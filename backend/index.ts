@@ -1,10 +1,10 @@
-import { prisma, Prisma, Int } from "./generated/prisma-client";
+import { prisma, Prisma, Int, User } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
-import { stringArg, idArg } from "nexus";
+import { stringArg, idArg, convertSDL } from "nexus";
 import { prismaObjectType, makePrismaSchema } from "nexus-prisma";
 import { GraphQLServer } from "graphql-yoga";
-import { AuthenticationError } from "apollo-server-core";
+import { AuthenticationError, ForbiddenError } from "apollo-server-core";
 import TmcClient from "./services/tmc";
 import fetchUser from "./middlewares/FetchUser";
 
@@ -21,7 +21,6 @@ const Query = prismaObjectType({
       type: "User",
       args: { email: stringArg() },
       resolve: (_, { email }, ctx) => {
-        const prisma: Prisma = ctx.prisma;
         return ctx.user;
       }
     });
@@ -37,6 +36,27 @@ const Mutation = prismaObjectType({
   name: "Mutation",
   definition(t) {
     t.prismaFields(["createUser"]);
+    t.field("chooseSlot", {
+      type: "User",
+      args: {
+        id: idArg()
+      },
+      resolve: async (_, { id }, ctx) => {
+        const prisma: Prisma = ctx.prisma;
+        console.log("slot id", id)
+        const slot = await prisma.slot({ id });
+        console.log("lolled")
+        if (slot.registered_count >= slot.capacity) {
+          throw new ForbiddenError("The slot is already full");
+        }
+        return prisma.updateUser({
+          where: { id: ctx.user.id },
+          data: {
+            slot: { connect: { id: slot.id } }
+          }
+        });
+      }
+    });
   }
 });
 

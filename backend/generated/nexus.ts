@@ -322,6 +322,7 @@ export interface NexusGenFieldTypes {
     updatedAt: any; // DateTime!
   }
   Mutation: { // field return type
+    chooseSlot: NexusGenRootTypes['User']; // User!
     createUser: NexusGenRootTypes['User']; // User!
   }
   Query: { // field return type
@@ -356,6 +357,9 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    chooseSlot: { // args
+      id?: string | null; // ID
+    }
     createUser: { // args
       data: NexusGenInputs['UserCreateInput']; // UserCreateInput!
     }

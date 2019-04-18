@@ -2,6 +2,7 @@ import * as React from "react";
 import gql from "graphql-tag";
 import { Query, QueryResult } from "react-apollo";
 import Slot from "./Slot";
+import { get } from "lodash";
 
 export const SlotListQuery = gql`
   query slots {
@@ -11,6 +12,12 @@ export const SlotListQuery = gql`
       registered_count
       starts_at
       ends_at
+    }
+    currentUser {
+      id
+      slot {
+        id
+      }
     }
   }
 `;
@@ -28,8 +35,11 @@ export default () => (
           </div>
         );
       }
+      const currentSlotId = get(data, "currentUser.slot.id");
       const { slots }: { slots: [Slot] } = data;
-      return slots.map(slot => <Slot id={slot.id} slot={slot} />);
+      return slots.map(slot => (
+        <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
+      ));
     }}
   </Query>
 );
