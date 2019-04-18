@@ -1,0 +1,33 @@
+type User {
+  id: ID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  upstream_id: Int! @unique
+  first_name: String
+  last_name: String
+  email: String!
+  administrator: Boolean!
+  slot: Slot
+  essay: Essay
+}
+
+type Slot {
+  id: ID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  capacity: Int!
+  registered: [User!]
+  registered_count: Int! @default(value: "0")
+  starts_at: DateTime!
+  ends_at: DateTime!
+}
+
+type Essay {
+  id: ID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  text: String!
+  author: User!
+}

@@ -1,0 +1,50 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "upgrade-interactive": "npm-check --update"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
+    "@zeit/next-typescript": "^1.1.1",
+    "apollo-boost": "^0.3.1",
+    "apollo-cache-inmemory": "^1.5.1",
+    "apollo-client": "^2.5.1",
+    "apollo-link": "^1.2.11",
+    "apollo-link-context": "^1.0.17",
+    "apollo-link-error": "^1.1.10",
+    "apollo-link-http": "^1.5.14",
+    "babel-plugin-styled-components": "^1.10.0",
+    "graphql": "^14.2.1",
+    "graphql-tag": "^2.10.1",
+    "luxon": "^1.12.1",
+    "next": "^8.1.0",
+    "next-fonts": "^0.17.0",
+    "next-with-apollo": "^3.4.0",
+    "nookies": "^2.0.4",
+    "react": "^16.8.6",
+    "react-apollo": "^2.5.4",
+    "react-dom": "^16.8.6",
+    "react-jss": "^8.6.1",
+    "styled-components": "^4.2.0",
+    "tmc-client-js": "0.0.9",
+    "typeface-roboto": "0.0.54"
+  },
+  "devDependencies": {
+    "@types/luxon": "^1.12.0",
+    "@types/next": "^8.0.3",
+    "@types/react": "^16.8.13",
+    "@types/react-dom": "^16.8.4",
+    "@types/styled-components": "^4.1.14",
+    "npm-check": "^5.9.0"
+  }
+}
