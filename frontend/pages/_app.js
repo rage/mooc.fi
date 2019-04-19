@@ -61,8 +61,18 @@ class MyApp extends App {
   }
 }
 
-MyApp.getInitialProps = ({ ctx }) => {
+// We're probably not supposed to do this
+const originalGetIntialProps = MyApp.getInitialProps;
+
+MyApp.getInitialProps = async arg => {
+  const { ctx } = arg;
+  let originalProps = {};
+  if (originalGetIntialProps) {
+    originalProps = (await originalGetIntialProps(arg)) || {};
+  }
+
   return {
+    ...originalProps,
     signedIn: isSignedIn(ctx)
   };
 };

@@ -10,7 +10,7 @@ const tmcClient = new TmcClient(
 
 export const isSignedIn = (ctx: NextContext) => {
   const accessToken = nookies.get(ctx)["access_token"];
-  return typeof accessToken == "string";
+  return typeof accessToken == "string"
 };
 
 export const signIn = async ({
