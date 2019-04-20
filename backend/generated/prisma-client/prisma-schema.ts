@@ -6,6 +6,10 @@ export const typeDefs = /* GraphQL */ `type AggregateEssay {
   count: Int!
 }
 
+type AggregateEssayTopic {
+  count: Int!
+}
+
 type AggregateSlot {
   count: Int!
 }
@@ -26,6 +30,7 @@ type Essay {
   updatedAt: DateTime!
   text: String!
   author: User!
+  topic: EssayTopic!
 }
 
 type EssayConnection {
@@ -36,16 +41,18 @@ type EssayConnection {
 
 input EssayCreateInput {
   text: String!
-  author: UserCreateOneWithoutEssayInput!
+  author: UserCreateOneWithoutEssaysInput!
+  topic: EssayTopicCreateOneInput!
 }
 
-input EssayCreateOneWithoutAuthorInput {
-  create: EssayCreateWithoutAuthorInput
-  connect: EssayWhereUniqueInput
+input EssayCreateManyWithoutAuthorInput {
+  create: [EssayCreateWithoutAuthorInput!]
+  connect: [EssayWhereUniqueInput!]
 }
 
 input EssayCreateWithoutAuthorInput {
   text: String!
+  topic: EssayTopicCreateOneInput!
 }
 
 type EssayEdge {
@@ -71,6 +78,56 @@ type EssayPreviousValues {
   text: String!
 }
 
+input EssayScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  text: String
+  text_not: String
+  text_in: [String!]
+  text_not_in: [String!]
+  text_lt: String
+  text_lte: String
+  text_gt: String
+  text_gte: String
+  text_contains: String
+  text_not_contains: String
+  text_starts_with: String
+  text_not_starts_with: String
+  text_ends_with: String
+  text_not_ends_with: String
+  AND: [EssayScalarWhereInput!]
+  OR: [EssayScalarWhereInput!]
+  NOT: [EssayScalarWhereInput!]
+}
+
 type EssaySubscriptionPayload {
   mutation: MutationType!
   node: Essay
@@ -89,29 +146,244 @@ input EssaySubscriptionWhereInput {
   NOT: [EssaySubscriptionWhereInput!]
 }
 
+type EssayTopic {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  description: String!
+  min_words: Int!
+  max_words: Int!
+}
+
+type EssayTopicConnection {
+  pageInfo: PageInfo!
+  edges: [EssayTopicEdge]!
+  aggregate: AggregateEssayTopic!
+}
+
+input EssayTopicCreateInput {
+  title: String!
+  description: String!
+  min_words: Int!
+  max_words: Int!
+}
+
+input EssayTopicCreateOneInput {
+  create: EssayTopicCreateInput
+  connect: EssayTopicWhereUniqueInput
+}
+
+type EssayTopicEdge {
+  node: EssayTopic!
+  cursor: String!
+}
+
+enum EssayTopicOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  min_words_ASC
+  min_words_DESC
+  max_words_ASC
+  max_words_DESC
+}
+
+type EssayTopicPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  description: String!
+  min_words: Int!
+  max_words: Int!
+}
+
+type EssayTopicSubscriptionPayload {
+  mutation: MutationType!
+  node: EssayTopic
+  updatedFields: [String!]
+  previousValues: EssayTopicPreviousValues
+}
+
+input EssayTopicSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: EssayTopicWhereInput
+  AND: [EssayTopicSubscriptionWhereInput!]
+  OR: [EssayTopicSubscriptionWhereInput!]
+  NOT: [EssayTopicSubscriptionWhereInput!]
+}
+
+input EssayTopicUpdateDataInput {
+  title: String
+  description: String
+  min_words: Int
+  max_words: Int
+}
+
+input EssayTopicUpdateInput {
+  title: String
+  description: String
+  min_words: Int
+  max_words: Int
+}
+
+input EssayTopicUpdateManyMutationInput {
+  title: String
+  description: String
+  min_words: Int
+  max_words: Int
+}
+
+input EssayTopicUpdateOneRequiredInput {
+  create: EssayTopicCreateInput
+  update: EssayTopicUpdateDataInput
+  upsert: EssayTopicUpsertNestedInput
+  connect: EssayTopicWhereUniqueInput
+}
+
+input EssayTopicUpsertNestedInput {
+  update: EssayTopicUpdateDataInput!
+  create: EssayTopicCreateInput!
+}
+
+input EssayTopicWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  min_words: Int
+  min_words_not: Int
+  min_words_in: [Int!]
+  min_words_not_in: [Int!]
+  min_words_lt: Int
+  min_words_lte: Int
+  min_words_gt: Int
+  min_words_gte: Int
+  max_words: Int
+  max_words_not: Int
+  max_words_in: [Int!]
+  max_words_not_in: [Int!]
+  max_words_lt: Int
+  max_words_lte: Int
+  max_words_gt: Int
+  max_words_gte: Int
+  AND: [EssayTopicWhereInput!]
+  OR: [EssayTopicWhereInput!]
+  NOT: [EssayTopicWhereInput!]
+}
+
+input EssayTopicWhereUniqueInput {
+  id: ID
+}
+
 input EssayUpdateInput {
   text: String
-  author: UserUpdateOneRequiredWithoutEssayInput
+  author: UserUpdateOneRequiredWithoutEssaysInput
+  topic: EssayTopicUpdateOneRequiredInput
+}
+
+input EssayUpdateManyDataInput {
+  text: String
 }
 
 input EssayUpdateManyMutationInput {
   text: String
 }
 
-input EssayUpdateOneWithoutAuthorInput {
-  create: EssayCreateWithoutAuthorInput
-  update: EssayUpdateWithoutAuthorDataInput
-  upsert: EssayUpsertWithoutAuthorInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: EssayWhereUniqueInput
+input EssayUpdateManyWithoutAuthorInput {
+  create: [EssayCreateWithoutAuthorInput!]
+  delete: [EssayWhereUniqueInput!]
+  connect: [EssayWhereUniqueInput!]
+  set: [EssayWhereUniqueInput!]
+  disconnect: [EssayWhereUniqueInput!]
+  update: [EssayUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [EssayUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [EssayScalarWhereInput!]
+  updateMany: [EssayUpdateManyWithWhereNestedInput!]
+}
+
+input EssayUpdateManyWithWhereNestedInput {
+  where: EssayScalarWhereInput!
+  data: EssayUpdateManyDataInput!
 }
 
 input EssayUpdateWithoutAuthorDataInput {
   text: String
+  topic: EssayTopicUpdateOneRequiredInput
 }
 
-input EssayUpsertWithoutAuthorInput {
+input EssayUpdateWithWhereUniqueWithoutAuthorInput {
+  where: EssayWhereUniqueInput!
+  data: EssayUpdateWithoutAuthorDataInput!
+}
+
+input EssayUpsertWithWhereUniqueWithoutAuthorInput {
+  where: EssayWhereUniqueInput!
   update: EssayUpdateWithoutAuthorDataInput!
   create: EssayCreateWithoutAuthorInput!
 }
@@ -162,6 +434,7 @@ input EssayWhereInput {
   text_ends_with: String
   text_not_ends_with: String
   author: UserWhereInput
+  topic: EssayTopicWhereInput
   AND: [EssayWhereInput!]
   OR: [EssayWhereInput!]
   NOT: [EssayWhereInput!]
@@ -180,6 +453,12 @@ type Mutation {
   upsertEssay(where: EssayWhereUniqueInput!, create: EssayCreateInput!, update: EssayUpdateInput!): Essay!
   deleteEssay(where: EssayWhereUniqueInput!): Essay
   deleteManyEssays(where: EssayWhereInput): BatchPayload!
+  createEssayTopic(data: EssayTopicCreateInput!): EssayTopic!
+  updateEssayTopic(data: EssayTopicUpdateInput!, where: EssayTopicWhereUniqueInput!): EssayTopic
+  updateManyEssayTopics(data: EssayTopicUpdateManyMutationInput!, where: EssayTopicWhereInput): BatchPayload!
+  upsertEssayTopic(where: EssayTopicWhereUniqueInput!, create: EssayTopicCreateInput!, update: EssayTopicUpdateInput!): EssayTopic!
+  deleteEssayTopic(where: EssayTopicWhereUniqueInput!): EssayTopic
+  deleteManyEssayTopics(where: EssayTopicWhereInput): BatchPayload!
   createSlot(data: SlotCreateInput!): Slot!
   updateSlot(data: SlotUpdateInput!, where: SlotWhereUniqueInput!): Slot
   updateManySlots(data: SlotUpdateManyMutationInput!, where: SlotWhereInput): BatchPayload!
@@ -215,6 +494,9 @@ type Query {
   essay(where: EssayWhereUniqueInput!): Essay
   essays(where: EssayWhereInput, orderBy: EssayOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Essay]!
   essaysConnection(where: EssayWhereInput, orderBy: EssayOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EssayConnection!
+  essayTopic(where: EssayTopicWhereUniqueInput!): EssayTopic
+  essayTopics(where: EssayTopicWhereInput, orderBy: EssayTopicOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EssayTopic]!
+  essayTopicsConnection(where: EssayTopicWhereInput, orderBy: EssayTopicOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EssayTopicConnection!
   slot(where: SlotWhereUniqueInput!): Slot
   slots(where: SlotWhereInput, orderBy: SlotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Slot]!
   slotsConnection(where: SlotWhereInput, orderBy: SlotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SlotConnection!
@@ -424,6 +706,7 @@ input SlotWhereUniqueInput {
 
 type Subscription {
   essay(where: EssaySubscriptionWhereInput): EssaySubscriptionPayload
+  essayTopic(where: EssayTopicSubscriptionWhereInput): EssayTopicSubscriptionPayload
   slot(where: SlotSubscriptionWhereInput): SlotSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -438,7 +721,7 @@ type User {
   email: String!
   administrator: Boolean!
   slot: Slot
-  essay: Essay
+  essays(where: EssayWhereInput, orderBy: EssayOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Essay!]
 }
 
 type UserConnection {
@@ -454,7 +737,7 @@ input UserCreateInput {
   email: String!
   administrator: Boolean!
   slot: SlotCreateOneWithoutRegisteredInput
-  essay: EssayCreateOneWithoutAuthorInput
+  essays: EssayCreateManyWithoutAuthorInput
 }
 
 input UserCreateManyWithoutSlotInput {
@@ -462,12 +745,12 @@ input UserCreateManyWithoutSlotInput {
   connect: [UserWhereUniqueInput!]
 }
 
-input UserCreateOneWithoutEssayInput {
-  create: UserCreateWithoutEssayInput
+input UserCreateOneWithoutEssaysInput {
+  create: UserCreateWithoutEssaysInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutEssayInput {
+input UserCreateWithoutEssaysInput {
   upstream_id: Int!
   first_name: String
   last_name: String
@@ -482,7 +765,7 @@ input UserCreateWithoutSlotInput {
   last_name: String
   email: String!
   administrator: Boolean!
-  essay: EssayCreateOneWithoutAuthorInput
+  essays: EssayCreateManyWithoutAuthorInput
 }
 
 type UserEdge {
@@ -633,7 +916,7 @@ input UserUpdateInput {
   email: String
   administrator: Boolean
   slot: SlotUpdateOneWithoutRegisteredInput
-  essay: EssayUpdateOneWithoutAuthorInput
+  essays: EssayUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateManyDataInput {
@@ -669,14 +952,14 @@ input UserUpdateManyWithWhereNestedInput {
   data: UserUpdateManyDataInput!
 }
 
-input UserUpdateOneRequiredWithoutEssayInput {
-  create: UserCreateWithoutEssayInput
-  update: UserUpdateWithoutEssayDataInput
-  upsert: UserUpsertWithoutEssayInput
+input UserUpdateOneRequiredWithoutEssaysInput {
+  create: UserCreateWithoutEssaysInput
+  update: UserUpdateWithoutEssaysDataInput
+  upsert: UserUpsertWithoutEssaysInput
   connect: UserWhereUniqueInput
 }
 
-input UserUpdateWithoutEssayDataInput {
+input UserUpdateWithoutEssaysDataInput {
   upstream_id: Int
   first_name: String
   last_name: String
@@ -691,7 +974,7 @@ input UserUpdateWithoutSlotDataInput {
   last_name: String
   email: String
   administrator: Boolean
-  essay: EssayUpdateOneWithoutAuthorInput
+  essays: EssayUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithWhereUniqueWithoutSlotInput {
@@ -699,9 +982,9 @@ input UserUpdateWithWhereUniqueWithoutSlotInput {
   data: UserUpdateWithoutSlotDataInput!
 }
 
-input UserUpsertWithoutEssayInput {
-  update: UserUpdateWithoutEssayDataInput!
-  create: UserCreateWithoutEssayInput!
+input UserUpsertWithoutEssaysInput {
+  update: UserUpdateWithoutEssaysDataInput!
+  create: UserCreateWithoutEssaysInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutSlotInput {
@@ -794,7 +1077,9 @@ input UserWhereInput {
   administrator: Boolean
   administrator_not: Boolean
   slot: SlotWhereInput
-  essay: EssayWhereInput
+  essays_every: EssayWhereInput
+  essays_some: EssayWhereInput
+  essays_none: EssayWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

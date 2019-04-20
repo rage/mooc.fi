@@ -7,6 +7,7 @@ import redirect from "../lib/redirect";
 import UserOverView from "../components/UserOverView";
 import Steps from "../components/Steps";
 import { Typography } from "@material-ui/core";
+import AnswerEssays from "../components/AnswerEssays";
 
 function Home() {
   return (
@@ -18,6 +19,7 @@ function Home() {
       <Steps />
       <UserOverView />
       <SlotList />
+      <AnswerEssays />
     </div>
   );
 }

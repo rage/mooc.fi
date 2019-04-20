@@ -15,6 +15,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 
 export interface Exists {
   essay: (where?: EssayWhereInput) => Promise<boolean>;
+  essayTopic: (where?: EssayTopicWhereInput) => Promise<boolean>;
   slot: (where?: SlotWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -61,6 +62,29 @@ export interface Prisma {
       last?: Int;
     }
   ) => EssayConnectionPromise;
+  essayTopic: (where: EssayTopicWhereUniqueInput) => EssayTopicPromise;
+  essayTopics: (
+    args?: {
+      where?: EssayTopicWhereInput;
+      orderBy?: EssayTopicOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<EssayTopic>;
+  essayTopicsConnection: (
+    args?: {
+      where?: EssayTopicWhereInput;
+      orderBy?: EssayTopicOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => EssayTopicConnectionPromise;
   slot: (where: SlotWhereUniqueInput) => SlotPromise;
   slots: (
     args?: {
@@ -129,6 +153,25 @@ export interface Prisma {
   ) => EssayPromise;
   deleteEssay: (where: EssayWhereUniqueInput) => EssayPromise;
   deleteManyEssays: (where?: EssayWhereInput) => BatchPayloadPromise;
+  createEssayTopic: (data: EssayTopicCreateInput) => EssayTopicPromise;
+  updateEssayTopic: (
+    args: { data: EssayTopicUpdateInput; where: EssayTopicWhereUniqueInput }
+  ) => EssayTopicPromise;
+  updateManyEssayTopics: (
+    args: {
+      data: EssayTopicUpdateManyMutationInput;
+      where?: EssayTopicWhereInput;
+    }
+  ) => BatchPayloadPromise;
+  upsertEssayTopic: (
+    args: {
+      where: EssayTopicWhereUniqueInput;
+      create: EssayTopicCreateInput;
+      update: EssayTopicUpdateInput;
+    }
+  ) => EssayTopicPromise;
+  deleteEssayTopic: (where: EssayTopicWhereUniqueInput) => EssayTopicPromise;
+  deleteManyEssayTopics: (where?: EssayTopicWhereInput) => BatchPayloadPromise;
   createSlot: (data: SlotCreateInput) => SlotPromise;
   updateSlot: (
     args: { data: SlotUpdateInput; where: SlotWhereUniqueInput }
@@ -173,6 +216,9 @@ export interface Subscription {
   essay: (
     where?: EssaySubscriptionWhereInput
   ) => EssaySubscriptionPayloadSubscription;
+  essayTopic: (
+    where?: EssayTopicSubscriptionWhereInput
+  ) => EssayTopicSubscriptionPayloadSubscription;
   slot: (
     where?: SlotSubscriptionWhereInput
   ) => SlotSubscriptionPayloadSubscription;
@@ -216,6 +262,22 @@ export type EssayOrderByInput =
   | "updatedAt_DESC"
   | "text_ASC"
   | "text_DESC";
+
+export type EssayTopicOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "title_ASC"
+  | "title_DESC"
+  | "description_ASC"
+  | "description_DESC"
+  | "min_words_ASC"
+  | "min_words_DESC"
+  | "max_words_ASC"
+  | "max_words_DESC";
 
 export type SlotOrderByInput =
   | "id_ASC"
@@ -323,7 +385,9 @@ export interface UserWhereInput {
   administrator?: Boolean;
   administrator_not?: Boolean;
   slot?: SlotWhereInput;
-  essay?: EssayWhereInput;
+  essays_every?: EssayWhereInput;
+  essays_some?: EssayWhereInput;
+  essays_none?: EssayWhereInput;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
@@ -446,10 +510,95 @@ export interface EssayWhereInput {
   text_ends_with?: String;
   text_not_ends_with?: String;
   author?: UserWhereInput;
+  topic?: EssayTopicWhereInput;
   AND?: EssayWhereInput[] | EssayWhereInput;
   OR?: EssayWhereInput[] | EssayWhereInput;
   NOT?: EssayWhereInput[] | EssayWhereInput;
 }
+
+export interface EssayTopicWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  title?: String;
+  title_not?: String;
+  title_in?: String[] | String;
+  title_not_in?: String[] | String;
+  title_lt?: String;
+  title_lte?: String;
+  title_gt?: String;
+  title_gte?: String;
+  title_contains?: String;
+  title_not_contains?: String;
+  title_starts_with?: String;
+  title_not_starts_with?: String;
+  title_ends_with?: String;
+  title_not_ends_with?: String;
+  description?: String;
+  description_not?: String;
+  description_in?: String[] | String;
+  description_not_in?: String[] | String;
+  description_lt?: String;
+  description_lte?: String;
+  description_gt?: String;
+  description_gte?: String;
+  description_contains?: String;
+  description_not_contains?: String;
+  description_starts_with?: String;
+  description_not_starts_with?: String;
+  description_ends_with?: String;
+  description_not_ends_with?: String;
+  min_words?: Int;
+  min_words_not?: Int;
+  min_words_in?: Int[] | Int;
+  min_words_not_in?: Int[] | Int;
+  min_words_lt?: Int;
+  min_words_lte?: Int;
+  min_words_gt?: Int;
+  min_words_gte?: Int;
+  max_words?: Int;
+  max_words_not?: Int;
+  max_words_in?: Int[] | Int;
+  max_words_not_in?: Int[] | Int;
+  max_words_lt?: Int;
+  max_words_lte?: Int;
+  max_words_gt?: Int;
+  max_words_gte?: Int;
+  AND?: EssayTopicWhereInput[] | EssayTopicWhereInput;
+  OR?: EssayTopicWhereInput[] | EssayTopicWhereInput;
+  NOT?: EssayTopicWhereInput[] | EssayTopicWhereInput;
+}
+
+export type EssayTopicWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
 
 export type SlotWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
@@ -462,15 +611,16 @@ export type UserWhereUniqueInput = AtLeastOne<{
 
 export interface EssayCreateInput {
   text: String;
-  author: UserCreateOneWithoutEssayInput;
+  author: UserCreateOneWithoutEssaysInput;
+  topic: EssayTopicCreateOneInput;
 }
 
-export interface UserCreateOneWithoutEssayInput {
-  create?: UserCreateWithoutEssayInput;
+export interface UserCreateOneWithoutEssaysInput {
+  create?: UserCreateWithoutEssaysInput;
   connect?: UserWhereUniqueInput;
 }
 
-export interface UserCreateWithoutEssayInput {
+export interface UserCreateWithoutEssaysInput {
   upstream_id: Int;
   first_name?: String;
   last_name?: String;
@@ -491,19 +641,32 @@ export interface SlotCreateWithoutRegisteredInput {
   ends_at: DateTimeInput;
 }
 
-export interface EssayUpdateInput {
-  text?: String;
-  author?: UserUpdateOneRequiredWithoutEssayInput;
+export interface EssayTopicCreateOneInput {
+  create?: EssayTopicCreateInput;
+  connect?: EssayTopicWhereUniqueInput;
 }
 
-export interface UserUpdateOneRequiredWithoutEssayInput {
-  create?: UserCreateWithoutEssayInput;
-  update?: UserUpdateWithoutEssayDataInput;
-  upsert?: UserUpsertWithoutEssayInput;
+export interface EssayTopicCreateInput {
+  title: String;
+  description: String;
+  min_words: Int;
+  max_words: Int;
+}
+
+export interface EssayUpdateInput {
+  text?: String;
+  author?: UserUpdateOneRequiredWithoutEssaysInput;
+  topic?: EssayTopicUpdateOneRequiredInput;
+}
+
+export interface UserUpdateOneRequiredWithoutEssaysInput {
+  create?: UserCreateWithoutEssaysInput;
+  update?: UserUpdateWithoutEssaysDataInput;
+  upsert?: UserUpsertWithoutEssaysInput;
   connect?: UserWhereUniqueInput;
 }
 
-export interface UserUpdateWithoutEssayDataInput {
+export interface UserUpdateWithoutEssaysDataInput {
   upstream_id?: Int;
   first_name?: String;
   last_name?: String;
@@ -533,13 +696,46 @@ export interface SlotUpsertWithoutRegisteredInput {
   create: SlotCreateWithoutRegisteredInput;
 }
 
-export interface UserUpsertWithoutEssayInput {
-  update: UserUpdateWithoutEssayDataInput;
-  create: UserCreateWithoutEssayInput;
+export interface UserUpsertWithoutEssaysInput {
+  update: UserUpdateWithoutEssaysDataInput;
+  create: UserCreateWithoutEssaysInput;
+}
+
+export interface EssayTopicUpdateOneRequiredInput {
+  create?: EssayTopicCreateInput;
+  update?: EssayTopicUpdateDataInput;
+  upsert?: EssayTopicUpsertNestedInput;
+  connect?: EssayTopicWhereUniqueInput;
+}
+
+export interface EssayTopicUpdateDataInput {
+  title?: String;
+  description?: String;
+  min_words?: Int;
+  max_words?: Int;
+}
+
+export interface EssayTopicUpsertNestedInput {
+  update: EssayTopicUpdateDataInput;
+  create: EssayTopicCreateInput;
 }
 
 export interface EssayUpdateManyMutationInput {
   text?: String;
+}
+
+export interface EssayTopicUpdateInput {
+  title?: String;
+  description?: String;
+  min_words?: Int;
+  max_words?: Int;
+}
+
+export interface EssayTopicUpdateManyMutationInput {
+  title?: String;
+  description?: String;
+  min_words?: Int;
+  max_words?: Int;
 }
 
 export interface SlotCreateInput {
@@ -561,16 +757,17 @@ export interface UserCreateWithoutSlotInput {
   last_name?: String;
   email: String;
   administrator: Boolean;
-  essay?: EssayCreateOneWithoutAuthorInput;
+  essays?: EssayCreateManyWithoutAuthorInput;
 }
 
-export interface EssayCreateOneWithoutAuthorInput {
-  create?: EssayCreateWithoutAuthorInput;
-  connect?: EssayWhereUniqueInput;
+export interface EssayCreateManyWithoutAuthorInput {
+  create?: EssayCreateWithoutAuthorInput[] | EssayCreateWithoutAuthorInput;
+  connect?: EssayWhereUniqueInput[] | EssayWhereUniqueInput;
 }
 
 export interface EssayCreateWithoutAuthorInput {
   text: String;
+  topic: EssayTopicCreateOneInput;
 }
 
 export interface SlotUpdateInput {
@@ -610,25 +807,100 @@ export interface UserUpdateWithoutSlotDataInput {
   last_name?: String;
   email?: String;
   administrator?: Boolean;
-  essay?: EssayUpdateOneWithoutAuthorInput;
+  essays?: EssayUpdateManyWithoutAuthorInput;
 }
 
-export interface EssayUpdateOneWithoutAuthorInput {
-  create?: EssayCreateWithoutAuthorInput;
-  update?: EssayUpdateWithoutAuthorDataInput;
-  upsert?: EssayUpsertWithoutAuthorInput;
-  delete?: Boolean;
-  disconnect?: Boolean;
-  connect?: EssayWhereUniqueInput;
+export interface EssayUpdateManyWithoutAuthorInput {
+  create?: EssayCreateWithoutAuthorInput[] | EssayCreateWithoutAuthorInput;
+  delete?: EssayWhereUniqueInput[] | EssayWhereUniqueInput;
+  connect?: EssayWhereUniqueInput[] | EssayWhereUniqueInput;
+  set?: EssayWhereUniqueInput[] | EssayWhereUniqueInput;
+  disconnect?: EssayWhereUniqueInput[] | EssayWhereUniqueInput;
+  update?:
+    | EssayUpdateWithWhereUniqueWithoutAuthorInput[]
+    | EssayUpdateWithWhereUniqueWithoutAuthorInput;
+  upsert?:
+    | EssayUpsertWithWhereUniqueWithoutAuthorInput[]
+    | EssayUpsertWithWhereUniqueWithoutAuthorInput;
+  deleteMany?: EssayScalarWhereInput[] | EssayScalarWhereInput;
+  updateMany?:
+    | EssayUpdateManyWithWhereNestedInput[]
+    | EssayUpdateManyWithWhereNestedInput;
+}
+
+export interface EssayUpdateWithWhereUniqueWithoutAuthorInput {
+  where: EssayWhereUniqueInput;
+  data: EssayUpdateWithoutAuthorDataInput;
 }
 
 export interface EssayUpdateWithoutAuthorDataInput {
   text?: String;
+  topic?: EssayTopicUpdateOneRequiredInput;
 }
 
-export interface EssayUpsertWithoutAuthorInput {
+export interface EssayUpsertWithWhereUniqueWithoutAuthorInput {
+  where: EssayWhereUniqueInput;
   update: EssayUpdateWithoutAuthorDataInput;
   create: EssayCreateWithoutAuthorInput;
+}
+
+export interface EssayScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  text?: String;
+  text_not?: String;
+  text_in?: String[] | String;
+  text_not_in?: String[] | String;
+  text_lt?: String;
+  text_lte?: String;
+  text_gt?: String;
+  text_gte?: String;
+  text_contains?: String;
+  text_not_contains?: String;
+  text_starts_with?: String;
+  text_not_starts_with?: String;
+  text_ends_with?: String;
+  text_not_ends_with?: String;
+  AND?: EssayScalarWhereInput[] | EssayScalarWhereInput;
+  OR?: EssayScalarWhereInput[] | EssayScalarWhereInput;
+  NOT?: EssayScalarWhereInput[] | EssayScalarWhereInput;
+}
+
+export interface EssayUpdateManyWithWhereNestedInput {
+  where: EssayScalarWhereInput;
+  data: EssayUpdateManyDataInput;
+}
+
+export interface EssayUpdateManyDataInput {
+  text?: String;
 }
 
 export interface UserUpsertWithWhereUniqueWithoutSlotInput {
@@ -752,7 +1024,7 @@ export interface UserCreateInput {
   email: String;
   administrator: Boolean;
   slot?: SlotCreateOneWithoutRegisteredInput;
-  essay?: EssayCreateOneWithoutAuthorInput;
+  essays?: EssayCreateManyWithoutAuthorInput;
 }
 
 export interface UserUpdateInput {
@@ -762,7 +1034,7 @@ export interface UserUpdateInput {
   email?: String;
   administrator?: Boolean;
   slot?: SlotUpdateOneWithoutRegisteredInput;
-  essay?: EssayUpdateOneWithoutAuthorInput;
+  essays?: EssayUpdateManyWithoutAuthorInput;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -782,6 +1054,17 @@ export interface EssaySubscriptionWhereInput {
   AND?: EssaySubscriptionWhereInput[] | EssaySubscriptionWhereInput;
   OR?: EssaySubscriptionWhereInput[] | EssaySubscriptionWhereInput;
   NOT?: EssaySubscriptionWhereInput[] | EssaySubscriptionWhereInput;
+}
+
+export interface EssayTopicSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: EssayTopicWhereInput;
+  AND?: EssayTopicSubscriptionWhereInput[] | EssayTopicSubscriptionWhereInput;
+  OR?: EssayTopicSubscriptionWhereInput[] | EssayTopicSubscriptionWhereInput;
+  NOT?: EssayTopicSubscriptionWhereInput[] | EssayTopicSubscriptionWhereInput;
 }
 
 export interface SlotSubscriptionWhereInput {
@@ -823,6 +1106,7 @@ export interface EssayPromise extends Promise<Essay>, Fragmentable {
   updatedAt: () => Promise<DateTimeOutput>;
   text: () => Promise<String>;
   author: <T = UserPromise>() => T;
+  topic: <T = EssayTopicPromise>() => T;
 }
 
 export interface EssaySubscription
@@ -833,6 +1117,7 @@ export interface EssaySubscription
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   text: () => Promise<AsyncIterator<String>>;
   author: <T = UserSubscription>() => T;
+  topic: <T = EssayTopicSubscription>() => T;
 }
 
 export interface User {
@@ -856,7 +1141,17 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
   slot: <T = SlotPromise>() => T;
-  essay: <T = EssayPromise>() => T;
+  essays: <T = FragmentableArray<Essay>>(
+    args?: {
+      where?: EssayWhereInput;
+      orderBy?: EssayOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface UserSubscription
@@ -871,7 +1166,17 @@ export interface UserSubscription
   email: () => Promise<AsyncIterator<String>>;
   administrator: () => Promise<AsyncIterator<Boolean>>;
   slot: <T = SlotSubscription>() => T;
-  essay: <T = EssaySubscription>() => T;
+  essays: <T = Promise<AsyncIterator<EssaySubscription>>>(
+    args?: {
+      where?: EssayWhereInput;
+      orderBy?: EssayOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface Slot {
@@ -926,6 +1231,38 @@ export interface SlotSubscription
   registered_count: () => Promise<AsyncIterator<Int>>;
   starts_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   ends_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface EssayTopic {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  title: String;
+  description: String;
+  min_words: Int;
+  max_words: Int;
+}
+
+export interface EssayTopicPromise extends Promise<EssayTopic>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  title: () => Promise<String>;
+  description: () => Promise<String>;
+  min_words: () => Promise<Int>;
+  max_words: () => Promise<Int>;
+}
+
+export interface EssayTopicSubscription
+  extends Promise<AsyncIterator<EssayTopic>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  title: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  min_words: () => Promise<AsyncIterator<Int>>;
+  max_words: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface EssayConnection {
@@ -1001,6 +1338,62 @@ export interface AggregateEssayPromise
 
 export interface AggregateEssaySubscription
   extends Promise<AsyncIterator<AggregateEssay>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface EssayTopicConnection {
+  pageInfo: PageInfo;
+  edges: EssayTopicEdge[];
+}
+
+export interface EssayTopicConnectionPromise
+  extends Promise<EssayTopicConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<EssayTopicEdge>>() => T;
+  aggregate: <T = AggregateEssayTopicPromise>() => T;
+}
+
+export interface EssayTopicConnectionSubscription
+  extends Promise<AsyncIterator<EssayTopicConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<EssayTopicEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateEssayTopicSubscription>() => T;
+}
+
+export interface EssayTopicEdge {
+  node: EssayTopic;
+  cursor: String;
+}
+
+export interface EssayTopicEdgePromise
+  extends Promise<EssayTopicEdge>,
+    Fragmentable {
+  node: <T = EssayTopicPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface EssayTopicEdgeSubscription
+  extends Promise<AsyncIterator<EssayTopicEdge>>,
+    Fragmentable {
+  node: <T = EssayTopicSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateEssayTopic {
+  count: Int;
+}
+
+export interface AggregateEssayTopicPromise
+  extends Promise<AggregateEssayTopic>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateEssayTopicSubscription
+  extends Promise<AsyncIterator<AggregateEssayTopic>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -1179,6 +1572,65 @@ export interface EssayPreviousValuesSubscription
   text: () => Promise<AsyncIterator<String>>;
 }
 
+export interface EssayTopicSubscriptionPayload {
+  mutation: MutationType;
+  node: EssayTopic;
+  updatedFields: String[];
+  previousValues: EssayTopicPreviousValues;
+}
+
+export interface EssayTopicSubscriptionPayloadPromise
+  extends Promise<EssayTopicSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = EssayTopicPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = EssayTopicPreviousValuesPromise>() => T;
+}
+
+export interface EssayTopicSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<EssayTopicSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = EssayTopicSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = EssayTopicPreviousValuesSubscription>() => T;
+}
+
+export interface EssayTopicPreviousValues {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  title: String;
+  description: String;
+  min_words: Int;
+  max_words: Int;
+}
+
+export interface EssayTopicPreviousValuesPromise
+  extends Promise<EssayTopicPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  title: () => Promise<String>;
+  description: () => Promise<String>;
+  min_words: () => Promise<Int>;
+  max_words: () => Promise<Int>;
+}
+
+export interface EssayTopicPreviousValuesSubscription
+  extends Promise<AsyncIterator<EssayTopicPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  title: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  min_words: () => Promise<AsyncIterator<Int>>;
+  max_words: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface SlotSubscriptionPayload {
   mutation: MutationType;
   node: Slot;
@@ -1348,6 +1800,10 @@ export const models: Model[] = [
   },
   {
     name: "Essay",
+    embedded: false
+  },
+  {
+    name: "EssayTopic",
     embedded: false
   }
 ];

@@ -8,7 +8,7 @@ type User {
   email: String!
   administrator: Boolean!
   slot: Slot
-  essay: Essay
+  essays: [Essay!]
 }
 
 type Slot {
@@ -30,4 +30,16 @@ type Essay {
 
   text: String!
   author: User!
+  topic: EssayTopic!
+}
+
+type EssayTopic {
+  id: ID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  title: String!
+  description: String!
+  min_words: Int!
+  max_words: Int!
 }

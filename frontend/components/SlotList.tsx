@@ -4,6 +4,7 @@ import Slot from "./Slot";
 import { get } from "lodash";
 import { useQuery } from "react-apollo-hooks";
 import { Slots } from "./__generated__/Slots";
+import { Typography } from "@material-ui/core";
 
 export const SlotListQuery = gql`
   query Slots {
@@ -39,7 +40,19 @@ export default () => {
   }
 
   const currentSlotId = get(data, "currentUser.slot.id");
-  return data.slots.map(slot => (
-    <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
-  ));
+  return (
+    <>
+      <Typography variant="h4" component="h2">
+        Näyttökoeajan valinta
+      </Typography>
+      <p>
+        Valitse listasta yksi sinulle sopiva näyttökoeaika. Huomaa että paikkoja
+        jokaisessa ajassa on saatavilla vain rajallisesti, joten suosittelemme
+        että valitset ajan mahdollisimman ajoissa.
+      </p>
+      {data.slots.map(slot => (
+        <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
+      ))}
+    </>
+  );
 };

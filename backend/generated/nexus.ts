@@ -11,12 +11,84 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  EssayCreateOneWithoutAuthorInput: { // input type
-    connect?: NexusGenInputs['EssayWhereUniqueInput'] | null; // EssayWhereUniqueInput
-    create?: NexusGenInputs['EssayCreateWithoutAuthorInput'] | null; // EssayCreateWithoutAuthorInput
-  }
-  EssayCreateWithoutAuthorInput: { // input type
-    text: string; // String!
+  EssayTopicWhereInput: { // input type
+    AND?: NexusGenInputs['EssayTopicWhereInput'][] | null; // [EssayTopicWhereInput!]
+    createdAt?: any | null; // DateTime
+    createdAt_gt?: any | null; // DateTime
+    createdAt_gte?: any | null; // DateTime
+    createdAt_in?: any[] | null; // [DateTime!]
+    createdAt_lt?: any | null; // DateTime
+    createdAt_lte?: any | null; // DateTime
+    createdAt_not?: any | null; // DateTime
+    createdAt_not_in?: any[] | null; // [DateTime!]
+    description?: string | null; // String
+    description_contains?: string | null; // String
+    description_ends_with?: string | null; // String
+    description_gt?: string | null; // String
+    description_gte?: string | null; // String
+    description_in?: string[] | null; // [String!]
+    description_lt?: string | null; // String
+    description_lte?: string | null; // String
+    description_not?: string | null; // String
+    description_not_contains?: string | null; // String
+    description_not_ends_with?: string | null; // String
+    description_not_in?: string[] | null; // [String!]
+    description_not_starts_with?: string | null; // String
+    description_starts_with?: string | null; // String
+    id?: string | null; // ID
+    id_contains?: string | null; // ID
+    id_ends_with?: string | null; // ID
+    id_gt?: string | null; // ID
+    id_gte?: string | null; // ID
+    id_in?: string[] | null; // [ID!]
+    id_lt?: string | null; // ID
+    id_lte?: string | null; // ID
+    id_not?: string | null; // ID
+    id_not_contains?: string | null; // ID
+    id_not_ends_with?: string | null; // ID
+    id_not_in?: string[] | null; // [ID!]
+    id_not_starts_with?: string | null; // ID
+    id_starts_with?: string | null; // ID
+    max_words?: number | null; // Int
+    max_words_gt?: number | null; // Int
+    max_words_gte?: number | null; // Int
+    max_words_in?: number[] | null; // [Int!]
+    max_words_lt?: number | null; // Int
+    max_words_lte?: number | null; // Int
+    max_words_not?: number | null; // Int
+    max_words_not_in?: number[] | null; // [Int!]
+    min_words?: number | null; // Int
+    min_words_gt?: number | null; // Int
+    min_words_gte?: number | null; // Int
+    min_words_in?: number[] | null; // [Int!]
+    min_words_lt?: number | null; // Int
+    min_words_lte?: number | null; // Int
+    min_words_not?: number | null; // Int
+    min_words_not_in?: number[] | null; // [Int!]
+    NOT?: NexusGenInputs['EssayTopicWhereInput'][] | null; // [EssayTopicWhereInput!]
+    OR?: NexusGenInputs['EssayTopicWhereInput'][] | null; // [EssayTopicWhereInput!]
+    title?: string | null; // String
+    title_contains?: string | null; // String
+    title_ends_with?: string | null; // String
+    title_gt?: string | null; // String
+    title_gte?: string | null; // String
+    title_in?: string[] | null; // [String!]
+    title_lt?: string | null; // String
+    title_lte?: string | null; // String
+    title_not?: string | null; // String
+    title_not_contains?: string | null; // String
+    title_not_ends_with?: string | null; // String
+    title_not_in?: string[] | null; // [String!]
+    title_not_starts_with?: string | null; // String
+    title_starts_with?: string | null; // String
+    updatedAt?: any | null; // DateTime
+    updatedAt_gt?: any | null; // DateTime
+    updatedAt_gte?: any | null; // DateTime
+    updatedAt_in?: any[] | null; // [DateTime!]
+    updatedAt_lt?: any | null; // DateTime
+    updatedAt_lte?: any | null; // DateTime
+    updatedAt_not?: any | null; // DateTime
+    updatedAt_not_in?: any[] | null; // [DateTime!]
   }
   EssayWhereInput: { // input type
     AND?: NexusGenInputs['EssayWhereInput'][] | null; // [EssayWhereInput!]
@@ -59,6 +131,7 @@ export interface NexusGenInputs {
     text_not_in?: string[] | null; // [String!]
     text_not_starts_with?: string | null; // String
     text_starts_with?: string | null; // String
+    topic?: NexusGenInputs['EssayTopicWhereInput'] | null; // EssayTopicWhereInput
     updatedAt?: any | null; // DateTime
     updatedAt_gt?: any | null; // DateTime
     updatedAt_gte?: any | null; // DateTime
@@ -67,19 +140,6 @@ export interface NexusGenInputs {
     updatedAt_lte?: any | null; // DateTime
     updatedAt_not?: any | null; // DateTime
     updatedAt_not_in?: any[] | null; // [DateTime!]
-  }
-  EssayWhereUniqueInput: { // input type
-    id?: string | null; // ID
-  }
-  SlotCreateOneWithoutRegisteredInput: { // input type
-    connect?: NexusGenInputs['SlotWhereUniqueInput'] | null; // SlotWhereUniqueInput
-    create?: NexusGenInputs['SlotCreateWithoutRegisteredInput'] | null; // SlotCreateWithoutRegisteredInput
-  }
-  SlotCreateWithoutRegisteredInput: { // input type
-    capacity: number; // Int!
-    ends_at: any; // DateTime!
-    registered_count?: number | null; // Int
-    starts_at: any; // DateTime!
   }
   SlotWhereInput: { // input type
     AND?: NexusGenInputs['SlotWhereInput'][] | null; // [SlotWhereInput!]
@@ -151,18 +211,6 @@ export interface NexusGenInputs {
     updatedAt_not?: any | null; // DateTime
     updatedAt_not_in?: any[] | null; // [DateTime!]
   }
-  SlotWhereUniqueInput: { // input type
-    id?: string | null; // ID
-  }
-  UserCreateInput: { // input type
-    administrator: boolean; // Boolean!
-    email: string; // String!
-    essay?: NexusGenInputs['EssayCreateOneWithoutAuthorInput'] | null; // EssayCreateOneWithoutAuthorInput
-    first_name?: string | null; // String
-    last_name?: string | null; // String
-    slot?: NexusGenInputs['SlotCreateOneWithoutRegisteredInput'] | null; // SlotCreateOneWithoutRegisteredInput
-    upstream_id: number; // Int!
-  }
   UserWhereInput: { // input type
     administrator?: boolean | null; // Boolean
     administrator_not?: boolean | null; // Boolean
@@ -189,7 +237,9 @@ export interface NexusGenInputs {
     email_not_in?: string[] | null; // [String!]
     email_not_starts_with?: string | null; // String
     email_starts_with?: string | null; // String
-    essay?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
+    essays_every?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
+    essays_none?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
+    essays_some?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
     first_name?: string | null; // String
     first_name_contains?: string | null; // String
     first_name_ends_with?: string | null; // String
@@ -259,6 +309,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  EssayOrderByInput: "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "text_ASC" | "text_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
   UserOrderByInput: "administrator_ASC" | "administrator_DESC" | "createdAt_ASC" | "createdAt_DESC" | "email_ASC" | "email_DESC" | "first_name_ASC" | "first_name_DESC" | "id_ASC" | "id_DESC" | "last_name_ASC" | "last_name_DESC" | "updatedAt_ASC" | "updatedAt_DESC" | "upstream_id_ASC" | "upstream_id_DESC"
 }
 
@@ -267,6 +318,15 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     id: string; // ID!
     text: string; // String!
+    updatedAt: any; // DateTime!
+  }
+  EssayTopic: { // root type
+    createdAt: any; // DateTime!
+    description: string; // String!
+    id: string; // ID!
+    max_words: number; // Int!
+    min_words: number; // Int!
+    title: string; // String!
     updatedAt: any; // DateTime!
   }
   Mutation: {};
@@ -299,17 +359,12 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  EssayCreateOneWithoutAuthorInput: NexusGenInputs['EssayCreateOneWithoutAuthorInput'];
-  EssayCreateWithoutAuthorInput: NexusGenInputs['EssayCreateWithoutAuthorInput'];
+  EssayTopicWhereInput: NexusGenInputs['EssayTopicWhereInput'];
   EssayWhereInput: NexusGenInputs['EssayWhereInput'];
-  EssayWhereUniqueInput: NexusGenInputs['EssayWhereUniqueInput'];
-  SlotCreateOneWithoutRegisteredInput: NexusGenInputs['SlotCreateOneWithoutRegisteredInput'];
-  SlotCreateWithoutRegisteredInput: NexusGenInputs['SlotCreateWithoutRegisteredInput'];
   SlotWhereInput: NexusGenInputs['SlotWhereInput'];
-  SlotWhereUniqueInput: NexusGenInputs['SlotWhereUniqueInput'];
-  UserCreateInput: NexusGenInputs['UserCreateInput'];
   UserWhereInput: NexusGenInputs['UserWhereInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
+  EssayOrderByInput: NexusGenEnums['EssayOrderByInput'];
   UserOrderByInput: NexusGenEnums['UserOrderByInput'];
 }
 
@@ -319,14 +374,27 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     id: string; // ID!
     text: string; // String!
+    topic: NexusGenRootTypes['EssayTopic']; // EssayTopic!
+    updatedAt: any; // DateTime!
+  }
+  EssayTopic: { // field return type
+    createdAt: any; // DateTime!
+    currentUserAnswer: NexusGenRootTypes['Essay'] | null; // Essay
+    description: string; // String!
+    id: string; // ID!
+    max_words: number; // Int!
+    min_words: number; // Int!
+    title: string; // String!
     updatedAt: any; // DateTime!
   }
   Mutation: { // field return type
     chooseSlot: NexusGenRootTypes['User']; // User!
-    createUser: NexusGenRootTypes['User']; // User!
+    saveEssay: NexusGenRootTypes['EssayTopic']; // EssayTopic!
   }
   Query: { // field return type
     currentUser: NexusGenRootTypes['User']; // User!
+    essayTopics: NexusGenRootTypes['EssayTopic'][]; // [EssayTopic!]!
+    ownEssay: NexusGenRootTypes['Essay']; // Essay!
     slots: NexusGenRootTypes['Slot'][]; // [Slot!]!
     user: NexusGenRootTypes['User'] | null; // User
     users: NexusGenRootTypes['User'][]; // [User!]!
@@ -345,7 +413,7 @@ export interface NexusGenFieldTypes {
     administrator: boolean; // Boolean!
     createdAt: any; // DateTime!
     email: string; // String!
-    essay: NexusGenRootTypes['Essay'] | null; // Essay
+    essays: NexusGenRootTypes['Essay'][] | null; // [Essay!]
     first_name: string | null; // String
     id: string; // ID!
     last_name: string | null; // String
@@ -360,13 +428,17 @@ export interface NexusGenArgTypes {
     chooseSlot: { // args
       id?: string | null; // ID
     }
-    createUser: { // args
-      data: NexusGenInputs['UserCreateInput']; // UserCreateInput!
+    saveEssay: { // args
+      text?: string | null; // String
+      topicId?: string | null; // ID
     }
   }
   Query: {
     currentUser: { // args
       email?: string | null; // String
+    }
+    ownEssay: { // args
+      id?: string | null; // ID
     }
     user: { // args
       where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
@@ -383,6 +455,17 @@ export interface NexusGenArgTypes {
       where?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     }
   }
+  User: {
+    essays: { // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      orderBy?: NexusGenEnums['EssayOrderByInput'] | null; // EssayOrderByInput
+      skip?: number | null; // Int
+      where?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
+    }
+  }
 }
 
 export interface NexusGenAbstractResolveReturnTypes {
@@ -390,11 +473,11 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Essay" | "Mutation" | "Query" | "Slot" | "User";
+export type NexusGenObjectNames = "Essay" | "EssayTopic" | "Mutation" | "Query" | "Slot" | "User";
 
-export type NexusGenInputNames = "EssayCreateOneWithoutAuthorInput" | "EssayCreateWithoutAuthorInput" | "EssayWhereInput" | "EssayWhereUniqueInput" | "SlotCreateOneWithoutRegisteredInput" | "SlotCreateWithoutRegisteredInput" | "SlotWhereInput" | "SlotWhereUniqueInput" | "UserCreateInput" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "EssayTopicWhereInput" | "EssayWhereInput" | "SlotWhereInput" | "UserWhereInput" | "UserWhereUniqueInput";
 
-export type NexusGenEnumNames = "UserOrderByInput";
+export type NexusGenEnumNames = "EssayOrderByInput" | "UserOrderByInput";
 
 export type NexusGenInterfaceNames = never;
 

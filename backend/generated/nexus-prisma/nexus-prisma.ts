@@ -18,6 +18,7 @@ export interface NexusPrismaTypes {
       User: UserObject
       Slot: SlotObject
       Essay: EssayObject
+      EssayTopic: EssayTopicObject
       UserConnection: UserConnectionObject
       PageInfo: PageInfoObject
       UserEdge: UserEdgeObject
@@ -28,6 +29,9 @@ export interface NexusPrismaTypes {
       EssayConnection: EssayConnectionObject
       EssayEdge: EssayEdgeObject
       AggregateEssay: AggregateEssayObject
+      EssayTopicConnection: EssayTopicConnectionObject
+      EssayTopicEdge: EssayTopicEdgeObject
+      AggregateEssayTopic: AggregateEssayTopicObject
       Mutation: MutationObject
       BatchPayload: BatchPayloadObject
       Subscription: SubscriptionObject
@@ -37,12 +41,15 @@ export interface NexusPrismaTypes {
       SlotPreviousValues: SlotPreviousValuesObject
       EssaySubscriptionPayload: EssaySubscriptionPayloadObject
       EssayPreviousValues: EssayPreviousValuesObject
+      EssayTopicSubscriptionPayload: EssayTopicSubscriptionPayloadObject
+      EssayTopicPreviousValues: EssayTopicPreviousValuesObject
     }
     fieldsDetails: {
       Query: QueryFieldDetails
       User: UserFieldDetails
       Slot: SlotFieldDetails
       Essay: EssayFieldDetails
+      EssayTopic: EssayTopicFieldDetails
       UserConnection: UserConnectionFieldDetails
       PageInfo: PageInfoFieldDetails
       UserEdge: UserEdgeFieldDetails
@@ -53,6 +60,9 @@ export interface NexusPrismaTypes {
       EssayConnection: EssayConnectionFieldDetails
       EssayEdge: EssayEdgeFieldDetails
       AggregateEssay: AggregateEssayFieldDetails
+      EssayTopicConnection: EssayTopicConnectionFieldDetails
+      EssayTopicEdge: EssayTopicEdgeFieldDetails
+      AggregateEssayTopic: AggregateEssayTopicFieldDetails
       Mutation: MutationFieldDetails
       BatchPayload: BatchPayloadFieldDetails
       Subscription: SubscriptionFieldDetails
@@ -62,6 +72,8 @@ export interface NexusPrismaTypes {
       SlotPreviousValues: SlotPreviousValuesFieldDetails
       EssaySubscriptionPayload: EssaySubscriptionPayloadFieldDetails
       EssayPreviousValues: EssayPreviousValuesFieldDetails
+      EssayTopicSubscriptionPayload: EssayTopicSubscriptionPayloadFieldDetails
+      EssayTopicPreviousValues: EssayTopicPreviousValuesFieldDetails
     }
   }
   inputTypes: {
@@ -70,20 +82,31 @@ export interface NexusPrismaTypes {
       UserWhereInput: UserWhereInputInputObject
       SlotWhereInput: SlotWhereInputInputObject
       EssayWhereInput: EssayWhereInputInputObject
+      EssayTopicWhereInput: EssayTopicWhereInputInputObject
       SlotWhereUniqueInput: SlotWhereUniqueInputInputObject
       EssayWhereUniqueInput: EssayWhereUniqueInputInputObject
+      EssayTopicWhereUniqueInput: EssayTopicWhereUniqueInputInputObject
       UserCreateInput: UserCreateInputInputObject
       SlotCreateOneWithoutRegisteredInput: SlotCreateOneWithoutRegisteredInputInputObject
       SlotCreateWithoutRegisteredInput: SlotCreateWithoutRegisteredInputInputObject
-      EssayCreateOneWithoutAuthorInput: EssayCreateOneWithoutAuthorInputInputObject
+      EssayCreateManyWithoutAuthorInput: EssayCreateManyWithoutAuthorInputInputObject
       EssayCreateWithoutAuthorInput: EssayCreateWithoutAuthorInputInputObject
+      EssayTopicCreateOneInput: EssayTopicCreateOneInputInputObject
+      EssayTopicCreateInput: EssayTopicCreateInputInputObject
       UserUpdateInput: UserUpdateInputInputObject
       SlotUpdateOneWithoutRegisteredInput: SlotUpdateOneWithoutRegisteredInputInputObject
       SlotUpdateWithoutRegisteredDataInput: SlotUpdateWithoutRegisteredDataInputInputObject
       SlotUpsertWithoutRegisteredInput: SlotUpsertWithoutRegisteredInputInputObject
-      EssayUpdateOneWithoutAuthorInput: EssayUpdateOneWithoutAuthorInputInputObject
+      EssayUpdateManyWithoutAuthorInput: EssayUpdateManyWithoutAuthorInputInputObject
+      EssayUpdateWithWhereUniqueWithoutAuthorInput: EssayUpdateWithWhereUniqueWithoutAuthorInputInputObject
       EssayUpdateWithoutAuthorDataInput: EssayUpdateWithoutAuthorDataInputInputObject
-      EssayUpsertWithoutAuthorInput: EssayUpsertWithoutAuthorInputInputObject
+      EssayTopicUpdateOneRequiredInput: EssayTopicUpdateOneRequiredInputInputObject
+      EssayTopicUpdateDataInput: EssayTopicUpdateDataInputInputObject
+      EssayTopicUpsertNestedInput: EssayTopicUpsertNestedInputInputObject
+      EssayUpsertWithWhereUniqueWithoutAuthorInput: EssayUpsertWithWhereUniqueWithoutAuthorInputInputObject
+      EssayScalarWhereInput: EssayScalarWhereInputInputObject
+      EssayUpdateManyWithWhereNestedInput: EssayUpdateManyWithWhereNestedInputInputObject
+      EssayUpdateManyDataInput: EssayUpdateManyDataInputInputObject
       UserUpdateManyMutationInput: UserUpdateManyMutationInputInputObject
       SlotCreateInput: SlotCreateInputInputObject
       UserCreateManyWithoutSlotInput: UserCreateManyWithoutSlotInputInputObject
@@ -98,22 +121,26 @@ export interface NexusPrismaTypes {
       UserUpdateManyDataInput: UserUpdateManyDataInputInputObject
       SlotUpdateManyMutationInput: SlotUpdateManyMutationInputInputObject
       EssayCreateInput: EssayCreateInputInputObject
-      UserCreateOneWithoutEssayInput: UserCreateOneWithoutEssayInputInputObject
-      UserCreateWithoutEssayInput: UserCreateWithoutEssayInputInputObject
+      UserCreateOneWithoutEssaysInput: UserCreateOneWithoutEssaysInputInputObject
+      UserCreateWithoutEssaysInput: UserCreateWithoutEssaysInputInputObject
       EssayUpdateInput: EssayUpdateInputInputObject
-      UserUpdateOneRequiredWithoutEssayInput: UserUpdateOneRequiredWithoutEssayInputInputObject
-      UserUpdateWithoutEssayDataInput: UserUpdateWithoutEssayDataInputInputObject
-      UserUpsertWithoutEssayInput: UserUpsertWithoutEssayInputInputObject
+      UserUpdateOneRequiredWithoutEssaysInput: UserUpdateOneRequiredWithoutEssaysInputInputObject
+      UserUpdateWithoutEssaysDataInput: UserUpdateWithoutEssaysDataInputInputObject
+      UserUpsertWithoutEssaysInput: UserUpsertWithoutEssaysInputInputObject
       EssayUpdateManyMutationInput: EssayUpdateManyMutationInputInputObject
+      EssayTopicUpdateInput: EssayTopicUpdateInputInputObject
+      EssayTopicUpdateManyMutationInput: EssayTopicUpdateManyMutationInputInputObject
       UserSubscriptionWhereInput: UserSubscriptionWhereInputInputObject
       SlotSubscriptionWhereInput: SlotSubscriptionWhereInputInputObject
       EssaySubscriptionWhereInput: EssaySubscriptionWhereInputInputObject
+      EssayTopicSubscriptionWhereInput: EssayTopicSubscriptionWhereInputInputObject
     }
   }
   enumTypes: {
     UserOrderByInput: UserOrderByInputValues,
-    SlotOrderByInput: SlotOrderByInputValues,
     EssayOrderByInput: EssayOrderByInputValues,
+    SlotOrderByInput: SlotOrderByInputValues,
+    EssayTopicOrderByInput: EssayTopicOrderByInputValues,
     MutationType: MutationTypeValues,
   }
 }
@@ -131,6 +158,9 @@ type QueryObject =
   | { name: 'essay', args?: QueryEssayArgs[] | false, alias?: string  } 
   | { name: 'essays', args?: QueryEssaysArgs[] | false, alias?: string  } 
   | { name: 'essaysConnection', args?: QueryEssaysConnectionArgs[] | false, alias?: string  } 
+  | { name: 'essayTopic', args?: QueryEssayTopicArgs[] | false, alias?: string  } 
+  | { name: 'essayTopics', args?: QueryEssayTopicsArgs[] | false, alias?: string  } 
+  | { name: 'essayTopicsConnection', args?: QueryEssayTopicsConnectionArgs[] | false, alias?: string  } 
 
 type QueryFields =
   | 'user'
@@ -142,6 +172,9 @@ type QueryFields =
   | 'essay'
   | 'essays'
   | 'essaysConnection'
+  | 'essayTopic'
+  | 'essayTopics'
+  | 'essayTopicsConnection'
 
 
 type QueryUserArgs =
@@ -191,6 +224,24 @@ type QueryEssaysArgs =
   | 'first'
   | 'last'
 type QueryEssaysConnectionArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryEssayTopicArgs =
+  | 'where'
+type QueryEssayTopicsArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryEssayTopicsConnectionArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -318,6 +369,45 @@ export interface QueryFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.EssayConnection> | prisma.EssayConnection
   }
+  essayTopic: {
+    type: 'EssayTopic'
+    args: Record<QueryEssayTopicArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where: EssayTopicWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+  }
+  essayTopics: {
+    type: 'EssayTopic'
+    args: Record<QueryEssayTopicsArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: EssayTopicWhereInput | null, orderBy?: prisma.EssayTopicOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic[]> | prisma.EssayTopic[]
+  }
+  essayTopicsConnection: {
+    type: 'EssayTopicConnection'
+    args: Record<QueryEssayTopicsConnectionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: EssayTopicWhereInput | null, orderBy?: prisma.EssayTopicOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopicConnection> | prisma.EssayTopicConnection
+  }
 }
   
 
@@ -334,7 +424,7 @@ type UserObject =
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
   | { name: 'slot', args?: [] | false, alias?: string  } 
-  | { name: 'essay', args?: [] | false, alias?: string  } 
+  | { name: 'essays', args?: UserEssaysArgs[] | false, alias?: string  } 
 
 type UserFields =
   | 'id'
@@ -346,10 +436,17 @@ type UserFields =
   | 'email'
   | 'administrator'
   | 'slot'
-  | 'essay'
+  | 'essays'
 
 
-
+type UserEssaysArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
   
 
 export interface UserFieldDetails {
@@ -430,18 +527,18 @@ export interface UserFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.Slot | null> | prisma.Slot | null
   }
-  essay: {
+  essays: {
     type: 'Essay'
-    args: {}
+    args: Record<UserEssaysArgs, core.NexusArgDef<string>>
     description: string
-    list: undefined
-    nullable: true
+    list: true
+    nullable: false
     resolve: (
       root: core.RootValue<"User">,
-      args: {  }  ,
+      args: { where?: EssayWhereInput | null, orderBy?: prisma.EssayOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay | null> | prisma.Essay | null
+    ) => Promise<prisma.Essay[]> | prisma.Essay[]
   }
 }
   
@@ -562,6 +659,7 @@ type EssayObject =
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
   | { name: 'text', args?: [] | false, alias?: string  } 
   | { name: 'author', args?: [] | false, alias?: string  } 
+  | { name: 'topic', args?: [] | false, alias?: string  } 
 
 type EssayFields =
   | 'id'
@@ -569,6 +667,7 @@ type EssayFields =
   | 'updatedAt'
   | 'text'
   | 'author'
+  | 'topic'
 
 
 
@@ -619,6 +718,104 @@ export interface EssayFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.User> | prisma.User
+  }
+  topic: {
+    type: 'EssayTopic'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Essay">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
+  }
+}
+  
+
+// Types for EssayTopic
+
+type EssayTopicObject =
+  | EssayTopicFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'title', args?: [] | false, alias?: string  } 
+  | { name: 'description', args?: [] | false, alias?: string  } 
+  | { name: 'min_words', args?: [] | false, alias?: string  } 
+  | { name: 'max_words', args?: [] | false, alias?: string  } 
+
+type EssayTopicFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'title'
+  | 'description'
+  | 'min_words'
+  | 'max_words'
+
+
+
+  
+
+export interface EssayTopicFieldDetails {
+  id: {
+    type: 'ID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  title: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  description: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  min_words: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  max_words: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
   }
 }
   
@@ -1053,6 +1250,131 @@ export interface AggregateEssayFieldDetails {
 }
   
 
+// Types for EssayTopicConnection
+
+type EssayTopicConnectionObject =
+  | EssayTopicConnectionFields
+  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
+  | { name: 'edges', args?: [] | false, alias?: string  } 
+  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+
+type EssayTopicConnectionFields =
+  | 'pageInfo'
+  | 'edges'
+  | 'aggregate'
+
+
+
+  
+
+export interface EssayTopicConnectionFieldDetails {
+  pageInfo: {
+    type: 'PageInfo'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"EssayTopicConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
+  }
+  edges: {
+    type: 'EssayTopicEdge'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"EssayTopicConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopicEdge[]> | prisma.EssayTopicEdge[]
+  }
+  aggregate: {
+    type: 'AggregateEssayTopic'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"EssayTopicConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.AggregateEssayTopic> | prisma.AggregateEssayTopic
+  }
+}
+  
+
+// Types for EssayTopicEdge
+
+type EssayTopicEdgeObject =
+  | EssayTopicEdgeFields
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'cursor', args?: [] | false, alias?: string  } 
+
+type EssayTopicEdgeFields =
+  | 'node'
+  | 'cursor'
+
+
+
+  
+
+export interface EssayTopicEdgeFieldDetails {
+  node: {
+    type: 'EssayTopic'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"EssayTopicEdge">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
+  }
+  cursor: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for AggregateEssayTopic
+
+type AggregateEssayTopicObject =
+  | AggregateEssayTopicFields
+  | { name: 'count', args?: [] | false, alias?: string  } 
+
+type AggregateEssayTopicFields =
+  | 'count'
+
+
+
+  
+
+export interface AggregateEssayTopicFieldDetails {
+  count: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
 // Types for Mutation
 
 type MutationObject =
@@ -1075,6 +1397,12 @@ type MutationObject =
   | { name: 'upsertEssay', args?: MutationUpsertEssayArgs[] | false, alias?: string  } 
   | { name: 'deleteEssay', args?: MutationDeleteEssayArgs[] | false, alias?: string  } 
   | { name: 'deleteManyEssays', args?: MutationDeleteManyEssaysArgs[] | false, alias?: string  } 
+  | { name: 'createEssayTopic', args?: MutationCreateEssayTopicArgs[] | false, alias?: string  } 
+  | { name: 'updateEssayTopic', args?: MutationUpdateEssayTopicArgs[] | false, alias?: string  } 
+  | { name: 'updateManyEssayTopics', args?: MutationUpdateManyEssayTopicsArgs[] | false, alias?: string  } 
+  | { name: 'upsertEssayTopic', args?: MutationUpsertEssayTopicArgs[] | false, alias?: string  } 
+  | { name: 'deleteEssayTopic', args?: MutationDeleteEssayTopicArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyEssayTopics', args?: MutationDeleteManyEssayTopicsArgs[] | false, alias?: string  } 
 
 type MutationFields =
   | 'createUser'
@@ -1095,6 +1423,12 @@ type MutationFields =
   | 'upsertEssay'
   | 'deleteEssay'
   | 'deleteManyEssays'
+  | 'createEssayTopic'
+  | 'updateEssayTopic'
+  | 'updateManyEssayTopics'
+  | 'upsertEssayTopic'
+  | 'deleteEssayTopic'
+  | 'deleteManyEssayTopics'
 
 
 type MutationCreateUserArgs =
@@ -1144,6 +1478,22 @@ type MutationUpsertEssayArgs =
 type MutationDeleteEssayArgs =
   | 'where'
 type MutationDeleteManyEssaysArgs =
+  | 'where'
+type MutationCreateEssayTopicArgs =
+  | 'data'
+type MutationUpdateEssayTopicArgs =
+  | 'data'
+  | 'where'
+type MutationUpdateManyEssayTopicsArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertEssayTopicArgs =
+  | 'where'
+  | 'create'
+  | 'update'
+type MutationDeleteEssayTopicArgs =
+  | 'where'
+type MutationDeleteManyEssayTopicsArgs =
   | 'where'
   
 
@@ -1382,6 +1732,84 @@ export interface MutationFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
+  createEssayTopic: {
+    type: 'EssayTopic'
+    args: Record<MutationCreateEssayTopicArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: EssayTopicCreateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
+  }
+  updateEssayTopic: {
+    type: 'EssayTopic'
+    args: Record<MutationUpdateEssayTopicArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: EssayTopicUpdateInput, where: EssayTopicWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+  }
+  updateManyEssayTopics: {
+    type: 'BatchPayload'
+    args: Record<MutationUpdateManyEssayTopicsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: EssayTopicUpdateManyMutationInput, where?: EssayTopicWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  upsertEssayTopic: {
+    type: 'EssayTopic'
+    args: Record<MutationUpsertEssayTopicArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: EssayTopicWhereUniqueInput, create: EssayTopicCreateInput, update: EssayTopicUpdateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
+  }
+  deleteEssayTopic: {
+    type: 'EssayTopic'
+    args: Record<MutationDeleteEssayTopicArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: EssayTopicWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+  }
+  deleteManyEssayTopics: {
+    type: 'BatchPayload'
+    args: Record<MutationDeleteManyEssayTopicsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where?: EssayTopicWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
 }
   
 
@@ -1417,11 +1845,13 @@ type SubscriptionObject =
   | { name: 'user', args?: SubscriptionUserArgs[] | false, alias?: string  } 
   | { name: 'slot', args?: SubscriptionSlotArgs[] | false, alias?: string  } 
   | { name: 'essay', args?: SubscriptionEssayArgs[] | false, alias?: string  } 
+  | { name: 'essayTopic', args?: SubscriptionEssayTopicArgs[] | false, alias?: string  } 
 
 type SubscriptionFields =
   | 'user'
   | 'slot'
   | 'essay'
+  | 'essayTopic'
 
 
 type SubscriptionUserArgs =
@@ -1429,6 +1859,8 @@ type SubscriptionUserArgs =
 type SubscriptionSlotArgs =
   | 'where'
 type SubscriptionEssayArgs =
+  | 'where'
+type SubscriptionEssayTopicArgs =
   | 'where'
   
 
@@ -1471,6 +1903,19 @@ export interface SubscriptionFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.EssaySubscriptionPayload | null> | prisma.EssaySubscriptionPayload | null
+  }
+  essayTopic: {
+    type: 'EssayTopicSubscriptionPayload'
+    args: Record<SubscriptionEssayTopicArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Subscription">,
+      args: { where?: EssayTopicSubscriptionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopicSubscriptionPayload | null> | prisma.EssayTopicSubscriptionPayload | null
   }
 }
   
@@ -1920,6 +2365,161 @@ export interface EssayPreviousValuesFieldDetails {
 }
   
 
+// Types for EssayTopicSubscriptionPayload
+
+type EssayTopicSubscriptionPayloadObject =
+  | EssayTopicSubscriptionPayloadFields
+  | { name: 'mutation', args?: [] | false, alias?: string  } 
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
+  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+
+type EssayTopicSubscriptionPayloadFields =
+  | 'mutation'
+  | 'node'
+  | 'updatedFields'
+  | 'previousValues'
+
+
+
+  
+
+export interface EssayTopicSubscriptionPayloadFieldDetails {
+  mutation: {
+    type: 'MutationType'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"EssayTopicSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.MutationType> | prisma.MutationType
+  }
+  node: {
+    type: 'EssayTopic'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"EssayTopicSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+  }
+  updatedFields: {
+    type: 'String'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: undefined
+  }
+  previousValues: {
+    type: 'EssayTopicPreviousValues'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"EssayTopicSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.EssayTopicPreviousValues | null> | prisma.EssayTopicPreviousValues | null
+  }
+}
+  
+
+// Types for EssayTopicPreviousValues
+
+type EssayTopicPreviousValuesObject =
+  | EssayTopicPreviousValuesFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'title', args?: [] | false, alias?: string  } 
+  | { name: 'description', args?: [] | false, alias?: string  } 
+  | { name: 'min_words', args?: [] | false, alias?: string  } 
+  | { name: 'max_words', args?: [] | false, alias?: string  } 
+
+type EssayTopicPreviousValuesFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'title'
+  | 'description'
+  | 'min_words'
+  | 'max_words'
+
+
+
+  
+
+export interface EssayTopicPreviousValuesFieldDetails {
+  id: {
+    type: 'ID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  title: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  description: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  min_words: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  max_words: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
 
 export interface UserWhereUniqueInput {
   id?: string | null
@@ -2014,7 +2614,9 @@ export interface UserWhereInput {
   administrator?: boolean | null
   administrator_not?: boolean | null
   slot?: SlotWhereInput | null
-  essay?: EssayWhereInput | null
+  essays_every?: EssayWhereInput | null
+  essays_some?: EssayWhereInput | null
+  essays_none?: EssayWhereInput | null
   AND?: UserWhereInput[]
   OR?: UserWhereInput[]
   NOT?: UserWhereInput[]
@@ -2104,7 +2706,9 @@ export type UserWhereInputInputObject =
   | { name: 'administrator', alias?: string  } 
   | { name: 'administrator_not', alias?: string  } 
   | { name: 'slot', alias?: string  } 
-  | { name: 'essay', alias?: string  } 
+  | { name: 'essays_every', alias?: string  } 
+  | { name: 'essays_some', alias?: string  } 
+  | { name: 'essays_none', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
@@ -2296,6 +2900,7 @@ export interface EssayWhereInput {
   text_ends_with?: string | null
   text_not_ends_with?: string | null
   author?: UserWhereInput | null
+  topic?: EssayTopicWhereInput | null
   AND?: EssayWhereInput[]
   OR?: EssayWhereInput[]
   NOT?: EssayWhereInput[]
@@ -2347,6 +2952,166 @@ export type EssayWhereInputInputObject =
   | { name: 'text_ends_with', alias?: string  } 
   | { name: 'text_not_ends_with', alias?: string  } 
   | { name: 'author', alias?: string  } 
+  | { name: 'topic', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface EssayTopicWhereInput {
+  id?: string | null
+  id_not?: string | null
+  id_in?: string[]
+  id_not_in?: string[]
+  id_lt?: string | null
+  id_lte?: string | null
+  id_gt?: string | null
+  id_gte?: string | null
+  id_contains?: string | null
+  id_not_contains?: string | null
+  id_starts_with?: string | null
+  id_not_starts_with?: string | null
+  id_ends_with?: string | null
+  id_not_ends_with?: string | null
+  createdAt?: string | null
+  createdAt_not?: string | null
+  createdAt_in?: string[]
+  createdAt_not_in?: string[]
+  createdAt_lt?: string | null
+  createdAt_lte?: string | null
+  createdAt_gt?: string | null
+  createdAt_gte?: string | null
+  updatedAt?: string | null
+  updatedAt_not?: string | null
+  updatedAt_in?: string[]
+  updatedAt_not_in?: string[]
+  updatedAt_lt?: string | null
+  updatedAt_lte?: string | null
+  updatedAt_gt?: string | null
+  updatedAt_gte?: string | null
+  title?: string | null
+  title_not?: string | null
+  title_in?: string[]
+  title_not_in?: string[]
+  title_lt?: string | null
+  title_lte?: string | null
+  title_gt?: string | null
+  title_gte?: string | null
+  title_contains?: string | null
+  title_not_contains?: string | null
+  title_starts_with?: string | null
+  title_not_starts_with?: string | null
+  title_ends_with?: string | null
+  title_not_ends_with?: string | null
+  description?: string | null
+  description_not?: string | null
+  description_in?: string[]
+  description_not_in?: string[]
+  description_lt?: string | null
+  description_lte?: string | null
+  description_gt?: string | null
+  description_gte?: string | null
+  description_contains?: string | null
+  description_not_contains?: string | null
+  description_starts_with?: string | null
+  description_not_starts_with?: string | null
+  description_ends_with?: string | null
+  description_not_ends_with?: string | null
+  min_words?: number | null
+  min_words_not?: number | null
+  min_words_in?: number[]
+  min_words_not_in?: number[]
+  min_words_lt?: number | null
+  min_words_lte?: number | null
+  min_words_gt?: number | null
+  min_words_gte?: number | null
+  max_words?: number | null
+  max_words_not?: number | null
+  max_words_in?: number[]
+  max_words_not_in?: number[]
+  max_words_lt?: number | null
+  max_words_lte?: number | null
+  max_words_gt?: number | null
+  max_words_gte?: number | null
+  AND?: EssayTopicWhereInput[]
+  OR?: EssayTopicWhereInput[]
+  NOT?: EssayTopicWhereInput[]
+}
+export type EssayTopicWhereInputInputObject =
+  | Extract<keyof EssayTopicWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'title_not', alias?: string  } 
+  | { name: 'title_in', alias?: string  } 
+  | { name: 'title_not_in', alias?: string  } 
+  | { name: 'title_lt', alias?: string  } 
+  | { name: 'title_lte', alias?: string  } 
+  | { name: 'title_gt', alias?: string  } 
+  | { name: 'title_gte', alias?: string  } 
+  | { name: 'title_contains', alias?: string  } 
+  | { name: 'title_not_contains', alias?: string  } 
+  | { name: 'title_starts_with', alias?: string  } 
+  | { name: 'title_not_starts_with', alias?: string  } 
+  | { name: 'title_ends_with', alias?: string  } 
+  | { name: 'title_not_ends_with', alias?: string  } 
+  | { name: 'description', alias?: string  } 
+  | { name: 'description_not', alias?: string  } 
+  | { name: 'description_in', alias?: string  } 
+  | { name: 'description_not_in', alias?: string  } 
+  | { name: 'description_lt', alias?: string  } 
+  | { name: 'description_lte', alias?: string  } 
+  | { name: 'description_gt', alias?: string  } 
+  | { name: 'description_gte', alias?: string  } 
+  | { name: 'description_contains', alias?: string  } 
+  | { name: 'description_not_contains', alias?: string  } 
+  | { name: 'description_starts_with', alias?: string  } 
+  | { name: 'description_not_starts_with', alias?: string  } 
+  | { name: 'description_ends_with', alias?: string  } 
+  | { name: 'description_not_ends_with', alias?: string  } 
+  | { name: 'min_words', alias?: string  } 
+  | { name: 'min_words_not', alias?: string  } 
+  | { name: 'min_words_in', alias?: string  } 
+  | { name: 'min_words_not_in', alias?: string  } 
+  | { name: 'min_words_lt', alias?: string  } 
+  | { name: 'min_words_lte', alias?: string  } 
+  | { name: 'min_words_gt', alias?: string  } 
+  | { name: 'min_words_gte', alias?: string  } 
+  | { name: 'max_words', alias?: string  } 
+  | { name: 'max_words_not', alias?: string  } 
+  | { name: 'max_words_in', alias?: string  } 
+  | { name: 'max_words_not_in', alias?: string  } 
+  | { name: 'max_words_lt', alias?: string  } 
+  | { name: 'max_words_lte', alias?: string  } 
+  | { name: 'max_words_gt', alias?: string  } 
+  | { name: 'max_words_gte', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
@@ -2365,6 +3130,13 @@ export type EssayWhereUniqueInputInputObject =
   | Extract<keyof EssayWhereUniqueInput, string>
   | { name: 'id', alias?: string  } 
   
+export interface EssayTopicWhereUniqueInput {
+  id?: string | null
+}
+export type EssayTopicWhereUniqueInputInputObject =
+  | Extract<keyof EssayTopicWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
 export interface UserCreateInput {
   upstream_id?: number
   first_name?: string | null
@@ -2372,7 +3144,7 @@ export interface UserCreateInput {
   email?: string
   administrator?: boolean
   slot?: SlotCreateOneWithoutRegisteredInput | null
-  essay?: EssayCreateOneWithoutAuthorInput | null
+  essays?: EssayCreateManyWithoutAuthorInput | null
 }
 export type UserCreateInputInputObject =
   | Extract<keyof UserCreateInput, string>
@@ -2382,7 +3154,7 @@ export type UserCreateInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'slot', alias?: string  } 
-  | { name: 'essay', alias?: string  } 
+  | { name: 'essays', alias?: string  } 
   
 export interface SlotCreateOneWithoutRegisteredInput {
   create?: SlotCreateWithoutRegisteredInput | null
@@ -2406,21 +3178,45 @@ export type SlotCreateWithoutRegisteredInputInputObject =
   | { name: 'starts_at', alias?: string  } 
   | { name: 'ends_at', alias?: string  } 
   
-export interface EssayCreateOneWithoutAuthorInput {
-  create?: EssayCreateWithoutAuthorInput | null
-  connect?: EssayWhereUniqueInput | null
+export interface EssayCreateManyWithoutAuthorInput {
+  create?: EssayCreateWithoutAuthorInput[]
+  connect?: EssayWhereUniqueInput[]
 }
-export type EssayCreateOneWithoutAuthorInputInputObject =
-  | Extract<keyof EssayCreateOneWithoutAuthorInput, string>
+export type EssayCreateManyWithoutAuthorInputInputObject =
+  | Extract<keyof EssayCreateManyWithoutAuthorInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
 export interface EssayCreateWithoutAuthorInput {
   text?: string
+  topic?: EssayTopicCreateOneInput
 }
 export type EssayCreateWithoutAuthorInputInputObject =
   | Extract<keyof EssayCreateWithoutAuthorInput, string>
   | { name: 'text', alias?: string  } 
+  | { name: 'topic', alias?: string  } 
+  
+export interface EssayTopicCreateOneInput {
+  create?: EssayTopicCreateInput | null
+  connect?: EssayTopicWhereUniqueInput | null
+}
+export type EssayTopicCreateOneInputInputObject =
+  | Extract<keyof EssayTopicCreateOneInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface EssayTopicCreateInput {
+  title?: string
+  description?: string
+  min_words?: number
+  max_words?: number
+}
+export type EssayTopicCreateInputInputObject =
+  | Extract<keyof EssayTopicCreateInput, string>
+  | { name: 'title', alias?: string  } 
+  | { name: 'description', alias?: string  } 
+  | { name: 'min_words', alias?: string  } 
+  | { name: 'max_words', alias?: string  } 
   
 export interface UserUpdateInput {
   upstream_id?: number | null
@@ -2429,7 +3225,7 @@ export interface UserUpdateInput {
   email?: string | null
   administrator?: boolean | null
   slot?: SlotUpdateOneWithoutRegisteredInput | null
-  essay?: EssayUpdateOneWithoutAuthorInput | null
+  essays?: EssayUpdateManyWithoutAuthorInput | null
 }
 export type UserUpdateInputInputObject =
   | Extract<keyof UserUpdateInput, string>
@@ -2439,7 +3235,7 @@ export type UserUpdateInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'slot', alias?: string  } 
-  | { name: 'essay', alias?: string  } 
+  | { name: 'essays', alias?: string  } 
   
 export interface SlotUpdateOneWithoutRegisteredInput {
   create?: SlotCreateWithoutRegisteredInput | null
@@ -2480,38 +3276,207 @@ export type SlotUpsertWithoutRegisteredInputInputObject =
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface EssayUpdateOneWithoutAuthorInput {
-  create?: EssayCreateWithoutAuthorInput | null
-  update?: EssayUpdateWithoutAuthorDataInput | null
-  upsert?: EssayUpsertWithoutAuthorInput | null
-  delete?: boolean | null
-  disconnect?: boolean | null
-  connect?: EssayWhereUniqueInput | null
+export interface EssayUpdateManyWithoutAuthorInput {
+  create?: EssayCreateWithoutAuthorInput[]
+  delete?: EssayWhereUniqueInput[]
+  connect?: EssayWhereUniqueInput[]
+  set?: EssayWhereUniqueInput[]
+  disconnect?: EssayWhereUniqueInput[]
+  update?: EssayUpdateWithWhereUniqueWithoutAuthorInput[]
+  upsert?: EssayUpsertWithWhereUniqueWithoutAuthorInput[]
+  deleteMany?: EssayScalarWhereInput[]
+  updateMany?: EssayUpdateManyWithWhereNestedInput[]
 }
-export type EssayUpdateOneWithoutAuthorInputInputObject =
-  | Extract<keyof EssayUpdateOneWithoutAuthorInput, string>
+export type EssayUpdateManyWithoutAuthorInputInputObject =
+  | Extract<keyof EssayUpdateManyWithoutAuthorInput, string>
   | { name: 'create', alias?: string  } 
+  | { name: 'delete', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  | { name: 'set', alias?: string  } 
+  | { name: 'disconnect', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'upsert', alias?: string  } 
-  | { name: 'delete', alias?: string  } 
-  | { name: 'disconnect', alias?: string  } 
-  | { name: 'connect', alias?: string  } 
+  | { name: 'deleteMany', alias?: string  } 
+  | { name: 'updateMany', alias?: string  } 
+  
+export interface EssayUpdateWithWhereUniqueWithoutAuthorInput {
+  where?: EssayWhereUniqueInput
+  data?: EssayUpdateWithoutAuthorDataInput
+}
+export type EssayUpdateWithWhereUniqueWithoutAuthorInputInputObject =
+  | Extract<keyof EssayUpdateWithWhereUniqueWithoutAuthorInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'data', alias?: string  } 
   
 export interface EssayUpdateWithoutAuthorDataInput {
   text?: string | null
+  topic?: EssayTopicUpdateOneRequiredInput | null
 }
 export type EssayUpdateWithoutAuthorDataInputInputObject =
   | Extract<keyof EssayUpdateWithoutAuthorDataInput, string>
   | { name: 'text', alias?: string  } 
+  | { name: 'topic', alias?: string  } 
   
-export interface EssayUpsertWithoutAuthorInput {
+export interface EssayTopicUpdateOneRequiredInput {
+  create?: EssayTopicCreateInput | null
+  update?: EssayTopicUpdateDataInput | null
+  upsert?: EssayTopicUpsertNestedInput | null
+  connect?: EssayTopicWhereUniqueInput | null
+}
+export type EssayTopicUpdateOneRequiredInputInputObject =
+  | Extract<keyof EssayTopicUpdateOneRequiredInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface EssayTopicUpdateDataInput {
+  title?: string | null
+  description?: string | null
+  min_words?: number | null
+  max_words?: number | null
+}
+export type EssayTopicUpdateDataInputInputObject =
+  | Extract<keyof EssayTopicUpdateDataInput, string>
+  | { name: 'title', alias?: string  } 
+  | { name: 'description', alias?: string  } 
+  | { name: 'min_words', alias?: string  } 
+  | { name: 'max_words', alias?: string  } 
+  
+export interface EssayTopicUpsertNestedInput {
+  update?: EssayTopicUpdateDataInput
+  create?: EssayTopicCreateInput
+}
+export type EssayTopicUpsertNestedInputInputObject =
+  | Extract<keyof EssayTopicUpsertNestedInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface EssayUpsertWithWhereUniqueWithoutAuthorInput {
+  where?: EssayWhereUniqueInput
   update?: EssayUpdateWithoutAuthorDataInput
   create?: EssayCreateWithoutAuthorInput
 }
-export type EssayUpsertWithoutAuthorInputInputObject =
-  | Extract<keyof EssayUpsertWithoutAuthorInput, string>
+export type EssayUpsertWithWhereUniqueWithoutAuthorInputInputObject =
+  | Extract<keyof EssayUpsertWithWhereUniqueWithoutAuthorInput, string>
+  | { name: 'where', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
+  
+export interface EssayScalarWhereInput {
+  id?: string | null
+  id_not?: string | null
+  id_in?: string[]
+  id_not_in?: string[]
+  id_lt?: string | null
+  id_lte?: string | null
+  id_gt?: string | null
+  id_gte?: string | null
+  id_contains?: string | null
+  id_not_contains?: string | null
+  id_starts_with?: string | null
+  id_not_starts_with?: string | null
+  id_ends_with?: string | null
+  id_not_ends_with?: string | null
+  createdAt?: string | null
+  createdAt_not?: string | null
+  createdAt_in?: string[]
+  createdAt_not_in?: string[]
+  createdAt_lt?: string | null
+  createdAt_lte?: string | null
+  createdAt_gt?: string | null
+  createdAt_gte?: string | null
+  updatedAt?: string | null
+  updatedAt_not?: string | null
+  updatedAt_in?: string[]
+  updatedAt_not_in?: string[]
+  updatedAt_lt?: string | null
+  updatedAt_lte?: string | null
+  updatedAt_gt?: string | null
+  updatedAt_gte?: string | null
+  text?: string | null
+  text_not?: string | null
+  text_in?: string[]
+  text_not_in?: string[]
+  text_lt?: string | null
+  text_lte?: string | null
+  text_gt?: string | null
+  text_gte?: string | null
+  text_contains?: string | null
+  text_not_contains?: string | null
+  text_starts_with?: string | null
+  text_not_starts_with?: string | null
+  text_ends_with?: string | null
+  text_not_ends_with?: string | null
+  AND?: EssayScalarWhereInput[]
+  OR?: EssayScalarWhereInput[]
+  NOT?: EssayScalarWhereInput[]
+}
+export type EssayScalarWhereInputInputObject =
+  | Extract<keyof EssayScalarWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'text', alias?: string  } 
+  | { name: 'text_not', alias?: string  } 
+  | { name: 'text_in', alias?: string  } 
+  | { name: 'text_not_in', alias?: string  } 
+  | { name: 'text_lt', alias?: string  } 
+  | { name: 'text_lte', alias?: string  } 
+  | { name: 'text_gt', alias?: string  } 
+  | { name: 'text_gte', alias?: string  } 
+  | { name: 'text_contains', alias?: string  } 
+  | { name: 'text_not_contains', alias?: string  } 
+  | { name: 'text_starts_with', alias?: string  } 
+  | { name: 'text_not_starts_with', alias?: string  } 
+  | { name: 'text_ends_with', alias?: string  } 
+  | { name: 'text_not_ends_with', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface EssayUpdateManyWithWhereNestedInput {
+  where?: EssayScalarWhereInput
+  data?: EssayUpdateManyDataInput
+}
+export type EssayUpdateManyWithWhereNestedInputInputObject =
+  | Extract<keyof EssayUpdateManyWithWhereNestedInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'data', alias?: string  } 
+  
+export interface EssayUpdateManyDataInput {
+  text?: string | null
+}
+export type EssayUpdateManyDataInputInputObject =
+  | Extract<keyof EssayUpdateManyDataInput, string>
+  | { name: 'text', alias?: string  } 
   
 export interface UserUpdateManyMutationInput {
   upstream_id?: number | null
@@ -2558,7 +3523,7 @@ export interface UserCreateWithoutSlotInput {
   last_name?: string | null
   email?: string
   administrator?: boolean
-  essay?: EssayCreateOneWithoutAuthorInput | null
+  essays?: EssayCreateManyWithoutAuthorInput | null
 }
 export type UserCreateWithoutSlotInputInputObject =
   | Extract<keyof UserCreateWithoutSlotInput, string>
@@ -2567,7 +3532,7 @@ export type UserCreateWithoutSlotInputInputObject =
   | { name: 'last_name', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
-  | { name: 'essay', alias?: string  } 
+  | { name: 'essays', alias?: string  } 
   
 export interface SlotUpdateInput {
   capacity?: number | null
@@ -2622,7 +3587,7 @@ export interface UserUpdateWithoutSlotDataInput {
   last_name?: string | null
   email?: string | null
   administrator?: boolean | null
-  essay?: EssayUpdateOneWithoutAuthorInput | null
+  essays?: EssayUpdateManyWithoutAuthorInput | null
 }
 export type UserUpdateWithoutSlotDataInputInputObject =
   | Extract<keyof UserUpdateWithoutSlotDataInput, string>
@@ -2631,7 +3596,7 @@ export type UserUpdateWithoutSlotDataInputInputObject =
   | { name: 'last_name', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
-  | { name: 'essay', alias?: string  } 
+  | { name: 'essays', alias?: string  } 
   
 export interface UserUpsertWithWhereUniqueWithoutSlotInput {
   where?: UserWhereUniqueInput
@@ -2858,23 +3823,25 @@ export type SlotUpdateManyMutationInputInputObject =
   
 export interface EssayCreateInput {
   text?: string
-  author?: UserCreateOneWithoutEssayInput
+  author?: UserCreateOneWithoutEssaysInput
+  topic?: EssayTopicCreateOneInput
 }
 export type EssayCreateInputInputObject =
   | Extract<keyof EssayCreateInput, string>
   | { name: 'text', alias?: string  } 
   | { name: 'author', alias?: string  } 
+  | { name: 'topic', alias?: string  } 
   
-export interface UserCreateOneWithoutEssayInput {
-  create?: UserCreateWithoutEssayInput | null
+export interface UserCreateOneWithoutEssaysInput {
+  create?: UserCreateWithoutEssaysInput | null
   connect?: UserWhereUniqueInput | null
 }
-export type UserCreateOneWithoutEssayInputInputObject =
-  | Extract<keyof UserCreateOneWithoutEssayInput, string>
+export type UserCreateOneWithoutEssaysInputInputObject =
+  | Extract<keyof UserCreateOneWithoutEssaysInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface UserCreateWithoutEssayInput {
+export interface UserCreateWithoutEssaysInput {
   upstream_id?: number
   first_name?: string | null
   last_name?: string | null
@@ -2882,8 +3849,8 @@ export interface UserCreateWithoutEssayInput {
   administrator?: boolean
   slot?: SlotCreateOneWithoutRegisteredInput | null
 }
-export type UserCreateWithoutEssayInputInputObject =
-  | Extract<keyof UserCreateWithoutEssayInput, string>
+export type UserCreateWithoutEssaysInputInputObject =
+  | Extract<keyof UserCreateWithoutEssaysInput, string>
   | { name: 'upstream_id', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
@@ -2893,27 +3860,29 @@ export type UserCreateWithoutEssayInputInputObject =
   
 export interface EssayUpdateInput {
   text?: string | null
-  author?: UserUpdateOneRequiredWithoutEssayInput | null
+  author?: UserUpdateOneRequiredWithoutEssaysInput | null
+  topic?: EssayTopicUpdateOneRequiredInput | null
 }
 export type EssayUpdateInputInputObject =
   | Extract<keyof EssayUpdateInput, string>
   | { name: 'text', alias?: string  } 
   | { name: 'author', alias?: string  } 
+  | { name: 'topic', alias?: string  } 
   
-export interface UserUpdateOneRequiredWithoutEssayInput {
-  create?: UserCreateWithoutEssayInput | null
-  update?: UserUpdateWithoutEssayDataInput | null
-  upsert?: UserUpsertWithoutEssayInput | null
+export interface UserUpdateOneRequiredWithoutEssaysInput {
+  create?: UserCreateWithoutEssaysInput | null
+  update?: UserUpdateWithoutEssaysDataInput | null
+  upsert?: UserUpsertWithoutEssaysInput | null
   connect?: UserWhereUniqueInput | null
 }
-export type UserUpdateOneRequiredWithoutEssayInputInputObject =
-  | Extract<keyof UserUpdateOneRequiredWithoutEssayInput, string>
+export type UserUpdateOneRequiredWithoutEssaysInputInputObject =
+  | Extract<keyof UserUpdateOneRequiredWithoutEssaysInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'upsert', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface UserUpdateWithoutEssayDataInput {
+export interface UserUpdateWithoutEssaysDataInput {
   upstream_id?: number | null
   first_name?: string | null
   last_name?: string | null
@@ -2921,8 +3890,8 @@ export interface UserUpdateWithoutEssayDataInput {
   administrator?: boolean | null
   slot?: SlotUpdateOneWithoutRegisteredInput | null
 }
-export type UserUpdateWithoutEssayDataInputInputObject =
-  | Extract<keyof UserUpdateWithoutEssayDataInput, string>
+export type UserUpdateWithoutEssaysDataInputInputObject =
+  | Extract<keyof UserUpdateWithoutEssaysDataInput, string>
   | { name: 'upstream_id', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
@@ -2930,12 +3899,12 @@ export type UserUpdateWithoutEssayDataInputInputObject =
   | { name: 'administrator', alias?: string  } 
   | { name: 'slot', alias?: string  } 
   
-export interface UserUpsertWithoutEssayInput {
-  update?: UserUpdateWithoutEssayDataInput
-  create?: UserCreateWithoutEssayInput
+export interface UserUpsertWithoutEssaysInput {
+  update?: UserUpdateWithoutEssaysDataInput
+  create?: UserCreateWithoutEssaysInput
 }
-export type UserUpsertWithoutEssayInputInputObject =
-  | Extract<keyof UserUpsertWithoutEssayInput, string>
+export type UserUpsertWithoutEssaysInputInputObject =
+  | Extract<keyof UserUpsertWithoutEssaysInput, string>
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
@@ -2945,6 +3914,32 @@ export interface EssayUpdateManyMutationInput {
 export type EssayUpdateManyMutationInputInputObject =
   | Extract<keyof EssayUpdateManyMutationInput, string>
   | { name: 'text', alias?: string  } 
+  
+export interface EssayTopicUpdateInput {
+  title?: string | null
+  description?: string | null
+  min_words?: number | null
+  max_words?: number | null
+}
+export type EssayTopicUpdateInputInputObject =
+  | Extract<keyof EssayTopicUpdateInput, string>
+  | { name: 'title', alias?: string  } 
+  | { name: 'description', alias?: string  } 
+  | { name: 'min_words', alias?: string  } 
+  | { name: 'max_words', alias?: string  } 
+  
+export interface EssayTopicUpdateManyMutationInput {
+  title?: string | null
+  description?: string | null
+  min_words?: number | null
+  max_words?: number | null
+}
+export type EssayTopicUpdateManyMutationInputInputObject =
+  | Extract<keyof EssayTopicUpdateManyMutationInput, string>
+  | { name: 'title', alias?: string  } 
+  | { name: 'description', alias?: string  } 
+  | { name: 'min_words', alias?: string  } 
+  | { name: 'max_words', alias?: string  } 
   
 export interface UserSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
@@ -3009,6 +4004,27 @@ export type EssaySubscriptionWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
+export interface EssayTopicSubscriptionWhereInput {
+  mutation_in?: prisma.MutationType[]
+  updatedFields_contains?: string | null
+  updatedFields_contains_every?: string[]
+  updatedFields_contains_some?: string[]
+  node?: EssayTopicWhereInput | null
+  AND?: EssayTopicSubscriptionWhereInput[]
+  OR?: EssayTopicSubscriptionWhereInput[]
+  NOT?: EssayTopicSubscriptionWhereInput[]
+}
+export type EssayTopicSubscriptionWhereInputInputObject =
+  | Extract<keyof EssayTopicSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
 
 export type UserOrderByInputValues =
   | 'id_ASC'
@@ -3028,6 +4044,16 @@ export type UserOrderByInputValues =
   | 'administrator_ASC'
   | 'administrator_DESC'
   
+export type EssayOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'text_ASC'
+  | 'text_DESC'
+  
 export type SlotOrderByInputValues =
   | 'id_ASC'
   | 'id_DESC'
@@ -3044,15 +4070,21 @@ export type SlotOrderByInputValues =
   | 'ends_at_ASC'
   | 'ends_at_DESC'
   
-export type EssayOrderByInputValues =
+export type EssayTopicOrderByInputValues =
   | 'id_ASC'
   | 'id_DESC'
   | 'createdAt_ASC'
   | 'createdAt_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
-  | 'text_ASC'
-  | 'text_DESC'
+  | 'title_ASC'
+  | 'title_DESC'
+  | 'description_ASC'
+  | 'description_DESC'
+  | 'min_words_ASC'
+  | 'min_words_DESC'
+  | 'max_words_ASC'
+  | 'max_words_DESC'
   
 export type MutationTypeValues =
   | 'CREATED'
