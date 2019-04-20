@@ -14,6 +14,9 @@ export const UserOverViewQuery = gql`
       slot {
         id
       }
+      essays {
+        id
+      }
     }
   }
 `;

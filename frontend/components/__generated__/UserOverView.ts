@@ -11,6 +11,11 @@ export interface UserOverView_currentUser_slot {
   id: string;
 }
 
+export interface UserOverView_currentUser_essays {
+  __typename: "Essay";
+  id: string;
+}
+
 export interface UserOverView_currentUser {
   __typename: "User";
   id: string;
@@ -19,6 +24,7 @@ export interface UserOverView_currentUser {
   last_name: string | null;
   email: string;
   slot: UserOverView_currentUser_slot | null;
+  essays: UserOverView_currentUser_essays[] | null;
 }
 
 export interface UserOverView {

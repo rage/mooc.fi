@@ -11,10 +11,16 @@ export interface UserSlotInfo_currentUser_slot {
   id: string;
 }
 
+export interface UserSlotInfo_currentUser_essays {
+  __typename: "Essay";
+  id: string;
+}
+
 export interface UserSlotInfo_currentUser {
   __typename: "User";
   id: string;
   slot: UserSlotInfo_currentUser_slot | null;
+  essays: UserSlotInfo_currentUser_essays[] | null;
 }
 
 export interface UserSlotInfo {

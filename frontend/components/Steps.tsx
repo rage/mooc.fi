@@ -18,6 +18,12 @@ export const StepsQuery = gql`
       slot {
         id
       }
+      essays {
+        id
+      }
+    }
+    essayTopics {
+      id
     }
   }
 `;
@@ -25,7 +31,7 @@ export const StepsQuery = gql`
 const Steps = () => {
   let step = 0;
 
-  const { data, loading, error } = useQuery<UserSlotInfo>(StepsQuery)
+  const { data, loading, error } = useQuery<UserSlotInfo>(StepsQuery);
 
   if (error) {
     return <div>Error</div>;
@@ -37,6 +43,11 @@ const Steps = () => {
 
   if (get(data, "currentUser.slot.id")) {
     step = 1;
+    if (
+      get(data, "currentUser.essays.length") === get(data, "essayTopics.length")
+    ) {
+      step = 2;
+    }
   }
   return (
     <Card>
