@@ -1,9 +1,10 @@
 import * as React from "react";
 import gql from "graphql-tag";
-import { Query, QueryResult } from "react-apollo";
+import { useQuery } from "react-apollo-hooks";
+import { UserOverView } from "./__generated__/UserOverView";
 
 export const UserOverViewQuery = gql`
-  query currentUser {
+  query UserOverView {
     currentUser {
       id
       upstream_id
@@ -17,23 +18,21 @@ export const UserOverViewQuery = gql`
   }
 `;
 
-export default () => (
-  <Query query={UserOverViewQuery}>
-    {({ loading, error, data }: QueryResult) => {
-      if (loading) {
-        return <div>Loading</div>;
-      }
-      if (error) {
-        return (
-          <div>
-            Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-          </div>
-        );
-      }
-      const { currentUser }: { currentUser: User } = data;
-      return <pre>{JSON.stringify(currentUser, undefined, 2)}</pre>;
-    }}
-  </Query>
-);
+export default () => {
+  const { loading, error, data } = useQuery<UserOverView>(UserOverViewQuery);
+  if (error) {
+    return (
+      <div>
+        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      </div>
+    );
+  }
+  if (loading || !data) {
+    return <div>Loading</div>;
+  }
+
+  const { currentUser } = data;
+  return <pre>{JSON.stringify(currentUser, undefined, 2)}</pre>;
+};
 
 export interface User {}

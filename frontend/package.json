@@ -7,7 +7,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "upgrade-interactive": "npm-check --update"
+    "upgrade-interactive": "npm-check --update",
+    "generate-graphql-types": "apollo codegen:generate --tagName=gql --target=typescript __generated__"
   },
   "keywords": [],
   "author": "",
@@ -33,6 +34,7 @@
     "nookies": "^2.0.4",
     "react": "^16.8.6",
     "react-apollo": "^2.5.4",
+    "react-apollo-hooks": "^0.4.5",
     "react-dom": "^16.8.6",
     "react-jss": "^8.6.1",
     "styled-components": "^4.2.0",

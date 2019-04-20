@@ -1,11 +1,12 @@
 import * as React from "react";
 import gql from "graphql-tag";
-import { Query, QueryResult } from "react-apollo";
 import Slot from "./Slot";
 import { get } from "lodash";
+import { useQuery } from "react-apollo-hooks";
+import { Slots } from "./__generated__/Slots";
 
 export const SlotListQuery = gql`
-  query slots {
+  query Slots {
     slots {
       id
       capacity
@@ -22,32 +23,23 @@ export const SlotListQuery = gql`
   }
 `;
 
-export default () => (
-  <Query query={SlotListQuery}>
-    {({ loading, error, data }: QueryResult) => {
-      if (loading) {
-        return <div>Loading</div>;
-      }
-      if (error) {
-        return (
-          <div>
-            Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-          </div>
-        );
-      }
-      const currentSlotId = get(data, "currentUser.slot.id");
-      const { slots }: { slots: [Slot] } = data;
-      return slots.map(slot => (
-        <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
-      ));
-    }}
-  </Query>
-);
+export default () => {
+  const { loading, error, data } = useQuery<Slots>(SlotListQuery);
 
-export interface Slot {
-  id: string;
-  capacity: string;
-  registered_count: number;
-  starts_at: string;
-  ends_at: string;
-}
+  if (error) {
+    return (
+      <div>
+        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      </div>
+    );
+  }
+
+  if (loading || !data) {
+    return <div>Loading</div>;
+  }
+
+  const currentSlotId = get(data, "currentUser.slot.id");
+  return data.slots.map(slot => (
+    <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
+  ));
+};

@@ -5,6 +5,7 @@ import { MuiThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import JssProvider from "react-jss/lib/JssProvider";
 import { ApolloProvider } from "react-apollo";
+import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
 import getPageContext from "../lib/getPageContext";
 import withApollo from "../lib/with-apollo";
 import Layout from "./_layout";
@@ -48,11 +49,13 @@ class MyApp extends App {
             {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server-side. */}
             <ApolloProvider client={apollo}>
-              <LoginStateContext.Provider value={this.props.signedIn}>
-                <Layout>
-                  <Component pageContext={this.pageContext} {...pageProps} />
-                </Layout>
-              </LoginStateContext.Provider>
+              <ApolloHooksProvider client={apollo}>
+                <LoginStateContext.Provider value={this.props.signedIn}>
+                  <Layout>
+                    <Component pageContext={this.pageContext} {...pageProps} />
+                  </Layout>
+                </LoginStateContext.Provider>
+              </ApolloHooksProvider>
             </ApolloProvider>
           </MuiThemeProvider>
         </JssProvider>
