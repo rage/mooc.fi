@@ -1,7 +1,7 @@
 import { prisma, Prisma, Int, User } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
-import { stringArg, idArg, convertSDL } from "nexus";
+import { stringArg, idArg, convertSDL, subscriptionField } from "nexus";
 import { prismaObjectType, makePrismaSchema } from "nexus-prisma";
 import { GraphQLServer } from "graphql-yoga";
 import { AuthenticationError, ForbiddenError } from "apollo-server-core";
@@ -61,7 +61,13 @@ const Mutation = prismaObjectType({
       resolve: async (_, { id }, ctx) => {
         const prisma: Prisma = ctx.prisma;
         const slot = await prisma.slot({ id });
-        if (slot.registered_count >= slot.capacity) {
+        const registered_count = await prisma
+          .usersConnection({
+            where: { slot: { id: id } }
+          })
+          .aggregate()
+          .count();
+        if (registered_count >= slot.capacity) {
           throw new ForbiddenError("The slot is already full");
         }
         return prisma.updateUser({
@@ -136,8 +142,26 @@ const EssayTopic = prismaObjectType({
   }
 });
 
+const Slots = prismaObjectType({
+  name: "Slot",
+  definition(t) {
+    t.prismaFields(["*"]);
+    t.field("registered_count", {
+      type: "Int",
+      resolve: async (parent, args, ctx) => {
+        const prisma: Prisma = ctx.prisma;
+        const userAggrecatePromise = prisma
+          .usersConnection({ where: { slot: { id: parent.id } } })
+          .aggregate();
+
+        return userAggrecatePromise.count();
+      }
+    });
+  }
+});
+
 const schema = makePrismaSchema({
-  types: [Query, Mutation, EssayTopic],
+  types: [Query, Mutation, EssayTopic, Slots],
 
   prisma: {
     datamodelInfo,

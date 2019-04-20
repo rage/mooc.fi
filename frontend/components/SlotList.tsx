@@ -1,10 +1,11 @@
 import * as React from "react";
 import gql from "graphql-tag";
 import Slot from "./Slot";
-import { get } from "lodash";
+import { get, groupBy } from "lodash";
 import { useQuery } from "react-apollo-hooks";
 import { Slots } from "./__generated__/Slots";
 import { Typography } from "@material-ui/core";
+import { DateTime } from "luxon";
 
 export const SlotListQuery = gql`
   query Slots {
@@ -25,7 +26,9 @@ export const SlotListQuery = gql`
 `;
 
 export default () => {
-  const { loading, error, data } = useQuery<Slots>(SlotListQuery);
+  const { loading, error, data } = useQuery<Slots>(SlotListQuery, {
+    pollInterval: 5000
+  });
 
   if (error) {
     return (
@@ -40,6 +43,15 @@ export default () => {
   }
 
   const currentSlotId = get(data, "currentUser.slot.id");
+
+  const sortedSlots = data.slots.sort(
+    (a, b) =>
+      DateTime.fromISO(a.starts_at).toMillis() -
+      DateTime.fromISO(b.starts_at).toMillis()
+  );
+  const groupedSlots = groupBy(sortedSlots, o =>
+    DateTime.fromISO(o.starts_at).toFormat("d.M.yyyy")
+  );
   return (
     <>
       <Typography variant="h4" component="h2">
@@ -50,8 +62,15 @@ export default () => {
         jokaisessa ajassa on saatavilla vain rajallisesti, joten suosittelemme
         että valitset ajan mahdollisimman ajoissa.
       </p>
-      {data.slots.map(slot => (
-        <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
+      {Object.entries(groupedSlots).map(([group, groupSlots]) => (
+        <div>
+          <Typography variant="h6" component="h3">
+            {group}
+          </Typography>
+          {groupSlots.map(slot => (
+            <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
+          ))}
+        </div>
       ))}
     </>
   );

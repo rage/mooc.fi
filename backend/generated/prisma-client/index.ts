@@ -288,8 +288,6 @@ export type SlotOrderByInput =
   | "updatedAt_DESC"
   | "capacity_ASC"
   | "capacity_DESC"
-  | "registered_count_ASC"
-  | "registered_count_DESC"
   | "starts_at_ASC"
   | "starts_at_DESC"
   | "ends_at_ASC"
@@ -435,14 +433,6 @@ export interface SlotWhereInput {
   registered_every?: UserWhereInput;
   registered_some?: UserWhereInput;
   registered_none?: UserWhereInput;
-  registered_count?: Int;
-  registered_count_not?: Int;
-  registered_count_in?: Int[] | Int;
-  registered_count_not_in?: Int[] | Int;
-  registered_count_lt?: Int;
-  registered_count_lte?: Int;
-  registered_count_gt?: Int;
-  registered_count_gte?: Int;
   starts_at?: DateTimeInput;
   starts_at_not?: DateTimeInput;
   starts_at_in?: DateTimeInput[] | DateTimeInput;
@@ -636,7 +626,6 @@ export interface SlotCreateOneWithoutRegisteredInput {
 
 export interface SlotCreateWithoutRegisteredInput {
   capacity: Int;
-  registered_count?: Int;
   starts_at: DateTimeInput;
   ends_at: DateTimeInput;
 }
@@ -686,7 +675,6 @@ export interface SlotUpdateOneWithoutRegisteredInput {
 
 export interface SlotUpdateWithoutRegisteredDataInput {
   capacity?: Int;
-  registered_count?: Int;
   starts_at?: DateTimeInput;
   ends_at?: DateTimeInput;
 }
@@ -741,7 +729,6 @@ export interface EssayTopicUpdateManyMutationInput {
 export interface SlotCreateInput {
   capacity: Int;
   registered?: UserCreateManyWithoutSlotInput;
-  registered_count?: Int;
   starts_at: DateTimeInput;
   ends_at: DateTimeInput;
 }
@@ -773,7 +760,6 @@ export interface EssayCreateWithoutAuthorInput {
 export interface SlotUpdateInput {
   capacity?: Int;
   registered?: UserUpdateManyWithoutSlotInput;
-  registered_count?: Int;
   starts_at?: DateTimeInput;
   ends_at?: DateTimeInput;
 }
@@ -1012,7 +998,6 @@ export interface UserUpdateManyDataInput {
 
 export interface SlotUpdateManyMutationInput {
   capacity?: Int;
-  registered_count?: Int;
   starts_at?: DateTimeInput;
   ends_at?: DateTimeInput;
 }
@@ -1184,7 +1169,6 @@ export interface Slot {
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   capacity: Int;
-  registered_count: Int;
   starts_at: DateTimeOutput;
   ends_at: DateTimeOutput;
 }
@@ -1205,7 +1189,6 @@ export interface SlotPromise extends Promise<Slot>, Fragmentable {
       last?: Int;
     }
   ) => T;
-  registered_count: () => Promise<Int>;
   starts_at: () => Promise<DateTimeOutput>;
   ends_at: () => Promise<DateTimeOutput>;
 }
@@ -1228,7 +1211,6 @@ export interface SlotSubscription
       last?: Int;
     }
   ) => T;
-  registered_count: () => Promise<AsyncIterator<Int>>;
   starts_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   ends_at: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -1661,7 +1643,6 @@ export interface SlotPreviousValues {
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   capacity: Int;
-  registered_count: Int;
   starts_at: DateTimeOutput;
   ends_at: DateTimeOutput;
 }
@@ -1673,7 +1654,6 @@ export interface SlotPreviousValuesPromise
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   capacity: () => Promise<Int>;
-  registered_count: () => Promise<Int>;
   starts_at: () => Promise<DateTimeOutput>;
   ends_at: () => Promise<DateTimeOutput>;
 }
@@ -1685,7 +1665,6 @@ export interface SlotPreviousValuesSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   capacity: () => Promise<AsyncIterator<Int>>;
-  registered_count: () => Promise<AsyncIterator<Int>>;
   starts_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   ends_at: () => Promise<AsyncIterator<DateTimeOutput>>;
 }

@@ -183,14 +183,6 @@ export interface NexusGenInputs {
     id_starts_with?: string | null; // ID
     NOT?: NexusGenInputs['SlotWhereInput'][] | null; // [SlotWhereInput!]
     OR?: NexusGenInputs['SlotWhereInput'][] | null; // [SlotWhereInput!]
-    registered_count?: number | null; // Int
-    registered_count_gt?: number | null; // Int
-    registered_count_gte?: number | null; // Int
-    registered_count_in?: number[] | null; // [Int!]
-    registered_count_lt?: number | null; // Int
-    registered_count_lte?: number | null; // Int
-    registered_count_not?: number | null; // Int
-    registered_count_not_in?: number[] | null; // [Int!]
     registered_every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     registered_none?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     registered_some?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
@@ -336,7 +328,6 @@ export interface NexusGenRootTypes {
     createdAt: any; // DateTime!
     ends_at: any; // DateTime!
     id: string; // ID!
-    registered_count: number; // Int!
     starts_at: any; // DateTime!
     updatedAt: any; // DateTime!
   }

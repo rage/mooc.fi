@@ -18,7 +18,6 @@ type Slot {
 
   capacity: Int!
   registered: [User!]
-  registered_count: Int! @default(value: "0")
   starts_at: DateTime!
   ends_at: DateTime!
 }

@@ -512,7 +512,6 @@ type Slot {
   updatedAt: DateTime!
   capacity: Int!
   registered(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
-  registered_count: Int!
   starts_at: DateTime!
   ends_at: DateTime!
 }
@@ -526,7 +525,6 @@ type SlotConnection {
 input SlotCreateInput {
   capacity: Int!
   registered: UserCreateManyWithoutSlotInput
-  registered_count: Int
   starts_at: DateTime!
   ends_at: DateTime!
 }
@@ -538,7 +536,6 @@ input SlotCreateOneWithoutRegisteredInput {
 
 input SlotCreateWithoutRegisteredInput {
   capacity: Int!
-  registered_count: Int
   starts_at: DateTime!
   ends_at: DateTime!
 }
@@ -557,8 +554,6 @@ enum SlotOrderByInput {
   updatedAt_DESC
   capacity_ASC
   capacity_DESC
-  registered_count_ASC
-  registered_count_DESC
   starts_at_ASC
   starts_at_DESC
   ends_at_ASC
@@ -570,7 +565,6 @@ type SlotPreviousValues {
   createdAt: DateTime!
   updatedAt: DateTime!
   capacity: Int!
-  registered_count: Int!
   starts_at: DateTime!
   ends_at: DateTime!
 }
@@ -596,14 +590,12 @@ input SlotSubscriptionWhereInput {
 input SlotUpdateInput {
   capacity: Int
   registered: UserUpdateManyWithoutSlotInput
-  registered_count: Int
   starts_at: DateTime
   ends_at: DateTime
 }
 
 input SlotUpdateManyMutationInput {
   capacity: Int
-  registered_count: Int
   starts_at: DateTime
   ends_at: DateTime
 }
@@ -619,7 +611,6 @@ input SlotUpdateOneWithoutRegisteredInput {
 
 input SlotUpdateWithoutRegisteredDataInput {
   capacity: Int
-  registered_count: Int
   starts_at: DateTime
   ends_at: DateTime
 }
@@ -671,14 +662,6 @@ input SlotWhereInput {
   registered_every: UserWhereInput
   registered_some: UserWhereInput
   registered_none: UserWhereInput
-  registered_count: Int
-  registered_count_not: Int
-  registered_count_in: [Int!]
-  registered_count_not_in: [Int!]
-  registered_count_lt: Int
-  registered_count_lte: Int
-  registered_count_gt: Int
-  registered_count_gte: Int
   starts_at: DateTime
   starts_at_not: DateTime
   starts_at_in: [DateTime!]

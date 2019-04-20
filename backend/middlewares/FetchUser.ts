@@ -7,7 +7,12 @@ const fetchUser = async (resolve, root, args, context, info) => {
     const result = await resolve(root, args, context, info);
     return result;
   }
-  const rawToken = context.request.get("Authorization");
+  let rawToken = null;
+  if (context.request) {
+    rawToken = context.request.get("Authorization");
+  } else if (context.connection) {
+    rawToken = context.connection.context["Authorization"]
+  }
   if (!rawToken) {
     return new AuthenticationError("Please log in.");
   }

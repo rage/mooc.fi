@@ -234,14 +234,6 @@ input SlotWhereInput {
   id_starts_with: ID
   NOT: [SlotWhereInput!]
   OR: [SlotWhereInput!]
-  registered_count: Int
-  registered_count_gt: Int
-  registered_count_gte: Int
-  registered_count_in: [Int!]
-  registered_count_lt: Int
-  registered_count_lte: Int
-  registered_count_not: Int
-  registered_count_not_in: [Int!]
   registered_every: UserWhereInput
   registered_none: UserWhereInput
   registered_some: UserWhereInput

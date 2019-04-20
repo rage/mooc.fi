@@ -552,7 +552,6 @@ type SlotObject =
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
   | { name: 'capacity', args?: [] | false, alias?: string  } 
   | { name: 'registered', args?: SlotRegisteredArgs[] | false, alias?: string  } 
-  | { name: 'registered_count', args?: [] | false, alias?: string  } 
   | { name: 'starts_at', args?: [] | false, alias?: string  } 
   | { name: 'ends_at', args?: [] | false, alias?: string  } 
 
@@ -562,7 +561,6 @@ type SlotFields =
   | 'updatedAt'
   | 'capacity'
   | 'registered'
-  | 'registered_count'
   | 'starts_at'
   | 'ends_at'
 
@@ -622,14 +620,6 @@ export interface SlotFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.User[]> | prisma.User[]
-  }
-  registered_count: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
   }
   starts_at: {
     type: 'DateTime'
@@ -2163,7 +2153,6 @@ type SlotPreviousValuesObject =
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
   | { name: 'capacity', args?: [] | false, alias?: string  } 
-  | { name: 'registered_count', args?: [] | false, alias?: string  } 
   | { name: 'starts_at', args?: [] | false, alias?: string  } 
   | { name: 'ends_at', args?: [] | false, alias?: string  } 
 
@@ -2172,7 +2161,6 @@ type SlotPreviousValuesFields =
   | 'createdAt'
   | 'updatedAt'
   | 'capacity'
-  | 'registered_count'
   | 'starts_at'
   | 'ends_at'
 
@@ -2206,14 +2194,6 @@ export interface SlotPreviousValuesFieldDetails {
     resolve: undefined
   }
   capacity: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  registered_count: {
     type: 'Int'
     args: {}
     description: string
@@ -2755,14 +2735,6 @@ export interface SlotWhereInput {
   registered_every?: UserWhereInput | null
   registered_some?: UserWhereInput | null
   registered_none?: UserWhereInput | null
-  registered_count?: number | null
-  registered_count_not?: number | null
-  registered_count_in?: number[]
-  registered_count_not_in?: number[]
-  registered_count_lt?: number | null
-  registered_count_lte?: number | null
-  registered_count_gt?: number | null
-  registered_count_gte?: number | null
   starts_at?: string | null
   starts_at_not?: string | null
   starts_at_in?: string[]
@@ -2826,14 +2798,6 @@ export type SlotWhereInputInputObject =
   | { name: 'registered_every', alias?: string  } 
   | { name: 'registered_some', alias?: string  } 
   | { name: 'registered_none', alias?: string  } 
-  | { name: 'registered_count', alias?: string  } 
-  | { name: 'registered_count_not', alias?: string  } 
-  | { name: 'registered_count_in', alias?: string  } 
-  | { name: 'registered_count_not_in', alias?: string  } 
-  | { name: 'registered_count_lt', alias?: string  } 
-  | { name: 'registered_count_lte', alias?: string  } 
-  | { name: 'registered_count_gt', alias?: string  } 
-  | { name: 'registered_count_gte', alias?: string  } 
   | { name: 'starts_at', alias?: string  } 
   | { name: 'starts_at_not', alias?: string  } 
   | { name: 'starts_at_in', alias?: string  } 
@@ -3167,14 +3131,12 @@ export type SlotCreateOneWithoutRegisteredInputInputObject =
   
 export interface SlotCreateWithoutRegisteredInput {
   capacity?: number
-  registered_count?: number | null
   starts_at?: string
   ends_at?: string
 }
 export type SlotCreateWithoutRegisteredInputInputObject =
   | Extract<keyof SlotCreateWithoutRegisteredInput, string>
   | { name: 'capacity', alias?: string  } 
-  | { name: 'registered_count', alias?: string  } 
   | { name: 'starts_at', alias?: string  } 
   | { name: 'ends_at', alias?: string  } 
   
@@ -3256,14 +3218,12 @@ export type SlotUpdateOneWithoutRegisteredInputInputObject =
   
 export interface SlotUpdateWithoutRegisteredDataInput {
   capacity?: number | null
-  registered_count?: number | null
   starts_at?: string | null
   ends_at?: string | null
 }
 export type SlotUpdateWithoutRegisteredDataInputInputObject =
   | Extract<keyof SlotUpdateWithoutRegisteredDataInput, string>
   | { name: 'capacity', alias?: string  } 
-  | { name: 'registered_count', alias?: string  } 
   | { name: 'starts_at', alias?: string  } 
   | { name: 'ends_at', alias?: string  } 
   
@@ -3496,7 +3456,6 @@ export type UserUpdateManyMutationInputInputObject =
 export interface SlotCreateInput {
   capacity?: number
   registered?: UserCreateManyWithoutSlotInput | null
-  registered_count?: number | null
   starts_at?: string
   ends_at?: string
 }
@@ -3504,7 +3463,6 @@ export type SlotCreateInputInputObject =
   | Extract<keyof SlotCreateInput, string>
   | { name: 'capacity', alias?: string  } 
   | { name: 'registered', alias?: string  } 
-  | { name: 'registered_count', alias?: string  } 
   | { name: 'starts_at', alias?: string  } 
   | { name: 'ends_at', alias?: string  } 
   
@@ -3537,7 +3495,6 @@ export type UserCreateWithoutSlotInputInputObject =
 export interface SlotUpdateInput {
   capacity?: number | null
   registered?: UserUpdateManyWithoutSlotInput | null
-  registered_count?: number | null
   starts_at?: string | null
   ends_at?: string | null
 }
@@ -3545,7 +3502,6 @@ export type SlotUpdateInputInputObject =
   | Extract<keyof SlotUpdateInput, string>
   | { name: 'capacity', alias?: string  } 
   | { name: 'registered', alias?: string  } 
-  | { name: 'registered_count', alias?: string  } 
   | { name: 'starts_at', alias?: string  } 
   | { name: 'ends_at', alias?: string  } 
   
@@ -3810,14 +3766,12 @@ export type UserUpdateManyDataInputInputObject =
   
 export interface SlotUpdateManyMutationInput {
   capacity?: number | null
-  registered_count?: number | null
   starts_at?: string | null
   ends_at?: string | null
 }
 export type SlotUpdateManyMutationInputInputObject =
   | Extract<keyof SlotUpdateManyMutationInput, string>
   | { name: 'capacity', alias?: string  } 
-  | { name: 'registered_count', alias?: string  } 
   | { name: 'starts_at', alias?: string  } 
   | { name: 'ends_at', alias?: string  } 
   
@@ -4063,8 +4017,6 @@ export type SlotOrderByInputValues =
   | 'updatedAt_DESC'
   | 'capacity_ASC'
   | 'capacity_DESC'
-  | 'registered_count_ASC'
-  | 'registered_count_DESC'
   | 'starts_at_ASC'
   | 'starts_at_DESC'
   | 'ends_at_ASC'
