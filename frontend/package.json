@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3021",
     "upgrade-interactive": "npm-check --update",
     "generate-graphql-types": "apollo codegen:generate --tagName=gql --target=typescript __generated__"
   },
