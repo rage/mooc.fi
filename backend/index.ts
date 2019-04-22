@@ -193,19 +193,25 @@ const server = new GraphQLServer({
   middlewares: [fetchUser]
 });
 
-server.start(
-  {
-    formatParams(o) {
-      logger.info("Query");
-      return o;
-    },
-    formatError: error => {
-      logger.warn(error);
-      return error;
-    },
-    formatResponse: (response, query) => {
-      return response;
-    }
+const serverStartOptions = {
+  formatParams(o) {
+    logger.info("Query");
+    return o;
   },
-  () => console.log("Server is running on http://localhost:4000")
+  formatError: error => {
+    logger.warn(error);
+    return error;
+  },
+  formatResponse: (response, query) => {
+    return response;
+  }
+};
+
+if (process.env.NODE_ENV === "production") {
+  console.log("Running in production mode");
+  serverStartOptions["playground"] = false;
+}
+
+server.start(serverStartOptions, () =>
+  console.log("Server is running on http://localhost:4000")
 );
