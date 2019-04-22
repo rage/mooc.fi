@@ -12,6 +12,7 @@ import { get } from "lodash";
 import gql from "graphql-tag";
 import { useMutation } from "react-apollo-hooks";
 import { SaveEssay, SaveEssayVariables } from "./__generated__/SaveEssay";
+import { StepsQuery } from "./Steps";
 
 interface AnswerEssayProps {
   topic: AnswereableEssays_essayTopics;
@@ -53,7 +54,8 @@ const AnswerEssay = ({ topic }: AnswerEssayProps) => {
     variables: {
       topicID: topic.id,
       text: text.trim()
-    }
+    },
+    refetchQueries: [ { query: StepsQuery } ]
   });
 
   const currentVersionSaved =
@@ -68,7 +70,7 @@ const AnswerEssay = ({ topic }: AnswerEssayProps) => {
         <p>{topic.description}</p>
 
         <p>
-          Minmipituus {topic.min_words} sanaa, maksimipituus {topic.max_words}{" "}
+          Minimipituus {topic.min_words} sanaa, maksimipituus {topic.max_words}{" "}
           sanaa.
         </p>
         <TextFieldContainer>

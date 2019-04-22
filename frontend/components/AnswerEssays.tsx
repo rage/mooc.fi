@@ -40,7 +40,7 @@ const AnswerEssays = () => {
       </Typography>
       <p>
         Alla on muutama lyhehkö motivaatioessee. Vastaa kaikkiin alla oleviin
-        esseisiin ennen kun tulet näyttökokeeseen. Esseen kirjoittamista ei
+        esseisiin ennen kuin tulet näyttökokeeseen. Esseen kirjoittamista ei
         kannata stressata -- näyttökokeella on suurempi painoarvo pisteisiin.
         Vastaa kuitenkin jokaiseen esseeseen huolella.
       </p>
