@@ -1,0 +1,7 @@
+draft.toml
+charts/
+.git
+*Dockerfile*
+*docker-compose*
+**/node_modules
+node_modules

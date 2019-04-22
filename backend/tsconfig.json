@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["es2016", "esnext.asynciterable"]
-  }
+    "lib": ["es2016", "esnext.asynciterable"],
+    "outDir": "./dist",
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "dist", "test", "src/test"]
 }
