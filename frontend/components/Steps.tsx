@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { get } from "lodash";
 import { useQuery } from "react-apollo-hooks";
 import { UserSlotInfo } from "./__generated__/UserSlotInfo";
+import styled from "styled-components";
 
 const steps = [
   "Valitse näyttökoeaika",
@@ -28,6 +29,10 @@ export const StepsQuery = gql`
   }
 `;
 
+const StyledCard = styled(Card)`
+  margin-bottom: 1rem;
+`
+
 const Steps = () => {
   let step = 0;
 
@@ -50,7 +55,7 @@ const Steps = () => {
     }
   }
   return (
-    <Card>
+    <StyledCard>
       <CardContent>
         <Stepper activeStep={step} alternativeLabel>
           {steps.map(label => (
@@ -60,7 +65,7 @@ const Steps = () => {
           ))}
         </Stepper>
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 };
 
