@@ -23,7 +23,7 @@ const TopBar = () => {
           <Button
             variant="contained"
             onClick={() => {
-              signOut(client.resetStore);
+              signOut(client);
             }}
           >
             Kirjaudu ulos

@@ -2,6 +2,7 @@ import TmcClient from "tmc-client-js";
 import Router from "next/router";
 import { NextContext } from "next";
 import nookies from "nookies";
+import { ApolloClient } from "apollo-boost";
 
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
@@ -27,13 +28,11 @@ export const signIn = async ({
   return res;
 };
 
-export const signOut = async (cb: (() => any) | undefined) => {
+export const signOut = async (apollo: ApolloClient<any>) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-  if (cb) {
-    cb();
-  }
   Router.push("/sign-in");
+  await apollo.resetStore();
 };
 
 export const getAccessToken = (ctx: NextContext | undefined) => {
