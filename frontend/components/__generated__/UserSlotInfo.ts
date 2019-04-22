@@ -23,6 +23,12 @@ export interface UserSlotInfo_currentUser {
   essays: UserSlotInfo_currentUser_essays[] | null;
 }
 
+export interface UserSlotInfo_essayTopics {
+  __typename: "EssayTopic";
+  id: string;
+}
+
 export interface UserSlotInfo {
   currentUser: UserSlotInfo_currentUser;
+  essayTopics: UserSlotInfo_essayTopics[];
 }

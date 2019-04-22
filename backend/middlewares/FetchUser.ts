@@ -11,7 +11,7 @@ const fetchUser = async (resolve, root, args, context, info) => {
   if (context.request) {
     rawToken = context.request.get("Authorization");
   } else if (context.connection) {
-    rawToken = context.connection.context["Authorization"]
+    rawToken = context.connection.context["Authorization"];
   }
   if (!rawToken) {
     return new AuthenticationError("Please log in.");
@@ -23,6 +23,19 @@ const fetchUser = async (resolve, root, args, context, info) => {
 
   const prisma: Prisma = context.prisma;
   const id: number = details.id;
+  const prismaDetails = {
+    administrator: details.administrator,
+    email: details.email.trim(),
+    first_name: details.user_field.first_name.trim(),
+    last_name: details.user_field.last_name.trim(),
+    upstream_id: details.id,
+    completed_enough: details.completed_enough
+  }
+  prisma.upsertUser({
+    where: { upstream_id: id },
+    create: prismaDetails,
+    update: prismaDetails
+  });
   const users = await prisma.users({
     where: { upstream_id: id }
   });

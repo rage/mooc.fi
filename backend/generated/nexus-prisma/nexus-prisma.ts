@@ -425,6 +425,7 @@ type UserObject =
   | { name: 'administrator', args?: [] | false, alias?: string  } 
   | { name: 'slot', args?: [] | false, alias?: string  } 
   | { name: 'essays', args?: UserEssaysArgs[] | false, alias?: string  } 
+  | { name: 'completed_enough', args?: [] | false, alias?: string  } 
 
 type UserFields =
   | 'id'
@@ -437,6 +438,7 @@ type UserFields =
   | 'administrator'
   | 'slot'
   | 'essays'
+  | 'completed_enough'
 
 
 type UserEssaysArgs =
@@ -539,6 +541,14 @@ export interface UserFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.Essay[]> | prisma.Essay[]
+  }
+  completed_enough: {
+    type: 'Boolean'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
   }
 }
   
@@ -1992,6 +2002,7 @@ type UserPreviousValuesObject =
   | { name: 'last_name', args?: [] | false, alias?: string  } 
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
+  | { name: 'completed_enough', args?: [] | false, alias?: string  } 
 
 type UserPreviousValuesFields =
   | 'id'
@@ -2002,6 +2013,7 @@ type UserPreviousValuesFields =
   | 'last_name'
   | 'email'
   | 'administrator'
+  | 'completed_enough'
 
 
 
@@ -2065,6 +2077,14 @@ export interface UserPreviousValuesFieldDetails {
     resolve: undefined
   }
   administrator: {
+    type: 'Boolean'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  completed_enough: {
     type: 'Boolean'
     args: {}
     description: string
@@ -2597,6 +2617,8 @@ export interface UserWhereInput {
   essays_every?: EssayWhereInput | null
   essays_some?: EssayWhereInput | null
   essays_none?: EssayWhereInput | null
+  completed_enough?: boolean | null
+  completed_enough_not?: boolean | null
   AND?: UserWhereInput[]
   OR?: UserWhereInput[]
   NOT?: UserWhereInput[]
@@ -2689,6 +2711,8 @@ export type UserWhereInputInputObject =
   | { name: 'essays_every', alias?: string  } 
   | { name: 'essays_some', alias?: string  } 
   | { name: 'essays_none', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'completed_enough_not', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
@@ -3109,6 +3133,7 @@ export interface UserCreateInput {
   administrator?: boolean
   slot?: SlotCreateOneWithoutRegisteredInput | null
   essays?: EssayCreateManyWithoutAuthorInput | null
+  completed_enough?: boolean | null
 }
 export type UserCreateInputInputObject =
   | Extract<keyof UserCreateInput, string>
@@ -3119,6 +3144,7 @@ export type UserCreateInputInputObject =
   | { name: 'administrator', alias?: string  } 
   | { name: 'slot', alias?: string  } 
   | { name: 'essays', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface SlotCreateOneWithoutRegisteredInput {
   create?: SlotCreateWithoutRegisteredInput | null
@@ -3188,6 +3214,7 @@ export interface UserUpdateInput {
   administrator?: boolean | null
   slot?: SlotUpdateOneWithoutRegisteredInput | null
   essays?: EssayUpdateManyWithoutAuthorInput | null
+  completed_enough?: boolean | null
 }
 export type UserUpdateInputInputObject =
   | Extract<keyof UserUpdateInput, string>
@@ -3198,6 +3225,7 @@ export type UserUpdateInputInputObject =
   | { name: 'administrator', alias?: string  } 
   | { name: 'slot', alias?: string  } 
   | { name: 'essays', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface SlotUpdateOneWithoutRegisteredInput {
   create?: SlotCreateWithoutRegisteredInput | null
@@ -3444,6 +3472,7 @@ export interface UserUpdateManyMutationInput {
   last_name?: string | null
   email?: string | null
   administrator?: boolean | null
+  completed_enough?: boolean | null
 }
 export type UserUpdateManyMutationInputInputObject =
   | Extract<keyof UserUpdateManyMutationInput, string>
@@ -3452,6 +3481,7 @@ export type UserUpdateManyMutationInputInputObject =
   | { name: 'last_name', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface SlotCreateInput {
   capacity?: number
@@ -3482,6 +3512,7 @@ export interface UserCreateWithoutSlotInput {
   email?: string
   administrator?: boolean
   essays?: EssayCreateManyWithoutAuthorInput | null
+  completed_enough?: boolean | null
 }
 export type UserCreateWithoutSlotInputInputObject =
   | Extract<keyof UserCreateWithoutSlotInput, string>
@@ -3491,6 +3522,7 @@ export type UserCreateWithoutSlotInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'essays', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface SlotUpdateInput {
   capacity?: number | null
@@ -3544,6 +3576,7 @@ export interface UserUpdateWithoutSlotDataInput {
   email?: string | null
   administrator?: boolean | null
   essays?: EssayUpdateManyWithoutAuthorInput | null
+  completed_enough?: boolean | null
 }
 export type UserUpdateWithoutSlotDataInputInputObject =
   | Extract<keyof UserUpdateWithoutSlotDataInput, string>
@@ -3553,6 +3586,7 @@ export type UserUpdateWithoutSlotDataInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'essays', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface UserUpsertWithWhereUniqueWithoutSlotInput {
   where?: UserWhereUniqueInput
@@ -3648,6 +3682,8 @@ export interface UserScalarWhereInput {
   email_not_ends_with?: string | null
   administrator?: boolean | null
   administrator_not?: boolean | null
+  completed_enough?: boolean | null
+  completed_enough_not?: boolean | null
   AND?: UserScalarWhereInput[]
   OR?: UserScalarWhereInput[]
   NOT?: UserScalarWhereInput[]
@@ -3736,6 +3772,8 @@ export type UserScalarWhereInputInputObject =
   | { name: 'email_not_ends_with', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'administrator_not', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'completed_enough_not', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
@@ -3755,6 +3793,7 @@ export interface UserUpdateManyDataInput {
   last_name?: string | null
   email?: string | null
   administrator?: boolean | null
+  completed_enough?: boolean | null
 }
 export type UserUpdateManyDataInputInputObject =
   | Extract<keyof UserUpdateManyDataInput, string>
@@ -3763,6 +3802,7 @@ export type UserUpdateManyDataInputInputObject =
   | { name: 'last_name', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface SlotUpdateManyMutationInput {
   capacity?: number | null
@@ -3802,6 +3842,7 @@ export interface UserCreateWithoutEssaysInput {
   email?: string
   administrator?: boolean
   slot?: SlotCreateOneWithoutRegisteredInput | null
+  completed_enough?: boolean | null
 }
 export type UserCreateWithoutEssaysInputInputObject =
   | Extract<keyof UserCreateWithoutEssaysInput, string>
@@ -3811,6 +3852,7 @@ export type UserCreateWithoutEssaysInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'slot', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface EssayUpdateInput {
   text?: string | null
@@ -3843,6 +3885,7 @@ export interface UserUpdateWithoutEssaysDataInput {
   email?: string | null
   administrator?: boolean | null
   slot?: SlotUpdateOneWithoutRegisteredInput | null
+  completed_enough?: boolean | null
 }
 export type UserUpdateWithoutEssaysDataInputInputObject =
   | Extract<keyof UserUpdateWithoutEssaysDataInput, string>
@@ -3852,6 +3895,7 @@ export type UserUpdateWithoutEssaysDataInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'slot', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
   
 export interface UserUpsertWithoutEssaysInput {
   update?: UserUpdateWithoutEssaysDataInput
@@ -3997,6 +4041,8 @@ export type UserOrderByInputValues =
   | 'email_DESC'
   | 'administrator_ASC'
   | 'administrator_DESC'
+  | 'completed_enough_ASC'
+  | 'completed_enough_DESC'
   
 export type EssayOrderByInputValues =
   | 'id_ASC'

@@ -9,6 +9,8 @@
 export interface ChooseSlot_chooseSlot_slot {
   __typename: "Slot";
   id: string;
+  registered_count: number;
+  capacity: number;
 }
 
 export interface ChooseSlot_chooseSlot {

@@ -207,6 +207,8 @@ export interface NexusGenInputs {
     administrator?: boolean | null; // Boolean
     administrator_not?: boolean | null; // Boolean
     AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    completed_enough?: boolean | null; // Boolean
+    completed_enough_not?: boolean | null; // Boolean
     createdAt?: any | null; // DateTime
     createdAt_gt?: any | null; // DateTime
     createdAt_gte?: any | null; // DateTime
@@ -302,7 +304,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   EssayOrderByInput: "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "text_ASC" | "text_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
-  UserOrderByInput: "administrator_ASC" | "administrator_DESC" | "createdAt_ASC" | "createdAt_DESC" | "email_ASC" | "email_DESC" | "first_name_ASC" | "first_name_DESC" | "id_ASC" | "id_DESC" | "last_name_ASC" | "last_name_DESC" | "updatedAt_ASC" | "updatedAt_DESC" | "upstream_id_ASC" | "upstream_id_DESC"
+  UserOrderByInput: "administrator_ASC" | "administrator_DESC" | "completed_enough_ASC" | "completed_enough_DESC" | "createdAt_ASC" | "createdAt_DESC" | "email_ASC" | "email_DESC" | "first_name_ASC" | "first_name_DESC" | "id_ASC" | "id_DESC" | "last_name_ASC" | "last_name_DESC" | "updatedAt_ASC" | "updatedAt_DESC" | "upstream_id_ASC" | "upstream_id_DESC"
 }
 
 export interface NexusGenRootTypes {
@@ -333,6 +335,7 @@ export interface NexusGenRootTypes {
   }
   User: { // root type
     administrator: boolean; // Boolean!
+    completed_enough: boolean; // Boolean!
     createdAt: any; // DateTime!
     email: string; // String!
     first_name?: string | null; // String
@@ -402,6 +405,7 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     administrator: boolean; // Boolean!
+    completed_enough: boolean; // Boolean!
     createdAt: any; // DateTime!
     email: string; // String!
     essays: NexusGenRootTypes['Essay'][] | null; // [Essay!]

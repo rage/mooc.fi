@@ -1160,6 +1160,22 @@ export default {
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -2369,6 +2385,26 @@ export default {
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "EssayWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -4772,6 +4808,18 @@ export default {
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "completed_enough_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completed_enough_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -6934,6 +6982,16 @@ export default {
               "ofType": null
             },
             "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -7280,6 +7338,16 @@ export default {
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "EssayUpdateManyWithoutAuthorInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -8561,6 +8629,16 @@ export default {
               "ofType": null
             },
             "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -8788,6 +8866,16 @@ export default {
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "EssayCreateManyWithoutAuthorInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -9122,6 +9210,16 @@ export default {
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "EssayUpdateManyWithoutAuthorInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -10123,6 +10221,26 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "AND",
             "description": null,
             "type": {
@@ -10268,6 +10386,16 @@ export default {
           },
           {
             "name": "administrator",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -10483,6 +10611,16 @@ export default {
               "ofType": null
             },
             "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -10643,6 +10781,16 @@ export default {
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SlotUpdateOneWithoutRegisteredInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -11267,6 +11415,22 @@ export default {
           },
           {
             "name": "administrator",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completed_enough",
             "description": null,
             "args": [],
             "type": {

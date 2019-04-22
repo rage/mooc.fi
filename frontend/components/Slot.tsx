@@ -36,18 +36,20 @@ const StyledCardContent = styled(CardContent)`
   justify-content: space-around;
   align-items: center;
   padding: 16px !important;
-  h3 {
+  h4 {
     flex: 1;
   }
   & > * {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 `;
 
 const FullText = styled.div`
   color: red;
   font-weight: bold;
+  width: 90px;
+  text-align: center;
 `;
 
 const Slot = ({ slot, currentSlotId }: Props) => {
@@ -80,26 +82,28 @@ const Slot = ({ slot, currentSlotId }: Props) => {
       <StyledCard>
         <StyledCardContent>
           <Typography variant="h5" component="h4">
-            {starts.toFormat("d.M.yyyy T")} - {ends.toFormat("T")}
+            {starts.toFormat("T")} - {ends.toFormat("T")}
           </Typography>
           <div>
             {slot.registered_count}/{slot.capacity}
           </div>
-          {selected || !full ? (
-            <Button
-              onClick={() => {
-                setSubmitting(true);
-                chooseSlot();
-              }}
-              color="primary"
-              variant="contained"
-              disabled={selected || submitting}
-            >
-              {selected ? "Valittu" : "Valitse"}
-            </Button>
-          ) : (
-            <FullText>Täynnä</FullText>
-          )}
+          <div>
+            {selected || !full ? (
+              <Button
+                onClick={() => {
+                  setSubmitting(true);
+                  chooseSlot();
+                }}
+                color="primary"
+                variant="contained"
+                disabled={selected || submitting}
+              >
+                {selected ? "Valittu" : "Valitse"}
+              </Button>
+            ) : (
+              <FullText>Täynnä</FullText>
+            )}
+          </div>
         </StyledCardContent>
       </StyledCard>
     </>

@@ -9,6 +9,7 @@ type User {
   administrator: Boolean!
   slot: Slot
   essays: [Essay!]
+  completed_enough: Boolean! @default(value: "false")
 }
 
 type Slot {

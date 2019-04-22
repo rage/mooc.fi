@@ -257,6 +257,7 @@ input SlotWhereInput {
 
 type User {
   administrator: Boolean!
+  completed_enough: Boolean!
   createdAt: DateTime!
   email: String!
   essays(after: String, before: String, first: Int, last: Int, orderBy: EssayOrderByInput, skip: Int, where: EssayWhereInput): [Essay!]
@@ -271,6 +272,8 @@ type User {
 enum UserOrderByInput {
   administrator_ASC
   administrator_DESC
+  completed_enough_ASC
+  completed_enough_DESC
   createdAt_ASC
   createdAt_DESC
   email_ASC
@@ -291,6 +294,8 @@ input UserWhereInput {
   administrator: Boolean
   administrator_not: Boolean
   AND: [UserWhereInput!]
+  completed_enough: Boolean
+  completed_enough_not: Boolean
   createdAt: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime

@@ -6,6 +6,7 @@ import { useQuery } from "react-apollo-hooks";
 import { Slots } from "./__generated__/Slots";
 import { Typography } from "@material-ui/core";
 import { DateTime } from "luxon";
+import styled from "styled-components";
 
 export const SlotListQuery = gql`
   query Slots {
@@ -24,6 +25,13 @@ export const SlotListQuery = gql`
     }
   }
 `;
+
+const SlotGroupContainer = styled.div`
+  margin: 2rem 1rem;
+  h3 {
+    margin-bottom: 0.5rem;
+  }
+`
 
 export default () => {
   const { loading, error, data } = useQuery<Slots>(SlotListQuery, {
@@ -63,14 +71,14 @@ export default () => {
         että valitset ajan mahdollisimman ajoissa.
       </p>
       {Object.entries(groupedSlots).map(([group, groupSlots]) => (
-        <div>
+        <SlotGroupContainer>
           <Typography variant="h6" component="h3">
             {group}
           </Typography>
           {groupSlots.map(slot => (
             <Slot key={slot.id} slot={slot} currentSlotId={currentSlotId} />
           ))}
-        </div>
+        </SlotGroupContainer>
       ))}
     </>
   );

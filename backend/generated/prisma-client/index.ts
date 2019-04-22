@@ -251,7 +251,9 @@ export type UserOrderByInput =
   | "email_ASC"
   | "email_DESC"
   | "administrator_ASC"
-  | "administrator_DESC";
+  | "administrator_DESC"
+  | "completed_enough_ASC"
+  | "completed_enough_DESC";
 
 export type EssayOrderByInput =
   | "id_ASC"
@@ -386,6 +388,8 @@ export interface UserWhereInput {
   essays_every?: EssayWhereInput;
   essays_some?: EssayWhereInput;
   essays_none?: EssayWhereInput;
+  completed_enough?: Boolean;
+  completed_enough_not?: Boolean;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
@@ -617,6 +621,7 @@ export interface UserCreateWithoutEssaysInput {
   email: String;
   administrator: Boolean;
   slot?: SlotCreateOneWithoutRegisteredInput;
+  completed_enough?: Boolean;
 }
 
 export interface SlotCreateOneWithoutRegisteredInput {
@@ -662,6 +667,7 @@ export interface UserUpdateWithoutEssaysDataInput {
   email?: String;
   administrator?: Boolean;
   slot?: SlotUpdateOneWithoutRegisteredInput;
+  completed_enough?: Boolean;
 }
 
 export interface SlotUpdateOneWithoutRegisteredInput {
@@ -745,6 +751,7 @@ export interface UserCreateWithoutSlotInput {
   email: String;
   administrator: Boolean;
   essays?: EssayCreateManyWithoutAuthorInput;
+  completed_enough?: Boolean;
 }
 
 export interface EssayCreateManyWithoutAuthorInput {
@@ -794,6 +801,7 @@ export interface UserUpdateWithoutSlotDataInput {
   email?: String;
   administrator?: Boolean;
   essays?: EssayUpdateManyWithoutAuthorInput;
+  completed_enough?: Boolean;
 }
 
 export interface EssayUpdateManyWithoutAuthorInput {
@@ -978,6 +986,8 @@ export interface UserScalarWhereInput {
   email_not_ends_with?: String;
   administrator?: Boolean;
   administrator_not?: Boolean;
+  completed_enough?: Boolean;
+  completed_enough_not?: Boolean;
   AND?: UserScalarWhereInput[] | UserScalarWhereInput;
   OR?: UserScalarWhereInput[] | UserScalarWhereInput;
   NOT?: UserScalarWhereInput[] | UserScalarWhereInput;
@@ -994,6 +1004,7 @@ export interface UserUpdateManyDataInput {
   last_name?: String;
   email?: String;
   administrator?: Boolean;
+  completed_enough?: Boolean;
 }
 
 export interface SlotUpdateManyMutationInput {
@@ -1010,6 +1021,7 @@ export interface UserCreateInput {
   administrator: Boolean;
   slot?: SlotCreateOneWithoutRegisteredInput;
   essays?: EssayCreateManyWithoutAuthorInput;
+  completed_enough?: Boolean;
 }
 
 export interface UserUpdateInput {
@@ -1020,6 +1032,7 @@ export interface UserUpdateInput {
   administrator?: Boolean;
   slot?: SlotUpdateOneWithoutRegisteredInput;
   essays?: EssayUpdateManyWithoutAuthorInput;
+  completed_enough?: Boolean;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -1028,6 +1041,7 @@ export interface UserUpdateManyMutationInput {
   last_name?: String;
   email?: String;
   administrator?: Boolean;
+  completed_enough?: Boolean;
 }
 
 export interface EssaySubscriptionWhereInput {
@@ -1114,6 +1128,7 @@ export interface User {
   last_name?: String;
   email: String;
   administrator: Boolean;
+  completed_enough: Boolean;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
@@ -1137,6 +1152,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
       last?: Int;
     }
   ) => T;
+  completed_enough: () => Promise<Boolean>;
 }
 
 export interface UserSubscription
@@ -1162,6 +1178,7 @@ export interface UserSubscription
       last?: Int;
     }
   ) => T;
+  completed_enough: () => Promise<AsyncIterator<Boolean>>;
 }
 
 export interface Slot {
@@ -1703,6 +1720,7 @@ export interface UserPreviousValues {
   last_name?: String;
   email: String;
   administrator: Boolean;
+  completed_enough: Boolean;
 }
 
 export interface UserPreviousValuesPromise
@@ -1716,6 +1734,7 @@ export interface UserPreviousValuesPromise
   last_name: () => Promise<String>;
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
+  completed_enough: () => Promise<Boolean>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -1729,6 +1748,7 @@ export interface UserPreviousValuesSubscription
   last_name: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   administrator: () => Promise<AsyncIterator<Boolean>>;
+  completed_enough: () => Promise<AsyncIterator<Boolean>>;
 }
 
 /*

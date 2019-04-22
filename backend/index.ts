@@ -8,6 +8,17 @@ import { AuthenticationError, ForbiddenError } from "apollo-server-core";
 import TmcClient from "./services/tmc";
 import fetchUser from "./middlewares/FetchUser";
 import { wordCount } from "../util/strings";
+import * as winston from "winston";
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  defaultMeta: { service: "backend" },
+  transports: [new winston.transports.Console()]
+});
 
 const Query = prismaObjectType({
   name: "Query",
@@ -67,6 +78,8 @@ const Mutation = prismaObjectType({
           })
           .aggregate()
           .count();
+
+        console.log(ctx.user);
         if (registered_count >= slot.capacity) {
           throw new ForbiddenError("The slot is already full");
         }
@@ -182,15 +195,15 @@ const server = new GraphQLServer({
 
 server.start(
   {
+    formatParams(o) {
+      logger.info("Query");
+      return o;
+    },
     formatError: error => {
-      console.warn(error);
+      logger.warn(error);
       return error;
     },
     formatResponse: (response, query) => {
-      console.info("GraphQL query and variables", {
-        query: query.queryString,
-        vars: query.variables
-      });
       return response;
     }
   },

@@ -5,6 +5,7 @@ export interface UserInfo {
   administrator: boolean;
   user_field: UserField;
   extra_fields: ExtraFields;
+  completed_enough: boolean | undefined;
 }
 
 export interface ExtraFields {}

@@ -10,7 +10,7 @@ const tmcClient = new TmcClient(
 
 export const isSignedIn = (ctx: NextContext) => {
   const accessToken = nookies.get(ctx)["access_token"];
-  return typeof accessToken == "string"
+  return typeof accessToken == "string";
 };
 
 export const signIn = async ({
@@ -27,9 +27,12 @@ export const signIn = async ({
   return res;
 };
 
-export const signOut = async () => {
+export const signOut = async (cb: (() => any) | undefined) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  if (cb) {
+    cb();
+  }
   Router.push("/sign-in");
 };
 

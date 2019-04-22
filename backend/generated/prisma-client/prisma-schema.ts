@@ -705,6 +705,7 @@ type User {
   administrator: Boolean!
   slot: Slot
   essays(where: EssayWhereInput, orderBy: EssayOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Essay!]
+  completed_enough: Boolean!
 }
 
 type UserConnection {
@@ -721,6 +722,7 @@ input UserCreateInput {
   administrator: Boolean!
   slot: SlotCreateOneWithoutRegisteredInput
   essays: EssayCreateManyWithoutAuthorInput
+  completed_enough: Boolean
 }
 
 input UserCreateManyWithoutSlotInput {
@@ -740,6 +742,7 @@ input UserCreateWithoutEssaysInput {
   email: String!
   administrator: Boolean!
   slot: SlotCreateOneWithoutRegisteredInput
+  completed_enough: Boolean
 }
 
 input UserCreateWithoutSlotInput {
@@ -749,6 +752,7 @@ input UserCreateWithoutSlotInput {
   email: String!
   administrator: Boolean!
   essays: EssayCreateManyWithoutAuthorInput
+  completed_enough: Boolean
 }
 
 type UserEdge {
@@ -773,6 +777,8 @@ enum UserOrderByInput {
   email_DESC
   administrator_ASC
   administrator_DESC
+  completed_enough_ASC
+  completed_enough_DESC
 }
 
 type UserPreviousValues {
@@ -784,6 +790,7 @@ type UserPreviousValues {
   last_name: String
   email: String!
   administrator: Boolean!
+  completed_enough: Boolean!
 }
 
 input UserScalarWhereInput {
@@ -869,6 +876,8 @@ input UserScalarWhereInput {
   email_not_ends_with: String
   administrator: Boolean
   administrator_not: Boolean
+  completed_enough: Boolean
+  completed_enough_not: Boolean
   AND: [UserScalarWhereInput!]
   OR: [UserScalarWhereInput!]
   NOT: [UserScalarWhereInput!]
@@ -900,6 +909,7 @@ input UserUpdateInput {
   administrator: Boolean
   slot: SlotUpdateOneWithoutRegisteredInput
   essays: EssayUpdateManyWithoutAuthorInput
+  completed_enough: Boolean
 }
 
 input UserUpdateManyDataInput {
@@ -908,6 +918,7 @@ input UserUpdateManyDataInput {
   last_name: String
   email: String
   administrator: Boolean
+  completed_enough: Boolean
 }
 
 input UserUpdateManyMutationInput {
@@ -916,6 +927,7 @@ input UserUpdateManyMutationInput {
   last_name: String
   email: String
   administrator: Boolean
+  completed_enough: Boolean
 }
 
 input UserUpdateManyWithoutSlotInput {
@@ -949,6 +961,7 @@ input UserUpdateWithoutEssaysDataInput {
   email: String
   administrator: Boolean
   slot: SlotUpdateOneWithoutRegisteredInput
+  completed_enough: Boolean
 }
 
 input UserUpdateWithoutSlotDataInput {
@@ -958,6 +971,7 @@ input UserUpdateWithoutSlotDataInput {
   email: String
   administrator: Boolean
   essays: EssayUpdateManyWithoutAuthorInput
+  completed_enough: Boolean
 }
 
 input UserUpdateWithWhereUniqueWithoutSlotInput {
@@ -1063,6 +1077,8 @@ input UserWhereInput {
   essays_every: EssayWhereInput
   essays_some: EssayWhereInput
   essays_none: EssayWhereInput
+  completed_enough: Boolean
+  completed_enough_not: Boolean
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

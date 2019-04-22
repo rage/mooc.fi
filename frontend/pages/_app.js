@@ -7,10 +7,10 @@ import JssProvider from "react-jss/lib/JssProvider";
 import { ApolloProvider } from "react-apollo";
 import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
 import getPageContext from "../lib/getPageContext";
-import withApollo from "../lib/with-apollo";
 import Layout from "./_layout";
 import { isSignedIn } from "../lib/authentication";
 import LoginStateContext from "../contexes/LoginStateContext";
+import withApolloClient from "../lib/with-apollo-client";
 
 class MyApp extends App {
   constructor() {
@@ -80,4 +80,4 @@ MyApp.getInitialProps = async arg => {
   };
 };
 
-export default withApollo(MyApp);
+export default withApolloClient(MyApp);

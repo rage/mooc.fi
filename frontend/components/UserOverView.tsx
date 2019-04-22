@@ -11,6 +11,8 @@ export const UserOverViewQuery = gql`
       first_name
       last_name
       email
+      administrator
+      completed_enough
       slot {
         id
       }
