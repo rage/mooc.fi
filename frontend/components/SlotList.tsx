@@ -31,7 +31,7 @@ const SlotGroupContainer = styled.div`
   h3 {
     margin-bottom: 0.5rem;
   }
-`
+`;
 
 export default () => {
   const { loading, error, data } = useQuery<Slots>(SlotListQuery, {
@@ -66,9 +66,9 @@ export default () => {
         Näyttökoeajan valinta
       </Typography>
       <p>
-        Valitse listasta yksi sinulle sopiva näyttökoeaika. Huomaa että paikkoja
-        jokaisessa ajassa on saatavilla vain rajallisesti, joten suosittelemme
-        että valitset ajan mahdollisimman ajoissa.
+        Valitse alla olevista näyttökoeajoista sinulle parhaiten sopiva aika.
+        Huomaa, että paikkoja on rajoitetusti — valitse aikasi mahdollisimman
+        pian.
       </p>
       {Object.entries(groupedSlots).map(([group, groupSlots]) => (
         <SlotGroupContainer>

@@ -36,13 +36,11 @@ const AnswerEssays = () => {
   return (
     <div>
       <Typography variant="h4" component="h2">
-        Motivaatioesseisiin vastaaminen
+        Ennen näyttökoetta
       </Typography>
       <p>
-        Alla on muutama lyhehkö motivaatioessee. Vastaa kaikkiin alla oleviin
-        esseisiin ennen kuin tulet näyttökokeeseen. Esseen kirjoittamista ei
-        kannata stressata -- näyttökokeella on suurempi painoarvo pisteisiin.
-        Vastaa kuitenkin jokaiseen esseeseen huolella.
+        Alla on useampi esseeaihe. Kirjoita jokaiseen aiheeseen liittyvä otsikon
+        mukainen essee ennen näyttökoettasi.
       </p>
       {data.essayTopics.map(topic => (
         <AnswerEssay key={topic.id} topic={topic} />
