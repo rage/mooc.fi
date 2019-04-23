@@ -45,6 +45,16 @@ const TextFieldContainer = styled.div`
   margin-bottom: 1rem;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledCaption = styled(Typography)`
+  color: rgba(0, 0, 0, 0.54) !important;
+  padding-left: 1rem;
+`;
+
 const AnswerEssay = ({ topic }: AnswerEssayProps) => {
   const savedText: string = get(topic, "currentUserAnswer.text") || "";
   const [text, setText] = React.useState(savedText);
@@ -55,7 +65,7 @@ const AnswerEssay = ({ topic }: AnswerEssayProps) => {
       topicID: topic.id,
       text: text.trim()
     },
-    refetchQueries: [ { query: StepsQuery } ]
+    refetchQueries: [{ query: StepsQuery }]
   });
 
   const currentVersionSaved =
@@ -87,14 +97,27 @@ const AnswerEssay = ({ topic }: AnswerEssayProps) => {
             helperText={`Sanoja: ${words}`}
           />
         </TextFieldContainer>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={!acceptableLength || currentVersionSaved}
-          onClick={() => saveEssay()}
-        >
-          {currentVersionSaved ? "Tallennettu!" : "Tallenna"}
-        </Button>
+        <ButtonContainer>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!acceptableLength || currentVersionSaved}
+            onClick={() => saveEssay()}
+          >
+            {currentVersionSaved ? "Tallennettu!" : "Tallenna"}
+          </Button>
+          {currentVersionSaved && (
+            <StyledCaption variant="caption">
+              Nykyinen versio tallennettu.
+            </StyledCaption>
+          )}
+          {!acceptableLength && (
+            <StyledCaption variant="caption">
+              Muokkaa vastauksesi sanarajojen sisään mahdollistaaksesi
+              tallennuksen.
+            </StyledCaption>
+          )}
+        </ButtonContainer>
       </CardContent>
     </StyledCard>
   );

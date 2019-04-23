@@ -23,6 +23,7 @@ const TitleContainer = styled.div`
 function SignIn(props: any) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState(false);
 
   return (
     <Card>
@@ -48,7 +49,10 @@ function SignIn(props: any) {
               label="Sähköpostiosoite tai käyttäjänimi"
               fullWidth
               value={email}
-              onChange={o => setEmail(o.target.value)}
+              onChange={o => {
+                setEmail(o.target.value);
+                setError(false);
+              }}
             />
           </Row>
           <Row>
@@ -60,13 +64,21 @@ function SignIn(props: any) {
               label="Salasana"
               fullWidth
               value={password}
-              onChange={o => setPassword(o.target.value)}
+              onChange={o => {
+                setPassword(o.target.value);
+                setError(false);
+              }}
             />
           </Row>
+          {error && <Row>Virheelliset tunnukset.</Row>}
           <Button
             onClick={async e => {
               e.preventDefault();
-              await signIn({ email, password });
+              try {
+                await signIn({ email, password });
+              } catch (e) {
+                setError(true);
+              }
             }}
             type="submit"
             fullWidth

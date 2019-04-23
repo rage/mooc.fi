@@ -4,7 +4,7 @@ import Slot from "./Slot";
 import { get, groupBy } from "lodash";
 import { useQuery } from "react-apollo-hooks";
 import { Slots } from "./__generated__/Slots";
-import { Typography } from "@material-ui/core";
+import { Typography, Card, CardContent } from "@material-ui/core";
 import { DateTime } from "luxon";
 import styled from "styled-components";
 
@@ -51,6 +51,7 @@ export default () => {
   }
 
   const currentSlotId = get(data, "currentUser.slot.id");
+  const currentSlot = get(data, "currentUser.slot");
 
   const sortedSlots = data.slots.sort(
     (a, b) =>
@@ -70,6 +71,7 @@ export default () => {
         Huomaa, että paikkoja on rajoitetusti — valitse aikasi mahdollisimman
         pian.
       </p>
+
       {Object.entries(groupedSlots).map(([group, groupSlots]) => (
         <SlotGroupContainer>
           <Typography variant="h6" component="h3">
