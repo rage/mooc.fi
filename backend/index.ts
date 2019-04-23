@@ -23,10 +23,15 @@ const logger = winston.createLogger({
 const Query = prismaObjectType({
   name: "Query",
   definition(t) {
-    t.prismaFields(["user"]);
+    //t.prismaFields(["user"]); // TODO add access control
     t.list.field("users", {
       type: "User",
-      resolve: (_, args, ctx) => ctx.prisma.users()
+      resolve: (_, args, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        return ctx.prisma.users();
+      }
     });
 
     t.field("currentUser", {
@@ -158,7 +163,7 @@ const EssayTopic = prismaObjectType({
 const Slots = prismaObjectType({
   name: "Slot",
   definition(t) {
-    t.prismaFields(["*"]);
+    t.prismaFields(["id", "capacity", "starts_at", "ends_at"]);
     t.field("registered_count", {
       type: "Int",
       resolve: async (parent, args, ctx) => {

@@ -296,15 +296,10 @@ export interface NexusGenInputs {
     upstream_id_not?: number | null; // Int
     upstream_id_not_in?: number[] | null; // [Int!]
   }
-  UserWhereUniqueInput: { // input type
-    id?: string | null; // ID
-    upstream_id?: number | null; // Int
-  }
 }
 
 export interface NexusGenEnums {
   EssayOrderByInput: "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "text_ASC" | "text_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
-  UserOrderByInput: "administrator_ASC" | "administrator_DESC" | "completed_enough_ASC" | "completed_enough_DESC" | "createdAt_ASC" | "createdAt_DESC" | "email_ASC" | "email_DESC" | "first_name_ASC" | "first_name_DESC" | "id_ASC" | "id_DESC" | "last_name_ASC" | "last_name_DESC" | "updatedAt_ASC" | "updatedAt_DESC" | "upstream_id_ASC" | "upstream_id_DESC"
 }
 
 export interface NexusGenRootTypes {
@@ -327,11 +322,9 @@ export interface NexusGenRootTypes {
   Query: {};
   Slot: { // root type
     capacity: number; // Int!
-    createdAt: any; // DateTime!
     ends_at: any; // DateTime!
     id: string; // ID!
     starts_at: any; // DateTime!
-    updatedAt: any; // DateTime!
   }
   User: { // root type
     administrator: boolean; // Boolean!
@@ -357,9 +350,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   EssayWhereInput: NexusGenInputs['EssayWhereInput'];
   SlotWhereInput: NexusGenInputs['SlotWhereInput'];
   UserWhereInput: NexusGenInputs['UserWhereInput'];
-  UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
   EssayOrderByInput: NexusGenEnums['EssayOrderByInput'];
-  UserOrderByInput: NexusGenEnums['UserOrderByInput'];
 }
 
 export interface NexusGenFieldTypes {
@@ -390,18 +381,14 @@ export interface NexusGenFieldTypes {
     essayTopics: NexusGenRootTypes['EssayTopic'][]; // [EssayTopic!]!
     ownEssay: NexusGenRootTypes['Essay']; // Essay!
     slots: NexusGenRootTypes['Slot'][]; // [Slot!]!
-    user: NexusGenRootTypes['User'] | null; // User
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
   Slot: { // field return type
     capacity: number; // Int!
-    createdAt: any; // DateTime!
     ends_at: any; // DateTime!
     id: string; // ID!
-    registered: NexusGenRootTypes['User'][] | null; // [User!]
     registered_count: number; // Int!
     starts_at: any; // DateTime!
-    updatedAt: any; // DateTime!
   }
   User: { // field return type
     administrator: boolean; // Boolean!
@@ -435,20 +422,6 @@ export interface NexusGenArgTypes {
     ownEssay: { // args
       id?: string | null; // ID
     }
-    user: { // args
-      where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
-    }
-  }
-  Slot: {
-    registered: { // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy?: NexusGenEnums['UserOrderByInput'] | null; // UserOrderByInput
-      skip?: number | null; // Int
-      where?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
-    }
   }
   User: {
     essays: { // args
@@ -470,9 +443,9 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Essay" | "EssayTopic" | "Mutation" | "Query" | "Slot" | "User";
 
-export type NexusGenInputNames = "EssayTopicWhereInput" | "EssayWhereInput" | "SlotWhereInput" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "EssayTopicWhereInput" | "EssayWhereInput" | "SlotWhereInput" | "UserWhereInput";
 
-export type NexusGenEnumNames = "EssayOrderByInput" | "UserOrderByInput";
+export type NexusGenEnumNames = "EssayOrderByInput";
 
 export type NexusGenInterfaceNames = never;
 

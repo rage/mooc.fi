@@ -177,19 +177,15 @@ type Query {
   essayTopics: [EssayTopic!]!
   ownEssay(id: ID): Essay!
   slots: [Slot!]!
-  user(where: UserWhereUniqueInput!): User
   users: [User!]!
 }
 
 type Slot {
   capacity: Int!
-  createdAt: DateTime!
   ends_at: DateTime!
   id: ID!
-  registered(after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput, skip: Int, where: UserWhereInput): [User!]
   registered_count: Int!
   starts_at: DateTime!
-  updatedAt: DateTime!
 }
 
 input SlotWhereInput {
@@ -267,27 +263,6 @@ type User {
   slot: Slot
   updatedAt: DateTime!
   upstream_id: Int!
-}
-
-enum UserOrderByInput {
-  administrator_ASC
-  administrator_DESC
-  completed_enough_ASC
-  completed_enough_DESC
-  createdAt_ASC
-  createdAt_DESC
-  email_ASC
-  email_DESC
-  first_name_ASC
-  first_name_DESC
-  id_ASC
-  id_DESC
-  last_name_ASC
-  last_name_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  upstream_id_ASC
-  upstream_id_DESC
 }
 
 input UserWhereInput {
@@ -382,9 +357,4 @@ input UserWhereInput {
   upstream_id_lte: Int
   upstream_id_not: Int
   upstream_id_not_in: [Int!]
-}
-
-input UserWhereUniqueInput {
-  id: ID
-  upstream_id: Int
 }
