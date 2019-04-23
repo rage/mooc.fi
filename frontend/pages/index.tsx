@@ -49,10 +49,6 @@ function Home() {
   const canRegister =
     data.currentUser.completed_enough || data.currentUser.administrator;
 
-  if (!data.currentUser.administrator) {
-    return <div>Ilmoittautuminen ei ole vielä käynnissä.</div>;
-  }
-
   return (
     <div>
       <Typography variant="h3" component="h1">

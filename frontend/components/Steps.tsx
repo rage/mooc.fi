@@ -91,7 +91,7 @@ const Steps = () => {
       <StyledCard>
         <StyledCardContent>
           Olet kirjoittanut {get(data, "currentUser.essays.length")}/
-          {get(data, "essayTopics.length")} pakollisista motivaatioessistä.{" "}
+          {get(data, "essayTopics.length")} pakollisista motivaatioesseistä.{" "}
           {!essaysComplete &&
             "Huomaathan kirjoittaa nämä kaikki ennen valitsemaasi näyttökoeaikaa."}
         </StyledCardContent>
