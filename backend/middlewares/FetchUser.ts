@@ -31,28 +31,11 @@ const fetchUser = async (resolve, root, args, context, info) => {
     upstream_id: details.id,
     completed_enough: details.completed_enough
   }
-  prisma.upsertUser({
+  context.user = await prisma.upsertUser({
     where: { upstream_id: id },
     create: prismaDetails,
     update: prismaDetails
   });
-  const users = await prisma.users({
-    where: { upstream_id: id }
-  });
-  if (users.length > 1) {
-    return new AuthenticationError("Could not match to user");
-  }
-  if (users.length == 0) {
-    context.user = await prisma.createUser({
-      administrator: details.administrator,
-      email: details.email.trim(),
-      first_name: details.user_field.first_name.trim(),
-      last_name: details.user_field.last_name.trim(),
-      upstream_id: details.id
-    });
-  } else {
-    context.user = users[0];
-  }
 
   const result = await resolve(root, args, context, info);
   return result;
