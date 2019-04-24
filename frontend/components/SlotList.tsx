@@ -59,7 +59,7 @@ export default () => {
       DateTime.fromISO(b.starts_at).toMillis()
   );
   const groupedSlots = groupBy(sortedSlots, o =>
-    DateTime.fromISO(o.starts_at).toFormat("d.M.yyyy")
+    DateTime.fromISO(o.starts_at).setZone("Europe/Helsinki").toFormat("d.M.yyyy")
   );
   return (
     <>

@@ -53,6 +53,10 @@ const Steps = () => {
   }
 
   const currentSlot = get(data, "currentUser.slot");
+  let currentSlotTime = null;
+  if (currentSlot) {
+    currentSlotTime = DateTime.fromISO(currentSlot.starts_at).setZone("Europe/Helsinki")
+  }
 
   const essaysComplete =
     get(data, "currentUser.essays.length") === get(data, "essayTopics.length");
@@ -78,10 +82,10 @@ const Steps = () => {
       </StyledCard>
       <StyledCard>
         <StyledCardContent>
-          {currentSlot ? (
+          {currentSlotTime ? (
             <div>
               Olet valinnut ajan{" "}
-              {DateTime.fromISO(currentSlot.starts_at).toFormat("d.M.yyyy T")}
+              {currentSlotTime.toFormat("d.M.yyyy T")} (UTC{currentSlotTime.toFormat("Z")})
             </div>
           ) : (
             <div>Et ole vielä valinnut aikaa</div>

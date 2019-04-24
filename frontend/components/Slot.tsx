@@ -53,8 +53,8 @@ const FullText = styled.div`
 `;
 
 const Slot = ({ slot, currentSlotId }: Props) => {
-  const starts = DateTime.fromISO(slot.starts_at);
-  const ends = DateTime.fromISO(slot.ends_at);
+  const starts = DateTime.fromISO(slot.starts_at).setZone("Europe/Helsinki");
+  const ends = DateTime.fromISO(slot.ends_at).setZone("Europe/Helsinki");
   const selected = slot.id === currentSlotId;
   const full = slot.registered_count >= slot.capacity;
   const [submitting, setSubmitting] = React.useState(false);
