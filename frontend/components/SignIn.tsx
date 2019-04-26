@@ -37,23 +37,6 @@ function SignIn(props: any) {
             Kirjaudu sisään
           </Typography>
         </TitleContainer>
-        <p>
-          Kirjaudu sisään samoilla MOOC.fi tunnuksilla, joita olet käyttänyt
-          Ohjelmoinnin MOOC -kurssilla.
-        </p>
-        <p>
-          Huom! Varmista ennen kun kirjaudut sisään, että olet syöttänyt
-          etunimesi ja sukunimesi oikein kurssin profiilissa:{" "}
-          <a
-            href="https://ohjelmointi-19.mooc.fi/profile"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://ohjelmointi-19.mooc.fi/profile
-          </a>
-          . Jos päivität tietojasi tuolla, muista painaa "Tallenna"-nappia sivun
-          alareunasta.
-        </p>
         <form>
           <Row>
             <TextField

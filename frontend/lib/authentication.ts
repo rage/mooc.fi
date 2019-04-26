@@ -33,7 +33,7 @@ export const signIn = async ({
     throw new Error("Etunimi tai sukunimi puuttuu.")
   }
   document.cookie = `access_token=${res.accessToken}`;
-  Router.push("/");
+  Router.push("/register-completion");
   return res;
 };
 

@@ -16,7 +16,7 @@ const TopBar = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" color="inherit">
-          Näyttökoe
+          MOOC Points
         </Typography>
         <EmptySpace />
         {loggedIn && (
@@ -26,7 +26,7 @@ const TopBar = () => {
               signOut(client);
             }}
           >
-            Kirjaudu ulos
+            Log out
           </Button>
         )}
       </Toolbar>

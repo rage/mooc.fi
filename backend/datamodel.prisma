@@ -7,39 +7,6 @@ type User {
   last_name: String
   email: String!
   administrator: Boolean!
-  slot: Slot
-  essays: [Essay!]
   completed_enough: Boolean! @default(value: "false")
 }
 
-type Slot {
-  id: ID! @unique
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-
-  capacity: Int!
-  registered: [User!]
-  starts_at: DateTime!
-  ends_at: DateTime!
-}
-
-type Essay {
-  id: ID! @unique
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-
-  text: String!
-  author: User!
-  topic: EssayTopic!
-}
-
-type EssayTopic {
-  id: ID! @unique
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-
-  title: String!
-  description: String!
-  min_words: Int!
-  max_words: Int!
-}

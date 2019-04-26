@@ -11,321 +11,13 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  EssayTopicWhereInput: { // input type
-    AND?: NexusGenInputs['EssayTopicWhereInput'][] | null; // [EssayTopicWhereInput!]
-    createdAt?: any | null; // DateTime
-    createdAt_gt?: any | null; // DateTime
-    createdAt_gte?: any | null; // DateTime
-    createdAt_in?: any[] | null; // [DateTime!]
-    createdAt_lt?: any | null; // DateTime
-    createdAt_lte?: any | null; // DateTime
-    createdAt_not?: any | null; // DateTime
-    createdAt_not_in?: any[] | null; // [DateTime!]
-    description?: string | null; // String
-    description_contains?: string | null; // String
-    description_ends_with?: string | null; // String
-    description_gt?: string | null; // String
-    description_gte?: string | null; // String
-    description_in?: string[] | null; // [String!]
-    description_lt?: string | null; // String
-    description_lte?: string | null; // String
-    description_not?: string | null; // String
-    description_not_contains?: string | null; // String
-    description_not_ends_with?: string | null; // String
-    description_not_in?: string[] | null; // [String!]
-    description_not_starts_with?: string | null; // String
-    description_starts_with?: string | null; // String
-    id?: string | null; // ID
-    id_contains?: string | null; // ID
-    id_ends_with?: string | null; // ID
-    id_gt?: string | null; // ID
-    id_gte?: string | null; // ID
-    id_in?: string[] | null; // [ID!]
-    id_lt?: string | null; // ID
-    id_lte?: string | null; // ID
-    id_not?: string | null; // ID
-    id_not_contains?: string | null; // ID
-    id_not_ends_with?: string | null; // ID
-    id_not_in?: string[] | null; // [ID!]
-    id_not_starts_with?: string | null; // ID
-    id_starts_with?: string | null; // ID
-    max_words?: number | null; // Int
-    max_words_gt?: number | null; // Int
-    max_words_gte?: number | null; // Int
-    max_words_in?: number[] | null; // [Int!]
-    max_words_lt?: number | null; // Int
-    max_words_lte?: number | null; // Int
-    max_words_not?: number | null; // Int
-    max_words_not_in?: number[] | null; // [Int!]
-    min_words?: number | null; // Int
-    min_words_gt?: number | null; // Int
-    min_words_gte?: number | null; // Int
-    min_words_in?: number[] | null; // [Int!]
-    min_words_lt?: number | null; // Int
-    min_words_lte?: number | null; // Int
-    min_words_not?: number | null; // Int
-    min_words_not_in?: number[] | null; // [Int!]
-    NOT?: NexusGenInputs['EssayTopicWhereInput'][] | null; // [EssayTopicWhereInput!]
-    OR?: NexusGenInputs['EssayTopicWhereInput'][] | null; // [EssayTopicWhereInput!]
-    title?: string | null; // String
-    title_contains?: string | null; // String
-    title_ends_with?: string | null; // String
-    title_gt?: string | null; // String
-    title_gte?: string | null; // String
-    title_in?: string[] | null; // [String!]
-    title_lt?: string | null; // String
-    title_lte?: string | null; // String
-    title_not?: string | null; // String
-    title_not_contains?: string | null; // String
-    title_not_ends_with?: string | null; // String
-    title_not_in?: string[] | null; // [String!]
-    title_not_starts_with?: string | null; // String
-    title_starts_with?: string | null; // String
-    updatedAt?: any | null; // DateTime
-    updatedAt_gt?: any | null; // DateTime
-    updatedAt_gte?: any | null; // DateTime
-    updatedAt_in?: any[] | null; // [DateTime!]
-    updatedAt_lt?: any | null; // DateTime
-    updatedAt_lte?: any | null; // DateTime
-    updatedAt_not?: any | null; // DateTime
-    updatedAt_not_in?: any[] | null; // [DateTime!]
-  }
-  EssayWhereInput: { // input type
-    AND?: NexusGenInputs['EssayWhereInput'][] | null; // [EssayWhereInput!]
-    author?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
-    createdAt?: any | null; // DateTime
-    createdAt_gt?: any | null; // DateTime
-    createdAt_gte?: any | null; // DateTime
-    createdAt_in?: any[] | null; // [DateTime!]
-    createdAt_lt?: any | null; // DateTime
-    createdAt_lte?: any | null; // DateTime
-    createdAt_not?: any | null; // DateTime
-    createdAt_not_in?: any[] | null; // [DateTime!]
-    id?: string | null; // ID
-    id_contains?: string | null; // ID
-    id_ends_with?: string | null; // ID
-    id_gt?: string | null; // ID
-    id_gte?: string | null; // ID
-    id_in?: string[] | null; // [ID!]
-    id_lt?: string | null; // ID
-    id_lte?: string | null; // ID
-    id_not?: string | null; // ID
-    id_not_contains?: string | null; // ID
-    id_not_ends_with?: string | null; // ID
-    id_not_in?: string[] | null; // [ID!]
-    id_not_starts_with?: string | null; // ID
-    id_starts_with?: string | null; // ID
-    NOT?: NexusGenInputs['EssayWhereInput'][] | null; // [EssayWhereInput!]
-    OR?: NexusGenInputs['EssayWhereInput'][] | null; // [EssayWhereInput!]
-    text?: string | null; // String
-    text_contains?: string | null; // String
-    text_ends_with?: string | null; // String
-    text_gt?: string | null; // String
-    text_gte?: string | null; // String
-    text_in?: string[] | null; // [String!]
-    text_lt?: string | null; // String
-    text_lte?: string | null; // String
-    text_not?: string | null; // String
-    text_not_contains?: string | null; // String
-    text_not_ends_with?: string | null; // String
-    text_not_in?: string[] | null; // [String!]
-    text_not_starts_with?: string | null; // String
-    text_starts_with?: string | null; // String
-    topic?: NexusGenInputs['EssayTopicWhereInput'] | null; // EssayTopicWhereInput
-    updatedAt?: any | null; // DateTime
-    updatedAt_gt?: any | null; // DateTime
-    updatedAt_gte?: any | null; // DateTime
-    updatedAt_in?: any[] | null; // [DateTime!]
-    updatedAt_lt?: any | null; // DateTime
-    updatedAt_lte?: any | null; // DateTime
-    updatedAt_not?: any | null; // DateTime
-    updatedAt_not_in?: any[] | null; // [DateTime!]
-  }
-  SlotWhereInput: { // input type
-    AND?: NexusGenInputs['SlotWhereInput'][] | null; // [SlotWhereInput!]
-    capacity?: number | null; // Int
-    capacity_gt?: number | null; // Int
-    capacity_gte?: number | null; // Int
-    capacity_in?: number[] | null; // [Int!]
-    capacity_lt?: number | null; // Int
-    capacity_lte?: number | null; // Int
-    capacity_not?: number | null; // Int
-    capacity_not_in?: number[] | null; // [Int!]
-    createdAt?: any | null; // DateTime
-    createdAt_gt?: any | null; // DateTime
-    createdAt_gte?: any | null; // DateTime
-    createdAt_in?: any[] | null; // [DateTime!]
-    createdAt_lt?: any | null; // DateTime
-    createdAt_lte?: any | null; // DateTime
-    createdAt_not?: any | null; // DateTime
-    createdAt_not_in?: any[] | null; // [DateTime!]
-    ends_at?: any | null; // DateTime
-    ends_at_gt?: any | null; // DateTime
-    ends_at_gte?: any | null; // DateTime
-    ends_at_in?: any[] | null; // [DateTime!]
-    ends_at_lt?: any | null; // DateTime
-    ends_at_lte?: any | null; // DateTime
-    ends_at_not?: any | null; // DateTime
-    ends_at_not_in?: any[] | null; // [DateTime!]
-    id?: string | null; // ID
-    id_contains?: string | null; // ID
-    id_ends_with?: string | null; // ID
-    id_gt?: string | null; // ID
-    id_gte?: string | null; // ID
-    id_in?: string[] | null; // [ID!]
-    id_lt?: string | null; // ID
-    id_lte?: string | null; // ID
-    id_not?: string | null; // ID
-    id_not_contains?: string | null; // ID
-    id_not_ends_with?: string | null; // ID
-    id_not_in?: string[] | null; // [ID!]
-    id_not_starts_with?: string | null; // ID
-    id_starts_with?: string | null; // ID
-    NOT?: NexusGenInputs['SlotWhereInput'][] | null; // [SlotWhereInput!]
-    OR?: NexusGenInputs['SlotWhereInput'][] | null; // [SlotWhereInput!]
-    registered_every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
-    registered_none?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
-    registered_some?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
-    starts_at?: any | null; // DateTime
-    starts_at_gt?: any | null; // DateTime
-    starts_at_gte?: any | null; // DateTime
-    starts_at_in?: any[] | null; // [DateTime!]
-    starts_at_lt?: any | null; // DateTime
-    starts_at_lte?: any | null; // DateTime
-    starts_at_not?: any | null; // DateTime
-    starts_at_not_in?: any[] | null; // [DateTime!]
-    updatedAt?: any | null; // DateTime
-    updatedAt_gt?: any | null; // DateTime
-    updatedAt_gte?: any | null; // DateTime
-    updatedAt_in?: any[] | null; // [DateTime!]
-    updatedAt_lt?: any | null; // DateTime
-    updatedAt_lte?: any | null; // DateTime
-    updatedAt_not?: any | null; // DateTime
-    updatedAt_not_in?: any[] | null; // [DateTime!]
-  }
-  UserWhereInput: { // input type
-    administrator?: boolean | null; // Boolean
-    administrator_not?: boolean | null; // Boolean
-    AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    completed_enough?: boolean | null; // Boolean
-    completed_enough_not?: boolean | null; // Boolean
-    createdAt?: any | null; // DateTime
-    createdAt_gt?: any | null; // DateTime
-    createdAt_gte?: any | null; // DateTime
-    createdAt_in?: any[] | null; // [DateTime!]
-    createdAt_lt?: any | null; // DateTime
-    createdAt_lte?: any | null; // DateTime
-    createdAt_not?: any | null; // DateTime
-    createdAt_not_in?: any[] | null; // [DateTime!]
-    email?: string | null; // String
-    email_contains?: string | null; // String
-    email_ends_with?: string | null; // String
-    email_gt?: string | null; // String
-    email_gte?: string | null; // String
-    email_in?: string[] | null; // [String!]
-    email_lt?: string | null; // String
-    email_lte?: string | null; // String
-    email_not?: string | null; // String
-    email_not_contains?: string | null; // String
-    email_not_ends_with?: string | null; // String
-    email_not_in?: string[] | null; // [String!]
-    email_not_starts_with?: string | null; // String
-    email_starts_with?: string | null; // String
-    essays_every?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
-    essays_none?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
-    essays_some?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
-    first_name?: string | null; // String
-    first_name_contains?: string | null; // String
-    first_name_ends_with?: string | null; // String
-    first_name_gt?: string | null; // String
-    first_name_gte?: string | null; // String
-    first_name_in?: string[] | null; // [String!]
-    first_name_lt?: string | null; // String
-    first_name_lte?: string | null; // String
-    first_name_not?: string | null; // String
-    first_name_not_contains?: string | null; // String
-    first_name_not_ends_with?: string | null; // String
-    first_name_not_in?: string[] | null; // [String!]
-    first_name_not_starts_with?: string | null; // String
-    first_name_starts_with?: string | null; // String
-    id?: string | null; // ID
-    id_contains?: string | null; // ID
-    id_ends_with?: string | null; // ID
-    id_gt?: string | null; // ID
-    id_gte?: string | null; // ID
-    id_in?: string[] | null; // [ID!]
-    id_lt?: string | null; // ID
-    id_lte?: string | null; // ID
-    id_not?: string | null; // ID
-    id_not_contains?: string | null; // ID
-    id_not_ends_with?: string | null; // ID
-    id_not_in?: string[] | null; // [ID!]
-    id_not_starts_with?: string | null; // ID
-    id_starts_with?: string | null; // ID
-    last_name?: string | null; // String
-    last_name_contains?: string | null; // String
-    last_name_ends_with?: string | null; // String
-    last_name_gt?: string | null; // String
-    last_name_gte?: string | null; // String
-    last_name_in?: string[] | null; // [String!]
-    last_name_lt?: string | null; // String
-    last_name_lte?: string | null; // String
-    last_name_not?: string | null; // String
-    last_name_not_contains?: string | null; // String
-    last_name_not_ends_with?: string | null; // String
-    last_name_not_in?: string[] | null; // [String!]
-    last_name_not_starts_with?: string | null; // String
-    last_name_starts_with?: string | null; // String
-    NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    slot?: NexusGenInputs['SlotWhereInput'] | null; // SlotWhereInput
-    updatedAt?: any | null; // DateTime
-    updatedAt_gt?: any | null; // DateTime
-    updatedAt_gte?: any | null; // DateTime
-    updatedAt_in?: any[] | null; // [DateTime!]
-    updatedAt_lt?: any | null; // DateTime
-    updatedAt_lte?: any | null; // DateTime
-    updatedAt_not?: any | null; // DateTime
-    updatedAt_not_in?: any[] | null; // [DateTime!]
-    upstream_id?: number | null; // Int
-    upstream_id_gt?: number | null; // Int
-    upstream_id_gte?: number | null; // Int
-    upstream_id_in?: number[] | null; // [Int!]
-    upstream_id_lt?: number | null; // Int
-    upstream_id_lte?: number | null; // Int
-    upstream_id_not?: number | null; // Int
-    upstream_id_not_in?: number[] | null; // [Int!]
-  }
 }
 
 export interface NexusGenEnums {
-  EssayOrderByInput: "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "text_ASC" | "text_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
 }
 
 export interface NexusGenRootTypes {
-  Essay: { // root type
-    createdAt: any; // DateTime!
-    id: string; // ID!
-    text: string; // String!
-    updatedAt: any; // DateTime!
-  }
-  EssayTopic: { // root type
-    createdAt: any; // DateTime!
-    description: string; // String!
-    id: string; // ID!
-    max_words: number; // Int!
-    min_words: number; // Int!
-    title: string; // String!
-    updatedAt: any; // DateTime!
-  }
-  Mutation: {};
   Query: {};
-  Slot: { // root type
-    capacity: number; // Int!
-    ends_at: any; // DateTime!
-    id: string; // ID!
-    starts_at: any; // DateTime!
-  }
   User: { // root type
     administrator: boolean; // Boolean!
     completed_enough: boolean; // Boolean!
@@ -346,92 +38,30 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  EssayTopicWhereInput: NexusGenInputs['EssayTopicWhereInput'];
-  EssayWhereInput: NexusGenInputs['EssayWhereInput'];
-  SlotWhereInput: NexusGenInputs['SlotWhereInput'];
-  UserWhereInput: NexusGenInputs['UserWhereInput'];
-  EssayOrderByInput: NexusGenEnums['EssayOrderByInput'];
 }
 
 export interface NexusGenFieldTypes {
-  Essay: { // field return type
-    author: NexusGenRootTypes['User']; // User!
-    createdAt: any; // DateTime!
-    id: string; // ID!
-    text: string; // String!
-    topic: NexusGenRootTypes['EssayTopic']; // EssayTopic!
-    updatedAt: any; // DateTime!
-  }
-  EssayTopic: { // field return type
-    createdAt: any; // DateTime!
-    currentUserAnswer: NexusGenRootTypes['Essay'] | null; // Essay
-    description: string; // String!
-    id: string; // ID!
-    max_words: number; // Int!
-    min_words: number; // Int!
-    title: string; // String!
-    updatedAt: any; // DateTime!
-  }
-  Mutation: { // field return type
-    chooseSlot: NexusGenRootTypes['User']; // User!
-    saveEssay: NexusGenRootTypes['EssayTopic']; // EssayTopic!
-  }
   Query: { // field return type
     currentUser: NexusGenRootTypes['User']; // User!
-    essayTopics: NexusGenRootTypes['EssayTopic'][]; // [EssayTopic!]!
-    ownEssay: NexusGenRootTypes['Essay']; // Essay!
-    slots: NexusGenRootTypes['Slot'][]; // [Slot!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
-  }
-  Slot: { // field return type
-    capacity: number; // Int!
-    ends_at: any; // DateTime!
-    id: string; // ID!
-    registered_count: number; // Int!
-    starts_at: any; // DateTime!
   }
   User: { // field return type
     administrator: boolean; // Boolean!
     completed_enough: boolean; // Boolean!
     createdAt: any; // DateTime!
     email: string; // String!
-    essays: NexusGenRootTypes['Essay'][] | null; // [Essay!]
     first_name: string | null; // String
     id: string; // ID!
     last_name: string | null; // String
-    slot: NexusGenRootTypes['Slot'] | null; // Slot
     updatedAt: any; // DateTime!
     upstream_id: number; // Int!
   }
 }
 
 export interface NexusGenArgTypes {
-  Mutation: {
-    chooseSlot: { // args
-      id?: string | null; // ID
-    }
-    saveEssay: { // args
-      text?: string | null; // String
-      topicId?: string | null; // ID
-    }
-  }
   Query: {
     currentUser: { // args
       email?: string | null; // String
-    }
-    ownEssay: { // args
-      id?: string | null; // ID
-    }
-  }
-  User: {
-    essays: { // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy?: NexusGenEnums['EssayOrderByInput'] | null; // EssayOrderByInput
-      skip?: number | null; // Int
-      where?: NexusGenInputs['EssayWhereInput'] | null; // EssayWhereInput
     }
   }
 }
@@ -441,11 +71,11 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Essay" | "EssayTopic" | "Mutation" | "Query" | "Slot" | "User";
+export type NexusGenObjectNames = "Query" | "User";
 
-export type NexusGenInputNames = "EssayTopicWhereInput" | "EssayWhereInput" | "SlotWhereInput" | "UserWhereInput";
+export type NexusGenInputNames = never;
 
-export type NexusGenEnumNames = "EssayOrderByInput";
+export type NexusGenEnumNames = never;
 
 export type NexusGenInterfaceNames = never;
 

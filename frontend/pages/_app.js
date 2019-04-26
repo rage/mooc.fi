@@ -31,7 +31,7 @@ class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>Näyttökoe</title>
+          <title>Points</title>
         </Head>
         {/* Wrap every page in Jss and Theme providers */}
         <JssProvider
