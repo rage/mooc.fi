@@ -20,6 +20,7 @@
     "axios": "^0.18.0",
     "graphql": "^14.2.1",
     "graphql-yoga": "^1.17.4",
+    "next-i18next": "^0.37.0",
     "nexus": "^0.11.6",
     "nexus-prisma": "^0.3.5",
     "prisma": "^1.30.2",

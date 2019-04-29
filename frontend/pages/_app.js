@@ -1,9 +1,10 @@
 import React from "react";
 import App, { Container } from "next/app";
+import NextI18Next from '../i18n'
 import Head from "next/head";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import JssProvider from "react-jss/lib/JssProvider";
+import JssProvider from "react-jss/lib/JssProvider"
 import { ApolloProvider } from "react-apollo";
 import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
 import getPageContext from "../lib/getPageContext";
@@ -80,4 +81,4 @@ MyApp.getInitialProps = async arg => {
   };
 };
 
-export default withApolloClient(MyApp);
+export default withApolloClient(NextI18Next.appWithTranslation(MyApp));

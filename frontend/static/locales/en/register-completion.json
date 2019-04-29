@@ -1,0 +1,13 @@
+{
+    "h1": "Registering credits",
+    "course-title": "You have completed the course Elements of Ai",
+    "course-points": "If you have a Finnish social security number, you get 2 credits through the Open university of Helsinki. Registering for credits is free.",
+    "course-register": "You must now register to the Open university of Helsinki in order for us to register your credits.",
+    "course-note": "Note that you must fill the e-mail **** to the form in part 1, or your credits cannot be registered.",
+    "instructions-title": "Toimi näin:",
+    "instructions1": "1. Täytä lomake täällä",
+    "instructions2": "2. Täytä lomakkeen kohtaan: 'Käyttämäsi sähköpostiosoite MOOC-kurssilla' sähköpostiosoitteeksi {data.currentUser.email} ilman lainausmerkkejä.",
+    "instructions3": "3. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, muista rastittaa 'Henkilötietojen käyttö' -laatikon alta kohta 'Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan).'",
+    "instructions4": "4. Opintosuoritus kirjataan kuuden viikon sisään lomakkeen täyttämisestä.",
+    "instructions-note-HY": "HUOM! Jos olet Helsingin yliopiston perustutkinto-opiskelija, nämä ilmoittautumisohjeet koskevat myös sinua. Vain niiden opiskelijoiden suoritukset rekisteröidään, jotka ilmoittautuvat kurssille Avoimen yliopiston kautta."
+  }
