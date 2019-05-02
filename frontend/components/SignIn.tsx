@@ -6,6 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import { Card, CardContent, TextField } from "@material-ui/core";
 import styled from "styled-components";
 import { signIn } from "../lib/authentication";
+import NextI18Next from '../i18n';
+
 
 const Row = styled.div`
   margin-bottom: 1.5rem;
@@ -20,7 +22,8 @@ const TitleContainer = styled.div`
   }
 `;
 
-function SignIn(props: any) {
+function SignIn(t: Function) {
+  console.log(t)
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
@@ -33,8 +36,8 @@ function SignIn(props: any) {
           <Avatar>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Kirjaudu sisään
+          <Typography component="h2" variant="h2" gutterBottom={true}>
+          <NextI18Next.Trans i18nKey='login'/>
           </Typography>
         </TitleContainer>
         <form>
@@ -67,7 +70,7 @@ function SignIn(props: any) {
               }}
             />
           </Row>
-          {error && <Row>Kirjautuminen ei onnistunut. {errorMessage}</Row>}
+          {error && <Row> <NextI18Next.Trans i18nKey='error'/> {errorMessage}</Row>}
           <Button
             onClick={async e => {
               e.preventDefault();
@@ -83,7 +86,7 @@ function SignIn(props: any) {
             variant="contained"
             color="primary"
           >
-            Kirjaudu sisään
+            <NextI18Next.Trans i18nKey='login'/>
           </Button>
         </form>
       </CardContent>
@@ -91,4 +94,4 @@ function SignIn(props: any) {
   );
 }
 
-export default SignIn;
+export default NextI18Next.withNamespaces('common')(SignIn);

@@ -15,7 +15,7 @@ const TopBar = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" color="inherit">
+        <Typography variant="h1" color="inherit" gutterBottom={true}>
           MOOC Points
         </Typography>
         <EmptySpace />

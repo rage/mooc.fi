@@ -1,6 +1,5 @@
 import React from "react";
 import App, { Container } from "next/app";
-import NextI18Next from '../i18n'
 import Head from "next/head";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +11,8 @@ import Layout from "./_layout";
 import { isSignedIn } from "../lib/authentication";
 import LoginStateContext from "../contexes/LoginStateContext";
 import withApolloClient from "../lib/with-apollo-client";
+import NextI18Next from '../i18n'
+
 
 class MyApp extends App {
   constructor() {
@@ -29,6 +30,7 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps, apollo } = this.props;
+    const { i18n, initialI18nStore, initialLanguage } = pageProps || {};
     return (
       <Container>
         <Head>
@@ -51,11 +53,13 @@ class MyApp extends App {
                 to render collected styles on server-side. */}
             <ApolloProvider client={apollo}>
               <ApolloHooksProvider client={apollo}>
+              
                 <LoginStateContext.Provider value={this.props.signedIn}>
                   <Layout>
                     <Component pageContext={this.pageContext} {...pageProps} />
                   </Layout>
                 </LoginStateContext.Provider>
+
               </ApolloHooksProvider>
             </ApolloProvider>
           </MuiThemeProvider>

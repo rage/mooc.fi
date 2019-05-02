@@ -1,0 +1,8 @@
+{
+    "login": "Kirjaudu sisään",
+    "logout": "Kirjaudu ulos",
+    "forgottenpw": "Unohditko salasanasi?",
+    "error": "Kirjautuminen epäonnistui",
+    "password": "Salasana",
+    "username": "Käyttäjätunnus tai sähköpostiosoite"
+}
