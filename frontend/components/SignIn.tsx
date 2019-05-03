@@ -30,7 +30,6 @@ const TitleContainer = styled.div`
 `;
 
 function SignIn(t: Function) {
-  console.log(t)
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
@@ -107,7 +106,6 @@ function SignIn(t: Function) {
             fullWidth
             variant="contained"
             color="primary"
-            role="formsubmit"
           >
             <NextI18Next.Trans i18nKey='login'/>
           </Button>

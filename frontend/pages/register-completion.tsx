@@ -1,11 +1,14 @@
 import * as React from "react";
 import { ApolloClient, gql } from "apollo-boost";
 import { NextContext } from "next";
-import { isSignedIn } from "../lib/authentication"
+import { isSignedIn, userDetails } from "../lib/authentication"
 import redirect from "../lib/redirect";
 import { useQuery } from "react-apollo-hooks";
 import { UserOverView as UserOverViewData } from "./__generated__/UserOverView";
-import RegisterCompletionText from "../components/RegisterCompletionText"
+import { Typography, Card, CardContent } from "@material-ui/core";
+import RegisterCompletionText from '../components/RegisterCompletionText'
+import NextI18Next from '../i18n';
+
 
 
 export const UserOverViewQuery = gql`
@@ -22,7 +25,7 @@ export const UserOverViewQuery = gql`
 
 
 
-function RegisterCompletion() {
+const RegisterCompletion = ({ t }) => {
     const { loading, error, data } = useQuery<UserOverViewData>(
         UserOverViewQuery
       );
@@ -33,8 +36,17 @@ function RegisterCompletion() {
         return <div>Loading</div>;
     }
     return (
-     <div>
-       <RegisterCompletionText email={data.currentUser.email} />
+     <div role='Main'>
+      <Typography variant="h2"  gutterBottom={true}>
+        {t('title')}
+      </Typography>
+      <Typography variant="body1"  paragraph>
+        {t('intro')}
+      </Typography>
+      <Typography variant="body1"  paragraph>
+        {t('donow')}
+      </Typography>
+      <RegisterCompletionText email={data.currentUser.email} />
      </div>
     );
   }
@@ -43,7 +55,9 @@ function RegisterCompletion() {
     if (!isSignedIn(context)) {
       redirect(context, "/sign-in");
     }
-    return {};
+    return {
+      namespacesRequired: ['register-completion'],
+    };
   };
 
-  export default RegisterCompletion
+  export default NextI18Next.withNamespaces('register-completion')(RegisterCompletion)

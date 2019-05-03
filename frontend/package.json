@@ -31,6 +31,7 @@
     "graphql-tag": "^2.10.1",
     "i18next": "^15.1.0",
     "i18next-browser-languagedetector": "^3.0.1",
+    "i18next-fluent": "0.0.3",
     "i18next-xhr-backend": "^2.0.1",
     "intl": "^1.2.5",
     "luxon": "^1.12.1",
