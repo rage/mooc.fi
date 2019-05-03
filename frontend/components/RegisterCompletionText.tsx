@@ -16,12 +16,12 @@ class RegisterCompletionText extends Component<RegProps> {
     render() {
      
       return(
+        <div role='main'>
         <div>
-        <div>
-              <Typography variant="h3" component="h1" gutterBottom={true}>
-                Otsikko
+              <Typography variant="h2"  gutterBottom={true}>
+                Rekisteröi Kurssisuoritus
               </Typography>
-            <Typography variant="h6" gutterBottom={true}>
+            <Typography variant="body1" gutterBottom={true}>
                Kurssin otsikko
             </Typography>
             <Typography variant="body1" paragraph>
@@ -36,7 +36,7 @@ class RegisterCompletionText extends Component<RegProps> {
         </div>
         <Card>
             <CardContent>
-                <Typography variant="h5" gutterBottom={true}>
+                <Typography variant="h3" gutterBottom={true}>
                     Toimi näin:
                 </Typography>
                 

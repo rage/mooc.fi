@@ -13,6 +13,12 @@ const Row = styled.div`
   margin-bottom: 1.5rem;
 `;
 
+const Alert = styled.div`
+  margin-bottom: 1.5rem;
+  color: red;
+
+`;
+
 const TitleContainer = styled.div`
   display: flex;
   align-items: center;
@@ -20,6 +26,7 @@ const TitleContainer = styled.div`
   & > * {
     margin-right: 1rem;
   }
+  margin-bottom: 1rem;
 `;
 
 function SignIn(t: Function) {
@@ -36,23 +43,38 @@ function SignIn(t: Function) {
           <Avatar>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h2" variant="h2" gutterBottom={true}>
+          <Typography 
+            component="h2" 
+            variant="h2" 
+            gutterBottom={true}
+            id='login'
+            >
           <NextI18Next.Trans i18nKey='login'/>
           </Typography>
         </TitleContainer>
-        <form>
+
+        <form 
+          role="form"
+          aria-labelledby="login"
+        >
+          <Row>
+            <Typography component="p" paragraph>
+              <NextI18Next.Trans i18nKey='form-info'/>
+            </Typography>
+          </Row>
           <Row>
             <TextField
               required
               id="outlined-adornment-password"
               variant="outlined"
-              label="Sähköpostiosoite tai käyttäjänimi"
+              label={<NextI18Next.Trans i18nKey='username'/>}
               fullWidth
               value={email}
               onChange={o => {
                 setEmail(o.target.value);
                 setError(false);
               }}
+              type="username"
             />
           </Row>
           <Row>
@@ -61,7 +83,7 @@ function SignIn(t: Function) {
               id="outlined-adornment-password"
               variant="outlined"
               type="password"
-              label="Salasana"
+              label= {<NextI18Next.Trans i18nKey='password'/>}
               fullWidth
               value={password}
               onChange={o => {
@@ -70,7 +92,7 @@ function SignIn(t: Function) {
               }}
             />
           </Row>
-          {error && <Row> <NextI18Next.Trans i18nKey='error'/> {errorMessage}</Row>}
+          {error && <Alert role='alert'> <NextI18Next.Trans i18nKey='error'/> {errorMessage}</Alert>}
           <Button
             onClick={async e => {
               e.preventDefault();
@@ -85,6 +107,7 @@ function SignIn(t: Function) {
             fullWidth
             variant="contained"
             color="primary"
+            role="formsubmit"
           >
             <NextI18Next.Trans i18nKey='login'/>
           </Button>
