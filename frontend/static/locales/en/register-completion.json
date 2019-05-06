@@ -1,11 +1,15 @@
 {
     "title": "Register Completion",
-    "intro":"You have completed the course The Elements of AI. If you have a finnish social security number, you will be credited 2 credits to the course register of the University of Helsinki. The open university of the University of Helsinki is responsible for registering the credits. Registering the credits is free.",
-    "donow": "You must now register to the Open University of the University of Helsinki in order for us to register your credits.",
+    "course": "Course: The Elements of AI.",
+    "credits":"Credits to University of Helsinki course register: 2 (Requires a Finnish social security number). ",
+    "credits_details": "The open university of the University of Helsinki is responsible for registering the credits. Registering the credits is free.",
+    "donow": "You must now register to the Open University of the University of Helsinki.",
     "instructions-title": "Follow these instructions: ",
-    "Instructions1":"1. You must use the e-mail address {{email}} on the registration form at part 2. If you do not use this address, your credits cannot be registered.",
-    "Instructions2": "2. Fill in the registration form at: https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
-    "Instructions3": "3. At the form field: Käyttämäsi sähköpostiosoite MOOC-kurssilla fill in {{email}}",
-    "Instructions4": "4. If you want an e-mail notification when the credits have been registered, remember to check the box  Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). Credits are registered within 6 weeks of registering to the Open University."
+    "Instructions1":"You must use this e-mail address on the registration form at part 1:",
+    "Instructions2": "1. Fill in the registration form at:",
+    "Instructions3": "2. At the form field: Käyttämäsi sähköpostiosoite MOOC-kurssilla fill in:  ",
+    "Instructions4": "3. If you want an e-mail notification when the credits have been registered, remember to check the box  Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). Credits are registered within 6 weeks of registering to the Open University.",
+    "NB": "NB! Bachelor's - and Master's degree students from University of Helsinki must also register their credits via the Open University!"
+
 
 }

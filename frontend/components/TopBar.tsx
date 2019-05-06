@@ -20,7 +20,7 @@ const TopBar = () => {
         </Typography>
         <EmptySpace />
         {loggedIn && (
-          <Button
+          <Button 
             variant="contained"
             onClick={() => {
               signOut(client);

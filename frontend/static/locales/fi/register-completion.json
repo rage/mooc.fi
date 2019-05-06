@@ -1,11 +1,14 @@
 {
     "title": "Opintopisteiden Rekisteröinti",
-    "intro": "Olet suorittanut kurssin The Elements of AI. Jos sinulla on suomalainen henkilötunnus, saat kurssista kahden opintopisteen laajuisen suoritusmerkinnän Helsingin yliopiston opintorekisteriin. Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin. Opintosuorituksen rekisteröinti on ilmaista.",
+    "course": "Kurssi: The elements of AI.",
+    "credits": "Opintopisteet Helsingin yliopiston opintorekisteriin: 2 (Vaatii suomalaisen henkilötunnuksen).",
+    "credits_details": "Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin. Opintosuorituksen rekisteröinti on ilmaista.",
     "donow": "Nyt sinun tulee ilmoittautua Helsingin yliopiston avoimeen yliopistoon, jotta voimme rekisteröidä suorituksesi",
     "instructions-title": "Toimi näin:",
-    "Instructions1": "1. Sinun täytyy käyttää kohdan 2 reksteröintilomakkeessa sähköpostiosoitetta {{email}} Jos et käytä tätä osoitetta lomakkeessa, suoritustasi ei voida kirjata.",
-    "Instructions2": "2. Täytä lomake osoitteessa: https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
-    "Instructions3": "3. Täytä lomakkeen kohtaan: Käyttämäsi sähköpostiosoite MOOC-kurssilla sähköpostiosoitteeksi {{email}}",
-    "Instructions4": "4. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, muista rastittaa Henkilötietojen käyttö -laatikon alta kohta Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). Opintopisteet kirjautuvat viimeistään kuuden viikon kuluessa ilmoittautumisesta."
+    "Instructions1": "Sinun täytyy käyttää kohdan 1 reksteröintilomakkeessa sähköpostiosoitetta:",
+    "Instructions2": "1. Täytä lomake osoitteessa: ",
+    "Instructions3": "2. Täytä lomakkeen kohtaan: Käyttämäsi sähköpostiosoite MOOC-kurssilla sähköpostiosoitteeksi:",
+    "Instructions4": "3. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, muista rastittaa Henkilötietojen käyttö -laatikon alta kohta Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). Opintopisteet kirjautuvat viimeistään kuuden viikon kuluessa ilmoittautumisesta.",
+    "NB": "Jos olet Helsingin yliopiston perustutkinto-opiskelija, nämä ilmoittatumisohjeet koskevat myös sinua."
     
 }

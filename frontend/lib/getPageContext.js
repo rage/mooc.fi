@@ -3,9 +3,7 @@ import {
   createMuiTheme,
   createGenerateClassName
 } from "@material-ui/core/styles";
-import deepPurple from "@material-ui/core/colors/deepPurple";
-import green from "@material-ui/core/colors/green";
-import teal from "@material-ui/core/colors/teal";
+
 
 
 // A theme with custom primary and secondary color.
@@ -13,15 +11,22 @@ import teal from "@material-ui/core/colors/teal";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: teal[300],
-      main: teal[500],
-      dark: teal[700]
+      light: '#ffff72',
+      main: '#ffeb3b',
+      dark: '#c8b900'
     },
     secondary: {
-      light: deepPurple[300],
-      main: deepPurple[500],
-      dark: deepPurple[700]
-    }
+      light: '#d05ce3',
+      main: '#9c27b0',
+      dark: '#6a0080'
+    },
+    error: 
+    {
+      light: '#ff6659',
+      main: '#d32f2f',
+      dark: '#9a0007'
+    },
+
   },
   typography: {
     useNextVariants: true

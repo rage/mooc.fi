@@ -5,9 +5,14 @@ import { isSignedIn, userDetails } from "../lib/authentication"
 import redirect from "../lib/redirect";
 import { useQuery } from "react-apollo-hooks";
 import { UserOverView as UserOverViewData } from "./__generated__/UserOverView";
-import { Typography, Card, CardContent } from "@material-ui/core";
+import { 
+  Typography, 
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails } from "@material-ui/core";
 import RegisterCompletionText from '../components/RegisterCompletionText'
 import NextI18Next from '../i18n';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 
@@ -37,16 +42,34 @@ const RegisterCompletion = ({ t }) => {
     }
     return (
      <div role='Main'>
-      <Typography variant="h2"  gutterBottom={true}>
+      <Typography variant="h2"  gutterBottom={true} align='center' >
         {t('title')}
       </Typography>
       <Typography variant="body1"  paragraph>
-        {t('intro')}
+        {t('course')}
       </Typography>
       <Typography variant="body1"  paragraph>
-        {t('donow')}
+        {t('credits')}
       </Typography>
-      <RegisterCompletionText email={data.currentUser.email} />
+      
+      <RegisterCompletionText 
+        email={data.currentUser.email} 
+        link=" https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002"
+        />
+        <ExpansionPanel >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant='h4'>Lisätietoa</Typography>
+          </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+        <Typography variant="body1"  paragraph>
+          {t('credits_details')}
+        </Typography>
+        <Typography variant="body1"  paragraph>
+          {t('donow')}
+        </Typography>
+        </ExpansionPanelDetails>
+
+        </ExpansionPanel>
      </div>
     );
   }
