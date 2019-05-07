@@ -3,6 +3,9 @@ import {
   createMuiTheme,
   createGenerateClassName
 } from "@material-ui/core/styles";
+import yellow from '@material-ui/core/colors/yellow';
+import red from '@material-ui/core/colors/red';
+import indigo from '@material-ui/core/colors/indigo';
 
 
 
@@ -11,26 +14,24 @@ import {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      light: '#ffff72',
-      main: '#ffeb3b',
-      dark: '#c8b900'
+     main: yellow[500],
+      
     },
     secondary: {
-      light: '#d05ce3',
-      main: '#9c27b0',
-      dark: '#6a0080'
+      main: indigo[500],
+      
     },
-    error: 
-    {
-      light: '#ff6659',
-      main: '#d32f2f',
-      dark: '#9a0007'
-    },
+    error: red,
+    textPrimary: '#111',
+    textSecondary: '#000'
 
   },
   typography: {
-    useNextVariants: true
-  }
+    useNextVariants: true,
+
+  },
+  spacing: 2,
+
 });
 
 function createPageContext() {

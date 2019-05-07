@@ -13,8 +13,11 @@ import {
 import RegisterCompletionText from '../components/RegisterCompletionText'
 import NextI18Next from '../i18n';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import styled from "styled-components";
 
-
+const TextArea = styled.div`
+  margin: 1.5rem;
+`;
 
 export const UserOverViewQuery = gql`
   query UserOverView {
@@ -45,7 +48,8 @@ const RegisterCompletion = ({ t }) => {
       <Typography variant="h2"  gutterBottom={true} align='center' >
         {t('title')}
       </Typography>
-      <Typography variant="body1"  paragraph>
+      <TextArea>
+      <Typography variant="body1"  paragraph >
         {t('course')}
       </Typography>
       <Typography variant="body1"  paragraph>
@@ -70,6 +74,7 @@ const RegisterCompletion = ({ t }) => {
         </ExpansionPanelDetails>
 
         </ExpansionPanel>
+        </TextArea>
      </div>
     );
   }

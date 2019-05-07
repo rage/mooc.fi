@@ -16,6 +16,8 @@
   "dependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
+    "@material-ui/system": "^3.0.0-alpha.2",
+    "@types/material-ui": "^0.21.6",
     "@types/react-intl": "^2.3.17",
     "@zeit/next-typescript": "^1.1.1",
     "apollo-boost": "^0.3.1",
@@ -35,6 +37,7 @@
     "i18next-xhr-backend": "^2.0.1",
     "intl": "^1.2.5",
     "luxon": "^1.12.1",
+    "material-ui": "^0.20.2",
     "next": "^8.1.0",
     "next-fonts": "^0.17.0",
     "next-i18next": "^0.37.0",

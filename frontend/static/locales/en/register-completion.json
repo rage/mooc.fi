@@ -7,9 +7,8 @@
     "instructions-title": "Follow these instructions: ",
     "Instructions1":"You must use this e-mail address on the registration form at part 1:",
     "Instructions2": "1. Fill in the registration form at:",
-    "Instructions3": "2. At the form field: Käyttämäsi sähköpostiosoite MOOC-kurssilla fill in:  ",
-    "Instructions4": "3. If you want an e-mail notification when the credits have been registered, remember to check the box  Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). Credits are registered within 6 weeks of registering to the Open University.",
-    "NB": "NB! Bachelor's - and Master's degree students from University of Helsinki must also register their credits via the Open University!"
-
-
+    "Instructions3": "2. At the form field: Your email address on the MOOC course fill in:  ",
+    "Instructions4": "3. If you want an e-mail notification when the credits have been registered, remember to check the box  A notification of completed studies will be sent to my email (including the grade). ",
+    "NB": "NB! Bachelor's - and Master's degree students from University of Helsinki must also register their credits via the Open University!",
+    "grades": "Credits are registered within 6 weeks of registering to the Open University.",
 }

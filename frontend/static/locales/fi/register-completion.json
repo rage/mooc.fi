@@ -8,7 +8,8 @@
     "Instructions1": "Sinun täytyy käyttää kohdan 1 reksteröintilomakkeessa sähköpostiosoitetta:",
     "Instructions2": "1. Täytä lomake osoitteessa: ",
     "Instructions3": "2. Täytä lomakkeen kohtaan: Käyttämäsi sähköpostiosoite MOOC-kurssilla sähköpostiosoitteeksi:",
-    "Instructions4": "3. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, muista rastittaa Henkilötietojen käyttö -laatikon alta kohta Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). Opintopisteet kirjautuvat viimeistään kuuden viikon kuluessa ilmoittautumisesta.",
-    "NB": "Jos olet Helsingin yliopiston perustutkinto-opiskelija, nämä ilmoittatumisohjeet koskevat myös sinua."
+    "Instructions4": "3. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, muista rastittaa Henkilötietojen käyttö -laatikon alta kohta Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). ",
+    "NB": "Jos olet Helsingin yliopiston perustutkinto-opiskelija, nämä ilmoittatumisohjeet koskevat myös sinua.",
+    "grades": "Opintopisteet kirjautuvat viimeistään kuuden viikon kuluessa ilmoittautumisesta."
     
 }
