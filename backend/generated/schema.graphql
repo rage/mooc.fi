@@ -2,9 +2,20 @@
 ### Do not make changes to this file directly
 
 
+type Completion {
+  completion_language: String!
+  email: String!
+  first_name: String!
+  id: Int!
+  last_name: String!
+  student_number: String!
+  username: String!
+}
+
 scalar DateTime
 
 type Query {
+  completions: [Completion!]!
   currentUser(email: String): User!
   users: [User!]!
 }

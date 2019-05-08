@@ -1,12 +1,15 @@
 import { prisma, Prisma, Int, User } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
-import { stringArg, idArg, convertSDL, subscriptionField } from "nexus";
+import { stringArg, idArg, convertSDL, subscriptionField, objectType } from "nexus";
 import { prismaObjectType, makePrismaSchema } from "nexus-prisma";
 import { GraphQLServer } from "graphql-yoga";
 import { AuthenticationError, ForbiddenError } from "apollo-server-core";
 import TmcClient from "./services/tmc";
 import fetchUser from "./middlewares/FetchUser";
+//import fetchCompletions from "./middlewares/fetchCompletions"
+const fetchCompletions = require('./middlewares/fetchCompletions')
+
 
 
 
@@ -43,9 +46,17 @@ const Query = prismaObjectType({
         return ctx.user;
       }
     });
+
+    t.list.field("completions", {
+      type: "Completion",
+      resolve: async (_, args, ctx) => {
+        return await fetchCompletions.doIt()
+      }
+    })
   }
 });
 
+ 
 const Mutation = prismaObjectType({
   name: "Mutation",
   definition(t) {
@@ -53,8 +64,22 @@ const Mutation = prismaObjectType({
   }
 });
 
+const Completion = objectType({
+  name: "Completion",
+  definition(t) {
+    t.int("id")
+    t.string("email")
+    t.string("username")
+    t.string("student_number")
+    t.string("first_name")
+    t.string("last_name")
+    t.string("completion_language")
+  }
+})
+
+
 const schema = makePrismaSchema({
-  types: [Query],
+  types: [Query, Completion],
 
   prisma: {
     datamodelInfo,
