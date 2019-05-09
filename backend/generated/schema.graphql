@@ -15,7 +15,7 @@ type Completion {
 scalar DateTime
 
 type Query {
-  completions: [Completion!]!
+  completions(course: String): [Completion!]!
   currentUser(email: String): User!
   users: [User!]!
 }

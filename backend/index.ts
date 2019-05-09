@@ -49,8 +49,11 @@ const Query = prismaObjectType({
 
     t.list.field("completions", {
       type: "Completion",
-      resolve: async (_, args, ctx) => {
-        return await fetchCompletions.doIt()
+      args: {
+        course: stringArg()
+      },
+      resolve: async (_, { course }, ctx) => {
+        return await fetchCompletions.doIt(course)
       }
     })
   }

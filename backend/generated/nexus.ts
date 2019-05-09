@@ -79,6 +79,9 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Query: {
+    completions: { // args
+      course?: string | null; // String
+    }
     currentUser: { // args
       email?: string | null; // String
     }
