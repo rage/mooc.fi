@@ -1,14 +1,14 @@
 import * as React from "react";
-import TopBar from "../components/TopBar";
 import Container from "../components/Container";
-
-
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
     <div>
       <a href="#main"> Skip to main content </a>
-      <TopBar />
+      <Header />
       <Container>{children}</Container>
+      <Footer />
     </div>
 );
 

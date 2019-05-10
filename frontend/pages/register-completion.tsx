@@ -7,17 +7,21 @@ import { useQuery } from "react-apollo-hooks";
 import { UserOverView as UserOverViewData } from "./__generated__/UserOverView";
 import { 
   Typography, 
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails } from "@material-ui/core";
+  Paper, } from "@material-ui/core";
 import RegisterCompletionText from '../components/RegisterCompletionText'
+import ImportantNotice from '../components/ImportantNotice'
 import NextI18Next from '../i18n';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import styled from "styled-components";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-const TextArea = styled.div`
-  margin: 1.5rem;
-`;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+     padding: '1em',
+     margin: '1em'
+    },
+    
+  }),
+);
 
 export const UserOverViewQuery = gql`
   query UserOverView {
@@ -31,9 +35,8 @@ export const UserOverViewQuery = gql`
   }
 `;
 
-
-
 const RegisterCompletion = ({ t }) => {
+    const classes = useStyles()
     const { loading, error, data } = useQuery<UserOverViewData>(
         UserOverViewQuery
       );
@@ -44,38 +47,34 @@ const RegisterCompletion = ({ t }) => {
         return <div>Loading</div>;
     }
     return (
-     <div role='Main'>
-      <Typography variant="h2"  gutterBottom={true} align='center' >
-        {t('title')}
-      </Typography>
-      <TextArea>
-      <Typography variant="body1"  paragraph >
-        {t('course')}
-      </Typography>
-      <Typography variant="body1"  paragraph>
-        {t('credits')}
-      </Typography>
-      
-      <RegisterCompletionText 
+      <main>
+        <Typography variant="h3" component='h1'  gutterBottom={true} align='center' >
+          {t('title')}
+        </Typography>
+        <Typography variant="body1" >
+          {t('course')}
+        </Typography>
+        <Typography variant="body1"  paragraph>
+          {t('credits')}
+        </Typography>
+        <Paper className={classes.paper}>
+          <Typography variant='h5' component='h2' gutterBottom={true}>
+            Aliotsikko
+          </Typography>
+          <Typography variant='body1' paragraph>
+            {t('credits_details')}
+          </Typography>
+          <Typography variant='body1' paragraph>
+            {t('donow')}
+          </Typography>
+        </Paper>
+        <ImportantNotice email={data.currentUser.email}/>
+        <RegisterCompletionText 
         email={data.currentUser.email} 
         link=" https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002"
         />
-        <ExpansionPanel >
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant='h4'>Lisätietoa</Typography>
-          </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-        <Typography variant="body1"  paragraph>
-          {t('credits_details')}
-        </Typography>
-        <Typography variant="body1"  paragraph>
-          {t('donow')}
-        </Typography>
-        </ExpansionPanelDetails>
+      </main>
 
-        </ExpansionPanel>
-        </TextArea>
-     </div>
     );
   }
 
@@ -89,3 +88,5 @@ const RegisterCompletion = ({ t }) => {
   };
 
   export default NextI18Next.withNamespaces('register-completion')(RegisterCompletion)
+
+  
