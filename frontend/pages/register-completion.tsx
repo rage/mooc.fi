@@ -7,7 +7,8 @@ import { useQuery } from "react-apollo-hooks";
 import { UserOverView as UserOverViewData } from "./__generated__/UserOverView";
 import { 
   Typography, 
-  Paper, } from "@material-ui/core";
+  Paper,
+  SvgIcon } from "@material-ui/core";
 import RegisterCompletionText from '../components/RegisterCompletionText'
 import ImportantNotice from '../components/ImportantNotice'
 import NextI18Next from '../i18n';
@@ -19,7 +20,18 @@ const useStyles = makeStyles((theme: Theme) =>
      padding: '1em',
      margin: '1em'
     },
-    
+    icon: {
+      width: 30,
+      height: 30,
+      margin: '0.5em'
+    },
+    paperWithRow: {
+      padding: '1em',
+     margin: '1em',
+     display: 'flex',
+     flexDirection: 'row',
+     alignItems: 'center',
+    }
   }),
 );
 
@@ -58,9 +70,6 @@ const RegisterCompletion = ({ t }) => {
           {t('credits')}
         </Typography>
         <Paper className={classes.paper}>
-          <Typography variant='h5' component='h2' gutterBottom={true}>
-            Aliotsikko
-          </Typography>
           <Typography variant='body1' paragraph>
             {t('credits_details')}
           </Typography>
@@ -73,6 +82,14 @@ const RegisterCompletion = ({ t }) => {
         email={data.currentUser.email} 
         link=" https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002"
         />
+        <Paper className={classes.paperWithRow}>
+          <SvgIcon className={classes.icon} color='primary'>
+             <path  d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
+          </SvgIcon>
+          <Typography variant='body1'>
+            {t('NB')}
+          </Typography>
+        </Paper>
       </main>
 
     );

@@ -12,8 +12,6 @@ const theme = createMuiTheme({
         main: amber[500],
         
       },
-     
-  
     },
   
   });

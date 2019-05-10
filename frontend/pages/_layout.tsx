@@ -8,8 +8,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
       <a href="#main"> Skip to main content </a>
       <Header />
       <Container>{children}</Container>
-      <Footer />
+     
     </div>
 );
 
 export default Layout;
+// <Footer />

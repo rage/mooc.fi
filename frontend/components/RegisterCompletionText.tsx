@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Typography, 
          Paper,
+         Button
         
         } from "@material-ui/core";
 import WarningIcon from '@material-ui/icons/Error';
@@ -11,13 +12,28 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
      padding: '1em',
-     margin: '1em'
+     margin: '1em',
+     display: 'flex',
+     flexDirection: 'column',
     },
-    
+    button: {
+      width: '65%'
+    }
   }),
 );
 
-
+function LinkButton(props:any) {
+  return(
+    <Button 
+      variant='contained' 
+      color='secondary' 
+      size='medium'
+      href={props.link} 
+      {...props}>
+      Rekisteröitymislomakkeeseen
+    </Button>
+  )
+}
 
 
 type RegProps = {
@@ -30,12 +46,11 @@ function RegisterCompletionText(props: RegProps)
   const classes = useStyles()
   return(
     <Paper className={classes.paper}>
-      <Typography variant='h4' component='h2' gutterBottom={true}>
+      <Typography variant='h4' component='h2' gutterBottom={true} align='center'>
         <NextI18Next.Trans i18nKey='instructions-title' />
       </Typography>
       <Typography variant="body1" paragraph>
         <NextI18Next.Trans i18nKey='Instructions2' /> 
-        <a href={props.link}>rekisteröitymislomakkeeseen</a>
       </Typography>
       <Typography variant="body1" paragraph>
         <NextI18Next.Trans i18nKey='Instructions3'/> {props.email}
@@ -46,6 +61,9 @@ function RegisterCompletionText(props: RegProps)
       <Typography variant="body1" paragraph>
         <NextI18Next.Trans i18nKey='grades' />
       </Typography>
+      <LinkButton 
+        className={classes.button}
+        link={props.link}/>
     </Paper>
         
   )
@@ -53,29 +71,3 @@ function RegisterCompletionText(props: RegProps)
 
 export default NextI18Next.withNamespaces('register-completion')(RegisterCompletionText)
 
-/*<Card role='region' aria-labelledby="instructions-title">
-            <CardContent>
-            <Typography variant="h3" gutterBottom={true} id="instructions-title" align='center'>
-                <NextI18Next.Trans i18nKey='instructions-title' />
-              </Typography>
-              <ImportantNotice>
-              <Avatar >
-                <WarningIcon />
-              </Avatar>
-                <Typography variant="body1"  inline>
-                  <NextI18Next.Trans i18nKey='Instructions1' /> {email}
-                </Typography>
-              </ImportantNotice>
-                <Typography variant="body1" paragraph>
-                  <NextI18Next.Trans i18nKey='Instructions2' /> 
-                  <a href={link}>rekisteröitymislomakkeeseen</a>
-                </Typography>
-                <Typography variant="body1" paragraph>
-                  <NextI18Next.Trans i18nKey='Instructions3'/> {email}
-                </Typography>
-                <Typography variant="body1" paragraph>
-                  <NextI18Next.Trans i18nKey='Instructions4' />
-                </Typography>
-            </CardContent>
-        </Card>
-       */
