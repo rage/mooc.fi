@@ -92,6 +92,7 @@ scalar DateTime
 
 type Mutation {
   addCourse(name: String, slug: String): Course!
+  addOpenUniversityCourse(course: ID, course_code: String): OpenUniversityCourse!
 }
 
 type OpenUniversityCourse {
@@ -168,6 +169,7 @@ type Query {
   completions(course: String): [Completion!]!
   courses: [Course!]!
   currentUser(email: String): User!
+  openUniversityCourses: [OpenUniversityCourse!]!
   users: [User!]!
 }
 

@@ -1,4 +1,4 @@
-import { prisma, Prisma, Int, User, Course } from "./generated/prisma-client";
+import { prisma, Prisma, Int, User, Course, OpenUniversityCourse } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
 import { stringArg, idArg, convertSDL, subscriptionField, objectType } from "nexus";
@@ -9,6 +9,7 @@ import TmcClient from "./services/tmc";
 import fetchUser from "./middlewares/FetchUser";
 //import fetchCompletions from "./middlewares/fetchCompletions"
 const fetchCompletions = require('./middlewares/fetchCompletions')
+const { UserInputError } = require('apollo-server-core')
 
 
 
@@ -57,6 +58,32 @@ const Query = prismaObjectType({
         if (!ctx.user.administrator) {
           throw new ForbiddenError("Access Denied");
         }
+        const coursesWithSlug : Course[] = await ctx.prisma.courses(
+          { 
+            where: {
+              slug: course
+            }
+          }
+        )
+        if (!coursesWithSlug || !coursesWithSlug.length) {
+          
+          const avoinCourses : OpenUniversityCourse[] = await ctx.prisma.openUniversityCourses(
+            {
+              where: {
+                course_code: course
+              }
+            }
+          )
+
+          if (!avoinCourses || !avoinCourses.length) {
+            throw new UserInputError("Invalid course identifier")
+          }
+
+          const courseFromAvoinCourse : Course = await ctx.prisma.openUniversityCourse(
+            {id: avoinCourses[0].id}
+          ).course()
+          course = courseFromAvoinCourse.slug       
+        }
         
         return await fetchCompletions.doIt(course)
       }
@@ -68,10 +95,18 @@ const Query = prismaObjectType({
         if (!ctx.user.administrator) {
           throw new ForbiddenError("Access Denied");
         }
-        
         return ctx.prisma.courses()
       }
-    }) 
+    })
+    t.list.field("openUniversityCourses", {
+      type: "OpenUniversityCourse",
+      resolve: async (_, args, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        return ctx.prisma.openUniversityCourses()
+      }
+    })  
   }
 });
 
@@ -86,12 +121,34 @@ const Mutation = prismaObjectType({
         slug: stringArg()
       },
       resolve: async (_, { name, slug }, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
         const prisma: Prisma = ctx.prisma
         const newCourse : Course = await prisma.createCourse({
           name: name,
           slug: slug
         })
         return newCourse
+      }
+    })
+
+    t.field("addOpenUniversityCourse", {
+      type: "OpenUniversityCourse",
+      args: {
+        course_code: stringArg(),
+        course: idArg()
+      },
+      resolve: async (_, { course_code, course }, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        const prisma: Prisma = ctx.prisma
+        const newOpenUniversityCourse : OpenUniversityCourse = await prisma.createOpenUniversityCourse({
+          course_code: course_code,
+          course: {connect: { id: course}}
+        })
+        return newOpenUniversityCourse
       }
     })
   }

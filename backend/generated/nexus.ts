@@ -204,6 +204,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addCourse: NexusGenRootTypes['Course']; // Course!
+    addOpenUniversityCourse: NexusGenRootTypes['OpenUniversityCourse']; // OpenUniversityCourse!
   }
   OpenUniversityCourse: { // field return type
     course: NexusGenRootTypes['Course']; // Course!
@@ -216,6 +217,7 @@ export interface NexusGenFieldTypes {
     completions: NexusGenRootTypes['Completion'][]; // [Completion!]!
     courses: NexusGenRootTypes['Course'][]; // [Course!]!
     currentUser: NexusGenRootTypes['User']; // User!
+    openUniversityCourses: NexusGenRootTypes['OpenUniversityCourse'][]; // [OpenUniversityCourse!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
@@ -247,6 +249,10 @@ export interface NexusGenArgTypes {
     addCourse: { // args
       name?: string | null; // String
       slug?: string | null; // String
+    }
+    addOpenUniversityCourse: { // args
+      course?: string | null; // ID
+      course_code?: string | null; // String
     }
   }
   Query: {

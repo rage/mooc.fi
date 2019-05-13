@@ -13,8 +13,6 @@ export async function doIt(course) {
   let info;
   if (course == "elements-of-ai"){
     info = await getElementsOfAiInfo()
-  } else {
-    throw new UserInputError("Invalid course identifier")
   }
   return info
 }
