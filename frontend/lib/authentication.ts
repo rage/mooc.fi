@@ -1,5 +1,5 @@
 import TmcClient from "tmc-client-js";
-import Router from "next/router";
+import Nexti18next from '../i18n'
 import { NextContext } from "next";
 import nookies from "nookies";
 import { ApolloClient } from "apollo-boost";
@@ -33,17 +33,19 @@ export const signIn = async ({
     throw new Error("Etunimi tai sukunimi puuttuu.")
   }
   document.cookie = `access_token=${res.accessToken};path=/`;
-  Router.push("/register-completion");
+  Nexti18next.Router.push("/register-completion");
   return res;
 };
 
 export const signOut = async (apollo: ApolloClient<any>) => {
-  console.log('logging out')
-  console.log('apollo', apollo)
-  document.cookie =
+  
+  
+  await apollo.resetStore()
+    .then(() => {
+      document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/";
-  Router.push("/sign-in");
-  await apollo.resetStore();
+      Nexti18next.Router.push("/sign-in");
+    });
   
   
 };

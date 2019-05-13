@@ -14,7 +14,13 @@ const handle = app.getRequestHandler();
 
   server.use(nextI18NextMiddleware(nextI18next))
 
-  server.get('*', (req, res) => handle(req, res))
+  server.get('*', (req, res) => {
+    return(
+      handle(req, res)
+    )
+  }
+  )
+  
 
   await server.listen(port)
   console.log(`> Ready on http://localhost:${port}`) // eslint-disable-line no-console

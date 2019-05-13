@@ -4,7 +4,6 @@ import { Typography,
          Button
         
         } from "@material-ui/core";
-import WarningIcon from '@material-ui/icons/Error';
 import NextI18Next from '../i18n';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 

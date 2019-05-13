@@ -6,6 +6,7 @@ const Fluent = require('i18next-fluent')
 module.exports = new NextI18Next({
   defaultLanguage: 'fi',
   otherLanguages: ['en'],
-  localeSubpaths: 'foreign',
+  localeSubpaths: 'all'
+
 })
  

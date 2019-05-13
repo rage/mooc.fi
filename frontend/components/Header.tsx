@@ -53,9 +53,8 @@ const useStyles = makeStyles((theme: Theme) =>
 function Header() {
   const classes = useStyles();
   const loggedIn = React.useContext(LoginStateContext);
-  console.log('loggedin', loggedIn)
   const client = useApolloClient();
-  console.log('client', client)
+  
   return(
     <AppBar position="static" color='inherit'>
       <Toolbar>
