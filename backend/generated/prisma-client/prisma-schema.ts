@@ -2,7 +2,15 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregateUser {
+export const typeDefs = /* GraphQL */ `type AggregateCourse {
+  count: Int!
+}
+
+type AggregateOpenUniversityCourse {
+  count: Int!
+}
+
+type AggregateUser {
   count: Int!
 }
 
@@ -10,11 +18,197 @@ type BatchPayload {
   count: Long!
 }
 
+type Course {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  slug: String!
+  open_university_courses(where: OpenUniversityCourseWhereInput, orderBy: OpenUniversityCourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OpenUniversityCourse!]
+}
+
+type CourseConnection {
+  pageInfo: PageInfo!
+  edges: [CourseEdge]!
+  aggregate: AggregateCourse!
+}
+
+input CourseCreateInput {
+  name: String!
+  slug: String!
+  open_university_courses: OpenUniversityCourseCreateManyWithoutCourseInput
+}
+
+input CourseCreateOneWithoutOpen_university_coursesInput {
+  create: CourseCreateWithoutOpen_university_coursesInput
+  connect: CourseWhereUniqueInput
+}
+
+input CourseCreateWithoutOpen_university_coursesInput {
+  name: String!
+  slug: String!
+}
+
+type CourseEdge {
+  node: Course!
+  cursor: String!
+}
+
+enum CourseOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  name_ASC
+  name_DESC
+  slug_ASC
+  slug_DESC
+}
+
+type CoursePreviousValues {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  slug: String!
+}
+
+type CourseSubscriptionPayload {
+  mutation: MutationType!
+  node: Course
+  updatedFields: [String!]
+  previousValues: CoursePreviousValues
+}
+
+input CourseSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CourseWhereInput
+  AND: [CourseSubscriptionWhereInput!]
+  OR: [CourseSubscriptionWhereInput!]
+  NOT: [CourseSubscriptionWhereInput!]
+}
+
+input CourseUpdateInput {
+  name: String
+  slug: String
+  open_university_courses: OpenUniversityCourseUpdateManyWithoutCourseInput
+}
+
+input CourseUpdateManyMutationInput {
+  name: String
+  slug: String
+}
+
+input CourseUpdateOneRequiredWithoutOpen_university_coursesInput {
+  create: CourseCreateWithoutOpen_university_coursesInput
+  update: CourseUpdateWithoutOpen_university_coursesDataInput
+  upsert: CourseUpsertWithoutOpen_university_coursesInput
+  connect: CourseWhereUniqueInput
+}
+
+input CourseUpdateWithoutOpen_university_coursesDataInput {
+  name: String
+  slug: String
+}
+
+input CourseUpsertWithoutOpen_university_coursesInput {
+  update: CourseUpdateWithoutOpen_university_coursesDataInput!
+  create: CourseCreateWithoutOpen_university_coursesInput!
+}
+
+input CourseWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  slug: String
+  slug_not: String
+  slug_in: [String!]
+  slug_not_in: [String!]
+  slug_lt: String
+  slug_lte: String
+  slug_gt: String
+  slug_gte: String
+  slug_contains: String
+  slug_not_contains: String
+  slug_starts_with: String
+  slug_not_starts_with: String
+  slug_ends_with: String
+  slug_not_ends_with: String
+  open_university_courses_every: OpenUniversityCourseWhereInput
+  open_university_courses_some: OpenUniversityCourseWhereInput
+  open_university_courses_none: OpenUniversityCourseWhereInput
+  AND: [CourseWhereInput!]
+  OR: [CourseWhereInput!]
+  NOT: [CourseWhereInput!]
+}
+
+input CourseWhereUniqueInput {
+  id: UUID
+}
+
 scalar DateTime
 
 scalar Long
 
 type Mutation {
+  createCourse(data: CourseCreateInput!): Course!
+  updateCourse(data: CourseUpdateInput!, where: CourseWhereUniqueInput!): Course
+  updateManyCourses(data: CourseUpdateManyMutationInput!, where: CourseWhereInput): BatchPayload!
+  upsertCourse(where: CourseWhereUniqueInput!, create: CourseCreateInput!, update: CourseUpdateInput!): Course!
+  deleteCourse(where: CourseWhereUniqueInput!): Course
+  deleteManyCourses(where: CourseWhereInput): BatchPayload!
+  createOpenUniversityCourse(data: OpenUniversityCourseCreateInput!): OpenUniversityCourse!
+  updateOpenUniversityCourse(data: OpenUniversityCourseUpdateInput!, where: OpenUniversityCourseWhereUniqueInput!): OpenUniversityCourse
+  updateManyOpenUniversityCourses(data: OpenUniversityCourseUpdateManyMutationInput!, where: OpenUniversityCourseWhereInput): BatchPayload!
+  upsertOpenUniversityCourse(where: OpenUniversityCourseWhereUniqueInput!, create: OpenUniversityCourseCreateInput!, update: OpenUniversityCourseUpdateInput!): OpenUniversityCourse!
+  deleteOpenUniversityCourse(where: OpenUniversityCourseWhereUniqueInput!): OpenUniversityCourse
+  deleteManyOpenUniversityCourses(where: OpenUniversityCourseWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -33,6 +227,225 @@ interface Node {
   id: ID!
 }
 
+type OpenUniversityCourse {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  course_code: String!
+  course: Course!
+}
+
+type OpenUniversityCourseConnection {
+  pageInfo: PageInfo!
+  edges: [OpenUniversityCourseEdge]!
+  aggregate: AggregateOpenUniversityCourse!
+}
+
+input OpenUniversityCourseCreateInput {
+  course_code: String!
+  course: CourseCreateOneWithoutOpen_university_coursesInput!
+}
+
+input OpenUniversityCourseCreateManyWithoutCourseInput {
+  create: [OpenUniversityCourseCreateWithoutCourseInput!]
+  connect: [OpenUniversityCourseWhereUniqueInput!]
+}
+
+input OpenUniversityCourseCreateWithoutCourseInput {
+  course_code: String!
+}
+
+type OpenUniversityCourseEdge {
+  node: OpenUniversityCourse!
+  cursor: String!
+}
+
+enum OpenUniversityCourseOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  course_code_ASC
+  course_code_DESC
+}
+
+type OpenUniversityCoursePreviousValues {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  course_code: String!
+}
+
+input OpenUniversityCourseScalarWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  course_code: String
+  course_code_not: String
+  course_code_in: [String!]
+  course_code_not_in: [String!]
+  course_code_lt: String
+  course_code_lte: String
+  course_code_gt: String
+  course_code_gte: String
+  course_code_contains: String
+  course_code_not_contains: String
+  course_code_starts_with: String
+  course_code_not_starts_with: String
+  course_code_ends_with: String
+  course_code_not_ends_with: String
+  AND: [OpenUniversityCourseScalarWhereInput!]
+  OR: [OpenUniversityCourseScalarWhereInput!]
+  NOT: [OpenUniversityCourseScalarWhereInput!]
+}
+
+type OpenUniversityCourseSubscriptionPayload {
+  mutation: MutationType!
+  node: OpenUniversityCourse
+  updatedFields: [String!]
+  previousValues: OpenUniversityCoursePreviousValues
+}
+
+input OpenUniversityCourseSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: OpenUniversityCourseWhereInput
+  AND: [OpenUniversityCourseSubscriptionWhereInput!]
+  OR: [OpenUniversityCourseSubscriptionWhereInput!]
+  NOT: [OpenUniversityCourseSubscriptionWhereInput!]
+}
+
+input OpenUniversityCourseUpdateInput {
+  course_code: String
+  course: CourseUpdateOneRequiredWithoutOpen_university_coursesInput
+}
+
+input OpenUniversityCourseUpdateManyDataInput {
+  course_code: String
+}
+
+input OpenUniversityCourseUpdateManyMutationInput {
+  course_code: String
+}
+
+input OpenUniversityCourseUpdateManyWithoutCourseInput {
+  create: [OpenUniversityCourseCreateWithoutCourseInput!]
+  delete: [OpenUniversityCourseWhereUniqueInput!]
+  connect: [OpenUniversityCourseWhereUniqueInput!]
+  set: [OpenUniversityCourseWhereUniqueInput!]
+  disconnect: [OpenUniversityCourseWhereUniqueInput!]
+  update: [OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput!]
+  upsert: [OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput!]
+  deleteMany: [OpenUniversityCourseScalarWhereInput!]
+  updateMany: [OpenUniversityCourseUpdateManyWithWhereNestedInput!]
+}
+
+input OpenUniversityCourseUpdateManyWithWhereNestedInput {
+  where: OpenUniversityCourseScalarWhereInput!
+  data: OpenUniversityCourseUpdateManyDataInput!
+}
+
+input OpenUniversityCourseUpdateWithoutCourseDataInput {
+  course_code: String
+}
+
+input OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput {
+  where: OpenUniversityCourseWhereUniqueInput!
+  data: OpenUniversityCourseUpdateWithoutCourseDataInput!
+}
+
+input OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput {
+  where: OpenUniversityCourseWhereUniqueInput!
+  update: OpenUniversityCourseUpdateWithoutCourseDataInput!
+  create: OpenUniversityCourseCreateWithoutCourseInput!
+}
+
+input OpenUniversityCourseWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  course_code: String
+  course_code_not: String
+  course_code_in: [String!]
+  course_code_not_in: [String!]
+  course_code_lt: String
+  course_code_lte: String
+  course_code_gt: String
+  course_code_gte: String
+  course_code_contains: String
+  course_code_not_contains: String
+  course_code_starts_with: String
+  course_code_not_starts_with: String
+  course_code_ends_with: String
+  course_code_not_ends_with: String
+  course: CourseWhereInput
+  AND: [OpenUniversityCourseWhereInput!]
+  OR: [OpenUniversityCourseWhereInput!]
+  NOT: [OpenUniversityCourseWhereInput!]
+}
+
+input OpenUniversityCourseWhereUniqueInput {
+  id: UUID
+}
+
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
@@ -41,6 +454,12 @@ type PageInfo {
 }
 
 type Query {
+  course(where: CourseWhereUniqueInput!): Course
+  courses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course]!
+  coursesConnection(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CourseConnection!
+  openUniversityCourse(where: OpenUniversityCourseWhereUniqueInput!): OpenUniversityCourse
+  openUniversityCourses(where: OpenUniversityCourseWhereInput, orderBy: OpenUniversityCourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OpenUniversityCourse]!
+  openUniversityCoursesConnection(where: OpenUniversityCourseWhereInput, orderBy: OpenUniversityCourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OpenUniversityCourseConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -48,6 +467,8 @@ type Query {
 }
 
 type Subscription {
+  course(where: CourseSubscriptionWhereInput): CourseSubscriptionPayload
+  openUniversityCourse(where: OpenUniversityCourseSubscriptionWhereInput): OpenUniversityCourseSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -246,4 +667,6 @@ input UserWhereUniqueInput {
   id: ID
   upstream_id: Int
 }
+
+scalar UUID
 `

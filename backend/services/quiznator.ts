@@ -1,5 +1,4 @@
 const axios = require('axios')
-const exec = require("child_process").exec;
 
 
 async function getPassedUsernamesByTag(tag) {

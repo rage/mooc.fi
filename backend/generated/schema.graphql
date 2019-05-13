@@ -12,10 +12,161 @@ type Completion {
   username: String!
 }
 
+type Course {
+  createdAt: DateTime!
+  id: UUID!
+  name: String!
+  open_university_courses(after: String, before: String, first: Int, last: Int, orderBy: OpenUniversityCourseOrderByInput, skip: Int, where: OpenUniversityCourseWhereInput): [OpenUniversityCourse!]
+  slug: String!
+  updatedAt: DateTime!
+}
+
+input CourseWhereInput {
+  AND: [CourseWhereInput!]
+  createdAt: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_not: DateTime
+  createdAt_not_in: [DateTime!]
+  id: UUID
+  id_contains: UUID
+  id_ends_with: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_not: UUID
+  id_not_contains: UUID
+  id_not_ends_with: UUID
+  id_not_in: [UUID!]
+  id_not_starts_with: UUID
+  id_starts_with: UUID
+  name: String
+  name_contains: String
+  name_ends_with: String
+  name_gt: String
+  name_gte: String
+  name_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_not: String
+  name_not_contains: String
+  name_not_ends_with: String
+  name_not_in: [String!]
+  name_not_starts_with: String
+  name_starts_with: String
+  NOT: [CourseWhereInput!]
+  open_university_courses_every: OpenUniversityCourseWhereInput
+  open_university_courses_none: OpenUniversityCourseWhereInput
+  open_university_courses_some: OpenUniversityCourseWhereInput
+  OR: [CourseWhereInput!]
+  slug: String
+  slug_contains: String
+  slug_ends_with: String
+  slug_gt: String
+  slug_gte: String
+  slug_in: [String!]
+  slug_lt: String
+  slug_lte: String
+  slug_not: String
+  slug_not_contains: String
+  slug_not_ends_with: String
+  slug_not_in: [String!]
+  slug_not_starts_with: String
+  slug_starts_with: String
+  updatedAt: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_not: DateTime
+  updatedAt_not_in: [DateTime!]
+}
+
 scalar DateTime
+
+type Mutation {
+  addCourse(name: String, slug: String): Course!
+}
+
+type OpenUniversityCourse {
+  course: Course!
+  course_code: String!
+  createdAt: DateTime!
+  id: UUID!
+  updatedAt: DateTime!
+}
+
+enum OpenUniversityCourseOrderByInput {
+  course_code_ASC
+  course_code_DESC
+  createdAt_ASC
+  createdAt_DESC
+  id_ASC
+  id_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+input OpenUniversityCourseWhereInput {
+  AND: [OpenUniversityCourseWhereInput!]
+  course: CourseWhereInput
+  course_code: String
+  course_code_contains: String
+  course_code_ends_with: String
+  course_code_gt: String
+  course_code_gte: String
+  course_code_in: [String!]
+  course_code_lt: String
+  course_code_lte: String
+  course_code_not: String
+  course_code_not_contains: String
+  course_code_not_ends_with: String
+  course_code_not_in: [String!]
+  course_code_not_starts_with: String
+  course_code_starts_with: String
+  createdAt: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_not: DateTime
+  createdAt_not_in: [DateTime!]
+  id: UUID
+  id_contains: UUID
+  id_ends_with: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_not: UUID
+  id_not_contains: UUID
+  id_not_ends_with: UUID
+  id_not_in: [UUID!]
+  id_not_starts_with: UUID
+  id_starts_with: UUID
+  NOT: [OpenUniversityCourseWhereInput!]
+  OR: [OpenUniversityCourseWhereInput!]
+  updatedAt: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_not: DateTime
+  updatedAt_not_in: [DateTime!]
+}
 
 type Query {
   completions(course: String): [Completion!]!
+  courses: [Course!]!
   currentUser(email: String): User!
   users: [User!]!
 }
@@ -31,3 +182,5 @@ type User {
   updatedAt: DateTime!
   upstream_id: Int!
 }
+
+scalar UUID

@@ -1,4 +1,4 @@
-import { prisma, Prisma, Int, User } from "./generated/prisma-client";
+import { prisma, Prisma, Int, User, Course } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
 import { stringArg, idArg, convertSDL, subscriptionField, objectType } from "nexus";
@@ -14,6 +14,7 @@ const fetchCompletions = require('./middlewares/fetchCompletions')
 
 
 import * as winston from "winston";
+import { OverlappingFieldsCanBeMerged } from "graphql/validation/rules/OverlappingFieldsCanBeMerged";
 
 const logger = winston.createLogger({
   level: "info",
@@ -53,17 +54,46 @@ const Query = prismaObjectType({
         course: stringArg()
       },
       resolve: async (_, { course }, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        
         return await fetchCompletions.doIt(course)
       }
     })
+
+    t.list.field("courses", {
+      type: "Course",
+      resolve: async (_, args, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        
+        return ctx.prisma.courses()
+      }
+    }) 
   }
 });
 
- 
+
 const Mutation = prismaObjectType({
   name: "Mutation",
   definition(t) {
-
+    t.field("addCourse", {
+      type: "Course",
+      args: {
+        name: stringArg(),
+        slug: stringArg()
+      },
+      resolve: async (_, { name, slug }, ctx) => {
+        const prisma: Prisma = ctx.prisma
+        const newCourse : Course = await prisma.createCourse({
+          name: name,
+          slug: slug
+        })
+        return newCourse
+      }
+    })
   }
 });
 
@@ -82,7 +112,7 @@ const Completion = objectType({
 
 
 const schema = makePrismaSchema({
-  types: [Query, Completion],
+  types: [Query, Completion, Mutation],
 
   prisma: {
     datamodelInfo,

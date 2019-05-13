@@ -10,3 +10,20 @@ type User {
   completed_enough: Boolean! @default(value: "false")
 }
 
+type Course {
+  id: UUID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  name: String!
+  slug: String!
+  open_university_courses: [OpenUniversityCourse!] @relation(name: "CourseToOpenUniversityCourse")
+}
+
+type OpenUniversityCourse {
+  id: UUID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  course_code: String!
+  course: Course! @relation(name: "CourseToOpenUniversityCourse")
+}
+

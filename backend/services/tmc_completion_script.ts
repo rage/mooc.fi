@@ -1,5 +1,6 @@
 const exec = require("child_process").exec;
-const axios = require("axios");
+import axios from 'axios'
+//const axios = require("axios");
 
 console.log("Fetching tmc access token...");
 let _accessToken = null;
