@@ -32,16 +32,20 @@ export const signIn = async ({
   if (firstName === "" || lastName === "") {
     throw new Error("Etunimi tai sukunimi puuttuu.")
   }
-  document.cookie = `access_token=${res.accessToken}`;
+  document.cookie = `access_token=${res.accessToken};path=/`;
   Router.push("/register-completion");
   return res;
 };
 
 export const signOut = async (apollo: ApolloClient<any>) => {
+  console.log('logging out')
+  console.log('apollo', apollo)
   document.cookie =
-    "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/";
   Router.push("/sign-in");
   await apollo.resetStore();
+  
+  
 };
 
 export const getAccessToken = (ctx: NextContext | undefined) => {

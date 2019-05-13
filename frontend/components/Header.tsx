@@ -7,6 +7,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import NextI18Next from '../i18n';
 
 
+
 function TitleText(props:any) {
   return (
     <Typography variant='body1' {...props} >
@@ -52,13 +53,17 @@ const useStyles = makeStyles((theme: Theme) =>
 function Header() {
   const classes = useStyles();
   const loggedIn = React.useContext(LoginStateContext);
+  console.log('loggedin', loggedIn)
   const client = useApolloClient();
+  console.log('client', client)
   return(
     <AppBar position="static" color='inherit'>
       <Toolbar>
         <LogoImage className={classes.avatar} />
         <TitleText className={classes.title} />
-        { loggedIn && <LogOutButton onclick={() => signOut(client)}/>}
+        { loggedIn && <LogOutButton 
+          onclick={() => signOut(client)}/>
+        }
       </Toolbar>
     </AppBar>
   )

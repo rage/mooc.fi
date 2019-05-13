@@ -52,6 +52,10 @@ const RegisterCompletion = ({ t }) => {
     const { loading, error, data } = useQuery<UserOverViewData>(
         UserOverViewQuery
       );
+    //breaks when logging out because before the redirect for a moment currentUser is not defined
+    //so this fixes it by giving the email a value even when no currentUser 
+    //const email = data ? data.currentUser.email : ''
+    console.log(data)
     if(error){
         console.log('no work')
     }

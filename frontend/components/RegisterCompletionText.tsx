@@ -43,6 +43,7 @@ type RegProps = {
   }
 function RegisterCompletionText(props: RegProps)
 {
+  
   const classes = useStyles()
   return(
     <Paper className={classes.paper}>
