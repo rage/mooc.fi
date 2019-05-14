@@ -13,6 +13,8 @@ export async function doIt(course) {
   let info;
   if (course == "elements-of-ai"){
     info = await getElementsOfAiInfo()
+  } else {
+    info = await getCourseInfo(course)
   }
   return info
 }
