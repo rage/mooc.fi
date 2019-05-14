@@ -2,7 +2,15 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregateCourse {
+export const typeDefs = /* GraphQL */ `type AggregateCompletion {
+  count: Int!
+}
+
+type AggregateCompletionRegistered {
+  count: Int!
+}
+
+type AggregateCourse {
   count: Int!
 }
 
@@ -16,6 +24,238 @@ type AggregateUser {
 
 type BatchPayload {
   count: Long!
+}
+
+type Completion {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  course: Course!
+}
+
+type CompletionConnection {
+  pageInfo: PageInfo!
+  edges: [CompletionEdge]!
+  aggregate: AggregateCompletion!
+}
+
+input CompletionCreateInput {
+  user: UserCreateOneInput!
+  course: CourseCreateOneInput!
+}
+
+type CompletionEdge {
+  node: Completion!
+  cursor: String!
+}
+
+enum CompletionOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type CompletionPreviousValues {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CompletionRegistered {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  course: Course!
+  organisation: String!
+}
+
+type CompletionRegisteredConnection {
+  pageInfo: PageInfo!
+  edges: [CompletionRegisteredEdge]!
+  aggregate: AggregateCompletionRegistered!
+}
+
+input CompletionRegisteredCreateInput {
+  user: UserCreateOneInput!
+  course: CourseCreateOneInput!
+  organisation: String!
+}
+
+type CompletionRegisteredEdge {
+  node: CompletionRegistered!
+  cursor: String!
+}
+
+enum CompletionRegisteredOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  organisation_ASC
+  organisation_DESC
+}
+
+type CompletionRegisteredPreviousValues {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  organisation: String!
+}
+
+type CompletionRegisteredSubscriptionPayload {
+  mutation: MutationType!
+  node: CompletionRegistered
+  updatedFields: [String!]
+  previousValues: CompletionRegisteredPreviousValues
+}
+
+input CompletionRegisteredSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CompletionRegisteredWhereInput
+  AND: [CompletionRegisteredSubscriptionWhereInput!]
+  OR: [CompletionRegisteredSubscriptionWhereInput!]
+  NOT: [CompletionRegisteredSubscriptionWhereInput!]
+}
+
+input CompletionRegisteredUpdateInput {
+  user: UserUpdateOneRequiredInput
+  course: CourseUpdateOneRequiredInput
+  organisation: String
+}
+
+input CompletionRegisteredUpdateManyMutationInput {
+  organisation: String
+}
+
+input CompletionRegisteredWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  user: UserWhereInput
+  course: CourseWhereInput
+  organisation: String
+  organisation_not: String
+  organisation_in: [String!]
+  organisation_not_in: [String!]
+  organisation_lt: String
+  organisation_lte: String
+  organisation_gt: String
+  organisation_gte: String
+  organisation_contains: String
+  organisation_not_contains: String
+  organisation_starts_with: String
+  organisation_not_starts_with: String
+  organisation_ends_with: String
+  organisation_not_ends_with: String
+  AND: [CompletionRegisteredWhereInput!]
+  OR: [CompletionRegisteredWhereInput!]
+  NOT: [CompletionRegisteredWhereInput!]
+}
+
+input CompletionRegisteredWhereUniqueInput {
+  id: UUID
+}
+
+type CompletionSubscriptionPayload {
+  mutation: MutationType!
+  node: Completion
+  updatedFields: [String!]
+  previousValues: CompletionPreviousValues
+}
+
+input CompletionSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CompletionWhereInput
+  AND: [CompletionSubscriptionWhereInput!]
+  OR: [CompletionSubscriptionWhereInput!]
+  NOT: [CompletionSubscriptionWhereInput!]
+}
+
+input CompletionUpdateInput {
+  user: UserUpdateOneRequiredInput
+  course: CourseUpdateOneRequiredInput
+}
+
+input CompletionWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  user: UserWhereInput
+  course: CourseWhereInput
+  AND: [CompletionWhereInput!]
+  OR: [CompletionWhereInput!]
+  NOT: [CompletionWhereInput!]
+}
+
+input CompletionWhereUniqueInput {
+  id: UUID
 }
 
 type Course {
@@ -37,6 +277,11 @@ input CourseCreateInput {
   name: String!
   slug: String!
   open_university_courses: OpenUniversityCourseCreateManyWithoutCourseInput
+}
+
+input CourseCreateOneInput {
+  create: CourseCreateInput
+  connect: CourseWhereUniqueInput
 }
 
 input CourseCreateOneWithoutOpen_university_coursesInput {
@@ -93,6 +338,12 @@ input CourseSubscriptionWhereInput {
   NOT: [CourseSubscriptionWhereInput!]
 }
 
+input CourseUpdateDataInput {
+  name: String
+  slug: String
+  open_university_courses: OpenUniversityCourseUpdateManyWithoutCourseInput
+}
+
 input CourseUpdateInput {
   name: String
   slug: String
@@ -102,6 +353,13 @@ input CourseUpdateInput {
 input CourseUpdateManyMutationInput {
   name: String
   slug: String
+}
+
+input CourseUpdateOneRequiredInput {
+  create: CourseCreateInput
+  update: CourseUpdateDataInput
+  upsert: CourseUpsertNestedInput
+  connect: CourseWhereUniqueInput
 }
 
 input CourseUpdateOneRequiredWithoutOpen_university_coursesInput {
@@ -114,6 +372,11 @@ input CourseUpdateOneRequiredWithoutOpen_university_coursesInput {
 input CourseUpdateWithoutOpen_university_coursesDataInput {
   name: String
   slug: String
+}
+
+input CourseUpsertNestedInput {
+  update: CourseUpdateDataInput!
+  create: CourseCreateInput!
 }
 
 input CourseUpsertWithoutOpen_university_coursesInput {
@@ -198,6 +461,17 @@ scalar DateTime
 scalar Long
 
 type Mutation {
+  createCompletion(data: CompletionCreateInput!): Completion!
+  updateCompletion(data: CompletionUpdateInput!, where: CompletionWhereUniqueInput!): Completion
+  upsertCompletion(where: CompletionWhereUniqueInput!, create: CompletionCreateInput!, update: CompletionUpdateInput!): Completion!
+  deleteCompletion(where: CompletionWhereUniqueInput!): Completion
+  deleteManyCompletions(where: CompletionWhereInput): BatchPayload!
+  createCompletionRegistered(data: CompletionRegisteredCreateInput!): CompletionRegistered!
+  updateCompletionRegistered(data: CompletionRegisteredUpdateInput!, where: CompletionRegisteredWhereUniqueInput!): CompletionRegistered
+  updateManyCompletionRegistereds(data: CompletionRegisteredUpdateManyMutationInput!, where: CompletionRegisteredWhereInput): BatchPayload!
+  upsertCompletionRegistered(where: CompletionRegisteredWhereUniqueInput!, create: CompletionRegisteredCreateInput!, update: CompletionRegisteredUpdateInput!): CompletionRegistered!
+  deleteCompletionRegistered(where: CompletionRegisteredWhereUniqueInput!): CompletionRegistered
+  deleteManyCompletionRegistereds(where: CompletionRegisteredWhereInput): BatchPayload!
   createCourse(data: CourseCreateInput!): Course!
   updateCourse(data: CourseUpdateInput!, where: CourseWhereUniqueInput!): Course
   updateManyCourses(data: CourseUpdateManyMutationInput!, where: CourseWhereInput): BatchPayload!
@@ -456,6 +730,12 @@ type PageInfo {
 }
 
 type Query {
+  completion(where: CompletionWhereUniqueInput!): Completion
+  completions(where: CompletionWhereInput, orderBy: CompletionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Completion]!
+  completionsConnection(where: CompletionWhereInput, orderBy: CompletionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompletionConnection!
+  completionRegistered(where: CompletionRegisteredWhereUniqueInput!): CompletionRegistered
+  completionRegistereds(where: CompletionRegisteredWhereInput, orderBy: CompletionRegisteredOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CompletionRegistered]!
+  completionRegisteredsConnection(where: CompletionRegisteredWhereInput, orderBy: CompletionRegisteredOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompletionRegisteredConnection!
   course(where: CourseWhereUniqueInput!): Course
   courses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course]!
   coursesConnection(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CourseConnection!
@@ -469,6 +749,8 @@ type Query {
 }
 
 type Subscription {
+  completion(where: CompletionSubscriptionWhereInput): CompletionSubscriptionPayload
+  completionRegistered(where: CompletionRegisteredSubscriptionWhereInput): CompletionRegisteredSubscriptionPayload
   course(where: CourseSubscriptionWhereInput): CourseSubscriptionPayload
   openUniversityCourse(where: OpenUniversityCourseSubscriptionWhereInput): OpenUniversityCourseSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
@@ -484,6 +766,7 @@ type User {
   email: String!
   administrator: Boolean!
   completed_enough: Boolean!
+  real_student_number: String
 }
 
 type UserConnection {
@@ -499,6 +782,12 @@ input UserCreateInput {
   email: String!
   administrator: Boolean!
   completed_enough: Boolean
+  real_student_number: String
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 type UserEdge {
@@ -525,6 +814,8 @@ enum UserOrderByInput {
   administrator_DESC
   completed_enough_ASC
   completed_enough_DESC
+  real_student_number_ASC
+  real_student_number_DESC
 }
 
 type UserPreviousValues {
@@ -537,6 +828,7 @@ type UserPreviousValues {
   email: String!
   administrator: Boolean!
   completed_enough: Boolean!
+  real_student_number: String
 }
 
 type UserSubscriptionPayload {
@@ -557,6 +849,16 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  upstream_id: Int
+  first_name: String
+  last_name: String
+  email: String
+  administrator: Boolean
+  completed_enough: Boolean
+  real_student_number: String
+}
+
 input UserUpdateInput {
   upstream_id: Int
   first_name: String
@@ -564,6 +866,7 @@ input UserUpdateInput {
   email: String
   administrator: Boolean
   completed_enough: Boolean
+  real_student_number: String
 }
 
 input UserUpdateManyMutationInput {
@@ -573,6 +876,19 @@ input UserUpdateManyMutationInput {
   email: String
   administrator: Boolean
   completed_enough: Boolean
+  real_student_number: String
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserWhereInput {
@@ -660,6 +976,20 @@ input UserWhereInput {
   administrator_not: Boolean
   completed_enough: Boolean
   completed_enough_not: Boolean
+  real_student_number: String
+  real_student_number_not: String
+  real_student_number_in: [String!]
+  real_student_number_not_in: [String!]
+  real_student_number_lt: String
+  real_student_number_lte: String
+  real_student_number_gt: String
+  real_student_number_gte: String
+  real_student_number_contains: String
+  real_student_number_not_contains: String
+  real_student_number_starts_with: String
+  real_student_number_not_starts_with: String
+  real_student_number_ends_with: String
+  real_student_number_not_ends_with: String
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

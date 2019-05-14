@@ -14,6 +14,10 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
   U[keyof U];
 
 export interface Exists {
+  completion: (where?: CompletionWhereInput) => Promise<boolean>;
+  completionRegistered: (
+    where?: CompletionRegisteredWhereInput
+  ) => Promise<boolean>;
   course: (where?: CourseWhereInput) => Promise<boolean>;
   openUniversityCourse: (
     where?: OpenUniversityCourseWhereInput
@@ -40,6 +44,54 @@ export interface Prisma {
    * Queries
    */
 
+  completion: (where: CompletionWhereUniqueInput) => CompletionPromise;
+  completions: (
+    args?: {
+      where?: CompletionWhereInput;
+      orderBy?: CompletionOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<Completion>;
+  completionsConnection: (
+    args?: {
+      where?: CompletionWhereInput;
+      orderBy?: CompletionOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => CompletionConnectionPromise;
+  completionRegistered: (
+    where: CompletionRegisteredWhereUniqueInput
+  ) => CompletionRegisteredPromise;
+  completionRegistereds: (
+    args?: {
+      where?: CompletionRegisteredWhereInput;
+      orderBy?: CompletionRegisteredOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<CompletionRegistered>;
+  completionRegisteredsConnection: (
+    args?: {
+      where?: CompletionRegisteredWhereInput;
+      orderBy?: CompletionRegisteredOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => CompletionRegisteredConnectionPromise;
   course: (where: CourseWhereUniqueInput) => CoursePromise;
   courses: (
     args?: {
@@ -117,6 +169,47 @@ export interface Prisma {
    * Mutations
    */
 
+  createCompletion: (data: CompletionCreateInput) => CompletionPromise;
+  updateCompletion: (
+    args: { data: CompletionUpdateInput; where: CompletionWhereUniqueInput }
+  ) => CompletionPromise;
+  upsertCompletion: (
+    args: {
+      where: CompletionWhereUniqueInput;
+      create: CompletionCreateInput;
+      update: CompletionUpdateInput;
+    }
+  ) => CompletionPromise;
+  deleteCompletion: (where: CompletionWhereUniqueInput) => CompletionPromise;
+  deleteManyCompletions: (where?: CompletionWhereInput) => BatchPayloadPromise;
+  createCompletionRegistered: (
+    data: CompletionRegisteredCreateInput
+  ) => CompletionRegisteredPromise;
+  updateCompletionRegistered: (
+    args: {
+      data: CompletionRegisteredUpdateInput;
+      where: CompletionRegisteredWhereUniqueInput;
+    }
+  ) => CompletionRegisteredPromise;
+  updateManyCompletionRegistereds: (
+    args: {
+      data: CompletionRegisteredUpdateManyMutationInput;
+      where?: CompletionRegisteredWhereInput;
+    }
+  ) => BatchPayloadPromise;
+  upsertCompletionRegistered: (
+    args: {
+      where: CompletionRegisteredWhereUniqueInput;
+      create: CompletionRegisteredCreateInput;
+      update: CompletionRegisteredUpdateInput;
+    }
+  ) => CompletionRegisteredPromise;
+  deleteCompletionRegistered: (
+    where: CompletionRegisteredWhereUniqueInput
+  ) => CompletionRegisteredPromise;
+  deleteManyCompletionRegistereds: (
+    where?: CompletionRegisteredWhereInput
+  ) => BatchPayloadPromise;
   createCourse: (data: CourseCreateInput) => CoursePromise;
   updateCourse: (
     args: { data: CourseUpdateInput; where: CourseWhereUniqueInput }
@@ -186,6 +279,12 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  completion: (
+    where?: CompletionSubscriptionWhereInput
+  ) => CompletionSubscriptionPayloadSubscription;
+  completionRegistered: (
+    where?: CompletionRegisteredSubscriptionWhereInput
+  ) => CompletionRegisteredSubscriptionPayloadSubscription;
   course: (
     where?: CourseSubscriptionWhereInput
   ) => CourseSubscriptionPayloadSubscription;
@@ -214,6 +313,24 @@ export type OpenUniversityCourseOrderByInput =
   | "updatedAt_DESC"
   | "course_code_ASC"
   | "course_code_DESC";
+
+export type CompletionOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type CompletionRegisteredOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "organisation_ASC"
+  | "organisation_DESC";
 
 export type CourseOrderByInput =
   | "id_ASC"
@@ -245,13 +362,14 @@ export type UserOrderByInput =
   | "administrator_ASC"
   | "administrator_DESC"
   | "completed_enough_ASC"
-  | "completed_enough_DESC";
+  | "completed_enough_DESC"
+  | "real_student_number_ASC"
+  | "real_student_number_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export type CourseWhereUniqueInput = AtLeastOne<{
+export type CompletionWhereUniqueInput = AtLeastOne<{
   id: UUID;
-  slug?: String;
 }>;
 
 export interface OpenUniversityCourseWhereInput {
@@ -372,15 +490,43 @@ export interface CourseWhereInput {
   NOT?: CourseWhereInput[] | CourseWhereInput;
 }
 
-export type OpenUniversityCourseWhereUniqueInput = AtLeastOne<{
-  id: UUID;
-  course_code?: String;
-}>;
-
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-  upstream_id?: Int;
-}>;
+export interface CompletionWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  user?: UserWhereInput;
+  course?: CourseWhereInput;
+  AND?: CompletionWhereInput[] | CompletionWhereInput;
+  OR?: CompletionWhereInput[] | CompletionWhereInput;
+  NOT?: CompletionWhereInput[] | CompletionWhereInput;
+}
 
 export interface UserWhereInput {
   id?: ID_Input;
@@ -467,9 +613,119 @@ export interface UserWhereInput {
   administrator_not?: Boolean;
   completed_enough?: Boolean;
   completed_enough_not?: Boolean;
+  real_student_number?: String;
+  real_student_number_not?: String;
+  real_student_number_in?: String[] | String;
+  real_student_number_not_in?: String[] | String;
+  real_student_number_lt?: String;
+  real_student_number_lte?: String;
+  real_student_number_gt?: String;
+  real_student_number_gte?: String;
+  real_student_number_contains?: String;
+  real_student_number_not_contains?: String;
+  real_student_number_starts_with?: String;
+  real_student_number_not_starts_with?: String;
+  real_student_number_ends_with?: String;
+  real_student_number_not_ends_with?: String;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
+}
+
+export type CompletionRegisteredWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+}>;
+
+export interface CompletionRegisteredWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  user?: UserWhereInput;
+  course?: CourseWhereInput;
+  organisation?: String;
+  organisation_not?: String;
+  organisation_in?: String[] | String;
+  organisation_not_in?: String[] | String;
+  organisation_lt?: String;
+  organisation_lte?: String;
+  organisation_gt?: String;
+  organisation_gte?: String;
+  organisation_contains?: String;
+  organisation_not_contains?: String;
+  organisation_starts_with?: String;
+  organisation_not_starts_with?: String;
+  organisation_ends_with?: String;
+  organisation_not_ends_with?: String;
+  AND?: CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput;
+  OR?: CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput;
+  NOT?: CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput;
+}
+
+export type CourseWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+  slug?: String;
+}>;
+
+export type OpenUniversityCourseWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+  course_code?: String;
+}>;
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  upstream_id?: Int;
+}>;
+
+export interface CompletionCreateInput {
+  user: UserCreateOneInput;
+  course: CourseCreateOneInput;
+}
+
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateInput {
+  upstream_id: Int;
+  first_name?: String;
+  last_name?: String;
+  email: String;
+  administrator: Boolean;
+  completed_enough?: Boolean;
+  real_student_number?: String;
+}
+
+export interface CourseCreateOneInput {
+  create?: CourseCreateInput;
+  connect?: CourseWhereUniqueInput;
 }
 
 export interface CourseCreateInput {
@@ -491,7 +747,41 @@ export interface OpenUniversityCourseCreateWithoutCourseInput {
   course_code: String;
 }
 
-export interface CourseUpdateInput {
+export interface CompletionUpdateInput {
+  user?: UserUpdateOneRequiredInput;
+  course?: CourseUpdateOneRequiredInput;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateDataInput {
+  upstream_id?: Int;
+  first_name?: String;
+  last_name?: String;
+  email?: String;
+  administrator?: Boolean;
+  completed_enough?: Boolean;
+  real_student_number?: String;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface CourseUpdateOneRequiredInput {
+  create?: CourseCreateInput;
+  update?: CourseUpdateDataInput;
+  upsert?: CourseUpsertNestedInput;
+  connect?: CourseWhereUniqueInput;
+}
+
+export interface CourseUpdateDataInput {
   name?: String;
   slug?: String;
   open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput;
@@ -607,6 +897,33 @@ export interface OpenUniversityCourseUpdateManyDataInput {
   course_code?: String;
 }
 
+export interface CourseUpsertNestedInput {
+  update: CourseUpdateDataInput;
+  create: CourseCreateInput;
+}
+
+export interface CompletionRegisteredCreateInput {
+  user: UserCreateOneInput;
+  course: CourseCreateOneInput;
+  organisation: String;
+}
+
+export interface CompletionRegisteredUpdateInput {
+  user?: UserUpdateOneRequiredInput;
+  course?: CourseUpdateOneRequiredInput;
+  organisation?: String;
+}
+
+export interface CompletionRegisteredUpdateManyMutationInput {
+  organisation?: String;
+}
+
+export interface CourseUpdateInput {
+  name?: String;
+  slug?: String;
+  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput;
+}
+
 export interface CourseUpdateManyMutationInput {
   name?: String;
   slug?: String;
@@ -653,15 +970,6 @@ export interface OpenUniversityCourseUpdateManyMutationInput {
   course_code?: String;
 }
 
-export interface UserCreateInput {
-  upstream_id: Int;
-  first_name?: String;
-  last_name?: String;
-  email: String;
-  administrator: Boolean;
-  completed_enough?: Boolean;
-}
-
 export interface UserUpdateInput {
   upstream_id?: Int;
   first_name?: String;
@@ -669,6 +977,7 @@ export interface UserUpdateInput {
   email?: String;
   administrator?: Boolean;
   completed_enough?: Boolean;
+  real_student_number?: String;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -678,6 +987,35 @@ export interface UserUpdateManyMutationInput {
   email?: String;
   administrator?: Boolean;
   completed_enough?: Boolean;
+  real_student_number?: String;
+}
+
+export interface CompletionSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: CompletionWhereInput;
+  AND?: CompletionSubscriptionWhereInput[] | CompletionSubscriptionWhereInput;
+  OR?: CompletionSubscriptionWhereInput[] | CompletionSubscriptionWhereInput;
+  NOT?: CompletionSubscriptionWhereInput[] | CompletionSubscriptionWhereInput;
+}
+
+export interface CompletionRegisteredSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: CompletionRegisteredWhereInput;
+  AND?:
+    | CompletionRegisteredSubscriptionWhereInput[]
+    | CompletionRegisteredSubscriptionWhereInput;
+  OR?:
+    | CompletionRegisteredSubscriptionWhereInput[]
+    | CompletionRegisteredSubscriptionWhereInput;
+  NOT?:
+    | CompletionRegisteredSubscriptionWhereInput[]
+    | CompletionRegisteredSubscriptionWhereInput;
 }
 
 export interface CourseSubscriptionWhereInput {
@@ -721,6 +1059,71 @@ export interface UserSubscriptionWhereInput {
 
 export interface NodeNode {
   id: ID_Output;
+}
+
+export interface Completion {
+  id: UUID;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface CompletionPromise extends Promise<Completion>, Fragmentable {
+  id: () => Promise<UUID>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  user: <T = UserPromise>() => T;
+  course: <T = CoursePromise>() => T;
+}
+
+export interface CompletionSubscription
+  extends Promise<AsyncIterator<Completion>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  user: <T = UserSubscription>() => T;
+  course: <T = CourseSubscription>() => T;
+}
+
+export interface User {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  upstream_id: Int;
+  first_name?: String;
+  last_name?: String;
+  email: String;
+  administrator: Boolean;
+  completed_enough: Boolean;
+  real_student_number?: String;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  upstream_id: () => Promise<Int>;
+  first_name: () => Promise<String>;
+  last_name: () => Promise<String>;
+  email: () => Promise<String>;
+  administrator: () => Promise<Boolean>;
+  completed_enough: () => Promise<Boolean>;
+  real_student_number: () => Promise<String>;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  upstream_id: () => Promise<AsyncIterator<Int>>;
+  first_name: () => Promise<AsyncIterator<String>>;
+  last_name: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  administrator: () => Promise<AsyncIterator<Boolean>>;
+  completed_enough: () => Promise<AsyncIterator<Boolean>>;
+  real_student_number: () => Promise<AsyncIterator<String>>;
 }
 
 export interface Course {
@@ -800,25 +1203,25 @@ export interface OpenUniversityCourseSubscription
   course: <T = CourseSubscription>() => T;
 }
 
-export interface CourseConnection {
+export interface CompletionConnection {
   pageInfo: PageInfo;
-  edges: CourseEdge[];
+  edges: CompletionEdge[];
 }
 
-export interface CourseConnectionPromise
-  extends Promise<CourseConnection>,
+export interface CompletionConnectionPromise
+  extends Promise<CompletionConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<CourseEdge>>() => T;
-  aggregate: <T = AggregateCoursePromise>() => T;
+  edges: <T = FragmentableArray<CompletionEdge>>() => T;
+  aggregate: <T = AggregateCompletionPromise>() => T;
 }
 
-export interface CourseConnectionSubscription
-  extends Promise<AsyncIterator<CourseConnection>>,
+export interface CompletionConnectionSubscription
+  extends Promise<AsyncIterator<CompletionConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<CourseEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateCourseSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CompletionEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCompletionSubscription>() => T;
 }
 
 export interface PageInfo {
@@ -842,6 +1245,149 @@ export interface PageInfoSubscription
   hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
   startCursor: () => Promise<AsyncIterator<String>>;
   endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CompletionEdge {
+  node: Completion;
+  cursor: String;
+}
+
+export interface CompletionEdgePromise
+  extends Promise<CompletionEdge>,
+    Fragmentable {
+  node: <T = CompletionPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface CompletionEdgeSubscription
+  extends Promise<AsyncIterator<CompletionEdge>>,
+    Fragmentable {
+  node: <T = CompletionSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateCompletion {
+  count: Int;
+}
+
+export interface AggregateCompletionPromise
+  extends Promise<AggregateCompletion>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateCompletionSubscription
+  extends Promise<AsyncIterator<AggregateCompletion>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface CompletionRegistered {
+  id: UUID;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  organisation: String;
+}
+
+export interface CompletionRegisteredPromise
+  extends Promise<CompletionRegistered>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  user: <T = UserPromise>() => T;
+  course: <T = CoursePromise>() => T;
+  organisation: () => Promise<String>;
+}
+
+export interface CompletionRegisteredSubscription
+  extends Promise<AsyncIterator<CompletionRegistered>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  user: <T = UserSubscription>() => T;
+  course: <T = CourseSubscription>() => T;
+  organisation: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CompletionRegisteredConnection {
+  pageInfo: PageInfo;
+  edges: CompletionRegisteredEdge[];
+}
+
+export interface CompletionRegisteredConnectionPromise
+  extends Promise<CompletionRegisteredConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CompletionRegisteredEdge>>() => T;
+  aggregate: <T = AggregateCompletionRegisteredPromise>() => T;
+}
+
+export interface CompletionRegisteredConnectionSubscription
+  extends Promise<AsyncIterator<CompletionRegisteredConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <
+    T = Promise<AsyncIterator<CompletionRegisteredEdgeSubscription>>
+  >() => T;
+  aggregate: <T = AggregateCompletionRegisteredSubscription>() => T;
+}
+
+export interface CompletionRegisteredEdge {
+  node: CompletionRegistered;
+  cursor: String;
+}
+
+export interface CompletionRegisteredEdgePromise
+  extends Promise<CompletionRegisteredEdge>,
+    Fragmentable {
+  node: <T = CompletionRegisteredPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface CompletionRegisteredEdgeSubscription
+  extends Promise<AsyncIterator<CompletionRegisteredEdge>>,
+    Fragmentable {
+  node: <T = CompletionRegisteredSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateCompletionRegistered {
+  count: Int;
+}
+
+export interface AggregateCompletionRegisteredPromise
+  extends Promise<AggregateCompletionRegistered>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateCompletionRegisteredSubscription
+  extends Promise<AsyncIterator<AggregateCompletionRegistered>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface CourseConnection {
+  pageInfo: PageInfo;
+  edges: CourseEdge[];
+}
+
+export interface CourseConnectionPromise
+  extends Promise<CourseConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CourseEdge>>() => T;
+  aggregate: <T = AggregateCoursePromise>() => T;
+}
+
+export interface CourseConnectionSubscription
+  extends Promise<AsyncIterator<CourseConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CourseEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCourseSubscription>() => T;
 }
 
 export interface CourseEdge {
@@ -935,44 +1481,6 @@ export interface AggregateOpenUniversityCourseSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface User {
-  id: ID_Output;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-  upstream_id: Int;
-  first_name?: String;
-  last_name?: String;
-  email: String;
-  administrator: Boolean;
-  completed_enough: Boolean;
-}
-
-export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  upstream_id: () => Promise<Int>;
-  first_name: () => Promise<String>;
-  last_name: () => Promise<String>;
-  email: () => Promise<String>;
-  administrator: () => Promise<Boolean>;
-  completed_enough: () => Promise<Boolean>;
-}
-
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  upstream_id: () => Promise<AsyncIterator<Int>>;
-  first_name: () => Promise<AsyncIterator<String>>;
-  last_name: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  administrator: () => Promise<AsyncIterator<Boolean>>;
-  completed_enough: () => Promise<AsyncIterator<Boolean>>;
-}
-
 export interface UserConnection {
   pageInfo: PageInfo;
   edges: UserEdge[];
@@ -1041,6 +1549,103 @@ export interface BatchPayloadSubscription
   extends Promise<AsyncIterator<BatchPayload>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface CompletionSubscriptionPayload {
+  mutation: MutationType;
+  node: Completion;
+  updatedFields: String[];
+  previousValues: CompletionPreviousValues;
+}
+
+export interface CompletionSubscriptionPayloadPromise
+  extends Promise<CompletionSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CompletionPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CompletionPreviousValuesPromise>() => T;
+}
+
+export interface CompletionSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CompletionSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CompletionSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CompletionPreviousValuesSubscription>() => T;
+}
+
+export interface CompletionPreviousValues {
+  id: UUID;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface CompletionPreviousValuesPromise
+  extends Promise<CompletionPreviousValues>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface CompletionPreviousValuesSubscription
+  extends Promise<AsyncIterator<CompletionPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface CompletionRegisteredSubscriptionPayload {
+  mutation: MutationType;
+  node: CompletionRegistered;
+  updatedFields: String[];
+  previousValues: CompletionRegisteredPreviousValues;
+}
+
+export interface CompletionRegisteredSubscriptionPayloadPromise
+  extends Promise<CompletionRegisteredSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CompletionRegisteredPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CompletionRegisteredPreviousValuesPromise>() => T;
+}
+
+export interface CompletionRegisteredSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CompletionRegisteredSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CompletionRegisteredSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CompletionRegisteredPreviousValuesSubscription>() => T;
+}
+
+export interface CompletionRegisteredPreviousValues {
+  id: UUID;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  organisation: String;
+}
+
+export interface CompletionRegisteredPreviousValuesPromise
+  extends Promise<CompletionRegisteredPreviousValues>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  organisation: () => Promise<String>;
+}
+
+export interface CompletionRegisteredPreviousValuesSubscription
+  extends Promise<AsyncIterator<CompletionRegisteredPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  organisation: () => Promise<AsyncIterator<String>>;
 }
 
 export interface CourseSubscriptionPayload {
@@ -1181,6 +1786,7 @@ export interface UserPreviousValues {
   email: String;
   administrator: Boolean;
   completed_enough: Boolean;
+  real_student_number?: String;
 }
 
 export interface UserPreviousValuesPromise
@@ -1195,6 +1801,7 @@ export interface UserPreviousValuesPromise
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
   completed_enough: () => Promise<Boolean>;
+  real_student_number: () => Promise<String>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -1209,14 +1816,10 @@ export interface UserPreviousValuesSubscription
   email: () => Promise<AsyncIterator<String>>;
   administrator: () => Promise<AsyncIterator<Boolean>>;
   completed_enough: () => Promise<AsyncIterator<Boolean>>;
+  real_student_number: () => Promise<AsyncIterator<String>>;
 }
 
 export type UUID = string;
-
-/*
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-*/
-export type String = string;
 
 /*
 DateTime scalar input type, allowing Date
@@ -1229,20 +1832,25 @@ DateTime scalar output type, which is always a string
 export type DateTimeOutput = string;
 
 /*
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+*/
+export type ID_Input = string | number;
+export type ID_Output = string;
+
+/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
 export type Int = number;
 
 /*
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+*/
+export type String = string;
+
+/*
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean;
-
-/*
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-*/
-export type ID_Input = string | number;
-export type ID_Output = string;
 
 export type Long = string;
 
@@ -1261,6 +1869,14 @@ export const models: Model[] = [
   },
   {
     name: "OpenUniversityCourse",
+    embedded: false
+  },
+  {
+    name: "Completion",
+    embedded: false
+  },
+  {
+    name: "CompletionRegistered",
     embedded: false
   }
 ];

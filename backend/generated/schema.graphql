@@ -181,6 +181,7 @@ type User {
   first_name: String
   id: ID!
   last_name: String
+  real_student_number: String
   updatedAt: DateTime!
   upstream_id: Int!
 }

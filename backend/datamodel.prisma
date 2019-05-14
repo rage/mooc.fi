@@ -8,6 +8,7 @@ type User {
   email: String!
   administrator: Boolean!
   completed_enough: Boolean! @default(value: "false")
+  real_student_number: String
 }
 
 type Course {
@@ -27,3 +28,19 @@ type OpenUniversityCourse {
   course: Course! @relation(name: "CourseToOpenUniversityCourse")
 }
 
+type Completion {
+  id: UUID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  user: User! @relation(name: "CompletionToUser")
+  course: Course! @relation(name: "CompletionToCourse")
+}
+
+type CompletionRegistered {
+  id: UUID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  user: User! @relation(name: "CompletionRegisteredToUser")
+  course: Course! @relation(name: "CompletionRegisteredToCourse")
+  organisation: String!
+}

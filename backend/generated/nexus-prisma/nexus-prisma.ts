@@ -28,6 +28,14 @@ export interface NexusPrismaTypes {
       OpenUniversityCourseConnection: OpenUniversityCourseConnectionObject
       OpenUniversityCourseEdge: OpenUniversityCourseEdgeObject
       AggregateOpenUniversityCourse: AggregateOpenUniversityCourseObject
+      Completion: CompletionObject
+      CompletionConnection: CompletionConnectionObject
+      CompletionEdge: CompletionEdgeObject
+      AggregateCompletion: AggregateCompletionObject
+      CompletionRegistered: CompletionRegisteredObject
+      CompletionRegisteredConnection: CompletionRegisteredConnectionObject
+      CompletionRegisteredEdge: CompletionRegisteredEdgeObject
+      AggregateCompletionRegistered: AggregateCompletionRegisteredObject
       Mutation: MutationObject
       BatchPayload: BatchPayloadObject
       Subscription: SubscriptionObject
@@ -37,6 +45,10 @@ export interface NexusPrismaTypes {
       CoursePreviousValues: CoursePreviousValuesObject
       OpenUniversityCourseSubscriptionPayload: OpenUniversityCourseSubscriptionPayloadObject
       OpenUniversityCoursePreviousValues: OpenUniversityCoursePreviousValuesObject
+      CompletionSubscriptionPayload: CompletionSubscriptionPayloadObject
+      CompletionPreviousValues: CompletionPreviousValuesObject
+      CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadObject
+      CompletionRegisteredPreviousValues: CompletionRegisteredPreviousValuesObject
     }
     fieldsDetails: {
       Query: QueryFieldDetails
@@ -53,6 +65,14 @@ export interface NexusPrismaTypes {
       OpenUniversityCourseConnection: OpenUniversityCourseConnectionFieldDetails
       OpenUniversityCourseEdge: OpenUniversityCourseEdgeFieldDetails
       AggregateOpenUniversityCourse: AggregateOpenUniversityCourseFieldDetails
+      Completion: CompletionFieldDetails
+      CompletionConnection: CompletionConnectionFieldDetails
+      CompletionEdge: CompletionEdgeFieldDetails
+      AggregateCompletion: AggregateCompletionFieldDetails
+      CompletionRegistered: CompletionRegisteredFieldDetails
+      CompletionRegisteredConnection: CompletionRegisteredConnectionFieldDetails
+      CompletionRegisteredEdge: CompletionRegisteredEdgeFieldDetails
+      AggregateCompletionRegistered: AggregateCompletionRegisteredFieldDetails
       Mutation: MutationFieldDetails
       BatchPayload: BatchPayloadFieldDetails
       Subscription: SubscriptionFieldDetails
@@ -62,6 +82,10 @@ export interface NexusPrismaTypes {
       CoursePreviousValues: CoursePreviousValuesFieldDetails
       OpenUniversityCourseSubscriptionPayload: OpenUniversityCourseSubscriptionPayloadFieldDetails
       OpenUniversityCoursePreviousValues: OpenUniversityCoursePreviousValuesFieldDetails
+      CompletionSubscriptionPayload: CompletionSubscriptionPayloadFieldDetails
+      CompletionPreviousValues: CompletionPreviousValuesFieldDetails
+      CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadFieldDetails
+      CompletionRegisteredPreviousValues: CompletionRegisteredPreviousValuesFieldDetails
     }
   }
   inputTypes: {
@@ -72,6 +96,10 @@ export interface NexusPrismaTypes {
       OpenUniversityCourseWhereInput: OpenUniversityCourseWhereInputInputObject
       CourseWhereInput: CourseWhereInputInputObject
       OpenUniversityCourseWhereUniqueInput: OpenUniversityCourseWhereUniqueInputInputObject
+      CompletionWhereUniqueInput: CompletionWhereUniqueInputInputObject
+      CompletionWhereInput: CompletionWhereInputInputObject
+      CompletionRegisteredWhereUniqueInput: CompletionRegisteredWhereUniqueInputInputObject
+      CompletionRegisteredWhereInput: CompletionRegisteredWhereInputInputObject
       UserCreateInput: UserCreateInputInputObject
       UserUpdateInput: UserUpdateInputInputObject
       UserUpdateManyMutationInput: UserUpdateManyMutationInputInputObject
@@ -95,15 +123,32 @@ export interface NexusPrismaTypes {
       CourseUpdateWithoutOpen_university_coursesDataInput: CourseUpdateWithoutOpen_university_coursesDataInputInputObject
       CourseUpsertWithoutOpen_university_coursesInput: CourseUpsertWithoutOpen_university_coursesInputInputObject
       OpenUniversityCourseUpdateManyMutationInput: OpenUniversityCourseUpdateManyMutationInputInputObject
+      CompletionCreateInput: CompletionCreateInputInputObject
+      UserCreateOneInput: UserCreateOneInputInputObject
+      CourseCreateOneInput: CourseCreateOneInputInputObject
+      CompletionUpdateInput: CompletionUpdateInputInputObject
+      UserUpdateOneRequiredInput: UserUpdateOneRequiredInputInputObject
+      UserUpdateDataInput: UserUpdateDataInputInputObject
+      UserUpsertNestedInput: UserUpsertNestedInputInputObject
+      CourseUpdateOneRequiredInput: CourseUpdateOneRequiredInputInputObject
+      CourseUpdateDataInput: CourseUpdateDataInputInputObject
+      CourseUpsertNestedInput: CourseUpsertNestedInputInputObject
+      CompletionRegisteredCreateInput: CompletionRegisteredCreateInputInputObject
+      CompletionRegisteredUpdateInput: CompletionRegisteredUpdateInputInputObject
+      CompletionRegisteredUpdateManyMutationInput: CompletionRegisteredUpdateManyMutationInputInputObject
       UserSubscriptionWhereInput: UserSubscriptionWhereInputInputObject
       CourseSubscriptionWhereInput: CourseSubscriptionWhereInputInputObject
       OpenUniversityCourseSubscriptionWhereInput: OpenUniversityCourseSubscriptionWhereInputInputObject
+      CompletionSubscriptionWhereInput: CompletionSubscriptionWhereInputInputObject
+      CompletionRegisteredSubscriptionWhereInput: CompletionRegisteredSubscriptionWhereInputInputObject
     }
   }
   enumTypes: {
     UserOrderByInput: UserOrderByInputValues,
     OpenUniversityCourseOrderByInput: OpenUniversityCourseOrderByInputValues,
     CourseOrderByInput: CourseOrderByInputValues,
+    CompletionOrderByInput: CompletionOrderByInputValues,
+    CompletionRegisteredOrderByInput: CompletionRegisteredOrderByInputValues,
     MutationType: MutationTypeValues,
   }
 }
@@ -121,6 +166,12 @@ type QueryObject =
   | { name: 'openUniversityCourse', args?: QueryOpenUniversityCourseArgs[] | false, alias?: string  } 
   | { name: 'openUniversityCourses', args?: QueryOpenUniversityCoursesArgs[] | false, alias?: string  } 
   | { name: 'openUniversityCoursesConnection', args?: QueryOpenUniversityCoursesConnectionArgs[] | false, alias?: string  } 
+  | { name: 'completion', args?: QueryCompletionArgs[] | false, alias?: string  } 
+  | { name: 'completions', args?: QueryCompletionsArgs[] | false, alias?: string  } 
+  | { name: 'completionsConnection', args?: QueryCompletionsConnectionArgs[] | false, alias?: string  } 
+  | { name: 'completionRegistered', args?: QueryCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'completionRegistereds', args?: QueryCompletionRegisteredsArgs[] | false, alias?: string  } 
+  | { name: 'completionRegisteredsConnection', args?: QueryCompletionRegisteredsConnectionArgs[] | false, alias?: string  } 
 
 type QueryFields =
   | 'user'
@@ -132,6 +183,12 @@ type QueryFields =
   | 'openUniversityCourse'
   | 'openUniversityCourses'
   | 'openUniversityCoursesConnection'
+  | 'completion'
+  | 'completions'
+  | 'completionsConnection'
+  | 'completionRegistered'
+  | 'completionRegistereds'
+  | 'completionRegisteredsConnection'
 
 
 type QueryUserArgs =
@@ -181,6 +238,42 @@ type QueryOpenUniversityCoursesArgs =
   | 'first'
   | 'last'
 type QueryOpenUniversityCoursesConnectionArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryCompletionArgs =
+  | 'where'
+type QueryCompletionsArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryCompletionsConnectionArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryCompletionRegisteredArgs =
+  | 'where'
+type QueryCompletionRegisteredsArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryCompletionRegisteredsConnectionArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -308,6 +401,84 @@ export interface QueryFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.OpenUniversityCourseConnection> | prisma.OpenUniversityCourseConnection
   }
+  completion: {
+    type: 'Completion'
+    args: Record<QueryCompletionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where: CompletionWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
+  }
+  completions: {
+    type: 'Completion'
+    args: Record<QueryCompletionsArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: CompletionWhereInput | null, orderBy?: prisma.CompletionOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion[]> | prisma.Completion[]
+  }
+  completionsConnection: {
+    type: 'CompletionConnection'
+    args: Record<QueryCompletionsConnectionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: CompletionWhereInput | null, orderBy?: prisma.CompletionOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionConnection> | prisma.CompletionConnection
+  }
+  completionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<QueryCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where: CompletionRegisteredWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  completionRegistereds: {
+    type: 'CompletionRegistered'
+    args: Record<QueryCompletionRegisteredsArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: CompletionRegisteredWhereInput | null, orderBy?: prisma.CompletionRegisteredOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered[]> | prisma.CompletionRegistered[]
+  }
+  completionRegisteredsConnection: {
+    type: 'CompletionRegisteredConnection'
+    args: Record<QueryCompletionRegisteredsConnectionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: CompletionRegisteredWhereInput | null, orderBy?: prisma.CompletionRegisteredOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredConnection> | prisma.CompletionRegisteredConnection
+  }
 }
   
 
@@ -324,6 +495,7 @@ type UserObject =
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
   | { name: 'completed_enough', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
 
 type UserFields =
   | 'id'
@@ -335,6 +507,7 @@ type UserFields =
   | 'email'
   | 'administrator'
   | 'completed_enough'
+  | 'real_student_number'
 
 
 
@@ -411,6 +584,14 @@ export interface UserFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
 }
@@ -1003,6 +1184,416 @@ export interface AggregateOpenUniversityCourseFieldDetails {
 }
   
 
+// Types for Completion
+
+type CompletionObject =
+  | CompletionFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'user', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+
+type CompletionFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'user'
+  | 'course'
+
+
+
+  
+
+export interface CompletionFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  user: {
+    type: 'User'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Completion">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.User> | prisma.User
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Completion">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
+  }
+}
+  
+
+// Types for CompletionConnection
+
+type CompletionConnectionObject =
+  | CompletionConnectionFields
+  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
+  | { name: 'edges', args?: [] | false, alias?: string  } 
+  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+
+type CompletionConnectionFields =
+  | 'pageInfo'
+  | 'edges'
+  | 'aggregate'
+
+
+
+  
+
+export interface CompletionConnectionFieldDetails {
+  pageInfo: {
+    type: 'PageInfo'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
+  }
+  edges: {
+    type: 'CompletionEdge'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionEdge[]> | prisma.CompletionEdge[]
+  }
+  aggregate: {
+    type: 'AggregateCompletion'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.AggregateCompletion> | prisma.AggregateCompletion
+  }
+}
+  
+
+// Types for CompletionEdge
+
+type CompletionEdgeObject =
+  | CompletionEdgeFields
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'cursor', args?: [] | false, alias?: string  } 
+
+type CompletionEdgeFields =
+  | 'node'
+  | 'cursor'
+
+
+
+  
+
+export interface CompletionEdgeFieldDetails {
+  node: {
+    type: 'Completion'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionEdge">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion> | prisma.Completion
+  }
+  cursor: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for AggregateCompletion
+
+type AggregateCompletionObject =
+  | AggregateCompletionFields
+  | { name: 'count', args?: [] | false, alias?: string  } 
+
+type AggregateCompletionFields =
+  | 'count'
+
+
+
+  
+
+export interface AggregateCompletionFieldDetails {
+  count: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for CompletionRegistered
+
+type CompletionRegisteredObject =
+  | CompletionRegisteredFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'user', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+  | { name: 'organisation', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'user'
+  | 'course'
+  | 'organisation'
+
+
+
+  
+
+export interface CompletionRegisteredFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  user: {
+    type: 'User'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegistered">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.User> | prisma.User
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegistered">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
+  }
+  organisation: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for CompletionRegisteredConnection
+
+type CompletionRegisteredConnectionObject =
+  | CompletionRegisteredConnectionFields
+  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
+  | { name: 'edges', args?: [] | false, alias?: string  } 
+  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredConnectionFields =
+  | 'pageInfo'
+  | 'edges'
+  | 'aggregate'
+
+
+
+  
+
+export interface CompletionRegisteredConnectionFieldDetails {
+  pageInfo: {
+    type: 'PageInfo'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
+  }
+  edges: {
+    type: 'CompletionRegisteredEdge'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredEdge[]> | prisma.CompletionRegisteredEdge[]
+  }
+  aggregate: {
+    type: 'AggregateCompletionRegistered'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.AggregateCompletionRegistered> | prisma.AggregateCompletionRegistered
+  }
+}
+  
+
+// Types for CompletionRegisteredEdge
+
+type CompletionRegisteredEdgeObject =
+  | CompletionRegisteredEdgeFields
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'cursor', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredEdgeFields =
+  | 'node'
+  | 'cursor'
+
+
+
+  
+
+export interface CompletionRegisteredEdgeFieldDetails {
+  node: {
+    type: 'CompletionRegistered'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredEdge">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered> | prisma.CompletionRegistered
+  }
+  cursor: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for AggregateCompletionRegistered
+
+type AggregateCompletionRegisteredObject =
+  | AggregateCompletionRegisteredFields
+  | { name: 'count', args?: [] | false, alias?: string  } 
+
+type AggregateCompletionRegisteredFields =
+  | 'count'
+
+
+
+  
+
+export interface AggregateCompletionRegisteredFieldDetails {
+  count: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
 // Types for Mutation
 
 type MutationObject =
@@ -1025,6 +1616,17 @@ type MutationObject =
   | { name: 'upsertOpenUniversityCourse', args?: MutationUpsertOpenUniversityCourseArgs[] | false, alias?: string  } 
   | { name: 'deleteOpenUniversityCourse', args?: MutationDeleteOpenUniversityCourseArgs[] | false, alias?: string  } 
   | { name: 'deleteManyOpenUniversityCourses', args?: MutationDeleteManyOpenUniversityCoursesArgs[] | false, alias?: string  } 
+  | { name: 'createCompletion', args?: MutationCreateCompletionArgs[] | false, alias?: string  } 
+  | { name: 'updateCompletion', args?: MutationUpdateCompletionArgs[] | false, alias?: string  } 
+  | { name: 'upsertCompletion', args?: MutationUpsertCompletionArgs[] | false, alias?: string  } 
+  | { name: 'deleteCompletion', args?: MutationDeleteCompletionArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyCompletions', args?: MutationDeleteManyCompletionsArgs[] | false, alias?: string  } 
+  | { name: 'createCompletionRegistered', args?: MutationCreateCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'updateCompletionRegistered', args?: MutationUpdateCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'updateManyCompletionRegistereds', args?: MutationUpdateManyCompletionRegisteredsArgs[] | false, alias?: string  } 
+  | { name: 'upsertCompletionRegistered', args?: MutationUpsertCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'deleteCompletionRegistered', args?: MutationDeleteCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyCompletionRegistereds', args?: MutationDeleteManyCompletionRegisteredsArgs[] | false, alias?: string  } 
 
 type MutationFields =
   | 'createUser'
@@ -1045,6 +1647,17 @@ type MutationFields =
   | 'upsertOpenUniversityCourse'
   | 'deleteOpenUniversityCourse'
   | 'deleteManyOpenUniversityCourses'
+  | 'createCompletion'
+  | 'updateCompletion'
+  | 'upsertCompletion'
+  | 'deleteCompletion'
+  | 'deleteManyCompletions'
+  | 'createCompletionRegistered'
+  | 'updateCompletionRegistered'
+  | 'updateManyCompletionRegistereds'
+  | 'upsertCompletionRegistered'
+  | 'deleteCompletionRegistered'
+  | 'deleteManyCompletionRegistereds'
 
 
 type MutationCreateUserArgs =
@@ -1094,6 +1707,35 @@ type MutationUpsertOpenUniversityCourseArgs =
 type MutationDeleteOpenUniversityCourseArgs =
   | 'where'
 type MutationDeleteManyOpenUniversityCoursesArgs =
+  | 'where'
+type MutationCreateCompletionArgs =
+  | 'data'
+type MutationUpdateCompletionArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertCompletionArgs =
+  | 'where'
+  | 'create'
+  | 'update'
+type MutationDeleteCompletionArgs =
+  | 'where'
+type MutationDeleteManyCompletionsArgs =
+  | 'where'
+type MutationCreateCompletionRegisteredArgs =
+  | 'data'
+type MutationUpdateCompletionRegisteredArgs =
+  | 'data'
+  | 'where'
+type MutationUpdateManyCompletionRegisteredsArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertCompletionRegisteredArgs =
+  | 'where'
+  | 'create'
+  | 'update'
+type MutationDeleteCompletionRegisteredArgs =
+  | 'where'
+type MutationDeleteManyCompletionRegisteredsArgs =
   | 'where'
   
 
@@ -1332,6 +1974,149 @@ export interface MutationFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
+  createCompletion: {
+    type: 'Completion'
+    args: Record<MutationCreateCompletionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionCreateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion> | prisma.Completion
+  }
+  updateCompletion: {
+    type: 'Completion'
+    args: Record<MutationUpdateCompletionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionUpdateInput, where: CompletionWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
+  }
+  upsertCompletion: {
+    type: 'Completion'
+    args: Record<MutationUpsertCompletionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: CompletionWhereUniqueInput, create: CompletionCreateInput, update: CompletionUpdateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion> | prisma.Completion
+  }
+  deleteCompletion: {
+    type: 'Completion'
+    args: Record<MutationDeleteCompletionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: CompletionWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
+  }
+  deleteManyCompletions: {
+    type: 'BatchPayload'
+    args: Record<MutationDeleteManyCompletionsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where?: CompletionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  createCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationCreateCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionRegisteredCreateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered> | prisma.CompletionRegistered
+  }
+  updateCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationUpdateCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionRegisteredUpdateInput, where: CompletionRegisteredWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  updateManyCompletionRegistereds: {
+    type: 'BatchPayload'
+    args: Record<MutationUpdateManyCompletionRegisteredsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionRegisteredUpdateManyMutationInput, where?: CompletionRegisteredWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  upsertCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationUpsertCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: CompletionRegisteredWhereUniqueInput, create: CompletionRegisteredCreateInput, update: CompletionRegisteredUpdateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered> | prisma.CompletionRegistered
+  }
+  deleteCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationDeleteCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: CompletionRegisteredWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  deleteManyCompletionRegistereds: {
+    type: 'BatchPayload'
+    args: Record<MutationDeleteManyCompletionRegisteredsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where?: CompletionRegisteredWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
 }
   
 
@@ -1367,11 +2152,15 @@ type SubscriptionObject =
   | { name: 'user', args?: SubscriptionUserArgs[] | false, alias?: string  } 
   | { name: 'course', args?: SubscriptionCourseArgs[] | false, alias?: string  } 
   | { name: 'openUniversityCourse', args?: SubscriptionOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'completion', args?: SubscriptionCompletionArgs[] | false, alias?: string  } 
+  | { name: 'completionRegistered', args?: SubscriptionCompletionRegisteredArgs[] | false, alias?: string  } 
 
 type SubscriptionFields =
   | 'user'
   | 'course'
   | 'openUniversityCourse'
+  | 'completion'
+  | 'completionRegistered'
 
 
 type SubscriptionUserArgs =
@@ -1379,6 +2168,10 @@ type SubscriptionUserArgs =
 type SubscriptionCourseArgs =
   | 'where'
 type SubscriptionOpenUniversityCourseArgs =
+  | 'where'
+type SubscriptionCompletionArgs =
+  | 'where'
+type SubscriptionCompletionRegisteredArgs =
   | 'where'
   
 
@@ -1421,6 +2214,32 @@ export interface SubscriptionFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.OpenUniversityCourseSubscriptionPayload | null> | prisma.OpenUniversityCourseSubscriptionPayload | null
+  }
+  completion: {
+    type: 'CompletionSubscriptionPayload'
+    args: Record<SubscriptionCompletionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Subscription">,
+      args: { where?: CompletionSubscriptionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionSubscriptionPayload | null> | prisma.CompletionSubscriptionPayload | null
+  }
+  completionRegistered: {
+    type: 'CompletionRegisteredSubscriptionPayload'
+    args: Record<SubscriptionCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Subscription">,
+      args: { where?: CompletionRegisteredSubscriptionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredSubscriptionPayload | null> | prisma.CompletionRegisteredSubscriptionPayload | null
   }
 }
   
@@ -1508,6 +2327,7 @@ type UserPreviousValuesObject =
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
   | { name: 'completed_enough', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
 
 type UserPreviousValuesFields =
   | 'id'
@@ -1519,6 +2339,7 @@ type UserPreviousValuesFields =
   | 'email'
   | 'administrator'
   | 'completed_enough'
+  | 'real_student_number'
 
 
 
@@ -1595,6 +2416,14 @@ export interface UserPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
 }
@@ -1860,6 +2689,246 @@ export interface OpenUniversityCoursePreviousValuesFieldDetails {
 }
   
 
+// Types for CompletionSubscriptionPayload
+
+type CompletionSubscriptionPayloadObject =
+  | CompletionSubscriptionPayloadFields
+  | { name: 'mutation', args?: [] | false, alias?: string  } 
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
+  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+
+type CompletionSubscriptionPayloadFields =
+  | 'mutation'
+  | 'node'
+  | 'updatedFields'
+  | 'previousValues'
+
+
+
+  
+
+export interface CompletionSubscriptionPayloadFieldDetails {
+  mutation: {
+    type: 'MutationType'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.MutationType> | prisma.MutationType
+  }
+  node: {
+    type: 'Completion'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"CompletionSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
+  }
+  updatedFields: {
+    type: 'String'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: undefined
+  }
+  previousValues: {
+    type: 'CompletionPreviousValues'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"CompletionSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionPreviousValues | null> | prisma.CompletionPreviousValues | null
+  }
+}
+  
+
+// Types for CompletionPreviousValues
+
+type CompletionPreviousValuesObject =
+  | CompletionPreviousValuesFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+
+type CompletionPreviousValuesFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+
+
+
+  
+
+export interface CompletionPreviousValuesFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for CompletionRegisteredSubscriptionPayload
+
+type CompletionRegisteredSubscriptionPayloadObject =
+  | CompletionRegisteredSubscriptionPayloadFields
+  | { name: 'mutation', args?: [] | false, alias?: string  } 
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
+  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredSubscriptionPayloadFields =
+  | 'mutation'
+  | 'node'
+  | 'updatedFields'
+  | 'previousValues'
+
+
+
+  
+
+export interface CompletionRegisteredSubscriptionPayloadFieldDetails {
+  mutation: {
+    type: 'MutationType'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.MutationType> | prisma.MutationType
+  }
+  node: {
+    type: 'CompletionRegistered'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  updatedFields: {
+    type: 'String'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: undefined
+  }
+  previousValues: {
+    type: 'CompletionRegisteredPreviousValues'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredPreviousValues | null> | prisma.CompletionRegisteredPreviousValues | null
+  }
+}
+  
+
+// Types for CompletionRegisteredPreviousValues
+
+type CompletionRegisteredPreviousValuesObject =
+  | CompletionRegisteredPreviousValuesFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'organisation', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredPreviousValuesFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'organisation'
+
+
+
+  
+
+export interface CompletionRegisteredPreviousValuesFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  organisation: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
 
 export interface UserWhereUniqueInput {
   id?: string | null
@@ -1955,6 +3024,20 @@ export interface UserWhereInput {
   administrator_not?: boolean | null
   completed_enough?: boolean | null
   completed_enough_not?: boolean | null
+  real_student_number?: string | null
+  real_student_number_not?: string | null
+  real_student_number_in?: string[]
+  real_student_number_not_in?: string[]
+  real_student_number_lt?: string | null
+  real_student_number_lte?: string | null
+  real_student_number_gt?: string | null
+  real_student_number_gte?: string | null
+  real_student_number_contains?: string | null
+  real_student_number_not_contains?: string | null
+  real_student_number_starts_with?: string | null
+  real_student_number_not_starts_with?: string | null
+  real_student_number_ends_with?: string | null
+  real_student_number_not_ends_with?: string | null
   AND?: UserWhereInput[]
   OR?: UserWhereInput[]
   NOT?: UserWhereInput[]
@@ -2045,6 +3128,20 @@ export type UserWhereInputInputObject =
   | { name: 'administrator_not', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
   | { name: 'completed_enough_not', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'real_student_number_not', alias?: string  } 
+  | { name: 'real_student_number_in', alias?: string  } 
+  | { name: 'real_student_number_not_in', alias?: string  } 
+  | { name: 'real_student_number_lt', alias?: string  } 
+  | { name: 'real_student_number_lte', alias?: string  } 
+  | { name: 'real_student_number_gt', alias?: string  } 
+  | { name: 'real_student_number_gte', alias?: string  } 
+  | { name: 'real_student_number_contains', alias?: string  } 
+  | { name: 'real_student_number_not_contains', alias?: string  } 
+  | { name: 'real_student_number_starts_with', alias?: string  } 
+  | { name: 'real_student_number_not_starts_with', alias?: string  } 
+  | { name: 'real_student_number_ends_with', alias?: string  } 
+  | { name: 'real_student_number_not_ends_with', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
@@ -2301,6 +3398,198 @@ export type OpenUniversityCourseWhereUniqueInputInputObject =
   | { name: 'id', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
   
+export interface CompletionWhereUniqueInput {
+  id?: undefined | null
+}
+export type CompletionWhereUniqueInputInputObject =
+  | Extract<keyof CompletionWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
+export interface CompletionWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
+  createdAt?: string | null
+  createdAt_not?: string | null
+  createdAt_in?: string[]
+  createdAt_not_in?: string[]
+  createdAt_lt?: string | null
+  createdAt_lte?: string | null
+  createdAt_gt?: string | null
+  createdAt_gte?: string | null
+  updatedAt?: string | null
+  updatedAt_not?: string | null
+  updatedAt_in?: string[]
+  updatedAt_not_in?: string[]
+  updatedAt_lt?: string | null
+  updatedAt_lte?: string | null
+  updatedAt_gt?: string | null
+  updatedAt_gte?: string | null
+  user?: UserWhereInput | null
+  course?: CourseWhereInput | null
+  AND?: CompletionWhereInput[]
+  OR?: CompletionWhereInput[]
+  NOT?: CompletionWhereInput[]
+}
+export type CompletionWhereInputInputObject =
+  | Extract<keyof CompletionWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface CompletionRegisteredWhereUniqueInput {
+  id?: undefined | null
+}
+export type CompletionRegisteredWhereUniqueInputInputObject =
+  | Extract<keyof CompletionRegisteredWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
+export interface CompletionRegisteredWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
+  createdAt?: string | null
+  createdAt_not?: string | null
+  createdAt_in?: string[]
+  createdAt_not_in?: string[]
+  createdAt_lt?: string | null
+  createdAt_lte?: string | null
+  createdAt_gt?: string | null
+  createdAt_gte?: string | null
+  updatedAt?: string | null
+  updatedAt_not?: string | null
+  updatedAt_in?: string[]
+  updatedAt_not_in?: string[]
+  updatedAt_lt?: string | null
+  updatedAt_lte?: string | null
+  updatedAt_gt?: string | null
+  updatedAt_gte?: string | null
+  user?: UserWhereInput | null
+  course?: CourseWhereInput | null
+  organisation?: string | null
+  organisation_not?: string | null
+  organisation_in?: string[]
+  organisation_not_in?: string[]
+  organisation_lt?: string | null
+  organisation_lte?: string | null
+  organisation_gt?: string | null
+  organisation_gte?: string | null
+  organisation_contains?: string | null
+  organisation_not_contains?: string | null
+  organisation_starts_with?: string | null
+  organisation_not_starts_with?: string | null
+  organisation_ends_with?: string | null
+  organisation_not_ends_with?: string | null
+  AND?: CompletionRegisteredWhereInput[]
+  OR?: CompletionRegisteredWhereInput[]
+  NOT?: CompletionRegisteredWhereInput[]
+}
+export type CompletionRegisteredWhereInputInputObject =
+  | Extract<keyof CompletionRegisteredWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
+  | { name: 'organisation_not', alias?: string  } 
+  | { name: 'organisation_in', alias?: string  } 
+  | { name: 'organisation_not_in', alias?: string  } 
+  | { name: 'organisation_lt', alias?: string  } 
+  | { name: 'organisation_lte', alias?: string  } 
+  | { name: 'organisation_gt', alias?: string  } 
+  | { name: 'organisation_gte', alias?: string  } 
+  | { name: 'organisation_contains', alias?: string  } 
+  | { name: 'organisation_not_contains', alias?: string  } 
+  | { name: 'organisation_starts_with', alias?: string  } 
+  | { name: 'organisation_not_starts_with', alias?: string  } 
+  | { name: 'organisation_ends_with', alias?: string  } 
+  | { name: 'organisation_not_ends_with', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
 export interface UserCreateInput {
   upstream_id?: number
   first_name?: string | null
@@ -2308,6 +3597,7 @@ export interface UserCreateInput {
   email?: string
   administrator?: boolean
   completed_enough?: boolean | null
+  real_student_number?: string | null
 }
 export type UserCreateInputInputObject =
   | Extract<keyof UserCreateInput, string>
@@ -2317,6 +3607,7 @@ export type UserCreateInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
   
 export interface UserUpdateInput {
   upstream_id?: number | null
@@ -2325,6 +3616,7 @@ export interface UserUpdateInput {
   email?: string | null
   administrator?: boolean | null
   completed_enough?: boolean | null
+  real_student_number?: string | null
 }
 export type UserUpdateInputInputObject =
   | Extract<keyof UserUpdateInput, string>
@@ -2334,6 +3626,7 @@ export type UserUpdateInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
   
 export interface UserUpdateManyMutationInput {
   upstream_id?: number | null
@@ -2342,6 +3635,7 @@ export interface UserUpdateManyMutationInput {
   email?: string | null
   administrator?: boolean | null
   completed_enough?: boolean | null
+  real_student_number?: string | null
 }
 export type UserUpdateManyMutationInputInputObject =
   | Extract<keyof UserUpdateManyMutationInput, string>
@@ -2351,6 +3645,7 @@ export type UserUpdateManyMutationInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
   
 export interface CourseCreateInput {
   name?: string
@@ -2638,6 +3933,145 @@ export type OpenUniversityCourseUpdateManyMutationInputInputObject =
   | Extract<keyof OpenUniversityCourseUpdateManyMutationInput, string>
   | { name: 'course_code', alias?: string  } 
   
+export interface CompletionCreateInput {
+  user?: UserCreateOneInput
+  course?: CourseCreateOneInput
+}
+export type CompletionCreateInputInputObject =
+  | Extract<keyof CompletionCreateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  
+export interface UserCreateOneInput {
+  create?: UserCreateInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserCreateOneInputInputObject =
+  | Extract<keyof UserCreateOneInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface CourseCreateOneInput {
+  create?: CourseCreateInput | null
+  connect?: CourseWhereUniqueInput | null
+}
+export type CourseCreateOneInputInputObject =
+  | Extract<keyof CourseCreateOneInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface CompletionUpdateInput {
+  user?: UserUpdateOneRequiredInput | null
+  course?: CourseUpdateOneRequiredInput | null
+}
+export type CompletionUpdateInputInputObject =
+  | Extract<keyof CompletionUpdateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput | null
+  update?: UserUpdateDataInput | null
+  upsert?: UserUpsertNestedInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserUpdateOneRequiredInputInputObject =
+  | Extract<keyof UserUpdateOneRequiredInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserUpdateDataInput {
+  upstream_id?: number | null
+  first_name?: string | null
+  last_name?: string | null
+  email?: string | null
+  administrator?: boolean | null
+  completed_enough?: boolean | null
+  real_student_number?: string | null
+}
+export type UserUpdateDataInputInputObject =
+  | Extract<keyof UserUpdateDataInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  
+export interface UserUpsertNestedInput {
+  update?: UserUpdateDataInput
+  create?: UserCreateInput
+}
+export type UserUpsertNestedInputInputObject =
+  | Extract<keyof UserUpsertNestedInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface CourseUpdateOneRequiredInput {
+  create?: CourseCreateInput | null
+  update?: CourseUpdateDataInput | null
+  upsert?: CourseUpsertNestedInput | null
+  connect?: CourseWhereUniqueInput | null
+}
+export type CourseUpdateOneRequiredInputInputObject =
+  | Extract<keyof CourseUpdateOneRequiredInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface CourseUpdateDataInput {
+  name?: string | null
+  slug?: string | null
+  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
+}
+export type CourseUpdateDataInputInputObject =
+  | Extract<keyof CourseUpdateDataInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  | { name: 'open_university_courses', alias?: string  } 
+  
+export interface CourseUpsertNestedInput {
+  update?: CourseUpdateDataInput
+  create?: CourseCreateInput
+}
+export type CourseUpsertNestedInputInputObject =
+  | Extract<keyof CourseUpsertNestedInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface CompletionRegisteredCreateInput {
+  user?: UserCreateOneInput
+  course?: CourseCreateOneInput
+  organisation?: string
+}
+export type CompletionRegisteredCreateInputInputObject =
+  | Extract<keyof CompletionRegisteredCreateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
+  
+export interface CompletionRegisteredUpdateInput {
+  user?: UserUpdateOneRequiredInput | null
+  course?: CourseUpdateOneRequiredInput | null
+  organisation?: string | null
+}
+export type CompletionRegisteredUpdateInputInputObject =
+  | Extract<keyof CompletionRegisteredUpdateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
+  
+export interface CompletionRegisteredUpdateManyMutationInput {
+  organisation?: string | null
+}
+export type CompletionRegisteredUpdateManyMutationInputInputObject =
+  | Extract<keyof CompletionRegisteredUpdateManyMutationInput, string>
+  | { name: 'organisation', alias?: string  } 
+  
 export interface UserSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
   updatedFields_contains?: string | null
@@ -2701,6 +4135,48 @@ export type OpenUniversityCourseSubscriptionWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
+export interface CompletionSubscriptionWhereInput {
+  mutation_in?: prisma.MutationType[]
+  updatedFields_contains?: string | null
+  updatedFields_contains_every?: string[]
+  updatedFields_contains_some?: string[]
+  node?: CompletionWhereInput | null
+  AND?: CompletionSubscriptionWhereInput[]
+  OR?: CompletionSubscriptionWhereInput[]
+  NOT?: CompletionSubscriptionWhereInput[]
+}
+export type CompletionSubscriptionWhereInputInputObject =
+  | Extract<keyof CompletionSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface CompletionRegisteredSubscriptionWhereInput {
+  mutation_in?: prisma.MutationType[]
+  updatedFields_contains?: string | null
+  updatedFields_contains_every?: string[]
+  updatedFields_contains_some?: string[]
+  node?: CompletionRegisteredWhereInput | null
+  AND?: CompletionRegisteredSubscriptionWhereInput[]
+  OR?: CompletionRegisteredSubscriptionWhereInput[]
+  NOT?: CompletionRegisteredSubscriptionWhereInput[]
+}
+export type CompletionRegisteredSubscriptionWhereInputInputObject =
+  | Extract<keyof CompletionRegisteredSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
 
 export type UserOrderByInputValues =
   | 'id_ASC'
@@ -2721,6 +4197,8 @@ export type UserOrderByInputValues =
   | 'administrator_DESC'
   | 'completed_enough_ASC'
   | 'completed_enough_DESC'
+  | 'real_student_number_ASC'
+  | 'real_student_number_DESC'
   
 export type OpenUniversityCourseOrderByInputValues =
   | 'id_ASC'
@@ -2743,6 +4221,24 @@ export type CourseOrderByInputValues =
   | 'name_DESC'
   | 'slug_ASC'
   | 'slug_DESC'
+  
+export type CompletionOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  
+export type CompletionRegisteredOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'organisation_ASC'
+  | 'organisation_DESC'
   
 export type MutationTypeValues =
   | 'CREATED'

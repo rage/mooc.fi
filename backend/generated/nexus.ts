@@ -166,6 +166,7 @@ export interface NexusGenRootTypes {
     first_name?: string | null; // String
     id: string; // ID!
     last_name?: string | null; // String
+    real_student_number?: string | null; // String
     updatedAt: any; // DateTime!
     upstream_id: number; // Int!
   }
@@ -228,6 +229,7 @@ export interface NexusGenFieldTypes {
     first_name: string | null; // String
     id: string; // ID!
     last_name: string | null; // String
+    real_student_number: string | null; // String
     updatedAt: any; // DateTime!
     upstream_id: number; // Int!
   }
