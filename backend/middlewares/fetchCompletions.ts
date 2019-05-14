@@ -6,7 +6,7 @@ const { UserInputError } = require('apollo-server-core')
 
 
 
-const elementsOfAiTags = ["elements-of-ai", "elements-of-ai-fi"];
+const elementsOfAiTags = ["elements-of-ai", "elements-of-ai-fi", "elements-of-ai-se"];
 
 
 export async function doIt(course) {
@@ -77,6 +77,8 @@ async function determineCompletionLanguage(tag) {
       return "en_us"
     case "elements-of-ai-fi":
      return "fi_fi"
+    case "elements-of-ai-se":
+      return "sv_SE"
     default:
       return "undefined"
   }

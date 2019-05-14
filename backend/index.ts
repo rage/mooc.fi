@@ -59,12 +59,9 @@ const Query = prismaObjectType({
           throw new ForbiddenError("Access Denied");
         }
         const courseWithSlug : Course = await ctx.prisma.course(
-          { 
-              slug: course
-          }
+          {slug: course}
         )
-        if (!courseWithSlug) {
-          
+        if (!courseWithSlug) { 
           const courseFromAvoinCourse : Course = await ctx.prisma.openUniversityCourse(
             {course_code: course}
           ).course()
@@ -73,7 +70,6 @@ const Query = prismaObjectType({
           }
           course = courseFromAvoinCourse.slug       
         }
-        
         return await fetchCompletions.doIt(course)
       }
     })
