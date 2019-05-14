@@ -58,30 +58,19 @@ const Query = prismaObjectType({
         if (!ctx.user.administrator) {
           throw new ForbiddenError("Access Denied");
         }
-        const coursesWithSlug : Course[] = await ctx.prisma.courses(
+        const courseWithSlug : Course = await ctx.prisma.course(
           { 
-            where: {
               slug: course
-            }
           }
         )
-        if (!coursesWithSlug || !coursesWithSlug.length) {
+        if (!courseWithSlug) {
           
-          const avoinCourses : OpenUniversityCourse[] = await ctx.prisma.openUniversityCourses(
-            {
-              where: {
-                course_code: course
-              }
-            }
-          )
-
-          if (!avoinCourses || !avoinCourses.length) {
+          const courseFromAvoinCourse : Course = await ctx.prisma.openUniversityCourse(
+            {course_code: course}
+          ).course()
+          if (!courseFromAvoinCourse) {
             throw new UserInputError("Invalid course identifier")
           }
-
-          const courseFromAvoinCourse : Course = await ctx.prisma.openUniversityCourse(
-            {id: avoinCourses[0].id}
-          ).course()
           course = courseFromAvoinCourse.slug       
         }
         

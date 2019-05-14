@@ -15,7 +15,7 @@ type Course {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   name: String!
-  slug: String!
+  slug: String! @unique
   open_university_courses: [OpenUniversityCourse!] @relation(name: "CourseToOpenUniversityCourse")
 }
 
@@ -23,7 +23,7 @@ type OpenUniversityCourse {
   id: UUID! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  course_code: String!
+  course_code: String! @unique
   course: Course! @relation(name: "CourseToOpenUniversityCourse")
 }
 

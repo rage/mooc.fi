@@ -2051,10 +2051,12 @@ export type UserWhereInputInputObject =
   
 export interface CourseWhereUniqueInput {
   id?: undefined | null
+  slug?: string | null
 }
 export type CourseWhereUniqueInputInputObject =
   | Extract<keyof CourseWhereUniqueInput, string>
   | { name: 'id', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
   
 export interface OpenUniversityCourseWhereInput {
   id?: undefined | null
@@ -2292,10 +2294,12 @@ export type CourseWhereInputInputObject =
   
 export interface OpenUniversityCourseWhereUniqueInput {
   id?: undefined | null
+  course_code?: string | null
 }
 export type OpenUniversityCourseWhereUniqueInputInputObject =
   | Extract<keyof OpenUniversityCourseWhereUniqueInput, string>
   | { name: 'id', alias?: string  } 
+  | { name: 'course_code', alias?: string  } 
   
 export interface UserCreateInput {
   upstream_id?: number

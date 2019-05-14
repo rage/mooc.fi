@@ -6,8 +6,8 @@
 export default {
   uniqueFieldsByModel: {
     User: ['id', 'upstream_id'],
-    Course: ['id'],
-    OpenUniversityCourse: ['id']
+    Course: ['id', 'slug'],
+    OpenUniversityCourse: ['id', 'course_code']
   },
   embeddedTypes: [],
   clientPath: 'generated/prisma-client',
@@ -2255,6 +2255,16 @@ export default {
               "ofType": null
             },
             "defaultValue": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -4153,6 +4163,16 @@ export default {
             "type": {
               "kind": "SCALAR",
               "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course_code",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null

@@ -190,6 +190,7 @@ input CourseWhereInput {
 
 input CourseWhereUniqueInput {
   id: UUID
+  slug: String
 }
 
 scalar DateTime
@@ -444,6 +445,7 @@ input OpenUniversityCourseWhereInput {
 
 input OpenUniversityCourseWhereUniqueInput {
   id: UUID
+  course_code: String
 }
 
 type PageInfo {
