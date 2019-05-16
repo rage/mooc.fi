@@ -11,5 +11,6 @@
     "Instructions4": "3. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, rastita 'Henkilötietojen käyttö' -laatikon alta kohta 'Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan).' ",
     "NB": "Jos olet Helsingin yliopiston perustutkinto-opiskelija, ilmoittatumisohjeet koskevat myös sinua!",
     "grades": "Opintopisteet kirjautuvat kuuden viikon kuluessa.",
-    "link": "Rekisteröitymislomakkeeseen"
+    "link": "Rekisteröitymislomakkeeseen",
+    "linkAria": "Linkki rekisteröitymislomakkeeseen. Avautuu uudessa välilehdessä. Siirtyy avoimen yliopiston palveluun."
 }

@@ -1,11 +1,12 @@
 import React  from 'react';
 import { Typography, 
          Paper,
-         Button
-        
+         Button,
+         Tooltip
         } from "@material-ui/core";
 import NextI18Next from '../i18n';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,20 +20,35 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '65%',
       margin: 'auto',
       marginBottom: '1em'
+    },
+    tooltip: {
+      backgroundColor: theme.palette.common.white,
+      fontSize: 11,
+      color: 'black',
+      border: '1px solid black'
     }
   }),
 );
 
 function LinkButton(props:any) {
+  const classes = useStyles()
   return(
+    <Tooltip 
+      title={<NextI18Next.Trans i18nKey='linkAria'/>}
+      classes={{ tooltip: classes.tooltip}}
+      placement="bottom"
+    >
     <Button 
       variant='contained' 
       color='secondary' 
       size='medium'
       href={props.link} 
-      {...props}>
-      <NextI18Next.Trans i18nKey='link'/>
-    </Button>
+      {...props}
+      role='link'
+      >
+        <NextI18Next.Trans i18nKey='link'/>
+      </Button>
+    </Tooltip>
   )
 }
 
@@ -67,7 +83,7 @@ function RegisterCompletionText(props: RegProps)
         className={classes.button}
         link={props.link}
         />
-    </Paper>
+      </Paper>
         
   )
 }

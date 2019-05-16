@@ -53,7 +53,7 @@ function SkipLink() {
     return (
         <a href='#main'className={classes.link}>
         <Typography variant='body1'>
-            The site is maintained by the RAGE research group.
+            <NextI18Next.Trans i18nKey='skiplink'/>
         </Typography>
         </a>
     )

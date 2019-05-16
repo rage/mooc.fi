@@ -5,6 +5,7 @@
     "error": "Kirjautuminen epäonnistui. Virheellinen salasana tai käyttäjätunnus/sähköpostiosoite",
     "password": "salasana",
     "username": "käyttäjätunnus tai sähköpostiosoite",
-    "form-info": "Käytä TMC käyttäjätietojasi kirjautuaksesi sivulle Mooc.points"
+    "form-info": "Käytä TMC käyttäjätietojasi kirjautuaksesi sivulle Mooc.points",
+    "skiplink": "pääsisältöön"
 }
 

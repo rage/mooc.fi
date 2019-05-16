@@ -11,6 +11,7 @@
     "Instructions4": "3. If you want an e-mail notification when the credits have been registered, tick the box  'A notification of completed studies will be sent to my email (including the grade)'. ",
     "NB": "NB! Bachelor's - and Master's degree students from University of Helsinki must also register their credits via the Open University!",
     "grades": "Credits will be registered within 6 weeks.",
-    "link": "To the registration form"
+    "link": "To the registration form",
+    "linkAria": "To the registration form. Opens in a new tab. Moves to the service of the open university."
 }
     

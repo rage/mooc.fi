@@ -3,11 +3,14 @@ import {
         FormControl,
         InputLabel,
         Input, 
-        Button }from "@material-ui/core";
+        Button, 
+        FormHelperText }from "@material-ui/core";
+        
 
 import { signIn } from "../lib/authentication";
 import NextI18Next from '../i18n';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,7 +38,8 @@ function SignIn(t: Function) {
 
   return (
     <form className={classes.form}>
-      <FormControl required fullWidth>
+      <FormControl required fullWidth
+        error={error}>
         <InputLabel htmlFor="email">
           <NextI18Next.Trans i18nKey='username'/>
         </InputLabel>
@@ -49,7 +53,12 @@ function SignIn(t: Function) {
             setError(false);
           }}/>
       </FormControl>
-      <FormControl margin="normal" required fullWidth>
+      <FormControl 
+        margin="normal" 
+        required 
+        fullWidth
+        error={error}
+        >
         <InputLabel htmlFor="password">
           <NextI18Next.Trans i18nKey='password'/>
         </InputLabel>
@@ -63,8 +72,15 @@ function SignIn(t: Function) {
             setError(false);
           }}
            />
+          <FormHelperText error={error}>
+            {error ? 
+              <NextI18Next.Trans i18nKey='error'/> :
+              <NextI18Next.Trans i18nKey='form-info'/>
+            }
+          </FormHelperText>
       </FormControl>
-      <Button
+      
+      <Button 
         className={classes.submit}
         type='submit'
         fullWidth
@@ -76,7 +92,9 @@ function SignIn(t: Function) {
             await signIn({ email, password });
           } catch (e) {
             setError(true);
-            setErrorMessage(e.message);
+            setTimeout(() =>{
+              setError(false)
+            },5000)
           }
         }}
         >
@@ -89,8 +107,3 @@ function SignIn(t: Function) {
 
 export default NextI18Next.withNamespaces('common')(SignIn);
 
-/*
- 
-          
-          {error && <Alert role='alert'> <NextI18Next.Trans i18nKey='error'/> {errorMessage}</Alert>}
-          */
