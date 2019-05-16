@@ -144,6 +144,7 @@ type UserObject =
   | { name: 'first_name', args?: [] | false, alias?: string  } 
   | { name: 'last_name', args?: [] | false, alias?: string  } 
   | { name: 'email', args?: [] | false, alias?: string  } 
+  | { name: 'administrator', args?: [] | false, alias?: string  } 
 
 type UserFields =
   | 'id'
@@ -153,6 +154,7 @@ type UserFields =
   | 'first_name'
   | 'last_name'
   | 'email'
+  | 'administrator'
 
 
 
@@ -213,6 +215,14 @@ export interface UserFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  administrator: {
+    type: 'Boolean'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
 }
@@ -655,6 +665,7 @@ type UserPreviousValuesObject =
   | { name: 'first_name', args?: [] | false, alias?: string  } 
   | { name: 'last_name', args?: [] | false, alias?: string  } 
   | { name: 'email', args?: [] | false, alias?: string  } 
+  | { name: 'administrator', args?: [] | false, alias?: string  } 
 
 type UserPreviousValuesFields =
   | 'id'
@@ -664,6 +675,7 @@ type UserPreviousValuesFields =
   | 'first_name'
   | 'last_name'
   | 'email'
+  | 'administrator'
 
 
 
@@ -724,6 +736,14 @@ export interface UserPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  administrator: {
+    type: 'Boolean'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
 }
@@ -820,6 +840,8 @@ export interface UserWhereInput {
   email_not_starts_with?: string | null
   email_ends_with?: string | null
   email_not_ends_with?: string | null
+  administrator?: boolean | null
+  administrator_not?: boolean | null
   AND?: UserWhereInput[]
   OR?: UserWhereInput[]
   NOT?: UserWhereInput[]
@@ -906,6 +928,8 @@ export type UserWhereInputInputObject =
   | { name: 'email_not_starts_with', alias?: string  } 
   | { name: 'email_ends_with', alias?: string  } 
   | { name: 'email_not_ends_with', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'administrator_not', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
@@ -915,6 +939,7 @@ export interface UserCreateInput {
   first_name?: string | null
   last_name?: string | null
   email?: string
+  administrator?: boolean | null
 }
 export type UserCreateInputInputObject =
   | Extract<keyof UserCreateInput, string>
@@ -922,12 +947,14 @@ export type UserCreateInputInputObject =
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
   | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
   
 export interface UserUpdateInput {
   upstream_id?: number | null
   first_name?: string | null
   last_name?: string | null
   email?: string | null
+  administrator?: boolean | null
 }
 export type UserUpdateInputInputObject =
   | Extract<keyof UserUpdateInput, string>
@@ -935,12 +962,14 @@ export type UserUpdateInputInputObject =
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
   | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
   
 export interface UserUpdateManyMutationInput {
   upstream_id?: number | null
   first_name?: string | null
   last_name?: string | null
   email?: string | null
+  administrator?: boolean | null
 }
 export type UserUpdateManyMutationInputInputObject =
   | Extract<keyof UserUpdateManyMutationInput, string>
@@ -948,6 +977,7 @@ export type UserUpdateManyMutationInputInputObject =
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
   | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
   
 export interface UserSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
@@ -986,6 +1016,8 @@ export type UserOrderByInputValues =
   | 'last_name_DESC'
   | 'email_ASC'
   | 'email_DESC'
+  | 'administrator_ASC'
+  | 'administrator_DESC'
   
 export type MutationTypeValues =
   | 'CREATED'

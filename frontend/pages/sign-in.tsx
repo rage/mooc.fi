@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const  SignInPage = ({ t }) => {
+const  SignInPage = ({ t } ) => {
   const classes = useStyles()
   return (
     <main className={classes.root} id='main'>

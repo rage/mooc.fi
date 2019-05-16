@@ -4,6 +4,7 @@ export interface UserInfo {
   email: string;
   user_field: UserField;
   extra_fields: ExtraFields;
+  administrator: boolean;
 
 }
 

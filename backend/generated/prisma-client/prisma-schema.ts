@@ -59,6 +59,7 @@ type User {
   first_name: String
   last_name: String
   email: String!
+  administrator: Boolean
 }
 
 type UserConnection {
@@ -72,6 +73,7 @@ input UserCreateInput {
   first_name: String
   last_name: String
   email: String!
+  administrator: Boolean
 }
 
 type UserEdge {
@@ -94,6 +96,8 @@ enum UserOrderByInput {
   last_name_DESC
   email_ASC
   email_DESC
+  administrator_ASC
+  administrator_DESC
 }
 
 type UserPreviousValues {
@@ -104,6 +108,7 @@ type UserPreviousValues {
   first_name: String
   last_name: String
   email: String!
+  administrator: Boolean
 }
 
 type UserSubscriptionPayload {
@@ -129,6 +134,7 @@ input UserUpdateInput {
   first_name: String
   last_name: String
   email: String
+  administrator: Boolean
 }
 
 input UserUpdateManyMutationInput {
@@ -136,6 +142,7 @@ input UserUpdateManyMutationInput {
   first_name: String
   last_name: String
   email: String
+  administrator: Boolean
 }
 
 input UserWhereInput {
@@ -219,6 +226,8 @@ input UserWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  administrator: Boolean
+  administrator_not: Boolean
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
