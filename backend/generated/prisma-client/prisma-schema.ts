@@ -32,6 +32,7 @@ type Completion {
   updatedAt: DateTime!
   user: User!
   course: Course!
+  completion_language: String
 }
 
 type CompletionConnection {
@@ -41,8 +42,19 @@ type CompletionConnection {
 }
 
 input CompletionCreateInput {
-  user: UserCreateOneInput!
+  user: UserCreateOneWithoutCompletionsInput!
   course: CourseCreateOneInput!
+  completion_language: String
+}
+
+input CompletionCreateManyWithoutUserInput {
+  create: [CompletionCreateWithoutUserInput!]
+  connect: [CompletionWhereUniqueInput!]
+}
+
+input CompletionCreateWithoutUserInput {
+  course: CourseCreateOneInput!
+  completion_language: String
 }
 
 type CompletionEdge {
@@ -57,12 +69,15 @@ enum CompletionOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  completion_language_ASC
+  completion_language_DESC
 }
 
 type CompletionPreviousValues {
   id: UUID!
   createdAt: DateTime!
   updatedAt: DateTime!
+  completion_language: String
 }
 
 type CompletionRegistered {
@@ -193,6 +208,56 @@ input CompletionRegisteredWhereUniqueInput {
   id: UUID
 }
 
+input CompletionScalarWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  completion_language: String
+  completion_language_not: String
+  completion_language_in: [String!]
+  completion_language_not_in: [String!]
+  completion_language_lt: String
+  completion_language_lte: String
+  completion_language_gt: String
+  completion_language_gte: String
+  completion_language_contains: String
+  completion_language_not_contains: String
+  completion_language_starts_with: String
+  completion_language_not_starts_with: String
+  completion_language_ends_with: String
+  completion_language_not_ends_with: String
+  AND: [CompletionScalarWhereInput!]
+  OR: [CompletionScalarWhereInput!]
+  NOT: [CompletionScalarWhereInput!]
+}
+
 type CompletionSubscriptionPayload {
   mutation: MutationType!
   node: Completion
@@ -212,8 +277,50 @@ input CompletionSubscriptionWhereInput {
 }
 
 input CompletionUpdateInput {
-  user: UserUpdateOneRequiredInput
+  user: UserUpdateOneRequiredWithoutCompletionsInput
   course: CourseUpdateOneRequiredInput
+  completion_language: String
+}
+
+input CompletionUpdateManyDataInput {
+  completion_language: String
+}
+
+input CompletionUpdateManyMutationInput {
+  completion_language: String
+}
+
+input CompletionUpdateManyWithoutUserInput {
+  create: [CompletionCreateWithoutUserInput!]
+  delete: [CompletionWhereUniqueInput!]
+  connect: [CompletionWhereUniqueInput!]
+  set: [CompletionWhereUniqueInput!]
+  disconnect: [CompletionWhereUniqueInput!]
+  update: [CompletionUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [CompletionUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [CompletionScalarWhereInput!]
+  updateMany: [CompletionUpdateManyWithWhereNestedInput!]
+}
+
+input CompletionUpdateManyWithWhereNestedInput {
+  where: CompletionScalarWhereInput!
+  data: CompletionUpdateManyDataInput!
+}
+
+input CompletionUpdateWithoutUserDataInput {
+  course: CourseUpdateOneRequiredInput
+  completion_language: String
+}
+
+input CompletionUpdateWithWhereUniqueWithoutUserInput {
+  where: CompletionWhereUniqueInput!
+  data: CompletionUpdateWithoutUserDataInput!
+}
+
+input CompletionUpsertWithWhereUniqueWithoutUserInput {
+  where: CompletionWhereUniqueInput!
+  update: CompletionUpdateWithoutUserDataInput!
+  create: CompletionCreateWithoutUserInput!
 }
 
 input CompletionWhereInput {
@@ -249,6 +356,20 @@ input CompletionWhereInput {
   updatedAt_gte: DateTime
   user: UserWhereInput
   course: CourseWhereInput
+  completion_language: String
+  completion_language_not: String
+  completion_language_in: [String!]
+  completion_language_not_in: [String!]
+  completion_language_lt: String
+  completion_language_lte: String
+  completion_language_gt: String
+  completion_language_gte: String
+  completion_language_contains: String
+  completion_language_not_contains: String
+  completion_language_starts_with: String
+  completion_language_not_starts_with: String
+  completion_language_ends_with: String
+  completion_language_not_ends_with: String
   AND: [CompletionWhereInput!]
   OR: [CompletionWhereInput!]
   NOT: [CompletionWhereInput!]
@@ -463,6 +584,7 @@ scalar Long
 type Mutation {
   createCompletion(data: CompletionCreateInput!): Completion!
   updateCompletion(data: CompletionUpdateInput!, where: CompletionWhereUniqueInput!): Completion
+  updateManyCompletions(data: CompletionUpdateManyMutationInput!, where: CompletionWhereInput): BatchPayload!
   upsertCompletion(where: CompletionWhereUniqueInput!, create: CompletionCreateInput!, update: CompletionUpdateInput!): Completion!
   deleteCompletion(where: CompletionWhereUniqueInput!): Completion
   deleteManyCompletions(where: CompletionWhereInput): BatchPayload!
@@ -757,16 +879,19 @@ type Subscription {
 }
 
 type User {
-  id: ID!
+  id: UUID!
+  upstream_id: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
-  upstream_id: Int!
   first_name: String
   last_name: String
+  username: String
   email: String!
   administrator: Boolean!
   completed_enough: Boolean!
+  student_number: String
   real_student_number: String
+  completions(where: CompletionWhereInput, orderBy: CompletionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Completion!]
 }
 
 type UserConnection {
@@ -779,15 +904,35 @@ input UserCreateInput {
   upstream_id: Int!
   first_name: String
   last_name: String
+  username: String
   email: String!
   administrator: Boolean!
   completed_enough: Boolean
+  student_number: String
   real_student_number: String
+  completions: CompletionCreateManyWithoutUserInput
 }
 
 input UserCreateOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutCompletionsInput {
+  create: UserCreateWithoutCompletionsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutCompletionsInput {
+  upstream_id: Int!
+  first_name: String
+  last_name: String
+  username: String
+  email: String!
+  administrator: Boolean!
+  completed_enough: Boolean
+  student_number: String
+  real_student_number: String
 }
 
 type UserEdge {
@@ -798,36 +943,42 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
+  upstream_id_ASC
+  upstream_id_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  upstream_id_ASC
-  upstream_id_DESC
   first_name_ASC
   first_name_DESC
   last_name_ASC
   last_name_DESC
+  username_ASC
+  username_DESC
   email_ASC
   email_DESC
   administrator_ASC
   administrator_DESC
   completed_enough_ASC
   completed_enough_DESC
+  student_number_ASC
+  student_number_DESC
   real_student_number_ASC
   real_student_number_DESC
 }
 
 type UserPreviousValues {
-  id: ID!
+  id: UUID!
+  upstream_id: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
-  upstream_id: Int!
   first_name: String
   last_name: String
+  username: String
   email: String!
   administrator: Boolean!
   completed_enough: Boolean!
+  student_number: String
   real_student_number: String
 }
 
@@ -853,29 +1004,37 @@ input UserUpdateDataInput {
   upstream_id: Int
   first_name: String
   last_name: String
+  username: String
   email: String
   administrator: Boolean
   completed_enough: Boolean
+  student_number: String
   real_student_number: String
+  completions: CompletionUpdateManyWithoutUserInput
 }
 
 input UserUpdateInput {
   upstream_id: Int
   first_name: String
   last_name: String
+  username: String
   email: String
   administrator: Boolean
   completed_enough: Boolean
+  student_number: String
   real_student_number: String
+  completions: CompletionUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
   upstream_id: Int
   first_name: String
   last_name: String
+  username: String
   email: String
   administrator: Boolean
   completed_enough: Boolean
+  student_number: String
   real_student_number: String
 }
 
@@ -886,26 +1045,58 @@ input UserUpdateOneRequiredInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateOneRequiredWithoutCompletionsInput {
+  create: UserCreateWithoutCompletionsInput
+  update: UserUpdateWithoutCompletionsDataInput
+  upsert: UserUpsertWithoutCompletionsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateWithoutCompletionsDataInput {
+  upstream_id: Int
+  first_name: String
+  last_name: String
+  username: String
+  email: String
+  administrator: Boolean
+  completed_enough: Boolean
+  student_number: String
+  real_student_number: String
+}
+
 input UserUpsertNestedInput {
   update: UserUpdateDataInput!
   create: UserCreateInput!
 }
 
+input UserUpsertWithoutCompletionsInput {
+  update: UserUpdateWithoutCompletionsDataInput!
+  create: UserCreateWithoutCompletionsInput!
+}
+
 input UserWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  upstream_id: Int
+  upstream_id_not: Int
+  upstream_id_in: [Int!]
+  upstream_id_not_in: [Int!]
+  upstream_id_lt: Int
+  upstream_id_lte: Int
+  upstream_id_gt: Int
+  upstream_id_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -922,14 +1113,6 @@ input UserWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  upstream_id: Int
-  upstream_id_not: Int
-  upstream_id_in: [Int!]
-  upstream_id_not_in: [Int!]
-  upstream_id_lt: Int
-  upstream_id_lte: Int
-  upstream_id_gt: Int
-  upstream_id_gte: Int
   first_name: String
   first_name_not: String
   first_name_in: [String!]
@@ -958,6 +1141,20 @@ input UserWhereInput {
   last_name_not_starts_with: String
   last_name_ends_with: String
   last_name_not_ends_with: String
+  username: String
+  username_not: String
+  username_in: [String!]
+  username_not_in: [String!]
+  username_lt: String
+  username_lte: String
+  username_gt: String
+  username_gte: String
+  username_contains: String
+  username_not_contains: String
+  username_starts_with: String
+  username_not_starts_with: String
+  username_ends_with: String
+  username_not_ends_with: String
   email: String
   email_not: String
   email_in: [String!]
@@ -976,6 +1173,20 @@ input UserWhereInput {
   administrator_not: Boolean
   completed_enough: Boolean
   completed_enough_not: Boolean
+  student_number: String
+  student_number_not: String
+  student_number_in: [String!]
+  student_number_not_in: [String!]
+  student_number_lt: String
+  student_number_lte: String
+  student_number_gt: String
+  student_number_gte: String
+  student_number_contains: String
+  student_number_not_contains: String
+  student_number_starts_with: String
+  student_number_not_starts_with: String
+  student_number_ends_with: String
+  student_number_not_ends_with: String
   real_student_number: String
   real_student_number_not: String
   real_student_number_in: [String!]
@@ -990,14 +1201,18 @@ input UserWhereInput {
   real_student_number_not_starts_with: String
   real_student_number_ends_with: String
   real_student_number_not_ends_with: String
+  completions_every: CompletionWhereInput
+  completions_some: CompletionWhereInput
+  completions_none: CompletionWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
 }
 
 input UserWhereUniqueInput {
-  id: ID
+  id: UUID
   upstream_id: Int
+  username: String
 }
 
 scalar UUID

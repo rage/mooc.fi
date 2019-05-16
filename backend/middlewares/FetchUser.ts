@@ -24,11 +24,11 @@ const fetchUser = async (resolve, root, args, context, info) => {
   const prisma: Prisma = context.prisma;
   const id: number = details.id;
   const prismaDetails = {
+    upstream_id: id,
     administrator: details.administrator,
     email: details.email.trim(),
     first_name: details.user_field.first_name.trim(),
     last_name: details.user_field.last_name.trim(),
-    upstream_id: details.id,
     completed_enough: details.completed_enough
   }
   context.user = await prisma.upsertUser({

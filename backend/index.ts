@@ -1,4 +1,4 @@
-import { prisma, Prisma, Int, User, Course, OpenUniversityCourse } from "./generated/prisma-client";
+import { prisma, Prisma, Int, User, Course, OpenUniversityCourse, Completion } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
 import { stringArg, idArg, convertSDL, subscriptionField, objectType } from "nexus";
@@ -139,22 +139,22 @@ const Mutation = prismaObjectType({
   }
 });
 
-const Completion = objectType({
-  name: "Completion",
-  definition(t) {
-    t.int("id")
-    t.string("email")
-    t.string("username")
-    t.string("student_number")
-    t.string("first_name")
-    t.string("last_name")
-    t.string("completion_language")
-  }
-})
+// const Completion = objectType({
+//   name: "Completion",
+//   definition(t) {
+//     t.int("id")
+//     t.string("email")
+//     t.string("username")
+//     t.string("student_number")
+//     t.string("first_name")
+//     t.string("last_name")
+//     t.string("completion_language")
+//   }
+// })
 
 
 const schema = makePrismaSchema({
-  types: [Query, Completion, Mutation],
+  types: [Query, Mutation],
 
   prisma: {
     datamodelInfo,
@@ -175,7 +175,7 @@ const server = new GraphQLServer({
 
 const serverStartOptions = {
   formatParams(o) {
-    logger.info("Query");
+    //logger.info("Query");
     return o;
   },
   formatError: error => {

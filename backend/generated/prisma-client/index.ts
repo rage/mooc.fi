@@ -173,6 +173,12 @@ export interface Prisma {
   updateCompletion: (
     args: { data: CompletionUpdateInput; where: CompletionWhereUniqueInput }
   ) => CompletionPromise;
+  updateManyCompletions: (
+    args: {
+      data: CompletionUpdateManyMutationInput;
+      where?: CompletionWhereInput;
+    }
+  ) => BatchPayloadPromise;
   upsertCompletion: (
     args: {
       where: CompletionWhereUniqueInput;
@@ -304,6 +310,16 @@ export interface ClientConstructor<T> {
  * Types
  */
 
+export type CompletionOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "completion_language_ASC"
+  | "completion_language_DESC";
+
 export type OpenUniversityCourseOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -313,14 +329,6 @@ export type OpenUniversityCourseOrderByInput =
   | "updatedAt_DESC"
   | "course_code_ASC"
   | "course_code_DESC";
-
-export type CompletionOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC";
 
 export type CompletionRegisteredOrderByInput =
   | "id_ASC"
@@ -347,22 +355,26 @@ export type CourseOrderByInput =
 export type UserOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "upstream_id_ASC"
+  | "upstream_id_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC"
-  | "upstream_id_ASC"
-  | "upstream_id_DESC"
   | "first_name_ASC"
   | "first_name_DESC"
   | "last_name_ASC"
   | "last_name_DESC"
+  | "username_ASC"
+  | "username_DESC"
   | "email_ASC"
   | "email_DESC"
   | "administrator_ASC"
   | "administrator_DESC"
   | "completed_enough_ASC"
   | "completed_enough_DESC"
+  | "student_number_ASC"
+  | "student_number_DESC"
   | "real_student_number_ASC"
   | "real_student_number_DESC";
 
@@ -372,7 +384,7 @@ export type CompletionWhereUniqueInput = AtLeastOne<{
   id: UUID;
 }>;
 
-export interface OpenUniversityCourseWhereInput {
+export interface CompletionWhereInput {
   id?: UUID;
   id_not?: UUID;
   id_in?: UUID[] | UUID;
@@ -403,24 +415,160 @@ export interface OpenUniversityCourseWhereInput {
   updatedAt_lte?: DateTimeInput;
   updatedAt_gt?: DateTimeInput;
   updatedAt_gte?: DateTimeInput;
-  course_code?: String;
-  course_code_not?: String;
-  course_code_in?: String[] | String;
-  course_code_not_in?: String[] | String;
-  course_code_lt?: String;
-  course_code_lte?: String;
-  course_code_gt?: String;
-  course_code_gte?: String;
-  course_code_contains?: String;
-  course_code_not_contains?: String;
-  course_code_starts_with?: String;
-  course_code_not_starts_with?: String;
-  course_code_ends_with?: String;
-  course_code_not_ends_with?: String;
+  user?: UserWhereInput;
   course?: CourseWhereInput;
-  AND?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
-  OR?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
-  NOT?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
+  completion_language?: String;
+  completion_language_not?: String;
+  completion_language_in?: String[] | String;
+  completion_language_not_in?: String[] | String;
+  completion_language_lt?: String;
+  completion_language_lte?: String;
+  completion_language_gt?: String;
+  completion_language_gte?: String;
+  completion_language_contains?: String;
+  completion_language_not_contains?: String;
+  completion_language_starts_with?: String;
+  completion_language_not_starts_with?: String;
+  completion_language_ends_with?: String;
+  completion_language_not_ends_with?: String;
+  AND?: CompletionWhereInput[] | CompletionWhereInput;
+  OR?: CompletionWhereInput[] | CompletionWhereInput;
+  NOT?: CompletionWhereInput[] | CompletionWhereInput;
+}
+
+export interface UserWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  upstream_id?: Int;
+  upstream_id_not?: Int;
+  upstream_id_in?: Int[] | Int;
+  upstream_id_not_in?: Int[] | Int;
+  upstream_id_lt?: Int;
+  upstream_id_lte?: Int;
+  upstream_id_gt?: Int;
+  upstream_id_gte?: Int;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  first_name?: String;
+  first_name_not?: String;
+  first_name_in?: String[] | String;
+  first_name_not_in?: String[] | String;
+  first_name_lt?: String;
+  first_name_lte?: String;
+  first_name_gt?: String;
+  first_name_gte?: String;
+  first_name_contains?: String;
+  first_name_not_contains?: String;
+  first_name_starts_with?: String;
+  first_name_not_starts_with?: String;
+  first_name_ends_with?: String;
+  first_name_not_ends_with?: String;
+  last_name?: String;
+  last_name_not?: String;
+  last_name_in?: String[] | String;
+  last_name_not_in?: String[] | String;
+  last_name_lt?: String;
+  last_name_lte?: String;
+  last_name_gt?: String;
+  last_name_gte?: String;
+  last_name_contains?: String;
+  last_name_not_contains?: String;
+  last_name_starts_with?: String;
+  last_name_not_starts_with?: String;
+  last_name_ends_with?: String;
+  last_name_not_ends_with?: String;
+  username?: String;
+  username_not?: String;
+  username_in?: String[] | String;
+  username_not_in?: String[] | String;
+  username_lt?: String;
+  username_lte?: String;
+  username_gt?: String;
+  username_gte?: String;
+  username_contains?: String;
+  username_not_contains?: String;
+  username_starts_with?: String;
+  username_not_starts_with?: String;
+  username_ends_with?: String;
+  username_not_ends_with?: String;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  administrator?: Boolean;
+  administrator_not?: Boolean;
+  completed_enough?: Boolean;
+  completed_enough_not?: Boolean;
+  student_number?: String;
+  student_number_not?: String;
+  student_number_in?: String[] | String;
+  student_number_not_in?: String[] | String;
+  student_number_lt?: String;
+  student_number_lte?: String;
+  student_number_gt?: String;
+  student_number_gte?: String;
+  student_number_contains?: String;
+  student_number_not_contains?: String;
+  student_number_starts_with?: String;
+  student_number_not_starts_with?: String;
+  student_number_ends_with?: String;
+  student_number_not_ends_with?: String;
+  real_student_number?: String;
+  real_student_number_not?: String;
+  real_student_number_in?: String[] | String;
+  real_student_number_not_in?: String[] | String;
+  real_student_number_lt?: String;
+  real_student_number_lte?: String;
+  real_student_number_gt?: String;
+  real_student_number_gte?: String;
+  real_student_number_contains?: String;
+  real_student_number_not_contains?: String;
+  real_student_number_starts_with?: String;
+  real_student_number_not_starts_with?: String;
+  real_student_number_ends_with?: String;
+  real_student_number_not_ends_with?: String;
+  completions_every?: CompletionWhereInput;
+  completions_some?: CompletionWhereInput;
+  completions_none?: CompletionWhereInput;
+  AND?: UserWhereInput[] | UserWhereInput;
+  OR?: UserWhereInput[] | UserWhereInput;
+  NOT?: UserWhereInput[] | UserWhereInput;
 }
 
 export interface CourseWhereInput {
@@ -490,7 +638,7 @@ export interface CourseWhereInput {
   NOT?: CourseWhereInput[] | CourseWhereInput;
 }
 
-export interface CompletionWhereInput {
+export interface OpenUniversityCourseWhereInput {
   id?: UUID;
   id_not?: UUID;
   id_in?: UUID[] | UUID;
@@ -521,115 +669,24 @@ export interface CompletionWhereInput {
   updatedAt_lte?: DateTimeInput;
   updatedAt_gt?: DateTimeInput;
   updatedAt_gte?: DateTimeInput;
-  user?: UserWhereInput;
+  course_code?: String;
+  course_code_not?: String;
+  course_code_in?: String[] | String;
+  course_code_not_in?: String[] | String;
+  course_code_lt?: String;
+  course_code_lte?: String;
+  course_code_gt?: String;
+  course_code_gte?: String;
+  course_code_contains?: String;
+  course_code_not_contains?: String;
+  course_code_starts_with?: String;
+  course_code_not_starts_with?: String;
+  course_code_ends_with?: String;
+  course_code_not_ends_with?: String;
   course?: CourseWhereInput;
-  AND?: CompletionWhereInput[] | CompletionWhereInput;
-  OR?: CompletionWhereInput[] | CompletionWhereInput;
-  NOT?: CompletionWhereInput[] | CompletionWhereInput;
-}
-
-export interface UserWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  createdAt?: DateTimeInput;
-  createdAt_not?: DateTimeInput;
-  createdAt_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
-  createdAt_lt?: DateTimeInput;
-  createdAt_lte?: DateTimeInput;
-  createdAt_gt?: DateTimeInput;
-  createdAt_gte?: DateTimeInput;
-  updatedAt?: DateTimeInput;
-  updatedAt_not?: DateTimeInput;
-  updatedAt_in?: DateTimeInput[] | DateTimeInput;
-  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
-  updatedAt_lt?: DateTimeInput;
-  updatedAt_lte?: DateTimeInput;
-  updatedAt_gt?: DateTimeInput;
-  updatedAt_gte?: DateTimeInput;
-  upstream_id?: Int;
-  upstream_id_not?: Int;
-  upstream_id_in?: Int[] | Int;
-  upstream_id_not_in?: Int[] | Int;
-  upstream_id_lt?: Int;
-  upstream_id_lte?: Int;
-  upstream_id_gt?: Int;
-  upstream_id_gte?: Int;
-  first_name?: String;
-  first_name_not?: String;
-  first_name_in?: String[] | String;
-  first_name_not_in?: String[] | String;
-  first_name_lt?: String;
-  first_name_lte?: String;
-  first_name_gt?: String;
-  first_name_gte?: String;
-  first_name_contains?: String;
-  first_name_not_contains?: String;
-  first_name_starts_with?: String;
-  first_name_not_starts_with?: String;
-  first_name_ends_with?: String;
-  first_name_not_ends_with?: String;
-  last_name?: String;
-  last_name_not?: String;
-  last_name_in?: String[] | String;
-  last_name_not_in?: String[] | String;
-  last_name_lt?: String;
-  last_name_lte?: String;
-  last_name_gt?: String;
-  last_name_gte?: String;
-  last_name_contains?: String;
-  last_name_not_contains?: String;
-  last_name_starts_with?: String;
-  last_name_not_starts_with?: String;
-  last_name_ends_with?: String;
-  last_name_not_ends_with?: String;
-  email?: String;
-  email_not?: String;
-  email_in?: String[] | String;
-  email_not_in?: String[] | String;
-  email_lt?: String;
-  email_lte?: String;
-  email_gt?: String;
-  email_gte?: String;
-  email_contains?: String;
-  email_not_contains?: String;
-  email_starts_with?: String;
-  email_not_starts_with?: String;
-  email_ends_with?: String;
-  email_not_ends_with?: String;
-  administrator?: Boolean;
-  administrator_not?: Boolean;
-  completed_enough?: Boolean;
-  completed_enough_not?: Boolean;
-  real_student_number?: String;
-  real_student_number_not?: String;
-  real_student_number_in?: String[] | String;
-  real_student_number_not_in?: String[] | String;
-  real_student_number_lt?: String;
-  real_student_number_lte?: String;
-  real_student_number_gt?: String;
-  real_student_number_gte?: String;
-  real_student_number_contains?: String;
-  real_student_number_not_contains?: String;
-  real_student_number_starts_with?: String;
-  real_student_number_not_starts_with?: String;
-  real_student_number_ends_with?: String;
-  real_student_number_not_ends_with?: String;
-  AND?: UserWhereInput[] | UserWhereInput;
-  OR?: UserWhereInput[] | UserWhereInput;
-  NOT?: UserWhereInput[] | UserWhereInput;
+  AND?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
+  OR?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
+  NOT?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
 }
 
 export type CompletionRegisteredWhereUniqueInput = AtLeastOne<{
@@ -699,27 +756,31 @@ export type OpenUniversityCourseWhereUniqueInput = AtLeastOne<{
 }>;
 
 export type UserWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
+  id: UUID;
   upstream_id?: Int;
+  username?: String;
 }>;
 
 export interface CompletionCreateInput {
-  user: UserCreateOneInput;
+  user: UserCreateOneWithoutCompletionsInput;
   course: CourseCreateOneInput;
+  completion_language?: String;
 }
 
-export interface UserCreateOneInput {
-  create?: UserCreateInput;
+export interface UserCreateOneWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput;
   connect?: UserWhereUniqueInput;
 }
 
-export interface UserCreateInput {
+export interface UserCreateWithoutCompletionsInput {
   upstream_id: Int;
   first_name?: String;
   last_name?: String;
+  username?: String;
   email: String;
   administrator: Boolean;
   completed_enough?: Boolean;
+  student_number?: String;
   real_student_number?: String;
 }
 
@@ -748,30 +809,33 @@ export interface OpenUniversityCourseCreateWithoutCourseInput {
 }
 
 export interface CompletionUpdateInput {
-  user?: UserUpdateOneRequiredInput;
+  user?: UserUpdateOneRequiredWithoutCompletionsInput;
   course?: CourseUpdateOneRequiredInput;
+  completion_language?: String;
 }
 
-export interface UserUpdateOneRequiredInput {
-  create?: UserCreateInput;
-  update?: UserUpdateDataInput;
-  upsert?: UserUpsertNestedInput;
+export interface UserUpdateOneRequiredWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput;
+  update?: UserUpdateWithoutCompletionsDataInput;
+  upsert?: UserUpsertWithoutCompletionsInput;
   connect?: UserWhereUniqueInput;
 }
 
-export interface UserUpdateDataInput {
+export interface UserUpdateWithoutCompletionsDataInput {
   upstream_id?: Int;
   first_name?: String;
   last_name?: String;
+  username?: String;
   email?: String;
   administrator?: Boolean;
   completed_enough?: Boolean;
+  student_number?: String;
   real_student_number?: String;
 }
 
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
+export interface UserUpsertWithoutCompletionsInput {
+  update: UserUpdateWithoutCompletionsDataInput;
+  create: UserCreateWithoutCompletionsInput;
 }
 
 export interface CourseUpdateOneRequiredInput {
@@ -902,16 +966,170 @@ export interface CourseUpsertNestedInput {
   create: CourseCreateInput;
 }
 
+export interface CompletionUpdateManyMutationInput {
+  completion_language?: String;
+}
+
 export interface CompletionRegisteredCreateInput {
   user: UserCreateOneInput;
   course: CourseCreateOneInput;
   organisation: String;
 }
 
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateInput {
+  upstream_id: Int;
+  first_name?: String;
+  last_name?: String;
+  username?: String;
+  email: String;
+  administrator: Boolean;
+  completed_enough?: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  completions?: CompletionCreateManyWithoutUserInput;
+}
+
+export interface CompletionCreateManyWithoutUserInput {
+  create?:
+    | CompletionCreateWithoutUserInput[]
+    | CompletionCreateWithoutUserInput;
+  connect?: CompletionWhereUniqueInput[] | CompletionWhereUniqueInput;
+}
+
+export interface CompletionCreateWithoutUserInput {
+  course: CourseCreateOneInput;
+  completion_language?: String;
+}
+
 export interface CompletionRegisteredUpdateInput {
   user?: UserUpdateOneRequiredInput;
   course?: CourseUpdateOneRequiredInput;
   organisation?: String;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateDataInput {
+  upstream_id?: Int;
+  first_name?: String;
+  last_name?: String;
+  username?: String;
+  email?: String;
+  administrator?: Boolean;
+  completed_enough?: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  completions?: CompletionUpdateManyWithoutUserInput;
+}
+
+export interface CompletionUpdateManyWithoutUserInput {
+  create?:
+    | CompletionCreateWithoutUserInput[]
+    | CompletionCreateWithoutUserInput;
+  delete?: CompletionWhereUniqueInput[] | CompletionWhereUniqueInput;
+  connect?: CompletionWhereUniqueInput[] | CompletionWhereUniqueInput;
+  set?: CompletionWhereUniqueInput[] | CompletionWhereUniqueInput;
+  disconnect?: CompletionWhereUniqueInput[] | CompletionWhereUniqueInput;
+  update?:
+    | CompletionUpdateWithWhereUniqueWithoutUserInput[]
+    | CompletionUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | CompletionUpsertWithWhereUniqueWithoutUserInput[]
+    | CompletionUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: CompletionScalarWhereInput[] | CompletionScalarWhereInput;
+  updateMany?:
+    | CompletionUpdateManyWithWhereNestedInput[]
+    | CompletionUpdateManyWithWhereNestedInput;
+}
+
+export interface CompletionUpdateWithWhereUniqueWithoutUserInput {
+  where: CompletionWhereUniqueInput;
+  data: CompletionUpdateWithoutUserDataInput;
+}
+
+export interface CompletionUpdateWithoutUserDataInput {
+  course?: CourseUpdateOneRequiredInput;
+  completion_language?: String;
+}
+
+export interface CompletionUpsertWithWhereUniqueWithoutUserInput {
+  where: CompletionWhereUniqueInput;
+  update: CompletionUpdateWithoutUserDataInput;
+  create: CompletionCreateWithoutUserInput;
+}
+
+export interface CompletionScalarWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  completion_language?: String;
+  completion_language_not?: String;
+  completion_language_in?: String[] | String;
+  completion_language_not_in?: String[] | String;
+  completion_language_lt?: String;
+  completion_language_lte?: String;
+  completion_language_gt?: String;
+  completion_language_gte?: String;
+  completion_language_contains?: String;
+  completion_language_not_contains?: String;
+  completion_language_starts_with?: String;
+  completion_language_not_starts_with?: String;
+  completion_language_ends_with?: String;
+  completion_language_not_ends_with?: String;
+  AND?: CompletionScalarWhereInput[] | CompletionScalarWhereInput;
+  OR?: CompletionScalarWhereInput[] | CompletionScalarWhereInput;
+  NOT?: CompletionScalarWhereInput[] | CompletionScalarWhereInput;
+}
+
+export interface CompletionUpdateManyWithWhereNestedInput {
+  where: CompletionScalarWhereInput;
+  data: CompletionUpdateManyDataInput;
+}
+
+export interface CompletionUpdateManyDataInput {
+  completion_language?: String;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
 }
 
 export interface CompletionRegisteredUpdateManyMutationInput {
@@ -974,19 +1192,24 @@ export interface UserUpdateInput {
   upstream_id?: Int;
   first_name?: String;
   last_name?: String;
+  username?: String;
   email?: String;
   administrator?: Boolean;
   completed_enough?: Boolean;
+  student_number?: String;
   real_student_number?: String;
+  completions?: CompletionUpdateManyWithoutUserInput;
 }
 
 export interface UserUpdateManyMutationInput {
   upstream_id?: Int;
   first_name?: String;
   last_name?: String;
+  username?: String;
   email?: String;
   administrator?: Boolean;
   completed_enough?: Boolean;
+  student_number?: String;
   real_student_number?: String;
 }
 
@@ -1065,6 +1288,7 @@ export interface Completion {
   id: UUID;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
+  completion_language?: String;
 }
 
 export interface CompletionPromise extends Promise<Completion>, Fragmentable {
@@ -1073,6 +1297,7 @@ export interface CompletionPromise extends Promise<Completion>, Fragmentable {
   updatedAt: () => Promise<DateTimeOutput>;
   user: <T = UserPromise>() => T;
   course: <T = CoursePromise>() => T;
+  completion_language: () => Promise<String>;
 }
 
 export interface CompletionSubscription
@@ -1083,47 +1308,76 @@ export interface CompletionSubscription
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   user: <T = UserSubscription>() => T;
   course: <T = CourseSubscription>() => T;
+  completion_language: () => Promise<AsyncIterator<String>>;
 }
 
 export interface User {
-  id: ID_Output;
+  id: UUID;
+  upstream_id: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  upstream_id: Int;
   first_name?: String;
   last_name?: String;
+  username?: String;
   email: String;
   administrator: Boolean;
   completed_enough: Boolean;
+  student_number?: String;
   real_student_number?: String;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
+  id: () => Promise<UUID>;
+  upstream_id: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  upstream_id: () => Promise<Int>;
   first_name: () => Promise<String>;
   last_name: () => Promise<String>;
+  username: () => Promise<String>;
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
   completed_enough: () => Promise<Boolean>;
+  student_number: () => Promise<String>;
   real_student_number: () => Promise<String>;
+  completions: <T = FragmentableArray<Completion>>(
+    args?: {
+      where?: CompletionWhereInput;
+      orderBy?: CompletionOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface UserSubscription
   extends Promise<AsyncIterator<User>>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
+  id: () => Promise<AsyncIterator<UUID>>;
+  upstream_id: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  upstream_id: () => Promise<AsyncIterator<Int>>;
   first_name: () => Promise<AsyncIterator<String>>;
   last_name: () => Promise<AsyncIterator<String>>;
+  username: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   administrator: () => Promise<AsyncIterator<Boolean>>;
   completed_enough: () => Promise<AsyncIterator<Boolean>>;
+  student_number: () => Promise<AsyncIterator<String>>;
   real_student_number: () => Promise<AsyncIterator<String>>;
+  completions: <T = Promise<AsyncIterator<CompletionSubscription>>>(
+    args?: {
+      where?: CompletionWhereInput;
+      orderBy?: CompletionOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface Course {
@@ -1580,6 +1834,7 @@ export interface CompletionPreviousValues {
   id: UUID;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
+  completion_language?: String;
 }
 
 export interface CompletionPreviousValuesPromise
@@ -1588,6 +1843,7 @@ export interface CompletionPreviousValuesPromise
   id: () => Promise<UUID>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
+  completion_language: () => Promise<String>;
 }
 
 export interface CompletionPreviousValuesSubscription
@@ -1596,6 +1852,7 @@ export interface CompletionPreviousValuesSubscription
   id: () => Promise<AsyncIterator<UUID>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  completion_language: () => Promise<AsyncIterator<String>>;
 }
 
 export interface CompletionRegisteredSubscriptionPayload {
@@ -1777,45 +2034,51 @@ export interface UserSubscriptionPayloadSubscription
 }
 
 export interface UserPreviousValues {
-  id: ID_Output;
+  id: UUID;
+  upstream_id: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  upstream_id: Int;
   first_name?: String;
   last_name?: String;
+  username?: String;
   email: String;
   administrator: Boolean;
   completed_enough: Boolean;
+  student_number?: String;
   real_student_number?: String;
 }
 
 export interface UserPreviousValuesPromise
   extends Promise<UserPreviousValues>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
+  id: () => Promise<UUID>;
+  upstream_id: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  upstream_id: () => Promise<Int>;
   first_name: () => Promise<String>;
   last_name: () => Promise<String>;
+  username: () => Promise<String>;
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
   completed_enough: () => Promise<Boolean>;
+  student_number: () => Promise<String>;
   real_student_number: () => Promise<String>;
 }
 
 export interface UserPreviousValuesSubscription
   extends Promise<AsyncIterator<UserPreviousValues>>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
+  id: () => Promise<AsyncIterator<UUID>>;
+  upstream_id: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  upstream_id: () => Promise<AsyncIterator<Int>>;
   first_name: () => Promise<AsyncIterator<String>>;
   last_name: () => Promise<AsyncIterator<String>>;
+  username: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   administrator: () => Promise<AsyncIterator<Boolean>>;
   completed_enough: () => Promise<AsyncIterator<Boolean>>;
+  student_number: () => Promise<AsyncIterator<String>>;
   real_student_number: () => Promise<AsyncIterator<String>>;
 }
 
@@ -1832,12 +2095,6 @@ DateTime scalar output type, which is always a string
 export type DateTimeOutput = string;
 
 /*
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-*/
-export type ID_Input = string | number;
-export type ID_Output = string;
-
-/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
 export type Int = number;
@@ -1851,6 +2108,12 @@ export type String = string;
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean;
+
+/*
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+*/
+export type ID_Input = string | number;
+export type ID_Output = string;
 
 export type Long = string;
 

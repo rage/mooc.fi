@@ -1,14 +1,17 @@
 type User {
-  id: ID! @unique
+  id: UUID! @unique
+  upstream_id: Int! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  upstream_id: Int! @unique
   first_name: String
   last_name: String
+  username: String @unique
   email: String!
   administrator: Boolean!
   completed_enough: Boolean! @default(value: "false")
+  student_number: String
   real_student_number: String
+  completions: [Completion!]
 }
 
 type Course {
@@ -32,8 +35,9 @@ type Completion {
   id: UUID! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  user: User! @relation(name: "CompletionToUser")
+  user: User!
   course: Course! @relation(name: "CompletionToCourse")
+  completion_language: String
 }
 
 type CompletionRegistered {

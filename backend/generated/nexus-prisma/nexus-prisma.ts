@@ -16,19 +16,19 @@ export interface NexusPrismaTypes {
     fields: {
       Query: QueryObject
       User: UserObject
+      Completion: CompletionObject
+      Course: CourseObject
+      OpenUniversityCourse: OpenUniversityCourseObject
       UserConnection: UserConnectionObject
       PageInfo: PageInfoObject
       UserEdge: UserEdgeObject
       AggregateUser: AggregateUserObject
-      Course: CourseObject
-      OpenUniversityCourse: OpenUniversityCourseObject
       CourseConnection: CourseConnectionObject
       CourseEdge: CourseEdgeObject
       AggregateCourse: AggregateCourseObject
       OpenUniversityCourseConnection: OpenUniversityCourseConnectionObject
       OpenUniversityCourseEdge: OpenUniversityCourseEdgeObject
       AggregateOpenUniversityCourse: AggregateOpenUniversityCourseObject
-      Completion: CompletionObject
       CompletionConnection: CompletionConnectionObject
       CompletionEdge: CompletionEdgeObject
       AggregateCompletion: AggregateCompletionObject
@@ -53,19 +53,19 @@ export interface NexusPrismaTypes {
     fieldsDetails: {
       Query: QueryFieldDetails
       User: UserFieldDetails
+      Completion: CompletionFieldDetails
+      Course: CourseFieldDetails
+      OpenUniversityCourse: OpenUniversityCourseFieldDetails
       UserConnection: UserConnectionFieldDetails
       PageInfo: PageInfoFieldDetails
       UserEdge: UserEdgeFieldDetails
       AggregateUser: AggregateUserFieldDetails
-      Course: CourseFieldDetails
-      OpenUniversityCourse: OpenUniversityCourseFieldDetails
       CourseConnection: CourseConnectionFieldDetails
       CourseEdge: CourseEdgeFieldDetails
       AggregateCourse: AggregateCourseFieldDetails
       OpenUniversityCourseConnection: OpenUniversityCourseConnectionFieldDetails
       OpenUniversityCourseEdge: OpenUniversityCourseEdgeFieldDetails
       AggregateOpenUniversityCourse: AggregateOpenUniversityCourseFieldDetails
-      Completion: CompletionFieldDetails
       CompletionConnection: CompletionConnectionFieldDetails
       CompletionEdge: CompletionEdgeFieldDetails
       AggregateCompletion: AggregateCompletionFieldDetails
@@ -91,22 +91,28 @@ export interface NexusPrismaTypes {
   inputTypes: {
     fields: {
       UserWhereUniqueInput: UserWhereUniqueInputInputObject
+      CompletionWhereInput: CompletionWhereInputInputObject
       UserWhereInput: UserWhereInputInputObject
-      CourseWhereUniqueInput: CourseWhereUniqueInputInputObject
-      OpenUniversityCourseWhereInput: OpenUniversityCourseWhereInputInputObject
       CourseWhereInput: CourseWhereInputInputObject
+      OpenUniversityCourseWhereInput: OpenUniversityCourseWhereInputInputObject
+      CourseWhereUniqueInput: CourseWhereUniqueInputInputObject
       OpenUniversityCourseWhereUniqueInput: OpenUniversityCourseWhereUniqueInputInputObject
       CompletionWhereUniqueInput: CompletionWhereUniqueInputInputObject
-      CompletionWhereInput: CompletionWhereInputInputObject
       CompletionRegisteredWhereUniqueInput: CompletionRegisteredWhereUniqueInputInputObject
       CompletionRegisteredWhereInput: CompletionRegisteredWhereInputInputObject
       UserCreateInput: UserCreateInputInputObject
-      UserUpdateInput: UserUpdateInputInputObject
-      UserUpdateManyMutationInput: UserUpdateManyMutationInputInputObject
+      CompletionCreateManyWithoutUserInput: CompletionCreateManyWithoutUserInputInputObject
+      CompletionCreateWithoutUserInput: CompletionCreateWithoutUserInputInputObject
+      CourseCreateOneInput: CourseCreateOneInputInputObject
       CourseCreateInput: CourseCreateInputInputObject
       OpenUniversityCourseCreateManyWithoutCourseInput: OpenUniversityCourseCreateManyWithoutCourseInputInputObject
       OpenUniversityCourseCreateWithoutCourseInput: OpenUniversityCourseCreateWithoutCourseInputInputObject
-      CourseUpdateInput: CourseUpdateInputInputObject
+      UserUpdateInput: UserUpdateInputInputObject
+      CompletionUpdateManyWithoutUserInput: CompletionUpdateManyWithoutUserInputInputObject
+      CompletionUpdateWithWhereUniqueWithoutUserInput: CompletionUpdateWithWhereUniqueWithoutUserInputInputObject
+      CompletionUpdateWithoutUserDataInput: CompletionUpdateWithoutUserDataInputInputObject
+      CourseUpdateOneRequiredInput: CourseUpdateOneRequiredInputInputObject
+      CourseUpdateDataInput: CourseUpdateDataInputInputObject
       OpenUniversityCourseUpdateManyWithoutCourseInput: OpenUniversityCourseUpdateManyWithoutCourseInputInputObject
       OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput: OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInputInputObject
       OpenUniversityCourseUpdateWithoutCourseDataInput: OpenUniversityCourseUpdateWithoutCourseDataInputInputObject
@@ -114,6 +120,13 @@ export interface NexusPrismaTypes {
       OpenUniversityCourseScalarWhereInput: OpenUniversityCourseScalarWhereInputInputObject
       OpenUniversityCourseUpdateManyWithWhereNestedInput: OpenUniversityCourseUpdateManyWithWhereNestedInputInputObject
       OpenUniversityCourseUpdateManyDataInput: OpenUniversityCourseUpdateManyDataInputInputObject
+      CourseUpsertNestedInput: CourseUpsertNestedInputInputObject
+      CompletionUpsertWithWhereUniqueWithoutUserInput: CompletionUpsertWithWhereUniqueWithoutUserInputInputObject
+      CompletionScalarWhereInput: CompletionScalarWhereInputInputObject
+      CompletionUpdateManyWithWhereNestedInput: CompletionUpdateManyWithWhereNestedInputInputObject
+      CompletionUpdateManyDataInput: CompletionUpdateManyDataInputInputObject
+      UserUpdateManyMutationInput: UserUpdateManyMutationInputInputObject
+      CourseUpdateInput: CourseUpdateInputInputObject
       CourseUpdateManyMutationInput: CourseUpdateManyMutationInputInputObject
       OpenUniversityCourseCreateInput: OpenUniversityCourseCreateInputInputObject
       CourseCreateOneWithoutOpen_university_coursesInput: CourseCreateOneWithoutOpen_university_coursesInputInputObject
@@ -124,17 +137,19 @@ export interface NexusPrismaTypes {
       CourseUpsertWithoutOpen_university_coursesInput: CourseUpsertWithoutOpen_university_coursesInputInputObject
       OpenUniversityCourseUpdateManyMutationInput: OpenUniversityCourseUpdateManyMutationInputInputObject
       CompletionCreateInput: CompletionCreateInputInputObject
-      UserCreateOneInput: UserCreateOneInputInputObject
-      CourseCreateOneInput: CourseCreateOneInputInputObject
+      UserCreateOneWithoutCompletionsInput: UserCreateOneWithoutCompletionsInputInputObject
+      UserCreateWithoutCompletionsInput: UserCreateWithoutCompletionsInputInputObject
       CompletionUpdateInput: CompletionUpdateInputInputObject
+      UserUpdateOneRequiredWithoutCompletionsInput: UserUpdateOneRequiredWithoutCompletionsInputInputObject
+      UserUpdateWithoutCompletionsDataInput: UserUpdateWithoutCompletionsDataInputInputObject
+      UserUpsertWithoutCompletionsInput: UserUpsertWithoutCompletionsInputInputObject
+      CompletionUpdateManyMutationInput: CompletionUpdateManyMutationInputInputObject
+      CompletionRegisteredCreateInput: CompletionRegisteredCreateInputInputObject
+      UserCreateOneInput: UserCreateOneInputInputObject
+      CompletionRegisteredUpdateInput: CompletionRegisteredUpdateInputInputObject
       UserUpdateOneRequiredInput: UserUpdateOneRequiredInputInputObject
       UserUpdateDataInput: UserUpdateDataInputInputObject
       UserUpsertNestedInput: UserUpsertNestedInputInputObject
-      CourseUpdateOneRequiredInput: CourseUpdateOneRequiredInputInputObject
-      CourseUpdateDataInput: CourseUpdateDataInputInputObject
-      CourseUpsertNestedInput: CourseUpsertNestedInputInputObject
-      CompletionRegisteredCreateInput: CompletionRegisteredCreateInputInputObject
-      CompletionRegisteredUpdateInput: CompletionRegisteredUpdateInputInputObject
       CompletionRegisteredUpdateManyMutationInput: CompletionRegisteredUpdateManyMutationInputInputObject
       UserSubscriptionWhereInput: UserSubscriptionWhereInputInputObject
       CourseSubscriptionWhereInput: CourseSubscriptionWhereInputInputObject
@@ -144,10 +159,10 @@ export interface NexusPrismaTypes {
     }
   }
   enumTypes: {
-    UserOrderByInput: UserOrderByInputValues,
-    OpenUniversityCourseOrderByInput: OpenUniversityCourseOrderByInputValues,
-    CourseOrderByInput: CourseOrderByInputValues,
     CompletionOrderByInput: CompletionOrderByInputValues,
+    OpenUniversityCourseOrderByInput: OpenUniversityCourseOrderByInputValues,
+    UserOrderByInput: UserOrderByInputValues,
+    CourseOrderByInput: CourseOrderByInputValues,
     CompletionRegisteredOrderByInput: CompletionRegisteredOrderByInputValues,
     MutationType: MutationTypeValues,
   }
@@ -487,35 +502,56 @@ export interface QueryFieldDetails {
 type UserObject =
   | UserFields
   | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'first_name', args?: [] | false, alias?: string  } 
   | { name: 'last_name', args?: [] | false, alias?: string  } 
+  | { name: 'username', args?: [] | false, alias?: string  } 
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
   | { name: 'completed_enough', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
   | { name: 'real_student_number', args?: [] | false, alias?: string  } 
+  | { name: 'completions', args?: UserCompletionsArgs[] | false, alias?: string  } 
 
 type UserFields =
   | 'id'
+  | 'upstream_id'
   | 'createdAt'
   | 'updatedAt'
-  | 'upstream_id'
   | 'first_name'
   | 'last_name'
+  | 'username'
   | 'email'
   | 'administrator'
   | 'completed_enough'
+  | 'student_number'
   | 'real_student_number'
+  | 'completions'
 
 
-
+type UserCompletionsArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
   
 
 export interface UserFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  upstream_id: {
+    type: 'Int'
     args: {}
     description: string
     list: undefined
@@ -538,14 +574,6 @@ export interface UserFieldDetails {
     nullable: false
     resolve: undefined
   }
-  upstream_id: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
   first_name: {
     type: 'String'
     args: {}
@@ -555,6 +583,14 @@ export interface UserFieldDetails {
     resolve: undefined
   }
   last_name: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  username: {
     type: 'String'
     args: {}
     description: string
@@ -586,6 +622,14 @@ export interface UserFieldDetails {
     nullable: false
     resolve: undefined
   }
+  student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
   real_student_number: {
     type: 'String'
     args: {}
@@ -593,6 +637,261 @@ export interface UserFieldDetails {
     list: undefined
     nullable: true
     resolve: undefined
+  }
+  completions: {
+    type: 'Completion'
+    args: Record<UserCompletionsArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"User">,
+      args: { where?: CompletionWhereInput | null, orderBy?: prisma.CompletionOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion[]> | prisma.Completion[]
+  }
+}
+  
+
+// Types for Completion
+
+type CompletionObject =
+  | CompletionFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'user', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+  | { name: 'completion_language', args?: [] | false, alias?: string  } 
+
+type CompletionFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'user'
+  | 'course'
+  | 'completion_language'
+
+
+
+  
+
+export interface CompletionFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  user: {
+    type: 'User'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Completion">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.User> | prisma.User
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Completion">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
+  }
+  completion_language: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+}
+  
+
+// Types for Course
+
+type CourseObject =
+  | CourseFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'name', args?: [] | false, alias?: string  } 
+  | { name: 'slug', args?: [] | false, alias?: string  } 
+  | { name: 'open_university_courses', args?: CourseOpen_university_coursesArgs[] | false, alias?: string  } 
+
+type CourseFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'name'
+  | 'slug'
+  | 'open_university_courses'
+
+
+type CourseOpen_university_coursesArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+  
+
+export interface CourseFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  name: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  slug: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  open_university_courses: {
+    type: 'OpenUniversityCourse'
+    args: Record<CourseOpen_university_coursesArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Course">,
+      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.OpenUniversityCourse[]> | prisma.OpenUniversityCourse[]
+  }
+}
+  
+
+// Types for OpenUniversityCourse
+
+type OpenUniversityCourseObject =
+  | OpenUniversityCourseFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'course_code', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+
+type OpenUniversityCourseFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'course_code'
+  | 'course'
+
+
+
+  
+
+export interface OpenUniversityCourseFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  course_code: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"OpenUniversityCourse">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
   }
 }
   
@@ -773,163 +1072,6 @@ export interface AggregateUserFieldDetails {
     list: undefined
     nullable: false
     resolve: undefined
-  }
-}
-  
-
-// Types for Course
-
-type CourseObject =
-  | CourseFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'createdAt', args?: [] | false, alias?: string  } 
-  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'name', args?: [] | false, alias?: string  } 
-  | { name: 'slug', args?: [] | false, alias?: string  } 
-  | { name: 'open_university_courses', args?: CourseOpen_university_coursesArgs[] | false, alias?: string  } 
-
-type CourseFields =
-  | 'id'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'name'
-  | 'slug'
-  | 'open_university_courses'
-
-
-type CourseOpen_university_coursesArgs =
-  | 'where'
-  | 'orderBy'
-  | 'skip'
-  | 'after'
-  | 'before'
-  | 'first'
-  | 'last'
-  
-
-export interface CourseFieldDetails {
-  id: {
-    type: 'UUID'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  createdAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  updatedAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  name: {
-    type: 'String'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  slug: {
-    type: 'String'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  open_university_courses: {
-    type: 'OpenUniversityCourse'
-    args: Record<CourseOpen_university_coursesArgs, core.NexusArgDef<string>>
-    description: string
-    list: true
-    nullable: false
-    resolve: (
-      root: core.RootValue<"Course">,
-      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse[]> | prisma.OpenUniversityCourse[]
-  }
-}
-  
-
-// Types for OpenUniversityCourse
-
-type OpenUniversityCourseObject =
-  | OpenUniversityCourseFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'createdAt', args?: [] | false, alias?: string  } 
-  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'course_code', args?: [] | false, alias?: string  } 
-  | { name: 'course', args?: [] | false, alias?: string  } 
-
-type OpenUniversityCourseFields =
-  | 'id'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'course_code'
-  | 'course'
-
-
-
-  
-
-export interface OpenUniversityCourseFieldDetails {
-  id: {
-    type: 'UUID'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  createdAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  updatedAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  course_code: {
-    type: 'String'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  course: {
-    type: 'Course'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: (
-      root: core.RootValue<"OpenUniversityCourse">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.Course> | prisma.Course
   }
 }
   
@@ -1180,81 +1322,6 @@ export interface AggregateOpenUniversityCourseFieldDetails {
     list: undefined
     nullable: false
     resolve: undefined
-  }
-}
-  
-
-// Types for Completion
-
-type CompletionObject =
-  | CompletionFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'createdAt', args?: [] | false, alias?: string  } 
-  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'user', args?: [] | false, alias?: string  } 
-  | { name: 'course', args?: [] | false, alias?: string  } 
-
-type CompletionFields =
-  | 'id'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'user'
-  | 'course'
-
-
-
-  
-
-export interface CompletionFieldDetails {
-  id: {
-    type: 'UUID'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  createdAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  updatedAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  user: {
-    type: 'User'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: (
-      root: core.RootValue<"Completion">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.User> | prisma.User
-  }
-  course: {
-    type: 'Course'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: (
-      root: core.RootValue<"Completion">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.Course> | prisma.Course
   }
 }
   
@@ -1618,6 +1685,7 @@ type MutationObject =
   | { name: 'deleteManyOpenUniversityCourses', args?: MutationDeleteManyOpenUniversityCoursesArgs[] | false, alias?: string  } 
   | { name: 'createCompletion', args?: MutationCreateCompletionArgs[] | false, alias?: string  } 
   | { name: 'updateCompletion', args?: MutationUpdateCompletionArgs[] | false, alias?: string  } 
+  | { name: 'updateManyCompletions', args?: MutationUpdateManyCompletionsArgs[] | false, alias?: string  } 
   | { name: 'upsertCompletion', args?: MutationUpsertCompletionArgs[] | false, alias?: string  } 
   | { name: 'deleteCompletion', args?: MutationDeleteCompletionArgs[] | false, alias?: string  } 
   | { name: 'deleteManyCompletions', args?: MutationDeleteManyCompletionsArgs[] | false, alias?: string  } 
@@ -1649,6 +1717,7 @@ type MutationFields =
   | 'deleteManyOpenUniversityCourses'
   | 'createCompletion'
   | 'updateCompletion'
+  | 'updateManyCompletions'
   | 'upsertCompletion'
   | 'deleteCompletion'
   | 'deleteManyCompletions'
@@ -1711,6 +1780,9 @@ type MutationDeleteManyOpenUniversityCoursesArgs =
 type MutationCreateCompletionArgs =
   | 'data'
 type MutationUpdateCompletionArgs =
+  | 'data'
+  | 'where'
+type MutationUpdateManyCompletionsArgs =
   | 'data'
   | 'where'
 type MutationUpsertCompletionArgs =
@@ -1999,6 +2071,19 @@ export interface MutationFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.Completion | null> | prisma.Completion | null
+  }
+  updateManyCompletions: {
+    type: 'BatchPayload'
+    args: Record<MutationUpdateManyCompletionsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionUpdateManyMutationInput, where?: CompletionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   upsertCompletion: {
     type: 'Completion'
@@ -2319,26 +2404,30 @@ export interface UserSubscriptionPayloadFieldDetails {
 type UserPreviousValuesObject =
   | UserPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'first_name', args?: [] | false, alias?: string  } 
   | { name: 'last_name', args?: [] | false, alias?: string  } 
+  | { name: 'username', args?: [] | false, alias?: string  } 
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
   | { name: 'completed_enough', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
   | { name: 'real_student_number', args?: [] | false, alias?: string  } 
 
 type UserPreviousValuesFields =
   | 'id'
+  | 'upstream_id'
   | 'createdAt'
   | 'updatedAt'
-  | 'upstream_id'
   | 'first_name'
   | 'last_name'
+  | 'username'
   | 'email'
   | 'administrator'
   | 'completed_enough'
+  | 'student_number'
   | 'real_student_number'
 
 
@@ -2347,7 +2436,15 @@ type UserPreviousValuesFields =
 
 export interface UserPreviousValuesFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  upstream_id: {
+    type: 'Int'
     args: {}
     description: string
     list: undefined
@@ -2370,14 +2467,6 @@ export interface UserPreviousValuesFieldDetails {
     nullable: false
     resolve: undefined
   }
-  upstream_id: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
   first_name: {
     type: 'String'
     args: {}
@@ -2387,6 +2476,14 @@ export interface UserPreviousValuesFieldDetails {
     resolve: undefined
   }
   last_name: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  username: {
     type: 'String'
     args: {}
     description: string
@@ -2416,6 +2513,14 @@ export interface UserPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
   real_student_number: {
@@ -2766,11 +2871,13 @@ type CompletionPreviousValuesObject =
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'completion_language', args?: [] | false, alias?: string  } 
 
 type CompletionPreviousValuesFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
+  | 'completion_language'
 
 
 
@@ -2799,6 +2906,14 @@ export interface CompletionPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  completion_language: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
 }
@@ -2931,231 +3046,17 @@ export interface CompletionRegisteredPreviousValuesFieldDetails {
 
 
 export interface UserWhereUniqueInput {
-  id?: string | null
+  id?: undefined | null
   upstream_id?: number | null
+  username?: string | null
 }
 export type UserWhereUniqueInputInputObject =
   | Extract<keyof UserWhereUniqueInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'upstream_id', alias?: string  } 
+  | { name: 'username', alias?: string  } 
   
-export interface UserWhereInput {
-  id?: string | null
-  id_not?: string | null
-  id_in?: string[]
-  id_not_in?: string[]
-  id_lt?: string | null
-  id_lte?: string | null
-  id_gt?: string | null
-  id_gte?: string | null
-  id_contains?: string | null
-  id_not_contains?: string | null
-  id_starts_with?: string | null
-  id_not_starts_with?: string | null
-  id_ends_with?: string | null
-  id_not_ends_with?: string | null
-  createdAt?: string | null
-  createdAt_not?: string | null
-  createdAt_in?: string[]
-  createdAt_not_in?: string[]
-  createdAt_lt?: string | null
-  createdAt_lte?: string | null
-  createdAt_gt?: string | null
-  createdAt_gte?: string | null
-  updatedAt?: string | null
-  updatedAt_not?: string | null
-  updatedAt_in?: string[]
-  updatedAt_not_in?: string[]
-  updatedAt_lt?: string | null
-  updatedAt_lte?: string | null
-  updatedAt_gt?: string | null
-  updatedAt_gte?: string | null
-  upstream_id?: number | null
-  upstream_id_not?: number | null
-  upstream_id_in?: number[]
-  upstream_id_not_in?: number[]
-  upstream_id_lt?: number | null
-  upstream_id_lte?: number | null
-  upstream_id_gt?: number | null
-  upstream_id_gte?: number | null
-  first_name?: string | null
-  first_name_not?: string | null
-  first_name_in?: string[]
-  first_name_not_in?: string[]
-  first_name_lt?: string | null
-  first_name_lte?: string | null
-  first_name_gt?: string | null
-  first_name_gte?: string | null
-  first_name_contains?: string | null
-  first_name_not_contains?: string | null
-  first_name_starts_with?: string | null
-  first_name_not_starts_with?: string | null
-  first_name_ends_with?: string | null
-  first_name_not_ends_with?: string | null
-  last_name?: string | null
-  last_name_not?: string | null
-  last_name_in?: string[]
-  last_name_not_in?: string[]
-  last_name_lt?: string | null
-  last_name_lte?: string | null
-  last_name_gt?: string | null
-  last_name_gte?: string | null
-  last_name_contains?: string | null
-  last_name_not_contains?: string | null
-  last_name_starts_with?: string | null
-  last_name_not_starts_with?: string | null
-  last_name_ends_with?: string | null
-  last_name_not_ends_with?: string | null
-  email?: string | null
-  email_not?: string | null
-  email_in?: string[]
-  email_not_in?: string[]
-  email_lt?: string | null
-  email_lte?: string | null
-  email_gt?: string | null
-  email_gte?: string | null
-  email_contains?: string | null
-  email_not_contains?: string | null
-  email_starts_with?: string | null
-  email_not_starts_with?: string | null
-  email_ends_with?: string | null
-  email_not_ends_with?: string | null
-  administrator?: boolean | null
-  administrator_not?: boolean | null
-  completed_enough?: boolean | null
-  completed_enough_not?: boolean | null
-  real_student_number?: string | null
-  real_student_number_not?: string | null
-  real_student_number_in?: string[]
-  real_student_number_not_in?: string[]
-  real_student_number_lt?: string | null
-  real_student_number_lte?: string | null
-  real_student_number_gt?: string | null
-  real_student_number_gte?: string | null
-  real_student_number_contains?: string | null
-  real_student_number_not_contains?: string | null
-  real_student_number_starts_with?: string | null
-  real_student_number_not_starts_with?: string | null
-  real_student_number_ends_with?: string | null
-  real_student_number_not_ends_with?: string | null
-  AND?: UserWhereInput[]
-  OR?: UserWhereInput[]
-  NOT?: UserWhereInput[]
-}
-export type UserWhereInputInputObject =
-  | Extract<keyof UserWhereInput, string>
-  | { name: 'id', alias?: string  } 
-  | { name: 'id_not', alias?: string  } 
-  | { name: 'id_in', alias?: string  } 
-  | { name: 'id_not_in', alias?: string  } 
-  | { name: 'id_lt', alias?: string  } 
-  | { name: 'id_lte', alias?: string  } 
-  | { name: 'id_gt', alias?: string  } 
-  | { name: 'id_gte', alias?: string  } 
-  | { name: 'id_contains', alias?: string  } 
-  | { name: 'id_not_contains', alias?: string  } 
-  | { name: 'id_starts_with', alias?: string  } 
-  | { name: 'id_not_starts_with', alias?: string  } 
-  | { name: 'id_ends_with', alias?: string  } 
-  | { name: 'id_not_ends_with', alias?: string  } 
-  | { name: 'createdAt', alias?: string  } 
-  | { name: 'createdAt_not', alias?: string  } 
-  | { name: 'createdAt_in', alias?: string  } 
-  | { name: 'createdAt_not_in', alias?: string  } 
-  | { name: 'createdAt_lt', alias?: string  } 
-  | { name: 'createdAt_lte', alias?: string  } 
-  | { name: 'createdAt_gt', alias?: string  } 
-  | { name: 'createdAt_gte', alias?: string  } 
-  | { name: 'updatedAt', alias?: string  } 
-  | { name: 'updatedAt_not', alias?: string  } 
-  | { name: 'updatedAt_in', alias?: string  } 
-  | { name: 'updatedAt_not_in', alias?: string  } 
-  | { name: 'updatedAt_lt', alias?: string  } 
-  | { name: 'updatedAt_lte', alias?: string  } 
-  | { name: 'updatedAt_gt', alias?: string  } 
-  | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'upstream_id_not', alias?: string  } 
-  | { name: 'upstream_id_in', alias?: string  } 
-  | { name: 'upstream_id_not_in', alias?: string  } 
-  | { name: 'upstream_id_lt', alias?: string  } 
-  | { name: 'upstream_id_lte', alias?: string  } 
-  | { name: 'upstream_id_gt', alias?: string  } 
-  | { name: 'upstream_id_gte', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'first_name_not', alias?: string  } 
-  | { name: 'first_name_in', alias?: string  } 
-  | { name: 'first_name_not_in', alias?: string  } 
-  | { name: 'first_name_lt', alias?: string  } 
-  | { name: 'first_name_lte', alias?: string  } 
-  | { name: 'first_name_gt', alias?: string  } 
-  | { name: 'first_name_gte', alias?: string  } 
-  | { name: 'first_name_contains', alias?: string  } 
-  | { name: 'first_name_not_contains', alias?: string  } 
-  | { name: 'first_name_starts_with', alias?: string  } 
-  | { name: 'first_name_not_starts_with', alias?: string  } 
-  | { name: 'first_name_ends_with', alias?: string  } 
-  | { name: 'first_name_not_ends_with', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'last_name_not', alias?: string  } 
-  | { name: 'last_name_in', alias?: string  } 
-  | { name: 'last_name_not_in', alias?: string  } 
-  | { name: 'last_name_lt', alias?: string  } 
-  | { name: 'last_name_lte', alias?: string  } 
-  | { name: 'last_name_gt', alias?: string  } 
-  | { name: 'last_name_gte', alias?: string  } 
-  | { name: 'last_name_contains', alias?: string  } 
-  | { name: 'last_name_not_contains', alias?: string  } 
-  | { name: 'last_name_starts_with', alias?: string  } 
-  | { name: 'last_name_not_starts_with', alias?: string  } 
-  | { name: 'last_name_ends_with', alias?: string  } 
-  | { name: 'last_name_not_ends_with', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'email_not', alias?: string  } 
-  | { name: 'email_in', alias?: string  } 
-  | { name: 'email_not_in', alias?: string  } 
-  | { name: 'email_lt', alias?: string  } 
-  | { name: 'email_lte', alias?: string  } 
-  | { name: 'email_gt', alias?: string  } 
-  | { name: 'email_gte', alias?: string  } 
-  | { name: 'email_contains', alias?: string  } 
-  | { name: 'email_not_contains', alias?: string  } 
-  | { name: 'email_starts_with', alias?: string  } 
-  | { name: 'email_not_starts_with', alias?: string  } 
-  | { name: 'email_ends_with', alias?: string  } 
-  | { name: 'email_not_ends_with', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'administrator_not', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
-  | { name: 'completed_enough_not', alias?: string  } 
-  | { name: 'real_student_number', alias?: string  } 
-  | { name: 'real_student_number_not', alias?: string  } 
-  | { name: 'real_student_number_in', alias?: string  } 
-  | { name: 'real_student_number_not_in', alias?: string  } 
-  | { name: 'real_student_number_lt', alias?: string  } 
-  | { name: 'real_student_number_lte', alias?: string  } 
-  | { name: 'real_student_number_gt', alias?: string  } 
-  | { name: 'real_student_number_gte', alias?: string  } 
-  | { name: 'real_student_number_contains', alias?: string  } 
-  | { name: 'real_student_number_not_contains', alias?: string  } 
-  | { name: 'real_student_number_starts_with', alias?: string  } 
-  | { name: 'real_student_number_not_starts_with', alias?: string  } 
-  | { name: 'real_student_number_ends_with', alias?: string  } 
-  | { name: 'real_student_number_not_ends_with', alias?: string  } 
-  | { name: 'AND', alias?: string  } 
-  | { name: 'OR', alias?: string  } 
-  | { name: 'NOT', alias?: string  } 
-  
-export interface CourseWhereUniqueInput {
-  id?: undefined | null
-  slug?: string | null
-}
-export type CourseWhereUniqueInputInputObject =
-  | Extract<keyof CourseWhereUniqueInput, string>
-  | { name: 'id', alias?: string  } 
-  | { name: 'slug', alias?: string  } 
-  
-export interface OpenUniversityCourseWhereInput {
+export interface CompletionWhereInput {
   id?: undefined | null
   id_not?: undefined | null
   id_in?: undefined[]
@@ -3186,27 +3087,28 @@ export interface OpenUniversityCourseWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
-  course_code?: string | null
-  course_code_not?: string | null
-  course_code_in?: string[]
-  course_code_not_in?: string[]
-  course_code_lt?: string | null
-  course_code_lte?: string | null
-  course_code_gt?: string | null
-  course_code_gte?: string | null
-  course_code_contains?: string | null
-  course_code_not_contains?: string | null
-  course_code_starts_with?: string | null
-  course_code_not_starts_with?: string | null
-  course_code_ends_with?: string | null
-  course_code_not_ends_with?: string | null
+  user?: UserWhereInput | null
   course?: CourseWhereInput | null
-  AND?: OpenUniversityCourseWhereInput[]
-  OR?: OpenUniversityCourseWhereInput[]
-  NOT?: OpenUniversityCourseWhereInput[]
+  completion_language?: string | null
+  completion_language_not?: string | null
+  completion_language_in?: string[]
+  completion_language_not_in?: string[]
+  completion_language_lt?: string | null
+  completion_language_lte?: string | null
+  completion_language_gt?: string | null
+  completion_language_gte?: string | null
+  completion_language_contains?: string | null
+  completion_language_not_contains?: string | null
+  completion_language_starts_with?: string | null
+  completion_language_not_starts_with?: string | null
+  completion_language_ends_with?: string | null
+  completion_language_not_ends_with?: string | null
+  AND?: CompletionWhereInput[]
+  OR?: CompletionWhereInput[]
+  NOT?: CompletionWhereInput[]
 }
-export type OpenUniversityCourseWhereInputInputObject =
-  | Extract<keyof OpenUniversityCourseWhereInput, string>
+export type CompletionWhereInputInputObject =
+  | Extract<keyof CompletionWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -3237,21 +3139,291 @@ export type OpenUniversityCourseWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'course_code', alias?: string  } 
-  | { name: 'course_code_not', alias?: string  } 
-  | { name: 'course_code_in', alias?: string  } 
-  | { name: 'course_code_not_in', alias?: string  } 
-  | { name: 'course_code_lt', alias?: string  } 
-  | { name: 'course_code_lte', alias?: string  } 
-  | { name: 'course_code_gt', alias?: string  } 
-  | { name: 'course_code_gte', alias?: string  } 
-  | { name: 'course_code_contains', alias?: string  } 
-  | { name: 'course_code_not_contains', alias?: string  } 
-  | { name: 'course_code_starts_with', alias?: string  } 
-  | { name: 'course_code_not_starts_with', alias?: string  } 
-  | { name: 'course_code_ends_with', alias?: string  } 
-  | { name: 'course_code_not_ends_with', alias?: string  } 
+  | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  | { name: 'completion_language_not', alias?: string  } 
+  | { name: 'completion_language_in', alias?: string  } 
+  | { name: 'completion_language_not_in', alias?: string  } 
+  | { name: 'completion_language_lt', alias?: string  } 
+  | { name: 'completion_language_lte', alias?: string  } 
+  | { name: 'completion_language_gt', alias?: string  } 
+  | { name: 'completion_language_gte', alias?: string  } 
+  | { name: 'completion_language_contains', alias?: string  } 
+  | { name: 'completion_language_not_contains', alias?: string  } 
+  | { name: 'completion_language_starts_with', alias?: string  } 
+  | { name: 'completion_language_not_starts_with', alias?: string  } 
+  | { name: 'completion_language_ends_with', alias?: string  } 
+  | { name: 'completion_language_not_ends_with', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface UserWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
+  upstream_id?: number | null
+  upstream_id_not?: number | null
+  upstream_id_in?: number[]
+  upstream_id_not_in?: number[]
+  upstream_id_lt?: number | null
+  upstream_id_lte?: number | null
+  upstream_id_gt?: number | null
+  upstream_id_gte?: number | null
+  createdAt?: string | null
+  createdAt_not?: string | null
+  createdAt_in?: string[]
+  createdAt_not_in?: string[]
+  createdAt_lt?: string | null
+  createdAt_lte?: string | null
+  createdAt_gt?: string | null
+  createdAt_gte?: string | null
+  updatedAt?: string | null
+  updatedAt_not?: string | null
+  updatedAt_in?: string[]
+  updatedAt_not_in?: string[]
+  updatedAt_lt?: string | null
+  updatedAt_lte?: string | null
+  updatedAt_gt?: string | null
+  updatedAt_gte?: string | null
+  first_name?: string | null
+  first_name_not?: string | null
+  first_name_in?: string[]
+  first_name_not_in?: string[]
+  first_name_lt?: string | null
+  first_name_lte?: string | null
+  first_name_gt?: string | null
+  first_name_gte?: string | null
+  first_name_contains?: string | null
+  first_name_not_contains?: string | null
+  first_name_starts_with?: string | null
+  first_name_not_starts_with?: string | null
+  first_name_ends_with?: string | null
+  first_name_not_ends_with?: string | null
+  last_name?: string | null
+  last_name_not?: string | null
+  last_name_in?: string[]
+  last_name_not_in?: string[]
+  last_name_lt?: string | null
+  last_name_lte?: string | null
+  last_name_gt?: string | null
+  last_name_gte?: string | null
+  last_name_contains?: string | null
+  last_name_not_contains?: string | null
+  last_name_starts_with?: string | null
+  last_name_not_starts_with?: string | null
+  last_name_ends_with?: string | null
+  last_name_not_ends_with?: string | null
+  username?: string | null
+  username_not?: string | null
+  username_in?: string[]
+  username_not_in?: string[]
+  username_lt?: string | null
+  username_lte?: string | null
+  username_gt?: string | null
+  username_gte?: string | null
+  username_contains?: string | null
+  username_not_contains?: string | null
+  username_starts_with?: string | null
+  username_not_starts_with?: string | null
+  username_ends_with?: string | null
+  username_not_ends_with?: string | null
+  email?: string | null
+  email_not?: string | null
+  email_in?: string[]
+  email_not_in?: string[]
+  email_lt?: string | null
+  email_lte?: string | null
+  email_gt?: string | null
+  email_gte?: string | null
+  email_contains?: string | null
+  email_not_contains?: string | null
+  email_starts_with?: string | null
+  email_not_starts_with?: string | null
+  email_ends_with?: string | null
+  email_not_ends_with?: string | null
+  administrator?: boolean | null
+  administrator_not?: boolean | null
+  completed_enough?: boolean | null
+  completed_enough_not?: boolean | null
+  student_number?: string | null
+  student_number_not?: string | null
+  student_number_in?: string[]
+  student_number_not_in?: string[]
+  student_number_lt?: string | null
+  student_number_lte?: string | null
+  student_number_gt?: string | null
+  student_number_gte?: string | null
+  student_number_contains?: string | null
+  student_number_not_contains?: string | null
+  student_number_starts_with?: string | null
+  student_number_not_starts_with?: string | null
+  student_number_ends_with?: string | null
+  student_number_not_ends_with?: string | null
+  real_student_number?: string | null
+  real_student_number_not?: string | null
+  real_student_number_in?: string[]
+  real_student_number_not_in?: string[]
+  real_student_number_lt?: string | null
+  real_student_number_lte?: string | null
+  real_student_number_gt?: string | null
+  real_student_number_gte?: string | null
+  real_student_number_contains?: string | null
+  real_student_number_not_contains?: string | null
+  real_student_number_starts_with?: string | null
+  real_student_number_not_starts_with?: string | null
+  real_student_number_ends_with?: string | null
+  real_student_number_not_ends_with?: string | null
+  completions_every?: CompletionWhereInput | null
+  completions_some?: CompletionWhereInput | null
+  completions_none?: CompletionWhereInput | null
+  AND?: UserWhereInput[]
+  OR?: UserWhereInput[]
+  NOT?: UserWhereInput[]
+}
+export type UserWhereInputInputObject =
+  | Extract<keyof UserWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'upstream_id_not', alias?: string  } 
+  | { name: 'upstream_id_in', alias?: string  } 
+  | { name: 'upstream_id_not_in', alias?: string  } 
+  | { name: 'upstream_id_lt', alias?: string  } 
+  | { name: 'upstream_id_lte', alias?: string  } 
+  | { name: 'upstream_id_gt', alias?: string  } 
+  | { name: 'upstream_id_gte', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'first_name_not', alias?: string  } 
+  | { name: 'first_name_in', alias?: string  } 
+  | { name: 'first_name_not_in', alias?: string  } 
+  | { name: 'first_name_lt', alias?: string  } 
+  | { name: 'first_name_lte', alias?: string  } 
+  | { name: 'first_name_gt', alias?: string  } 
+  | { name: 'first_name_gte', alias?: string  } 
+  | { name: 'first_name_contains', alias?: string  } 
+  | { name: 'first_name_not_contains', alias?: string  } 
+  | { name: 'first_name_starts_with', alias?: string  } 
+  | { name: 'first_name_not_starts_with', alias?: string  } 
+  | { name: 'first_name_ends_with', alias?: string  } 
+  | { name: 'first_name_not_ends_with', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'last_name_not', alias?: string  } 
+  | { name: 'last_name_in', alias?: string  } 
+  | { name: 'last_name_not_in', alias?: string  } 
+  | { name: 'last_name_lt', alias?: string  } 
+  | { name: 'last_name_lte', alias?: string  } 
+  | { name: 'last_name_gt', alias?: string  } 
+  | { name: 'last_name_gte', alias?: string  } 
+  | { name: 'last_name_contains', alias?: string  } 
+  | { name: 'last_name_not_contains', alias?: string  } 
+  | { name: 'last_name_starts_with', alias?: string  } 
+  | { name: 'last_name_not_starts_with', alias?: string  } 
+  | { name: 'last_name_ends_with', alias?: string  } 
+  | { name: 'last_name_not_ends_with', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'username_not', alias?: string  } 
+  | { name: 'username_in', alias?: string  } 
+  | { name: 'username_not_in', alias?: string  } 
+  | { name: 'username_lt', alias?: string  } 
+  | { name: 'username_lte', alias?: string  } 
+  | { name: 'username_gt', alias?: string  } 
+  | { name: 'username_gte', alias?: string  } 
+  | { name: 'username_contains', alias?: string  } 
+  | { name: 'username_not_contains', alias?: string  } 
+  | { name: 'username_starts_with', alias?: string  } 
+  | { name: 'username_not_starts_with', alias?: string  } 
+  | { name: 'username_ends_with', alias?: string  } 
+  | { name: 'username_not_ends_with', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'email_not', alias?: string  } 
+  | { name: 'email_in', alias?: string  } 
+  | { name: 'email_not_in', alias?: string  } 
+  | { name: 'email_lt', alias?: string  } 
+  | { name: 'email_lte', alias?: string  } 
+  | { name: 'email_gt', alias?: string  } 
+  | { name: 'email_gte', alias?: string  } 
+  | { name: 'email_contains', alias?: string  } 
+  | { name: 'email_not_contains', alias?: string  } 
+  | { name: 'email_starts_with', alias?: string  } 
+  | { name: 'email_not_starts_with', alias?: string  } 
+  | { name: 'email_ends_with', alias?: string  } 
+  | { name: 'email_not_ends_with', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'administrator_not', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'completed_enough_not', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'student_number_not', alias?: string  } 
+  | { name: 'student_number_in', alias?: string  } 
+  | { name: 'student_number_not_in', alias?: string  } 
+  | { name: 'student_number_lt', alias?: string  } 
+  | { name: 'student_number_lte', alias?: string  } 
+  | { name: 'student_number_gt', alias?: string  } 
+  | { name: 'student_number_gte', alias?: string  } 
+  | { name: 'student_number_contains', alias?: string  } 
+  | { name: 'student_number_not_contains', alias?: string  } 
+  | { name: 'student_number_starts_with', alias?: string  } 
+  | { name: 'student_number_not_starts_with', alias?: string  } 
+  | { name: 'student_number_ends_with', alias?: string  } 
+  | { name: 'student_number_not_ends_with', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'real_student_number_not', alias?: string  } 
+  | { name: 'real_student_number_in', alias?: string  } 
+  | { name: 'real_student_number_not_in', alias?: string  } 
+  | { name: 'real_student_number_lt', alias?: string  } 
+  | { name: 'real_student_number_lte', alias?: string  } 
+  | { name: 'real_student_number_gt', alias?: string  } 
+  | { name: 'real_student_number_gte', alias?: string  } 
+  | { name: 'real_student_number_contains', alias?: string  } 
+  | { name: 'real_student_number_not_contains', alias?: string  } 
+  | { name: 'real_student_number_starts_with', alias?: string  } 
+  | { name: 'real_student_number_not_starts_with', alias?: string  } 
+  | { name: 'real_student_number_ends_with', alias?: string  } 
+  | { name: 'real_student_number_not_ends_with', alias?: string  } 
+  | { name: 'completions_every', alias?: string  } 
+  | { name: 'completions_some', alias?: string  } 
+  | { name: 'completions_none', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
@@ -3389,23 +3561,7 @@ export type CourseWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface OpenUniversityCourseWhereUniqueInput {
-  id?: undefined | null
-  course_code?: string | null
-}
-export type OpenUniversityCourseWhereUniqueInputInputObject =
-  | Extract<keyof OpenUniversityCourseWhereUniqueInput, string>
-  | { name: 'id', alias?: string  } 
-  | { name: 'course_code', alias?: string  } 
-  
-export interface CompletionWhereUniqueInput {
-  id?: undefined | null
-}
-export type CompletionWhereUniqueInputInputObject =
-  | Extract<keyof CompletionWhereUniqueInput, string>
-  | { name: 'id', alias?: string  } 
-  
-export interface CompletionWhereInput {
+export interface OpenUniversityCourseWhereInput {
   id?: undefined | null
   id_not?: undefined | null
   id_in?: undefined[]
@@ -3436,14 +3592,27 @@ export interface CompletionWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
-  user?: UserWhereInput | null
+  course_code?: string | null
+  course_code_not?: string | null
+  course_code_in?: string[]
+  course_code_not_in?: string[]
+  course_code_lt?: string | null
+  course_code_lte?: string | null
+  course_code_gt?: string | null
+  course_code_gte?: string | null
+  course_code_contains?: string | null
+  course_code_not_contains?: string | null
+  course_code_starts_with?: string | null
+  course_code_not_starts_with?: string | null
+  course_code_ends_with?: string | null
+  course_code_not_ends_with?: string | null
   course?: CourseWhereInput | null
-  AND?: CompletionWhereInput[]
-  OR?: CompletionWhereInput[]
-  NOT?: CompletionWhereInput[]
+  AND?: OpenUniversityCourseWhereInput[]
+  OR?: OpenUniversityCourseWhereInput[]
+  NOT?: OpenUniversityCourseWhereInput[]
 }
-export type CompletionWhereInputInputObject =
-  | Extract<keyof CompletionWhereInput, string>
+export type OpenUniversityCourseWhereInputInputObject =
+  | Extract<keyof OpenUniversityCourseWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -3474,11 +3643,49 @@ export type CompletionWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'user', alias?: string  } 
+  | { name: 'course_code', alias?: string  } 
+  | { name: 'course_code_not', alias?: string  } 
+  | { name: 'course_code_in', alias?: string  } 
+  | { name: 'course_code_not_in', alias?: string  } 
+  | { name: 'course_code_lt', alias?: string  } 
+  | { name: 'course_code_lte', alias?: string  } 
+  | { name: 'course_code_gt', alias?: string  } 
+  | { name: 'course_code_gte', alias?: string  } 
+  | { name: 'course_code_contains', alias?: string  } 
+  | { name: 'course_code_not_contains', alias?: string  } 
+  | { name: 'course_code_starts_with', alias?: string  } 
+  | { name: 'course_code_not_starts_with', alias?: string  } 
+  | { name: 'course_code_ends_with', alias?: string  } 
+  | { name: 'course_code_not_ends_with', alias?: string  } 
   | { name: 'course', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
+  
+export interface CourseWhereUniqueInput {
+  id?: undefined | null
+  slug?: string | null
+}
+export type CourseWhereUniqueInputInputObject =
+  | Extract<keyof CourseWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  
+export interface OpenUniversityCourseWhereUniqueInput {
+  id?: undefined | null
+  course_code?: string | null
+}
+export type OpenUniversityCourseWhereUniqueInputInputObject =
+  | Extract<keyof OpenUniversityCourseWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'course_code', alias?: string  } 
+  
+export interface CompletionWhereUniqueInput {
+  id?: undefined | null
+}
+export type CompletionWhereUniqueInputInputObject =
+  | Extract<keyof CompletionWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
   
 export interface CompletionRegisteredWhereUniqueInput {
   id?: undefined | null
@@ -3594,58 +3801,53 @@ export interface UserCreateInput {
   upstream_id?: number
   first_name?: string | null
   last_name?: string | null
+  username?: string | null
   email?: string
   administrator?: boolean
   completed_enough?: boolean | null
+  student_number?: string | null
   real_student_number?: string | null
+  completions?: CompletionCreateManyWithoutUserInput | null
 }
 export type UserCreateInputInputObject =
   | Extract<keyof UserCreateInput, string>
   | { name: 'upstream_id', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'real_student_number', alias?: string  } 
+  | { name: 'completions', alias?: string  } 
   
-export interface UserUpdateInput {
-  upstream_id?: number | null
-  first_name?: string | null
-  last_name?: string | null
-  email?: string | null
-  administrator?: boolean | null
-  completed_enough?: boolean | null
-  real_student_number?: string | null
+export interface CompletionCreateManyWithoutUserInput {
+  create?: CompletionCreateWithoutUserInput[]
+  connect?: CompletionWhereUniqueInput[]
 }
-export type UserUpdateInputInputObject =
-  | Extract<keyof UserUpdateInput, string>
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
-  | { name: 'real_student_number', alias?: string  } 
+export type CompletionCreateManyWithoutUserInputInputObject =
+  | Extract<keyof CompletionCreateManyWithoutUserInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
   
-export interface UserUpdateManyMutationInput {
-  upstream_id?: number | null
-  first_name?: string | null
-  last_name?: string | null
-  email?: string | null
-  administrator?: boolean | null
-  completed_enough?: boolean | null
-  real_student_number?: string | null
+export interface CompletionCreateWithoutUserInput {
+  course?: CourseCreateOneInput
+  completion_language?: string | null
 }
-export type UserUpdateManyMutationInputInputObject =
-  | Extract<keyof UserUpdateManyMutationInput, string>
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
-  | { name: 'real_student_number', alias?: string  } 
+export type CompletionCreateWithoutUserInputInputObject =
+  | Extract<keyof CompletionCreateWithoutUserInput, string>
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface CourseCreateOneInput {
+  create?: CourseCreateInput | null
+  connect?: CourseWhereUniqueInput | null
+}
+export type CourseCreateOneInputInputObject =
+  | Extract<keyof CourseCreateOneInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
   
 export interface CourseCreateInput {
   name?: string
@@ -3674,13 +3876,92 @@ export type OpenUniversityCourseCreateWithoutCourseInputInputObject =
   | Extract<keyof OpenUniversityCourseCreateWithoutCourseInput, string>
   | { name: 'course_code', alias?: string  } 
   
-export interface CourseUpdateInput {
+export interface UserUpdateInput {
+  upstream_id?: number | null
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string | null
+  administrator?: boolean | null
+  completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+  completions?: CompletionUpdateManyWithoutUserInput | null
+}
+export type UserUpdateInputInputObject =
+  | Extract<keyof UserUpdateInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'completions', alias?: string  } 
+  
+export interface CompletionUpdateManyWithoutUserInput {
+  create?: CompletionCreateWithoutUserInput[]
+  delete?: CompletionWhereUniqueInput[]
+  connect?: CompletionWhereUniqueInput[]
+  set?: CompletionWhereUniqueInput[]
+  disconnect?: CompletionWhereUniqueInput[]
+  update?: CompletionUpdateWithWhereUniqueWithoutUserInput[]
+  upsert?: CompletionUpsertWithWhereUniqueWithoutUserInput[]
+  deleteMany?: CompletionScalarWhereInput[]
+  updateMany?: CompletionUpdateManyWithWhereNestedInput[]
+}
+export type CompletionUpdateManyWithoutUserInputInputObject =
+  | Extract<keyof CompletionUpdateManyWithoutUserInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'delete', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  | { name: 'set', alias?: string  } 
+  | { name: 'disconnect', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'deleteMany', alias?: string  } 
+  | { name: 'updateMany', alias?: string  } 
+  
+export interface CompletionUpdateWithWhereUniqueWithoutUserInput {
+  where?: CompletionWhereUniqueInput
+  data?: CompletionUpdateWithoutUserDataInput
+}
+export type CompletionUpdateWithWhereUniqueWithoutUserInputInputObject =
+  | Extract<keyof CompletionUpdateWithWhereUniqueWithoutUserInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'data', alias?: string  } 
+  
+export interface CompletionUpdateWithoutUserDataInput {
+  course?: CourseUpdateOneRequiredInput | null
+  completion_language?: string | null
+}
+export type CompletionUpdateWithoutUserDataInputInputObject =
+  | Extract<keyof CompletionUpdateWithoutUserDataInput, string>
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface CourseUpdateOneRequiredInput {
+  create?: CourseCreateInput | null
+  update?: CourseUpdateDataInput | null
+  upsert?: CourseUpsertNestedInput | null
+  connect?: CourseWhereUniqueInput | null
+}
+export type CourseUpdateOneRequiredInputInputObject =
+  | Extract<keyof CourseUpdateOneRequiredInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface CourseUpdateDataInput {
   name?: string | null
   slug?: string | null
   open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
 }
-export type CourseUpdateInputInputObject =
-  | Extract<keyof CourseUpdateInput, string>
+export type CourseUpdateDataInputInputObject =
+  | Extract<keyof CourseUpdateDataInput, string>
   | { name: 'name', alias?: string  } 
   | { name: 'slug', alias?: string  } 
   | { name: 'open_university_courses', alias?: string  } 
@@ -3850,6 +4131,175 @@ export type OpenUniversityCourseUpdateManyDataInputInputObject =
   | Extract<keyof OpenUniversityCourseUpdateManyDataInput, string>
   | { name: 'course_code', alias?: string  } 
   
+export interface CourseUpsertNestedInput {
+  update?: CourseUpdateDataInput
+  create?: CourseCreateInput
+}
+export type CourseUpsertNestedInputInputObject =
+  | Extract<keyof CourseUpsertNestedInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface CompletionUpsertWithWhereUniqueWithoutUserInput {
+  where?: CompletionWhereUniqueInput
+  update?: CompletionUpdateWithoutUserDataInput
+  create?: CompletionCreateWithoutUserInput
+}
+export type CompletionUpsertWithWhereUniqueWithoutUserInputInputObject =
+  | Extract<keyof CompletionUpsertWithWhereUniqueWithoutUserInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface CompletionScalarWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
+  createdAt?: string | null
+  createdAt_not?: string | null
+  createdAt_in?: string[]
+  createdAt_not_in?: string[]
+  createdAt_lt?: string | null
+  createdAt_lte?: string | null
+  createdAt_gt?: string | null
+  createdAt_gte?: string | null
+  updatedAt?: string | null
+  updatedAt_not?: string | null
+  updatedAt_in?: string[]
+  updatedAt_not_in?: string[]
+  updatedAt_lt?: string | null
+  updatedAt_lte?: string | null
+  updatedAt_gt?: string | null
+  updatedAt_gte?: string | null
+  completion_language?: string | null
+  completion_language_not?: string | null
+  completion_language_in?: string[]
+  completion_language_not_in?: string[]
+  completion_language_lt?: string | null
+  completion_language_lte?: string | null
+  completion_language_gt?: string | null
+  completion_language_gte?: string | null
+  completion_language_contains?: string | null
+  completion_language_not_contains?: string | null
+  completion_language_starts_with?: string | null
+  completion_language_not_starts_with?: string | null
+  completion_language_ends_with?: string | null
+  completion_language_not_ends_with?: string | null
+  AND?: CompletionScalarWhereInput[]
+  OR?: CompletionScalarWhereInput[]
+  NOT?: CompletionScalarWhereInput[]
+}
+export type CompletionScalarWhereInputInputObject =
+  | Extract<keyof CompletionScalarWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  | { name: 'completion_language_not', alias?: string  } 
+  | { name: 'completion_language_in', alias?: string  } 
+  | { name: 'completion_language_not_in', alias?: string  } 
+  | { name: 'completion_language_lt', alias?: string  } 
+  | { name: 'completion_language_lte', alias?: string  } 
+  | { name: 'completion_language_gt', alias?: string  } 
+  | { name: 'completion_language_gte', alias?: string  } 
+  | { name: 'completion_language_contains', alias?: string  } 
+  | { name: 'completion_language_not_contains', alias?: string  } 
+  | { name: 'completion_language_starts_with', alias?: string  } 
+  | { name: 'completion_language_not_starts_with', alias?: string  } 
+  | { name: 'completion_language_ends_with', alias?: string  } 
+  | { name: 'completion_language_not_ends_with', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface CompletionUpdateManyWithWhereNestedInput {
+  where?: CompletionScalarWhereInput
+  data?: CompletionUpdateManyDataInput
+}
+export type CompletionUpdateManyWithWhereNestedInputInputObject =
+  | Extract<keyof CompletionUpdateManyWithWhereNestedInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'data', alias?: string  } 
+  
+export interface CompletionUpdateManyDataInput {
+  completion_language?: string | null
+}
+export type CompletionUpdateManyDataInputInputObject =
+  | Extract<keyof CompletionUpdateManyDataInput, string>
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface UserUpdateManyMutationInput {
+  upstream_id?: number | null
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string | null
+  administrator?: boolean | null
+  completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+}
+export type UserUpdateManyMutationInputInputObject =
+  | Extract<keyof UserUpdateManyMutationInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  
+export interface CourseUpdateInput {
+  name?: string | null
+  slug?: string | null
+  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
+}
+export type CourseUpdateInputInputObject =
+  | Extract<keyof CourseUpdateInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  | { name: 'open_university_courses', alias?: string  } 
+  
 export interface CourseUpdateManyMutationInput {
   name?: string | null
   slug?: string | null
@@ -3934,13 +4384,121 @@ export type OpenUniversityCourseUpdateManyMutationInputInputObject =
   | { name: 'course_code', alias?: string  } 
   
 export interface CompletionCreateInput {
-  user?: UserCreateOneInput
+  user?: UserCreateOneWithoutCompletionsInput
   course?: CourseCreateOneInput
+  completion_language?: string | null
 }
 export type CompletionCreateInputInputObject =
   | Extract<keyof CompletionCreateInput, string>
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface UserCreateOneWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserCreateOneWithoutCompletionsInputInputObject =
+  | Extract<keyof UserCreateOneWithoutCompletionsInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserCreateWithoutCompletionsInput {
+  upstream_id?: number
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string
+  administrator?: boolean
+  completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+}
+export type UserCreateWithoutCompletionsInputInputObject =
+  | Extract<keyof UserCreateWithoutCompletionsInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  
+export interface CompletionUpdateInput {
+  user?: UserUpdateOneRequiredWithoutCompletionsInput | null
+  course?: CourseUpdateOneRequiredInput | null
+  completion_language?: string | null
+}
+export type CompletionUpdateInputInputObject =
+  | Extract<keyof CompletionUpdateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface UserUpdateOneRequiredWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput | null
+  update?: UserUpdateWithoutCompletionsDataInput | null
+  upsert?: UserUpsertWithoutCompletionsInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserUpdateOneRequiredWithoutCompletionsInputInputObject =
+  | Extract<keyof UserUpdateOneRequiredWithoutCompletionsInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserUpdateWithoutCompletionsDataInput {
+  upstream_id?: number | null
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string | null
+  administrator?: boolean | null
+  completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+}
+export type UserUpdateWithoutCompletionsDataInputInputObject =
+  | Extract<keyof UserUpdateWithoutCompletionsDataInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  
+export interface UserUpsertWithoutCompletionsInput {
+  update?: UserUpdateWithoutCompletionsDataInput
+  create?: UserCreateWithoutCompletionsInput
+}
+export type UserUpsertWithoutCompletionsInputInputObject =
+  | Extract<keyof UserUpsertWithoutCompletionsInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface CompletionUpdateManyMutationInput {
+  completion_language?: string | null
+}
+export type CompletionUpdateManyMutationInputInputObject =
+  | Extract<keyof CompletionUpdateManyMutationInput, string>
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface CompletionRegisteredCreateInput {
+  user?: UserCreateOneInput
+  course?: CourseCreateOneInput
+  organisation?: string
+}
+export type CompletionRegisteredCreateInputInputObject =
+  | Extract<keyof CompletionRegisteredCreateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
   
 export interface UserCreateOneInput {
   create?: UserCreateInput | null
@@ -3951,23 +4509,16 @@ export type UserCreateOneInputInputObject =
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface CourseCreateOneInput {
-  create?: CourseCreateInput | null
-  connect?: CourseWhereUniqueInput | null
-}
-export type CourseCreateOneInputInputObject =
-  | Extract<keyof CourseCreateOneInput, string>
-  | { name: 'create', alias?: string  } 
-  | { name: 'connect', alias?: string  } 
-  
-export interface CompletionUpdateInput {
+export interface CompletionRegisteredUpdateInput {
   user?: UserUpdateOneRequiredInput | null
   course?: CourseUpdateOneRequiredInput | null
+  organisation?: string | null
 }
-export type CompletionUpdateInputInputObject =
-  | Extract<keyof CompletionUpdateInput, string>
+export type CompletionRegisteredUpdateInputInputObject =
+  | Extract<keyof CompletionRegisteredUpdateInput, string>
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
   
 export interface UserUpdateOneRequiredInput {
   create?: UserCreateInput | null
@@ -3986,20 +4537,26 @@ export interface UserUpdateDataInput {
   upstream_id?: number | null
   first_name?: string | null
   last_name?: string | null
+  username?: string | null
   email?: string | null
   administrator?: boolean | null
   completed_enough?: boolean | null
+  student_number?: string | null
   real_student_number?: string | null
+  completions?: CompletionUpdateManyWithoutUserInput | null
 }
 export type UserUpdateDataInputInputObject =
   | Extract<keyof UserUpdateDataInput, string>
   | { name: 'upstream_id', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'real_student_number', alias?: string  } 
+  | { name: 'completions', alias?: string  } 
   
 export interface UserUpsertNestedInput {
   update?: UserUpdateDataInput
@@ -4009,61 +4566,6 @@ export type UserUpsertNestedInputInputObject =
   | Extract<keyof UserUpsertNestedInput, string>
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
-  
-export interface CourseUpdateOneRequiredInput {
-  create?: CourseCreateInput | null
-  update?: CourseUpdateDataInput | null
-  upsert?: CourseUpsertNestedInput | null
-  connect?: CourseWhereUniqueInput | null
-}
-export type CourseUpdateOneRequiredInputInputObject =
-  | Extract<keyof CourseUpdateOneRequiredInput, string>
-  | { name: 'create', alias?: string  } 
-  | { name: 'update', alias?: string  } 
-  | { name: 'upsert', alias?: string  } 
-  | { name: 'connect', alias?: string  } 
-  
-export interface CourseUpdateDataInput {
-  name?: string | null
-  slug?: string | null
-  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
-}
-export type CourseUpdateDataInputInputObject =
-  | Extract<keyof CourseUpdateDataInput, string>
-  | { name: 'name', alias?: string  } 
-  | { name: 'slug', alias?: string  } 
-  | { name: 'open_university_courses', alias?: string  } 
-  
-export interface CourseUpsertNestedInput {
-  update?: CourseUpdateDataInput
-  create?: CourseCreateInput
-}
-export type CourseUpsertNestedInputInputObject =
-  | Extract<keyof CourseUpsertNestedInput, string>
-  | { name: 'update', alias?: string  } 
-  | { name: 'create', alias?: string  } 
-  
-export interface CompletionRegisteredCreateInput {
-  user?: UserCreateOneInput
-  course?: CourseCreateOneInput
-  organisation?: string
-}
-export type CompletionRegisteredCreateInputInputObject =
-  | Extract<keyof CompletionRegisteredCreateInput, string>
-  | { name: 'user', alias?: string  } 
-  | { name: 'course', alias?: string  } 
-  | { name: 'organisation', alias?: string  } 
-  
-export interface CompletionRegisteredUpdateInput {
-  user?: UserUpdateOneRequiredInput | null
-  course?: CourseUpdateOneRequiredInput | null
-  organisation?: string | null
-}
-export type CompletionRegisteredUpdateInputInputObject =
-  | Extract<keyof CompletionRegisteredUpdateInput, string>
-  | { name: 'user', alias?: string  } 
-  | { name: 'course', alias?: string  } 
-  | { name: 'organisation', alias?: string  } 
   
 export interface CompletionRegisteredUpdateManyMutationInput {
   organisation?: string | null
@@ -4178,27 +4680,15 @@ export type CompletionRegisteredSubscriptionWhereInputInputObject =
   | { name: 'NOT', alias?: string  } 
   
 
-export type UserOrderByInputValues =
+export type CompletionOrderByInputValues =
   | 'id_ASC'
   | 'id_DESC'
   | 'createdAt_ASC'
   | 'createdAt_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
-  | 'upstream_id_ASC'
-  | 'upstream_id_DESC'
-  | 'first_name_ASC'
-  | 'first_name_DESC'
-  | 'last_name_ASC'
-  | 'last_name_DESC'
-  | 'email_ASC'
-  | 'email_DESC'
-  | 'administrator_ASC'
-  | 'administrator_DESC'
-  | 'completed_enough_ASC'
-  | 'completed_enough_DESC'
-  | 'real_student_number_ASC'
-  | 'real_student_number_DESC'
+  | 'completion_language_ASC'
+  | 'completion_language_DESC'
   
 export type OpenUniversityCourseOrderByInputValues =
   | 'id_ASC'
@@ -4209,6 +4699,32 @@ export type OpenUniversityCourseOrderByInputValues =
   | 'updatedAt_DESC'
   | 'course_code_ASC'
   | 'course_code_DESC'
+  
+export type UserOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'upstream_id_ASC'
+  | 'upstream_id_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'first_name_ASC'
+  | 'first_name_DESC'
+  | 'last_name_ASC'
+  | 'last_name_DESC'
+  | 'username_ASC'
+  | 'username_DESC'
+  | 'email_ASC'
+  | 'email_DESC'
+  | 'administrator_ASC'
+  | 'administrator_DESC'
+  | 'completed_enough_ASC'
+  | 'completed_enough_DESC'
+  | 'student_number_ASC'
+  | 'student_number_DESC'
+  | 'real_student_number_ASC'
+  | 'real_student_number_DESC'
   
 export type CourseOrderByInputValues =
   | 'id_ASC'
@@ -4221,14 +4737,6 @@ export type CourseOrderByInputValues =
   | 'name_DESC'
   | 'slug_ASC'
   | 'slug_DESC'
-  
-export type CompletionOrderByInputValues =
-  | 'id_ASC'
-  | 'id_DESC'
-  | 'createdAt_ASC'
-  | 'createdAt_DESC'
-  | 'updatedAt_ASC'
-  | 'updatedAt_DESC'
   
 export type CompletionRegisteredOrderByInputValues =
   | 'id_ASC'
