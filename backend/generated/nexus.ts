@@ -19,8 +19,6 @@ export interface NexusGenEnums {
 export interface NexusGenRootTypes {
   Query: {};
   User: { // root type
-    administrator: boolean; // Boolean!
-    completed_enough: boolean; // Boolean!
     createdAt: any; // DateTime!
     email: string; // String!
     first_name?: string | null; // String
@@ -46,8 +44,6 @@ export interface NexusGenFieldTypes {
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
-    administrator: boolean; // Boolean!
-    completed_enough: boolean; // Boolean!
     createdAt: any; // DateTime!
     email: string; // String!
     first_name: string | null; // String

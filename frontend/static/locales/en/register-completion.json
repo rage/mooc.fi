@@ -1,14 +1,16 @@
 {
     "title": "Register Completion",
     "course": "Course: The Elements of AI.",
-    "credits":"Credits to University of Helsinki course register: 2 (Requires a Finnish social security number). ",
+    "credits":"Credits: 2 (Requires a Finnish social security number). ",
     "credits_details": "The open university of the University of Helsinki is responsible for registering the credits. Registering the credits is free.",
-    "donow": "You must now register to the Open University of the University of Helsinki.",
+    "donow": "Register to the Open University of the University of Helsinki, so we can process your credits.",
     "instructions-title": "Follow these instructions: ",
-    "Instructions1":"You must use this e-mail address on the registration form at part 1:",
-    "Instructions2": "1. Fill in the registration form at:",
-    "Instructions3": "2. At the form field: Your email address on the MOOC course fill in:  ",
-    "Instructions4": "3. If you want an e-mail notification when the credits have been registered, remember to check the box  A notification of completed studies will be sent to my email (including the grade). ",
+    "Instructions1":"Use this e-mail address on the registration form:",
+    "Instructions2": "1. Fill in the registration form.",
+    "Instructions3": "2. At the form field: 'Your email address on the MOOC course' fill in:  ",
+    "Instructions4": "3. If you want an e-mail notification when the credits have been registered, tick the box  'A notification of completed studies will be sent to my email (including the grade)'. ",
     "NB": "NB! Bachelor's - and Master's degree students from University of Helsinki must also register their credits via the Open University!",
-    "grades": "Credits are registered within 6 weeks of registering to the Open University."
+    "grades": "Credits will be registered within 6 weeks.",
+    "link": "To the registration form"
 }
+    

@@ -5,7 +5,6 @@ export default (context: NextContext, target: string) => {
   if (context.res) {
     // server
     // 303: "See other"
-    console.log('this is what I do')
     context.res.writeHead(303, { Location: target });
     context.res.end();
   } else {

@@ -1,12 +1,15 @@
-const NextI18Next = require('next-i18next/dist/commonjs')
-const Fluent = require('i18next-fluent')
+const I18Next = require('next-i18next/dist/commonjs')
 
 //create new NextI18Next instance
-//and set it to use fluent syntax
-module.exports = new NextI18Next({
+const NextI18Next = new I18Next({
   defaultLanguage: 'fi',
   otherLanguages: ['en'],
-  localeSubpaths: 'all'
+  localeSubpaths: 'all',
+  debug: true,
+  localeExtension: 'JSON',
 
+  
 })
- 
+
+console.log(NextI18Next.config)
+module.exports = NextI18Next

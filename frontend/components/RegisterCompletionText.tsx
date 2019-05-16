@@ -29,7 +29,7 @@ function LinkButton(props:any) {
       size='medium'
       href={props.link} 
       {...props}>
-      Rekisteröitymislomakkeeseen
+      <NextI18Next.Trans i18nKey='link'/>
     </Button>
   )
 }
@@ -63,7 +63,8 @@ function RegisterCompletionText(props: RegProps)
       </Typography>
       <LinkButton 
         className={classes.button}
-        link={props.link}/>
+        link={props.link}
+        />
     </Paper>
         
   )

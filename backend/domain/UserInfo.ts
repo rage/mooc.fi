@@ -2,10 +2,9 @@ export interface UserInfo {
   id: number;
   username: string;
   email: string;
-  administrator: boolean;
   user_field: UserField;
   extra_fields: ExtraFields;
-  completed_enough: boolean | undefined;
+
 }
 
 export interface ExtraFields {}

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const  SignInPage = ({ t }) => {
   const classes = useStyles()
-
+  console.log(NextI18Next)
   return (
     <main className={classes.root}>
       <Paper className={classes.paper}>

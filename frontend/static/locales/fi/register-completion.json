@@ -1,15 +1,15 @@
 {
     "title": "Opintopisteiden Rekisteröinti",
     "course": "Kurssi: The elements of AI.",
-    "credits": "Opintopisteet Helsingin yliopiston opintorekisteriin: 2 (Vaatii suomalaisen henkilötunnuksen).",
+    "credits": "Opintopisteet: 2 (Vaatii suomalaisen henkilötunnuksen).",
     "credits_details": "Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin. Opintosuorituksen rekisteröinti on ilmaista.",
-    "donow": "Nyt sinun tulee ilmoittautua Helsingin yliopiston avoimeen yliopistoon, jotta voimme rekisteröidä suorituksesi",
+    "donow": "Sinun tulee ilmoittautua Helsingin yliopiston avoimeen yliopistoon, jotta voimme rekisteröidä suorituksesi.",
     "instructions-title": "Toimi näin:",
-    "Instructions1": "Sinun täytyy käyttää kohdan 1 reksteröintilomakkeessa sähköpostiosoitetta:",
-    "Instructions2": "1. Täytä lomake osoitteessa: ",
-    "Instructions3": "2. Täytä lomakkeen kohtaan: Käyttämäsi sähköpostiosoite MOOC-kurssilla sähköpostiosoitteeksi:",
-    "Instructions4": "3. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, muista rastittaa Henkilötietojen käyttö -laatikon alta kohta Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan). ",
-    "NB": "Jos olet Helsingin yliopiston perustutkinto-opiskelija, nämä ilmoittatumisohjeet koskevat myös sinua.",
-    "grades": "Opintopisteet kirjautuvat viimeistään kuuden viikon kuluessa ilmoittautumisesta."
-    
+    "Instructions1": "Käytä reksteröintilomakkeessa sähköpostiosoitetta:",
+    "Instructions2": "1. Täytä rekisteröintilomake. ",
+    "Instructions3": "2. Täytä kohtaan: 'Käyttämäsi sähköpostiosoite MOOC-kurssilla' sähköpostiosoitteeksi:",
+    "Instructions4": "3. Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, rastita 'Henkilötietojen käyttö' -laatikon alta kohta 'Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan).' ",
+    "NB": "Jos olet Helsingin yliopiston perustutkinto-opiskelija, ilmoittatumisohjeet koskevat myös sinua!",
+    "grades": "Opintopisteet kirjautuvat kuuden viikon kuluessa.",
+    "link": "Rekisteröitymislomakkeeseen"
 }

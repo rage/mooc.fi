@@ -6,7 +6,5 @@ type User {
   first_name: String
   last_name: String
   email: String!
-  administrator: Boolean!
-  completed_enough: Boolean! @default(value: "false")
 }
 
