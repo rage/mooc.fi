@@ -29,9 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const  SignInPage = ({ t }) => {
   const classes = useStyles()
-  console.log(NextI18Next)
   return (
-    <main className={classes.root}>
+    <main className={classes.root} id='main'>
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar} >
           <LockOutlinedIcon />

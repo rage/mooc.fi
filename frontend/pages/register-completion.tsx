@@ -31,6 +31,13 @@ const useStyles = makeStyles((theme: Theme) =>
      display: 'flex',
      flexDirection: 'row',
      alignItems: 'center',
+    },
+    title: {
+      marginBottom: '1em'
+    },
+    courseInfo: {
+      marginTop: 0,
+      marginLeft: '1em'
     }
   }),
 );
@@ -52,9 +59,6 @@ const RegisterCompletion = ({ t }) => {
     const { loading, error, data } = useQuery<UserOverViewData>(
         UserOverViewQuery
       );
-    //breaks when logging out because before the redirect for a moment currentUser is not defined
-    //so this fixes it by giving the email a value even when no currentUser 
-    //const email = data ? data.currentUser.email : ''
     
     if(error){
       <div>
@@ -66,14 +70,23 @@ const RegisterCompletion = ({ t }) => {
         return <div>Loading</div>;
     }
     return (
-      <main>
-        <Typography variant="h3" component='h1'  gutterBottom={true} align='center' >
+      <main id='main'>
+        <Typography 
+          variant="h2" 
+          component='h1'  
+          gutterBottom={true} 
+          align='center' 
+          className={classes.title}>
           {t('title')}
         </Typography>
-        <Typography variant="body1" >
+        <Typography variant="h6" component='p'className={classes.courseInfo} >
           {t('course')}
         </Typography>
-        <Typography variant="body1"  paragraph>
+        <Typography 
+          variant="h6"  
+          component='p' 
+          className={classes.courseInfo}
+          gutterBottom={true}>
           {t('credits')}
         </Typography>
         <Paper className={classes.paper}>

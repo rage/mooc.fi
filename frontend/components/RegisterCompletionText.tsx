@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import { Typography, 
          Paper,
          Button
@@ -16,7 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
      flexDirection: 'column',
     },
     button: {
-      width: '65%'
+      width: '65%',
+      margin: 'auto',
+      marginBottom: '1em'
     }
   }),
 );
