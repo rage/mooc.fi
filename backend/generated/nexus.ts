@@ -36,6 +36,20 @@ export interface NexusGenInputs {
     createdAt_lte?: any | null; // DateTime
     createdAt_not?: any | null; // DateTime
     createdAt_not_in?: any[] | null; // [DateTime!]
+    email?: string | null; // String
+    email_contains?: string | null; // String
+    email_ends_with?: string | null; // String
+    email_gt?: string | null; // String
+    email_gte?: string | null; // String
+    email_in?: string[] | null; // [String!]
+    email_lt?: string | null; // String
+    email_lte?: string | null; // String
+    email_not?: string | null; // String
+    email_not_contains?: string | null; // String
+    email_not_ends_with?: string | null; // String
+    email_not_in?: string[] | null; // [String!]
+    email_not_starts_with?: string | null; // String
+    email_starts_with?: string | null; // String
     id?: any | null; // UUID
     id_contains?: any | null; // UUID
     id_ends_with?: any | null; // UUID
@@ -52,6 +66,20 @@ export interface NexusGenInputs {
     id_starts_with?: any | null; // UUID
     NOT?: NexusGenInputs['CompletionWhereInput'][] | null; // [CompletionWhereInput!]
     OR?: NexusGenInputs['CompletionWhereInput'][] | null; // [CompletionWhereInput!]
+    student_number?: string | null; // String
+    student_number_contains?: string | null; // String
+    student_number_ends_with?: string | null; // String
+    student_number_gt?: string | null; // String
+    student_number_gte?: string | null; // String
+    student_number_in?: string[] | null; // [String!]
+    student_number_lt?: string | null; // String
+    student_number_lte?: string | null; // String
+    student_number_not?: string | null; // String
+    student_number_not_contains?: string | null; // String
+    student_number_not_ends_with?: string | null; // String
+    student_number_not_in?: string[] | null; // [String!]
+    student_number_not_starts_with?: string | null; // String
+    student_number_starts_with?: string | null; // String
     updatedAt?: any | null; // DateTime
     updatedAt_gt?: any | null; // DateTime
     updatedAt_gte?: any | null; // DateTime
@@ -61,6 +89,14 @@ export interface NexusGenInputs {
     updatedAt_not?: any | null; // DateTime
     updatedAt_not_in?: any[] | null; // [DateTime!]
     user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    user_upstream_id?: number | null; // Int
+    user_upstream_id_gt?: number | null; // Int
+    user_upstream_id_gte?: number | null; // Int
+    user_upstream_id_in?: number[] | null; // [Int!]
+    user_upstream_id_lt?: number | null; // Int
+    user_upstream_id_lte?: number | null; // Int
+    user_upstream_id_not?: number | null; // Int
+    user_upstream_id_not_in?: number[] | null; // [Int!]
   }
   CourseWhereInput: { // input type
     AND?: NexusGenInputs['CourseWhereInput'][] | null; // [CourseWhereInput!]
@@ -315,7 +351,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  CompletionOrderByInput: "completion_language_ASC" | "completion_language_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
+  CompletionOrderByInput: "completion_language_ASC" | "completion_language_DESC" | "createdAt_ASC" | "createdAt_DESC" | "email_ASC" | "email_DESC" | "id_ASC" | "id_DESC" | "student_number_ASC" | "student_number_DESC" | "updatedAt_ASC" | "updatedAt_DESC" | "user_upstream_id_ASC" | "user_upstream_id_DESC"
   OpenUniversityCourseOrderByInput: "course_code_ASC" | "course_code_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
 }
 
@@ -323,8 +359,11 @@ export interface NexusGenRootTypes {
   Completion: { // root type
     completion_language?: string | null; // String
     createdAt: any; // DateTime!
+    email: string; // String!
     id: any; // UUID!
+    student_number?: string | null; // String
     updatedAt: any; // DateTime!
+    user_upstream_id?: number | null; // Int
   }
   Course: { // root type
     createdAt: any; // DateTime!
@@ -378,9 +417,12 @@ export interface NexusGenFieldTypes {
     completion_language: string | null; // String
     course: NexusGenRootTypes['Course']; // Course!
     createdAt: any; // DateTime!
+    email: string; // String!
     id: any; // UUID!
+    student_number: string | null; // String
     updatedAt: any; // DateTime!
     user: NexusGenRootTypes['User']; // User!
+    user_upstream_id: number | null; // Int
   }
   Course: { // field return type
     createdAt: any; // DateTime!

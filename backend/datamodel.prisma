@@ -32,9 +32,13 @@ type OpenUniversityCourse {
 }
 
 type Completion {
-  id: UUID! @unique
+  id: UUID! @unique 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  "User's unique identifier. Should be used to deduplicate registered completions, since all the other fields can change."
+  user_upstream_id: Int
+  email: String!
+  student_number: String
   user: User!
   course: Course! @relation(name: "CompletionToCourse")
   completion_language: String
@@ -46,5 +50,6 @@ type CompletionRegistered {
   updatedAt: DateTime! @updatedAt
   user: User! @relation(name: "CompletionRegisteredToUser")
   course: Course! @relation(name: "CompletionRegisteredToCourse")
+  real_student_number: String
   organisation: String!
 }

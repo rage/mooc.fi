@@ -30,6 +30,9 @@ type Completion {
   id: UUID!
   createdAt: DateTime!
   updatedAt: DateTime!
+  user_upstream_id: Int
+  email: String!
+  student_number: String
   user: User!
   course: Course!
   completion_language: String
@@ -42,6 +45,9 @@ type CompletionConnection {
 }
 
 input CompletionCreateInput {
+  user_upstream_id: Int
+  email: String!
+  student_number: String
   user: UserCreateOneWithoutCompletionsInput!
   course: CourseCreateOneInput!
   completion_language: String
@@ -53,6 +59,9 @@ input CompletionCreateManyWithoutUserInput {
 }
 
 input CompletionCreateWithoutUserInput {
+  user_upstream_id: Int
+  email: String!
+  student_number: String
   course: CourseCreateOneInput!
   completion_language: String
 }
@@ -69,6 +78,12 @@ enum CompletionOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  user_upstream_id_ASC
+  user_upstream_id_DESC
+  email_ASC
+  email_DESC
+  student_number_ASC
+  student_number_DESC
   completion_language_ASC
   completion_language_DESC
 }
@@ -77,6 +92,9 @@ type CompletionPreviousValues {
   id: UUID!
   createdAt: DateTime!
   updatedAt: DateTime!
+  user_upstream_id: Int
+  email: String!
+  student_number: String
   completion_language: String
 }
 
@@ -86,6 +104,7 @@ type CompletionRegistered {
   updatedAt: DateTime!
   user: User!
   course: Course!
+  real_student_number: String
   organisation: String!
 }
 
@@ -98,6 +117,7 @@ type CompletionRegisteredConnection {
 input CompletionRegisteredCreateInput {
   user: UserCreateOneInput!
   course: CourseCreateOneInput!
+  real_student_number: String
   organisation: String!
 }
 
@@ -113,6 +133,8 @@ enum CompletionRegisteredOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  real_student_number_ASC
+  real_student_number_DESC
   organisation_ASC
   organisation_DESC
 }
@@ -121,6 +143,7 @@ type CompletionRegisteredPreviousValues {
   id: UUID!
   createdAt: DateTime!
   updatedAt: DateTime!
+  real_student_number: String
   organisation: String!
 }
 
@@ -145,10 +168,12 @@ input CompletionRegisteredSubscriptionWhereInput {
 input CompletionRegisteredUpdateInput {
   user: UserUpdateOneRequiredInput
   course: CourseUpdateOneRequiredInput
+  real_student_number: String
   organisation: String
 }
 
 input CompletionRegisteredUpdateManyMutationInput {
+  real_student_number: String
   organisation: String
 }
 
@@ -185,6 +210,20 @@ input CompletionRegisteredWhereInput {
   updatedAt_gte: DateTime
   user: UserWhereInput
   course: CourseWhereInput
+  real_student_number: String
+  real_student_number_not: String
+  real_student_number_in: [String!]
+  real_student_number_not_in: [String!]
+  real_student_number_lt: String
+  real_student_number_lte: String
+  real_student_number_gt: String
+  real_student_number_gte: String
+  real_student_number_contains: String
+  real_student_number_not_contains: String
+  real_student_number_starts_with: String
+  real_student_number_not_starts_with: String
+  real_student_number_ends_with: String
+  real_student_number_not_ends_with: String
   organisation: String
   organisation_not: String
   organisation_in: [String!]
@@ -239,6 +278,42 @@ input CompletionScalarWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  user_upstream_id: Int
+  user_upstream_id_not: Int
+  user_upstream_id_in: [Int!]
+  user_upstream_id_not_in: [Int!]
+  user_upstream_id_lt: Int
+  user_upstream_id_lte: Int
+  user_upstream_id_gt: Int
+  user_upstream_id_gte: Int
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  student_number: String
+  student_number_not: String
+  student_number_in: [String!]
+  student_number_not_in: [String!]
+  student_number_lt: String
+  student_number_lte: String
+  student_number_gt: String
+  student_number_gte: String
+  student_number_contains: String
+  student_number_not_contains: String
+  student_number_starts_with: String
+  student_number_not_starts_with: String
+  student_number_ends_with: String
+  student_number_not_ends_with: String
   completion_language: String
   completion_language_not: String
   completion_language_in: [String!]
@@ -277,16 +352,25 @@ input CompletionSubscriptionWhereInput {
 }
 
 input CompletionUpdateInput {
+  user_upstream_id: Int
+  email: String
+  student_number: String
   user: UserUpdateOneRequiredWithoutCompletionsInput
   course: CourseUpdateOneRequiredInput
   completion_language: String
 }
 
 input CompletionUpdateManyDataInput {
+  user_upstream_id: Int
+  email: String
+  student_number: String
   completion_language: String
 }
 
 input CompletionUpdateManyMutationInput {
+  user_upstream_id: Int
+  email: String
+  student_number: String
   completion_language: String
 }
 
@@ -308,6 +392,9 @@ input CompletionUpdateManyWithWhereNestedInput {
 }
 
 input CompletionUpdateWithoutUserDataInput {
+  user_upstream_id: Int
+  email: String
+  student_number: String
   course: CourseUpdateOneRequiredInput
   completion_language: String
 }
@@ -354,6 +441,42 @@ input CompletionWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  user_upstream_id: Int
+  user_upstream_id_not: Int
+  user_upstream_id_in: [Int!]
+  user_upstream_id_not_in: [Int!]
+  user_upstream_id_lt: Int
+  user_upstream_id_lte: Int
+  user_upstream_id_gt: Int
+  user_upstream_id_gte: Int
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  student_number: String
+  student_number_not: String
+  student_number_in: [String!]
+  student_number_not_in: [String!]
+  student_number_lt: String
+  student_number_lte: String
+  student_number_gt: String
+  student_number_gte: String
+  student_number_contains: String
+  student_number_not_contains: String
+  student_number_starts_with: String
+  student_number_not_starts_with: String
+  student_number_ends_with: String
+  student_number_not_ends_with: String
   user: UserWhereInput
   course: CourseWhereInput
   completion_language: String

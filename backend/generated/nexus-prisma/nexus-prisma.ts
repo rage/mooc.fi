@@ -661,6 +661,9 @@ type CompletionObject =
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'user_upstream_id', args?: [] | false, alias?: string  } 
+  | { name: 'email', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
   | { name: 'user', args?: [] | false, alias?: string  } 
   | { name: 'course', args?: [] | false, alias?: string  } 
   | { name: 'completion_language', args?: [] | false, alias?: string  } 
@@ -669,6 +672,9 @@ type CompletionFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
+  | 'user_upstream_id'
+  | 'email'
+  | 'student_number'
   | 'user'
   | 'course'
   | 'completion_language'
@@ -700,6 +706,30 @@ export interface CompletionFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  user_upstream_id: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  email: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
   user: {
@@ -1460,6 +1490,7 @@ type CompletionRegisteredObject =
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
   | { name: 'user', args?: [] | false, alias?: string  } 
   | { name: 'course', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
   | { name: 'organisation', args?: [] | false, alias?: string  } 
 
 type CompletionRegisteredFields =
@@ -1468,6 +1499,7 @@ type CompletionRegisteredFields =
   | 'updatedAt'
   | 'user'
   | 'course'
+  | 'real_student_number'
   | 'organisation'
 
 
@@ -1524,6 +1556,14 @@ export interface CompletionRegisteredFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.Course> | prisma.Course
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
   }
   organisation: {
     type: 'String'
@@ -2871,12 +2911,18 @@ type CompletionPreviousValuesObject =
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'user_upstream_id', args?: [] | false, alias?: string  } 
+  | { name: 'email', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
   | { name: 'completion_language', args?: [] | false, alias?: string  } 
 
 type CompletionPreviousValuesFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
+  | 'user_upstream_id'
+  | 'email'
+  | 'student_number'
   | 'completion_language'
 
 
@@ -2906,6 +2952,30 @@ export interface CompletionPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  user_upstream_id: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  email: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
   completion_language: {
@@ -2996,12 +3066,14 @@ type CompletionRegisteredPreviousValuesObject =
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
   | { name: 'organisation', args?: [] | false, alias?: string  } 
 
 type CompletionRegisteredPreviousValuesFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
+  | 'real_student_number'
   | 'organisation'
 
 
@@ -3031,6 +3103,14 @@ export interface CompletionRegisteredPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
+    resolve: undefined
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
     resolve: undefined
   }
   organisation: {
@@ -3087,6 +3167,42 @@ export interface CompletionWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
+  user_upstream_id?: number | null
+  user_upstream_id_not?: number | null
+  user_upstream_id_in?: number[]
+  user_upstream_id_not_in?: number[]
+  user_upstream_id_lt?: number | null
+  user_upstream_id_lte?: number | null
+  user_upstream_id_gt?: number | null
+  user_upstream_id_gte?: number | null
+  email?: string | null
+  email_not?: string | null
+  email_in?: string[]
+  email_not_in?: string[]
+  email_lt?: string | null
+  email_lte?: string | null
+  email_gt?: string | null
+  email_gte?: string | null
+  email_contains?: string | null
+  email_not_contains?: string | null
+  email_starts_with?: string | null
+  email_not_starts_with?: string | null
+  email_ends_with?: string | null
+  email_not_ends_with?: string | null
+  student_number?: string | null
+  student_number_not?: string | null
+  student_number_in?: string[]
+  student_number_not_in?: string[]
+  student_number_lt?: string | null
+  student_number_lte?: string | null
+  student_number_gt?: string | null
+  student_number_gte?: string | null
+  student_number_contains?: string | null
+  student_number_not_contains?: string | null
+  student_number_starts_with?: string | null
+  student_number_not_starts_with?: string | null
+  student_number_ends_with?: string | null
+  student_number_not_ends_with?: string | null
   user?: UserWhereInput | null
   course?: CourseWhereInput | null
   completion_language?: string | null
@@ -3139,6 +3255,42 @@ export type CompletionWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'user_upstream_id_not', alias?: string  } 
+  | { name: 'user_upstream_id_in', alias?: string  } 
+  | { name: 'user_upstream_id_not_in', alias?: string  } 
+  | { name: 'user_upstream_id_lt', alias?: string  } 
+  | { name: 'user_upstream_id_lte', alias?: string  } 
+  | { name: 'user_upstream_id_gt', alias?: string  } 
+  | { name: 'user_upstream_id_gte', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'email_not', alias?: string  } 
+  | { name: 'email_in', alias?: string  } 
+  | { name: 'email_not_in', alias?: string  } 
+  | { name: 'email_lt', alias?: string  } 
+  | { name: 'email_lte', alias?: string  } 
+  | { name: 'email_gt', alias?: string  } 
+  | { name: 'email_gte', alias?: string  } 
+  | { name: 'email_contains', alias?: string  } 
+  | { name: 'email_not_contains', alias?: string  } 
+  | { name: 'email_starts_with', alias?: string  } 
+  | { name: 'email_not_starts_with', alias?: string  } 
+  | { name: 'email_ends_with', alias?: string  } 
+  | { name: 'email_not_ends_with', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'student_number_not', alias?: string  } 
+  | { name: 'student_number_in', alias?: string  } 
+  | { name: 'student_number_not_in', alias?: string  } 
+  | { name: 'student_number_lt', alias?: string  } 
+  | { name: 'student_number_lte', alias?: string  } 
+  | { name: 'student_number_gt', alias?: string  } 
+  | { name: 'student_number_gte', alias?: string  } 
+  | { name: 'student_number_contains', alias?: string  } 
+  | { name: 'student_number_not_contains', alias?: string  } 
+  | { name: 'student_number_starts_with', alias?: string  } 
+  | { name: 'student_number_not_starts_with', alias?: string  } 
+  | { name: 'student_number_ends_with', alias?: string  } 
+  | { name: 'student_number_not_ends_with', alias?: string  } 
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
@@ -3727,6 +3879,20 @@ export interface CompletionRegisteredWhereInput {
   updatedAt_gte?: string | null
   user?: UserWhereInput | null
   course?: CourseWhereInput | null
+  real_student_number?: string | null
+  real_student_number_not?: string | null
+  real_student_number_in?: string[]
+  real_student_number_not_in?: string[]
+  real_student_number_lt?: string | null
+  real_student_number_lte?: string | null
+  real_student_number_gt?: string | null
+  real_student_number_gte?: string | null
+  real_student_number_contains?: string | null
+  real_student_number_not_contains?: string | null
+  real_student_number_starts_with?: string | null
+  real_student_number_not_starts_with?: string | null
+  real_student_number_ends_with?: string | null
+  real_student_number_not_ends_with?: string | null
   organisation?: string | null
   organisation_not?: string | null
   organisation_in?: string[]
@@ -3779,6 +3945,20 @@ export type CompletionRegisteredWhereInputInputObject =
   | { name: 'updatedAt_gte', alias?: string  } 
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'real_student_number_not', alias?: string  } 
+  | { name: 'real_student_number_in', alias?: string  } 
+  | { name: 'real_student_number_not_in', alias?: string  } 
+  | { name: 'real_student_number_lt', alias?: string  } 
+  | { name: 'real_student_number_lte', alias?: string  } 
+  | { name: 'real_student_number_gt', alias?: string  } 
+  | { name: 'real_student_number_gte', alias?: string  } 
+  | { name: 'real_student_number_contains', alias?: string  } 
+  | { name: 'real_student_number_not_contains', alias?: string  } 
+  | { name: 'real_student_number_starts_with', alias?: string  } 
+  | { name: 'real_student_number_not_starts_with', alias?: string  } 
+  | { name: 'real_student_number_ends_with', alias?: string  } 
+  | { name: 'real_student_number_not_ends_with', alias?: string  } 
   | { name: 'organisation', alias?: string  } 
   | { name: 'organisation_not', alias?: string  } 
   | { name: 'organisation_in', alias?: string  } 
@@ -3832,11 +4012,17 @@ export type CompletionCreateManyWithoutUserInputInputObject =
   | { name: 'connect', alias?: string  } 
   
 export interface CompletionCreateWithoutUserInput {
+  user_upstream_id?: number | null
+  email?: string
+  student_number?: string | null
   course?: CourseCreateOneInput
   completion_language?: string | null
 }
 export type CompletionCreateWithoutUserInputInputObject =
   | Extract<keyof CompletionCreateWithoutUserInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'course', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
   
@@ -3934,11 +4120,17 @@ export type CompletionUpdateWithWhereUniqueWithoutUserInputInputObject =
   | { name: 'data', alias?: string  } 
   
 export interface CompletionUpdateWithoutUserDataInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
   course?: CourseUpdateOneRequiredInput | null
   completion_language?: string | null
 }
 export type CompletionUpdateWithoutUserDataInputInputObject =
   | Extract<keyof CompletionUpdateWithoutUserDataInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'course', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
   
@@ -4182,6 +4374,42 @@ export interface CompletionScalarWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
+  user_upstream_id?: number | null
+  user_upstream_id_not?: number | null
+  user_upstream_id_in?: number[]
+  user_upstream_id_not_in?: number[]
+  user_upstream_id_lt?: number | null
+  user_upstream_id_lte?: number | null
+  user_upstream_id_gt?: number | null
+  user_upstream_id_gte?: number | null
+  email?: string | null
+  email_not?: string | null
+  email_in?: string[]
+  email_not_in?: string[]
+  email_lt?: string | null
+  email_lte?: string | null
+  email_gt?: string | null
+  email_gte?: string | null
+  email_contains?: string | null
+  email_not_contains?: string | null
+  email_starts_with?: string | null
+  email_not_starts_with?: string | null
+  email_ends_with?: string | null
+  email_not_ends_with?: string | null
+  student_number?: string | null
+  student_number_not?: string | null
+  student_number_in?: string[]
+  student_number_not_in?: string[]
+  student_number_lt?: string | null
+  student_number_lte?: string | null
+  student_number_gt?: string | null
+  student_number_gte?: string | null
+  student_number_contains?: string | null
+  student_number_not_contains?: string | null
+  student_number_starts_with?: string | null
+  student_number_not_starts_with?: string | null
+  student_number_ends_with?: string | null
+  student_number_not_ends_with?: string | null
   completion_language?: string | null
   completion_language_not?: string | null
   completion_language_in?: string[]
@@ -4232,6 +4460,42 @@ export type CompletionScalarWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'user_upstream_id_not', alias?: string  } 
+  | { name: 'user_upstream_id_in', alias?: string  } 
+  | { name: 'user_upstream_id_not_in', alias?: string  } 
+  | { name: 'user_upstream_id_lt', alias?: string  } 
+  | { name: 'user_upstream_id_lte', alias?: string  } 
+  | { name: 'user_upstream_id_gt', alias?: string  } 
+  | { name: 'user_upstream_id_gte', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'email_not', alias?: string  } 
+  | { name: 'email_in', alias?: string  } 
+  | { name: 'email_not_in', alias?: string  } 
+  | { name: 'email_lt', alias?: string  } 
+  | { name: 'email_lte', alias?: string  } 
+  | { name: 'email_gt', alias?: string  } 
+  | { name: 'email_gte', alias?: string  } 
+  | { name: 'email_contains', alias?: string  } 
+  | { name: 'email_not_contains', alias?: string  } 
+  | { name: 'email_starts_with', alias?: string  } 
+  | { name: 'email_not_starts_with', alias?: string  } 
+  | { name: 'email_ends_with', alias?: string  } 
+  | { name: 'email_not_ends_with', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'student_number_not', alias?: string  } 
+  | { name: 'student_number_in', alias?: string  } 
+  | { name: 'student_number_not_in', alias?: string  } 
+  | { name: 'student_number_lt', alias?: string  } 
+  | { name: 'student_number_lte', alias?: string  } 
+  | { name: 'student_number_gt', alias?: string  } 
+  | { name: 'student_number_gte', alias?: string  } 
+  | { name: 'student_number_contains', alias?: string  } 
+  | { name: 'student_number_not_contains', alias?: string  } 
+  | { name: 'student_number_starts_with', alias?: string  } 
+  | { name: 'student_number_not_starts_with', alias?: string  } 
+  | { name: 'student_number_ends_with', alias?: string  } 
+  | { name: 'student_number_not_ends_with', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
   | { name: 'completion_language_not', alias?: string  } 
   | { name: 'completion_language_in', alias?: string  } 
@@ -4260,10 +4524,16 @@ export type CompletionUpdateManyWithWhereNestedInputInputObject =
   | { name: 'data', alias?: string  } 
   
 export interface CompletionUpdateManyDataInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
   completion_language?: string | null
 }
 export type CompletionUpdateManyDataInputInputObject =
   | Extract<keyof CompletionUpdateManyDataInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
   
 export interface UserUpdateManyMutationInput {
@@ -4384,12 +4654,18 @@ export type OpenUniversityCourseUpdateManyMutationInputInputObject =
   | { name: 'course_code', alias?: string  } 
   
 export interface CompletionCreateInput {
+  user_upstream_id?: number | null
+  email?: string
+  student_number?: string | null
   user?: UserCreateOneWithoutCompletionsInput
   course?: CourseCreateOneInput
   completion_language?: string | null
 }
 export type CompletionCreateInputInputObject =
   | Extract<keyof CompletionCreateInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
@@ -4427,12 +4703,18 @@ export type UserCreateWithoutCompletionsInputInputObject =
   | { name: 'real_student_number', alias?: string  } 
   
 export interface CompletionUpdateInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
   user?: UserUpdateOneRequiredWithoutCompletionsInput | null
   course?: CourseUpdateOneRequiredInput | null
   completion_language?: string | null
 }
 export type CompletionUpdateInputInputObject =
   | Extract<keyof CompletionUpdateInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
@@ -4483,21 +4765,29 @@ export type UserUpsertWithoutCompletionsInputInputObject =
   | { name: 'create', alias?: string  } 
   
 export interface CompletionUpdateManyMutationInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
   completion_language?: string | null
 }
 export type CompletionUpdateManyMutationInputInputObject =
   | Extract<keyof CompletionUpdateManyMutationInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
   | { name: 'completion_language', alias?: string  } 
   
 export interface CompletionRegisteredCreateInput {
   user?: UserCreateOneInput
   course?: CourseCreateOneInput
+  real_student_number?: string | null
   organisation?: string
 }
 export type CompletionRegisteredCreateInputInputObject =
   | Extract<keyof CompletionRegisteredCreateInput, string>
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
   | { name: 'organisation', alias?: string  } 
   
 export interface UserCreateOneInput {
@@ -4512,12 +4802,14 @@ export type UserCreateOneInputInputObject =
 export interface CompletionRegisteredUpdateInput {
   user?: UserUpdateOneRequiredInput | null
   course?: CourseUpdateOneRequiredInput | null
+  real_student_number?: string | null
   organisation?: string | null
 }
 export type CompletionRegisteredUpdateInputInputObject =
   | Extract<keyof CompletionRegisteredUpdateInput, string>
   | { name: 'user', alias?: string  } 
   | { name: 'course', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
   | { name: 'organisation', alias?: string  } 
   
 export interface UserUpdateOneRequiredInput {
@@ -4568,10 +4860,12 @@ export type UserUpsertNestedInputInputObject =
   | { name: 'create', alias?: string  } 
   
 export interface CompletionRegisteredUpdateManyMutationInput {
+  real_student_number?: string | null
   organisation?: string | null
 }
 export type CompletionRegisteredUpdateManyMutationInputInputObject =
   | Extract<keyof CompletionRegisteredUpdateManyMutationInput, string>
+  | { name: 'real_student_number', alias?: string  } 
   | { name: 'organisation', alias?: string  } 
   
 export interface UserSubscriptionWhereInput {
@@ -4687,6 +4981,12 @@ export type CompletionOrderByInputValues =
   | 'createdAt_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
+  | 'user_upstream_id_ASC'
+  | 'user_upstream_id_DESC'
+  | 'email_ASC'
+  | 'email_DESC'
+  | 'student_number_ASC'
+  | 'student_number_DESC'
   | 'completion_language_ASC'
   | 'completion_language_DESC'
   
@@ -4745,6 +5045,8 @@ export type CompletionRegisteredOrderByInputValues =
   | 'createdAt_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
+  | 'real_student_number_ASC'
+  | 'real_student_number_DESC'
   | 'organisation_ASC'
   | 'organisation_DESC'
   

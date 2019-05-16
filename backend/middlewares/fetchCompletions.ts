@@ -11,15 +11,16 @@ const { UserInputError } = require('apollo-server-core')
 const elementsOfAiTags = ["elements-of-ai", "elements-of-ai-fi", "elements-of-ai-se"];
 
 
-export async function doIt(course) {
-  const startTime = new Date().getTime()
+export default async function fetchCompletions(course, ctx): Promise<Completion[]> {
+  
   let info;
   if (course == "elements-of-ai") {
-    await getElementsOfAiInfo()
+    await getElementsOfAiInfo(ctx)
   } else {
-    await getCourseInfo(course)
+    await getCourseInfo(course, ctx)
   }
-  const data = await getCompletionDataFromDB(course)
+  const startTime = new Date().getTime()
+  const data = await getCompletionDataFromDB(course, ctx)
   console.log("FINISHED WITH", course)
   const stopTime = new Date().getTime()
   console.log("used", stopTime-startTime, "time")
@@ -28,7 +29,7 @@ export async function doIt(course) {
 }
 
 
-async function getCourseInfo(course) {
+async function getCourseInfo(course, ctx) {
   let basicInfo
   const promise = async course => {
     let usernames = await getPassedUsernamesByTag(course)
@@ -37,12 +38,12 @@ async function getCourseInfo(course) {
       usernames.length
       } students have passed ${course} so far.`
     )
-    usernames = await removeDataThatIsInDBAlready(usernames)
+    usernames = await removeDataThatIsInDBAlready(usernames, ctx)
     //console.log("usernames length after filterin",usernames.length)
     //console.log("usernames after filtering:", usernames)
     basicInfo = await tmcService.getBasicInfoByUsernames(usernames);
     console.log(`Got info from ${basicInfo.length} ${course} students`);
-    await saveCompletionsAndUsersToDatabase(basicInfo, course, course)
+    await saveCompletionsAndUsersToDatabase(basicInfo, course, ctx, course)
     basicInfo = await parseCompletions(basicInfo, course)
 
   }
@@ -50,7 +51,7 @@ async function getCourseInfo(course) {
   return basicInfo
 }
 
-async function getElementsOfAiInfo() {
+async function getElementsOfAiInfo(ctx) {
   let tagsToInfo = [];
   const promises = elementsOfAiTags.map(async tag => {
     let usernames = await getPassedUsernamesByTag(tag);
@@ -59,13 +60,13 @@ async function getElementsOfAiInfo() {
       usernames.length
       } students have passed ${tag} so far.`
     );
-    usernames = await removeDataThatIsInDBAlready(usernames)
+    usernames = await removeDataThatIsInDBAlready(usernames, ctx)
     //console.log("usernames length for ", tag,"after filterin",usernames.length)
     //console.log("usernames after filtering:", usernames)
     let basicInfo = await tmcService.getBasicInfoByUsernames(usernames);
     //console.log("basicInfo for ", tag, ":", basicInfo)
     console.log(`Got info from ${basicInfo.length} ${tag} students`);
-    await saveCompletionsAndUsersToDatabase(basicInfo, "elements-of-ai", tag)
+    await saveCompletionsAndUsersToDatabase(basicInfo, "elements-of-ai",ctx,  tag,)
     //basicInfo = await parseCompletions(basicInfo, tag)
 
     tagsToInfo.push(...basicInfo)
@@ -74,16 +75,15 @@ async function getElementsOfAiInfo() {
   //return tagsToInfo;
 }
 
-async function getCompletionDataFromDB(course_slug : string) {
+async function getCompletionDataFromDB(course_slug : string, ctx): Promise<Completion[]> {
+  const prisma : Prisma = ctx.prisma
   const course : Course = await prisma.course({slug: course_slug})
 
-  let data : Completion[] = await prisma.completions({where: {course: course}, first: 10})
-
-  return data
-
+  return prisma.completions({where: {course: course}})
 }
 
-async function removeDataThatIsInDBAlready(data : string[]) {
+async function removeDataThatIsInDBAlready(data : string[], ctx) {
+  const prisma : Prisma = ctx.prisma
   const users : User[] = await prisma.users({
     where: {
       username_in: data
@@ -112,8 +112,8 @@ async function parseCompletions(completions, tag) {
   return parsed
 }
 
-async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, course_name_for_debug) {
-  let i = 0;
+async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx,  course_name_for_debug) {
+  const prisma : Prisma = ctx.prisma
   console.log('starting with', course_name_for_debug)
   for (let i = 0; i < data.length; i++) {
     let old = data[i]
@@ -143,7 +143,10 @@ async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, cours
       const completion: Completion = await prisma.createCompletion({
         user: { connect: { upstream_id: user.upstream_id } },
         course: { connect: { id: course.id } },
-        completion_language: determineCompletionLanguage(course_name_for_debug)
+        completion_language: determineCompletionLanguage(course_name_for_debug),
+        user_upstream_id: user.upstream_id,
+        email: user.email,
+        student_number: user.student_number
       })
     }
   }

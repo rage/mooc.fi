@@ -1,4 +1,4 @@
-import { prisma, Prisma, Int, User, Course, OpenUniversityCourse, Completion } from "./generated/prisma-client";
+import { prisma, Prisma, Int, User, Course, OpenUniversityCourse } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
 import { stringArg, idArg, convertSDL, subscriptionField, objectType } from "nexus";
@@ -8,10 +8,8 @@ import { AuthenticationError, ForbiddenError } from "apollo-server-core";
 import TmcClient from "./services/tmc";
 import fetchUser from "./middlewares/FetchUser";
 //import fetchCompletions from "./middlewares/fetchCompletions"
-const fetchCompletions = require('./middlewares/fetchCompletions')
+import fetchCompletions from './middlewares/fetchCompletions'
 const { UserInputError } = require('apollo-server-core')
-
-
 
 
 import * as winston from "winston";
@@ -55,6 +53,7 @@ const Query = prismaObjectType({
         course: stringArg()
       },
       resolve: async (_, { course }, ctx) => {
+        const prisma: Prisma = ctx.prisma
         if (!ctx.user.administrator) {
           throw new ForbiddenError("Access Denied");
         }
@@ -70,7 +69,9 @@ const Query = prismaObjectType({
           }
           course = courseFromAvoinCourse.slug       
         }
-        return await fetchCompletions.doIt(course)
+        const completions = await fetchCompletions(course, ctx);
+
+        return completions
       }
     })
 
@@ -149,6 +150,24 @@ const Mutation = prismaObjectType({
 //     t.string("first_name")
 //     t.string("last_name")
 //     t.string("completion_language")
+//   }
+// })
+
+// const Completion = prismaObjectType({
+//   name: "Completion",
+//   definition(t) {
+//     t.prismaFields(["id" ,"createdAt" ,"updatedAt" ,"course" ,"completion_language"])
+//     t.field("user", {
+//       type: "User",
+//       nullable: false,
+//       resolve: async (parent, args, ctx) => {
+//         const prisma = ctx.prisma;
+//         if (ctx.cachedUser) {
+//           return ctx.cachedUser
+//         }
+//         return null;
+//       }
+//     })
 //   }
 // })
 

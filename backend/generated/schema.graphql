@@ -6,9 +6,12 @@ type Completion {
   completion_language: String
   course: Course!
   createdAt: DateTime!
+  email: String!
   id: UUID!
+  student_number: String
   updatedAt: DateTime!
   user: User!
+  user_upstream_id: Int
 }
 
 enum CompletionOrderByInput {
@@ -16,10 +19,16 @@ enum CompletionOrderByInput {
   completion_language_DESC
   createdAt_ASC
   createdAt_DESC
+  email_ASC
+  email_DESC
   id_ASC
   id_DESC
+  student_number_ASC
+  student_number_DESC
   updatedAt_ASC
   updatedAt_DESC
+  user_upstream_id_ASC
+  user_upstream_id_DESC
 }
 
 input CompletionWhereInput {
@@ -47,6 +56,20 @@ input CompletionWhereInput {
   createdAt_lte: DateTime
   createdAt_not: DateTime
   createdAt_not_in: [DateTime!]
+  email: String
+  email_contains: String
+  email_ends_with: String
+  email_gt: String
+  email_gte: String
+  email_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_not: String
+  email_not_contains: String
+  email_not_ends_with: String
+  email_not_in: [String!]
+  email_not_starts_with: String
+  email_starts_with: String
   id: UUID
   id_contains: UUID
   id_ends_with: UUID
@@ -63,6 +86,20 @@ input CompletionWhereInput {
   id_starts_with: UUID
   NOT: [CompletionWhereInput!]
   OR: [CompletionWhereInput!]
+  student_number: String
+  student_number_contains: String
+  student_number_ends_with: String
+  student_number_gt: String
+  student_number_gte: String
+  student_number_in: [String!]
+  student_number_lt: String
+  student_number_lte: String
+  student_number_not: String
+  student_number_not_contains: String
+  student_number_not_ends_with: String
+  student_number_not_in: [String!]
+  student_number_not_starts_with: String
+  student_number_starts_with: String
   updatedAt: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
@@ -72,6 +109,14 @@ input CompletionWhereInput {
   updatedAt_not: DateTime
   updatedAt_not_in: [DateTime!]
   user: UserWhereInput
+  user_upstream_id: Int
+  user_upstream_id_gt: Int
+  user_upstream_id_gte: Int
+  user_upstream_id_in: [Int!]
+  user_upstream_id_lt: Int
+  user_upstream_id_lte: Int
+  user_upstream_id_not: Int
+  user_upstream_id_not_in: [Int!]
 }
 
 type Course {
