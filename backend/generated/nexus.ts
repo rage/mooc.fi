@@ -421,7 +421,6 @@ export interface NexusGenFieldTypes {
     id: any; // UUID!
     student_number: string | null; // String
     updatedAt: any; // DateTime!
-    user: NexusGenRootTypes['User']; // User!
     user_upstream_id: number | null; // Int
   }
   Course: { // field return type

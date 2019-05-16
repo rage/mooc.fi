@@ -153,27 +153,18 @@ const Mutation = prismaObjectType({
 //   }
 // })
 
-// const Completion = prismaObjectType({
-//   name: "Completion",
-//   definition(t) {
-//     t.prismaFields(["id" ,"createdAt" ,"updatedAt" ,"course" ,"completion_language"])
-//     t.field("user", {
-//       type: "User",
-//       nullable: false,
-//       resolve: async (parent, args, ctx) => {
-//         const prisma = ctx.prisma;
-//         if (ctx.cachedUser) {
-//           return ctx.cachedUser
-//         }
-//         return null;
-//       }
-//     })
-//   }
-// })
+const Completion = prismaObjectType({
+  name: "Completion",
+  definition(t) {
+    t.prismaFields(["id" ,"createdAt" ,"updatedAt" ,"course" ,"completion_language", "email",
+                    "student_number", "user_upstream_id"])
+
+  }
+})
 
 
 const schema = makePrismaSchema({
-  types: [Query, Mutation],
+  types: [Query, Mutation, Completion],
 
   prisma: {
     datamodelInfo,

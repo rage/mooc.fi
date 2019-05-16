@@ -10,7 +10,6 @@ type Completion {
   id: UUID!
   student_number: String
   updatedAt: DateTime!
-  user: User!
   user_upstream_id: Int
 }
 
