@@ -490,7 +490,9 @@ export interface NexusGenArgTypes {
   }
   Query: {
     completions: { // args
+      after?: string | null; // ID
       course?: string | null; // String
+      first?: number | null; // Int
     }
     currentUser: { // args
       email?: string | null; // String

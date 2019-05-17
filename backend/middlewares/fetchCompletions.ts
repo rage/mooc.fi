@@ -11,15 +11,16 @@ const { UserInputError } = require('apollo-server-core')
 const elementsOfAiTags = ["elements-of-ai", "elements-of-ai-fi", "elements-of-ai-se"];
 
 
-export default async function fetchCompletions(course, ctx): Promise<Completion[]> {
-  
+export default async function fetchCompletions(args, ctx): Promise<Completion[]> {
+  const { course } = args
+  console.log("course from args", course)
   if (course == "elements-of-ai") {
     await getElementsOfAiInfo(ctx)
   } else {
     await getCourseInfo(course, ctx)
   }
   const startTime = new Date().getTime()
-  const data = await getCompletionDataFromDB(course, ctx)
+  const data = await getCompletionDataFromDB(args, ctx)
   console.log("FINISHED WITH", course)
   const stopTime = new Date().getTime()
   console.log("used", stopTime-startTime, "time")
@@ -27,9 +28,9 @@ export default async function fetchCompletions(course, ctx): Promise<Completion[
 }
 
 
-async function getCourseInfo(course, ctx) {
+async function getCourseInfo(course , ctx) {
   let basicInfo
-  const promise = async course => {
+  const promise = async () => {
     let usernames = await getPassedUsernamesByTag(course)
     console.log(
       `Got passed students from quiznator! ${
@@ -64,11 +65,15 @@ async function getElementsOfAiInfo(ctx) {
   await Promise.all(promises);
 }
 
-async function getCompletionDataFromDB(course_slug : string, ctx): Promise<Completion[]> {
+async function getCompletionDataFromDB({course, first, after}, ctx): Promise<Completion[]> {
   const prisma : Prisma = ctx.prisma
-  const course : Course = await prisma.course({slug: course_slug})
+  const courseObject : Course = await prisma.course({slug: course})
 
-  return prisma.completions({where: {course: course}})
+  return prisma.completions({
+    where: {course: courseObject},
+    first: first,
+    after: after
+  })
 }
 
 async function removeDataThatIsInDBAlready(data : string[], ctx) {

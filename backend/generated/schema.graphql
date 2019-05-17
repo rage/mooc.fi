@@ -272,7 +272,7 @@ input OpenUniversityCourseWhereInput {
 }
 
 type Query {
-  completions(course: String): [Completion!]!
+  completions(after: ID, course: String, first: Int): [Completion!]!
   courses: [Course!]!
   currentUser(email: String): User!
   openUniversityCourses: [OpenUniversityCourse!]!
