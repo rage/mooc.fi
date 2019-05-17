@@ -13,7 +13,6 @@ const elementsOfAiTags = ["elements-of-ai", "elements-of-ai-fi", "elements-of-ai
 
 export default async function fetchCompletions(course, ctx): Promise<Completion[]> {
   
-  let info;
   if (course == "elements-of-ai") {
     await getElementsOfAiInfo(ctx)
   } else {
@@ -25,7 +24,6 @@ export default async function fetchCompletions(course, ctx): Promise<Completion[
   const stopTime = new Date().getTime()
   console.log("used", stopTime-startTime, "time")
   return data
-  //return info
 }
 
 
@@ -39,16 +37,12 @@ async function getCourseInfo(course, ctx) {
       } students have passed ${course} so far.`
     )
     usernames = await removeDataThatIsInDBAlready(usernames, ctx)
-    //console.log("usernames length after filterin",usernames.length)
-    //console.log("usernames after filtering:", usernames)
     basicInfo = await tmcService.getBasicInfoByUsernames(usernames);
     console.log(`Got info from ${basicInfo.length} ${course} students`);
     await saveCompletionsAndUsersToDatabase(basicInfo, course, ctx, course)
-    basicInfo = await parseCompletions(basicInfo, course)
 
   }
   await Promise.apply(promise)
-  return basicInfo
 }
 
 async function getElementsOfAiInfo(ctx) {
@@ -61,18 +55,13 @@ async function getElementsOfAiInfo(ctx) {
       } students have passed ${tag} so far.`
     );
     usernames = await removeDataThatIsInDBAlready(usernames, ctx)
-    //console.log("usernames length for ", tag,"after filterin",usernames.length)
-    //console.log("usernames after filtering:", usernames)
     let basicInfo = await tmcService.getBasicInfoByUsernames(usernames);
-    //console.log("basicInfo for ", tag, ":", basicInfo)
     console.log(`Got info from ${basicInfo.length} ${tag} students`);
     await saveCompletionsAndUsersToDatabase(basicInfo, "elements-of-ai",ctx,  tag,)
-    //basicInfo = await parseCompletions(basicInfo, tag)
 
     tagsToInfo.push(...basicInfo)
   });
   await Promise.all(promises);
-  //return tagsToInfo;
 }
 
 async function getCompletionDataFromDB(course_slug : string, ctx): Promise<Completion[]> {
