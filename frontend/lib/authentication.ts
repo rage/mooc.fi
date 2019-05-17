@@ -6,6 +6,7 @@ import { ApolloClient } from "apollo-boost";
 import axios from "axios";
 import { get } from "lodash"
 
+
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28"
@@ -15,6 +16,7 @@ export const isSignedIn = (ctx: NextContext) => {
   const accessToken = nookies.get(ctx)["access_token"];
   return typeof accessToken == "string";
 };
+
 
 export const signIn = async ({
   email,
@@ -26,6 +28,7 @@ export const signIn = async ({
   const res = await tmcClient.authenticate({ username: email, password });
 
   const details = await userDetails(res.accessToken)
+  console.log(details)
   const firstName = (get(details, "user_field.first_name") || "").trim()
   const lastName = (get(details, "user_field.last_name") || "").trim()
   console.log("first name", firstName, "last name", lastName)
@@ -46,8 +49,6 @@ export const signOut = async (apollo: ApolloClient<any>) => {
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/";
       Nexti18next.Router.push("/sign-in");
     });
-  
-  
 };
 
 export const getAccessToken = (ctx: NextContext | undefined) => {
@@ -58,7 +59,7 @@ export const getAccessToken = (ctx: NextContext | undefined) => {
 
 export async function userDetails(accessToken: String) {
   const res = await axios.get(
-    `https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true&extra_fields=ohjelmoinnin-mooc-2019`,
+    `https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`,
     {
       headers: {
         "Content-Type": "application/json",

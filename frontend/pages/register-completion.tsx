@@ -59,7 +59,6 @@ const RegisterCompletion = ({ t }) => {
     const { loading, error, data } = useQuery<UserOverViewData>(
         UserOverViewQuery
       );
-    
     if(error){
       <div>
         Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>

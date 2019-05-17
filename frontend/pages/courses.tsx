@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Paper, Avatar, Typography } from '@material-ui/core'
+import {  Typography } from '@material-ui/core'
 import NextI18Next from '../i18n';
 import { NextContext } from "next";
 import { isSignedIn } from "../lib/authentication";
@@ -9,14 +9,11 @@ import { ApolloClient, gql } from "apollo-boost";
 import { useQuery } from "react-apollo-hooks";
 import { UserOverView as UserOverViewData } from "./__generated__/UserOverView";
 
+
 export const UserOverViewQuery = gql`
   query UserOverView {
     currentUser {
       id
-      upstream_id
-      first_name
-      last_name
-      email
       administrator
     }
   }
@@ -35,8 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
      alignItems: 'center',
      padding: '1em',
     },
-    avatar: {
-      margin: '1rem'
+    title: {
+      margin: 'auto'
     }
   }),
 );
@@ -57,10 +54,17 @@ const  CompletionDashboard = ({ t } ) => {
         return <div>Loading</div>;
     }
     return (
+      
       <main className={classes.root} id='main'>
-        <Typography component='h1' variant='h2' gutterBottom={true}>
-            Completion Dashboard 
-        </Typography>
+      <Typography 
+        component='h1' 
+        variant='h2' 
+        gutterBottom={true}
+        align='center'>
+            All Courses
+      </Typography>
+      
+        
         
       </main>
     )
