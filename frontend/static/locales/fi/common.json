@@ -1,0 +1,11 @@
+{
+    "login": "Kirjaudu sisään",
+    "logout": "Kirjaudu ulos",
+    "forgottenpw": "Unohditko salasanasi?",
+    "error": "Kirjautuminen epäonnistui. Virheellinen salasana tai käyttäjätunnus/sähköpostiosoite",
+    "password": "salasana",
+    "username": "käyttäjätunnus tai sähköpostiosoite",
+    "form-info": "Käytä TMC käyttäjätietojasi kirjautuaksesi sivulle Mooc.points",
+    "skiplink": "pääsisältöön"
+}
+

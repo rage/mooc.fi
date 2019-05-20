@@ -6,15 +6,6 @@
 // GraphQL query operation: UserOverView
 // ====================================================
 
-export interface UserOverView_currentUser_slot {
-  __typename: "Slot";
-  id: string;
-}
-
-export interface UserOverView_currentUser_essays {
-  __typename: "Essay";
-  id: string;
-}
 
 export interface UserOverView_currentUser {
   __typename: "User";
@@ -24,9 +15,6 @@ export interface UserOverView_currentUser {
   last_name: string | null;
   email: string;
   administrator: boolean;
-  completed_enough: boolean;
-  slot: UserOverView_currentUser_slot | null;
-  essays: UserOverView_currentUser_essays[] | null;
 }
 
 export interface UserOverView {

@@ -6,7 +6,6 @@ import { getMarkupFromTree } from "react-apollo-hooks";
 import { renderToString } from "react-dom/server";
 import { NextContext } from "next";
 import { ApolloClient, NormalizedCacheObject } from "apollo-boost";
-import { parseCookies } from "nookies";
 import { AppComponentContext } from "next/app";
 
 interface Props {

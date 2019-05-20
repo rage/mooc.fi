@@ -5,10 +5,11 @@
 
 export default {
   uniqueFieldsByModel: {
-    User: ['id', 'upstream_id'],
-    Slot: ['id'],
-    Essay: ['id'],
-    EssayTopic: ['id']
+    User: ['id', 'upstream_id', 'username'],
+    Course: ['id', 'slug'],
+    OpenUniversityCourse: ['id', 'course_code'],
+    Completion: ['id'],
+    CompletionRegistered: ['id']
   },
   embeddedTypes: [],
   clientPath: 'generated/prisma-client',
@@ -235,7 +236,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "slot",
+            "name": "course",
             "description": null,
             "args": [
               {
@@ -246,7 +247,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotWhereUniqueInput",
+                    "name": "CourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -255,14 +256,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "Slot",
+              "name": "Course",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "slots",
+            "name": "courses",
             "description": null,
             "args": [
               {
@@ -270,7 +271,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotWhereInput",
+                  "name": "CourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -280,7 +281,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "SlotOrderByInput",
+                  "name": "CourseOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -344,7 +345,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "Slot",
+                  "name": "Course",
                   "ofType": null
                 }
               }
@@ -353,7 +354,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "slotsConnection",
+            "name": "coursesConnection",
             "description": null,
             "args": [
               {
@@ -361,7 +362,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotWhereInput",
+                  "name": "CourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -371,7 +372,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "SlotOrderByInput",
+                  "name": "CourseOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -432,7 +433,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "SlotConnection",
+                "name": "CourseConnection",
                 "ofType": null
               }
             },
@@ -440,7 +441,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "essay",
+            "name": "openUniversityCourse",
             "description": null,
             "args": [
               {
@@ -451,7 +452,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayWhereUniqueInput",
+                    "name": "OpenUniversityCourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -460,14 +461,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "Essay",
+              "name": "OpenUniversityCourse",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "essays",
+            "name": "openUniversityCourses",
             "description": null,
             "args": [
               {
@@ -475,7 +476,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
+                  "name": "OpenUniversityCourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -485,7 +486,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "EssayOrderByInput",
+                  "name": "OpenUniversityCourseOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -549,7 +550,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "Essay",
+                  "name": "OpenUniversityCourse",
                   "ofType": null
                 }
               }
@@ -558,7 +559,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "essaysConnection",
+            "name": "openUniversityCoursesConnection",
             "description": null,
             "args": [
               {
@@ -566,7 +567,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
+                  "name": "OpenUniversityCourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -576,7 +577,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "EssayOrderByInput",
+                  "name": "OpenUniversityCourseOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -637,7 +638,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "EssayConnection",
+                "name": "OpenUniversityCourseConnection",
                 "ofType": null
               }
             },
@@ -645,7 +646,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "essayTopic",
+            "name": "completion",
             "description": null,
             "args": [
               {
@@ -656,7 +657,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicWhereUniqueInput",
+                    "name": "CompletionWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -665,14 +666,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "EssayTopic",
+              "name": "Completion",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "essayTopics",
+            "name": "completions",
             "description": null,
             "args": [
               {
@@ -680,7 +681,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicWhereInput",
+                  "name": "CompletionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -690,7 +691,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "EssayTopicOrderByInput",
+                  "name": "CompletionOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -754,7 +755,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "EssayTopic",
+                  "name": "Completion",
                   "ofType": null
                 }
               }
@@ -763,7 +764,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "essayTopicsConnection",
+            "name": "completionsConnection",
             "description": null,
             "args": [
               {
@@ -771,7 +772,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicWhereInput",
+                  "name": "CompletionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -781,7 +782,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "EssayTopicOrderByInput",
+                  "name": "CompletionOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -842,7 +843,212 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "EssayTopicConnection",
+                "name": "CompletionConnection",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completionRegistered",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredWhereUniqueInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CompletionRegistered",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completionRegistereds",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredWhereInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "orderBy",
+                "description": null,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "CompletionRegisteredOrderByInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "skip",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "after",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "first",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "last",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CompletionRegistered",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completionRegisteredsConnection",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredWhereInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "orderBy",
+                "description": null,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "CompletionRegisteredOrderByInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "skip",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "after",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "first",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "last",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "CompletionRegisteredConnection",
                 "ofType": null
               }
             },
@@ -893,7 +1099,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -907,6 +1113,16 @@ export default {
               "ofType": null
             },
             "defaultValue": null
+          },
+          {
+            "name": "username",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -915,8 +1131,8 @@ export default {
       },
       {
         "kind": "SCALAR",
-        "name": "ID",
-        "description": "The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID.",
+        "name": "UUID",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -927,6 +1143,16 @@ export default {
         "kind": "SCALAR",
         "name": "Int",
         "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. ",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "String",
+        "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -947,7 +1173,23 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "upstream_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -987,22 +1229,6 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "upstream_id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "first_name",
             "description": null,
             "args": [],
@@ -1016,6 +1242,18 @@ export default {
           },
           {
             "name": "last_name",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "username",
             "description": null,
             "args": [],
             "type": {
@@ -1059,19 +1297,47 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "slot",
+            "name": "completed_enough",
             "description": null,
             "args": [],
             "type": {
-              "kind": "OBJECT",
-              "name": "Slot",
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "essays",
+            "name": "real_student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completions",
             "description": null,
             "args": [
               {
@@ -1079,7 +1345,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
+                  "name": "CompletionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -1089,7 +1355,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "EssayOrderByInput",
+                  "name": "CompletionOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -1153,25 +1419,9 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "Essay",
+                  "name": "Completion",
                   "ofType": null
                 }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "completed_enough",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -1195,16 +1445,6 @@ export default {
       },
       {
         "kind": "SCALAR",
-        "name": "String",
-        "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
         "name": "Boolean",
         "description": "The `Boolean` scalar type represents `true` or `false`.",
         "fields": null,
@@ -1214,206 +1454,8 @@ export default {
         "possibleTypes": null
       },
       {
-        "kind": "OBJECT",
-        "name": "Slot",
-        "description": null,
-        "fields": [
-          {
-            "name": "id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "createdAt",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "updatedAt",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "capacity",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "registered",
-            "description": null,
-            "args": [
-              {
-                "name": "where",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserWhereInput",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "orderBy",
-                "description": null,
-                "type": {
-                  "kind": "ENUM",
-                  "name": "UserOrderByInput",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "skip",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "after",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "before",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "first",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "last",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                },
-                "defaultValue": null
-              }
-            ],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "User",
-                  "ofType": null
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "starts_at",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
         "kind": "INPUT_OBJECT",
-        "name": "UserWhereInput",
+        "name": "CompletionWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -1422,7 +1464,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1432,7 +1474,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1448,7 +1490,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -1466,7 +1508,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -1478,7 +1520,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1488,7 +1530,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1498,7 +1540,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1508,7 +1550,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1518,7 +1560,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1528,7 +1570,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1538,7 +1580,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1548,7 +1590,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1558,7 +1600,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1568,7 +1610,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -1766,6 +1808,811 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "user_upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user_upstream_id_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user_upstream_id_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user_upstream_id_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user_upstream_id_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user_upstream_id_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user_upstream_id_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user_upstream_id_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "AND",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "OR",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "NOT",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserWhereInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "upstream_id",
             "description": null,
             "type": {
@@ -1857,6 +2704,198 @@ export default {
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
               "ofType": null
             },
             "defaultValue": null
@@ -2174,6 +3213,162 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "username",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "email",
             "description": null,
             "type": {
@@ -2350,46 +3545,6 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "slot",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotWhereInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "essays_every",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayWhereInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "essays_some",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayWhereInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "essays_none",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayWhereInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "completed_enough",
             "description": null,
             "type": {
@@ -2410,6 +3565,348 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completions_every",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CompletionWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completions_some",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CompletionWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completions_none",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CompletionWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "AND",
             "description": null,
             "type": {
@@ -2470,7 +3967,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "SlotWhereInput",
+        "name": "CourseWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -2479,7 +3976,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2489,7 +3986,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2505,7 +4002,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -2523,7 +4020,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -2535,7 +4032,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2545,7 +4042,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2555,7 +4052,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2565,7 +4062,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2575,7 +4072,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2585,7 +4082,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2595,7 +4092,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2605,7 +4102,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2615,7 +4112,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2625,7 +4122,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -2823,27 +4320,27 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "capacity",
+            "name": "name",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "capacity_not",
+            "name": "name_not",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "capacity_in",
+            "name": "name_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -2853,7 +4350,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "Int",
+                  "name": "String",
                   "ofType": null
                 }
               }
@@ -2861,7 +4358,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "capacity_not_in",
+            "name": "name_not_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -2871,7 +4368,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "Int",
+                  "name": "String",
                   "ofType": null
                 }
               }
@@ -2879,263 +4376,287 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "capacity_lt",
+            "name": "name_lt",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "capacity_lte",
+            "name": "name_lte",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "capacity_gt",
+            "name": "name_gt",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "capacity_gte",
+            "name": "name_gte",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "registered_every",
+            "name": "name_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "name_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "open_university_courses_every",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserWhereInput",
+              "name": "OpenUniversityCourseWhereInput",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "registered_some",
+            "name": "open_university_courses_some",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserWhereInput",
+              "name": "OpenUniversityCourseWhereInput",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "registered_none",
+            "name": "open_university_courses_none",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserWhereInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
+              "name": "OpenUniversityCourseWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -3151,7 +4672,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotWhereInput",
+                  "name": "CourseWhereInput",
                   "ofType": null
                 }
               }
@@ -3169,7 +4690,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotWhereInput",
+                  "name": "CourseWhereInput",
                   "ofType": null
                 }
               }
@@ -3187,7 +4708,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotWhereInput",
+                  "name": "CourseWhereInput",
                   "ofType": null
                 }
               }
@@ -3201,7 +4722,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayWhereInput",
+        "name": "OpenUniversityCourseWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3210,7 +4731,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3220,7 +4741,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3236,7 +4757,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -3254,7 +4775,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -3266,7 +4787,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3276,7 +4797,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3286,7 +4807,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3296,7 +4817,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3306,7 +4827,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3316,7 +4837,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3326,7 +4847,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3336,7 +4857,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3346,7 +4867,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3356,7 +4877,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -3554,7 +5075,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text",
+            "name": "course_code",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3564,7 +5085,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not",
+            "name": "course_code_not",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3574,7 +5095,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_in",
+            "name": "course_code_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -3592,7 +5113,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_in",
+            "name": "course_code_not_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -3610,7 +5131,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_lt",
+            "name": "course_code_lt",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3620,7 +5141,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_lte",
+            "name": "course_code_lte",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3630,7 +5151,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_gt",
+            "name": "course_code_gt",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3640,7 +5161,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_gte",
+            "name": "course_code_gte",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3650,7 +5171,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_contains",
+            "name": "course_code_contains",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3660,7 +5181,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_contains",
+            "name": "course_code_not_contains",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3670,7 +5191,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_starts_with",
+            "name": "course_code_starts_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3680,7 +5201,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_starts_with",
+            "name": "course_code_not_starts_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3690,7 +5211,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_ends_with",
+            "name": "course_code_ends_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3700,7 +5221,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_ends_with",
+            "name": "course_code_not_ends_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3710,21 +5231,11 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "author",
+            "name": "course",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserWhereInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "topic",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayTopicWhereInput",
+              "name": "CourseWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -3740,7 +5251,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
+                  "name": "OpenUniversityCourseWhereInput",
                   "ofType": null
                 }
               }
@@ -3758,7 +5269,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
+                  "name": "OpenUniversityCourseWhereInput",
                   "ofType": null
                 }
               }
@@ -3776,924 +5287,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "EssayTopicWhereInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "id",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_not_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_not_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "id_not_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "createdAt_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updatedAt_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_not_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_not_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "title_not_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_not_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_not_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "description_not_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "min_words_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "AND",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicWhereInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "OR",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicWhereInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "NOT",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicWhereInput",
+                  "name": "OpenUniversityCourseWhereInput",
                   "ofType": null
                 }
               }
@@ -4707,7 +5301,7 @@ export default {
       },
       {
         "kind": "ENUM",
-        "name": "UserOrderByInput",
+        "name": "CompletionOrderByInput",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -4750,6 +5344,552 @@ export default {
             "deprecationReason": null
           },
           {
+            "name": "user_upstream_id_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user_upstream_id_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "email_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "email_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "student_number_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "student_number_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completion_language_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completion_language_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Completion",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user_upstream_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "email",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Course",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Course",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "open_university_courses",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseWhereInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "orderBy",
+                "description": null,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "OpenUniversityCourseOrderByInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "skip",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "after",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "before",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "first",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "last",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "OpenUniversityCourse",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "OpenUniversityCourseOrderByInput",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "id_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "course_code_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "course_code_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "OpenUniversityCourse",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "course_code",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Course",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "UserOrderByInput",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "id_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "upstream_id_ASC",
             "description": null,
             "isDeprecated": false,
@@ -4757,6 +5897,30 @@ export default {
           },
           {
             "name": "upstream_id_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -4781,6 +5945,18 @@ export default {
           },
           {
             "name": "last_name_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "username_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "username_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -4820,297 +5996,32 @@ export default {
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
-          }
-        ],
-        "possibleTypes": null
-      },
-      {
-        "kind": "ENUM",
-        "name": "EssayOrderByInput",
-        "description": null,
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": [
+          },
           {
-            "name": "id_ASC",
+            "name": "student_number_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "id_DESC",
+            "name": "student_number_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "createdAt_ASC",
+            "name": "real_student_number_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "createdAt_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "updatedAt_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "updatedAt_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "text_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "text_DESC",
+            "name": "real_student_number_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           }
         ],
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Essay",
-        "description": null,
-        "fields": [
-          {
-            "name": "id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "createdAt",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "updatedAt",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "text",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "author",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "User",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "topic",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EssayTopic",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "EssayTopic",
-        "description": null,
-        "fields": [
-          {
-            "name": "id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "createdAt",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "updatedAt",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "title",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "description",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "min_words",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "max_words",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
         "possibleTypes": null
       },
       {
@@ -5315,7 +6226,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "SlotWhereUniqueInput",
+        "name": "CourseWhereUniqueInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -5324,7 +6235,17 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -5336,7 +6257,7 @@ export default {
       },
       {
         "kind": "ENUM",
-        "name": "SlotOrderByInput",
+        "name": "CourseOrderByInput",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -5379,37 +6300,25 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "capacity_ASC",
+            "name": "name_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "capacity_DESC",
+            "name": "name_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "starts_at_ASC",
+            "name": "slug_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "starts_at_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ends_at_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ends_at_DESC",
+            "name": "slug_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -5419,7 +6328,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "SlotConnection",
+        "name": "CourseConnection",
         "description": null,
         "fields": [
           {
@@ -5450,7 +6359,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "SlotEdge",
+                  "name": "CourseEdge",
                   "ofType": null
                 }
               }
@@ -5467,7 +6376,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "AggregateSlot",
+                "name": "AggregateCourse",
                 "ofType": null
               }
             },
@@ -5482,7 +6391,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "SlotEdge",
+        "name": "CourseEdge",
         "description": null,
         "fields": [
           {
@@ -5494,7 +6403,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Slot",
+                "name": "Course",
                 "ofType": null
               }
             },
@@ -5525,7 +6434,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "AggregateSlot",
+        "name": "AggregateCourse",
         "description": null,
         "fields": [
           {
@@ -5552,7 +6461,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayWhereUniqueInput",
+        "name": "OpenUniversityCourseWhereUniqueInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -5561,7 +6470,17 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course_code",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -5573,7 +6492,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssayConnection",
+        "name": "OpenUniversityCourseConnection",
         "description": null,
         "fields": [
           {
@@ -5604,7 +6523,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "EssayEdge",
+                  "name": "OpenUniversityCourseEdge",
                   "ofType": null
                 }
               }
@@ -5621,7 +6540,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "AggregateEssay",
+                "name": "AggregateOpenUniversityCourse",
                 "ofType": null
               }
             },
@@ -5636,7 +6555,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssayEdge",
+        "name": "OpenUniversityCourseEdge",
         "description": null,
         "fields": [
           {
@@ -5648,7 +6567,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Essay",
+                "name": "OpenUniversityCourse",
                 "ofType": null
               }
             },
@@ -5679,7 +6598,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "AggregateEssay",
+        "name": "AggregateOpenUniversityCourse",
         "description": null,
         "fields": [
           {
@@ -5706,7 +6625,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicWhereUniqueInput",
+        "name": "CompletionWhereUniqueInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -5715,8 +6634,1026 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CompletionConnection",
+        "description": null,
+        "fields": [
+          {
+            "name": "pageInfo",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PageInfo",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "edges",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CompletionEdge",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "aggregate",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AggregateCompletion",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CompletionEdge",
+        "description": null,
+        "fields": [
+          {
+            "name": "node",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Completion",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "cursor",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AggregateCompletion",
+        "description": null,
+        "fields": [
+          {
+            "name": "count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CompletionRegisteredWhereUniqueInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CompletionRegistered",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "user",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Course",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "real_student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "organisation",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CompletionRegisteredWhereInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "id_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "UUID",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "createdAt_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedAt_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "AND",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "OR",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "NOT",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredWhereInput",
+                  "ofType": null
+                }
+              }
             },
             "defaultValue": null
           }
@@ -5727,7 +7664,7 @@ export default {
       },
       {
         "kind": "ENUM",
-        "name": "EssayTopicOrderByInput",
+        "name": "CompletionRegisteredOrderByInput",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -5770,49 +7707,25 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "title_ASC",
+            "name": "real_student_number_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "title_DESC",
+            "name": "real_student_number_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "description_ASC",
+            "name": "organisation_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "description_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "min_words_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "min_words_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "max_words_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "max_words_DESC",
+            "name": "organisation_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -5822,7 +7735,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssayTopicConnection",
+        "name": "CompletionRegisteredConnection",
         "description": null,
         "fields": [
           {
@@ -5853,7 +7766,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "EssayTopicEdge",
+                  "name": "CompletionRegisteredEdge",
                   "ofType": null
                 }
               }
@@ -5870,7 +7783,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "AggregateEssayTopic",
+                "name": "AggregateCompletionRegistered",
                 "ofType": null
               }
             },
@@ -5885,7 +7798,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssayTopicEdge",
+        "name": "CompletionRegisteredEdge",
         "description": null,
         "fields": [
           {
@@ -5897,7 +7810,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "EssayTopic",
+                "name": "CompletionRegistered",
                 "ofType": null
               }
             },
@@ -5928,7 +7841,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "AggregateEssayTopic",
+        "name": "AggregateCompletionRegistered",
         "description": null,
         "fields": [
           {
@@ -5950,6 +7863,16 @@ export default {
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "ID",
+        "description": "The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -6212,7 +8135,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "createSlot",
+            "name": "createCourse",
             "description": null,
             "args": [
               {
@@ -6223,7 +8146,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotCreateInput",
+                    "name": "CourseCreateInput",
                     "ofType": null
                   }
                 },
@@ -6235,7 +8158,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Slot",
+                "name": "Course",
                 "ofType": null
               }
             },
@@ -6243,7 +8166,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "updateSlot",
+            "name": "updateCourse",
             "description": null,
             "args": [
               {
@@ -6254,7 +8177,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotUpdateInput",
+                    "name": "CourseUpdateInput",
                     "ofType": null
                   }
                 },
@@ -6268,7 +8191,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotWhereUniqueInput",
+                    "name": "CourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6277,14 +8200,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "Slot",
+              "name": "Course",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "updateManySlots",
+            "name": "updateManyCourses",
             "description": null,
             "args": [
               {
@@ -6295,7 +8218,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotUpdateManyMutationInput",
+                    "name": "CourseUpdateManyMutationInput",
                     "ofType": null
                   }
                 },
@@ -6306,7 +8229,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotWhereInput",
+                  "name": "CourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -6325,7 +8248,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "upsertSlot",
+            "name": "upsertCourse",
             "description": null,
             "args": [
               {
@@ -6336,7 +8259,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotWhereUniqueInput",
+                    "name": "CourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6350,7 +8273,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotCreateInput",
+                    "name": "CourseCreateInput",
                     "ofType": null
                   }
                 },
@@ -6364,7 +8287,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotUpdateInput",
+                    "name": "CourseUpdateInput",
                     "ofType": null
                   }
                 },
@@ -6376,7 +8299,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Slot",
+                "name": "Course",
                 "ofType": null
               }
             },
@@ -6384,7 +8307,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "deleteSlot",
+            "name": "deleteCourse",
             "description": null,
             "args": [
               {
@@ -6395,7 +8318,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SlotWhereUniqueInput",
+                    "name": "CourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6404,14 +8327,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "Slot",
+              "name": "Course",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "deleteManySlots",
+            "name": "deleteManyCourses",
             "description": null,
             "args": [
               {
@@ -6419,7 +8342,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotWhereInput",
+                  "name": "CourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -6438,7 +8361,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "createEssay",
+            "name": "createOpenUniversityCourse",
             "description": null,
             "args": [
               {
@@ -6449,7 +8372,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayCreateInput",
+                    "name": "OpenUniversityCourseCreateInput",
                     "ofType": null
                   }
                 },
@@ -6461,7 +8384,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Essay",
+                "name": "OpenUniversityCourse",
                 "ofType": null
               }
             },
@@ -6469,7 +8392,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "updateEssay",
+            "name": "updateOpenUniversityCourse",
             "description": null,
             "args": [
               {
@@ -6480,7 +8403,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayUpdateInput",
+                    "name": "OpenUniversityCourseUpdateInput",
                     "ofType": null
                   }
                 },
@@ -6494,7 +8417,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayWhereUniqueInput",
+                    "name": "OpenUniversityCourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6503,14 +8426,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "Essay",
+              "name": "OpenUniversityCourse",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "updateManyEssays",
+            "name": "updateManyOpenUniversityCourses",
             "description": null,
             "args": [
               {
@@ -6521,7 +8444,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayUpdateManyMutationInput",
+                    "name": "OpenUniversityCourseUpdateManyMutationInput",
                     "ofType": null
                   }
                 },
@@ -6532,7 +8455,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
+                  "name": "OpenUniversityCourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -6551,7 +8474,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "upsertEssay",
+            "name": "upsertOpenUniversityCourse",
             "description": null,
             "args": [
               {
@@ -6562,7 +8485,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayWhereUniqueInput",
+                    "name": "OpenUniversityCourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6576,7 +8499,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayCreateInput",
+                    "name": "OpenUniversityCourseCreateInput",
                     "ofType": null
                   }
                 },
@@ -6590,7 +8513,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayUpdateInput",
+                    "name": "OpenUniversityCourseUpdateInput",
                     "ofType": null
                   }
                 },
@@ -6602,7 +8525,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Essay",
+                "name": "OpenUniversityCourse",
                 "ofType": null
               }
             },
@@ -6610,7 +8533,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "deleteEssay",
+            "name": "deleteOpenUniversityCourse",
             "description": null,
             "args": [
               {
@@ -6621,7 +8544,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayWhereUniqueInput",
+                    "name": "OpenUniversityCourseWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6630,14 +8553,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "Essay",
+              "name": "OpenUniversityCourse",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "deleteManyEssays",
+            "name": "deleteManyOpenUniversityCourses",
             "description": null,
             "args": [
               {
@@ -6645,7 +8568,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereInput",
+                  "name": "OpenUniversityCourseWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -6664,7 +8587,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "createEssayTopic",
+            "name": "createCompletion",
             "description": null,
             "args": [
               {
@@ -6675,7 +8598,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicCreateInput",
+                    "name": "CompletionCreateInput",
                     "ofType": null
                   }
                 },
@@ -6687,7 +8610,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "EssayTopic",
+                "name": "Completion",
                 "ofType": null
               }
             },
@@ -6695,7 +8618,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "updateEssayTopic",
+            "name": "updateCompletion",
             "description": null,
             "args": [
               {
@@ -6706,7 +8629,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicUpdateInput",
+                    "name": "CompletionUpdateInput",
                     "ofType": null
                   }
                 },
@@ -6720,7 +8643,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicWhereUniqueInput",
+                    "name": "CompletionWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6729,14 +8652,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "EssayTopic",
+              "name": "Completion",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "updateManyEssayTopics",
+            "name": "updateManyCompletions",
             "description": null,
             "args": [
               {
@@ -6747,7 +8670,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicUpdateManyMutationInput",
+                    "name": "CompletionUpdateManyMutationInput",
                     "ofType": null
                   }
                 },
@@ -6758,7 +8681,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicWhereInput",
+                  "name": "CompletionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -6777,7 +8700,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "upsertEssayTopic",
+            "name": "upsertCompletion",
             "description": null,
             "args": [
               {
@@ -6788,7 +8711,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicWhereUniqueInput",
+                    "name": "CompletionWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6802,7 +8725,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicCreateInput",
+                    "name": "CompletionCreateInput",
                     "ofType": null
                   }
                 },
@@ -6816,7 +8739,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicUpdateInput",
+                    "name": "CompletionUpdateInput",
                     "ofType": null
                   }
                 },
@@ -6828,7 +8751,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "EssayTopic",
+                "name": "Completion",
                 "ofType": null
               }
             },
@@ -6836,7 +8759,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "deleteEssayTopic",
+            "name": "deleteCompletion",
             "description": null,
             "args": [
               {
@@ -6847,7 +8770,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "EssayTopicWhereUniqueInput",
+                    "name": "CompletionWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -6856,14 +8779,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "EssayTopic",
+              "name": "Completion",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "deleteManyEssayTopics",
+            "name": "deleteManyCompletions",
             "description": null,
             "args": [
               {
@@ -6871,7 +8794,233 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicWhereInput",
+                  "name": "CompletionWhereInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "BatchPayload",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createCompletionRegistered",
+            "description": null,
+            "args": [
+              {
+                "name": "data",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredCreateInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "CompletionRegistered",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updateCompletionRegistered",
+            "description": null,
+            "args": [
+              {
+                "name": "data",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredUpdateInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredWhereUniqueInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CompletionRegistered",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updateManyCompletionRegistereds",
+            "description": null,
+            "args": [
+              {
+                "name": "data",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredUpdateManyMutationInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredWhereInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "BatchPayload",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "upsertCompletionRegistered",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredWhereUniqueInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "create",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredCreateInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "update",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredUpdateInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "CompletionRegistered",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "deleteCompletionRegistered",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CompletionRegisteredWhereUniqueInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CompletionRegistered",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "deleteManyCompletionRegistereds",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -6936,6 +9085,16 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "username",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "email",
             "description": null,
             "type": {
@@ -6964,26 +9123,6 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "slot",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotCreateOneWithoutRegisteredInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "essays",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayCreateManyWithoutAuthorInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "completed_enough",
             "description": null,
             "type": {
@@ -6992,34 +9131,33 @@ export default {
               "ofType": null
             },
             "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "SlotCreateOneWithoutRegisteredInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
+          },
           {
-            "name": "create",
+            "name": "student_number",
             "description": null,
             "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotCreateWithoutRegisteredInput",
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "connect",
+            "name": "real_student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completions",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "SlotWhereUniqueInput",
+              "name": "CompletionCreateManyWithoutUserInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7031,60 +9169,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "SlotCreateWithoutRegisteredInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "capacity",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "EssayCreateManyWithoutAuthorInput",
+        "name": "CompletionCreateManyWithoutUserInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7099,7 +9184,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayCreateWithoutAuthorInput",
+                  "name": "CompletionCreateWithoutUserInput",
                   "ofType": null
                 }
               }
@@ -7117,7 +9202,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereUniqueInput",
+                  "name": "CompletionWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -7131,12 +9216,22 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayCreateWithoutAuthorInput",
+        "name": "CompletionCreateWithoutUserInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "text",
+            "name": "user_upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -7150,16 +9245,36 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "topic",
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
             "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayTopicCreateOneInput",
+                "name": "CourseCreateOneInput",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null
           }
@@ -7170,7 +9285,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicCreateOneInput",
+        "name": "CourseCreateOneInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7179,7 +9294,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicCreateInput",
+              "name": "CourseCreateInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7189,7 +9304,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicWhereUniqueInput",
+              "name": "CourseWhereUniqueInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7201,12 +9316,12 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicCreateInput",
+        "name": "CourseCreateInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "title",
+            "name": "name",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -7220,7 +9335,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "description",
+            "name": "slug",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -7234,28 +9349,82 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "min_words",
+            "name": "open_university_courses",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
+              "kind": "INPUT_OBJECT",
+              "name": "OpenUniversityCourseCreateManyWithoutCourseInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "OpenUniversityCourseCreateManyWithoutCourseInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "create",
+            "description": null,
+            "type": {
+              "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseCreateWithoutCourseInput",
+                  "ofType": null
+                }
               }
             },
             "defaultValue": null
           },
           {
-            "name": "max_words",
+            "name": "connect",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "OpenUniversityCourseCreateWithoutCourseInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "course_code",
             "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -7303,6 +9472,16 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "username",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "email",
             "description": null,
             "type": {
@@ -7323,26 +9502,6 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "slot",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotUpdateOneWithoutRegisteredInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "essays",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayUpdateManyWithoutAuthorInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "completed_enough",
             "description": null,
             "type": {
@@ -7351,74 +9510,33 @@ export default {
               "ofType": null
             },
             "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "SlotUpdateOneWithoutRegisteredInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "create",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotCreateWithoutRegisteredInput",
-              "ofType": null
-            },
-            "defaultValue": null
           },
           {
-            "name": "update",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotUpdateWithoutRegisteredDataInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "upsert",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotUpsertWithoutRegisteredInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "delete",
+            "name": "student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Boolean",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "disconnect",
+            "name": "real_student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Boolean",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "connect",
+            "name": "completions",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "SlotWhereUniqueInput",
+              "name": "CompletionUpdateManyWithoutUserInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7430,87 +9548,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "SlotUpdateWithoutRegisteredDataInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "capacity",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "SlotUpsertWithoutRegisteredInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "update",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SlotUpdateWithoutRegisteredDataInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "create",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SlotCreateWithoutRegisteredInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "EssayUpdateManyWithoutAuthorInput",
+        "name": "CompletionUpdateManyWithoutUserInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7525,7 +9563,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayCreateWithoutAuthorInput",
+                  "name": "CompletionCreateWithoutUserInput",
                   "ofType": null
                 }
               }
@@ -7543,7 +9581,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereUniqueInput",
+                  "name": "CompletionWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -7561,7 +9599,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereUniqueInput",
+                  "name": "CompletionWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -7579,7 +9617,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereUniqueInput",
+                  "name": "CompletionWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -7597,7 +9635,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayWhereUniqueInput",
+                  "name": "CompletionWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -7615,7 +9653,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayUpdateWithWhereUniqueWithoutAuthorInput",
+                  "name": "CompletionUpdateWithWhereUniqueWithoutUserInput",
                   "ofType": null
                 }
               }
@@ -7633,7 +9671,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayUpsertWithWhereUniqueWithoutAuthorInput",
+                  "name": "CompletionUpsertWithWhereUniqueWithoutUserInput",
                   "ofType": null
                 }
               }
@@ -7651,7 +9689,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayScalarWhereInput",
+                  "name": "CompletionScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -7669,7 +9707,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayUpdateManyWithWhereNestedInput",
+                  "name": "CompletionUpdateManyWithWhereNestedInput",
                   "ofType": null
                 }
               }
@@ -7683,7 +9721,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayUpdateWithWhereUniqueWithoutAuthorInput",
+        "name": "CompletionUpdateWithWhereUniqueWithoutUserInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7695,7 +9733,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayWhereUniqueInput",
+                "name": "CompletionWhereUniqueInput",
                 "ofType": null
               }
             },
@@ -7709,7 +9747,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayUpdateWithoutAuthorDataInput",
+                "name": "CompletionUpdateWithoutUserDataInput",
                 "ofType": null
               }
             },
@@ -7722,12 +9760,22 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayUpdateWithoutAuthorDataInput",
+        "name": "CompletionUpdateWithoutUserDataInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "text",
+            "name": "user_upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -7737,11 +9785,31 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "topic",
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicUpdateOneRequiredInput",
+              "name": "CourseUpdateOneRequiredInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -7753,7 +9821,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicUpdateOneRequiredInput",
+        "name": "CourseUpdateOneRequiredInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7762,7 +9830,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicCreateInput",
+              "name": "CourseCreateInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7772,7 +9840,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicUpdateDataInput",
+              "name": "CourseUpdateDataInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7782,7 +9850,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicUpsertNestedInput",
+              "name": "CourseUpsertNestedInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7792,7 +9860,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicWhereUniqueInput",
+              "name": "CourseWhereUniqueInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7804,12 +9872,12 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicUpdateDataInput",
+        "name": "CourseUpdateDataInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "title",
+            "name": "name",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -7819,7 +9887,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "description",
+            "name": "slug",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -7829,21 +9897,11 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "min_words",
+            "name": "open_university_courses",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
+              "kind": "INPUT_OBJECT",
+              "name": "OpenUniversityCourseUpdateManyWithoutCourseInput",
               "ofType": null
             },
             "defaultValue": null
@@ -7855,34 +9913,168 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicUpsertNestedInput",
+        "name": "OpenUniversityCourseUpdateManyWithoutCourseInput",
         "description": null,
         "fields": null,
         "inputFields": [
-          {
-            "name": "update",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "EssayTopicUpdateDataInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
           {
             "name": "create",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
+              "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "EssayTopicCreateInput",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseCreateWithoutCourseInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "delete",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "connect",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "set",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "disconnect",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "update",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "upsert",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "deleteMany",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseScalarWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updateMany",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OpenUniversityCourseUpdateManyWithWhereNestedInput",
+                  "ofType": null
+                }
               }
             },
             "defaultValue": null
@@ -7894,7 +10086,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayUpsertWithWhereUniqueWithoutAuthorInput",
+        "name": "OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7906,7 +10098,67 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayWhereUniqueInput",
+                "name": "OpenUniversityCourseWhereUniqueInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "data",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "OpenUniversityCourseUpdateWithoutCourseDataInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "OpenUniversityCourseUpdateWithoutCourseDataInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "course_code",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "where",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "OpenUniversityCourseWhereUniqueInput",
                 "ofType": null
               }
             },
@@ -7920,7 +10172,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayUpdateWithoutAuthorDataInput",
+                "name": "OpenUniversityCourseUpdateWithoutCourseDataInput",
                 "ofType": null
               }
             },
@@ -7934,7 +10186,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayCreateWithoutAuthorInput",
+                "name": "OpenUniversityCourseCreateWithoutCourseInput",
                 "ofType": null
               }
             },
@@ -7947,7 +10199,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayScalarWhereInput",
+        "name": "OpenUniversityCourseScalarWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7956,7 +10208,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -7966,7 +10218,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -7982,7 +10234,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -8000,7 +10252,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -8012,7 +10264,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8022,7 +10274,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8032,7 +10284,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8042,7 +10294,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8052,7 +10304,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8062,7 +10314,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8072,7 +10324,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8082,7 +10334,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8092,7 +10344,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8102,7 +10354,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -8300,7 +10552,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text",
+            "name": "course_code",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8310,7 +10562,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not",
+            "name": "course_code_not",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8320,7 +10572,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_in",
+            "name": "course_code_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -8338,7 +10590,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_in",
+            "name": "course_code_not_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -8356,7 +10608,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_lt",
+            "name": "course_code_lt",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8366,7 +10618,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_lte",
+            "name": "course_code_lte",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8376,7 +10628,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_gt",
+            "name": "course_code_gt",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8386,7 +10638,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_gte",
+            "name": "course_code_gte",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8396,7 +10648,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_contains",
+            "name": "course_code_contains",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8406,7 +10658,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_contains",
+            "name": "course_code_not_contains",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8416,7 +10668,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_starts_with",
+            "name": "course_code_starts_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8426,7 +10678,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_starts_with",
+            "name": "course_code_not_starts_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8436,7 +10688,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_ends_with",
+            "name": "course_code_ends_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8446,7 +10698,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "text_not_ends_with",
+            "name": "course_code_not_ends_with",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8466,7 +10718,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayScalarWhereInput",
+                  "name": "OpenUniversityCourseScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -8484,7 +10736,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayScalarWhereInput",
+                  "name": "OpenUniversityCourseScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -8502,7 +10754,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayScalarWhereInput",
+                  "name": "OpenUniversityCourseScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -8516,7 +10768,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayUpdateManyWithWhereNestedInput",
+        "name": "OpenUniversityCourseUpdateManyWithWhereNestedInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -8528,7 +10780,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayScalarWhereInput",
+                "name": "OpenUniversityCourseScalarWhereInput",
                 "ofType": null
               }
             },
@@ -8542,7 +10794,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "EssayUpdateManyDataInput",
+                "name": "OpenUniversityCourseUpdateManyDataInput",
                 "ofType": null
               }
             },
@@ -8555,12 +10807,12 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayUpdateManyDataInput",
+        "name": "OpenUniversityCourseUpdateManyDataInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "text",
+            "name": "course_code",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -8576,568 +10828,33 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserUpdateManyMutationInput",
+        "name": "CourseUpsertNestedInput",
         "description": null,
         "fields": null,
         "inputFields": [
-          {
-            "name": "upstream_id",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "email",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "administrator",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "completed_enough",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "BatchPayload",
-        "description": null,
-        "fields": [
-          {
-            "name": "count",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Long",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "Long",
-        "description": null,
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "SlotCreateInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "capacity",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "registered",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "UserCreateManyWithoutSlotInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "UserCreateManyWithoutSlotInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "create",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserCreateWithoutSlotInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "connect",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserWhereUniqueInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "UserCreateWithoutSlotInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "upstream_id",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "email",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "administrator",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "essays",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayCreateManyWithoutAuthorInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "completed_enough",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "SlotUpdateInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "capacity",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "registered",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "UserUpdateManyWithoutSlotInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "starts_at",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "UserUpdateManyWithoutSlotInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "create",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserCreateWithoutSlotInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "delete",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserWhereUniqueInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "connect",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserWhereUniqueInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "set",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserWhereUniqueInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "disconnect",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserWhereUniqueInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
           {
             "name": "update",
             "description": null,
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserUpdateWithWhereUniqueWithoutSlotInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "upsert",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserUpsertWithWhereUniqueWithoutSlotInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "deleteMany",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserScalarWhereInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "updateMany",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UserUpdateManyWithWhereNestedInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "UserUpdateWithWhereUniqueWithoutSlotInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "where",
-            "description": null,
-            "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserWhereUniqueInput",
+                "name": "CourseUpdateDataInput",
                 "ofType": null
               }
             },
             "defaultValue": null
           },
           {
-            "name": "data",
+            "name": "create",
             "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserUpdateWithoutSlotDataInput",
+                "name": "CourseCreateInput",
                 "ofType": null
               }
             },
@@ -9150,88 +10867,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserUpdateWithoutSlotDataInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "upstream_id",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "email",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "administrator",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "essays",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayUpdateManyWithoutAuthorInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "completed_enough",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "UserUpsertWithWhereUniqueWithoutSlotInput",
+        "name": "CompletionUpsertWithWhereUniqueWithoutUserInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -9243,7 +10879,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserWhereUniqueInput",
+                "name": "CompletionWhereUniqueInput",
                 "ofType": null
               }
             },
@@ -9257,7 +10893,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserUpdateWithoutSlotDataInput",
+                "name": "CompletionUpdateWithoutUserDataInput",
                 "ofType": null
               }
             },
@@ -9271,7 +10907,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserCreateWithoutSlotInput",
+                "name": "CompletionCreateWithoutUserInput",
                 "ofType": null
               }
             },
@@ -9284,7 +10920,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserScalarWhereInput",
+        "name": "CompletionScalarWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -9293,7 +10929,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9303,7 +10939,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9319,7 +10955,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -9337,7 +10973,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "UUID",
                   "ofType": null
                 }
               }
@@ -9349,7 +10985,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9359,7 +10995,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9369,7 +11005,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9379,7 +11015,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9389,7 +11025,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9399,7 +11035,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9409,7 +11045,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9419,7 +11055,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9429,7 +11065,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9439,7 +11075,7 @@ export default {
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "ID",
+              "name": "UUID",
               "ofType": null
             },
             "defaultValue": null
@@ -9637,7 +11273,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id",
+            "name": "user_upstream_id",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -9647,7 +11283,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id_not",
+            "name": "user_upstream_id_not",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -9657,7 +11293,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id_in",
+            "name": "user_upstream_id_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -9675,7 +11311,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id_not_in",
+            "name": "user_upstream_id_not_in",
             "description": null,
             "type": {
               "kind": "LIST",
@@ -9693,7 +11329,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id_lt",
+            "name": "user_upstream_id_lt",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -9703,7 +11339,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id_lte",
+            "name": "user_upstream_id_lte",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -9713,7 +11349,7 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id_gt",
+            "name": "user_upstream_id_gt",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -9723,323 +11359,11 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "upstream_id_gte",
+            "name": "user_upstream_id_gte",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_not_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_not_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "first_name_not_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_not",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_not_in",
-            "description": null,
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_lt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_lte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_gt",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_gte",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_not_contains",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_not_starts_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "last_name_not_ends_with",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -10201,41 +11525,313 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "administrator",
+            "name": "student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Boolean",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "administrator_not",
+            "name": "student_number_not",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Boolean",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "completed_enough",
+            "name": "student_number_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_lt",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Boolean",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "completed_enough_not",
+            "name": "student_number_lte",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Boolean",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_starts_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language_not_ends_with",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -10251,7 +11847,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "UserScalarWhereInput",
+                  "name": "CompletionScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -10269,7 +11865,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "UserScalarWhereInput",
+                  "name": "CompletionScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -10287,7 +11883,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "UserScalarWhereInput",
+                  "name": "CompletionScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -10301,7 +11897,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserUpdateManyWithWhereNestedInput",
+        "name": "CompletionUpdateManyWithWhereNestedInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -10313,7 +11909,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserScalarWhereInput",
+                "name": "CompletionScalarWhereInput",
                 "ofType": null
               }
             },
@@ -10327,7 +11923,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserUpdateManyDataInput",
+                "name": "CompletionUpdateManyDataInput",
                 "ofType": null
               }
             },
@@ -10340,7 +11936,58 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserUpdateManyDataInput",
+        "name": "CompletionUpdateManyDataInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "user_upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserUpdateManyMutationInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -10366,6 +12013,16 @@ export default {
           },
           {
             "name": "last_name",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "username",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -10403,44 +12060,23 @@ export default {
               "ofType": null
             },
             "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "SlotUpdateManyMutationInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
+          },
           {
-            "name": "capacity",
+            "name": "student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "starts_at",
+            "name": "real_student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -10451,13 +12087,122 @@ export default {
         "possibleTypes": null
       },
       {
+        "kind": "OBJECT",
+        "name": "BatchPayload",
+        "description": null,
+        "fields": [
+          {
+            "name": "count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Long",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "INPUT_OBJECT",
-        "name": "EssayCreateInput",
+        "name": "CourseUpdateInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "text",
+            "name": "name",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "open_university_courses",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "OpenUniversityCourseUpdateManyWithoutCourseInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CourseUpdateManyMutationInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "name",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "OpenUniversityCourseCreateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "course_code",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -10471,28 +12216,14 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "author",
+            "name": "course",
             "description": null,
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserCreateOneWithoutEssaysInput",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "topic",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "EssayTopicCreateOneInput",
+                "name": "CourseCreateOneWithoutOpen_university_coursesInput",
                 "ofType": null
               }
             },
@@ -10505,7 +12236,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserCreateOneWithoutEssaysInput",
+        "name": "CourseCreateOneWithoutOpen_university_coursesInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -10514,7 +12245,333 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserCreateWithoutEssaysInput",
+              "name": "CourseCreateWithoutOpen_university_coursesInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "connect",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseWhereUniqueInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CourseCreateWithoutOpen_university_coursesInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "name",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "OpenUniversityCourseUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "course_code",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseUpdateOneRequiredWithoutOpen_university_coursesInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CourseUpdateOneRequiredWithoutOpen_university_coursesInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "create",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseCreateWithoutOpen_university_coursesInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "update",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseUpdateWithoutOpen_university_coursesDataInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "upsert",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseUpsertWithoutOpen_university_coursesInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "connect",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseWhereUniqueInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CourseUpdateWithoutOpen_university_coursesDataInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "name",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "slug",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CourseUpsertWithoutOpen_university_coursesInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "update",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "CourseUpdateWithoutOpen_university_coursesDataInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "create",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "CourseCreateWithoutOpen_university_coursesInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "OpenUniversityCourseUpdateManyMutationInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "course_code",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CompletionCreateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "user_upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "UserCreateOneWithoutCompletionsInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "CourseCreateOneInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserCreateOneWithoutCompletionsInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "create",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserCreateWithoutCompletionsInput",
               "ofType": null
             },
             "defaultValue": null
@@ -10536,7 +12593,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserCreateWithoutEssaysInput",
+        "name": "UserCreateWithoutCompletionsInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -10575,6 +12632,16 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "username",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "email",
             "description": null,
             "type": {
@@ -10603,16 +12670,6 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "slot",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotCreateOneWithoutRegisteredInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "completed_enough",
             "description": null,
             "type": {
@@ -10621,20 +12678,9 @@ export default {
               "ofType": null
             },
             "defaultValue": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "EssayUpdateInput",
-        "description": null,
-        "fields": null,
-        "inputFields": [
+          },
           {
-            "name": "text",
+            "name": "student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -10644,21 +12690,11 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "author",
+            "name": "real_student_number",
             "description": null,
             "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "UserUpdateOneRequiredWithoutEssaysInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "topic",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "EssayTopicUpdateOneRequiredInput",
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -10670,7 +12706,78 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserUpdateOneRequiredWithoutEssaysInput",
+        "name": "CompletionUpdateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "user_upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "user",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserUpdateOneRequiredWithoutCompletionsInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseUpdateOneRequiredInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserUpdateOneRequiredWithoutCompletionsInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -10679,7 +12786,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserCreateWithoutEssaysInput",
+              "name": "UserCreateWithoutCompletionsInput",
               "ofType": null
             },
             "defaultValue": null
@@ -10689,7 +12796,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserUpdateWithoutEssaysDataInput",
+              "name": "UserUpdateWithoutCompletionsDataInput",
               "ofType": null
             },
             "defaultValue": null
@@ -10699,7 +12806,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "UserUpsertWithoutEssaysInput",
+              "name": "UserUpsertWithoutCompletionsInput",
               "ofType": null
             },
             "defaultValue": null
@@ -10721,7 +12828,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserUpdateWithoutEssaysDataInput",
+        "name": "UserUpdateWithoutCompletionsDataInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -10756,6 +12863,16 @@ export default {
             "defaultValue": null
           },
           {
+            "name": "username",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "email",
             "description": null,
             "type": {
@@ -10776,21 +12893,31 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "slot",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SlotUpdateOneWithoutRegisteredInput",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "completed_enough",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -10802,7 +12929,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UserUpsertWithoutEssaysInput",
+        "name": "UserUpsertWithoutCompletionsInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -10814,7 +12941,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserUpdateWithoutEssaysDataInput",
+                "name": "UserUpdateWithoutCompletionsDataInput",
                 "ofType": null
               }
             },
@@ -10828,7 +12955,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "UserCreateWithoutEssaysInput",
+                "name": "UserCreateWithoutCompletionsInput",
                 "ofType": null
               }
             },
@@ -10841,12 +12968,42 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayUpdateManyMutationInput",
+        "name": "CompletionUpdateManyMutationInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "text",
+            "name": "user_upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completion_language",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -10862,12 +13019,40 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicUpdateInput",
+        "name": "CompletionRegisteredCreateInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "title",
+            "name": "user",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "UserCreateOneInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "CourseCreateOneInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -10877,31 +13062,46 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "description",
+            "name": "organisation",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserCreateOneInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "create",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserCreateInput",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "min_words",
+            "name": "connect",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "max_words",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
+              "kind": "INPUT_OBJECT",
+              "name": "UserWhereUniqueInput",
               "ofType": null
             },
             "defaultValue": null
@@ -10913,12 +13113,32 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicUpdateManyMutationInput",
+        "name": "CompletionRegisteredUpdateInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "title",
+            "name": "user",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserUpdateOneRequiredInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "course",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CourseUpdateOneRequiredInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -10928,7 +13148,89 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "description",
+            "name": "organisation",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserUpdateOneRequiredInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "create",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserCreateInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "update",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserUpdateDataInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "upsert",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserUpsertNestedInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "connect",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "UserWhereUniqueInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserUpdateDataInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "upstream_id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "first_name",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -10938,21 +13240,151 @@ export default {
             "defaultValue": null
           },
           {
-            "name": "min_words",
+            "name": "last_name",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
           },
           {
-            "name": "max_words",
+            "name": "username",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "email",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "administrator",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completed_enough",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "real_student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "completions",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CompletionUpdateManyWithoutUserInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "UserUpsertNestedInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "update",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "UserUpdateDataInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "create",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "UserCreateInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CompletionRegisteredUpdateManyMutationInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "real_student_number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "organisation",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -10991,7 +13423,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "slot",
+            "name": "course",
             "description": null,
             "args": [
               {
@@ -10999,7 +13431,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotSubscriptionWhereInput",
+                  "name": "CourseSubscriptionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -11007,14 +13439,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "SlotSubscriptionPayload",
+              "name": "CourseSubscriptionPayload",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "essay",
+            "name": "openUniversityCourse",
             "description": null,
             "args": [
               {
@@ -11022,7 +13454,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssaySubscriptionWhereInput",
+                  "name": "OpenUniversityCourseSubscriptionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -11030,14 +13462,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "EssaySubscriptionPayload",
+              "name": "OpenUniversityCourseSubscriptionPayload",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "essayTopic",
+            "name": "completion",
             "description": null,
             "args": [
               {
@@ -11045,7 +13477,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicSubscriptionWhereInput",
+                  "name": "CompletionSubscriptionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -11053,7 +13485,30 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "EssayTopicSubscriptionPayload",
+              "name": "CompletionSubscriptionPayload",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completionRegistered",
+            "description": null,
+            "args": [
+              {
+                "name": "where",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredSubscriptionWhereInput",
+                  "ofType": null
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CompletionRegisteredSubscriptionPayload",
               "ofType": null
             },
             "isDeprecated": false,
@@ -11318,7 +13773,23 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "upstream_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -11358,22 +13829,6 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "upstream_id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "first_name",
             "description": null,
             "args": [],
@@ -11387,6 +13842,18 @@ export default {
           },
           {
             "name": "last_name",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "username",
             "description": null,
             "args": [],
             "type": {
@@ -11444,6 +13911,30 @@ export default {
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "real_student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -11453,7 +13944,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "SlotSubscriptionWhereInput",
+        "name": "CourseSubscriptionWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -11526,7 +14017,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "SlotWhereInput",
+              "name": "CourseWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -11542,7 +14033,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotSubscriptionWhereInput",
+                  "name": "CourseSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -11560,7 +14051,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotSubscriptionWhereInput",
+                  "name": "CourseSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -11578,7 +14069,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "SlotSubscriptionWhereInput",
+                  "name": "CourseSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -11592,7 +14083,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "SlotSubscriptionPayload",
+        "name": "CourseSubscriptionPayload",
         "description": null,
         "fields": [
           {
@@ -11617,7 +14108,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "Slot",
+              "name": "Course",
               "ofType": null
             },
             "isDeprecated": false,
@@ -11649,7 +14140,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "SlotPreviousValues",
+              "name": "CoursePreviousValues",
               "ofType": null
             },
             "isDeprecated": false,
@@ -11663,7 +14154,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "SlotPreviousValues",
+        "name": "CoursePreviousValues",
         "description": null,
         "fields": [
           {
@@ -11675,7 +14166,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "UUID",
                 "ofType": null
               }
             },
@@ -11715,7 +14206,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "capacity",
+            "name": "name",
             "description": null,
             "args": [],
             "type": {
@@ -11723,7 +14214,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -11731,7 +14222,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "starts_at",
+            "name": "slug",
             "description": null,
             "args": [],
             "type": {
@@ -11739,23 +14230,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "DateTime",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ends_at",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "DateTime",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -11770,7 +14245,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssaySubscriptionWhereInput",
+        "name": "OpenUniversityCourseSubscriptionWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -11843,7 +14318,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayWhereInput",
+              "name": "OpenUniversityCourseWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -11859,7 +14334,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssaySubscriptionWhereInput",
+                  "name": "OpenUniversityCourseSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -11877,7 +14352,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssaySubscriptionWhereInput",
+                  "name": "OpenUniversityCourseSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -11895,7 +14370,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssaySubscriptionWhereInput",
+                  "name": "OpenUniversityCourseSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -11909,7 +14384,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssaySubscriptionPayload",
+        "name": "OpenUniversityCourseSubscriptionPayload",
         "description": null,
         "fields": [
           {
@@ -11934,7 +14409,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "Essay",
+              "name": "OpenUniversityCourse",
               "ofType": null
             },
             "isDeprecated": false,
@@ -11966,7 +14441,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "EssayPreviousValues",
+              "name": "OpenUniversityCoursePreviousValues",
               "ofType": null
             },
             "isDeprecated": false,
@@ -11980,7 +14455,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssayPreviousValues",
+        "name": "OpenUniversityCoursePreviousValues",
         "description": null,
         "fields": [
           {
@@ -11992,7 +14467,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "UUID",
                 "ofType": null
               }
             },
@@ -12032,7 +14507,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "text",
+            "name": "course_code",
             "description": null,
             "args": [],
             "type": {
@@ -12055,7 +14530,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "EssayTopicSubscriptionWhereInput",
+        "name": "CompletionSubscriptionWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -12128,7 +14603,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "EssayTopicWhereInput",
+              "name": "CompletionWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -12144,7 +14619,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicSubscriptionWhereInput",
+                  "name": "CompletionSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -12162,7 +14637,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicSubscriptionWhereInput",
+                  "name": "CompletionSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -12180,7 +14655,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "EssayTopicSubscriptionWhereInput",
+                  "name": "CompletionSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -12194,7 +14669,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssayTopicSubscriptionPayload",
+        "name": "CompletionSubscriptionPayload",
         "description": null,
         "fields": [
           {
@@ -12219,7 +14694,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "EssayTopic",
+              "name": "Completion",
               "ofType": null
             },
             "isDeprecated": false,
@@ -12251,7 +14726,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "EssayTopicPreviousValues",
+              "name": "CompletionPreviousValues",
               "ofType": null
             },
             "isDeprecated": false,
@@ -12265,7 +14740,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "EssayTopicPreviousValues",
+        "name": "CompletionPreviousValues",
         "description": null,
         "fields": [
           {
@@ -12277,7 +14752,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "UUID",
                 "ofType": null
               }
             },
@@ -12317,7 +14792,19 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "title",
+            "name": "user_upstream_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "email",
             "description": null,
             "args": [],
             "type": {
@@ -12333,7 +14820,312 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "description",
+            "name": "student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "completion_language",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CompletionRegisteredSubscriptionWhereInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "mutation_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "MutationType",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedFields_contains",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedFields_contains_every",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "updatedFields_contains_some",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "node",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CompletionRegisteredWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "AND",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredSubscriptionWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "OR",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredSubscriptionWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "NOT",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CompletionRegisteredSubscriptionWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CompletionRegisteredSubscriptionPayload",
+        "description": null,
+        "fields": [
+          {
+            "name": "mutation",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "MutationType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "node",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CompletionRegistered",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedFields",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "previousValues",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CompletionRegisteredPreviousValues",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CompletionRegisteredPreviousValues",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "real_student_number",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "organisation",
             "description": null,
             "args": [],
             "type": {
@@ -12342,38 +15134,6 @@ export default {
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "min_words",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "max_words",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
                 "ofType": null
               }
             },

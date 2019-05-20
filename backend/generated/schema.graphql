@@ -2,275 +2,51 @@
 ### Do not make changes to this file directly
 
 
-scalar DateTime
-
-type Essay {
-  author: User!
-  createdAt: DateTime!
-  id: ID!
-  text: String!
-  topic: EssayTopic!
-  updatedAt: DateTime!
-}
-
-enum EssayOrderByInput {
-  createdAt_ASC
-  createdAt_DESC
-  id_ASC
-  id_DESC
-  text_ASC
-  text_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type EssayTopic {
-  createdAt: DateTime!
-  currentUserAnswer: Essay
-  description: String!
-  id: ID!
-  max_words: Int!
-  min_words: Int!
-  title: String!
-  updatedAt: DateTime!
-}
-
-input EssayTopicWhereInput {
-  AND: [EssayTopicWhereInput!]
-  createdAt: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_not: DateTime
-  createdAt_not_in: [DateTime!]
-  description: String
-  description_contains: String
-  description_ends_with: String
-  description_gt: String
-  description_gte: String
-  description_in: [String!]
-  description_lt: String
-  description_lte: String
-  description_not: String
-  description_not_contains: String
-  description_not_ends_with: String
-  description_not_in: [String!]
-  description_not_starts_with: String
-  description_starts_with: String
-  id: ID
-  id_contains: ID
-  id_ends_with: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_not: ID
-  id_not_contains: ID
-  id_not_ends_with: ID
-  id_not_in: [ID!]
-  id_not_starts_with: ID
-  id_starts_with: ID
-  max_words: Int
-  max_words_gt: Int
-  max_words_gte: Int
-  max_words_in: [Int!]
-  max_words_lt: Int
-  max_words_lte: Int
-  max_words_not: Int
-  max_words_not_in: [Int!]
-  min_words: Int
-  min_words_gt: Int
-  min_words_gte: Int
-  min_words_in: [Int!]
-  min_words_lt: Int
-  min_words_lte: Int
-  min_words_not: Int
-  min_words_not_in: [Int!]
-  NOT: [EssayTopicWhereInput!]
-  OR: [EssayTopicWhereInput!]
-  title: String
-  title_contains: String
-  title_ends_with: String
-  title_gt: String
-  title_gte: String
-  title_in: [String!]
-  title_lt: String
-  title_lte: String
-  title_not: String
-  title_not_contains: String
-  title_not_ends_with: String
-  title_not_in: [String!]
-  title_not_starts_with: String
-  title_starts_with: String
-  updatedAt: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_not: DateTime
-  updatedAt_not_in: [DateTime!]
-}
-
-input EssayWhereInput {
-  AND: [EssayWhereInput!]
-  author: UserWhereInput
-  createdAt: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_not: DateTime
-  createdAt_not_in: [DateTime!]
-  id: ID
-  id_contains: ID
-  id_ends_with: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_not: ID
-  id_not_contains: ID
-  id_not_ends_with: ID
-  id_not_in: [ID!]
-  id_not_starts_with: ID
-  id_starts_with: ID
-  NOT: [EssayWhereInput!]
-  OR: [EssayWhereInput!]
-  text: String
-  text_contains: String
-  text_ends_with: String
-  text_gt: String
-  text_gte: String
-  text_in: [String!]
-  text_lt: String
-  text_lte: String
-  text_not: String
-  text_not_contains: String
-  text_not_ends_with: String
-  text_not_in: [String!]
-  text_not_starts_with: String
-  text_starts_with: String
-  topic: EssayTopicWhereInput
-  updatedAt: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_not: DateTime
-  updatedAt_not_in: [DateTime!]
-}
-
-type Mutation {
-  chooseSlot(id: ID): User!
-  saveEssay(text: String, topicId: ID): EssayTopic!
-}
-
-type Query {
-  currentUser(email: String): User!
-  essayTopics: [EssayTopic!]!
-  ownEssay(id: ID): Essay!
-  slots: [Slot!]!
-  users: [User!]!
-}
-
-type Slot {
-  capacity: Int!
-  ends_at: DateTime!
-  id: ID!
-  registered_count: Int!
-  starts_at: DateTime!
-}
-
-input SlotWhereInput {
-  AND: [SlotWhereInput!]
-  capacity: Int
-  capacity_gt: Int
-  capacity_gte: Int
-  capacity_in: [Int!]
-  capacity_lt: Int
-  capacity_lte: Int
-  capacity_not: Int
-  capacity_not_in: [Int!]
-  createdAt: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_not: DateTime
-  createdAt_not_in: [DateTime!]
-  ends_at: DateTime
-  ends_at_gt: DateTime
-  ends_at_gte: DateTime
-  ends_at_in: [DateTime!]
-  ends_at_lt: DateTime
-  ends_at_lte: DateTime
-  ends_at_not: DateTime
-  ends_at_not_in: [DateTime!]
-  id: ID
-  id_contains: ID
-  id_ends_with: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_not: ID
-  id_not_contains: ID
-  id_not_ends_with: ID
-  id_not_in: [ID!]
-  id_not_starts_with: ID
-  id_starts_with: ID
-  NOT: [SlotWhereInput!]
-  OR: [SlotWhereInput!]
-  registered_every: UserWhereInput
-  registered_none: UserWhereInput
-  registered_some: UserWhereInput
-  starts_at: DateTime
-  starts_at_gt: DateTime
-  starts_at_gte: DateTime
-  starts_at_in: [DateTime!]
-  starts_at_lt: DateTime
-  starts_at_lte: DateTime
-  starts_at_not: DateTime
-  starts_at_not_in: [DateTime!]
-  updatedAt: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_not: DateTime
-  updatedAt_not_in: [DateTime!]
-}
-
-type User {
-  administrator: Boolean!
-  completed_enough: Boolean!
+type Completion {
+  completion_language: String
+  course: Course!
   createdAt: DateTime!
   email: String!
-  essays(after: String, before: String, first: Int, last: Int, orderBy: EssayOrderByInput, skip: Int, where: EssayWhereInput): [Essay!]
-  first_name: String
-  id: ID!
-  last_name: String
-  slot: Slot
+  id: UUID!
+  student_number: String
   updatedAt: DateTime!
-  upstream_id: Int!
+  user_upstream_id: Int
 }
 
-input UserWhereInput {
-  administrator: Boolean
-  administrator_not: Boolean
-  AND: [UserWhereInput!]
-  completed_enough: Boolean
-  completed_enough_not: Boolean
+enum CompletionOrderByInput {
+  completion_language_ASC
+  completion_language_DESC
+  createdAt_ASC
+  createdAt_DESC
+  email_ASC
+  email_DESC
+  id_ASC
+  id_DESC
+  student_number_ASC
+  student_number_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  user_upstream_id_ASC
+  user_upstream_id_DESC
+}
+
+input CompletionWhereInput {
+  AND: [CompletionWhereInput!]
+  completion_language: String
+  completion_language_contains: String
+  completion_language_ends_with: String
+  completion_language_gt: String
+  completion_language_gte: String
+  completion_language_in: [String!]
+  completion_language_lt: String
+  completion_language_lte: String
+  completion_language_not: String
+  completion_language_not_contains: String
+  completion_language_not_ends_with: String
+  completion_language_not_in: [String!]
+  completion_language_not_starts_with: String
+  completion_language_starts_with: String
+  course: CourseWhereInput
   createdAt: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
@@ -293,9 +69,263 @@ input UserWhereInput {
   email_not_in: [String!]
   email_not_starts_with: String
   email_starts_with: String
-  essays_every: EssayWhereInput
-  essays_none: EssayWhereInput
-  essays_some: EssayWhereInput
+  id: UUID
+  id_contains: UUID
+  id_ends_with: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_not: UUID
+  id_not_contains: UUID
+  id_not_ends_with: UUID
+  id_not_in: [UUID!]
+  id_not_starts_with: UUID
+  id_starts_with: UUID
+  NOT: [CompletionWhereInput!]
+  OR: [CompletionWhereInput!]
+  student_number: String
+  student_number_contains: String
+  student_number_ends_with: String
+  student_number_gt: String
+  student_number_gte: String
+  student_number_in: [String!]
+  student_number_lt: String
+  student_number_lte: String
+  student_number_not: String
+  student_number_not_contains: String
+  student_number_not_ends_with: String
+  student_number_not_in: [String!]
+  student_number_not_starts_with: String
+  student_number_starts_with: String
+  updatedAt: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_not: DateTime
+  updatedAt_not_in: [DateTime!]
+  user: UserWhereInput
+  user_upstream_id: Int
+  user_upstream_id_gt: Int
+  user_upstream_id_gte: Int
+  user_upstream_id_in: [Int!]
+  user_upstream_id_lt: Int
+  user_upstream_id_lte: Int
+  user_upstream_id_not: Int
+  user_upstream_id_not_in: [Int!]
+}
+
+type Course {
+  createdAt: DateTime!
+  id: UUID!
+  name: String!
+  open_university_courses(after: String, before: String, first: Int, last: Int, orderBy: OpenUniversityCourseOrderByInput, skip: Int, where: OpenUniversityCourseWhereInput): [OpenUniversityCourse!]
+  slug: String!
+  updatedAt: DateTime!
+}
+
+input CourseWhereInput {
+  AND: [CourseWhereInput!]
+  createdAt: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_not: DateTime
+  createdAt_not_in: [DateTime!]
+  id: UUID
+  id_contains: UUID
+  id_ends_with: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_not: UUID
+  id_not_contains: UUID
+  id_not_ends_with: UUID
+  id_not_in: [UUID!]
+  id_not_starts_with: UUID
+  id_starts_with: UUID
+  name: String
+  name_contains: String
+  name_ends_with: String
+  name_gt: String
+  name_gte: String
+  name_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_not: String
+  name_not_contains: String
+  name_not_ends_with: String
+  name_not_in: [String!]
+  name_not_starts_with: String
+  name_starts_with: String
+  NOT: [CourseWhereInput!]
+  open_university_courses_every: OpenUniversityCourseWhereInput
+  open_university_courses_none: OpenUniversityCourseWhereInput
+  open_university_courses_some: OpenUniversityCourseWhereInput
+  OR: [CourseWhereInput!]
+  slug: String
+  slug_contains: String
+  slug_ends_with: String
+  slug_gt: String
+  slug_gte: String
+  slug_in: [String!]
+  slug_lt: String
+  slug_lte: String
+  slug_not: String
+  slug_not_contains: String
+  slug_not_ends_with: String
+  slug_not_in: [String!]
+  slug_not_starts_with: String
+  slug_starts_with: String
+  updatedAt: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_not: DateTime
+  updatedAt_not_in: [DateTime!]
+}
+
+scalar DateTime
+
+type Mutation {
+  addCourse(name: String, slug: String): Course!
+  addOpenUniversityCourse(course: ID, course_code: String): OpenUniversityCourse!
+}
+
+type OpenUniversityCourse {
+  course: Course!
+  course_code: String!
+  createdAt: DateTime!
+  id: UUID!
+  updatedAt: DateTime!
+}
+
+enum OpenUniversityCourseOrderByInput {
+  course_code_ASC
+  course_code_DESC
+  createdAt_ASC
+  createdAt_DESC
+  id_ASC
+  id_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+input OpenUniversityCourseWhereInput {
+  AND: [OpenUniversityCourseWhereInput!]
+  course: CourseWhereInput
+  course_code: String
+  course_code_contains: String
+  course_code_ends_with: String
+  course_code_gt: String
+  course_code_gte: String
+  course_code_in: [String!]
+  course_code_lt: String
+  course_code_lte: String
+  course_code_not: String
+  course_code_not_contains: String
+  course_code_not_ends_with: String
+  course_code_not_in: [String!]
+  course_code_not_starts_with: String
+  course_code_starts_with: String
+  createdAt: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_not: DateTime
+  createdAt_not_in: [DateTime!]
+  id: UUID
+  id_contains: UUID
+  id_ends_with: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_not: UUID
+  id_not_contains: UUID
+  id_not_ends_with: UUID
+  id_not_in: [UUID!]
+  id_not_starts_with: UUID
+  id_starts_with: UUID
+  NOT: [OpenUniversityCourseWhereInput!]
+  OR: [OpenUniversityCourseWhereInput!]
+  updatedAt: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_not: DateTime
+  updatedAt_not_in: [DateTime!]
+}
+
+type Query {
+  completions(after: ID, course: String, first: Int): [Completion!]!
+  courses: [Course!]!
+  currentUser(email: String): User!
+  openUniversityCourses: [OpenUniversityCourse!]!
+  users: [User!]!
+}
+
+type User {
+  administrator: Boolean!
+  completed_enough: Boolean!
+  completions(after: String, before: String, first: Int, last: Int, orderBy: CompletionOrderByInput, skip: Int, where: CompletionWhereInput): [Completion!]
+  createdAt: DateTime!
+  email: String!
+  first_name: String
+  id: UUID!
+  last_name: String
+  real_student_number: String
+  student_number: String
+  updatedAt: DateTime!
+  upstream_id: Int!
+  username: String
+}
+
+input UserWhereInput {
+  administrator: Boolean
+  administrator_not: Boolean
+  AND: [UserWhereInput!]
+  completed_enough: Boolean
+  completed_enough_not: Boolean
+  completions_every: CompletionWhereInput
+  completions_none: CompletionWhereInput
+  completions_some: CompletionWhereInput
+  createdAt: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_not: DateTime
+  createdAt_not_in: [DateTime!]
+  email: String
+  email_contains: String
+  email_ends_with: String
+  email_gt: String
+  email_gte: String
+  email_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_not: String
+  email_not_contains: String
+  email_not_ends_with: String
+  email_not_in: [String!]
+  email_not_starts_with: String
+  email_starts_with: String
   first_name: String
   first_name_contains: String
   first_name_ends_with: String
@@ -310,20 +340,20 @@ input UserWhereInput {
   first_name_not_in: [String!]
   first_name_not_starts_with: String
   first_name_starts_with: String
-  id: ID
-  id_contains: ID
-  id_ends_with: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_not: ID
-  id_not_contains: ID
-  id_not_ends_with: ID
-  id_not_in: [ID!]
-  id_not_starts_with: ID
-  id_starts_with: ID
+  id: UUID
+  id_contains: UUID
+  id_ends_with: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_not: UUID
+  id_not_contains: UUID
+  id_not_ends_with: UUID
+  id_not_in: [UUID!]
+  id_not_starts_with: UUID
+  id_starts_with: UUID
   last_name: String
   last_name_contains: String
   last_name_ends_with: String
@@ -340,7 +370,34 @@ input UserWhereInput {
   last_name_starts_with: String
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
-  slot: SlotWhereInput
+  real_student_number: String
+  real_student_number_contains: String
+  real_student_number_ends_with: String
+  real_student_number_gt: String
+  real_student_number_gte: String
+  real_student_number_in: [String!]
+  real_student_number_lt: String
+  real_student_number_lte: String
+  real_student_number_not: String
+  real_student_number_not_contains: String
+  real_student_number_not_ends_with: String
+  real_student_number_not_in: [String!]
+  real_student_number_not_starts_with: String
+  real_student_number_starts_with: String
+  student_number: String
+  student_number_contains: String
+  student_number_ends_with: String
+  student_number_gt: String
+  student_number_gte: String
+  student_number_in: [String!]
+  student_number_lt: String
+  student_number_lte: String
+  student_number_not: String
+  student_number_not_contains: String
+  student_number_not_ends_with: String
+  student_number_not_in: [String!]
+  student_number_not_starts_with: String
+  student_number_starts_with: String
   updatedAt: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
@@ -357,4 +414,20 @@ input UserWhereInput {
   upstream_id_lte: Int
   upstream_id_not: Int
   upstream_id_not_in: [Int!]
+  username: String
+  username_contains: String
+  username_ends_with: String
+  username_gt: String
+  username_gte: String
+  username_in: [String!]
+  username_lt: String
+  username_lte: String
+  username_not: String
+  username_not_contains: String
+  username_not_ends_with: String
+  username_not_in: [String!]
+  username_not_starts_with: String
+  username_starts_with: String
 }
+
+scalar UUID
