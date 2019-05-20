@@ -6,15 +6,13 @@
 // GraphQL query operation: UserOverView
 // ====================================================
 
-
 export interface UserOverView_currentUser {
   __typename: "User";
-  id: string;
+  id: any;
   upstream_id: number;
   first_name: string | null;
   last_name: string | null;
   email: string;
-  administrator: boolean;
 }
 
 export interface UserOverView {
