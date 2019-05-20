@@ -7,10 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node index.ts",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly ./",
-    "nexus-prisma-generate": "nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma",
     "build": "tsc",
     "upgrade-interactive": "npm-check --update",
-    "prisma-deploy": "prisma deploy --force"
+    "prisma-deploy": "prisma deploy --force",
+    "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma"
   },
   "keywords": [],
   "author": "",
