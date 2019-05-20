@@ -1,20 +1,20 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: moocfi
+  name: prisma
   namespace: moocfi
   annotations:
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
   - hosts:
-    - points.mooc.fi
-    secretName: quizzes-moocfi-cert-secret
+    - moocfi-prisma.mooc.fi
+    secretName: moocfi-prisma-moocfi-cert-secret
   rules:
-    - host: points.mooc.fi
+    - host: moocfi-prisma.mooc.fi
       http:
         paths:
-        - path: /api/
+        - path: /
           backend:
-            serviceName: moocfi-backend
-            servicePort: 80
+            serviceName: prisma
+            servicePort: 30432

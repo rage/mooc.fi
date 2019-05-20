@@ -182,7 +182,8 @@ const schema = makePrismaSchema({
 const server = new GraphQLServer({
   schema,
   context: req => ({ prisma, ...req }),
-  middlewares: [fetchUser]
+  middlewares: [fetchUser],
+
 });
 
 const serverStartOptions = {
@@ -196,12 +197,13 @@ const serverStartOptions = {
   },
   formatResponse: (response, query) => {
     return response;
-  }
+  },
 };
 
 if (process.env.NODE_ENV === "production") {
   console.log("Running in production mode");
-  serverStartOptions["playground"] = false;
+  serverStartOptions["playground"] = "/api";
+  serverStartOptions["endpoint"] = "/api"
 }
 
 server.start(serverStartOptions, () =>
