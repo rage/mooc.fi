@@ -1,22 +1,28 @@
 import * as React from "react";
 import {  Typography } from '@material-ui/core'
-import NextI18Next from '../i18n';
 import { NextContext } from "next";
 import { isSignedIn } from "../lib/authentication";
 import redirect from "../lib/redirect";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ApolloClient, gql } from "apollo-boost";
+import { AllCourses as AllCoursesData } from "./__generated__/AllCourses";
 import { useQuery } from "react-apollo-hooks";
-import { UserOverView as UserOverViewData } from "./__generated__/UserOverView";
+import CourseGrid from '../components/CourseGrid'
 
 
-export const UserOverViewQuery = gql`
-  query UserOverView {
-    currentUser {
-      id
-      administrator
-    }
+
+export const AllCoursesQuery = gql`
+query AllCourses {
+  courses {
+    id
+    name
+    slug
   }
+  currentUser {
+    id
+    administrator
+  }
+}
 `;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -33,17 +39,21 @@ const useStyles = makeStyles((theme: Theme) =>
      padding: '1em',
     },
     title: {
-      margin: 'auto'
+      margin: 'auto',
+      padding: '1em'
     }
   }),
 );
 
 
 const  CompletionDashboard = ({ t } ) => {
+
     const classes = useStyles()
-    const { loading, error, data } = useQuery<UserOverViewData>(
-      UserOverViewQuery
+
+    const { loading, error, data } = useQuery<AllCoursesData>(
+      AllCoursesQuery
     );
+
     if(error){
       <div>
         Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
@@ -53,20 +63,20 @@ const  CompletionDashboard = ({ t } ) => {
     if (loading || !data) {
         return <div>Loading</div>;
     }
-    return (
-      
-      <main className={classes.root} id='main'>
-      <Typography 
-        component='h1' 
-        variant='h2' 
-        gutterBottom={true}
-        align='center'>
+
+      return (
+      <section>
+        <Typography 
+          component='h1' 
+          variant='h2' 
+          gutterBottom={true}
+          align='center'
+          className={classes.title}>
             All Courses
-      </Typography>
-      
+        </Typography>
+        <CourseGrid courses={data.courses}/>
+      </section>
         
-        
-      </main>
     )
   }
 
@@ -79,4 +89,4 @@ CompletionDashboard.getInitialProps = function(context: NextContext) {
     };
   };
 
-export default NextI18Next.withNamespaces('common')(CompletionDashboard)
+export default CompletionDashboard
