@@ -7,6 +7,7 @@ import axios from "axios";
 import { get } from "lodash"
 
 
+
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28"
@@ -17,6 +18,10 @@ export const isSignedIn = (ctx: NextContext) => {
   return typeof accessToken == "string";
 };
 
+export const isAdmin = (ctx: NextContext) => {
+  const admin = nookies.get(ctx)["admin"];
+  return admin === "true";
+};
 
 export const signIn = async ({
   email,
@@ -36,6 +41,7 @@ export const signIn = async ({
     throw new Error("Etunimi tai sukunimi puuttuu.")
   }
   document.cookie = `access_token=${res.accessToken};path=/`;
+  document.cookie= `admin=${details.administrator};path=/`;
   Nexti18next.Router.push("/register-completion");
   return res;
 };
