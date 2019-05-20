@@ -57,6 +57,9 @@ const Query = prismaObjectType({
         if (!ctx.user.administrator) {
           throw new ForbiddenError("Access Denied");
         }
+        if (!first || first > 50) {
+          ctx.disableRelations = true
+        }
         console.log("A")
         const courseWithSlug: Course = await ctx.prisma.course(
           { slug: course }
@@ -71,7 +74,7 @@ const Query = prismaObjectType({
           }
           course = courseFromAvoinCourse.slug
         }
-        const completions = await fetchCompletions({course, first, after}, ctx);
+        const completions = await fetchCompletions({ course, first, after }, ctx);
 
         return completions
       }
@@ -125,7 +128,7 @@ const Mutation = prismaObjectType({
       type: "OpenUniversityCourse",
       args: {
         course_code: stringArg(),
-        course: idArg()
+        course: idArg(),
       },
       resolve: async (_, { course_code, course }, ctx) => {
         if (!ctx.user.administrator) {
@@ -139,27 +142,35 @@ const Mutation = prismaObjectType({
         return newOpenUniversityCourse
       }
     })
+    // t.field("registerCompletion", {
+    //   type: "CompletionRegistered",
+    //   args: {
+    //     organisation: stringArg(),
+    //     completions: [{completion_id: idArg(), real_student_number: stringArg()}]
+    //   },
+    //   resolve: async (_, args, ctx) => {
+    //     return null
+    //   }
+    // })
   }
 });
 
-// const Completion = objectType({
-//   name: "Completion",
-//   definition(t) {
-//     t.int("id")
-//     t.string("email")
-//     t.string("username")
-//     t.string("student_number")
-//     t.string("first_name")
-//     t.string("last_name")
-//     t.string("completion_language")
-//   }
-// })
 
 const Completion = prismaObjectType({
   name: "Completion",
   definition(t) {
     t.prismaFields(["id", "createdAt", "updatedAt", "course", "completion_language", "email",
       "student_number", "user_upstream_id"])
+
+    t.field("user", {
+      type: "User",
+      resolve: (parent, args, ctx) => {
+        if (ctx.disableRelations) {
+          throw new ForbiddenError("Cannot query relations when asking for more than 50 objects")
+        }
+        return ctx.prisma.completion({id: parent.id}).user()
+      }
+    })
 
   }
 })
@@ -176,7 +187,17 @@ const schema = makePrismaSchema({
   outputs: {
     schema: path.join(__dirname, "./generated/schema.graphql"),
     typegen: path.join(__dirname, "./generated/nexus.ts")
-  }
+  },
+
+  typegenAutoConfig: {
+    sources: [
+      {
+        source: path.join(__dirname, './context.ts'),
+        alias: 'ctx',
+      },
+    ],
+    contextType: 'ctx.Context',
+  },
 });
 
 const server = new GraphQLServer({
