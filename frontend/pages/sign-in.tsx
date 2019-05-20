@@ -7,6 +7,7 @@ import NextI18Next from '../i18n';
 import SignInForm from '../components/SignInForm'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Container from '../components/Container'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const  SignInPage = ({ t } ) => {
   const classes = useStyles()
   return (
-    <main className={classes.root} id='main'>
+      <Container>
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar} >
           <LockOutlinedIcon />
@@ -40,7 +41,8 @@ const  SignInPage = ({ t } ) => {
         </Typography>
         <SignInForm />
       </Paper>
-    </main>
+      </Container>
+   
   )
 }
 
