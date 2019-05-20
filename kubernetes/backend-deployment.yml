@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: moocfi-backend
-          image: gcr.io/moocfi/moocfi-backend:build-1558369665-f8bbdfd140513a8489ab0333187d9aaa61f0dfb6
+          image: gcr.io/moocfi/moocfi-backend:build-1558371126-3483778a55b4235099ba519c5e6aac0ef9f23f4a
           imagePullPolicy: Always
           ports:
             - name: backend-http
@@ -104,7 +104,7 @@ spec:
 
       initContainers:
         - name: moocfi-backend-run-migrations
-          image: gcr.io/moocfi/moocfi-backend:build-1558369665-f8bbdfd140513a8489ab0333187d9aaa61f0dfb6
+          image: gcr.io/moocfi/moocfi-backend:build-1558371126-3483778a55b4235099ba519c5e6aac0ef9f23f4a
           command: ["sh", "-c", "npm run prisma-deploy"]
           env:
             - name: DB_NAME

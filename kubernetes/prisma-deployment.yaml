@@ -50,7 +50,7 @@ spec:
             configMapKeyRef:
               name: prisma-configmap
               key: PRISMA_CONFIG
-        image: prismagraphql/prisma:1.30
+        image: prismagraphql/prisma:1.33
         name: prisma
         ports:
         - containerPort: 4466
