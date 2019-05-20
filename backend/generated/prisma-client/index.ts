@@ -798,6 +798,7 @@ export interface CompletionRegisteredWhereInput {
   organisation_not_starts_with?: String;
   organisation_ends_with?: String;
   organisation_not_ends_with?: String;
+  completion?: CompletionWhereInput;
   AND?: CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput;
   OR?: CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput;
   NOT?: CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput;
@@ -1040,8 +1041,9 @@ export interface CompletionUpdateManyMutationInput {
 export interface CompletionRegisteredCreateInput {
   user: UserCreateOneInput;
   course: CourseCreateOneInput;
-  real_student_number?: String;
+  real_student_number: String;
   organisation: String;
+  completion: CompletionCreateOneInput;
 }
 
 export interface UserCreateOneInput {
@@ -1077,11 +1079,17 @@ export interface CompletionCreateWithoutUserInput {
   completion_language?: String;
 }
 
+export interface CompletionCreateOneInput {
+  create?: CompletionCreateInput;
+  connect?: CompletionWhereUniqueInput;
+}
+
 export interface CompletionRegisteredUpdateInput {
   user?: UserUpdateOneRequiredInput;
   course?: CourseUpdateOneRequiredInput;
   real_student_number?: String;
   organisation?: String;
+  completion?: CompletionUpdateOneRequiredInput;
 }
 
 export interface UserUpdateOneRequiredInput {
@@ -1244,6 +1252,27 @@ export interface CompletionUpdateManyDataInput {
 export interface UserUpsertNestedInput {
   update: UserUpdateDataInput;
   create: UserCreateInput;
+}
+
+export interface CompletionUpdateOneRequiredInput {
+  create?: CompletionCreateInput;
+  update?: CompletionUpdateDataInput;
+  upsert?: CompletionUpsertNestedInput;
+  connect?: CompletionWhereUniqueInput;
+}
+
+export interface CompletionUpdateDataInput {
+  user_upstream_id?: Int;
+  email?: String;
+  student_number?: String;
+  user?: UserUpdateOneRequiredWithoutCompletionsInput;
+  course?: CourseUpdateOneRequiredInput;
+  completion_language?: String;
+}
+
+export interface CompletionUpsertNestedInput {
+  update: CompletionUpdateDataInput;
+  create: CompletionCreateInput;
 }
 
 export interface CompletionRegisteredUpdateManyMutationInput {
@@ -1664,7 +1693,7 @@ export interface CompletionRegistered {
   id: UUID;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  real_student_number?: String;
+  real_student_number: String;
   organisation: String;
 }
 
@@ -1678,6 +1707,7 @@ export interface CompletionRegisteredPromise
   course: <T = CoursePromise>() => T;
   real_student_number: () => Promise<String>;
   organisation: () => Promise<String>;
+  completion: <T = CompletionPromise>() => T;
 }
 
 export interface CompletionRegisteredSubscription
@@ -1690,6 +1720,7 @@ export interface CompletionRegisteredSubscription
   course: <T = CourseSubscription>() => T;
   real_student_number: () => Promise<AsyncIterator<String>>;
   organisation: () => Promise<AsyncIterator<String>>;
+  completion: <T = CompletionSubscription>() => T;
 }
 
 export interface CompletionRegisteredConnection {
@@ -2020,7 +2051,7 @@ export interface CompletionRegisteredPreviousValues {
   id: UUID;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  real_student_number?: String;
+  real_student_number: String;
   organisation: String;
 }
 

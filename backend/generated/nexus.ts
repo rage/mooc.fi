@@ -3,7 +3,7 @@
  * Do not make changes to this file directly
  */
 
-
+import * as ctx from "../context"
 
 
 declare global {
@@ -421,6 +421,7 @@ export interface NexusGenFieldTypes {
     id: any; // UUID!
     student_number: string | null; // String
     updatedAt: any; // DateTime!
+    user: NexusGenRootTypes['User']; // User!
     user_upstream_id: number | null; // Int
   }
   Course: { // field return type
@@ -529,7 +530,7 @@ export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int
 export type NexusGenUnionNames = never;
 
 export interface NexusGenTypes {
-  context: any;
+  context: ctx.Context;
   inputTypes: NexusGenInputs;
   rootTypes: NexusGenRootTypes;
   argTypes: NexusGenArgTypes;
