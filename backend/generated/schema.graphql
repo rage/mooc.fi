@@ -14,6 +14,11 @@ type Completion {
   user_upstream_id: Int
 }
 
+input CompletionArg {
+  completion_id: String!
+  student_number: String!
+}
+
 enum CompletionOrderByInput {
   completion_language_ASC
   completion_language_DESC
@@ -29,6 +34,17 @@ enum CompletionOrderByInput {
   updatedAt_DESC
   user_upstream_id_ASC
   user_upstream_id_DESC
+}
+
+type CompletionRegistered {
+  completion: Completion!
+  course: Course!
+  createdAt: DateTime!
+  id: UUID!
+  organisation: String!
+  real_student_number: String!
+  updatedAt: DateTime!
+  user: User!
 }
 
 input CompletionWhereInput {
@@ -200,6 +216,7 @@ scalar DateTime
 type Mutation {
   addCourse(name: String, slug: String): Course!
   addOpenUniversityCourse(course: ID, course_code: String): OpenUniversityCourse!
+  registerCompletion(completions: [CompletionArg!], organisation: String): [CompletionRegistered!]!
 }
 
 type OpenUniversityCourse {
@@ -273,10 +290,11 @@ input OpenUniversityCourseWhereInput {
 }
 
 type Query {
-  completions(after: ID, course: String, first: Int): [Completion!]!
+  completions(after: ID, before: ID, course: String, first: Int, last: Int): [Completion!]!
   courses: [Course!]!
   currentUser(email: String): User!
   openUniversityCourses: [OpenUniversityCourse!]!
+  registeredCompletions(after: ID, before: ID, course: String, first: Int, last: Int): [CompletionRegistered!]!
   users: [User!]!
 }
 

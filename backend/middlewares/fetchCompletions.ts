@@ -65,14 +65,16 @@ async function getElementsOfAiInfo(ctx) {
   await Promise.all(promises);
 }
 
-async function getCompletionDataFromDB({course, first, after}, ctx): Promise<Completion[]> {
+async function getCompletionDataFromDB({course, first, after, last, before}, ctx): Promise<Completion[]> {
   const prisma : Prisma = ctx.prisma
   const courseObject : Course = await prisma.course({slug: course})
 
   return prisma.completions({
     where: {course: courseObject},
     first: first,
-    after: after
+    after: after,
+    last: last,
+    before: before
   })
 }
 
