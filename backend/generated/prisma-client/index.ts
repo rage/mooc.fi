@@ -280,10 +280,10 @@ export interface ClientConstructor<T> {
 export type CompletionOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
+  | "created_at_ASC"
+  | "created_at_DESC"
+  | "updated_at_ASC"
+  | "updated_at_DESC"
   | "user_upstream_id_ASC"
   | "user_upstream_id_DESC"
   | "email_ASC"
@@ -293,35 +293,35 @@ export type CompletionOrderByInput =
   | "completion_language_ASC"
   | "completion_language_DESC";
 
-export type OpenUniversityCourseOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "course_code_ASC"
-  | "course_code_DESC";
-
 export type CompletionRegisteredOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
+  | "created_at_ASC"
+  | "created_at_DESC"
+  | "updated_at_ASC"
+  | "updated_at_DESC"
   | "real_student_number_ASC"
   | "real_student_number_DESC"
   | "organisation_ASC"
   | "organisation_DESC";
 
+export type OpenUniversityCourseOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "created_at_ASC"
+  | "created_at_DESC"
+  | "updated_at_ASC"
+  | "updated_at_DESC"
+  | "course_code_ASC"
+  | "course_code_DESC";
+
 export type CourseOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
+  | "created_at_ASC"
+  | "created_at_DESC"
+  | "updated_at_ASC"
+  | "updated_at_DESC"
   | "name_ASC"
   | "name_DESC"
   | "slug_ASC"
@@ -332,10 +332,10 @@ export type UserOrderByInput =
   | "id_DESC"
   | "upstream_id_ASC"
   | "upstream_id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
+  | "created_at_ASC"
+  | "created_at_DESC"
+  | "updated_at_ASC"
+  | "updated_at_DESC"
   | "first_name_ASC"
   | "first_name_DESC"
   | "last_name_ASC"
@@ -346,8 +346,6 @@ export type UserOrderByInput =
   | "email_DESC"
   | "administrator_ASC"
   | "administrator_DESC"
-  | "completed_enough_ASC"
-  | "completed_enough_DESC"
   | "student_number_ASC"
   | "student_number_DESC"
   | "real_student_number_ASC"
@@ -374,22 +372,22 @@ export interface CompletionWhereInput {
   id_not_starts_with?: Maybe<UUID>;
   id_ends_with?: Maybe<UUID>;
   id_not_ends_with?: Maybe<UUID>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
   user_upstream_id?: Maybe<Int>;
   user_upstream_id_not?: Maybe<Int>;
   user_upstream_id_in?: Maybe<Int[] | Int>;
@@ -470,22 +468,22 @@ export interface UserWhereInput {
   upstream_id_lte?: Maybe<Int>;
   upstream_id_gt?: Maybe<Int>;
   upstream_id_gte?: Maybe<Int>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
   first_name?: Maybe<String>;
   first_name_not?: Maybe<String>;
   first_name_in?: Maybe<String[] | String>;
@@ -544,8 +542,6 @@ export interface UserWhereInput {
   email_not_ends_with?: Maybe<String>;
   administrator?: Maybe<Boolean>;
   administrator_not?: Maybe<Boolean>;
-  completed_enough?: Maybe<Boolean>;
-  completed_enough_not?: Maybe<Boolean>;
   student_number?: Maybe<String>;
   student_number_not?: Maybe<String>;
   student_number_in?: Maybe<String[] | String>;
@@ -577,9 +573,83 @@ export interface UserWhereInput {
   completions_every?: Maybe<CompletionWhereInput>;
   completions_some?: Maybe<CompletionWhereInput>;
   completions_none?: Maybe<CompletionWhereInput>;
+  registered_completions_every?: Maybe<CompletionRegisteredWhereInput>;
+  registered_completions_some?: Maybe<CompletionRegisteredWhereInput>;
+  registered_completions_none?: Maybe<CompletionRegisteredWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
+}
+
+export interface CompletionRegisteredWhereInput {
+  id?: Maybe<UUID>;
+  id_not?: Maybe<UUID>;
+  id_in?: Maybe<UUID[] | UUID>;
+  id_not_in?: Maybe<UUID[] | UUID>;
+  id_lt?: Maybe<UUID>;
+  id_lte?: Maybe<UUID>;
+  id_gt?: Maybe<UUID>;
+  id_gte?: Maybe<UUID>;
+  id_contains?: Maybe<UUID>;
+  id_not_contains?: Maybe<UUID>;
+  id_starts_with?: Maybe<UUID>;
+  id_not_starts_with?: Maybe<UUID>;
+  id_ends_with?: Maybe<UUID>;
+  id_not_ends_with?: Maybe<UUID>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
+  user?: Maybe<UserWhereInput>;
+  course?: Maybe<CourseWhereInput>;
+  real_student_number?: Maybe<String>;
+  real_student_number_not?: Maybe<String>;
+  real_student_number_in?: Maybe<String[] | String>;
+  real_student_number_not_in?: Maybe<String[] | String>;
+  real_student_number_lt?: Maybe<String>;
+  real_student_number_lte?: Maybe<String>;
+  real_student_number_gt?: Maybe<String>;
+  real_student_number_gte?: Maybe<String>;
+  real_student_number_contains?: Maybe<String>;
+  real_student_number_not_contains?: Maybe<String>;
+  real_student_number_starts_with?: Maybe<String>;
+  real_student_number_not_starts_with?: Maybe<String>;
+  real_student_number_ends_with?: Maybe<String>;
+  real_student_number_not_ends_with?: Maybe<String>;
+  organisation?: Maybe<String>;
+  organisation_not?: Maybe<String>;
+  organisation_in?: Maybe<String[] | String>;
+  organisation_not_in?: Maybe<String[] | String>;
+  organisation_lt?: Maybe<String>;
+  organisation_lte?: Maybe<String>;
+  organisation_gt?: Maybe<String>;
+  organisation_gte?: Maybe<String>;
+  organisation_contains?: Maybe<String>;
+  organisation_not_contains?: Maybe<String>;
+  organisation_starts_with?: Maybe<String>;
+  organisation_not_starts_with?: Maybe<String>;
+  organisation_ends_with?: Maybe<String>;
+  organisation_not_ends_with?: Maybe<String>;
+  completion?: Maybe<CompletionWhereInput>;
+  AND?: Maybe<
+    CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput
+  >;
+  OR?: Maybe<CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput>;
+  NOT?: Maybe<
+    CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput
+  >;
 }
 
 export interface CourseWhereInput {
@@ -597,22 +667,22 @@ export interface CourseWhereInput {
   id_not_starts_with?: Maybe<UUID>;
   id_ends_with?: Maybe<UUID>;
   id_not_ends_with?: Maybe<UUID>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
   name?: Maybe<String>;
   name_not?: Maybe<String>;
   name_in?: Maybe<String[] | String>;
@@ -664,22 +734,22 @@ export interface OpenUniversityCourseWhereInput {
   id_not_starts_with?: Maybe<UUID>;
   id_ends_with?: Maybe<UUID>;
   id_not_ends_with?: Maybe<UUID>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
   course_code?: Maybe<String>;
   course_code_not?: Maybe<String>;
   course_code_in?: Maybe<String[] | String>;
@@ -708,77 +778,6 @@ export type CompletionRegisteredWhereUniqueInput = AtLeastOne<{
   id: Maybe<UUID>;
 }>;
 
-export interface CompletionRegisteredWhereInput {
-  id?: Maybe<UUID>;
-  id_not?: Maybe<UUID>;
-  id_in?: Maybe<UUID[] | UUID>;
-  id_not_in?: Maybe<UUID[] | UUID>;
-  id_lt?: Maybe<UUID>;
-  id_lte?: Maybe<UUID>;
-  id_gt?: Maybe<UUID>;
-  id_gte?: Maybe<UUID>;
-  id_contains?: Maybe<UUID>;
-  id_not_contains?: Maybe<UUID>;
-  id_starts_with?: Maybe<UUID>;
-  id_not_starts_with?: Maybe<UUID>;
-  id_ends_with?: Maybe<UUID>;
-  id_not_ends_with?: Maybe<UUID>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  user?: Maybe<UserWhereInput>;
-  course?: Maybe<CourseWhereInput>;
-  real_student_number?: Maybe<String>;
-  real_student_number_not?: Maybe<String>;
-  real_student_number_in?: Maybe<String[] | String>;
-  real_student_number_not_in?: Maybe<String[] | String>;
-  real_student_number_lt?: Maybe<String>;
-  real_student_number_lte?: Maybe<String>;
-  real_student_number_gt?: Maybe<String>;
-  real_student_number_gte?: Maybe<String>;
-  real_student_number_contains?: Maybe<String>;
-  real_student_number_not_contains?: Maybe<String>;
-  real_student_number_starts_with?: Maybe<String>;
-  real_student_number_not_starts_with?: Maybe<String>;
-  real_student_number_ends_with?: Maybe<String>;
-  real_student_number_not_ends_with?: Maybe<String>;
-  organisation?: Maybe<String>;
-  organisation_not?: Maybe<String>;
-  organisation_in?: Maybe<String[] | String>;
-  organisation_not_in?: Maybe<String[] | String>;
-  organisation_lt?: Maybe<String>;
-  organisation_lte?: Maybe<String>;
-  organisation_gt?: Maybe<String>;
-  organisation_gte?: Maybe<String>;
-  organisation_contains?: Maybe<String>;
-  organisation_not_contains?: Maybe<String>;
-  organisation_starts_with?: Maybe<String>;
-  organisation_not_starts_with?: Maybe<String>;
-  organisation_ends_with?: Maybe<String>;
-  organisation_not_ends_with?: Maybe<String>;
-  completion?: Maybe<CompletionWhereInput>;
-  AND?: Maybe<
-    CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput
-  >;
-  OR?: Maybe<CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput>;
-  NOT?: Maybe<
-    CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput
-  >;
-}
-
 export type CourseWhereUniqueInput = AtLeastOne<{
   id: Maybe<UUID>;
   slug?: Maybe<String>;
@@ -796,6 +795,7 @@ export type UserWhereUniqueInput = AtLeastOne<{
 }>;
 
 export interface CompletionCreateInput {
+  id?: Maybe<UUID>;
   user_upstream_id?: Maybe<Int>;
   email: String;
   student_number?: Maybe<String>;
@@ -810,15 +810,37 @@ export interface UserCreateOneWithoutCompletionsInput {
 }
 
 export interface UserCreateWithoutCompletionsInput {
+  id?: Maybe<UUID>;
   upstream_id: Int;
   first_name?: Maybe<String>;
   last_name?: Maybe<String>;
-  username?: Maybe<String>;
+  username: String;
   email: String;
   administrator: Boolean;
-  completed_enough?: Maybe<Boolean>;
   student_number?: Maybe<String>;
   real_student_number?: Maybe<String>;
+  registered_completions?: Maybe<
+    CompletionRegisteredCreateManyWithoutUserInput
+  >;
+}
+
+export interface CompletionRegisteredCreateManyWithoutUserInput {
+  create?: Maybe<
+    | CompletionRegisteredCreateWithoutUserInput[]
+    | CompletionRegisteredCreateWithoutUserInput
+  >;
+  connect?: Maybe<
+    | CompletionRegisteredWhereUniqueInput[]
+    | CompletionRegisteredWhereUniqueInput
+  >;
+}
+
+export interface CompletionRegisteredCreateWithoutUserInput {
+  id?: Maybe<UUID>;
+  course: CourseCreateOneInput;
+  real_student_number: String;
+  organisation: String;
+  completion: CompletionCreateOneInput;
 }
 
 export interface CourseCreateOneInput {
@@ -827,6 +849,7 @@ export interface CourseCreateOneInput {
 }
 
 export interface CourseCreateInput {
+  id?: Maybe<UUID>;
   name: String;
   slug: String;
   open_university_courses?: Maybe<
@@ -846,7 +869,13 @@ export interface OpenUniversityCourseCreateManyWithoutCourseInput {
 }
 
 export interface OpenUniversityCourseCreateWithoutCourseInput {
+  id?: Maybe<UUID>;
   course_code: String;
+}
+
+export interface CompletionCreateOneInput {
+  create?: Maybe<CompletionCreateInput>;
+  connect?: Maybe<CompletionWhereUniqueInput>;
 }
 
 export interface CompletionUpdateInput {
@@ -872,14 +901,62 @@ export interface UserUpdateWithoutCompletionsDataInput {
   username?: Maybe<String>;
   email?: Maybe<String>;
   administrator?: Maybe<Boolean>;
-  completed_enough?: Maybe<Boolean>;
   student_number?: Maybe<String>;
   real_student_number?: Maybe<String>;
+  registered_completions?: Maybe<
+    CompletionRegisteredUpdateManyWithoutUserInput
+  >;
 }
 
-export interface UserUpsertWithoutCompletionsInput {
-  update: UserUpdateWithoutCompletionsDataInput;
-  create: UserCreateWithoutCompletionsInput;
+export interface CompletionRegisteredUpdateManyWithoutUserInput {
+  create?: Maybe<
+    | CompletionRegisteredCreateWithoutUserInput[]
+    | CompletionRegisteredCreateWithoutUserInput
+  >;
+  delete?: Maybe<
+    | CompletionRegisteredWhereUniqueInput[]
+    | CompletionRegisteredWhereUniqueInput
+  >;
+  connect?: Maybe<
+    | CompletionRegisteredWhereUniqueInput[]
+    | CompletionRegisteredWhereUniqueInput
+  >;
+  set?: Maybe<
+    | CompletionRegisteredWhereUniqueInput[]
+    | CompletionRegisteredWhereUniqueInput
+  >;
+  disconnect?: Maybe<
+    | CompletionRegisteredWhereUniqueInput[]
+    | CompletionRegisteredWhereUniqueInput
+  >;
+  update?: Maybe<
+    | CompletionRegisteredUpdateWithWhereUniqueWithoutUserInput[]
+    | CompletionRegisteredUpdateWithWhereUniqueWithoutUserInput
+  >;
+  upsert?: Maybe<
+    | CompletionRegisteredUpsertWithWhereUniqueWithoutUserInput[]
+    | CompletionRegisteredUpsertWithWhereUniqueWithoutUserInput
+  >;
+  deleteMany?: Maybe<
+    | CompletionRegisteredScalarWhereInput[]
+    | CompletionRegisteredScalarWhereInput
+  >;
+  updateMany?: Maybe<
+    | CompletionRegisteredUpdateManyWithWhereNestedInput[]
+    | CompletionRegisteredUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface CompletionRegisteredUpdateWithWhereUniqueWithoutUserInput {
+  where: CompletionRegisteredWhereUniqueInput;
+  data: CompletionRegisteredUpdateWithoutUserDataInput;
+}
+
+export interface CompletionRegisteredUpdateWithoutUserDataInput {
+  course?: Maybe<CourseUpdateOneRequiredInput>;
+  real_student_number?: Maybe<String>;
+  organisation?: Maybe<String>;
+  completion?: Maybe<CompletionUpdateOneRequiredInput>;
 }
 
 export interface CourseUpdateOneRequiredInput {
@@ -966,22 +1043,22 @@ export interface OpenUniversityCourseScalarWhereInput {
   id_not_starts_with?: Maybe<UUID>;
   id_ends_with?: Maybe<UUID>;
   id_not_ends_with?: Maybe<UUID>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
   course_code?: Maybe<String>;
   course_code_not?: Maybe<String>;
   course_code_in?: Maybe<String[] | String>;
@@ -1024,6 +1101,121 @@ export interface CourseUpsertNestedInput {
   create: CourseCreateInput;
 }
 
+export interface CompletionUpdateOneRequiredInput {
+  create?: Maybe<CompletionCreateInput>;
+  update?: Maybe<CompletionUpdateDataInput>;
+  upsert?: Maybe<CompletionUpsertNestedInput>;
+  connect?: Maybe<CompletionWhereUniqueInput>;
+}
+
+export interface CompletionUpdateDataInput {
+  user_upstream_id?: Maybe<Int>;
+  email?: Maybe<String>;
+  student_number?: Maybe<String>;
+  user?: Maybe<UserUpdateOneRequiredWithoutCompletionsInput>;
+  course?: Maybe<CourseUpdateOneRequiredInput>;
+  completion_language?: Maybe<String>;
+}
+
+export interface CompletionUpsertNestedInput {
+  update: CompletionUpdateDataInput;
+  create: CompletionCreateInput;
+}
+
+export interface CompletionRegisteredUpsertWithWhereUniqueWithoutUserInput {
+  where: CompletionRegisteredWhereUniqueInput;
+  update: CompletionRegisteredUpdateWithoutUserDataInput;
+  create: CompletionRegisteredCreateWithoutUserInput;
+}
+
+export interface CompletionRegisteredScalarWhereInput {
+  id?: Maybe<UUID>;
+  id_not?: Maybe<UUID>;
+  id_in?: Maybe<UUID[] | UUID>;
+  id_not_in?: Maybe<UUID[] | UUID>;
+  id_lt?: Maybe<UUID>;
+  id_lte?: Maybe<UUID>;
+  id_gt?: Maybe<UUID>;
+  id_gte?: Maybe<UUID>;
+  id_contains?: Maybe<UUID>;
+  id_not_contains?: Maybe<UUID>;
+  id_starts_with?: Maybe<UUID>;
+  id_not_starts_with?: Maybe<UUID>;
+  id_ends_with?: Maybe<UUID>;
+  id_not_ends_with?: Maybe<UUID>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
+  real_student_number?: Maybe<String>;
+  real_student_number_not?: Maybe<String>;
+  real_student_number_in?: Maybe<String[] | String>;
+  real_student_number_not_in?: Maybe<String[] | String>;
+  real_student_number_lt?: Maybe<String>;
+  real_student_number_lte?: Maybe<String>;
+  real_student_number_gt?: Maybe<String>;
+  real_student_number_gte?: Maybe<String>;
+  real_student_number_contains?: Maybe<String>;
+  real_student_number_not_contains?: Maybe<String>;
+  real_student_number_starts_with?: Maybe<String>;
+  real_student_number_not_starts_with?: Maybe<String>;
+  real_student_number_ends_with?: Maybe<String>;
+  real_student_number_not_ends_with?: Maybe<String>;
+  organisation?: Maybe<String>;
+  organisation_not?: Maybe<String>;
+  organisation_in?: Maybe<String[] | String>;
+  organisation_not_in?: Maybe<String[] | String>;
+  organisation_lt?: Maybe<String>;
+  organisation_lte?: Maybe<String>;
+  organisation_gt?: Maybe<String>;
+  organisation_gte?: Maybe<String>;
+  organisation_contains?: Maybe<String>;
+  organisation_not_contains?: Maybe<String>;
+  organisation_starts_with?: Maybe<String>;
+  organisation_not_starts_with?: Maybe<String>;
+  organisation_ends_with?: Maybe<String>;
+  organisation_not_ends_with?: Maybe<String>;
+  AND?: Maybe<
+    | CompletionRegisteredScalarWhereInput[]
+    | CompletionRegisteredScalarWhereInput
+  >;
+  OR?: Maybe<
+    | CompletionRegisteredScalarWhereInput[]
+    | CompletionRegisteredScalarWhereInput
+  >;
+  NOT?: Maybe<
+    | CompletionRegisteredScalarWhereInput[]
+    | CompletionRegisteredScalarWhereInput
+  >;
+}
+
+export interface CompletionRegisteredUpdateManyWithWhereNestedInput {
+  where: CompletionRegisteredScalarWhereInput;
+  data: CompletionRegisteredUpdateManyDataInput;
+}
+
+export interface CompletionRegisteredUpdateManyDataInput {
+  real_student_number?: Maybe<String>;
+  organisation?: Maybe<String>;
+}
+
+export interface UserUpsertWithoutCompletionsInput {
+  update: UserUpdateWithoutCompletionsDataInput;
+  create: UserCreateWithoutCompletionsInput;
+}
+
 export interface CompletionUpdateManyMutationInput {
   user_upstream_id?: Maybe<Int>;
   email?: Maybe<String>;
@@ -1032,26 +1224,27 @@ export interface CompletionUpdateManyMutationInput {
 }
 
 export interface CompletionRegisteredCreateInput {
-  user: UserCreateOneInput;
+  id?: Maybe<UUID>;
+  user: UserCreateOneWithoutRegistered_completionsInput;
   course: CourseCreateOneInput;
   real_student_number: String;
   organisation: String;
   completion: CompletionCreateOneInput;
 }
 
-export interface UserCreateOneInput {
-  create?: Maybe<UserCreateInput>;
+export interface UserCreateOneWithoutRegistered_completionsInput {
+  create?: Maybe<UserCreateWithoutRegistered_completionsInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserCreateInput {
+export interface UserCreateWithoutRegistered_completionsInput {
+  id?: Maybe<UUID>;
   upstream_id: Int;
   first_name?: Maybe<String>;
   last_name?: Maybe<String>;
-  username?: Maybe<String>;
+  username: String;
   email: String;
   administrator: Boolean;
-  completed_enough?: Maybe<Boolean>;
   student_number?: Maybe<String>;
   real_student_number?: Maybe<String>;
   completions?: Maybe<CompletionCreateManyWithoutUserInput>;
@@ -1065,6 +1258,7 @@ export interface CompletionCreateManyWithoutUserInput {
 }
 
 export interface CompletionCreateWithoutUserInput {
+  id?: Maybe<UUID>;
   user_upstream_id?: Maybe<Int>;
   email: String;
   student_number?: Maybe<String>;
@@ -1072,34 +1266,28 @@ export interface CompletionCreateWithoutUserInput {
   completion_language?: Maybe<String>;
 }
 
-export interface CompletionCreateOneInput {
-  create?: Maybe<CompletionCreateInput>;
-  connect?: Maybe<CompletionWhereUniqueInput>;
-}
-
 export interface CompletionRegisteredUpdateInput {
-  user?: Maybe<UserUpdateOneRequiredInput>;
+  user?: Maybe<UserUpdateOneRequiredWithoutRegistered_completionsInput>;
   course?: Maybe<CourseUpdateOneRequiredInput>;
   real_student_number?: Maybe<String>;
   organisation?: Maybe<String>;
   completion?: Maybe<CompletionUpdateOneRequiredInput>;
 }
 
-export interface UserUpdateOneRequiredInput {
-  create?: Maybe<UserCreateInput>;
-  update?: Maybe<UserUpdateDataInput>;
-  upsert?: Maybe<UserUpsertNestedInput>;
+export interface UserUpdateOneRequiredWithoutRegistered_completionsInput {
+  create?: Maybe<UserCreateWithoutRegistered_completionsInput>;
+  update?: Maybe<UserUpdateWithoutRegistered_completionsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutRegistered_completionsInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpdateDataInput {
+export interface UserUpdateWithoutRegistered_completionsDataInput {
   upstream_id?: Maybe<Int>;
   first_name?: Maybe<String>;
   last_name?: Maybe<String>;
   username?: Maybe<String>;
   email?: Maybe<String>;
   administrator?: Maybe<Boolean>;
-  completed_enough?: Maybe<Boolean>;
   student_number?: Maybe<String>;
   real_student_number?: Maybe<String>;
   completions?: Maybe<CompletionUpdateManyWithoutUserInput>;
@@ -1162,22 +1350,22 @@ export interface CompletionScalarWhereInput {
   id_not_starts_with?: Maybe<UUID>;
   id_ends_with?: Maybe<UUID>;
   id_not_ends_with?: Maybe<UUID>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
+  created_at?: Maybe<DateTimeInput>;
+  created_at_not?: Maybe<DateTimeInput>;
+  created_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  created_at_lt?: Maybe<DateTimeInput>;
+  created_at_lte?: Maybe<DateTimeInput>;
+  created_at_gt?: Maybe<DateTimeInput>;
+  created_at_gte?: Maybe<DateTimeInput>;
+  updated_at?: Maybe<DateTimeInput>;
+  updated_at_not?: Maybe<DateTimeInput>;
+  updated_at_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updated_at_lt?: Maybe<DateTimeInput>;
+  updated_at_lte?: Maybe<DateTimeInput>;
+  updated_at_gt?: Maybe<DateTimeInput>;
+  updated_at_gte?: Maybe<DateTimeInput>;
   user_upstream_id?: Maybe<Int>;
   user_upstream_id_not?: Maybe<Int>;
   user_upstream_id_in?: Maybe<Int[] | Int>;
@@ -1245,30 +1433,9 @@ export interface CompletionUpdateManyDataInput {
   completion_language?: Maybe<String>;
 }
 
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
-}
-
-export interface CompletionUpdateOneRequiredInput {
-  create?: Maybe<CompletionCreateInput>;
-  update?: Maybe<CompletionUpdateDataInput>;
-  upsert?: Maybe<CompletionUpsertNestedInput>;
-  connect?: Maybe<CompletionWhereUniqueInput>;
-}
-
-export interface CompletionUpdateDataInput {
-  user_upstream_id?: Maybe<Int>;
-  email?: Maybe<String>;
-  student_number?: Maybe<String>;
-  user?: Maybe<UserUpdateOneRequiredWithoutCompletionsInput>;
-  course?: Maybe<CourseUpdateOneRequiredInput>;
-  completion_language?: Maybe<String>;
-}
-
-export interface CompletionUpsertNestedInput {
-  update: CompletionUpdateDataInput;
-  create: CompletionCreateInput;
+export interface UserUpsertWithoutRegistered_completionsInput {
+  update: UserUpdateWithoutRegistered_completionsDataInput;
+  create: UserCreateWithoutRegistered_completionsInput;
 }
 
 export interface CompletionRegisteredUpdateManyMutationInput {
@@ -1290,6 +1457,7 @@ export interface CourseUpdateManyMutationInput {
 }
 
 export interface OpenUniversityCourseCreateInput {
+  id?: Maybe<UUID>;
   course_code: String;
   course: CourseCreateOneWithoutOpen_university_coursesInput;
 }
@@ -1300,6 +1468,7 @@ export interface CourseCreateOneWithoutOpen_university_coursesInput {
 }
 
 export interface CourseCreateWithoutOpen_university_coursesInput {
+  id?: Maybe<UUID>;
   name: String;
   slug: String;
 }
@@ -1330,6 +1499,22 @@ export interface OpenUniversityCourseUpdateManyMutationInput {
   course_code?: Maybe<String>;
 }
 
+export interface UserCreateInput {
+  id?: Maybe<UUID>;
+  upstream_id: Int;
+  first_name?: Maybe<String>;
+  last_name?: Maybe<String>;
+  username: String;
+  email: String;
+  administrator: Boolean;
+  student_number?: Maybe<String>;
+  real_student_number?: Maybe<String>;
+  completions?: Maybe<CompletionCreateManyWithoutUserInput>;
+  registered_completions?: Maybe<
+    CompletionRegisteredCreateManyWithoutUserInput
+  >;
+}
+
 export interface UserUpdateInput {
   upstream_id?: Maybe<Int>;
   first_name?: Maybe<String>;
@@ -1337,10 +1522,12 @@ export interface UserUpdateInput {
   username?: Maybe<String>;
   email?: Maybe<String>;
   administrator?: Maybe<Boolean>;
-  completed_enough?: Maybe<Boolean>;
   student_number?: Maybe<String>;
   real_student_number?: Maybe<String>;
   completions?: Maybe<CompletionUpdateManyWithoutUserInput>;
+  registered_completions?: Maybe<
+    CompletionRegisteredUpdateManyWithoutUserInput
+  >;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -1350,7 +1537,6 @@ export interface UserUpdateManyMutationInput {
   username?: Maybe<String>;
   email?: Maybe<String>;
   administrator?: Maybe<Boolean>;
-  completed_enough?: Maybe<Boolean>;
   student_number?: Maybe<String>;
   real_student_number?: Maybe<String>;
 }
@@ -1440,8 +1626,8 @@ export interface NodeNode {
 
 export interface Completion {
   id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   user_upstream_id?: Int;
   email: String;
   student_number?: String;
@@ -1450,8 +1636,8 @@ export interface Completion {
 
 export interface CompletionPromise extends Promise<Completion>, Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   user_upstream_id: () => Promise<Int>;
   email: () => Promise<String>;
   student_number: () => Promise<String>;
@@ -1464,8 +1650,8 @@ export interface CompletionSubscription
   extends Promise<AsyncIterator<Completion>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   user_upstream_id: () => Promise<AsyncIterator<Int>>;
   email: () => Promise<AsyncIterator<String>>;
   student_number: () => Promise<AsyncIterator<String>>;
@@ -1478,8 +1664,8 @@ export interface CompletionNullablePromise
   extends Promise<Completion | null>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   user_upstream_id: () => Promise<Int>;
   email: () => Promise<String>;
   student_number: () => Promise<String>;
@@ -1491,14 +1677,13 @@ export interface CompletionNullablePromise
 export interface User {
   id: UUID;
   upstream_id: Int;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   first_name?: String;
   last_name?: String;
-  username?: String;
+  username: String;
   email: String;
   administrator: Boolean;
-  completed_enough: Boolean;
   student_number?: String;
   real_student_number?: String;
 }
@@ -1506,19 +1691,27 @@ export interface User {
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<UUID>;
   upstream_id: () => Promise<Int>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   first_name: () => Promise<String>;
   last_name: () => Promise<String>;
   username: () => Promise<String>;
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
-  completed_enough: () => Promise<Boolean>;
   student_number: () => Promise<String>;
   real_student_number: () => Promise<String>;
   completions: <T = FragmentableArray<Completion>>(args?: {
     where?: CompletionWhereInput;
     orderBy?: CompletionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  registered_completions: <T = FragmentableArray<CompletionRegistered>>(args?: {
+    where?: CompletionRegisteredWhereInput;
+    orderBy?: CompletionRegisteredOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -1532,19 +1725,29 @@ export interface UserSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
   upstream_id: () => Promise<AsyncIterator<Int>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   first_name: () => Promise<AsyncIterator<String>>;
   last_name: () => Promise<AsyncIterator<String>>;
   username: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   administrator: () => Promise<AsyncIterator<Boolean>>;
-  completed_enough: () => Promise<AsyncIterator<Boolean>>;
   student_number: () => Promise<AsyncIterator<String>>;
   real_student_number: () => Promise<AsyncIterator<String>>;
   completions: <T = Promise<AsyncIterator<CompletionSubscription>>>(args?: {
     where?: CompletionWhereInput;
     orderBy?: CompletionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  registered_completions: <
+    T = Promise<AsyncIterator<CompletionRegisteredSubscription>>
+  >(args?: {
+    where?: CompletionRegisteredWhereInput;
+    orderBy?: CompletionRegisteredOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -1558,14 +1761,13 @@ export interface UserNullablePromise
     Fragmentable {
   id: () => Promise<UUID>;
   upstream_id: () => Promise<Int>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   first_name: () => Promise<String>;
   last_name: () => Promise<String>;
   username: () => Promise<String>;
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
-  completed_enough: () => Promise<Boolean>;
   student_number: () => Promise<String>;
   real_student_number: () => Promise<String>;
   completions: <T = FragmentableArray<Completion>>(args?: {
@@ -1577,20 +1779,76 @@ export interface UserNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
+  registered_completions: <T = FragmentableArray<CompletionRegistered>>(args?: {
+    where?: CompletionRegisteredWhereInput;
+    orderBy?: CompletionRegisteredOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface CompletionRegistered {
+  id: UUID;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
+  real_student_number: String;
+  organisation: String;
+}
+
+export interface CompletionRegisteredPromise
+  extends Promise<CompletionRegistered>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
+  user: <T = UserPromise>() => T;
+  course: <T = CoursePromise>() => T;
+  real_student_number: () => Promise<String>;
+  organisation: () => Promise<String>;
+  completion: <T = CompletionPromise>() => T;
+}
+
+export interface CompletionRegisteredSubscription
+  extends Promise<AsyncIterator<CompletionRegistered>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  user: <T = UserSubscription>() => T;
+  course: <T = CourseSubscription>() => T;
+  real_student_number: () => Promise<AsyncIterator<String>>;
+  organisation: () => Promise<AsyncIterator<String>>;
+  completion: <T = CompletionSubscription>() => T;
+}
+
+export interface CompletionRegisteredNullablePromise
+  extends Promise<CompletionRegistered | null>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
+  user: <T = UserPromise>() => T;
+  course: <T = CoursePromise>() => T;
+  real_student_number: () => Promise<String>;
+  organisation: () => Promise<String>;
+  completion: <T = CompletionPromise>() => T;
 }
 
 export interface Course {
   id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   name: String;
   slug: String;
 }
 
 export interface CoursePromise extends Promise<Course>, Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   name: () => Promise<String>;
   slug: () => Promise<String>;
   open_university_courses: <
@@ -1610,8 +1868,8 @@ export interface CourseSubscription
   extends Promise<AsyncIterator<Course>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   name: () => Promise<AsyncIterator<String>>;
   slug: () => Promise<AsyncIterator<String>>;
   open_university_courses: <
@@ -1631,8 +1889,8 @@ export interface CourseNullablePromise
   extends Promise<Course | null>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   name: () => Promise<String>;
   slug: () => Promise<String>;
   open_university_courses: <
@@ -1650,8 +1908,8 @@ export interface CourseNullablePromise
 
 export interface OpenUniversityCourse {
   id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   course_code: String;
 }
 
@@ -1659,8 +1917,8 @@ export interface OpenUniversityCoursePromise
   extends Promise<OpenUniversityCourse>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   course_code: () => Promise<String>;
   course: <T = CoursePromise>() => T;
 }
@@ -1669,8 +1927,8 @@ export interface OpenUniversityCourseSubscription
   extends Promise<AsyncIterator<OpenUniversityCourse>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   course_code: () => Promise<AsyncIterator<String>>;
   course: <T = CourseSubscription>() => T;
 }
@@ -1679,8 +1937,8 @@ export interface OpenUniversityCourseNullablePromise
   extends Promise<OpenUniversityCourse | null>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   course_code: () => Promise<String>;
   course: <T = CoursePromise>() => T;
 }
@@ -1762,53 +2020,6 @@ export interface AggregateCompletionSubscription
   extends Promise<AsyncIterator<AggregateCompletion>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface CompletionRegistered {
-  id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-  real_student_number: String;
-  organisation: String;
-}
-
-export interface CompletionRegisteredPromise
-  extends Promise<CompletionRegistered>,
-    Fragmentable {
-  id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  user: <T = UserPromise>() => T;
-  course: <T = CoursePromise>() => T;
-  real_student_number: () => Promise<String>;
-  organisation: () => Promise<String>;
-  completion: <T = CompletionPromise>() => T;
-}
-
-export interface CompletionRegisteredSubscription
-  extends Promise<AsyncIterator<CompletionRegistered>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  user: <T = UserSubscription>() => T;
-  course: <T = CourseSubscription>() => T;
-  real_student_number: () => Promise<AsyncIterator<String>>;
-  organisation: () => Promise<AsyncIterator<String>>;
-  completion: <T = CompletionSubscription>() => T;
-}
-
-export interface CompletionRegisteredNullablePromise
-  extends Promise<CompletionRegistered | null>,
-    Fragmentable {
-  id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  user: <T = UserPromise>() => T;
-  course: <T = CoursePromise>() => T;
-  real_student_number: () => Promise<String>;
-  organisation: () => Promise<String>;
-  completion: <T = CompletionPromise>() => T;
 }
 
 export interface CompletionRegisteredConnection {
@@ -2078,8 +2289,8 @@ export interface CompletionSubscriptionPayloadSubscription
 
 export interface CompletionPreviousValues {
   id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   user_upstream_id?: Int;
   email: String;
   student_number?: String;
@@ -2090,8 +2301,8 @@ export interface CompletionPreviousValuesPromise
   extends Promise<CompletionPreviousValues>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   user_upstream_id: () => Promise<Int>;
   email: () => Promise<String>;
   student_number: () => Promise<String>;
@@ -2102,8 +2313,8 @@ export interface CompletionPreviousValuesSubscription
   extends Promise<AsyncIterator<CompletionPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   user_upstream_id: () => Promise<AsyncIterator<Int>>;
   email: () => Promise<AsyncIterator<String>>;
   student_number: () => Promise<AsyncIterator<String>>;
@@ -2137,8 +2348,8 @@ export interface CompletionRegisteredSubscriptionPayloadSubscription
 
 export interface CompletionRegisteredPreviousValues {
   id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   real_student_number: String;
   organisation: String;
 }
@@ -2147,8 +2358,8 @@ export interface CompletionRegisteredPreviousValuesPromise
   extends Promise<CompletionRegisteredPreviousValues>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   real_student_number: () => Promise<String>;
   organisation: () => Promise<String>;
 }
@@ -2157,8 +2368,8 @@ export interface CompletionRegisteredPreviousValuesSubscription
   extends Promise<AsyncIterator<CompletionRegisteredPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   real_student_number: () => Promise<AsyncIterator<String>>;
   organisation: () => Promise<AsyncIterator<String>>;
 }
@@ -2190,8 +2401,8 @@ export interface CourseSubscriptionPayloadSubscription
 
 export interface CoursePreviousValues {
   id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   name: String;
   slug: String;
 }
@@ -2200,8 +2411,8 @@ export interface CoursePreviousValuesPromise
   extends Promise<CoursePreviousValues>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   name: () => Promise<String>;
   slug: () => Promise<String>;
 }
@@ -2210,8 +2421,8 @@ export interface CoursePreviousValuesSubscription
   extends Promise<AsyncIterator<CoursePreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   name: () => Promise<AsyncIterator<String>>;
   slug: () => Promise<AsyncIterator<String>>;
 }
@@ -2243,8 +2454,8 @@ export interface OpenUniversityCourseSubscriptionPayloadSubscription
 
 export interface OpenUniversityCoursePreviousValues {
   id: UUID;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   course_code: String;
 }
 
@@ -2252,8 +2463,8 @@ export interface OpenUniversityCoursePreviousValuesPromise
   extends Promise<OpenUniversityCoursePreviousValues>,
     Fragmentable {
   id: () => Promise<UUID>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   course_code: () => Promise<String>;
 }
 
@@ -2261,8 +2472,8 @@ export interface OpenUniversityCoursePreviousValuesSubscription
   extends Promise<AsyncIterator<OpenUniversityCoursePreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   course_code: () => Promise<AsyncIterator<String>>;
 }
 
@@ -2294,14 +2505,13 @@ export interface UserSubscriptionPayloadSubscription
 export interface UserPreviousValues {
   id: UUID;
   upstream_id: Int;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
+  created_at: DateTimeOutput;
+  updated_at: DateTimeOutput;
   first_name?: String;
   last_name?: String;
-  username?: String;
+  username: String;
   email: String;
   administrator: Boolean;
-  completed_enough: Boolean;
   student_number?: String;
   real_student_number?: String;
 }
@@ -2311,14 +2521,13 @@ export interface UserPreviousValuesPromise
     Fragmentable {
   id: () => Promise<UUID>;
   upstream_id: () => Promise<Int>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
   first_name: () => Promise<String>;
   last_name: () => Promise<String>;
   username: () => Promise<String>;
   email: () => Promise<String>;
   administrator: () => Promise<Boolean>;
-  completed_enough: () => Promise<Boolean>;
   student_number: () => Promise<String>;
   real_student_number: () => Promise<String>;
 }
@@ -2328,14 +2537,13 @@ export interface UserPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<UUID>>;
   upstream_id: () => Promise<AsyncIterator<Int>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   first_name: () => Promise<AsyncIterator<String>>;
   last_name: () => Promise<AsyncIterator<String>>;
   username: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
   administrator: () => Promise<AsyncIterator<Boolean>>;
-  completed_enough: () => Promise<AsyncIterator<Boolean>>;
   student_number: () => Promise<AsyncIterator<String>>;
   real_student_number: () => Promise<AsyncIterator<String>>;
 }
