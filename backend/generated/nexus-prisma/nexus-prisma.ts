@@ -16,131 +16,154 @@ export interface NexusPrismaTypes {
     fields: {
       Query: QueryObject
       User: UserObject
-      Slot: SlotObject
-      Essay: EssayObject
-      EssayTopic: EssayTopicObject
+      Completion: CompletionObject
+      Course: CourseObject
+      OpenUniversityCourse: OpenUniversityCourseObject
       UserConnection: UserConnectionObject
       PageInfo: PageInfoObject
       UserEdge: UserEdgeObject
       AggregateUser: AggregateUserObject
-      SlotConnection: SlotConnectionObject
-      SlotEdge: SlotEdgeObject
-      AggregateSlot: AggregateSlotObject
-      EssayConnection: EssayConnectionObject
-      EssayEdge: EssayEdgeObject
-      AggregateEssay: AggregateEssayObject
-      EssayTopicConnection: EssayTopicConnectionObject
-      EssayTopicEdge: EssayTopicEdgeObject
-      AggregateEssayTopic: AggregateEssayTopicObject
+      CourseConnection: CourseConnectionObject
+      CourseEdge: CourseEdgeObject
+      AggregateCourse: AggregateCourseObject
+      OpenUniversityCourseConnection: OpenUniversityCourseConnectionObject
+      OpenUniversityCourseEdge: OpenUniversityCourseEdgeObject
+      AggregateOpenUniversityCourse: AggregateOpenUniversityCourseObject
+      CompletionConnection: CompletionConnectionObject
+      CompletionEdge: CompletionEdgeObject
+      AggregateCompletion: AggregateCompletionObject
+      CompletionRegistered: CompletionRegisteredObject
+      CompletionRegisteredConnection: CompletionRegisteredConnectionObject
+      CompletionRegisteredEdge: CompletionRegisteredEdgeObject
+      AggregateCompletionRegistered: AggregateCompletionRegisteredObject
       Mutation: MutationObject
       BatchPayload: BatchPayloadObject
       Subscription: SubscriptionObject
       UserSubscriptionPayload: UserSubscriptionPayloadObject
       UserPreviousValues: UserPreviousValuesObject
-      SlotSubscriptionPayload: SlotSubscriptionPayloadObject
-      SlotPreviousValues: SlotPreviousValuesObject
-      EssaySubscriptionPayload: EssaySubscriptionPayloadObject
-      EssayPreviousValues: EssayPreviousValuesObject
-      EssayTopicSubscriptionPayload: EssayTopicSubscriptionPayloadObject
-      EssayTopicPreviousValues: EssayTopicPreviousValuesObject
+      CourseSubscriptionPayload: CourseSubscriptionPayloadObject
+      CoursePreviousValues: CoursePreviousValuesObject
+      OpenUniversityCourseSubscriptionPayload: OpenUniversityCourseSubscriptionPayloadObject
+      OpenUniversityCoursePreviousValues: OpenUniversityCoursePreviousValuesObject
+      CompletionSubscriptionPayload: CompletionSubscriptionPayloadObject
+      CompletionPreviousValues: CompletionPreviousValuesObject
+      CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadObject
+      CompletionRegisteredPreviousValues: CompletionRegisteredPreviousValuesObject
     }
     fieldsDetails: {
       Query: QueryFieldDetails
       User: UserFieldDetails
-      Slot: SlotFieldDetails
-      Essay: EssayFieldDetails
-      EssayTopic: EssayTopicFieldDetails
+      Completion: CompletionFieldDetails
+      Course: CourseFieldDetails
+      OpenUniversityCourse: OpenUniversityCourseFieldDetails
       UserConnection: UserConnectionFieldDetails
       PageInfo: PageInfoFieldDetails
       UserEdge: UserEdgeFieldDetails
       AggregateUser: AggregateUserFieldDetails
-      SlotConnection: SlotConnectionFieldDetails
-      SlotEdge: SlotEdgeFieldDetails
-      AggregateSlot: AggregateSlotFieldDetails
-      EssayConnection: EssayConnectionFieldDetails
-      EssayEdge: EssayEdgeFieldDetails
-      AggregateEssay: AggregateEssayFieldDetails
-      EssayTopicConnection: EssayTopicConnectionFieldDetails
-      EssayTopicEdge: EssayTopicEdgeFieldDetails
-      AggregateEssayTopic: AggregateEssayTopicFieldDetails
+      CourseConnection: CourseConnectionFieldDetails
+      CourseEdge: CourseEdgeFieldDetails
+      AggregateCourse: AggregateCourseFieldDetails
+      OpenUniversityCourseConnection: OpenUniversityCourseConnectionFieldDetails
+      OpenUniversityCourseEdge: OpenUniversityCourseEdgeFieldDetails
+      AggregateOpenUniversityCourse: AggregateOpenUniversityCourseFieldDetails
+      CompletionConnection: CompletionConnectionFieldDetails
+      CompletionEdge: CompletionEdgeFieldDetails
+      AggregateCompletion: AggregateCompletionFieldDetails
+      CompletionRegistered: CompletionRegisteredFieldDetails
+      CompletionRegisteredConnection: CompletionRegisteredConnectionFieldDetails
+      CompletionRegisteredEdge: CompletionRegisteredEdgeFieldDetails
+      AggregateCompletionRegistered: AggregateCompletionRegisteredFieldDetails
       Mutation: MutationFieldDetails
       BatchPayload: BatchPayloadFieldDetails
       Subscription: SubscriptionFieldDetails
       UserSubscriptionPayload: UserSubscriptionPayloadFieldDetails
       UserPreviousValues: UserPreviousValuesFieldDetails
-      SlotSubscriptionPayload: SlotSubscriptionPayloadFieldDetails
-      SlotPreviousValues: SlotPreviousValuesFieldDetails
-      EssaySubscriptionPayload: EssaySubscriptionPayloadFieldDetails
-      EssayPreviousValues: EssayPreviousValuesFieldDetails
-      EssayTopicSubscriptionPayload: EssayTopicSubscriptionPayloadFieldDetails
-      EssayTopicPreviousValues: EssayTopicPreviousValuesFieldDetails
+      CourseSubscriptionPayload: CourseSubscriptionPayloadFieldDetails
+      CoursePreviousValues: CoursePreviousValuesFieldDetails
+      OpenUniversityCourseSubscriptionPayload: OpenUniversityCourseSubscriptionPayloadFieldDetails
+      OpenUniversityCoursePreviousValues: OpenUniversityCoursePreviousValuesFieldDetails
+      CompletionSubscriptionPayload: CompletionSubscriptionPayloadFieldDetails
+      CompletionPreviousValues: CompletionPreviousValuesFieldDetails
+      CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadFieldDetails
+      CompletionRegisteredPreviousValues: CompletionRegisteredPreviousValuesFieldDetails
     }
   }
   inputTypes: {
     fields: {
       UserWhereUniqueInput: UserWhereUniqueInputInputObject
+      CompletionWhereInput: CompletionWhereInputInputObject
       UserWhereInput: UserWhereInputInputObject
-      SlotWhereInput: SlotWhereInputInputObject
-      EssayWhereInput: EssayWhereInputInputObject
-      EssayTopicWhereInput: EssayTopicWhereInputInputObject
-      SlotWhereUniqueInput: SlotWhereUniqueInputInputObject
-      EssayWhereUniqueInput: EssayWhereUniqueInputInputObject
-      EssayTopicWhereUniqueInput: EssayTopicWhereUniqueInputInputObject
+      CourseWhereInput: CourseWhereInputInputObject
+      OpenUniversityCourseWhereInput: OpenUniversityCourseWhereInputInputObject
+      CourseWhereUniqueInput: CourseWhereUniqueInputInputObject
+      OpenUniversityCourseWhereUniqueInput: OpenUniversityCourseWhereUniqueInputInputObject
+      CompletionWhereUniqueInput: CompletionWhereUniqueInputInputObject
+      CompletionRegisteredWhereUniqueInput: CompletionRegisteredWhereUniqueInputInputObject
+      CompletionRegisteredWhereInput: CompletionRegisteredWhereInputInputObject
       UserCreateInput: UserCreateInputInputObject
-      SlotCreateOneWithoutRegisteredInput: SlotCreateOneWithoutRegisteredInputInputObject
-      SlotCreateWithoutRegisteredInput: SlotCreateWithoutRegisteredInputInputObject
-      EssayCreateManyWithoutAuthorInput: EssayCreateManyWithoutAuthorInputInputObject
-      EssayCreateWithoutAuthorInput: EssayCreateWithoutAuthorInputInputObject
-      EssayTopicCreateOneInput: EssayTopicCreateOneInputInputObject
-      EssayTopicCreateInput: EssayTopicCreateInputInputObject
+      CompletionCreateManyWithoutUserInput: CompletionCreateManyWithoutUserInputInputObject
+      CompletionCreateWithoutUserInput: CompletionCreateWithoutUserInputInputObject
+      CourseCreateOneInput: CourseCreateOneInputInputObject
+      CourseCreateInput: CourseCreateInputInputObject
+      OpenUniversityCourseCreateManyWithoutCourseInput: OpenUniversityCourseCreateManyWithoutCourseInputInputObject
+      OpenUniversityCourseCreateWithoutCourseInput: OpenUniversityCourseCreateWithoutCourseInputInputObject
       UserUpdateInput: UserUpdateInputInputObject
-      SlotUpdateOneWithoutRegisteredInput: SlotUpdateOneWithoutRegisteredInputInputObject
-      SlotUpdateWithoutRegisteredDataInput: SlotUpdateWithoutRegisteredDataInputInputObject
-      SlotUpsertWithoutRegisteredInput: SlotUpsertWithoutRegisteredInputInputObject
-      EssayUpdateManyWithoutAuthorInput: EssayUpdateManyWithoutAuthorInputInputObject
-      EssayUpdateWithWhereUniqueWithoutAuthorInput: EssayUpdateWithWhereUniqueWithoutAuthorInputInputObject
-      EssayUpdateWithoutAuthorDataInput: EssayUpdateWithoutAuthorDataInputInputObject
-      EssayTopicUpdateOneRequiredInput: EssayTopicUpdateOneRequiredInputInputObject
-      EssayTopicUpdateDataInput: EssayTopicUpdateDataInputInputObject
-      EssayTopicUpsertNestedInput: EssayTopicUpsertNestedInputInputObject
-      EssayUpsertWithWhereUniqueWithoutAuthorInput: EssayUpsertWithWhereUniqueWithoutAuthorInputInputObject
-      EssayScalarWhereInput: EssayScalarWhereInputInputObject
-      EssayUpdateManyWithWhereNestedInput: EssayUpdateManyWithWhereNestedInputInputObject
-      EssayUpdateManyDataInput: EssayUpdateManyDataInputInputObject
+      CompletionUpdateManyWithoutUserInput: CompletionUpdateManyWithoutUserInputInputObject
+      CompletionUpdateWithWhereUniqueWithoutUserInput: CompletionUpdateWithWhereUniqueWithoutUserInputInputObject
+      CompletionUpdateWithoutUserDataInput: CompletionUpdateWithoutUserDataInputInputObject
+      CourseUpdateOneRequiredInput: CourseUpdateOneRequiredInputInputObject
+      CourseUpdateDataInput: CourseUpdateDataInputInputObject
+      OpenUniversityCourseUpdateManyWithoutCourseInput: OpenUniversityCourseUpdateManyWithoutCourseInputInputObject
+      OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput: OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInputInputObject
+      OpenUniversityCourseUpdateWithoutCourseDataInput: OpenUniversityCourseUpdateWithoutCourseDataInputInputObject
+      OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput: OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInputInputObject
+      OpenUniversityCourseScalarWhereInput: OpenUniversityCourseScalarWhereInputInputObject
+      OpenUniversityCourseUpdateManyWithWhereNestedInput: OpenUniversityCourseUpdateManyWithWhereNestedInputInputObject
+      OpenUniversityCourseUpdateManyDataInput: OpenUniversityCourseUpdateManyDataInputInputObject
+      CourseUpsertNestedInput: CourseUpsertNestedInputInputObject
+      CompletionUpsertWithWhereUniqueWithoutUserInput: CompletionUpsertWithWhereUniqueWithoutUserInputInputObject
+      CompletionScalarWhereInput: CompletionScalarWhereInputInputObject
+      CompletionUpdateManyWithWhereNestedInput: CompletionUpdateManyWithWhereNestedInputInputObject
+      CompletionUpdateManyDataInput: CompletionUpdateManyDataInputInputObject
       UserUpdateManyMutationInput: UserUpdateManyMutationInputInputObject
-      SlotCreateInput: SlotCreateInputInputObject
-      UserCreateManyWithoutSlotInput: UserCreateManyWithoutSlotInputInputObject
-      UserCreateWithoutSlotInput: UserCreateWithoutSlotInputInputObject
-      SlotUpdateInput: SlotUpdateInputInputObject
-      UserUpdateManyWithoutSlotInput: UserUpdateManyWithoutSlotInputInputObject
-      UserUpdateWithWhereUniqueWithoutSlotInput: UserUpdateWithWhereUniqueWithoutSlotInputInputObject
-      UserUpdateWithoutSlotDataInput: UserUpdateWithoutSlotDataInputInputObject
-      UserUpsertWithWhereUniqueWithoutSlotInput: UserUpsertWithWhereUniqueWithoutSlotInputInputObject
-      UserScalarWhereInput: UserScalarWhereInputInputObject
-      UserUpdateManyWithWhereNestedInput: UserUpdateManyWithWhereNestedInputInputObject
-      UserUpdateManyDataInput: UserUpdateManyDataInputInputObject
-      SlotUpdateManyMutationInput: SlotUpdateManyMutationInputInputObject
-      EssayCreateInput: EssayCreateInputInputObject
-      UserCreateOneWithoutEssaysInput: UserCreateOneWithoutEssaysInputInputObject
-      UserCreateWithoutEssaysInput: UserCreateWithoutEssaysInputInputObject
-      EssayUpdateInput: EssayUpdateInputInputObject
-      UserUpdateOneRequiredWithoutEssaysInput: UserUpdateOneRequiredWithoutEssaysInputInputObject
-      UserUpdateWithoutEssaysDataInput: UserUpdateWithoutEssaysDataInputInputObject
-      UserUpsertWithoutEssaysInput: UserUpsertWithoutEssaysInputInputObject
-      EssayUpdateManyMutationInput: EssayUpdateManyMutationInputInputObject
-      EssayTopicUpdateInput: EssayTopicUpdateInputInputObject
-      EssayTopicUpdateManyMutationInput: EssayTopicUpdateManyMutationInputInputObject
+      CourseUpdateInput: CourseUpdateInputInputObject
+      CourseUpdateManyMutationInput: CourseUpdateManyMutationInputInputObject
+      OpenUniversityCourseCreateInput: OpenUniversityCourseCreateInputInputObject
+      CourseCreateOneWithoutOpen_university_coursesInput: CourseCreateOneWithoutOpen_university_coursesInputInputObject
+      CourseCreateWithoutOpen_university_coursesInput: CourseCreateWithoutOpen_university_coursesInputInputObject
+      OpenUniversityCourseUpdateInput: OpenUniversityCourseUpdateInputInputObject
+      CourseUpdateOneRequiredWithoutOpen_university_coursesInput: CourseUpdateOneRequiredWithoutOpen_university_coursesInputInputObject
+      CourseUpdateWithoutOpen_university_coursesDataInput: CourseUpdateWithoutOpen_university_coursesDataInputInputObject
+      CourseUpsertWithoutOpen_university_coursesInput: CourseUpsertWithoutOpen_university_coursesInputInputObject
+      OpenUniversityCourseUpdateManyMutationInput: OpenUniversityCourseUpdateManyMutationInputInputObject
+      CompletionCreateInput: CompletionCreateInputInputObject
+      UserCreateOneWithoutCompletionsInput: UserCreateOneWithoutCompletionsInputInputObject
+      UserCreateWithoutCompletionsInput: UserCreateWithoutCompletionsInputInputObject
+      CompletionUpdateInput: CompletionUpdateInputInputObject
+      UserUpdateOneRequiredWithoutCompletionsInput: UserUpdateOneRequiredWithoutCompletionsInputInputObject
+      UserUpdateWithoutCompletionsDataInput: UserUpdateWithoutCompletionsDataInputInputObject
+      UserUpsertWithoutCompletionsInput: UserUpsertWithoutCompletionsInputInputObject
+      CompletionUpdateManyMutationInput: CompletionUpdateManyMutationInputInputObject
+      CompletionRegisteredCreateInput: CompletionRegisteredCreateInputInputObject
+      UserCreateOneInput: UserCreateOneInputInputObject
+      CompletionRegisteredUpdateInput: CompletionRegisteredUpdateInputInputObject
+      UserUpdateOneRequiredInput: UserUpdateOneRequiredInputInputObject
+      UserUpdateDataInput: UserUpdateDataInputInputObject
+      UserUpsertNestedInput: UserUpsertNestedInputInputObject
+      CompletionRegisteredUpdateManyMutationInput: CompletionRegisteredUpdateManyMutationInputInputObject
       UserSubscriptionWhereInput: UserSubscriptionWhereInputInputObject
-      SlotSubscriptionWhereInput: SlotSubscriptionWhereInputInputObject
-      EssaySubscriptionWhereInput: EssaySubscriptionWhereInputInputObject
-      EssayTopicSubscriptionWhereInput: EssayTopicSubscriptionWhereInputInputObject
+      CourseSubscriptionWhereInput: CourseSubscriptionWhereInputInputObject
+      OpenUniversityCourseSubscriptionWhereInput: OpenUniversityCourseSubscriptionWhereInputInputObject
+      CompletionSubscriptionWhereInput: CompletionSubscriptionWhereInputInputObject
+      CompletionRegisteredSubscriptionWhereInput: CompletionRegisteredSubscriptionWhereInputInputObject
     }
   }
   enumTypes: {
+    CompletionOrderByInput: CompletionOrderByInputValues,
+    OpenUniversityCourseOrderByInput: OpenUniversityCourseOrderByInputValues,
     UserOrderByInput: UserOrderByInputValues,
-    EssayOrderByInput: EssayOrderByInputValues,
-    SlotOrderByInput: SlotOrderByInputValues,
-    EssayTopicOrderByInput: EssayTopicOrderByInputValues,
+    CourseOrderByInput: CourseOrderByInputValues,
+    CompletionRegisteredOrderByInput: CompletionRegisteredOrderByInputValues,
     MutationType: MutationTypeValues,
   }
 }
@@ -152,29 +175,35 @@ type QueryObject =
   | { name: 'user', args?: QueryUserArgs[] | false, alias?: string  } 
   | { name: 'users', args?: QueryUsersArgs[] | false, alias?: string  } 
   | { name: 'usersConnection', args?: QueryUsersConnectionArgs[] | false, alias?: string  } 
-  | { name: 'slot', args?: QuerySlotArgs[] | false, alias?: string  } 
-  | { name: 'slots', args?: QuerySlotsArgs[] | false, alias?: string  } 
-  | { name: 'slotsConnection', args?: QuerySlotsConnectionArgs[] | false, alias?: string  } 
-  | { name: 'essay', args?: QueryEssayArgs[] | false, alias?: string  } 
-  | { name: 'essays', args?: QueryEssaysArgs[] | false, alias?: string  } 
-  | { name: 'essaysConnection', args?: QueryEssaysConnectionArgs[] | false, alias?: string  } 
-  | { name: 'essayTopic', args?: QueryEssayTopicArgs[] | false, alias?: string  } 
-  | { name: 'essayTopics', args?: QueryEssayTopicsArgs[] | false, alias?: string  } 
-  | { name: 'essayTopicsConnection', args?: QueryEssayTopicsConnectionArgs[] | false, alias?: string  } 
+  | { name: 'course', args?: QueryCourseArgs[] | false, alias?: string  } 
+  | { name: 'courses', args?: QueryCoursesArgs[] | false, alias?: string  } 
+  | { name: 'coursesConnection', args?: QueryCoursesConnectionArgs[] | false, alias?: string  } 
+  | { name: 'openUniversityCourse', args?: QueryOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'openUniversityCourses', args?: QueryOpenUniversityCoursesArgs[] | false, alias?: string  } 
+  | { name: 'openUniversityCoursesConnection', args?: QueryOpenUniversityCoursesConnectionArgs[] | false, alias?: string  } 
+  | { name: 'completion', args?: QueryCompletionArgs[] | false, alias?: string  } 
+  | { name: 'completions', args?: QueryCompletionsArgs[] | false, alias?: string  } 
+  | { name: 'completionsConnection', args?: QueryCompletionsConnectionArgs[] | false, alias?: string  } 
+  | { name: 'completionRegistered', args?: QueryCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'completionRegistereds', args?: QueryCompletionRegisteredsArgs[] | false, alias?: string  } 
+  | { name: 'completionRegisteredsConnection', args?: QueryCompletionRegisteredsConnectionArgs[] | false, alias?: string  } 
 
 type QueryFields =
   | 'user'
   | 'users'
   | 'usersConnection'
-  | 'slot'
-  | 'slots'
-  | 'slotsConnection'
-  | 'essay'
-  | 'essays'
-  | 'essaysConnection'
-  | 'essayTopic'
-  | 'essayTopics'
-  | 'essayTopicsConnection'
+  | 'course'
+  | 'courses'
+  | 'coursesConnection'
+  | 'openUniversityCourse'
+  | 'openUniversityCourses'
+  | 'openUniversityCoursesConnection'
+  | 'completion'
+  | 'completions'
+  | 'completionsConnection'
+  | 'completionRegistered'
+  | 'completionRegistereds'
+  | 'completionRegisteredsConnection'
 
 
 type QueryUserArgs =
@@ -195,17 +224,9 @@ type QueryUsersConnectionArgs =
   | 'before'
   | 'first'
   | 'last'
-type QuerySlotArgs =
+type QueryCourseArgs =
   | 'where'
-type QuerySlotsArgs =
-  | 'where'
-  | 'orderBy'
-  | 'skip'
-  | 'after'
-  | 'before'
-  | 'first'
-  | 'last'
-type QuerySlotsConnectionArgs =
+type QueryCoursesArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -213,9 +234,7 @@ type QuerySlotsConnectionArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryEssayArgs =
-  | 'where'
-type QueryEssaysArgs =
+type QueryCoursesConnectionArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -223,7 +242,9 @@ type QueryEssaysArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryEssaysConnectionArgs =
+type QueryOpenUniversityCourseArgs =
+  | 'where'
+type QueryOpenUniversityCoursesArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -231,9 +252,7 @@ type QueryEssaysConnectionArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryEssayTopicArgs =
-  | 'where'
-type QueryEssayTopicsArgs =
+type QueryOpenUniversityCoursesConnectionArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -241,7 +260,35 @@ type QueryEssayTopicsArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryEssayTopicsConnectionArgs =
+type QueryCompletionArgs =
+  | 'where'
+type QueryCompletionsArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryCompletionsConnectionArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryCompletionRegisteredArgs =
+  | 'where'
+type QueryCompletionRegisteredsArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryCompletionRegisteredsConnectionArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -291,122 +338,161 @@ export interface QueryFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.UserConnection> | prisma.UserConnection
   }
-  slot: {
-    type: 'Slot'
-    args: Record<QuerySlotArgs, core.NexusArgDef<string>>
+  course: {
+    type: 'Course'
+    args: Record<QueryCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where: SlotWhereUniqueInput }  ,
+      args: { where: CourseWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot | null> | prisma.Slot | null
+    ) => Promise<prisma.Course | null> | prisma.Course | null
   }
-  slots: {
-    type: 'Slot'
-    args: Record<QuerySlotsArgs, core.NexusArgDef<string>>
+  courses: {
+    type: 'Course'
+    args: Record<QueryCoursesArgs, core.NexusArgDef<string>>
     description: string
     list: true
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: SlotWhereInput | null, orderBy?: prisma.SlotOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: CourseWhereInput | null, orderBy?: prisma.CourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot[]> | prisma.Slot[]
+    ) => Promise<prisma.Course[]> | prisma.Course[]
   }
-  slotsConnection: {
-    type: 'SlotConnection'
-    args: Record<QuerySlotsConnectionArgs, core.NexusArgDef<string>>
+  coursesConnection: {
+    type: 'CourseConnection'
+    args: Record<QueryCoursesConnectionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: SlotWhereInput | null, orderBy?: prisma.SlotOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: CourseWhereInput | null, orderBy?: prisma.CourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.SlotConnection> | prisma.SlotConnection
+    ) => Promise<prisma.CourseConnection> | prisma.CourseConnection
   }
-  essay: {
-    type: 'Essay'
-    args: Record<QueryEssayArgs, core.NexusArgDef<string>>
+  openUniversityCourse: {
+    type: 'OpenUniversityCourse'
+    args: Record<QueryOpenUniversityCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where: EssayWhereUniqueInput }  ,
+      args: { where: OpenUniversityCourseWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay | null> | prisma.Essay | null
+    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
   }
-  essays: {
-    type: 'Essay'
-    args: Record<QueryEssaysArgs, core.NexusArgDef<string>>
+  openUniversityCourses: {
+    type: 'OpenUniversityCourse'
+    args: Record<QueryOpenUniversityCoursesArgs, core.NexusArgDef<string>>
     description: string
     list: true
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: EssayWhereInput | null, orderBy?: prisma.EssayOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay[]> | prisma.Essay[]
+    ) => Promise<prisma.OpenUniversityCourse[]> | prisma.OpenUniversityCourse[]
   }
-  essaysConnection: {
-    type: 'EssayConnection'
-    args: Record<QueryEssaysConnectionArgs, core.NexusArgDef<string>>
+  openUniversityCoursesConnection: {
+    type: 'OpenUniversityCourseConnection'
+    args: Record<QueryOpenUniversityCoursesConnectionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: EssayWhereInput | null, orderBy?: prisma.EssayOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayConnection> | prisma.EssayConnection
+    ) => Promise<prisma.OpenUniversityCourseConnection> | prisma.OpenUniversityCourseConnection
   }
-  essayTopic: {
-    type: 'EssayTopic'
-    args: Record<QueryEssayTopicArgs, core.NexusArgDef<string>>
+  completion: {
+    type: 'Completion'
+    args: Record<QueryCompletionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where: EssayTopicWhereUniqueInput }  ,
+      args: { where: CompletionWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
   }
-  essayTopics: {
-    type: 'EssayTopic'
-    args: Record<QueryEssayTopicsArgs, core.NexusArgDef<string>>
+  completions: {
+    type: 'Completion'
+    args: Record<QueryCompletionsArgs, core.NexusArgDef<string>>
     description: string
     list: true
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: EssayTopicWhereInput | null, orderBy?: prisma.EssayTopicOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: CompletionWhereInput | null, orderBy?: prisma.CompletionOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic[]> | prisma.EssayTopic[]
+    ) => Promise<prisma.Completion[]> | prisma.Completion[]
   }
-  essayTopicsConnection: {
-    type: 'EssayTopicConnection'
-    args: Record<QueryEssayTopicsConnectionArgs, core.NexusArgDef<string>>
+  completionsConnection: {
+    type: 'CompletionConnection'
+    args: Record<QueryCompletionsConnectionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: EssayTopicWhereInput | null, orderBy?: prisma.EssayTopicOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: CompletionWhereInput | null, orderBy?: prisma.CompletionOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopicConnection> | prisma.EssayTopicConnection
+    ) => Promise<prisma.CompletionConnection> | prisma.CompletionConnection
+  }
+  completionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<QueryCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where: CompletionRegisteredWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  completionRegistereds: {
+    type: 'CompletionRegistered'
+    args: Record<QueryCompletionRegisteredsArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: CompletionRegisteredWhereInput | null, orderBy?: prisma.CompletionRegisteredOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered[]> | prisma.CompletionRegistered[]
+  }
+  completionRegisteredsConnection: {
+    type: 'CompletionRegisteredConnection'
+    args: Record<QueryCompletionRegisteredsConnectionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: CompletionRegisteredWhereInput | null, orderBy?: prisma.CompletionRegisteredOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredConnection> | prisma.CompletionRegisteredConnection
   }
 }
   
@@ -416,32 +502,36 @@ export interface QueryFieldDetails {
 type UserObject =
   | UserFields
   | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'first_name', args?: [] | false, alias?: string  } 
   | { name: 'last_name', args?: [] | false, alias?: string  } 
+  | { name: 'username', args?: [] | false, alias?: string  } 
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
-  | { name: 'slot', args?: [] | false, alias?: string  } 
-  | { name: 'essays', args?: UserEssaysArgs[] | false, alias?: string  } 
   | { name: 'completed_enough', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
+  | { name: 'completions', args?: UserCompletionsArgs[] | false, alias?: string  } 
 
 type UserFields =
   | 'id'
+  | 'upstream_id'
   | 'createdAt'
   | 'updatedAt'
-  | 'upstream_id'
   | 'first_name'
   | 'last_name'
+  | 'username'
   | 'email'
   | 'administrator'
-  | 'slot'
-  | 'essays'
   | 'completed_enough'
+  | 'student_number'
+  | 'real_student_number'
+  | 'completions'
 
 
-type UserEssaysArgs =
+type UserCompletionsArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -453,7 +543,15 @@ type UserEssaysArgs =
 
 export interface UserFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  upstream_id: {
+    type: 'Int'
     args: {}
     description: string
     list: undefined
@@ -476,14 +574,6 @@ export interface UserFieldDetails {
     nullable: false
     resolve: undefined
   }
-  upstream_id: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
   first_name: {
     type: 'String'
     args: {}
@@ -493,6 +583,14 @@ export interface UserFieldDetails {
     resolve: undefined
   }
   last_name: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  username: {
     type: 'String'
     args: {}
     description: string
@@ -516,32 +614,6 @@ export interface UserFieldDetails {
     nullable: false
     resolve: undefined
   }
-  slot: {
-    type: 'Slot'
-    args: {}
-    description: string
-    list: undefined
-    nullable: true
-    resolve: (
-      root: core.RootValue<"User">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot | null> | prisma.Slot | null
-  }
-  essays: {
-    type: 'Essay'
-    args: Record<UserEssaysArgs, core.NexusArgDef<string>>
-    description: string
-    list: true
-    nullable: false
-    resolve: (
-      root: core.RootValue<"User">,
-      args: { where?: EssayWhereInput | null, orderBy?: prisma.EssayOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay[]> | prisma.Essay[]
-  }
   completed_enough: {
     type: 'Boolean'
     args: {}
@@ -550,32 +622,174 @@ export interface UserFieldDetails {
     nullable: false
     resolve: undefined
   }
+  student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  completions: {
+    type: 'Completion'
+    args: Record<UserCompletionsArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"User">,
+      args: { where?: CompletionWhereInput | null, orderBy?: prisma.CompletionOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Completion[]> | prisma.Completion[]
+  }
 }
   
 
-// Types for Slot
+// Types for Completion
 
-type SlotObject =
-  | SlotFields
+type CompletionObject =
+  | CompletionFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'capacity', args?: [] | false, alias?: string  } 
-  | { name: 'registered', args?: SlotRegisteredArgs[] | false, alias?: string  } 
-  | { name: 'starts_at', args?: [] | false, alias?: string  } 
-  | { name: 'ends_at', args?: [] | false, alias?: string  } 
+  | { name: 'user_upstream_id', args?: [] | false, alias?: string  } 
+  | { name: 'email', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
+  | { name: 'user', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+  | { name: 'completion_language', args?: [] | false, alias?: string  } 
 
-type SlotFields =
+type CompletionFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
-  | 'capacity'
-  | 'registered'
-  | 'starts_at'
-  | 'ends_at'
+  | 'user_upstream_id'
+  | 'email'
+  | 'student_number'
+  | 'user'
+  | 'course'
+  | 'completion_language'
 
 
-type SlotRegisteredArgs =
+
+  
+
+export interface CompletionFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  user_upstream_id: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  email: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  user: {
+    type: 'User'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Completion">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.User> | prisma.User
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Completion">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
+  }
+  completion_language: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+}
+  
+
+// Types for Course
+
+type CourseObject =
+  | CourseFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'name', args?: [] | false, alias?: string  } 
+  | { name: 'slug', args?: [] | false, alias?: string  } 
+  | { name: 'open_university_courses', args?: CourseOpen_university_coursesArgs[] | false, alias?: string  } 
+
+type CourseFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'name'
+  | 'slug'
+  | 'open_university_courses'
+
+
+type CourseOpen_university_coursesArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -585,9 +799,9 @@ type SlotRegisteredArgs =
   | 'last'
   
 
-export interface SlotFieldDetails {
+export interface CourseFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
     args: {}
     description: string
     list: undefined
@@ -610,72 +824,62 @@ export interface SlotFieldDetails {
     nullable: false
     resolve: undefined
   }
-  capacity: {
-    type: 'Int'
+  name: {
+    type: 'String'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: undefined
   }
-  registered: {
-    type: 'User'
-    args: Record<SlotRegisteredArgs, core.NexusArgDef<string>>
+  slug: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  open_university_courses: {
+    type: 'OpenUniversityCourse'
+    args: Record<CourseOpen_university_coursesArgs, core.NexusArgDef<string>>
     description: string
     list: true
     nullable: false
     resolve: (
-      root: core.RootValue<"Slot">,
-      args: { where?: UserWhereInput | null, orderBy?: prisma.UserOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      root: core.RootValue<"Course">,
+      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User[]> | prisma.User[]
-  }
-  starts_at: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  ends_at: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
+    ) => Promise<prisma.OpenUniversityCourse[]> | prisma.OpenUniversityCourse[]
   }
 }
   
 
-// Types for Essay
+// Types for OpenUniversityCourse
 
-type EssayObject =
-  | EssayFields
+type OpenUniversityCourseObject =
+  | OpenUniversityCourseFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'text', args?: [] | false, alias?: string  } 
-  | { name: 'author', args?: [] | false, alias?: string  } 
-  | { name: 'topic', args?: [] | false, alias?: string  } 
+  | { name: 'course_code', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
 
-type EssayFields =
+type OpenUniversityCourseFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
-  | 'text'
-  | 'author'
-  | 'topic'
+  | 'course_code'
+  | 'course'
 
 
 
   
 
-export interface EssayFieldDetails {
+export interface OpenUniversityCourseFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
     args: {}
     description: string
     list: undefined
@@ -698,7 +902,7 @@ export interface EssayFieldDetails {
     nullable: false
     resolve: undefined
   }
-  text: {
+  course_code: {
     type: 'String'
     args: {}
     description: string
@@ -706,116 +910,18 @@ export interface EssayFieldDetails {
     nullable: false
     resolve: undefined
   }
-  author: {
-    type: 'User'
+  course: {
+    type: 'Course'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"Essay">,
+      root: core.RootValue<"OpenUniversityCourse">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User> | prisma.User
-  }
-  topic: {
-    type: 'EssayTopic'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: (
-      root: core.RootValue<"Essay">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
-  }
-}
-  
-
-// Types for EssayTopic
-
-type EssayTopicObject =
-  | EssayTopicFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'createdAt', args?: [] | false, alias?: string  } 
-  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'title', args?: [] | false, alias?: string  } 
-  | { name: 'description', args?: [] | false, alias?: string  } 
-  | { name: 'min_words', args?: [] | false, alias?: string  } 
-  | { name: 'max_words', args?: [] | false, alias?: string  } 
-
-type EssayTopicFields =
-  | 'id'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'title'
-  | 'description'
-  | 'min_words'
-  | 'max_words'
-
-
-
-  
-
-export interface EssayTopicFieldDetails {
-  id: {
-    type: 'ID'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  createdAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  updatedAt: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  title: {
-    type: 'String'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  description: {
-    type: 'String'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  min_words: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  max_words: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
+    ) => Promise<prisma.Course> | prisma.Course
   }
 }
   
@@ -1000,15 +1106,15 @@ export interface AggregateUserFieldDetails {
 }
   
 
-// Types for SlotConnection
+// Types for CourseConnection
 
-type SlotConnectionObject =
-  | SlotConnectionFields
+type CourseConnectionObject =
+  | CourseConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
   | { name: 'aggregate', args?: [] | false, alias?: string  } 
 
-type SlotConnectionFields =
+type CourseConnectionFields =
   | 'pageInfo'
   | 'edges'
   | 'aggregate'
@@ -1017,7 +1123,7 @@ type SlotConnectionFields =
 
   
 
-export interface SlotConnectionFieldDetails {
+export interface CourseConnectionFieldDetails {
   pageInfo: {
     type: 'PageInfo'
     args: {}
@@ -1025,49 +1131,49 @@ export interface SlotConnectionFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"SlotConnection">,
+      root: core.RootValue<"CourseConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
-    type: 'SlotEdge'
+    type: 'CourseEdge'
     args: {}
     description: string
     list: true
     nullable: false
     resolve: (
-      root: core.RootValue<"SlotConnection">,
+      root: core.RootValue<"CourseConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.SlotEdge[]> | prisma.SlotEdge[]
+    ) => Promise<prisma.CourseEdge[]> | prisma.CourseEdge[]
   }
   aggregate: {
-    type: 'AggregateSlot'
+    type: 'AggregateCourse'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"SlotConnection">,
+      root: core.RootValue<"CourseConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.AggregateSlot> | prisma.AggregateSlot
+    ) => Promise<prisma.AggregateCourse> | prisma.AggregateCourse
   }
 }
   
 
-// Types for SlotEdge
+// Types for CourseEdge
 
-type SlotEdgeObject =
-  | SlotEdgeFields
+type CourseEdgeObject =
+  | CourseEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
 
-type SlotEdgeFields =
+type CourseEdgeFields =
   | 'node'
   | 'cursor'
 
@@ -1075,19 +1181,19 @@ type SlotEdgeFields =
 
   
 
-export interface SlotEdgeFieldDetails {
+export interface CourseEdgeFieldDetails {
   node: {
-    type: 'Slot'
+    type: 'Course'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"SlotEdge">,
+      root: core.RootValue<"CourseEdge">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot> | prisma.Slot
+    ) => Promise<prisma.Course> | prisma.Course
   }
   cursor: {
     type: 'String'
@@ -1100,20 +1206,20 @@ export interface SlotEdgeFieldDetails {
 }
   
 
-// Types for AggregateSlot
+// Types for AggregateCourse
 
-type AggregateSlotObject =
-  | AggregateSlotFields
+type AggregateCourseObject =
+  | AggregateCourseFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
-type AggregateSlotFields =
+type AggregateCourseFields =
   | 'count'
 
 
 
   
 
-export interface AggregateSlotFieldDetails {
+export interface AggregateCourseFieldDetails {
   count: {
     type: 'Int'
     args: {}
@@ -1125,15 +1231,15 @@ export interface AggregateSlotFieldDetails {
 }
   
 
-// Types for EssayConnection
+// Types for OpenUniversityCourseConnection
 
-type EssayConnectionObject =
-  | EssayConnectionFields
+type OpenUniversityCourseConnectionObject =
+  | OpenUniversityCourseConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
   | { name: 'aggregate', args?: [] | false, alias?: string  } 
 
-type EssayConnectionFields =
+type OpenUniversityCourseConnectionFields =
   | 'pageInfo'
   | 'edges'
   | 'aggregate'
@@ -1142,7 +1248,7 @@ type EssayConnectionFields =
 
   
 
-export interface EssayConnectionFieldDetails {
+export interface OpenUniversityCourseConnectionFieldDetails {
   pageInfo: {
     type: 'PageInfo'
     args: {}
@@ -1150,49 +1256,49 @@ export interface EssayConnectionFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayConnection">,
+      root: core.RootValue<"OpenUniversityCourseConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
-    type: 'EssayEdge'
+    type: 'OpenUniversityCourseEdge'
     args: {}
     description: string
     list: true
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayConnection">,
+      root: core.RootValue<"OpenUniversityCourseConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayEdge[]> | prisma.EssayEdge[]
+    ) => Promise<prisma.OpenUniversityCourseEdge[]> | prisma.OpenUniversityCourseEdge[]
   }
   aggregate: {
-    type: 'AggregateEssay'
+    type: 'AggregateOpenUniversityCourse'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayConnection">,
+      root: core.RootValue<"OpenUniversityCourseConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.AggregateEssay> | prisma.AggregateEssay
+    ) => Promise<prisma.AggregateOpenUniversityCourse> | prisma.AggregateOpenUniversityCourse
   }
 }
   
 
-// Types for EssayEdge
+// Types for OpenUniversityCourseEdge
 
-type EssayEdgeObject =
-  | EssayEdgeFields
+type OpenUniversityCourseEdgeObject =
+  | OpenUniversityCourseEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
 
-type EssayEdgeFields =
+type OpenUniversityCourseEdgeFields =
   | 'node'
   | 'cursor'
 
@@ -1200,19 +1306,19 @@ type EssayEdgeFields =
 
   
 
-export interface EssayEdgeFieldDetails {
+export interface OpenUniversityCourseEdgeFieldDetails {
   node: {
-    type: 'Essay'
+    type: 'OpenUniversityCourse'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayEdge">,
+      root: core.RootValue<"OpenUniversityCourseEdge">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay> | prisma.Essay
+    ) => Promise<prisma.OpenUniversityCourse> | prisma.OpenUniversityCourse
   }
   cursor: {
     type: 'String'
@@ -1225,20 +1331,20 @@ export interface EssayEdgeFieldDetails {
 }
   
 
-// Types for AggregateEssay
+// Types for AggregateOpenUniversityCourse
 
-type AggregateEssayObject =
-  | AggregateEssayFields
+type AggregateOpenUniversityCourseObject =
+  | AggregateOpenUniversityCourseFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
-type AggregateEssayFields =
+type AggregateOpenUniversityCourseFields =
   | 'count'
 
 
 
   
 
-export interface AggregateEssayFieldDetails {
+export interface AggregateOpenUniversityCourseFieldDetails {
   count: {
     type: 'Int'
     args: {}
@@ -1250,15 +1356,15 @@ export interface AggregateEssayFieldDetails {
 }
   
 
-// Types for EssayTopicConnection
+// Types for CompletionConnection
 
-type EssayTopicConnectionObject =
-  | EssayTopicConnectionFields
+type CompletionConnectionObject =
+  | CompletionConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
   | { name: 'aggregate', args?: [] | false, alias?: string  } 
 
-type EssayTopicConnectionFields =
+type CompletionConnectionFields =
   | 'pageInfo'
   | 'edges'
   | 'aggregate'
@@ -1267,7 +1373,7 @@ type EssayTopicConnectionFields =
 
   
 
-export interface EssayTopicConnectionFieldDetails {
+export interface CompletionConnectionFieldDetails {
   pageInfo: {
     type: 'PageInfo'
     args: {}
@@ -1275,49 +1381,49 @@ export interface EssayTopicConnectionFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayTopicConnection">,
+      root: core.RootValue<"CompletionConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
-    type: 'EssayTopicEdge'
+    type: 'CompletionEdge'
     args: {}
     description: string
     list: true
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayTopicConnection">,
+      root: core.RootValue<"CompletionConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopicEdge[]> | prisma.EssayTopicEdge[]
+    ) => Promise<prisma.CompletionEdge[]> | prisma.CompletionEdge[]
   }
   aggregate: {
-    type: 'AggregateEssayTopic'
+    type: 'AggregateCompletion'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayTopicConnection">,
+      root: core.RootValue<"CompletionConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.AggregateEssayTopic> | prisma.AggregateEssayTopic
+    ) => Promise<prisma.AggregateCompletion> | prisma.AggregateCompletion
   }
 }
   
 
-// Types for EssayTopicEdge
+// Types for CompletionEdge
 
-type EssayTopicEdgeObject =
-  | EssayTopicEdgeFields
+type CompletionEdgeObject =
+  | CompletionEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
 
-type EssayTopicEdgeFields =
+type CompletionEdgeFields =
   | 'node'
   | 'cursor'
 
@@ -1325,19 +1431,19 @@ type EssayTopicEdgeFields =
 
   
 
-export interface EssayTopicEdgeFieldDetails {
+export interface CompletionEdgeFieldDetails {
   node: {
-    type: 'EssayTopic'
+    type: 'Completion'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayTopicEdge">,
+      root: core.RootValue<"CompletionEdge">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
+    ) => Promise<prisma.Completion> | prisma.Completion
   }
   cursor: {
     type: 'String'
@@ -1350,20 +1456,240 @@ export interface EssayTopicEdgeFieldDetails {
 }
   
 
-// Types for AggregateEssayTopic
+// Types for AggregateCompletion
 
-type AggregateEssayTopicObject =
-  | AggregateEssayTopicFields
+type AggregateCompletionObject =
+  | AggregateCompletionFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
-type AggregateEssayTopicFields =
+type AggregateCompletionFields =
   | 'count'
 
 
 
   
 
-export interface AggregateEssayTopicFieldDetails {
+export interface AggregateCompletionFieldDetails {
+  count: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for CompletionRegistered
+
+type CompletionRegisteredObject =
+  | CompletionRegisteredFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'user', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
+  | { name: 'organisation', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'user'
+  | 'course'
+  | 'real_student_number'
+  | 'organisation'
+
+
+
+  
+
+export interface CompletionRegisteredFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  user: {
+    type: 'User'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegistered">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.User> | prisma.User
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegistered">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  organisation: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for CompletionRegisteredConnection
+
+type CompletionRegisteredConnectionObject =
+  | CompletionRegisteredConnectionFields
+  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
+  | { name: 'edges', args?: [] | false, alias?: string  } 
+  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredConnectionFields =
+  | 'pageInfo'
+  | 'edges'
+  | 'aggregate'
+
+
+
+  
+
+export interface CompletionRegisteredConnectionFieldDetails {
+  pageInfo: {
+    type: 'PageInfo'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
+  }
+  edges: {
+    type: 'CompletionRegisteredEdge'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredEdge[]> | prisma.CompletionRegisteredEdge[]
+  }
+  aggregate: {
+    type: 'AggregateCompletionRegistered'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.AggregateCompletionRegistered> | prisma.AggregateCompletionRegistered
+  }
+}
+  
+
+// Types for CompletionRegisteredEdge
+
+type CompletionRegisteredEdgeObject =
+  | CompletionRegisteredEdgeFields
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'cursor', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredEdgeFields =
+  | 'node'
+  | 'cursor'
+
+
+
+  
+
+export interface CompletionRegisteredEdgeFieldDetails {
+  node: {
+    type: 'CompletionRegistered'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredEdge">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered> | prisma.CompletionRegistered
+  }
+  cursor: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for AggregateCompletionRegistered
+
+type AggregateCompletionRegisteredObject =
+  | AggregateCompletionRegisteredFields
+  | { name: 'count', args?: [] | false, alias?: string  } 
+
+type AggregateCompletionRegisteredFields =
+  | 'count'
+
+
+
+  
+
+export interface AggregateCompletionRegisteredFieldDetails {
   count: {
     type: 'Int'
     args: {}
@@ -1385,24 +1711,30 @@ type MutationObject =
   | { name: 'upsertUser', args?: MutationUpsertUserArgs[] | false, alias?: string  } 
   | { name: 'deleteUser', args?: MutationDeleteUserArgs[] | false, alias?: string  } 
   | { name: 'deleteManyUsers', args?: MutationDeleteManyUsersArgs[] | false, alias?: string  } 
-  | { name: 'createSlot', args?: MutationCreateSlotArgs[] | false, alias?: string  } 
-  | { name: 'updateSlot', args?: MutationUpdateSlotArgs[] | false, alias?: string  } 
-  | { name: 'updateManySlots', args?: MutationUpdateManySlotsArgs[] | false, alias?: string  } 
-  | { name: 'upsertSlot', args?: MutationUpsertSlotArgs[] | false, alias?: string  } 
-  | { name: 'deleteSlot', args?: MutationDeleteSlotArgs[] | false, alias?: string  } 
-  | { name: 'deleteManySlots', args?: MutationDeleteManySlotsArgs[] | false, alias?: string  } 
-  | { name: 'createEssay', args?: MutationCreateEssayArgs[] | false, alias?: string  } 
-  | { name: 'updateEssay', args?: MutationUpdateEssayArgs[] | false, alias?: string  } 
-  | { name: 'updateManyEssays', args?: MutationUpdateManyEssaysArgs[] | false, alias?: string  } 
-  | { name: 'upsertEssay', args?: MutationUpsertEssayArgs[] | false, alias?: string  } 
-  | { name: 'deleteEssay', args?: MutationDeleteEssayArgs[] | false, alias?: string  } 
-  | { name: 'deleteManyEssays', args?: MutationDeleteManyEssaysArgs[] | false, alias?: string  } 
-  | { name: 'createEssayTopic', args?: MutationCreateEssayTopicArgs[] | false, alias?: string  } 
-  | { name: 'updateEssayTopic', args?: MutationUpdateEssayTopicArgs[] | false, alias?: string  } 
-  | { name: 'updateManyEssayTopics', args?: MutationUpdateManyEssayTopicsArgs[] | false, alias?: string  } 
-  | { name: 'upsertEssayTopic', args?: MutationUpsertEssayTopicArgs[] | false, alias?: string  } 
-  | { name: 'deleteEssayTopic', args?: MutationDeleteEssayTopicArgs[] | false, alias?: string  } 
-  | { name: 'deleteManyEssayTopics', args?: MutationDeleteManyEssayTopicsArgs[] | false, alias?: string  } 
+  | { name: 'createCourse', args?: MutationCreateCourseArgs[] | false, alias?: string  } 
+  | { name: 'updateCourse', args?: MutationUpdateCourseArgs[] | false, alias?: string  } 
+  | { name: 'updateManyCourses', args?: MutationUpdateManyCoursesArgs[] | false, alias?: string  } 
+  | { name: 'upsertCourse', args?: MutationUpsertCourseArgs[] | false, alias?: string  } 
+  | { name: 'deleteCourse', args?: MutationDeleteCourseArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyCourses', args?: MutationDeleteManyCoursesArgs[] | false, alias?: string  } 
+  | { name: 'createOpenUniversityCourse', args?: MutationCreateOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'updateOpenUniversityCourse', args?: MutationUpdateOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'updateManyOpenUniversityCourses', args?: MutationUpdateManyOpenUniversityCoursesArgs[] | false, alias?: string  } 
+  | { name: 'upsertOpenUniversityCourse', args?: MutationUpsertOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'deleteOpenUniversityCourse', args?: MutationDeleteOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyOpenUniversityCourses', args?: MutationDeleteManyOpenUniversityCoursesArgs[] | false, alias?: string  } 
+  | { name: 'createCompletion', args?: MutationCreateCompletionArgs[] | false, alias?: string  } 
+  | { name: 'updateCompletion', args?: MutationUpdateCompletionArgs[] | false, alias?: string  } 
+  | { name: 'updateManyCompletions', args?: MutationUpdateManyCompletionsArgs[] | false, alias?: string  } 
+  | { name: 'upsertCompletion', args?: MutationUpsertCompletionArgs[] | false, alias?: string  } 
+  | { name: 'deleteCompletion', args?: MutationDeleteCompletionArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyCompletions', args?: MutationDeleteManyCompletionsArgs[] | false, alias?: string  } 
+  | { name: 'createCompletionRegistered', args?: MutationCreateCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'updateCompletionRegistered', args?: MutationUpdateCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'updateManyCompletionRegistereds', args?: MutationUpdateManyCompletionRegisteredsArgs[] | false, alias?: string  } 
+  | { name: 'upsertCompletionRegistered', args?: MutationUpsertCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'deleteCompletionRegistered', args?: MutationDeleteCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyCompletionRegistereds', args?: MutationDeleteManyCompletionRegisteredsArgs[] | false, alias?: string  } 
 
 type MutationFields =
   | 'createUser'
@@ -1411,24 +1743,30 @@ type MutationFields =
   | 'upsertUser'
   | 'deleteUser'
   | 'deleteManyUsers'
-  | 'createSlot'
-  | 'updateSlot'
-  | 'updateManySlots'
-  | 'upsertSlot'
-  | 'deleteSlot'
-  | 'deleteManySlots'
-  | 'createEssay'
-  | 'updateEssay'
-  | 'updateManyEssays'
-  | 'upsertEssay'
-  | 'deleteEssay'
-  | 'deleteManyEssays'
-  | 'createEssayTopic'
-  | 'updateEssayTopic'
-  | 'updateManyEssayTopics'
-  | 'upsertEssayTopic'
-  | 'deleteEssayTopic'
-  | 'deleteManyEssayTopics'
+  | 'createCourse'
+  | 'updateCourse'
+  | 'updateManyCourses'
+  | 'upsertCourse'
+  | 'deleteCourse'
+  | 'deleteManyCourses'
+  | 'createOpenUniversityCourse'
+  | 'updateOpenUniversityCourse'
+  | 'updateManyOpenUniversityCourses'
+  | 'upsertOpenUniversityCourse'
+  | 'deleteOpenUniversityCourse'
+  | 'deleteManyOpenUniversityCourses'
+  | 'createCompletion'
+  | 'updateCompletion'
+  | 'updateManyCompletions'
+  | 'upsertCompletion'
+  | 'deleteCompletion'
+  | 'deleteManyCompletions'
+  | 'createCompletionRegistered'
+  | 'updateCompletionRegistered'
+  | 'updateManyCompletionRegistereds'
+  | 'upsertCompletionRegistered'
+  | 'deleteCompletionRegistered'
+  | 'deleteManyCompletionRegistereds'
 
 
 type MutationCreateUserArgs =
@@ -1447,53 +1785,69 @@ type MutationDeleteUserArgs =
   | 'where'
 type MutationDeleteManyUsersArgs =
   | 'where'
-type MutationCreateSlotArgs =
+type MutationCreateCourseArgs =
   | 'data'
-type MutationUpdateSlotArgs =
-  | 'data'
-  | 'where'
-type MutationUpdateManySlotsArgs =
+type MutationUpdateCourseArgs =
   | 'data'
   | 'where'
-type MutationUpsertSlotArgs =
+type MutationUpdateManyCoursesArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertCourseArgs =
   | 'where'
   | 'create'
   | 'update'
-type MutationDeleteSlotArgs =
+type MutationDeleteCourseArgs =
   | 'where'
-type MutationDeleteManySlotsArgs =
+type MutationDeleteManyCoursesArgs =
   | 'where'
-type MutationCreateEssayArgs =
+type MutationCreateOpenUniversityCourseArgs =
   | 'data'
-type MutationUpdateEssayArgs =
-  | 'data'
-  | 'where'
-type MutationUpdateManyEssaysArgs =
+type MutationUpdateOpenUniversityCourseArgs =
   | 'data'
   | 'where'
-type MutationUpsertEssayArgs =
+type MutationUpdateManyOpenUniversityCoursesArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertOpenUniversityCourseArgs =
   | 'where'
   | 'create'
   | 'update'
-type MutationDeleteEssayArgs =
+type MutationDeleteOpenUniversityCourseArgs =
   | 'where'
-type MutationDeleteManyEssaysArgs =
+type MutationDeleteManyOpenUniversityCoursesArgs =
   | 'where'
-type MutationCreateEssayTopicArgs =
+type MutationCreateCompletionArgs =
   | 'data'
-type MutationUpdateEssayTopicArgs =
-  | 'data'
-  | 'where'
-type MutationUpdateManyEssayTopicsArgs =
+type MutationUpdateCompletionArgs =
   | 'data'
   | 'where'
-type MutationUpsertEssayTopicArgs =
+type MutationUpdateManyCompletionsArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertCompletionArgs =
   | 'where'
   | 'create'
   | 'update'
-type MutationDeleteEssayTopicArgs =
+type MutationDeleteCompletionArgs =
   | 'where'
-type MutationDeleteManyEssayTopicsArgs =
+type MutationDeleteManyCompletionsArgs =
+  | 'where'
+type MutationCreateCompletionRegisteredArgs =
+  | 'data'
+type MutationUpdateCompletionRegisteredArgs =
+  | 'data'
+  | 'where'
+type MutationUpdateManyCompletionRegisteredsArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertCompletionRegisteredArgs =
+  | 'where'
+  | 'create'
+  | 'update'
+type MutationDeleteCompletionRegisteredArgs =
+  | 'where'
+type MutationDeleteManyCompletionRegisteredsArgs =
   | 'where'
   
 
@@ -1576,236 +1930,314 @@ export interface MutationFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  createSlot: {
-    type: 'Slot'
-    args: Record<MutationCreateSlotArgs, core.NexusArgDef<string>>
+  createCourse: {
+    type: 'Course'
+    args: Record<MutationCreateCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: SlotCreateInput }  ,
+      args: { data: CourseCreateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot> | prisma.Slot
+    ) => Promise<prisma.Course> | prisma.Course
   }
-  updateSlot: {
-    type: 'Slot'
-    args: Record<MutationUpdateSlotArgs, core.NexusArgDef<string>>
+  updateCourse: {
+    type: 'Course'
+    args: Record<MutationUpdateCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: SlotUpdateInput, where: SlotWhereUniqueInput }  ,
+      args: { data: CourseUpdateInput, where: CourseWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot | null> | prisma.Slot | null
+    ) => Promise<prisma.Course | null> | prisma.Course | null
   }
-  updateManySlots: {
+  updateManyCourses: {
     type: 'BatchPayload'
-    args: Record<MutationUpdateManySlotsArgs, core.NexusArgDef<string>>
+    args: Record<MutationUpdateManyCoursesArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: SlotUpdateManyMutationInput, where?: SlotWhereInput | null }  ,
+      args: { data: CourseUpdateManyMutationInput, where?: CourseWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  upsertSlot: {
-    type: 'Slot'
-    args: Record<MutationUpsertSlotArgs, core.NexusArgDef<string>>
+  upsertCourse: {
+    type: 'Course'
+    args: Record<MutationUpsertCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: SlotWhereUniqueInput, create: SlotCreateInput, update: SlotUpdateInput }  ,
+      args: { where: CourseWhereUniqueInput, create: CourseCreateInput, update: CourseUpdateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot> | prisma.Slot
+    ) => Promise<prisma.Course> | prisma.Course
   }
-  deleteSlot: {
-    type: 'Slot'
-    args: Record<MutationDeleteSlotArgs, core.NexusArgDef<string>>
+  deleteCourse: {
+    type: 'Course'
+    args: Record<MutationDeleteCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: SlotWhereUniqueInput }  ,
+      args: { where: CourseWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot | null> | prisma.Slot | null
+    ) => Promise<prisma.Course | null> | prisma.Course | null
   }
-  deleteManySlots: {
+  deleteManyCourses: {
     type: 'BatchPayload'
-    args: Record<MutationDeleteManySlotsArgs, core.NexusArgDef<string>>
+    args: Record<MutationDeleteManyCoursesArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where?: SlotWhereInput | null }  ,
+      args: { where?: CourseWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  createEssay: {
-    type: 'Essay'
-    args: Record<MutationCreateEssayArgs, core.NexusArgDef<string>>
+  createOpenUniversityCourse: {
+    type: 'OpenUniversityCourse'
+    args: Record<MutationCreateOpenUniversityCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: EssayCreateInput }  ,
+      args: { data: OpenUniversityCourseCreateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay> | prisma.Essay
+    ) => Promise<prisma.OpenUniversityCourse> | prisma.OpenUniversityCourse
   }
-  updateEssay: {
-    type: 'Essay'
-    args: Record<MutationUpdateEssayArgs, core.NexusArgDef<string>>
+  updateOpenUniversityCourse: {
+    type: 'OpenUniversityCourse'
+    args: Record<MutationUpdateOpenUniversityCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: EssayUpdateInput, where: EssayWhereUniqueInput }  ,
+      args: { data: OpenUniversityCourseUpdateInput, where: OpenUniversityCourseWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay | null> | prisma.Essay | null
+    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
   }
-  updateManyEssays: {
+  updateManyOpenUniversityCourses: {
     type: 'BatchPayload'
-    args: Record<MutationUpdateManyEssaysArgs, core.NexusArgDef<string>>
+    args: Record<MutationUpdateManyOpenUniversityCoursesArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: EssayUpdateManyMutationInput, where?: EssayWhereInput | null }  ,
+      args: { data: OpenUniversityCourseUpdateManyMutationInput, where?: OpenUniversityCourseWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  upsertEssay: {
-    type: 'Essay'
-    args: Record<MutationUpsertEssayArgs, core.NexusArgDef<string>>
+  upsertOpenUniversityCourse: {
+    type: 'OpenUniversityCourse'
+    args: Record<MutationUpsertOpenUniversityCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: EssayWhereUniqueInput, create: EssayCreateInput, update: EssayUpdateInput }  ,
+      args: { where: OpenUniversityCourseWhereUniqueInput, create: OpenUniversityCourseCreateInput, update: OpenUniversityCourseUpdateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay> | prisma.Essay
+    ) => Promise<prisma.OpenUniversityCourse> | prisma.OpenUniversityCourse
   }
-  deleteEssay: {
-    type: 'Essay'
-    args: Record<MutationDeleteEssayArgs, core.NexusArgDef<string>>
+  deleteOpenUniversityCourse: {
+    type: 'OpenUniversityCourse'
+    args: Record<MutationDeleteOpenUniversityCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: EssayWhereUniqueInput }  ,
+      args: { where: OpenUniversityCourseWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay | null> | prisma.Essay | null
+    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
   }
-  deleteManyEssays: {
+  deleteManyOpenUniversityCourses: {
     type: 'BatchPayload'
-    args: Record<MutationDeleteManyEssaysArgs, core.NexusArgDef<string>>
+    args: Record<MutationDeleteManyOpenUniversityCoursesArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where?: EssayWhereInput | null }  ,
+      args: { where?: OpenUniversityCourseWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  createEssayTopic: {
-    type: 'EssayTopic'
-    args: Record<MutationCreateEssayTopicArgs, core.NexusArgDef<string>>
+  createCompletion: {
+    type: 'Completion'
+    args: Record<MutationCreateCompletionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: EssayTopicCreateInput }  ,
+      args: { data: CompletionCreateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
+    ) => Promise<prisma.Completion> | prisma.Completion
   }
-  updateEssayTopic: {
-    type: 'EssayTopic'
-    args: Record<MutationUpdateEssayTopicArgs, core.NexusArgDef<string>>
+  updateCompletion: {
+    type: 'Completion'
+    args: Record<MutationUpdateCompletionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: EssayTopicUpdateInput, where: EssayTopicWhereUniqueInput }  ,
+      args: { data: CompletionUpdateInput, where: CompletionWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
   }
-  updateManyEssayTopics: {
+  updateManyCompletions: {
     type: 'BatchPayload'
-    args: Record<MutationUpdateManyEssayTopicsArgs, core.NexusArgDef<string>>
+    args: Record<MutationUpdateManyCompletionsArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: EssayTopicUpdateManyMutationInput, where?: EssayTopicWhereInput | null }  ,
+      args: { data: CompletionUpdateManyMutationInput, where?: CompletionWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  upsertEssayTopic: {
-    type: 'EssayTopic'
-    args: Record<MutationUpsertEssayTopicArgs, core.NexusArgDef<string>>
+  upsertCompletion: {
+    type: 'Completion'
+    args: Record<MutationUpsertCompletionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: EssayTopicWhereUniqueInput, create: EssayTopicCreateInput, update: EssayTopicUpdateInput }  ,
+      args: { where: CompletionWhereUniqueInput, create: CompletionCreateInput, update: CompletionUpdateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic> | prisma.EssayTopic
+    ) => Promise<prisma.Completion> | prisma.Completion
   }
-  deleteEssayTopic: {
-    type: 'EssayTopic'
-    args: Record<MutationDeleteEssayTopicArgs, core.NexusArgDef<string>>
+  deleteCompletion: {
+    type: 'Completion'
+    args: Record<MutationDeleteCompletionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: EssayTopicWhereUniqueInput }  ,
+      args: { where: CompletionWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
   }
-  deleteManyEssayTopics: {
+  deleteManyCompletions: {
     type: 'BatchPayload'
-    args: Record<MutationDeleteManyEssayTopicsArgs, core.NexusArgDef<string>>
+    args: Record<MutationDeleteManyCompletionsArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where?: EssayTopicWhereInput | null }  ,
+      args: { where?: CompletionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  createCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationCreateCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionRegisteredCreateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered> | prisma.CompletionRegistered
+  }
+  updateCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationUpdateCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionRegisteredUpdateInput, where: CompletionRegisteredWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  updateManyCompletionRegistereds: {
+    type: 'BatchPayload'
+    args: Record<MutationUpdateManyCompletionRegisteredsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: CompletionRegisteredUpdateManyMutationInput, where?: CompletionRegisteredWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  upsertCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationUpsertCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: CompletionRegisteredWhereUniqueInput, create: CompletionRegisteredCreateInput, update: CompletionRegisteredUpdateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered> | prisma.CompletionRegistered
+  }
+  deleteCompletionRegistered: {
+    type: 'CompletionRegistered'
+    args: Record<MutationDeleteCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: CompletionRegisteredWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  deleteManyCompletionRegistereds: {
+    type: 'BatchPayload'
+    args: Record<MutationDeleteManyCompletionRegisteredsArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where?: CompletionRegisteredWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
@@ -1843,24 +2275,28 @@ export interface BatchPayloadFieldDetails {
 type SubscriptionObject =
   | SubscriptionFields
   | { name: 'user', args?: SubscriptionUserArgs[] | false, alias?: string  } 
-  | { name: 'slot', args?: SubscriptionSlotArgs[] | false, alias?: string  } 
-  | { name: 'essay', args?: SubscriptionEssayArgs[] | false, alias?: string  } 
-  | { name: 'essayTopic', args?: SubscriptionEssayTopicArgs[] | false, alias?: string  } 
+  | { name: 'course', args?: SubscriptionCourseArgs[] | false, alias?: string  } 
+  | { name: 'openUniversityCourse', args?: SubscriptionOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'completion', args?: SubscriptionCompletionArgs[] | false, alias?: string  } 
+  | { name: 'completionRegistered', args?: SubscriptionCompletionRegisteredArgs[] | false, alias?: string  } 
 
 type SubscriptionFields =
   | 'user'
-  | 'slot'
-  | 'essay'
-  | 'essayTopic'
+  | 'course'
+  | 'openUniversityCourse'
+  | 'completion'
+  | 'completionRegistered'
 
 
 type SubscriptionUserArgs =
   | 'where'
-type SubscriptionSlotArgs =
+type SubscriptionCourseArgs =
   | 'where'
-type SubscriptionEssayArgs =
+type SubscriptionOpenUniversityCourseArgs =
   | 'where'
-type SubscriptionEssayTopicArgs =
+type SubscriptionCompletionArgs =
+  | 'where'
+type SubscriptionCompletionRegisteredArgs =
   | 'where'
   
 
@@ -1878,44 +2314,57 @@ export interface SubscriptionFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.UserSubscriptionPayload | null> | prisma.UserSubscriptionPayload | null
   }
-  slot: {
-    type: 'SlotSubscriptionPayload'
-    args: Record<SubscriptionSlotArgs, core.NexusArgDef<string>>
+  course: {
+    type: 'CourseSubscriptionPayload'
+    args: Record<SubscriptionCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Subscription">,
-      args: { where?: SlotSubscriptionWhereInput | null }  ,
+      args: { where?: CourseSubscriptionWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.SlotSubscriptionPayload | null> | prisma.SlotSubscriptionPayload | null
+    ) => Promise<prisma.CourseSubscriptionPayload | null> | prisma.CourseSubscriptionPayload | null
   }
-  essay: {
-    type: 'EssaySubscriptionPayload'
-    args: Record<SubscriptionEssayArgs, core.NexusArgDef<string>>
+  openUniversityCourse: {
+    type: 'OpenUniversityCourseSubscriptionPayload'
+    args: Record<SubscriptionOpenUniversityCourseArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Subscription">,
-      args: { where?: EssaySubscriptionWhereInput | null }  ,
+      args: { where?: OpenUniversityCourseSubscriptionWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssaySubscriptionPayload | null> | prisma.EssaySubscriptionPayload | null
+    ) => Promise<prisma.OpenUniversityCourseSubscriptionPayload | null> | prisma.OpenUniversityCourseSubscriptionPayload | null
   }
-  essayTopic: {
-    type: 'EssayTopicSubscriptionPayload'
-    args: Record<SubscriptionEssayTopicArgs, core.NexusArgDef<string>>
+  completion: {
+    type: 'CompletionSubscriptionPayload'
+    args: Record<SubscriptionCompletionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Subscription">,
-      args: { where?: EssayTopicSubscriptionWhereInput | null }  ,
+      args: { where?: CompletionSubscriptionWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopicSubscriptionPayload | null> | prisma.EssayTopicSubscriptionPayload | null
+    ) => Promise<prisma.CompletionSubscriptionPayload | null> | prisma.CompletionSubscriptionPayload | null
+  }
+  completionRegistered: {
+    type: 'CompletionRegisteredSubscriptionPayload'
+    args: Record<SubscriptionCompletionRegisteredArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Subscription">,
+      args: { where?: CompletionRegisteredSubscriptionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredSubscriptionPayload | null> | prisma.CompletionRegisteredSubscriptionPayload | null
   }
 }
   
@@ -1995,25 +2444,31 @@ export interface UserSubscriptionPayloadFieldDetails {
 type UserPreviousValuesObject =
   | UserPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'upstream_id', args?: [] | false, alias?: string  } 
   | { name: 'first_name', args?: [] | false, alias?: string  } 
   | { name: 'last_name', args?: [] | false, alias?: string  } 
+  | { name: 'username', args?: [] | false, alias?: string  } 
   | { name: 'email', args?: [] | false, alias?: string  } 
   | { name: 'administrator', args?: [] | false, alias?: string  } 
   | { name: 'completed_enough', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
 
 type UserPreviousValuesFields =
   | 'id'
+  | 'upstream_id'
   | 'createdAt'
   | 'updatedAt'
-  | 'upstream_id'
   | 'first_name'
   | 'last_name'
+  | 'username'
   | 'email'
   | 'administrator'
   | 'completed_enough'
+  | 'student_number'
+  | 'real_student_number'
 
 
 
@@ -2021,7 +2476,15 @@ type UserPreviousValuesFields =
 
 export interface UserPreviousValuesFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  upstream_id: {
+    type: 'Int'
     args: {}
     description: string
     list: undefined
@@ -2044,14 +2507,6 @@ export interface UserPreviousValuesFieldDetails {
     nullable: false
     resolve: undefined
   }
-  upstream_id: {
-    type: 'Int'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
   first_name: {
     type: 'String'
     args: {}
@@ -2061,6 +2516,14 @@ export interface UserPreviousValuesFieldDetails {
     resolve: undefined
   }
   last_name: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  username: {
     type: 'String'
     args: {}
     description: string
@@ -2092,19 +2555,35 @@ export interface UserPreviousValuesFieldDetails {
     nullable: false
     resolve: undefined
   }
+  student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
 }
   
 
-// Types for SlotSubscriptionPayload
+// Types for CourseSubscriptionPayload
 
-type SlotSubscriptionPayloadObject =
-  | SlotSubscriptionPayloadFields
+type CourseSubscriptionPayloadObject =
+  | CourseSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'updatedFields', args?: [] | false, alias?: string  } 
   | { name: 'previousValues', args?: [] | false, alias?: string  } 
 
-type SlotSubscriptionPayloadFields =
+type CourseSubscriptionPayloadFields =
   | 'mutation'
   | 'node'
   | 'updatedFields'
@@ -2114,7 +2593,7 @@ type SlotSubscriptionPayloadFields =
 
   
 
-export interface SlotSubscriptionPayloadFieldDetails {
+export interface CourseSubscriptionPayloadFieldDetails {
   mutation: {
     type: 'MutationType'
     args: {}
@@ -2122,24 +2601,24 @@ export interface SlotSubscriptionPayloadFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"SlotSubscriptionPayload">,
+      root: core.RootValue<"CourseSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
-    type: 'Slot'
+    type: 'Course'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"SlotSubscriptionPayload">,
+      root: core.RootValue<"CourseSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Slot | null> | prisma.Slot | null
+    ) => Promise<prisma.Course | null> | prisma.Course | null
   }
   updatedFields: {
     type: 'String'
@@ -2150,47 +2629,45 @@ export interface SlotSubscriptionPayloadFieldDetails {
     resolve: undefined
   }
   previousValues: {
-    type: 'SlotPreviousValues'
+    type: 'CoursePreviousValues'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"SlotSubscriptionPayload">,
+      root: core.RootValue<"CourseSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.SlotPreviousValues | null> | prisma.SlotPreviousValues | null
+    ) => Promise<prisma.CoursePreviousValues | null> | prisma.CoursePreviousValues | null
   }
 }
   
 
-// Types for SlotPreviousValues
+// Types for CoursePreviousValues
 
-type SlotPreviousValuesObject =
-  | SlotPreviousValuesFields
+type CoursePreviousValuesObject =
+  | CoursePreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'capacity', args?: [] | false, alias?: string  } 
-  | { name: 'starts_at', args?: [] | false, alias?: string  } 
-  | { name: 'ends_at', args?: [] | false, alias?: string  } 
+  | { name: 'name', args?: [] | false, alias?: string  } 
+  | { name: 'slug', args?: [] | false, alias?: string  } 
 
-type SlotPreviousValuesFields =
+type CoursePreviousValuesFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
-  | 'capacity'
-  | 'starts_at'
-  | 'ends_at'
+  | 'name'
+  | 'slug'
 
 
 
   
 
-export interface SlotPreviousValuesFieldDetails {
+export interface CoursePreviousValuesFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
     args: {}
     description: string
     list: undefined
@@ -2213,24 +2690,16 @@ export interface SlotPreviousValuesFieldDetails {
     nullable: false
     resolve: undefined
   }
-  capacity: {
-    type: 'Int'
+  name: {
+    type: 'String'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: undefined
   }
-  starts_at: {
-    type: 'DateTime'
-    args: {}
-    description: string
-    list: undefined
-    nullable: false
-    resolve: undefined
-  }
-  ends_at: {
-    type: 'DateTime'
+  slug: {
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -2240,16 +2709,16 @@ export interface SlotPreviousValuesFieldDetails {
 }
   
 
-// Types for EssaySubscriptionPayload
+// Types for OpenUniversityCourseSubscriptionPayload
 
-type EssaySubscriptionPayloadObject =
-  | EssaySubscriptionPayloadFields
+type OpenUniversityCourseSubscriptionPayloadObject =
+  | OpenUniversityCourseSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'updatedFields', args?: [] | false, alias?: string  } 
   | { name: 'previousValues', args?: [] | false, alias?: string  } 
 
-type EssaySubscriptionPayloadFields =
+type OpenUniversityCourseSubscriptionPayloadFields =
   | 'mutation'
   | 'node'
   | 'updatedFields'
@@ -2259,7 +2728,7 @@ type EssaySubscriptionPayloadFields =
 
   
 
-export interface EssaySubscriptionPayloadFieldDetails {
+export interface OpenUniversityCourseSubscriptionPayloadFieldDetails {
   mutation: {
     type: 'MutationType'
     args: {}
@@ -2267,24 +2736,24 @@ export interface EssaySubscriptionPayloadFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssaySubscriptionPayload">,
+      root: core.RootValue<"OpenUniversityCourseSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
-    type: 'Essay'
+    type: 'OpenUniversityCourse'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"EssaySubscriptionPayload">,
+      root: core.RootValue<"OpenUniversityCourseSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Essay | null> | prisma.Essay | null
+    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
   }
   updatedFields: {
     type: 'String'
@@ -2295,43 +2764,43 @@ export interface EssaySubscriptionPayloadFieldDetails {
     resolve: undefined
   }
   previousValues: {
-    type: 'EssayPreviousValues'
+    type: 'OpenUniversityCoursePreviousValues'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"EssaySubscriptionPayload">,
+      root: core.RootValue<"OpenUniversityCourseSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayPreviousValues | null> | prisma.EssayPreviousValues | null
+    ) => Promise<prisma.OpenUniversityCoursePreviousValues | null> | prisma.OpenUniversityCoursePreviousValues | null
   }
 }
   
 
-// Types for EssayPreviousValues
+// Types for OpenUniversityCoursePreviousValues
 
-type EssayPreviousValuesObject =
-  | EssayPreviousValuesFields
+type OpenUniversityCoursePreviousValuesObject =
+  | OpenUniversityCoursePreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'text', args?: [] | false, alias?: string  } 
+  | { name: 'course_code', args?: [] | false, alias?: string  } 
 
-type EssayPreviousValuesFields =
+type OpenUniversityCoursePreviousValuesFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
-  | 'text'
+  | 'course_code'
 
 
 
   
 
-export interface EssayPreviousValuesFieldDetails {
+export interface OpenUniversityCoursePreviousValuesFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
     args: {}
     description: string
     list: undefined
@@ -2354,7 +2823,7 @@ export interface EssayPreviousValuesFieldDetails {
     nullable: false
     resolve: undefined
   }
-  text: {
+  course_code: {
     type: 'String'
     args: {}
     description: string
@@ -2365,16 +2834,16 @@ export interface EssayPreviousValuesFieldDetails {
 }
   
 
-// Types for EssayTopicSubscriptionPayload
+// Types for CompletionSubscriptionPayload
 
-type EssayTopicSubscriptionPayloadObject =
-  | EssayTopicSubscriptionPayloadFields
+type CompletionSubscriptionPayloadObject =
+  | CompletionSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'updatedFields', args?: [] | false, alias?: string  } 
   | { name: 'previousValues', args?: [] | false, alias?: string  } 
 
-type EssayTopicSubscriptionPayloadFields =
+type CompletionSubscriptionPayloadFields =
   | 'mutation'
   | 'node'
   | 'updatedFields'
@@ -2384,7 +2853,7 @@ type EssayTopicSubscriptionPayloadFields =
 
   
 
-export interface EssayTopicSubscriptionPayloadFieldDetails {
+export interface CompletionSubscriptionPayloadFieldDetails {
   mutation: {
     type: 'MutationType'
     args: {}
@@ -2392,24 +2861,24 @@ export interface EssayTopicSubscriptionPayloadFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"EssayTopicSubscriptionPayload">,
+      root: core.RootValue<"CompletionSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
-    type: 'EssayTopic'
+    type: 'Completion'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"EssayTopicSubscriptionPayload">,
+      root: core.RootValue<"CompletionSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopic | null> | prisma.EssayTopic | null
+    ) => Promise<prisma.Completion | null> | prisma.Completion | null
   }
   updatedFields: {
     type: 'String'
@@ -2420,49 +2889,49 @@ export interface EssayTopicSubscriptionPayloadFieldDetails {
     resolve: undefined
   }
   previousValues: {
-    type: 'EssayTopicPreviousValues'
+    type: 'CompletionPreviousValues'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"EssayTopicSubscriptionPayload">,
+      root: core.RootValue<"CompletionSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.EssayTopicPreviousValues | null> | prisma.EssayTopicPreviousValues | null
+    ) => Promise<prisma.CompletionPreviousValues | null> | prisma.CompletionPreviousValues | null
   }
 }
   
 
-// Types for EssayTopicPreviousValues
+// Types for CompletionPreviousValues
 
-type EssayTopicPreviousValuesObject =
-  | EssayTopicPreviousValuesFields
+type CompletionPreviousValuesObject =
+  | CompletionPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'createdAt', args?: [] | false, alias?: string  } 
   | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'title', args?: [] | false, alias?: string  } 
-  | { name: 'description', args?: [] | false, alias?: string  } 
-  | { name: 'min_words', args?: [] | false, alias?: string  } 
-  | { name: 'max_words', args?: [] | false, alias?: string  } 
+  | { name: 'user_upstream_id', args?: [] | false, alias?: string  } 
+  | { name: 'email', args?: [] | false, alias?: string  } 
+  | { name: 'student_number', args?: [] | false, alias?: string  } 
+  | { name: 'completion_language', args?: [] | false, alias?: string  } 
 
-type EssayTopicPreviousValuesFields =
+type CompletionPreviousValuesFields =
   | 'id'
   | 'createdAt'
   | 'updatedAt'
-  | 'title'
-  | 'description'
-  | 'min_words'
-  | 'max_words'
+  | 'user_upstream_id'
+  | 'email'
+  | 'student_number'
+  | 'completion_language'
 
 
 
   
 
-export interface EssayTopicPreviousValuesFieldDetails {
+export interface CompletionPreviousValuesFieldDetails {
   id: {
-    type: 'ID'
+    type: 'UUID'
     args: {}
     description: string
     list: undefined
@@ -2485,7 +2954,15 @@ export interface EssayTopicPreviousValuesFieldDetails {
     nullable: false
     resolve: undefined
   }
-  title: {
+  user_upstream_id: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  email: {
     type: 'String'
     args: {}
     description: string
@@ -2493,24 +2970,151 @@ export interface EssayTopicPreviousValuesFieldDetails {
     nullable: false
     resolve: undefined
   }
-  description: {
+  student_number: {
     type: 'String'
     args: {}
     description: string
     list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  completion_language: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+}
+  
+
+// Types for CompletionRegisteredSubscriptionPayload
+
+type CompletionRegisteredSubscriptionPayloadObject =
+  | CompletionRegisteredSubscriptionPayloadFields
+  | { name: 'mutation', args?: [] | false, alias?: string  } 
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
+  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredSubscriptionPayloadFields =
+  | 'mutation'
+  | 'node'
+  | 'updatedFields'
+  | 'previousValues'
+
+
+
+  
+
+export interface CompletionRegisteredSubscriptionPayloadFieldDetails {
+  mutation: {
+    type: 'MutationType'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.MutationType> | prisma.MutationType
+  }
+  node: {
+    type: 'CompletionRegistered'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegistered | null> | prisma.CompletionRegistered | null
+  }
+  updatedFields: {
+    type: 'String'
+    args: {}
+    description: string
+    list: true
     nullable: false
     resolve: undefined
   }
-  min_words: {
-    type: 'Int'
+  previousValues: {
+    type: 'CompletionRegisteredPreviousValues'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"CompletionRegisteredSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.CompletionRegisteredPreviousValues | null> | prisma.CompletionRegisteredPreviousValues | null
+  }
+}
+  
+
+// Types for CompletionRegisteredPreviousValues
+
+type CompletionRegisteredPreviousValuesObject =
+  | CompletionRegisteredPreviousValuesFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'createdAt', args?: [] | false, alias?: string  } 
+  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
+  | { name: 'real_student_number', args?: [] | false, alias?: string  } 
+  | { name: 'organisation', args?: [] | false, alias?: string  } 
+
+type CompletionRegisteredPreviousValuesFields =
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'real_student_number'
+  | 'organisation'
+
+
+
+  
+
+export interface CompletionRegisteredPreviousValuesFieldDetails {
+  id: {
+    type: 'UUID'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: undefined
   }
-  max_words: {
-    type: 'Int'
+  createdAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  updatedAt: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  real_student_number: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  organisation: {
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -2522,29 +3126,31 @@ export interface EssayTopicPreviousValuesFieldDetails {
 
 
 export interface UserWhereUniqueInput {
-  id?: string | null
+  id?: undefined | null
   upstream_id?: number | null
+  username?: string | null
 }
 export type UserWhereUniqueInputInputObject =
   | Extract<keyof UserWhereUniqueInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'upstream_id', alias?: string  } 
+  | { name: 'username', alias?: string  } 
   
-export interface UserWhereInput {
-  id?: string | null
-  id_not?: string | null
-  id_in?: string[]
-  id_not_in?: string[]
-  id_lt?: string | null
-  id_lte?: string | null
-  id_gt?: string | null
-  id_gte?: string | null
-  id_contains?: string | null
-  id_not_contains?: string | null
-  id_starts_with?: string | null
-  id_not_starts_with?: string | null
-  id_ends_with?: string | null
-  id_not_ends_with?: string | null
+export interface CompletionWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
   createdAt?: string | null
   createdAt_not?: string | null
   createdAt_in?: string[]
@@ -2561,6 +3167,165 @@ export interface UserWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
+  user_upstream_id?: number | null
+  user_upstream_id_not?: number | null
+  user_upstream_id_in?: number[]
+  user_upstream_id_not_in?: number[]
+  user_upstream_id_lt?: number | null
+  user_upstream_id_lte?: number | null
+  user_upstream_id_gt?: number | null
+  user_upstream_id_gte?: number | null
+  email?: string | null
+  email_not?: string | null
+  email_in?: string[]
+  email_not_in?: string[]
+  email_lt?: string | null
+  email_lte?: string | null
+  email_gt?: string | null
+  email_gte?: string | null
+  email_contains?: string | null
+  email_not_contains?: string | null
+  email_starts_with?: string | null
+  email_not_starts_with?: string | null
+  email_ends_with?: string | null
+  email_not_ends_with?: string | null
+  student_number?: string | null
+  student_number_not?: string | null
+  student_number_in?: string[]
+  student_number_not_in?: string[]
+  student_number_lt?: string | null
+  student_number_lte?: string | null
+  student_number_gt?: string | null
+  student_number_gte?: string | null
+  student_number_contains?: string | null
+  student_number_not_contains?: string | null
+  student_number_starts_with?: string | null
+  student_number_not_starts_with?: string | null
+  student_number_ends_with?: string | null
+  student_number_not_ends_with?: string | null
+  user?: UserWhereInput | null
+  course?: CourseWhereInput | null
+  completion_language?: string | null
+  completion_language_not?: string | null
+  completion_language_in?: string[]
+  completion_language_not_in?: string[]
+  completion_language_lt?: string | null
+  completion_language_lte?: string | null
+  completion_language_gt?: string | null
+  completion_language_gte?: string | null
+  completion_language_contains?: string | null
+  completion_language_not_contains?: string | null
+  completion_language_starts_with?: string | null
+  completion_language_not_starts_with?: string | null
+  completion_language_ends_with?: string | null
+  completion_language_not_ends_with?: string | null
+  AND?: CompletionWhereInput[]
+  OR?: CompletionWhereInput[]
+  NOT?: CompletionWhereInput[]
+}
+export type CompletionWhereInputInputObject =
+  | Extract<keyof CompletionWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'user_upstream_id_not', alias?: string  } 
+  | { name: 'user_upstream_id_in', alias?: string  } 
+  | { name: 'user_upstream_id_not_in', alias?: string  } 
+  | { name: 'user_upstream_id_lt', alias?: string  } 
+  | { name: 'user_upstream_id_lte', alias?: string  } 
+  | { name: 'user_upstream_id_gt', alias?: string  } 
+  | { name: 'user_upstream_id_gte', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'email_not', alias?: string  } 
+  | { name: 'email_in', alias?: string  } 
+  | { name: 'email_not_in', alias?: string  } 
+  | { name: 'email_lt', alias?: string  } 
+  | { name: 'email_lte', alias?: string  } 
+  | { name: 'email_gt', alias?: string  } 
+  | { name: 'email_gte', alias?: string  } 
+  | { name: 'email_contains', alias?: string  } 
+  | { name: 'email_not_contains', alias?: string  } 
+  | { name: 'email_starts_with', alias?: string  } 
+  | { name: 'email_not_starts_with', alias?: string  } 
+  | { name: 'email_ends_with', alias?: string  } 
+  | { name: 'email_not_ends_with', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'student_number_not', alias?: string  } 
+  | { name: 'student_number_in', alias?: string  } 
+  | { name: 'student_number_not_in', alias?: string  } 
+  | { name: 'student_number_lt', alias?: string  } 
+  | { name: 'student_number_lte', alias?: string  } 
+  | { name: 'student_number_gt', alias?: string  } 
+  | { name: 'student_number_gte', alias?: string  } 
+  | { name: 'student_number_contains', alias?: string  } 
+  | { name: 'student_number_not_contains', alias?: string  } 
+  | { name: 'student_number_starts_with', alias?: string  } 
+  | { name: 'student_number_not_starts_with', alias?: string  } 
+  | { name: 'student_number_ends_with', alias?: string  } 
+  | { name: 'student_number_not_ends_with', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  | { name: 'completion_language_not', alias?: string  } 
+  | { name: 'completion_language_in', alias?: string  } 
+  | { name: 'completion_language_not_in', alias?: string  } 
+  | { name: 'completion_language_lt', alias?: string  } 
+  | { name: 'completion_language_lte', alias?: string  } 
+  | { name: 'completion_language_gt', alias?: string  } 
+  | { name: 'completion_language_gte', alias?: string  } 
+  | { name: 'completion_language_contains', alias?: string  } 
+  | { name: 'completion_language_not_contains', alias?: string  } 
+  | { name: 'completion_language_starts_with', alias?: string  } 
+  | { name: 'completion_language_not_starts_with', alias?: string  } 
+  | { name: 'completion_language_ends_with', alias?: string  } 
+  | { name: 'completion_language_not_ends_with', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface UserWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
   upstream_id?: number | null
   upstream_id_not?: number | null
   upstream_id_in?: number[]
@@ -2569,6 +3334,22 @@ export interface UserWhereInput {
   upstream_id_lte?: number | null
   upstream_id_gt?: number | null
   upstream_id_gte?: number | null
+  createdAt?: string | null
+  createdAt_not?: string | null
+  createdAt_in?: string[]
+  createdAt_not_in?: string[]
+  createdAt_lt?: string | null
+  createdAt_lte?: string | null
+  createdAt_gt?: string | null
+  createdAt_gte?: string | null
+  updatedAt?: string | null
+  updatedAt_not?: string | null
+  updatedAt_in?: string[]
+  updatedAt_not_in?: string[]
+  updatedAt_lt?: string | null
+  updatedAt_lte?: string | null
+  updatedAt_gt?: string | null
+  updatedAt_gte?: string | null
   first_name?: string | null
   first_name_not?: string | null
   first_name_in?: string[]
@@ -2597,6 +3378,20 @@ export interface UserWhereInput {
   last_name_not_starts_with?: string | null
   last_name_ends_with?: string | null
   last_name_not_ends_with?: string | null
+  username?: string | null
+  username_not?: string | null
+  username_in?: string[]
+  username_not_in?: string[]
+  username_lt?: string | null
+  username_lte?: string | null
+  username_gt?: string | null
+  username_gte?: string | null
+  username_contains?: string | null
+  username_not_contains?: string | null
+  username_starts_with?: string | null
+  username_not_starts_with?: string | null
+  username_ends_with?: string | null
+  username_not_ends_with?: string | null
   email?: string | null
   email_not?: string | null
   email_in?: string[]
@@ -2613,12 +3408,39 @@ export interface UserWhereInput {
   email_not_ends_with?: string | null
   administrator?: boolean | null
   administrator_not?: boolean | null
-  slot?: SlotWhereInput | null
-  essays_every?: EssayWhereInput | null
-  essays_some?: EssayWhereInput | null
-  essays_none?: EssayWhereInput | null
   completed_enough?: boolean | null
   completed_enough_not?: boolean | null
+  student_number?: string | null
+  student_number_not?: string | null
+  student_number_in?: string[]
+  student_number_not_in?: string[]
+  student_number_lt?: string | null
+  student_number_lte?: string | null
+  student_number_gt?: string | null
+  student_number_gte?: string | null
+  student_number_contains?: string | null
+  student_number_not_contains?: string | null
+  student_number_starts_with?: string | null
+  student_number_not_starts_with?: string | null
+  student_number_ends_with?: string | null
+  student_number_not_ends_with?: string | null
+  real_student_number?: string | null
+  real_student_number_not?: string | null
+  real_student_number_in?: string[]
+  real_student_number_not_in?: string[]
+  real_student_number_lt?: string | null
+  real_student_number_lte?: string | null
+  real_student_number_gt?: string | null
+  real_student_number_gte?: string | null
+  real_student_number_contains?: string | null
+  real_student_number_not_contains?: string | null
+  real_student_number_starts_with?: string | null
+  real_student_number_not_starts_with?: string | null
+  real_student_number_ends_with?: string | null
+  real_student_number_not_ends_with?: string | null
+  completions_every?: CompletionWhereInput | null
+  completions_some?: CompletionWhereInput | null
+  completions_none?: CompletionWhereInput | null
   AND?: UserWhereInput[]
   OR?: UserWhereInput[]
   NOT?: UserWhereInput[]
@@ -2639,6 +3461,14 @@ export type UserWhereInputInputObject =
   | { name: 'id_not_starts_with', alias?: string  } 
   | { name: 'id_ends_with', alias?: string  } 
   | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'upstream_id_not', alias?: string  } 
+  | { name: 'upstream_id_in', alias?: string  } 
+  | { name: 'upstream_id_not_in', alias?: string  } 
+  | { name: 'upstream_id_lt', alias?: string  } 
+  | { name: 'upstream_id_lte', alias?: string  } 
+  | { name: 'upstream_id_gt', alias?: string  } 
+  | { name: 'upstream_id_gte', alias?: string  } 
   | { name: 'createdAt', alias?: string  } 
   | { name: 'createdAt_not', alias?: string  } 
   | { name: 'createdAt_in', alias?: string  } 
@@ -2655,14 +3485,6 @@ export type UserWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'upstream_id_not', alias?: string  } 
-  | { name: 'upstream_id_in', alias?: string  } 
-  | { name: 'upstream_id_not_in', alias?: string  } 
-  | { name: 'upstream_id_lt', alias?: string  } 
-  | { name: 'upstream_id_lte', alias?: string  } 
-  | { name: 'upstream_id_gt', alias?: string  } 
-  | { name: 'upstream_id_gte', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'first_name_not', alias?: string  } 
   | { name: 'first_name_in', alias?: string  } 
@@ -2691,6 +3513,20 @@ export type UserWhereInputInputObject =
   | { name: 'last_name_not_starts_with', alias?: string  } 
   | { name: 'last_name_ends_with', alias?: string  } 
   | { name: 'last_name_not_ends_with', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'username_not', alias?: string  } 
+  | { name: 'username_in', alias?: string  } 
+  | { name: 'username_not_in', alias?: string  } 
+  | { name: 'username_lt', alias?: string  } 
+  | { name: 'username_lte', alias?: string  } 
+  | { name: 'username_gt', alias?: string  } 
+  | { name: 'username_gte', alias?: string  } 
+  | { name: 'username_contains', alias?: string  } 
+  | { name: 'username_not_contains', alias?: string  } 
+  | { name: 'username_starts_with', alias?: string  } 
+  | { name: 'username_not_starts_with', alias?: string  } 
+  | { name: 'username_ends_with', alias?: string  } 
+  | { name: 'username_not_ends_with', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'email_not', alias?: string  } 
   | { name: 'email_in', alias?: string  } 
@@ -2707,31 +3543,58 @@ export type UserWhereInputInputObject =
   | { name: 'email_not_ends_with', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'administrator_not', alias?: string  } 
-  | { name: 'slot', alias?: string  } 
-  | { name: 'essays_every', alias?: string  } 
-  | { name: 'essays_some', alias?: string  } 
-  | { name: 'essays_none', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
   | { name: 'completed_enough_not', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'student_number_not', alias?: string  } 
+  | { name: 'student_number_in', alias?: string  } 
+  | { name: 'student_number_not_in', alias?: string  } 
+  | { name: 'student_number_lt', alias?: string  } 
+  | { name: 'student_number_lte', alias?: string  } 
+  | { name: 'student_number_gt', alias?: string  } 
+  | { name: 'student_number_gte', alias?: string  } 
+  | { name: 'student_number_contains', alias?: string  } 
+  | { name: 'student_number_not_contains', alias?: string  } 
+  | { name: 'student_number_starts_with', alias?: string  } 
+  | { name: 'student_number_not_starts_with', alias?: string  } 
+  | { name: 'student_number_ends_with', alias?: string  } 
+  | { name: 'student_number_not_ends_with', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'real_student_number_not', alias?: string  } 
+  | { name: 'real_student_number_in', alias?: string  } 
+  | { name: 'real_student_number_not_in', alias?: string  } 
+  | { name: 'real_student_number_lt', alias?: string  } 
+  | { name: 'real_student_number_lte', alias?: string  } 
+  | { name: 'real_student_number_gt', alias?: string  } 
+  | { name: 'real_student_number_gte', alias?: string  } 
+  | { name: 'real_student_number_contains', alias?: string  } 
+  | { name: 'real_student_number_not_contains', alias?: string  } 
+  | { name: 'real_student_number_starts_with', alias?: string  } 
+  | { name: 'real_student_number_not_starts_with', alias?: string  } 
+  | { name: 'real_student_number_ends_with', alias?: string  } 
+  | { name: 'real_student_number_not_ends_with', alias?: string  } 
+  | { name: 'completions_every', alias?: string  } 
+  | { name: 'completions_some', alias?: string  } 
+  | { name: 'completions_none', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface SlotWhereInput {
-  id?: string | null
-  id_not?: string | null
-  id_in?: string[]
-  id_not_in?: string[]
-  id_lt?: string | null
-  id_lte?: string | null
-  id_gt?: string | null
-  id_gte?: string | null
-  id_contains?: string | null
-  id_not_contains?: string | null
-  id_starts_with?: string | null
-  id_not_starts_with?: string | null
-  id_ends_with?: string | null
-  id_not_ends_with?: string | null
+export interface CourseWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
   createdAt?: string | null
   createdAt_not?: string | null
   createdAt_in?: string[]
@@ -2748,39 +3611,43 @@ export interface SlotWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
-  capacity?: number | null
-  capacity_not?: number | null
-  capacity_in?: number[]
-  capacity_not_in?: number[]
-  capacity_lt?: number | null
-  capacity_lte?: number | null
-  capacity_gt?: number | null
-  capacity_gte?: number | null
-  registered_every?: UserWhereInput | null
-  registered_some?: UserWhereInput | null
-  registered_none?: UserWhereInput | null
-  starts_at?: string | null
-  starts_at_not?: string | null
-  starts_at_in?: string[]
-  starts_at_not_in?: string[]
-  starts_at_lt?: string | null
-  starts_at_lte?: string | null
-  starts_at_gt?: string | null
-  starts_at_gte?: string | null
-  ends_at?: string | null
-  ends_at_not?: string | null
-  ends_at_in?: string[]
-  ends_at_not_in?: string[]
-  ends_at_lt?: string | null
-  ends_at_lte?: string | null
-  ends_at_gt?: string | null
-  ends_at_gte?: string | null
-  AND?: SlotWhereInput[]
-  OR?: SlotWhereInput[]
-  NOT?: SlotWhereInput[]
+  name?: string | null
+  name_not?: string | null
+  name_in?: string[]
+  name_not_in?: string[]
+  name_lt?: string | null
+  name_lte?: string | null
+  name_gt?: string | null
+  name_gte?: string | null
+  name_contains?: string | null
+  name_not_contains?: string | null
+  name_starts_with?: string | null
+  name_not_starts_with?: string | null
+  name_ends_with?: string | null
+  name_not_ends_with?: string | null
+  slug?: string | null
+  slug_not?: string | null
+  slug_in?: string[]
+  slug_not_in?: string[]
+  slug_lt?: string | null
+  slug_lte?: string | null
+  slug_gt?: string | null
+  slug_gte?: string | null
+  slug_contains?: string | null
+  slug_not_contains?: string | null
+  slug_starts_with?: string | null
+  slug_not_starts_with?: string | null
+  slug_ends_with?: string | null
+  slug_not_ends_with?: string | null
+  open_university_courses_every?: OpenUniversityCourseWhereInput | null
+  open_university_courses_some?: OpenUniversityCourseWhereInput | null
+  open_university_courses_none?: OpenUniversityCourseWhereInput | null
+  AND?: CourseWhereInput[]
+  OR?: CourseWhereInput[]
+  NOT?: CourseWhereInput[]
 }
-export type SlotWhereInputInputObject =
-  | Extract<keyof SlotWhereInput, string>
+export type CourseWhereInputInputObject =
+  | Extract<keyof CourseWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -2811,52 +3678,56 @@ export type SlotWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'capacity', alias?: string  } 
-  | { name: 'capacity_not', alias?: string  } 
-  | { name: 'capacity_in', alias?: string  } 
-  | { name: 'capacity_not_in', alias?: string  } 
-  | { name: 'capacity_lt', alias?: string  } 
-  | { name: 'capacity_lte', alias?: string  } 
-  | { name: 'capacity_gt', alias?: string  } 
-  | { name: 'capacity_gte', alias?: string  } 
-  | { name: 'registered_every', alias?: string  } 
-  | { name: 'registered_some', alias?: string  } 
-  | { name: 'registered_none', alias?: string  } 
-  | { name: 'starts_at', alias?: string  } 
-  | { name: 'starts_at_not', alias?: string  } 
-  | { name: 'starts_at_in', alias?: string  } 
-  | { name: 'starts_at_not_in', alias?: string  } 
-  | { name: 'starts_at_lt', alias?: string  } 
-  | { name: 'starts_at_lte', alias?: string  } 
-  | { name: 'starts_at_gt', alias?: string  } 
-  | { name: 'starts_at_gte', alias?: string  } 
-  | { name: 'ends_at', alias?: string  } 
-  | { name: 'ends_at_not', alias?: string  } 
-  | { name: 'ends_at_in', alias?: string  } 
-  | { name: 'ends_at_not_in', alias?: string  } 
-  | { name: 'ends_at_lt', alias?: string  } 
-  | { name: 'ends_at_lte', alias?: string  } 
-  | { name: 'ends_at_gt', alias?: string  } 
-  | { name: 'ends_at_gte', alias?: string  } 
+  | { name: 'name', alias?: string  } 
+  | { name: 'name_not', alias?: string  } 
+  | { name: 'name_in', alias?: string  } 
+  | { name: 'name_not_in', alias?: string  } 
+  | { name: 'name_lt', alias?: string  } 
+  | { name: 'name_lte', alias?: string  } 
+  | { name: 'name_gt', alias?: string  } 
+  | { name: 'name_gte', alias?: string  } 
+  | { name: 'name_contains', alias?: string  } 
+  | { name: 'name_not_contains', alias?: string  } 
+  | { name: 'name_starts_with', alias?: string  } 
+  | { name: 'name_not_starts_with', alias?: string  } 
+  | { name: 'name_ends_with', alias?: string  } 
+  | { name: 'name_not_ends_with', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  | { name: 'slug_not', alias?: string  } 
+  | { name: 'slug_in', alias?: string  } 
+  | { name: 'slug_not_in', alias?: string  } 
+  | { name: 'slug_lt', alias?: string  } 
+  | { name: 'slug_lte', alias?: string  } 
+  | { name: 'slug_gt', alias?: string  } 
+  | { name: 'slug_gte', alias?: string  } 
+  | { name: 'slug_contains', alias?: string  } 
+  | { name: 'slug_not_contains', alias?: string  } 
+  | { name: 'slug_starts_with', alias?: string  } 
+  | { name: 'slug_not_starts_with', alias?: string  } 
+  | { name: 'slug_ends_with', alias?: string  } 
+  | { name: 'slug_not_ends_with', alias?: string  } 
+  | { name: 'open_university_courses_every', alias?: string  } 
+  | { name: 'open_university_courses_some', alias?: string  } 
+  | { name: 'open_university_courses_none', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface EssayWhereInput {
-  id?: string | null
-  id_not?: string | null
-  id_in?: string[]
-  id_not_in?: string[]
-  id_lt?: string | null
-  id_lte?: string | null
-  id_gt?: string | null
-  id_gte?: string | null
-  id_contains?: string | null
-  id_not_contains?: string | null
-  id_starts_with?: string | null
-  id_not_starts_with?: string | null
-  id_ends_with?: string | null
-  id_not_ends_with?: string | null
+export interface OpenUniversityCourseWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
   createdAt?: string | null
   createdAt_not?: string | null
   createdAt_in?: string[]
@@ -2873,28 +3744,27 @@ export interface EssayWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
-  text?: string | null
-  text_not?: string | null
-  text_in?: string[]
-  text_not_in?: string[]
-  text_lt?: string | null
-  text_lte?: string | null
-  text_gt?: string | null
-  text_gte?: string | null
-  text_contains?: string | null
-  text_not_contains?: string | null
-  text_starts_with?: string | null
-  text_not_starts_with?: string | null
-  text_ends_with?: string | null
-  text_not_ends_with?: string | null
-  author?: UserWhereInput | null
-  topic?: EssayTopicWhereInput | null
-  AND?: EssayWhereInput[]
-  OR?: EssayWhereInput[]
-  NOT?: EssayWhereInput[]
+  course_code?: string | null
+  course_code_not?: string | null
+  course_code_in?: string[]
+  course_code_not_in?: string[]
+  course_code_lt?: string | null
+  course_code_lte?: string | null
+  course_code_gt?: string | null
+  course_code_gte?: string | null
+  course_code_contains?: string | null
+  course_code_not_contains?: string | null
+  course_code_starts_with?: string | null
+  course_code_not_starts_with?: string | null
+  course_code_ends_with?: string | null
+  course_code_not_ends_with?: string | null
+  course?: CourseWhereInput | null
+  AND?: OpenUniversityCourseWhereInput[]
+  OR?: OpenUniversityCourseWhereInput[]
+  NOT?: OpenUniversityCourseWhereInput[]
 }
-export type EssayWhereInputInputObject =
-  | Extract<keyof EssayWhereInput, string>
+export type OpenUniversityCourseWhereInputInputObject =
+  | Extract<keyof OpenUniversityCourseWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -2925,41 +3795,72 @@ export type EssayWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'text', alias?: string  } 
-  | { name: 'text_not', alias?: string  } 
-  | { name: 'text_in', alias?: string  } 
-  | { name: 'text_not_in', alias?: string  } 
-  | { name: 'text_lt', alias?: string  } 
-  | { name: 'text_lte', alias?: string  } 
-  | { name: 'text_gt', alias?: string  } 
-  | { name: 'text_gte', alias?: string  } 
-  | { name: 'text_contains', alias?: string  } 
-  | { name: 'text_not_contains', alias?: string  } 
-  | { name: 'text_starts_with', alias?: string  } 
-  | { name: 'text_not_starts_with', alias?: string  } 
-  | { name: 'text_ends_with', alias?: string  } 
-  | { name: 'text_not_ends_with', alias?: string  } 
-  | { name: 'author', alias?: string  } 
-  | { name: 'topic', alias?: string  } 
+  | { name: 'course_code', alias?: string  } 
+  | { name: 'course_code_not', alias?: string  } 
+  | { name: 'course_code_in', alias?: string  } 
+  | { name: 'course_code_not_in', alias?: string  } 
+  | { name: 'course_code_lt', alias?: string  } 
+  | { name: 'course_code_lte', alias?: string  } 
+  | { name: 'course_code_gt', alias?: string  } 
+  | { name: 'course_code_gte', alias?: string  } 
+  | { name: 'course_code_contains', alias?: string  } 
+  | { name: 'course_code_not_contains', alias?: string  } 
+  | { name: 'course_code_starts_with', alias?: string  } 
+  | { name: 'course_code_not_starts_with', alias?: string  } 
+  | { name: 'course_code_ends_with', alias?: string  } 
+  | { name: 'course_code_not_ends_with', alias?: string  } 
+  | { name: 'course', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface EssayTopicWhereInput {
-  id?: string | null
-  id_not?: string | null
-  id_in?: string[]
-  id_not_in?: string[]
-  id_lt?: string | null
-  id_lte?: string | null
-  id_gt?: string | null
-  id_gte?: string | null
-  id_contains?: string | null
-  id_not_contains?: string | null
-  id_starts_with?: string | null
-  id_not_starts_with?: string | null
-  id_ends_with?: string | null
-  id_not_ends_with?: string | null
+export interface CourseWhereUniqueInput {
+  id?: undefined | null
+  slug?: string | null
+}
+export type CourseWhereUniqueInputInputObject =
+  | Extract<keyof CourseWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  
+export interface OpenUniversityCourseWhereUniqueInput {
+  id?: undefined | null
+  course_code?: string | null
+}
+export type OpenUniversityCourseWhereUniqueInputInputObject =
+  | Extract<keyof OpenUniversityCourseWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'course_code', alias?: string  } 
+  
+export interface CompletionWhereUniqueInput {
+  id?: undefined | null
+}
+export type CompletionWhereUniqueInputInputObject =
+  | Extract<keyof CompletionWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
+export interface CompletionRegisteredWhereUniqueInput {
+  id?: undefined | null
+}
+export type CompletionRegisteredWhereUniqueInputInputObject =
+  | Extract<keyof CompletionRegisteredWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
+export interface CompletionRegisteredWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
   createdAt?: string | null
   createdAt_not?: string | null
   createdAt_in?: string[]
@@ -2976,56 +3877,42 @@ export interface EssayTopicWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
-  title?: string | null
-  title_not?: string | null
-  title_in?: string[]
-  title_not_in?: string[]
-  title_lt?: string | null
-  title_lte?: string | null
-  title_gt?: string | null
-  title_gte?: string | null
-  title_contains?: string | null
-  title_not_contains?: string | null
-  title_starts_with?: string | null
-  title_not_starts_with?: string | null
-  title_ends_with?: string | null
-  title_not_ends_with?: string | null
-  description?: string | null
-  description_not?: string | null
-  description_in?: string[]
-  description_not_in?: string[]
-  description_lt?: string | null
-  description_lte?: string | null
-  description_gt?: string | null
-  description_gte?: string | null
-  description_contains?: string | null
-  description_not_contains?: string | null
-  description_starts_with?: string | null
-  description_not_starts_with?: string | null
-  description_ends_with?: string | null
-  description_not_ends_with?: string | null
-  min_words?: number | null
-  min_words_not?: number | null
-  min_words_in?: number[]
-  min_words_not_in?: number[]
-  min_words_lt?: number | null
-  min_words_lte?: number | null
-  min_words_gt?: number | null
-  min_words_gte?: number | null
-  max_words?: number | null
-  max_words_not?: number | null
-  max_words_in?: number[]
-  max_words_not_in?: number[]
-  max_words_lt?: number | null
-  max_words_lte?: number | null
-  max_words_gt?: number | null
-  max_words_gte?: number | null
-  AND?: EssayTopicWhereInput[]
-  OR?: EssayTopicWhereInput[]
-  NOT?: EssayTopicWhereInput[]
+  user?: UserWhereInput | null
+  course?: CourseWhereInput | null
+  real_student_number?: string | null
+  real_student_number_not?: string | null
+  real_student_number_in?: string[]
+  real_student_number_not_in?: string[]
+  real_student_number_lt?: string | null
+  real_student_number_lte?: string | null
+  real_student_number_gt?: string | null
+  real_student_number_gte?: string | null
+  real_student_number_contains?: string | null
+  real_student_number_not_contains?: string | null
+  real_student_number_starts_with?: string | null
+  real_student_number_not_starts_with?: string | null
+  real_student_number_ends_with?: string | null
+  real_student_number_not_ends_with?: string | null
+  organisation?: string | null
+  organisation_not?: string | null
+  organisation_in?: string[]
+  organisation_not_in?: string[]
+  organisation_lt?: string | null
+  organisation_lte?: string | null
+  organisation_gt?: string | null
+  organisation_gte?: string | null
+  organisation_contains?: string | null
+  organisation_not_contains?: string | null
+  organisation_starts_with?: string | null
+  organisation_not_starts_with?: string | null
+  organisation_ends_with?: string | null
+  organisation_not_ends_with?: string | null
+  AND?: CompletionRegisteredWhereInput[]
+  OR?: CompletionRegisteredWhereInput[]
+  NOT?: CompletionRegisteredWhereInput[]
 }
-export type EssayTopicWhereInputInputObject =
-  | Extract<keyof EssayTopicWhereInput, string>
+export type CompletionRegisteredWhereInputInputObject =
+  | Extract<keyof CompletionRegisteredWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -3056,227 +3943,163 @@ export type EssayTopicWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'title', alias?: string  } 
-  | { name: 'title_not', alias?: string  } 
-  | { name: 'title_in', alias?: string  } 
-  | { name: 'title_not_in', alias?: string  } 
-  | { name: 'title_lt', alias?: string  } 
-  | { name: 'title_lte', alias?: string  } 
-  | { name: 'title_gt', alias?: string  } 
-  | { name: 'title_gte', alias?: string  } 
-  | { name: 'title_contains', alias?: string  } 
-  | { name: 'title_not_contains', alias?: string  } 
-  | { name: 'title_starts_with', alias?: string  } 
-  | { name: 'title_not_starts_with', alias?: string  } 
-  | { name: 'title_ends_with', alias?: string  } 
-  | { name: 'title_not_ends_with', alias?: string  } 
-  | { name: 'description', alias?: string  } 
-  | { name: 'description_not', alias?: string  } 
-  | { name: 'description_in', alias?: string  } 
-  | { name: 'description_not_in', alias?: string  } 
-  | { name: 'description_lt', alias?: string  } 
-  | { name: 'description_lte', alias?: string  } 
-  | { name: 'description_gt', alias?: string  } 
-  | { name: 'description_gte', alias?: string  } 
-  | { name: 'description_contains', alias?: string  } 
-  | { name: 'description_not_contains', alias?: string  } 
-  | { name: 'description_starts_with', alias?: string  } 
-  | { name: 'description_not_starts_with', alias?: string  } 
-  | { name: 'description_ends_with', alias?: string  } 
-  | { name: 'description_not_ends_with', alias?: string  } 
-  | { name: 'min_words', alias?: string  } 
-  | { name: 'min_words_not', alias?: string  } 
-  | { name: 'min_words_in', alias?: string  } 
-  | { name: 'min_words_not_in', alias?: string  } 
-  | { name: 'min_words_lt', alias?: string  } 
-  | { name: 'min_words_lte', alias?: string  } 
-  | { name: 'min_words_gt', alias?: string  } 
-  | { name: 'min_words_gte', alias?: string  } 
-  | { name: 'max_words', alias?: string  } 
-  | { name: 'max_words_not', alias?: string  } 
-  | { name: 'max_words_in', alias?: string  } 
-  | { name: 'max_words_not_in', alias?: string  } 
-  | { name: 'max_words_lt', alias?: string  } 
-  | { name: 'max_words_lte', alias?: string  } 
-  | { name: 'max_words_gt', alias?: string  } 
-  | { name: 'max_words_gte', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'real_student_number_not', alias?: string  } 
+  | { name: 'real_student_number_in', alias?: string  } 
+  | { name: 'real_student_number_not_in', alias?: string  } 
+  | { name: 'real_student_number_lt', alias?: string  } 
+  | { name: 'real_student_number_lte', alias?: string  } 
+  | { name: 'real_student_number_gt', alias?: string  } 
+  | { name: 'real_student_number_gte', alias?: string  } 
+  | { name: 'real_student_number_contains', alias?: string  } 
+  | { name: 'real_student_number_not_contains', alias?: string  } 
+  | { name: 'real_student_number_starts_with', alias?: string  } 
+  | { name: 'real_student_number_not_starts_with', alias?: string  } 
+  | { name: 'real_student_number_ends_with', alias?: string  } 
+  | { name: 'real_student_number_not_ends_with', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
+  | { name: 'organisation_not', alias?: string  } 
+  | { name: 'organisation_in', alias?: string  } 
+  | { name: 'organisation_not_in', alias?: string  } 
+  | { name: 'organisation_lt', alias?: string  } 
+  | { name: 'organisation_lte', alias?: string  } 
+  | { name: 'organisation_gt', alias?: string  } 
+  | { name: 'organisation_gte', alias?: string  } 
+  | { name: 'organisation_contains', alias?: string  } 
+  | { name: 'organisation_not_contains', alias?: string  } 
+  | { name: 'organisation_starts_with', alias?: string  } 
+  | { name: 'organisation_not_starts_with', alias?: string  } 
+  | { name: 'organisation_ends_with', alias?: string  } 
+  | { name: 'organisation_not_ends_with', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
-  
-export interface SlotWhereUniqueInput {
-  id?: string | null
-}
-export type SlotWhereUniqueInputInputObject =
-  | Extract<keyof SlotWhereUniqueInput, string>
-  | { name: 'id', alias?: string  } 
-  
-export interface EssayWhereUniqueInput {
-  id?: string | null
-}
-export type EssayWhereUniqueInputInputObject =
-  | Extract<keyof EssayWhereUniqueInput, string>
-  | { name: 'id', alias?: string  } 
-  
-export interface EssayTopicWhereUniqueInput {
-  id?: string | null
-}
-export type EssayTopicWhereUniqueInputInputObject =
-  | Extract<keyof EssayTopicWhereUniqueInput, string>
-  | { name: 'id', alias?: string  } 
   
 export interface UserCreateInput {
   upstream_id?: number
   first_name?: string | null
   last_name?: string | null
+  username?: string | null
   email?: string
   administrator?: boolean
-  slot?: SlotCreateOneWithoutRegisteredInput | null
-  essays?: EssayCreateManyWithoutAuthorInput | null
   completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+  completions?: CompletionCreateManyWithoutUserInput | null
 }
 export type UserCreateInputInputObject =
   | Extract<keyof UserCreateInput, string>
   | { name: 'upstream_id', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
-  | { name: 'slot', alias?: string  } 
-  | { name: 'essays', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'completions', alias?: string  } 
   
-export interface SlotCreateOneWithoutRegisteredInput {
-  create?: SlotCreateWithoutRegisteredInput | null
-  connect?: SlotWhereUniqueInput | null
+export interface CompletionCreateManyWithoutUserInput {
+  create?: CompletionCreateWithoutUserInput[]
+  connect?: CompletionWhereUniqueInput[]
 }
-export type SlotCreateOneWithoutRegisteredInputInputObject =
-  | Extract<keyof SlotCreateOneWithoutRegisteredInput, string>
+export type CompletionCreateManyWithoutUserInputInputObject =
+  | Extract<keyof CompletionCreateManyWithoutUserInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface SlotCreateWithoutRegisteredInput {
-  capacity?: number
-  starts_at?: string
-  ends_at?: string
+export interface CompletionCreateWithoutUserInput {
+  user_upstream_id?: number | null
+  email?: string
+  student_number?: string | null
+  course?: CourseCreateOneInput
+  completion_language?: string | null
 }
-export type SlotCreateWithoutRegisteredInputInputObject =
-  | Extract<keyof SlotCreateWithoutRegisteredInput, string>
-  | { name: 'capacity', alias?: string  } 
-  | { name: 'starts_at', alias?: string  } 
-  | { name: 'ends_at', alias?: string  } 
+export type CompletionCreateWithoutUserInputInputObject =
+  | Extract<keyof CompletionCreateWithoutUserInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
   
-export interface EssayCreateManyWithoutAuthorInput {
-  create?: EssayCreateWithoutAuthorInput[]
-  connect?: EssayWhereUniqueInput[]
+export interface CourseCreateOneInput {
+  create?: CourseCreateInput | null
+  connect?: CourseWhereUniqueInput | null
 }
-export type EssayCreateManyWithoutAuthorInputInputObject =
-  | Extract<keyof EssayCreateManyWithoutAuthorInput, string>
+export type CourseCreateOneInputInputObject =
+  | Extract<keyof CourseCreateOneInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface EssayCreateWithoutAuthorInput {
-  text?: string
-  topic?: EssayTopicCreateOneInput
+export interface CourseCreateInput {
+  name?: string
+  slug?: string
+  open_university_courses?: OpenUniversityCourseCreateManyWithoutCourseInput | null
 }
-export type EssayCreateWithoutAuthorInputInputObject =
-  | Extract<keyof EssayCreateWithoutAuthorInput, string>
-  | { name: 'text', alias?: string  } 
-  | { name: 'topic', alias?: string  } 
+export type CourseCreateInputInputObject =
+  | Extract<keyof CourseCreateInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  | { name: 'open_university_courses', alias?: string  } 
   
-export interface EssayTopicCreateOneInput {
-  create?: EssayTopicCreateInput | null
-  connect?: EssayTopicWhereUniqueInput | null
+export interface OpenUniversityCourseCreateManyWithoutCourseInput {
+  create?: OpenUniversityCourseCreateWithoutCourseInput[]
+  connect?: OpenUniversityCourseWhereUniqueInput[]
 }
-export type EssayTopicCreateOneInputInputObject =
-  | Extract<keyof EssayTopicCreateOneInput, string>
+export type OpenUniversityCourseCreateManyWithoutCourseInputInputObject =
+  | Extract<keyof OpenUniversityCourseCreateManyWithoutCourseInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface EssayTopicCreateInput {
-  title?: string
-  description?: string
-  min_words?: number
-  max_words?: number
+export interface OpenUniversityCourseCreateWithoutCourseInput {
+  course_code?: string
 }
-export type EssayTopicCreateInputInputObject =
-  | Extract<keyof EssayTopicCreateInput, string>
-  | { name: 'title', alias?: string  } 
-  | { name: 'description', alias?: string  } 
-  | { name: 'min_words', alias?: string  } 
-  | { name: 'max_words', alias?: string  } 
+export type OpenUniversityCourseCreateWithoutCourseInputInputObject =
+  | Extract<keyof OpenUniversityCourseCreateWithoutCourseInput, string>
+  | { name: 'course_code', alias?: string  } 
   
 export interface UserUpdateInput {
   upstream_id?: number | null
   first_name?: string | null
   last_name?: string | null
+  username?: string | null
   email?: string | null
   administrator?: boolean | null
-  slot?: SlotUpdateOneWithoutRegisteredInput | null
-  essays?: EssayUpdateManyWithoutAuthorInput | null
   completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+  completions?: CompletionUpdateManyWithoutUserInput | null
 }
 export type UserUpdateInputInputObject =
   | Extract<keyof UserUpdateInput, string>
   | { name: 'upstream_id', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
-  | { name: 'slot', alias?: string  } 
-  | { name: 'essays', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'completions', alias?: string  } 
   
-export interface SlotUpdateOneWithoutRegisteredInput {
-  create?: SlotCreateWithoutRegisteredInput | null
-  update?: SlotUpdateWithoutRegisteredDataInput | null
-  upsert?: SlotUpsertWithoutRegisteredInput | null
-  delete?: boolean | null
-  disconnect?: boolean | null
-  connect?: SlotWhereUniqueInput | null
+export interface CompletionUpdateManyWithoutUserInput {
+  create?: CompletionCreateWithoutUserInput[]
+  delete?: CompletionWhereUniqueInput[]
+  connect?: CompletionWhereUniqueInput[]
+  set?: CompletionWhereUniqueInput[]
+  disconnect?: CompletionWhereUniqueInput[]
+  update?: CompletionUpdateWithWhereUniqueWithoutUserInput[]
+  upsert?: CompletionUpsertWithWhereUniqueWithoutUserInput[]
+  deleteMany?: CompletionScalarWhereInput[]
+  updateMany?: CompletionUpdateManyWithWhereNestedInput[]
 }
-export type SlotUpdateOneWithoutRegisteredInputInputObject =
-  | Extract<keyof SlotUpdateOneWithoutRegisteredInput, string>
-  | { name: 'create', alias?: string  } 
-  | { name: 'update', alias?: string  } 
-  | { name: 'upsert', alias?: string  } 
-  | { name: 'delete', alias?: string  } 
-  | { name: 'disconnect', alias?: string  } 
-  | { name: 'connect', alias?: string  } 
-  
-export interface SlotUpdateWithoutRegisteredDataInput {
-  capacity?: number | null
-  starts_at?: string | null
-  ends_at?: string | null
-}
-export type SlotUpdateWithoutRegisteredDataInputInputObject =
-  | Extract<keyof SlotUpdateWithoutRegisteredDataInput, string>
-  | { name: 'capacity', alias?: string  } 
-  | { name: 'starts_at', alias?: string  } 
-  | { name: 'ends_at', alias?: string  } 
-  
-export interface SlotUpsertWithoutRegisteredInput {
-  update?: SlotUpdateWithoutRegisteredDataInput
-  create?: SlotCreateWithoutRegisteredInput
-}
-export type SlotUpsertWithoutRegisteredInputInputObject =
-  | Extract<keyof SlotUpsertWithoutRegisteredInput, string>
-  | { name: 'update', alias?: string  } 
-  | { name: 'create', alias?: string  } 
-  
-export interface EssayUpdateManyWithoutAuthorInput {
-  create?: EssayCreateWithoutAuthorInput[]
-  delete?: EssayWhereUniqueInput[]
-  connect?: EssayWhereUniqueInput[]
-  set?: EssayWhereUniqueInput[]
-  disconnect?: EssayWhereUniqueInput[]
-  update?: EssayUpdateWithWhereUniqueWithoutAuthorInput[]
-  upsert?: EssayUpsertWithWhereUniqueWithoutAuthorInput[]
-  deleteMany?: EssayScalarWhereInput[]
-  updateMany?: EssayUpdateManyWithWhereNestedInput[]
-}
-export type EssayUpdateManyWithoutAuthorInputInputObject =
-  | Extract<keyof EssayUpdateManyWithoutAuthorInput, string>
+export type CompletionUpdateManyWithoutUserInputInputObject =
+  | Extract<keyof CompletionUpdateManyWithoutUserInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'delete', alias?: string  } 
   | { name: 'connect', alias?: string  } 
@@ -3287,85 +4110,119 @@ export type EssayUpdateManyWithoutAuthorInputInputObject =
   | { name: 'deleteMany', alias?: string  } 
   | { name: 'updateMany', alias?: string  } 
   
-export interface EssayUpdateWithWhereUniqueWithoutAuthorInput {
-  where?: EssayWhereUniqueInput
-  data?: EssayUpdateWithoutAuthorDataInput
+export interface CompletionUpdateWithWhereUniqueWithoutUserInput {
+  where?: CompletionWhereUniqueInput
+  data?: CompletionUpdateWithoutUserDataInput
 }
-export type EssayUpdateWithWhereUniqueWithoutAuthorInputInputObject =
-  | Extract<keyof EssayUpdateWithWhereUniqueWithoutAuthorInput, string>
+export type CompletionUpdateWithWhereUniqueWithoutUserInputInputObject =
+  | Extract<keyof CompletionUpdateWithWhereUniqueWithoutUserInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'data', alias?: string  } 
   
-export interface EssayUpdateWithoutAuthorDataInput {
-  text?: string | null
-  topic?: EssayTopicUpdateOneRequiredInput | null
+export interface CompletionUpdateWithoutUserDataInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
+  course?: CourseUpdateOneRequiredInput | null
+  completion_language?: string | null
 }
-export type EssayUpdateWithoutAuthorDataInputInputObject =
-  | Extract<keyof EssayUpdateWithoutAuthorDataInput, string>
-  | { name: 'text', alias?: string  } 
-  | { name: 'topic', alias?: string  } 
+export type CompletionUpdateWithoutUserDataInputInputObject =
+  | Extract<keyof CompletionUpdateWithoutUserDataInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
   
-export interface EssayTopicUpdateOneRequiredInput {
-  create?: EssayTopicCreateInput | null
-  update?: EssayTopicUpdateDataInput | null
-  upsert?: EssayTopicUpsertNestedInput | null
-  connect?: EssayTopicWhereUniqueInput | null
+export interface CourseUpdateOneRequiredInput {
+  create?: CourseCreateInput | null
+  update?: CourseUpdateDataInput | null
+  upsert?: CourseUpsertNestedInput | null
+  connect?: CourseWhereUniqueInput | null
 }
-export type EssayTopicUpdateOneRequiredInputInputObject =
-  | Extract<keyof EssayTopicUpdateOneRequiredInput, string>
+export type CourseUpdateOneRequiredInputInputObject =
+  | Extract<keyof CourseUpdateOneRequiredInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'upsert', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface EssayTopicUpdateDataInput {
-  title?: string | null
-  description?: string | null
-  min_words?: number | null
-  max_words?: number | null
+export interface CourseUpdateDataInput {
+  name?: string | null
+  slug?: string | null
+  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
 }
-export type EssayTopicUpdateDataInputInputObject =
-  | Extract<keyof EssayTopicUpdateDataInput, string>
-  | { name: 'title', alias?: string  } 
-  | { name: 'description', alias?: string  } 
-  | { name: 'min_words', alias?: string  } 
-  | { name: 'max_words', alias?: string  } 
+export type CourseUpdateDataInputInputObject =
+  | Extract<keyof CourseUpdateDataInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  | { name: 'open_university_courses', alias?: string  } 
   
-export interface EssayTopicUpsertNestedInput {
-  update?: EssayTopicUpdateDataInput
-  create?: EssayTopicCreateInput
+export interface OpenUniversityCourseUpdateManyWithoutCourseInput {
+  create?: OpenUniversityCourseCreateWithoutCourseInput[]
+  delete?: OpenUniversityCourseWhereUniqueInput[]
+  connect?: OpenUniversityCourseWhereUniqueInput[]
+  set?: OpenUniversityCourseWhereUniqueInput[]
+  disconnect?: OpenUniversityCourseWhereUniqueInput[]
+  update?: OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput[]
+  upsert?: OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput[]
+  deleteMany?: OpenUniversityCourseScalarWhereInput[]
+  updateMany?: OpenUniversityCourseUpdateManyWithWhereNestedInput[]
 }
-export type EssayTopicUpsertNestedInputInputObject =
-  | Extract<keyof EssayTopicUpsertNestedInput, string>
-  | { name: 'update', alias?: string  } 
+export type OpenUniversityCourseUpdateManyWithoutCourseInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpdateManyWithoutCourseInput, string>
   | { name: 'create', alias?: string  } 
+  | { name: 'delete', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  | { name: 'set', alias?: string  } 
+  | { name: 'disconnect', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'deleteMany', alias?: string  } 
+  | { name: 'updateMany', alias?: string  } 
   
-export interface EssayUpsertWithWhereUniqueWithoutAuthorInput {
-  where?: EssayWhereUniqueInput
-  update?: EssayUpdateWithoutAuthorDataInput
-  create?: EssayCreateWithoutAuthorInput
+export interface OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput {
+  where?: OpenUniversityCourseWhereUniqueInput
+  data?: OpenUniversityCourseUpdateWithoutCourseDataInput
 }
-export type EssayUpsertWithWhereUniqueWithoutAuthorInputInputObject =
-  | Extract<keyof EssayUpsertWithWhereUniqueWithoutAuthorInput, string>
+export type OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'data', alias?: string  } 
+  
+export interface OpenUniversityCourseUpdateWithoutCourseDataInput {
+  course_code?: string | null
+}
+export type OpenUniversityCourseUpdateWithoutCourseDataInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpdateWithoutCourseDataInput, string>
+  | { name: 'course_code', alias?: string  } 
+  
+export interface OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput {
+  where?: OpenUniversityCourseWhereUniqueInput
+  update?: OpenUniversityCourseUpdateWithoutCourseDataInput
+  create?: OpenUniversityCourseCreateWithoutCourseInput
+}
+export type OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface EssayScalarWhereInput {
-  id?: string | null
-  id_not?: string | null
-  id_in?: string[]
-  id_not_in?: string[]
-  id_lt?: string | null
-  id_lte?: string | null
-  id_gt?: string | null
-  id_gte?: string | null
-  id_contains?: string | null
-  id_not_contains?: string | null
-  id_starts_with?: string | null
-  id_not_starts_with?: string | null
-  id_ends_with?: string | null
-  id_not_ends_with?: string | null
+export interface OpenUniversityCourseScalarWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
   createdAt?: string | null
   createdAt_not?: string | null
   createdAt_in?: string[]
@@ -3382,26 +4239,26 @@ export interface EssayScalarWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
-  text?: string | null
-  text_not?: string | null
-  text_in?: string[]
-  text_not_in?: string[]
-  text_lt?: string | null
-  text_lte?: string | null
-  text_gt?: string | null
-  text_gte?: string | null
-  text_contains?: string | null
-  text_not_contains?: string | null
-  text_starts_with?: string | null
-  text_not_starts_with?: string | null
-  text_ends_with?: string | null
-  text_not_ends_with?: string | null
-  AND?: EssayScalarWhereInput[]
-  OR?: EssayScalarWhereInput[]
-  NOT?: EssayScalarWhereInput[]
+  course_code?: string | null
+  course_code_not?: string | null
+  course_code_in?: string[]
+  course_code_not_in?: string[]
+  course_code_lt?: string | null
+  course_code_lte?: string | null
+  course_code_gt?: string | null
+  course_code_gte?: string | null
+  course_code_contains?: string | null
+  course_code_not_contains?: string | null
+  course_code_starts_with?: string | null
+  course_code_not_starts_with?: string | null
+  course_code_ends_with?: string | null
+  course_code_not_ends_with?: string | null
+  AND?: OpenUniversityCourseScalarWhereInput[]
+  OR?: OpenUniversityCourseScalarWhereInput[]
+  NOT?: OpenUniversityCourseScalarWhereInput[]
 }
-export type EssayScalarWhereInputInputObject =
-  | Extract<keyof EssayScalarWhereInput, string>
+export type OpenUniversityCourseScalarWhereInputInputObject =
+  | Extract<keyof OpenUniversityCourseScalarWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -3432,188 +4289,75 @@ export type EssayScalarWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'text', alias?: string  } 
-  | { name: 'text_not', alias?: string  } 
-  | { name: 'text_in', alias?: string  } 
-  | { name: 'text_not_in', alias?: string  } 
-  | { name: 'text_lt', alias?: string  } 
-  | { name: 'text_lte', alias?: string  } 
-  | { name: 'text_gt', alias?: string  } 
-  | { name: 'text_gte', alias?: string  } 
-  | { name: 'text_contains', alias?: string  } 
-  | { name: 'text_not_contains', alias?: string  } 
-  | { name: 'text_starts_with', alias?: string  } 
-  | { name: 'text_not_starts_with', alias?: string  } 
-  | { name: 'text_ends_with', alias?: string  } 
-  | { name: 'text_not_ends_with', alias?: string  } 
+  | { name: 'course_code', alias?: string  } 
+  | { name: 'course_code_not', alias?: string  } 
+  | { name: 'course_code_in', alias?: string  } 
+  | { name: 'course_code_not_in', alias?: string  } 
+  | { name: 'course_code_lt', alias?: string  } 
+  | { name: 'course_code_lte', alias?: string  } 
+  | { name: 'course_code_gt', alias?: string  } 
+  | { name: 'course_code_gte', alias?: string  } 
+  | { name: 'course_code_contains', alias?: string  } 
+  | { name: 'course_code_not_contains', alias?: string  } 
+  | { name: 'course_code_starts_with', alias?: string  } 
+  | { name: 'course_code_not_starts_with', alias?: string  } 
+  | { name: 'course_code_ends_with', alias?: string  } 
+  | { name: 'course_code_not_ends_with', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface EssayUpdateManyWithWhereNestedInput {
-  where?: EssayScalarWhereInput
-  data?: EssayUpdateManyDataInput
+export interface OpenUniversityCourseUpdateManyWithWhereNestedInput {
+  where?: OpenUniversityCourseScalarWhereInput
+  data?: OpenUniversityCourseUpdateManyDataInput
 }
-export type EssayUpdateManyWithWhereNestedInputInputObject =
-  | Extract<keyof EssayUpdateManyWithWhereNestedInput, string>
+export type OpenUniversityCourseUpdateManyWithWhereNestedInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpdateManyWithWhereNestedInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'data', alias?: string  } 
   
-export interface EssayUpdateManyDataInput {
-  text?: string | null
+export interface OpenUniversityCourseUpdateManyDataInput {
+  course_code?: string | null
 }
-export type EssayUpdateManyDataInputInputObject =
-  | Extract<keyof EssayUpdateManyDataInput, string>
-  | { name: 'text', alias?: string  } 
+export type OpenUniversityCourseUpdateManyDataInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpdateManyDataInput, string>
+  | { name: 'course_code', alias?: string  } 
   
-export interface UserUpdateManyMutationInput {
-  upstream_id?: number | null
-  first_name?: string | null
-  last_name?: string | null
-  email?: string | null
-  administrator?: boolean | null
-  completed_enough?: boolean | null
+export interface CourseUpsertNestedInput {
+  update?: CourseUpdateDataInput
+  create?: CourseCreateInput
 }
-export type UserUpdateManyMutationInputInputObject =
-  | Extract<keyof UserUpdateManyMutationInput, string>
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
-  
-export interface SlotCreateInput {
-  capacity?: number
-  registered?: UserCreateManyWithoutSlotInput | null
-  starts_at?: string
-  ends_at?: string
-}
-export type SlotCreateInputInputObject =
-  | Extract<keyof SlotCreateInput, string>
-  | { name: 'capacity', alias?: string  } 
-  | { name: 'registered', alias?: string  } 
-  | { name: 'starts_at', alias?: string  } 
-  | { name: 'ends_at', alias?: string  } 
-  
-export interface UserCreateManyWithoutSlotInput {
-  create?: UserCreateWithoutSlotInput[]
-  connect?: UserWhereUniqueInput[]
-}
-export type UserCreateManyWithoutSlotInputInputObject =
-  | Extract<keyof UserCreateManyWithoutSlotInput, string>
-  | { name: 'create', alias?: string  } 
-  | { name: 'connect', alias?: string  } 
-  
-export interface UserCreateWithoutSlotInput {
-  upstream_id?: number
-  first_name?: string | null
-  last_name?: string | null
-  email?: string
-  administrator?: boolean
-  essays?: EssayCreateManyWithoutAuthorInput | null
-  completed_enough?: boolean | null
-}
-export type UserCreateWithoutSlotInputInputObject =
-  | Extract<keyof UserCreateWithoutSlotInput, string>
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'essays', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
-  
-export interface SlotUpdateInput {
-  capacity?: number | null
-  registered?: UserUpdateManyWithoutSlotInput | null
-  starts_at?: string | null
-  ends_at?: string | null
-}
-export type SlotUpdateInputInputObject =
-  | Extract<keyof SlotUpdateInput, string>
-  | { name: 'capacity', alias?: string  } 
-  | { name: 'registered', alias?: string  } 
-  | { name: 'starts_at', alias?: string  } 
-  | { name: 'ends_at', alias?: string  } 
-  
-export interface UserUpdateManyWithoutSlotInput {
-  create?: UserCreateWithoutSlotInput[]
-  delete?: UserWhereUniqueInput[]
-  connect?: UserWhereUniqueInput[]
-  set?: UserWhereUniqueInput[]
-  disconnect?: UserWhereUniqueInput[]
-  update?: UserUpdateWithWhereUniqueWithoutSlotInput[]
-  upsert?: UserUpsertWithWhereUniqueWithoutSlotInput[]
-  deleteMany?: UserScalarWhereInput[]
-  updateMany?: UserUpdateManyWithWhereNestedInput[]
-}
-export type UserUpdateManyWithoutSlotInputInputObject =
-  | Extract<keyof UserUpdateManyWithoutSlotInput, string>
-  | { name: 'create', alias?: string  } 
-  | { name: 'delete', alias?: string  } 
-  | { name: 'connect', alias?: string  } 
-  | { name: 'set', alias?: string  } 
-  | { name: 'disconnect', alias?: string  } 
+export type CourseUpsertNestedInputInputObject =
+  | Extract<keyof CourseUpsertNestedInput, string>
   | { name: 'update', alias?: string  } 
-  | { name: 'upsert', alias?: string  } 
-  | { name: 'deleteMany', alias?: string  } 
-  | { name: 'updateMany', alias?: string  } 
+  | { name: 'create', alias?: string  } 
   
-export interface UserUpdateWithWhereUniqueWithoutSlotInput {
-  where?: UserWhereUniqueInput
-  data?: UserUpdateWithoutSlotDataInput
+export interface CompletionUpsertWithWhereUniqueWithoutUserInput {
+  where?: CompletionWhereUniqueInput
+  update?: CompletionUpdateWithoutUserDataInput
+  create?: CompletionCreateWithoutUserInput
 }
-export type UserUpdateWithWhereUniqueWithoutSlotInputInputObject =
-  | Extract<keyof UserUpdateWithWhereUniqueWithoutSlotInput, string>
-  | { name: 'where', alias?: string  } 
-  | { name: 'data', alias?: string  } 
-  
-export interface UserUpdateWithoutSlotDataInput {
-  upstream_id?: number | null
-  first_name?: string | null
-  last_name?: string | null
-  email?: string | null
-  administrator?: boolean | null
-  essays?: EssayUpdateManyWithoutAuthorInput | null
-  completed_enough?: boolean | null
-}
-export type UserUpdateWithoutSlotDataInputInputObject =
-  | Extract<keyof UserUpdateWithoutSlotDataInput, string>
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'essays', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
-  
-export interface UserUpsertWithWhereUniqueWithoutSlotInput {
-  where?: UserWhereUniqueInput
-  update?: UserUpdateWithoutSlotDataInput
-  create?: UserCreateWithoutSlotInput
-}
-export type UserUpsertWithWhereUniqueWithoutSlotInputInputObject =
-  | Extract<keyof UserUpsertWithWhereUniqueWithoutSlotInput, string>
+export type CompletionUpsertWithWhereUniqueWithoutUserInputInputObject =
+  | Extract<keyof CompletionUpsertWithWhereUniqueWithoutUserInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface UserScalarWhereInput {
-  id?: string | null
-  id_not?: string | null
-  id_in?: string[]
-  id_not_in?: string[]
-  id_lt?: string | null
-  id_lte?: string | null
-  id_gt?: string | null
-  id_gte?: string | null
-  id_contains?: string | null
-  id_not_contains?: string | null
-  id_starts_with?: string | null
-  id_not_starts_with?: string | null
-  id_ends_with?: string | null
-  id_not_ends_with?: string | null
+export interface CompletionScalarWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
   createdAt?: string | null
   createdAt_not?: string | null
   createdAt_in?: string[]
@@ -3630,42 +4374,14 @@ export interface UserScalarWhereInput {
   updatedAt_lte?: string | null
   updatedAt_gt?: string | null
   updatedAt_gte?: string | null
-  upstream_id?: number | null
-  upstream_id_not?: number | null
-  upstream_id_in?: number[]
-  upstream_id_not_in?: number[]
-  upstream_id_lt?: number | null
-  upstream_id_lte?: number | null
-  upstream_id_gt?: number | null
-  upstream_id_gte?: number | null
-  first_name?: string | null
-  first_name_not?: string | null
-  first_name_in?: string[]
-  first_name_not_in?: string[]
-  first_name_lt?: string | null
-  first_name_lte?: string | null
-  first_name_gt?: string | null
-  first_name_gte?: string | null
-  first_name_contains?: string | null
-  first_name_not_contains?: string | null
-  first_name_starts_with?: string | null
-  first_name_not_starts_with?: string | null
-  first_name_ends_with?: string | null
-  first_name_not_ends_with?: string | null
-  last_name?: string | null
-  last_name_not?: string | null
-  last_name_in?: string[]
-  last_name_not_in?: string[]
-  last_name_lt?: string | null
-  last_name_lte?: string | null
-  last_name_gt?: string | null
-  last_name_gte?: string | null
-  last_name_contains?: string | null
-  last_name_not_contains?: string | null
-  last_name_starts_with?: string | null
-  last_name_not_starts_with?: string | null
-  last_name_ends_with?: string | null
-  last_name_not_ends_with?: string | null
+  user_upstream_id?: number | null
+  user_upstream_id_not?: number | null
+  user_upstream_id_in?: number[]
+  user_upstream_id_not_in?: number[]
+  user_upstream_id_lt?: number | null
+  user_upstream_id_lte?: number | null
+  user_upstream_id_gt?: number | null
+  user_upstream_id_gte?: number | null
   email?: string | null
   email_not?: string | null
   email_in?: string[]
@@ -3680,16 +4396,40 @@ export interface UserScalarWhereInput {
   email_not_starts_with?: string | null
   email_ends_with?: string | null
   email_not_ends_with?: string | null
-  administrator?: boolean | null
-  administrator_not?: boolean | null
-  completed_enough?: boolean | null
-  completed_enough_not?: boolean | null
-  AND?: UserScalarWhereInput[]
-  OR?: UserScalarWhereInput[]
-  NOT?: UserScalarWhereInput[]
+  student_number?: string | null
+  student_number_not?: string | null
+  student_number_in?: string[]
+  student_number_not_in?: string[]
+  student_number_lt?: string | null
+  student_number_lte?: string | null
+  student_number_gt?: string | null
+  student_number_gte?: string | null
+  student_number_contains?: string | null
+  student_number_not_contains?: string | null
+  student_number_starts_with?: string | null
+  student_number_not_starts_with?: string | null
+  student_number_ends_with?: string | null
+  student_number_not_ends_with?: string | null
+  completion_language?: string | null
+  completion_language_not?: string | null
+  completion_language_in?: string[]
+  completion_language_not_in?: string[]
+  completion_language_lt?: string | null
+  completion_language_lte?: string | null
+  completion_language_gt?: string | null
+  completion_language_gte?: string | null
+  completion_language_contains?: string | null
+  completion_language_not_contains?: string | null
+  completion_language_starts_with?: string | null
+  completion_language_not_starts_with?: string | null
+  completion_language_ends_with?: string | null
+  completion_language_not_ends_with?: string | null
+  AND?: CompletionScalarWhereInput[]
+  OR?: CompletionScalarWhereInput[]
+  NOT?: CompletionScalarWhereInput[]
 }
-export type UserScalarWhereInputInputObject =
-  | Extract<keyof UserScalarWhereInput, string>
+export type CompletionScalarWhereInputInputObject =
+  | Extract<keyof CompletionScalarWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -3720,42 +4460,14 @@ export type UserScalarWhereInputInputObject =
   | { name: 'updatedAt_lte', alias?: string  } 
   | { name: 'updatedAt_gt', alias?: string  } 
   | { name: 'updatedAt_gte', alias?: string  } 
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'upstream_id_not', alias?: string  } 
-  | { name: 'upstream_id_in', alias?: string  } 
-  | { name: 'upstream_id_not_in', alias?: string  } 
-  | { name: 'upstream_id_lt', alias?: string  } 
-  | { name: 'upstream_id_lte', alias?: string  } 
-  | { name: 'upstream_id_gt', alias?: string  } 
-  | { name: 'upstream_id_gte', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'first_name_not', alias?: string  } 
-  | { name: 'first_name_in', alias?: string  } 
-  | { name: 'first_name_not_in', alias?: string  } 
-  | { name: 'first_name_lt', alias?: string  } 
-  | { name: 'first_name_lte', alias?: string  } 
-  | { name: 'first_name_gt', alias?: string  } 
-  | { name: 'first_name_gte', alias?: string  } 
-  | { name: 'first_name_contains', alias?: string  } 
-  | { name: 'first_name_not_contains', alias?: string  } 
-  | { name: 'first_name_starts_with', alias?: string  } 
-  | { name: 'first_name_not_starts_with', alias?: string  } 
-  | { name: 'first_name_ends_with', alias?: string  } 
-  | { name: 'first_name_not_ends_with', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'last_name_not', alias?: string  } 
-  | { name: 'last_name_in', alias?: string  } 
-  | { name: 'last_name_not_in', alias?: string  } 
-  | { name: 'last_name_lt', alias?: string  } 
-  | { name: 'last_name_lte', alias?: string  } 
-  | { name: 'last_name_gt', alias?: string  } 
-  | { name: 'last_name_gte', alias?: string  } 
-  | { name: 'last_name_contains', alias?: string  } 
-  | { name: 'last_name_not_contains', alias?: string  } 
-  | { name: 'last_name_starts_with', alias?: string  } 
-  | { name: 'last_name_not_starts_with', alias?: string  } 
-  | { name: 'last_name_ends_with', alias?: string  } 
-  | { name: 'last_name_not_ends_with', alias?: string  } 
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'user_upstream_id_not', alias?: string  } 
+  | { name: 'user_upstream_id_in', alias?: string  } 
+  | { name: 'user_upstream_id_not_in', alias?: string  } 
+  | { name: 'user_upstream_id_lt', alias?: string  } 
+  | { name: 'user_upstream_id_lte', alias?: string  } 
+  | { name: 'user_upstream_id_gt', alias?: string  } 
+  | { name: 'user_upstream_id_gte', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'email_not', alias?: string  } 
   | { name: 'email_in', alias?: string  } 
@@ -3770,174 +4482,391 @@ export type UserScalarWhereInputInputObject =
   | { name: 'email_not_starts_with', alias?: string  } 
   | { name: 'email_ends_with', alias?: string  } 
   | { name: 'email_not_ends_with', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'administrator_not', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
-  | { name: 'completed_enough_not', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'student_number_not', alias?: string  } 
+  | { name: 'student_number_in', alias?: string  } 
+  | { name: 'student_number_not_in', alias?: string  } 
+  | { name: 'student_number_lt', alias?: string  } 
+  | { name: 'student_number_lte', alias?: string  } 
+  | { name: 'student_number_gt', alias?: string  } 
+  | { name: 'student_number_gte', alias?: string  } 
+  | { name: 'student_number_contains', alias?: string  } 
+  | { name: 'student_number_not_contains', alias?: string  } 
+  | { name: 'student_number_starts_with', alias?: string  } 
+  | { name: 'student_number_not_starts_with', alias?: string  } 
+  | { name: 'student_number_ends_with', alias?: string  } 
+  | { name: 'student_number_not_ends_with', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  | { name: 'completion_language_not', alias?: string  } 
+  | { name: 'completion_language_in', alias?: string  } 
+  | { name: 'completion_language_not_in', alias?: string  } 
+  | { name: 'completion_language_lt', alias?: string  } 
+  | { name: 'completion_language_lte', alias?: string  } 
+  | { name: 'completion_language_gt', alias?: string  } 
+  | { name: 'completion_language_gte', alias?: string  } 
+  | { name: 'completion_language_contains', alias?: string  } 
+  | { name: 'completion_language_not_contains', alias?: string  } 
+  | { name: 'completion_language_starts_with', alias?: string  } 
+  | { name: 'completion_language_not_starts_with', alias?: string  } 
+  | { name: 'completion_language_ends_with', alias?: string  } 
+  | { name: 'completion_language_not_ends_with', alias?: string  } 
   | { name: 'AND', alias?: string  } 
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface UserUpdateManyWithWhereNestedInput {
-  where?: UserScalarWhereInput
-  data?: UserUpdateManyDataInput
+export interface CompletionUpdateManyWithWhereNestedInput {
+  where?: CompletionScalarWhereInput
+  data?: CompletionUpdateManyDataInput
 }
-export type UserUpdateManyWithWhereNestedInputInputObject =
-  | Extract<keyof UserUpdateManyWithWhereNestedInput, string>
+export type CompletionUpdateManyWithWhereNestedInputInputObject =
+  | Extract<keyof CompletionUpdateManyWithWhereNestedInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'data', alias?: string  } 
   
-export interface UserUpdateManyDataInput {
+export interface CompletionUpdateManyDataInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
+  completion_language?: string | null
+}
+export type CompletionUpdateManyDataInputInputObject =
+  | Extract<keyof CompletionUpdateManyDataInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface UserUpdateManyMutationInput {
   upstream_id?: number | null
   first_name?: string | null
   last_name?: string | null
+  username?: string | null
   email?: string | null
   administrator?: boolean | null
   completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
 }
-export type UserUpdateManyDataInputInputObject =
-  | Extract<keyof UserUpdateManyDataInput, string>
+export type UserUpdateManyMutationInputInputObject =
+  | Extract<keyof UserUpdateManyMutationInput, string>
   | { name: 'upstream_id', alias?: string  } 
   | { name: 'first_name', alias?: string  } 
   | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'administrator', alias?: string  } 
   | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
   
-export interface SlotUpdateManyMutationInput {
-  capacity?: number | null
-  starts_at?: string | null
-  ends_at?: string | null
+export interface CourseUpdateInput {
+  name?: string | null
+  slug?: string | null
+  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
 }
-export type SlotUpdateManyMutationInputInputObject =
-  | Extract<keyof SlotUpdateManyMutationInput, string>
-  | { name: 'capacity', alias?: string  } 
-  | { name: 'starts_at', alias?: string  } 
-  | { name: 'ends_at', alias?: string  } 
+export type CourseUpdateInputInputObject =
+  | Extract<keyof CourseUpdateInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
+  | { name: 'open_university_courses', alias?: string  } 
   
-export interface EssayCreateInput {
-  text?: string
-  author?: UserCreateOneWithoutEssaysInput
-  topic?: EssayTopicCreateOneInput
+export interface CourseUpdateManyMutationInput {
+  name?: string | null
+  slug?: string | null
 }
-export type EssayCreateInputInputObject =
-  | Extract<keyof EssayCreateInput, string>
-  | { name: 'text', alias?: string  } 
-  | { name: 'author', alias?: string  } 
-  | { name: 'topic', alias?: string  } 
+export type CourseUpdateManyMutationInputInputObject =
+  | Extract<keyof CourseUpdateManyMutationInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
   
-export interface UserCreateOneWithoutEssaysInput {
-  create?: UserCreateWithoutEssaysInput | null
-  connect?: UserWhereUniqueInput | null
+export interface OpenUniversityCourseCreateInput {
+  course_code?: string
+  course?: CourseCreateOneWithoutOpen_university_coursesInput
 }
-export type UserCreateOneWithoutEssaysInputInputObject =
-  | Extract<keyof UserCreateOneWithoutEssaysInput, string>
+export type OpenUniversityCourseCreateInputInputObject =
+  | Extract<keyof OpenUniversityCourseCreateInput, string>
+  | { name: 'course_code', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  
+export interface CourseCreateOneWithoutOpen_university_coursesInput {
+  create?: CourseCreateWithoutOpen_university_coursesInput | null
+  connect?: CourseWhereUniqueInput | null
+}
+export type CourseCreateOneWithoutOpen_university_coursesInputInputObject =
+  | Extract<keyof CourseCreateOneWithoutOpen_university_coursesInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface UserCreateWithoutEssaysInput {
-  upstream_id?: number
-  first_name?: string | null
-  last_name?: string | null
-  email?: string
-  administrator?: boolean
-  slot?: SlotCreateOneWithoutRegisteredInput | null
-  completed_enough?: boolean | null
+export interface CourseCreateWithoutOpen_university_coursesInput {
+  name?: string
+  slug?: string
 }
-export type UserCreateWithoutEssaysInputInputObject =
-  | Extract<keyof UserCreateWithoutEssaysInput, string>
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'slot', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
+export type CourseCreateWithoutOpen_university_coursesInputInputObject =
+  | Extract<keyof CourseCreateWithoutOpen_university_coursesInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
   
-export interface EssayUpdateInput {
-  text?: string | null
-  author?: UserUpdateOneRequiredWithoutEssaysInput | null
-  topic?: EssayTopicUpdateOneRequiredInput | null
+export interface OpenUniversityCourseUpdateInput {
+  course_code?: string | null
+  course?: CourseUpdateOneRequiredWithoutOpen_university_coursesInput | null
 }
-export type EssayUpdateInputInputObject =
-  | Extract<keyof EssayUpdateInput, string>
-  | { name: 'text', alias?: string  } 
-  | { name: 'author', alias?: string  } 
-  | { name: 'topic', alias?: string  } 
+export type OpenUniversityCourseUpdateInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpdateInput, string>
+  | { name: 'course_code', alias?: string  } 
+  | { name: 'course', alias?: string  } 
   
-export interface UserUpdateOneRequiredWithoutEssaysInput {
-  create?: UserCreateWithoutEssaysInput | null
-  update?: UserUpdateWithoutEssaysDataInput | null
-  upsert?: UserUpsertWithoutEssaysInput | null
-  connect?: UserWhereUniqueInput | null
+export interface CourseUpdateOneRequiredWithoutOpen_university_coursesInput {
+  create?: CourseCreateWithoutOpen_university_coursesInput | null
+  update?: CourseUpdateWithoutOpen_university_coursesDataInput | null
+  upsert?: CourseUpsertWithoutOpen_university_coursesInput | null
+  connect?: CourseWhereUniqueInput | null
 }
-export type UserUpdateOneRequiredWithoutEssaysInputInputObject =
-  | Extract<keyof UserUpdateOneRequiredWithoutEssaysInput, string>
+export type CourseUpdateOneRequiredWithoutOpen_university_coursesInputInputObject =
+  | Extract<keyof CourseUpdateOneRequiredWithoutOpen_university_coursesInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'upsert', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface UserUpdateWithoutEssaysDataInput {
-  upstream_id?: number | null
-  first_name?: string | null
-  last_name?: string | null
-  email?: string | null
-  administrator?: boolean | null
-  slot?: SlotUpdateOneWithoutRegisteredInput | null
-  completed_enough?: boolean | null
+export interface CourseUpdateWithoutOpen_university_coursesDataInput {
+  name?: string | null
+  slug?: string | null
 }
-export type UserUpdateWithoutEssaysDataInputInputObject =
-  | Extract<keyof UserUpdateWithoutEssaysDataInput, string>
-  | { name: 'upstream_id', alias?: string  } 
-  | { name: 'first_name', alias?: string  } 
-  | { name: 'last_name', alias?: string  } 
-  | { name: 'email', alias?: string  } 
-  | { name: 'administrator', alias?: string  } 
-  | { name: 'slot', alias?: string  } 
-  | { name: 'completed_enough', alias?: string  } 
+export type CourseUpdateWithoutOpen_university_coursesDataInputInputObject =
+  | Extract<keyof CourseUpdateWithoutOpen_university_coursesDataInput, string>
+  | { name: 'name', alias?: string  } 
+  | { name: 'slug', alias?: string  } 
   
-export interface UserUpsertWithoutEssaysInput {
-  update?: UserUpdateWithoutEssaysDataInput
-  create?: UserCreateWithoutEssaysInput
+export interface CourseUpsertWithoutOpen_university_coursesInput {
+  update?: CourseUpdateWithoutOpen_university_coursesDataInput
+  create?: CourseCreateWithoutOpen_university_coursesInput
 }
-export type UserUpsertWithoutEssaysInputInputObject =
-  | Extract<keyof UserUpsertWithoutEssaysInput, string>
+export type CourseUpsertWithoutOpen_university_coursesInputInputObject =
+  | Extract<keyof CourseUpsertWithoutOpen_university_coursesInput, string>
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface EssayUpdateManyMutationInput {
-  text?: string | null
+export interface OpenUniversityCourseUpdateManyMutationInput {
+  course_code?: string | null
 }
-export type EssayUpdateManyMutationInputInputObject =
-  | Extract<keyof EssayUpdateManyMutationInput, string>
-  | { name: 'text', alias?: string  } 
+export type OpenUniversityCourseUpdateManyMutationInputInputObject =
+  | Extract<keyof OpenUniversityCourseUpdateManyMutationInput, string>
+  | { name: 'course_code', alias?: string  } 
   
-export interface EssayTopicUpdateInput {
-  title?: string | null
-  description?: string | null
-  min_words?: number | null
-  max_words?: number | null
+export interface CompletionCreateInput {
+  user_upstream_id?: number | null
+  email?: string
+  student_number?: string | null
+  user?: UserCreateOneWithoutCompletionsInput
+  course?: CourseCreateOneInput
+  completion_language?: string | null
 }
-export type EssayTopicUpdateInputInputObject =
-  | Extract<keyof EssayTopicUpdateInput, string>
-  | { name: 'title', alias?: string  } 
-  | { name: 'description', alias?: string  } 
-  | { name: 'min_words', alias?: string  } 
-  | { name: 'max_words', alias?: string  } 
+export type CompletionCreateInputInputObject =
+  | Extract<keyof CompletionCreateInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
   
-export interface EssayTopicUpdateManyMutationInput {
-  title?: string | null
-  description?: string | null
-  min_words?: number | null
-  max_words?: number | null
+export interface UserCreateOneWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput | null
+  connect?: UserWhereUniqueInput | null
 }
-export type EssayTopicUpdateManyMutationInputInputObject =
-  | Extract<keyof EssayTopicUpdateManyMutationInput, string>
-  | { name: 'title', alias?: string  } 
-  | { name: 'description', alias?: string  } 
-  | { name: 'min_words', alias?: string  } 
-  | { name: 'max_words', alias?: string  } 
+export type UserCreateOneWithoutCompletionsInputInputObject =
+  | Extract<keyof UserCreateOneWithoutCompletionsInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserCreateWithoutCompletionsInput {
+  upstream_id?: number
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string
+  administrator?: boolean
+  completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+}
+export type UserCreateWithoutCompletionsInputInputObject =
+  | Extract<keyof UserCreateWithoutCompletionsInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  
+export interface CompletionUpdateInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
+  user?: UserUpdateOneRequiredWithoutCompletionsInput | null
+  course?: CourseUpdateOneRequiredInput | null
+  completion_language?: string | null
+}
+export type CompletionUpdateInputInputObject =
+  | Extract<keyof CompletionUpdateInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface UserUpdateOneRequiredWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput | null
+  update?: UserUpdateWithoutCompletionsDataInput | null
+  upsert?: UserUpsertWithoutCompletionsInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserUpdateOneRequiredWithoutCompletionsInputInputObject =
+  | Extract<keyof UserUpdateOneRequiredWithoutCompletionsInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserUpdateWithoutCompletionsDataInput {
+  upstream_id?: number | null
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string | null
+  administrator?: boolean | null
+  completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+}
+export type UserUpdateWithoutCompletionsDataInputInputObject =
+  | Extract<keyof UserUpdateWithoutCompletionsDataInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  
+export interface UserUpsertWithoutCompletionsInput {
+  update?: UserUpdateWithoutCompletionsDataInput
+  create?: UserCreateWithoutCompletionsInput
+}
+export type UserUpsertWithoutCompletionsInputInputObject =
+  | Extract<keyof UserUpsertWithoutCompletionsInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface CompletionUpdateManyMutationInput {
+  user_upstream_id?: number | null
+  email?: string | null
+  student_number?: string | null
+  completion_language?: string | null
+}
+export type CompletionUpdateManyMutationInputInputObject =
+  | Extract<keyof CompletionUpdateManyMutationInput, string>
+  | { name: 'user_upstream_id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'completion_language', alias?: string  } 
+  
+export interface CompletionRegisteredCreateInput {
+  user?: UserCreateOneInput
+  course?: CourseCreateOneInput
+  real_student_number?: string | null
+  organisation?: string
+}
+export type CompletionRegisteredCreateInputInputObject =
+  | Extract<keyof CompletionRegisteredCreateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
+  
+export interface UserCreateOneInput {
+  create?: UserCreateInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserCreateOneInputInputObject =
+  | Extract<keyof UserCreateOneInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface CompletionRegisteredUpdateInput {
+  user?: UserUpdateOneRequiredInput | null
+  course?: CourseUpdateOneRequiredInput | null
+  real_student_number?: string | null
+  organisation?: string | null
+}
+export type CompletionRegisteredUpdateInputInputObject =
+  | Extract<keyof CompletionRegisteredUpdateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
+  
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput | null
+  update?: UserUpdateDataInput | null
+  upsert?: UserUpsertNestedInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserUpdateOneRequiredInputInputObject =
+  | Extract<keyof UserUpdateOneRequiredInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserUpdateDataInput {
+  upstream_id?: number | null
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string | null
+  administrator?: boolean | null
+  completed_enough?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+  completions?: CompletionUpdateManyWithoutUserInput | null
+}
+export type UserUpdateDataInputInputObject =
+  | Extract<keyof UserUpdateDataInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'completed_enough', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'completions', alias?: string  } 
+  
+export interface UserUpsertNestedInput {
+  update?: UserUpdateDataInput
+  create?: UserCreateInput
+}
+export type UserUpsertNestedInputInputObject =
+  | Extract<keyof UserUpsertNestedInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface CompletionRegisteredUpdateManyMutationInput {
+  real_student_number?: string | null
+  organisation?: string | null
+}
+export type CompletionRegisteredUpdateManyMutationInputInputObject =
+  | Extract<keyof CompletionRegisteredUpdateManyMutationInput, string>
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'organisation', alias?: string  } 
   
 export interface UserSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
@@ -3960,18 +4889,18 @@ export type UserSubscriptionWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface SlotSubscriptionWhereInput {
+export interface CourseSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
   updatedFields_contains?: string | null
   updatedFields_contains_every?: string[]
   updatedFields_contains_some?: string[]
-  node?: SlotWhereInput | null
-  AND?: SlotSubscriptionWhereInput[]
-  OR?: SlotSubscriptionWhereInput[]
-  NOT?: SlotSubscriptionWhereInput[]
+  node?: CourseWhereInput | null
+  AND?: CourseSubscriptionWhereInput[]
+  OR?: CourseSubscriptionWhereInput[]
+  NOT?: CourseSubscriptionWhereInput[]
 }
-export type SlotSubscriptionWhereInputInputObject =
-  | Extract<keyof SlotSubscriptionWhereInput, string>
+export type CourseSubscriptionWhereInputInputObject =
+  | Extract<keyof CourseSubscriptionWhereInput, string>
   | { name: 'mutation_in', alias?: string  } 
   | { name: 'updatedFields_contains', alias?: string  } 
   | { name: 'updatedFields_contains_every', alias?: string  } 
@@ -3981,18 +4910,18 @@ export type SlotSubscriptionWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface EssaySubscriptionWhereInput {
+export interface OpenUniversityCourseSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
   updatedFields_contains?: string | null
   updatedFields_contains_every?: string[]
   updatedFields_contains_some?: string[]
-  node?: EssayWhereInput | null
-  AND?: EssaySubscriptionWhereInput[]
-  OR?: EssaySubscriptionWhereInput[]
-  NOT?: EssaySubscriptionWhereInput[]
+  node?: OpenUniversityCourseWhereInput | null
+  AND?: OpenUniversityCourseSubscriptionWhereInput[]
+  OR?: OpenUniversityCourseSubscriptionWhereInput[]
+  NOT?: OpenUniversityCourseSubscriptionWhereInput[]
 }
-export type EssaySubscriptionWhereInputInputObject =
-  | Extract<keyof EssaySubscriptionWhereInput, string>
+export type OpenUniversityCourseSubscriptionWhereInputInputObject =
+  | Extract<keyof OpenUniversityCourseSubscriptionWhereInput, string>
   | { name: 'mutation_in', alias?: string  } 
   | { name: 'updatedFields_contains', alias?: string  } 
   | { name: 'updatedFields_contains_every', alias?: string  } 
@@ -4002,18 +4931,39 @@ export type EssaySubscriptionWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface EssayTopicSubscriptionWhereInput {
+export interface CompletionSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
   updatedFields_contains?: string | null
   updatedFields_contains_every?: string[]
   updatedFields_contains_some?: string[]
-  node?: EssayTopicWhereInput | null
-  AND?: EssayTopicSubscriptionWhereInput[]
-  OR?: EssayTopicSubscriptionWhereInput[]
-  NOT?: EssayTopicSubscriptionWhereInput[]
+  node?: CompletionWhereInput | null
+  AND?: CompletionSubscriptionWhereInput[]
+  OR?: CompletionSubscriptionWhereInput[]
+  NOT?: CompletionSubscriptionWhereInput[]
 }
-export type EssayTopicSubscriptionWhereInputInputObject =
-  | Extract<keyof EssayTopicSubscriptionWhereInput, string>
+export type CompletionSubscriptionWhereInputInputObject =
+  | Extract<keyof CompletionSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface CompletionRegisteredSubscriptionWhereInput {
+  mutation_in?: prisma.MutationType[]
+  updatedFields_contains?: string | null
+  updatedFields_contains_every?: string[]
+  updatedFields_contains_some?: string[]
+  node?: CompletionRegisteredWhereInput | null
+  AND?: CompletionRegisteredSubscriptionWhereInput[]
+  OR?: CompletionRegisteredSubscriptionWhereInput[]
+  NOT?: CompletionRegisteredSubscriptionWhereInput[]
+}
+export type CompletionRegisteredSubscriptionWhereInputInputObject =
+  | Extract<keyof CompletionRegisteredSubscriptionWhereInput, string>
   | { name: 'mutation_in', alias?: string  } 
   | { name: 'updatedFields_contains', alias?: string  } 
   | { name: 'updatedFields_contains_every', alias?: string  } 
@@ -4024,65 +4974,81 @@ export type EssayTopicSubscriptionWhereInputInputObject =
   | { name: 'NOT', alias?: string  } 
   
 
-export type UserOrderByInputValues =
+export type CompletionOrderByInputValues =
   | 'id_ASC'
   | 'id_DESC'
   | 'createdAt_ASC'
   | 'createdAt_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
+  | 'user_upstream_id_ASC'
+  | 'user_upstream_id_DESC'
+  | 'email_ASC'
+  | 'email_DESC'
+  | 'student_number_ASC'
+  | 'student_number_DESC'
+  | 'completion_language_ASC'
+  | 'completion_language_DESC'
+  
+export type OpenUniversityCourseOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'course_code_ASC'
+  | 'course_code_DESC'
+  
+export type UserOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
   | 'upstream_id_ASC'
   | 'upstream_id_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
   | 'first_name_ASC'
   | 'first_name_DESC'
   | 'last_name_ASC'
   | 'last_name_DESC'
+  | 'username_ASC'
+  | 'username_DESC'
   | 'email_ASC'
   | 'email_DESC'
   | 'administrator_ASC'
   | 'administrator_DESC'
   | 'completed_enough_ASC'
   | 'completed_enough_DESC'
+  | 'student_number_ASC'
+  | 'student_number_DESC'
+  | 'real_student_number_ASC'
+  | 'real_student_number_DESC'
   
-export type EssayOrderByInputValues =
+export type CourseOrderByInputValues =
   | 'id_ASC'
   | 'id_DESC'
   | 'createdAt_ASC'
   | 'createdAt_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
-  | 'text_ASC'
-  | 'text_DESC'
+  | 'name_ASC'
+  | 'name_DESC'
+  | 'slug_ASC'
+  | 'slug_DESC'
   
-export type SlotOrderByInputValues =
+export type CompletionRegisteredOrderByInputValues =
   | 'id_ASC'
   | 'id_DESC'
   | 'createdAt_ASC'
   | 'createdAt_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
-  | 'capacity_ASC'
-  | 'capacity_DESC'
-  | 'starts_at_ASC'
-  | 'starts_at_DESC'
-  | 'ends_at_ASC'
-  | 'ends_at_DESC'
-  
-export type EssayTopicOrderByInputValues =
-  | 'id_ASC'
-  | 'id_DESC'
-  | 'createdAt_ASC'
-  | 'createdAt_DESC'
-  | 'updatedAt_ASC'
-  | 'updatedAt_DESC'
-  | 'title_ASC'
-  | 'title_DESC'
-  | 'description_ASC'
-  | 'description_DESC'
-  | 'min_words_ASC'
-  | 'min_words_DESC'
-  | 'max_words_ASC'
-  | 'max_words_DESC'
+  | 'real_student_number_ASC'
+  | 'real_student_number_DESC'
+  | 'organisation_ASC'
+  | 'organisation_DESC'
   
 export type MutationTypeValues =
   | 'CREATED'

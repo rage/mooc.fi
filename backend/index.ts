@@ -1,14 +1,18 @@
-import { prisma, Prisma, Int, User } from "./generated/prisma-client";
+import { prisma, Prisma, Int, User, Course, OpenUniversityCourse } from "./generated/prisma-client";
 import datamodelInfo from "./generated/nexus-prisma";
 import * as path from "path";
-import { stringArg, idArg, convertSDL, subscriptionField } from "nexus";
+import { stringArg, idArg, convertSDL, subscriptionField, objectType, intArg } from "nexus";
 import { prismaObjectType, makePrismaSchema } from "nexus-prisma";
 import { GraphQLServer } from "graphql-yoga";
 import { AuthenticationError, ForbiddenError } from "apollo-server-core";
 import TmcClient from "./services/tmc";
 import fetchUser from "./middlewares/FetchUser";
-import { wordCount } from "../util/strings";
+import fetchCompletions from './middlewares/fetchCompletions'
+const { UserInputError } = require('apollo-server-core')
+
+
 import * as winston from "winston";
+import { OverlappingFieldsCanBeMerged } from "graphql/validation/rules/OverlappingFieldsCanBeMerged";
 
 const logger = winston.createLogger({
   level: "info",
@@ -42,144 +46,127 @@ const Query = prismaObjectType({
       }
     });
 
-    t.list.field("slots", {
-      type: "Slot",
-      resolve: (_, args, ctx) => ctx.prisma.slots()
-    });
-
-    t.list.field("essayTopics", {
-      type: "EssayTopic",
-      resolve: (_, args, ctx) => ctx.prisma.essayTopics()
-    });
-
-    t.field("ownEssay", {
-      type: "Essay",
+    t.list.field("completions", {
+      type: "Completion",
       args: {
-        id: idArg()
+        course: stringArg(),
+        first: intArg(),
+        after: idArg()
       },
+      resolve: async (_, { course, first, after }, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        console.log("A")
+        const courseWithSlug: Course = await ctx.prisma.course(
+          { slug: course }
+        )
+        console.log("B")
+        if (!courseWithSlug) {
+          const courseFromAvoinCourse: Course = await ctx.prisma.openUniversityCourse(
+            { course_code: course }
+          ).course()
+          if (!courseFromAvoinCourse) {
+            throw new UserInputError("Invalid course identifier")
+          }
+          course = courseFromAvoinCourse.slug
+        }
+        const completions = await fetchCompletions({course, first, after}, ctx);
 
-      resolve: async (o, { id }, ctx) => {
-        const prisma: Prisma = ctx.prisma;
-        return await prisma.essay({ id });
+        return completions
       }
-    });
+    })
+
+    t.list.field("courses", {
+      type: "Course",
+      resolve: async (_, args, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        return ctx.prisma.courses()
+      }
+    })
+    t.list.field("openUniversityCourses", {
+      type: "OpenUniversityCourse",
+      resolve: async (_, args, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
+        }
+        return ctx.prisma.openUniversityCourses()
+      }
+    })
   }
 });
+
 
 const Mutation = prismaObjectType({
   name: "Mutation",
   definition(t) {
-    t.field("chooseSlot", {
-      type: "User",
+    t.field("addCourse", {
+      type: "Course",
       args: {
-        id: idArg()
+        name: stringArg(),
+        slug: stringArg()
       },
-      resolve: async (_, { id }, ctx) => {
-        const prisma: Prisma = ctx.prisma;
-        const slot = await prisma.slot({ id });
-        const registered_count = await prisma
-          .usersConnection({
-            where: { slot: { id: id } }
-          })
-          .aggregate()
-          .count();
-
-        console.log(ctx.user);
-        if (registered_count >= slot.capacity) {
-          throw new ForbiddenError("The slot is already full");
+      resolve: async (_, { name, slug }, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
         }
-        return prisma.updateUser({
-          where: { id: ctx.user.id },
-          data: {
-            slot: { connect: { id: slot.id } }
-          }
-        });
+        const prisma: Prisma = ctx.prisma
+        const newCourse: Course = await prisma.createCourse({
+          name: name,
+          slug: slug
+        })
+        return newCourse
       }
-    });
+    })
 
-    t.field("saveEssay", {
-      type: "EssayTopic",
+    t.field("addOpenUniversityCourse", {
+      type: "OpenUniversityCourse",
       args: {
-        topicId: idArg(),
-        text: stringArg()
+        course_code: stringArg(),
+        course: idArg()
       },
-      resolve: async (_, { topicId, text }, ctx) => {
-        const prisma: Prisma = ctx.prisma;
-        const topic = await prisma.essayTopic({ id: topicId });
-        const words = wordCount(text);
-        if (words < topic.min_words || words > topic.max_words) {
-          throw new ForbiddenError(
-            "Text word count is not within given limits."
-          );
+      resolve: async (_, { course_code, course }, ctx) => {
+        if (!ctx.user.administrator) {
+          throw new ForbiddenError("Access Denied");
         }
-        const previousAnswer = (await prisma.essays({
-          where: { author: { id: ctx.user.id }, topic: { id: topicId } },
-          orderBy: "createdAt_DESC",
-          first: 1
-        }))[0];
-        if (!previousAnswer) {
-          await prisma.createEssay({
-            author: { connect: { id: ctx.user.id } },
-            topic: {
-              connect: {
-                id: topicId
-              }
-            },
-            text
-          });
-        } else {
-          await prisma.updateEssay({
-            data: { text },
-            where: { id: previousAnswer.id }
-          });
-        }
-
-        return prisma.essayTopic({ id: topicId });
+        const prisma: Prisma = ctx.prisma
+        const newOpenUniversityCourse: OpenUniversityCourse = await prisma.createOpenUniversityCourse({
+          course_code: course_code,
+          course: { connect: { id: course } }
+        })
+        return newOpenUniversityCourse
       }
-    });
+    })
   }
 });
 
-const EssayTopic = prismaObjectType({
-  name: "EssayTopic",
+// const Completion = objectType({
+//   name: "Completion",
+//   definition(t) {
+//     t.int("id")
+//     t.string("email")
+//     t.string("username")
+//     t.string("student_number")
+//     t.string("first_name")
+//     t.string("last_name")
+//     t.string("completion_language")
+//   }
+// })
+
+const Completion = prismaObjectType({
+  name: "Completion",
   definition(t) {
-    t.prismaFields(["*"]);
-    t.field("currentUserAnswer", {
-      type: "Essay",
-      nullable: true,
-      resolve: async (parent, args, ctx) => {
-        const prisma: Prisma = ctx.prisma;
-        const essay = await prisma.essays({
-          where: { author: { id: ctx.user.id }, topic: { id: parent.id } },
-          orderBy: "createdAt_DESC",
-          first: 1
-        });
-        return essay[0];
-      }
-    });
-  }
-});
+    t.prismaFields(["id", "createdAt", "updatedAt", "course", "completion_language", "email",
+      "student_number", "user_upstream_id"])
 
-const Slots = prismaObjectType({
-  name: "Slot",
-  definition(t) {
-    t.prismaFields(["id", "capacity", "starts_at", "ends_at"]);
-    t.field("registered_count", {
-      type: "Int",
-      resolve: async (parent, args, ctx) => {
-        const prisma: Prisma = ctx.prisma;
-        const userAggrecatePromise = prisma
-          .usersConnection({ where: { slot: { id: parent.id } } })
-          .aggregate();
-
-        return userAggrecatePromise.count();
-      }
-    });
   }
-});
+})
+
 
 const schema = makePrismaSchema({
-  types: [Query, Mutation, EssayTopic, Slots],
+  types: [Query, Mutation, Completion],
 
   prisma: {
     datamodelInfo,

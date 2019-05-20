@@ -1,45 +1,55 @@
 type User {
-  id: ID! @unique
+  id: UUID! @unique
+  upstream_id: Int! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  upstream_id: Int! @unique
   first_name: String
   last_name: String
+  username: String @unique
   email: String!
   administrator: Boolean!
-  slot: Slot
-  essays: [Essay!]
   completed_enough: Boolean! @default(value: "false")
+  student_number: String
+  real_student_number: String
+  completions: [Completion!]
 }
 
-type Slot {
-  id: ID! @unique
+type Course {
+  id: UUID! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-
-  capacity: Int!
-  registered: [User!]
-  starts_at: DateTime!
-  ends_at: DateTime!
+  name: String!
+  slug: String! @unique
+  open_university_courses: [OpenUniversityCourse!] @relation(name: "CourseToOpenUniversityCourse")
 }
 
-type Essay {
-  id: ID! @unique
+type OpenUniversityCourse {
+  id: UUID! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-
-  text: String!
-  author: User!
-  topic: EssayTopic!
+  course_code: String! @unique
+  course: Course! @relation(name: "CourseToOpenUniversityCourse")
 }
 
-type EssayTopic {
-  id: ID! @unique
+type Completion {
+  id: UUID! @unique 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  "User's unique identifier. Should be used to deduplicate registered completions, since all the other fields can change."
+  user_upstream_id: Int
+  email: String!
+  student_number: String
+  user: User!
+  course: Course! @relation(name: "CompletionToCourse")
+  completion_language: String
+}
 
-  title: String!
-  description: String!
-  min_words: Int!
-  max_words: Int!
+type CompletionRegistered {
+  id: UUID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  user: User! @relation(name: "CompletionRegisteredToUser")
+  course: Course! @relation(name: "CompletionRegisteredToCourse")
+  real_student_number: String
+  organisation: String!
 }

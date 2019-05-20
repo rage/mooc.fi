@@ -1,0 +1,13 @@
+{
+    "login": "Log in",
+    "logout": "Log out",
+    "forgottenpw": "Forgot your password?",
+    "error": "Login failed. Wrong password or username/e-mail",
+    "password": "password",
+    "username": "email or username",
+    "form-info": "Use your TMC login details to log into Mooc.points",
+    "skiplink": "To main content"
+
+}
+
+

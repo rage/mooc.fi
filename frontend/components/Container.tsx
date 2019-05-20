@@ -5,4 +5,7 @@ export default styled.div`
   max-width: 700px;
   margin: 0 auto;
   margin-top: 2rem;
+  padding: 0.5em;
+
+  
 `
