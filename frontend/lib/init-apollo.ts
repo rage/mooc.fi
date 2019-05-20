@@ -13,9 +13,13 @@ import fetch from "isomorphic-unfetch";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 
+const production = process.env.NODE_ENV === "production";
+
 function create(initialState: any, ctx: NextContext | undefined) {
   const httpLink = createHttpLink({
-    uri: "http://localhost:4000",
+    uri: production
+      ? "https://points.mooc.fi/backend"
+      : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch
   });
