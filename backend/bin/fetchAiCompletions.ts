@@ -18,7 +18,6 @@ export default async function fetchCompletions() {
 }
 
 async function getElementsOfAiInfo() {
-  let tagsToInfo = []
   const promises = elementsOfAiTags.map(async tag => {
     let usernames = await getPassedUsernamesByTag(tag)
     console.log(
@@ -30,8 +29,6 @@ async function getElementsOfAiInfo() {
     let basicInfo = await tmcService.getBasicInfoByUsernames(usernames)
     console.log(`Got info from ${basicInfo.length} ${tag} students`)
     await saveCompletionsAndUsersToDatabase(basicInfo, "elements-of-ai", tag)
-
-    tagsToInfo.push(...basicInfo)
   })
   await Promise.all(promises)
 }
@@ -79,7 +76,7 @@ async function saveCompletionsAndUsersToDatabase(
       where: { user: user, course: course },
     })
     if (!doesCompletionExists.length) {
-      const completion: Completion = await prisma.createCompletion({
+      await prisma.createCompletion({
         user: { connect: { upstream_id: user.upstream_id } },
         course: { connect: { id: course.id } },
         completion_language: determineCompletionLanguage(course_name),
