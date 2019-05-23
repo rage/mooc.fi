@@ -5,7 +5,7 @@ export default styled.div`
   max-width: 700px;
   margin: 0 auto;
   margin-top: 2rem;
-  border-left: 10px solid #c8b900;
+  padding: 0.5em;
 
   
 `

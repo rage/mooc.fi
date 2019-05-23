@@ -2,65 +2,39 @@ import React from "react";
 import PropTypes from "prop-types";
 import Document, { Head, Main, NextScript } from "next/document";
 import flush from "styled-jsx/server";
-import { ServerStyleSheet } from "styled-components";
+import { ServerStyleSheets } from '@material-ui/styles';
+import theme from '../src/theme';
+
 
 
 class MyDocument extends Document {
+
   static async getInitialProps(ctx) {
-    let pageContext;
-    const page = ctx.renderPage(Component => {
-      const WrappedComponent = props => {
-        pageContext = props.pageContext;
-        return <Component {...props} />;
-      };
-
-      WrappedComponent.propTypes = {
-        pageContext: PropTypes.object.isRequired
-      };
-
-      return WrappedComponent;
-    });
-
-    let css;
-    if (pageContext) {
-      css = pageContext.sheetsRegistry.toString();
-    }
-    const sheet = new ServerStyleSheet();
+    const sheets = new ServerStyleSheets()
     const originalRenderPage = ctx.renderPage;
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: App => props => sheet.collectStyles(<App {...props} />)
-        });
-      const initialProps = await Document.getInitialProps(ctx);
 
-      return {
-        ...initialProps,
-        ...page,
-        pageContext,
-        styles: (
-          <React.Fragment>
-            <style
-              id="jss-server-side"
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: css }}
-            />
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-            {flush() || null}
-          </React.Fragment>
-        )
-      };
-    } finally {
-      sheet.seal();
+    ctx.renderPage = () =>
+      originalRenderPage({
+        enhanceApp: App => props => sheets.collect(<App {...props} />)
+      })
+
+    const initialProps = await Document.getInitialProps(ctx)
+
+    return { 
+      ...initialProps,
+      styles: (
+        <React.Fragment>
+          {sheets.getStyleElement()}
+          {flush() || null}
+        </React.Fragment>
+      )
     }
   }
 
   render() {
-    const { pageContext } = this.props;
 
     return (
-      <html lang="en" dir="ltr">
+      <html lang="fi" dir="ltr">
         <Head>
           <meta charSet="utf-8" />
           {/* Use minimum-scale=1 to enable GPU rasterization */}
@@ -71,10 +45,7 @@ class MyDocument extends Document {
           {/* PWA primary color */}
           <meta
             name="theme-color"
-            content={
-              pageContext ? pageContext.theme.palette.primary.main : null
-            }
-          />
+            content={theme.palette.primary.main}/>
         </Head>
         <body>
           <Main />

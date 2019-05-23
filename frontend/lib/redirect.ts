@@ -1,4 +1,4 @@
-import Router from "next/router";
+import Nexti18next from '../i18n'
 import { NextContext } from "next";
 
 export default (context: NextContext, target: string) => {
@@ -9,6 +9,6 @@ export default (context: NextContext, target: string) => {
     context.res.end();
   } else {
     // In the browser, we just pretend like this never even happened ;)
-    Router.replace(target);
+    Nexti18next.Router.replace(target);
   }
 };
