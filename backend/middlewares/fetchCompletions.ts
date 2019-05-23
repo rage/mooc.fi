@@ -1,10 +1,8 @@
 require("dotenv-safe").config();
 import { prisma, Prisma, Int, User, Course, OpenUniversityCourse, Completion } from "../generated/prisma-client";
-import { POINT_CONVERSION_COMPRESSED } from "constants";
 const getPassedUsernamesByTag = require("../services/quiznator")
   .getPassedUsernamesByTag;
 const tmcService = require("../services/tmc_completion_script");
-const { UserInputError } = require('apollo-server-core')
 
 
 
@@ -91,26 +89,10 @@ async function removeDataThatIsInDBAlready(data : string[], ctx) {
   })
 }
 
-async function parseCompletions(completions, tag) {
-  let parsed = []
-  for (let i = 0; i < completions.length; i++) {
-    let completion = {}
-    let old = completions[i]
-    completion["id"] = old.id
-    completion["email"] = old.email
-    completion["username"] = old.username
-    completion["student_number"] = old.student_number
-    completion["first_name"] = old.first_name
-    completion["last_name"] = old.last_name
-    completion["completion_language"] = determineCompletionLanguage(tag)
-    parsed.push(completion)
-  }
-  return parsed
-}
 
-async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx,  course_name_for_debug) {
+async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx,  course_name) {
   const prisma : Prisma = ctx.prisma
-  console.log('starting with', course_name_for_debug)
+  console.log('starting with', course_name)
   for (let i = 0; i < data.length; i++) {
     let old = data[i]
     if (!old.id) console.log(old)
@@ -139,7 +121,7 @@ async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx, 
       const completion: Completion = await prisma.createCompletion({
         user: { connect: { upstream_id: user.upstream_id } },
         course: { connect: { id: course.id } },
-        completion_language: determineCompletionLanguage(course_name_for_debug),
+        completion_language: determineCompletionLanguage(course_name),
         user_upstream_id: user.upstream_id,
         email: user.email,
         student_number: user.student_number
