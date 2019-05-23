@@ -11,6 +11,7 @@ import {
   SvgIcon } from "@material-ui/core";
 import RegisterCompletionText from '../components/RegisterCompletionText'
 import ImportantNotice from '../components/ImportantNotice'
+import Container from '../components/Container'
 import NextI18Next from '../i18n';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -69,7 +70,7 @@ const RegisterCompletion = ({ t }) => {
         return <div>Loading</div>;
     }
     return (
-      <main id='main'>
+      <Container>
         <Typography 
           variant="h2" 
           component='h1'  
@@ -109,7 +110,7 @@ const RegisterCompletion = ({ t }) => {
             {t('NB')}
           </Typography>
         </Paper>
-      </main>
+        </Container>
 
     );
   }
