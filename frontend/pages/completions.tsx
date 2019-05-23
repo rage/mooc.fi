@@ -1,5 +1,6 @@
 import  React,{ useState } from "react";
-import {  Typography, Grid } from '@material-ui/core'
+import {  Typography,
+          Table } from '@material-ui/core'
 import { NextContext } from "next";
 import { isSignedIn, isAdmin } from "../lib/authentication";
 import redirect from "../lib/redirect";
@@ -8,10 +9,7 @@ import { ApolloClient, gql } from "apollo-boost";
 import { AllCourses as AllCoursesData } from "./__generated__/AllCourses";
 import { useQuery } from "react-apollo-hooks";
 import AdminError from '../components/AdminError'
-import LanguageSelectorBar from "../components/LanguageSelectorBar";
-import DashboardSideMenu from "../components/DashboardSideMenu"
-import CourseDashboard from "../components/CourseDashboard"
-
+import { WideContainer } from "../components/Container"
 
 
 export const AllCoursesQuery = gql`
@@ -38,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-const  Course = ({ t, admin } ) => {
+const  Completions= ({ admin } ) => {
 
     const [languageValue, setLanguageValue] = useState(4)
     const [ courseDetails, setCourseDetails ] = useState({})
@@ -70,31 +68,25 @@ const  Course = ({ t, admin } ) => {
 
     return (
       <section>
-        <Typography 
-          component='h1' 
-          variant='h2' 
-          align='center'
-          className={classes.title}>
-            Elements of Ai
-        </Typography>
-        <LanguageSelectorBar
-          value={languageValue}
-          handleChange={handleChange}
-        />
-        <Grid container>
-          <Grid item>
-            <DashboardSideMenu />
-          </Grid>
-          <Grid item >
-            <CourseDashboard />
-          </Grid>
-        </Grid>
+        <WideContainer>
+            <Typography 
+                component='h1' 
+                variant='h2' 
+                align='center'
+                className={classes.title}>
+                    Completions
+            </Typography>
+            <Table>
+
+            </Table>
+            
+         </WideContainer> 
       </section>
         
     )
   }
 
-Course.getInitialProps = function(context: NextContext) {
+Completions.getInitialProps = function(context: NextContext) {
     const admin = isAdmin(context)
     console.log(admin)
     if (!isSignedIn(context)) {
@@ -102,8 +94,7 @@ Course.getInitialProps = function(context: NextContext) {
     }
     return {
       admin,
-      namespacesRequired: ['common'],
     };
   };
 
-export default Course
+export default Completions
