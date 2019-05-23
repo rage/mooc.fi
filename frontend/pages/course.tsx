@@ -1,5 +1,5 @@
-import * as React from "react";
-import {  Typography } from '@material-ui/core'
+import  React,{ useState } from "react";
+import {  Typography, Grid } from '@material-ui/core'
 import { NextContext } from "next";
 import { isSignedIn, isAdmin } from "../lib/authentication";
 import redirect from "../lib/redirect";
@@ -7,8 +7,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ApolloClient, gql } from "apollo-boost";
 import { AllCourses as AllCoursesData } from "./__generated__/AllCourses";
 import { useQuery } from "react-apollo-hooks";
-import CourseGrid from '../components/CourseGrid'
 import AdminError from '../components/AdminError'
+import LanguageSelectorBar from "../components/LanguageSelectorBar";
+import DashboardSideMenu from "../components/DashboardSideMenu"
+import CourseDashboard from "../components/CourseDashboard"
+
 
 
 export const AllCoursesQuery = gql`
@@ -27,28 +30,25 @@ query AllCourses {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      widht: 'auto',
-      display: 'block',
-
-    },
-    paper: {
-     display: 'flex',
-     flexDirection: 'column',
-     alignItems: 'center',
-     padding: '1em',
-    },
     title: {
       margin: 'auto',
-      padding: '1em'
+      padding: '0.5em'
     }
   }),
 );
 
 
-const  CompletionDashboard = ({ t, admin } ) => {
+const  Course = ({ t, admin } ) => {
+
+    const [languageValue, setLanguageValue] = useState(4)
+    const [ courseDetails, setCourseDetails ] = useState({})
+
 
     const classes = useStyles()
+
+    const handleChange = (event, value) => {
+      setLanguageValue(value)
+    }
 
     const { loading, error, data } = useQuery<AllCoursesData>(
       AllCoursesQuery
@@ -73,18 +73,28 @@ const  CompletionDashboard = ({ t, admin } ) => {
         <Typography 
           component='h1' 
           variant='h2' 
-          gutterBottom={true}
           align='center'
           className={classes.title}>
-            All Courses
+            Elements of Ai
         </Typography>
-        <CourseGrid courses={data.courses}/>
+        <LanguageSelectorBar
+          value={languageValue}
+          handleChange={handleChange}
+        />
+        <Grid container>
+          <Grid item>
+            <DashboardSideMenu />
+          </Grid>
+          <Grid item >
+            <CourseDashboard />
+          </Grid>
+        </Grid>
       </section>
         
     )
   }
 
-CompletionDashboard.getInitialProps = function(context: NextContext) {
+Course.getInitialProps = function(context: NextContext) {
     const admin = isAdmin(context)
     console.log(admin)
     if (!isSignedIn(context)) {
@@ -96,4 +106,4 @@ CompletionDashboard.getInitialProps = function(context: NextContext) {
     };
   };
 
-export default CompletionDashboard
+export default Course

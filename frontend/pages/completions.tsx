@@ -1,5 +1,6 @@
-import * as React from "react";
-import {  Typography } from '@material-ui/core'
+import  React,{ useState } from "react";
+import {  Typography,
+          Table } from '@material-ui/core'
 import { NextContext } from "next";
 import { isSignedIn, isAdmin } from "../lib/authentication";
 import redirect from "../lib/redirect";
@@ -7,8 +8,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ApolloClient, gql } from "apollo-boost";
 import { AllCourses as AllCoursesData } from "./__generated__/AllCourses";
 import { useQuery } from "react-apollo-hooks";
-import CourseGrid from '../components/CourseGrid'
 import AdminError from '../components/AdminError'
+import { WideContainer } from "../components/Container"
 
 
 export const AllCoursesQuery = gql`
@@ -27,28 +28,25 @@ query AllCourses {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      widht: 'auto',
-      display: 'block',
-
-    },
-    paper: {
-     display: 'flex',
-     flexDirection: 'column',
-     alignItems: 'center',
-     padding: '1em',
-    },
     title: {
       margin: 'auto',
-      padding: '1em'
+      padding: '0.5em'
     }
   }),
 );
 
 
-const  CompletionDashboard = ({ t, admin } ) => {
+const  Completions= ({ admin } ) => {
+
+    const [languageValue, setLanguageValue] = useState(4)
+    const [ courseDetails, setCourseDetails ] = useState({})
+
 
     const classes = useStyles()
+
+    const handleChange = (event, value) => {
+      setLanguageValue(value)
+    }
 
     const { loading, error, data } = useQuery<AllCoursesData>(
       AllCoursesQuery
@@ -70,21 +68,25 @@ const  CompletionDashboard = ({ t, admin } ) => {
 
     return (
       <section>
-        <Typography 
-          component='h1' 
-          variant='h2' 
-          gutterBottom={true}
-          align='center'
-          className={classes.title}>
-            All Courses
-        </Typography>
-        <CourseGrid courses={data.courses}/>
+        <WideContainer>
+            <Typography 
+                component='h1' 
+                variant='h2' 
+                align='center'
+                className={classes.title}>
+                    Completions
+            </Typography>
+            <Table>
+
+            </Table>
+            
+         </WideContainer> 
       </section>
         
     )
   }
 
-CompletionDashboard.getInitialProps = function(context: NextContext) {
+Completions.getInitialProps = function(context: NextContext) {
     const admin = isAdmin(context)
     console.log(admin)
     if (!isSignedIn(context)) {
@@ -92,8 +94,7 @@ CompletionDashboard.getInitialProps = function(context: NextContext) {
     }
     return {
       admin,
-      namespacesRequired: ['common'],
     };
   };
 
-export default CompletionDashboard
+export default Completions
