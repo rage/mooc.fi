@@ -1,38 +1,34 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Document, { Head, Main, NextScript } from "next/document";
-import flush from "styled-jsx/server";
-import { ServerStyleSheets } from '@material-ui/styles';
-import theme from '../src/theme';
-
-
+import React from "react"
+import PropTypes from "prop-types"
+import Document, { Head, Main, NextScript } from "next/document"
+import flush from "styled-jsx/server"
+import { ServerStyleSheets } from "@material-ui/styles"
+import theme from "../src/theme"
 
 class MyDocument extends Document {
-
   static async getInitialProps(ctx) {
     const sheets = new ServerStyleSheets()
-    const originalRenderPage = ctx.renderPage;
+    const originalRenderPage = ctx.renderPage
 
     ctx.renderPage = () =>
       originalRenderPage({
-        enhanceApp: App => props => sheets.collect(<App {...props} />)
+        enhanceApp: App => props => sheets.collect(<App {...props} />),
       })
 
     const initialProps = await Document.getInitialProps(ctx)
 
-    return { 
+    return {
       ...initialProps,
       styles: (
         <React.Fragment>
           {sheets.getStyleElement()}
           {flush() || null}
         </React.Fragment>
-      )
+      ),
     }
   }
 
   render() {
-
     return (
       <html lang="fi" dir="ltr">
         <Head>
@@ -43,17 +39,15 @@ class MyDocument extends Document {
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           {/* PWA primary color */}
-          <meta
-            name="theme-color"
-            content={theme.palette.primary.main}/>
+          <meta name="theme-color" content={theme.palette.primary.main} />
         </Head>
         <body>
           <Main />
           <NextScript />
         </body>
       </html>
-    );
+    )
   }
 }
 
-export default MyDocument;
+export default MyDocument

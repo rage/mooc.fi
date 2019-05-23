@@ -1,10 +1,10 @@
-const exec = require("child_process").exec;
-import axios from 'axios'
+const exec = require("child_process").exec
+import axios from "axios"
 //const axios = require("axios");
 
-console.log("Fetching tmc access token...");
-let _accessToken = null;
-console.log("Got tmc access token.");
+console.log("Fetching tmc access token...")
+let _accessToken = null
+console.log("Got tmc access token.")
 
 function fetchAccessToken() {
   return new Promise((resolve, _reject) => {
@@ -19,21 +19,21 @@ function fetchAccessToken() {
       { maxBuffer: 1024 * 1000 },
       (err, accessToken) => {
         if (err) {
-          console.error("Error while getting tmc access token");
+          console.error("Error while getting tmc access token")
           console.log(err)
-          process.exit(1);
+          process.exit(1)
         }
-        resolve(accessToken.trim());
-      }
-    );
-  });
+        resolve(accessToken.trim())
+      },
+    )
+  })
 }
 
 async function getAccessToken() {
   if (_accessToken) {
-    return _accessToken;
+    return _accessToken
   }
-  _accessToken = await fetchAccessToken();
+  _accessToken = await fetchAccessToken()
   return _accessToken
 }
 
@@ -43,17 +43,16 @@ async function getBasicInfoByUsernames(usernames) {
       process.env.TMC_HOST
     }/api/v8/users/basic_info_by_usernames?extra_fields=elements-of-ai&user_fields=1`,
     {
-      usernames: usernames
+      usernames: usernames,
     },
     {
-      headers: { Authorization: `Bearer ${await getAccessToken()}` }
-    }
-  );
+      headers: { Authorization: `Bearer ${await getAccessToken()}` },
+    },
+  )
   return res.data
 }
 
 module.exports = {
   getAccessToken: getAccessToken,
-  getBasicInfoByUsernames: getBasicInfoByUsernames
-};
-
+  getBasicInfoByUsernames: getBasicInfoByUsernames,
+}
