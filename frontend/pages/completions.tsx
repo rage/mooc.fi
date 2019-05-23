@@ -1,29 +1,32 @@
 import  React,{ useState } from "react";
 import {  Typography,
-          Table } from '@material-ui/core'
+           } from '@material-ui/core'
 import { NextContext } from "next";
 import { isSignedIn, isAdmin } from "../lib/authentication";
 import redirect from "../lib/redirect";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ApolloClient, gql } from "apollo-boost";
-import { AllCourses as AllCoursesData } from "./__generated__/AllCourses";
 import { useQuery } from "react-apollo-hooks";
 import AdminError from '../components/AdminError'
-import { WideContainer } from "../components/Container"
+import CompletionsList from '../components/CompletionsList'
+import LanguageSelectorBar from '../components/LanguageSelectorBar'
+import { AllCompletions as AllCompletionsData} from "./__generated__/AllCompletions";
 
+export const AllCompletionsQuery = gql`
+query AllCompletions
+  { completions(course: "elements-of-ai" first:40) {
+    id
+    email
+    completion_language
+    created_at
+    user{
+      first_name
+      last_name
+      student_number
+      }
+    }
+  }
 
-export const AllCoursesQuery = gql`
-query AllCourses {
-  courses {
-    id
-    name
-    slug
-  }
-  currentUser {
-    id
-    administrator
-  }
-}
 `;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,8 +51,8 @@ const  Completions= ({ admin } ) => {
       setLanguageValue(value)
     }
 
-    const { loading, error, data } = useQuery<AllCoursesData>(
-      AllCoursesQuery
+    const { loading, error, data } = useQuery<AllCompletionsData>(
+      AllCompletionsQuery
     );
 
     if(error){
@@ -65,22 +68,21 @@ const  Completions= ({ admin } ) => {
     if (loading || !data) {
         return <div>Loading</div>;
     }
-
+    console.log(data)
     return (
       <section>
-        <WideContainer>
-            <Typography 
-                component='h1' 
-                variant='h2' 
-                align='center'
-                className={classes.title}>
-                    Completions
-            </Typography>
-            <Table>
+        <Typography 
+          component='h1' 
+          variant='h2' 
+          align='center'
+          className={classes.title}>
+            Completions
+        </Typography>
+        <LanguageSelectorBar 
+          value={languageValue}
+          handleChange={handleChange} />
+        <CompletionsList completions={data.completions}/>
 
-            </Table>
-            
-         </WideContainer> 
       </section>
         
     )
