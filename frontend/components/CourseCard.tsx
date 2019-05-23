@@ -16,6 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+
+
 function CourseCard({ course }) {
     const classes = useStyles()
     console.log(course.name)

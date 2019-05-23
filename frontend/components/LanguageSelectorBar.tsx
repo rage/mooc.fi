@@ -1,10 +1,10 @@
 import React  from 'react';
 import { Tabs,
          Tab,
-         SvgIcon
+         SvgIcon,
+         
         } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,6 +27,8 @@ function FlagIcon({path}) {
 function LanguageSelectorBar({ value, handleChange, }) {
     
     const classes = useStyles()
+    console.log('At langbar',value)
+    console.log(handleChange)
 
     return(
       <section>
@@ -35,7 +37,8 @@ function LanguageSelectorBar({ value, handleChange, }) {
             value={value}
             onChange={handleChange}
             className={classes.tabs}
-            >
+            centered
+            >   <Tab label='SELECT COURSE LANGUAGE' disabled />
                 <Tab label='FI' />
                 <Tab label='EN' />
                 <Tab label='SE' /> 
