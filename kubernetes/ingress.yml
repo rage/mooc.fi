@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: moocfi
+  namespace: moocfi
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - points.mooc.fi
+    secretName: quizzes-moocfi-cert-secret
+  rules:
+    - host: points.mooc.fi
+      http:
+        paths:
+        - path: /api/
+          backend:
+            serviceName: moocfi-backend
+            servicePort: 80

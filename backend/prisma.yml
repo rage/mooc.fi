@@ -5,5 +5,4 @@ generate:
     output: ./generated/prisma-client/
 hooks:
   post-deploy:
-    - prisma generate
-    - npm run nexus-prisma-generate
+    - npm run generate

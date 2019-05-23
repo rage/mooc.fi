@@ -29,7 +29,7 @@ const fetchUser = async (resolve, root, args, context, info) => {
     email: details.email.trim(),
     first_name: details.user_field.first_name.trim(),
     last_name: details.user_field.last_name.trim(),
-    completed_enough: details.completed_enough
+    username: details.username
   }
   context.user = await prisma.upsertUser({
     where: { upstream_id: id },

@@ -136,13 +136,12 @@ async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx, 
 function determineCompletionLanguage(tag): string {
   switch (tag) {
     case "elements-of-ai":
-      return "en_us"
+      return "en_US"
     case "elements-of-ai-fi":
-      return "fi_fi"
+      return "fi_FI"
     case "elements-of-ai-se":
       return "sv_SE"
     default:
       return "undefined"
   }
 }
-

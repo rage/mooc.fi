@@ -18,7 +18,7 @@ const production = process.env.NODE_ENV === "production";
 function create(initialState: any, ctx: NextContext | undefined) {
   const httpLink = createHttpLink({
     uri: production
-      ? "https://nayttokoe-2019.mooc.fi/backend"
+      ? "https://points.mooc.fi/backend"
       : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch

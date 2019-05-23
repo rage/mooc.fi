@@ -1,0 +1,59 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: prisma
+  name: prisma
+  namespace: moocfi
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: prisma
+    spec:
+      containers:
+      - env:
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: POSTGRES_DATABASE
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: POSTGRES_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: POSTGRES_PORT
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: POSTGRES_PASSWORD
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: POSTGRES_USERNAME
+        - name: PRISMA_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: PRISMA_SECRET
+        - name: PRISMA_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: prisma-configmap
+              key: PRISMA_CONFIG
+        image: prismagraphql/prisma:1.33
+        name: prisma
+        ports:
+        - containerPort: 4466
+        resources: {}
+      restartPolicy: Always
+status: {}
