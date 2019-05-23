@@ -1,11 +1,12 @@
 import React  from 'react';
-import { List,
-         ListItem,
-         ListItemText,
-         ListItemSecondaryAction,
-         ListSubheader
+import { 
+    Table,
+    TableHead,
+    TableCell,
+    TableRow
         } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+
 
 
 const completions = [
@@ -28,37 +29,73 @@ const useStyles = makeStyles((theme: Theme) =>
     list: {
      padding: '0.7em',
      backgroundColor: 'white'
+    },
+    listItem: {
+      margin: '0.7em'
+    },
+    content: {
+      margin: '0.5em'
     }
   }),
 );
 
-function CompletionsListItem({ completer }) {
+/*function ListItemContent({ student }) {
+  const classes = useStyles()
   return(
-    <ListItem 
-      divider={true}
-      button={true}
-    >
-      <ListItemText
-        primary={completer.name}
-        secondary={completer.SID}
-      />
-    </ListItem>
+    <Grid container direction='row'>
+      <Grid item className={classes.content}>
+        <Typography variant='body1'>
+          {student.user.first_name} {student.user.last_name}
+        </Typography>
+      </Grid>
+      <Grid item className={classes.content}>
+        <Typography variant='body1'>
+          {student.user.student_number}
+        </Typography>
+      </Grid>
+      <Grid item className={classes.content}>
+        <Typography variant='body1'>
+          {student.created_at}
+        </Typography>
+      </Grid>
+      <Grid item className={classes.content}>
+        <Typography variant='body1'>
+          {student.completion_language}
+        </Typography>
+      </Grid>
+    </Grid>
+  )
+}*/
+
+function CompletionsListItem({ student }) {
+  const classes = useStyles()
+  console.log(student)
+  return(
+    
+   
   )
 }
 
-function CompletionsList() {
+function CompletionsList({ completions }) {
     const classes = useStyles()
-    
+    console.log(completions)
     return(
-      <section>
-        <List className={classes.list}>
-          <ListSubheader>
-            Completions for this course
-          </ListSubheader>
-          {completions.map(c => <CompletionsListItem key={c.SID} completer={c} />)}
-        </List>
-      </section>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>
+              Name
+            </TableCell>
+            <TableCell>
+              Student ID
+            </TableCell>
+            <TableCell>
+              
+            </TableCell>
+          </TableRow>
+        </TableHead>
+      </Table>
     )
   }
-
+ 
 export default CompletionsList

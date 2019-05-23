@@ -8,11 +8,10 @@ import { ApolloClient, gql } from "apollo-boost";
 import { AllCourses as AllCoursesData } from "./__generated__/AllCourses";
 import { useQuery } from "react-apollo-hooks";
 import AdminError from '../components/AdminError'
-import LanguageSelectorBar from "../components/LanguageSelectorBar";
-import DashboardSideMenu from "../components/DashboardSideMenu"
-import CourseDashboard from "../components/CourseDashboard"
-
-
+import DashboardOption from '../components/DashboardOption'
+import ViewListIcon from '@material-ui/icons/ViewList'
+import ScatterplotIcon from '@material-ui/icons/ScatterPlot'
+import LanguageSelectorBar from '../components/LanguageSelectorBar'
 
 export const AllCoursesQuery = gql`
 query AllCourses {
@@ -33,15 +32,18 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       margin: 'auto',
       padding: '0.5em'
+    },
+    gridItem: {
+      margin: '0.5em'
     }
   }),
 );
 
 
-const  Course = ({ t, admin } ) => {
+const  Course = ({ admin } ) => {
 
     const [languageValue, setLanguageValue] = useState(4)
-    const [ courseDetails, setCourseDetails ] = useState({})
+    const [ course, setCourse ] = useState('')
 
 
     const classes = useStyles()
@@ -79,15 +81,16 @@ const  Course = ({ t, admin } ) => {
         </Typography>
         <LanguageSelectorBar
           value={languageValue}
-          handleChange={handleChange}
-        />
+          handleChange={handleChange} />
         <Grid container>
-          <Grid item>
-            <DashboardSideMenu />
-          </Grid>
-          <Grid item >
-            <CourseDashboard />
-          </Grid>
+          <DashboardOption 
+            title='Completions'
+            subtitle='See all students who have completed the course'
+            icon={<ViewListIcon />}/>
+          <DashboardOption 
+            title='Points'
+            subtitle='See the points of all students'
+            icon={<ScatterplotIcon />} />
         </Grid>
       </section>
         
