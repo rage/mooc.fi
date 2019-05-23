@@ -1678,12 +1678,18 @@ export interface NodeNode {
 
 export interface UserPreviousValues {
   id: UUID;
+<<<<<<< HEAD
   upstream_id: Int;
   created_at: DateTimeOutput;
   updated_at: DateTimeOutput;
   first_name?: String;
   last_name?: String;
   username: String;
+=======
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  user_upstream_id?: Int;
+>>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
   email: String;
   administrator: Boolean;
   student_number?: String;
@@ -1748,8 +1754,8 @@ export interface CompletionRegisteredConnectionSubscription
 export interface User {
   id: UUID;
   upstream_id: Int;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   first_name?: String;
   last_name?: String;
   username: String;
@@ -1853,8 +1859,8 @@ export interface AggregateCompletionSubscription
 
 export interface CompletionRegistered {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   real_student_number: String;
   organisation: String;
 }
@@ -1890,11 +1896,20 @@ export interface CompletionRegisteredEdge {
   cursor: String;
 }
 
+<<<<<<< HEAD
 export interface CompletionRegisteredEdgePromise
   extends Promise<CompletionRegisteredEdge>,
     Fragmentable {
   node: <T = CompletionRegisteredPromise>() => T;
   cursor: () => Promise<String>;
+=======
+export interface Course {
+  id: UUID;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  name: String;
+  slug: String;
+>>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 }
 
 export interface CompletionRegisteredEdgeSubscription
@@ -1969,8 +1984,8 @@ export interface CompletionEdgeSubscription
 
 export interface OpenUniversityCoursePreviousValues {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   course_code: String;
 }
 
@@ -2341,9 +2356,18 @@ export interface CourseSubscriptionPayloadSubscription
 
 export interface OpenUniversityCourse {
   id: UUID;
+<<<<<<< HEAD
   created_at: DateTimeOutput;
   updated_at: DateTimeOutput;
   course_code: String;
+=======
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  user_upstream_id?: Int;
+  email: String;
+  student_number?: String;
+  completion_language?: String;
+>>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 }
 
 export interface OpenUniversityCoursePromise
@@ -2368,8 +2392,8 @@ export interface OpenUniversityCourseSubscription
 
 export interface CompletionRegisteredPreviousValues {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   real_student_number: String;
   organisation: String;
 }
@@ -2416,7 +2440,39 @@ export interface CompletionRegisteredSubscriptionPayloadSubscription
   mutation: () => Promise<AsyncIterator<MutationType>>;
   node: <T = CompletionRegisteredSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
+<<<<<<< HEAD
   previousValues: <T = CompletionRegisteredPreviousValuesSubscription>() => T;
+=======
+  previousValues: <T = CoursePreviousValuesSubscription>() => T;
+}
+
+export interface CoursePreviousValues {
+  id: UUID;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  name: String;
+  slug: String;
+}
+
+export interface CoursePreviousValuesPromise
+  extends Promise<CoursePreviousValues>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
+  name: () => Promise<String>;
+  slug: () => Promise<String>;
+}
+
+export interface CoursePreviousValuesSubscription
+  extends Promise<AsyncIterator<CoursePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  name: () => Promise<AsyncIterator<String>>;
+  slug: () => Promise<AsyncIterator<String>>;
+>>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 }
 
 export interface CourseEdge {
@@ -2436,8 +2492,16 @@ export interface CourseEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
+<<<<<<< HEAD
 export interface AggregateOpenUniversityCourse {
   count: Int;
+=======
+export interface OpenUniversityCoursePreviousValues {
+  id: UUID;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  course_code: String;
+>>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 }
 
 export interface AggregateOpenUniversityCoursePromise
@@ -2470,10 +2534,23 @@ export interface AggregateUserSubscription
 
 export interface Course {
   id: UUID;
+<<<<<<< HEAD
   created_at: DateTimeOutput;
   updated_at: DateTimeOutput;
   name: String;
   slug: String;
+=======
+  upstream_id: Int;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  first_name?: String;
+  last_name?: String;
+  username: String;
+  email: String;
+  administrator: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+>>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 }
 
 export interface CoursePromise extends Promise<Course>, Fragmentable {

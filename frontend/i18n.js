@@ -1,14 +1,12 @@
-const I18Next = require('next-i18next/dist/commonjs')
+const I18Next = require("next-i18next/dist/commonjs")
 
 //create new NextI18Next instance
 const NextI18Next = new I18Next({
-  defaultLanguage: 'fi',
-  otherLanguages: ['en'],
-  localeSubpaths: 'all',
+  defaultLanguage: "fi",
+  otherLanguages: ["en"],
+  localeSubpaths: "all",
   debug: true,
-  localeExtension: 'JSON',
-
-  
+  localeExtension: "JSON",
 })
 
 console.log(NextI18Next.config)

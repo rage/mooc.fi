@@ -10,6 +10,7 @@
     "build": "tsc",
     "upgrade-interactive": "npm-check --update",
     "prisma-deploy": "prisma deploy --force",
+    "fetch-ai-completions": "ts-node ./bin/fetchAiCompletions.ts",
     "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma"
   },
   "keywords": [],
