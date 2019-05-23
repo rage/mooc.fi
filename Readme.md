@@ -1,11 +1,16 @@
 ## Development environment
 
+Note: Before starting development, please run the following command on the repo root:
+
+```bash
+npm ci
+```
 
 frontend:
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
@@ -18,5 +23,6 @@ docker-compose up
 
 ```bash
 cd backend
+npm ci
 npm run dev
 ```

@@ -1,0 +1,31 @@
+{
+  "name": "points.mooc.fi",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "husky": "^2.3.0",
+    "prettier": "^1.17.1"
+  },
+  "scripts": {
+    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
+    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rage/points.mooc.fi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rage/points.mooc.fi/issues"
+  },
+  "homepage": "https://github.com/rage/points.mooc.fi#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "./bin/check-code-style.sh"
+    }
+  }
+}
