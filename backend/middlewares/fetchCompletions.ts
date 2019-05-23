@@ -90,9 +90,9 @@ async function removeDataThatIsInDBAlready(data : string[], ctx) {
 }
 
 
-async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx,  course_name_for_debug) {
+async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx,  course_name) {
   const prisma : Prisma = ctx.prisma
-  console.log('starting with', course_name_for_debug)
+  console.log('starting with', course_name)
   for (let i = 0; i < data.length; i++) {
     let old = data[i]
     if (!old.id) console.log(old)
@@ -121,7 +121,7 @@ async function saveCompletionsAndUsersToDatabase(data: any[], course_slug, ctx, 
       const completion: Completion = await prisma.createCompletion({
         user: { connect: { upstream_id: user.upstream_id } },
         course: { connect: { id: course.id } },
-        completion_language: determineCompletionLanguage(course_name_for_debug),
+        completion_language: determineCompletionLanguage(course_name),
         user_upstream_id: user.upstream_id,
         email: user.email,
         student_number: user.student_number
