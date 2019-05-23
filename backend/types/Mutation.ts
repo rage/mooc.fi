@@ -1,5 +1,5 @@
-import { prismaObjectType } from "nexus-prisma";
-import { stringArg, idArg, arg } from "nexus/dist";
+import { prismaObjectType } from "nexus-prisma"
+import { stringArg, idArg, arg } from "nexus/dist"
 import * as resolvers from "../resolvers/Mutation"
 const Mutation = prismaObjectType({
   name: "Mutation",
@@ -8,9 +8,10 @@ const Mutation = prismaObjectType({
       type: "Course",
       args: {
         name: stringArg(),
-        slug: stringArg()
+        slug: stringArg(),
       },
-      resolve: (_, { name, slug }, ctx) => resolvers.addCourse(_, { name, slug }, ctx)
+      resolve: (_, { name, slug }, ctx) =>
+        resolvers.addCourse(_, { name, slug }, ctx),
     })
 
     t.field("addOpenUniversityCourse", {
@@ -20,18 +21,18 @@ const Mutation = prismaObjectType({
         course: idArg(),
       },
       resolve: (_, { course_code, course }, ctx) =>
-        resolvers.addOpenUniversityCourse(_, { course_code, course }, ctx)
+        resolvers.addOpenUniversityCourse(_, { course_code, course }, ctx),
     })
 
     t.list.field("registerCompletion", {
       type: "CompletionRegistered",
       args: {
         organisation: stringArg(),
-        completions: arg({ type: "CompletionArg", list: true })
+        completions: arg({ type: "CompletionArg", list: true }),
       },
-      resolve: (_, args, ctx) => resolvers.registerCompletion(_, args, ctx)
+      resolve: (_, args, ctx) => resolvers.registerCompletion(_, args, ctx),
     })
-  }
-});
+  },
+})
 
 export default Mutation

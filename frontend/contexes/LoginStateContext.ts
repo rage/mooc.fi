@@ -1,5 +1,5 @@
-import * as React from "react";
+import * as React from "react"
 
-const LoginStateContext = React.createContext(false);
+const LoginStateContext = React.createContext(false)
 
-export default LoginStateContext;
+export default LoginStateContext
