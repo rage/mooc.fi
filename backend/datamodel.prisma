@@ -1,8 +1,8 @@
 type User @db(name: "user") {
   id: UUID! @id
   upstream_id: Int! @unique
-  created_at: DateTime! @createdAt
-  updated_at: DateTime! @updatedAt
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   first_name: String
   last_name: String
   username: String! @unique
@@ -16,8 +16,8 @@ type User @db(name: "user") {
 
 type Course @db(name: "course") {
   id: UUID! @id
-  created_at: DateTime! @createdAt
-  updated_at: DateTime! @updatedAt
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   name: String!
   slug: String! @unique
   open_university_courses: [OpenUniversityCourse!] @relation(name: "CourseToOpenUniversityCourse")
@@ -25,16 +25,16 @@ type Course @db(name: "course") {
 
 type OpenUniversityCourse  @db(name: "open_university_course"){
   id: UUID! @id
-  created_at: DateTime! @createdAt
-  updated_at: DateTime! @updatedAt
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   course_code: String! @unique
   course: Course! @relation(link: INLINE, name: "CourseToOpenUniversityCourse")
 }
 
 type Completion @db(name: "completion") {
   id: UUID! @id
-  created_at: DateTime! @createdAt
-  updated_at: DateTime! @updatedAt
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   "User's unique identifier. Should be used to deduplicate registered completions, since all the other fields can change."
   user_upstream_id: Int
   email: String!
@@ -46,8 +46,8 @@ type Completion @db(name: "completion") {
 
 type CompletionRegistered @db(name: "completion_registered") {
   id: UUID! @id
-  created_at: DateTime! @createdAt
-  updated_at: DateTime! @updatedAt
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   user: User! @relation(link: INLINE, name: "CompletionRegisteredToUser")
   course: Course! @relation(link: INLINE, name: "CompletionRegisteredToCourse")
   real_student_number: String!

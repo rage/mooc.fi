@@ -28,8 +28,8 @@ type BatchPayload {
 
 type Completion {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   user_upstream_id: Int
   email: String!
   student_number: String
@@ -46,8 +46,8 @@ type CompletionConnection {
 
 input CompletionCreateInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   user_upstream_id: Int
   email: String!
   student_number: String
@@ -68,8 +68,8 @@ input CompletionCreateOneInput {
 
 input CompletionCreateWithoutUserInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   user_upstream_id: Int
   email: String!
   student_number: String
@@ -105,8 +105,8 @@ enum CompletionOrderByInput {
 
 type CompletionPreviousValues {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   user_upstream_id: Int
   email: String!
   student_number: String
@@ -115,8 +115,8 @@ type CompletionPreviousValues {
 
 type CompletionRegistered {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   user: User!
   course: Course!
   real_student_number: String!
@@ -132,8 +132,8 @@ type CompletionRegisteredConnection {
 
 input CompletionRegisteredCreateInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   user: UserCreateOneWithoutRegistered_completionsInput!
   course: CourseCreateOneInput!
   real_student_number: String!
@@ -148,8 +148,8 @@ input CompletionRegisteredCreateManyWithoutUserInput {
 
 input CompletionRegisteredCreateWithoutUserInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   course: CourseCreateOneInput!
   real_student_number: String!
   organisation: String!
@@ -180,8 +180,8 @@ enum CompletionRegisteredOrderByInput {
 
 type CompletionRegisteredPreviousValues {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   real_student_number: String!
   organisation: String!
 }
@@ -688,8 +688,8 @@ input CompletionWhereUniqueInput {
 
 type Course {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   name: String!
   slug: String!
   open_university_courses(where: OpenUniversityCourseWhereInput, orderBy: OpenUniversityCourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OpenUniversityCourse!]
@@ -703,8 +703,8 @@ type CourseConnection {
 
 input CourseCreateInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   name: String!
   slug: String!
   open_university_courses: OpenUniversityCourseCreateManyWithoutCourseInput
@@ -722,8 +722,8 @@ input CourseCreateOneWithoutOpen_university_coursesInput {
 
 input CourseCreateWithoutOpen_university_coursesInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   name: String!
   slug: String!
 }
@@ -752,8 +752,8 @@ enum CourseOrderByInput {
 
 type CoursePreviousValues {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   name: String!
   slug: String!
 }
@@ -951,8 +951,8 @@ interface Node {
 
 type OpenUniversityCourse {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   course_code: String!
   course: Course!
 }
@@ -965,8 +965,8 @@ type OpenUniversityCourseConnection {
 
 input OpenUniversityCourseCreateInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   course_code: String!
   course: CourseCreateOneWithoutOpen_university_coursesInput!
 }
@@ -978,8 +978,8 @@ input OpenUniversityCourseCreateManyWithoutCourseInput {
 
 input OpenUniversityCourseCreateWithoutCourseInput {
   id: UUID
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   course_code: String!
 }
 
@@ -1005,8 +1005,8 @@ enum OpenUniversityCourseOrderByInput {
 
 type OpenUniversityCoursePreviousValues {
   id: UUID!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   course_code: String!
 }
 
@@ -1224,8 +1224,8 @@ type Subscription {
 type User {
   id: UUID!
   upstream_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   first_name: String
   last_name: String
   username: String!
@@ -1246,8 +1246,8 @@ type UserConnection {
 input UserCreateInput {
   id: UUID
   upstream_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   first_name: String
   last_name: String
   username: String!
@@ -1272,8 +1272,8 @@ input UserCreateOneWithoutRegistered_completionsInput {
 input UserCreateWithoutCompletionsInput {
   id: UUID
   upstream_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   first_name: String
   last_name: String
   username: String!
@@ -1287,8 +1287,8 @@ input UserCreateWithoutCompletionsInput {
 input UserCreateWithoutRegistered_completionsInput {
   id: UUID
   upstream_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   first_name: String
   last_name: String
   username: String!
@@ -1336,8 +1336,8 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: UUID!
   upstream_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
+  created_at: DateTime
+  updated_at: DateTime
   first_name: String
   last_name: String
   username: String!

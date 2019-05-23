@@ -841,8 +841,8 @@ export type UserWhereUniqueInput = AtLeastOne<{
 
 export interface CompletionCreateInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   user_upstream_id?: Int;
   email: String;
   student_number?: String;
@@ -859,8 +859,8 @@ export interface UserCreateOneWithoutCompletionsInput {
 export interface UserCreateWithoutCompletionsInput {
   id?: UUID;
   upstream_id: Int;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   first_name?: String;
   last_name?: String;
   username: String;
@@ -882,8 +882,8 @@ export interface CompletionRegisteredCreateManyWithoutUserInput {
 
 export interface CompletionRegisteredCreateWithoutUserInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   course: CourseCreateOneInput;
   real_student_number: String;
   organisation: String;
@@ -897,8 +897,8 @@ export interface CourseCreateOneInput {
 
 export interface CourseCreateInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   name: String;
   slug: String;
   open_university_courses?: OpenUniversityCourseCreateManyWithoutCourseInput;
@@ -915,8 +915,8 @@ export interface OpenUniversityCourseCreateManyWithoutCourseInput {
 
 export interface OpenUniversityCourseCreateWithoutCourseInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   course_code: String;
 }
 
@@ -1262,8 +1262,8 @@ export interface CompletionUpdateManyMutationInput {
 
 export interface CompletionRegisteredCreateInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   user: UserCreateOneWithoutRegistered_completionsInput;
   course: CourseCreateOneInput;
   real_student_number: String;
@@ -1279,8 +1279,8 @@ export interface UserCreateOneWithoutRegistered_completionsInput {
 export interface UserCreateWithoutRegistered_completionsInput {
   id?: UUID;
   upstream_id: Int;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   first_name?: String;
   last_name?: String;
   username: String;
@@ -1300,8 +1300,8 @@ export interface CompletionCreateManyWithoutUserInput {
 
 export interface CompletionCreateWithoutUserInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   user_upstream_id?: Int;
   email: String;
   student_number?: String;
@@ -1510,8 +1510,8 @@ export interface CourseUpdateManyMutationInput {
 
 export interface OpenUniversityCourseCreateInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   course_code: String;
   course: CourseCreateOneWithoutOpen_university_coursesInput;
 }
@@ -1523,8 +1523,8 @@ export interface CourseCreateOneWithoutOpen_university_coursesInput {
 
 export interface CourseCreateWithoutOpen_university_coursesInput {
   id?: UUID;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   name: String;
   slug: String;
 }
@@ -1564,8 +1564,8 @@ export interface OpenUniversityCourseUpdateManyMutationInput {
 export interface UserCreateInput {
   id?: UUID;
   upstream_id: Int;
-  created_at: DateTimeInput;
-  updated_at: DateTimeInput;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
   first_name?: String;
   last_name?: String;
   username: String;
@@ -1678,8 +1678,8 @@ export interface NodeNode {
 
 export interface Completion {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   user_upstream_id?: Int;
   email: String;
   student_number?: String;
@@ -1715,8 +1715,8 @@ export interface CompletionSubscription
 export interface User {
   id: UUID;
   upstream_id: Int;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   first_name?: String;
   last_name?: String;
   username: String;
@@ -1804,8 +1804,8 @@ export interface UserSubscription
 
 export interface CompletionRegistered {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   real_student_number: String;
   organisation: String;
 }
@@ -1838,8 +1838,8 @@ export interface CompletionRegisteredSubscription
 
 export interface Course {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   name: String;
   slug: String;
 }
@@ -1888,8 +1888,8 @@ export interface CourseSubscription
 
 export interface OpenUniversityCourse {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   course_code: String;
 }
 
@@ -2259,8 +2259,8 @@ export interface CompletionSubscriptionPayloadSubscription
 
 export interface CompletionPreviousValues {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   user_upstream_id?: Int;
   email: String;
   student_number?: String;
@@ -2318,8 +2318,8 @@ export interface CompletionRegisteredSubscriptionPayloadSubscription
 
 export interface CompletionRegisteredPreviousValues {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   real_student_number: String;
   organisation: String;
 }
@@ -2371,8 +2371,8 @@ export interface CourseSubscriptionPayloadSubscription
 
 export interface CoursePreviousValues {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   name: String;
   slug: String;
 }
@@ -2424,8 +2424,8 @@ export interface OpenUniversityCourseSubscriptionPayloadSubscription
 
 export interface OpenUniversityCoursePreviousValues {
   id: UUID;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   course_code: String;
 }
 
@@ -2475,8 +2475,8 @@ export interface UserSubscriptionPayloadSubscription
 export interface UserPreviousValues {
   id: UUID;
   upstream_id: Int;
-  created_at: DateTimeOutput;
-  updated_at: DateTimeOutput;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
   first_name?: String;
   last_name?: String;
   username: String;

@@ -585,7 +585,7 @@ export interface UserFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -593,7 +593,7 @@ export interface UserFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   first_name: {
@@ -724,7 +724,7 @@ export interface CompletionFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -732,7 +732,7 @@ export interface CompletionFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   user_upstream_id: {
@@ -840,7 +840,7 @@ export interface CourseFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -848,7 +848,7 @@ export interface CourseFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   name: {
@@ -918,7 +918,7 @@ export interface OpenUniversityCourseFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -926,7 +926,7 @@ export interface OpenUniversityCourseFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   course_code: {
@@ -994,7 +994,7 @@ export interface CompletionRegisteredFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -1002,7 +1002,7 @@ export interface CompletionRegisteredFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   user: {
@@ -2536,7 +2536,7 @@ export interface UserPreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -2544,7 +2544,7 @@ export interface UserPreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   first_name: {
@@ -2711,7 +2711,7 @@ export interface CoursePreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -2719,7 +2719,7 @@ export interface CoursePreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   name: {
@@ -2844,7 +2844,7 @@ export interface OpenUniversityCoursePreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -2852,7 +2852,7 @@ export interface OpenUniversityCoursePreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   course_code: {
@@ -2975,7 +2975,7 @@ export interface CompletionPreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -2983,7 +2983,7 @@ export interface CompletionPreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   user_upstream_id: {
@@ -3126,7 +3126,7 @@ export interface CompletionRegisteredPreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   updated_at: {
@@ -3134,7 +3134,7 @@ export interface CompletionRegisteredPreviousValuesFieldDetails {
     args: {}
     description: string
     list: undefined
-    nullable: false
+    nullable: true
     resolve: undefined
   }
   real_student_number: {
@@ -4015,8 +4015,8 @@ export type CompletionRegisteredWhereUniqueInputInputObject =
   
 export interface UserCreateInput {
   upstream_id?: number
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   first_name?: string | null
   last_name?: string | null
   username?: string
@@ -4052,8 +4052,8 @@ export type CompletionCreateManyWithoutUserInputInputObject =
   | { name: 'connect', alias?: string  } 
   
 export interface CompletionCreateWithoutUserInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   user_upstream_id?: number | null
   email?: string
   student_number?: string | null
@@ -4080,8 +4080,8 @@ export type CourseCreateOneInputInputObject =
   | { name: 'connect', alias?: string  } 
   
 export interface CourseCreateInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   name?: string
   slug?: string
   open_university_courses?: OpenUniversityCourseCreateManyWithoutCourseInput | null
@@ -4104,8 +4104,8 @@ export type OpenUniversityCourseCreateManyWithoutCourseInputInputObject =
   | { name: 'connect', alias?: string  } 
   
 export interface OpenUniversityCourseCreateWithoutCourseInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   course_code?: string
 }
 export type OpenUniversityCourseCreateWithoutCourseInputInputObject =
@@ -4124,8 +4124,8 @@ export type CompletionRegisteredCreateManyWithoutUserInputInputObject =
   | { name: 'connect', alias?: string  } 
   
 export interface CompletionRegisteredCreateWithoutUserInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   course?: CourseCreateOneInput
   real_student_number?: string
   organisation?: string
@@ -4150,8 +4150,8 @@ export type CompletionCreateOneInputInputObject =
   | { name: 'connect', alias?: string  } 
   
 export interface CompletionCreateInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   user_upstream_id?: number | null
   email?: string
   student_number?: string | null
@@ -4181,8 +4181,8 @@ export type UserCreateOneWithoutCompletionsInputInputObject =
   
 export interface UserCreateWithoutCompletionsInput {
   upstream_id?: number
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   first_name?: string | null
   last_name?: string | null
   username?: string
@@ -5059,8 +5059,8 @@ export type CourseUpdateManyMutationInputInputObject =
   | { name: 'slug', alias?: string  } 
   
 export interface OpenUniversityCourseCreateInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   course_code?: string
   course?: CourseCreateOneWithoutOpen_university_coursesInput
 }
@@ -5081,8 +5081,8 @@ export type CourseCreateOneWithoutOpen_university_coursesInputInputObject =
   | { name: 'connect', alias?: string  } 
   
 export interface CourseCreateWithoutOpen_university_coursesInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   name?: string
   slug?: string
 }
@@ -5191,8 +5191,8 @@ export type CompletionUpdateManyMutationInputInputObject =
   | { name: 'completion_language', alias?: string  } 
   
 export interface CompletionRegisteredCreateInput {
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   user?: UserCreateOneWithoutRegistered_completionsInput
   course?: CourseCreateOneInput
   real_student_number?: string
@@ -5220,8 +5220,8 @@ export type UserCreateOneWithoutRegistered_completionsInputInputObject =
   
 export interface UserCreateWithoutRegistered_completionsInput {
   upstream_id?: number
-  created_at?: string
-  updated_at?: string
+  created_at?: string | null
+  updated_at?: string | null
   first_name?: string | null
   last_name?: string | null
   username?: string
