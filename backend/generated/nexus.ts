@@ -459,6 +459,12 @@ export interface NexusGenRootTypes {
     updated_at?: any | null; // DateTime
   }
   Query: {};
+  Service: { // root type
+    created_at?: any | null; // DateTime
+    id: any; // UUID!
+    updated_at?: any | null; // DateTime
+    url: string; // String!
+  }
   User: { // root type
     administrator: boolean; // Boolean!
     created_at?: any | null; // DateTime
@@ -526,6 +532,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addCourse: NexusGenRootTypes['Course']; // Course!
     addOpenUniversityCourse: NexusGenRootTypes['OpenUniversityCourse']; // OpenUniversityCourse!
+    addService: NexusGenRootTypes['Service']; // Service!
     registerCompletion: NexusGenRootTypes['CompletionRegistered'][]; // [CompletionRegistered!]!
   }
   OpenUniversityCourse: { // field return type
@@ -541,7 +548,14 @@ export interface NexusGenFieldTypes {
     currentUser: NexusGenRootTypes['User']; // User!
     openUniversityCourses: NexusGenRootTypes['OpenUniversityCourse'][]; // [OpenUniversityCourse!]!
     registeredCompletions: NexusGenRootTypes['CompletionRegistered'][]; // [CompletionRegistered!]!
+    services: NexusGenRootTypes['Service'][]; // [Service!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
+  }
+  Service: { // field return type
+    created_at: any | null; // DateTime
+    id: any; // UUID!
+    updated_at: any | null; // DateTime
+    url: string; // String!
   }
   User: { // field return type
     administrator: boolean; // Boolean!
@@ -580,6 +594,9 @@ export interface NexusGenArgTypes {
     addOpenUniversityCourse: { // args
       course?: string | null; // ID
       course_code?: string | null; // String
+    }
+    addService: { // args
+      url: string; // String!
     }
     registerCompletion: { // args
       completions?: NexusGenInputs['CompletionArg'][] | null; // [CompletionArg!]
@@ -632,7 +649,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Completion" | "CompletionRegistered" | "Course" | "Mutation" | "OpenUniversityCourse" | "Query" | "User";
+export type NexusGenObjectNames = "Completion" | "CompletionRegistered" | "Course" | "Mutation" | "OpenUniversityCourse" | "Query" | "Service" | "User";
 
 export type NexusGenInputNames = "CompletionArg" | "CompletionRegisteredWhereInput" | "CompletionWhereInput" | "CourseWhereInput" | "OpenUniversityCourseWhereInput" | "UserWhereInput";
 

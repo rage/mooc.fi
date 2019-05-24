@@ -304,6 +304,7 @@ scalar DateTime
 type Mutation {
   addCourse(name: String, slug: String): Course!
   addOpenUniversityCourse(course: ID, course_code: String): OpenUniversityCourse!
+  addService(url: String!): Service!
   registerCompletion(completions: [CompletionArg!], organisation: String): [CompletionRegistered!]!
 }
 
@@ -387,7 +388,15 @@ type Query {
   currentUser(email: String): User!
   openUniversityCourses: [OpenUniversityCourse!]!
   registeredCompletions(after: ID, before: ID, course: String, first: Int, last: Int): [CompletionRegistered!]!
+  services: [Service!]!
   users: [User!]!
+}
+
+type Service {
+  created_at: DateTime
+  id: UUID!
+  updated_at: DateTime
+  url: String!
 }
 
 type User {

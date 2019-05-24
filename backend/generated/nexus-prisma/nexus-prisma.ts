@@ -36,6 +36,18 @@ export interface NexusPrismaTypes {
       CompletionRegisteredConnection: CompletionRegisteredConnectionObject
       CompletionRegisteredEdge: CompletionRegisteredEdgeObject
       AggregateCompletionRegistered: AggregateCompletionRegisteredObject
+      Service: ServiceObject
+      ServiceConnection: ServiceConnectionObject
+      ServiceEdge: ServiceEdgeObject
+      AggregateService: AggregateServiceObject
+      UserCourseProgress: UserCourseProgressObject
+      UserCourseProgressConnection: UserCourseProgressConnectionObject
+      UserCourseProgressEdge: UserCourseProgressEdgeObject
+      AggregateUserCourseProgress: AggregateUserCourseProgressObject
+      UserCourseServiceProgress: UserCourseServiceProgressObject
+      UserCourseServiceProgressConnection: UserCourseServiceProgressConnectionObject
+      UserCourseServiceProgressEdge: UserCourseServiceProgressEdgeObject
+      AggregateUserCourseServiceProgress: AggregateUserCourseServiceProgressObject
       Mutation: MutationObject
       BatchPayload: BatchPayloadObject
       Subscription: SubscriptionObject
@@ -49,6 +61,12 @@ export interface NexusPrismaTypes {
       CompletionPreviousValues: CompletionPreviousValuesObject
       CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadObject
       CompletionRegisteredPreviousValues: CompletionRegisteredPreviousValuesObject
+      ServiceSubscriptionPayload: ServiceSubscriptionPayloadObject
+      ServicePreviousValues: ServicePreviousValuesObject
+      UserCourseProgressSubscriptionPayload: UserCourseProgressSubscriptionPayloadObject
+      UserCourseProgressPreviousValues: UserCourseProgressPreviousValuesObject
+      UserCourseServiceProgressSubscriptionPayload: UserCourseServiceProgressSubscriptionPayloadObject
+      UserCourseServiceProgressPreviousValues: UserCourseServiceProgressPreviousValuesObject
     }
     fieldsDetails: {
       Query: QueryFieldDetails
@@ -73,6 +91,18 @@ export interface NexusPrismaTypes {
       CompletionRegisteredConnection: CompletionRegisteredConnectionFieldDetails
       CompletionRegisteredEdge: CompletionRegisteredEdgeFieldDetails
       AggregateCompletionRegistered: AggregateCompletionRegisteredFieldDetails
+      Service: ServiceFieldDetails
+      ServiceConnection: ServiceConnectionFieldDetails
+      ServiceEdge: ServiceEdgeFieldDetails
+      AggregateService: AggregateServiceFieldDetails
+      UserCourseProgress: UserCourseProgressFieldDetails
+      UserCourseProgressConnection: UserCourseProgressConnectionFieldDetails
+      UserCourseProgressEdge: UserCourseProgressEdgeFieldDetails
+      AggregateUserCourseProgress: AggregateUserCourseProgressFieldDetails
+      UserCourseServiceProgress: UserCourseServiceProgressFieldDetails
+      UserCourseServiceProgressConnection: UserCourseServiceProgressConnectionFieldDetails
+      UserCourseServiceProgressEdge: UserCourseServiceProgressEdgeFieldDetails
+      AggregateUserCourseServiceProgress: AggregateUserCourseServiceProgressFieldDetails
       Mutation: MutationFieldDetails
       BatchPayload: BatchPayloadFieldDetails
       Subscription: SubscriptionFieldDetails
@@ -86,6 +116,12 @@ export interface NexusPrismaTypes {
       CompletionPreviousValues: CompletionPreviousValuesFieldDetails
       CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadFieldDetails
       CompletionRegisteredPreviousValues: CompletionRegisteredPreviousValuesFieldDetails
+      ServiceSubscriptionPayload: ServiceSubscriptionPayloadFieldDetails
+      ServicePreviousValues: ServicePreviousValuesFieldDetails
+      UserCourseProgressSubscriptionPayload: UserCourseProgressSubscriptionPayloadFieldDetails
+      UserCourseProgressPreviousValues: UserCourseProgressPreviousValuesFieldDetails
+      UserCourseServiceProgressSubscriptionPayload: UserCourseServiceProgressSubscriptionPayloadFieldDetails
+      UserCourseServiceProgressPreviousValues: UserCourseServiceProgressPreviousValuesFieldDetails
     }
   }
   inputTypes: {
@@ -100,6 +136,12 @@ export interface NexusPrismaTypes {
       OpenUniversityCourseWhereUniqueInput: OpenUniversityCourseWhereUniqueInputInputObject
       CompletionWhereUniqueInput: CompletionWhereUniqueInputInputObject
       CompletionRegisteredWhereUniqueInput: CompletionRegisteredWhereUniqueInputInputObject
+      ServiceWhereUniqueInput: ServiceWhereUniqueInputInputObject
+      ServiceWhereInput: ServiceWhereInputInputObject
+      UserCourseProgressWhereUniqueInput: UserCourseProgressWhereUniqueInputInputObject
+      UserCourseProgressWhereInput: UserCourseProgressWhereInputInputObject
+      UserCourseServiceProgressWhereUniqueInput: UserCourseServiceProgressWhereUniqueInputInputObject
+      UserCourseServiceProgressWhereInput: UserCourseServiceProgressWhereInputInputObject
       UserCreateInput: UserCreateInputInputObject
       CompletionCreateManyWithoutUserInput: CompletionCreateManyWithoutUserInputInputObject
       CompletionCreateWithoutUserInput: CompletionCreateWithoutUserInputInputObject
@@ -165,11 +207,31 @@ export interface NexusPrismaTypes {
       UserUpdateWithoutRegistered_completionsDataInput: UserUpdateWithoutRegistered_completionsDataInputInputObject
       UserUpsertWithoutRegistered_completionsInput: UserUpsertWithoutRegistered_completionsInputInputObject
       CompletionRegisteredUpdateManyMutationInput: CompletionRegisteredUpdateManyMutationInputInputObject
+      ServiceCreateInput: ServiceCreateInputInputObject
+      ServiceUpdateInput: ServiceUpdateInputInputObject
+      ServiceUpdateManyMutationInput: ServiceUpdateManyMutationInputInputObject
+      UserCourseProgressCreateInput: UserCourseProgressCreateInputInputObject
+      UserCreateOneInput: UserCreateOneInputInputObject
+      UserCourseProgressUpdateInput: UserCourseProgressUpdateInputInputObject
+      UserUpdateOneRequiredInput: UserUpdateOneRequiredInputInputObject
+      UserUpdateDataInput: UserUpdateDataInputInputObject
+      UserUpsertNestedInput: UserUpsertNestedInputInputObject
+      UserCourseProgressUpdateManyMutationInput: UserCourseProgressUpdateManyMutationInputInputObject
+      UserCourseServiceProgressCreateInput: UserCourseServiceProgressCreateInputInputObject
+      ServiceCreateOneInput: ServiceCreateOneInputInputObject
+      UserCourseServiceProgressUpdateInput: UserCourseServiceProgressUpdateInputInputObject
+      ServiceUpdateOneRequiredInput: ServiceUpdateOneRequiredInputInputObject
+      ServiceUpdateDataInput: ServiceUpdateDataInputInputObject
+      ServiceUpsertNestedInput: ServiceUpsertNestedInputInputObject
+      UserCourseServiceProgressUpdateManyMutationInput: UserCourseServiceProgressUpdateManyMutationInputInputObject
       UserSubscriptionWhereInput: UserSubscriptionWhereInputInputObject
       CourseSubscriptionWhereInput: CourseSubscriptionWhereInputInputObject
       OpenUniversityCourseSubscriptionWhereInput: OpenUniversityCourseSubscriptionWhereInputInputObject
       CompletionSubscriptionWhereInput: CompletionSubscriptionWhereInputInputObject
       CompletionRegisteredSubscriptionWhereInput: CompletionRegisteredSubscriptionWhereInputInputObject
+      ServiceSubscriptionWhereInput: ServiceSubscriptionWhereInputInputObject
+      UserCourseProgressSubscriptionWhereInput: UserCourseProgressSubscriptionWhereInputInputObject
+      UserCourseServiceProgressSubscriptionWhereInput: UserCourseServiceProgressSubscriptionWhereInputInputObject
     }
   }
   enumTypes: {
@@ -178,6 +240,9 @@ export interface NexusPrismaTypes {
     CompletionRegisteredOrderByInput: CompletionRegisteredOrderByInputValues,
     UserOrderByInput: UserOrderByInputValues,
     CourseOrderByInput: CourseOrderByInputValues,
+    ServiceOrderByInput: ServiceOrderByInputValues,
+    UserCourseProgressOrderByInput: UserCourseProgressOrderByInputValues,
+    UserCourseServiceProgressOrderByInput: UserCourseServiceProgressOrderByInputValues,
     MutationType: MutationTypeValues,
   }
 }
@@ -201,6 +266,15 @@ type QueryObject =
   | { name: 'completionRegistered', args?: QueryCompletionRegisteredArgs[] | false, alias?: string  } 
   | { name: 'completionRegistereds', args?: QueryCompletionRegisteredsArgs[] | false, alias?: string  } 
   | { name: 'completionRegisteredsConnection', args?: QueryCompletionRegisteredsConnectionArgs[] | false, alias?: string  } 
+  | { name: 'service', args?: QueryServiceArgs[] | false, alias?: string  } 
+  | { name: 'services', args?: QueryServicesArgs[] | false, alias?: string  } 
+  | { name: 'servicesConnection', args?: QueryServicesConnectionArgs[] | false, alias?: string  } 
+  | { name: 'userCourseProgress', args?: QueryUserCourseProgressArgs[] | false, alias?: string  } 
+  | { name: 'userCourseProgresses', args?: QueryUserCourseProgressesArgs[] | false, alias?: string  } 
+  | { name: 'userCourseProgressesConnection', args?: QueryUserCourseProgressesConnectionArgs[] | false, alias?: string  } 
+  | { name: 'userCourseServiceProgress', args?: QueryUserCourseServiceProgressArgs[] | false, alias?: string  } 
+  | { name: 'userCourseServiceProgresses', args?: QueryUserCourseServiceProgressesArgs[] | false, alias?: string  } 
+  | { name: 'userCourseServiceProgressesConnection', args?: QueryUserCourseServiceProgressesConnectionArgs[] | false, alias?: string  } 
 
 type QueryFields =
   | 'user'
@@ -218,6 +292,15 @@ type QueryFields =
   | 'completionRegistered'
   | 'completionRegistereds'
   | 'completionRegisteredsConnection'
+  | 'service'
+  | 'services'
+  | 'servicesConnection'
+  | 'userCourseProgress'
+  | 'userCourseProgresses'
+  | 'userCourseProgressesConnection'
+  | 'userCourseServiceProgress'
+  | 'userCourseServiceProgresses'
+  | 'userCourseServiceProgressesConnection'
 
 
 type QueryUserArgs =
@@ -303,6 +386,60 @@ type QueryCompletionRegisteredsArgs =
   | 'first'
   | 'last'
 type QueryCompletionRegisteredsConnectionArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryServiceArgs =
+  | 'where'
+type QueryServicesArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryServicesConnectionArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryUserCourseProgressArgs =
+  | 'where'
+type QueryUserCourseProgressesArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryUserCourseProgressesConnectionArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryUserCourseServiceProgressArgs =
+  | 'where'
+type QueryUserCourseServiceProgressesArgs =
+  | 'where'
+  | 'orderBy'
+  | 'skip'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+type QueryUserCourseServiceProgressesConnectionArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -507,6 +644,123 @@ export interface QueryFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.CompletionRegisteredConnection> | prisma.CompletionRegisteredConnection
+  }
+  service: {
+    type: 'Service'
+    args: Record<QueryServiceArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where: ServiceWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service | null> | prisma.Service | null
+  }
+  services: {
+    type: 'Service'
+    args: Record<QueryServicesArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: ServiceWhereInput | null, orderBy?: prisma.ServiceOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service[]> | prisma.Service[]
+  }
+  servicesConnection: {
+    type: 'ServiceConnection'
+    args: Record<QueryServicesConnectionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: ServiceWhereInput | null, orderBy?: prisma.ServiceOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.ServiceConnection> | prisma.ServiceConnection
+  }
+  userCourseProgress: {
+    type: 'UserCourseProgress'
+    args: Record<QueryUserCourseProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where: UserCourseProgressWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress | null> | prisma.UserCourseProgress | null
+  }
+  userCourseProgresses: {
+    type: 'UserCourseProgress'
+    args: Record<QueryUserCourseProgressesArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: UserCourseProgressWhereInput | null, orderBy?: prisma.UserCourseProgressOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress[]> | prisma.UserCourseProgress[]
+  }
+  userCourseProgressesConnection: {
+    type: 'UserCourseProgressConnection'
+    args: Record<QueryUserCourseProgressesConnectionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: UserCourseProgressWhereInput | null, orderBy?: prisma.UserCourseProgressOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgressConnection> | prisma.UserCourseProgressConnection
+  }
+  userCourseServiceProgress: {
+    type: 'UserCourseServiceProgress'
+    args: Record<QueryUserCourseServiceProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where: UserCourseServiceProgressWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress | null> | prisma.UserCourseServiceProgress | null
+  }
+  userCourseServiceProgresses: {
+    type: 'UserCourseServiceProgress'
+    args: Record<QueryUserCourseServiceProgressesArgs, core.NexusArgDef<string>>
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: UserCourseServiceProgressWhereInput | null, orderBy?: prisma.UserCourseServiceProgressOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress[]> | prisma.UserCourseServiceProgress[]
+  }
+  userCourseServiceProgressesConnection: {
+    type: 'UserCourseServiceProgressConnection'
+    args: Record<QueryUserCourseServiceProgressesConnectionArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Query">,
+      args: { where?: UserCourseServiceProgressWhereInput | null, orderBy?: prisma.UserCourseServiceProgressOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgressConnection> | prisma.UserCourseServiceProgressConnection
   }
 }
   
@@ -1743,6 +1997,581 @@ export interface AggregateCompletionRegisteredFieldDetails {
 }
   
 
+// Types for Service
+
+type ServiceObject =
+  | ServiceFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'created_at', args?: [] | false, alias?: string  } 
+  | { name: 'updated_at', args?: [] | false, alias?: string  } 
+  | { name: 'url', args?: [] | false, alias?: string  } 
+
+type ServiceFields =
+  | 'id'
+  | 'created_at'
+  | 'updated_at'
+  | 'url'
+
+
+
+  
+
+export interface ServiceFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  created_at: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  updated_at: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  url: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for ServiceConnection
+
+type ServiceConnectionObject =
+  | ServiceConnectionFields
+  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
+  | { name: 'edges', args?: [] | false, alias?: string  } 
+  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+
+type ServiceConnectionFields =
+  | 'pageInfo'
+  | 'edges'
+  | 'aggregate'
+
+
+
+  
+
+export interface ServiceConnectionFieldDetails {
+  pageInfo: {
+    type: 'PageInfo'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"ServiceConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
+  }
+  edges: {
+    type: 'ServiceEdge'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"ServiceConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.ServiceEdge[]> | prisma.ServiceEdge[]
+  }
+  aggregate: {
+    type: 'AggregateService'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"ServiceConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.AggregateService> | prisma.AggregateService
+  }
+}
+  
+
+// Types for ServiceEdge
+
+type ServiceEdgeObject =
+  | ServiceEdgeFields
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'cursor', args?: [] | false, alias?: string  } 
+
+type ServiceEdgeFields =
+  | 'node'
+  | 'cursor'
+
+
+
+  
+
+export interface ServiceEdgeFieldDetails {
+  node: {
+    type: 'Service'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"ServiceEdge">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service> | prisma.Service
+  }
+  cursor: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for AggregateService
+
+type AggregateServiceObject =
+  | AggregateServiceFields
+  | { name: 'count', args?: [] | false, alias?: string  } 
+
+type AggregateServiceFields =
+  | 'count'
+
+
+
+  
+
+export interface AggregateServiceFieldDetails {
+  count: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for UserCourseProgress
+
+type UserCourseProgressObject =
+  | UserCourseProgressFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'user', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+  | { name: 'progress', args?: [] | false, alias?: string  } 
+
+type UserCourseProgressFields =
+  | 'id'
+  | 'user'
+  | 'course'
+  | 'progress'
+
+
+
+  
+
+export interface UserCourseProgressFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  user: {
+    type: 'User'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseProgress">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.User> | prisma.User
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseProgress">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
+  }
+  progress: {
+    type: 'Json'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for UserCourseProgressConnection
+
+type UserCourseProgressConnectionObject =
+  | UserCourseProgressConnectionFields
+  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
+  | { name: 'edges', args?: [] | false, alias?: string  } 
+  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+
+type UserCourseProgressConnectionFields =
+  | 'pageInfo'
+  | 'edges'
+  | 'aggregate'
+
+
+
+  
+
+export interface UserCourseProgressConnectionFieldDetails {
+  pageInfo: {
+    type: 'PageInfo'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseProgressConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
+  }
+  edges: {
+    type: 'UserCourseProgressEdge'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseProgressConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgressEdge[]> | prisma.UserCourseProgressEdge[]
+  }
+  aggregate: {
+    type: 'AggregateUserCourseProgress'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseProgressConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.AggregateUserCourseProgress> | prisma.AggregateUserCourseProgress
+  }
+}
+  
+
+// Types for UserCourseProgressEdge
+
+type UserCourseProgressEdgeObject =
+  | UserCourseProgressEdgeFields
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'cursor', args?: [] | false, alias?: string  } 
+
+type UserCourseProgressEdgeFields =
+  | 'node'
+  | 'cursor'
+
+
+
+  
+
+export interface UserCourseProgressEdgeFieldDetails {
+  node: {
+    type: 'UserCourseProgress'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseProgressEdge">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress> | prisma.UserCourseProgress
+  }
+  cursor: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for AggregateUserCourseProgress
+
+type AggregateUserCourseProgressObject =
+  | AggregateUserCourseProgressFields
+  | { name: 'count', args?: [] | false, alias?: string  } 
+
+type AggregateUserCourseProgressFields =
+  | 'count'
+
+
+
+  
+
+export interface AggregateUserCourseProgressFieldDetails {
+  count: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for UserCourseServiceProgress
+
+type UserCourseServiceProgressObject =
+  | UserCourseServiceProgressFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'user', args?: [] | false, alias?: string  } 
+  | { name: 'course', args?: [] | false, alias?: string  } 
+  | { name: 'service', args?: [] | false, alias?: string  } 
+  | { name: 'progress', args?: [] | false, alias?: string  } 
+
+type UserCourseServiceProgressFields =
+  | 'id'
+  | 'user'
+  | 'course'
+  | 'service'
+  | 'progress'
+
+
+
+  
+
+export interface UserCourseServiceProgressFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  user: {
+    type: 'User'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgress">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.User> | prisma.User
+  }
+  course: {
+    type: 'Course'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgress">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Course> | prisma.Course
+  }
+  service: {
+    type: 'Service'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgress">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service> | prisma.Service
+  }
+  progress: {
+    type: 'Json'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for UserCourseServiceProgressConnection
+
+type UserCourseServiceProgressConnectionObject =
+  | UserCourseServiceProgressConnectionFields
+  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
+  | { name: 'edges', args?: [] | false, alias?: string  } 
+  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+
+type UserCourseServiceProgressConnectionFields =
+  | 'pageInfo'
+  | 'edges'
+  | 'aggregate'
+
+
+
+  
+
+export interface UserCourseServiceProgressConnectionFieldDetails {
+  pageInfo: {
+    type: 'PageInfo'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgressConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
+  }
+  edges: {
+    type: 'UserCourseServiceProgressEdge'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgressConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgressEdge[]> | prisma.UserCourseServiceProgressEdge[]
+  }
+  aggregate: {
+    type: 'AggregateUserCourseServiceProgress'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgressConnection">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.AggregateUserCourseServiceProgress> | prisma.AggregateUserCourseServiceProgress
+  }
+}
+  
+
+// Types for UserCourseServiceProgressEdge
+
+type UserCourseServiceProgressEdgeObject =
+  | UserCourseServiceProgressEdgeFields
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'cursor', args?: [] | false, alias?: string  } 
+
+type UserCourseServiceProgressEdgeFields =
+  | 'node'
+  | 'cursor'
+
+
+
+  
+
+export interface UserCourseServiceProgressEdgeFieldDetails {
+  node: {
+    type: 'UserCourseServiceProgress'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgressEdge">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress> | prisma.UserCourseServiceProgress
+  }
+  cursor: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for AggregateUserCourseServiceProgress
+
+type AggregateUserCourseServiceProgressObject =
+  | AggregateUserCourseServiceProgressFields
+  | { name: 'count', args?: [] | false, alias?: string  } 
+
+type AggregateUserCourseServiceProgressFields =
+  | 'count'
+
+
+
+  
+
+export interface AggregateUserCourseServiceProgressFieldDetails {
+  count: {
+    type: 'Int'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
 // Types for Mutation
 
 type MutationObject =
@@ -1777,6 +2606,24 @@ type MutationObject =
   | { name: 'upsertCompletionRegistered', args?: MutationUpsertCompletionRegisteredArgs[] | false, alias?: string  } 
   | { name: 'deleteCompletionRegistered', args?: MutationDeleteCompletionRegisteredArgs[] | false, alias?: string  } 
   | { name: 'deleteManyCompletionRegistereds', args?: MutationDeleteManyCompletionRegisteredsArgs[] | false, alias?: string  } 
+  | { name: 'createService', args?: MutationCreateServiceArgs[] | false, alias?: string  } 
+  | { name: 'updateService', args?: MutationUpdateServiceArgs[] | false, alias?: string  } 
+  | { name: 'updateManyServices', args?: MutationUpdateManyServicesArgs[] | false, alias?: string  } 
+  | { name: 'upsertService', args?: MutationUpsertServiceArgs[] | false, alias?: string  } 
+  | { name: 'deleteService', args?: MutationDeleteServiceArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyServices', args?: MutationDeleteManyServicesArgs[] | false, alias?: string  } 
+  | { name: 'createUserCourseProgress', args?: MutationCreateUserCourseProgressArgs[] | false, alias?: string  } 
+  | { name: 'updateUserCourseProgress', args?: MutationUpdateUserCourseProgressArgs[] | false, alias?: string  } 
+  | { name: 'updateManyUserCourseProgresses', args?: MutationUpdateManyUserCourseProgressesArgs[] | false, alias?: string  } 
+  | { name: 'upsertUserCourseProgress', args?: MutationUpsertUserCourseProgressArgs[] | false, alias?: string  } 
+  | { name: 'deleteUserCourseProgress', args?: MutationDeleteUserCourseProgressArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyUserCourseProgresses', args?: MutationDeleteManyUserCourseProgressesArgs[] | false, alias?: string  } 
+  | { name: 'createUserCourseServiceProgress', args?: MutationCreateUserCourseServiceProgressArgs[] | false, alias?: string  } 
+  | { name: 'updateUserCourseServiceProgress', args?: MutationUpdateUserCourseServiceProgressArgs[] | false, alias?: string  } 
+  | { name: 'updateManyUserCourseServiceProgresses', args?: MutationUpdateManyUserCourseServiceProgressesArgs[] | false, alias?: string  } 
+  | { name: 'upsertUserCourseServiceProgress', args?: MutationUpsertUserCourseServiceProgressArgs[] | false, alias?: string  } 
+  | { name: 'deleteUserCourseServiceProgress', args?: MutationDeleteUserCourseServiceProgressArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyUserCourseServiceProgresses', args?: MutationDeleteManyUserCourseServiceProgressesArgs[] | false, alias?: string  } 
 
 type MutationFields =
   | 'createUser'
@@ -1809,6 +2656,24 @@ type MutationFields =
   | 'upsertCompletionRegistered'
   | 'deleteCompletionRegistered'
   | 'deleteManyCompletionRegistereds'
+  | 'createService'
+  | 'updateService'
+  | 'updateManyServices'
+  | 'upsertService'
+  | 'deleteService'
+  | 'deleteManyServices'
+  | 'createUserCourseProgress'
+  | 'updateUserCourseProgress'
+  | 'updateManyUserCourseProgresses'
+  | 'upsertUserCourseProgress'
+  | 'deleteUserCourseProgress'
+  | 'deleteManyUserCourseProgresses'
+  | 'createUserCourseServiceProgress'
+  | 'updateUserCourseServiceProgress'
+  | 'updateManyUserCourseServiceProgresses'
+  | 'upsertUserCourseServiceProgress'
+  | 'deleteUserCourseServiceProgress'
+  | 'deleteManyUserCourseServiceProgresses'
 
 
 type MutationCreateUserArgs =
@@ -1890,6 +2755,54 @@ type MutationUpsertCompletionRegisteredArgs =
 type MutationDeleteCompletionRegisteredArgs =
   | 'where'
 type MutationDeleteManyCompletionRegisteredsArgs =
+  | 'where'
+type MutationCreateServiceArgs =
+  | 'data'
+type MutationUpdateServiceArgs =
+  | 'data'
+  | 'where'
+type MutationUpdateManyServicesArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertServiceArgs =
+  | 'where'
+  | 'create'
+  | 'update'
+type MutationDeleteServiceArgs =
+  | 'where'
+type MutationDeleteManyServicesArgs =
+  | 'where'
+type MutationCreateUserCourseProgressArgs =
+  | 'data'
+type MutationUpdateUserCourseProgressArgs =
+  | 'data'
+  | 'where'
+type MutationUpdateManyUserCourseProgressesArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertUserCourseProgressArgs =
+  | 'where'
+  | 'create'
+  | 'update'
+type MutationDeleteUserCourseProgressArgs =
+  | 'where'
+type MutationDeleteManyUserCourseProgressesArgs =
+  | 'where'
+type MutationCreateUserCourseServiceProgressArgs =
+  | 'data'
+type MutationUpdateUserCourseServiceProgressArgs =
+  | 'data'
+  | 'where'
+type MutationUpdateManyUserCourseServiceProgressesArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertUserCourseServiceProgressArgs =
+  | 'where'
+  | 'create'
+  | 'update'
+type MutationDeleteUserCourseServiceProgressArgs =
+  | 'where'
+type MutationDeleteManyUserCourseServiceProgressesArgs =
   | 'where'
   
 
@@ -2284,6 +3197,240 @@ export interface MutationFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
+  createService: {
+    type: 'Service'
+    args: Record<MutationCreateServiceArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: ServiceCreateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service> | prisma.Service
+  }
+  updateService: {
+    type: 'Service'
+    args: Record<MutationUpdateServiceArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: ServiceUpdateInput, where: ServiceWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service | null> | prisma.Service | null
+  }
+  updateManyServices: {
+    type: 'BatchPayload'
+    args: Record<MutationUpdateManyServicesArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: ServiceUpdateManyMutationInput, where?: ServiceWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  upsertService: {
+    type: 'Service'
+    args: Record<MutationUpsertServiceArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: ServiceWhereUniqueInput, create: ServiceCreateInput, update: ServiceUpdateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service> | prisma.Service
+  }
+  deleteService: {
+    type: 'Service'
+    args: Record<MutationDeleteServiceArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: ServiceWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service | null> | prisma.Service | null
+  }
+  deleteManyServices: {
+    type: 'BatchPayload'
+    args: Record<MutationDeleteManyServicesArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where?: ServiceWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  createUserCourseProgress: {
+    type: 'UserCourseProgress'
+    args: Record<MutationCreateUserCourseProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: UserCourseProgressCreateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress> | prisma.UserCourseProgress
+  }
+  updateUserCourseProgress: {
+    type: 'UserCourseProgress'
+    args: Record<MutationUpdateUserCourseProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: UserCourseProgressUpdateInput, where: UserCourseProgressWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress | null> | prisma.UserCourseProgress | null
+  }
+  updateManyUserCourseProgresses: {
+    type: 'BatchPayload'
+    args: Record<MutationUpdateManyUserCourseProgressesArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: UserCourseProgressUpdateManyMutationInput, where?: UserCourseProgressWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  upsertUserCourseProgress: {
+    type: 'UserCourseProgress'
+    args: Record<MutationUpsertUserCourseProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: UserCourseProgressWhereUniqueInput, create: UserCourseProgressCreateInput, update: UserCourseProgressUpdateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress> | prisma.UserCourseProgress
+  }
+  deleteUserCourseProgress: {
+    type: 'UserCourseProgress'
+    args: Record<MutationDeleteUserCourseProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: UserCourseProgressWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress | null> | prisma.UserCourseProgress | null
+  }
+  deleteManyUserCourseProgresses: {
+    type: 'BatchPayload'
+    args: Record<MutationDeleteManyUserCourseProgressesArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where?: UserCourseProgressWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  createUserCourseServiceProgress: {
+    type: 'UserCourseServiceProgress'
+    args: Record<MutationCreateUserCourseServiceProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: UserCourseServiceProgressCreateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress> | prisma.UserCourseServiceProgress
+  }
+  updateUserCourseServiceProgress: {
+    type: 'UserCourseServiceProgress'
+    args: Record<MutationUpdateUserCourseServiceProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: UserCourseServiceProgressUpdateInput, where: UserCourseServiceProgressWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress | null> | prisma.UserCourseServiceProgress | null
+  }
+  updateManyUserCourseServiceProgresses: {
+    type: 'BatchPayload'
+    args: Record<MutationUpdateManyUserCourseServiceProgressesArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { data: UserCourseServiceProgressUpdateManyMutationInput, where?: UserCourseServiceProgressWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
+  upsertUserCourseServiceProgress: {
+    type: 'UserCourseServiceProgress'
+    args: Record<MutationUpsertUserCourseServiceProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: UserCourseServiceProgressWhereUniqueInput, create: UserCourseServiceProgressCreateInput, update: UserCourseServiceProgressUpdateInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress> | prisma.UserCourseServiceProgress
+  }
+  deleteUserCourseServiceProgress: {
+    type: 'UserCourseServiceProgress'
+    args: Record<MutationDeleteUserCourseServiceProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where: UserCourseServiceProgressWhereUniqueInput }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress | null> | prisma.UserCourseServiceProgress | null
+  }
+  deleteManyUserCourseServiceProgresses: {
+    type: 'BatchPayload'
+    args: Record<MutationDeleteManyUserCourseServiceProgressesArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Mutation">,
+      args: { where?: UserCourseServiceProgressWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
+  }
 }
   
 
@@ -2321,6 +3468,9 @@ type SubscriptionObject =
   | { name: 'openUniversityCourse', args?: SubscriptionOpenUniversityCourseArgs[] | false, alias?: string  } 
   | { name: 'completion', args?: SubscriptionCompletionArgs[] | false, alias?: string  } 
   | { name: 'completionRegistered', args?: SubscriptionCompletionRegisteredArgs[] | false, alias?: string  } 
+  | { name: 'service', args?: SubscriptionServiceArgs[] | false, alias?: string  } 
+  | { name: 'userCourseProgress', args?: SubscriptionUserCourseProgressArgs[] | false, alias?: string  } 
+  | { name: 'userCourseServiceProgress', args?: SubscriptionUserCourseServiceProgressArgs[] | false, alias?: string  } 
 
 type SubscriptionFields =
   | 'user'
@@ -2328,6 +3478,9 @@ type SubscriptionFields =
   | 'openUniversityCourse'
   | 'completion'
   | 'completionRegistered'
+  | 'service'
+  | 'userCourseProgress'
+  | 'userCourseServiceProgress'
 
 
 type SubscriptionUserArgs =
@@ -2339,6 +3492,12 @@ type SubscriptionOpenUniversityCourseArgs =
 type SubscriptionCompletionArgs =
   | 'where'
 type SubscriptionCompletionRegisteredArgs =
+  | 'where'
+type SubscriptionServiceArgs =
+  | 'where'
+type SubscriptionUserCourseProgressArgs =
+  | 'where'
+type SubscriptionUserCourseServiceProgressArgs =
   | 'where'
   
 
@@ -2407,6 +3566,45 @@ export interface SubscriptionFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.CompletionRegisteredSubscriptionPayload | null> | prisma.CompletionRegisteredSubscriptionPayload | null
+  }
+  service: {
+    type: 'ServiceSubscriptionPayload'
+    args: Record<SubscriptionServiceArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Subscription">,
+      args: { where?: ServiceSubscriptionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.ServiceSubscriptionPayload | null> | prisma.ServiceSubscriptionPayload | null
+  }
+  userCourseProgress: {
+    type: 'UserCourseProgressSubscriptionPayload'
+    args: Record<SubscriptionUserCourseProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Subscription">,
+      args: { where?: UserCourseProgressSubscriptionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgressSubscriptionPayload | null> | prisma.UserCourseProgressSubscriptionPayload | null
+  }
+  userCourseServiceProgress: {
+    type: 'UserCourseServiceProgressSubscriptionPayload'
+    args: Record<SubscriptionUserCourseServiceProgressArgs, core.NexusArgDef<string>>
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"Subscription">,
+      args: { where?: UserCourseServiceProgressSubscriptionWhereInput | null }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgressSubscriptionPayload | null> | prisma.UserCourseServiceProgressSubscriptionPayload | null
   }
 }
   
@@ -3147,6 +4345,341 @@ export interface CompletionRegisteredPreviousValuesFieldDetails {
   }
   organisation: {
     type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for ServiceSubscriptionPayload
+
+type ServiceSubscriptionPayloadObject =
+  | ServiceSubscriptionPayloadFields
+  | { name: 'mutation', args?: [] | false, alias?: string  } 
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
+  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+
+type ServiceSubscriptionPayloadFields =
+  | 'mutation'
+  | 'node'
+  | 'updatedFields'
+  | 'previousValues'
+
+
+
+  
+
+export interface ServiceSubscriptionPayloadFieldDetails {
+  mutation: {
+    type: 'MutationType'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"ServiceSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.MutationType> | prisma.MutationType
+  }
+  node: {
+    type: 'Service'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"ServiceSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Service | null> | prisma.Service | null
+  }
+  updatedFields: {
+    type: 'String'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: undefined
+  }
+  previousValues: {
+    type: 'ServicePreviousValues'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"ServiceSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.ServicePreviousValues | null> | prisma.ServicePreviousValues | null
+  }
+}
+  
+
+// Types for ServicePreviousValues
+
+type ServicePreviousValuesObject =
+  | ServicePreviousValuesFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'created_at', args?: [] | false, alias?: string  } 
+  | { name: 'updated_at', args?: [] | false, alias?: string  } 
+  | { name: 'url', args?: [] | false, alias?: string  } 
+
+type ServicePreviousValuesFields =
+  | 'id'
+  | 'created_at'
+  | 'updated_at'
+  | 'url'
+
+
+
+  
+
+export interface ServicePreviousValuesFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  created_at: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  updated_at: {
+    type: 'DateTime'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: undefined
+  }
+  url: {
+    type: 'String'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for UserCourseProgressSubscriptionPayload
+
+type UserCourseProgressSubscriptionPayloadObject =
+  | UserCourseProgressSubscriptionPayloadFields
+  | { name: 'mutation', args?: [] | false, alias?: string  } 
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
+  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+
+type UserCourseProgressSubscriptionPayloadFields =
+  | 'mutation'
+  | 'node'
+  | 'updatedFields'
+  | 'previousValues'
+
+
+
+  
+
+export interface UserCourseProgressSubscriptionPayloadFieldDetails {
+  mutation: {
+    type: 'MutationType'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseProgressSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.MutationType> | prisma.MutationType
+  }
+  node: {
+    type: 'UserCourseProgress'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"UserCourseProgressSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgress | null> | prisma.UserCourseProgress | null
+  }
+  updatedFields: {
+    type: 'String'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: undefined
+  }
+  previousValues: {
+    type: 'UserCourseProgressPreviousValues'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"UserCourseProgressSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseProgressPreviousValues | null> | prisma.UserCourseProgressPreviousValues | null
+  }
+}
+  
+
+// Types for UserCourseProgressPreviousValues
+
+type UserCourseProgressPreviousValuesObject =
+  | UserCourseProgressPreviousValuesFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'progress', args?: [] | false, alias?: string  } 
+
+type UserCourseProgressPreviousValuesFields =
+  | 'id'
+  | 'progress'
+
+
+
+  
+
+export interface UserCourseProgressPreviousValuesFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  progress: {
+    type: 'Json'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+}
+  
+
+// Types for UserCourseServiceProgressSubscriptionPayload
+
+type UserCourseServiceProgressSubscriptionPayloadObject =
+  | UserCourseServiceProgressSubscriptionPayloadFields
+  | { name: 'mutation', args?: [] | false, alias?: string  } 
+  | { name: 'node', args?: [] | false, alias?: string  } 
+  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
+  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+
+type UserCourseServiceProgressSubscriptionPayloadFields =
+  | 'mutation'
+  | 'node'
+  | 'updatedFields'
+  | 'previousValues'
+
+
+
+  
+
+export interface UserCourseServiceProgressSubscriptionPayloadFieldDetails {
+  mutation: {
+    type: 'MutationType'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgressSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.MutationType> | prisma.MutationType
+  }
+  node: {
+    type: 'UserCourseServiceProgress'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgressSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgress | null> | prisma.UserCourseServiceProgress | null
+  }
+  updatedFields: {
+    type: 'String'
+    args: {}
+    description: string
+    list: true
+    nullable: false
+    resolve: undefined
+  }
+  previousValues: {
+    type: 'UserCourseServiceProgressPreviousValues'
+    args: {}
+    description: string
+    list: undefined
+    nullable: true
+    resolve: (
+      root: core.RootValue<"UserCourseServiceProgressSubscriptionPayload">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.UserCourseServiceProgressPreviousValues | null> | prisma.UserCourseServiceProgressPreviousValues | null
+  }
+}
+  
+
+// Types for UserCourseServiceProgressPreviousValues
+
+type UserCourseServiceProgressPreviousValuesObject =
+  | UserCourseServiceProgressPreviousValuesFields
+  | { name: 'id', args?: [] | false, alias?: string  } 
+  | { name: 'progress', args?: [] | false, alias?: string  } 
+
+type UserCourseServiceProgressPreviousValuesFields =
+  | 'id'
+  | 'progress'
+
+
+
+  
+
+export interface UserCourseServiceProgressPreviousValuesFieldDetails {
+  id: {
+    type: 'UUID'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: undefined
+  }
+  progress: {
+    type: 'Json'
     args: {}
     description: string
     list: undefined
@@ -4012,6 +5545,214 @@ export interface CompletionRegisteredWhereUniqueInput {
 export type CompletionRegisteredWhereUniqueInputInputObject =
   | Extract<keyof CompletionRegisteredWhereUniqueInput, string>
   | { name: 'id', alias?: string  } 
+  
+export interface ServiceWhereUniqueInput {
+  id?: undefined | null
+}
+export type ServiceWhereUniqueInputInputObject =
+  | Extract<keyof ServiceWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
+export interface ServiceWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
+  created_at?: string | null
+  created_at_not?: string | null
+  created_at_in?: string[]
+  created_at_not_in?: string[]
+  created_at_lt?: string | null
+  created_at_lte?: string | null
+  created_at_gt?: string | null
+  created_at_gte?: string | null
+  updated_at?: string | null
+  updated_at_not?: string | null
+  updated_at_in?: string[]
+  updated_at_not_in?: string[]
+  updated_at_lt?: string | null
+  updated_at_lte?: string | null
+  updated_at_gt?: string | null
+  updated_at_gte?: string | null
+  url?: string | null
+  url_not?: string | null
+  url_in?: string[]
+  url_not_in?: string[]
+  url_lt?: string | null
+  url_lte?: string | null
+  url_gt?: string | null
+  url_gte?: string | null
+  url_contains?: string | null
+  url_not_contains?: string | null
+  url_starts_with?: string | null
+  url_not_starts_with?: string | null
+  url_ends_with?: string | null
+  url_not_ends_with?: string | null
+  AND?: ServiceWhereInput[]
+  OR?: ServiceWhereInput[]
+  NOT?: ServiceWhereInput[]
+}
+export type ServiceWhereInputInputObject =
+  | Extract<keyof ServiceWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'created_at', alias?: string  } 
+  | { name: 'created_at_not', alias?: string  } 
+  | { name: 'created_at_in', alias?: string  } 
+  | { name: 'created_at_not_in', alias?: string  } 
+  | { name: 'created_at_lt', alias?: string  } 
+  | { name: 'created_at_lte', alias?: string  } 
+  | { name: 'created_at_gt', alias?: string  } 
+  | { name: 'created_at_gte', alias?: string  } 
+  | { name: 'updated_at', alias?: string  } 
+  | { name: 'updated_at_not', alias?: string  } 
+  | { name: 'updated_at_in', alias?: string  } 
+  | { name: 'updated_at_not_in', alias?: string  } 
+  | { name: 'updated_at_lt', alias?: string  } 
+  | { name: 'updated_at_lte', alias?: string  } 
+  | { name: 'updated_at_gt', alias?: string  } 
+  | { name: 'updated_at_gte', alias?: string  } 
+  | { name: 'url', alias?: string  } 
+  | { name: 'url_not', alias?: string  } 
+  | { name: 'url_in', alias?: string  } 
+  | { name: 'url_not_in', alias?: string  } 
+  | { name: 'url_lt', alias?: string  } 
+  | { name: 'url_lte', alias?: string  } 
+  | { name: 'url_gt', alias?: string  } 
+  | { name: 'url_gte', alias?: string  } 
+  | { name: 'url_contains', alias?: string  } 
+  | { name: 'url_not_contains', alias?: string  } 
+  | { name: 'url_starts_with', alias?: string  } 
+  | { name: 'url_not_starts_with', alias?: string  } 
+  | { name: 'url_ends_with', alias?: string  } 
+  | { name: 'url_not_ends_with', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface UserCourseProgressWhereUniqueInput {
+  id?: undefined | null
+}
+export type UserCourseProgressWhereUniqueInputInputObject =
+  | Extract<keyof UserCourseProgressWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
+export interface UserCourseProgressWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
+  user?: UserWhereInput | null
+  course?: CourseWhereInput | null
+  AND?: UserCourseProgressWhereInput[]
+  OR?: UserCourseProgressWhereInput[]
+  NOT?: UserCourseProgressWhereInput[]
+}
+export type UserCourseProgressWhereInputInputObject =
+  | Extract<keyof UserCourseProgressWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface UserCourseServiceProgressWhereUniqueInput {
+  id?: undefined | null
+}
+export type UserCourseServiceProgressWhereUniqueInputInputObject =
+  | Extract<keyof UserCourseServiceProgressWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  
+export interface UserCourseServiceProgressWhereInput {
+  id?: undefined | null
+  id_not?: undefined | null
+  id_in?: undefined[]
+  id_not_in?: undefined[]
+  id_lt?: undefined | null
+  id_lte?: undefined | null
+  id_gt?: undefined | null
+  id_gte?: undefined | null
+  id_contains?: undefined | null
+  id_not_contains?: undefined | null
+  id_starts_with?: undefined | null
+  id_not_starts_with?: undefined | null
+  id_ends_with?: undefined | null
+  id_not_ends_with?: undefined | null
+  user?: UserWhereInput | null
+  course?: CourseWhereInput | null
+  service?: ServiceWhereInput | null
+  AND?: UserCourseServiceProgressWhereInput[]
+  OR?: UserCourseServiceProgressWhereInput[]
+  NOT?: UserCourseServiceProgressWhereInput[]
+}
+export type UserCourseServiceProgressWhereInputInputObject =
+  | Extract<keyof UserCourseServiceProgressWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'service', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
   
 export interface UserCreateInput {
   upstream_id?: number
@@ -5326,6 +7067,203 @@ export type CompletionRegisteredUpdateManyMutationInputInputObject =
   | { name: 'real_student_number', alias?: string  } 
   | { name: 'organisation', alias?: string  } 
   
+export interface ServiceCreateInput {
+  created_at?: string | null
+  updated_at?: string | null
+  url?: string
+}
+export type ServiceCreateInputInputObject =
+  | Extract<keyof ServiceCreateInput, string>
+  | { name: 'created_at', alias?: string  } 
+  | { name: 'updated_at', alias?: string  } 
+  | { name: 'url', alias?: string  } 
+  
+export interface ServiceUpdateInput {
+  created_at?: string | null
+  updated_at?: string | null
+  url?: string | null
+}
+export type ServiceUpdateInputInputObject =
+  | Extract<keyof ServiceUpdateInput, string>
+  | { name: 'created_at', alias?: string  } 
+  | { name: 'updated_at', alias?: string  } 
+  | { name: 'url', alias?: string  } 
+  
+export interface ServiceUpdateManyMutationInput {
+  created_at?: string | null
+  updated_at?: string | null
+  url?: string | null
+}
+export type ServiceUpdateManyMutationInputInputObject =
+  | Extract<keyof ServiceUpdateManyMutationInput, string>
+  | { name: 'created_at', alias?: string  } 
+  | { name: 'updated_at', alias?: string  } 
+  | { name: 'url', alias?: string  } 
+  
+export interface UserCourseProgressCreateInput {
+  user?: UserCreateOneInput
+  course?: CourseCreateOneInput
+  progress?: undefined
+}
+export type UserCourseProgressCreateInputInputObject =
+  | Extract<keyof UserCourseProgressCreateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'progress', alias?: string  } 
+  
+export interface UserCreateOneInput {
+  create?: UserCreateInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserCreateOneInputInputObject =
+  | Extract<keyof UserCreateOneInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserCourseProgressUpdateInput {
+  user?: UserUpdateOneRequiredInput | null
+  course?: CourseUpdateOneRequiredInput | null
+  progress?: undefined | null
+}
+export type UserCourseProgressUpdateInputInputObject =
+  | Extract<keyof UserCourseProgressUpdateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'progress', alias?: string  } 
+  
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput | null
+  update?: UserUpdateDataInput | null
+  upsert?: UserUpsertNestedInput | null
+  connect?: UserWhereUniqueInput | null
+}
+export type UserUpdateOneRequiredInputInputObject =
+  | Extract<keyof UserUpdateOneRequiredInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserUpdateDataInput {
+  upstream_id?: number | null
+  created_at?: string | null
+  updated_at?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  username?: string | null
+  email?: string | null
+  administrator?: boolean | null
+  student_number?: string | null
+  real_student_number?: string | null
+  completions?: CompletionUpdateManyWithoutUserInput | null
+  registered_completions?: CompletionRegisteredUpdateManyWithoutUserInput | null
+}
+export type UserUpdateDataInputInputObject =
+  | Extract<keyof UserUpdateDataInput, string>
+  | { name: 'upstream_id', alias?: string  } 
+  | { name: 'created_at', alias?: string  } 
+  | { name: 'updated_at', alias?: string  } 
+  | { name: 'first_name', alias?: string  } 
+  | { name: 'last_name', alias?: string  } 
+  | { name: 'username', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'administrator', alias?: string  } 
+  | { name: 'student_number', alias?: string  } 
+  | { name: 'real_student_number', alias?: string  } 
+  | { name: 'completions', alias?: string  } 
+  | { name: 'registered_completions', alias?: string  } 
+  
+export interface UserUpsertNestedInput {
+  update?: UserUpdateDataInput
+  create?: UserCreateInput
+}
+export type UserUpsertNestedInputInputObject =
+  | Extract<keyof UserUpsertNestedInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface UserCourseProgressUpdateManyMutationInput {
+  progress?: undefined | null
+}
+export type UserCourseProgressUpdateManyMutationInputInputObject =
+  | Extract<keyof UserCourseProgressUpdateManyMutationInput, string>
+  | { name: 'progress', alias?: string  } 
+  
+export interface UserCourseServiceProgressCreateInput {
+  user?: UserCreateOneInput
+  course?: CourseCreateOneInput
+  service?: ServiceCreateOneInput
+  progress?: undefined
+}
+export type UserCourseServiceProgressCreateInputInputObject =
+  | Extract<keyof UserCourseServiceProgressCreateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'service', alias?: string  } 
+  | { name: 'progress', alias?: string  } 
+  
+export interface ServiceCreateOneInput {
+  create?: ServiceCreateInput | null
+  connect?: ServiceWhereUniqueInput | null
+}
+export type ServiceCreateOneInputInputObject =
+  | Extract<keyof ServiceCreateOneInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface UserCourseServiceProgressUpdateInput {
+  user?: UserUpdateOneRequiredInput | null
+  course?: CourseUpdateOneRequiredInput | null
+  service?: ServiceUpdateOneRequiredInput | null
+  progress?: undefined | null
+}
+export type UserCourseServiceProgressUpdateInputInputObject =
+  | Extract<keyof UserCourseServiceProgressUpdateInput, string>
+  | { name: 'user', alias?: string  } 
+  | { name: 'course', alias?: string  } 
+  | { name: 'service', alias?: string  } 
+  | { name: 'progress', alias?: string  } 
+  
+export interface ServiceUpdateOneRequiredInput {
+  create?: ServiceCreateInput | null
+  update?: ServiceUpdateDataInput | null
+  upsert?: ServiceUpsertNestedInput | null
+  connect?: ServiceWhereUniqueInput | null
+}
+export type ServiceUpdateOneRequiredInputInputObject =
+  | Extract<keyof ServiceUpdateOneRequiredInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface ServiceUpdateDataInput {
+  created_at?: string | null
+  updated_at?: string | null
+  url?: string | null
+}
+export type ServiceUpdateDataInputInputObject =
+  | Extract<keyof ServiceUpdateDataInput, string>
+  | { name: 'created_at', alias?: string  } 
+  | { name: 'updated_at', alias?: string  } 
+  | { name: 'url', alias?: string  } 
+  
+export interface ServiceUpsertNestedInput {
+  update?: ServiceUpdateDataInput
+  create?: ServiceCreateInput
+}
+export type ServiceUpsertNestedInputInputObject =
+  | Extract<keyof ServiceUpsertNestedInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
+export interface UserCourseServiceProgressUpdateManyMutationInput {
+  progress?: undefined | null
+}
+export type UserCourseServiceProgressUpdateManyMutationInputInputObject =
+  | Extract<keyof UserCourseServiceProgressUpdateManyMutationInput, string>
+  | { name: 'progress', alias?: string  } 
+  
 export interface UserSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
   updatedFields_contains?: string | null
@@ -5431,6 +7369,69 @@ export type CompletionRegisteredSubscriptionWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
+export interface ServiceSubscriptionWhereInput {
+  mutation_in?: prisma.MutationType[]
+  updatedFields_contains?: string | null
+  updatedFields_contains_every?: string[]
+  updatedFields_contains_some?: string[]
+  node?: ServiceWhereInput | null
+  AND?: ServiceSubscriptionWhereInput[]
+  OR?: ServiceSubscriptionWhereInput[]
+  NOT?: ServiceSubscriptionWhereInput[]
+}
+export type ServiceSubscriptionWhereInputInputObject =
+  | Extract<keyof ServiceSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface UserCourseProgressSubscriptionWhereInput {
+  mutation_in?: prisma.MutationType[]
+  updatedFields_contains?: string | null
+  updatedFields_contains_every?: string[]
+  updatedFields_contains_some?: string[]
+  node?: UserCourseProgressWhereInput | null
+  AND?: UserCourseProgressSubscriptionWhereInput[]
+  OR?: UserCourseProgressSubscriptionWhereInput[]
+  NOT?: UserCourseProgressSubscriptionWhereInput[]
+}
+export type UserCourseProgressSubscriptionWhereInputInputObject =
+  | Extract<keyof UserCourseProgressSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
+export interface UserCourseServiceProgressSubscriptionWhereInput {
+  mutation_in?: prisma.MutationType[]
+  updatedFields_contains?: string | null
+  updatedFields_contains_every?: string[]
+  updatedFields_contains_some?: string[]
+  node?: UserCourseServiceProgressWhereInput | null
+  AND?: UserCourseServiceProgressSubscriptionWhereInput[]
+  OR?: UserCourseServiceProgressSubscriptionWhereInput[]
+  NOT?: UserCourseServiceProgressSubscriptionWhereInput[]
+}
+export type UserCourseServiceProgressSubscriptionWhereInputInputObject =
+  | Extract<keyof UserCourseServiceProgressSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
+  
 
 export type CompletionOrderByInputValues =
   | 'id_ASC'
@@ -5521,6 +7522,40 @@ export type CourseOrderByInputValues =
   | 'name_DESC'
   | 'slug_ASC'
   | 'slug_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  
+export type ServiceOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'created_at_ASC'
+  | 'created_at_DESC'
+  | 'updated_at_ASC'
+  | 'updated_at_DESC'
+  | 'url_ASC'
+  | 'url_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  
+export type UserCourseProgressOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'progress_ASC'
+  | 'progress_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  
+export type UserCourseServiceProgressOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'progress_ASC'
+  | 'progress_DESC'
   | 'createdAt_ASC'
   | 'createdAt_DESC'
   | 'updatedAt_ASC'

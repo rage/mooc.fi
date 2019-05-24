@@ -18,7 +18,19 @@ type AggregateOpenUniversityCourse {
   count: Int!
 }
 
+type AggregateService {
+  count: Int!
+}
+
 type AggregateUser {
+  count: Int!
+}
+
+type AggregateUserCourseProgress {
+  count: Int!
+}
+
+type AggregateUserCourseServiceProgress {
   count: Int!
 }
 
@@ -904,6 +916,8 @@ input CourseWhereUniqueInput {
 
 scalar DateTime
 
+scalar Json
+
 scalar Long
 
 type Mutation {
@@ -931,12 +945,30 @@ type Mutation {
   upsertOpenUniversityCourse(where: OpenUniversityCourseWhereUniqueInput!, create: OpenUniversityCourseCreateInput!, update: OpenUniversityCourseUpdateInput!): OpenUniversityCourse!
   deleteOpenUniversityCourse(where: OpenUniversityCourseWhereUniqueInput!): OpenUniversityCourse
   deleteManyOpenUniversityCourses(where: OpenUniversityCourseWhereInput): BatchPayload!
+  createService(data: ServiceCreateInput!): Service!
+  updateService(data: ServiceUpdateInput!, where: ServiceWhereUniqueInput!): Service
+  updateManyServices(data: ServiceUpdateManyMutationInput!, where: ServiceWhereInput): BatchPayload!
+  upsertService(where: ServiceWhereUniqueInput!, create: ServiceCreateInput!, update: ServiceUpdateInput!): Service!
+  deleteService(where: ServiceWhereUniqueInput!): Service
+  deleteManyServices(where: ServiceWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  createUserCourseProgress(data: UserCourseProgressCreateInput!): UserCourseProgress!
+  updateUserCourseProgress(data: UserCourseProgressUpdateInput!, where: UserCourseProgressWhereUniqueInput!): UserCourseProgress
+  updateManyUserCourseProgresses(data: UserCourseProgressUpdateManyMutationInput!, where: UserCourseProgressWhereInput): BatchPayload!
+  upsertUserCourseProgress(where: UserCourseProgressWhereUniqueInput!, create: UserCourseProgressCreateInput!, update: UserCourseProgressUpdateInput!): UserCourseProgress!
+  deleteUserCourseProgress(where: UserCourseProgressWhereUniqueInput!): UserCourseProgress
+  deleteManyUserCourseProgresses(where: UserCourseProgressWhereInput): BatchPayload!
+  createUserCourseServiceProgress(data: UserCourseServiceProgressCreateInput!): UserCourseServiceProgress!
+  updateUserCourseServiceProgress(data: UserCourseServiceProgressUpdateInput!, where: UserCourseServiceProgressWhereUniqueInput!): UserCourseServiceProgress
+  updateManyUserCourseServiceProgresses(data: UserCourseServiceProgressUpdateManyMutationInput!, where: UserCourseServiceProgressWhereInput): BatchPayload!
+  upsertUserCourseServiceProgress(where: UserCourseServiceProgressWhereUniqueInput!, create: UserCourseServiceProgressCreateInput!, update: UserCourseServiceProgressUpdateInput!): UserCourseServiceProgress!
+  deleteUserCourseServiceProgress(where: UserCourseServiceProgressWhereUniqueInput!): UserCourseServiceProgress
+  deleteManyUserCourseServiceProgresses(where: UserCourseServiceProgressWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -1207,10 +1239,173 @@ type Query {
   openUniversityCourse(where: OpenUniversityCourseWhereUniqueInput!): OpenUniversityCourse
   openUniversityCourses(where: OpenUniversityCourseWhereInput, orderBy: OpenUniversityCourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OpenUniversityCourse]!
   openUniversityCoursesConnection(where: OpenUniversityCourseWhereInput, orderBy: OpenUniversityCourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OpenUniversityCourseConnection!
+  service(where: ServiceWhereUniqueInput!): Service
+  services(where: ServiceWhereInput, orderBy: ServiceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Service]!
+  servicesConnection(where: ServiceWhereInput, orderBy: ServiceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ServiceConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  userCourseProgress(where: UserCourseProgressWhereUniqueInput!): UserCourseProgress
+  userCourseProgresses(where: UserCourseProgressWhereInput, orderBy: UserCourseProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserCourseProgress]!
+  userCourseProgressesConnection(where: UserCourseProgressWhereInput, orderBy: UserCourseProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserCourseProgressConnection!
+  userCourseServiceProgress(where: UserCourseServiceProgressWhereUniqueInput!): UserCourseServiceProgress
+  userCourseServiceProgresses(where: UserCourseServiceProgressWhereInput, orderBy: UserCourseServiceProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserCourseServiceProgress]!
+  userCourseServiceProgressesConnection(where: UserCourseServiceProgressWhereInput, orderBy: UserCourseServiceProgressOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserCourseServiceProgressConnection!
   node(id: ID!): Node
+}
+
+type Service {
+  id: UUID!
+  created_at: DateTime
+  updated_at: DateTime
+  url: String!
+}
+
+type ServiceConnection {
+  pageInfo: PageInfo!
+  edges: [ServiceEdge]!
+  aggregate: AggregateService!
+}
+
+input ServiceCreateInput {
+  id: UUID
+  created_at: DateTime
+  updated_at: DateTime
+  url: String!
+}
+
+input ServiceCreateOneInput {
+  create: ServiceCreateInput
+  connect: ServiceWhereUniqueInput
+}
+
+type ServiceEdge {
+  node: Service!
+  cursor: String!
+}
+
+enum ServiceOrderByInput {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  url_ASC
+  url_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ServicePreviousValues {
+  id: UUID!
+  created_at: DateTime
+  updated_at: DateTime
+  url: String!
+}
+
+type ServiceSubscriptionPayload {
+  mutation: MutationType!
+  node: Service
+  updatedFields: [String!]
+  previousValues: ServicePreviousValues
+}
+
+input ServiceSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ServiceWhereInput
+  AND: [ServiceSubscriptionWhereInput!]
+  OR: [ServiceSubscriptionWhereInput!]
+  NOT: [ServiceSubscriptionWhereInput!]
+}
+
+input ServiceUpdateDataInput {
+  created_at: DateTime
+  updated_at: DateTime
+  url: String
+}
+
+input ServiceUpdateInput {
+  created_at: DateTime
+  updated_at: DateTime
+  url: String
+}
+
+input ServiceUpdateManyMutationInput {
+  created_at: DateTime
+  updated_at: DateTime
+  url: String
+}
+
+input ServiceUpdateOneRequiredInput {
+  create: ServiceCreateInput
+  update: ServiceUpdateDataInput
+  upsert: ServiceUpsertNestedInput
+  connect: ServiceWhereUniqueInput
+}
+
+input ServiceUpsertNestedInput {
+  update: ServiceUpdateDataInput!
+  create: ServiceCreateInput!
+}
+
+input ServiceWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  created_at: DateTime
+  created_at_not: DateTime
+  created_at_in: [DateTime!]
+  created_at_not_in: [DateTime!]
+  created_at_lt: DateTime
+  created_at_lte: DateTime
+  created_at_gt: DateTime
+  created_at_gte: DateTime
+  updated_at: DateTime
+  updated_at_not: DateTime
+  updated_at_in: [DateTime!]
+  updated_at_not_in: [DateTime!]
+  updated_at_lt: DateTime
+  updated_at_lte: DateTime
+  updated_at_gt: DateTime
+  updated_at_gte: DateTime
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  AND: [ServiceWhereInput!]
+  OR: [ServiceWhereInput!]
+  NOT: [ServiceWhereInput!]
+}
+
+input ServiceWhereUniqueInput {
+  id: UUID
 }
 
 type Subscription {
@@ -1218,7 +1413,10 @@ type Subscription {
   completionRegistered(where: CompletionRegisteredSubscriptionWhereInput): CompletionRegisteredSubscriptionPayload
   course(where: CourseSubscriptionWhereInput): CourseSubscriptionPayload
   openUniversityCourse(where: OpenUniversityCourseSubscriptionWhereInput): OpenUniversityCourseSubscriptionPayload
+  service(where: ServiceSubscriptionWhereInput): ServiceSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  userCourseProgress(where: UserCourseProgressSubscriptionWhereInput): UserCourseProgressSubscriptionPayload
+  userCourseServiceProgress(where: UserCourseServiceProgressSubscriptionWhereInput): UserCourseServiceProgressSubscriptionPayload
 }
 
 type User {
@@ -1243,6 +1441,200 @@ type UserConnection {
   aggregate: AggregateUser!
 }
 
+type UserCourseProgress {
+  id: UUID!
+  user: User!
+  course: Course!
+  progress: Json!
+}
+
+type UserCourseProgressConnection {
+  pageInfo: PageInfo!
+  edges: [UserCourseProgressEdge]!
+  aggregate: AggregateUserCourseProgress!
+}
+
+input UserCourseProgressCreateInput {
+  id: UUID
+  user: UserCreateOneInput!
+  course: CourseCreateOneInput!
+  progress: Json!
+}
+
+type UserCourseProgressEdge {
+  node: UserCourseProgress!
+  cursor: String!
+}
+
+enum UserCourseProgressOrderByInput {
+  id_ASC
+  id_DESC
+  progress_ASC
+  progress_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type UserCourseProgressPreviousValues {
+  id: UUID!
+  progress: Json!
+}
+
+type UserCourseProgressSubscriptionPayload {
+  mutation: MutationType!
+  node: UserCourseProgress
+  updatedFields: [String!]
+  previousValues: UserCourseProgressPreviousValues
+}
+
+input UserCourseProgressSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: UserCourseProgressWhereInput
+  AND: [UserCourseProgressSubscriptionWhereInput!]
+  OR: [UserCourseProgressSubscriptionWhereInput!]
+  NOT: [UserCourseProgressSubscriptionWhereInput!]
+}
+
+input UserCourseProgressUpdateInput {
+  user: UserUpdateOneRequiredInput
+  course: CourseUpdateOneRequiredInput
+  progress: Json
+}
+
+input UserCourseProgressUpdateManyMutationInput {
+  progress: Json
+}
+
+input UserCourseProgressWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  user: UserWhereInput
+  course: CourseWhereInput
+  AND: [UserCourseProgressWhereInput!]
+  OR: [UserCourseProgressWhereInput!]
+  NOT: [UserCourseProgressWhereInput!]
+}
+
+input UserCourseProgressWhereUniqueInput {
+  id: UUID
+}
+
+type UserCourseServiceProgress {
+  id: UUID!
+  user: User!
+  course: Course!
+  service: Service!
+  progress: Json!
+}
+
+type UserCourseServiceProgressConnection {
+  pageInfo: PageInfo!
+  edges: [UserCourseServiceProgressEdge]!
+  aggregate: AggregateUserCourseServiceProgress!
+}
+
+input UserCourseServiceProgressCreateInput {
+  id: UUID
+  user: UserCreateOneInput!
+  course: CourseCreateOneInput!
+  service: ServiceCreateOneInput!
+  progress: Json!
+}
+
+type UserCourseServiceProgressEdge {
+  node: UserCourseServiceProgress!
+  cursor: String!
+}
+
+enum UserCourseServiceProgressOrderByInput {
+  id_ASC
+  id_DESC
+  progress_ASC
+  progress_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type UserCourseServiceProgressPreviousValues {
+  id: UUID!
+  progress: Json!
+}
+
+type UserCourseServiceProgressSubscriptionPayload {
+  mutation: MutationType!
+  node: UserCourseServiceProgress
+  updatedFields: [String!]
+  previousValues: UserCourseServiceProgressPreviousValues
+}
+
+input UserCourseServiceProgressSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: UserCourseServiceProgressWhereInput
+  AND: [UserCourseServiceProgressSubscriptionWhereInput!]
+  OR: [UserCourseServiceProgressSubscriptionWhereInput!]
+  NOT: [UserCourseServiceProgressSubscriptionWhereInput!]
+}
+
+input UserCourseServiceProgressUpdateInput {
+  user: UserUpdateOneRequiredInput
+  course: CourseUpdateOneRequiredInput
+  service: ServiceUpdateOneRequiredInput
+  progress: Json
+}
+
+input UserCourseServiceProgressUpdateManyMutationInput {
+  progress: Json
+}
+
+input UserCourseServiceProgressWhereInput {
+  id: UUID
+  id_not: UUID
+  id_in: [UUID!]
+  id_not_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_contains: UUID
+  id_not_contains: UUID
+  id_starts_with: UUID
+  id_not_starts_with: UUID
+  id_ends_with: UUID
+  id_not_ends_with: UUID
+  user: UserWhereInput
+  course: CourseWhereInput
+  service: ServiceWhereInput
+  AND: [UserCourseServiceProgressWhereInput!]
+  OR: [UserCourseServiceProgressWhereInput!]
+  NOT: [UserCourseServiceProgressWhereInput!]
+}
+
+input UserCourseServiceProgressWhereUniqueInput {
+  id: UUID
+}
+
 input UserCreateInput {
   id: UUID
   upstream_id: Int!
@@ -1257,6 +1649,11 @@ input UserCreateInput {
   real_student_number: String
   completions: CompletionCreateManyWithoutUserInput
   registered_completions: CompletionRegisteredCreateManyWithoutUserInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutCompletionsInput {
@@ -1365,6 +1762,21 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  upstream_id: Int
+  created_at: DateTime
+  updated_at: DateTime
+  first_name: String
+  last_name: String
+  username: String
+  email: String
+  administrator: Boolean
+  student_number: String
+  real_student_number: String
+  completions: CompletionUpdateManyWithoutUserInput
+  registered_completions: CompletionRegisteredUpdateManyWithoutUserInput
+}
+
 input UserUpdateInput {
   upstream_id: Int
   created_at: DateTime
@@ -1391,6 +1803,13 @@ input UserUpdateManyMutationInput {
   administrator: Boolean
   student_number: String
   real_student_number: String
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneRequiredWithoutCompletionsInput {
@@ -1433,6 +1852,11 @@ input UserUpdateWithoutRegistered_completionsDataInput {
   student_number: String
   real_student_number: String
   completions: CompletionUpdateManyWithoutUserInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutCompletionsInput {

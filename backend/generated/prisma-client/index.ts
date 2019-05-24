@@ -22,7 +22,14 @@ export interface Exists {
   openUniversityCourse: (
     where?: OpenUniversityCourseWhereInput
   ) => Promise<boolean>;
+  service: (where?: ServiceWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
+  userCourseProgress: (
+    where?: UserCourseProgressWhereInput
+  ) => Promise<boolean>;
+  userCourseServiceProgress: (
+    where?: UserCourseServiceProgressWhereInput
+  ) => Promise<boolean>;
 }
 
 export interface Node {}
@@ -140,6 +147,29 @@ export interface Prisma {
       last?: Int;
     }
   ) => OpenUniversityCourseConnectionPromise;
+  service: (where: ServiceWhereUniqueInput) => ServicePromise;
+  services: (
+    args?: {
+      where?: ServiceWhereInput;
+      orderBy?: ServiceOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<Service>;
+  servicesConnection: (
+    args?: {
+      where?: ServiceWhereInput;
+      orderBy?: ServiceOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => ServiceConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserPromise;
   users: (
     args?: {
@@ -163,6 +193,56 @@ export interface Prisma {
       last?: Int;
     }
   ) => UserConnectionPromise;
+  userCourseProgress: (
+    where: UserCourseProgressWhereUniqueInput
+  ) => UserCourseProgressPromise;
+  userCourseProgresses: (
+    args?: {
+      where?: UserCourseProgressWhereInput;
+      orderBy?: UserCourseProgressOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<UserCourseProgress>;
+  userCourseProgressesConnection: (
+    args?: {
+      where?: UserCourseProgressWhereInput;
+      orderBy?: UserCourseProgressOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => UserCourseProgressConnectionPromise;
+  userCourseServiceProgress: (
+    where: UserCourseServiceProgressWhereUniqueInput
+  ) => UserCourseServiceProgressPromise;
+  userCourseServiceProgresses: (
+    args?: {
+      where?: UserCourseServiceProgressWhereInput;
+      orderBy?: UserCourseServiceProgressOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<UserCourseServiceProgress>;
+  userCourseServiceProgressesConnection: (
+    args?: {
+      where?: UserCourseServiceProgressWhereInput;
+      orderBy?: UserCourseServiceProgressOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => UserCourseServiceProgressConnectionPromise;
   node: (args: { id: ID_Output }) => Node;
 
   /**
@@ -260,6 +340,22 @@ export interface Prisma {
   deleteManyOpenUniversityCourses: (
     where?: OpenUniversityCourseWhereInput
   ) => BatchPayloadPromise;
+  createService: (data: ServiceCreateInput) => ServicePromise;
+  updateService: (
+    args: { data: ServiceUpdateInput; where: ServiceWhereUniqueInput }
+  ) => ServicePromise;
+  updateManyServices: (
+    args: { data: ServiceUpdateManyMutationInput; where?: ServiceWhereInput }
+  ) => BatchPayloadPromise;
+  upsertService: (
+    args: {
+      where: ServiceWhereUniqueInput;
+      create: ServiceCreateInput;
+      update: ServiceUpdateInput;
+    }
+  ) => ServicePromise;
+  deleteService: (where: ServiceWhereUniqueInput) => ServicePromise;
+  deleteManyServices: (where?: ServiceWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (
     args: { data: UserUpdateInput; where: UserWhereUniqueInput }
@@ -276,6 +372,62 @@ export interface Prisma {
   ) => UserPromise;
   deleteUser: (where: UserWhereUniqueInput) => UserPromise;
   deleteManyUsers: (where?: UserWhereInput) => BatchPayloadPromise;
+  createUserCourseProgress: (
+    data: UserCourseProgressCreateInput
+  ) => UserCourseProgressPromise;
+  updateUserCourseProgress: (
+    args: {
+      data: UserCourseProgressUpdateInput;
+      where: UserCourseProgressWhereUniqueInput;
+    }
+  ) => UserCourseProgressPromise;
+  updateManyUserCourseProgresses: (
+    args: {
+      data: UserCourseProgressUpdateManyMutationInput;
+      where?: UserCourseProgressWhereInput;
+    }
+  ) => BatchPayloadPromise;
+  upsertUserCourseProgress: (
+    args: {
+      where: UserCourseProgressWhereUniqueInput;
+      create: UserCourseProgressCreateInput;
+      update: UserCourseProgressUpdateInput;
+    }
+  ) => UserCourseProgressPromise;
+  deleteUserCourseProgress: (
+    where: UserCourseProgressWhereUniqueInput
+  ) => UserCourseProgressPromise;
+  deleteManyUserCourseProgresses: (
+    where?: UserCourseProgressWhereInput
+  ) => BatchPayloadPromise;
+  createUserCourseServiceProgress: (
+    data: UserCourseServiceProgressCreateInput
+  ) => UserCourseServiceProgressPromise;
+  updateUserCourseServiceProgress: (
+    args: {
+      data: UserCourseServiceProgressUpdateInput;
+      where: UserCourseServiceProgressWhereUniqueInput;
+    }
+  ) => UserCourseServiceProgressPromise;
+  updateManyUserCourseServiceProgresses: (
+    args: {
+      data: UserCourseServiceProgressUpdateManyMutationInput;
+      where?: UserCourseServiceProgressWhereInput;
+    }
+  ) => BatchPayloadPromise;
+  upsertUserCourseServiceProgress: (
+    args: {
+      where: UserCourseServiceProgressWhereUniqueInput;
+      create: UserCourseServiceProgressCreateInput;
+      update: UserCourseServiceProgressUpdateInput;
+    }
+  ) => UserCourseServiceProgressPromise;
+  deleteUserCourseServiceProgress: (
+    where: UserCourseServiceProgressWhereUniqueInput
+  ) => UserCourseServiceProgressPromise;
+  deleteManyUserCourseServiceProgresses: (
+    where?: UserCourseServiceProgressWhereInput
+  ) => BatchPayloadPromise;
 
   /**
    * Subscriptions
@@ -297,9 +449,18 @@ export interface Subscription {
   openUniversityCourse: (
     where?: OpenUniversityCourseSubscriptionWhereInput
   ) => OpenUniversityCourseSubscriptionPayloadSubscription;
+  service: (
+    where?: ServiceSubscriptionWhereInput
+  ) => ServiceSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
+  userCourseProgress: (
+    where?: UserCourseProgressSubscriptionWhereInput
+  ) => UserCourseProgressSubscriptionPayloadSubscription;
+  userCourseServiceProgress: (
+    where?: UserCourseServiceProgressSubscriptionWhereInput
+  ) => UserCourseServiceProgressSubscriptionPayloadSubscription;
 }
 
 export interface ClientConstructor<T> {
@@ -376,6 +537,20 @@ export type CourseOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
+export type ServiceOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "created_at_ASC"
+  | "created_at_DESC"
+  | "updated_at_ASC"
+  | "updated_at_DESC"
+  | "url_ASC"
+  | "url_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
 export type UserOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -399,6 +574,26 @@ export type UserOrderByInput =
   | "student_number_DESC"
   | "real_student_number_ASC"
   | "real_student_number_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type UserCourseProgressOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "progress_ASC"
+  | "progress_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type UserCourseServiceProgressOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "progress_ASC"
+  | "progress_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -833,11 +1028,124 @@ export type OpenUniversityCourseWhereUniqueInput = AtLeastOne<{
   course_code?: String;
 }>;
 
+export type ServiceWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+}>;
+
+export interface ServiceWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  created_at?: DateTimeInput;
+  created_at_not?: DateTimeInput;
+  created_at_in?: DateTimeInput[] | DateTimeInput;
+  created_at_not_in?: DateTimeInput[] | DateTimeInput;
+  created_at_lt?: DateTimeInput;
+  created_at_lte?: DateTimeInput;
+  created_at_gt?: DateTimeInput;
+  created_at_gte?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  updated_at_not?: DateTimeInput;
+  updated_at_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_not_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_lt?: DateTimeInput;
+  updated_at_lte?: DateTimeInput;
+  updated_at_gt?: DateTimeInput;
+  updated_at_gte?: DateTimeInput;
+  url?: String;
+  url_not?: String;
+  url_in?: String[] | String;
+  url_not_in?: String[] | String;
+  url_lt?: String;
+  url_lte?: String;
+  url_gt?: String;
+  url_gte?: String;
+  url_contains?: String;
+  url_not_contains?: String;
+  url_starts_with?: String;
+  url_not_starts_with?: String;
+  url_ends_with?: String;
+  url_not_ends_with?: String;
+  AND?: ServiceWhereInput[] | ServiceWhereInput;
+  OR?: ServiceWhereInput[] | ServiceWhereInput;
+  NOT?: ServiceWhereInput[] | ServiceWhereInput;
+}
+
 export type UserWhereUniqueInput = AtLeastOne<{
   id: UUID;
   upstream_id?: Int;
   username?: String;
 }>;
+
+export type UserCourseProgressWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+}>;
+
+export interface UserCourseProgressWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  user?: UserWhereInput;
+  course?: CourseWhereInput;
+  AND?: UserCourseProgressWhereInput[] | UserCourseProgressWhereInput;
+  OR?: UserCourseProgressWhereInput[] | UserCourseProgressWhereInput;
+  NOT?: UserCourseProgressWhereInput[] | UserCourseProgressWhereInput;
+}
+
+export type UserCourseServiceProgressWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+}>;
+
+export interface UserCourseServiceProgressWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  user?: UserWhereInput;
+  course?: CourseWhereInput;
+  service?: ServiceWhereInput;
+  AND?:
+    | UserCourseServiceProgressWhereInput[]
+    | UserCourseServiceProgressWhereInput;
+  OR?:
+    | UserCourseServiceProgressWhereInput[]
+    | UserCourseServiceProgressWhereInput;
+  NOT?:
+    | UserCourseServiceProgressWhereInput[]
+    | UserCourseServiceProgressWhereInput;
+}
 
 export interface CompletionCreateInput {
   id?: UUID;
@@ -1561,6 +1869,25 @@ export interface OpenUniversityCourseUpdateManyMutationInput {
   course_code?: String;
 }
 
+export interface ServiceCreateInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  url: String;
+}
+
+export interface ServiceUpdateInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  url?: String;
+}
+
+export interface ServiceUpdateManyMutationInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  url?: String;
+}
+
 export interface UserCreateInput {
   id?: UUID;
   upstream_id: Int;
@@ -1603,6 +1930,97 @@ export interface UserUpdateManyMutationInput {
   administrator?: Boolean;
   student_number?: String;
   real_student_number?: String;
+}
+
+export interface UserCourseProgressCreateInput {
+  id?: UUID;
+  user: UserCreateOneInput;
+  course: CourseCreateOneInput;
+  progress: Json;
+}
+
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCourseProgressUpdateInput {
+  user?: UserUpdateOneRequiredInput;
+  course?: CourseUpdateOneRequiredInput;
+  progress?: Json;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateDataInput {
+  upstream_id?: Int;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  first_name?: String;
+  last_name?: String;
+  username?: String;
+  email?: String;
+  administrator?: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  completions?: CompletionUpdateManyWithoutUserInput;
+  registered_completions?: CompletionRegisteredUpdateManyWithoutUserInput;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface UserCourseProgressUpdateManyMutationInput {
+  progress?: Json;
+}
+
+export interface UserCourseServiceProgressCreateInput {
+  id?: UUID;
+  user: UserCreateOneInput;
+  course: CourseCreateOneInput;
+  service: ServiceCreateOneInput;
+  progress: Json;
+}
+
+export interface ServiceCreateOneInput {
+  create?: ServiceCreateInput;
+  connect?: ServiceWhereUniqueInput;
+}
+
+export interface UserCourseServiceProgressUpdateInput {
+  user?: UserUpdateOneRequiredInput;
+  course?: CourseUpdateOneRequiredInput;
+  service?: ServiceUpdateOneRequiredInput;
+  progress?: Json;
+}
+
+export interface ServiceUpdateOneRequiredInput {
+  create?: ServiceCreateInput;
+  update?: ServiceUpdateDataInput;
+  upsert?: ServiceUpsertNestedInput;
+  connect?: ServiceWhereUniqueInput;
+}
+
+export interface ServiceUpdateDataInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  url?: String;
+}
+
+export interface ServiceUpsertNestedInput {
+  update: ServiceUpdateDataInput;
+  create: ServiceCreateInput;
+}
+
+export interface UserCourseServiceProgressUpdateManyMutationInput {
+  progress?: Json;
 }
 
 export interface CompletionSubscriptionWhereInput {
@@ -1661,6 +2079,17 @@ export interface OpenUniversityCourseSubscriptionWhereInput {
     | OpenUniversityCourseSubscriptionWhereInput;
 }
 
+export interface ServiceSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: ServiceWhereInput;
+  AND?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
+  OR?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
+  NOT?: ServiceSubscriptionWhereInput[] | ServiceSubscriptionWhereInput;
+}
+
 export interface UserSubscriptionWhereInput {
   mutation_in?: MutationType[] | MutationType;
   updatedFields_contains?: String;
@@ -1670,6 +2099,40 @@ export interface UserSubscriptionWhereInput {
   AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
   OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
   NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+}
+
+export interface UserCourseProgressSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserCourseProgressWhereInput;
+  AND?:
+    | UserCourseProgressSubscriptionWhereInput[]
+    | UserCourseProgressSubscriptionWhereInput;
+  OR?:
+    | UserCourseProgressSubscriptionWhereInput[]
+    | UserCourseProgressSubscriptionWhereInput;
+  NOT?:
+    | UserCourseProgressSubscriptionWhereInput[]
+    | UserCourseProgressSubscriptionWhereInput;
+}
+
+export interface UserCourseServiceProgressSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserCourseServiceProgressWhereInput;
+  AND?:
+    | UserCourseServiceProgressSubscriptionWhereInput[]
+    | UserCourseServiceProgressSubscriptionWhereInput;
+  OR?:
+    | UserCourseServiceProgressSubscriptionWhereInput[]
+    | UserCourseServiceProgressSubscriptionWhereInput;
+  NOT?:
+    | UserCourseServiceProgressSubscriptionWhereInput[]
+    | UserCourseServiceProgressSubscriptionWhereInput;
 }
 
 export interface NodeNode {
@@ -2162,6 +2625,83 @@ export interface AggregateOpenUniversityCourseSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface Service {
+  id: UUID;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  url: String;
+}
+
+export interface ServicePromise extends Promise<Service>, Fragmentable {
+  id: () => Promise<UUID>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
+  url: () => Promise<String>;
+}
+
+export interface ServiceSubscription
+  extends Promise<AsyncIterator<Service>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  url: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ServiceConnection {
+  pageInfo: PageInfo;
+  edges: ServiceEdge[];
+}
+
+export interface ServiceConnectionPromise
+  extends Promise<ServiceConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ServiceEdge>>() => T;
+  aggregate: <T = AggregateServicePromise>() => T;
+}
+
+export interface ServiceConnectionSubscription
+  extends Promise<AsyncIterator<ServiceConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ServiceEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateServiceSubscription>() => T;
+}
+
+export interface ServiceEdge {
+  node: Service;
+  cursor: String;
+}
+
+export interface ServiceEdgePromise extends Promise<ServiceEdge>, Fragmentable {
+  node: <T = ServicePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ServiceEdgeSubscription
+  extends Promise<AsyncIterator<ServiceEdge>>,
+    Fragmentable {
+  node: <T = ServiceSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateService {
+  count: Int;
+}
+
+export interface AggregateServicePromise
+  extends Promise<AggregateService>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateServiceSubscription
+  extends Promise<AsyncIterator<AggregateService>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface UserConnection {
   pageInfo: PageInfo;
   edges: UserEdge[];
@@ -2212,6 +2752,170 @@ export interface AggregateUserPromise
 
 export interface AggregateUserSubscription
   extends Promise<AsyncIterator<AggregateUser>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserCourseProgress {
+  id: UUID;
+  progress: Json;
+}
+
+export interface UserCourseProgressPromise
+  extends Promise<UserCourseProgress>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  user: <T = UserPromise>() => T;
+  course: <T = CoursePromise>() => T;
+  progress: () => Promise<Json>;
+}
+
+export interface UserCourseProgressSubscription
+  extends Promise<AsyncIterator<UserCourseProgress>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  user: <T = UserSubscription>() => T;
+  course: <T = CourseSubscription>() => T;
+  progress: () => Promise<AsyncIterator<Json>>;
+}
+
+export interface UserCourseProgressConnection {
+  pageInfo: PageInfo;
+  edges: UserCourseProgressEdge[];
+}
+
+export interface UserCourseProgressConnectionPromise
+  extends Promise<UserCourseProgressConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserCourseProgressEdge>>() => T;
+  aggregate: <T = AggregateUserCourseProgressPromise>() => T;
+}
+
+export interface UserCourseProgressConnectionSubscription
+  extends Promise<AsyncIterator<UserCourseProgressConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <
+    T = Promise<AsyncIterator<UserCourseProgressEdgeSubscription>>
+  >() => T;
+  aggregate: <T = AggregateUserCourseProgressSubscription>() => T;
+}
+
+export interface UserCourseProgressEdge {
+  node: UserCourseProgress;
+  cursor: String;
+}
+
+export interface UserCourseProgressEdgePromise
+  extends Promise<UserCourseProgressEdge>,
+    Fragmentable {
+  node: <T = UserCourseProgressPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserCourseProgressEdgeSubscription
+  extends Promise<AsyncIterator<UserCourseProgressEdge>>,
+    Fragmentable {
+  node: <T = UserCourseProgressSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateUserCourseProgress {
+  count: Int;
+}
+
+export interface AggregateUserCourseProgressPromise
+  extends Promise<AggregateUserCourseProgress>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserCourseProgressSubscription
+  extends Promise<AsyncIterator<AggregateUserCourseProgress>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserCourseServiceProgress {
+  id: UUID;
+  progress: Json;
+}
+
+export interface UserCourseServiceProgressPromise
+  extends Promise<UserCourseServiceProgress>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  user: <T = UserPromise>() => T;
+  course: <T = CoursePromise>() => T;
+  service: <T = ServicePromise>() => T;
+  progress: () => Promise<Json>;
+}
+
+export interface UserCourseServiceProgressSubscription
+  extends Promise<AsyncIterator<UserCourseServiceProgress>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  user: <T = UserSubscription>() => T;
+  course: <T = CourseSubscription>() => T;
+  service: <T = ServiceSubscription>() => T;
+  progress: () => Promise<AsyncIterator<Json>>;
+}
+
+export interface UserCourseServiceProgressConnection {
+  pageInfo: PageInfo;
+  edges: UserCourseServiceProgressEdge[];
+}
+
+export interface UserCourseServiceProgressConnectionPromise
+  extends Promise<UserCourseServiceProgressConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserCourseServiceProgressEdge>>() => T;
+  aggregate: <T = AggregateUserCourseServiceProgressPromise>() => T;
+}
+
+export interface UserCourseServiceProgressConnectionSubscription
+  extends Promise<AsyncIterator<UserCourseServiceProgressConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <
+    T = Promise<AsyncIterator<UserCourseServiceProgressEdgeSubscription>>
+  >() => T;
+  aggregate: <T = AggregateUserCourseServiceProgressSubscription>() => T;
+}
+
+export interface UserCourseServiceProgressEdge {
+  node: UserCourseServiceProgress;
+  cursor: String;
+}
+
+export interface UserCourseServiceProgressEdgePromise
+  extends Promise<UserCourseServiceProgressEdge>,
+    Fragmentable {
+  node: <T = UserCourseServiceProgressPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserCourseServiceProgressEdgeSubscription
+  extends Promise<AsyncIterator<UserCourseServiceProgressEdge>>,
+    Fragmentable {
+  node: <T = UserCourseServiceProgressSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateUserCourseServiceProgress {
+  count: Int;
+}
+
+export interface AggregateUserCourseServiceProgressPromise
+  extends Promise<AggregateUserCourseServiceProgress>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserCourseServiceProgressSubscription
+  extends Promise<AsyncIterator<AggregateUserCourseServiceProgress>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -2447,6 +3151,56 @@ export interface OpenUniversityCoursePreviousValuesSubscription
   course_code: () => Promise<AsyncIterator<String>>;
 }
 
+export interface ServiceSubscriptionPayload {
+  mutation: MutationType;
+  node: Service;
+  updatedFields: String[];
+  previousValues: ServicePreviousValues;
+}
+
+export interface ServiceSubscriptionPayloadPromise
+  extends Promise<ServiceSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ServicePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ServicePreviousValuesPromise>() => T;
+}
+
+export interface ServiceSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ServiceSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ServiceSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ServicePreviousValuesSubscription>() => T;
+}
+
+export interface ServicePreviousValues {
+  id: UUID;
+  created_at?: DateTimeOutput;
+  updated_at?: DateTimeOutput;
+  url: String;
+}
+
+export interface ServicePreviousValuesPromise
+  extends Promise<ServicePreviousValues>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
+  url: () => Promise<String>;
+}
+
+export interface ServicePreviousValuesSubscription
+  extends Promise<AsyncIterator<ServicePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  url: () => Promise<AsyncIterator<String>>;
+}
+
 export interface UserSubscriptionPayload {
   mutation: MutationType;
   node: User;
@@ -2518,6 +3272,96 @@ export interface UserPreviousValuesSubscription
   real_student_number: () => Promise<AsyncIterator<String>>;
 }
 
+export interface UserCourseProgressSubscriptionPayload {
+  mutation: MutationType;
+  node: UserCourseProgress;
+  updatedFields: String[];
+  previousValues: UserCourseProgressPreviousValues;
+}
+
+export interface UserCourseProgressSubscriptionPayloadPromise
+  extends Promise<UserCourseProgressSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = UserCourseProgressPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserCourseProgressPreviousValuesPromise>() => T;
+}
+
+export interface UserCourseProgressSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserCourseProgressSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserCourseProgressSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserCourseProgressPreviousValuesSubscription>() => T;
+}
+
+export interface UserCourseProgressPreviousValues {
+  id: UUID;
+  progress: Json;
+}
+
+export interface UserCourseProgressPreviousValuesPromise
+  extends Promise<UserCourseProgressPreviousValues>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  progress: () => Promise<Json>;
+}
+
+export interface UserCourseProgressPreviousValuesSubscription
+  extends Promise<AsyncIterator<UserCourseProgressPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  progress: () => Promise<AsyncIterator<Json>>;
+}
+
+export interface UserCourseServiceProgressSubscriptionPayload {
+  mutation: MutationType;
+  node: UserCourseServiceProgress;
+  updatedFields: String[];
+  previousValues: UserCourseServiceProgressPreviousValues;
+}
+
+export interface UserCourseServiceProgressSubscriptionPayloadPromise
+  extends Promise<UserCourseServiceProgressSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = UserCourseServiceProgressPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserCourseServiceProgressPreviousValuesPromise>() => T;
+}
+
+export interface UserCourseServiceProgressSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserCourseServiceProgressSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserCourseServiceProgressSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <
+    T = UserCourseServiceProgressPreviousValuesSubscription
+  >() => T;
+}
+
+export interface UserCourseServiceProgressPreviousValues {
+  id: UUID;
+  progress: Json;
+}
+
+export interface UserCourseServiceProgressPreviousValuesPromise
+  extends Promise<UserCourseServiceProgressPreviousValues>,
+    Fragmentable {
+  id: () => Promise<UUID>;
+  progress: () => Promise<Json>;
+}
+
+export interface UserCourseServiceProgressPreviousValuesSubscription
+  extends Promise<AsyncIterator<UserCourseServiceProgressPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  progress: () => Promise<AsyncIterator<Json>>;
+}
+
 export type UUID = string;
 
 /*
@@ -2544,6 +3388,8 @@ export type String = string;
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean;
+
+export type Json = any;
 
 /*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
@@ -2576,6 +3422,18 @@ export const models: Model[] = [
   },
   {
     name: "CompletionRegistered",
+    embedded: false
+  },
+  {
+    name: "Service",
+    embedded: false
+  },
+  {
+    name: "UserCourseProgress",
+    embedded: false
+  },
+  {
+    name: "UserCourseServiceProgress",
     embedded: false
   }
 ];
