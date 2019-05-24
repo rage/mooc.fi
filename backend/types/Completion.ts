@@ -17,8 +17,7 @@ const Completion = prismaObjectType({
 
     t.field("user", {
       type: "User",
-      resolve: async (parent, args, ctx) =>
-        await resolvers.Completion(parent, args, ctx),
+      resolve: (parent, args, ctx) => resolvers.Completion(parent, args, ctx),
     })
   },
 })

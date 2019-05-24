@@ -8,14 +8,13 @@ const Query = prismaObjectType({
     //t.prismaFields(["user"]); // TODO add access control
     t.list.field("users", {
       type: "User",
-      resolve: async (_, args, ctx) => await resolvers.users(_, args, ctx),
+      resolve: (_, args, ctx) => resolvers.users(_, args, ctx),
     })
 
     t.field("currentUser", {
       type: "User",
       args: { email: stringArg() },
-      resolve: async (_, { email }, ctx) =>
-        await resolvers.currentUser(_, { email }, ctx),
+      resolve: (_, { email }, ctx) => resolvers.currentUser(_, { email }, ctx),
     })
 
     t.list.field("completions", {
@@ -27,22 +26,17 @@ const Query = prismaObjectType({
         last: intArg(),
         before: idArg(),
       },
-      resolve: async (_, { course, first, after, last, before }, ctx) =>
-        await resolvers.completions(
-          _,
-          { course, first, after, last, before },
-          ctx,
-        ),
+      resolve: (_, { course, first, after, last, before }, ctx) =>
+        resolvers.completions(_, { course, first, after, last, before }, ctx),
     })
 
     t.list.field("courses", {
       type: "Course",
-      resolve: async (_, args, ctx) => await resolvers.courses(_, args, ctx),
+      resolve: (_, args, ctx) => resolvers.courses(_, args, ctx),
     })
     t.list.field("CourseAliases", {
       type: "CourseAlias",
-      resolve: async (_, args, ctx) =>
-        await resolvers.CourseAliases(_, args, ctx),
+      resolve: (_, args, ctx) => resolvers.CourseAliases(_, args, ctx),
     })
 
     t.list.field("registeredCompletions", {
@@ -54,8 +48,8 @@ const Query = prismaObjectType({
         last: intArg(),
         before: idArg(),
       },
-      resolve: async (_, { course, first, after, last, before }, ctx) =>
-        await resolvers.registeredCompletions(
+      resolve: (_, { course, first, after, last, before }, ctx) =>
+        resolvers.registeredCompletions(
           _,
           { course, first, after, last, before },
           ctx,
@@ -64,7 +58,7 @@ const Query = prismaObjectType({
 
     t.list.field("services", {
       type: "Service",
-      resolve: async (_, args, ctx) => await resolvers.services(_, args, ctx),
+      resolve: (_, args, ctx) => resolvers.services(_, args, ctx),
     })
   },
 })
