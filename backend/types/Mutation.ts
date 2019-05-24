@@ -14,18 +14,14 @@ const Mutation = prismaObjectType({
         await resolvers.addCourse(_, { name, slug }, ctx),
     })
 
-    t.field("addOpenUniversityCourse", {
-      type: "OpenUniversityCourse",
+    t.field("addCourseAlias", {
+      type: "CourseAlias",
       args: {
         course_code: stringArg(),
         course: idArg(),
       },
       resolve: async (_, { course_code, course }, ctx) =>
-        await resolvers.addOpenUniversityCourse(
-          _,
-          { course_code, course },
-          ctx,
-        ),
+        await resolvers.addCourseAlias(_, { course_code, course }, ctx),
     })
 
     t.list.field("registerCompletion", {

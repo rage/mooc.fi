@@ -168,6 +168,56 @@ export interface NexusGenInputs {
     user_upstream_id_not?: number | null; // Int
     user_upstream_id_not_in?: number[] | null; // [Int!]
   }
+  CourseAliasWhereInput: { // input type
+    AND?: NexusGenInputs['CourseAliasWhereInput'][] | null; // [CourseAliasWhereInput!]
+    course?: NexusGenInputs['CourseWhereInput'] | null; // CourseWhereInput
+    course_code?: string | null; // String
+    course_code_contains?: string | null; // String
+    course_code_ends_with?: string | null; // String
+    course_code_gt?: string | null; // String
+    course_code_gte?: string | null; // String
+    course_code_in?: string[] | null; // [String!]
+    course_code_lt?: string | null; // String
+    course_code_lte?: string | null; // String
+    course_code_not?: string | null; // String
+    course_code_not_contains?: string | null; // String
+    course_code_not_ends_with?: string | null; // String
+    course_code_not_in?: string[] | null; // [String!]
+    course_code_not_starts_with?: string | null; // String
+    course_code_starts_with?: string | null; // String
+    created_at?: any | null; // DateTime
+    created_at_gt?: any | null; // DateTime
+    created_at_gte?: any | null; // DateTime
+    created_at_in?: any[] | null; // [DateTime!]
+    created_at_lt?: any | null; // DateTime
+    created_at_lte?: any | null; // DateTime
+    created_at_not?: any | null; // DateTime
+    created_at_not_in?: any[] | null; // [DateTime!]
+    id?: any | null; // UUID
+    id_contains?: any | null; // UUID
+    id_ends_with?: any | null; // UUID
+    id_gt?: any | null; // UUID
+    id_gte?: any | null; // UUID
+    id_in?: any[] | null; // [UUID!]
+    id_lt?: any | null; // UUID
+    id_lte?: any | null; // UUID
+    id_not?: any | null; // UUID
+    id_not_contains?: any | null; // UUID
+    id_not_ends_with?: any | null; // UUID
+    id_not_in?: any[] | null; // [UUID!]
+    id_not_starts_with?: any | null; // UUID
+    id_starts_with?: any | null; // UUID
+    NOT?: NexusGenInputs['CourseAliasWhereInput'][] | null; // [CourseAliasWhereInput!]
+    OR?: NexusGenInputs['CourseAliasWhereInput'][] | null; // [CourseAliasWhereInput!]
+    updated_at?: any | null; // DateTime
+    updated_at_gt?: any | null; // DateTime
+    updated_at_gte?: any | null; // DateTime
+    updated_at_in?: any[] | null; // [DateTime!]
+    updated_at_lt?: any | null; // DateTime
+    updated_at_lte?: any | null; // DateTime
+    updated_at_not?: any | null; // DateTime
+    updated_at_not_in?: any[] | null; // [DateTime!]
+  }
   CourseWhereInput: { // input type
     AND?: NexusGenInputs['CourseWhereInput'][] | null; // [CourseWhereInput!]
     created_at?: any | null; // DateTime
@@ -207,9 +257,9 @@ export interface NexusGenInputs {
     name_not_starts_with?: string | null; // String
     name_starts_with?: string | null; // String
     NOT?: NexusGenInputs['CourseWhereInput'][] | null; // [CourseWhereInput!]
-    open_university_courses_every?: NexusGenInputs['OpenUniversityCourseWhereInput'] | null; // OpenUniversityCourseWhereInput
-    open_university_courses_none?: NexusGenInputs['OpenUniversityCourseWhereInput'] | null; // OpenUniversityCourseWhereInput
-    open_university_courses_some?: NexusGenInputs['OpenUniversityCourseWhereInput'] | null; // OpenUniversityCourseWhereInput
+    open_university_courses_every?: NexusGenInputs['CourseAliasWhereInput'] | null; // CourseAliasWhereInput
+    open_university_courses_none?: NexusGenInputs['CourseAliasWhereInput'] | null; // CourseAliasWhereInput
+    open_university_courses_some?: NexusGenInputs['CourseAliasWhereInput'] | null; // CourseAliasWhereInput
     OR?: NexusGenInputs['CourseWhereInput'][] | null; // [CourseWhereInput!]
     slug?: string | null; // String
     slug_contains?: string | null; // String
@@ -225,56 +275,6 @@ export interface NexusGenInputs {
     slug_not_in?: string[] | null; // [String!]
     slug_not_starts_with?: string | null; // String
     slug_starts_with?: string | null; // String
-    updated_at?: any | null; // DateTime
-    updated_at_gt?: any | null; // DateTime
-    updated_at_gte?: any | null; // DateTime
-    updated_at_in?: any[] | null; // [DateTime!]
-    updated_at_lt?: any | null; // DateTime
-    updated_at_lte?: any | null; // DateTime
-    updated_at_not?: any | null; // DateTime
-    updated_at_not_in?: any[] | null; // [DateTime!]
-  }
-  OpenUniversityCourseWhereInput: { // input type
-    AND?: NexusGenInputs['OpenUniversityCourseWhereInput'][] | null; // [OpenUniversityCourseWhereInput!]
-    course?: NexusGenInputs['CourseWhereInput'] | null; // CourseWhereInput
-    course_code?: string | null; // String
-    course_code_contains?: string | null; // String
-    course_code_ends_with?: string | null; // String
-    course_code_gt?: string | null; // String
-    course_code_gte?: string | null; // String
-    course_code_in?: string[] | null; // [String!]
-    course_code_lt?: string | null; // String
-    course_code_lte?: string | null; // String
-    course_code_not?: string | null; // String
-    course_code_not_contains?: string | null; // String
-    course_code_not_ends_with?: string | null; // String
-    course_code_not_in?: string[] | null; // [String!]
-    course_code_not_starts_with?: string | null; // String
-    course_code_starts_with?: string | null; // String
-    created_at?: any | null; // DateTime
-    created_at_gt?: any | null; // DateTime
-    created_at_gte?: any | null; // DateTime
-    created_at_in?: any[] | null; // [DateTime!]
-    created_at_lt?: any | null; // DateTime
-    created_at_lte?: any | null; // DateTime
-    created_at_not?: any | null; // DateTime
-    created_at_not_in?: any[] | null; // [DateTime!]
-    id?: any | null; // UUID
-    id_contains?: any | null; // UUID
-    id_ends_with?: any | null; // UUID
-    id_gt?: any | null; // UUID
-    id_gte?: any | null; // UUID
-    id_in?: any[] | null; // [UUID!]
-    id_lt?: any | null; // UUID
-    id_lte?: any | null; // UUID
-    id_not?: any | null; // UUID
-    id_not_contains?: any | null; // UUID
-    id_not_ends_with?: any | null; // UUID
-    id_not_in?: any[] | null; // [UUID!]
-    id_not_starts_with?: any | null; // UUID
-    id_starts_with?: any | null; // UUID
-    NOT?: NexusGenInputs['OpenUniversityCourseWhereInput'][] | null; // [OpenUniversityCourseWhereInput!]
-    OR?: NexusGenInputs['OpenUniversityCourseWhereInput'][] | null; // [OpenUniversityCourseWhereInput!]
     updated_at?: any | null; // DateTime
     updated_at_gt?: any | null; // DateTime
     updated_at_gte?: any | null; // DateTime
@@ -424,7 +424,7 @@ export interface NexusGenInputs {
 export interface NexusGenEnums {
   CompletionOrderByInput: "completion_language_ASC" | "completion_language_DESC" | "created_at_ASC" | "created_at_DESC" | "createdAt_ASC" | "createdAt_DESC" | "email_ASC" | "email_DESC" | "id_ASC" | "id_DESC" | "student_number_ASC" | "student_number_DESC" | "updated_at_ASC" | "updated_at_DESC" | "updatedAt_ASC" | "updatedAt_DESC" | "user_upstream_id_ASC" | "user_upstream_id_DESC"
   CompletionRegisteredOrderByInput: "created_at_ASC" | "created_at_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "organisation_ASC" | "organisation_DESC" | "real_student_number_ASC" | "real_student_number_DESC" | "updated_at_ASC" | "updated_at_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
-  OpenUniversityCourseOrderByInput: "course_code_ASC" | "course_code_DESC" | "created_at_ASC" | "created_at_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "updated_at_ASC" | "updated_at_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
+  CourseAliasOrderByInput: "course_code_ASC" | "course_code_DESC" | "created_at_ASC" | "created_at_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "updated_at_ASC" | "updated_at_DESC" | "updatedAt_ASC" | "updatedAt_DESC"
 }
 
 export interface NexusGenRootTypes {
@@ -451,13 +451,13 @@ export interface NexusGenRootTypes {
     slug: string; // String!
     updated_at?: any | null; // DateTime
   }
-  Mutation: {};
-  OpenUniversityCourse: { // root type
+  CourseAlias: { // root type
     course_code: string; // String!
     created_at?: any | null; // DateTime
     id: any; // UUID!
     updated_at?: any | null; // DateTime
   }
+  Mutation: {};
   Query: {};
   Service: { // root type
     created_at?: any | null; // DateTime
@@ -491,12 +491,12 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   CompletionArg: NexusGenInputs['CompletionArg'];
   CompletionRegisteredWhereInput: NexusGenInputs['CompletionRegisteredWhereInput'];
   CompletionWhereInput: NexusGenInputs['CompletionWhereInput'];
+  CourseAliasWhereInput: NexusGenInputs['CourseAliasWhereInput'];
   CourseWhereInput: NexusGenInputs['CourseWhereInput'];
-  OpenUniversityCourseWhereInput: NexusGenInputs['OpenUniversityCourseWhereInput'];
   UserWhereInput: NexusGenInputs['UserWhereInput'];
   CompletionOrderByInput: NexusGenEnums['CompletionOrderByInput'];
   CompletionRegisteredOrderByInput: NexusGenEnums['CompletionRegisteredOrderByInput'];
-  OpenUniversityCourseOrderByInput: NexusGenEnums['OpenUniversityCourseOrderByInput'];
+  CourseAliasOrderByInput: NexusGenEnums['CourseAliasOrderByInput'];
 }
 
 export interface NexusGenFieldTypes {
@@ -525,28 +525,28 @@ export interface NexusGenFieldTypes {
     created_at: any | null; // DateTime
     id: any; // UUID!
     name: string; // String!
-    open_university_courses: NexusGenRootTypes['OpenUniversityCourse'][] | null; // [OpenUniversityCourse!]
+    open_university_courses: NexusGenRootTypes['CourseAlias'][] | null; // [CourseAlias!]
     slug: string; // String!
     updated_at: any | null; // DateTime
   }
-  Mutation: { // field return type
-    addCourse: NexusGenRootTypes['Course']; // Course!
-    addOpenUniversityCourse: NexusGenRootTypes['OpenUniversityCourse']; // OpenUniversityCourse!
-    addService: NexusGenRootTypes['Service']; // Service!
-    registerCompletion: NexusGenRootTypes['CompletionRegistered'][]; // [CompletionRegistered!]!
-  }
-  OpenUniversityCourse: { // field return type
+  CourseAlias: { // field return type
     course: NexusGenRootTypes['Course']; // Course!
     course_code: string; // String!
     created_at: any | null; // DateTime
     id: any; // UUID!
     updated_at: any | null; // DateTime
   }
+  Mutation: { // field return type
+    addCourse: NexusGenRootTypes['Course']; // Course!
+    addCourseAlias: NexusGenRootTypes['CourseAlias']; // CourseAlias!
+    addService: NexusGenRootTypes['Service']; // Service!
+    registerCompletion: NexusGenRootTypes['CompletionRegistered'][]; // [CompletionRegistered!]!
+  }
   Query: { // field return type
     completions: NexusGenRootTypes['Completion'][]; // [Completion!]!
+    CourseAliases: NexusGenRootTypes['CourseAlias'][]; // [CourseAlias!]!
     courses: NexusGenRootTypes['Course'][]; // [Course!]!
     currentUser: NexusGenRootTypes['User']; // User!
-    openUniversityCourses: NexusGenRootTypes['OpenUniversityCourse'][]; // [OpenUniversityCourse!]!
     registeredCompletions: NexusGenRootTypes['CompletionRegistered'][]; // [CompletionRegistered!]!
     services: NexusGenRootTypes['Service'][]; // [Service!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
@@ -581,9 +581,9 @@ export interface NexusGenArgTypes {
       before?: string | null; // String
       first?: number | null; // Int
       last?: number | null; // Int
-      orderBy?: NexusGenEnums['OpenUniversityCourseOrderByInput'] | null; // OpenUniversityCourseOrderByInput
+      orderBy?: NexusGenEnums['CourseAliasOrderByInput'] | null; // CourseAliasOrderByInput
       skip?: number | null; // Int
-      where?: NexusGenInputs['OpenUniversityCourseWhereInput'] | null; // OpenUniversityCourseWhereInput
+      where?: NexusGenInputs['CourseAliasWhereInput'] | null; // CourseAliasWhereInput
     }
   }
   Mutation: {
@@ -591,7 +591,7 @@ export interface NexusGenArgTypes {
       name?: string | null; // String
       slug?: string | null; // String
     }
-    addOpenUniversityCourse: { // args
+    addCourseAlias: { // args
       course?: string | null; // ID
       course_code?: string | null; // String
     }
@@ -649,11 +649,11 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Completion" | "CompletionRegistered" | "Course" | "Mutation" | "OpenUniversityCourse" | "Query" | "Service" | "User";
+export type NexusGenObjectNames = "Completion" | "CompletionRegistered" | "Course" | "CourseAlias" | "Mutation" | "Query" | "Service" | "User";
 
-export type NexusGenInputNames = "CompletionArg" | "CompletionRegisteredWhereInput" | "CompletionWhereInput" | "CourseWhereInput" | "OpenUniversityCourseWhereInput" | "UserWhereInput";
+export type NexusGenInputNames = "CompletionArg" | "CompletionRegisteredWhereInput" | "CompletionWhereInput" | "CourseAliasWhereInput" | "CourseWhereInput" | "UserWhereInput";
 
-export type NexusGenEnumNames = "CompletionOrderByInput" | "CompletionRegisteredOrderByInput" | "OpenUniversityCourseOrderByInput";
+export type NexusGenEnumNames = "CompletionOrderByInput" | "CompletionRegisteredOrderByInput" | "CourseAliasOrderByInput";
 
 export type NexusGenInterfaceNames = never;
 

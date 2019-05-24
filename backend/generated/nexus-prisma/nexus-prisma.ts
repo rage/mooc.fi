@@ -18,7 +18,7 @@ export interface NexusPrismaTypes {
       User: UserObject
       Completion: CompletionObject
       Course: CourseObject
-      OpenUniversityCourse: OpenUniversityCourseObject
+      CourseAlias: CourseAliasObject
       CompletionRegistered: CompletionRegisteredObject
       UserConnection: UserConnectionObject
       PageInfo: PageInfoObject
@@ -27,9 +27,9 @@ export interface NexusPrismaTypes {
       CourseConnection: CourseConnectionObject
       CourseEdge: CourseEdgeObject
       AggregateCourse: AggregateCourseObject
-      OpenUniversityCourseConnection: OpenUniversityCourseConnectionObject
-      OpenUniversityCourseEdge: OpenUniversityCourseEdgeObject
-      AggregateOpenUniversityCourse: AggregateOpenUniversityCourseObject
+      CourseAliasConnection: CourseAliasConnectionObject
+      CourseAliasEdge: CourseAliasEdgeObject
+      AggregateCourseAlias: AggregateCourseAliasObject
       CompletionConnection: CompletionConnectionObject
       CompletionEdge: CompletionEdgeObject
       AggregateCompletion: AggregateCompletionObject
@@ -55,8 +55,8 @@ export interface NexusPrismaTypes {
       UserPreviousValues: UserPreviousValuesObject
       CourseSubscriptionPayload: CourseSubscriptionPayloadObject
       CoursePreviousValues: CoursePreviousValuesObject
-      OpenUniversityCourseSubscriptionPayload: OpenUniversityCourseSubscriptionPayloadObject
-      OpenUniversityCoursePreviousValues: OpenUniversityCoursePreviousValuesObject
+      CourseAliasSubscriptionPayload: CourseAliasSubscriptionPayloadObject
+      CourseAliasPreviousValues: CourseAliasPreviousValuesObject
       CompletionSubscriptionPayload: CompletionSubscriptionPayloadObject
       CompletionPreviousValues: CompletionPreviousValuesObject
       CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadObject
@@ -73,7 +73,7 @@ export interface NexusPrismaTypes {
       User: UserFieldDetails
       Completion: CompletionFieldDetails
       Course: CourseFieldDetails
-      OpenUniversityCourse: OpenUniversityCourseFieldDetails
+      CourseAlias: CourseAliasFieldDetails
       CompletionRegistered: CompletionRegisteredFieldDetails
       UserConnection: UserConnectionFieldDetails
       PageInfo: PageInfoFieldDetails
@@ -82,9 +82,9 @@ export interface NexusPrismaTypes {
       CourseConnection: CourseConnectionFieldDetails
       CourseEdge: CourseEdgeFieldDetails
       AggregateCourse: AggregateCourseFieldDetails
-      OpenUniversityCourseConnection: OpenUniversityCourseConnectionFieldDetails
-      OpenUniversityCourseEdge: OpenUniversityCourseEdgeFieldDetails
-      AggregateOpenUniversityCourse: AggregateOpenUniversityCourseFieldDetails
+      CourseAliasConnection: CourseAliasConnectionFieldDetails
+      CourseAliasEdge: CourseAliasEdgeFieldDetails
+      AggregateCourseAlias: AggregateCourseAliasFieldDetails
       CompletionConnection: CompletionConnectionFieldDetails
       CompletionEdge: CompletionEdgeFieldDetails
       AggregateCompletion: AggregateCompletionFieldDetails
@@ -110,8 +110,8 @@ export interface NexusPrismaTypes {
       UserPreviousValues: UserPreviousValuesFieldDetails
       CourseSubscriptionPayload: CourseSubscriptionPayloadFieldDetails
       CoursePreviousValues: CoursePreviousValuesFieldDetails
-      OpenUniversityCourseSubscriptionPayload: OpenUniversityCourseSubscriptionPayloadFieldDetails
-      OpenUniversityCoursePreviousValues: OpenUniversityCoursePreviousValuesFieldDetails
+      CourseAliasSubscriptionPayload: CourseAliasSubscriptionPayloadFieldDetails
+      CourseAliasPreviousValues: CourseAliasPreviousValuesFieldDetails
       CompletionSubscriptionPayload: CompletionSubscriptionPayloadFieldDetails
       CompletionPreviousValues: CompletionPreviousValuesFieldDetails
       CompletionRegisteredSubscriptionPayload: CompletionRegisteredSubscriptionPayloadFieldDetails
@@ -131,9 +131,9 @@ export interface NexusPrismaTypes {
       UserWhereInput: UserWhereInputInputObject
       CompletionRegisteredWhereInput: CompletionRegisteredWhereInputInputObject
       CourseWhereInput: CourseWhereInputInputObject
-      OpenUniversityCourseWhereInput: OpenUniversityCourseWhereInputInputObject
+      CourseAliasWhereInput: CourseAliasWhereInputInputObject
       CourseWhereUniqueInput: CourseWhereUniqueInputInputObject
-      OpenUniversityCourseWhereUniqueInput: OpenUniversityCourseWhereUniqueInputInputObject
+      CourseAliasWhereUniqueInput: CourseAliasWhereUniqueInputInputObject
       CompletionWhereUniqueInput: CompletionWhereUniqueInputInputObject
       CompletionRegisteredWhereUniqueInput: CompletionRegisteredWhereUniqueInputInputObject
       ServiceWhereUniqueInput: ServiceWhereUniqueInputInputObject
@@ -147,8 +147,8 @@ export interface NexusPrismaTypes {
       CompletionCreateWithoutUserInput: CompletionCreateWithoutUserInputInputObject
       CourseCreateOneInput: CourseCreateOneInputInputObject
       CourseCreateInput: CourseCreateInputInputObject
-      OpenUniversityCourseCreateManyWithoutCourseInput: OpenUniversityCourseCreateManyWithoutCourseInputInputObject
-      OpenUniversityCourseCreateWithoutCourseInput: OpenUniversityCourseCreateWithoutCourseInputInputObject
+      CourseAliasCreateManyWithoutCourseInput: CourseAliasCreateManyWithoutCourseInputInputObject
+      CourseAliasCreateWithoutCourseInput: CourseAliasCreateWithoutCourseInputInputObject
       CompletionRegisteredCreateManyWithoutUserInput: CompletionRegisteredCreateManyWithoutUserInputInputObject
       CompletionRegisteredCreateWithoutUserInput: CompletionRegisteredCreateWithoutUserInputInputObject
       CompletionCreateOneInput: CompletionCreateOneInputInputObject
@@ -161,13 +161,13 @@ export interface NexusPrismaTypes {
       CompletionUpdateWithoutUserDataInput: CompletionUpdateWithoutUserDataInputInputObject
       CourseUpdateOneRequiredInput: CourseUpdateOneRequiredInputInputObject
       CourseUpdateDataInput: CourseUpdateDataInputInputObject
-      OpenUniversityCourseUpdateManyWithoutCourseInput: OpenUniversityCourseUpdateManyWithoutCourseInputInputObject
-      OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput: OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInputInputObject
-      OpenUniversityCourseUpdateWithoutCourseDataInput: OpenUniversityCourseUpdateWithoutCourseDataInputInputObject
-      OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput: OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInputInputObject
-      OpenUniversityCourseScalarWhereInput: OpenUniversityCourseScalarWhereInputInputObject
-      OpenUniversityCourseUpdateManyWithWhereNestedInput: OpenUniversityCourseUpdateManyWithWhereNestedInputInputObject
-      OpenUniversityCourseUpdateManyDataInput: OpenUniversityCourseUpdateManyDataInputInputObject
+      CourseAliasUpdateManyWithoutCourseInput: CourseAliasUpdateManyWithoutCourseInputInputObject
+      CourseAliasUpdateWithWhereUniqueWithoutCourseInput: CourseAliasUpdateWithWhereUniqueWithoutCourseInputInputObject
+      CourseAliasUpdateWithoutCourseDataInput: CourseAliasUpdateWithoutCourseDataInputInputObject
+      CourseAliasUpsertWithWhereUniqueWithoutCourseInput: CourseAliasUpsertWithWhereUniqueWithoutCourseInputInputObject
+      CourseAliasScalarWhereInput: CourseAliasScalarWhereInputInputObject
+      CourseAliasUpdateManyWithWhereNestedInput: CourseAliasUpdateManyWithWhereNestedInputInputObject
+      CourseAliasUpdateManyDataInput: CourseAliasUpdateManyDataInputInputObject
       CourseUpsertNestedInput: CourseUpsertNestedInputInputObject
       CompletionUpsertWithWhereUniqueWithoutUserInput: CompletionUpsertWithWhereUniqueWithoutUserInputInputObject
       CompletionScalarWhereInput: CompletionScalarWhereInputInputObject
@@ -189,14 +189,14 @@ export interface NexusPrismaTypes {
       UserUpdateManyMutationInput: UserUpdateManyMutationInputInputObject
       CourseUpdateInput: CourseUpdateInputInputObject
       CourseUpdateManyMutationInput: CourseUpdateManyMutationInputInputObject
-      OpenUniversityCourseCreateInput: OpenUniversityCourseCreateInputInputObject
+      CourseAliasCreateInput: CourseAliasCreateInputInputObject
       CourseCreateOneWithoutOpen_university_coursesInput: CourseCreateOneWithoutOpen_university_coursesInputInputObject
       CourseCreateWithoutOpen_university_coursesInput: CourseCreateWithoutOpen_university_coursesInputInputObject
-      OpenUniversityCourseUpdateInput: OpenUniversityCourseUpdateInputInputObject
+      CourseAliasUpdateInput: CourseAliasUpdateInputInputObject
       CourseUpdateOneRequiredWithoutOpen_university_coursesInput: CourseUpdateOneRequiredWithoutOpen_university_coursesInputInputObject
       CourseUpdateWithoutOpen_university_coursesDataInput: CourseUpdateWithoutOpen_university_coursesDataInputInputObject
       CourseUpsertWithoutOpen_university_coursesInput: CourseUpsertWithoutOpen_university_coursesInputInputObject
-      OpenUniversityCourseUpdateManyMutationInput: OpenUniversityCourseUpdateManyMutationInputInputObject
+      CourseAliasUpdateManyMutationInput: CourseAliasUpdateManyMutationInputInputObject
       CompletionUpdateInput: CompletionUpdateInputInputObject
       CompletionUpdateManyMutationInput: CompletionUpdateManyMutationInputInputObject
       CompletionRegisteredCreateInput: CompletionRegisteredCreateInputInputObject
@@ -226,7 +226,7 @@ export interface NexusPrismaTypes {
       UserCourseServiceProgressUpdateManyMutationInput: UserCourseServiceProgressUpdateManyMutationInputInputObject
       UserSubscriptionWhereInput: UserSubscriptionWhereInputInputObject
       CourseSubscriptionWhereInput: CourseSubscriptionWhereInputInputObject
-      OpenUniversityCourseSubscriptionWhereInput: OpenUniversityCourseSubscriptionWhereInputInputObject
+      CourseAliasSubscriptionWhereInput: CourseAliasSubscriptionWhereInputInputObject
       CompletionSubscriptionWhereInput: CompletionSubscriptionWhereInputInputObject
       CompletionRegisteredSubscriptionWhereInput: CompletionRegisteredSubscriptionWhereInputInputObject
       ServiceSubscriptionWhereInput: ServiceSubscriptionWhereInputInputObject
@@ -236,7 +236,7 @@ export interface NexusPrismaTypes {
   }
   enumTypes: {
     CompletionOrderByInput: CompletionOrderByInputValues,
-    OpenUniversityCourseOrderByInput: OpenUniversityCourseOrderByInputValues,
+    CourseAliasOrderByInput: CourseAliasOrderByInputValues,
     CompletionRegisteredOrderByInput: CompletionRegisteredOrderByInputValues,
     UserOrderByInput: UserOrderByInputValues,
     CourseOrderByInput: CourseOrderByInputValues,
@@ -257,9 +257,9 @@ type QueryObject =
   | { name: 'course', args?: QueryCourseArgs[] | false, alias?: string  } 
   | { name: 'courses', args?: QueryCoursesArgs[] | false, alias?: string  } 
   | { name: 'coursesConnection', args?: QueryCoursesConnectionArgs[] | false, alias?: string  } 
-  | { name: 'openUniversityCourse', args?: QueryOpenUniversityCourseArgs[] | false, alias?: string  } 
-  | { name: 'openUniversityCourses', args?: QueryOpenUniversityCoursesArgs[] | false, alias?: string  } 
-  | { name: 'openUniversityCoursesConnection', args?: QueryOpenUniversityCoursesConnectionArgs[] | false, alias?: string  } 
+  | { name: 'courseAlias', args?: QueryCourseAliasArgs[] | false, alias?: string  } 
+  | { name: 'courseAliases', args?: QueryCourseAliasesArgs[] | false, alias?: string  } 
+  | { name: 'courseAliasesConnection', args?: QueryCourseAliasesConnectionArgs[] | false, alias?: string  } 
   | { name: 'completion', args?: QueryCompletionArgs[] | false, alias?: string  } 
   | { name: 'completions', args?: QueryCompletionsArgs[] | false, alias?: string  } 
   | { name: 'completionsConnection', args?: QueryCompletionsConnectionArgs[] | false, alias?: string  } 
@@ -283,9 +283,9 @@ type QueryFields =
   | 'course'
   | 'courses'
   | 'coursesConnection'
-  | 'openUniversityCourse'
-  | 'openUniversityCourses'
-  | 'openUniversityCoursesConnection'
+  | 'courseAlias'
+  | 'courseAliases'
+  | 'courseAliasesConnection'
   | 'completion'
   | 'completions'
   | 'completionsConnection'
@@ -339,9 +339,9 @@ type QueryCoursesConnectionArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryOpenUniversityCourseArgs =
+type QueryCourseAliasArgs =
   | 'where'
-type QueryOpenUniversityCoursesArgs =
+type QueryCourseAliasesArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -349,7 +349,7 @@ type QueryOpenUniversityCoursesArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryOpenUniversityCoursesConnectionArgs =
+type QueryCourseAliasesConnectionArgs =
   | 'where'
   | 'orderBy'
   | 'skip'
@@ -528,44 +528,44 @@ export interface QueryFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.CourseConnection> | prisma.CourseConnection
   }
-  openUniversityCourse: {
-    type: 'OpenUniversityCourse'
-    args: Record<QueryOpenUniversityCourseArgs, core.NexusArgDef<string>>
+  courseAlias: {
+    type: 'CourseAlias'
+    args: Record<QueryCourseAliasArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where: OpenUniversityCourseWhereUniqueInput }  ,
+      args: { where: CourseAliasWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
+    ) => Promise<prisma.CourseAlias | null> | prisma.CourseAlias | null
   }
-  openUniversityCourses: {
-    type: 'OpenUniversityCourse'
-    args: Record<QueryOpenUniversityCoursesArgs, core.NexusArgDef<string>>
+  courseAliases: {
+    type: 'CourseAlias'
+    args: Record<QueryCourseAliasesArgs, core.NexusArgDef<string>>
     description: string
     list: true
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: CourseAliasWhereInput | null, orderBy?: prisma.CourseAliasOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse[]> | prisma.OpenUniversityCourse[]
+    ) => Promise<prisma.CourseAlias[]> | prisma.CourseAlias[]
   }
-  openUniversityCoursesConnection: {
-    type: 'OpenUniversityCourseConnection'
-    args: Record<QueryOpenUniversityCoursesConnectionArgs, core.NexusArgDef<string>>
+  courseAliasesConnection: {
+    type: 'CourseAliasConnection'
+    args: Record<QueryCourseAliasesConnectionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
-      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: CourseAliasWhereInput | null, orderBy?: prisma.CourseAliasOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourseConnection> | prisma.OpenUniversityCourseConnection
+    ) => Promise<prisma.CourseAliasConnection> | prisma.CourseAliasConnection
   }
   completion: {
     type: 'Completion'
@@ -1122,32 +1122,32 @@ export interface CourseFieldDetails {
     resolve: undefined
   }
   open_university_courses: {
-    type: 'OpenUniversityCourse'
+    type: 'CourseAlias'
     args: Record<CourseOpen_university_coursesArgs, core.NexusArgDef<string>>
     description: string
     list: true
     nullable: false
     resolve: (
       root: core.RootValue<"Course">,
-      args: { where?: OpenUniversityCourseWhereInput | null, orderBy?: prisma.OpenUniversityCourseOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
+      args: { where?: CourseAliasWhereInput | null, orderBy?: prisma.CourseAliasOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse[]> | prisma.OpenUniversityCourse[]
+    ) => Promise<prisma.CourseAlias[]> | prisma.CourseAlias[]
   }
 }
   
 
-// Types for OpenUniversityCourse
+// Types for CourseAlias
 
-type OpenUniversityCourseObject =
-  | OpenUniversityCourseFields
+type CourseAliasObject =
+  | CourseAliasFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'created_at', args?: [] | false, alias?: string  } 
   | { name: 'updated_at', args?: [] | false, alias?: string  } 
   | { name: 'course_code', args?: [] | false, alias?: string  } 
   | { name: 'course', args?: [] | false, alias?: string  } 
 
-type OpenUniversityCourseFields =
+type CourseAliasFields =
   | 'id'
   | 'created_at'
   | 'updated_at'
@@ -1158,7 +1158,7 @@ type OpenUniversityCourseFields =
 
   
 
-export interface OpenUniversityCourseFieldDetails {
+export interface CourseAliasFieldDetails {
   id: {
     type: 'UUID'
     args: {}
@@ -1198,7 +1198,7 @@ export interface OpenUniversityCourseFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"OpenUniversityCourse">,
+      root: core.RootValue<"CourseAlias">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
@@ -1622,15 +1622,15 @@ export interface AggregateCourseFieldDetails {
 }
   
 
-// Types for OpenUniversityCourseConnection
+// Types for CourseAliasConnection
 
-type OpenUniversityCourseConnectionObject =
-  | OpenUniversityCourseConnectionFields
+type CourseAliasConnectionObject =
+  | CourseAliasConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
   | { name: 'aggregate', args?: [] | false, alias?: string  } 
 
-type OpenUniversityCourseConnectionFields =
+type CourseAliasConnectionFields =
   | 'pageInfo'
   | 'edges'
   | 'aggregate'
@@ -1639,7 +1639,7 @@ type OpenUniversityCourseConnectionFields =
 
   
 
-export interface OpenUniversityCourseConnectionFieldDetails {
+export interface CourseAliasConnectionFieldDetails {
   pageInfo: {
     type: 'PageInfo'
     args: {}
@@ -1647,49 +1647,49 @@ export interface OpenUniversityCourseConnectionFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"OpenUniversityCourseConnection">,
+      root: core.RootValue<"CourseAliasConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
-    type: 'OpenUniversityCourseEdge'
+    type: 'CourseAliasEdge'
     args: {}
     description: string
     list: true
     nullable: false
     resolve: (
-      root: core.RootValue<"OpenUniversityCourseConnection">,
+      root: core.RootValue<"CourseAliasConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourseEdge[]> | prisma.OpenUniversityCourseEdge[]
+    ) => Promise<prisma.CourseAliasEdge[]> | prisma.CourseAliasEdge[]
   }
   aggregate: {
-    type: 'AggregateOpenUniversityCourse'
+    type: 'AggregateCourseAlias'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"OpenUniversityCourseConnection">,
+      root: core.RootValue<"CourseAliasConnection">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.AggregateOpenUniversityCourse> | prisma.AggregateOpenUniversityCourse
+    ) => Promise<prisma.AggregateCourseAlias> | prisma.AggregateCourseAlias
   }
 }
   
 
-// Types for OpenUniversityCourseEdge
+// Types for CourseAliasEdge
 
-type OpenUniversityCourseEdgeObject =
-  | OpenUniversityCourseEdgeFields
+type CourseAliasEdgeObject =
+  | CourseAliasEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
 
-type OpenUniversityCourseEdgeFields =
+type CourseAliasEdgeFields =
   | 'node'
   | 'cursor'
 
@@ -1697,19 +1697,19 @@ type OpenUniversityCourseEdgeFields =
 
   
 
-export interface OpenUniversityCourseEdgeFieldDetails {
+export interface CourseAliasEdgeFieldDetails {
   node: {
-    type: 'OpenUniversityCourse'
+    type: 'CourseAlias'
     args: {}
     description: string
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"OpenUniversityCourseEdge">,
+      root: core.RootValue<"CourseAliasEdge">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse> | prisma.OpenUniversityCourse
+    ) => Promise<prisma.CourseAlias> | prisma.CourseAlias
   }
   cursor: {
     type: 'String'
@@ -1722,20 +1722,20 @@ export interface OpenUniversityCourseEdgeFieldDetails {
 }
   
 
-// Types for AggregateOpenUniversityCourse
+// Types for AggregateCourseAlias
 
-type AggregateOpenUniversityCourseObject =
-  | AggregateOpenUniversityCourseFields
+type AggregateCourseAliasObject =
+  | AggregateCourseAliasFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
-type AggregateOpenUniversityCourseFields =
+type AggregateCourseAliasFields =
   | 'count'
 
 
 
   
 
-export interface AggregateOpenUniversityCourseFieldDetails {
+export interface AggregateCourseAliasFieldDetails {
   count: {
     type: 'Int'
     args: {}
@@ -2588,12 +2588,12 @@ type MutationObject =
   | { name: 'upsertCourse', args?: MutationUpsertCourseArgs[] | false, alias?: string  } 
   | { name: 'deleteCourse', args?: MutationDeleteCourseArgs[] | false, alias?: string  } 
   | { name: 'deleteManyCourses', args?: MutationDeleteManyCoursesArgs[] | false, alias?: string  } 
-  | { name: 'createOpenUniversityCourse', args?: MutationCreateOpenUniversityCourseArgs[] | false, alias?: string  } 
-  | { name: 'updateOpenUniversityCourse', args?: MutationUpdateOpenUniversityCourseArgs[] | false, alias?: string  } 
-  | { name: 'updateManyOpenUniversityCourses', args?: MutationUpdateManyOpenUniversityCoursesArgs[] | false, alias?: string  } 
-  | { name: 'upsertOpenUniversityCourse', args?: MutationUpsertOpenUniversityCourseArgs[] | false, alias?: string  } 
-  | { name: 'deleteOpenUniversityCourse', args?: MutationDeleteOpenUniversityCourseArgs[] | false, alias?: string  } 
-  | { name: 'deleteManyOpenUniversityCourses', args?: MutationDeleteManyOpenUniversityCoursesArgs[] | false, alias?: string  } 
+  | { name: 'createCourseAlias', args?: MutationCreateCourseAliasArgs[] | false, alias?: string  } 
+  | { name: 'updateCourseAlias', args?: MutationUpdateCourseAliasArgs[] | false, alias?: string  } 
+  | { name: 'updateManyCourseAliases', args?: MutationUpdateManyCourseAliasesArgs[] | false, alias?: string  } 
+  | { name: 'upsertCourseAlias', args?: MutationUpsertCourseAliasArgs[] | false, alias?: string  } 
+  | { name: 'deleteCourseAlias', args?: MutationDeleteCourseAliasArgs[] | false, alias?: string  } 
+  | { name: 'deleteManyCourseAliases', args?: MutationDeleteManyCourseAliasesArgs[] | false, alias?: string  } 
   | { name: 'createCompletion', args?: MutationCreateCompletionArgs[] | false, alias?: string  } 
   | { name: 'updateCompletion', args?: MutationUpdateCompletionArgs[] | false, alias?: string  } 
   | { name: 'updateManyCompletions', args?: MutationUpdateManyCompletionsArgs[] | false, alias?: string  } 
@@ -2638,12 +2638,12 @@ type MutationFields =
   | 'upsertCourse'
   | 'deleteCourse'
   | 'deleteManyCourses'
-  | 'createOpenUniversityCourse'
-  | 'updateOpenUniversityCourse'
-  | 'updateManyOpenUniversityCourses'
-  | 'upsertOpenUniversityCourse'
-  | 'deleteOpenUniversityCourse'
-  | 'deleteManyOpenUniversityCourses'
+  | 'createCourseAlias'
+  | 'updateCourseAlias'
+  | 'updateManyCourseAliases'
+  | 'upsertCourseAlias'
+  | 'deleteCourseAlias'
+  | 'deleteManyCourseAliases'
   | 'createCompletion'
   | 'updateCompletion'
   | 'updateManyCompletions'
@@ -2708,21 +2708,21 @@ type MutationDeleteCourseArgs =
   | 'where'
 type MutationDeleteManyCoursesArgs =
   | 'where'
-type MutationCreateOpenUniversityCourseArgs =
+type MutationCreateCourseAliasArgs =
   | 'data'
-type MutationUpdateOpenUniversityCourseArgs =
-  | 'data'
-  | 'where'
-type MutationUpdateManyOpenUniversityCoursesArgs =
+type MutationUpdateCourseAliasArgs =
   | 'data'
   | 'where'
-type MutationUpsertOpenUniversityCourseArgs =
+type MutationUpdateManyCourseAliasesArgs =
+  | 'data'
+  | 'where'
+type MutationUpsertCourseAliasArgs =
   | 'where'
   | 'create'
   | 'update'
-type MutationDeleteOpenUniversityCourseArgs =
+type MutationDeleteCourseAliasArgs =
   | 'where'
-type MutationDeleteManyOpenUniversityCoursesArgs =
+type MutationDeleteManyCourseAliasesArgs =
   | 'where'
 type MutationCreateCompletionArgs =
   | 'data'
@@ -2963,80 +2963,80 @@ export interface MutationFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  createOpenUniversityCourse: {
-    type: 'OpenUniversityCourse'
-    args: Record<MutationCreateOpenUniversityCourseArgs, core.NexusArgDef<string>>
+  createCourseAlias: {
+    type: 'CourseAlias'
+    args: Record<MutationCreateCourseAliasArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: OpenUniversityCourseCreateInput }  ,
+      args: { data: CourseAliasCreateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse> | prisma.OpenUniversityCourse
+    ) => Promise<prisma.CourseAlias> | prisma.CourseAlias
   }
-  updateOpenUniversityCourse: {
-    type: 'OpenUniversityCourse'
-    args: Record<MutationUpdateOpenUniversityCourseArgs, core.NexusArgDef<string>>
+  updateCourseAlias: {
+    type: 'CourseAlias'
+    args: Record<MutationUpdateCourseAliasArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: OpenUniversityCourseUpdateInput, where: OpenUniversityCourseWhereUniqueInput }  ,
+      args: { data: CourseAliasUpdateInput, where: CourseAliasWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
+    ) => Promise<prisma.CourseAlias | null> | prisma.CourseAlias | null
   }
-  updateManyOpenUniversityCourses: {
+  updateManyCourseAliases: {
     type: 'BatchPayload'
-    args: Record<MutationUpdateManyOpenUniversityCoursesArgs, core.NexusArgDef<string>>
+    args: Record<MutationUpdateManyCourseAliasesArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { data: OpenUniversityCourseUpdateManyMutationInput, where?: OpenUniversityCourseWhereInput | null }  ,
+      args: { data: CourseAliasUpdateManyMutationInput, where?: CourseAliasWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
-  upsertOpenUniversityCourse: {
-    type: 'OpenUniversityCourse'
-    args: Record<MutationUpsertOpenUniversityCourseArgs, core.NexusArgDef<string>>
+  upsertCourseAlias: {
+    type: 'CourseAlias'
+    args: Record<MutationUpsertCourseAliasArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: OpenUniversityCourseWhereUniqueInput, create: OpenUniversityCourseCreateInput, update: OpenUniversityCourseUpdateInput }  ,
+      args: { where: CourseAliasWhereUniqueInput, create: CourseAliasCreateInput, update: CourseAliasUpdateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse> | prisma.OpenUniversityCourse
+    ) => Promise<prisma.CourseAlias> | prisma.CourseAlias
   }
-  deleteOpenUniversityCourse: {
-    type: 'OpenUniversityCourse'
-    args: Record<MutationDeleteOpenUniversityCourseArgs, core.NexusArgDef<string>>
+  deleteCourseAlias: {
+    type: 'CourseAlias'
+    args: Record<MutationDeleteCourseAliasArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where: OpenUniversityCourseWhereUniqueInput }  ,
+      args: { where: CourseAliasWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
+    ) => Promise<prisma.CourseAlias | null> | prisma.CourseAlias | null
   }
-  deleteManyOpenUniversityCourses: {
+  deleteManyCourseAliases: {
     type: 'BatchPayload'
-    args: Record<MutationDeleteManyOpenUniversityCoursesArgs, core.NexusArgDef<string>>
+    args: Record<MutationDeleteManyCourseAliasesArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
-      args: { where?: OpenUniversityCourseWhereInput | null }  ,
+      args: { where?: CourseAliasWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
@@ -3465,7 +3465,7 @@ type SubscriptionObject =
   | SubscriptionFields
   | { name: 'user', args?: SubscriptionUserArgs[] | false, alias?: string  } 
   | { name: 'course', args?: SubscriptionCourseArgs[] | false, alias?: string  } 
-  | { name: 'openUniversityCourse', args?: SubscriptionOpenUniversityCourseArgs[] | false, alias?: string  } 
+  | { name: 'courseAlias', args?: SubscriptionCourseAliasArgs[] | false, alias?: string  } 
   | { name: 'completion', args?: SubscriptionCompletionArgs[] | false, alias?: string  } 
   | { name: 'completionRegistered', args?: SubscriptionCompletionRegisteredArgs[] | false, alias?: string  } 
   | { name: 'service', args?: SubscriptionServiceArgs[] | false, alias?: string  } 
@@ -3475,7 +3475,7 @@ type SubscriptionObject =
 type SubscriptionFields =
   | 'user'
   | 'course'
-  | 'openUniversityCourse'
+  | 'courseAlias'
   | 'completion'
   | 'completionRegistered'
   | 'service'
@@ -3487,7 +3487,7 @@ type SubscriptionUserArgs =
   | 'where'
 type SubscriptionCourseArgs =
   | 'where'
-type SubscriptionOpenUniversityCourseArgs =
+type SubscriptionCourseAliasArgs =
   | 'where'
 type SubscriptionCompletionArgs =
   | 'where'
@@ -3528,18 +3528,18 @@ export interface SubscriptionFieldDetails {
       info?: GraphQLResolveInfo
     ) => Promise<prisma.CourseSubscriptionPayload | null> | prisma.CourseSubscriptionPayload | null
   }
-  openUniversityCourse: {
-    type: 'OpenUniversityCourseSubscriptionPayload'
-    args: Record<SubscriptionOpenUniversityCourseArgs, core.NexusArgDef<string>>
+  courseAlias: {
+    type: 'CourseAliasSubscriptionPayload'
+    args: Record<SubscriptionCourseAliasArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Subscription">,
-      args: { where?: OpenUniversityCourseSubscriptionWhereInput | null }  ,
+      args: { where?: CourseAliasSubscriptionWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourseSubscriptionPayload | null> | prisma.OpenUniversityCourseSubscriptionPayload | null
+    ) => Promise<prisma.CourseAliasSubscriptionPayload | null> | prisma.CourseAliasSubscriptionPayload | null
   }
   completion: {
     type: 'CompletionSubscriptionPayload'
@@ -3939,16 +3939,16 @@ export interface CoursePreviousValuesFieldDetails {
 }
   
 
-// Types for OpenUniversityCourseSubscriptionPayload
+// Types for CourseAliasSubscriptionPayload
 
-type OpenUniversityCourseSubscriptionPayloadObject =
-  | OpenUniversityCourseSubscriptionPayloadFields
+type CourseAliasSubscriptionPayloadObject =
+  | CourseAliasSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'updatedFields', args?: [] | false, alias?: string  } 
   | { name: 'previousValues', args?: [] | false, alias?: string  } 
 
-type OpenUniversityCourseSubscriptionPayloadFields =
+type CourseAliasSubscriptionPayloadFields =
   | 'mutation'
   | 'node'
   | 'updatedFields'
@@ -3958,7 +3958,7 @@ type OpenUniversityCourseSubscriptionPayloadFields =
 
   
 
-export interface OpenUniversityCourseSubscriptionPayloadFieldDetails {
+export interface CourseAliasSubscriptionPayloadFieldDetails {
   mutation: {
     type: 'MutationType'
     args: {}
@@ -3966,24 +3966,24 @@ export interface OpenUniversityCourseSubscriptionPayloadFieldDetails {
     list: undefined
     nullable: false
     resolve: (
-      root: core.RootValue<"OpenUniversityCourseSubscriptionPayload">,
+      root: core.RootValue<"CourseAliasSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
-    type: 'OpenUniversityCourse'
+    type: 'CourseAlias'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"OpenUniversityCourseSubscriptionPayload">,
+      root: core.RootValue<"CourseAliasSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCourse | null> | prisma.OpenUniversityCourse | null
+    ) => Promise<prisma.CourseAlias | null> | prisma.CourseAlias | null
   }
   updatedFields: {
     type: 'String'
@@ -3994,31 +3994,31 @@ export interface OpenUniversityCourseSubscriptionPayloadFieldDetails {
     resolve: undefined
   }
   previousValues: {
-    type: 'OpenUniversityCoursePreviousValues'
+    type: 'CourseAliasPreviousValues'
     args: {}
     description: string
     list: undefined
     nullable: true
     resolve: (
-      root: core.RootValue<"OpenUniversityCourseSubscriptionPayload">,
+      root: core.RootValue<"CourseAliasSubscriptionPayload">,
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.OpenUniversityCoursePreviousValues | null> | prisma.OpenUniversityCoursePreviousValues | null
+    ) => Promise<prisma.CourseAliasPreviousValues | null> | prisma.CourseAliasPreviousValues | null
   }
 }
   
 
-// Types for OpenUniversityCoursePreviousValues
+// Types for CourseAliasPreviousValues
 
-type OpenUniversityCoursePreviousValuesObject =
-  | OpenUniversityCoursePreviousValuesFields
+type CourseAliasPreviousValuesObject =
+  | CourseAliasPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'created_at', args?: [] | false, alias?: string  } 
   | { name: 'updated_at', args?: [] | false, alias?: string  } 
   | { name: 'course_code', args?: [] | false, alias?: string  } 
 
-type OpenUniversityCoursePreviousValuesFields =
+type CourseAliasPreviousValuesFields =
   | 'id'
   | 'created_at'
   | 'updated_at'
@@ -4028,7 +4028,7 @@ type OpenUniversityCoursePreviousValuesFields =
 
   
 
-export interface OpenUniversityCoursePreviousValuesFieldDetails {
+export interface CourseAliasPreviousValuesFieldDetails {
   id: {
     type: 'UUID'
     args: {}
@@ -5339,9 +5339,9 @@ export interface CourseWhereInput {
   slug_not_starts_with?: string | null
   slug_ends_with?: string | null
   slug_not_ends_with?: string | null
-  open_university_courses_every?: OpenUniversityCourseWhereInput | null
-  open_university_courses_some?: OpenUniversityCourseWhereInput | null
-  open_university_courses_none?: OpenUniversityCourseWhereInput | null
+  open_university_courses_every?: CourseAliasWhereInput | null
+  open_university_courses_some?: CourseAliasWhereInput | null
+  open_university_courses_none?: CourseAliasWhereInput | null
   AND?: CourseWhereInput[]
   OR?: CourseWhereInput[]
   NOT?: CourseWhereInput[]
@@ -5413,7 +5413,7 @@ export type CourseWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface OpenUniversityCourseWhereInput {
+export interface CourseAliasWhereInput {
   id?: undefined | null
   id_not?: undefined | null
   id_in?: undefined[]
@@ -5459,12 +5459,12 @@ export interface OpenUniversityCourseWhereInput {
   course_code_ends_with?: string | null
   course_code_not_ends_with?: string | null
   course?: CourseWhereInput | null
-  AND?: OpenUniversityCourseWhereInput[]
-  OR?: OpenUniversityCourseWhereInput[]
-  NOT?: OpenUniversityCourseWhereInput[]
+  AND?: CourseAliasWhereInput[]
+  OR?: CourseAliasWhereInput[]
+  NOT?: CourseAliasWhereInput[]
 }
-export type OpenUniversityCourseWhereInputInputObject =
-  | Extract<keyof OpenUniversityCourseWhereInput, string>
+export type CourseAliasWhereInputInputObject =
+  | Extract<keyof CourseAliasWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -5523,12 +5523,12 @@ export type CourseWhereUniqueInputInputObject =
   | { name: 'id', alias?: string  } 
   | { name: 'slug', alias?: string  } 
   
-export interface OpenUniversityCourseWhereUniqueInput {
+export interface CourseAliasWhereUniqueInput {
   id?: undefined | null
   course_code?: string | null
 }
-export type OpenUniversityCourseWhereUniqueInputInputObject =
-  | Extract<keyof OpenUniversityCourseWhereUniqueInput, string>
+export type CourseAliasWhereUniqueInputInputObject =
+  | Extract<keyof CourseAliasWhereUniqueInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
   
@@ -5825,7 +5825,7 @@ export interface CourseCreateInput {
   updated_at?: string | null
   name?: string
   slug?: string
-  open_university_courses?: OpenUniversityCourseCreateManyWithoutCourseInput | null
+  open_university_courses?: CourseAliasCreateManyWithoutCourseInput | null
 }
 export type CourseCreateInputInputObject =
   | Extract<keyof CourseCreateInput, string>
@@ -5835,22 +5835,22 @@ export type CourseCreateInputInputObject =
   | { name: 'slug', alias?: string  } 
   | { name: 'open_university_courses', alias?: string  } 
   
-export interface OpenUniversityCourseCreateManyWithoutCourseInput {
-  create?: OpenUniversityCourseCreateWithoutCourseInput[]
-  connect?: OpenUniversityCourseWhereUniqueInput[]
+export interface CourseAliasCreateManyWithoutCourseInput {
+  create?: CourseAliasCreateWithoutCourseInput[]
+  connect?: CourseAliasWhereUniqueInput[]
 }
-export type OpenUniversityCourseCreateManyWithoutCourseInputInputObject =
-  | Extract<keyof OpenUniversityCourseCreateManyWithoutCourseInput, string>
+export type CourseAliasCreateManyWithoutCourseInputInputObject =
+  | Extract<keyof CourseAliasCreateManyWithoutCourseInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface OpenUniversityCourseCreateWithoutCourseInput {
+export interface CourseAliasCreateWithoutCourseInput {
   created_at?: string | null
   updated_at?: string | null
   course_code?: string
 }
-export type OpenUniversityCourseCreateWithoutCourseInputInputObject =
-  | Extract<keyof OpenUniversityCourseCreateWithoutCourseInput, string>
+export type CourseAliasCreateWithoutCourseInputInputObject =
+  | Extract<keyof CourseAliasCreateWithoutCourseInput, string>
   | { name: 'created_at', alias?: string  } 
   | { name: 'updated_at', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
@@ -6045,7 +6045,7 @@ export interface CourseUpdateDataInput {
   updated_at?: string | null
   name?: string | null
   slug?: string | null
-  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
+  open_university_courses?: CourseAliasUpdateManyWithoutCourseInput | null
 }
 export type CourseUpdateDataInputInputObject =
   | Extract<keyof CourseUpdateDataInput, string>
@@ -6055,19 +6055,19 @@ export type CourseUpdateDataInputInputObject =
   | { name: 'slug', alias?: string  } 
   | { name: 'open_university_courses', alias?: string  } 
   
-export interface OpenUniversityCourseUpdateManyWithoutCourseInput {
-  create?: OpenUniversityCourseCreateWithoutCourseInput[]
-  delete?: OpenUniversityCourseWhereUniqueInput[]
-  connect?: OpenUniversityCourseWhereUniqueInput[]
-  set?: OpenUniversityCourseWhereUniqueInput[]
-  disconnect?: OpenUniversityCourseWhereUniqueInput[]
-  update?: OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput[]
-  upsert?: OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput[]
-  deleteMany?: OpenUniversityCourseScalarWhereInput[]
-  updateMany?: OpenUniversityCourseUpdateManyWithWhereNestedInput[]
+export interface CourseAliasUpdateManyWithoutCourseInput {
+  create?: CourseAliasCreateWithoutCourseInput[]
+  delete?: CourseAliasWhereUniqueInput[]
+  connect?: CourseAliasWhereUniqueInput[]
+  set?: CourseAliasWhereUniqueInput[]
+  disconnect?: CourseAliasWhereUniqueInput[]
+  update?: CourseAliasUpdateWithWhereUniqueWithoutCourseInput[]
+  upsert?: CourseAliasUpsertWithWhereUniqueWithoutCourseInput[]
+  deleteMany?: CourseAliasScalarWhereInput[]
+  updateMany?: CourseAliasUpdateManyWithWhereNestedInput[]
 }
-export type OpenUniversityCourseUpdateManyWithoutCourseInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpdateManyWithoutCourseInput, string>
+export type CourseAliasUpdateManyWithoutCourseInputInputObject =
+  | Extract<keyof CourseAliasUpdateManyWithoutCourseInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'delete', alias?: string  } 
   | { name: 'connect', alias?: string  } 
@@ -6078,38 +6078,38 @@ export type OpenUniversityCourseUpdateManyWithoutCourseInputInputObject =
   | { name: 'deleteMany', alias?: string  } 
   | { name: 'updateMany', alias?: string  } 
   
-export interface OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput {
-  where?: OpenUniversityCourseWhereUniqueInput
-  data?: OpenUniversityCourseUpdateWithoutCourseDataInput
+export interface CourseAliasUpdateWithWhereUniqueWithoutCourseInput {
+  where?: CourseAliasWhereUniqueInput
+  data?: CourseAliasUpdateWithoutCourseDataInput
 }
-export type OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput, string>
+export type CourseAliasUpdateWithWhereUniqueWithoutCourseInputInputObject =
+  | Extract<keyof CourseAliasUpdateWithWhereUniqueWithoutCourseInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'data', alias?: string  } 
   
-export interface OpenUniversityCourseUpdateWithoutCourseDataInput {
+export interface CourseAliasUpdateWithoutCourseDataInput {
   created_at?: string | null
   updated_at?: string | null
   course_code?: string | null
 }
-export type OpenUniversityCourseUpdateWithoutCourseDataInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpdateWithoutCourseDataInput, string>
+export type CourseAliasUpdateWithoutCourseDataInputInputObject =
+  | Extract<keyof CourseAliasUpdateWithoutCourseDataInput, string>
   | { name: 'created_at', alias?: string  } 
   | { name: 'updated_at', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
   
-export interface OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput {
-  where?: OpenUniversityCourseWhereUniqueInput
-  update?: OpenUniversityCourseUpdateWithoutCourseDataInput
-  create?: OpenUniversityCourseCreateWithoutCourseInput
+export interface CourseAliasUpsertWithWhereUniqueWithoutCourseInput {
+  where?: CourseAliasWhereUniqueInput
+  update?: CourseAliasUpdateWithoutCourseDataInput
+  create?: CourseAliasCreateWithoutCourseInput
 }
-export type OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput, string>
+export type CourseAliasUpsertWithWhereUniqueWithoutCourseInputInputObject =
+  | Extract<keyof CourseAliasUpsertWithWhereUniqueWithoutCourseInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface OpenUniversityCourseScalarWhereInput {
+export interface CourseAliasScalarWhereInput {
   id?: undefined | null
   id_not?: undefined | null
   id_in?: undefined[]
@@ -6154,12 +6154,12 @@ export interface OpenUniversityCourseScalarWhereInput {
   course_code_not_starts_with?: string | null
   course_code_ends_with?: string | null
   course_code_not_ends_with?: string | null
-  AND?: OpenUniversityCourseScalarWhereInput[]
-  OR?: OpenUniversityCourseScalarWhereInput[]
-  NOT?: OpenUniversityCourseScalarWhereInput[]
+  AND?: CourseAliasScalarWhereInput[]
+  OR?: CourseAliasScalarWhereInput[]
+  NOT?: CourseAliasScalarWhereInput[]
 }
-export type OpenUniversityCourseScalarWhereInputInputObject =
-  | Extract<keyof OpenUniversityCourseScalarWhereInput, string>
+export type CourseAliasScalarWhereInputInputObject =
+  | Extract<keyof CourseAliasScalarWhereInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'id_not', alias?: string  } 
   | { name: 'id_in', alias?: string  } 
@@ -6208,22 +6208,22 @@ export type OpenUniversityCourseScalarWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface OpenUniversityCourseUpdateManyWithWhereNestedInput {
-  where?: OpenUniversityCourseScalarWhereInput
-  data?: OpenUniversityCourseUpdateManyDataInput
+export interface CourseAliasUpdateManyWithWhereNestedInput {
+  where?: CourseAliasScalarWhereInput
+  data?: CourseAliasUpdateManyDataInput
 }
-export type OpenUniversityCourseUpdateManyWithWhereNestedInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpdateManyWithWhereNestedInput, string>
+export type CourseAliasUpdateManyWithWhereNestedInputInputObject =
+  | Extract<keyof CourseAliasUpdateManyWithWhereNestedInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'data', alias?: string  } 
   
-export interface OpenUniversityCourseUpdateManyDataInput {
+export interface CourseAliasUpdateManyDataInput {
   created_at?: string | null
   updated_at?: string | null
   course_code?: string | null
 }
-export type OpenUniversityCourseUpdateManyDataInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpdateManyDataInput, string>
+export type CourseAliasUpdateManyDataInputInputObject =
+  | Extract<keyof CourseAliasUpdateManyDataInput, string>
   | { name: 'created_at', alias?: string  } 
   | { name: 'updated_at', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
@@ -6776,7 +6776,7 @@ export interface CourseUpdateInput {
   updated_at?: string | null
   name?: string | null
   slug?: string | null
-  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput | null
+  open_university_courses?: CourseAliasUpdateManyWithoutCourseInput | null
 }
 export type CourseUpdateInputInputObject =
   | Extract<keyof CourseUpdateInput, string>
@@ -6799,14 +6799,14 @@ export type CourseUpdateManyMutationInputInputObject =
   | { name: 'name', alias?: string  } 
   | { name: 'slug', alias?: string  } 
   
-export interface OpenUniversityCourseCreateInput {
+export interface CourseAliasCreateInput {
   created_at?: string | null
   updated_at?: string | null
   course_code?: string
   course?: CourseCreateOneWithoutOpen_university_coursesInput
 }
-export type OpenUniversityCourseCreateInputInputObject =
-  | Extract<keyof OpenUniversityCourseCreateInput, string>
+export type CourseAliasCreateInputInputObject =
+  | Extract<keyof CourseAliasCreateInput, string>
   | { name: 'created_at', alias?: string  } 
   | { name: 'updated_at', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
@@ -6834,14 +6834,14 @@ export type CourseCreateWithoutOpen_university_coursesInputInputObject =
   | { name: 'name', alias?: string  } 
   | { name: 'slug', alias?: string  } 
   
-export interface OpenUniversityCourseUpdateInput {
+export interface CourseAliasUpdateInput {
   created_at?: string | null
   updated_at?: string | null
   course_code?: string | null
   course?: CourseUpdateOneRequiredWithoutOpen_university_coursesInput | null
 }
-export type OpenUniversityCourseUpdateInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpdateInput, string>
+export type CourseAliasUpdateInputInputObject =
+  | Extract<keyof CourseAliasUpdateInput, string>
   | { name: 'created_at', alias?: string  } 
   | { name: 'updated_at', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
@@ -6882,13 +6882,13 @@ export type CourseUpsertWithoutOpen_university_coursesInputInputObject =
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface OpenUniversityCourseUpdateManyMutationInput {
+export interface CourseAliasUpdateManyMutationInput {
   created_at?: string | null
   updated_at?: string | null
   course_code?: string | null
 }
-export type OpenUniversityCourseUpdateManyMutationInputInputObject =
-  | Extract<keyof OpenUniversityCourseUpdateManyMutationInput, string>
+export type CourseAliasUpdateManyMutationInputInputObject =
+  | Extract<keyof CourseAliasUpdateManyMutationInput, string>
   | { name: 'created_at', alias?: string  } 
   | { name: 'updated_at', alias?: string  } 
   | { name: 'course_code', alias?: string  } 
@@ -7306,18 +7306,18 @@ export type CourseSubscriptionWhereInputInputObject =
   | { name: 'OR', alias?: string  } 
   | { name: 'NOT', alias?: string  } 
   
-export interface OpenUniversityCourseSubscriptionWhereInput {
+export interface CourseAliasSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
   updatedFields_contains?: string | null
   updatedFields_contains_every?: string[]
   updatedFields_contains_some?: string[]
-  node?: OpenUniversityCourseWhereInput | null
-  AND?: OpenUniversityCourseSubscriptionWhereInput[]
-  OR?: OpenUniversityCourseSubscriptionWhereInput[]
-  NOT?: OpenUniversityCourseSubscriptionWhereInput[]
+  node?: CourseAliasWhereInput | null
+  AND?: CourseAliasSubscriptionWhereInput[]
+  OR?: CourseAliasSubscriptionWhereInput[]
+  NOT?: CourseAliasSubscriptionWhereInput[]
 }
-export type OpenUniversityCourseSubscriptionWhereInputInputObject =
-  | Extract<keyof OpenUniversityCourseSubscriptionWhereInput, string>
+export type CourseAliasSubscriptionWhereInputInputObject =
+  | Extract<keyof CourseAliasSubscriptionWhereInput, string>
   | { name: 'mutation_in', alias?: string  } 
   | { name: 'updatedFields_contains', alias?: string  } 
   | { name: 'updatedFields_contains_every', alias?: string  } 
@@ -7453,7 +7453,7 @@ export type CompletionOrderByInputValues =
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
   
-export type OpenUniversityCourseOrderByInputValues =
+export type CourseAliasOrderByInputValues =
   | 'id_ASC'
   | 'id_DESC'
   | 'created_at_ASC'

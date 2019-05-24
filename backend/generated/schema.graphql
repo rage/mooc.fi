@@ -227,9 +227,83 @@ type Course {
   created_at: DateTime
   id: UUID!
   name: String!
-  open_university_courses(after: String, before: String, first: Int, last: Int, orderBy: OpenUniversityCourseOrderByInput, skip: Int, where: OpenUniversityCourseWhereInput): [OpenUniversityCourse!]
+  open_university_courses(after: String, before: String, first: Int, last: Int, orderBy: CourseAliasOrderByInput, skip: Int, where: CourseAliasWhereInput): [CourseAlias!]
   slug: String!
   updated_at: DateTime
+}
+
+type CourseAlias {
+  course: Course!
+  course_code: String!
+  created_at: DateTime
+  id: UUID!
+  updated_at: DateTime
+}
+
+enum CourseAliasOrderByInput {
+  course_code_ASC
+  course_code_DESC
+  created_at_ASC
+  created_at_DESC
+  createdAt_ASC
+  createdAt_DESC
+  id_ASC
+  id_DESC
+  updated_at_ASC
+  updated_at_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+input CourseAliasWhereInput {
+  AND: [CourseAliasWhereInput!]
+  course: CourseWhereInput
+  course_code: String
+  course_code_contains: String
+  course_code_ends_with: String
+  course_code_gt: String
+  course_code_gte: String
+  course_code_in: [String!]
+  course_code_lt: String
+  course_code_lte: String
+  course_code_not: String
+  course_code_not_contains: String
+  course_code_not_ends_with: String
+  course_code_not_in: [String!]
+  course_code_not_starts_with: String
+  course_code_starts_with: String
+  created_at: DateTime
+  created_at_gt: DateTime
+  created_at_gte: DateTime
+  created_at_in: [DateTime!]
+  created_at_lt: DateTime
+  created_at_lte: DateTime
+  created_at_not: DateTime
+  created_at_not_in: [DateTime!]
+  id: UUID
+  id_contains: UUID
+  id_ends_with: UUID
+  id_gt: UUID
+  id_gte: UUID
+  id_in: [UUID!]
+  id_lt: UUID
+  id_lte: UUID
+  id_not: UUID
+  id_not_contains: UUID
+  id_not_ends_with: UUID
+  id_not_in: [UUID!]
+  id_not_starts_with: UUID
+  id_starts_with: UUID
+  NOT: [CourseAliasWhereInput!]
+  OR: [CourseAliasWhereInput!]
+  updated_at: DateTime
+  updated_at_gt: DateTime
+  updated_at_gte: DateTime
+  updated_at_in: [DateTime!]
+  updated_at_lt: DateTime
+  updated_at_lte: DateTime
+  updated_at_not: DateTime
+  updated_at_not_in: [DateTime!]
 }
 
 input CourseWhereInput {
@@ -271,9 +345,9 @@ input CourseWhereInput {
   name_not_starts_with: String
   name_starts_with: String
   NOT: [CourseWhereInput!]
-  open_university_courses_every: OpenUniversityCourseWhereInput
-  open_university_courses_none: OpenUniversityCourseWhereInput
-  open_university_courses_some: OpenUniversityCourseWhereInput
+  open_university_courses_every: CourseAliasWhereInput
+  open_university_courses_none: CourseAliasWhereInput
+  open_university_courses_some: CourseAliasWhereInput
   OR: [CourseWhereInput!]
   slug: String
   slug_contains: String
@@ -303,90 +377,16 @@ scalar DateTime
 
 type Mutation {
   addCourse(name: String, slug: String): Course!
-  addOpenUniversityCourse(course: ID, course_code: String): OpenUniversityCourse!
+  addCourseAlias(course: ID, course_code: String): CourseAlias!
   addService(url: String!): Service!
   registerCompletion(completions: [CompletionArg!], organisation: String): [CompletionRegistered!]!
 }
 
-type OpenUniversityCourse {
-  course: Course!
-  course_code: String!
-  created_at: DateTime
-  id: UUID!
-  updated_at: DateTime
-}
-
-enum OpenUniversityCourseOrderByInput {
-  course_code_ASC
-  course_code_DESC
-  created_at_ASC
-  created_at_DESC
-  createdAt_ASC
-  createdAt_DESC
-  id_ASC
-  id_DESC
-  updated_at_ASC
-  updated_at_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-input OpenUniversityCourseWhereInput {
-  AND: [OpenUniversityCourseWhereInput!]
-  course: CourseWhereInput
-  course_code: String
-  course_code_contains: String
-  course_code_ends_with: String
-  course_code_gt: String
-  course_code_gte: String
-  course_code_in: [String!]
-  course_code_lt: String
-  course_code_lte: String
-  course_code_not: String
-  course_code_not_contains: String
-  course_code_not_ends_with: String
-  course_code_not_in: [String!]
-  course_code_not_starts_with: String
-  course_code_starts_with: String
-  created_at: DateTime
-  created_at_gt: DateTime
-  created_at_gte: DateTime
-  created_at_in: [DateTime!]
-  created_at_lt: DateTime
-  created_at_lte: DateTime
-  created_at_not: DateTime
-  created_at_not_in: [DateTime!]
-  id: UUID
-  id_contains: UUID
-  id_ends_with: UUID
-  id_gt: UUID
-  id_gte: UUID
-  id_in: [UUID!]
-  id_lt: UUID
-  id_lte: UUID
-  id_not: UUID
-  id_not_contains: UUID
-  id_not_ends_with: UUID
-  id_not_in: [UUID!]
-  id_not_starts_with: UUID
-  id_starts_with: UUID
-  NOT: [OpenUniversityCourseWhereInput!]
-  OR: [OpenUniversityCourseWhereInput!]
-  updated_at: DateTime
-  updated_at_gt: DateTime
-  updated_at_gte: DateTime
-  updated_at_in: [DateTime!]
-  updated_at_lt: DateTime
-  updated_at_lte: DateTime
-  updated_at_not: DateTime
-  updated_at_not_in: [DateTime!]
-}
-
 type Query {
   completions(after: ID, before: ID, course: String, first: Int, last: Int): [Completion!]!
+  CourseAliases: [CourseAlias!]!
   courses: [Course!]!
   currentUser(email: String): User!
-  openUniversityCourses: [OpenUniversityCourse!]!
   registeredCompletions(after: ID, before: ID, course: String, first: Int, last: Int): [CompletionRegistered!]!
   services: [Service!]!
   users: [User!]!
