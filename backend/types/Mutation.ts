@@ -32,6 +32,14 @@ const Mutation = prismaObjectType({
       },
       resolve: (_, args, ctx) => resolvers.registerCompletion(_, args, ctx),
     })
+
+    t.field("addService", {
+      type: "Service",
+      args: {
+        url: stringArg({required: true})
+      },
+      resolve: (_, { url }, ctx) => resolvers.addService(_, { url }, ctx)
+    })
   },
 })
 

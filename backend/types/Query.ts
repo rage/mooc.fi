@@ -58,6 +58,11 @@ const Query = prismaObjectType({
           ctx,
         ),
     })
+
+    t.list.field("services", {
+      type: "Service",
+      resolve: (_, args, ctx) => resolvers.services(_, args, ctx)
+    })
   },
 })
 

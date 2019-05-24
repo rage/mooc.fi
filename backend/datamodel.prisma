@@ -54,3 +54,26 @@ type CompletionRegistered @db(name: "completion_registered") {
   organisation: String!
   completion: Completion!
 }
+
+type Service @db(name: "service") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  url: String!
+}
+
+type UserCourseProgress @db(name: "user_course_progress") {
+  id: UUID! @id
+  user: User! @relation(link: INLINE, name: "UserCourseProgressToUser")
+  course: Course! @relation(link: INLINE, name: "UserCourseProgressToCourse")
+  progress: Json!
+}
+
+
+type UserCourseServiceProgress @db(name: "user_course_service_progress") {
+  id: UUID! @id
+  user: User! @relation(link: INLINE, name: "UserCourseServiceProgressToUser")
+  course: Course! @relation(link: INLINE, name: "UserCourseServiceProgressToCourse")
+  service: Service! @relation(link: INLINE, name: "UserCourseServiceProgressToService")
+  progress: Json!
+}
