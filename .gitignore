@@ -6,3 +6,4 @@ dist
 .next
 .env
 *secret.yml
+backend/generated
