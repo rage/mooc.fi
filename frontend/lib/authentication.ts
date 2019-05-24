@@ -6,11 +6,6 @@ import { ApolloClient } from "apollo-boost"
 import axios from "axios"
 import { get } from "lodash"
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
@@ -22,15 +17,9 @@ export const isSignedIn = (ctx: NextContext) => {
 }
 
 export const isAdmin = (ctx: NextContext) => {
-<<<<<<< HEAD
-  const admin = nookies.get(ctx)["admin"];
-  return admin === "true";
-};
-=======
   const admin = nookies.get(ctx)["admin"]
   return admin === "true"
 }
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 
 export const signIn = async ({
   email,
@@ -49,19 +38,11 @@ export const signIn = async ({
   if (firstName === "" || lastName === "") {
     throw new Error("Etunimi tai sukunimi puuttuu.")
   }
-<<<<<<< HEAD
-  document.cookie = `access_token=${res.accessToken};path=/`;
-  document.cookie= `admin=${details.administrator};path=/`;
-  Nexti18next.Router.push("/register-completion");
-  return res;
-};
-=======
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
   Nexti18next.Router.push("/register-completion")
   return res
 }
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 
 export const signOut = async (apollo: ApolloClient<any>) => {
   await apollo.resetStore().then(() => {

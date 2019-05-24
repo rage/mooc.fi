@@ -1,159 +1,84 @@
-<<<<<<< HEAD
-import React  from 'react';
-import { 
-    Table,
-    TableHead,
-    TableCell,
-    TableRow
-        } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
-
-
-const completions = [
-  {
-    name: 'Matti',
-    SID: '1234'
-  },
-  {
-    name: 'Minna',
-    SID: '12345'
-  },
-  {
-    name: 'Markus',
-    SID: '123456'
-=======
-import React from "react"
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  ListSubheader,
-} from "@material-ui/core"
+import React, { useState } from "react"
+import { ApolloClient, gql } from "apollo-boost"
+import { AllCompletions as AllCompletionsData } from "../pages/__generated__/AllCompletions"
+import { useQuery } from "react-apollo-hooks"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import {Table, TableRow, TableCell, TableHead, Typography} from '@material-ui/core';
 
-const completions = [
-  {
-    name: "Matti",
-    SID: "1234",
-  },
-  {
-    name: "Minna",
-    SID: "12345",
-  },
-  {
-    name: "Markus",
-    SID: "123456",
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
-  },
-]
-
+export const AllCompletionsQuery = gql`
+  query AllCompletions {
+    completions(course: "elements-of-ai" first:40) {
+      id
+      email
+      completion_language
+      created_at
+      user {
+        first_name
+        last_name
+        student_number
+      }
+    }
+  }
+`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    list: {
-<<<<<<< HEAD
-     padding: '0.7em',
-     backgroundColor: 'white'
+    title: {
+      margin: "auto",
+      padding: "0.5em",
     },
-    listItem: {
-      margin: '0.7em'
-    },
-    content: {
-      margin: '0.5em'
+    toolbar: { 
+      ...theme.mixins.toolbar,
+      padding: '1em'
     }
-  }),
-);
 
-/*function ListItemContent({ student }) {
-  const classes = useStyles()
-  return(
-    <Grid container direction='row'>
-      <Grid item className={classes.content}>
-        <Typography variant='body1'>
-          {student.user.first_name} {student.user.last_name}
-        </Typography>
-      </Grid>
-      <Grid item className={classes.content}>
-        <Typography variant='body1'>
-          {student.user.student_number}
-        </Typography>
-      </Grid>
-      <Grid item className={classes.content}>
-        <Typography variant='body1'>
-          {student.created_at}
-        </Typography>
-      </Grid>
-      <Grid item className={classes.content}>
-        <Typography variant='body1'>
-          {student.completion_language}
-        </Typography>
-      </Grid>
-    </Grid>
-  )
-}*/
-
-function CompletionsListItem({ student }) {
-  const classes = useStyles()
-  console.log(student)
-  return(
-    
-   
-  )
-}
-
-function CompletionsList({ completions }) {
-    const classes = useStyles()
-    console.log(completions)
-    return(
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              Name
-            </TableCell>
-            <TableCell>
-              Student ID
-            </TableCell>
-            <TableCell>
-              
-            </TableCell>
-          </TableRow>
-        </TableHead>
-      </Table>
-    )
-  }
- 
-export default CompletionsList
-=======
-      padding: "0.7em",
-      backgroundColor: "white",
-    },
   }),
 )
 
-function CompletionsListItem({ completer }) {
-  return (
-    <ListItem divider={true} button={true}>
-      <ListItemText primary={completer.name} secondary={completer.SID} />
-    </ListItem>
-  )
-}
+const CompletionsList = () => {
+  const { loading, error, data } = useQuery<AllCompletionsData>(AllCompletionsQuery)
+  if (error) {
+    ;<div>
+      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+    </div>
+  }
+  if (loading || !data) {
+    return <div>Loading</div>
+  }
+  console.log(data)
+  const rows = [
 
-function CompletionsList() {
-  const classes = useStyles()
-
+  ]
   return (
-    <section>
-      <List className={classes.list}>
-        <ListSubheader>Completions for this course</ListSubheader>
-        {completions.map(c => (
-          <CompletionsListItem key={c.SID} completer={c} />
-        ))}
-      </List>
+    <section >
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>First Name</TableCell>
+            <TableCell align='right'>Last Name</TableCell>
+            <TableCell align='right'>email</TableCell>
+            <TableCell align='right'>Student Number</TableCell>
+            <TableCell align='right'>Language</TableCell>
+            <TableCell align='right'>Completion time</TableCell>
+          </TableRow>
+        </TableHead>
+        {data.completions.map(c => (
+          <TableRow key={c.id}>
+            <TableCell component="th" scope="row">
+                {c.user.first_name}
+            </TableCell>
+            <TableCell align="right">{c.user.last_name}</TableCell>
+            <TableCell align="right">{c.email}</TableCell>
+            <TableCell align="right">{c.user.student_number}</TableCell>
+            <TableCell align="right">{c.completion_language}</TableCell>
+            <TableCell align="right">{c.created_at}</TableCell>
+          </TableRow>
+        )
+        )}
+      </Table>
     </section>
   )
 }
 
+
+
 export default CompletionsList
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e

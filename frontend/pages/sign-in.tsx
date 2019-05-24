@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import * as React from "react";
-import { NextContext } from "next";
-import { isSignedIn } from "../lib/authentication";
-import redirect from "../lib/redirect";
-import { Paper, Avatar, Typography } from '@material-ui/core'
-import NextI18Next from '../i18n';
-import SignInForm from '../components/SignInForm'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Container from '../components/Container'
-=======
 import * as React from "react"
 import { NextContext } from "next"
 import { isSignedIn } from "../lib/authentication"
@@ -20,7 +8,6 @@ import SignInForm from "../components/SignInForm"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
 import Container from "../components/Container"
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,11 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const SignInPage = ({ t }) => {
   const classes = useStyles()
   return (
-<<<<<<< HEAD
-      <Container>
-=======
     <Container>
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -57,12 +40,7 @@ const SignInPage = ({ t }) => {
         </Typography>
         <SignInForm />
       </Paper>
-<<<<<<< HEAD
-      </Container>
-   
-=======
     </Container>
->>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
   )
 }
 
