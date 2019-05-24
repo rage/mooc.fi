@@ -403,6 +403,8 @@ type Query {
   currentUser(email: String): User!
   registeredCompletions(after: ID, before: ID, course: String, first: Int, last: Int): [CompletionRegistered!]!
   services: [Service!]!
+  UserCourseProgress(course_id: ID!, user_id: ID!): UserCourseProgress!
+  UserCourseProgresses(after: ID, before: ID, course_id: ID, first: Int, last: Int, user_id: ID): [UserCourseProgress!]!
   users: [User!]!
 }
 

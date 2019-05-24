@@ -566,6 +566,8 @@ export interface NexusGenFieldTypes {
     currentUser: NexusGenRootTypes['User']; // User!
     registeredCompletions: NexusGenRootTypes['CompletionRegistered'][]; // [CompletionRegistered!]!
     services: NexusGenRootTypes['Service'][]; // [Service!]!
+    UserCourseProgress: NexusGenRootTypes['UserCourseProgress']; // UserCourseProgress!
+    UserCourseProgresses: NexusGenRootTypes['UserCourseProgress'][]; // [UserCourseProgress!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
   Service: { // field return type
@@ -648,6 +650,18 @@ export interface NexusGenArgTypes {
       course?: string | null; // String
       first?: number | null; // Int
       last?: number | null; // Int
+    }
+    UserCourseProgress: { // args
+      course_id: string; // ID!
+      user_id: string; // ID!
+    }
+    UserCourseProgresses: { // args
+      after?: string | null; // ID
+      before?: string | null; // ID
+      course_id?: string | null; // ID
+      first?: number | null; // Int
+      last?: number | null; // Int
+      user_id?: string | null; // ID
     }
   }
   User: {
