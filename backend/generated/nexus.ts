@@ -430,6 +430,7 @@ export interface NexusGenEnums {
 export interface NexusGenRootTypes {
   Completion: { // root type
     completion_language?: string | null; // String
+<<<<<<< HEAD
     created_at: any; // DateTime!
     email: string; // String!
     id: any; // UUID!
@@ -450,25 +451,61 @@ export interface NexusGenRootTypes {
     name: string; // String!
     slug: string; // String!
     updated_at: any; // DateTime!
+=======
+    created_at?: any | null; // DateTime
+    email: string; // String!
+    id: any; // UUID!
+    student_number?: string | null; // String
+    updated_at?: any | null; // DateTime
+    user_upstream_id?: number | null; // Int
+  }
+  CompletionRegistered: { // root type
+    created_at?: any | null; // DateTime
+    id: any; // UUID!
+    organisation: string; // String!
+    real_student_number: string; // String!
+    updated_at?: any | null; // DateTime
+  }
+  Course: { // root type
+    created_at?: any | null; // DateTime
+    id: any; // UUID!
+    name: string; // String!
+    slug: string; // String!
+    updated_at?: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   }
   Mutation: {};
   OpenUniversityCourse: { // root type
     course_code: string; // String!
+<<<<<<< HEAD
     created_at: any; // DateTime!
     id: any; // UUID!
     updated_at: any; // DateTime!
+=======
+    created_at?: any | null; // DateTime
+    id: any; // UUID!
+    updated_at?: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   }
   Query: {};
   User: { // root type
     administrator: boolean; // Boolean!
+<<<<<<< HEAD
     created_at: any; // DateTime!
+=======
+    created_at?: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
     email: string; // String!
     first_name?: string | null; // String
     id: any; // UUID!
     last_name?: string | null; // String
     real_student_number?: string | null; // String
     student_number?: string | null; // String
+<<<<<<< HEAD
     updated_at: any; // DateTime!
+=======
+    updated_at?: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
     upstream_id: number; // Int!
     username: string; // String!
   }
@@ -497,17 +534,26 @@ export interface NexusGenFieldTypes {
   Completion: { // field return type
     completion_language: string | null; // String
     course: NexusGenRootTypes['Course']; // Course!
+<<<<<<< HEAD
     created_at: any; // DateTime!
     email: string; // String!
     id: any; // UUID!
     student_number: string | null; // String
     updated_at: any; // DateTime!
+=======
+    created_at: any | null; // DateTime
+    email: string; // String!
+    id: any; // UUID!
+    student_number: string | null; // String
+    updated_at: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
     user: NexusGenRootTypes['User']; // User!
     user_upstream_id: number | null; // Int
   }
   CompletionRegistered: { // field return type
     completion: NexusGenRootTypes['Completion']; // Completion!
     course: NexusGenRootTypes['Course']; // Course!
+<<<<<<< HEAD
     created_at: any; // DateTime!
     id: any; // UUID!
     organisation: string; // String!
@@ -517,11 +563,26 @@ export interface NexusGenFieldTypes {
   }
   Course: { // field return type
     created_at: any; // DateTime!
+=======
+    created_at: any | null; // DateTime
+    id: any; // UUID!
+    organisation: string; // String!
+    real_student_number: string; // String!
+    updated_at: any | null; // DateTime
+    user: NexusGenRootTypes['User']; // User!
+  }
+  Course: { // field return type
+    created_at: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
     id: any; // UUID!
     name: string; // String!
     open_university_courses: NexusGenRootTypes['OpenUniversityCourse'][] | null; // [OpenUniversityCourse!]
     slug: string; // String!
+<<<<<<< HEAD
     updated_at: any; // DateTime!
+=======
+    updated_at: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   }
   Mutation: { // field return type
     addCourse: NexusGenRootTypes['Course']; // Course!
@@ -531,9 +592,15 @@ export interface NexusGenFieldTypes {
   OpenUniversityCourse: { // field return type
     course: NexusGenRootTypes['Course']; // Course!
     course_code: string; // String!
+<<<<<<< HEAD
     created_at: any; // DateTime!
     id: any; // UUID!
     updated_at: any; // DateTime!
+=======
+    created_at: any | null; // DateTime
+    id: any; // UUID!
+    updated_at: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   }
   Query: { // field return type
     completions: NexusGenRootTypes['Completion'][]; // [Completion!]!
@@ -546,7 +613,11 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     administrator: boolean; // Boolean!
     completions: NexusGenRootTypes['Completion'][] | null; // [Completion!]
+<<<<<<< HEAD
     created_at: any; // DateTime!
+=======
+    created_at: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
     email: string; // String!
     first_name: string | null; // String
     id: any; // UUID!
@@ -554,7 +625,11 @@ export interface NexusGenFieldTypes {
     real_student_number: string | null; // String
     registered_completions: NexusGenRootTypes['CompletionRegistered'][] | null; // [CompletionRegistered!]
     student_number: string | null; // String
+<<<<<<< HEAD
     updated_at: any; // DateTime!
+=======
+    updated_at: any | null; // DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
     upstream_id: number; // Int!
     username: string; // String!
   }

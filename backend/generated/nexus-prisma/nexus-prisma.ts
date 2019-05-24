@@ -4053,10 +4053,13 @@ export type CompletionCreateManyWithoutUserInputInputObject =
   
 export interface CompletionCreateWithoutUserInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
@@ -4087,10 +4090,13 @@ export type CourseCreateOneInputInputObject =
   
 export interface CourseCreateInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
@@ -4117,10 +4123,13 @@ export type OpenUniversityCourseCreateManyWithoutCourseInputInputObject =
   
 export interface OpenUniversityCourseCreateWithoutCourseInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
@@ -4143,10 +4152,13 @@ export type CompletionRegisteredCreateManyWithoutUserInputInputObject =
   
 export interface CompletionRegisteredCreateWithoutUserInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
@@ -4175,10 +4187,13 @@ export type CompletionCreateOneInputInputObject =
   
 export interface CompletionCreateInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
@@ -5090,10 +5105,13 @@ export type CourseUpdateManyMutationInputInputObject =
   
 export interface OpenUniversityCourseCreateInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
@@ -5118,10 +5136,13 @@ export type CourseCreateOneWithoutOpen_university_coursesInputInputObject =
   
 export interface CourseCreateWithoutOpen_university_coursesInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
@@ -5234,10 +5255,13 @@ export type CompletionUpdateManyMutationInputInputObject =
   
 export interface CompletionRegisteredCreateInput {
 <<<<<<< HEAD
+<<<<<<< HEAD
   created_at?: string
   updated_at?: string
 =======
   id?: undefined | null
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: string | null
   updated_at?: string | null
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e

@@ -510,9 +510,146 @@ export interface CompletionWhereInput {
   NOT?: CompletionWhereInput[] | CompletionWhereInput;
 }
 
+<<<<<<< HEAD
 export interface CourseUpsertNestedInput {
   update: CourseUpdateDataInput;
   create: CourseCreateInput;
+=======
+export interface UserWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  upstream_id?: Int;
+  upstream_id_not?: Int;
+  upstream_id_in?: Int[] | Int;
+  upstream_id_not_in?: Int[] | Int;
+  upstream_id_lt?: Int;
+  upstream_id_lte?: Int;
+  upstream_id_gt?: Int;
+  upstream_id_gte?: Int;
+  created_at?: DateTimeInput;
+  created_at_not?: DateTimeInput;
+  created_at_in?: DateTimeInput[] | DateTimeInput;
+  created_at_not_in?: DateTimeInput[] | DateTimeInput;
+  created_at_lt?: DateTimeInput;
+  created_at_lte?: DateTimeInput;
+  created_at_gt?: DateTimeInput;
+  created_at_gte?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  updated_at_not?: DateTimeInput;
+  updated_at_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_not_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_lt?: DateTimeInput;
+  updated_at_lte?: DateTimeInput;
+  updated_at_gt?: DateTimeInput;
+  updated_at_gte?: DateTimeInput;
+  first_name?: String;
+  first_name_not?: String;
+  first_name_in?: String[] | String;
+  first_name_not_in?: String[] | String;
+  first_name_lt?: String;
+  first_name_lte?: String;
+  first_name_gt?: String;
+  first_name_gte?: String;
+  first_name_contains?: String;
+  first_name_not_contains?: String;
+  first_name_starts_with?: String;
+  first_name_not_starts_with?: String;
+  first_name_ends_with?: String;
+  first_name_not_ends_with?: String;
+  last_name?: String;
+  last_name_not?: String;
+  last_name_in?: String[] | String;
+  last_name_not_in?: String[] | String;
+  last_name_lt?: String;
+  last_name_lte?: String;
+  last_name_gt?: String;
+  last_name_gte?: String;
+  last_name_contains?: String;
+  last_name_not_contains?: String;
+  last_name_starts_with?: String;
+  last_name_not_starts_with?: String;
+  last_name_ends_with?: String;
+  last_name_not_ends_with?: String;
+  username?: String;
+  username_not?: String;
+  username_in?: String[] | String;
+  username_not_in?: String[] | String;
+  username_lt?: String;
+  username_lte?: String;
+  username_gt?: String;
+  username_gte?: String;
+  username_contains?: String;
+  username_not_contains?: String;
+  username_starts_with?: String;
+  username_not_starts_with?: String;
+  username_ends_with?: String;
+  username_not_ends_with?: String;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  administrator?: Boolean;
+  administrator_not?: Boolean;
+  student_number?: String;
+  student_number_not?: String;
+  student_number_in?: String[] | String;
+  student_number_not_in?: String[] | String;
+  student_number_lt?: String;
+  student_number_lte?: String;
+  student_number_gt?: String;
+  student_number_gte?: String;
+  student_number_contains?: String;
+  student_number_not_contains?: String;
+  student_number_starts_with?: String;
+  student_number_not_starts_with?: String;
+  student_number_ends_with?: String;
+  student_number_not_ends_with?: String;
+  real_student_number?: String;
+  real_student_number_not?: String;
+  real_student_number_in?: String[] | String;
+  real_student_number_not_in?: String[] | String;
+  real_student_number_lt?: String;
+  real_student_number_lte?: String;
+  real_student_number_gt?: String;
+  real_student_number_gte?: String;
+  real_student_number_contains?: String;
+  real_student_number_not_contains?: String;
+  real_student_number_starts_with?: String;
+  real_student_number_not_starts_with?: String;
+  real_student_number_ends_with?: String;
+  real_student_number_not_ends_with?: String;
+  completions_every?: CompletionWhereInput;
+  completions_some?: CompletionWhereInput;
+  completions_none?: CompletionWhereInput;
+  registered_completions_every?: CompletionRegisteredWhereInput;
+  registered_completions_some?: CompletionRegisteredWhereInput;
+  registered_completions_none?: CompletionRegisteredWhereInput;
+  AND?: UserWhereInput[] | UserWhereInput;
+  OR?: UserWhereInput[] | UserWhereInput;
+  NOT?: UserWhereInput[] | UserWhereInput;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CompletionRegisteredWhereInput {
@@ -582,11 +719,79 @@ export interface CompletionRegisteredWhereInput {
   NOT?: CompletionRegisteredWhereInput[] | CompletionRegisteredWhereInput;
 }
 
+<<<<<<< HEAD
 export interface CompletionUpdateOneRequiredInput {
   create?: CompletionCreateInput;
   update?: CompletionUpdateDataInput;
   upsert?: CompletionUpsertNestedInput;
   connect?: CompletionWhereUniqueInput;
+=======
+export interface CourseWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  created_at?: DateTimeInput;
+  created_at_not?: DateTimeInput;
+  created_at_in?: DateTimeInput[] | DateTimeInput;
+  created_at_not_in?: DateTimeInput[] | DateTimeInput;
+  created_at_lt?: DateTimeInput;
+  created_at_lte?: DateTimeInput;
+  created_at_gt?: DateTimeInput;
+  created_at_gte?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  updated_at_not?: DateTimeInput;
+  updated_at_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_not_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_lt?: DateTimeInput;
+  updated_at_lte?: DateTimeInput;
+  updated_at_gt?: DateTimeInput;
+  updated_at_gte?: DateTimeInput;
+  name?: String;
+  name_not?: String;
+  name_in?: String[] | String;
+  name_not_in?: String[] | String;
+  name_lt?: String;
+  name_lte?: String;
+  name_gt?: String;
+  name_gte?: String;
+  name_contains?: String;
+  name_not_contains?: String;
+  name_starts_with?: String;
+  name_not_starts_with?: String;
+  name_ends_with?: String;
+  name_not_ends_with?: String;
+  slug?: String;
+  slug_not?: String;
+  slug_in?: String[] | String;
+  slug_not_in?: String[] | String;
+  slug_lt?: String;
+  slug_lte?: String;
+  slug_gt?: String;
+  slug_gte?: String;
+  slug_contains?: String;
+  slug_not_contains?: String;
+  slug_starts_with?: String;
+  slug_not_starts_with?: String;
+  slug_ends_with?: String;
+  slug_not_ends_with?: String;
+  open_university_courses_every?: OpenUniversityCourseWhereInput;
+  open_university_courses_some?: OpenUniversityCourseWhereInput;
+  open_university_courses_none?: OpenUniversityCourseWhereInput;
+  AND?: CourseWhereInput[] | CourseWhereInput;
+  OR?: CourseWhereInput[] | CourseWhereInput;
+  NOT?: CourseWhereInput[] | CourseWhereInput;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface OpenUniversityCourseWhereInput {
@@ -638,6 +843,7 @@ export interface OpenUniversityCourseWhereInput {
   AND?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
   OR?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
   NOT?: OpenUniversityCourseWhereInput[] | OpenUniversityCourseWhereInput;
+<<<<<<< HEAD
 }
 
 export interface OpenUniversityCourseCreateWithoutCourseInput {
@@ -744,6 +950,135 @@ export interface UserUpdateWithoutCompletionsDataInput {
 }
 
 export interface UserUpdateManyMutationInput {
+=======
+}
+
+export type CompletionRegisteredWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+}>;
+
+export type CourseWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+  slug?: String;
+}>;
+
+export type OpenUniversityCourseWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+  course_code?: String;
+}>;
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: UUID;
+  upstream_id?: Int;
+  username?: String;
+}>;
+
+export interface CompletionCreateInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  user_upstream_id?: Int;
+  email: String;
+  student_number?: String;
+  user: UserCreateOneWithoutCompletionsInput;
+  course: CourseCreateOneInput;
+  completion_language?: String;
+}
+
+export interface UserCreateOneWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateWithoutCompletionsInput {
+  id?: UUID;
+  upstream_id: Int;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  first_name?: String;
+  last_name?: String;
+  username: String;
+  email: String;
+  administrator: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  registered_completions?: CompletionRegisteredCreateManyWithoutUserInput;
+}
+
+export interface CompletionRegisteredCreateManyWithoutUserInput {
+  create?:
+    | CompletionRegisteredCreateWithoutUserInput[]
+    | CompletionRegisteredCreateWithoutUserInput;
+  connect?:
+    | CompletionRegisteredWhereUniqueInput[]
+    | CompletionRegisteredWhereUniqueInput;
+}
+
+export interface CompletionRegisteredCreateWithoutUserInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  course: CourseCreateOneInput;
+  real_student_number: String;
+  organisation: String;
+  completion: CompletionCreateOneInput;
+}
+
+export interface CourseCreateOneInput {
+  create?: CourseCreateInput;
+  connect?: CourseWhereUniqueInput;
+}
+
+export interface CourseCreateInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  name: String;
+  slug: String;
+  open_university_courses?: OpenUniversityCourseCreateManyWithoutCourseInput;
+}
+
+export interface OpenUniversityCourseCreateManyWithoutCourseInput {
+  create?:
+    | OpenUniversityCourseCreateWithoutCourseInput[]
+    | OpenUniversityCourseCreateWithoutCourseInput;
+  connect?:
+    | OpenUniversityCourseWhereUniqueInput[]
+    | OpenUniversityCourseWhereUniqueInput;
+}
+
+export interface OpenUniversityCourseCreateWithoutCourseInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  course_code: String;
+}
+
+export interface CompletionCreateOneInput {
+  create?: CompletionCreateInput;
+  connect?: CompletionWhereUniqueInput;
+}
+
+export interface CompletionUpdateInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  user_upstream_id?: Int;
+  email?: String;
+  student_number?: String;
+  user?: UserUpdateOneRequiredWithoutCompletionsInput;
+  course?: CourseUpdateOneRequiredInput;
+  completion_language?: String;
+}
+
+export interface UserUpdateOneRequiredWithoutCompletionsInput {
+  create?: UserCreateWithoutCompletionsInput;
+  update?: UserUpdateWithoutCompletionsDataInput;
+  upsert?: UserUpsertWithoutCompletionsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutCompletionsDataInput {
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   upstream_id?: Int;
   created_at?: DateTimeInput;
   updated_at?: DateTimeInput;
@@ -754,6 +1089,10 @@ export interface UserUpdateManyMutationInput {
   administrator?: Boolean;
   student_number?: String;
   real_student_number?: String;
+<<<<<<< HEAD
+=======
+  registered_completions?: CompletionRegisteredUpdateManyWithoutUserInput;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CompletionRegisteredUpdateManyWithoutUserInput {
@@ -820,6 +1159,7 @@ export interface CourseUpdateOneRequiredInput {
   update?: CourseUpdateDataInput;
   upsert?: CourseUpsertNestedInput;
   connect?: CourseWhereUniqueInput;
+<<<<<<< HEAD
 }
 
 export interface CourseUpdateOneRequiredWithoutOpen_university_coursesInput {
@@ -827,6 +1167,8 @@ export interface CourseUpdateOneRequiredWithoutOpen_university_coursesInput {
   update?: CourseUpdateWithoutOpen_university_coursesDataInput;
   upsert?: CourseUpsertWithoutOpen_university_coursesInput;
   connect?: CourseWhereUniqueInput;
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CourseUpdateDataInput {
@@ -835,6 +1177,7 @@ export interface CourseUpdateDataInput {
   name?: String;
   slug?: String;
   open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput;
+<<<<<<< HEAD
 }
 
 export interface CourseCreateWithoutOpen_university_coursesInput {
@@ -843,6 +1186,8 @@ export interface CourseCreateWithoutOpen_university_coursesInput {
   updated_at: DateTimeInput;
   name: String;
   slug: String;
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface OpenUniversityCourseUpdateManyWithoutCourseInput {
@@ -873,11 +1218,14 @@ export interface OpenUniversityCourseUpdateManyWithoutCourseInput {
   updateMany?:
     | OpenUniversityCourseUpdateManyWithWhereNestedInput[]
     | OpenUniversityCourseUpdateManyWithWhereNestedInput;
+<<<<<<< HEAD
 }
 
 export interface CourseCreateOneWithoutOpen_university_coursesInput {
   create?: CourseCreateWithoutOpen_university_coursesInput;
   connect?: CourseWhereUniqueInput;
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput {
@@ -885,6 +1233,7 @@ export interface OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput {
   data: OpenUniversityCourseUpdateWithoutCourseDataInput;
 }
 
+<<<<<<< HEAD
 export interface CourseUpdateManyMutationInput {
   created_at?: DateTimeInput;
   updated_at?: DateTimeInput;
@@ -984,6 +1333,12 @@ export interface CourseUpdateInput {
   name?: String;
   slug?: String;
   open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput;
+=======
+export interface OpenUniversityCourseUpdateWithoutCourseDataInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  course_code?: String;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput {
@@ -1051,11 +1406,14 @@ export interface OpenUniversityCourseScalarWhereInput {
   NOT?:
     | OpenUniversityCourseScalarWhereInput[]
     | OpenUniversityCourseScalarWhereInput;
+<<<<<<< HEAD
 }
 
 export interface CompletionUpdateManyWithWhereNestedInput {
   where: CompletionScalarWhereInput;
   data: CompletionUpdateManyDataInput;
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface OpenUniversityCourseUpdateManyWithWhereNestedInput {
@@ -1063,6 +1421,7 @@ export interface OpenUniversityCourseUpdateManyWithWhereNestedInput {
   data: OpenUniversityCourseUpdateManyDataInput;
 }
 
+<<<<<<< HEAD
 export interface CompletionCreateInput {
   id?: UUID;
   created_at: DateTimeInput;
@@ -1073,6 +1432,12 @@ export interface CompletionCreateInput {
   user: UserCreateOneWithoutCompletionsInput;
   course: CourseCreateOneInput;
   completion_language?: String;
+=======
+export interface OpenUniversityCourseUpdateManyDataInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  course_code?: String;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface UserWhereInput {
@@ -1211,6 +1576,7 @@ export interface UserWhereInput {
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
+<<<<<<< HEAD
 export interface UserCreateWithoutCompletionsInput {
   id?: UUID;
   upstream_id: Int;
@@ -1319,11 +1685,22 @@ export interface CourseCreateInput {
 }
 
 export interface CompletionUpdateWithoutUserDataInput {
+=======
+export interface CompletionUpdateOneRequiredInput {
+  create?: CompletionCreateInput;
+  update?: CompletionUpdateDataInput;
+  upsert?: CompletionUpsertNestedInput;
+  connect?: CompletionWhereUniqueInput;
+}
+
+export interface CompletionUpdateDataInput {
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   created_at?: DateTimeInput;
   updated_at?: DateTimeInput;
   user_upstream_id?: Int;
   email?: String;
   student_number?: String;
+<<<<<<< HEAD
   course?: CourseUpdateOneRequiredInput;
   completion_language?: String;
 }
@@ -1337,6 +1714,11 @@ export interface UserSubscriptionWhereInput {
   AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
   OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
   NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+=======
+  user?: UserUpdateOneRequiredWithoutCompletionsInput;
+  course?: CourseUpdateOneRequiredInput;
+  completion_language?: String;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CompletionUpsertNestedInput {
@@ -1445,6 +1827,7 @@ export interface CompletionRegisteredScalarWhereInput {
   NOT?:
     | CompletionRegisteredScalarWhereInput[]
     | CompletionRegisteredScalarWhereInput;
+<<<<<<< HEAD
 }
 
 export interface CourseUpdateWithoutOpen_university_coursesDataInput {
@@ -1452,6 +1835,8 @@ export interface CourseUpdateWithoutOpen_university_coursesDataInput {
   updated_at?: DateTimeInput;
   name?: String;
   slug?: String;
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CompletionRegisteredUpdateManyWithWhereNestedInput {
@@ -1500,6 +1885,7 @@ export interface CompletionUpdateManyMutationInput {
   completion_language?: String;
 }
 
+<<<<<<< HEAD
 export interface UserCreateOneWithoutCompletionsInput {
   create?: UserCreateWithoutCompletionsInput;
   connect?: UserWhereUniqueInput;
@@ -1513,6 +1899,86 @@ export interface CompletionUpdateWithWhereUniqueWithoutUserInput {
 export interface CourseCreateOneInput {
   create?: CourseCreateInput;
   connect?: CourseWhereUniqueInput;
+=======
+export interface CompletionRegisteredCreateInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  user: UserCreateOneWithoutRegistered_completionsInput;
+  course: CourseCreateOneInput;
+  real_student_number: String;
+  organisation: String;
+  completion: CompletionCreateOneInput;
+}
+
+export interface UserCreateOneWithoutRegistered_completionsInput {
+  create?: UserCreateWithoutRegistered_completionsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateWithoutRegistered_completionsInput {
+  id?: UUID;
+  upstream_id: Int;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  first_name?: String;
+  last_name?: String;
+  username: String;
+  email: String;
+  administrator: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  completions?: CompletionCreateManyWithoutUserInput;
+}
+
+export interface CompletionCreateManyWithoutUserInput {
+  create?:
+    | CompletionCreateWithoutUserInput[]
+    | CompletionCreateWithoutUserInput;
+  connect?: CompletionWhereUniqueInput[] | CompletionWhereUniqueInput;
+}
+
+export interface CompletionCreateWithoutUserInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  user_upstream_id?: Int;
+  email: String;
+  student_number?: String;
+  course: CourseCreateOneInput;
+  completion_language?: String;
+}
+
+export interface CompletionRegisteredUpdateInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  user?: UserUpdateOneRequiredWithoutRegistered_completionsInput;
+  course?: CourseUpdateOneRequiredInput;
+  real_student_number?: String;
+  organisation?: String;
+  completion?: CompletionUpdateOneRequiredInput;
+}
+
+export interface UserUpdateOneRequiredWithoutRegistered_completionsInput {
+  create?: UserCreateWithoutRegistered_completionsInput;
+  update?: UserUpdateWithoutRegistered_completionsDataInput;
+  upsert?: UserUpsertWithoutRegistered_completionsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutRegistered_completionsDataInput {
+  upstream_id?: Int;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  first_name?: String;
+  last_name?: String;
+  username?: String;
+  email?: String;
+  administrator?: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  completions?: CompletionUpdateManyWithoutUserInput;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CompletionUpdateManyWithoutUserInput {
@@ -1533,6 +1999,7 @@ export interface CompletionUpdateManyWithoutUserInput {
   updateMany?:
     | CompletionUpdateManyWithWhereNestedInput[]
     | CompletionUpdateManyWithWhereNestedInput;
+<<<<<<< HEAD
 }
 
 export interface CourseSubscriptionWhereInput {
@@ -1565,16 +2032,172 @@ export interface CourseUpsertWithoutOpen_university_coursesInput {
 export interface UserCreateOneWithoutRegistered_completionsInput {
   create?: UserCreateWithoutRegistered_completionsInput;
   connect?: UserWhereUniqueInput;
+=======
+}
+
+export interface CompletionUpdateWithWhereUniqueWithoutUserInput {
+  where: CompletionWhereUniqueInput;
+  data: CompletionUpdateWithoutUserDataInput;
+}
+
+export interface CompletionUpdateWithoutUserDataInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  user_upstream_id?: Int;
+  email?: String;
+  student_number?: String;
+  course?: CourseUpdateOneRequiredInput;
+  completion_language?: String;
+}
+
+export interface CompletionUpsertWithWhereUniqueWithoutUserInput {
+  where: CompletionWhereUniqueInput;
+  update: CompletionUpdateWithoutUserDataInput;
+  create: CompletionCreateWithoutUserInput;
+}
+
+export interface CompletionScalarWhereInput {
+  id?: UUID;
+  id_not?: UUID;
+  id_in?: UUID[] | UUID;
+  id_not_in?: UUID[] | UUID;
+  id_lt?: UUID;
+  id_lte?: UUID;
+  id_gt?: UUID;
+  id_gte?: UUID;
+  id_contains?: UUID;
+  id_not_contains?: UUID;
+  id_starts_with?: UUID;
+  id_not_starts_with?: UUID;
+  id_ends_with?: UUID;
+  id_not_ends_with?: UUID;
+  created_at?: DateTimeInput;
+  created_at_not?: DateTimeInput;
+  created_at_in?: DateTimeInput[] | DateTimeInput;
+  created_at_not_in?: DateTimeInput[] | DateTimeInput;
+  created_at_lt?: DateTimeInput;
+  created_at_lte?: DateTimeInput;
+  created_at_gt?: DateTimeInput;
+  created_at_gte?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  updated_at_not?: DateTimeInput;
+  updated_at_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_not_in?: DateTimeInput[] | DateTimeInput;
+  updated_at_lt?: DateTimeInput;
+  updated_at_lte?: DateTimeInput;
+  updated_at_gt?: DateTimeInput;
+  updated_at_gte?: DateTimeInput;
+  user_upstream_id?: Int;
+  user_upstream_id_not?: Int;
+  user_upstream_id_in?: Int[] | Int;
+  user_upstream_id_not_in?: Int[] | Int;
+  user_upstream_id_lt?: Int;
+  user_upstream_id_lte?: Int;
+  user_upstream_id_gt?: Int;
+  user_upstream_id_gte?: Int;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  student_number?: String;
+  student_number_not?: String;
+  student_number_in?: String[] | String;
+  student_number_not_in?: String[] | String;
+  student_number_lt?: String;
+  student_number_lte?: String;
+  student_number_gt?: String;
+  student_number_gte?: String;
+  student_number_contains?: String;
+  student_number_not_contains?: String;
+  student_number_starts_with?: String;
+  student_number_not_starts_with?: String;
+  student_number_ends_with?: String;
+  student_number_not_ends_with?: String;
+  completion_language?: String;
+  completion_language_not?: String;
+  completion_language_in?: String[] | String;
+  completion_language_not_in?: String[] | String;
+  completion_language_lt?: String;
+  completion_language_lte?: String;
+  completion_language_gt?: String;
+  completion_language_gte?: String;
+  completion_language_contains?: String;
+  completion_language_not_contains?: String;
+  completion_language_starts_with?: String;
+  completion_language_not_starts_with?: String;
+  completion_language_ends_with?: String;
+  completion_language_not_ends_with?: String;
+  AND?: CompletionScalarWhereInput[] | CompletionScalarWhereInput;
+  OR?: CompletionScalarWhereInput[] | CompletionScalarWhereInput;
+  NOT?: CompletionScalarWhereInput[] | CompletionScalarWhereInput;
+}
+
+export interface CompletionUpdateManyWithWhereNestedInput {
+  where: CompletionScalarWhereInput;
+  data: CompletionUpdateManyDataInput;
+}
+
+export interface CompletionUpdateManyDataInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  user_upstream_id?: Int;
+  email?: String;
+  student_number?: String;
+  completion_language?: String;
+}
+
+export interface UserUpsertWithoutRegistered_completionsInput {
+  update: UserUpdateWithoutRegistered_completionsDataInput;
+  create: UserCreateWithoutRegistered_completionsInput;
+}
+
+export interface CompletionRegisteredUpdateManyMutationInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  real_student_number?: String;
+  organisation?: String;
+}
+
+export interface CourseUpdateInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  name?: String;
+  slug?: String;
+  open_university_courses?: OpenUniversityCourseUpdateManyWithoutCourseInput;
+}
+
+export interface CourseUpdateManyMutationInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  name?: String;
+  slug?: String;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface OpenUniversityCourseCreateInput {
   id?: UUID;
+<<<<<<< HEAD
   created_at: DateTimeInput;
   updated_at: DateTimeInput;
+=======
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   course_code: String;
   course: CourseCreateOneWithoutOpen_university_coursesInput;
 }
 
+<<<<<<< HEAD
 export interface UserCreateWithoutRegistered_completionsInput {
   id?: UUID;
   upstream_id: Int;
@@ -1597,6 +2220,40 @@ export interface OpenUniversityCourseCreateManyWithoutCourseInput {
   connect?:
     | OpenUniversityCourseWhereUniqueInput[]
     | OpenUniversityCourseWhereUniqueInput;
+=======
+export interface CourseCreateOneWithoutOpen_university_coursesInput {
+  create?: CourseCreateWithoutOpen_university_coursesInput;
+  connect?: CourseWhereUniqueInput;
+}
+
+export interface CourseCreateWithoutOpen_university_coursesInput {
+  id?: UUID;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  name: String;
+  slug: String;
+}
+
+export interface OpenUniversityCourseUpdateInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  course_code?: String;
+  course?: CourseUpdateOneRequiredWithoutOpen_university_coursesInput;
+}
+
+export interface CourseUpdateOneRequiredWithoutOpen_university_coursesInput {
+  create?: CourseCreateWithoutOpen_university_coursesInput;
+  update?: CourseUpdateWithoutOpen_university_coursesDataInput;
+  upsert?: CourseUpsertWithoutOpen_university_coursesInput;
+  connect?: CourseWhereUniqueInput;
+}
+
+export interface CourseUpdateWithoutOpen_university_coursesDataInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  name?: String;
+  slug?: String;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface UserUpdateOneRequiredWithoutRegistered_completionsInput {
@@ -1606,6 +2263,7 @@ export interface UserUpdateOneRequiredWithoutRegistered_completionsInput {
   connect?: UserWhereUniqueInput;
 }
 
+<<<<<<< HEAD
 export interface CompletionRegisteredUpdateInput {
   created_at?: DateTimeInput;
   updated_at?: DateTimeInput;
@@ -1670,6 +2328,123 @@ export interface OpenUniversityCourseUpdateInput {
   updated_at?: DateTimeInput;
   course_code?: String;
   course?: CourseUpdateOneRequiredWithoutOpen_university_coursesInput;
+=======
+export interface OpenUniversityCourseUpdateManyMutationInput {
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  course_code?: String;
+}
+
+export interface UserCreateInput {
+  id?: UUID;
+  upstream_id: Int;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  first_name?: String;
+  last_name?: String;
+  username: String;
+  email: String;
+  administrator: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  completions?: CompletionCreateManyWithoutUserInput;
+  registered_completions?: CompletionRegisteredCreateManyWithoutUserInput;
+}
+
+export interface UserUpdateInput {
+  upstream_id?: Int;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  first_name?: String;
+  last_name?: String;
+  username?: String;
+  email?: String;
+  administrator?: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+  completions?: CompletionUpdateManyWithoutUserInput;
+  registered_completions?: CompletionRegisteredUpdateManyWithoutUserInput;
+}
+
+export interface UserUpdateManyMutationInput {
+  upstream_id?: Int;
+  created_at?: DateTimeInput;
+  updated_at?: DateTimeInput;
+  first_name?: String;
+  last_name?: String;
+  username?: String;
+  email?: String;
+  administrator?: Boolean;
+  student_number?: String;
+  real_student_number?: String;
+}
+
+export interface CompletionSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: CompletionWhereInput;
+  AND?: CompletionSubscriptionWhereInput[] | CompletionSubscriptionWhereInput;
+  OR?: CompletionSubscriptionWhereInput[] | CompletionSubscriptionWhereInput;
+  NOT?: CompletionSubscriptionWhereInput[] | CompletionSubscriptionWhereInput;
+}
+
+export interface CompletionRegisteredSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: CompletionRegisteredWhereInput;
+  AND?:
+    | CompletionRegisteredSubscriptionWhereInput[]
+    | CompletionRegisteredSubscriptionWhereInput;
+  OR?:
+    | CompletionRegisteredSubscriptionWhereInput[]
+    | CompletionRegisteredSubscriptionWhereInput;
+  NOT?:
+    | CompletionRegisteredSubscriptionWhereInput[]
+    | CompletionRegisteredSubscriptionWhereInput;
+}
+
+export interface CourseSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: CourseWhereInput;
+  AND?: CourseSubscriptionWhereInput[] | CourseSubscriptionWhereInput;
+  OR?: CourseSubscriptionWhereInput[] | CourseSubscriptionWhereInput;
+  NOT?: CourseSubscriptionWhereInput[] | CourseSubscriptionWhereInput;
+}
+
+export interface OpenUniversityCourseSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: OpenUniversityCourseWhereInput;
+  AND?:
+    | OpenUniversityCourseSubscriptionWhereInput[]
+    | OpenUniversityCourseSubscriptionWhereInput;
+  OR?:
+    | OpenUniversityCourseSubscriptionWhereInput[]
+    | OpenUniversityCourseSubscriptionWhereInput;
+  NOT?:
+    | OpenUniversityCourseSubscriptionWhereInput[]
+    | OpenUniversityCourseSubscriptionWhereInput;
+}
+
+export interface UserSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserWhereInput;
+  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface NodeNode {
@@ -1728,6 +2503,7 @@ export interface UserPreviousValuesSubscription
   real_student_number: () => Promise<AsyncIterator<String>>;
 }
 
+<<<<<<< HEAD
 export interface CompletionRegisteredConnection {
   pageInfo: PageInfo;
   edges: CompletionRegisteredEdge[];
@@ -1751,6 +2527,8 @@ export interface CompletionRegisteredConnectionSubscription
   aggregate: <T = AggregateCompletionRegisteredSubscription>() => T;
 }
 
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 export interface User {
   id: UUID;
   upstream_id: Int;
@@ -1839,6 +2617,7 @@ export interface UserSubscription
       last?: Int;
     }
   ) => T;
+<<<<<<< HEAD
 }
 
 export interface AggregateCompletion {
@@ -1855,6 +2634,8 @@ export interface AggregateCompletionSubscription
   extends Promise<AsyncIterator<AggregateCompletion>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CompletionRegistered {
@@ -1891,6 +2672,7 @@ export interface CompletionRegisteredSubscription
   completion: <T = CompletionSubscription>() => T;
 }
 
+<<<<<<< HEAD
 export interface CompletionRegisteredEdge {
   node: CompletionRegistered;
   cursor: String;
@@ -1903,6 +2685,8 @@ export interface CompletionRegisteredEdgePromise
   node: <T = CompletionRegisteredPromise>() => T;
   cursor: () => Promise<String>;
 =======
+=======
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 export interface Course {
   id: UUID;
   created_at?: DateTimeOutput;
@@ -1912,11 +2696,54 @@ export interface Course {
 >>>>>>> 20b0bc473b69f302447158c775bd0d7e61ff893e
 }
 
+<<<<<<< HEAD
 export interface CompletionRegisteredEdgeSubscription
   extends Promise<AsyncIterator<CompletionRegisteredEdge>>,
     Fragmentable {
   node: <T = CompletionRegisteredSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
+=======
+export interface CoursePromise extends Promise<Course>, Fragmentable {
+  id: () => Promise<UUID>;
+  created_at: () => Promise<DateTimeOutput>;
+  updated_at: () => Promise<DateTimeOutput>;
+  name: () => Promise<String>;
+  slug: () => Promise<String>;
+  open_university_courses: <T = FragmentableArray<OpenUniversityCourse>>(
+    args?: {
+      where?: OpenUniversityCourseWhereInput;
+      orderBy?: OpenUniversityCourseOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+}
+
+export interface CourseSubscription
+  extends Promise<AsyncIterator<Course>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<UUID>>;
+  created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+  name: () => Promise<AsyncIterator<String>>;
+  slug: () => Promise<AsyncIterator<String>>;
+  open_university_courses: <
+    T = Promise<AsyncIterator<OpenUniversityCourseSubscription>>
+  >(
+    args?: {
+      where?: OpenUniversityCourseWhereInput;
+      orderBy?: OpenUniversityCourseOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface CoursePreviousValues {
@@ -1943,8 +2770,18 @@ export interface CoursePreviousValuesSubscription
   id: () => Promise<AsyncIterator<UUID>>;
   created_at: () => Promise<AsyncIterator<DateTimeOutput>>;
   updated_at: () => Promise<AsyncIterator<DateTimeOutput>>;
+<<<<<<< HEAD
   name: () => Promise<AsyncIterator<String>>;
   slug: () => Promise<AsyncIterator<String>>;
+=======
+  course_code: () => Promise<AsyncIterator<String>>;
+  course: <T = CourseSubscription>() => T;
+}
+
+export interface CompletionConnection {
+  pageInfo: PageInfo;
+  edges: CompletionEdge[];
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 export interface BatchPayload {

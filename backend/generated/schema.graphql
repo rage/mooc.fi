@@ -5,11 +5,19 @@
 type Completion {
   completion_language: String
   course: Course!
+<<<<<<< HEAD
   created_at: DateTime!
   email: String!
   id: UUID!
   student_number: String
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  email: String!
+  id: UUID!
+  student_number: String
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   user: User!
   user_upstream_id: Int
 }
@@ -43,11 +51,19 @@ enum CompletionOrderByInput {
 type CompletionRegistered {
   completion: Completion!
   course: Course!
+<<<<<<< HEAD
   created_at: DateTime!
   id: UUID!
   organisation: String!
   real_student_number: String!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  id: UUID!
+  organisation: String!
+  real_student_number: String!
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   user: User!
 }
 
@@ -224,12 +240,20 @@ input CompletionWhereInput {
 }
 
 type Course {
+<<<<<<< HEAD
   created_at: DateTime!
+=======
+  created_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   id: UUID!
   name: String!
   open_university_courses(after: String, before: String, first: Int, last: Int, orderBy: OpenUniversityCourseOrderByInput, skip: Int, where: OpenUniversityCourseWhereInput): [OpenUniversityCourse!]
   slug: String!
+<<<<<<< HEAD
   updated_at: DateTime!
+=======
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 input CourseWhereInput {
@@ -310,9 +334,15 @@ type Mutation {
 type OpenUniversityCourse {
   course: Course!
   course_code: String!
+<<<<<<< HEAD
   created_at: DateTime!
   id: UUID!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  id: UUID!
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
 }
 
 enum OpenUniversityCourseOrderByInput {
@@ -393,7 +423,11 @@ type Query {
 type User {
   administrator: Boolean!
   completions(after: String, before: String, first: Int, last: Int, orderBy: CompletionOrderByInput, skip: Int, where: CompletionWhereInput): [Completion!]
+<<<<<<< HEAD
   created_at: DateTime!
+=======
+  created_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   email: String!
   first_name: String
   id: UUID!
@@ -401,7 +435,11 @@ type User {
   real_student_number: String
   registered_completions(after: String, before: String, first: Int, last: Int, orderBy: CompletionRegisteredOrderByInput, skip: Int, where: CompletionRegisteredWhereInput): [CompletionRegistered!]
   student_number: String
+<<<<<<< HEAD
   updated_at: DateTime!
+=======
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   upstream_id: Int!
   username: String!
 }
