@@ -42,7 +42,7 @@ const Query = prismaObjectType({
     t.list.field("CourseAliases", {
       type: "CourseAlias",
       resolve: async (_, args, ctx) =>
-        await resolvers.CourseAliass(_, args, ctx),
+        await resolvers.CourseAliases(_, args, ctx),
     })
 
     t.list.field("registeredCompletions", {
