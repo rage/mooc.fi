@@ -46,8 +46,13 @@ type CompletionConnection {
 
 input CompletionCreateInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   user_upstream_id: Int
   email: String!
   student_number: String
@@ -68,8 +73,13 @@ input CompletionCreateOneInput {
 
 input CompletionCreateWithoutUserInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   user_upstream_id: Int
   email: String!
   student_number: String
@@ -132,8 +142,13 @@ type CompletionRegisteredConnection {
 
 input CompletionRegisteredCreateInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   user: UserCreateOneWithoutRegistered_completionsInput!
   course: CourseCreateOneInput!
   real_student_number: String!
@@ -148,8 +163,13 @@ input CompletionRegisteredCreateManyWithoutUserInput {
 
 input CompletionRegisteredCreateWithoutUserInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   course: CourseCreateOneInput!
   real_student_number: String!
   organisation: String!
@@ -703,8 +723,13 @@ type CourseConnection {
 
 input CourseCreateInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   name: String!
   slug: String!
   open_university_courses: OpenUniversityCourseCreateManyWithoutCourseInput
@@ -722,8 +747,13 @@ input CourseCreateOneWithoutOpen_university_coursesInput {
 
 input CourseCreateWithoutOpen_university_coursesInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   name: String!
   slug: String!
 }
@@ -965,8 +995,13 @@ type OpenUniversityCourseConnection {
 
 input OpenUniversityCourseCreateInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   course_code: String!
   course: CourseCreateOneWithoutOpen_university_coursesInput!
 }
@@ -978,8 +1013,13 @@ input OpenUniversityCourseCreateManyWithoutCourseInput {
 
 input OpenUniversityCourseCreateWithoutCourseInput {
   id: UUID
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   course_code: String!
 }
 
@@ -1246,8 +1286,13 @@ type UserConnection {
 input UserCreateInput {
   id: UUID
   upstream_id: Int!
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   first_name: String
   last_name: String
   username: String!
@@ -1272,8 +1317,13 @@ input UserCreateOneWithoutRegistered_completionsInput {
 input UserCreateWithoutCompletionsInput {
   id: UUID
   upstream_id: Int!
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   first_name: String
   last_name: String
   username: String!
@@ -1287,8 +1337,13 @@ input UserCreateWithoutCompletionsInput {
 input UserCreateWithoutRegistered_completionsInput {
   id: UUID
   upstream_id: Int!
+<<<<<<< HEAD
   created_at: DateTime!
   updated_at: DateTime!
+=======
+  created_at: DateTime
+  updated_at: DateTime
+>>>>>>> 6caec0b9bf62b0fb716065a55d48ee60a30c1903
   first_name: String
   last_name: String
   username: String!
