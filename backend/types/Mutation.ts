@@ -10,8 +10,8 @@ const Mutation = prismaObjectType({
         name: stringArg(),
         slug: stringArg(),
       },
-      resolve: async (_, { name, slug }, ctx) =>
-        await resolvers.addCourse(_, { name, slug }, ctx),
+      resolve: (_, { name, slug }, ctx) =>
+        resolvers.addCourse(_, { name, slug }, ctx),
     })
 
     t.field("addCourseAlias", {
@@ -20,8 +20,8 @@ const Mutation = prismaObjectType({
         course_code: stringArg(),
         course: idArg(),
       },
-      resolve: async (_, { course_code, course }, ctx) =>
-        await resolvers.addCourseAlias(_, { course_code, course }, ctx),
+      resolve: (_, { course_code, course }, ctx) =>
+        resolvers.addCourseAlias(_, { course_code, course }, ctx),
     })
 
     t.list.field("registerCompletion", {
@@ -30,8 +30,7 @@ const Mutation = prismaObjectType({
         organisation: stringArg(),
         completions: arg({ type: "CompletionArg", list: true }),
       },
-      resolve: async (_, args, ctx) =>
-        await resolvers.registerCompletion(_, args, ctx),
+      resolve: (_, args, ctx) => resolvers.registerCompletion(_, args, ctx),
     })
 
     t.field("addService", {
@@ -39,8 +38,7 @@ const Mutation = prismaObjectType({
       args: {
         url: stringArg({ required: true }),
       },
-      resolve: async (_, { url }, ctx) =>
-        await resolvers.addService(_, { url }, ctx),
+      resolve: (_, { url }, ctx) => resolvers.addService(_, { url }, ctx),
     })
   },
 })
