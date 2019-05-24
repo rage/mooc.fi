@@ -7,7 +7,7 @@ export default {
   uniqueFieldsByModel: {
     User: ['id', 'upstream_id', 'username'],
     Course: ['id', 'slug'],
-    OpenUniversityCourse: ['id', 'course_code'],
+    CourseAlias: ['id', 'course_code'],
     Completion: ['id'],
     CompletionRegistered: ['id'],
     Service: ['id'],
@@ -444,7 +444,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "openUniversityCourse",
+            "name": "courseAlias",
             "description": null,
             "args": [
               {
@@ -455,7 +455,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseWhereUniqueInput",
+                    "name": "CourseAliasWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -464,14 +464,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "OpenUniversityCourse",
+              "name": "CourseAlias",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "openUniversityCourses",
+            "name": "courseAliases",
             "description": null,
             "args": [
               {
@@ -479,7 +479,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -489,7 +489,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "OpenUniversityCourseOrderByInput",
+                  "name": "CourseAliasOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -553,7 +553,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "OpenUniversityCourse",
+                  "name": "CourseAlias",
                   "ofType": null
                 }
               }
@@ -562,7 +562,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "openUniversityCoursesConnection",
+            "name": "courseAliasesConnection",
             "description": null,
             "args": [
               {
@@ -570,7 +570,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -580,7 +580,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "OpenUniversityCourseOrderByInput",
+                  "name": "CourseAliasOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -641,7 +641,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "OpenUniversityCourseConnection",
+                "name": "CourseAliasConnection",
                 "ofType": null
               }
             },
@@ -6090,7 +6090,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "OpenUniversityCourseWhereInput",
+              "name": "CourseAliasWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -6100,7 +6100,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "OpenUniversityCourseWhereInput",
+              "name": "CourseAliasWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -6110,7 +6110,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "OpenUniversityCourseWhereInput",
+              "name": "CourseAliasWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -6176,7 +6176,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseWhereInput",
+        "name": "CourseAliasWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -6705,7 +6705,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 }
               }
@@ -6723,7 +6723,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 }
               }
@@ -6741,7 +6741,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 }
               }
@@ -7093,7 +7093,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -7103,7 +7103,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "ENUM",
-                  "name": "OpenUniversityCourseOrderByInput",
+                  "name": "CourseAliasOrderByInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -7167,7 +7167,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "OpenUniversityCourse",
+                  "name": "CourseAlias",
                   "ofType": null
                 }
               }
@@ -7183,7 +7183,7 @@ export default {
       },
       {
         "kind": "ENUM",
-        "name": "OpenUniversityCourseOrderByInput",
+        "name": "CourseAliasOrderByInput",
         "description": null,
         "fields": null,
         "inputFields": null,
@@ -7266,7 +7266,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "OpenUniversityCourse",
+        "name": "CourseAlias",
         "description": null,
         "fields": [
           {
@@ -8201,7 +8201,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseWhereUniqueInput",
+        "name": "CourseAliasWhereUniqueInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -8232,7 +8232,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "OpenUniversityCourseConnection",
+        "name": "CourseAliasConnection",
         "description": null,
         "fields": [
           {
@@ -8263,7 +8263,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "OpenUniversityCourseEdge",
+                  "name": "CourseAliasEdge",
                   "ofType": null
                 }
               }
@@ -8280,7 +8280,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "AggregateOpenUniversityCourse",
+                "name": "AggregateCourseAlias",
                 "ofType": null
               }
             },
@@ -8295,7 +8295,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "OpenUniversityCourseEdge",
+        "name": "CourseAliasEdge",
         "description": null,
         "fields": [
           {
@@ -8307,7 +8307,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "OpenUniversityCourse",
+                "name": "CourseAlias",
                 "ofType": null
               }
             },
@@ -8338,7 +8338,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "AggregateOpenUniversityCourse",
+        "name": "AggregateCourseAlias",
         "description": null,
         "fields": [
           {
@@ -11133,7 +11133,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "createOpenUniversityCourse",
+            "name": "createCourseAlias",
             "description": null,
             "args": [
               {
@@ -11144,7 +11144,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseCreateInput",
+                    "name": "CourseAliasCreateInput",
                     "ofType": null
                   }
                 },
@@ -11156,7 +11156,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "OpenUniversityCourse",
+                "name": "CourseAlias",
                 "ofType": null
               }
             },
@@ -11164,7 +11164,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "updateOpenUniversityCourse",
+            "name": "updateCourseAlias",
             "description": null,
             "args": [
               {
@@ -11175,7 +11175,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseUpdateInput",
+                    "name": "CourseAliasUpdateInput",
                     "ofType": null
                   }
                 },
@@ -11189,7 +11189,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseWhereUniqueInput",
+                    "name": "CourseAliasWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -11198,14 +11198,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "OpenUniversityCourse",
+              "name": "CourseAlias",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "updateManyOpenUniversityCourses",
+            "name": "updateManyCourseAliases",
             "description": null,
             "args": [
               {
@@ -11216,7 +11216,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseUpdateManyMutationInput",
+                    "name": "CourseAliasUpdateManyMutationInput",
                     "ofType": null
                   }
                 },
@@ -11227,7 +11227,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -11246,7 +11246,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "upsertOpenUniversityCourse",
+            "name": "upsertCourseAlias",
             "description": null,
             "args": [
               {
@@ -11257,7 +11257,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseWhereUniqueInput",
+                    "name": "CourseAliasWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -11271,7 +11271,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseCreateInput",
+                    "name": "CourseAliasCreateInput",
                     "ofType": null
                   }
                 },
@@ -11285,7 +11285,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseUpdateInput",
+                    "name": "CourseAliasUpdateInput",
                     "ofType": null
                   }
                 },
@@ -11297,7 +11297,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "OpenUniversityCourse",
+                "name": "CourseAlias",
                 "ofType": null
               }
             },
@@ -11305,7 +11305,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "deleteOpenUniversityCourse",
+            "name": "deleteCourseAlias",
             "description": null,
             "args": [
               {
@@ -11316,7 +11316,7 @@ export default {
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "OpenUniversityCourseWhereUniqueInput",
+                    "name": "CourseAliasWhereUniqueInput",
                     "ofType": null
                   }
                 },
@@ -11325,14 +11325,14 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "OpenUniversityCourse",
+              "name": "CourseAlias",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "deleteManyOpenUniversityCourses",
+            "name": "deleteManyCourseAliases",
             "description": null,
             "args": [
               {
@@ -11340,7 +11340,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereInput",
+                  "name": "CourseAliasWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -12867,7 +12867,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "OpenUniversityCourseCreateManyWithoutCourseInput",
+              "name": "CourseAliasCreateManyWithoutCourseInput",
               "ofType": null
             },
             "defaultValue": null
@@ -12879,7 +12879,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseCreateManyWithoutCourseInput",
+        "name": "CourseAliasCreateManyWithoutCourseInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -12894,7 +12894,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseCreateWithoutCourseInput",
+                  "name": "CourseAliasCreateWithoutCourseInput",
                   "ofType": null
                 }
               }
@@ -12912,7 +12912,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "name": "CourseAliasWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -12926,7 +12926,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseCreateWithoutCourseInput",
+        "name": "CourseAliasCreateWithoutCourseInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -13931,7 +13931,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "OpenUniversityCourseUpdateManyWithoutCourseInput",
+              "name": "CourseAliasUpdateManyWithoutCourseInput",
               "ofType": null
             },
             "defaultValue": null
@@ -13943,7 +13943,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpdateManyWithoutCourseInput",
+        "name": "CourseAliasUpdateManyWithoutCourseInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -13958,7 +13958,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseCreateWithoutCourseInput",
+                  "name": "CourseAliasCreateWithoutCourseInput",
                   "ofType": null
                 }
               }
@@ -13976,7 +13976,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "name": "CourseAliasWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -13994,7 +13994,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "name": "CourseAliasWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -14012,7 +14012,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "name": "CourseAliasWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -14030,7 +14030,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseWhereUniqueInput",
+                  "name": "CourseAliasWhereUniqueInput",
                   "ofType": null
                 }
               }
@@ -14048,7 +14048,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput",
+                  "name": "CourseAliasUpdateWithWhereUniqueWithoutCourseInput",
                   "ofType": null
                 }
               }
@@ -14066,7 +14066,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput",
+                  "name": "CourseAliasUpsertWithWhereUniqueWithoutCourseInput",
                   "ofType": null
                 }
               }
@@ -14084,7 +14084,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseScalarWhereInput",
+                  "name": "CourseAliasScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -14102,7 +14102,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseUpdateManyWithWhereNestedInput",
+                  "name": "CourseAliasUpdateManyWithWhereNestedInput",
                   "ofType": null
                 }
               }
@@ -14116,7 +14116,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpdateWithWhereUniqueWithoutCourseInput",
+        "name": "CourseAliasUpdateWithWhereUniqueWithoutCourseInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -14128,7 +14128,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "OpenUniversityCourseWhereUniqueInput",
+                "name": "CourseAliasWhereUniqueInput",
                 "ofType": null
               }
             },
@@ -14142,7 +14142,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "OpenUniversityCourseUpdateWithoutCourseDataInput",
+                "name": "CourseAliasUpdateWithoutCourseDataInput",
                 "ofType": null
               }
             },
@@ -14155,7 +14155,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpdateWithoutCourseDataInput",
+        "name": "CourseAliasUpdateWithoutCourseDataInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -14196,7 +14196,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpsertWithWhereUniqueWithoutCourseInput",
+        "name": "CourseAliasUpsertWithWhereUniqueWithoutCourseInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -14208,7 +14208,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "OpenUniversityCourseWhereUniqueInput",
+                "name": "CourseAliasWhereUniqueInput",
                 "ofType": null
               }
             },
@@ -14222,7 +14222,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "OpenUniversityCourseUpdateWithoutCourseDataInput",
+                "name": "CourseAliasUpdateWithoutCourseDataInput",
                 "ofType": null
               }
             },
@@ -14236,7 +14236,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "OpenUniversityCourseCreateWithoutCourseInput",
+                "name": "CourseAliasCreateWithoutCourseInput",
                 "ofType": null
               }
             },
@@ -14249,7 +14249,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseScalarWhereInput",
+        "name": "CourseAliasScalarWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -14768,7 +14768,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseScalarWhereInput",
+                  "name": "CourseAliasScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -14786,7 +14786,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseScalarWhereInput",
+                  "name": "CourseAliasScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -14804,7 +14804,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseScalarWhereInput",
+                  "name": "CourseAliasScalarWhereInput",
                   "ofType": null
                 }
               }
@@ -14818,7 +14818,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpdateManyWithWhereNestedInput",
+        "name": "CourseAliasUpdateManyWithWhereNestedInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -14830,7 +14830,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "OpenUniversityCourseScalarWhereInput",
+                "name": "CourseAliasScalarWhereInput",
                 "ofType": null
               }
             },
@@ -14844,7 +14844,7 @@ export default {
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "OpenUniversityCourseUpdateManyDataInput",
+                "name": "CourseAliasUpdateManyDataInput",
                 "ofType": null
               }
             },
@@ -14857,7 +14857,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpdateManyDataInput",
+        "name": "CourseAliasUpdateManyDataInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -17817,7 +17817,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "OpenUniversityCourseUpdateManyWithoutCourseInput",
+              "name": "CourseAliasUpdateManyWithoutCourseInput",
               "ofType": null
             },
             "defaultValue": null
@@ -17880,7 +17880,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseCreateInput",
+        "name": "CourseAliasCreateInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -18029,7 +18029,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpdateInput",
+        "name": "CourseAliasUpdateInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -18221,7 +18221,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseUpdateManyMutationInput",
+        "name": "CourseAliasUpdateManyMutationInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -19881,7 +19881,7 @@ export default {
             "deprecationReason": null
           },
           {
-            "name": "openUniversityCourse",
+            "name": "courseAlias",
             "description": null,
             "args": [
               {
@@ -19889,7 +19889,7 @@ export default {
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseSubscriptionWhereInput",
+                  "name": "CourseAliasSubscriptionWhereInput",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -19897,7 +19897,7 @@ export default {
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "OpenUniversityCourseSubscriptionPayload",
+              "name": "CourseAliasSubscriptionPayload",
               "ofType": null
             },
             "isDeprecated": false,
@@ -20721,7 +20721,7 @@ export default {
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "OpenUniversityCourseSubscriptionWhereInput",
+        "name": "CourseAliasSubscriptionWhereInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -20794,7 +20794,7 @@ export default {
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "OpenUniversityCourseWhereInput",
+              "name": "CourseAliasWhereInput",
               "ofType": null
             },
             "defaultValue": null
@@ -20810,7 +20810,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseSubscriptionWhereInput",
+                  "name": "CourseAliasSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -20828,7 +20828,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseSubscriptionWhereInput",
+                  "name": "CourseAliasSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -20846,7 +20846,7 @@ export default {
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "OpenUniversityCourseSubscriptionWhereInput",
+                  "name": "CourseAliasSubscriptionWhereInput",
                   "ofType": null
                 }
               }
@@ -20860,7 +20860,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "OpenUniversityCourseSubscriptionPayload",
+        "name": "CourseAliasSubscriptionPayload",
         "description": null,
         "fields": [
           {
@@ -20885,7 +20885,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "OpenUniversityCourse",
+              "name": "CourseAlias",
               "ofType": null
             },
             "isDeprecated": false,
@@ -20917,7 +20917,7 @@ export default {
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "OpenUniversityCoursePreviousValues",
+              "name": "CourseAliasPreviousValues",
               "ofType": null
             },
             "isDeprecated": false,
@@ -20931,7 +20931,7 @@ export default {
       },
       {
         "kind": "OBJECT",
-        "name": "OpenUniversityCoursePreviousValues",
+        "name": "CourseAliasPreviousValues",
         "description": null,
         "fields": [
           {

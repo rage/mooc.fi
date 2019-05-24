@@ -20,15 +20,15 @@ type Course @db(name: "course") {
   updated_at: DateTime @updatedAt
   name: String!
   slug: String! @unique
-  open_university_courses: [OpenUniversityCourse!] @relation(name: "CourseToOpenUniversityCourse")
+  open_university_courses: [CourseAlias!] @relation(name: "CourseToCourseAlias")
 }
 
-type OpenUniversityCourse  @db(name: "open_university_course"){
+type CourseAlias  @db(name: "course_alias"){
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   course_code: String! @unique
-  course: Course! @relation(link: INLINE, name: "CourseToOpenUniversityCourse")
+  course: Course! @relation(link: INLINE, name: "CourseToCourseAlias")
 }
 
 type Completion @db(name: "completion") {

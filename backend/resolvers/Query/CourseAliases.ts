@@ -1,10 +1,10 @@
 import { ForbiddenError } from "apollo-server-core"
 
-const openUniversityCourses = async (_, args, ctx) => {
+const CourseAliass = async (_, args, ctx) => {
   if (!ctx.user.administrator) {
     throw new ForbiddenError("Access Denied")
   }
-  return ctx.prisma.openUniversityCourses()
+  return ctx.prisma.CourseAliass()
 }
 
-export default openUniversityCourses
+export default CourseAliass

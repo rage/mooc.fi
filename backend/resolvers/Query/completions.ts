@@ -12,7 +12,7 @@ const completions = async (_, { course, first, after, last, before }, ctx) => {
   const courseWithSlug: Course = await ctx.prisma.course({ slug: course })
   if (!courseWithSlug) {
     const courseFromAvoinCourse: Course = await ctx.prisma
-      .openUniversityCourse({ course_code: course })
+      .CourseAlias({ course_code: course })
       .course()
     if (!courseFromAvoinCourse) {
       throw new UserInputError("Invalid course identifier")
