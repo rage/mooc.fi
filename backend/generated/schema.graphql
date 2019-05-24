@@ -375,11 +375,25 @@ input CourseWhereInput {
 
 scalar DateTime
 
+scalar Json
+
 type Mutation {
   addCourse(name: String, slug: String): Course!
   addCourseAlias(course: ID, course_code: String): CourseAlias!
   addService(url: String!): Service!
+  addUserCourseProgress(course_id: ID!, progress: ProgressArg!, user_id: ID!): UserCourseProgress!
   registerCompletion(completions: [CompletionArg!], organisation: String): [CompletionRegistered!]!
+}
+
+input PointsByGroup {
+  group: String!
+  max_points: Int!
+  n_points: Int!
+  progress: Float!
+}
+
+input ProgressArg {
+  PointsByGroup: [PointsByGroup!]
 }
 
 type Query {
@@ -413,6 +427,13 @@ type User {
   updated_at: DateTime
   upstream_id: Int!
   username: String!
+}
+
+type UserCourseProgress {
+  course: Course!
+  id: UUID!
+  progress: Json!
+  user: User!
 }
 
 input UserWhereInput {
