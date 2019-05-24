@@ -60,6 +60,7 @@ type Service @db(name: "service") {
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   url: String!
+  name: String!
 }
 
 type UserCourseProgress @db(name: "user_course_progress") {
