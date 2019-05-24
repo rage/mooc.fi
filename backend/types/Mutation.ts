@@ -40,6 +40,21 @@ const Mutation = prismaObjectType({
       },
       resolve: (_, { url }, ctx) => resolvers.addService(_, { url }, ctx),
     })
+
+    t.field("addUserCourseProgress", {
+      type: "UserCourseProgress",
+      args: {
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
+        progress: arg({ type: "ProgressArg", required: true }),
+      },
+      resolve: (_, { user_id, course_id, progress }, ctx) =>
+        resolvers.addUserCourseProgress(
+          _,
+          { user_id, course_id, progress },
+          ctx,
+        ),
+    })
   },
 })
 

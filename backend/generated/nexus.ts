@@ -284,6 +284,15 @@ export interface NexusGenInputs {
     updated_at_not?: any | null; // DateTime
     updated_at_not_in?: any[] | null; // [DateTime!]
   }
+  PointsByGroup: { // input type
+    group: string; // String!
+    max_points: number; // Int!
+    n_points: number; // Int!
+    progress: number; // Float!
+  }
+  ProgressArg: { // input type
+    PointsByGroup?: NexusGenInputs['PointsByGroup'][] | null; // [PointsByGroup!]
+  }
   UserWhereInput: { // input type
     administrator?: boolean | null; // Boolean
     administrator_not?: boolean | null; // Boolean
@@ -478,12 +487,17 @@ export interface NexusGenRootTypes {
     upstream_id: number; // Int!
     username: string; // String!
   }
+  UserCourseProgress: { // root type
+    id: any; // UUID!
+    progress: any; // Json!
+  }
   String: string;
   Int: number;
   Float: number;
   Boolean: boolean;
   ID: string;
   DateTime: any;
+  Json: any;
   UUID: any;
 }
 
@@ -493,6 +507,8 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   CompletionWhereInput: NexusGenInputs['CompletionWhereInput'];
   CourseAliasWhereInput: NexusGenInputs['CourseAliasWhereInput'];
   CourseWhereInput: NexusGenInputs['CourseWhereInput'];
+  PointsByGroup: NexusGenInputs['PointsByGroup'];
+  ProgressArg: NexusGenInputs['ProgressArg'];
   UserWhereInput: NexusGenInputs['UserWhereInput'];
   CompletionOrderByInput: NexusGenEnums['CompletionOrderByInput'];
   CompletionRegisteredOrderByInput: NexusGenEnums['CompletionRegisteredOrderByInput'];
@@ -540,6 +556,7 @@ export interface NexusGenFieldTypes {
     addCourse: NexusGenRootTypes['Course']; // Course!
     addCourseAlias: NexusGenRootTypes['CourseAlias']; // CourseAlias!
     addService: NexusGenRootTypes['Service']; // Service!
+    addUserCourseProgress: NexusGenRootTypes['UserCourseProgress']; // UserCourseProgress!
     registerCompletion: NexusGenRootTypes['CompletionRegistered'][]; // [CompletionRegistered!]!
   }
   Query: { // field return type
@@ -572,6 +589,12 @@ export interface NexusGenFieldTypes {
     upstream_id: number; // Int!
     username: string; // String!
   }
+  UserCourseProgress: { // field return type
+    course: NexusGenRootTypes['Course']; // Course!
+    id: any; // UUID!
+    progress: any; // Json!
+    user: NexusGenRootTypes['User']; // User!
+  }
 }
 
 export interface NexusGenArgTypes {
@@ -597,6 +620,11 @@ export interface NexusGenArgTypes {
     }
     addService: { // args
       url: string; // String!
+    }
+    addUserCourseProgress: { // args
+      course_id: string; // ID!
+      progress: NexusGenInputs['ProgressArg']; // ProgressArg!
+      user_id: string; // ID!
     }
     registerCompletion: { // args
       completions?: NexusGenInputs['CompletionArg'][] | null; // [CompletionArg!]
@@ -649,15 +677,15 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Completion" | "CompletionRegistered" | "Course" | "CourseAlias" | "Mutation" | "Query" | "Service" | "User";
+export type NexusGenObjectNames = "Completion" | "CompletionRegistered" | "Course" | "CourseAlias" | "Mutation" | "Query" | "Service" | "User" | "UserCourseProgress";
 
-export type NexusGenInputNames = "CompletionArg" | "CompletionRegisteredWhereInput" | "CompletionWhereInput" | "CourseAliasWhereInput" | "CourseWhereInput" | "UserWhereInput";
+export type NexusGenInputNames = "CompletionArg" | "CompletionRegisteredWhereInput" | "CompletionWhereInput" | "CourseAliasWhereInput" | "CourseWhereInput" | "PointsByGroup" | "ProgressArg" | "UserWhereInput";
 
 export type NexusGenEnumNames = "CompletionOrderByInput" | "CompletionRegisteredOrderByInput" | "CourseAliasOrderByInput";
 
 export type NexusGenInterfaceNames = never;
 
-export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int" | "String" | "UUID";
+export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int" | "Json" | "String" | "UUID";
 
 export type NexusGenUnionNames = never;
 
