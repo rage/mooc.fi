@@ -36,7 +36,7 @@ const Query = prismaObjectType({
     })
     t.list.field("CourseAliases", {
       type: "CourseAlias",
-      resolve: (_, args, ctx) => resolvers.CourseAliases(_, args, ctx),
+      resolve: (_, args, ctx) => resolvers.courseAliases(_, args, ctx),
     })
 
     t.list.field("registeredCompletions", {
@@ -59,6 +59,29 @@ const Query = prismaObjectType({
     t.list.field("services", {
       type: "Service",
       resolve: (_, args, ctx) => resolvers.services(_, args, ctx),
+    })
+
+    t.list.field("UserCourseProgresses", {
+      type: "UserCourseProgress",
+      args: {
+        user_id: idArg(),
+        course_id: idArg(),
+        first: intArg(),
+        after: idArg(),
+        last: intArg(),
+        before: idArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.userCourseProgresses(_, args, ctx),
+    })
+
+    t.field("UserCourseProgress", {
+      type: "UserCourseProgress",
+      args: {
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
+      },
+      resolve: (_, { user_id, course_id }, ctx) =>
+        resolvers.userCourseProgress(_, { user_id, course_id }, ctx),
     })
   },
 })
