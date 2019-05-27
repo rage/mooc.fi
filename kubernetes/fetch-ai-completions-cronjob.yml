@@ -4,7 +4,7 @@ metadata:
   name: fetch-ai-completions
   namespace: moocfi
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "5/10 * * * *"
   jobTemplate:
     spec:
       template:
