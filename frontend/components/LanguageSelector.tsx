@@ -66,10 +66,8 @@ function LanguageSelector({ handleLanguageChange, languageValue }) {
   const [anchorEl, setAnchorEl] = useState(null)
 
   function handleClick(event) {
-    console.log('click')
-    anchorEl ? 
-      setAnchorEl(null): 
-      setAnchorEl(event.currentTarget)
+    console.log("click")
+    anchorEl ? setAnchorEl(null) : setAnchorEl(event.currentTarget)
   }
   function handleClose(event) {
     setAnchorEl(event.currentTarget)

@@ -5,7 +5,7 @@ import { useQuery } from "react-apollo-hooks"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Grid, Typography } from "@material-ui/core"
 import CompletionCard, { HeaderCard } from "./CompletionCard"
-import { withRouter } from 'next/router'
+import { withRouter } from "next/router"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions {
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const CompletionsList = withRouter(props => {
   const course = props.router.query.course
 
-  console.log('courselist', course)
+  console.log("courselist", course)
 
   const { loading, error, data } = useQuery<AllCompletionsData>(
     AllCompletionsQuery,
