@@ -6,15 +6,15 @@ import {
   CardActionArea,
   CardMedia,
   Typography,
-  Button
+  Button,
 } from "@material-ui/core"
-import DashboardIcon from '@material-ui/icons/Dashboard'
-import Link from 'next/link'
+import DashboardIcon from "@material-ui/icons/Dashboard"
+import Link from "next/link"
 
 function CourseCard({ course }) {
   console.log(course.name)
   return (
-    <Grid item xs={12} sm={6} lg={3}  >
+    <Grid item xs={12} sm={6} lg={3}>
       <Card>
         <CardMedia
           component="img"
@@ -27,12 +27,11 @@ function CourseCard({ course }) {
           </Typography>
         </CardContent>
         <CardActionArea>
-          <Link as={`/course/${course.slug}`} href={`/course?course=${course.slug}`}>
-            <Button
-            variant='contained'
-            color='secondary'
-            size='large'
-           >
+          <Link
+            as={`/course/${course.slug}`}
+            href={`/course?course=${course.slug}`}
+          >
+            <Button variant="contained" color="secondary" size="large">
               <DashboardIcon />
               Course Dashboard
             </Button>

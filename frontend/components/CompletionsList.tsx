@@ -3,12 +3,13 @@ import { ApolloClient, gql } from "apollo-boost"
 import { AllCompletions as AllCompletionsData } from "../pages/__generated__/AllCompletions"
 import { useQuery } from "react-apollo-hooks"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import {Grid, Typography} from '@material-ui/core';
-import CompletionCard, { HeaderCard } from './CompletionCard'
+import { Grid, Typography } from "@material-ui/core"
+import CompletionCard, { HeaderCard } from "./CompletionCard"
+import { withRouter } from 'next/router'
 
 export const AllCompletionsQuery = gql`
   query AllCompletions {
-    completions(course: "elements-of-ai" first:40) {
+    completions(course: "elements-of-ai", first: 40) {
       id
       email
       completion_language
@@ -27,16 +28,21 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: "auto",
       padding: "0.5em",
     },
-    toolbar: { 
+    toolbar: {
       ...theme.mixins.toolbar,
-      padding: '1em'
-    }
-
+      padding: "1em",
+    },
   }),
 )
 
-const CompletionsList = () => {
-  const { loading, error, data } = useQuery<AllCompletionsData>(AllCompletionsQuery)
+const CompletionsList = withRouter(props => {
+  const course = props.router.query.course
+
+  console.log('courselist', course)
+
+  const { loading, error, data } = useQuery<AllCompletionsData>(
+    AllCompletionsQuery,
+  )
   if (error) {
     ;<div>
       Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
@@ -48,16 +54,22 @@ const CompletionsList = () => {
   console.log(data)
   return (
     <section>
-    <Typography variant='h3' component='h2' align='center' gutterBottom={true}>
-      Course Completions 
-    </Typography>
-    <Grid container spacing={3}>
-      <HeaderCard language='fi' course='Elements of Ai' />
-      {data.completions.map(completer => <CompletionCard completer={completer} /> )}
-    </Grid>
+      <Typography
+        variant="h3"
+        component="h2"
+        align="center"
+        gutterBottom={true}
+      >
+        Course Completions
+      </Typography>
+      <Grid container spacing={3}>
+        <HeaderCard language="fi" course="Elements of Ai" />
+        {data.completions.map(completer => (
+          <CompletionCard completer={completer} key={completer.id} />
+        ))}
+      </Grid>
     </section>
   )
-}
-
+})
 
 export default CompletionsList
