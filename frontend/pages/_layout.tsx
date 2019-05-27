@@ -1,5 +1,4 @@
 import * as React from "react"
-import Container from "../components/Container"
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import SkipLink from "../components/SkipLink"

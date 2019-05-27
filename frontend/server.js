@@ -14,6 +14,12 @@ const handle = app.getRequestHandler()
 
   server.use(nextI18NextMiddleware(nextI18next))
 
+  server.get("/course/:id", (req, res) => {
+    const actualPage = "/course"
+    const queryParams = { course: req.params.id }
+    app.render(req, res, actualPage, queryParams)
+  })
+
   server.get("*", (req, res) => {
     return handle(req, res)
   })
