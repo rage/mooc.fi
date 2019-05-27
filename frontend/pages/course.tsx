@@ -42,13 +42,10 @@ const MapTypeToComponent = {
 }
 
 function Course({ admin }) {
-
-  if(!admin){
-    return(
-      <AdminError />
-    )
+  if (!admin) {
+    return <AdminError />
   }
-  
+
   const [languageValue, setLanguageValue] = useState({
     fi: true,
     en: true,
@@ -84,7 +81,7 @@ function Course({ admin }) {
 
 Course.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
-  
+
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
@@ -93,6 +90,5 @@ Course.getInitialProps = function(context: NextContext) {
     namespacesRequired: ["common"],
   }
 }
-
 
 export default Course
