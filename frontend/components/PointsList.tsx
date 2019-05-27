@@ -13,13 +13,8 @@ import {
   Grid,
   Card,
   CardContent,
-  CardHeader,
-  ListSubheader,
 } from "@material-ui/core"
-import {
-  VictoryChart,
-  VictoryBar
-} from "victory"
+import { VictoryChart, VictoryBar, VictoryAxis } from "victory"
 
 /*export const AllCompletionsQuery = gql`
   query AllCompletions {
@@ -50,16 +45,65 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 function ListHeader() {
   return (
-    <Grid item xs={12} sm={12} lg={12} >
-    <Card>
-      <CardContent>
-        <div>
-          <Typography variant="h6" component="p">
-            Elements of Ai
+    <Grid item xs={12} sm={12} lg={12}>
+      <Card>
+        <CardContent>
+          <div>
+            <Typography variant="h6" component="p">
+              Elements of Ai
+            </Typography>
+            <Typography variant="body1" component="p">
+              Students: 50 0000
+            </Typography>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>1</TableCell>
+                  <TableCell align="right">2</TableCell>
+                  <TableCell align="right">3</TableCell>
+                  <TableCell align="right">4</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>11/12</TableCell>
+                  <TableCell align="right">7/10</TableCell>
+                  <TableCell align="right">6/10</TableCell>
+                  <TableCell align="right">0/11</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </Grid>
+  )
+}
+
+function ListItemCard() {
+  return (
+    <Grid item xs={12} sm={12} lg={12}>
+      <Card>
+        <CardContent>
+          <Typography variant="h5" component="p">
+            Milla Makkonen
           </Typography>
           <Typography variant="body1" component="p">
-            Students: 50 0000
+            test.mail@test.com
           </Typography>
+          <Typography variant="body1" component="p">
+            12345678
+          </Typography>
+          <VictoryChart height={175}>
+            <VictoryBar
+              horizontal
+              style={{ data: { fill: "#c43a31" } }}
+              data={[{ y: 12, x: 0.2 }]}
+              barWidth={30}
+              domain={{ y: [0, 15], x: [0, 1] }}
+            />
+            <VictoryAxis dependentAxis label="Completed from total exercises" />
+          </VictoryChart>
           <Table>
             <TableHead>
               <TableRow>
@@ -78,55 +122,8 @@ function ListHeader() {
               </TableRow>
             </TableBody>
           </Table>
-        </div>
-      </CardContent>
-    </Card>
-    </Grid>
-  )
-}
-
-function ListItemCard() {
-  return (
-    <Grid item xs={12} sm={12} lg={12} >
-    <Card>
-      <CardContent>
-        <Typography variant="h5" component="p">
-          Milla Makkonen
-        </Typography>
-        <Typography variant="body1" component="p">
-          test.mail@test.com
-        </Typography>
-        <Typography variant="body1" component="p">
-          12345678
-        </Typography>
-        <VictoryChart>
-          <VictoryBar horizontal
-            data={[
-              {x: 1, y: 12, y0: 1}
-            ]}
-            domain={{ x:[1,1], y: [0,20]}}
-          />
-        </VictoryChart>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>1</TableCell>
-              <TableCell align="right">2</TableCell>
-              <TableCell align="right">3</TableCell>
-              <TableCell align="right">4</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>11/12</TableCell>
-              <TableCell align="right">7/10</TableCell>
-              <TableCell align="right">6/10</TableCell>
-              <TableCell align="right">0/11</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
     </Grid>
   )
 }
@@ -145,13 +142,18 @@ const PointsList = () => {
   }*/
   return (
     <section>
-    <Typography component='h1'variant='h3' align='center' gutterBottom={true}>
-      Points
-    </Typography>
-    <Grid container spacing={3}>
-      <ListHeader />
-      <ListItemCard />
-    </Grid>
+      <Typography
+        component="h1"
+        variant="h3"
+        align="center"
+        gutterBottom={true}
+      >
+        Points
+      </Typography>
+      <Grid container spacing={3}>
+        <ListHeader />
+        <ListItemCard />
+      </Grid>
     </section>
   )
 }
