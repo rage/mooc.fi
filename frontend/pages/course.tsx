@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import { IconButton } from "@material-ui/core"
 import LanguageSelectorBar from "../components/LanguageSelectorBar"
 import CompletionsList from "../components/CompletionsList"
 import PointsList from "../components/PointsList"
@@ -9,6 +8,7 @@ import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import AdminError from "../components/AdminError"
 import { NextContext } from "next"
+import { WideContainer } from "../components/Container"
 
 const drawerWidth = 240
 
@@ -42,13 +42,10 @@ const MapTypeToComponent = {
 }
 
 function Course({ admin }) {
-
-  if(!admin){
-    return(
-      <AdminError />
-    )
+  if (!admin) {
+    return <AdminError />
   }
-  
+
   const [languageValue, setLanguageValue] = useState({
     fi: true,
     en: true,
@@ -68,23 +65,25 @@ function Course({ admin }) {
   }
 
   return (
-    <section className={classes.root}>
-      <LanguageSelectorBar
-        value={selection}
-        handleChange={handleSelectionChange}
-      />
-      {MapTypeToComponent[selection]}
-      <LanguageSelector
-        handleLanguageChange={handleLanguageChange}
-        languageValue={languageValue}
-      />
-    </section>
+    <WideContainer>
+      <section className={classes.root}>
+        <LanguageSelectorBar
+          value={selection}
+          handleChange={handleSelectionChange}
+        />
+        <LanguageSelector
+          handleLanguageChange={handleLanguageChange}
+          languageValue={languageValue}
+        />
+        {MapTypeToComponent[selection]}
+      </section>
+    </WideContainer>
   )
 }
 
 Course.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
-  
+
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
@@ -93,6 +92,5 @@ Course.getInitialProps = function(context: NextContext) {
     namespacesRequired: ["common"],
   }
 }
-
 
 export default Course
