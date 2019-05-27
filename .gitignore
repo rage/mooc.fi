@@ -6,8 +6,4 @@ dist
 .next
 .env
 *secret.yml
-<<<<<<< HEAD
-backend/generated/
-=======
 backend/generated
->>>>>>> master
