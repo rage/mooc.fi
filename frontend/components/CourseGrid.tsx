@@ -3,7 +3,6 @@ import { Grid } from "@material-ui/core"
 import CourseCard from "./CourseCard"
 
 function CourseGrid({ courses }) {
-
   return (
     <section>
       <Grid container spacing={3}>

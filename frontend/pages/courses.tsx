@@ -27,12 +27,12 @@ export const AllCoursesQuery = gql`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     header: {
-      marginTop: '1em'
-    }
+      marginTop: "1em",
+    },
   }),
 )
 
-const CompletionDashboard = ({  admin }) => {
+const Courses = ({ admin }) => {
   const classes = useStyles()
 
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
@@ -48,7 +48,7 @@ const CompletionDashboard = ({  admin }) => {
   }
 
   if (loading || !data) {
-    return <CircularProgress color='primary' />
+    return <CircularProgress color="primary" />
   }
 
   return (
@@ -67,7 +67,7 @@ const CompletionDashboard = ({  admin }) => {
   )
 }
 
-CompletionDashboard.getInitialProps = function(context: NextContext) {
+Courses.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
   console.log(admin)
   if (!isSignedIn(context)) {
@@ -79,4 +79,4 @@ CompletionDashboard.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default CompletionDashboard
+export default Courses
