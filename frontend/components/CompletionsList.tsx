@@ -1,58 +1,75 @@
-import React from "react"
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  ListSubheader,
-} from "@material-ui/core"
+import React, { useState } from "react"
+import { ApolloClient, gql } from "apollo-boost"
+import { AllCompletions as AllCompletionsData } from "../pages/__generated__/AllCompletions"
+import { useQuery } from "react-apollo-hooks"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { Grid, Typography } from "@material-ui/core"
+import CompletionCard, { HeaderCard } from "./CompletionCard"
+import { withRouter } from "next/router"
 
-const completions = [
-  {
-    name: "Matti",
-    SID: "1234",
-  },
-  {
-    name: "Minna",
-    SID: "12345",
-  },
-  {
-    name: "Markus",
-    SID: "123456",
-  },
-]
-
+export const AllCompletionsQuery = gql`
+  query AllCompletions {
+    completions(course: "elements-of-ai", first: 40) {
+      id
+      email
+      completion_language
+      created_at
+      user {
+        first_name
+        last_name
+        student_number
+      }
+    }
+  }
+`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    list: {
-      padding: "0.7em",
-      backgroundColor: "white",
+    title: {
+      margin: "auto",
+      padding: "0.5em",
+    },
+    toolbar: {
+      ...theme.mixins.toolbar,
+      padding: "1em",
     },
   }),
 )
 
-function CompletionsListItem({ completer }) {
-  return (
-    <ListItem divider={true} button={true}>
-      <ListItemText primary={completer.name} secondary={completer.SID} />
-    </ListItem>
+const CompletionsList = withRouter(props => {
+  const course = props.router.query.course
+
+  console.log("courselist", course)
+
+  const { loading, error, data } = useQuery<AllCompletionsData>(
+    AllCompletionsQuery,
   )
-}
-
-function CompletionsList() {
-  const classes = useStyles()
-
+  if (error) {
+    ;<div>
+      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+    </div>
+  }
+  if (loading || !data) {
+    return <div>Loading</div>
+  }
+  console.log(data)
   return (
     <section>
-      <List className={classes.list}>
-        <ListSubheader>Completions for this course</ListSubheader>
-        {completions.map(c => (
-          <CompletionsListItem key={c.SID} completer={c} />
+      <Typography
+        variant="h3"
+        component="h2"
+        align="center"
+        gutterBottom={true}
+      >
+        Course Completions
+      </Typography>
+      <Grid container spacing={3}>
+        <HeaderCard language="fi" course="Elements of Ai" />
+        {data.completions.map(completer => (
+          <CompletionCard completer={completer} key={completer.id} />
         ))}
-      </List>
+      </Grid>
     </section>
   )
-}
+})
 
 export default CompletionsList
