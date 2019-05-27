@@ -1,6 +1,10 @@
 import { Prisma, Course, User } from "../../generated/prisma-client"
+import { ForbiddenError } from "apollo-server-core"
 
 const addUserCourseServiceProgress = async (_, args, ctx) => {
+  if (!ctx.user.administrator) {
+    throw new ForbiddenError("Access Denied")
+  }
   const { service_id, progress, user_course_progress_id } = args
   const prisma: Prisma = ctx.prisma
   const course: Course = await prisma
