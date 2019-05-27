@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Typography } from "@material-ui/core"
+import { Typography, CircularProgress } from "@material-ui/core"
 import { NextContext } from "next"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
@@ -26,24 +26,13 @@ export const AllCoursesQuery = gql`
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      widht: "auto",
-      display: "block",
-    },
-    paper: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      padding: "1em",
-    },
-    title: {
-      margin: "auto",
-      padding: "1em",
-    },
+    header: {
+      marginTop: '1em'
+    }
   }),
 )
 
-const CompletionDashboard = ({ t, admin }) => {
+const CompletionDashboard = ({  admin }) => {
   const classes = useStyles()
 
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
@@ -59,7 +48,7 @@ const CompletionDashboard = ({ t, admin }) => {
   }
 
   if (loading || !data) {
-    return <div>Loading</div>
+    return <CircularProgress color='primary' />
   }
 
   return (
@@ -69,7 +58,7 @@ const CompletionDashboard = ({ t, admin }) => {
         variant="h2"
         gutterBottom={true}
         align="center"
-        className={classes.title}
+        className={classes.header}
       >
         All Courses
       </Typography>

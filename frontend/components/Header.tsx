@@ -36,9 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
     avatar: {
       margin: "1em",
     },
-    appBar: {
-      zIndex: theme.zIndex.drawer + 1,
-    },
   }),
 )
 
@@ -48,7 +45,7 @@ function Header() {
   const client = useApolloClient()
 
   return (
-    <AppBar position='fixed' color="inherit" className={classes.appBar}>
+    <AppBar position="static" color="inherit">
       <Toolbar>
         <LogoImage className={classes.avatar} />
         <TitleText className={classes.title} />
