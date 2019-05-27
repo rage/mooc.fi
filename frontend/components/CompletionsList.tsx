@@ -3,7 +3,8 @@ import { ApolloClient, gql } from "apollo-boost"
 import { AllCompletions as AllCompletionsData } from "../pages/__generated__/AllCompletions"
 import { useQuery } from "react-apollo-hooks"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import {Table, TableRow, TableCell, TableHead, Typography} from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
+import CompletionCard, { HeaderCard } from './CompletionCard'
 
 export const AllCompletionsQuery = gql`
   query AllCompletions {
@@ -45,40 +46,18 @@ const CompletionsList = () => {
     return <div>Loading</div>
   }
   console.log(data)
-  const rows = [
-
-  ]
   return (
-    <section >
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>First Name</TableCell>
-            <TableCell align='right'>Last Name</TableCell>
-            <TableCell align='right'>email</TableCell>
-            <TableCell align='right'>Student Number</TableCell>
-            <TableCell align='right'>Language</TableCell>
-            <TableCell align='right'>Completion time</TableCell>
-          </TableRow>
-        </TableHead>
-        {data.completions.map(c => (
-          <TableRow key={c.id}>
-            <TableCell component="th" scope="row">
-                {c.user.first_name}
-            </TableCell>
-            <TableCell align="right">{c.user.last_name}</TableCell>
-            <TableCell align="right">{c.email}</TableCell>
-            <TableCell align="right">{c.user.student_number}</TableCell>
-            <TableCell align="right">{c.completion_language}</TableCell>
-            <TableCell align="right">{c.created_at}</TableCell>
-          </TableRow>
-        )
-        )}
-      </Table>
+    <section>
+    <Typography variant='h3' component='h2' align='center' gutterBottom={true}>
+      Course Completions 
+    </Typography>
+    <Grid container spacing={3}>
+      <HeaderCard language='fi' course='Elements of Ai' />
+      {data.completions.map(completer => <CompletionCard completer={completer} /> )}
+    </Grid>
     </section>
   )
 }
-
 
 
 export default CompletionsList
