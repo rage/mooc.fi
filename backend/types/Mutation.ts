@@ -37,8 +37,10 @@ const Mutation = prismaObjectType({
       type: "Service",
       args: {
         url: stringArg({ required: true }),
+        name: stringArg({ required: true }),
       },
-      resolve: (_, { url }, ctx) => resolvers.addService(_, { url }, ctx),
+      resolve: (_, { url, name }, ctx) =>
+        resolvers.addService(_, { url, name }, ctx),
     })
 
     t.field("addUserCourseProgress", {
@@ -54,6 +56,17 @@ const Mutation = prismaObjectType({
           { user_id, course_id, progress },
           ctx,
         ),
+    })
+
+    t.field("addUserCourseServiceProgress", {
+      type: "UserCourseServiceProgress",
+      args: {
+        progress: arg({ type: "ProgressArg", required: true }),
+        service_id: idArg({ required: true }),
+        user_course_progress_id: idArg({ required: true }),
+      },
+      resolve: (_, args, ctx) =>
+        resolvers.addUserCourseServiceProgress(_, args, ctx),
     })
   },
 })

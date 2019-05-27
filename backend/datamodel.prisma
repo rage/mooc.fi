@@ -20,7 +20,7 @@ type Course @db(name: "course") {
   updated_at: DateTime @updatedAt
   name: String!
   slug: String! @unique
-  open_university_courses: [CourseAlias!] @relation(name: "CourseToCourseAlias")
+  course_aliases: [CourseAlias!] @relation(name: "CourseToCourseAlias")
 }
 
 type CourseAlias  @db(name: "course_alias"){
@@ -42,6 +42,7 @@ type Completion @db(name: "completion") {
   user: User!  @relation(link: INLINE, name: "CompletionToUser")
   course: Course! @relation(link: INLINE, name: "CompletionToCourse")
   completion_language: String
+  completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion") 
 }
 
 type CompletionRegistered @db(name: "completion_registered") {
@@ -52,7 +53,7 @@ type CompletionRegistered @db(name: "completion_registered") {
   course: Course! @relation(link: INLINE, name: "CompletionRegisteredToCourse")
   real_student_number: String!
   organisation: String!
-  completion: Completion!
+  completion: Completion! @relation(link: INLINE, name: "CompletionRegisteredToCompletion")
 }
 
 type Service @db(name: "service") {
@@ -68,6 +69,7 @@ type UserCourseProgress @db(name: "user_course_progress") {
   user: User! @relation(link: INLINE, name: "UserCourseProgressToUser")
   course: Course! @relation(link: INLINE, name: "UserCourseProgressToCourse")
   progress: Json!
+  user_course_service_progresses: [UserCourseServiceProgress!]! @relation(name:"UserCourseServiceProgressToUserCourseProgress")
 }
 
 
@@ -77,4 +79,5 @@ type UserCourseServiceProgress @db(name: "user_course_service_progress") {
   course: Course! @relation(link: INLINE, name: "UserCourseServiceProgressToCourse")
   service: Service! @relation(link: INLINE, name: "UserCourseServiceProgressToService")
   progress: Json!
+  user_course_progress: UserCourseProgress! @relation(link: INLINE, name: "UserCourseServiceProgressToUserCourseProgress")
 }

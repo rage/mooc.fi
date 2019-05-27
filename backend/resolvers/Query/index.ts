@@ -7,3 +7,6 @@ export { default as registeredCompletions } from "./registeredCompletions"
 export { default as services } from "./services"
 export { default as userCourseProgresses } from "./userCourseProgresses"
 export { default as userCourseProgress } from "./userCourseProgress"
+export {
+  default as userCourseServiceProgresses,
+} from "./userCourseServiceProgresses"
