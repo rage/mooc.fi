@@ -1,13 +1,19 @@
 import React from "react"
 import { Grid, Card, CardContent, Typography } from "@material-ui/core"
 import DoneIcon from "@material-ui/icons/Done"
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    titleCard: {
+      borderLeft: "7px solid #af52bf",
+    },
+  }),
+)
 
 function CardContentGrid({ completer }) {
   return (
     <Grid container spacing={1} direction="row" alignItems="flex-start">
-      <Grid item>
-        <Typography variant="body1">{completer.user.first_name}</Typography>
-      </Grid>
       <Grid item>
         <Typography variant="body1">{completer.user.first_name}</Typography>
       </Grid>
@@ -59,11 +65,12 @@ function CompletionCard({ completer }) {
 export default CompletionCard
 
 export function HeaderCard({}) {
+  const classes = useStyles()
   return (
     <Grid item xs={12} sm={12} lg={8}>
-      <Card>
+      <Card className={classes.titleCard}>
         <CardContent>
-          <Typography component="h2" variant="h4">
+          <Typography component="p" variant="h6">
             Elements of Ai
           </Typography>
         </CardContent>

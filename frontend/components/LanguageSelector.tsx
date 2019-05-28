@@ -4,14 +4,28 @@ import {
   FormGroup,
   FormControlLabel,
   Card,
-  FormLabel,
+  CardHeader,
+  Typography,
 } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
+
+const useStyles = makeStyles(theme => ({
+  baseCard: {
+    margin: 5,
+  },
+  checkbox: {
+    margin: 3,
+  },
+}))
 
 function LanguageSelector({ handleLanguageChange, languageValue }) {
+  const classes = useStyles()
   return (
-    <Card>
+    <Card className={classes.baseCard}>
+      <CardHeader title="Select course language" />
       <FormGroup row>
         <FormControlLabel
+          className={classes.checkbox}
           control={
             <Checkbox
               checked={languageValue.en}
@@ -21,6 +35,7 @@ function LanguageSelector({ handleLanguageChange, languageValue }) {
           label="EN"
         />
         <FormControlLabel
+          className={classes.checkbox}
           control={
             <Checkbox
               checked={languageValue.fi}
@@ -30,6 +45,7 @@ function LanguageSelector({ handleLanguageChange, languageValue }) {
           label="FI"
         />
         <FormControlLabel
+          className={classes.checkbox}
           control={
             <Checkbox
               checked={languageValue.se}

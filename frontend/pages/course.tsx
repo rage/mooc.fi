@@ -9,30 +9,21 @@ import redirect from "../lib/redirect"
 import AdminError from "../components/AdminError"
 import { NextContext } from "next"
 import { WideContainer } from "../components/Container"
-
-const drawerWidth = 240
+import { Breadcrumbs, Link } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
-  root: {},
-  drawer: {
-    [theme.breakpoints.up("sm")]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
+  breadcrumb: {
+    marginTop: 5,
+    marginLeft: 5,
   },
-  drawerPaper: {
-    padding: "1em",
-    width: drawerWidth,
+  link: {
+    display: "flex",
   },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
+  icon: {
+    marginRight: theme.spacing(0.5),
+    width: 20,
+    height: 20,
   },
-  headerItem: {
-    padding: "1.5em",
-  },
-  menuButton: {},
-  toolbar: theme.mixins.toolbar,
 }))
 
 const MapTypeToComponent = {
@@ -65,19 +56,28 @@ function Course({ admin }) {
   }
 
   return (
-    <WideContainer>
-      <section className={classes.root}>
-        <LanguageSelectorBar
-          value={selection}
-          handleChange={handleSelectionChange}
-        />
+    <section>
+      <Breadcrumbs
+        separator=">"
+        aria-label="Breadcrumb"
+        className={classes.breadcrumb}
+      >
+        <Link className={classes.link}>Home</Link>
+        <Link className={classes.link}>Courses</Link>
+        <Link className={classes.link}>Elements of Ai</Link>
+      </Breadcrumbs>
+      <LanguageSelectorBar
+        value={selection}
+        handleChange={handleSelectionChange}
+      />
+      <WideContainer>
         <LanguageSelector
           handleLanguageChange={handleLanguageChange}
           languageValue={languageValue}
         />
         {MapTypeToComponent[selection]}
-      </section>
-    </WideContainer>
+      </WideContainer>
+    </section>
   )
 }
 

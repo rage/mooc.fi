@@ -33,20 +33,21 @@ import { VictoryChart, VictoryBar, VictoryAxis } from "victory"
 `*/
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    title: {
-      margin: "auto",
-      padding: "0.5em",
+    titleCard: {
+      borderLeft: "7px solid #ffc107",
     },
-    toolbar: {
-      ...theme.mixins.toolbar,
-      padding: "1em",
+    title: {
+      textTransform: "uppercase",
+      marginTop: "0.7em",
+      marginBottom: "0.7em",
     },
   }),
 )
 function ListHeader() {
+  const classes = useStyles()
   return (
     <Grid item xs={12} sm={12} lg={12}>
-      <Card>
+      <Card className={classes.titleCard}>
         <CardContent>
           <div>
             <Typography variant="h6" component="p">
@@ -147,6 +148,7 @@ const PointsList = () => {
         variant="h3"
         align="center"
         gutterBottom={true}
+        className={classes.title}
       >
         Points
       </Typography>

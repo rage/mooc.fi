@@ -42,19 +42,16 @@ export const MoreCompletionsQuery = gql`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
-      margin: "auto",
-      padding: "0.5em",
-    },
-    toolbar: {
-      ...theme.mixins.toolbar,
-      padding: "1em",
+      textTransform: "uppercase",
+      marginTop: "0.7em",
+      marginBottom: "0.7em",
     },
   }),
 )
 
 const CompletionsList = withRouter(props => {
   const course = props.router.query.course
-  const [completionsData, setcompletionsData] = useState()
+  const classes = useStyles()
 
   const { loading, error, data } = useQuery<AllCompletionsData>(
     AllCompletionsQuery,
@@ -72,19 +69,7 @@ const CompletionsList = withRouter(props => {
   if (loading || !data) {
     return <div>Loading</div>
   }
-  console.log("cursor", data.completions[0].id)
 
-  const onLoadMore = () => {
-    const { loading, error, data } = useQuery<MoreCompletionsData>(
-      MoreCompletionsQuery,
-      {
-        variables: {
-          course,
-          cursor: data.completions[0].id,
-        },
-      },
-    )
-  }
   return (
     <section>
       <Typography
@@ -92,8 +77,9 @@ const CompletionsList = withRouter(props => {
         component="h2"
         align="center"
         gutterBottom={true}
+        className={classes.title}
       >
-        Course Completions
+        Completions
       </Typography>
       <Grid container spacing={3}>
         <HeaderCard />
