@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { ApolloClient, gql } from "apollo-boost"
+import { Query } from "react-apollo"
 import { AllCompletions as AllCompletionsData } from "../pages/__generated__/AllCompletions"
-import { MoreCompletions as MoreCompletionsData } from "./__generated__/MoreCompletions"
-import { useQuery } from "react-apollo-hooks"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, Typography } from "@material-ui/core"
+import { Grid, Typography, CircularProgress } from "@material-ui/core"
 import CompletionCard, { HeaderCard } from "./CompletionCard"
 import { withRouter } from "next/router"
 import CompletionPaginator from "./CompletionPaginator"
@@ -12,21 +11,6 @@ import CompletionPaginator from "./CompletionPaginator"
 export const AllCompletionsQuery = gql`
   query AllCompletions($course: String) {
     completions(course: $course, first: 40) {
-      id
-      email
-      completion_language
-      created_at
-      user {
-        first_name
-        last_name
-        student_number
-      }
-    }
-  }
-`
-export const MoreCompletionsQuery = gql`
-  query MoreCompletions($course: String, $cursor: ID) {
-    completions(course: $course, first: 40, after: $cursor) {
       id
       email
       completion_language
@@ -49,27 +33,50 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const CompletionsList = withRouter(props => {
-  const course = props.router.query.course
-  const classes = useStyles()
+interface Variables {
+  course: string
+}
 
-  const { loading, error, data } = useQuery<AllCompletionsData>(
-    AllCompletionsQuery,
-    {
-      variables: {
-        course,
-      },
-    },
+export interface CompletionsListProps {
+  course: string
+}
+
+const Completions: React.SFC<CompletionsListProps> = props => {
+  const { course } = props
+
+  return (
+    <Query<AllCompletionsData, Variables>
+      query={AllCompletionsQuery}
+      variables={{ course }}
+    >
+      {({ loading, error, data }) => {
+        if (loading) {
+          return <CircularProgress color="secondary" />
+        }
+        if (error || !data) {
+          return (
+            <div>
+              Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+            </div>
+          )
+        }
+        console.log(data)
+        return (
+          <Grid container spacing={3} justify="center">
+            <HeaderCard />
+            {data.completions.map(completer => (
+              <CompletionCard completer={completer} key={completer.id} />
+            ))}
+            <CompletionPaginator />
+          </Grid>
+        )
+      }}
+    </Query>
   )
-  if (error) {
-    ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-    </div>
-  }
-  if (loading || !data) {
-    return <div>Loading</div>
-  }
-
+}
+const CompletionsList = withRouter(props => {
+  const classes = useStyles()
+  const { router } = props
   return (
     <section>
       <Typography
@@ -81,13 +88,7 @@ const CompletionsList = withRouter(props => {
       >
         Completions
       </Typography>
-      <Grid container spacing={3} justify="center">
-        <HeaderCard />
-        {data.completions.map(completer => (
-          <CompletionCard completer={completer} key={completer.id} />
-        ))}
-        <CompletionPaginator />
-      </Grid>
+      <Completions course={router.query.course} />
     </section>
   )
 })

@@ -99,11 +99,14 @@ function ListItemCard() {
             <VictoryBar
               horizontal
               style={{ data: { fill: "#c43a31" } }}
-              data={[{ y: 12, x: 0.2 }]}
+              data={[{ y: 12, x: 0.4 }]}
               barWidth={30}
               domain={{ y: [0, 15], x: [0, 1] }}
             />
-            <VictoryAxis dependentAxis label="Completed from total exercises" />
+            <VictoryAxis
+              dependentAxis
+              label="Points awarded from total points possible"
+            />
           </VictoryChart>
           <Table>
             <TableHead>
