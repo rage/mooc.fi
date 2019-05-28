@@ -60,6 +60,15 @@ const Mutation = prismaObjectType({
       resolve: (_, args, ctx) =>
         resolvers.addUserCourseServiceProgress(_, args, ctx),
     })
+
+    t.field("addOrganization", {
+      type: "Organization",
+      args: {
+        name: stringArg(),
+        slug: stringArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.addOrganization(_, args, ctx),
+    })
   },
 })
 

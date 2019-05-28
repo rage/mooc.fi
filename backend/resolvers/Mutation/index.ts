@@ -6,3 +6,4 @@ export { default as addUserCourseProgress } from "./addUserCourseProgress"
 export {
   default as addUserCourseServiceProgress,
 } from "./addUserCourseServiceProgress"
+export { default as addOrganization } from "./addOrganization"
