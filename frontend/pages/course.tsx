@@ -7,6 +7,7 @@ import LanguageSelector from "../components/LanguageSelector"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import AdminError from "../components/AdminError"
+import CourseDashboard from "../components/CourseDashboard"
 import { NextContext } from "next"
 import { WideContainer } from "../components/Container"
 import { Breadcrumbs, Link } from "@material-ui/core"
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 const MapTypeToComponent = {
   1: <CompletionsList />,
   2: <PointsList />,
-  0: <p>STUFF</p>,
+  0: <CourseDashboard />,
 }
 
 function Course({ admin }) {
