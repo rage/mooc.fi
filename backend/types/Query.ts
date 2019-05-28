@@ -119,6 +119,17 @@ const Query = prismaObjectType({
       resolve: (_, args, ctx) =>
         resolvers.userCourseServiceProgress(_, args, ctx),
     })
+
+    t.list.field("organizations", {
+      type: "Organization",
+      args: {
+        first: intArg(),
+        after: idArg(),
+        last: intArg(),
+        before: idArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.organizations(_, args, ctx),
+    })
   },
 })
 
