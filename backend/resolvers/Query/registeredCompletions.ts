@@ -2,14 +2,11 @@ import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { Course, Prisma } from "../../generated/prisma-client"
 import { lstat } from "fs"
 
-const registeredCompletions = async (
-  _,
-  { course, first, after, last, before },
-  ctx,
-) => {
+const registeredCompletions = async (_, args, ctx) => {
   if (!ctx.user.administrator) {
     throw new ForbiddenError("Access Denied")
   }
+  const { course, first, after, last, before } = args
   if ((!first && !last) || (first > 50 || last > 50)) {
     throw new ForbiddenError("Cannot query more than 50 items")
   }
@@ -24,7 +21,7 @@ const withCourse = async (course, first, after, last, before, ctx) => {
   const courseWithSlug: Course = await ctx.prisma.course({ slug: course })
   if (!courseWithSlug) {
     const courseFromAvoinCourse: Course = await ctx.prisma
-      .openUniversityCourse({ course_code: course })
+      .CourseAlias({ course_code: course })
       .course()
     if (!courseFromAvoinCourse) {
       throw new UserInputError("Invalid course identifier")
