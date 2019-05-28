@@ -64,7 +64,9 @@ function Course({ admin }) {
         className={classes.breadcrumb}
       >
         <Link className={classes.link}>Home</Link>
-        <Link className={classes.link}>Courses</Link>
+        <Link className={classes.link} href={`/courses`} underline="hover">
+          Courses
+        </Link>
         <Link className={classes.link}>Elements of Ai</Link>
       </Breadcrumbs>
       <LanguageSelectorBar
