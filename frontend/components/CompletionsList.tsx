@@ -81,7 +81,7 @@ const CompletionsList = withRouter(props => {
       >
         Completions
       </Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justify="center">
         <HeaderCard />
         {data.completions.map(completer => (
           <CompletionCard completer={completer} key={completer.id} />
