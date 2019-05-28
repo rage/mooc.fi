@@ -61,6 +61,14 @@ const Query = prismaObjectType({
       resolve: (_, args, ctx) => resolvers.services(_, args, ctx),
     })
 
+    t.field("service", {
+      type: "Service",
+      args: {
+        service_id: idArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.service(_, args, ctx),
+    })
+
     t.list.field("UserCourseProgresses", {
       type: "UserCourseProgress",
       args: {

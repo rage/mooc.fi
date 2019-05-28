@@ -13,3 +13,4 @@ export {
 export {
   default as userCourseServiceProgress,
 } from "./userCourseServiceProgress"
+export { default as service } from "./service"
