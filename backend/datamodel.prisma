@@ -79,6 +79,8 @@ type Service @db(name: "service") {
 
 type UserCourseProgress @db(name: "user_course_progress") {
   id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   user: User! @relation(link: INLINE, name: "UserCourseProgressToUser")
   course: Course! @relation(link: INLINE, name: "UserCourseProgressToCourse")
   "Json containing all progress data for User in a course"
@@ -89,6 +91,8 @@ type UserCourseProgress @db(name: "user_course_progress") {
 
 type UserCourseServiceProgress @db(name: "user_course_service_progress") {
   id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   user: User! @relation(link: INLINE, name: "UserCourseServiceProgressToUser")
   course: Course! @relation(link: INLINE, name: "UserCourseServiceProgressToCourse")
   service: Service! @relation(link: INLINE, name: "UserCourseServiceProgressToService")
