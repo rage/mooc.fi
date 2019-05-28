@@ -15,3 +15,4 @@ export {
   default as userCourseServiceProgress,
 } from "./userCourseServiceProgress"
 export { default as service } from "./service"
+export { default as organizations } from "./organizations"
