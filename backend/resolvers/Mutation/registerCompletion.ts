@@ -2,8 +2,10 @@ import { ForbiddenError } from "apollo-server-core"
 import { Prisma, Course, User } from "../../generated/prisma-client"
 
 const registerCompletion = async (_, args, ctx) => {
-  if (!ctx.organization || (ctx.user && !ctx.user.administrator)) {
-    throw new ForbiddenError("Access Denied")
+  if (!ctx.organization) {
+    if (!ctx.user.administrator) {
+      throw new ForbiddenError("Access Denied")
+    }
   }
   const prisma: Prisma = ctx.prisma
   const registeredCompletions = args.completions.map(async entry => {
