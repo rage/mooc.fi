@@ -13,6 +13,7 @@ const Completion = prismaObjectType({
       "email",
       "student_number",
       "user_upstream_id",
+      "completions_registered",
     ])
 
     t.field("user", {
