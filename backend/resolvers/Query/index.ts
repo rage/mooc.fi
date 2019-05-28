@@ -10,3 +10,6 @@ export { default as userCourseProgress } from "./userCourseProgress"
 export {
   default as userCourseServiceProgresses,
 } from "./userCourseServiceProgresses"
+export {
+  default as userCourseServiceProgress,
+} from "./userCourseServiceProgress"
