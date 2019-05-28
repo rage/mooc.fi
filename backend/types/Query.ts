@@ -130,6 +130,14 @@ const Query = prismaObjectType({
       },
       resolve: (_, args, ctx) => resolvers.organizations(_, args, ctx),
     })
+
+    t.field("organization", {
+      type: "Organization",
+      args: {
+        id: idArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.organization(_, args, ctx),
+    })
   },
 })
 
