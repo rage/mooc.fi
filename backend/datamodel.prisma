@@ -27,7 +27,7 @@ type Course @db(name: "course") {
   "identify course in other api querys"
   slug: String! @unique
   "aliases that can be used in this this api instead of slug "
-  course_aliases: [CourseAlias!] @relation(name: "CourseToCourseAlias")
+  course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
 }
 
 type CourseAlias  @db(name: "course_alias"){
@@ -63,10 +63,9 @@ type CompletionRegistered @db(name: "completion_registered") {
   course: Course! @relation(link: INLINE, name: "CompletionRegisteredToCourse")
   "Confirmed student number"
   real_student_number: String!
-  "Where this completion has been registered"
-  organisation: String!
   "Link to completion whose register info this is"
   completion: Completion! @relation(link: INLINE, name: "CompletionRegisteredToCompletion")
+  organization: Organization @relation(link:INLINE, name: "CompletionRegisteredToOrganization")
 }
 
 type Service @db(name: "service") {
@@ -99,4 +98,14 @@ type UserCourseServiceProgress @db(name: "user_course_service_progress") {
   "User's progress in a course in a spesific course"
   progress: Json!
   user_course_progress: UserCourseProgress! @relation(link: INLINE, name: "UserCourseServiceProgressToUserCourseProgress")
+}
+
+type Organization @db(name: "organization") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  name: String!
+  slug: String! @unique
+  secret_key: String! @unique
+  completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToOrganization")
 }
