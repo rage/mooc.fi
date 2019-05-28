@@ -10,8 +10,7 @@ const Mutation = prismaObjectType({
         name: stringArg(),
         slug: stringArg(),
       },
-      resolve: (_, { name, slug }, ctx) =>
-        resolvers.addCourse(_, { name, slug }, ctx),
+      resolve: (_, args, ctx) => resolvers.addCourse(_, args, ctx),
     })
 
     t.field("addCourseAlias", {
@@ -20,8 +19,7 @@ const Mutation = prismaObjectType({
         course_code: stringArg(),
         course: idArg(),
       },
-      resolve: (_, { course_code, course }, ctx) =>
-        resolvers.addCourseAlias(_, { course_code, course }, ctx),
+      resolve: (_, args, ctx) => resolvers.addCourseAlias(_, args, ctx),
     })
 
     t.list.field("registerCompletion", {
@@ -39,8 +37,7 @@ const Mutation = prismaObjectType({
         url: stringArg({ required: true }),
         name: stringArg({ required: true }),
       },
-      resolve: (_, { url, name }, ctx) =>
-        resolvers.addService(_, { url, name }, ctx),
+      resolve: (_, args, ctx) => resolvers.addService(_, args, ctx),
     })
 
     t.field("addUserCourseProgress", {
@@ -50,12 +47,7 @@ const Mutation = prismaObjectType({
         course_id: idArg({ required: true }),
         progress: arg({ type: "ProgressArg", required: true }),
       },
-      resolve: (_, { user_id, course_id, progress }, ctx) =>
-        resolvers.addUserCourseProgress(
-          _,
-          { user_id, course_id, progress },
-          ctx,
-        ),
+      resolve: (_, args, ctx) => resolvers.addUserCourseProgress(_, args, ctx),
     })
 
     t.field("addUserCourseServiceProgress", {

@@ -1,4 +1,5 @@
-const currentUser = async (_, { email }, ctx) => {
+const currentUser = async (_, args, ctx) => {
+  const { email } = args
   return ctx.user
 }
 
