@@ -25,7 +25,6 @@ const Mutation = prismaObjectType({
     t.list.field("registerCompletion", {
       type: "CompletionRegistered",
       args: {
-        organisation: stringArg(),
         completions: arg({ type: "CompletionArg", list: true }),
       },
       resolve: (_, args, ctx) => resolvers.registerCompletion(_, args, ctx),
