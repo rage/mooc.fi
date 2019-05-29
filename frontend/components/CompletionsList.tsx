@@ -49,7 +49,7 @@ const Completions: React.SFC<CompletionsListProps> = props => {
       query={AllCompletionsQuery}
       variables={{ course }}
     >
-      {({ loading, error, data }) => {
+      {({ loading, error, data, fetchMore }) => {
         if (loading) {
           return <CircularProgress color="secondary" />
         }
@@ -67,7 +67,20 @@ const Completions: React.SFC<CompletionsListProps> = props => {
             {data.completions.map(completer => (
               <CompletionCard completer={completer} key={completer.id} />
             ))}
-            <CompletionPaginator />
+            <CompletionPaginator
+              onLoadMore={() =>
+                fetchMore({
+                  query: AllCompletionsQuery,
+                  updateQuery: (previousResult, { fetchMoreResult }) => {
+                    const PreviousEntry = previousResult.completions
+                    const moreCompletions = fetchMoreResult.completions
+                    return {
+                      completions: [...PreviousEntry, ...moreCompletions],
+                    }
+                  },
+                })
+              }
+            />
           </Grid>
         )
       }}

@@ -9,7 +9,7 @@ import {
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft"
 
-function Paginator() {
+function Paginator({ onLoadMore }) {
   return (
     <Grid item xs={12} sm={12} lg={8}>
       <Grid container direction="row" alignItems="center">
@@ -22,7 +22,7 @@ function Paginator() {
           <div>1</div>
         </Grid>
         <Grid item>
-          <IconButton>
+          <IconButton onClick={onLoadMore}>
             <KeyboardArrowRightIcon />
           </IconButton>
         </Grid>
