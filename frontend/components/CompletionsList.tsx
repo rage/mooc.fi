@@ -21,6 +21,10 @@ export const AllCompletionsQuery = gql`
         student_number
       }
     }
+    course(slug: $course) {
+      id
+      name
+    }
   }
 `
 const useStyles = makeStyles((theme: Theme) =>
@@ -62,7 +66,7 @@ const Completions: React.SFC<CompletionsListProps> = props => {
         console.log(data)
         return (
           <Grid container spacing={3} justify="center">
-            <HeaderCard />
+            <HeaderCard course={data.course} />
             {data.completions.map(completer => (
               <CompletionCard completer={completer} key={completer.id} />
             ))}

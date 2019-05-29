@@ -11,6 +11,10 @@ import CourseDashboard from "../components/CourseDashboard"
 import { NextContext } from "next"
 import { WideContainer } from "../components/Container"
 import { Breadcrumbs, Link } from "@material-ui/core"
+import { ApolloClient, gql } from "apollo-boost"
+import { CourseDetails as CourseDetailsData } from "./__generated__/CourseDetails"
+import { useQuery } from "react-apollo-hooks"
+import { withRouter } from "next/router"
 
 const useStyles = makeStyles(theme => ({
   breadcrumb: {
@@ -33,7 +37,19 @@ const MapTypeToComponent = {
   0: <CourseDashboard />,
 }
 
-function Course({ admin }) {
+export const CourseQuery = gql`
+  query CourseDetails($slug: String) {
+    course(slug: $slug) {
+      id
+      name
+    }
+  }
+`
+
+const Course = withRouter(props => {
+  const { admin, router } = props
+  const slug = router.query.course
+
   if (!admin) {
     return <AdminError />
   }
@@ -67,7 +83,7 @@ function Course({ admin }) {
         <Link className={classes.link} href={`/courses`} underline="hover">
           Courses
         </Link>
-        <Link className={classes.link}>Elements of Ai</Link>
+        <Link className={classes.link}>{slug}</Link>
       </Breadcrumbs>
       <LanguageSelectorBar
         value={selection}
@@ -82,7 +98,7 @@ function Course({ admin }) {
       </WideContainer>
     </section>
   )
-}
+})
 
 Course.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)

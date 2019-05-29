@@ -104,14 +104,14 @@ function CompletionCard({ completer }) {
 
 export default CompletionCard
 
-export function HeaderCard({}) {
+export function HeaderCard({ course }) {
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={12} lg={8}>
       <Card className={classes.titleCard}>
         <CardContent>
           <Typography component="p" variant="h6">
-            Elements of Ai
+            {course.name}
           </Typography>
         </CardContent>
       </Card>

@@ -9,6 +9,7 @@ import { AllCourses as AllCoursesData } from "./__generated__/AllCourses"
 import { useQuery } from "react-apollo-hooks"
 import CourseGrid from "../components/CourseGrid"
 import AdminError from "../components/AdminError"
+import { WideContainer } from "../components/Container"
 
 export const AllCoursesQuery = gql`
   query AllCourses {
@@ -53,16 +54,18 @@ const Courses = ({ admin }) => {
 
   return (
     <section>
-      <Typography
-        component="h1"
-        variant="h2"
-        gutterBottom={true}
-        align="center"
-        className={classes.header}
-      >
-        All Courses
-      </Typography>
-      <CourseGrid courses={data.courses} />
+      <WideContainer>
+        <Typography
+          component="h1"
+          variant="h2"
+          gutterBottom={true}
+          align="center"
+          className={classes.header}
+        >
+          All Courses
+        </Typography>
+        <CourseGrid courses={data.courses} />
+      </WideContainer>
     </section>
   )
 }
