@@ -1,13 +1,11 @@
-export { default as addCourseMutations } from "./addCourse"
-export { default as addCourseAliasMutations } from "./addCourseAlias"
+export { default as addCourseMutations } from "./course"
+export { default as addCourseAliasMutations } from "./courseAlias"
 export {
   default as addCompletionRegisteredMutations,
-} from "./registerCompletion"
-export { default as addServiceMutations } from "./addService"
-export {
-  default as addUserCourseProgressMutations,
-} from "./addUserCourseProgress"
+} from "./CompletionRegistered"
+export { default as addServiceMutations } from "./service"
+export { default as addUserCourseProgressMutations } from "./userCourseProgress"
 export {
   default as addUserCourseServiceProgressMutations,
-} from "./addUserCourseServiceProgress"
-export { default as addOrganizationMutations } from "./addOrganization"
+} from "./userCourseServiceProgress"
+export { default as addOrganizationMutations } from "./organization"
