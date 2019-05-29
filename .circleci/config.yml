@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: "Build and deploy"
+          command: "bin/ci-deploy.sh"
+  code_style:
+    docker:
+      - image: circleci/node:11
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: "yarn install"
+      - run:
+          name: "Check code style"
+          command: "bin/check-code-style.sh"
+workflows:
+  version: 2
+  btd:
+    jobs:
+      - build
+      - code_style

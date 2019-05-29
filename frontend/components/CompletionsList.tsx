@@ -40,7 +40,6 @@ interface Variables {
 export interface CompletionsListProps {
   course: string
 }
-
 const Completions: React.SFC<CompletionsListProps> = props => {
   const { course } = props
 

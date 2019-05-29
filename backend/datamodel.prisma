@@ -1,16 +1,21 @@
 type User @db(name: "user") {
   id: UUID! @id
+  "User's unique identifier from TMC"
   upstream_id: Int! @unique
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   first_name: String
   last_name: String
+  "TMC random generated username"
   username: String! @unique
   email: String!
   administrator: Boolean!
   student_number: String
+  "Confirmed student number"
   real_student_number: String
+  "User's completions"
   completions: [Completion!]! @relation(name: "CompletionToUser")
+  "User's completions that have been reqistered for ECTS etc."
   registered_completions: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToUser")
 }
 
@@ -19,16 +24,20 @@ type Course @db(name: "course") {
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   name: String!
+  "identify course in other api querys"
   slug: String! @unique
-  open_university_courses: [OpenUniversityCourse!] @relation(name: "CourseToOpenUniversityCourse")
+  "aliases that can be used in this this api instead of slug "
+  course_aliases: [CourseAlias!] @relation(name: "CourseToCourseAlias")
 }
 
-type OpenUniversityCourse  @db(name: "open_university_course"){
+type CourseAlias  @db(name: "course_alias"){
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
+  "The actual code/slug that is used in querys"
   course_code: String! @unique
-  course: Course! @relation(link: INLINE, name: "CourseToOpenUniversityCourse")
+  "Which course this code links to"
+  course: Course! @relation(link: INLINE, name: "CourseToCourseAlias")
 }
 
 type Completion @db(name: "completion") {
@@ -42,6 +51,8 @@ type Completion @db(name: "completion") {
   user: User!  @relation(link: INLINE, name: "CompletionToUser")
   course: Course! @relation(link: INLINE, name: "CompletionToCourse")
   completion_language: String
+  "Where this completion has been registered, can have multiple locations."
+  completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion") 
 }
 
 type CompletionRegistered @db(name: "completion_registered") {
@@ -50,7 +61,42 @@ type CompletionRegistered @db(name: "completion_registered") {
   updated_at: DateTime @updatedAt
   user: User! @relation(link: INLINE, name: "CompletionRegisteredToUser")
   course: Course! @relation(link: INLINE, name: "CompletionRegisteredToCourse")
+  "Confirmed student number"
   real_student_number: String!
+  "Where this completion has been registered"
   organisation: String!
-  completion: Completion!
+  "Link to completion whose register info this is"
+  completion: Completion! @relation(link: INLINE, name: "CompletionRegisteredToCompletion")
+}
+
+type Service @db(name: "service") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  url: String!
+  name: String!
+}
+
+type UserCourseProgress @db(name: "user_course_progress") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  user: User! @relation(link: INLINE, name: "UserCourseProgressToUser")
+  course: Course! @relation(link: INLINE, name: "UserCourseProgressToCourse")
+  "Json containing all progress data for User in a course"
+  progress: Json!
+  user_course_service_progresses: [UserCourseServiceProgress!]! @relation(name:"UserCourseServiceProgressToUserCourseProgress")
+}
+
+
+type UserCourseServiceProgress @db(name: "user_course_service_progress") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  user: User! @relation(link: INLINE, name: "UserCourseServiceProgressToUser")
+  course: Course! @relation(link: INLINE, name: "UserCourseServiceProgressToCourse")
+  service: Service! @relation(link: INLINE, name: "UserCourseServiceProgressToService")
+  "User's progress in a course in a spesific course"
+  progress: Json!
+  user_course_progress: UserCourseProgress! @relation(link: INLINE, name: "UserCourseServiceProgressToUserCourseProgress")
 }
