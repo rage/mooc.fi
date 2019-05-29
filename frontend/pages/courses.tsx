@@ -8,7 +8,7 @@ import { ApolloClient, gql } from "apollo-boost"
 import { AllCourses as AllCoursesData } from "./__generated__/AllCourses"
 import { useQuery } from "react-apollo-hooks"
 import CourseGrid from "../components/CourseGrid"
-import AdminError from "../components/AdminError"
+import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
 
 export const AllCoursesQuery = gql`
