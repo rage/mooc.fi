@@ -1,8 +1,5 @@
 import { prismaObjectType } from "nexus-prisma"
-import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { stringArg, intArg, idArg } from "nexus/dist"
-import { Course } from "../generated/prisma-client"
-import fetchCompletions from "../middlewares/fetchCompletions"
 import * as resolvers from "../resolvers/Query"
 
 const Query = prismaObjectType({
@@ -17,7 +14,7 @@ const Query = prismaObjectType({
     t.field("currentUser", {
       type: "User",
       args: { email: stringArg() },
-      resolve: (_, { email }, ctx) => resolvers.currentUser(_, { email }, ctx),
+      resolve: (_, args, ctx) => resolvers.currentUser(_, args, ctx),
     })
 
     t.list.field("completions", {
@@ -29,17 +26,25 @@ const Query = prismaObjectType({
         last: intArg(),
         before: idArg(),
       },
-      resolve: (_, { course, first, after, last, before }, ctx) =>
-        resolvers.completions(_, { course, first, after, last, before }, ctx),
+      resolve: (_, args, ctx) => resolvers.completions(_, args, ctx),
     })
 
     t.list.field("courses", {
       type: "Course",
       resolve: (_, args, ctx) => resolvers.courses(_, args, ctx),
     })
-    t.list.field("openUniversityCourses", {
-      type: "OpenUniversityCourse",
-      resolve: (_, args, ctx) => resolvers.openUniversityCourses(_, args, ctx),
+
+    t.field("course", {
+      type: "Course",
+      args: {
+        slug: stringArg(),
+        id: idArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.course(_, args, ctx),
+    })
+    t.list.field("CourseAliases", {
+      type: "CourseAlias",
+      resolve: (_, args, ctx) => resolvers.courseAliases(_, args, ctx),
     })
 
     t.list.field("registeredCompletions", {
@@ -51,12 +56,68 @@ const Query = prismaObjectType({
         last: intArg(),
         before: idArg(),
       },
-      resolve: (_, { course, first, after, last, before }, ctx) =>
-        resolvers.registeredCompletions(
-          _,
-          { course, first, after, last, before },
-          ctx,
-        ),
+      resolve: (_, args, ctx) => resolvers.registeredCompletions(_, args, ctx),
+    })
+
+    t.list.field("services", {
+      type: "Service",
+      resolve: (_, args, ctx) => resolvers.services(_, args, ctx),
+    })
+
+    t.field("service", {
+      type: "Service",
+      args: {
+        service_id: idArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.service(_, args, ctx),
+    })
+
+    t.list.field("UserCourseProgresses", {
+      type: "UserCourseProgress",
+      args: {
+        user_id: idArg(),
+        course_id: idArg(),
+        first: intArg(),
+        after: idArg(),
+        last: intArg(),
+        before: idArg(),
+      },
+      resolve: (_, args, ctx) => resolvers.userCourseProgresses(_, args, ctx),
+    })
+
+    t.field("UserCourseProgress", {
+      type: "UserCourseProgress",
+      args: {
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
+      },
+      resolve: (_, args, ctx) => resolvers.userCourseProgress(_, args, ctx),
+    })
+
+    t.list.field("UserCourseServiceProgresses", {
+      type: "UserCourseServiceProgress",
+      args: {
+        user_id: idArg(),
+        course_id: idArg(),
+        service_id: idArg(),
+        first: intArg(),
+        after: idArg(),
+        last: intArg(),
+        before: idArg(),
+      },
+      resolve: (_, args, ctx) =>
+        resolvers.userCourseServiceProgresses(_, args, ctx),
+    })
+
+    t.field("UserCourseServiceProgress", {
+      type: "UserCourseServiceProgress",
+      args: {
+        user_id: idArg(),
+        course_id: idArg(),
+        service_id: idArg(),
+      },
+      resolve: (_, args, ctx) =>
+        resolvers.userCourseServiceProgress(_, args, ctx),
     })
   },
 })

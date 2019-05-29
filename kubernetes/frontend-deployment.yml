@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moocfi-frontend
+  namespace: moocfi
+spec:
+  selector:
+    matchLabels:
+      app: moocfi-frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: moocfi-frontend
+    spec:
+      containers:
+        - name: moocfi-frontend
+          image: gcr.io/moocfi/moocfi-frontend:build-1558952149-6e40dd894d33083cdffb18216af96052ada48c44
+          imagePullPolicy: Always
+          ports:
+            - name: frontend-http
+              containerPort: 3021
