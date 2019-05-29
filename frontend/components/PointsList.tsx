@@ -82,6 +82,7 @@ function ListHeader() {
 }
 
 function ListItemCard() {
+  const classes = useStyles()
   return (
     <Grid item xs={12} sm={12} lg={12}>
       <Card>
@@ -95,13 +96,16 @@ function ListItemCard() {
           <Typography variant="body1" component="p">
             12345678
           </Typography>
-          <VictoryChart height={175}>
+          <VictoryChart
+            height={75}
+            padding={{ top: 1, bottom: 45, left: 3, right: 3 }}
+          >
             <VictoryBar
               horizontal
               style={{ data: { fill: "#c43a31" } }}
-              data={[{ y: 12, x: 0.4 }]}
-              barWidth={30}
-              domain={{ y: [0, 15], x: [0, 1] }}
+              data={[{ y: 12, x: 0.2 }]}
+              barWidth={15}
+              domain={{ y: [0, 15], x: [0, 0.5] }}
             />
             <VictoryAxis
               dependentAxis
