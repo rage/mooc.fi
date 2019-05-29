@@ -14,10 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function LanguageSelectorBar({ value, handleChange }) {
+function DashboardTabBar({ value, handleChange }) {
   const classes = useStyles()
-  console.log("At langbar", value)
-  console.log(handleChange)
 
   return (
     <Tabs
@@ -36,4 +34,4 @@ function LanguageSelectorBar({ value, handleChange }) {
   )
 }
 
-export default LanguageSelectorBar
+export default DashboardTabBar

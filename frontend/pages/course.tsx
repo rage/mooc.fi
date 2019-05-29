@@ -1,36 +1,22 @@
 import React, { useState } from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import LanguageSelectorBar from "../components/LanguageSelectorBar"
-import CompletionsList from "../components/CompletionsList"
-import PointsList from "../components/PointsList"
-import LanguageSelector from "../components/LanguageSelector"
+import DashboardTabBar from "../components/Dashboard/DashboardTabBar"
+import CompletionsList from "../components/Dashboard/CompletionsList"
+import PointsList from "../components/Dashboard/PointsList"
+import LanguageSelector from "../components/Dashboard/LanguageSelector"
+import DashboardBreadCrumbs from "../components/Dashboard/DashboardBreadCrumbs"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
-import AdminError from "../components/AdminError"
-import CourseDashboard from "../components/CourseDashboard"
+import AdminError from "../components/Dashboard/AdminError"
+import CourseDashboard from "../components/Dashboard/CourseDashboard"
 import { NextContext } from "next"
 import { WideContainer } from "../components/Container"
-import { Breadcrumbs, Link } from "@material-ui/core"
 import { ApolloClient, gql } from "apollo-boost"
 import { CourseDetails as CourseDetailsData } from "./__generated__/CourseDetails"
 import { useQuery } from "react-apollo-hooks"
 import { withRouter } from "next/router"
 
-const useStyles = makeStyles(theme => ({
-  breadcrumb: {
-    marginTop: 5,
-    marginLeft: 5,
-  },
-  link: {
-    display: "flex",
-  },
-  icon: {
-    marginRight: theme.spacing(0.5),
-    width: 20,
-    height: 20,
-  },
-}))
-
+//map selection value of tab navigation
+//to the component to be rendered
 const MapTypeToComponent = {
   1: <CompletionsList />,
   2: <PointsList />,
@@ -54,14 +40,14 @@ const Course = withRouter(props => {
     return <AdminError />
   }
 
+  //store which languages are selected
   const [languageValue, setLanguageValue] = useState({
     fi: true,
     en: true,
     se: true,
   })
+  //store which tab is open
   const [selection, setSelection] = useState(0)
-
-  const classes = useStyles()
 
   const handleSelectionChange = (event, value) => {
     setSelection(value)
@@ -74,21 +60,8 @@ const Course = withRouter(props => {
 
   return (
     <section>
-      <Breadcrumbs
-        separator=">"
-        aria-label="Breadcrumb"
-        className={classes.breadcrumb}
-      >
-        <Link className={classes.link}>Home</Link>
-        <Link className={classes.link} href={`/courses`} underline="hover">
-          Courses
-        </Link>
-        <Link className={classes.link}>{slug}</Link>
-      </Breadcrumbs>
-      <LanguageSelectorBar
-        value={selection}
-        handleChange={handleSelectionChange}
-      />
+      <DashboardBreadCrumbs page={slug} />
+      <DashboardTabBar value={selection} handleChange={handleSelectionChange} />
       <WideContainer>
         <LanguageSelector
           handleLanguageChange={handleLanguageChange}

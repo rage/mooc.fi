@@ -1,10 +1,11 @@
 import React from "react"
 import { ApolloClient, gql } from "apollo-boost"
 import { Query } from "react-apollo"
-import { AllCompletions as AllCompletionsData } from "../pages/__generated__/AllCompletions"
+import { AllCompletions as AllCompletionsData } from "../../pages/__generated__/AllCompletions"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Grid, Typography, CircularProgress } from "@material-ui/core"
-import CompletionCard, { HeaderCard } from "./CompletionCard"
+import CompletionCard from "./CompletionCard"
+import HeaderCard from "./HeaderCard"
 import { withRouter } from "next/router"
 import CompletionPaginator from "./CompletionPaginator"
 
