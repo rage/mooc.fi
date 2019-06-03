@@ -1,17 +1,13 @@
-export { default as users } from "./users"
-export { default as currentUser } from "./currentUser"
-export { default as completions } from "./completions"
-export { default as course } from "./course"
-export { default as courses } from "./courses"
-export { default as courseAliases } from "./courseAliases"
-export { default as registeredCompletions } from "./registeredCompletions"
-export { default as services } from "./services"
-export { default as userCourseProgresses } from "./userCourseProgresses"
-export { default as userCourseProgress } from "./userCourseProgress"
+export { default as addUserQueries } from "./user"
+export { default as addCompletionQueries } from "./completion"
+export { default as addCourseQueries } from "./course"
+export { default as addCourseAliasQueries } from "./courseAlias"
 export {
-  default as userCourseServiceProgresses,
-} from "./userCourseServiceProgresses"
+  default as addCompletionRegisteredQueries,
+} from "./registeredCompletion"
+export { default as addUserCourseProgressQueries } from "./userCourseProgress"
 export {
-  default as userCourseServiceProgress,
+  default as addUserCourseServiceProgressQueries,
 } from "./userCourseServiceProgress"
-export { default as service } from "./service"
+export { default as addServiceQueries } from "./service"
+export { default as addOrganizationQueries } from "./organization"
