@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { ApolloClient, gql } from "apollo-boost"
 import { Query } from "react-apollo"
 import { AllCompletions as AllCompletionsData } from "../__generated__/AllCompletions"
@@ -55,6 +55,7 @@ export interface CompletionsListProps {
 }
 const Completions: React.SFC<CompletionsListProps> = props => {
   const { course } = props
+  const [pageNumber, setPageNumber] = useState(1)
 
   return (
     <Query<AllCompletionsData, Variables>
@@ -73,7 +74,7 @@ const Completions: React.SFC<CompletionsListProps> = props => {
           )
         }
         const cursor = data.completionsPaginated.pageInfo.endCursor
-
+        console.log("data", data.completionsPaginated)
         return (
           <Grid container spacing={3} justify="center">
             <HeaderCard course={"elements-of-ai"} />
@@ -91,6 +92,7 @@ const Completions: React.SFC<CompletionsListProps> = props => {
                   updateQuery: (previousResult, { fetchMoreResult }) => {
                     const newCompletions = fetchMoreResult.completionsPaginated
                     const newCursor = newCompletions.pageInfo.endCursor
+                    setPageNumber(pageNumber + 1)
                     return {
                       cursor: newCursor,
                       completionsPaginated: {
@@ -109,7 +111,8 @@ const Completions: React.SFC<CompletionsListProps> = props => {
                 })
               }
               isNext={data.completionsPaginated.pageInfo.hasNextPage}
-              hasPrevious={data.completionsPaginated.pageInfo.hasPrevious}
+              hasPrevious={data.completionsPaginated.pageInfo.hasPreviousPage}
+              pageNumber={pageNumber}
             />
           </Grid>
         )
