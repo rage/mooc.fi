@@ -1,7 +1,7 @@
 import { Prisma } from "../../generated/prisma-client"
-import { ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("course", {
@@ -11,9 +11,7 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
       id: idArg(),
     },
     resolve: (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const { slug, id } = args
       const prisma: Prisma = ctx.prisma
       return prisma.course({
@@ -28,9 +26,7 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("courses", {
     type: "Course",
     resolve: (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       return ctx.prisma.courses()
     },
   })

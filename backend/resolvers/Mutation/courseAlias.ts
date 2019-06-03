@@ -1,7 +1,7 @@
-import { ForbiddenError } from "apollo-server-core"
 import { Prisma, CourseAlias } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg, stringArg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const addCourseAlias = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourseAlias", {
@@ -11,9 +11,7 @@ const addCourseAlias = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       course: idArg(),
     },
     resolve: async (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const { course_code, course } = args
       const prisma: Prisma = ctx.prisma
       const newCourseAlias: CourseAlias = await prisma.createCourseAlias({
