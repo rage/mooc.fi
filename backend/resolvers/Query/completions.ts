@@ -3,8 +3,10 @@ import { Course } from "../../generated/prisma-client"
 import fetchCompletions from "../../middlewares/fetchCompletions"
 
 const completions = async (_, args, ctx) => {
-  if (!ctx.user.administrator) {
-    throw new ForbiddenError("Access Denied")
+  if (!ctx.organization) {
+    if (!ctx.user.administrator) {
+      throw new ForbiddenError("Access Denied")
+    }
   }
   const { first, after, last, before } = args
   let { course } = args

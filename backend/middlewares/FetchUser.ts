@@ -3,11 +3,12 @@ import TmcClient from "../services/tmc"
 import { Prisma } from "../generated/prisma-client"
 
 const fetchUser = async (resolve, root, args, context, info) => {
+  const prisma: Prisma = context.prisma
   if (context.userDetails) {
     const result = await resolve(root, args, context, info)
     return result
   }
-  let rawToken = null
+  let rawToken: string = null
   if (context.request) {
     rawToken = context.request.get("Authorization")
   } else if (context.connection) {
@@ -16,12 +17,23 @@ const fetchUser = async (resolve, root, args, context, info) => {
   if (!rawToken) {
     return new AuthenticationError("Please log in.")
   }
+  if (rawToken.startsWith("Basic")) {
+    let org
+    try {
+      const secret: string = rawToken.split(" ")[1]
+      org = await prisma.organizations({ where: { secret_key: secret } })
+      org = org[0]
+    } catch (e) {
+      return new AuthenticationError("Please log in.")
+    }
+    context.organization = org
+    return await resolve(root, args, context, info)
+  }
   const client = new TmcClient(rawToken)
   const details = await client.getCurrentUserDetails()
   context.userDetails = details
   context.tmcClient = client
 
-  const prisma: Prisma = context.prisma
   const id: number = details.id
   const prismaDetails = {
     upstream_id: id,

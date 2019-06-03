@@ -3,8 +3,10 @@ import { Course, Prisma } from "../../generated/prisma-client"
 import { lstat } from "fs"
 
 const registeredCompletions = async (_, args, ctx) => {
-  if (!ctx.user.administrator) {
-    throw new ForbiddenError("Access Denied")
+  if (!ctx.organization) {
+    if (!ctx.user.administrator) {
+      throw new ForbiddenError("Access Denied")
+    }
   }
   const { course, first, after, last, before } = args
   if ((!first && !last) || (first > 50 || last > 50)) {
