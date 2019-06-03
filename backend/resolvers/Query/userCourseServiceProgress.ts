@@ -2,9 +2,9 @@ import {
   Prisma,
   UserCourseServiceProgress,
 } from "../../generated/prisma-client"
-import { ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg, intArg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const userCourseServiceProgress = async (
   t: PrismaObjectDefinitionBlock<"Query">,
@@ -17,9 +17,7 @@ const userCourseServiceProgress = async (
       service_id: idArg(),
     },
     resolve: async (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const { user_id, course_id, service_id } = args
       const prisma: Prisma = ctx.prisma
       const result: UserCourseServiceProgress[] = await prisma.userCourseServiceProgresses(
@@ -51,9 +49,7 @@ const userCourseServiceProgresses = (
       before: idArg(),
     },
     resolve: (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const {
         user_id,
         course_id,

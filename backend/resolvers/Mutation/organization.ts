@@ -1,9 +1,9 @@
-import { ForbiddenError } from "apollo-server-core"
 import { Prisma } from "../../generated/prisma-client"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addOrganization", {
@@ -13,9 +13,7 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       slug: stringArg(),
     },
     resolve: async (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const { name, slug } = args
       const prisma: Prisma = ctx.prisma
       let secret
