@@ -3,6 +3,7 @@ import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg } from "nexus/dist"
 import { add } from "winston"
+import checkAccess from "../../accessControl"
 
 const addService = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addService", {
@@ -13,9 +14,7 @@ const addService = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       const prisma: Prisma = ctx.prisma
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const { url, name } = args
       return await prisma.createService({ url: url, name: name })
     },

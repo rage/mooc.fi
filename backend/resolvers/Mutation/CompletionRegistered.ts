@@ -2,6 +2,7 @@ import { ForbiddenError } from "apollo-server-core"
 import { Prisma, Course, User } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { arg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const registerCompletion = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,
@@ -12,11 +13,7 @@ const registerCompletion = async (
       completions: arg({ type: "CompletionArg", list: true }),
     },
     resolve: (_, args, ctx) => {
-      if (!ctx.organization) {
-        if (!ctx.user.administrator) {
-          throw new ForbiddenError("Access Denied")
-        }
-      }
+      checkAccess(ctx, { allowOrganizations: true })
       const prisma: Prisma = ctx.prisma
       const registeredCompletions = args.completions.map(async entry => {
         const course: Course = await prisma

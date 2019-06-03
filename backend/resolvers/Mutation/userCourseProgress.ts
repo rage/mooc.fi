@@ -2,6 +2,7 @@ import { Prisma } from "../../generated/prisma-client"
 import { ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg, arg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const addUserCourseProgress = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addUserCourseProgress", {
@@ -12,9 +13,7 @@ const addUserCourseProgress = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       progress: arg({ type: "ProgressArg", required: true }),
     },
     resolve: (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const { user_id, course_id, progress } = args
       const prisma: Prisma = ctx.prisma
       return prisma.createUserCourseProgress({

@@ -2,6 +2,7 @@ import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { Course } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { intArg, stringArg, idArg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const registeredCompletions = async (
   t: PrismaObjectDefinitionBlock<"Query">,
@@ -16,11 +17,7 @@ const registeredCompletions = async (
       before: idArg(),
     },
     resolve: async (_, args, ctx) => {
-      if (!ctx.organization) {
-        if (!ctx.user.administrator) {
-          throw new ForbiddenError("Access Denied")
-        }
-      }
+      checkAccess(ctx, { allowOrganizations: true })
       const { course, first, after, last, before } = args
       if ((!first && !last) || (first > 50 || last > 50)) {
         throw new ForbiddenError("Cannot query more than 50 items")
