@@ -2,6 +2,7 @@ import { Prisma } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg, intArg } from "nexus/dist"
+import checkAccess from "../../accessControl"
 
 const userCourseProgress = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("UserCourseProgress", {
@@ -40,9 +41,7 @@ const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       before: idArg(),
     },
     resolve: (_, args, ctx) => {
-      if (!ctx.user.administrator) {
-        throw new ForbiddenError("Access Denied")
-      }
+      checkAccess(ctx, { allowOrganizations: false })
       const { first, last, before, after, user_id, course_id } = args
       const prisma: Prisma = ctx.prisma
       return prisma.userCourseProgresses({
