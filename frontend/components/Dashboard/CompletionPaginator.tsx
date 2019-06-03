@@ -9,22 +9,31 @@ import {
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft"
 
-function Paginator({ onLoadMore }) {
+function Paginator({ getNext, isNext, hasPrevious }) {
+  const pageCounter = 1
   return (
     <Grid item xs={12} sm={12} lg={8}>
       <Grid container direction="row" alignItems="center">
         <Grid item>
-          <IconButton>
-            <KeyboardArrowLeftIcon />
-          </IconButton>
+          {hasPrevious ? (
+            <IconButton>
+              <KeyboardArrowLeftIcon />
+            </IconButton>
+          ) : (
+            ""
+          )}
         </Grid>
         <Grid item>
-          <div>1</div>
+          <div>{pageCounter}</div>
         </Grid>
         <Grid item>
-          <IconButton onClick={onLoadMore}>
-            <KeyboardArrowRightIcon />
-          </IconButton>
+          {isNext ? (
+            <IconButton onClick={getNext}>
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          ) : (
+            ""
+          )}
         </Grid>
       </Grid>
     </Grid>
