@@ -7,14 +7,15 @@ import DashboardIcon from "@material-ui/icons/Dashboard"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    tabs: {},
+    tabs: {
+      backgroundColor: "#6d1b7b",
+      color: "white",
+    },
   }),
 )
 
-function LanguageSelectorBar({ value, handleChange }) {
+function DashboardTabBar({ value, handleChange }) {
   const classes = useStyles()
-  console.log("At langbar", value)
-  console.log(handleChange)
 
   return (
     <Tabs
@@ -33,4 +34,4 @@ function LanguageSelectorBar({ value, handleChange }) {
   )
 }
 
-export default LanguageSelectorBar
+export default DashboardTabBar

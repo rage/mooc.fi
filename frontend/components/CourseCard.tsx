@@ -10,9 +10,18 @@ import {
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import Link from "next/link"
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    dashboardButton: {
+      margin: "auto",
+    },
+  }),
+)
 
 function CourseCard({ course }) {
-  console.log(course.name)
+  const classes = useStyles()
   return (
     <Grid item xs={12} sm={6} lg={3}>
       <Card>
@@ -31,7 +40,7 @@ function CourseCard({ course }) {
             as={`/course/${course.slug}`}
             href={`/course?course=${course.slug}`}
           >
-            <Button variant="contained" color="secondary" size="large">
+            <Button variant="contained" color="secondary" fullWidth>
               <DashboardIcon />
               Course Dashboard
             </Button>
