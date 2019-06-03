@@ -31,7 +31,6 @@ export const signIn = async ({
   const res = await tmcClient.authenticate({ username: email, password })
 
   const details = await userDetails(res.accessToken)
-  console.log(details)
   const firstName = (get(details, "user_field.first_name") || "").trim()
   const lastName = (get(details, "user_field.last_name") || "").trim()
   console.log("first name", firstName, "last name", lastName)
@@ -40,7 +39,11 @@ export const signIn = async ({
   }
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
-  Nexti18next.Router.push("/register-completion")
+  if (details.administrator) {
+    Nexti18next.Router.push("/courses")
+  } else {
+    Nexti18next.Router.push("/register-completion")
+  }
   return res
 }
 
