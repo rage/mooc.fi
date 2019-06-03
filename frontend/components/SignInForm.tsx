@@ -5,6 +5,7 @@ import {
   Input,
   Button,
   FormHelperText,
+  Link,
 } from "@material-ui/core"
 
 import { signIn } from "../lib/authentication"
@@ -91,6 +92,9 @@ function SignIn(t: Function) {
       >
         <NextI18Next.Trans i18nKey="login" />
       </Button>
+      <Link href="https://tmc.mooc.fi/password_reset_keys/new">
+        <NextI18Next.Trans i18nKey="forgottenpw" />
+      </Link>
     </form>
   )
 }

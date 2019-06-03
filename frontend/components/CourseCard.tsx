@@ -14,8 +14,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    dashboardButton: {
-      margin: "auto",
+    card: {
+      padding: "0.8em",
     },
   }),
 )
@@ -24,7 +24,7 @@ function CourseCard({ course }) {
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={6} lg={3}>
-      <Card>
+      <Card className={classes.card}>
         <CardMedia
           component="img"
           alt="Course Logo"
