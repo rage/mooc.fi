@@ -1,10 +1,5 @@
-import { ForbiddenError, UserInputError } from "apollo-server-core"
-import {
-  Course,
-  Prisma,
-  CompletionConnection,
-  CompletionConnectionPromise,
-} from "../../generated/prisma-client"
+import { UserInputError } from "apollo-server-core"
+import { Course, Prisma } from "../../generated/prisma-client"
 import fetchCompletions from "../../middlewares/fetchCompletions"
 import { stringArg, intArg, idArg } from "nexus/dist"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"

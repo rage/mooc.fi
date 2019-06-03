@@ -1,8 +1,6 @@
-import { ForbiddenError } from "apollo-server-core"
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg } from "nexus/dist"
-import { add } from "winston"
 import checkAccess from "../../accessControl"
 
 const addService = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
