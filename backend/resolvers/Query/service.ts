@@ -1,5 +1,4 @@
 import { Prisma } from "../../generated/prisma-client"
-import { ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"

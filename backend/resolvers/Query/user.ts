@@ -1,4 +1,3 @@
-import { ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg } from "nexus/dist"
 import checkAccess from "../../accessControl"

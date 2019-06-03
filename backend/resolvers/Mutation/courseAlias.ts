@@ -1,4 +1,3 @@
-import { ForbiddenError } from "apollo-server-core"
 import { Prisma, CourseAlias } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg, stringArg } from "nexus/dist"
