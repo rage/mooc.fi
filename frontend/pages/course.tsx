@@ -1,59 +1,53 @@
 import React, { useState } from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import { IconButton } from "@material-ui/core"
-import LanguageSelectorBar from "../components/LanguageSelectorBar"
-import CompletionsList from "../components/CompletionsList"
-import PointsList from "../components/PointsList"
-import LanguageSelector from "../components/LanguageSelector"
+import DashboardTabBar from "../components/Dashboard/DashboardTabBar"
+import CompletionsList from "../components/Dashboard/CompletionsList"
+import PointsList from "../components/Dashboard/PointsList"
+import LanguageSelector from "../components/Dashboard/LanguageSelector"
+import DashboardBreadCrumbs from "../components/Dashboard/DashboardBreadCrumbs"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
-import AdminError from "../components/AdminError"
+import AdminError from "../components/Dashboard/AdminError"
+import CourseDashboard from "../components/Dashboard/CourseDashboard"
 import { NextContext } from "next"
+import { WideContainer } from "../components/Container"
+import { ApolloClient, gql } from "apollo-boost"
+import { CourseDetails as CourseDetailsData } from "./__generated__/CourseDetails"
+import { useQuery } from "react-apollo-hooks"
+import { withRouter } from "next/router"
 
-const drawerWidth = 240
-
-const useStyles = makeStyles(theme => ({
-  root: {},
-  drawer: {
-    [theme.breakpoints.up("sm")]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  drawerPaper: {
-    padding: "1em",
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-  headerItem: {
-    padding: "1.5em",
-  },
-  menuButton: {},
-  toolbar: theme.mixins.toolbar,
-}))
-
+//map selection value of tab navigation
+//to the component to be rendered
 const MapTypeToComponent = {
   1: <CompletionsList />,
   2: <PointsList />,
-  0: <p>STUFF</p>,
+  0: <CourseDashboard />,
 }
 
-function Course({ admin }) {
+export const CourseQuery = gql`
+  query CourseDetails($slug: String) {
+    course(slug: $slug) {
+      id
+      name
+    }
+  }
+`
+
+const Course = withRouter(props => {
+  const { admin, router } = props
+  const slug = router.query.course
+
   if (!admin) {
     return <AdminError />
   }
 
+  //store which languages are selected
   const [languageValue, setLanguageValue] = useState({
     fi: true,
     en: true,
     se: true,
   })
+  //store which tab is open
   const [selection, setSelection] = useState(0)
-
-  const classes = useStyles()
 
   const handleSelectionChange = (event, value) => {
     setSelection(value)
@@ -65,19 +59,19 @@ function Course({ admin }) {
   }
 
   return (
-    <section className={classes.root}>
-      <LanguageSelectorBar
-        value={selection}
-        handleChange={handleSelectionChange}
-      />
-      {MapTypeToComponent[selection]}
-      <LanguageSelector
-        handleLanguageChange={handleLanguageChange}
-        languageValue={languageValue}
-      />
+    <section>
+      <DashboardBreadCrumbs page={slug} />
+      <DashboardTabBar value={selection} handleChange={handleSelectionChange} />
+      <WideContainer>
+        <LanguageSelector
+          handleLanguageChange={handleLanguageChange}
+          languageValue={languageValue}
+        />
+        {MapTypeToComponent[selection]}
+      </WideContainer>
     </section>
   )
-}
+})
 
 Course.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
