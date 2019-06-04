@@ -1,13 +1,11 @@
 import React, { useState } from "react"
 import { ApolloClient, gql } from "apollo-boost"
 import { Query } from "react-apollo"
-import { AllCompletions as AllCompletionsData } from "../__generated__/AllCompletions"
+import { AllCompletions as AllCompletionsData } from "./__generated__/AllCompletions"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, Typography, CircularProgress } from "@material-ui/core"
-import CompletionCard from "./CompletionCard"
-import HeaderCard from "./HeaderCard"
+import { Typography, CircularProgress } from "@material-ui/core"
 import { withRouter } from "next/router"
-import CompletionPaginator from "./CompletionPaginator"
+import CompletionsListWithData from "./CompletionsListWithData"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions($course: String, $cursor: ID) {
@@ -28,6 +26,16 @@ export const AllCompletionsQuery = gql`
             first_name
             last_name
             student_number
+          }
+          course {
+            id
+            name
+          }
+          completions_registered {
+            id
+            organization {
+              name
+            }
           }
         }
         cursor
@@ -56,6 +64,7 @@ export interface CompletionsListProps {
 const Completions: React.SFC<CompletionsListProps> = props => {
   const { course } = props
   const [pageNumber, setPageNumber] = useState(1)
+  const [prevPage, setPrevPage] = useState()
 
   return (
     <Query<AllCompletionsData, Variables>
@@ -76,51 +85,43 @@ const Completions: React.SFC<CompletionsListProps> = props => {
         const cursor = data.completionsPaginated.pageInfo.endCursor
         console.log("data", data.completionsPaginated)
         return (
-          <Grid container spacing={3} justify="center">
-            <HeaderCard course={"elements-of-ai"} />
-            {data.completionsPaginated.edges.map(completer => (
-              <CompletionCard
-                completer={completer.node}
-                key={completer.node.id}
-              />
-            ))}
-            <CompletionPaginator
-              getNext={() =>
-                fetchMore({
-                  query: AllCompletionsQuery,
-                  variables: { course: course, cursor: cursor },
-                  updateQuery: (previousResult, { fetchMoreResult }) => {
-                    const newCompletions = fetchMoreResult.completionsPaginated
-                    const newCursor = newCompletions.pageInfo.endCursor
-                    setPageNumber(pageNumber + 1)
-                    return {
-                      cursor: newCursor,
-                      completionsPaginated: {
-                        pageInfo: {
-                          hasNextPage: newCompletions.pageInfo.hasNextPage,
-                          hasPreviousPage: true,
-                          startCursor: newCompletions.pageInfo.startCursor,
-                          endCursor: newCompletions.pageInfo.endCursor,
-                          __typename: "PageInfo",
-                        },
-                        edges: newCompletions.edges,
-                        __typename: "CompletionConnection",
+          <CompletionsListWithData
+            completions={data}
+            onLoadMore={() =>
+              fetchMore({
+                query: AllCompletionsQuery,
+                variables: { course: course, cursor: cursor },
+                updateQuery: (previousResult, { fetchMoreResult }) => {
+                  const newCompletions = fetchMoreResult.completionsPaginated
+                  const newCursor = newCompletions.pageInfo.endCursor
+                  //store the amount of pages gone forward in pagenumber
+                  setPageNumber(pageNumber + 1)
+                  return {
+                    cursor: newCursor,
+                    completionsPaginated: {
+                      pageInfo: {
+                        hasNextPage: newCompletions.pageInfo.hasNextPage,
+                        hasPreviousPage: true,
+                        startCursor: newCompletions.pageInfo.startCursor,
+                        endCursor: newCompletions.pageInfo.endCursor,
+                        __typename: "PageInfo",
                       },
-                    }
-                  },
-                })
-              }
-              isNext={data.completionsPaginated.pageInfo.hasNextPage}
-              hasPrevious={data.completionsPaginated.pageInfo.hasPreviousPage}
-              pageNumber={pageNumber}
-            />
-          </Grid>
+                      edges: newCompletions.edges,
+                      __typename: "CompletionConnection",
+                    },
+                  }
+                },
+              })
+            }
+            pageNumber={pageNumber}
+          />
         )
       }}
     </Query>
   )
 }
 const CompletionsList = withRouter(props => {
+  console.log(props)
   const classes = useStyles()
   const { router } = props
   return (
