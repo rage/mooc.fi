@@ -15,3 +15,7 @@ export interface CourseDetails_course {
 export interface CourseDetails {
   course: CourseDetails_course;
 }
+
+export interface CourseDetailsVariables {
+  slug?: string | null;
+}
