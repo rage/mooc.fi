@@ -6,10 +6,20 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Typography, CircularProgress } from "@material-ui/core"
 import { withRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
+import CourseLanguageContext from "../../contexes/CourseLanguageContext"
 
 export const AllCompletionsQuery = gql`
-  query AllCompletions($course: String, $cursor: ID) {
-    completionsPaginated(course: $course, first: 15, after: $cursor) {
+  query AllCompletions(
+    $course: String
+    $cursor: ID
+    $completion_language: String
+  ) {
+    completionsPaginated(
+      course: $course
+      completion_language: $completion_language
+      first: 15
+      after: $cursor
+    ) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -64,12 +74,13 @@ export interface CompletionsListProps {
 const Completions: React.SFC<CompletionsListProps> = props => {
   const { course } = props
   const [pageNumber, setPageNumber] = useState(1)
-  const [prevPage, setPrevPage] = useState()
-
   return (
     <Query<AllCompletionsData, Variables>
       query={AllCompletionsQuery}
-      variables={{ course }}
+      variables={{
+        course,
+        completion_language: React.useContext(CourseLanguageContext),
+      }}
     >
       {({ loading, error, data, fetchMore }) => {
         if (loading) {

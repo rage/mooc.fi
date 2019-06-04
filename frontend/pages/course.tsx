@@ -42,11 +42,7 @@ const Course = withRouter(props => {
   }
 
   //store which languages are selected
-  const [languageValue, setLanguageValue] = useState({
-    fi: true,
-    en: true,
-    se: true,
-  })
+  const [languageValue, setLanguageValue] = useState("fi_FI")
 
   //store which tab is open
   const [selection, setSelection] = useState(0)
@@ -54,12 +50,10 @@ const Course = withRouter(props => {
   const handleSelectionChange = (event, value) => {
     setSelection(value)
   }
-  const handleLanguageChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setLanguageValue({ ...languageValue, [name]: event.target.checked })
+  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
+    console.log(languageValue)
+    setLanguageValue((event.target as HTMLInputElement).value)
   }
-
   return (
     <CourseLanguageContext.Provider value={languageValue}>
       <section>
