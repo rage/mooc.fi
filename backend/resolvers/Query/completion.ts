@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-core"
+import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { Course, Prisma } from "../../generated/prisma-client"
 import fetchCompletions from "../../middlewares/fetchCompletions"
 import { stringArg, intArg, idArg } from "nexus/dist"
@@ -57,7 +57,7 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
       const { first, after, last, before } = args
       let { course } = args
       if ((!first && !last) || (first > 50 || last > 50)) {
-        ctx.disableRelations = true
+        throw new ForbiddenError("Cannot query more than 50 objects")
       }
       const courseWithSlug: Course = await ctx.prisma.course({ slug: course })
       if (!courseWithSlug) {
