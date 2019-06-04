@@ -6,8 +6,9 @@ import CssBaseline from "@material-ui/core/CssBaseline"
 import { ApolloProvider } from "react-apollo"
 import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks"
 import Layout from "./_layout"
-import { isSignedIn } from "../lib/authentication"
+import { isSignedIn, isAdmin } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
+import UserDetailContext from "../contexes/UserDetailContext"
 import withApolloClient from "../lib/with-apollo-client"
 import NextI18Next from "../i18n"
 import theme from "../src/theme"
@@ -38,9 +39,11 @@ class MyApp extends App {
           <ApolloProvider client={apollo}>
             <ApolloHooksProvider client={apollo}>
               <LoginStateContext.Provider value={this.props.signedIn}>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
+                <UserDetailContext.Provider value={this.props.admin}>
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </UserDetailContext.Provider>
               </LoginStateContext.Provider>
             </ApolloHooksProvider>
           </ApolloProvider>
@@ -59,10 +62,10 @@ MyApp.getInitialProps = async arg => {
   if (originalGetIntialProps) {
     originalProps = (await originalGetIntialProps(arg)) || {}
   }
-
   return {
     ...originalProps,
     signedIn: isSignedIn(ctx),
+    admin: isAdmin(ctx),
   }
 }
 
