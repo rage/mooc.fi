@@ -59,6 +59,9 @@ const serverStartOptions = {
   formatResponse: (response, query) => {
     return response
   },
+  bodyParserOptions: {
+    limit: "10mb",
+  },
 }
 
 if (process.env.NODE_ENV === "production") {
