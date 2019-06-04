@@ -12,7 +12,7 @@ const registerCompletion = async (
       completions: arg({ type: "CompletionArg", list: true }),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: true })
+      checkAccess(ctx, { allowOrganizations: true, disallowAdmin: true })
       const prisma: Prisma = ctx.prisma
       const registeredCompletions = args.completions.map(async entry => {
         const course: Course = await prisma
