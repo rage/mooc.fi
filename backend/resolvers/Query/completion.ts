@@ -10,6 +10,7 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "Completion",
     args: {
       course: stringArg(),
+      completion_language: stringArg(),
       first: intArg(),
       after: idArg(),
       last: intArg(),
@@ -17,7 +18,7 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: true })
-      const { first, after, last, before } = args
+      const { first, after, last, before, completion_language } = args
       let { course } = args
       if ((!first && !last) || (first > 50 || last > 50)) {
         ctx.disableRelations = true
@@ -32,12 +33,19 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
         }
         course = courseFromAvoinCourse.slug
       }
-      const completions = await fetchCompletions(
-        { course, first, after, last, before },
-        ctx,
-      )
+      const prisma: Prisma = ctx.prisma
+      const courseObject: Course = await prisma.course({ slug: course })
 
-      return completions
+      return prisma.completions({
+        where: {
+          course: { id: courseObject.id },
+          completion_language: completion_language,
+        },
+        first: first,
+        after: after,
+        last: last,
+        before: before,
+      })
     },
   })
 }
@@ -46,6 +54,7 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "CompletionConnection",
     args: {
       course: stringArg(),
+      completion_language: stringArg(),
       first: intArg(),
       after: idArg(),
       last: intArg(),
@@ -54,7 +63,7 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
     resolve: async (_, args, ctx) => {
       const prisma: Prisma = ctx.prisma
       checkAccess(ctx, { allowOrganizations: true })
-      const { first, after, last, before } = args
+      const { first, after, last, before, completion_language } = args
       let { course } = args
       if ((!first && !last) || (first > 50 || last > 50)) {
         throw new ForbiddenError("Cannot query more than 50 objects")
@@ -73,7 +82,10 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
       const courseObject: Course = await prisma.course({ slug: course })
 
       const completions = prisma.completionsConnection({
-        where: { course: { id: courseObject.id } },
+        where: {
+          course: { id: courseObject.id },
+          completion_language: completion_language,
+        },
         first: first,
         after: after,
         last: last,
