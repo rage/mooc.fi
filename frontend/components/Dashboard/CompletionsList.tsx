@@ -21,8 +21,6 @@ export const AllCompletionsQuery = gql`
       after: $cursor
     ) {
       pageInfo {
-        hasNextPage
-        hasPreviousPage
         startCursor
         endCursor
       }
@@ -48,93 +46,135 @@ export const AllCompletionsQuery = gql`
             }
           }
         }
-        cursor
       }
     }
   }
 `
+export const PreviousPageCompletionsQuery = gql`
+  query AllCompletions(
+    $course: String
+    $cursor: ID
+    $completion_language: String
+  ) {
+    completionsPaginated(
+      course: $course
+      completion_language: $completion_language
+      last: 15
+      before: $cursor
+    ) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      edges {
+        node {
+          id
+          email
+          completion_language
+          created_at
+          user {
+            id
+            first_name
+            last_name
+            student_number
+          }
+          course {
+            id
+            name
+          }
+          completions_registered {
+            id
+            organization {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`
+class CompletionsQuery extends Query<AllCompletionsData, {}> {}
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      textTransform: "uppercase",
-      marginTop: "0.7em",
-      marginBottom: "0.7em",
-    },
-  }),
-)
-
-interface Variables {
-  course: string
-}
-
-export interface CompletionsListProps {
-  course: string
-}
-const Completions: React.SFC<CompletionsListProps> = props => {
-  const { course } = props
-  const [pageNumber, setPageNumber] = useState(1)
+const CompletionsList = withRouter(props => {
+  const completionLanguage = React.useContext(CourseLanguageContext)
+  const course = props.router.query.course
+  const [queryDetails, setQueryDetails] = useState({
+    start: null,
+    end: null,
+    back: false,
+    page: 1,
+  })
+  const query = queryDetails.back
+    ? PreviousPageCompletionsQuery
+    : AllCompletionsQuery
+  const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
   return (
-    <Query<AllCompletionsData, Variables>
-      query={AllCompletionsQuery}
+    <CompletionsQuery
+      query={query}
       variables={{
+        cursor,
+        completion_language: completionLanguage,
         course,
-        completion_language: React.useContext(CourseLanguageContext),
       }}
+      fetchPolicy="network-only"
     >
-      {({ loading, error, data, fetchMore }) => {
+      {({
+        data: {
+          completionsPaginated: {
+            edges = [],
+            pageInfo: { startCursor = undefined, endCursor = undefined } = {},
+          } = {},
+        } = {},
+        error,
+        loading,
+      }) => {
+        const completions = edges.map(edge => edge.node)
         if (loading) {
           return <CircularProgress color="secondary" />
         }
-        if (error || !data) {
+        if (error) {
           return (
             <div>
               Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
             </div>
           )
         }
-        const cursor = data.completionsPaginated.pageInfo.endCursor
-        console.log("data", data.completionsPaginated)
         return (
           <CompletionsListWithData
-            completions={data}
+            completions={completions}
             onLoadMore={() =>
-              fetchMore({
-                query: AllCompletionsQuery,
-                variables: { course: course, cursor: cursor },
-                updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const newCompletions = fetchMoreResult.completionsPaginated
-                  const newCursor = newCompletions.pageInfo.endCursor
-                  //store the amount of pages gone forward in pagenumber
-                  setPageNumber(pageNumber + 1)
-                  return {
-                    cursor: newCursor,
-                    completionsPaginated: {
-                      pageInfo: {
-                        hasNextPage: newCompletions.pageInfo.hasNextPage,
-                        hasPreviousPage: true,
-                        startCursor: newCompletions.pageInfo.startCursor,
-                        endCursor: newCompletions.pageInfo.endCursor,
-                        __typename: "PageInfo",
-                      },
-                      edges: newCompletions.edges,
-                      __typename: "CompletionConnection",
-                    },
-                  }
-                },
+              setQueryDetails({
+                start: endCursor,
+                end: startCursor,
+                back: false,
+                page: queryDetails.page + 1,
               })
             }
-            pageNumber={pageNumber}
+            onGoBack={() =>
+              setQueryDetails({
+                start: endCursor,
+                end: startCursor,
+                back: true,
+                page: queryDetails.page - 1,
+              })
+            }
+            pageNumber={queryDetails.page}
           />
         )
       }}
-    </Query>
+    </CompletionsQuery>
   )
-}
+})
+/*
+const Completions: React.SFC<CompletionsListProps> = props => {
+  const { course } = props
+  
+
 const CompletionsList = withRouter(props => {
-  console.log(props)
-  const classes = useStyles()
-  const { router } = props
+  
   return (
     <section>
       <Typography
@@ -150,5 +190,5 @@ const CompletionsList = withRouter(props => {
     </section>
   )
 })
-
+*/
 export default CompletionsList
