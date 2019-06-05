@@ -1,41 +1,57 @@
-import { Prisma, Course, User } from "../../generated/prisma-client"
+import {
+  Prisma,
+  Course,
+  User,
+  CompletionRegistered,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { chunk } from "lodash"
 
 const registerCompletion = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
-  t.list.field("registerCompletion", {
-    type: "CompletionRegistered",
+  t.field("registerCompletion", {
+    type: "String",
     args: {
       completions: arg({ type: "CompletionArg", list: true }),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: true, disallowAdmin: true })
       const prisma: Prisma = ctx.prisma
-      const registeredCompletions = args.completions.map(async entry => {
-        const course: Course = await prisma
-          .completion({ id: entry.completion_id })
-          .course()
-        const user: User = await prisma
-          .completion({ id: entry.completion_id })
-          .user()
-        return await prisma.createCompletionRegistered({
-          completion: { connect: { id: entry.completion_id } },
-          organization: { connect: { id: ctx.organization.id } },
-          course: { connect: { id: course.id } },
-          real_student_number: entry.student_number,
-          user: { connect: { id: user.id } },
-        })
-      })
-      return registeredCompletions
+      let queue = chunk(args.completions, 500)
+      for (let i = 0; i < queue.length; i++) {
+        const promises = buildPromises(queue[i], ctx, prisma)
+        await Promise.all(promises)
+      }
+      return "success"
     },
   })
 }
 
+const buildPromises = (array, ctx, prisma): [Promise<CompletionRegistered>] => {
+  return array.map(async entry => {
+    console.log("entry", entry)
+    const course: Course = await prisma
+      .completion({ id: entry.completion_id })
+      .course()
+    const user: User = await prisma
+      .completion({ id: entry.completion_id })
+      .user()
+    console.log(course, user)
+    return prisma.createCompletionRegistered({
+      completion: { connect: { id: entry.completion_id } },
+      organization: { connect: { id: ctx.organization.id } },
+      course: { connect: { id: course.id } },
+      real_student_number: entry.student_number,
+      user: { connect: { id: user.id } },
+    })
+  })
+}
+
 const addCompletionRegisteredMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutaiton">,
+  t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   registerCompletion(t)
 }
