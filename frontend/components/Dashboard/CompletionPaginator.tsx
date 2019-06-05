@@ -1,23 +1,25 @@
 import React from "react"
 import { Grid, IconButton } from "@material-ui/core"
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
+import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft"
 
-function Paginator({ getNext, isNext, pageNumber }) {
-  console.log("next", isNext)
+function Paginator({ getNext, getPrevious, pageNumber }) {
   return (
     <Grid item xs={12} sm={12} lg={8}>
       <Grid container direction="row" alignItems="center">
         <Grid item>
-          <div>{pageNumber}</div>
-        </Grid>
-        <Grid item>
-          {isNext ? (
-            <IconButton onClick={getNext}>
-              <KeyboardArrowRightIcon />
+          {pageNumber !== 1 ? (
+            <IconButton onClick={getPrevious}>
+              <KeyboardArrowLeftIcon />
             </IconButton>
           ) : (
             ""
           )}
+        </Grid>
+        <Grid item>
+          <IconButton onClick={getNext}>
+            <KeyboardArrowRightIcon />
+          </IconButton>
         </Grid>
       </Grid>
     </Grid>

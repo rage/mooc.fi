@@ -6,16 +6,16 @@ import CompletionPaginator from "./CompletionPaginator"
 
 const CompletionsListWithData = props => {
   console.log(props)
-  const { completions, onLoadMore, pageNumber } = props
+  const { completions, onLoadMore, onGoBack, pageNumber } = props
   return (
     <Grid container spacing={3} justify="center">
-      <HeaderCard course={"elements-of-ai"} />
-      {completions.completionsPaginated.edges.map(completer => (
-        <CompletionCard completer={completer.node} key={completer.node.id} />
+      <HeaderCard course={completions[0].course} />
+      {completions.map(completer => (
+        <CompletionCard completer={completer} key={completer.id} />
       ))}
       <CompletionPaginator
         getNext={onLoadMore}
-        isNext={completions.completionsPaginated.pageInfo.hasNextPage}
+        getPrevious={onGoBack}
         pageNumber={pageNumber}
       />
     </Grid>
