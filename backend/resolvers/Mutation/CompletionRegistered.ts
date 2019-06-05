@@ -1,4 +1,9 @@
-import { Prisma, Course, User } from "../../generated/prisma-client"
+import {
+  Prisma,
+  Course,
+  User,
+  CompletionRegistered,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -16,26 +21,25 @@ const registerCompletion = async (
       checkAccess(ctx, { allowOrganizations: true, disallowAdmin: true })
       const prisma: Prisma = ctx.prisma
       let queue = chunk(args.completions, 500)
-      queue.map(async entry => {
-        await buildPromises(args.completions, ctx, prisma)
-      })
-      queue.map(async entry => {
-        await Promise.all(entry)
-      })
-
+      for (let i = 0; i < queue.length; i++) {
+        const promises = buildPromises(queue[i], ctx, prisma)
+        await Promise.all(promises)
+      }
       return "success"
     },
   })
 }
 
-const buildPromises = async (array, ctx, prisma) => {
+const buildPromises = (array, ctx, prisma): [Promise<CompletionRegistered>] => {
   return array.map(async entry => {
+    console.log("entry", entry)
     const course: Course = await prisma
       .completion({ id: entry.completion_id })
       .course()
     const user: User = await prisma
       .completion({ id: entry.completion_id })
       .user()
+    console.log(course, user)
     return prisma.createCompletionRegistered({
       completion: { connect: { id: entry.completion_id } },
       organization: { connect: { id: ctx.organization.id } },
