@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: moocfi-backend
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: moocfi-backend
-          image: gcr.io/moocfi/moocfi-backend:build-1559652483-a9b8de8ab1a47249b66240e40e6810f818320a2b
+          image: gcr.io/moocfi/moocfi-backend:build-1559725360-e062025db9e4e2930ebc03a7dddbacbfbb267bb5
           imagePullPolicy: Always
           ports:
             - name: backend-http
@@ -104,7 +104,7 @@ spec:
 
       initContainers:
         - name: moocfi-backend-run-migrations
-          image: gcr.io/moocfi/moocfi-backend:build-1559652483-a9b8de8ab1a47249b66240e40e6810f818320a2b
+          image: gcr.io/moocfi/moocfi-backend:build-1559725360-e062025db9e4e2930ebc03a7dddbacbfbb267bb5
           command: ["sh", "-c", "npm run prisma-deploy"]
           env:
             - name: DB_NAME

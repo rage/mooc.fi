@@ -5,6 +5,10 @@ metadata:
   namespace: moocfi
   annotations:
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "100"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "6000"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   tls:
   - hosts:
