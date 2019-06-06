@@ -7,12 +7,13 @@ import {
 import { Mutex } from "await-semaphore"
 import * as kafka from "kafka-node"
 import { DateTime } from "luxon"
+import { PointsByGroup } from "../types"
 
 const mutex = new Mutex()
 const Consumer = kafka.Consumer
-const client = new kafka.KafkaClient()
-const consumer = new Consumer(client, [{ topic: "test3", partition: 0 }], {
-  autoCommit: false,
+const client = new kafka.KafkaClient({ kafkaHost: "localhost:9092" })
+const consumer = new Consumer(client, [{ topic: "test5", partition: 0 }], {
+  autoCommit: true,
 })
 
 consumer.on("message", async kafkaMessage => {
@@ -21,7 +22,7 @@ consumer.on("message", async kafkaMessage => {
   console.log("---------------------------------------------------------")
 
   console.log(kafkaMessage)
-  let message
+  let message: Message
   try {
     message = JSON.parse(kafkaMessage.value.toString("utf8"))
   } catch (e) {
@@ -32,6 +33,17 @@ consumer.on("message", async kafkaMessage => {
 
   if (!validateMessageFormat(message)) {
     console.log("JSON VALIDATE FAILED")
+    release()
+    return
+  }
+  try {
+    if (!validatePointsByGroupArray(message.progress)) {
+      console.log("Progress is not valid")
+      release()
+      return
+    }
+  } catch (error) {
+    console.log("validating progress format failed with error:", error)
     release()
     return
   }
@@ -64,12 +76,42 @@ const validateMessageFormat = (messageObject): Boolean => {
   )
 }
 
+const validatePointsByGroupArray = (
+  pointsByGroupArray: [PointsByGroup],
+): Boolean => {
+  let valid: Boolean = true
+  console.log(pointsByGroupArray)
+  if (pointsByGroupArray.length < 1) return false
+  return !pointsByGroupArray.some(entry => {
+    return !validatePointsByGroup(entry)
+  })
+}
+
+const validatePointsByGroup = (pointsByGroup: PointsByGroup): Boolean => {
+  return (
+    pointsByGroup != null &&
+    pointsByGroup.group &&
+    pointsByGroup.max_points &&
+    !isNaN(pointsByGroup.max_points) &&
+    pointsByGroup.n_points &&
+    !isNaN(pointsByGroup.n_points) &&
+    pointsByGroup.progress &&
+    !isNaN(pointsByGroup.progress)
+  )
+}
 interface Message {
   timestamp: string
   user_id: number
   course_id: string
   service_id: string
-  progress: [any]
+  progress: [PointsByGroup]
+}
+
+interface PointsByGroup {
+  group: string
+  max_points: number
+  n_points: number
+  progress: number
 }
 
 const saveToDatabase = async (message: Message) => {
@@ -131,6 +173,6 @@ const saveToDatabase = async (message: Message) => {
       timestamp: timestamp.toJSDate(),
     })
   }
-  console.log("db success")
+  console.log("Saved to DB succesfully")
   return true
 }
