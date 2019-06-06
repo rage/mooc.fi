@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { ApolloClient, gql } from "apollo-boost"
 import { Query } from "react-apollo"
 import { AllCompletions as AllCompletionsData } from "./__generated__/AllCompletions"
@@ -169,27 +169,5 @@ const CompletionsList = withRouter(props => {
     </CompletionsQuery>
   )
 })
-/*
-const Completions: React.SFC<CompletionsListProps> = props => {
-  const { course } = props
-  
 
-const CompletionsList = withRouter(props => {
-  
-  return (
-    <section>
-      <Typography
-        variant="h3"
-        component="h2"
-        align="center"
-        gutterBottom={true}
-        className={classes.title}
-      >
-        Completions
-      </Typography>
-      <Completions course={router.query.course} />
-    </section>
-  )
-})
-*/
 export default CompletionsList

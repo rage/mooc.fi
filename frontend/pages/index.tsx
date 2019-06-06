@@ -1,13 +1,12 @@
 import * as React from "react"
 import { Typography } from "@material-ui/core"
 import withI18n from "../lib/withI18n"
+import ExplanationHero from "../components/Home/ExplanationHero"
 
 function Home() {
   return (
     <div>
-      <Typography variant="h3" component="h1">
-        There will be things
-      </Typography>
+      <ExplanationHero />
     </div>
   )
 }
