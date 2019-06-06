@@ -8,7 +8,6 @@ import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType
 import { arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import { chunk } from "lodash"
-
 const registerCompletion = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
