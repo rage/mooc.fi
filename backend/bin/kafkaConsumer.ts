@@ -6,41 +6,51 @@ import {
 } from "../generated/prisma-client"
 import { Mutex } from "await-semaphore"
 import * as kafka from "kafka-node"
+import { DateTime } from "luxon"
 
 const mutex = new Mutex()
 const Consumer = kafka.Consumer
 const client = new kafka.KafkaClient()
-const consumer = new Consumer(client, [{ topic: "test2", partition: 0 }], {
+const consumer = new Consumer(client, [{ topic: "test3", partition: 0 }], {
   autoCommit: false,
 })
 
 consumer.on("message", async kafkaMessage => {
+  //Going to mutex
+  const release = await mutex.acquire()
+  console.log("---------------------------------------------------------")
+
   console.log(kafkaMessage)
   let message
   try {
     message = JSON.parse(kafkaMessage.value.toString("utf8"))
   } catch (e) {
     console.log("invalid message", e)
+    release()
     return
   }
 
   if (!validateMessageFormat(message)) {
     console.log("JSON VALIDATE FAILED")
+    release()
     return
   }
 
-  //Going to mutex
-  const release = await mutex.acquire()
-
   try {
-    await saveToDatabase(message)
+    if (!(await saveToDatabase(message))) {
+      console.log("Could not save event to database")
+    }
   } catch (error) {
     console.log("Could not save event to database:", error)
   }
-
   //Releasing mutex
+  console.log("---------------------------------------------------------")
   release()
 })
+
+const validateTimestamp = (timestamp: DateTime) => {
+  return timestamp.invalid == null
+}
 
 const validateMessageFormat = (messageObject): Boolean => {
   const m = messageObject
@@ -53,7 +63,22 @@ const validateMessageFormat = (messageObject): Boolean => {
     m.service_id
   )
 }
-const saveToDatabase = async (message: any) => {
+
+interface Message {
+  timestamp: string
+  user_id: number
+  course_id: string
+  service_id: string
+  progress: [any]
+}
+
+const saveToDatabase = async (message: Message) => {
+  const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+  if (!validateTimestamp(timestamp)) {
+    console.log("invalid timestamp")
+    return
+  }
+
   const user: User = await prisma.user({ upstream_id: message.user_id })
   const userCourseProgresses: UserCourseProgress[] = await prisma.userCourseProgresses(
     {
@@ -82,12 +107,18 @@ const saveToDatabase = async (message: any) => {
   )
   const userCourseServiceProgress = userCourseServiceProgresses[0]
   if (userCourseServiceProgress) {
+    const oldTimestamp = DateTime.fromISO(userCourseServiceProgress.timestamp)
+    if (timestamp < oldTimestamp) {
+      console.log("Timestamp older than in DB, aborting")
+      return false
+    }
     await prisma.updateUserCourseServiceProgress({
       where: {
         id: userCourseServiceProgress.id,
       },
       data: {
         progress: message.progress,
+        timestamp: timestamp.toJSDate(),
       },
     })
   } else {
@@ -97,6 +128,9 @@ const saveToDatabase = async (message: any) => {
       service: { connect: { id: message.service_id } },
       progress: message.progress,
       user_course_progress: { connect: { id: userCourseProgress.id } },
+      timestamp: timestamp.toJSDate(),
     })
   }
+  console.log("db success")
+  return true
 }
