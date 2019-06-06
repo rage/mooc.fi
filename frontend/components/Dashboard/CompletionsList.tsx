@@ -31,6 +31,7 @@ export const AllCompletionsQuery = gql`
           completion_language
           created_at
           user {
+            id
             first_name
             last_name
             student_number
