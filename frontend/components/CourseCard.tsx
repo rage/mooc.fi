@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       padding: "0.8em",
     },
+    media: {
+      height: 250,
+    },
   }),
 )
 
@@ -28,7 +31,8 @@ function CourseCard({ course }) {
         <CardMedia
           component="img"
           alt="Course Logo"
-          image={`../static/images/courseimages/${course.slug}.png`}
+          image={require(`../static/images/courseimages/${course.slug}.png`)}
+          className={classes.media}
         />
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom={true}>
