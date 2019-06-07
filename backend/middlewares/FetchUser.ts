@@ -5,7 +5,7 @@ import { Role } from "../accessControl"
 
 const fetchUser = async (resolve, root, args, context, info) => {
   const prisma: Prisma = context.prisma
-  if (context.userDetails) {
+  if (context.userDetails || context.organization) {
     const result = await resolve(root, args, context, info)
     return result
   }
