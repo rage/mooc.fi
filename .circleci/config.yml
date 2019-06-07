@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "Install dependencies"
-          command: "yarn install"
+          command: "npm ci"
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
