@@ -14,6 +14,7 @@ import { ApolloClient, gql } from "apollo-boost"
 import { CourseDetails as CourseDetailsData } from "./__generated__/CourseDetails"
 import { useQuery } from "react-apollo-hooks"
 import { withRouter } from "next/router"
+import CourseLanguageContext from "../contexes/CourseLanguageContext"
 
 //map selection value of tab navigation
 //to the component to be rendered
@@ -41,35 +42,35 @@ const Course = withRouter(props => {
   }
 
   //store which languages are selected
-  const [languageValue, setLanguageValue] = useState({
-    fi: true,
-    en: true,
-    se: true,
-  })
+  const [languageValue, setLanguageValue] = useState("fi_FI")
+
   //store which tab is open
   const [selection, setSelection] = useState(0)
 
   const handleSelectionChange = (event, value) => {
     setSelection(value)
   }
-  const handleLanguageChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setLanguageValue({ ...languageValue, [name]: event.target.checked })
+  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
+    console.log(languageValue)
+    setLanguageValue((event.target as HTMLInputElement).value)
   }
-
   return (
-    <section>
-      <DashboardBreadCrumbs page={slug} />
-      <DashboardTabBar value={selection} handleChange={handleSelectionChange} />
-      <WideContainer>
-        <LanguageSelector
-          handleLanguageChange={handleLanguageChange}
-          languageValue={languageValue}
+    <CourseLanguageContext.Provider value={languageValue}>
+      <section>
+        <DashboardBreadCrumbs page={slug} />
+        <DashboardTabBar
+          value={selection}
+          handleChange={handleSelectionChange}
         />
-        {MapTypeToComponent[selection]}
-      </WideContainer>
-    </section>
+        <WideContainer>
+          <LanguageSelector
+            handleLanguageChange={handleLanguageChange}
+            languageValue={languageValue}
+          />
+          {MapTypeToComponent[selection]}
+        </WideContainer>
+      </section>
+    </CourseLanguageContext.Provider>
   )
 })
 
