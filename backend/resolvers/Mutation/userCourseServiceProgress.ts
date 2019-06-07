@@ -9,7 +9,7 @@ const addUserCourseServiceProgress = async (
   t.field("addUserCourseServiceProgress", {
     type: "UserCourseServiceProgress",
     args: {
-      progress: arg({ type: "ProgressArg", required: true }),
+      progress: arg({ type: "PointsByGroup", required: true }),
       service_id: idArg({ required: true }),
       user_course_progress_id: idArg({ required: true }),
     },

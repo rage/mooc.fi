@@ -5,7 +5,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo "Checking code style..."
-yarn prettier-check
+npm run prettier-check
 
 rc=$?;
 if [[ $rc != 0 ]]
