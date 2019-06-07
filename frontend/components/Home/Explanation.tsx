@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: 50,
       padding: "2rem",
       margin: "5rem 0",
-      marginTop: "15rem",
+      marginTop: "5rem",
       marginBottom: "0.1rem",
     },
     paperContent: {
