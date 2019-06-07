@@ -11,7 +11,7 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
       id: idArg(),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { slug, id } = args
       const prisma: Prisma = ctx.prisma
       return prisma.course({
@@ -26,7 +26,7 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("courses", {
     type: "Course",
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       return ctx.prisma.courses()
     },
   })
