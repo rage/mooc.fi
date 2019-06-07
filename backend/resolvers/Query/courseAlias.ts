@@ -5,7 +5,7 @@ const courseAliass = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("CourseAliases", {
     type: "CourseAlias",
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       return ctx.prisma.courseAliases()
     },
   })
