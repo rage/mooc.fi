@@ -107,7 +107,6 @@ type Organization @db(name: "organization") {
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
-  name: String!
   slug: String! @unique
   secret_key: String! @unique
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToOrganization")
