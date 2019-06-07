@@ -3,15 +3,13 @@ import { Grid, IconButton } from "@material-ui/core"
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft"
 
-function Paginator({ getNext, isNext, hasPrevious, pageNumber }) {
-  console.log(hasPrevious)
-  console.log("next", isNext)
+function Paginator({ getNext, getPrevious, pageNumber }) {
   return (
     <Grid item xs={12} sm={12} lg={8}>
       <Grid container direction="row" alignItems="center">
         <Grid item>
-          {hasPrevious ? (
-            <IconButton>
+          {pageNumber !== 1 ? (
+            <IconButton onClick={getPrevious}>
               <KeyboardArrowLeftIcon />
             </IconButton>
           ) : (
@@ -19,16 +17,9 @@ function Paginator({ getNext, isNext, hasPrevious, pageNumber }) {
           )}
         </Grid>
         <Grid item>
-          <div>{pageNumber}</div>
-        </Grid>
-        <Grid item>
-          {isNext ? (
-            <IconButton onClick={getNext}>
-              <KeyboardArrowRightIcon />
-            </IconButton>
-          ) : (
-            ""
-          )}
+          <IconButton onClick={getNext}>
+            <KeyboardArrowRightIcon />
+          </IconButton>
         </Grid>
       </Grid>
     </Grid>

@@ -1,5 +1,13 @@
 import React from "react"
-import { Checkbox, FormGroup, FormControlLabel } from "@material-ui/core"
+import {
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
+} from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles(theme => ({
@@ -10,39 +18,22 @@ const useStyles = makeStyles(theme => ({
 
 function LanguageSelectorForm({ handleLanguageChange, languageValue }) {
   const classes = useStyles()
+  console.log(languageValue)
+  console.log(handleLanguageChange)
   return (
-    <FormGroup row>
-      <FormControlLabel
-        className={classes.checkbox}
-        control={
-          <Checkbox
-            checked={languageValue.en}
-            onChange={handleLanguageChange("en")}
-          />
-        }
-        label="EN"
-      />
-      <FormControlLabel
-        className={classes.checkbox}
-        control={
-          <Checkbox
-            checked={languageValue.fi}
-            onChange={handleLanguageChange("fi")}
-          />
-        }
-        label="FI"
-      />
-      <FormControlLabel
-        className={classes.checkbox}
-        control={
-          <Checkbox
-            checked={languageValue.se}
-            onChange={handleLanguageChange("se")}
-          />
-        }
-        label="SE"
-      />
-    </FormGroup>
+    <FormControl component="fieldset">
+      <RadioGroup
+        aria-label="course language"
+        name="courselanguage"
+        value={languageValue}
+        onChange={handleLanguageChange}
+        row
+      >
+        <FormControlLabel value="fi_FI" control={<Radio />} label="FI" />
+        <FormControlLabel value="en_US" control={<Radio />} label="EN" />
+        <FormControlLabel value="se_SE" control={<Radio />} label="SE" />
+      </RadioGroup>
+    </FormControl>
   )
 }
 

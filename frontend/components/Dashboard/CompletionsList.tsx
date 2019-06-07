@@ -1,17 +1,68 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { ApolloClient, gql } from "apollo-boost"
 import { Query } from "react-apollo"
-import { AllCompletions as AllCompletionsData } from "../__generated__/AllCompletions"
+import { AllCompletions as AllCompletionsData } from "./__generated__/AllCompletions"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, Typography, CircularProgress } from "@material-ui/core"
-import CompletionCard from "./CompletionCard"
-import HeaderCard from "./HeaderCard"
+import { Typography, CircularProgress } from "@material-ui/core"
 import { withRouter } from "next/router"
-import CompletionPaginator from "./CompletionPaginator"
+import CompletionsListWithData from "./CompletionsListWithData"
+import CourseLanguageContext from "../../contexes/CourseLanguageContext"
 
 export const AllCompletionsQuery = gql`
-  query AllCompletions($course: String, $cursor: ID) {
-    completionsPaginated(course: $course, first: 15, after: $cursor) {
+  query AllCompletions(
+    $course: String
+    $cursor: ID
+    $completion_language: String
+  ) {
+    completionsPaginated(
+      course: $course
+      completion_language: $completion_language
+      first: 15
+      after: $cursor
+    ) {
+      pageInfo {
+        startCursor
+        endCursor
+      }
+      edges {
+        node {
+          id
+          email
+          completion_language
+          created_at
+          user {
+            id
+            first_name
+            last_name
+            student_number
+          }
+          course {
+            id
+            name
+          }
+          completions_registered {
+            id
+            organization {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`
+export const PreviousPageCompletionsQuery = gql`
+  query AllCompletions(
+    $course: String
+    $cursor: ID
+    $completion_language: String
+  ) {
+    completionsPaginated(
+      course: $course
+      completion_language: $completion_language
+      last: 15
+      before: $cursor
+    ) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -25,117 +76,97 @@ export const AllCompletionsQuery = gql`
           completion_language
           created_at
           user {
+            id
             first_name
             last_name
             student_number
           }
+          course {
+            id
+            name
+          }
+          completions_registered {
+            id
+            organization {
+              id
+              name
+            }
+          }
         }
-        cursor
       }
     }
   }
 `
+class CompletionsQuery extends Query<AllCompletionsData, {}> {}
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      textTransform: "uppercase",
-      marginTop: "0.7em",
-      marginBottom: "0.7em",
-    },
-  }),
-)
-
-interface Variables {
-  course: string
-}
-
-export interface CompletionsListProps {
-  course: string
-}
-const Completions: React.SFC<CompletionsListProps> = props => {
-  const { course } = props
-  const [pageNumber, setPageNumber] = useState(1)
-
+const CompletionsList = withRouter(props => {
+  const completionLanguage = React.useContext(CourseLanguageContext)
+  const course = props.router.query.course
+  const [queryDetails, setQueryDetails] = useState({
+    start: null,
+    end: null,
+    back: false,
+    page: 1,
+  })
+  const query = queryDetails.back
+    ? PreviousPageCompletionsQuery
+    : AllCompletionsQuery
+  const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
   return (
-    <Query<AllCompletionsData, Variables>
-      query={AllCompletionsQuery}
-      variables={{ course }}
+    <CompletionsQuery
+      query={query}
+      variables={{
+        cursor,
+        completion_language: completionLanguage,
+        course,
+      }}
+      fetchPolicy="network-only"
     >
-      {({ loading, error, data, fetchMore }) => {
+      {({
+        data: {
+          completionsPaginated: {
+            edges = [],
+            pageInfo: { startCursor = undefined, endCursor = undefined } = {},
+          } = {},
+        } = {},
+        error,
+        loading,
+      }) => {
+        const completions = edges.map(edge => edge.node)
         if (loading) {
           return <CircularProgress color="secondary" />
         }
-        if (error || !data) {
+        if (error) {
           return (
             <div>
               Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
             </div>
           )
         }
-        const cursor = data.completionsPaginated.pageInfo.endCursor
-        console.log("data", data.completionsPaginated)
         return (
-          <Grid container spacing={3} justify="center">
-            <HeaderCard course={"elements-of-ai"} />
-            {data.completionsPaginated.edges.map(completer => (
-              <CompletionCard
-                completer={completer.node}
-                key={completer.node.id}
-              />
-            ))}
-            <CompletionPaginator
-              getNext={() =>
-                fetchMore({
-                  query: AllCompletionsQuery,
-                  variables: { course: course, cursor: cursor },
-                  updateQuery: (previousResult, { fetchMoreResult }) => {
-                    const newCompletions = fetchMoreResult.completionsPaginated
-                    const newCursor = newCompletions.pageInfo.endCursor
-                    setPageNumber(pageNumber + 1)
-                    return {
-                      cursor: newCursor,
-                      completionsPaginated: {
-                        pageInfo: {
-                          hasNextPage: newCompletions.pageInfo.hasNextPage,
-                          hasPreviousPage: true,
-                          startCursor: newCompletions.pageInfo.startCursor,
-                          endCursor: newCompletions.pageInfo.endCursor,
-                          __typename: "PageInfo",
-                        },
-                        edges: newCompletions.edges,
-                        __typename: "CompletionConnection",
-                      },
-                    }
-                  },
-                })
-              }
-              isNext={data.completionsPaginated.pageInfo.hasNextPage}
-              hasPrevious={data.completionsPaginated.pageInfo.hasPreviousPage}
-              pageNumber={pageNumber}
-            />
-          </Grid>
+          <CompletionsListWithData
+            completions={completions}
+            onLoadMore={() =>
+              setQueryDetails({
+                start: endCursor,
+                end: startCursor,
+                back: false,
+                page: queryDetails.page + 1,
+              })
+            }
+            onGoBack={() =>
+              setQueryDetails({
+                start: endCursor,
+                end: startCursor,
+                back: true,
+                page: queryDetails.page - 1,
+              })
+            }
+            pageNumber={queryDetails.page}
+          />
         )
       }}
-    </Query>
-  )
-}
-const CompletionsList = withRouter(props => {
-  const classes = useStyles()
-  const { router } = props
-  return (
-    <section>
-      <Typography
-        variant="h3"
-        component="h2"
-        align="center"
-        gutterBottom={true}
-        className={classes.title}
-      >
-        Completions
-      </Typography>
-      <Completions course={router.query.course} />
-    </section>
+    </CompletionsQuery>
   )
 })
 
