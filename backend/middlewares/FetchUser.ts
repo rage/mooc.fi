@@ -1,6 +1,7 @@
 import { AuthenticationError } from "apollo-server-core"
 import TmcClient from "../services/tmc"
 import { Prisma } from "../generated/prisma-client"
+import { Role } from "../accessControl"
 
 const fetchUser = async (resolve, root, args, context, info) => {
   const prisma: Prisma = context.prisma
@@ -15,7 +16,8 @@ const fetchUser = async (resolve, root, args, context, info) => {
     rawToken = context.connection.context["Authorization"]
   }
   if (!rawToken) {
-    return new AuthenticationError("Please log in.")
+    context.role = Role.VISITOR
+    return await resolve(root, args, context, info)
   }
   if (rawToken.startsWith("Basic")) {
     let org
@@ -27,6 +29,7 @@ const fetchUser = async (resolve, root, args, context, info) => {
       return new AuthenticationError("Please log in.")
     }
     context.organization = org
+    context.role = Role.ORGANIZATION
     return await resolve(root, args, context, info)
   }
   const client = new TmcClient(rawToken)
@@ -48,6 +51,11 @@ const fetchUser = async (resolve, root, args, context, info) => {
     create: prismaDetails,
     update: prismaDetails,
   })
+  if (context.user.administrator) {
+    context.role = Role.ADMIN
+  } else {
+    context.role = Role.USER
+  }
 
   const result = await resolve(root, args, context, info)
   return result
