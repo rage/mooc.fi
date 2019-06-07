@@ -41,7 +41,7 @@ const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       before: idArg(),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { first, last, before, after, user_id, course_id } = args
       const prisma: Prisma = ctx.prisma
       return prisma.userCourseProgresses({
