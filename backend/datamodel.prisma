@@ -28,6 +28,7 @@ type Course @db(name: "course") {
   slug: String! @unique
   "aliases that can be used in this this api instead of slug "
   course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
+  services: [Service] @relation(name: "CourseToService")
 }
 
 type CourseAlias  @db(name: "course_alias"){
@@ -74,6 +75,7 @@ type Service @db(name: "service") {
   updated_at: DateTime @updatedAt
   url: String!
   name: String!
+  courses: [Course] @relation(name: "CourseToService")
 }
 
 type UserCourseProgress @db(name: "user_course_progress") {
@@ -109,4 +111,15 @@ type Organization @db(name: "organization") {
   slug: String! @unique
   secret_key: String! @unique
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToOrganization")
+  organization_translations: [OrganizationTranslation!]! @relation(name: "OrganizationToOrganizationTranslation")
+}
+
+type OrganizationTranslation @db(name: "organization_translation") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  language: String!
+  name: String!
+  description: String
+  organization: Organization! @relation(link: INLINE, name: "OrganizationToOrganizationTranslation")
 }
