@@ -9,12 +9,12 @@ const addUserCourseServiceProgress = async (
   t.field("addUserCourseServiceProgress", {
     type: "UserCourseServiceProgress",
     args: {
-      progress: arg({ type: "ProgressArg", required: true }),
+      progress: arg({ type: "PointsByGroup", required: true }),
       service_id: idArg({ required: true }),
       user_course_progress_id: idArg({ required: true }),
     },
     resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { service_id, progress, user_course_progress_id } = args
       const prisma: Prisma = ctx.prisma
       const course: Course = await prisma

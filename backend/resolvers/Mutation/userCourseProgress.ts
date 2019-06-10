@@ -9,10 +9,10 @@ const addUserCourseProgress = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     args: {
       user_id: idArg({ required: true }),
       course_id: idArg({ required: true }),
-      progress: arg({ type: "ProgressArg", required: true }),
+      progress: arg({ type: "PointsByGroup", required: true }),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { user_id, course_id, progress } = args
       const prisma: Prisma = ctx.prisma
       return prisma.createUserCourseProgress({
