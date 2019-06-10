@@ -6,7 +6,7 @@ const users = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("users", {
     type: "User",
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       return ctx.prisma.users()
     },
   })

@@ -1,6 +1,7 @@
 import { AuthenticationError } from "apollo-server-core"
 import TmcClient from "../services/tmc"
 import { Prisma } from "../generated/prisma-client"
+import { Role } from "../accessControl"
 
 const fetchUser = async (resolve, root, args, context, info) => {
   const prisma: Prisma = context.prisma
@@ -15,25 +16,35 @@ const fetchUser = async (resolve, root, args, context, info) => {
     rawToken = context.connection.context["Authorization"]
   }
   if (!rawToken) {
+    context.role = Role.VISITOR
+  } else if (rawToken.startsWith("Basic")) {
+    await getOrganization(prisma, rawToken, context)
+  } else {
+    await getUser(rawToken, context, prisma)
+  }
+
+  return await resolve(root, args, context, info)
+}
+
+export default fetchUser
+
+const getOrganization = async (prisma, rawToken, context) => {
+  let org
+  try {
+    const secret: string = rawToken.split(" ")[1]
+    org = await prisma.organizations({ where: { secret_key: secret } })
+    org = org[0]
+  } catch (e) {
     return new AuthenticationError("Please log in.")
   }
-  if (rawToken.startsWith("Basic")) {
-    let org
-    try {
-      const secret: string = rawToken.split(" ")[1]
-      org = await prisma.organizations({ where: { secret_key: secret } })
-      org = org[0]
-    } catch (e) {
-      return new AuthenticationError("Please log in.")
-    }
-    context.organization = org
-    return await resolve(root, args, context, info)
-  }
+  context.organization = org
+  context.role = Role.ORGANIZATION
+}
+async function getUser(rawToken: string, context: any, prisma: Prisma) {
   const client = new TmcClient(rawToken)
   const details = await client.getCurrentUserDetails()
   context.userDetails = details
   context.tmcClient = client
-
   const id: number = details.id
   const prismaDetails = {
     upstream_id: id,
@@ -48,9 +59,9 @@ const fetchUser = async (resolve, root, args, context, info) => {
     create: prismaDetails,
     update: prismaDetails,
   })
-
-  const result = await resolve(root, args, context, info)
-  return result
+  if (context.user.administrator) {
+    context.role = Role.ADMIN
+  } else {
+    context.role = Role.USER
+  }
 }
-
-export default fetchUser

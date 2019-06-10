@@ -98,6 +98,7 @@ type UserCourseServiceProgress @db(name: "user_course_service_progress") {
   "User's progress in a course in a spesific course"
   progress: Json!
   user_course_progress: UserCourseProgress! @relation(link: INLINE, name: "UserCourseServiceProgressToUserCourseProgress")
+  timestamp: DateTime
 }
 
 type Organization @db(name: "organization") {

@@ -11,7 +11,7 @@ const addCourseAlias = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       course: idArg(),
     },
     resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { course_code, course } = args
       const prisma: Prisma = ctx.prisma
       const newCourseAlias: CourseAlias = await prisma.createCourseAlias({

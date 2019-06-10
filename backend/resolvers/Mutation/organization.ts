@@ -13,7 +13,7 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       slug: stringArg(),
     },
     resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { name, slug } = args
       const prisma: Prisma = ctx.prisma
       let secret
