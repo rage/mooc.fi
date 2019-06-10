@@ -11,3 +11,8 @@ export {
 } from "./userCourseServiceProgress"
 export { default as addServiceQueries } from "./service"
 export { default as addOrganizationQueries } from "./organization"
+export { default as addStudyModuleQueries } from "./studyModule"
+export {
+  default as addStudyModuleTranslationQueries,
+} from "./studyModuleTranslation"
+export { default as addCourseTranslationQueries } from "./courseTranslation"
