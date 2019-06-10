@@ -28,6 +28,12 @@ type Course @db(name: "course") {
   slug: String! @unique
   "aliases that can be used in this this api instead of slug "
   course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
+  photo: String
+  course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation")
+  promote: Boolean
+  status: CourseStatus
+  study_module: StudyModule @relation(link: INLINE, name: "StudyModuleToCourse")
+  start_point: Boolean
 }
 
 type CourseAlias  @db(name: "course_alias"){
@@ -38,6 +44,21 @@ type CourseAlias  @db(name: "course_alias"){
   course_code: String! @unique
   "Which course this code links to"
   course: Course! @relation(link: INLINE, name: "CourseToCourseAlias")
+}
+
+enum CourseStatus {
+  Active, Ended, Upcoming
+}
+
+type CourseTranslation {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  name: String!
+  language: String!
+  description: String!
+  link: String!
+  course: Course! @relation(link: INLINE, name:"CourseToCourseTranslation")
 }
 
 type Completion @db(name: "completion") {
@@ -74,6 +95,24 @@ type Service @db(name: "service") {
   updated_at: DateTime @updatedAt
   url: String!
   name: String!
+}
+
+type StudyModule {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  courses: [Course!]! @relation(name: "StudyModuleToCourse")
+  study_module_translations: [StudyModuleTranslation!]! @relation(name: "StudyModuleToStudyModuleTranslation")
+}
+
+type StudyModuleTranslation {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  name: String!
+  language: String!
+  description: String!
+  study_module: StudyModule! @relation(link: INLINE, name: "StudyModuleToStudyModuleTranslation")
 }
 
 type UserCourseProgress @db(name: "user_course_progress") {
