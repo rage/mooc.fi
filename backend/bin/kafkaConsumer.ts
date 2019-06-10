@@ -14,10 +14,14 @@ import TmcClient from "../services/tmc"
 
 const mutex = new Mutex()
 const Consumer = kafka.Consumer
-const client = new kafka.KafkaClient({ kafkaHost: "localhost:9092" })
-const consumer = new Consumer(client, [{ topic: "test5", partition: 0 }], {
-  autoCommit: true,
-})
+const client = new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_HOST })
+const consumer = new Consumer(
+  client,
+  [{ topic: process.env.KAFKA_TOPIC, partition: 0 }],
+  {
+    autoCommit: true,
+  },
+)
 
 consumer.on("message", async kafkaMessage => {
   //Going to mutex
