@@ -1,36 +1,62 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, Paper, Typography, Button } from "@material-ui/core"
 import StartCourseList from "./StartCourseLits"
-import MoreCoursesList from "./MorecoursesList"
+import { Typography } from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    base: {
-      textAlign: "left",
-      borderRadius: 4,
-      display: "block",
-      overflow: "hidden",
-      padding: "1rem",
-      marginTop: "2em",
+    container: {
+      marginTop: "2rem",
+      marginBottom: "3rem",
+      backgroundColor: "#224960",
+      width: "100%",
+      marginLeft: 0,
+      marginRight: 0,
+      color: "#F1F1E6",
     },
-    header: {
-      marginTop: "1em",
-      marginBottom: "1em",
-      textTransform: "uppercase",
+    content: {
+      width: "95%",
+      margin: "auto",
     },
-    subtitle: {
-      lineHeight: "1.46429em",
-      fontSize: 18,
-      fontWeight: 400,
-    },
+    startcourses: {},
+    moreCourses: {},
   }),
 )
 
 function ModuleCard() {
   const classes = useStyles()
   return (
-    <Grid item xs={12} sm={12} lg={12}>
+    <div className={classes.container}>
+      <div className={classes.content}>
+        <div>
+          <Typography component="h3" variant="h3">
+            Koodaus
+          </Typography>
+          <Typography component="p" variant="subtitle1" paragraph>
+            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
+            fugit, sed quia consequuntur magni dolores eos qui ratione
+            voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem
+            ipsum quia dolor sit amet, consectetur
+          </Typography>
+          <Typography component="h4" variant="h4" gutterBottom={true}>
+            Aloita Näistä
+          </Typography>
+          <StartCourseList />
+        </div>
+        <div>
+          <Typography component="h4" variant="h5" gutterBottom={true}>
+            Jatka sitten näihin
+          </Typography>
+          <StartCourseList />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ModuleCard
+
+/*<Grid item xs={12} sm={12} lg={12}>
       <Paper className={classes.base}>
         <Typography
           variant="h4"
@@ -50,8 +76,4 @@ function ModuleCard() {
           Opintokokonaisuuden kotisivulle
         </Button>
       </Paper>
-    </Grid>
-  )
-}
-
-export default ModuleCard
+    </Grid>*/
