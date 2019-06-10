@@ -6,19 +6,18 @@ import ModuleCard from "./ModuleCard"
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginTop: 8,
-      marginBottom: 4,
+      overflow: "hidden",
     },
     title: {
       marginTop: "1.5em",
       marginBottom: "1rem",
-      textTransform: "uppercase",
       padding: "0 1.85rem",
     },
     subtitle: {
       lineHeight: "1.46429em",
       fontSize: 18,
       fontWeight: 400,
+      padding: "0 1.85rem",
     },
   }),
 )
@@ -26,7 +25,32 @@ const useStyles = makeStyles((theme: Theme) =>
 function Modules() {
   const classes = useStyles()
   return (
-    <Container component="section" className={classes.root}>
+    <section className={classes.root}>
+      <Typography
+        component="h2"
+        variant="h2"
+        align="center"
+        className={classes.title}
+      >
+        Opintokokonaisuudet
+      </Typography>
+      <Typography
+        component="p"
+        variant="subtitle1"
+        className={classes.subtitle}
+      >
+        Nämä kurssit ovat aloittelijaystävällisiä, eivätkä vaadi
+        ohjelmointiosaamista. Ne ovat hyvä tapa alkaa oppimaan
+        tietojenkäsittelytiedettä.
+      </Typography>
+      <ModuleCard />
+    </section>
+  )
+}
+
+export default Modules
+
+/*<Container component="section" className={classes.root}>
       <Typography
         component="h2"
         variant="h3"
@@ -50,8 +74,4 @@ function Modules() {
         <ModuleCard />
         <ModuleCard />
       </Grid>
-    </Container>
-  )
-}
-
-export default Modules
+    </Container>*/
