@@ -15,11 +15,14 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "#F1F1E6",
     },
     content: {
-      width: "95%",
-      margin: "auto",
+      padding: "1rem",
     },
-    startcourses: {},
-    moreCourses: {},
+    startcourses: {
+      fontSize: 18,
+    },
+    moreCourses: {
+      fontSize: 12,
+    },
   }),
 )
 
@@ -28,22 +31,22 @@ function ModuleCard() {
   return (
     <div className={classes.container}>
       <div className={classes.content}>
-        <div>
-          <Typography component="h3" variant="h3">
-            Koodaus
-          </Typography>
-          <Typography component="p" variant="subtitle1" paragraph>
-            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-            fugit, sed quia consequuntur magni dolores eos qui ratione
-            voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem
-            ipsum quia dolor sit amet, consectetur
-          </Typography>
+        <Typography component="h3" variant="h3">
+          Koodaus
+        </Typography>
+        <Typography component="p" variant="subtitle1" paragraph>
+          Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
+          fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
+          sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
+          sit amet, consectetur
+        </Typography>
+        <div className={classes.startcourses}>
           <Typography component="h4" variant="h4" gutterBottom={true}>
             Aloita Näistä
           </Typography>
           <StartCourseList />
         </div>
-        <div>
+        <div className={classes.moreCourses}>
           <Typography component="h4" variant="h5" gutterBottom={true}>
             Jatka sitten näihin
           </Typography>
