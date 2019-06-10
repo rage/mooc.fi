@@ -12,6 +12,7 @@
     "prisma-deploy": "prisma deploy --force",
     "fetch-ai-completions": "ts-node ./bin/fetchAiCompletions.ts",
     "kafka-consumer": "ts-node ./bin/kafkaConsumer.ts",
+    "kafka-consumer-debug": "ts-node ./bin/kafkaConsumer.ts -- --nolazy --debug-brk=5858",
     "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma"
   },
   "keywords": [],
