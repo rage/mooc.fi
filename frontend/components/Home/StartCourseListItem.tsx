@@ -5,7 +5,7 @@ import {
   Typography,
   CardMedia,
   Card,
-  CardHeader,
+  CardActionArea,
   CardContent,
 } from "@material-ui/core"
 
