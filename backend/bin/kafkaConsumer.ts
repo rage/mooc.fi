@@ -1,3 +1,4 @@
+require("dotenv-safe").config()
 import {
   prisma,
   UserCourseProgress,
@@ -9,13 +10,18 @@ import { Mutex } from "await-semaphore"
 import * as kafka from "kafka-node"
 import { DateTime } from "luxon"
 import { PointsByGroup } from "../types"
+import TmcClient from "../services/tmc"
 
 const mutex = new Mutex()
 const Consumer = kafka.Consumer
-const client = new kafka.KafkaClient({ kafkaHost: "localhost:9092" })
-const consumer = new Consumer(client, [{ topic: "test5", partition: 0 }], {
-  autoCommit: true,
-})
+const client = new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_HOST })
+const consumer = new Consumer(
+  client,
+  [{ topic: process.env.KAFKA_TOPIC, partition: 0 }],
+  {
+    autoCommit: true,
+  },
+)
 
 consumer.on("message", async kafkaMessage => {
   //Going to mutex
@@ -115,14 +121,35 @@ interface PointsByGroup {
   progress: number
 }
 
+const isUserInDB = async (prisma: Prisma, user_id) => {
+  return await prisma.$exists.user({ upstream_id: user_id })
+}
+
+const getUserFromTMC = async (prisma: Prisma, user_id): Promise<User> => {
+  const tmc: TmcClient = new TmcClient()
+  const userDetails = await tmc.getUserDetailsById(user_id)
+  return prisma.createUser({
+    upstream_id: userDetails.id,
+    first_name: userDetails.user_field.first_name,
+    last_name: userDetails.user_field.last_name,
+    email: userDetails.email,
+    username: userDetails.username,
+    administrator: userDetails.administrator,
+  })
+}
+
 const saveToDatabase = async (message: Message) => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
   if (!validateTimestamp(timestamp)) {
     console.log("invalid timestamp")
     return
   }
-
-  const user: User = await prisma.user({ upstream_id: message.user_id })
+  let user: User
+  if (await isUserInDB(prisma, message.user_id)) {
+    user = await prisma.user({ upstream_id: message.user_id })
+  } else {
+    user = await getUserFromTMC(prisma, message.user_id)
+  }
   const userCourseProgresses: UserCourseProgress[] = await prisma.userCourseProgresses(
     {
       where: {
@@ -131,6 +158,7 @@ const saveToDatabase = async (message: Message) => {
       },
     },
   )
+
   let userCourseProgress = userCourseProgresses[0]
   if (!userCourseProgress) {
     userCourseProgress = await prisma.createUserCourseProgress({
