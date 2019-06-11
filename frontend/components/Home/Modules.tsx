@@ -12,12 +12,21 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "1.5em",
       marginBottom: "1rem",
       padding: "0 1.85rem",
+      fontSize: "4rem",
+      [theme.breakpoints.down("sm")]: {
+        fontSize: "3rem",
+      },
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "2.5rem",
+      },
+      overflowWrap: "break-word",
     },
     subtitle: {
       lineHeight: "1.46429em",
       fontSize: 18,
       fontWeight: 400,
       padding: "0 1.85rem",
+      overflowWrap: "break-word",
     },
   }),
 )
