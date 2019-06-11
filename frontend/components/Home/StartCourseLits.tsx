@@ -13,7 +13,7 @@ function StartCourseList() {
   const classes = useStyles()
   return (
     <section className={classes.grid}>
-      <Grid container spacing={1}>
+      <Grid container spacing={4}>
         <StartCourseListItem />
         <StartCourseListItem />
         <StartCourseListItem />

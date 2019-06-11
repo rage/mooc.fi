@@ -22,7 +22,7 @@ function TitleText(props: any) {
 }
 
 function LogoImage(props: any) {
-  return <Avatar alt="MOOC logo" src="../static/images/logo.png" {...props} />
+  return <Avatar alt="MOOC logo" src="../static/images/moocfi.svg" {...props} />
 }
 
 function LogOutButton(props: any) {
