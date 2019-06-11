@@ -20,15 +20,25 @@ const useStyles = makeStyles((theme: Theme) =>
     contentroot: {
       padding: "1em",
     },
-    imageroot: {},
+    imageroot: {
+      height: "12em",
+      width: "auto",
+    },
+    grid: {
+      marginBottom: "2em",
+    },
+    card: {
+      width: "17em",
+      height: "25em",
+    },
   }),
 )
 
-function StartCourseListItem() {
+function StartCourseListItem({ small = false }) {
   const classes = useStyles()
   return (
-    <Grid item xs={12} md={6} lg={4}>
-      <Card>
+    <Grid item xs={12} lg={small ? 3 : 4} className={classes.grid}>
+      <Card className={classes.card}>
         <CardMedia
           component="img"
           alt="Course Logo"
@@ -39,7 +49,11 @@ function StartCourseListItem() {
           <Typography variant="body1" component="h4" className={classes.title}>
             Tietokoneen toiminta
           </Typography>
-          <Typography variant="body1" component="p" style={{ fontSize: "1em" }}>
+          <Typography
+            variant="body1"
+            component="p"
+            style={{ fontSize: "0.9em" }}
+          >
             Ohjelmointia Javalla perusteista lähtien, sekä mahdollisuus
             opinto-oikeuteen. Täydellinen kurssi ohjelmoinnin alkeiden
             opetteluun. Ei vaadi esitietoja.
