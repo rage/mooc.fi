@@ -1,7 +1,7 @@
-import React, { useState } from "react"
-import { mockModules } from "../mockModuleData"
+import React, { useState, useEffect } from "react"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
+import NextI18Next from "../i18n"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -34,46 +34,61 @@ const AllModulesQuery = gql`
 
 const objectifyTranslations = modules => {
   return modules.map(({ study_module_translations, courses, ...module }) => {
-    let module_translations = {}
+    let newModuleTranslations = {}
     study_module_translations.forEach(translation => {
-      module_translations = {
+      newModuleTranslations = {
         [translation.language]: translation,
-        ...module_translations,
+        ...newModuleTranslations,
       }
     })
-    const mutilatedCourses = courses.map(
-      ({ course_translations, ...course }) => {
-        let translations = {}
-        course_translations.forEach(translation => {
-          translations = {
-            [translation.language]: translation,
-            ...translations,
-          }
-        })
-        return {
-          course_translations: translations,
-          ...course,
+    const newCourses = courses.map(({ course_translations, ...course }) => {
+      let newCourseTranslations = {}
+      course_translations.forEach(translation => {
+        newCourseTranslations = {
+          [translation.language]: translation,
+          ...newCourseTranslations,
         }
-      },
-    )
+      })
+      return {
+        course_translations: newCourseTranslations,
+        ...course,
+      }
+    })
     return {
-      study_module_translations: module_translations,
-      courses: mutilatedCourses,
+      study_module_translations: newModuleTranslations,
+      courses: newCourses,
       ...module,
     }
   })
 }
 
 const MockModules = () => {
-  const [modules, setModules] = useState(mockModules.study_modules)
+  const { loading, error, data } = useQuery(AllModulesQuery)
   const [language, setLanguage] = useState("fi")
 
-  const mutilatedModules = objectifyTranslations(modules)
+  useEffect(() => {
+    setLanguage(NextI18Next.i18n.language)
+  }, [NextI18Next.i18n.language])
 
-  if (modules) {
+  if (loading) {
+    return <div>loading</div>
+  } else if (data) {
+    const modifiedModules = objectifyTranslations(data.study_modules)
+    const filteredModules = modifiedModules
+      .filter(mod => mod.study_module_translations[language])
+      .map(({ courses, ...rest }) => {
+        const filteredCourses = courses.filter(
+          course => course.course_translations[language],
+        )
+        return {
+          courses: filteredCourses,
+          ...rest,
+        }
+      })
+    console.log(filteredModules)
     return (
       <div>
-        {mutilatedModules.map(module => (
+        {filteredModules.map(module => (
           <div key={module.id}>
             <div>{module.study_module_translations[language].name}</div>
             <div>
@@ -89,7 +104,6 @@ const MockModules = () => {
       </div>
     )
   }
-  return <div>loading</div>
 }
 
 export default MockModules
