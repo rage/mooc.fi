@@ -20,24 +20,25 @@ const useStyles = makeStyles((theme: Theme) =>
     contentroot: {
       padding: "1em",
     },
+    imageroot: {},
   }),
 )
 
 function StartCourseListItem() {
   const classes = useStyles()
   return (
-    <Grid item xs={12} md={4} lg={4}>
+    <Grid item xs={12} md={6} lg={4}>
       <Card>
-        <CardHeader
-          title="Tietokoneen toiminta"
-          classes={{ root: classes.headerroot, title: classes.title }}
-        />
         <CardMedia
           component="img"
           alt="Course Logo"
           image={require("../../static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg")}
+          classes={{ root: classes.imageroot }}
         />
         <CardContent classes={{ root: classes.contentroot }}>
+          <Typography variant="body1" component="h4" className={classes.title}>
+            Tietokoneen toiminta
+          </Typography>
           <Typography variant="body1" component="p" style={{ fontSize: "1em" }}>
             Ohjelmointia Javalla perusteista lähtien, sekä mahdollisuus
             opinto-oikeuteen. Täydellinen kurssi ohjelmoinnin alkeiden
