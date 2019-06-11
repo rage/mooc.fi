@@ -1,7 +1,7 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import StartCourseList from "./StartCourseLits"
-import { Typography } from "@material-ui/core"
+import { Typography, Container } from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,7 +30,7 @@ function ModuleCard() {
   const classes = useStyles()
   return (
     <div className={classes.container}>
-      <div className={classes.content}>
+      <Container>
         <Typography component="h3" variant="h3">
           Koodaus
         </Typography>
@@ -52,31 +52,9 @@ function ModuleCard() {
           </Typography>
           <StartCourseList />
         </div>
-      </div>
+      </Container>
     </div>
   )
 }
 
 export default ModuleCard
-
-/*<Grid item xs={12} sm={12} lg={12}>
-      <Paper className={classes.base}>
-        <Typography
-          variant="h4"
-          className={classes.header}
-          component="h3"
-          align="center"
-        >
-          Koodaus
-        </Typography>
-        <Typography variant="body1" component="p" className={classes.subtitle}>
-          Ohjelmointia Javalla perusteista lähtien, Sen jälkeen tarjolla
-          kursseja v Ei vaadi esitietoja.
-        </Typography>
-        <StartCourseList />
-        <MoreCoursesList />
-        <Button variant="outlined" fullWidth>
-          Opintokokonaisuuden kotisivulle
-        </Button>
-      </Paper>
-    </Grid>*/
