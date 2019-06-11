@@ -28,9 +28,9 @@ const logger = winston.createLogger({
 
 const logCommit = (err, topicPartitions) => {
   if (err) {
-    logger.error("Error in commit:", err)
+    logger.error("Error in commit:" + err)
   } else {
-    logger.info("Committed. topicPartitions:", topicPartitions)
+    logger.info("Committed. topicPartitions:" + topicPartitions)
   }
 }
 
