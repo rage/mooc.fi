@@ -13,7 +13,7 @@ import TmcClient from "../services/tmc"
 import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
 let commitCounter = 0
-const commitInterval = 5
+const commitInterval = 100
 const mutex = new Mutex()
 
 const logger = winston.createLogger({
