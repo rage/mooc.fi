@@ -41,12 +41,7 @@ function ModuleCard() {
         <Typography component="h3" variant="h3" className={classes.title}>
           Koodaus
         </Typography>
-        <Typography
-          component="p"
-          variant="subtitle1"
-          paragraph
-          className={classes.text}
-        >
+        <Typography component="p" variant="subtitle1" paragraph>
           Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
           fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
           sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor

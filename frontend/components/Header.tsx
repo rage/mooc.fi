@@ -16,7 +16,7 @@ import NextI18Next from "../i18n"
 function TitleText(props: any) {
   return (
     <Typography variant="body1" {...props}>
-      MOOC Points
+      MOOC.fi
     </Typography>
   )
 }
@@ -36,12 +36,14 @@ function LogOutButton(props: any) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
-      fontFamily: "Open Sans Condensed, sans-serif",
+      fontFamily: "Open Sans Condensed Light, sans-serif",
       fontSize: "1.75rem",
       flex: 1,
     },
     avatar: {
       margin: "1em",
+      height: "3em",
+      width: "3em",
     },
   }),
 )
@@ -55,7 +57,7 @@ function Header() {
     <AppBar position="static" color="inherit">
       <Toolbar>
         <Link href={"/"}>
-          <LogoImage className={classes.avatar} />
+          <LogoImage classes={{ root: classes.avatar }} />
         </Link>
         <TitleText className={classes.title} />
 
