@@ -80,7 +80,7 @@ function ModuleCard() {
           </Typography>
           <StartCourseList small extra />
         </div>
-        <Button variant="outlined" color="inherit" className={classes.link}>
+        <Button color="inherit" className={classes.link}>
           <Typography>Opintokokonaisuuden kotisivulle</Typography>
         </Button>
       </Container>
