@@ -9,3 +9,8 @@ export {
   default as addUserCourseServiceProgressMutations,
 } from "./userCourseServiceProgress"
 export { default as addOrganizationMutations } from "./organization"
+export { default as addCourseTranslationMutations } from "./courseTranslation"
+export { default as addStudyModuleMutations } from "./studyModule"
+export {
+  default as addStudyModuleTranslationMutations,
+} from "./studyModuleTranslation"

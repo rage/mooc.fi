@@ -46,11 +46,11 @@ type CourseAlias  @db(name: "course_alias"){
   course: Course! @relation(link: INLINE, name: "CourseToCourseAlias")
 }
 
-enum CourseStatus {
+enum CourseStatus @db(name:"course_status"){
   Active, Ended, Upcoming
 }
 
-type CourseTranslation {
+type CourseTranslation @db(name:"course_translation"){
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
@@ -97,7 +97,7 @@ type Service @db(name: "service") {
   name: String!
 }
 
-type StudyModule {
+type StudyModule @db(name:"study_module"){
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
@@ -105,7 +105,7 @@ type StudyModule {
   study_module_translations: [StudyModuleTranslation!]! @relation(name: "StudyModuleToStudyModuleTranslation")
 }
 
-type StudyModuleTranslation {
+type StudyModuleTranslation @db(name:"study_module_translation"){
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
