@@ -9,24 +9,22 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden",
     },
     title: {
-      marginTop: "1.5em",
-      marginBottom: "1rem",
+      marginBottom: "2rem",
       padding: "0 1.85rem",
       fontSize: "4rem",
       [theme.breakpoints.down("sm")]: {
         fontSize: "3rem",
       },
       [theme.breakpoints.down("xs")]: {
-        fontSize: "2.5rem",
+        fontSize: "2rem",
       },
-      overflowWrap: "break-word",
     },
     subtitle: {
       lineHeight: "1.46429em",
       fontSize: 18,
       fontWeight: 400,
-      padding: "0 1.85rem",
       overflowWrap: "break-word",
+      marginBottom: "3rem",
     },
   }),
 )
@@ -35,52 +33,29 @@ function Modules() {
   const classes = useStyles()
   return (
     <section className={classes.root}>
-      <Typography
-        component="h2"
-        variant="h2"
-        align="center"
-        className={classes.title}
-      >
-        Opintokokonaisuudet
-      </Typography>
-      <Typography
-        component="p"
-        variant="subtitle1"
-        className={classes.subtitle}
-      >
-        Nämä kurssit ovat aloittelijaystävällisiä, eivätkä vaadi
-        ohjelmointiosaamista. Ne ovat hyvä tapa alkaa oppimaan
-        tietojenkäsittelytiedettä.
-      </Typography>
+      <Container>
+        <Typography
+          component="h2"
+          variant="h2"
+          align="center"
+          className={classes.title}
+        >
+          Opintokokonaisuudet
+        </Typography>
+        <Typography
+          component="p"
+          variant="subtitle1"
+          className={classes.subtitle}
+        >
+          Nämä kurssit ovat aloittelijaystävällisiä, eivätkä vaadi
+          ohjelmointiosaamista. Ne ovat hyvä tapa alkaa oppimaan
+          tietojenkäsittelytiedettä.
+        </Typography>
+      </Container>
+      <ModuleCard />
       <ModuleCard />
     </section>
   )
 }
 
 export default Modules
-
-/*<Container component="section" className={classes.root}>
-      <Typography
-        component="h2"
-        variant="h3"
-        align="center"
-        className={classes.title}
-      >
-        Kaikki Opintokokonaisuudet
-      </Typography>
-      <Typography
-        component="p"
-        variant="subtitle1"
-        className={classes.subtitle}
-      >
-        Tarjoamme useita opintokokonaisuuksia, jotka muodostavat yhteinäisiä
-        kurssisarjoja neljältä eri tietojenkäsittelytieteen osa-alueelta:
-        Koodaus, tietoturva, pilvipohjaiset websovellukset sekä tekoäly ja
-        datatiede. Opintokokonaisuuden suorittaminen antaa hyvän pohjan sen osa
-        alueen taidoille.
-      </Typography>
-      <Grid container spacing={3}>
-        <ModuleCard />
-        <ModuleCard />
-      </Grid>
-    </Container>*/

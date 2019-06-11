@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden",
     },
     title: {
-      marginBottom: "1rem",
+      marginBottom: "2rem",
       padding: "0 1.85rem",
       fontSize: "4rem",
       [theme.breakpoints.down("sm")]: {
@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: "1.46429em",
       fontSize: 18,
       fontWeight: 400,
+      marginBottom: "3rem",
+    },
+    grid: {
+      fontSize: 20,
     },
   }),
 )
@@ -51,7 +55,7 @@ function CourseHighlights() {
           ohjelmointiosaamista. Ne ovat hyvä tapa alkaa oppimaan
           tietojenkäsittelytiedettä.
         </Typography>
-        <Grid container spacing={5}>
+        <Grid container spacing={3} className={classes.grid}>
           <StartCourseListItem />
           <StartCourseListItem />
           <StartCourseListItem />
