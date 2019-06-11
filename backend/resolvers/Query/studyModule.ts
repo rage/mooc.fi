@@ -24,7 +24,6 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("study_modules", {
     type: "StudyModule",
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
       return ctx.prisma.studyModules()
     },
   })
