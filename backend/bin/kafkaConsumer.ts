@@ -7,65 +7,86 @@ import {
   Prisma,
 } from "../generated/prisma-client"
 import { Mutex } from "await-semaphore"
-import * as kafka from "kafka-node"
 import { DateTime } from "luxon"
 import { PointsByGroup } from "../types"
 import TmcClient from "../services/tmc"
-
+import * as Kafka from "node-rdkafka"
+import * as winston from "winston"
+let commitCounter = 0
+const commitInterval = 5
 const mutex = new Mutex()
-const Consumer = kafka.Consumer
-const client = new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_HOST })
-const consumer = new Consumer(
-  client,
-  [{ topic: process.env.KAFKA_TOPIC, partition: 0 }],
-  {
-    autoCommit: true,
-  },
-)
 
-consumer.on("message", async kafkaMessage => {
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  defaultMeta: { service: "kafka-consumer" },
+  transports: [new winston.transports.Console()],
+})
+
+const logCommit = (err, topicPartitions) => {
+  if (err) {
+    logger.error("Error in commit:", err)
+  } else {
+    logger.info("Committed. topicPartitions:", topicPartitions)
+  }
+}
+
+const commit = async message => {
+  if (commitCounter >= commitInterval) {
+    await consumer.commitMessage(message)
+    commitCounter = 0
+  }
+  commitCounter++
+}
+
+const handleMessage = async kafkaMessage => {
   //Going to mutex
   const release = await mutex.acquire()
-  console.log("---------------------------------------------------------")
-
-  console.log(kafkaMessage)
+  logger.info(kafkaMessage)
   let message: Message
   try {
     message = JSON.parse(kafkaMessage.value.toString("utf8"))
   } catch (e) {
-    console.log("invalid message", e)
+    logger.error("invalid message", e)
+    await commit(kafkaMessage)
     release()
     return
   }
 
   if (!validateMessageFormat(message)) {
-    console.log("JSON VALIDATE FAILED")
+    logger.error("JSON VALIDATE FAILED")
+    await commit(kafkaMessage)
     release()
     return
   }
   try {
     if (!validatePointsByGroupArray(message.progress)) {
-      console.log("Progress is not valid")
+      logger.error("Progress is not valid")
+      await commit(kafkaMessage)
       release()
       return
     }
   } catch (error) {
-    console.log("validating progress format failed with error:", error)
+    logger.error("validating progress format failed with error:", error)
+    await commit(kafkaMessage)
     release()
     return
   }
 
   try {
     if (!(await saveToDatabase(message))) {
-      console.log("Could not save event to database")
+      logger.error("Could not save event to database")
     }
   } catch (error) {
-    console.log("Could not save event to database:", error)
+    logger.error("Could not save event to database:", error)
   }
+  await commit(kafkaMessage)
   //Releasing mutex
-  console.log("---------------------------------------------------------")
   release()
-})
+}
 
 const validateTimestamp = (timestamp: DateTime) => {
   return timestamp.invalid == null
@@ -87,7 +108,6 @@ const validatePointsByGroupArray = (
   pointsByGroupArray: [PointsByGroup],
 ): Boolean => {
   let valid: Boolean = true
-  console.log(pointsByGroupArray)
   if (pointsByGroupArray.length < 1) return false
   return !pointsByGroupArray.some(entry => {
     return !validatePointsByGroup(entry)
@@ -141,7 +161,7 @@ const getUserFromTMC = async (prisma: Prisma, user_id): Promise<User> => {
 const saveToDatabase = async (message: Message) => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
   if (!validateTimestamp(timestamp)) {
-    console.log("invalid timestamp")
+    logger.error("invalid timestamp")
     return
   }
   let user: User
@@ -180,7 +200,7 @@ const saveToDatabase = async (message: Message) => {
   if (userCourseServiceProgress) {
     const oldTimestamp = DateTime.fromISO(userCourseServiceProgress.timestamp)
     if (timestamp < oldTimestamp) {
-      console.log("Timestamp older than in DB, aborting")
+      logger.error("Timestamp older than in DB, aborting")
       return false
     }
     await prisma.updateUserCourseServiceProgress({
@@ -203,7 +223,7 @@ const saveToDatabase = async (message: Message) => {
     })
   }
   await generateUserCourseProgress(userCourseProgress, prisma)
-  console.log("Saved to DB succesfully")
+  logger.info("Saved to DB succesfully")
   return true
 }
 
@@ -218,7 +238,6 @@ const generateUserCourseProgress = async (
     return entry.progress
   })
   let combined = []
-  console.log("progresses", progresses)
   progresses.map(entry => {
     combined.push(...entry)
   })
@@ -229,3 +248,23 @@ const generateUserCourseProgress = async (
     },
   })
 }
+
+const consumer = new Kafka.KafkaConsumer(
+  {
+    "group.id": "kafka",
+    "metadata.broker.list": process.env.KAFKA_HOST,
+    offset_commit_cb: logCommit,
+    "enable.auto.commit": "false",
+    "partition.assignment.strategy": "roundrobin",
+  },
+  {},
+)
+
+consumer.connect()
+
+consumer
+  .on("ready", () => {
+    consumer.subscribe([process.env.KAFKA_TOPIC])
+    consumer.consume()
+  })
+  .on("data", handleMessage)
