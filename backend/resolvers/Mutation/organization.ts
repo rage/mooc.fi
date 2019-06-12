@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma-client"
+import { Prisma, Organization } from "../../generated/prisma-client"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
@@ -23,16 +23,21 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         result = await prisma.organizations({ where: { secret_key: secret } })
       } while (result.length)
 
-      return prisma.createOrganization({
-        name: name,
+      const org: Organization = await prisma.createOrganization({
         slug: slug,
         secret_key: secret,
       })
+      const orgTranslation = await prisma.createOrganizationTranslation({
+        name: name,
+        language: "fi_FI", //placeholder
+        organization: { connect: { id: org.id } },
+      })
+      return prisma.organization({ id: org.id })
     },
   })
 }
 
-const generateSecret = async () => {
+export const generateSecret = async () => {
   const randomBytesPromise = promisify(randomBytes)
   return (await randomBytesPromise(128)).toString("hex")
 }
