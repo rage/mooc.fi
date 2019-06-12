@@ -1,17 +1,11 @@
-import React, { useEffect, useState } from "react"
-import withI18n from "../lib/withI18n"
-import ExplanationHero from "../components/Home/ExplanationHero"
-import NaviCardList from "../components/Home/NaviCardList"
-import CourseHighlights from "../components/Home/CourseHighlights"
-import Modules from "../components/Home/Modules"
-import { mockModules } from "../mockModuleData"
+import React, { useState, useEffect } from "react"
+import { gql } from "apollo-boost"
+import { useQuery } from "react-apollo-hooks"
+import NextI18Next from "../i18n"
 import {
   filterAndModifyByLanguage,
   getPromotedCourses,
 } from "../util/moduleFunctions"
-import NextI18Next from "../i18n"
-import { gql } from "apollo-boost"
-import { useQuery } from "react-apollo-hooks"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -42,7 +36,7 @@ const AllModulesQuery = gql`
   }
 `
 
-function Home() {
+const MockModules = () => {
   const { loading, error, data } = useQuery(AllModulesQuery)
   const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
 
@@ -50,23 +44,33 @@ function Home() {
     setLanguage(NextI18Next.i18n.language)
   }, [NextI18Next.i18n.language])
 
-  const modules = filterAndModifyByLanguage(mockModules.study_modules, language)
-  /* const modules = filterAndModifyByLanguage(
-    data.study_modules,
-    language,
-  ) */
-  const promotedCourses = getPromotedCourses(modules)
-
   if (loading) {
     return <div>loading</div>
   } else if (data) {
+    const filteredModules = filterAndModifyByLanguage(
+      data.study_modules,
+      language,
+    )
+    const promotedCourses = getPromotedCourses(filteredModules)
+    console.log(promotedCourses)
+    console.log(filteredModules)
     return (
       <div>
-        <ExplanationHero />
-        <NaviCardList />
+        {filteredModules.map(mod => (
+          <div key={mod.id}>
+            <div>{mod.name}</div>
+            <div>{"____" + mod.description}</div>
+            {mod.courses.map(course => (
+              <div key={course.id}>
+                <div>{"________" + course.name}</div>
+                <div>{"____________" + course.description}</div>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     )
   }
 }
 
-export default Home
+export default MockModules

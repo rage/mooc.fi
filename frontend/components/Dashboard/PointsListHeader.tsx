@@ -6,27 +6,34 @@ import PointsListHeaderTable from "./PointsListHeaderTable"
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     titleCard: {
-      borderLeft: "7px solid #ffc107",
+      padding: "1em",
+      backgroundColor: "white",
+    },
+    title: {
+      textTransform: "uppercase",
+      fontSize: 24,
     },
   }),
 )
 function PointsListHeader() {
   const classes = useStyles()
   return (
-    <Grid item xs={12} sm={12} lg={12}>
-      <Card className={classes.titleCard}>
-        <CardContent>
-          <div>
-            <Typography variant="h6" component="p">
+    <Grid item xs={12} sm={12} lg={12} className={classes.titleCard}>
+      <Grid container>
+        <Grid item xs={12} sm={12} lg={12}>
+          <div className={classes.titleCard}>
+            <Typography variant="h6" component="p" className={classes.title}>
               Elements of Ai
             </Typography>
-            <Typography variant="body1" component="p">
+            <Typography variant="subtitle1" component="p">
               Students: 50 0000
             </Typography>
-            <PointsListHeaderTable />
           </div>
-        </CardContent>
-      </Card>
+        </Grid>
+        <Grid item xs={12} sm={12} lg={12}>
+          <PointsListHeaderTable />
+        </Grid>
+      </Grid>
     </Grid>
   )
 }
