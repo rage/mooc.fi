@@ -17,6 +17,7 @@ type User @db(name: "user") {
   completions: [Completion!]! @relation(name: "CompletionToUser")
   "User's completions that have been reqistered for ECTS etc."
   registered_completions: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToUser")
+  created_organization: [Organization!]! @relation(name: "OrganizationToUser")
 }
 
 type Course @db(name: "course") {
@@ -108,6 +109,22 @@ type Organization @db(name: "organization") {
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   slug: String! @unique
+  verified_at: DateTime
+  verified: Boolean
+  disabled: Boolean
+  hidden: Boolean
+  creator: User @relation(link: INLINE, name: "OrganizationToUser")
+  tmc_created_at: DateTime
+  tmc_updated_at: DateTime
+  logo_file_name: String
+  logo_content_type: String
+  logo_file_size: Int
+  logo_updated_at: DateTime
+  phone: String
+  contact_information: String
+  email: String
+  website: String
+  pinned: Boolean
   secret_key: String! @unique
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToOrganization")
   organization_translations: [OrganizationTranslation!]! @relation(name: "OrganizationToOrganizationTranslation")
@@ -119,6 +136,7 @@ type OrganizationTranslation @db(name: "organization_translation") {
   updated_at: DateTime @updatedAt
   language: String!
   name: String!
-  description: String
+  disabled_reason: String
+  information: String
   organization: Organization! @relation(link: INLINE, name: "OrganizationToOrganizationTranslation")
 }
