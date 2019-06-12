@@ -2,12 +2,11 @@ const exec = require("child_process").exec
 import axios from "axios"
 //const axios = require("axios");
 
-console.log("Fetching tmc access token...")
 let _accessToken = null
-console.log("Got tmc access token.")
 
 function fetchAccessToken() {
   return new Promise((resolve, _reject) => {
+    console.log("Fetching tmc access token...")
     exec(
       `curl -fsS -XPOST $TMC_HOST/oauth/token --data-urlencode "client_id=${
         process.env.TMC_CLIENT_ID
@@ -23,13 +22,14 @@ function fetchAccessToken() {
           console.log(err)
           process.exit(1)
         }
+        console.log("Got tmc access token.")
         resolve(accessToken.trim())
       },
     )
   })
 }
 
-async function getAccessToken() {
+export async function getAccessToken() {
   if (_accessToken) {
     return _accessToken
   }

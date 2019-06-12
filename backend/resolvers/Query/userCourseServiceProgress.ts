@@ -17,7 +17,7 @@ const userCourseServiceProgress = async (
       service_id: idArg(),
     },
     resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { user_id, course_id, service_id } = args
       const prisma: Prisma = ctx.prisma
       const result: UserCourseServiceProgress[] = await prisma.userCourseServiceProgresses(
@@ -49,7 +49,7 @@ const userCourseServiceProgresses = (
       before: idArg(),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const {
         user_id,
         course_id,
