@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseHighlights() {
+function CourseHighlights({ courses }) {
   const classes = useStyles()
   return (
     <section className={classes.root}>
@@ -56,9 +56,9 @@ function CourseHighlights() {
           tietojenkäsittelytiedettä.
         </Typography>
         <Grid container spacing={3} className={classes.grid}>
-          <StartCourseListItem />
-          <StartCourseListItem />
-          <StartCourseListItem />
+          {courses.map(course => (
+            <StartCourseListItem key={course.id} course={course} />
+          ))}
         </Grid>
       </Container>
     </section>

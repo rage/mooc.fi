@@ -39,13 +39,15 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function ModuleCard() {
+function ModuleCard({ studyModule }) {
   const classes = useStyles()
+  const startCourses = studyModule.courses.filter(course => course.start_point)
+  const otherCourses = studyModule.courses.filter(course => !course.start_point)
   return (
     <div className={classes.container}>
       <Container>
         <Typography component="h3" variant="h3" className={classes.title}>
-          Koodaus
+          {studyModule.name}
         </Typography>
         <Typography
           component="p"
@@ -53,10 +55,7 @@ function ModuleCard() {
           paragraph
           className={classes.bodyText}
         >
-          Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-          fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
-          sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
-          sit amet, consectetur
+          {studyModule.description}
         </Typography>
         <div className={classes.startcourses}>
           <Typography
@@ -67,7 +66,7 @@ function ModuleCard() {
           >
             Aloita näistä
           </Typography>
-          <StartCourseList />
+          <StartCourseList courses={startCourses} />
         </div>
         <div className={classes.moreCourses}>
           <Typography
@@ -78,7 +77,7 @@ function ModuleCard() {
           >
             Jatka sitten näihin
           </Typography>
-          <StartCourseList small extra />
+          <StartCourseList small extra courses={otherCourses} />
         </div>
         <Button color="inherit" className={classes.link}>
           <Typography>Opintokokonaisuuden kotisivulle</Typography>

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function Modules() {
+function Modules({ modules }) {
   const classes = useStyles()
   return (
     <section className={classes.root}>
@@ -52,8 +52,9 @@ function Modules() {
           tietojenkäsittelytiedettä.
         </Typography>
       </Container>
-      <ModuleCard />
-      <ModuleCard />
+      {modules.map(mod => (
+        <ModuleCard studyModule={mod} key={mod.id} />
+      ))}
     </section>
   )
 }
