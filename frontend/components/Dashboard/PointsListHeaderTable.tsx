@@ -1,29 +1,76 @@
 import React from "react"
-import {
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableBody,
-} from "@material-ui/core"
+import { Table, TableRow, TableCell, TableBody } from "@material-ui/core"
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    tableChart: {
+      backgroundColor: "red",
+      width: `${100 * (7 / 10)}%`,
+    },
+  }),
+)
 
 function PointsListHeaderTable() {
+  const classes = useStyles()
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>1</TableCell>
-          <TableCell align="right">2</TableCell>
-          <TableCell align="right">3</TableCell>
-          <TableCell align="right">4</TableCell>
-        </TableRow>
-      </TableHead>
+    <Table size="small">
       <TableBody>
         <TableRow>
-          <TableCell>11/12</TableCell>
-          <TableCell align="right">7/10</TableCell>
-          <TableCell align="right">6/10</TableCell>
-          <TableCell align="right">0/11</TableCell>
+          <TableCell align="left">1</TableCell>
+          <TableCell align="left">11/12</TableCell>
+          <TableCell>
+            <div
+              style={{
+                backgroundColor: "red",
+                width: `${100 * (11 / 12)}%`,
+              }}
+            >
+              total
+            </div>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell align="left">2</TableCell>
+          <TableCell align="left">7/10</TableCell>
+          <TableCell>
+            <div
+              style={{
+                backgroundColor: "red",
+                width: `${100 * (7 / 10)}%`,
+              }}
+            >
+              total
+            </div>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell align="left">3</TableCell>
+          <TableCell align="left">6/10</TableCell>
+          <TableCell>
+            <div
+              style={{
+                backgroundColor: "red",
+                width: `${100 * (6 / 10)}%`,
+              }}
+            >
+              total
+            </div>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell align="left">4</TableCell>
+          <TableCell align="left">6/10</TableCell>
+          <TableCell>
+            <div
+              style={{
+                backgroundColor: "red",
+                width: `${100 * (6 / 10)}%`,
+              }}
+            >
+              total
+            </div>
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>

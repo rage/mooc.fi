@@ -6,6 +6,7 @@ import LanguageSelectorForm from "./LanguageSelectorForm"
 const useStyles = makeStyles(theme => ({
   baseCard: {
     margin: 5,
+    padding: "1em",
   },
 }))
 

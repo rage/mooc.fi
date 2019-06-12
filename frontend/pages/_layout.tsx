@@ -8,6 +8,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
     <SkipLink />
     <Header />
     <main id="main">{children}</main>
+    <Footer />
   </div>
 )
 

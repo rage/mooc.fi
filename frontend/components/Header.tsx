@@ -1,5 +1,12 @@
 import * as React from "react"
-import { AppBar, Toolbar, Typography, Button, Avatar } from "@material-ui/core"
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Avatar,
+  Link,
+} from "@material-ui/core"
 import { signOut } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
 import { useApolloClient } from "react-apollo-hooks"
@@ -9,13 +16,13 @@ import NextI18Next from "../i18n"
 function TitleText(props: any) {
   return (
     <Typography variant="body1" {...props}>
-      MOOC Points
+      MOOC.fi
     </Typography>
   )
 }
 
 function LogoImage(props: any) {
-  return <Avatar alt="MOOC logo" src="../static/images/logo.png" {...props} />
+  return <Avatar alt="MOOC logo" src="../static/images/moocfi.svg" {...props} />
 }
 
 function LogOutButton(props: any) {
@@ -29,12 +36,14 @@ function LogOutButton(props: any) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
-      fontFamily: "Open Sans Condensed, sans-serif",
+      fontFamily: "Open Sans Condensed Light, sans-serif",
       fontSize: "1.75rem",
       flex: 1,
     },
     avatar: {
       margin: "1em",
+      height: "3em",
+      width: "3em",
     },
   }),
 )
@@ -47,8 +56,11 @@ function Header() {
   return (
     <AppBar position="static" color="inherit">
       <Toolbar>
-        <LogoImage className={classes.avatar} />
+        <Link href={"/"}>
+          <LogoImage classes={{ root: classes.avatar }} />
+        </Link>
         <TitleText className={classes.title} />
+
         {loggedIn && <LogOutButton onclick={() => signOut(client)} />}
       </Toolbar>
     </AppBar>

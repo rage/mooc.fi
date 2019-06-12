@@ -21,6 +21,23 @@ export interface AllCompletions_completionsPaginated_edges_node_user {
   student_number: string | null;
 }
 
+export interface AllCompletions_completionsPaginated_edges_node_course {
+  __typename: "Course";
+  id: any;
+  name: string;
+}
+
+export interface AllCompletions_completionsPaginated_edges_node_completions_registered_organization {
+  __typename: "Organization";
+  name: string;
+}
+
+export interface AllCompletions_completionsPaginated_edges_node_completions_registered {
+  __typename: "CompletionRegistered";
+  id: any;
+  organization: AllCompletions_completionsPaginated_edges_node_completions_registered_organization | null;
+}
+
 export interface AllCompletions_completionsPaginated_edges_node {
   __typename: "Completion";
   id: any;
@@ -28,6 +45,8 @@ export interface AllCompletions_completionsPaginated_edges_node {
   completion_language: string | null;
   created_at: any | null;
   user: AllCompletions_completionsPaginated_edges_node_user;
+  course: AllCompletions_completionsPaginated_edges_node_course;
+  completions_registered: AllCompletions_completionsPaginated_edges_node_completions_registered[] | null;
 }
 
 export interface AllCompletions_completionsPaginated_edges {
@@ -48,4 +67,6 @@ export interface AllCompletions {
 
 export interface AllCompletionsVariables {
   course?: string | null;
+  cursor?: string | null;
+  completion_language?: string | null;
 }

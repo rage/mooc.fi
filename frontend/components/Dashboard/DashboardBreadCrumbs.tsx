@@ -40,7 +40,9 @@ const DashboardBreadCrumbs = ({ page }) => {
         aria-label="Breadcrumb"
         className={classes.breadcrumb}
       >
-        <Link className={classes.link}>Home</Link>
+        <Link className={classes.link} href={"/"}>
+          Home
+        </Link>
         <Link className={classes.link} href={`/courses`} underline="hover">
           Courses
         </Link>
