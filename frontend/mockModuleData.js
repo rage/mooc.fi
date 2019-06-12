@@ -7,7 +7,7 @@ export const mockModules = {
           id: "0616fba6-e119-4d77-9b71-2b0fae2101b3",
           language: "en",
           name: "Web development",
-          description: "Become a super professionsl web developer and unicorn",
+          description: "Become a super professional web developer and unicorn",
         },
         {
           id: "948698ce-837c-4e0e-93f6-679ea2688691",
@@ -20,8 +20,8 @@ export const mockModules = {
         {
           id: "03dfa6a0-5854-4e71-ace6-e796ff851915",
           slug: "docker",
-          photo: "./photos/whale.jpg",
-          promote: false,
+          photo: "../../static/images/courseimages/tikape.jpg",
+          promote: true,
           status: "Active",
           start_point: true,
           course_translations: [
@@ -44,7 +44,7 @@ export const mockModules = {
         {
           id: "bb772ed2-7eb0-4876-9fae-9659700edc16",
           slug: "fullstack-harkka",
-          photo: "./photos/kitten.jpg",
+          photo: "../../static/images/courseimages/fullstack.2.png",
           promote: false,
           status: "Active",
           start_point: false,
@@ -68,7 +68,7 @@ export const mockModules = {
         {
           id: "dabb43a1-3e39-4ef9-ad9a-6b183fbc4cbb",
           slug: "fullstack",
-          photo: "./photos/kitten.jpg",
+          photo: "../../static/images/courseimages/fullstack.2.png",
           promote: false,
           status: "Active",
           start_point: true,
@@ -111,7 +111,7 @@ export const mockModules = {
         {
           id: "4591d276-af80-4e5c-8bb0-305d4923bcc6",
           slug: "tira",
-          photo: "./photos/kitten.jpg",
+          photo: "../../static/images/courseimages/tira.png",
           promote: false,
           status: "Active",
           start_point: false,
@@ -135,7 +135,7 @@ export const mockModules = {
         {
           id: "7c409f15-60b5-4aea-9841-d42cb5070800",
           slug: "mooc1",
-          photo: "./photos/kitten.jpg",
+          photo: "../../static/images/courseimages/doggos.png",
           promote: true,
           status: "Active",
           start_point: true,
@@ -153,7 +153,7 @@ export const mockModules = {
               language: "fi",
               name: "Ohjelmoinnin MOOC I 2019",
               description:
-                "Ohjelmointia Javalla perusteista lähtien. Ei vaadi esitietoja.",
+                "Ohjelmointia Javalla perusteista lähtien, sekä mahdollisuus opinto-oikeuteen. Täydellinen kurssi ohjelmoinnin alkeiden opetteluun. Ei vaadi esitietoja.",
               link: "https://ohjelmointi-19.mooc.fi/",
             },
           ],
@@ -161,7 +161,8 @@ export const mockModules = {
         {
           id: "af48ac2b-6790-45d0-8413-61ffca25e962",
           slug: "tito",
-          photo: "./photos/kitten.jpg",
+          photo:
+            "../../static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg",
           promote: false,
           status: "Active",
           start_point: false,
@@ -178,7 +179,7 @@ export const mockModules = {
         {
           id: "ec3877c5-b768-453e-9998-f7068b8c2463",
           slug: "mooc2",
-          photo: "./photos/kitten.jpg",
+          photo: "../../static/images/courseimages/doggos.png",
           promote: false,
           status: "Active",
           start_point: false,

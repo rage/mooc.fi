@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import NextI18Next from "../i18n"
+import {
+  filterAndModifyByLanguage,
+  getPromotedCourses,
+} from "../util/moduleFunctions"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -32,39 +36,9 @@ const AllModulesQuery = gql`
   }
 `
 
-const objectifyTranslations = modules => {
-  return modules.map(({ study_module_translations, courses, ...module }) => {
-    let newModuleTranslations = {}
-    study_module_translations.forEach(translation => {
-      newModuleTranslations = {
-        [translation.language]: translation,
-        ...newModuleTranslations,
-      }
-    })
-    const newCourses = courses.map(({ course_translations, ...course }) => {
-      let newCourseTranslations = {}
-      course_translations.forEach(translation => {
-        newCourseTranslations = {
-          [translation.language]: translation,
-          ...newCourseTranslations,
-        }
-      })
-      return {
-        course_translations: newCourseTranslations,
-        ...course,
-      }
-    })
-    return {
-      study_module_translations: newModuleTranslations,
-      courses: newCourses,
-      ...module,
-    }
-  })
-}
-
 const MockModules = () => {
   const { loading, error, data } = useQuery(AllModulesQuery)
-  const [language, setLanguage] = useState("fi")
+  const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
 
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)
@@ -73,30 +47,23 @@ const MockModules = () => {
   if (loading) {
     return <div>loading</div>
   } else if (data) {
-    const modifiedModules = objectifyTranslations(data.study_modules)
-    const filteredModules = modifiedModules
-      .filter(mod => mod.study_module_translations[language])
-      .map(({ courses, ...rest }) => {
-        const filteredCourses = courses.filter(
-          course => course.course_translations[language],
-        )
-        return {
-          courses: filteredCourses,
-          ...rest,
-        }
-      })
+    const filteredModules = filterAndModifyByLanguage(
+      data.study_modules,
+      language,
+    )
+    const promotedCourses = getPromotedCourses(filteredModules)
+    console.log(promotedCourses)
     console.log(filteredModules)
     return (
       <div>
-        {filteredModules.map(module => (
-          <div key={module.id}>
-            <div>{module.study_module_translations[language].name}</div>
-            <div>
-              {"____" + module.study_module_translations[language].description}
-            </div>
-            {module.courses.map(course => (
+        {filteredModules.map(mod => (
+          <div key={mod.id}>
+            <div>{mod.name}</div>
+            <div>{"____" + mod.description}</div>
+            {mod.courses.map(course => (
               <div key={course.id}>
-                {"________" + course.course_translations[language].name}
+                <div>{"________" + course.name}</div>
+                <div>{"____________" + course.description}</div>
               </div>
             ))}
           </div>

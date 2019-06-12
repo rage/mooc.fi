@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function StartCourseListItem({ small = false }) {
+function StartCourseListItem({ small = false, course }) {
   const classes = useStyles()
   return (
     <Grid item xs={12} lg={small ? 3 : 4} className={classes.grid}>
@@ -42,21 +42,19 @@ function StartCourseListItem({ small = false }) {
         <CardMedia
           component="img"
           alt="Course Logo"
-          image={require("../../static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg")}
+          image={course.photo}
           classes={{ root: classes.imageroot }}
         />
         <CardContent classes={{ root: classes.contentroot }}>
           <Typography variant="body1" component="h4" className={classes.title}>
-            Tietokoneen toiminta
+            {course.name}
           </Typography>
           <Typography
             variant="body1"
             component="p"
             style={{ fontSize: "0.9em" }}
           >
-            Ohjelmointia Javalla perusteista lähtien, sekä mahdollisuus
-            opinto-oikeuteen. Täydellinen kurssi ohjelmoinnin alkeiden
-            opetteluun. Ei vaadi esitietoja.
+            {course.description}
           </Typography>
         </CardContent>
       </Card>

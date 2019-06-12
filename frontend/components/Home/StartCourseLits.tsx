@@ -9,15 +9,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function StartCourseList({ small = false, extra = false }) {
+function StartCourseList({ small = false, extra = false, courses }) {
   const classes = useStyles()
   return (
     <section className={classes.grid}>
       <Grid container spacing={3}>
-        <StartCourseListItem small={small} />
-        <StartCourseListItem small={small} />
-        <StartCourseListItem small={small} />
-        {extra && <StartCourseListItem small={small} />}
+        {courses.map(course => (
+          <StartCourseListItem small={small} key={course.id} course={course} />
+        ))}
       </Grid>
     </section>
   )
