@@ -7,6 +7,10 @@ const backgroundImage = require("../../static/images/homeBackground.jpg")
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      display: "flex",
+      position: "relative",
+    },
     backdrop: {
       position: "absolute",
       left: 0,
@@ -35,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function ExplanationHero() {
   const classes = useStyles()
   return (
-    <section>
+    <section className={classes.root}>
       <Container>
         <img style={{ display: "none" }} src={backgroundImage} alt="" />
         <Explanation />
