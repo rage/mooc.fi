@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import withI18n from "../lib/withI18n"
 import ExplanationHero from "../components/Home/ExplanationHero"
+import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
 import Modules from "../components/Home/Modules"
 import { mockModules } from "../mockModuleData"
@@ -62,8 +63,7 @@ function Home() {
     return (
       <div>
         <ExplanationHero />
-        <CourseHighlights courses={promotedCourses} />
-        <Modules modules={modules} />
+        <NaviCardList />
       </div>
     )
   }
