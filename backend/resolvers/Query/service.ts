@@ -10,7 +10,7 @@ const service = (t: PrismaObjectDefinitionBlock<"Query">) => {
       service_id: idArg(),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { service_id } = args
       const prisma: Prisma = ctx.prisma
       return prisma.service({ id: service_id })
@@ -22,7 +22,7 @@ const services = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("services", {
     type: "Service",
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const prisma: Prisma = ctx.prisma
       return prisma.services()
     },

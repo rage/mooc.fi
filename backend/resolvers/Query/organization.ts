@@ -10,7 +10,7 @@ const organization = (t: PrismaObjectDefinitionBlock<"Query">) => {
       id: idArg(),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { id } = args
       const prisma: Prisma = ctx.prisma
       return prisma.organization({ id: id })
@@ -28,7 +28,7 @@ const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
       before: idArg(),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { first, last, after, before } = args
       const prisma: Prisma = ctx.prisma
 

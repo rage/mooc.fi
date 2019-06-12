@@ -12,7 +12,7 @@ const addService = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       const prisma: Prisma = ctx.prisma
-      checkAccess(ctx, { allowOrganizations: false })
+      checkAccess(ctx)
       const { url, name } = args
       return await prisma.createService({ url: url, name: name })
     },
