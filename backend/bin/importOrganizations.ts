@@ -1,0 +1,89 @@
+require("dotenv-safe").config()
+import { prisma, User } from "../generated/prisma-client"
+import TmcClient from "../services/tmc"
+import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
+import { generateSecret } from "../resolvers/Mutation/organization"
+const tmc = new TmcClient()
+
+const fetchOrganizations = async () => {
+  const orgInfos: OrganizationInfo[] = await tmc.getOrganizations()
+  orgInfos.forEach(p => upsertOrganization(p))
+}
+
+const upsertOrganization = async (org: OrganizationInfo) => {
+  const user: User =
+    org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
+  const details = {
+    slug: org.slug,
+    verified_at: org.verified_at,
+    verified: org.verified || false,
+    disabled: org.disabled || false,
+    tmc_created_at: org.created_at,
+    tmc_updated_at: org.updated_at,
+    hidden: org.hidden || false,
+    creator: user != null ? { connect: { id: user.id } } : null,
+    logo_file_name: org.logo_file_name,
+    logo_content_type: org.logo_content_type,
+    logo_file_size: Number(org.logo_file_size),
+    logo_updated_at: org.logo_updated_at,
+    phone: org.phone,
+    contact_information: org.contact_information,
+    email: org.email,
+    website: org.website,
+    pinned: org.pinned || false,
+  }
+  const organization = await prisma.upsertOrganization({
+    where: { slug: org.slug },
+    create: await detailsWithSecret(details),
+    update: details,
+  })
+  const translationDetails = {
+    language: "fi_FI", //placholder since there is no language information
+    name: org.name,
+    disabled_reason: org.disabled_reason,
+    information: org.information,
+    organization: { connect: { id: organization.id } },
+  }
+  const organizationTranslations = await prisma
+    .organization({ id: organization.id })
+    .organization_translations({
+      where: { language: translationDetails.language },
+    })
+  const organizationTranslationId = organizationTranslations.length
+    ? organizationTranslations[0].id
+    : null
+  if (organizationTranslationId != null) {
+    const organizationTranslation = await prisma.updateOrganizationTranslation({
+      where: { id: organizationTranslationId },
+      data: translationDetails,
+    })
+  } else {
+    const organizationTranslation = await prisma.createOrganizationTranslation(
+      translationDetails,
+    )
+  }
+}
+
+const detailsWithSecret = async details => {
+  details.secret_key = await generateSecret()
+  return details
+}
+
+const getUserFromTmc = async (user_id: Number): Promise<User> => {
+  const details: UserInfo = await tmc.getUserDetailsById(user_id)
+  const prismaDetails = {
+    upstream_id: details.id,
+    administrator: details.administrator,
+    email: details.email.trim(),
+    first_name: details.user_field.first_name.trim(),
+    last_name: details.user_field.last_name.trim(),
+    username: details.username,
+  }
+  return await prisma.upsertUser({
+    where: { upstream_id: details.id },
+    create: prismaDetails,
+    update: prismaDetails,
+  })
+}
+
+fetchOrganizations()

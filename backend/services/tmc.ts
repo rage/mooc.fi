@@ -1,5 +1,5 @@
 import axios from "axios"
-import { UserInfo } from "../domain/UserInfo"
+import { UserInfo, OrganizationInfo } from "../domain/UserInfo"
 import { getAccessToken } from "./tmc_completion_script"
 
 const BASE_URL = "https://tmc.mooc.fi"
@@ -32,5 +32,12 @@ export default class TmcClient {
 
     const userInfo = res.data
     return userInfo
+  }
+
+  async getOrganizations(): Promise<OrganizationInfo[]> {
+    const res = await axios.get(`${BASE_URL}/api/v8/org.json`, {
+      headers: { Authorization: `Bearer ${await getAccessToken()}` },
+    })
+    return res.data
   }
 }
