@@ -3,6 +3,7 @@ import withI18n from "../lib/withI18n"
 import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
+import ModuleNavi from "../components/Home/ModuleNavi"
 import Modules from "../components/Home/Modules"
 import { mockModules } from "../mockModuleData"
 import {
@@ -65,6 +66,7 @@ function Home() {
         <ExplanationHero />
         <NaviCardList />
         <CourseHighlights />
+        <ModuleNavi />
       </div>
     )
   }
