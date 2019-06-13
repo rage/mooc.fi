@@ -3,7 +3,7 @@ import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
 import { Prisma } from "../../generated/prisma-client"
 let commitCounter = 0
-const commitInterval = 100
+const commitInterval = 5
 export const handleMessage = async (
   kafkaMessage,
   mutex,
