@@ -49,9 +49,8 @@ consumer
   .on("data", message =>
     handleMessage(message, mutex, logger, consumer, prisma),
   )
-consumer
-  .on("event.error", error => logger.error(error))
+consumer.on("event.error", error => logger.error(error))
 
-consumer.on('event.log', function (log) {
-  console.log(log);
-});
+consumer.on("event.log", function(log) {
+  console.log(log)
+})
