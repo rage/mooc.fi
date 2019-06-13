@@ -27,10 +27,6 @@ const logCommit = (err, topicPartitions) => {
   }
 }
 
-const message_cb = message => {
-  handleMessage(message, mutex, logger, consumer, prisma)
-}
-
 const consumer = new Kafka.KafkaConsumer(
   {
     "group.id": "kafka",
@@ -38,6 +34,7 @@ const consumer = new Kafka.KafkaConsumer(
     offset_commit_cb: logCommit,
     "enable.auto.commit": "false",
     "partition.assignment.strategy": "roundrobin",
+    "auto.offset.reset": "error",
   },
   {},
 )
@@ -49,4 +46,12 @@ consumer
     consumer.subscribe([process.env.KAFKA_TOPIC])
     consumer.consume()
   })
-  .on("data", message_cb)
+  .on("data", message =>
+    handleMessage(message, mutex, logger, consumer, prisma),
+  )
+consumer
+  .on("event.error", error => logger.error(error))
+
+consumer.on('event.log', function (log) {
+  console.log(log);
+});
