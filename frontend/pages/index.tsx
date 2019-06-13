@@ -64,6 +64,7 @@ function Home() {
       <div>
         <ExplanationHero />
         <NaviCardList />
+        <CourseHighlights />
       </div>
     )
   }
