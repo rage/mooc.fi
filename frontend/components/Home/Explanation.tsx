@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: "2rem",
       paddingBottom: "2rem",
     },
-    subtitleContainer: {
-      maxWidth: "70%",
-    },
     subtitle: {
-      [theme.breakpoints.down("xs")]: {
-        fontSize: 22,
+      [theme.breakpoints.up("xs")]: {
+        fontSize: 18,
       },
       [theme.breakpoints.up("sm")]: {
+        fontSize: 22,
+      },
+      [theme.breakpoints.up("md")]: {
         fontSize: 32,
       },
       fontFamily: "Open Sans Condensed Light, sans-serif",
