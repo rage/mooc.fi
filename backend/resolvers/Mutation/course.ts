@@ -34,17 +34,18 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         photo: photo,
         course_translations: null,
         status: status,
-        study_module: (study_module != null ? { connect: { id: study_module } } : null),
+        study_module:
+          study_module != null ? { connect: { id: study_module } } : null,
       })
     },
   })
 }
 
-const updateCourse = (t : PrismaObjectDefinitionBlock<"Mutaton">) => {
+const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutaton">) => {
   t.field("updateCourse", {
     type: "Course",
     args: {
-      id: idArg({required: false}),
+      id: idArg({ required: false }),
       name: stringArg(),
       slug: stringArg(),
       photo: stringArg(),
@@ -55,7 +56,7 @@ const updateCourse = (t : PrismaObjectDefinitionBlock<"Mutaton">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
-      const prisma : Prisma = ctx.prisma
+      const prisma: Prisma = ctx.prisma
       const {
         id,
         name,
@@ -68,7 +69,8 @@ const updateCourse = (t : PrismaObjectDefinitionBlock<"Mutaton">) => {
       } = args
       return prisma.updateCourse({
         where: {
-          id: id, slug: slug
+          id: id,
+          slug: slug,
         },
         data: {
           name: name,
@@ -77,18 +79,16 @@ const updateCourse = (t : PrismaObjectDefinitionBlock<"Mutaton">) => {
           start_point: start_point,
           promote: promote,
           status: status,
-          study_module: study_module
-        }
+          study_module: study_module,
+        },
       })
-
-    }
+    },
   })
 }
 
 const addCourseMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   addCourse(t)
   updateCourse(t)
-
 }
 
 export default addCourseMutations
