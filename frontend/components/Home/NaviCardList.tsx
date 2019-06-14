@@ -25,10 +25,21 @@ const naviItems = [
     linkText: "Opettajien sivut",
     img: "../../static/images/Opettajien.jpg",
   },
+  {
+    title: "Täydennä ammattitaitoasi.",
+    text:
+      "Täydennyskoulutusmoduulimme tarjoavat mahdollisuuksia täydentää osaamistasi.",
+    linkText: "FMSCI",
+    img: "../../static/images/taydennysKoulutus.jpg",
+  },
 ]
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    grid: {},
+    grid: {
+      marginLeft: "1rem",
+      marginRight: "1rem",
+      marginBottom: "2em",
+    },
   }),
 )
 
@@ -36,13 +47,11 @@ function NaviCardList() {
   const classes = useStyles()
   return (
     <section className={classes.grid}>
-      <Container>
-        <Grid container spacing={3}>
-          {naviItems.map(item => (
-            <NaviCard key={item.title} item={item} />
-          ))}
-        </Grid>
-      </Container>
+      <Grid container spacing={3}>
+        {naviItems.map(item => (
+          <NaviCard key={item.title} item={item} />
+        ))}
+      </Grid>
     </section>
   )
 }
