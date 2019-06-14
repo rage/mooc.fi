@@ -31,10 +31,39 @@ const addStudyModuleTranslation = async (
   })
 }
 
+const updateStudyModuleTranslation = (
+  t: PrismaObjectDefinitionBlock<"Mutation">,
+) => {
+  t.field("updateStudyModuletranslation", {
+    type: "StudyModuleTranslation",
+    args: {
+      id: idArg({ required: true }),
+      language: stringArg(),
+      name: stringArg(),
+      description: stringArg(),
+      study_module: idArg(),
+    },
+    resolve: (_, args, ctx) => {
+      checkAccess(ctx)
+      const { id, language, name, description, study_module } = args
+      const prisma: Prisma = ctx.prisma
+      return prisma.updateStudyModuleTranslation({
+        where: { id: id },
+        data: {
+          description: description,
+          language: language,
+          name: name,
+          study_module: { connect: { id: study_module } },
+        },
+      })
+    },
+  })
+}
 const addStudyModuleTranslationMutations = (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   addStudyModuleTranslation(t)
+  updateStudyModuleTranslation(t)
 }
 
 export default addStudyModuleTranslationMutations
