@@ -41,6 +41,7 @@ const updateService = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
 const addServiceMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   addService(t)
+  updateService(t)
 }
 
 export default addServiceMutations
