@@ -1,5 +1,4 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import styled from "styled-components"
 import { Typography } from "@material-ui/core"
 
@@ -31,42 +30,28 @@ const Title = styled(Typography)`
     font-size: 72px;
   }
 `
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    backdrop: {
-      position: "absolute",
-      left: 0,
-      width: "70%",
-      top: 0,
-      bottom: 0,
-      backgroundColor: "white",
-      opacity: 0.9,
-      zIndex: -1,
-    },
-    backGround: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      zIndex: -2,
-      backgroundImage: `url(${backgroundImage})`,
-      backgroundPosition: "center",
-    },
-  }),
-)
+
+const ImageBackground = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -2;
+  background-image: url(${backgroundImage});
+  background-position: center;
+`
 
 function ModuleBanner() {
-  const classes = useStyles()
   return (
     <ModuleBannerContainer>
       <img style={{ display: "none" }} src={backgroundImage} alt="" />
       <Title component="h2" align="center">
         Tekoäly ja Datatiede
       </Title>
-      <div className={classes.backGround} />
+      <ImageBackground />
     </ModuleBannerContainer>
   )
 }

@@ -68,6 +68,7 @@ function Home() {
         <CourseHighlights />
         <ModuleNavi />
         <Modules />
+        <Modules />
       </div>
     )
   }

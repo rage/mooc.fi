@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const backgroundImage = require("../../static/images/courseimages/doggos.png")
 
-function NaviCard() {
+function CourseCard() {
   //const backgroundImage = require(item.img)
   const classes = useStyles()
   return (
@@ -122,4 +122,4 @@ function NaviCard() {
   )
 }
 
-export default NaviCard
+export default CourseCard

@@ -1,7 +1,9 @@
 import React from "react"
-import { Grid, Typography } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { Grid, Typography, Link } from "@material-ui/core"
+import styled from "styled-components"
 import ModuleBanner from "./ModuleBanner"
+import CourseCard from "./CourseCard"
+import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 
 const naviItems = [
   {
@@ -29,33 +31,71 @@ const naviItems = [
     img: "../../static/images/CyberSecurityModule.jpg",
   },
 ]
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    grid: {
-      marginLeft: "1rem",
-      marginRight: "1rem",
-      marginBottom: "2em",
-    },
-    title: {
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 46,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 72,
-      },
-      fontFamily: "Open Sans Condensed Light, sans-serif",
-      marginTop: "2rem",
-      marginBottom: "2rem",
-    },
-  }),
-)
+
+const IntroText = styled(Typography)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  font-size: 18px;
+  width: 90%;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  margin-left: 1rem;
+  @media (min-width: 425px) {
+    font-size: 22px;
+    width: 70%;
+  }
+  @media (min-width: 1000px) {
+    font-size: 32px;
+    width: 60%;
+  }
+`
+
+const SubHeader = styled(Typography)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  margin-left: 1rem;
+  font-size: 24px;
+  @media (min-width: 425px) {
+    font-size: 32px;
+  }
+  @media (min-width: 1000px) {
+    font-size: 48px;
+  }
+`
+
+const ModuleHomeLink = styled(Link)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  color: #00a68d;
+  font-size: 16px;
+  margin-left: 2em;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+`
 
 function Modules() {
-  const classes = useStyles()
   return (
-    <section>
+    <section style={{ marginBottom: "2em" }}>
       <ModuleBanner />
-      <Grid container spacing={5} />
+      <IntroText>
+        inventore veritatis et quasi architecto beatae vitae dicta sunt
+        explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
+        odit aut fugit, sed quia consequuntur magni
+      </IntroText>
+      <SubHeader align="center">Aloita näistä</SubHeader>
+      <Grid container spacing={3} style={{ margin: "0.5rem" }}>
+        <CourseCard />
+        <CourseCard />
+        <CourseCard />
+      </Grid>
+      <SubHeader align="center">Jatka sitten näihin</SubHeader>
+      <Grid container spacing={3}>
+        <ModuleSmallCourseCard />
+        <ModuleSmallCourseCard />
+        <ModuleSmallCourseCard />
+      </Grid>
+      <ModuleHomeLink underline="always">
+        Opinto-kokonaisuuden kotisivulle
+      </ModuleHomeLink>
     </section>
   )
 }
