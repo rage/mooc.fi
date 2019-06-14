@@ -63,6 +63,7 @@ const addStudyModuleTranslationMutations = (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   addStudyModuleTranslation(t)
+  updateStudyModuleTranslation(t)
 }
 
 export default addStudyModuleTranslationMutations
