@@ -34,9 +34,8 @@ const consumer = new Kafka.KafkaConsumer(
     offset_commit_cb: logCommit,
     "enable.auto.commit": "false",
     "partition.assignment.strategy": "roundrobin",
-    "auto.offset.reset": "error",
   },
-  {},
+  { "auto.offset.reset": "earliest" },
 )
 
 consumer.connect()
