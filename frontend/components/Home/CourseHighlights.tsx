@@ -1,8 +1,8 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, Typography } from "@material-ui/core"
+import { Grid } from "@material-ui/core"
 import ImageBanner from "./ImageBanner"
-import CourseCard, { VerticalCard } from "./CourseCard"
+import CourseCard from "./CourseCard"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

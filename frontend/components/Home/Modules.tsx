@@ -1,60 +1,61 @@
 import React from "react"
+import { Grid, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, Container, Typography, Paper } from "@material-ui/core"
-import ModuleCard from "./ModuleCard"
+import ModuleBanner from "./ModuleBanner"
 
+const naviItems = [
+  {
+    title: "Tekoäly ja Datatiede",
+    text:
+      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
+    img: "../../static/images/AiModule.jpg",
+  },
+  {
+    title: "Koodaustekniikat",
+    text:
+      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
+    img: "../../static/images/CodeModule.jpg",
+  },
+  {
+    title: "Pilvipohjaiset Websovellukset",
+    text:
+      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
+    img: "../../static/images/WebModule.jpg",
+  },
+  {
+    title: "Tietoturva",
+    text:
+      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
+    img: "../../static/images/CyberSecurityModule.jpg",
+  },
+]
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      overflow: "hidden",
+    grid: {
+      marginLeft: "1rem",
+      marginRight: "1rem",
+      marginBottom: "2em",
     },
     title: {
+      [theme.breakpoints.up("xs")]: {
+        fontSize: 46,
+      },
+      [theme.breakpoints.up("md")]: {
+        fontSize: 72,
+      },
+      fontFamily: "Open Sans Condensed Light, sans-serif",
+      marginTop: "2rem",
       marginBottom: "2rem",
-      padding: "0 1.85rem",
-      fontSize: "4rem",
-      [theme.breakpoints.down("sm")]: {
-        fontSize: "3rem",
-      },
-      [theme.breakpoints.down("xs")]: {
-        fontSize: "2rem",
-      },
-    },
-    subtitle: {
-      lineHeight: "1.46429em",
-      fontSize: 18,
-      fontWeight: 400,
-      overflowWrap: "break-word",
-      marginBottom: "3rem",
     },
   }),
 )
 
-function Modules({ modules }) {
+function Modules() {
   const classes = useStyles()
   return (
-    <section className={classes.root}>
-      <Container>
-        <Typography
-          component="h2"
-          variant="h2"
-          align="center"
-          className={classes.title}
-        >
-          Opintokokonaisuudet
-        </Typography>
-        <Typography
-          component="p"
-          variant="subtitle1"
-          className={classes.subtitle}
-        >
-          Nämä kurssit ovat aloittelijaystävällisiä, eivätkä vaadi
-          ohjelmointiosaamista. Ne ovat hyvä tapa alkaa oppimaan
-          tietojenkäsittelytiedettä.
-        </Typography>
-      </Container>
-      {modules.map(mod => (
-        <ModuleCard studyModule={mod} key={mod.id} />
-      ))}
+    <section>
+      <ModuleBanner />
+      <Grid container spacing={5} />
     </section>
   )
 }

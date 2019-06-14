@@ -67,6 +67,7 @@ function Home() {
         <NaviCardList />
         <CourseHighlights />
         <ModuleNavi />
+        <Modules />
       </div>
     )
   }
