@@ -11,9 +11,8 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow:
         "0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2)",
       overflow: "hidden",
-      marginBottom: "1rem",
       [theme.breakpoints.up("xs")]: {
-        height: 250,
+        height: 215,
       },
       [theme.breakpoints.up("md")]: {
         height: 400,
@@ -97,7 +96,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const backgroundImage = require("../../static/images/courseimages/doggos.png")
 
-function NaviCard() {
+function CourseCard() {
   //const backgroundImage = require(item.img)
   const classes = useStyles()
   return (
@@ -122,4 +121,4 @@ function NaviCard() {
   )
 }
 
-export default NaviCard
+export default CourseCard
