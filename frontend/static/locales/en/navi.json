@@ -1,0 +1,25 @@
+{
+    "naviItems": [
+        {
+            "title": "Open courses for all",
+            "text":
+              "Online learning at its best. Don't worry about course fees or the commute. Study where it's convenient for you!",
+            "linkText": "Courses and Modules",
+            "img": "../../static/images/AllCourses.jpg"
+          },
+          {
+            "title": "Teach courses in your own classroom.",
+            "text":
+              "Teacher! You can have your own courses, with point lists and schedules tailored for you.",
+            "linkText": "For teachers",
+            "img": "../../static/images/Opettajien.jpg"
+          },
+          {
+            "title": "Continue your education.",
+            "text":
+              "Our study modules offer you an opportunity to continue your education and further your career.",
+            "linkText": "FMSCI",
+            "img": "../../static/images/taydennysKoulutus.jpg"
+          }
+        ]
+}

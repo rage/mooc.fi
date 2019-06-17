@@ -1,6 +1,7 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Grid, Typography } from "@material-ui/core"
+import NextI18Next from "../../i18n"
 
 const backgroundImage = require("../../static/images/courseHighlightsBanner.jpg")
 
@@ -12,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
       marginBottom: "2rem",
       paddingBottom: "2rem",
+      minHeight: 400,
     },
     backdrop: {
       position: "absolute",
@@ -73,13 +75,10 @@ function ImageBanner() {
     <section className={classes.root}>
       <img style={{ display: "none" }} src={backgroundImage} alt="" />
       <Typography component="h2" className={classes.title}>
-        Aloita näistä
+        <NextI18Next.Trans i18nKey="highlightTitle" />
       </Typography>
       <Typography component="p" className={classes.subtitle}>
-        Aloittelijoille sopivia kursseja.
-      </Typography>
-      <Typography component="p" className={classes.subtitle}>
-        Ei esitietovaatimuksia.
+        <NextI18Next.Trans i18nKey="highlightSubtitle" />
       </Typography>
       <div className={classes.backGround} />
     </section>

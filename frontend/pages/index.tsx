@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import withI18n from "../lib/withI18n"
+import NextI18Next from "../i18n"
 import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
@@ -10,7 +10,6 @@ import {
   filterAndModifyByLanguage,
   getPromotedCourses,
 } from "../util/moduleFunctions"
-import NextI18Next from "../i18n"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 
@@ -43,7 +42,7 @@ const AllModulesQuery = gql`
   }
 `
 
-function Home() {
+const Home = ({ t }) => {
   const { loading, error, data } = useQuery(AllModulesQuery)
   const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
 
@@ -74,4 +73,10 @@ function Home() {
   }
 }
 
-export default Home
+Home.getInitialProps = function() {
+  return {
+    namespacesRequired: ["home", "navi"],
+  }
+}
+
+export default NextI18Next.withNamespaces(["home", "navi"])(Home)

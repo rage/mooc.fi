@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
     image: {
       position: "relative",
       [theme.breakpoints.up("xs")]: {
-        height: 250,
+        height: 200,
       },
       [theme.breakpoints.up("md")]: {
         height: 450,

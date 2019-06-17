@@ -38,6 +38,7 @@ class MyApp extends App {
           <MuiThemeProvider theme={theme}>
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
+
             <ApolloProvider client={apollo}>
               <ApolloHooksProvider client={apollo}>
                 <LoginStateContext.Provider value={this.props.signedIn}>
