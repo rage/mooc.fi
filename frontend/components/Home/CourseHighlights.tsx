@@ -19,16 +19,16 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseHighlights() {
+function CourseHighlights({ courses }) {
   const classes = useStyles()
   return (
     <section className={classes.root}>
       <ImageBanner />
       <section className={classes.grid}>
         <Grid container spacing={3}>
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
+          {courses.map(course => (
+            <CourseCard key={course.id} course={course} />
+          ))}
         </Grid>
       </section>
     </section>

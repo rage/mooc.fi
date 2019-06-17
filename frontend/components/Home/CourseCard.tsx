@@ -1,7 +1,6 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, ButtonBase, Typography, Link } from "@material-ui/core"
-import { typography } from "material-ui/styles"
+import { Grid, ButtonBase, Typography } from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,13 +9,13 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       boxShadow:
         "0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2)",
-      overflow: "hidden",
       [theme.breakpoints.up("xs")]: {
         height: 215,
       },
       [theme.breakpoints.up("md")]: {
         height: 400,
       },
+      maxWidth: 400,
     },
     imageSrc: {
       position: "absolute",
@@ -94,26 +93,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const backgroundImage = require("../../static/images/courseimages/doggos.png")
-
-function CourseCard() {
-  //const backgroundImage = require(item.img)
+function CourseCard({ course }) {
   const classes = useStyles()
   return (
-    <Grid item xs={12} md={4} lg={4}>
-      <ButtonBase focusRipple className={classes.image}>
+    <Grid item xs={12} md={4} lg={3}>
+      <ButtonBase focusRipple className={classes.image} href={`${course.link}`}>
         <span
           className={classes.imageSrc}
-          style={{ backgroundImage: `url(${backgroundImage})` }}
+          style={{ backgroundImage: `url(${course.photo})` }}
         />
         <span className={classes.imageBackdrop} />
         <span className={classes.imageButton}>
           <Typography className={classes.title} align="left">
-            Ohjelmoinnin Mooc
+            {course.name}
           </Typography>
           <Typography className={classes.bodyText} paragraph>
-            Ohjelmointia Javalla perusteista lähtien sekä mahdollisuus
-            opinto-oikeuteen. Ei esitietovaatimuksia.
+            {course.description}
           </Typography>
         </span>
       </ButtonBase>
