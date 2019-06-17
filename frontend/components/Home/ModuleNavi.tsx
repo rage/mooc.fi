@@ -51,7 +51,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function ModuleNavi() {
+function ModuleNavi({ modules }) {
+  console.log("Modulenavi", modules)
   const classes = useStyles()
   return (
     <section className={classes.grid}>
@@ -59,8 +60,12 @@ function ModuleNavi() {
         <NextI18Next.Trans i18nKey="modulesTitle" />
       </Typography>
       <Grid container spacing={5}>
-        {naviItems.map(item => (
-          <ModuleNaviCard key={item.title} item={item} />
+        {modules.map(module => (
+          <ModuleNaviCard
+            key={module.title}
+            module={module}
+            img="../../static/images/CyberSecurityModule.jpg"
+          />
         ))}
       </Grid>
     </section>

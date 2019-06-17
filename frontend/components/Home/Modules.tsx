@@ -49,7 +49,9 @@ const ModuleHomeLink = styled(Link)`
   padding-bottom: 1em;
 `
 
-function Modules() {
+function Modules({ module }) {
+  const startCourses = module.courses.filter(c => c.start_point === true)
+  const otherCourses = module.courses.filter(c => c.start_point === false)
   return (
     <section
       style={{
@@ -59,12 +61,8 @@ function Modules() {
         overflow: "hidden",
       }}
     >
-      <ModuleBanner />
-      <IntroText>
-        inventore veritatis et quasi architecto beatae vitae dicta sunt
-        explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
-        odit aut fugit, sed quia consequuntur magni
-      </IntroText>
+      <ModuleBanner title={module.name} />
+      <IntroText>{module.description}</IntroText>
       <SubHeader align="center">
         <NextI18Next.Trans i18nKey="modulesSubtitleStart" />
       </SubHeader>
@@ -76,9 +74,9 @@ function Modules() {
         }}
       >
         <Grid container spacing={3}>
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
+          {startCourses.map(course => (
+            <CourseCard key={course.id} course={course} />
+          ))}
         </Grid>
       </section>
       <SubHeader align="center">
@@ -92,9 +90,11 @@ function Modules() {
         }}
       >
         <Grid container spacing={3}>
-          <ModuleSmallCourseCard />
-          <ModuleSmallCourseCard />
-          <ModuleSmallCourseCard />
+          {otherCourses
+            ? otherCourses.map(c => (
+                <ModuleSmallCourseCard key={module.id} course={c} />
+              ))
+            : ""}
         </Grid>
       </section>
       <div

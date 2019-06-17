@@ -51,12 +51,12 @@ const ImageBackground = styled.div`
   background-position: center;
 `
 
-function ModuleBanner() {
+function ModuleBanner({ title }) {
   return (
     <ModuleBannerContainer>
       <img style={{ display: "none" }} src={backgroundImage} alt="" />
       <Title component="h2" align="center">
-        Tekoäly ja Datatiede
+        {title}
       </Title>
       <ImageBackground />
     </ModuleBannerContainer>

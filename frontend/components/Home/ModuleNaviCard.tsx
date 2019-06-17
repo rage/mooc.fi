@@ -76,23 +76,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
-function ModuleNaviCard({ item }) {
+function ModuleNaviCard({ module, img }) {
   const classes = useStyles()
-  console.log(item)
   return (
-    <Grid item xs={12} md={6} lg={6}>
+    <Grid item xs={12} md={4} lg={3}>
       <ButtonBase focusRipple className={classes.image}>
         <span
           className={classes.imageSrc}
-          style={{ backgroundImage: `url(${item.img})` }}
+          style={{ backgroundImage: `url(${img})` }}
         />
         <span className={classes.imageBackdrop} />
         <span className={classes.imageButton}>
           <Typography className={classes.title} align="left">
-            {item.title}
+            {module.name}
           </Typography>
           <Typography className={classes.bodyText} paragraph>
-            {item.text}
+            {module.description}
           </Typography>
         </span>
       </ButtonBase>
