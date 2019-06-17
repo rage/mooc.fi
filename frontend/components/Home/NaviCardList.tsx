@@ -1,7 +1,8 @@
 import React from "react"
-import { Grid, Container } from "@material-ui/core"
+import { Grid } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import NaviCard from "./NaviCard"
+import NextI18Next from "../../i18n"
 
 const naviItems = [
   {
@@ -43,12 +44,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function NaviCardList() {
+function NaviCardList({ t }) {
   const classes = useStyles()
+  const items = t("naviItems")
+
   return (
     <section className={classes.grid}>
       <Grid container spacing={3}>
-        {naviItems.map(item => (
+        {items.map(item => (
           <NaviCard key={item.title} item={item} />
         ))}
       </Grid>
@@ -56,4 +59,4 @@ function NaviCardList() {
   )
 }
 
-export default NaviCardList
+export default NextI18Next.withNamespaces("navi")(NaviCardList)

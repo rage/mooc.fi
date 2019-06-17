@@ -2,6 +2,7 @@ import React from "react"
 import App, { Container } from "next/app"
 import Head from "next/head"
 import { MuiThemeProvider } from "@material-ui/core/styles"
+import { StylesProvider } from "@material-ui/styles"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import { ApolloProvider } from "react-apollo"
 import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks"
@@ -33,21 +34,24 @@ class MyApp extends App {
         {/* Wrap every page in Jss and Theme providers */}
         {/* MuiThemeProvider makes the theme available down the React
               tree thanks to React context. */}
-        <MuiThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <ApolloProvider client={apollo}>
-            <ApolloHooksProvider client={apollo}>
-              <LoginStateContext.Provider value={this.props.signedIn}>
-                <UserDetailContext.Provider value={this.props.admin}>
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
-                </UserDetailContext.Provider>
-              </LoginStateContext.Provider>
-            </ApolloHooksProvider>
-          </ApolloProvider>
-        </MuiThemeProvider>
+        <StylesProvider injectFirst>
+          <MuiThemeProvider theme={theme}>
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
+
+            <ApolloProvider client={apollo}>
+              <ApolloHooksProvider client={apollo}>
+                <LoginStateContext.Provider value={this.props.signedIn}>
+                  <UserDetailContext.Provider value={this.props.admin}>
+                    <Layout>
+                      <Component {...pageProps} />
+                    </Layout>
+                  </UserDetailContext.Provider>
+                </LoginStateContext.Provider>
+              </ApolloHooksProvider>
+            </ApolloProvider>
+          </MuiThemeProvider>
+        </StylesProvider>
       </Container>
     )
   }

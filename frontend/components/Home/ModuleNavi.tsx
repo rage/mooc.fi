@@ -2,6 +2,7 @@ import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
+import NextI18Next from "../../i18n"
 
 const naviItems = [
   {
@@ -55,7 +56,7 @@ function ModuleNavi() {
   return (
     <section className={classes.grid}>
       <Typography component="h2" className={classes.title} align="center">
-        Opinto-kokonaisuudet
+        <NextI18Next.Trans i18nKey="modulesTitle" />
       </Typography>
       <Grid container spacing={5}>
         {naviItems.map(item => (

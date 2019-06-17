@@ -1,0 +1,10 @@
+{
+    "intro": "Helsingin yliopiston tietojenkäsittelytieteen osasto tarjoaa avoimia laadukkaita ja ilmaisia verkkokursseja kaikille. Aloittelija voi lähteä liikkeelle Ohjelmoinnin MOOCista tai tekoälyn perusteisiin keskittyvästä Elements of AI -kurssista. Osaamistaan päivittävä voi syventyä vaikkapa tietoturvaan tai Fullstack -ohjelmointiin.",
+    "courseButton": "Kurssimme",
+    "highlightTitle": "Aloita näistä",
+    "highlightSubtitle": "Aloittelijoille sopivia kursseja. Ei esitietovaatimuksia.",
+    "modulesTitle": "Opinto-kokonaisuudet",
+    "modulesSubtitleStart": "Aloita näistä",
+    "modulesSubtitleContinue":"Jatka sitten näihin",
+    "modulesLinkToHome": "Opinto-kokonaisuuden kotisivulle"
+}
