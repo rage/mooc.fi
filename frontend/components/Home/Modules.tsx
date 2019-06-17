@@ -4,33 +4,7 @@ import styled from "styled-components"
 import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
-
-const naviItems = [
-  {
-    title: "Tekoäly ja Datatiede",
-    text:
-      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
-    img: "../../static/images/AiModule.jpg",
-  },
-  {
-    title: "Koodaustekniikat",
-    text:
-      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
-    img: "../../static/images/CodeModule.jpg",
-  },
-  {
-    title: "Pilvipohjaiset Websovellukset",
-    text:
-      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
-    img: "../../static/images/WebModule.jpg",
-  },
-  {
-    title: "Tietoturva",
-    text:
-      "t explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni ",
-    img: "../../static/images/CyberSecurityModule.jpg",
-  },
-]
+import NextI18Next from "../../i18n"
 
 const IntroText = styled(Typography)`
   font-family: "Open Sans Condensed Light", sans-serif;
@@ -51,8 +25,8 @@ const IntroText = styled(Typography)`
 
 const SubHeader = styled(Typography)`
   font-family: "Open Sans Condensed Light", sans-serif;
-  margin-bottom: 1em;
-  padding-bottom: 1em;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
   margin-left: 1rem;
   font-size: 24px;
   @media (min-width: 425px) {
@@ -66,36 +40,72 @@ const SubHeader = styled(Typography)`
 const ModuleHomeLink = styled(Link)`
   font-family: "Open Sans Condensed Light", sans-serif;
   color: #00a68d;
-  font-size: 16px;
-  margin-left: 2em;
+  font-size: 18px;
+  margin: auto;
+  @media (min-width: 425px) {
+    font-size: 22px;
+  }
   margin-bottom: 1em;
   padding-bottom: 1em;
 `
 
 function Modules() {
   return (
-    <section style={{ marginBottom: "2em" }}>
+    <section
+      style={{
+        marginBottom: "5em",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
       <ModuleBanner />
       <IntroText>
         inventore veritatis et quasi architecto beatae vitae dicta sunt
         explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
         odit aut fugit, sed quia consequuntur magni
       </IntroText>
-      <SubHeader align="center">Aloita näistä</SubHeader>
-      <Grid container spacing={3} style={{ margin: "0.5rem" }}>
-        <CourseCard />
-        <CourseCard />
-        <CourseCard />
-      </Grid>
-      <SubHeader align="center">Jatka sitten näihin</SubHeader>
-      <Grid container spacing={3}>
-        <ModuleSmallCourseCard />
-        <ModuleSmallCourseCard />
-        <ModuleSmallCourseCard />
-      </Grid>
-      <ModuleHomeLink underline="always">
-        Opinto-kokonaisuuden kotisivulle
-      </ModuleHomeLink>
+      <SubHeader align="center">
+        <NextI18Next.Trans i18nKey="modulesSubtitleStart" />
+      </SubHeader>
+      <section
+        style={{
+          marginLeft: "1rem",
+          marginRight: "1rem",
+          marginBottom: "5em",
+        }}
+      >
+        <Grid container spacing={3}>
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+        </Grid>
+      </section>
+      <SubHeader align="center">
+        <NextI18Next.Trans i18nKey="modulesSubtitleContinue" />
+      </SubHeader>
+      <section
+        style={{
+          marginLeft: "1rem",
+          marginRight: "1rem",
+          marginBottom: "3em",
+        }}
+      >
+        <Grid container spacing={3}>
+          <ModuleSmallCourseCard />
+          <ModuleSmallCourseCard />
+          <ModuleSmallCourseCard />
+        </Grid>
+      </section>
+      <div
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <ModuleHomeLink underline="always">
+          <NextI18Next.Trans i18nKey="modulesLinkToHome" />
+        </ModuleHomeLink>
+      </div>
     </section>
   )
 }

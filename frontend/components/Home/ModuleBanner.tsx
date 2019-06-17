@@ -12,6 +12,13 @@ const ModuleBannerContainer = styled.section`
   padding-bottom: 2rem;
   align-items: center;
   justify-content: center;
+  min-height: 250px;
+  @media (min-width: 700px) {
+    min-height: 300px;
+  }
+  @media (min-width: 1000px) {
+    min-height: 350px;
+  }
 `
 
 const Title = styled(Typography)`

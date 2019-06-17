@@ -1,6 +1,7 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Button, Typography } from "@material-ui/core"
+import NextI18Next from "../../i18n"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "white",
       fontSize: 24,
       fontFamily: "Open Sans Condensed Light, sans-serif",
-      marginLeft: "20%",
+      marginLeft: "10%",
     },
   }),
 )
@@ -54,24 +55,19 @@ function Explanation() {
       <Typography variant="h1" component="h1" className={classes.title}>
         MOOC.fi
       </Typography>
-      <div className={classes.subtitleContainer}>
+      <div>
         <Typography
           variant="subtitle1"
           component="p"
           className={classes.subtitle}
         >
-          Helsingin yliopiston tietojenkäsittelytieteen osasto tarjoaa avoimia
-          laadukkaita ja ilmaisia verkkokursseja kaikille. Aloittelija voi
-          lähteä liikkeelle Ohjelmoinnin MOOCista tai tekoälyn perusteisiin
-          keskittyvästä Elements of AI -kurssista. Osaamistaan päivittävä voi
-          syventyä vaikkapa tietoturvaan tai Fullstack -ohjelmointiin.
+          <NextI18Next.Trans i18nKey="intro" />
         </Typography>
-        <Button size="large" variant="contained" className={classes.button}>
-          Kurssimme
+        <Button variant="contained" className={classes.button}>
+          <NextI18Next.Trans i18nKey="courseButton" />
         </Button>
       </div>
     </div>
   )
 }
-
 export default Explanation

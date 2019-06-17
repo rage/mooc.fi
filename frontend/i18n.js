@@ -7,7 +7,7 @@ const NextI18Next = new I18Next({
   localeSubpaths: "foreign",
   debug: true,
   localeExtension: "JSON",
+  returnObjects: true,
 })
 
-console.log(NextI18Next.config)
 module.exports = NextI18Next
