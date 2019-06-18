@@ -19,7 +19,7 @@ export const saveToDatabase = async (
     return
   }
   const isExercise = await prisma.$exists.exercice({
-    custom_id: message.course_id,
+    custom_id: message.exercise_id,
   })
   if (!isExercise) {
     logger.error("Given exercise does not exist")
@@ -61,6 +61,6 @@ export const saveToDatabase = async (
       },
     })
   }
-
+  logger.info("Saved to DB succesfully")
   return true
 }
