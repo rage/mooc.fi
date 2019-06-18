@@ -1,100 +1,100 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, ButtonBase, Typography, Link } from "@material-ui/core"
+import { Grid, ButtonBase, Typography } from "@material-ui/core"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    image: {
-      position: "relative",
-      [theme.breakpoints.up("xs")]: {
-        height: 200,
-      },
-      [theme.breakpoints.up("md")]: {
-        height: 450,
-      },
-      width: "100%",
-      boxShadow:
-        "0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2)",
-      overflow: "hidden",
-    },
-    imageSrc: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      backgroundSize: "cover",
-      backgroundPosition: "center 40%",
-    },
-    imageBackdrop: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      backgroundColor: "white",
-      opacity: 0.9,
-      width: "70%",
-    },
-    imageButton: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      alignItems: "left",
-      display: "flex",
-      flexDirection: "column",
-      paddingBottom: "1em",
-      paddingTop: "1em",
-    },
-    title: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 24,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 48,
-      },
-      marginBottom: "0.5rem",
-      marginLeft: "1rem",
-      maxWidth: "60%",
-    },
-    bodyText: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 16,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 22,
-      },
-      maxWidth: "60%",
-      textAlign: "left",
-      margin: 0,
-      marginLeft: "1rem",
-      flex: 1,
-    },
-  }),
-)
+const Base = styled(ButtonBase)`
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  height: 200px;
+  @media (min-width: 720px) {
+    height: 300px;
+  }
+`
+const ImageBackground = styled.span`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center 40%;
+`
+const ImageCover = styled.span`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+  opacity: 0.9;
+  width: 70%;
+`
+const ContentArea = styled.span`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  align-items: left;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1em;
+  padding-top: 1em;
+`
+
+const NaviCardTitle = styled(Typography)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  max-width: 60%;
+  line-height: 1.2em;
+  @media (min-width: 320px) {
+    font-size: 26px;
+  }
+  @media (min-width: 420px) {
+    font-size: 32px;
+  }
+  @media (min-width: 720px) {
+    font-size: 46px;
+  }
+  @media (min-width: 720px) {
+    font-size: 48px;
+  }
+`
+const NaviCardBodyText = styled(Typography)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  max-width: 60%;
+  text-align: left;
+  margin: 0;
+  margin-left: 1rem;
+  flex: 1;
+  @media (min-width: 320px) {
+    font-size: 18px;
+  }
+  @media (min-width: 420px) {
+    font-size: 20px;
+  }
+  @media (min-width: 720px) {
+    font-size: 24px;
+  }
+  @media (min-width: 1000px) {
+    font-size: 24px;
+  }
+`
 function ModuleNaviCard({ module, img }) {
-  const classes = useStyles()
   return (
-    <Grid item xs={12} md={4} lg={3}>
-      <ButtonBase focusRipple className={classes.image}>
-        <span
-          className={classes.imageSrc}
-          style={{ backgroundImage: `url(${img})` }}
-        />
-        <span className={classes.imageBackdrop} />
-        <span className={classes.imageButton}>
-          <Typography className={classes.title} align="left">
-            {module.name}
-          </Typography>
-          <Typography className={classes.bodyText} paragraph>
-            {module.description}
-          </Typography>
-        </span>
-      </ButtonBase>
+    <Grid item xs={12} md={6} lg={6}>
+      <Base focusRipple>
+        <ImageBackground style={{ backgroundImage: `url(${img})` }} />
+        <ImageCover />
+        <ContentArea>
+          <NaviCardTitle align="left">{module.name}</NaviCardTitle>
+          <NaviCardBodyText paragraph>{module.description}</NaviCardBodyText>
+        </ContentArea>
+      </Base>
     </Grid>
   )
 }
