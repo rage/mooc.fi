@@ -5,8 +5,8 @@ import {
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
-} from "../../generated/prisma-client"
-import TmcClient from "../../services/tmc"
+} from "../../../generated/prisma-client"
+import TmcClient from "../../../services/tmc"
 import { validateTimestamp } from "./validate"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 const isUserInDB = async (prisma: Prisma, user_id) => {
