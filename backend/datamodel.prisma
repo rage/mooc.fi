@@ -191,7 +191,6 @@ type Exercice @db(name: "exercise") {
   part: Int
   section: Int
   max_points: Int
-  completed: Boolean @default(value: false)
   course: Course!
   service: Service @relation(link: INLINE, name: "ExerciceToService")
   ExerciseCompleteds: [ExerciseCompleted!]! @relation(name: "ExerciseCompletedToExercise")
@@ -205,4 +204,5 @@ type ExerciseCompleted @db(name: "exercise_completed") {
   exercise: Exercice! @relation(link: INLINE, name: "ExerciseCompletedToExercise")
   user: User! @relation(link: INLINE, name: "ExerciseCompletedToUser")
   timestamp: DateTime
+  completed: Boolean @default(value: false)
 }
