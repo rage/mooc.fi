@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       left: 0,
       width: "70%",
+      [theme.breakpoints.up("md")]: {
+        width: "45%",
+      },
       top: 0,
       bottom: 0,
       backgroundColor: "white",

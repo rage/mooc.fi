@@ -9,6 +9,7 @@ const CourseTitle = styled(Typography)`
   @media (min-width: 425px) {
     font-size: 32px;
   }
+  color: black;
 `
 const CourseText = styled(Typography)`
   font-family: "Open Sans Condensed Light", sans-serif;
@@ -17,9 +18,10 @@ const CourseText = styled(Typography)`
   @media (min-width: 425px) {
     font-size: 18px;
   }
+  color: black;
 `
 
-const Button = styled(ButtonBase)`
+const Button = styled.div`
   position: relative;
   overflow: hidden;
   display: flex;
@@ -27,10 +29,12 @@ const Button = styled(ButtonBase)`
 `
 function ModuleSmallCourseCard({ course }) {
   return (
-    <Grid item xs={12} md={4} lg={4}>
-      <Button focusRipple href={`${course.link}`}>
-        <CourseTitle align="left">{course.name}</CourseTitle>
-        <CourseText paragraph>{course.description}</CourseText>
+    <Grid item xs={12} sm={6} md={4} lg={4}>
+      <Button>
+        <a href={`${course.link}`} style={{ textDecoration: "none" }}>
+          <CourseTitle align="left">{course.name}</CourseTitle>
+          <CourseText paragraph>{course.description}</CourseText>
+        </a>
       </Button>
     </Grid>
   )

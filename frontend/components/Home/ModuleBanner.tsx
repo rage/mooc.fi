@@ -22,7 +22,7 @@ const ModuleBannerContainer = styled.section`
 `
 
 const Title = styled(Typography)`
-  font-size: 46px;
+  font-size: 38px;
   margin-top: 2rem;
   margin-left: 2rem;
   margin-bottom: 1rem;
@@ -31,7 +31,7 @@ const Title = styled(Typography)`
   background-color: rgba(255, 255, 255, 0.8);
   width: 60%;
   @media (min-width: 425px) {
-    font-size: 56px;
+    font-size: 52px;
   }
   @media (min-width: 1000px) {
     font-size: 72px;

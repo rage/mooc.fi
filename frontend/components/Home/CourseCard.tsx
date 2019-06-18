@@ -74,6 +74,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("xs")]: {
         fontSize: 22,
       },
+      [theme.breakpoints.up("sm")]: {
+        fontSize: 28,
+      },
       [theme.breakpoints.up("md")]: {
         fontSize: 32,
       },
@@ -96,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function CourseCard({ course }) {
   const classes = useStyles()
   return (
-    <Grid item xs={12} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <ButtonBase focusRipple className={classes.image} href={`${course.link}`}>
         <span
           className={classes.imageSrc}
