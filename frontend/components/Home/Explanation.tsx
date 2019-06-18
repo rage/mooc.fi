@@ -68,7 +68,11 @@ function Explanation() {
         >
           <NextI18Next.Trans i18nKey="intro" />
         </Typography>
-        <Button variant="contained" className={classes.button}>
+        <Button
+          variant="contained"
+          className={classes.button}
+          href="#coursesAndModules"
+        >
           <NextI18Next.Trans i18nKey="courseButton" />
         </Button>
       </div>

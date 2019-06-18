@@ -68,7 +68,6 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 function NaviCard({ item }) {
-  //const backgroundImage = require(item.img)
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -86,7 +85,7 @@ function NaviCard({ item }) {
             {item.text}
           </Typography>
           <Typography align="left">
-            <Link className={classes.link} underline="always">
+            <Link className={classes.link} underline="always" href={item.link}>
               {item.linkText}
             </Link>
           </Typography>

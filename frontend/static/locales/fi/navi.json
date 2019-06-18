@@ -5,28 +5,33 @@
             "text":
               "Verkko-oppimista parhaimmillaan. Älä huolehdi kurssimaksuista tai koulumatkoista, vaan opiskele siellä missä sinulle sopii.",
             "linkText": "Kurssit ja Opinto-kokonaisuudet",
-            "img": "../../static/images/AllCourses.jpg"
+            "img": "../../static/images/AllCourses.jpg",
+            "link": "#coursesAndModules"
           },
           {
             "title": "Ensimmäisen vuoden opinnot kaikille",
             "text":
               "Digital Education for All -hanke avaa tietojenkäsittelytieteen ensimmäisen vuoden kaikille.",
             "linkText": "DEFA -hanke",
-            "img": "../../static/images/DEFA.jpg"
+            "img": "../../static/images/DEFA.jpg",
+            "link": "https://www.helsinki.fi/fi/projektit/digital-education-for-all"
           },
           {
             "title": "Opeta kursseja omassa luokassasi.",
             "text":
               "Opettaja! Haluatko kurssime luokkaasi omilla pistelistoillasi ja omalla aikataulullasi.",
             "linkText": "Opettajien sivut",
-            "img": "../../static/images/Opettajien.jpg"
+            "img": "../../static/images/Opettajien.jpg",
+            "link": "https://mooc.fi/teachers"
+
           },
           {
             "title": "Täydennä ammattitaitoasi.",
             "text":
               "Täydennyskoulutusmoduulimme tarjoavat mahdollisuuksia täydentää osaamistasi.",
             "linkText": "FMSCI",
-            "img": "../../static/images/taydennysKoulutus.jpg"
+            "img": "../../static/images/taydennysKoulutus.jpg",
+            "link": "www.google.fi"
           }
         ]
 }

@@ -37,7 +37,7 @@ const GridContainer = styled.section`
 function CourseHighlights({ courses }) {
   const classes = useStyles()
   return (
-    <section className={classes.root}>
+    <section className={classes.root} id="coursesAndModules">
       <ImageBanner />
       <GridContainer>
         <Grid container spacing={3}>
