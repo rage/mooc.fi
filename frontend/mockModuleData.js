@@ -2,6 +2,7 @@ export const mockModules = {
   study_modules: [
     {
       id: "21d838c9-54c7-4fbb-8e4c-91e8f14f0d73",
+      image: "../../static/images/WebModule.jpg",
       study_module_translations: [
         {
           id: "0616fba6-e119-4d77-9b71-2b0fae2101b3",
@@ -93,6 +94,7 @@ export const mockModules = {
     },
     {
       id: "662f537e-4395-40db-a32d-710b51fa169e",
+      image: "../../static/images/CodeModule.jpg",
       study_module_translations: [
         {
           id: "9fa46739-8993-4b32-8624-00d30e47830b",

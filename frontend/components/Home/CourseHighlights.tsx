@@ -32,13 +32,19 @@ const GridContainer = styled.section`
     margin-left: 3.5em;
     margin-right: 3.5em;
   }
+  @media (min-width: 1500px) {
+    margin-left: 5.5em;
+    margin-right: 5.5em;
+  }
 `
 
-function CourseHighlights({ courses }) {
+function CourseHighlights({ courses, title, headerImage, subtitle }) {
   const classes = useStyles()
+  console.log(title)
+  console.log(subtitle)
   return (
     <section className={classes.root} id="coursesAndModules">
-      <ImageBanner />
+      <ImageBanner title={title} image={headerImage} subtitle={subtitle} />
       <GridContainer>
         <Grid container spacing={3}>
           {courses.map(course => (

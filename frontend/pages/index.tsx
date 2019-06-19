@@ -5,6 +5,7 @@ import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
 import ModuleNavi from "../components/Home/ModuleNavi"
 import Modules from "../components/Home/Modules"
+import EmailSubscribe from "../components/Home/EmailSubscribe"
 import { mockModules } from "../mockModuleData"
 import {
   filterAndModifyByLanguage,
@@ -64,11 +65,29 @@ const Home = ({ t }) => {
       <div>
         <ExplanationHero />
         <NaviCardList />
-        <CourseHighlights courses={promotedCourses} />
+        <CourseHighlights
+          courses={promotedCourses}
+          title={t("highlightTitle")}
+          headerImage={"../../static/images/courseHighlightsBanner.jpg"}
+          subtitle={t("highlightSubtitle")}
+        />
         <ModuleNavi modules={modules} />
         {modules.map(module => (
           <Modules key={module.id} module={module} />
         ))}
+        <CourseHighlights
+          courses={promotedCourses}
+          title={t("allCoursesTitle")}
+          headerImage={"../../static/images/AllCoursesBanner.jpeg"}
+          subtitle={""}
+        />
+        <CourseHighlights
+          courses={promotedCourses}
+          title={t("upcomingCoursesTitle")}
+          headerImage={"../../static/images/AllCoursesBanner.jpg"}
+          subtitle={""}
+        />
+        <EmailSubscribe />
       </div>
     )
   }

@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "relative",
       marginBottom: "2rem",
       minHeight: 500,
+      [theme.breakpoints.up("xl")]: {
+        minHeight: 750,
+      },
     },
     backdrop: {
       position: "absolute",
