@@ -5,13 +5,12 @@ import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import NextI18Next from "../../i18n"
+import Container from "../Container"
 
 const IntroText = styled(Typography)`
   font-family: "Open Sans Condensed Light", sans-serif;
   font-size: 22px;
   width: 90%;
-  margin-bottom: 1em;
-  padding-bottom: 1em;
   margin-left: 1rem;
   @media (min-width: 425px) {
     font-size: 26px;
@@ -28,6 +27,7 @@ const SubHeader = styled(Typography)`
   margin-bottom: 3rem;
   padding-bottom: 1rem;
   margin-left: 1rem;
+  margin-top: 3em;
   font-size: 32px;
   @media (min-width: 425px) {
     font-size: 32px;
@@ -48,44 +48,30 @@ const ModuleHomeLink = styled(Link)`
   margin-bottom: 1em;
   padding-bottom: 1em;
 `
-const GridContainer = styled.section`
-  margin-bottom: 5em;
-  margin-left: 1em;
-  margin-right: 1em;
-  @media (min-width: 420px) {
-    margin-left: 1.5em;
-    margin-right: 1.5em;
-  }
-  @media (min-width: 700px) {
-    margin-left: 2.5em;
-    margin-right: 2.5em;
-  }
-  @media (min-width: 1000px) {
-    margin-left: 3.5em;
-    margin-right: 3.5em;
-  }
-`
+
 function Modules({ module }) {
   const startCourses = module.courses.filter(c => c.start_point === true)
   const otherCourses = module.courses.filter(c => c.start_point === false)
   return (
     <section style={{ marginBottom: "3em" }}>
       <ModuleBanner module={module} />
-      <IntroText>{module.description}</IntroText>
-      <SubHeader align="center">
-        <NextI18Next.Trans i18nKey="modulesSubtitleStart" />
-      </SubHeader>
-      <GridContainer>
+      <Container>
+        <IntroText>{module.description}</IntroText>
+
+        <SubHeader align="center">
+          <NextI18Next.Trans i18nKey="modulesSubtitleStart" />
+        </SubHeader>
+
         <Grid container spacing={3}>
           {startCourses.map(course => (
             <CourseCard key={course.id} course={course} />
           ))}
         </Grid>
-      </GridContainer>
-      <SubHeader align="center">
-        <NextI18Next.Trans i18nKey="modulesSubtitleContinue" />
-      </SubHeader>
-      <GridContainer>
+
+        <SubHeader align="center">
+          <NextI18Next.Trans i18nKey="modulesSubtitleContinue" />
+        </SubHeader>
+
         <Grid container spacing={3}>
           {otherCourses
             ? otherCourses.map(c => (
@@ -93,16 +79,18 @@ function Modules({ module }) {
               ))
             : ""}
         </Grid>
-      </GridContainer>
-      <div
-        style={{
-          textAlign: "center",
-        }}
-      >
-        <ModuleHomeLink underline="always">
-          <NextI18Next.Trans i18nKey="modulesLinkToHome" />
-        </ModuleHomeLink>
-      </div>
+
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "3em",
+          }}
+        >
+          <ModuleHomeLink underline="always">
+            <NextI18Next.Trans i18nKey="modulesLinkToHome" />
+          </ModuleHomeLink>
+        </div>
+      </Container>
     </section>
   )
 }
