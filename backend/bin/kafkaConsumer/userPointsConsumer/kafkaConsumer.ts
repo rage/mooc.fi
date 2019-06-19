@@ -7,6 +7,8 @@ import * as winston from "winston"
 
 import { handleMessage } from "./handleMessage"
 
+const TOPIC_NAME = ["user-points"]
+
 const mutex = new Mutex()
 
 const logger = winston.createLogger({
@@ -42,7 +44,7 @@ consumer.connect()
 
 consumer
   .on("ready", () => {
-    consumer.subscribe(["4test"])
+    consumer.subscribe(TOPIC_NAME)
     consumer.consume()
   })
   .on("data", message =>

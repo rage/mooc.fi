@@ -18,7 +18,7 @@ type User @db(name: "user") {
   "User's completions that have been reqistered for ECTS etc."
   registered_completions: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToUser")
   created_organizations: [Organization!]! @relation(name: "OrganizationToUser")
-  exercise_completeds: [ExerciseCompleted!]! @relation(name: "ExerciseCompletedToUser")
+  exercise_completions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToUser")
 }
 
 type Course @db(name: "course") {
@@ -99,7 +99,7 @@ type Service @db(name: "service") {
   url: String!
   name: String!
   courses: [Course] @relation(name: "CourseToService")
-  exercises: [Exercice!]! @relation(name: "ExerciceToService")
+  exercises: [Exercise!]! @relation(name: "ExerciseToService")
 }
 
 type StudyModule @db(name:"study_module"){
@@ -182,7 +182,7 @@ type OrganizationTranslation @db(name: "organization_translation") {
   organization: Organization! @relation(link: INLINE, name: "OrganizationToOrganizationTranslation")
 }
 
-type Exercice @db(name: "exercise") {
+type Exercise @db(name: "exercise") {
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
@@ -192,17 +192,17 @@ type Exercice @db(name: "exercise") {
   section: Int
   max_points: Int
   course: Course!
-  service: Service @relation(link: INLINE, name: "ExerciceToService")
-  ExerciseCompleteds: [ExerciseCompleted!]! @relation(name: "ExerciseCompletedToExercise")
+  service: Service @relation(link: INLINE, name: "ExerciseToService")
+  ExerciseCompletions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToExercise")
 }
 
-type ExerciseCompleted @db(name: "exercise_completed") {
+type ExerciseCompletion @db(name: "exercise_completion") {
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   n_points: Int
-  exercise: Exercice! @relation(link: INLINE, name: "ExerciseCompletedToExercise")
-  user: User! @relation(link: INLINE, name: "ExerciseCompletedToUser")
+  exercise: Exercise! @relation(link: INLINE, name: "ExerciseCompletionsToExercise")
+  user: User! @relation(link: INLINE, name: "ExerciseCompletionsToUser")
   timestamp: DateTime
   completed: Boolean @default(value: false)
 }
