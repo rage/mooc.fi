@@ -13,7 +13,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: fetch-ai-completions
-              image: gcr.io/moocfi/moocfi-backend:build-1559904053-f008139aa37b55e527e9d554f005ef0c9d8f3a39
+              image: gcr.io/moocfi/moocfi-backend:build-1560941636-8c8d07a30d31941f43aad21cef32f85ce1106f80
               command: ["sh", "-c", "npm run fetch-ai-completions"]
               env:
                 - name: DB_NAME
