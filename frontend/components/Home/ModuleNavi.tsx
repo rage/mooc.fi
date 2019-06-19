@@ -50,11 +50,7 @@ function ModuleNavi({ modules }) {
       <GridContainer>
         <Grid container spacing={5}>
           {modules.map(module => (
-            <ModuleNaviCard
-              key={module.title}
-              module={module}
-              img="../../static/images/CyberSecurityModule.jpg"
-            />
+            <ModuleNaviCard key={module.title} module={module} />
           ))}
         </Grid>
       </GridContainer>

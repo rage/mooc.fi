@@ -1,9 +1,13 @@
 import React from "react"
 import Language from "@material-ui/icons/Language"
-import { Select, FormControl, Input } from "@material-ui/core"
+import { Select, FormControl, MenuItem, InputLabel } from "@material-ui/core"
 import Router from "next/router"
+import NextI18Next from "../i18n"
 
 function LanguageSwitch() {
+  const currentLanguage = NextI18Next.i18n.language
+  const [lang, setLang] = React.useState(currentLanguage)
+
   const SwitchLanguage = (event: React.ChangeEvent<{ value: unknown }>) => {
     const language = event.target.value || ""
     document.cookie = `next-i18next=${event.target.value};path=/`
@@ -11,21 +15,16 @@ function LanguageSwitch() {
       pathname: `/${language}`,
     })
   }
-
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
+    <div
+      style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
+    >
       <Language style={{ marginRight: "1rem" }} />
-      <form>
-        <FormControl>
-          <Select
-            native
-            value={"lang"}
-            onChange={SwitchLanguage}
-            input={<Input id="language-native-simple" />}
-          >
-            <option value="" />
-            <option value="en">English</option>
-            <option value="fi">Suomi</option>
+      <form autoComplete="off">
+        <FormControl style={{ minWidth: 120 }}>
+          <Select value={lang} onChange={SwitchLanguage} name="language">
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="fi">Suomi</MenuItem>
           </Select>
         </FormControl>
       </form>

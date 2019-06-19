@@ -70,7 +70,7 @@ function Modules({ module }) {
   const otherCourses = module.courses.filter(c => c.start_point === false)
   return (
     <section style={{ marginBottom: "3em" }}>
-      <ModuleBanner title={module.name} />
+      <ModuleBanner module={module} />
       <IntroText>{module.description}</IntroText>
       <SubHeader align="center">
         <NextI18Next.Trans i18nKey="modulesSubtitleStart" />

@@ -6,5 +6,11 @@
     "modulesTitle": "Opinto-kokonaisuudet",
     "modulesSubtitleStart": "Aloita näistä",
     "modulesSubtitleContinue":"Jatka sitten näihin",
-    "modulesLinkToHome": "Opinto-kokonaisuuden kotisivulle"
+    "modulesLinkToHome": "Opinto-kokonaisuuden kotisivulle",
+    "allCoursesTitle": "Kaikki kurssit",
+    "upcomingCoursesTitle": "Tulevat kurssit",
+    "emailHeader": "Haluatko ilmoituksia uusista kursseista?",
+    "emailField": "Sähköpostiosoite",
+    "emailButton": "LIITY",
+    "emailThanks": "Kiitos listalle liittymisestä!"
 }
