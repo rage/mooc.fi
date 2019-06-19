@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: moocfi-frontend
-          image: gcr.io/moocfi/moocfi-frontend:build-1559904282-f008139aa37b55e527e9d554f005ef0c9d8f3a39
+          image: gcr.io/moocfi/moocfi-frontend:build-1560942458-8c8d07a30d31941f43aad21cef32f85ce1106f80
           imagePullPolicy: Always
           ports:
             - name: frontend-http
