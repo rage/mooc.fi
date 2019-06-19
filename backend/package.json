@@ -14,7 +14,8 @@
     "fetch-organizations": "ts-node ./bin/importOrganizations.ts",
     "start-kafka-consumers": "concurrently npm:kafka-consumer-*",
     "kafka-consumer-user-course-progress": "ts-node ./bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.ts",
-    "kafka-consumer-user-points-consumer": "ts-node ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",
+    "kafka-consumer-user-points": "ts-node ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",
+    "kafka-consumer-exercises" : "ts-node ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
     "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma"
   },
   "keywords": [],

@@ -194,6 +194,7 @@ type Exercise @db(name: "exercise") {
   course: Course!
   service: Service @relation(link: INLINE, name: "ExerciseToService")
   ExerciseCompletions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToExercise")
+  timestamp: DateTime
 }
 
 type ExerciseCompletion @db(name: "exercise_completion") {
