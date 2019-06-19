@@ -15,3 +15,4 @@ export {
   default as addStudyModuleTranslationMutations,
 } from "./studyModuleTranslation"
 export { default as addExerciseMutations } from "./Exercise"
+export { default as addExerciseCompletionMutations } from "./ExerciseCompletion"

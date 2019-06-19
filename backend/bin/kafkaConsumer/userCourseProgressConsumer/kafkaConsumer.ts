@@ -8,6 +8,7 @@ import * as winston from "winston"
 import { handleMessage } from "./handleMessage"
 
 const mutex = new Mutex()
+const TOPIC_NAME = ["user-course-progress"]
 
 const logger = winston.createLogger({
   level: "info",
@@ -42,7 +43,7 @@ consumer.connect()
 
 consumer
   .on("ready", () => {
-    consumer.subscribe([process.env.KAFKA_TOPIC])
+    consumer.subscribe(TOPIC_NAME)
     consumer.consume()
   })
   .on("data", message =>

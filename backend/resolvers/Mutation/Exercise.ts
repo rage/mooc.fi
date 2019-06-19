@@ -1,10 +1,11 @@
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, intArg, idArg } from "nexus/dist"
 import { Prisma } from "../../generated/prisma-client"
+import checkAccess from "../../accessControl"
 
 const addExercise = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addExercise", {
-    type: "Exercice",
+    type: "Exercise",
     args: {
       custom_id: stringArg(),
       name: stringArg(),
@@ -15,6 +16,7 @@ const addExercise = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       service: idArg(),
     },
     resolve: (_, args, ctx) => {
+      checkAccess(ctx)
       const {
         custom_id,
         name,
@@ -24,8 +26,9 @@ const addExercise = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course,
         service,
       } = args
+      console.log(args)
       const prisma: Prisma = ctx.prisma
-      return prisma.createExercice({
+      return prisma.createExercise({
         course: { connect: { id: course } },
         service: { connect: { id: service } },
         custom_id: custom_id,

@@ -1,8 +1,8 @@
 import { Message } from "./interfaces"
 import {
   Prisma,
-  ExerciseCompleted,
-  Exercice,
+  ExerciseCompletion,
+  Exercise,
 } from "../../../generated/prisma-client"
 import { DateTime } from "luxon"
 import winston = require("winston")
@@ -18,21 +18,21 @@ export const saveToDatabase = async (
     logger.error("invalid timestamp")
     return
   }
-  const isExercise = await prisma.$exists.exercice({
+  const isExercise = await prisma.$exists.exercise({
     custom_id: message.exercise_id,
   })
   if (!isExercise) {
     logger.error("Given exercise does not exist")
     return false
   }
-  const exercises: Exercice[] = await prisma.exercices({
+  const exercises: Exercise[] = await prisma.exercises({
     where: {
       course: { id: message.course_id },
       service: { id: message.service_id },
     },
   })
   const exercice = exercises[0]
-  const exerciseCompleteds: ExerciseCompleted[] = await prisma.exerciseCompleteds(
+  const exerciseCompleteds: ExerciseCompletion[] = await prisma.exerciseCompletions(
     {
       first: 1,
       where: {
@@ -43,7 +43,7 @@ export const saveToDatabase = async (
   )
   const exerciseCompleted = exerciseCompleteds[0]
   if (!exerciseCompleted) {
-    await prisma.createExerciseCompleted({
+    await prisma.createExerciseCompletion({
       exercise: { connect: { id: exercice.id } },
       user: { connect: { upstream_id: Number(message.user_id) } },
       n_points: Number(message.n_points),
@@ -54,7 +54,7 @@ export const saveToDatabase = async (
       logger.error("Timestamp older than in DB, aborting")
       return false
     }
-    await prisma.updateExerciseCompleted({
+    await prisma.updateExerciseCompletion({
       where: { id: exerciseCompleted.id },
       data: {
         n_points: Number(message.n_points),
