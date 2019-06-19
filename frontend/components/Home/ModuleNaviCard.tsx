@@ -84,11 +84,11 @@ const NaviCardBodyText = styled(Typography)`
     font-size: 24px;
   }
 `
-function ModuleNaviCard({ module, img }) {
+function ModuleNaviCard({ module }) {
   return (
     <Grid item xs={12} md={6} lg={6}>
       <Base focusRipple>
-        <ImageBackground style={{ backgroundImage: `url(${img})` }} />
+        <ImageBackground style={{ backgroundImage: `url(${module.image})` }} />
         <ImageCover />
         <ContentArea>
           <NaviCardTitle align="left">{module.name}</NaviCardTitle>

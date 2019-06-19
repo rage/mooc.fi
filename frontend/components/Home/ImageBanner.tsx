@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat",
       zIndex: -2,
-      backgroundImage: `url(${backgroundImage})`,
+
       backgroundPosition: "center",
     },
     title: {
@@ -69,18 +69,21 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function ImageBanner() {
+function ImageBanner({ image, title, subtitle }) {
   const classes = useStyles()
   return (
     <section className={classes.root}>
-      <img style={{ display: "none" }} src={backgroundImage} alt="" />
+      <img style={{ display: "none" }} src={image} alt="" />
       <Typography component="h2" className={classes.title}>
-        <NextI18Next.Trans i18nKey="highlightTitle" />
+        {title}
       </Typography>
       <Typography component="p" className={classes.subtitle}>
-        <NextI18Next.Trans i18nKey="highlightSubtitle" />
+        {subtitle}
       </Typography>
-      <div className={classes.backGround} />
+      <div
+        className={classes.backGround}
+        style={{ backgroundImage: `url(${image})` }}
+      />
     </section>
   )
 }

@@ -47,18 +47,17 @@ const ImageBackground = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   z-index: -2;
-  background-image: url(${backgroundImage});
   background-position: center;
 `
 
-function ModuleBanner({ title }) {
+function ModuleBanner({ module }) {
   return (
     <ModuleBannerContainer>
-      <img style={{ display: "none" }} src={backgroundImage} alt="" />
+      <img style={{ display: "none" }} src={module.image} alt="" />
       <Title component="h2" align="center">
-        {title}
+        {module.name}
       </Title>
-      <ImageBackground />
+      <ImageBackground style={{ backgroundImage: `url(${module.image}` }} />
     </ModuleBannerContainer>
   )
 }
