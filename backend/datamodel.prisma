@@ -17,7 +17,8 @@ type User @db(name: "user") {
   completions: [Completion!]! @relation(name: "CompletionToUser")
   "User's completions that have been reqistered for ECTS etc."
   registered_completions: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToUser")
-  created_organization: [Organization!]! @relation(name: "OrganizationToUser")
+  created_organizations: [Organization!]! @relation(name: "OrganizationToUser")
+  exercise_completions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToUser")
 }
 
 type Course @db(name: "course") {
@@ -98,6 +99,7 @@ type Service @db(name: "service") {
   url: String!
   name: String!
   courses: [Course] @relation(name: "CourseToService")
+  exercises: [Exercise!]! @relation(name: "ExerciseToService")
 }
 
 type StudyModule @db(name:"study_module"){
@@ -178,4 +180,29 @@ type OrganizationTranslation @db(name: "organization_translation") {
   disabled_reason: String
   information: String
   organization: Organization! @relation(link: INLINE, name: "OrganizationToOrganizationTranslation")
+}
+
+type Exercise @db(name: "exercise") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  custom_id: String!
+  name: String
+  part: Int
+  section: Int
+  max_points: Int
+  course: Course!
+  service: Service @relation(link: INLINE, name: "ExerciseToService")
+  ExerciseCompletions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToExercise")
+}
+
+type ExerciseCompletion @db(name: "exercise_completion") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  n_points: Int
+  exercise: Exercise! @relation(link: INLINE, name: "ExerciseCompletionsToExercise")
+  user: User! @relation(link: INLINE, name: "ExerciseCompletionsToUser")
+  timestamp: DateTime
+  completed: Boolean @default(value: false)
 }

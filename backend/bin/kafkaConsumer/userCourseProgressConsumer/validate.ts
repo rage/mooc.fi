@@ -20,7 +20,6 @@ export const validateMessageFormat = (messageObject): Boolean => {
 export const validatePointsByGroupArray = (
   pointsByGroupArray: [PointsByGroup],
 ): Boolean => {
-  let valid: Boolean = true
   if (pointsByGroupArray.length < 1) return false
   return !pointsByGroupArray.some(entry => {
     return !validatePointsByGroup(entry)
