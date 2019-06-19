@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
       marginBottom: "2rem",
       paddingBottom: "2rem",
-      minHeight: 400,
+      minHeight: 450,
     },
     backdrop: {
       position: "absolute",

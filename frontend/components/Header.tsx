@@ -12,6 +12,7 @@ import LoginStateContext from "../contexes/LoginStateContext"
 import { useApolloClient } from "react-apollo-hooks"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import NextI18Next from "../i18n"
+import LanguageSwitch from "./LanguageSwitch"
 
 function TitleText(props: any) {
   return (
@@ -62,6 +63,7 @@ function Header() {
         <TitleText className={classes.title} />
 
         {loggedIn && <LogOutButton onclick={() => signOut(client)} />}
+        <LanguageSwitch />
       </Toolbar>
     </AppBar>
   )

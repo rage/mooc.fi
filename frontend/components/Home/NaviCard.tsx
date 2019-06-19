@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
     bodyText: {
       fontFamily: "Open Sans Condensed Light, sans-serif",
       fontSize: 16,
-      maxWidth: "60%",
+      maxWidth: "55%",
       textAlign: "left",
       margin: 0,
       marginLeft: "1rem",
@@ -68,10 +68,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 function NaviCard({ item }) {
-  //const backgroundImage = require(item.img)
   const classes = useStyles()
   return (
-    <Grid item xs={12} md={6} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <ButtonBase focusRipple className={classes.image}>
         <span
           className={classes.imageSrc}
@@ -86,7 +85,7 @@ function NaviCard({ item }) {
             {item.text}
           </Typography>
           <Typography align="left">
-            <Link className={classes.link} underline="always">
+            <Link className={classes.link} underline="always" href={item.link}>
               {item.linkText}
             </Link>
           </Typography>
