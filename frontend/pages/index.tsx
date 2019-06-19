@@ -51,11 +51,11 @@ const Home = ({ t }) => {
   }, [NextI18Next.i18n.language])
 
   const modules = filterAndModifyByLanguage(mockModules.study_modules, language)
-  /* const modules = filterAndModifyByLanguage(
-    data.study_modules,
-    language,
-  ) */
   const promotedCourses = getPromotedCourses(modules)
+
+  console.log("index", modules)
+  console.log("index", language)
+  console.log("promoted Courses", promotedCourses)
 
   if (loading) {
     return <div>loading</div>
@@ -64,10 +64,11 @@ const Home = ({ t }) => {
       <div>
         <ExplanationHero />
         <NaviCardList />
-        <CourseHighlights />
-        <ModuleNavi />
-        <Modules />
-        <Modules />
+        <CourseHighlights courses={promotedCourses} />
+        <ModuleNavi modules={modules} />
+        {modules.map(module => (
+          <Modules key={module.id} module={module} />
+        ))}
       </div>
     )
   }

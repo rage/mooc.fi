@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       fontFamily: "Open Sans Condensed Light, sans-serif",
       paddingTop: "2rem",
       paddingBottom: "2rem",
+      [theme.breakpoints.up("md")]: {
+        marginLeft: "1rem",
+      },
     },
     subtitle: {
       [theme.breakpoints.up("xs")]: {
@@ -32,6 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       [theme.breakpoints.up("md")]: {
         fontSize: 32,
+        maxWidth: "47%",
+        marginLeft: "1rem",
       },
       fontFamily: "Open Sans Condensed Light, sans-serif",
       paddingRight: "1rem",
@@ -63,7 +68,11 @@ function Explanation() {
         >
           <NextI18Next.Trans i18nKey="intro" />
         </Typography>
-        <Button variant="contained" className={classes.button}>
+        <Button
+          variant="contained"
+          className={classes.button}
+          href="#coursesAndModules"
+        >
           <NextI18Next.Trans i18nKey="courseButton" />
         </Button>
       </div>
