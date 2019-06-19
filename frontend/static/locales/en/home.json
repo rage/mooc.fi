@@ -6,6 +6,12 @@
     "modulesTitle": "Modules",
     "modulesSubtitleStart": "Start with these",
     "modulesSubtitleContinue":"Continue to these",
-    "modulesLinkToHome": "Module homepage"
+    "modulesLinkToHome": "Module homepage",
+    "allCoursesTitle": "All Courses",
+    "upcomingCoursesTitle":"Upcoming Courses",
+    "emailHeader": "Get notified of new courses",
+    "emailField": "Email address",
+    "emailButton": "SUBSCRIBE",
+    "emailThanks": "Thanks for joining the list!"
    
 }

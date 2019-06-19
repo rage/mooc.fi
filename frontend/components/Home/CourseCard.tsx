@@ -10,10 +10,10 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow:
         "0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2)",
       [theme.breakpoints.up("xs")]: {
-        height: 215,
+        height: 275,
       },
       [theme.breakpoints.up("md")]: {
-        height: 400,
+        height: 450,
       },
       maxWidth: 400,
     },
@@ -84,8 +84,8 @@ const useStyles = makeStyles((theme: Theme) =>
     bodyText: {
       fontFamily: "Open Sans Condensed Light, sans-serif",
       textAlign: "left",
-      marginLeft: "1rem",
       marginBottom: "1rem",
+      padding: "0.5rem",
       [theme.breakpoints.up("xs")]: {
         fontSize: 16,
       },
@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function CourseCard({ course }) {
   const classes = useStyles()
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
       <ButtonBase focusRipple className={classes.image} href={`${course.link}`}>
         <span
           className={classes.imageSrc}

@@ -17,13 +17,16 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 72,
       },
       [theme.breakpoints.up("sm")]: {
-        fontSize: 144,
+        fontSize: 120,
       },
       fontFamily: "Open Sans Condensed Light, sans-serif",
       paddingTop: "2rem",
       paddingBottom: "2rem",
       [theme.breakpoints.up("md")]: {
         marginLeft: "1rem",
+      },
+      [theme.breakpoints.up("xl")]: {
+        fontSize: 210,
       },
     },
     subtitle: {
@@ -34,9 +37,15 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 22,
       },
       [theme.breakpoints.up("md")]: {
+        fontSize: 22,
+        maxWidth: "47%",
+        marginLeft: "1rem",
+      },
+      [theme.breakpoints.up("xl")]: {
         fontSize: 32,
         maxWidth: "47%",
         marginLeft: "1rem",
+        marginBottom: "3rem",
       },
       fontFamily: "Open Sans Condensed Light, sans-serif",
       paddingRight: "1rem",
