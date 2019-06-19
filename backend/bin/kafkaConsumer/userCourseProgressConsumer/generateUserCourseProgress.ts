@@ -1,4 +1,4 @@
-import { UserCourseProgress, Prisma } from "../../generated/prisma-client"
+import { UserCourseProgress, Prisma } from "../../../generated/prisma-client"
 
 export const generateUserCourseProgress = async (
   userCourseProgress: UserCourseProgress,

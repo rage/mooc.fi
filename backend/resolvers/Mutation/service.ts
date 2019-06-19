@@ -20,7 +20,7 @@ const addService = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 }
 
 const updateService = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
-  t.field("addService", {
+  t.field("updateService", {
     type: "Service",
     args: {
       id: idArg({ required: true }),

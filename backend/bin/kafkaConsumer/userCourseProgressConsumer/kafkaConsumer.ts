@@ -1,5 +1,5 @@
 require("dotenv-safe").config()
-import { prisma } from "../../generated/prisma-client"
+import { prisma } from "../../../generated/prisma-client"
 import { Mutex } from "await-semaphore"
 
 import * as Kafka from "node-rdkafka"
@@ -8,6 +8,7 @@ import * as winston from "winston"
 import { handleMessage } from "./handleMessage"
 
 const mutex = new Mutex()
+const TOPIC_NAME = ["user-course-progress"]
 
 const logger = winston.createLogger({
   level: "info",
@@ -15,7 +16,7 @@ const logger = winston.createLogger({
     winston.format.timestamp(),
     winston.format.json(),
   ),
-  defaultMeta: { service: "kafka-consumer" },
+  defaultMeta: { service: "kafka-consumer-UserCourseProgress" },
   transports: [new winston.transports.Console()],
 })
 
@@ -42,7 +43,7 @@ consumer.connect()
 
 consumer
   .on("ready", () => {
-    consumer.subscribe([process.env.KAFKA_TOPIC])
+    consumer.subscribe(TOPIC_NAME)
     consumer.consume()
   })
   .on("data", message =>

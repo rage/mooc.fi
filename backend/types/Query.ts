@@ -16,6 +16,8 @@ const Query = prismaObjectType({
     queries.addStudyModuleQueries(t)
     queries.addStudyModuleTranslationQueries(t)
     queries.addCourseTranslationQueries(t)
+    queries.addExerciseQueries(t)
+    queries.addExerciseComlpetionQueries(t)
   },
 })
 

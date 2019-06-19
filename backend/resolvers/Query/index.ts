@@ -16,3 +16,5 @@ export {
   default as addStudyModuleTranslationQueries,
 } from "./studyModuleTranslation"
 export { default as addCourseTranslationQueries } from "./courseTranslation"
+export { default as addExerciseQueries } from "./Exercise"
+export { default as addExerciseComlpetionQueries } from "./ExerciseCompletion"
