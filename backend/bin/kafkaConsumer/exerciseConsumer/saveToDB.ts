@@ -68,6 +68,7 @@ const handleExercise = async (
         part: Number(exercise.part),
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
+        timestamp: timestamp,
       },
     })
   } else {
@@ -79,6 +80,7 @@ const handleExercise = async (
       max_points: Number(exercise.max_points),
       course: { connect: { id: course_id } },
       service: { connect: { id: service_id } },
+      timestamp: timestamp,
     })
   }
 }
