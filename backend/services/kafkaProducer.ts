@@ -1,5 +1,16 @@
 require("dotenv-safe").config()
 import * as Kafka from "node-rdkafka"
+import * as winston from "winston"
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  defaultMeta: { service: "kafka-producer" },
+  transports: [new winston.transports.Console()],
+})
 
 let producer: Kafka.Producer
 let queue: ProducerMessage[]
@@ -15,8 +26,7 @@ export default class KafkaProducer {
     producer.connect()
     producer.on("ready", async () => await this.producerReadyFunction())
     producer.on("event.error", function(err) {
-      console.error("Error from producer")
-      console.error(err)
+      logger.error("Error from producer: " + err)
     })
   }
 
@@ -41,8 +51,7 @@ export default class KafkaProducer {
             Date.now(),
           )
         } catch (err) {
-          console.error("A problem occurred when sending our message")
-          console.error(err)
+          logger.error("A problem occurred when sending our message: " + err)
         }
       }
     }
