@@ -1,9 +1,6 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, Typography } from "@material-ui/core"
-import NextI18Next from "../../i18n"
-
-const backgroundImage = require("../../static/images/courseHighlightsBanner.jpg")
+import { Typography } from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
