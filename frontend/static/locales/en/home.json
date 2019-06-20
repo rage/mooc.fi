@@ -12,6 +12,7 @@
     "emailHeader": "Get notified of new courses",
     "emailField": "Email address",
     "emailButton": "SUBSCRIBE",
-    "emailThanks": "Thanks for joining the list!"
+    "emailThanks": "Thanks for joining the list!",
+    "langSwitch": "Suomenkielinen versio"
    
 }

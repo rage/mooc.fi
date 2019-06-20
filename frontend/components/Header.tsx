@@ -62,8 +62,8 @@ function Header() {
         </Link>
         <TitleText className={classes.title} />
 
-        {loggedIn && <LogOutButton onclick={() => signOut(client)} />}
         <LanguageSwitch />
+        {loggedIn && <LogOutButton onclick={() => signOut(client)} />}
       </Toolbar>
     </AppBar>
   )
