@@ -1,8 +1,8 @@
-FROM node:11-alpine
+FROM node:12
 
-RUN apk --no-cache update \
-  && apk --no-cache add g++ make bash zlib-dev curl \
-  &&  rm -fr /var/cache/apk/*
+RUN apt-get update \
+  && apt-get install -y build-essential libgl1-mesa-glx \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --chown=node . /app
 

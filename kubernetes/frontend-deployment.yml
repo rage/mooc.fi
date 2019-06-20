@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: moocfi-frontend
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: moocfi-frontend
-          image: gcr.io/moocfi/moocfi-frontend:build-1560942458-8c8d07a30d31941f43aad21cef32f85ce1106f80
+          image: gcr.io/moocfi/moocfi-frontend:build-1561036031-34764690c6093d2953f7838828c1e38d2146f15c
           imagePullPolicy: Always
           ports:
             - name: frontend-http

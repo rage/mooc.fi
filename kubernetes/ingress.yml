@@ -18,7 +18,7 @@ spec:
     - host: points.mooc.fi
       http:
         paths:
-        - path: /api/
+        - path: /api
           backend:
             serviceName: moocfi-backend
             servicePort: 80

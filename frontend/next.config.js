@@ -1,16 +1,23 @@
 const withPlugins = require("next-compose-plugins")
 const withTypescript = require("@zeit/next-typescript")
 const withFonts = require("next-fonts")
-const optimizedImages = require("next-optimized-images")
+const withOptimizedImages = require("next-optimized-images")
+const sharp = require("responsive-loader/sharp")
 
 module.exports = withPlugins([
   withTypescript,
   withFonts,
   [
-    optimizedImages,
+    withOptimizedImages,
     {
-      handleImages: ["jpeg", "png", "svg"],
+      overwriteImageLoaderPaths: require.resolve.paths("")[0],
       optimizeImages: true,
+      responsive: {
+        adapter: sharp,
+        sizes: [300, 600, 1200, 2000],
+        placeholder: true,
+        placeholderSize: 50,
+      },
     },
   ],
 ])
