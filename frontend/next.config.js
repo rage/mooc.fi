@@ -1,6 +1,16 @@
 const withPlugins = require("next-compose-plugins")
 const withTypescript = require("@zeit/next-typescript")
 const withFonts = require("next-fonts")
-const withImages = require("next-images")
+const optimizedImages = require("next-optimized-images")
 
-module.exports = withPlugins([withTypescript, withFonts, withImages])
+module.exports = withPlugins([
+  withTypescript,
+  withFonts,
+  [
+    optimizedImages,
+    {
+      handleImages: ["jpeg", "png", "svg"],
+      optimizeImages: true,
+    },
+  ],
+])

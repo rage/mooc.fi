@@ -16,6 +16,7 @@ export interface AllCompletions_completionsPaginated_pageInfo {
 
 export interface AllCompletions_completionsPaginated_edges_node_user {
   __typename: "User";
+  id: any;
   first_name: string | null;
   last_name: string | null;
   student_number: string | null;
@@ -29,7 +30,8 @@ export interface AllCompletions_completionsPaginated_edges_node_course {
 
 export interface AllCompletions_completionsPaginated_edges_node_completions_registered_organization {
   __typename: "Organization";
-  name: string;
+  id: any;
+  slug: string;
 }
 
 export interface AllCompletions_completionsPaginated_edges_node_completions_registered {
@@ -52,7 +54,6 @@ export interface AllCompletions_completionsPaginated_edges_node {
 export interface AllCompletions_completionsPaginated_edges {
   __typename: "CompletionEdge";
   node: AllCompletions_completionsPaginated_edges_node;
-  cursor: string;
 }
 
 export interface AllCompletions_completionsPaginated {

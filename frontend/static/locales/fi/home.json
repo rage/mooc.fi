@@ -12,5 +12,6 @@
     "emailHeader": "Haluatko ilmoituksia uusista kursseista?",
     "emailField": "Sähköpostiosoite",
     "emailButton": "LIITY",
-    "emailThanks": "Kiitos listalle liittymisestä!"
+    "emailThanks": "Kiitos listalle liittymisestä!",
+    "langSwitch": "English version"
 }

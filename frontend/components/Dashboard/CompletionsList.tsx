@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import { ApolloClient, gql } from "apollo-boost"
 import { Query } from "react-apollo"
 import { AllCompletions as AllCompletionsData } from "./__generated__/AllCompletions"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Typography, CircularProgress } from "@material-ui/core"
 import { withRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
@@ -43,7 +42,7 @@ export const AllCompletionsQuery = gql`
           completions_registered {
             id
             organization {
-              name
+              slug
             }
           }
         }
@@ -89,7 +88,7 @@ export const PreviousPageCompletionsQuery = gql`
             id
             organization {
               id
-              name
+              slug
             }
           }
         }
