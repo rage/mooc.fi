@@ -10,10 +10,12 @@ import { mockModules } from "../mockModuleData"
 import {
   filterAndModifyByLanguage,
   getPromotedCourses,
+  filterAndModifyCoursesByLanguage,
 } from "../util/moduleFunctions"
 import { ApolloClient, gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "./__generated__/AllModules"
+import { Courses } from "../courseData"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -54,6 +56,7 @@ const Home = ({ t }) => {
 
   const modules = filterAndModifyByLanguage(mockModules.study_modules, language)
   const promotedCourses = getPromotedCourses(modules)
+  const courses = filterAndModifyCoursesByLanguage(Courses.allcourses, language)
 
   if (error) {
     ;<div>
@@ -71,7 +74,7 @@ const Home = ({ t }) => {
       <ExplanationHero />
       <NaviCardList />
       <CourseHighlights
-        courses={promotedCourses}
+        courses={courses.filter(c => c.promote === true)}
         title={t("highlightTitle")}
         headerImage={"../../static/images/courseHighlightsBanner.jpg"}
         subtitle={t("highlightSubtitle")}
@@ -81,13 +84,13 @@ const Home = ({ t }) => {
         <Modules key={module.id} module={module} />
       ))}
       <CourseHighlights
-        courses={promotedCourses}
+        courses={courses}
         title={t("allCoursesTitle")}
         headerImage={"../../static/images/AllCoursesBanner.jpeg"}
         subtitle={""}
       />
       <CourseHighlights
-        courses={promotedCourses}
+        courses={courses.filter(c => c.status === "Upcoming")}
         title={t("upcomingCoursesTitle")}
         headerImage={"../../static/images/AllCoursesBanner.jpg"}
         subtitle={""}
@@ -104,3 +107,8 @@ Home.getInitialProps = function() {
 }
 
 export default NextI18Next.withNamespaces(["home", "navi"])(Home)
+
+/*<ModuleNavi modules={modules} />
+      {modules.map(module => (
+        <Modules key={module.id} module={module} />
+      ))}*/
