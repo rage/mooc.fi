@@ -65,7 +65,7 @@ const Home = ({ t }) => {
   }
 
   if (loading) {
-    return <div> I am loading loading</div>
+    return <div>Loading</div>
   }
 
   console.log("Index", data)
@@ -81,15 +81,21 @@ const Home = ({ t }) => {
       />
 
       <CourseHighlights
-        courses={courses}
+        courses={courses.filter(c => c.status === "Active")}
         title={t("allCoursesTitle")}
-        headerImage={"../../static/images/AllCoursesBanner.jpeg"}
+        headerImage={"../../static/images/AllCoursesBanner.jpg"}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Upcoming")}
         title={t("upcomingCoursesTitle")}
-        headerImage={"../../static/images/AllCoursesBanner.jpg"}
+        headerImage={"../../static/images/AllCoursesBanner.jpeg"}
+        subtitle={""}
+      />
+      <CourseHighlights
+        courses={courses.filter(c => c.status === "Ended")}
+        title={t("endedCoursesTitle")}
+        headerImage={"../../static/images/oldCoursesBanner.jpg"}
         subtitle={""}
       />
       <EmailSubscribe />
