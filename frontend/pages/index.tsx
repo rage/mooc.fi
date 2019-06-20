@@ -79,10 +79,7 @@ const Home = ({ t }) => {
         headerImage={"../../static/images/courseHighlightsBanner.jpg"}
         subtitle={t("highlightSubtitle")}
       />
-      <ModuleNavi modules={modules} />
-      {modules.map(module => (
-        <Modules key={module.id} module={module} />
-      ))}
+
       <CourseHighlights
         courses={courses}
         title={t("allCoursesTitle")}
