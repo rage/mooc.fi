@@ -12,11 +12,13 @@ module.exports = withPlugins([
     {
       overwriteImageLoaderPaths: require.resolve.paths("")[0],
       optimizeImages: true,
+
       responsive: {
         adapter: sharp,
         sizes: [300, 600, 1200, 2000],
         placeholder: true,
         placeholderSize: 50,
+        optimizeImagesInDev: true,
       },
     },
   ],

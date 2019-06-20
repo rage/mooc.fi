@@ -1,6 +1,7 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Grid, ButtonBase, Typography } from "@material-ui/core"
+import styled from "styled-components"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,10 +11,10 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow:
         "0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2)",
       [theme.breakpoints.up("xs")]: {
-        height: 275,
+        height: 350,
       },
       [theme.breakpoints.up("md")]: {
-        height: 450,
+        height: 500,
       },
       maxWidth: 400,
     },
@@ -45,6 +46,8 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 0,
       top: 0,
       bottom: 0,
+      backgroundColor: "white",
+      opacity: 0.8,
     },
     imageButton: {
       position: "absolute",
@@ -70,9 +73,10 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontFamily: "Open Sans Condensed Light, sans-serif",
       marginBottom: "0.5rem",
-      marginLeft: "1rem",
+      marginLeft: "0.5rem",
+      padding: "0.5rem",
       [theme.breakpoints.up("xs")]: {
-        fontSize: 22,
+        fontSize: 20,
       },
       [theme.breakpoints.up("sm")]: {
         fontSize: 28,
@@ -105,7 +109,6 @@ function CourseCard({ course }) {
           className={classes.imageSrc}
           style={{ backgroundImage: `url(${course.photo})` }}
         />
-        <span className={classes.imageBackdrop} />
         <span className={classes.imageButton}>
           <Typography className={classes.title} align="left">
             {course.name}

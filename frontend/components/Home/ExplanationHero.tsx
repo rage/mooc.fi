@@ -39,16 +39,11 @@ const Background = styled.div`
 function ExplanationHero() {
   return (
     <ExplanationRoot>
-      <img
-        style={{ display: "none" }}
-        src={require("../../static/images/homeBackground.jpg")}
-        alt=""
-      />
       <Explanation />
       <BackDrop />
       <Background
         style={{
-          backgroundImage: "url(../../static/images/homeBackground.jpg)",
+          backgroundImage: `url(${require("../../static/images/homeBackground.jpg")})`,
         }}
       />
     </ExplanationRoot>
