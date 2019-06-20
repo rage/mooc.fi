@@ -2,8 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import { Typography } from "@material-ui/core"
 
-const backgroundImage = require("../../static/images/AiModule.jpg")
-
 const ModuleBannerContainer = styled.section`
   display: flex;
   position: relative;

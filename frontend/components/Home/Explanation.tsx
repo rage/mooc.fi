@@ -1,91 +1,71 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Button, Typography } from "@material-ui/core"
 import NextI18Next from "../../i18n"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      maxWidth: "70%",
-      zIndex: 50,
-      marginLeft: "1em",
-      marginBottom: "1rem",
-      overflow: "hidden",
-    },
-    title: {
-      [theme.breakpoints.down("xs")]: {
-        fontSize: 72,
-      },
-      [theme.breakpoints.up("sm")]: {
-        fontSize: 120,
-      },
-      fontFamily: "Open Sans Condensed Light, sans-serif",
-      paddingTop: "2rem",
-      paddingBottom: "2rem",
-      [theme.breakpoints.up("md")]: {
-        marginLeft: "1rem",
-      },
-      [theme.breakpoints.up("xl")]: {
-        fontSize: 210,
-      },
-    },
-    subtitle: {
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 18,
-      },
-      [theme.breakpoints.up("sm")]: {
-        fontSize: 22,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 22,
-        maxWidth: "47%",
-        marginLeft: "1rem",
-      },
-      [theme.breakpoints.up("xl")]: {
-        fontSize: 32,
-        maxWidth: "47%",
-        marginLeft: "1rem",
-        marginBottom: "3rem",
-      },
-      fontFamily: "Open Sans Condensed Light, sans-serif",
-      paddingRight: "1rem",
-      paddingBottom: "2rem",
-    },
-    button: {
-      margin: "auto",
-      backgroundColor: "#00A68D",
-      color: "white",
-      fontSize: 24,
-      fontFamily: "Open Sans Condensed Light, sans-serif",
-      marginLeft: "10%",
-    },
-  }),
-)
+const ExplanationRoot = styled.div`
+  max-width: 70%;
+  z-index: 50;
+  margin-left: 1em;
+  margin-bottom: 1rem;
+  overflow: hidden;
+`
+
+const Title = styled(Typography)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  font-size: 72px;
+  @media (min-width: 600px) {
+    font-size: 120px;
+  }
+  @media (min-width: 960px) {
+    margin-left: 1rem;
+  }
+  @media (min-width: 1920px) {
+    font-size: 210px;
+  }
+`
+const Subtitle = styled(Typography)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  padding-right: 1rem;
+  padding-bottom: 2rem;
+  font-size: 18px;
+  @media (min-width: 600px) {
+    font-size: 22px;
+  }
+  @media (min-width: 960px) {
+    max-width: 47%;
+    margin-left: 1rem;
+  }
+  @media (min-width: 1920px) {
+    font-size: 32px;
+    margin-bottom: 3rem;
+  }
+`
+
+const CourseButton = styled(Button)`
+  margin: auto;
+  background-color: #00a68d;
+  color: white;
+  font-size: 24px;
+  font-family: "Open Sans Condensed Light", sans-serif;
+  margin-left: 10%;
+`
 
 function Explanation() {
-  const classes = useStyles()
   return (
-    <div className={classes.root}>
-      <Typography variant="h1" component="h1" className={classes.title}>
-        MOOC.fi
-      </Typography>
+    <ExplanationRoot>
+      <Title component="h1">MOOC.fi</Title>
       <div>
-        <Typography
-          variant="subtitle1"
-          component="p"
-          className={classes.subtitle}
-        >
+        <Subtitle component="p">
           <NextI18Next.Trans i18nKey="intro" />
-        </Typography>
-        <Button
-          variant="contained"
-          className={classes.button}
-          href="#coursesAndModules"
-        >
+        </Subtitle>
+        <CourseButton variant="contained" href="#coursesAndModules">
           <NextI18Next.Trans i18nKey="courseButton" />
-        </Button>
+        </CourseButton>
       </div>
-    </div>
+    </ExplanationRoot>
   )
 }
 export default Explanation

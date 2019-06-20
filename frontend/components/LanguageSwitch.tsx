@@ -10,9 +10,10 @@ function LanguageSwitch() {
 
   const SwitchLanguage = (event: React.ChangeEvent<{ value: unknown }>) => {
     const language = event.target.value || ""
+    const path = Router.pathname
     document.cookie = `next-i18next=${event.target.value};path=/`
     Router.push({
-      pathname: `/${language}`,
+      pathname: `/${language}${path}`,
     })
   }
   return (
