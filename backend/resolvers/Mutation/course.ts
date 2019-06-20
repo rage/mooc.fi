@@ -1,7 +1,9 @@
-import { Prisma } from "../../generated/prisma-client"
+import { Prisma, Course } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
+
 const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
     type: "Course",
@@ -26,7 +28,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_module,
       } = args
       const prisma: Prisma = ctx.prisma
-      return prisma.createCourse({
+      const course: Course = await prisma.createCourse({
         name: name,
         slug: slug,
         promote: promote,
@@ -37,6 +39,16 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_module:
           study_module != null ? { connect: { id: study_module } } : null,
       })
+
+      const kafkaProducer = await new KafkaProducer()
+      const producerMessage: ProducerMessage = {
+        message: JSON.stringify(course),
+        partition: null,
+        topic: "new-course",
+      }
+      await kafkaProducer.queueProducerMessage(producerMessage)
+      await kafkaProducer.disconnect()
+      return course
     },
   })
 }
