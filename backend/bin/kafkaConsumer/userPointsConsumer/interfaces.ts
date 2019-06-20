@@ -6,4 +6,6 @@ export interface Message {
   user_id: Number
   course_id: string
   service_id: string
+  required_actions: string | null
+  message_format_version: Number
 }
