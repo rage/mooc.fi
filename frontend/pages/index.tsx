@@ -11,8 +11,9 @@ import {
   filterAndModifyByLanguage,
   getPromotedCourses,
 } from "../util/moduleFunctions"
-import { gql } from "apollo-boost"
+import { ApolloClient, gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
+import { AllModules as AllModulesData } from "./__generated__/AllModules"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -44,7 +45,7 @@ const AllModulesQuery = gql`
 `
 
 const Home = ({ t }) => {
-  const { loading, error, data } = useQuery(AllModulesQuery)
+  const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
   const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
 
   useEffect(() => {
@@ -54,43 +55,46 @@ const Home = ({ t }) => {
   const modules = filterAndModifyByLanguage(mockModules.study_modules, language)
   const promotedCourses = getPromotedCourses(modules)
 
-  console.log("index", modules)
-  console.log("index", language)
-  console.log("promoted Courses", promotedCourses)
+  if (error) {
+    ;<div>
+      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+    </div>
+  }
 
   if (loading) {
-    return <div>loading</div>
-  } else if (data) {
-    return (
-      <div>
-        <ExplanationHero />
-        <NaviCardList />
-        <CourseHighlights
-          courses={promotedCourses}
-          title={t("highlightTitle")}
-          headerImage={"../../static/images/courseHighlightsBanner.jpg"}
-          subtitle={t("highlightSubtitle")}
-        />
-        <ModuleNavi modules={modules} />
-        {modules.map(module => (
-          <Modules key={module.id} module={module} />
-        ))}
-        <CourseHighlights
-          courses={promotedCourses}
-          title={t("allCoursesTitle")}
-          headerImage={"../../static/images/AllCoursesBanner.jpeg"}
-          subtitle={""}
-        />
-        <CourseHighlights
-          courses={promotedCourses}
-          title={t("upcomingCoursesTitle")}
-          headerImage={"../../static/images/AllCoursesBanner.jpg"}
-          subtitle={""}
-        />
-        <EmailSubscribe />
-      </div>
-    )
+    return <div> I am loading loading</div>
   }
+
+  console.log("Index", data)
+  return (
+    <div>
+      <ExplanationHero />
+      <NaviCardList />
+      <CourseHighlights
+        courses={promotedCourses}
+        title={t("highlightTitle")}
+        headerImage={"../../static/images/courseHighlightsBanner.jpg"}
+        subtitle={t("highlightSubtitle")}
+      />
+      <ModuleNavi modules={modules} />
+      {modules.map(module => (
+        <Modules key={module.id} module={module} />
+      ))}
+      <CourseHighlights
+        courses={promotedCourses}
+        title={t("allCoursesTitle")}
+        headerImage={"../../static/images/AllCoursesBanner.jpeg"}
+        subtitle={""}
+      />
+      <CourseHighlights
+        courses={promotedCourses}
+        title={t("upcomingCoursesTitle")}
+        headerImage={"../../static/images/AllCoursesBanner.jpg"}
+        subtitle={""}
+      />
+      <EmailSubscribe />
+    </div>
+  )
 }
 
 Home.getInitialProps = function() {

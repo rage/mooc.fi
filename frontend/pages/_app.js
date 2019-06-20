@@ -25,7 +25,7 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps, apollo } = this.props
-    const { i18n, initialI18nStore, initialLanguage } = pageProps || {}
+
     return (
       <Container>
         <Head>
