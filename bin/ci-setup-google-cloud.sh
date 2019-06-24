@@ -1,6 +1,6 @@
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ "$BRANCH" == "master" ]] || [[ "$BRANCH" == "deployment-test" ]]; then
+if [[ "$BRANCH" == "master" ]]; then
   echo "Configuring Google Cloud"
   echo $GCLOUD_SERVICE_KEY >${HOME}/gcloud-service-key.json
   gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json

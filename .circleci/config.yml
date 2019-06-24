@@ -27,7 +27,6 @@ jobs:
             branches:
               only:
                 - master
-                - deployment-test
           steps:
             - run: "bin/push-docker-frontend-image.sh"
 
@@ -46,7 +45,6 @@ jobs:
             branches:
               only:
                 - master
-                - deployment-test
           steps:
             - run: "bin/push-docker-backend-image.sh"
 
@@ -79,4 +77,3 @@ workflows:
             branches:
               only:
                 - master
-                - deployment-test
