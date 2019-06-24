@@ -4,6 +4,7 @@ export interface Message {
   course_id: string
   service_id: string
   progress: [PointsByGroup]
+  message_format_version: Number
 }
 
 export interface PointsByGroup {

@@ -23,7 +23,6 @@ export const handleMessage = async (
     release()
     return
   }
-  console.log(message)
   if (!validateMessageFormat(message)) {
     logger.error("JSON VALIDATE FAILED")
     await commit(kafkaMessage, consumer)

@@ -206,4 +206,5 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   user: User! @relation(link: INLINE, name: "ExerciseCompletionsToUser")
   timestamp: DateTime
   completed: Boolean @default(value: false)
+  required_actions: String
 }

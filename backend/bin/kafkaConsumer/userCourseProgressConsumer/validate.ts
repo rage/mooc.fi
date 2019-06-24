@@ -1,6 +1,7 @@
 import { DateTime } from "luxon"
 import { PointsByGroup } from "./interfaces"
 
+const CURRENT_MESSAGE_FORMAT_VERSION = 1
 export const validateTimestamp = (timestamp: DateTime) => {
   return timestamp.invalid == null
 }
@@ -13,7 +14,8 @@ export const validateMessageFormat = (messageObject): Boolean => {
     m.user_id &&
     m.course_id &&
     m.progress &&
-    m.service_id
+    m.service_id &&
+    m.message_format_version == CURRENT_MESSAGE_FORMAT_VERSION
   )
 }
 
