@@ -1,4 +1,6 @@
 import DateTime from "luxon"
+
+const CURRENT_MESSAGE_FORMAT_VERSION = 1
 export const validateMessageFormat = (messageObject): Boolean => {
   const m = messageObject
   return (
@@ -6,6 +8,7 @@ export const validateMessageFormat = (messageObject): Boolean => {
     m.timestamp &&
     m.service_id &&
     m.course_id &&
+    m.message_format_version == CURRENT_MESSAGE_FORMAT_VERSION &&
     m.data &&
     validateData(m.data)
   )

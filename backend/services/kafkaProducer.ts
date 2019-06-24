@@ -15,6 +15,7 @@ const logger = winston.createLogger({
 let producer: Kafka.Producer
 let queue: ProducerMessage[]
 let disconnect: Boolean
+
 export default class KafkaProducer {
   constructor() {
     queue = []
