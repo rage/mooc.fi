@@ -15,14 +15,6 @@
             "linkText": "For teachers",
             "img": "../../static/images/Opettajien.jpg",
             "link": "https://mooc.fi/teachers"
-          },
-          {
-            "title": "Continue your education.",
-            "text":
-              "Our study modules offer you an opportunity to continue your education and further your career.",
-            "linkText": "FMSCI",
-            "img": "../../static/images/taydennysKoulutus.jpg",
-            "link": "https://www.google.fi"
           }
         ]
 }
