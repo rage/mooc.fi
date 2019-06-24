@@ -4,8 +4,7 @@ const I18Next = require("next-i18next/dist/commonjs")
 const NextI18Next = new I18Next({
   defaultLanguage: "fi",
   otherLanguages: ["en"],
-  localeSubpaths: "all",
-  debug: true,
+  localeSubpaths: "foreign",
   localeExtension: "JSON",
   returnObjects: true,
   browserLanguageDetection: false,

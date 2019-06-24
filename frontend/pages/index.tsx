@@ -76,26 +76,26 @@ const Home = ({ t }) => {
       <CourseHighlights
         courses={courses.filter(c => c.promote === true)}
         title={t("highlightTitle")}
-        headerImage={"../../static/images/courseHighlightsBanner.jpg"}
+        headerImage={`${require("../static/images/courseHighlightsBanner.jpg?webp")}`}
         subtitle={t("highlightSubtitle")}
       />
 
       <CourseHighlights
         courses={courses.filter(c => c.status === "Active")}
         title={t("allCoursesTitle")}
-        headerImage={"../../static/images/AllCoursesBanner.jpg"}
+        headerImage={`${require("../static/images/AllCoursesBanner.jpg?webp")}`}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Upcoming")}
         title={t("upcomingCoursesTitle")}
-        headerImage={"../../static/images/AllCoursesBanner.jpeg"}
+        headerImage={`${require("../static/images/AllCoursesBanner.jpeg?webp")}`}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Ended")}
         title={t("endedCoursesTitle")}
-        headerImage={"../../static/images/oldCoursesBanner.jpg"}
+        headerImage={`${require("../static/images/oldCoursesBanner.jpg?webp")}`}
         subtitle={""}
       />
       <EmailSubscribe />
