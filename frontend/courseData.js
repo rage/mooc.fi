@@ -1,10 +1,22 @@
+const ohpe_image = require("./static/images/courseimages/doggos.png?inline")
+const fs_image = require("./static/images/courseimages/fullstack.2.png?inline")
+const ai_image = require("./static/images/courseimages/elements-of-ai.png?inline")
+const dap_image = require("./static/images/courseimages/dap.jpg?inline")
+const wepa_image = require("./static/images/courseimages/wepa.jpg?inline")
+const tilpe_image = require("./static/images/courseimages/tilpe.png?inline")
+const docker_image = require("./static/images/courseimages/containers.png?inline")
+const tikape_image = require("./static/images/courseimages/tikape.jpg?inline")
+const tira_image = require("./static/images/courseimages/tira.png?inline")
+const tito_image = require("./static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg?inline")
+const cyber_image = require("./static/images/courseimages/cyber.png?inline")
+
 export const Courses = {
   allcourses: [
     {
       id: "jdoifsbf",
       name: "Ohjelmoinnin MOOC 2019",
       slug: "ohpe",
-      photo: "../../static/images/courseimages/doggos.png",
+      photo: ohpe_image,
       course_translations: [
         {
           id: "dzoiur",
@@ -23,7 +35,7 @@ export const Courses = {
       id: "dgoijdgoijf8904",
       name: "Full stack open 2019",
       slug: "fullstack",
-      photo: "../../static/images/courseimages/fullstack.2.png",
+      photo: fs_image,
       course_translations: [
         {
           id: "idojgf4903",
@@ -50,7 +62,7 @@ export const Courses = {
       id: "tfujhgfdgrs",
       name: "Elements of AI",
       slug: "elements-of-ai",
-      photo: "../../static/images/courseimages/elements-of-ai.png",
+      photo: ai_image,
       course_translations: [
         {
           id: "ifghdfdh",
@@ -77,7 +89,7 @@ export const Courses = {
       id: "hftsgtraet",
       name: "Data Analysis with Python",
       slug: "data-analysis-python",
-      photo: "../../static/images/courseimages/dap.jpg",
+      photo: dap_image,
       course_translations: [
         {
           id: "gdstreedst",
@@ -104,7 +116,7 @@ export const Courses = {
       id: "hfhdrr",
       name: "Web-palvelinohjelmointi Java",
       slug: "wepa",
-      photo: "../../static/images/courseimages/wepa.jpg",
+      photo: wepa_image,
       course_translations: [
         {
           id: "jyr6876",
@@ -123,7 +135,7 @@ export const Courses = {
       id: "gsrhrthrs",
       name: "Johdatus tietoliikenteeseen",
       slug: "johto",
-      photo: "../../static/images/courseimages/tilpe.png",
+      photo: tilpe_image,
       course_translations: [
         {
           id: "fdnjeso",
@@ -142,7 +154,7 @@ export const Courses = {
       id: "es646rki",
       name: "DevOps with Docker",
       slug: "docker",
-      photo: "../../static/images/courseimages/containers.png",
+      photo: docker_image,
       course_translations: [
         {
           id: "545thjftfhes",
@@ -169,7 +181,7 @@ export const Courses = {
       id: "egdfhftuer65745",
       name: "Tietokantojen perusteet",
       slug: "tikape",
-      photo: "../../static/images/courseimages/tikape.jpg",
+      photo: tikape_image,
       course_translations: [
         {
           id: "gdjiaoter",
@@ -188,7 +200,7 @@ export const Courses = {
       id: "dhyrrtutrutrik",
       name: "Tietorakenteet ja algoritmit",
       slug: "tira",
-      photo: "../../static/images/courseimages/tira.png",
+      photo: tira_image,
       course_translations: [
         {
           id: "gdfgtewt",
@@ -207,8 +219,7 @@ export const Courses = {
       id: "hdtry565656465",
       name: "Tietokoneen toiminnan perusteet",
       slug: "tito",
-      photo:
-        "../../static/images/courseimages/tietokoneen-toiminnan-perusteet.jpg",
+      photo: tito_image,
       course_translations: [
         {
           id: "fsdedhbdf",
@@ -227,7 +238,7 @@ export const Courses = {
       id: "hfdhgdrdeetteet4et4",
       name: "Cyber Security Base",
       slug: "cyber",
-      photo: "../../static/images/courseimages/cyber.png",
+      photo: cyber_image,
       course_translations: [
         {
           id: "fsjieojewoirtjoi",
@@ -254,7 +265,7 @@ export const Courses = {
       id: "sgjdeirotueori",
       name: "Ohjelmoinnin MOOC 2018",
       slug: "ohpe18",
-      photo: "../../static/images/courseimages/doggos.png",
+      photo: ohpe_image,
       course_translations: [
         {
           id: "jfsjoidfoijdfoijdfsoijdfsoij",
@@ -273,7 +284,7 @@ export const Courses = {
       id: "4545thythyggh",
       name: "Cyber Security Base(2018)",
       slug: "cyber2018",
-      photo: "../../static/images/courseimages/cyber.png",
+      photo: cyber_image,
       course_translations: [
         {
           id: "4243trhftghf",
@@ -300,7 +311,7 @@ export const Courses = {
       id: "<rwjogh<ugrixtjö",
       name: "2013 Programming with Java I",
       slug: "ohpe13",
-      photo: "../../static/images/courseimages/doggos.png",
+      photo: ohpe_image,
       course_translations: [
         {
           id: "75tyjfxkhmx,kgxmj",
@@ -319,7 +330,7 @@ export const Courses = {
       id: "<rwjogh<ugrixtjö",
       name: "2013 Programming with Java II",
       slug: "ohpe13-2",
-      photo: "../../static/images/courseimages/doggos.png",
+      photo: ohpe_image,
       course_translations: [
         {
           id: "75tyjfxkhmx,kgxmj",

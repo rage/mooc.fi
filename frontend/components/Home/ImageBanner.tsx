@@ -70,7 +70,6 @@ function ImageBanner({ image, title, subtitle }) {
   const classes = useStyles()
   return (
     <section className={classes.root}>
-      <img style={{ display: "none" }} src={image} alt="" />
       <Typography component="h2" className={classes.title}>
         {title}
       </Typography>

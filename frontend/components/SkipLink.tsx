@@ -58,4 +58,4 @@ function SkipLink() {
   )
 }
 
-export default NextI18Next.withNamespaces("common")(SkipLink)
+export default NextI18Next.withTranslation("common")(SkipLink)

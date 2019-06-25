@@ -11,9 +11,11 @@ const ExplanationRoot = styled.section`
     min-height: 750px;
   }
 `
+
 const BackDrop = styled.div`
   position: absolute;
   left: 0;
+  right: 0;
   width: 70%;
   @media (min-width: 960px) {
     width: 45%;
