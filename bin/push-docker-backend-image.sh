@@ -1,6 +1,12 @@
 #!/bin/bash
 set -eo pipefail
 
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "$BRANCH" != "master" ]]; then
+  exit 0
+fi
+
 CURRENT_DIR="$(dirname "$0")"
 DATE=$(date +%s)
 
