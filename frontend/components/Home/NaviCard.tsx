@@ -1,6 +1,7 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, ButtonBase, Typography, Link } from "@material-ui/core"
+import { Grid, ButtonBase, Typography } from "@material-ui/core"
+import NextI18Next from "../../i18n"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,9 +88,9 @@ function NaviCard({ item }) {
             {item.text}
           </Typography>
           <Typography align="left">
-            <Link className={classes.link} underline="always" href={item.link}>
+            <NextI18Next.Link className={classes.link} href={item.link}>
               {item.linkText}
-            </Link>
+            </NextI18Next.Link>
           </Typography>
         </span>
       </ButtonBase>
