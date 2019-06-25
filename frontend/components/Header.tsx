@@ -1,12 +1,5 @@
 import * as React from "react"
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Avatar,
-  Link,
-} from "@material-ui/core"
+import { AppBar, Toolbar, Typography, Button, Avatar } from "@material-ui/core"
 import { signOut } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
 import { useApolloClient } from "react-apollo-hooks"
@@ -57,9 +50,9 @@ function Header() {
   return (
     <AppBar position="static" color="inherit">
       <Toolbar>
-        <Link href={"/"}>
+        <NextI18Next.Link href="/">
           <LogoImage classes={{ root: classes.avatar }} />
-        </Link>
+        </NextI18Next.Link>
         <TitleText className={classes.title} />
 
         <LanguageSwitch />
