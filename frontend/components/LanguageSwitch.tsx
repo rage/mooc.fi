@@ -16,23 +16,17 @@ const SwitchButton = styled(Button)`
 `
 
 function LanguageSwitch() {
-  const currentLanguage = NextI18Next.i18n.language
-  const [lang, setLang] = React.useState(currentLanguage)
-
-  const SwitchLanguage = () => {
-    let language
-    {
-      lang === "en" ? (language = "fi") : (language = "en")
-    }
-    const path = Router.pathname
-    document.cookie = `next-i18next=${language};path=/`
-    Router.push({
-      pathname: `/${language}${path}`,
-    })
-  }
   return (
-    <SwitchButton onClick={SwitchLanguage}>
-      {lang === "en" ? "Suomenkielinen versio" : "English version"}
+    <SwitchButton
+      onClick={() =>
+        NextI18Next.i18n.changeLanguage(
+          NextI18Next.i18n.language === "en" ? "fi" : "en",
+        )
+      }
+    >
+      {NextI18Next.i18n.language === "en"
+        ? "Suomenkielinen versio"
+        : "English version"}
       <Language style={{ marginLeft: "0.5rem" }} />
     </SwitchButton>
   )

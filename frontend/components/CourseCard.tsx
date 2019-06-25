@@ -9,7 +9,7 @@ import {
   Button,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
-import Link from "next/link"
+import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +40,7 @@ function CourseCard({ course }) {
           </Typography>
         </CardContent>
         <CardActionArea>
-          <Link
+          <NextI18Next.Link
             as={`/course/${course.slug}`}
             href={`/course?course=${course.slug}`}
           >
@@ -48,7 +48,7 @@ function CourseCard({ course }) {
               <DashboardIcon />
               Course Dashboard
             </Button>
-          </Link>
+          </NextI18Next.Link>
         </CardActionArea>
       </Card>
     </Grid>
