@@ -102,4 +102,4 @@ function Footer() {
   )
 }
 
-export default NextI18Next.withNamespaces("common")(Footer)
+export default NextI18Next.withTranslation("common")(Footer)

@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CourseHighlights({ courses, title, headerImage, subtitle }) {
   const classes = useStyles()
-  console.log(title)
-  console.log(subtitle)
+
   return (
     <section className={classes.root} id="coursesAndModules">
       <ImageBanner title={title} image={headerImage} subtitle={subtitle} />

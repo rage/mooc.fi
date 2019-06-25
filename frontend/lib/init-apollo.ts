@@ -32,6 +32,7 @@ function create(initialState: any, ctx: NextContext | undefined) {
       },
     }
   })
+  const isBrowser = typeof window !== "undefined"
 
   return new ApolloClient({
     link: ApolloLink.from([
@@ -47,6 +48,7 @@ function create(initialState: any, ctx: NextContext | undefined) {
       authLink.concat(httpLink),
     ]),
     cache: new InMemoryCache().restore(initialState || {}),
+    ssrMode: !isBrowser,
   })
 }
 

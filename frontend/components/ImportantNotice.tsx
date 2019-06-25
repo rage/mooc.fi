@@ -48,6 +48,6 @@ function ImportantNotice(props: RegProps) {
   )
 }
 
-export default NextI18Next.withNamespaces("register-completion")(
+export default NextI18Next.withTranslation("register-completion")(
   ImportantNotice,
 )

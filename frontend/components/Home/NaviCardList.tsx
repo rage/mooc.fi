@@ -24,7 +24,6 @@ const GridContainer = styled.section`
 
 function NaviCardList({ t }) {
   const items = t("naviItems")
-
   return (
     <GridContainer>
       <Grid container spacing={3}>
@@ -36,4 +35,4 @@ function NaviCardList({ t }) {
   )
 }
 
-export default NextI18Next.withNamespaces("navi")(NaviCardList)
+export default NextI18Next.withTranslation("navi")(NaviCardList)
