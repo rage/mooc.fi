@@ -9,6 +9,7 @@ const NextI18Next = new I18Next({
   returnObjects: true,
   debug: true,
   browserLanguageDetection: false,
+  preload: ["fi", "en"],
 })
 
 module.exports = NextI18Next
