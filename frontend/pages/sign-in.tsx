@@ -55,4 +55,4 @@ SignInPage.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default NextI18Next.withNamespaces("common")(SignInPage)
+export default NextI18Next.withTranslation("common")(SignInPage)

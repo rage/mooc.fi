@@ -55,7 +55,7 @@ const StyledButton = styled(Button)`
   }
 `
 
-function EmailSubscribe() {
+function EmailSubscribe({ t }) {
   const [sent, setSent] = React.useState(false)
   const formRef = React.createRef()
 
@@ -67,13 +67,11 @@ function EmailSubscribe() {
     <MailingList>
       <StyledCard>
         <CardContent>
-          <StyledHeader variant="h5">
-            <NexI18Next.Trans i18nKey="emailHeader" />
-          </StyledHeader>
+          <StyledHeader variant="h5">{t("emailHeader")}</StyledHeader>
           <div>
             {sent ? (
               <Typography variant="subtitle1">
-                <NexI18Next.Trans i18nKey="emailThanks" />
+                {t("emailThanks")}
                 <SentimentSatisfiedIcon />
               </Typography>
             ) : (
@@ -87,10 +85,7 @@ function EmailSubscribe() {
               >
                 <FieldWrapper>
                   <StyledFormControl>
-                    <TextField
-                      label={<NexI18Next.Trans i18nKey="emailField" />}
-                      name="EMAIL"
-                    />
+                    <TextField label={t("emailField")} name="EMAIL" />
                   </StyledFormControl>
                 </FieldWrapper>
                 <StyledButton
@@ -101,7 +96,7 @@ function EmailSubscribe() {
                     handleSubmit()
                   }}
                 >
-                  <NexI18Next.Trans i18nKey="emailButton" />
+                  {t("emailButton")}
                   <Send />
                 </StyledButton>
               </form>
@@ -113,4 +108,4 @@ function EmailSubscribe() {
   )
 }
 
-export default EmailSubscribe
+export default NexI18Next.withTranslation("home")(EmailSubscribe)

@@ -1,14 +1,19 @@
 import React from "react"
 import Language from "@material-ui/icons/Language"
-import {
-  Select,
-  FormControl,
-  MenuItem,
-  InputLabel,
-  Button,
-} from "@material-ui/core"
+import { Button } from "@material-ui/core"
 import Router from "next/router"
 import NextI18Next from "../i18n"
+import styled from "styled-components"
+
+const SwitchButton = styled(Button)`
+  font-size: 12px;
+  line-height: 1.3;
+  padding-right: 1px;
+
+  @media (min-width: 400px) {
+    font-size: 14px;
+  }
+`
 
 function LanguageSwitch() {
   const currentLanguage = NextI18Next.i18n.language
@@ -26,20 +31,11 @@ function LanguageSwitch() {
     })
   }
   return (
-    <Button onClick={SwitchLanguage}>
-      <Language style={{ marginRight: "1rem" }} />
+    <SwitchButton onClick={SwitchLanguage}>
       {lang === "en" ? "Suomenkielinen versio" : "English version"}
-    </Button>
+      <Language style={{ marginLeft: "0.5rem" }} />
+    </SwitchButton>
   )
 }
-
-/*form autoComplete="off">
-        <FormControl style={{ minWidth: 120 }}>
-          <Select value={lang} onChange={SwitchLanguage} name="language">
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="fi">Suomi</MenuItem>
-          </Select>
-        </FormControl>
-      </form>*/
 
 export default LanguageSwitch

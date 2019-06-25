@@ -69,4 +69,4 @@ function Header() {
   )
 }
 
-export default NextI18Next.withNamespaces("common")(Header)
+export default NextI18Next.withTranslation("common")(Header)

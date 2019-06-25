@@ -5,7 +5,7 @@
             "text":
               "Online learning at its best. Don't worry about course fees or the commute. Study where it's convenient for you!",
             "linkText": "Courses and Modules",
-            "img": "../../static/images/AllCourses.jpg",
+            "img": "AllCourses.jpg",
             "link": "#coursesAndModules"
           },
           {
@@ -13,7 +13,7 @@
             "text":
               "Teacher! You can have your own courses, with point lists and schedules tailored for you.",
             "linkText": "For teachers",
-            "img": "../../static/images/Opettajien.jpg",
+            "img": "Opettajien.jpg",
             "link": "https://mooc.fi/teachers"
           }
         ]

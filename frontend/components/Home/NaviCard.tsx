@@ -69,12 +69,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function NaviCard({ item }) {
   const classes = useStyles()
+  const image = require(`../../static/images/${item.img}?resize&size=250`)
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <ButtonBase focusRipple className={classes.image}>
         <span
           className={classes.imageSrc}
-          style={{ backgroundImage: `url(${item.img})` }}
+          style={{ backgroundImage: `url(${image})` }}
         />
         <span className={classes.imageBackdrop} />
         <span className={classes.imageButton}>

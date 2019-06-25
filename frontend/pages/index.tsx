@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import NextI18Next from "../i18n"
+import NextI18Next, { withTranslation } from "../i18n"
 import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
@@ -49,7 +49,6 @@ const AllModulesQuery = gql`
 const Home = ({ t }) => {
   const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
   const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
-
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)
   }, [NextI18Next.i18n.language])
@@ -68,7 +67,6 @@ const Home = ({ t }) => {
     return <div>Loading</div>
   }
 
-  console.log("Index", data)
   return (
     <div>
       <ExplanationHero />
@@ -76,26 +74,26 @@ const Home = ({ t }) => {
       <CourseHighlights
         courses={courses.filter(c => c.promote === true)}
         title={t("highlightTitle")}
-        headerImage={"../../static/images/courseHighlightsBanner.jpg"}
+        headerImage={`${require("../static/images/courseHighlightsBanner.jpg?webp")}`}
         subtitle={t("highlightSubtitle")}
       />
 
       <CourseHighlights
         courses={courses.filter(c => c.status === "Active")}
         title={t("allCoursesTitle")}
-        headerImage={"../../static/images/AllCoursesBanner.jpg"}
+        headerImage={`${require("../static/images/AllCoursesBanner.jpg?webp")}`}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Upcoming")}
         title={t("upcomingCoursesTitle")}
-        headerImage={"../../static/images/AllCoursesBanner.jpeg"}
+        headerImage={`${require("../static/images/AllCoursesBanner.jpg?webp")}`}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Ended")}
         title={t("endedCoursesTitle")}
-        headerImage={"../../static/images/oldCoursesBanner.jpg"}
+        headerImage={`${require("../static/images/oldCoursesBanner.jpg?webp")}`}
         subtitle={""}
       />
       <EmailSubscribe />
@@ -109,7 +107,7 @@ Home.getInitialProps = function() {
   }
 }
 
-export default NextI18Next.withNamespaces(["home", "navi"])(Home)
+export default NextI18Next.withTranslation("home")(Home)
 
 /*<ModuleNavi modules={modules} />
       {modules.map(module => (
