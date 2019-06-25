@@ -22,7 +22,8 @@ const GridContainer = styled.section`
   }
 `
 
-function NaviCardList({ t }) {
+function NaviCardList() {
+  const { t, i18n } = NextI18Next.useTranslation("navi")
   const items = t("naviItems")
   console.log(items)
   return (
@@ -36,6 +37,4 @@ function NaviCardList({ t }) {
   )
 }
 
-export default NextI18Next.withTranslation("navi")(NaviCardList)
-
-/**/
+export default NaviCardList
