@@ -47,13 +47,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function SkipLink() {
+function SkipLink({ t }) {
   const classes = useStyles()
   return (
     <a href="#main" className={classes.link}>
-      <Typography variant="body1">
-        <NextI18Next.Trans i18nKey="skiplink" />
-      </Typography>
+      <Typography variant="body1">{t("skiplink")}</Typography>
     </a>
   )
 }
