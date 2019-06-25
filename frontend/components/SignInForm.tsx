@@ -99,4 +99,4 @@ function SignIn(t: Function) {
   )
 }
 
-export default NextI18Next.withNamespaces("common")(SignIn)
+export default NextI18Next.withTranslation("common")(SignIn)

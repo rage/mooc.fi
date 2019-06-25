@@ -3,6 +3,7 @@ const next = require("next")
 const nextI18NextMiddleware = require("next-i18next/middleware")
 const compression = require("compression")
 const nextI18next = require("./i18n")
+
 const Redirects = require("./Redirects")
 const port = process.env.PORT || 3000
 const app = next({ dev: process.env.NODE_ENV !== "production" })

@@ -53,19 +53,17 @@ const CourseButton = styled(Button)`
   margin-left: 10%;
 `
 
-function Explanation() {
+function Explanation({ t }) {
   return (
     <ExplanationRoot>
       <Title component="h1">MOOC.fi</Title>
       <div>
-        <Subtitle component="p">
-          <NextI18Next.Trans i18nKey="intro" />
-        </Subtitle>
+        <Subtitle component="p">{t("intro")}</Subtitle>
         <CourseButton variant="contained" href="#coursesAndModules">
-          <NextI18Next.Trans i18nKey="courseButton" />
+          {t("courseButton")}
         </CourseButton>
       </div>
     </ExplanationRoot>
   )
 }
-export default Explanation
+export default NextI18Next.withTranslation("home")(Explanation)

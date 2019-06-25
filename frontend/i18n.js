@@ -5,8 +5,8 @@ const NextI18Next = new I18Next({
   defaultLanguage: "fi",
   otherLanguages: ["en"],
   localeSubpaths: "foreign",
-  localeExtension: "JSON",
   returnObjects: true,
+  debug: true,
   browserLanguageDetection: false,
 })
 
