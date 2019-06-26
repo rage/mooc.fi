@@ -1,6 +1,7 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
+import styled from "styled-components"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,9 +66,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
+const BackgroundImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+`
 
 function ImageBanner({ image, title, subtitle }) {
   const classes = useStyles()
+  console.log(image.src)
   return (
     <section className={classes.root}>
       <Typography component="h2" className={classes.title}>
@@ -76,10 +87,7 @@ function ImageBanner({ image, title, subtitle }) {
       <Typography component="p" className={classes.subtitle}>
         {subtitle}
       </Typography>
-      <div
-        className={classes.backGround}
-        style={{ backgroundImage: `url(${image})` }}
-      />
+      <BackgroundImage srcSet={image.srcSet} src={image.src} />
     </section>
   )
 }

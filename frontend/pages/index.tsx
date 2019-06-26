@@ -16,6 +16,9 @@ import { ApolloClient, gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "./__generated__/AllModules"
 import { Courses } from "../courseData"
+const highlightsBanner = require("../static/images/courseHighlightsBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -74,26 +77,26 @@ const Home = ({ t }) => {
       <CourseHighlights
         courses={courses.filter(c => c.promote === true)}
         title={t("highlightTitle")}
-        headerImage={`${require("../static/images/courseHighlightsBanner.jpg?webp")}`}
+        headerImage={highlightsBanner}
         subtitle={t("highlightSubtitle")}
       />
 
       <CourseHighlights
         courses={courses.filter(c => c.status === "Active")}
         title={t("allCoursesTitle")}
-        headerImage={`${require("../static/images/AllCoursesBanner.jpg?webp")}`}
+        headerImage={allCoursesBanner}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Upcoming")}
         title={t("upcomingCoursesTitle")}
-        headerImage={`${require("../static/images/AllCoursesBanner.jpg?webp")}`}
+        headerImage={allCoursesBanner}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Ended")}
         title={t("endedCoursesTitle")}
-        headerImage={`${require("../static/images/oldCoursesBanner.jpg?webp")}`}
+        headerImage={oldCoursesBanner}
         subtitle={""}
       />
       <EmailSubscribe />

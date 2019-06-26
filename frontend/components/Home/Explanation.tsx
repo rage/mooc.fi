@@ -5,7 +5,7 @@ import styled from "styled-components"
 
 const ExplanationRoot = styled.div`
   max-width: 70%;
-  z-index: 50;
+  position: relative;
   margin-left: 1em;
   margin-bottom: 1rem;
   overflow: hidden;

@@ -25,7 +25,7 @@ const GridContainer = styled.section`
 function NaviCardList() {
   const { t, i18n } = NextI18Next.useTranslation("navi")
   const items = t("naviItems")
-  console.log(items)
+
   return (
     <GridContainer>
       <Grid container spacing={3}>
