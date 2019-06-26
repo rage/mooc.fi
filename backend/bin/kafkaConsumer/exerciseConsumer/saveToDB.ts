@@ -29,6 +29,19 @@ export const saveToDatabase = async (
     )
   })
 
+  await prisma.updateManyExercises({
+    where: {
+      AND: {
+        course: { id: message.course_id },
+        service: { id: message.service_id },
+        custom_id_not_in: message.data.map(p => p.id),
+      },
+    },
+    data: {
+      deleted: true,
+    },
+  })
+
   logger.info("Saved to DB succesfully")
   return true
 }

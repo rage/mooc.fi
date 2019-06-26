@@ -15,7 +15,7 @@
     "start-kafka-consumers": "concurrently npm:kafka-consumer-*",
     "kafka-consumer-user-course-progress": "ts-node ./bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.ts",
     "kafka-consumer-user-points": "ts-node ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",
-    "kafka-consumer-exercises" : "ts-node ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
+    "kafka-consumer-exercises": "ts-node ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
     "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma"
   },
   "keywords": [],
@@ -29,6 +29,7 @@
     "dotenv-safe": "^6.1.0",
     "graphql": "^14.3.0",
     "graphql-yoga": "^1.17.4",
+    "lodash": "^4.17.11",
     "luxon": "^1.16.0",
     "next-i18next": "^0.37.0",
     "nexus": "^0.11.7",
