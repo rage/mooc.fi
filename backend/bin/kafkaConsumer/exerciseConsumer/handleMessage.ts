@@ -1,7 +1,8 @@
-import { validateMessageFormat } from "./validate"
 import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
 import { Prisma } from "../../../generated/prisma-client"
+import { MessageYupSchema } from "./validate"
+
 let commitCounter = 0
 const commitInterval = 100
 export const handleMessage = async (
@@ -23,8 +24,11 @@ export const handleMessage = async (
     release()
     return
   }
-  if (!validateMessageFormat(message)) {
-    logger.error("JSON VALIDATE FAILED")
+
+  try {
+    await MessageYupSchema.validate(message)
+  } catch (error) {
+    logger.error("JSON VALIDATE FAILED: " + error)
     await commit(kafkaMessage, consumer)
     release()
     return

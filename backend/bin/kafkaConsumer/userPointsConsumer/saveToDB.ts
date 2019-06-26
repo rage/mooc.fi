@@ -6,7 +6,6 @@ import {
 } from "../../../generated/prisma-client"
 import { DateTime } from "luxon"
 import winston = require("winston")
-import { validateTimestamp } from "./validate"
 
 export const saveToDatabase = async (
   message: Message,
@@ -14,10 +13,7 @@ export const saveToDatabase = async (
   logger: winston.Logger,
 ): Promise<Boolean> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
-  if (!validateTimestamp(timestamp)) {
-    logger.error("invalid timestamp")
-    return
-  }
+
   const isExercise = await prisma.$exists.exercise({
     custom_id: message.exercise_id,
   })
