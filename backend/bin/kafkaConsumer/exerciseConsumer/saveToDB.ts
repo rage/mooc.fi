@@ -2,7 +2,6 @@ import { Message, ExerciseData } from "./interfaces"
 import { Prisma, Exercise, prisma } from "../../../generated/prisma-client"
 import { DateTime } from "luxon"
 import winston = require("winston")
-import { validateTimestamp } from "./validate"
 
 export const saveToDatabase = async (
   message: Message,
@@ -10,10 +9,7 @@ export const saveToDatabase = async (
   logger: winston.Logger,
 ): Promise<Boolean> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
-  if (!validateTimestamp(timestamp)) {
-    logger.error("invalid timestamp")
-    return
-  }
+
   const courseExists = await prisma.$exists.course({ id: message.course_id })
   if (!courseExists) {
     logger.error("given course does not exist")
