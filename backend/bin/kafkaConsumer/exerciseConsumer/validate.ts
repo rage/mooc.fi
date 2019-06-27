@@ -1,31 +1,32 @@
-import DateTime from "luxon"
-export const validateMessageFormat = (messageObject): Boolean => {
-  const m = messageObject
-  return (
-    m != undefined &&
-    m.timestamp &&
-    m.service_id &&
-    m.course_id &&
-    m.data &&
-    validateData(m.data)
-  )
-}
+import * as yup from "yup"
 
-export const validateTimestamp = (timestamp: DateTime) => {
-  return timestamp.invalid == null
-}
+const CURRENT_MESSAGE_FORMAT_VERSION = 1
 
-const validateData = (dataArray: any[]) => {
-  const notValid = dataArray.some(
-    data =>
-      !(
-        data != undefined &&
-        data.id &&
-        data.name &&
-        data.part &&
-        data.section &&
-        data.max_points
-      ),
-  )
-  return !notValid
-}
+const ExerciseDataYupSchema = yup.object().shape({
+  name: yup.string().required(),
+  id: yup.string().required(),
+  part: yup.number().required(),
+  section: yup.number().required(),
+  max_points: yup.number().required(),
+})
+
+export const MessageYupSchema = yup.object().shape({
+  timestamp: yup.date().required(),
+  course_id: yup
+    .string()
+    .length(36)
+    .required(),
+  service_id: yup
+    .string()
+    .length(36)
+    .required(),
+  data: yup
+    .array()
+    .of(ExerciseDataYupSchema)
+    .required(),
+  message_format_version: yup
+    .number()
+    .min(CURRENT_MESSAGE_FORMAT_VERSION)
+    .max(CURRENT_MESSAGE_FORMAT_VERSION)
+    .required(),
+})
