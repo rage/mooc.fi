@@ -1,5 +1,6 @@
 import React from "react"
-import { Grid, Typography, ButtonBase } from "@material-ui/core"
+import Grid from "@material-ui/core/Grid"
+import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 
 const CourseTitle = styled(Typography)`

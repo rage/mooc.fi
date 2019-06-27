@@ -1,5 +1,7 @@
 import React from "react"
-import { Grid, Typography, Link } from "@material-ui/core"
+import Grid from "@material-ui/core/Grid"
+import Typography from "@material-ui/core/Typography"
+import Link from "@material-ui/core/Link"
 import styled from "styled-components"
 import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
@@ -50,6 +52,7 @@ const ModuleHomeLink = styled(Link)`
 `
 
 function Modules({ module }) {
+  const { t, i18n } = NextI18Next.useTranslation("home")
   const startCourses = module.courses.filter(c => c.start_point === true)
   const otherCourses = module.courses.filter(c => c.start_point === false)
   return (
@@ -58,9 +61,7 @@ function Modules({ module }) {
       <Container>
         <IntroText>{module.description}</IntroText>
 
-        <SubHeader align="center">
-          <NextI18Next.Trans i18nKey="modulesSubtitleStart" />
-        </SubHeader>
+        <SubHeader align="center">{t("modulesSubtitleStart")}</SubHeader>
 
         <Grid container spacing={3}>
           {startCourses.map(course => (
@@ -68,9 +69,7 @@ function Modules({ module }) {
           ))}
         </Grid>
 
-        <SubHeader align="center">
-          <NextI18Next.Trans i18nKey="modulesSubtitleContinue" />
-        </SubHeader>
+        <SubHeader align="center">{t("modulesSubtitleContinue")}</SubHeader>
 
         <Grid container spacing={3}>
           {otherCourses
@@ -87,7 +86,7 @@ function Modules({ module }) {
           }}
         >
           <ModuleHomeLink underline="always">
-            <NextI18Next.Trans i18nKey="modulesLinkToHome" />
+            {t("modulesLinkToHome")}
           </ModuleHomeLink>
         </div>
       </Container>

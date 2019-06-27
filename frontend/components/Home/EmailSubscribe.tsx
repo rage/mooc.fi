@@ -1,16 +1,14 @@
 import React from "react"
 import styled from "styled-components"
-import {
-  Card,
-  CardContent,
-  Typography,
-  FormControl,
-  TextField,
-  Button,
-} from "@material-ui/core"
 import NexI18Next from "../../i18n"
 import Send from "@material-ui/icons/Send"
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied"
+import Card from "@material-ui/core/Card"
+import CardContent from "@material-ui/core/CardContent"
+import Typography from "@material-ui/core/Typography"
+import FormControl from "@material-ui/core/FormControl"
+import TextField from "@material-ui/core/TextField"
+import Button from "@material-ui/core/Button"
 
 const MailingList = styled.div`
   height: 20rem;
