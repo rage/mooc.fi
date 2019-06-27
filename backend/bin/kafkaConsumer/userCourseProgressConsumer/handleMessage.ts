@@ -1,7 +1,7 @@
-import { validateMessageFormat, validatePointsByGroupArray } from "./validate"
 import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
 import { Prisma } from "../../../generated/prisma-client"
+import { MessageYupSchema } from "./validate"
 let commitCounter = 0
 const commitInterval = 100
 export const handleMessage = async (
@@ -24,21 +24,10 @@ export const handleMessage = async (
     return
   }
 
-  if (!validateMessageFormat(message)) {
-    logger.error("JSON VALIDATE FAILED")
-    await commit(kafkaMessage, consumer)
-    release()
-    return
-  }
   try {
-    if (!validatePointsByGroupArray(message.progress)) {
-      logger.error("Progress is not valid")
-      await commit(kafkaMessage, consumer)
-      release()
-      return
-    }
+    await MessageYupSchema.validate(message)
   } catch (error) {
-    logger.error("validating progress format failed with error:", error)
+    logger.error("JSON VALIDATE FAILED: " + error)
     await commit(kafkaMessage, consumer)
     release()
     return
