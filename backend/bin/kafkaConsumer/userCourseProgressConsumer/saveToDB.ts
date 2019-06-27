@@ -7,7 +7,6 @@ import {
   UserCourseServiceProgress,
 } from "../../../generated/prisma-client"
 import TmcClient from "../../../services/tmc"
-import { validateTimestamp } from "./validate"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 const isUserInDB = async (prisma: Prisma, user_id) => {
   return await prisma.$exists.user({ upstream_id: user_id })
@@ -32,10 +31,7 @@ export const saveToDatabase = async (
   logger,
 ) => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
-  if (!validateTimestamp(timestamp)) {
-    logger.error("invalid timestamp")
-    return
-  }
+
   let user: User
   if (await isUserInDB(prisma, message.user_id)) {
     user = await prisma.user({ upstream_id: message.user_id })
