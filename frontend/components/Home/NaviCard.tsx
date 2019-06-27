@@ -1,7 +1,9 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, ButtonBase, Typography } from "@material-ui/core"
 import NextI18Next from "../../i18n"
+import Grid from "@material-ui/core/Grid"
+import ButtonBase from "@material-ui/core/ButtonBase"
+import Typography from "@material-ui/core/Typography"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

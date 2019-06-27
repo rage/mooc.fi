@@ -1,7 +1,6 @@
 import React from "react"
 import Language from "@material-ui/icons/Language"
 import { Button } from "@material-ui/core"
-import Router from "next/router"
 import NextI18Next from "../i18n"
 import styled from "styled-components"
 

@@ -3,16 +3,9 @@ import NextI18Next from "../i18n"
 import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
-import ModuleNavi from "../components/Home/ModuleNavi"
-import Modules from "../components/Home/Modules"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
-import { mockModules } from "../mockModuleData"
-import {
-  filterAndModifyByLanguage,
-  getPromotedCourses,
-  filterAndModifyCoursesByLanguage,
-} from "../util/moduleFunctions"
-import { ApolloClient, gql } from "apollo-boost"
+import { filterAndModifyCoursesByLanguage } from "../util/moduleFunctions"
+import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "./__generated__/AllModules"
 import { Courses } from "../courseData"
@@ -55,9 +48,6 @@ const Home = ({ t }) => {
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)
   }, [NextI18Next.i18n.language])
-  console.log("Language", NextI18Next.i18n.language)
-  const modules = filterAndModifyByLanguage(mockModules.study_modules, language)
-  const promotedCourses = getPromotedCourses(modules)
   const courses = filterAndModifyCoursesByLanguage(Courses.allcourses, language)
 
   if (error) {

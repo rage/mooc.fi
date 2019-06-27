@@ -1,9 +1,9 @@
 import React from "react"
-import { Grid, Typography } from "@material-ui/core"
+import Typography from "@material-ui/core/Typography"
+import Grid from "@material-ui/core/Grid"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
 import NextI18Next from "../../i18n"
-import styled from "styled-components"
 import Container from "../Container"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,12 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 function ModuleNavi({ modules }) {
-  console.log("Modulenavi", modules)
+  const { t, i18n } = NextI18Next.useTranslation("home")
   const classes = useStyles()
   return (
     <section style={{ marginBottom: "5em" }}>
       <Typography component="h2" className={classes.title} align="center">
-        <NextI18Next.Trans i18nKey="modulesTitle" />
+        {t("modulesTitle")}
       </Typography>
       <Container>
         <Grid container spacing={5}>
