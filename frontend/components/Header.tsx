@@ -51,7 +51,9 @@ function Header() {
     <AppBar position="static" color="inherit">
       <Toolbar>
         <NextI18Next.Link href="/">
-          <LogoImage classes={{ root: classes.avatar }} />
+          <a href="/">
+            <LogoImage classes={{ root: classes.avatar }} />
+          </a>
         </NextI18Next.Link>
         <TitleText className={classes.title} />
 

@@ -1,5 +1,7 @@
 import React from "react"
-import { Grid, ButtonBase, Typography } from "@material-ui/core"
+import Grid from "@material-ui/core/Grid"
+import ButtonBase from "@material-ui/core/ButtonBase"
+import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 
 const Base = styled(ButtonBase)`

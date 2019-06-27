@@ -3,6 +3,9 @@ const withTypescript = require("@zeit/next-typescript")
 const withFonts = require("next-fonts")
 const withOptimizedImages = require("next-optimized-images")
 const sharp = require("responsive-loader/sharp")
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+})
 
 module.exports = withPlugins([
   withTypescript,
@@ -10,16 +13,21 @@ module.exports = withPlugins([
   [
     withOptimizedImages,
     {
+      handleImages: ["jpeg", "png", "svg", "webp", "gif"],
       overwriteImageLoaderPaths: require.resolve.paths("")[0],
       optimizeImages: true,
-
+      optimizeImagesInDev: true,
+      webp: {
+        preset: "default",
+        quality: 75,
+      },
       responsive: {
         adapter: sharp,
-        sizes: [300, 600, 1200, 2000],
         placeholder: true,
         placeholderSize: 50,
         optimizeImagesInDev: true,
       },
     },
   ],
+  withBundleAnalyzer,
 ])

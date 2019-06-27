@@ -1,11 +1,12 @@
 import React from "react"
-import { Button, Typography } from "@material-ui/core"
+import Button from "@material-ui/core/Button"
+import Typography from "@material-ui/core/Typography"
 import NextI18Next from "../../i18n"
 import styled from "styled-components"
 
 const ExplanationRoot = styled.div`
   max-width: 70%;
-  z-index: 50;
+  position: relative;
   margin-left: 1em;
   margin-bottom: 1rem;
   overflow: hidden;

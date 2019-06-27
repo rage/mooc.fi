@@ -1,6 +1,6 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Typography, Grid, Card, CardContent } from "@material-ui/core"
+import { Typography, Grid } from "@material-ui/core"
 import PointsListHeaderTable from "./PointsListHeaderTable"
 
 const useStyles = makeStyles((theme: Theme) =>
