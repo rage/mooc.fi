@@ -78,7 +78,7 @@ const BackgroundImage = styled.img`
 
 function ImageBanner({ image, title, subtitle }) {
   const classes = useStyles()
-  console.log(image.src)
+
   return (
     <section className={classes.root}>
       <Typography component="h2" className={classes.title}>

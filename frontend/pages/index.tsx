@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import NextI18Next, { withTranslation } from "../i18n"
+import NextI18Next from "../i18n"
 import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
@@ -55,7 +55,7 @@ const Home = ({ t }) => {
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)
   }, [NextI18Next.i18n.language])
-
+  console.log("Language", NextI18Next.i18n.language)
   const modules = filterAndModifyByLanguage(mockModules.study_modules, language)
   const promotedCourses = getPromotedCourses(modules)
   const courses = filterAndModifyCoursesByLanguage(Courses.allcourses, language)
