@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from "react"
-import NextI18Next, { withTranslation } from "../i18n"
+import NextI18Next from "../i18n"
 import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
-import ModuleNavi from "../components/Home/ModuleNavi"
-import Modules from "../components/Home/Modules"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
-import { mockModules } from "../mockModuleData"
-import {
-  filterAndModifyByLanguage,
-  getPromotedCourses,
-  filterAndModifyCoursesByLanguage,
-} from "../util/moduleFunctions"
-import { ApolloClient, gql } from "apollo-boost"
+import { filterAndModifyCoursesByLanguage } from "../util/moduleFunctions"
+import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "./__generated__/AllModules"
 import { Courses } from "../courseData"
+const highlightsBanner = require("../static/images/courseHighlightsBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -52,9 +48,6 @@ const Home = ({ t }) => {
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)
   }, [NextI18Next.i18n.language])
-
-  const modules = filterAndModifyByLanguage(mockModules.study_modules, language)
-  const promotedCourses = getPromotedCourses(modules)
   const courses = filterAndModifyCoursesByLanguage(Courses.allcourses, language)
 
   if (error) {
@@ -74,26 +67,26 @@ const Home = ({ t }) => {
       <CourseHighlights
         courses={courses.filter(c => c.promote === true)}
         title={t("highlightTitle")}
-        headerImage={`${require("../static/images/courseHighlightsBanner.jpg?webp")}`}
+        headerImage={highlightsBanner}
         subtitle={t("highlightSubtitle")}
       />
 
       <CourseHighlights
         courses={courses.filter(c => c.status === "Active")}
         title={t("allCoursesTitle")}
-        headerImage={`${require("../static/images/AllCoursesBanner.jpg?webp")}`}
+        headerImage={allCoursesBanner}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Upcoming")}
         title={t("upcomingCoursesTitle")}
-        headerImage={`${require("../static/images/AllCoursesBanner.jpg?webp")}`}
+        headerImage={allCoursesBanner}
         subtitle={""}
       />
       <CourseHighlights
         courses={courses.filter(c => c.status === "Ended")}
         title={t("endedCoursesTitle")}
-        headerImage={`${require("../static/images/oldCoursesBanner.jpg?webp")}`}
+        headerImage={oldCoursesBanner}
         subtitle={""}
       />
       <EmailSubscribe />

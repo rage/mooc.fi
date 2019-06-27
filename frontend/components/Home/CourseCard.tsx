@@ -1,7 +1,9 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, ButtonBase, Typography } from "@material-ui/core"
 import styled from "styled-components"
+import Grid from "@material-ui/core/Grid"
+import ButtonBase from "@material-ui/core/ButtonBase"
+import Typography from "@material-ui/core/Typography"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -100,15 +102,29 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
+const BackgroundImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+`
+
 function CourseCard({ course }) {
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
       <ButtonBase focusRipple className={classes.image} href={`${course.link}`}>
-        <span
-          className={classes.imageSrc}
-          style={{ backgroundImage: `url(${course.photo})` }}
-        />
+        <span className={classes.imageSrc}>
+          <picture>
+            <source srcSet={course.photo[0]} type="image/webp" />
+            <source srcSet={course.photo[1]} type="image/png" />
+            <BackgroundImage src={course.photo[1]} />
+          </picture>
+        </span>
+
         <span className={classes.imageButton}>
           <Typography className={classes.title} align="left">
             {course.name}

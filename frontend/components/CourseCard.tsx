@@ -44,10 +44,12 @@ function CourseCard({ course }) {
             as={`/course/${course.slug}`}
             href={`/course?course=${course.slug}`}
           >
-            <Button variant="contained" color="secondary" fullWidth>
-              <DashboardIcon />
-              Course Dashboard
-            </Button>
+            <a href={`/course?course=${course.slug}`}>
+              <Button variant="contained" color="secondary" fullWidth>
+                <DashboardIcon />
+                Course Dashboard
+              </Button>
+            </a>
           </NextI18Next.Link>
         </CardActionArea>
       </Card>

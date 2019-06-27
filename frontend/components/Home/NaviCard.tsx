@@ -1,7 +1,9 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Grid, ButtonBase, Typography } from "@material-ui/core"
 import NextI18Next from "../../i18n"
+import Grid from "@material-ui/core/Grid"
+import ButtonBase from "@material-ui/core/ButtonBase"
+import Typography from "@material-ui/core/Typography"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function NaviCard({ item }) {
   const classes = useStyles()
-  const image = require(`../../static/images/${item.img}?resize&size=250`)
+  const image = require(`../../static/images/${item.img}`)
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -88,8 +90,8 @@ function NaviCard({ item }) {
             {item.text}
           </Typography>
           <Typography align="left">
-            <NextI18Next.Link className={classes.link} href={item.link}>
-              {item.linkText}
+            <NextI18Next.Link href={item.link}>
+              <a href={item.link}>{item.linkText}</a>
             </NextI18Next.Link>
           </Typography>
         </span>
