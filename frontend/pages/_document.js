@@ -16,9 +16,12 @@ class MyDocument extends Document {
     ctx.renderPage = () =>
       originalRenderPage({
         enhanceApp: App => props => {
-          const muiStylesData = sheets.collect(<App {...props} />)
-          const styledComponentsData = sheet.collectStyles(<App {...props} />)
-          return [muiStylesData, styledComponentsData]
+          const MuiStylesDataWrapper = sheets.collect(<App {...props} />)
+
+          const styledComponentsDataWrapper = sheet.collectStyles(
+            MuiStylesDataWrapper,
+          )
+          return styledComponentsDataWrapper
         },
       })
 
@@ -31,6 +34,7 @@ class MyDocument extends Document {
         <React.Fragment>
           {sheets.getStyleElement()}
           {sheet.getStyleElement()}
+
           {flush() || null}
         </React.Fragment>
       ),
