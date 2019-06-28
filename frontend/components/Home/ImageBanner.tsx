@@ -1,69 +1,15 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: "flex",
-      position: "relative",
-      flexDirection: "column",
-      marginBottom: "2rem",
-      paddingBottom: "2rem",
-      minHeight: 450,
-    },
-    backdrop: {
-      position: "absolute",
-      left: 0,
-      width: "70%",
-      top: 0,
-      bottom: 0,
-      backgroundColor: "white",
-      opacity: 0.9,
-      zIndex: -1,
-    },
-    backGround: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      zIndex: -2,
-
-      backgroundPosition: "center",
-    },
-    title: {
-      marginTop: "2rem",
-      marginLeft: "2rem",
-      marginBottom: "1rem",
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 46,
-      },
-      [theme.breakpoints.up("sm")]: {
-        fontSize: 56,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 72,
-      },
-    },
-    subtitle: {
-      marginLeft: "2rem",
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 22,
-      },
-      [theme.breakpoints.up("sm")]: {
-        fontSize: 28,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 32,
-      },
-      width: "55%",
-    },
-  }),
-)
+const BannerRoot = styled.section`
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  min-height: 450px;
+`
 const BackgroundImage = styled.img`
   position: absolute;
   top: 0;
@@ -73,20 +19,41 @@ const BackgroundImage = styled.img`
   object-fit: cover;
   z-index: -2;
 `
+const Title = styled(Typography)`
+  margin-top: 2rem;
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+  @media (min-width: 320px) {
+    font-size: 46px;
+  }
+  @media (min-width: 600px) {
+    font-size: 56px;
+  }
+  @media (min-width: 960px) {
+    font-size: 72px;
+  }
+`
+const Subtitle = styled(Typography)`
+  margin-left: 2rem;
+  width: 55%;
+  @media (min-width: 320px) {
+    font-size: 22px;
+  }
+  @media (min-width: 600px) {
+    font-size: 28px;
+  }
+  @media (min-width: 960px) {
+    font-size: 32px;
+  }
+`
 
 function ImageBanner({ image, title, subtitle }) {
-  const classes = useStyles()
-
   return (
-    <section className={classes.root}>
-      <Typography component="h2" className={classes.title}>
-        {title}
-      </Typography>
-      <Typography component="p" className={classes.subtitle}>
-        {subtitle}
-      </Typography>
+    <BannerRoot>
+      <Title component="h2">{title}</Title>
+      <Subtitle component="p">{subtitle}</Subtitle>
       <BackgroundImage srcSet={image.srcSet} src={image.src} />
-    </section>
+    </BannerRoot>
   )
 }
 
