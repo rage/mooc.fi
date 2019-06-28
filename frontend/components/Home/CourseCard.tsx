@@ -73,7 +73,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     title: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       marginBottom: "0.5rem",
       marginLeft: "0.5rem",
       padding: "0.5rem",
@@ -88,7 +87,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     bodyText: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       textAlign: "left",
       marginBottom: "1rem",
       padding: "0.5rem",

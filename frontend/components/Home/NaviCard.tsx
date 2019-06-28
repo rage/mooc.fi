@@ -44,14 +44,12 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: "1em",
     },
     title: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       fontSize: 22,
       marginBottom: "0.5rem",
       marginLeft: "1rem",
       maxWidth: "60%",
     },
     bodyText: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       fontSize: 16,
       maxWidth: "55%",
       textAlign: "left",
@@ -60,7 +58,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1,
     },
     link: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       color: "#00A68D",
       fontSize: 18,
       maxWidth: "60%",
@@ -91,7 +88,9 @@ function NaviCard({ item }) {
           </Typography>
           <Typography align="left">
             <NextI18Next.Link href={item.link}>
-              <a href={item.link}>{item.linkText}</a>
+              <a href={item.link} className={classes.link}>
+                {item.linkText}
+              </a>
             </NextI18Next.Link>
           </Typography>
         </span>

@@ -48,7 +48,6 @@ const ContentArea = styled.span`
 `
 
 const NaviCardTitle = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   margin-bottom: 1rem;
   margin-left: 1rem;
   max-width: 60%;
@@ -67,7 +66,6 @@ const NaviCardTitle = styled(Typography)`
   }
 `
 const NaviCardBodyText = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   max-width: 60%;
   text-align: left;
   margin: 0;

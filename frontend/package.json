@@ -23,6 +23,7 @@
     "@next/bundle-analyzer": "^8.1.0",
     "@types/material-ui": "^0.21.6",
     "@types/react-fontawesome": "^1.6.4",
+    "@zeit/next-css": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
     "apollo-boost": "^0.4.3",
     "apollo-cache-inmemory": "^1.6.2",
@@ -66,6 +67,7 @@
     "sharp": "^0.22.1",
     "styled-components": "^4.3.2",
     "tmc-client-js": "0.0.9",
+    "typeface-open-sans-condensed": "0.0.72",
     "webp-loader": "^0.5.0"
   },
   "devDependencies": {
