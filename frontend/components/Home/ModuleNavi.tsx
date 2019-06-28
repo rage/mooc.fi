@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("md")]: {
         fontSize: 72,
       },
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       marginTop: "2rem",
       marginBottom: "1em",
     },

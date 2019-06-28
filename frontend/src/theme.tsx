@@ -11,6 +11,9 @@ const theme = createMuiTheme({
       main: amber[500],
     },
   },
+  typography: {
+    fontFamily: "Open Sans Condensed, sans-serif",
+  },
 })
 
 export default theme

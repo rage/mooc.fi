@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundPosition: "center",
     },
     title: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       marginTop: "2rem",
       marginLeft: "2rem",
       marginBottom: "1rem",
@@ -51,7 +50,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     subtitle: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
       marginLeft: "2rem",
       [theme.breakpoints.up("xs")]: {
         fontSize: 22,

@@ -13,7 +13,6 @@ const ExplanationRoot = styled.div`
 `
 
 const Title = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   padding-top: 2rem;
   padding-bottom: 2rem;
   font-size: 72px;
@@ -28,7 +27,6 @@ const Title = styled(Typography)`
   }
 `
 const Subtitle = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   padding-right: 1rem;
   padding-bottom: 2rem;
   font-size: 18px;
@@ -50,7 +48,6 @@ const CourseButton = styled(Button)`
   background-color: #00a68d;
   color: white;
   font-size: 24px;
-  font-family: "Open Sans Condensed Light", sans-serif;
   margin-left: 10%;
 `
 
