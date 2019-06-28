@@ -10,7 +10,6 @@ import NextI18Next from "../../i18n"
 import Container from "../Container"
 
 const IntroText = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   font-size: 22px;
   width: 90%;
   margin-left: 1rem;
@@ -25,7 +24,6 @@ const IntroText = styled(Typography)`
 `
 
 const SubHeader = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   margin-bottom: 3rem;
   padding-bottom: 1rem;
   margin-left: 1rem;
@@ -40,7 +38,6 @@ const SubHeader = styled(Typography)`
 `
 
 const ModuleHomeLink = styled(Link)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   color: #00a68d;
   font-size: 22px;
   margin: auto;

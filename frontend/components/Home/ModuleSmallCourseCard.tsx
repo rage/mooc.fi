@@ -4,7 +4,6 @@ import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 
 const CourseTitle = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   margin-bottom: 0.5rem;
   font-size: 22px;
   @media (min-width: 425px) {
@@ -13,7 +12,6 @@ const CourseTitle = styled(Typography)`
   color: black;
 `
 const CourseText = styled(Typography)`
-  font-family: "Open Sans Condensed Light", sans-serif;
   margin-bottom: 1rem;
   font-size: 16px;
   @media (min-width: 425px) {
