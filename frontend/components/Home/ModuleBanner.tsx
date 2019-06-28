@@ -25,7 +25,6 @@ const Title = styled(Typography)`
   margin-left: 2rem;
   margin-bottom: 1rem;
   padding: 1rem;
-  font-family: "Open Sans Condensed Light", sans-serif;
   background-color: rgba(255, 255, 255, 0.8);
   width: 60%;
   @media (min-width: 425px) {
