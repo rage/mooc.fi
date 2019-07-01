@@ -4,26 +4,9 @@ import { NextContext } from "next"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { ApolloClient, gql } from "apollo-boost"
-import { AllCourses as AllCoursesData } from "./__generated__/AllCourses"
-import { useQuery } from "react-apollo-hooks"
-import CourseGrid from "../components/CourseGrid"
 import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
-
-export const AllCoursesQuery = gql`
-  query AllCourses {
-    courses {
-      id
-      name
-      slug
-    }
-    currentUser {
-      id
-      administrator
-    }
-  }
-`
+import CourseEditForm from "../components/Dashboard/CourseEditForm"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,44 +16,32 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Courses = ({ admin }) => {
+const NewCourse = ({ admin }) => {
   const classes = useStyles()
-
-  const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
-
-  if (error) {
-    ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-    </div>
-  }
 
   if (!admin) {
     return <AdminError />
   }
 
-  if (loading || !data) {
-    return <CircularProgress color="primary" />
-  }
-
   return (
     <section>
       <WideContainer>
-        <Typography
+      <Typography
           component="h1"
           variant="h2"
           gutterBottom={true}
           align="center"
           className={classes.header}
         >
-          All Courses
+          Create a new course
         </Typography>
-        <CourseGrid courses={data.courses} />
+        <CourseEditForm course={null} />
       </WideContainer>
     </section>
   )
 }
 
-Courses.getInitialProps = function(context: NextContext) {
+NewCourse.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
@@ -81,4 +52,4 @@ Courses.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default Courses
+export default NewCourse

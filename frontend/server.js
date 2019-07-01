@@ -29,6 +29,11 @@ const DirectFrom = Redirects.redirects_list
     return app.render(req, res, actualPage, queryParams)
   })
 
+  server.get("/courses/new", (req, res) => {
+    const actualPage = "/new-course"
+    return app.render(req, res, actualPage)
+  })
+
   server.get("*", (req, res) => {
     const redirectNeeded = DirectFrom.find(
       redirect => redirect.from === req.url,
