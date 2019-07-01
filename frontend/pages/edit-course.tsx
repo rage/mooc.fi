@@ -7,16 +7,21 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
 import CourseEditForm from "../components/Dashboard/CourseEditForm"
+import { withRouter } from "next/router"
+import { useQuery } from "react-apollo-hooks"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     header: {
       marginTop: "1em",
-    }
+    },
   }),
 )
 
-const NewCourse = ({ admin }) => {
+const EditCourse = withRouter(props => {
+  const { admin, router } = props
+  const slug = router.query.course
+
   const classes = useStyles()
 
   if (!admin) {
@@ -26,22 +31,22 @@ const NewCourse = ({ admin }) => {
   return (
     <section>
       <WideContainer>
-      <Typography
+        <Typography
           component="h1"
           variant="h2"
           gutterBottom={true}
           align="center"
           className={classes.header}
         >
-          Create a new course
+          {slug ? 'Edit course' : 'Create a new course'}
         </Typography>
-        <CourseEditForm course={null} />
+        <CourseEditForm slug={slug} />
       </WideContainer>
     </section>
   )
-}
+})
 
-NewCourse.getInitialProps = function(context: NextContext) {
+EditCourse.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
@@ -52,4 +57,4 @@ NewCourse.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default NewCourse
+export default EditCourse

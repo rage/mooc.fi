@@ -7,7 +7,7 @@ function CourseGrid({ courses }) {
   return (
     <section>
       <Grid container spacing={3}>
-        {courses.map(course => (
+        {(courses || []).map(course => (
           <CourseCard key={course.id} course={course} />
         ))}
         <NewCourseCard />

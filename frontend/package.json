@@ -38,6 +38,7 @@
     "babel-plugin-styled-components": "^1.10.2",
     "compression": "^1.7.4",
     "express": "^4.17.1",
+    "firebase": "^6.2.4",
     "fontawesome": "^5.6.3",
     "formik": "^1.5.7",
     "formik-material-ui": "0.0.19",
@@ -71,7 +72,8 @@
     "styled-components": "^4.3.2",
     "tmc-client-js": "0.0.9",
     "typeface-open-sans-condensed": "0.0.72",
-    "webp-loader": "^0.5.0"
+    "webp-loader": "^0.5.0",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@types/luxon": "^1.15.1",

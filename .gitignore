@@ -7,3 +7,4 @@ dist
 .env
 *secret.yml
 backend/generated
+frontend/firebase.config.js

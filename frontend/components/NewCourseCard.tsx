@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 250,
     },
     header: {
-      height: 250
-    }
+      height: 250,
+    },
   }),
 )
 
@@ -35,12 +35,17 @@ function NewCourseCard() {
         <CardMedia
           component="div"
           alt="Course Logo"
-          image={''}
+          image={""}
           //image={''}
           className={classes.media}
         >
-          <Grid container justify="center" alignItems="center" style={{ display: 'flex', height: '100%' }}>
-            <AddCircleIcon fontSize='large' />
+          <Grid
+            container
+            justify="center"
+            alignItems="center"
+            style={{ display: "flex", height: "100%" }}
+          >
+            <AddCircleIcon fontSize="large" />
           </Grid>
         </CardMedia>
         <CardContent>
@@ -49,11 +54,8 @@ function NewCourseCard() {
           </Typography>
         </CardContent>
         <CardActionArea>
-          <NextI18Next.Link
-            as={`/courses/new`}
-            href={`/new-course`}
-          >
-            <a href='/new-course'>
+          <NextI18Next.Link as={`/courses/new`} href={`/edit-course`}>
+            <a href="/edit-course">
               <Button variant="contained" color="secondary" fullWidth>
                 <AddIcon />
                 Create
