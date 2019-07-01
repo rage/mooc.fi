@@ -63,11 +63,7 @@ function SignIn(t: Function) {
           }}
         />
         <FormHelperText error={error}>
-          {error ? (
-            <NextI18Next.Trans i18nKey="error" />
-          ) : (
-            <NextI18Next.Trans i18nKey="form-info" />
-          )}
+          {error && <NextI18Next.Trans i18nKey="error" />}
         </FormHelperText>
       </FormControl>
 

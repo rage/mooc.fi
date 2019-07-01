@@ -48,6 +48,15 @@ export const UserOverViewQuery = gql`
       first_name
       last_name
       email
+      completions {
+        id
+        completion_language
+        student_number
+        course {
+          id
+          slug
+        }
+      }
     }
   }
 `
@@ -56,14 +65,38 @@ const RegisterCompletion = ({ t }) => {
   const classes = useStyles()
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
   if (error) {
-    ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-    </div>
+    return (
+      <div>
+        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      </div>
+    )
   }
 
   if (loading || !data) {
     return <div>Loading</div>
   }
+
+  const completion = data.currentUser.completions.find(
+    c => c.course.slug === "elements-of-ai",
+  )
+
+  if (!completion) {
+    return (
+      <Container>
+        <Typography
+          variant="h2"
+          component="h1"
+          gutterBottom={true}
+          align="center"
+          className={classes.title}
+        >
+          {t("course_completion_not_found_title")}
+        </Typography>
+        <Typography>{t("course_completion_not_found")}</Typography>
+      </Container>
+    )
+  }
+
   return (
     <Container>
       <Typography
