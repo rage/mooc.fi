@@ -11,6 +11,7 @@ import ImportantNotice from "../components/ImportantNotice"
 import Container from "../components/Container"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { withRouter } from "next/router"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +62,7 @@ export const UserOverViewQuery = gql`
   }
 `
 
-const RegisterCompletion = ({ t }) => {
+const RegisterCompletion = ({ t, router }) => {
   const classes = useStyles()
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
   if (error) {
@@ -76,8 +77,10 @@ const RegisterCompletion = ({ t }) => {
     return <div>Loading</div>
   }
 
+  const courseSlug = router.query.slug
+
   const completion = data.currentUser.completions.find(
-    c => c.course.slug === "elements-of-ai",
+    c => c.course.slug === courseSlug,
   )
 
   if (!completion) {
@@ -151,6 +154,6 @@ RegisterCompletion.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default NextI18Next.withTranslation("register-completion")(
-  RegisterCompletion,
+export default withRouter(
+  NextI18Next.withTranslation("register-completion")(RegisterCompletion),
 )

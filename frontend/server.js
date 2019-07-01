@@ -25,7 +25,7 @@ const DirectFrom = Redirects.redirects_list
 
   server.get("/register-completion/:slug", (req, res) => {
     const actualPage = "/register-completion"
-    const queryParams = { course_slug: req.params.slug }
+    const queryParams = { slug: req.params.slug }
     return app.render(req, res, actualPage, queryParams)
   })
 
