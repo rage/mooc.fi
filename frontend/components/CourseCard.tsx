@@ -9,6 +9,7 @@ import {
   Button,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
+import EditIcon from "@material-ui/icons/Edit"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
@@ -48,6 +49,17 @@ function CourseCard({ course }) {
               <Button variant="contained" color="secondary" fullWidth>
                 <DashboardIcon />
                 Course Dashboard
+              </Button>
+            </a>
+          </NextI18Next.Link>
+          <NextI18Next.Link
+            as={`/courses/${course.slug}/edit`}
+            href={`/edit-course?course=${course.slug}`}
+          >
+            <a href={`/edit-course?course=${course.slug}`}>
+              <Button variant="contained" color="secondary" fullWidth>
+                <EditIcon />
+                Edit
               </Button>
             </a>
           </NextI18Next.Link>

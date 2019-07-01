@@ -17,6 +17,18 @@ const DirectFrom = Redirects.redirects_list
   server.use(compression())
   server.use(nextI18NextMiddleware(nextI18next))
 
+  server.get("/courses/:id/edit", (req, res) => {
+    const actualPage = "/edit-course"
+    const queryParams = { course: req.params.id }
+    return app.render(req, res, actualPage, queryParams)
+  })
+
+  server.get("/courses/new", (req, res) => {
+    const actualPage = "/edit-course"
+    return app.render(req, res, actualPage, {})
+  })
+
+
   server.get("/course/:id", (req, res) => {
     const actualPage = "/course"
     const queryParams = { course: req.params.id }
@@ -27,11 +39,6 @@ const DirectFrom = Redirects.redirects_list
     const actualPage = "/register-completion"
     const queryParams = { slug: req.params.slug }
     return app.render(req, res, actualPage, queryParams)
-  })
-
-  server.get("/courses/new", (req, res) => {
-    const actualPage = "/new-course"
-    return app.render(req, res, actualPage)
   })
 
   server.get("*", (req, res) => {

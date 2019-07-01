@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react"
-import { Grid, FormControlLabel, MenuItem, Paper, Button, LinearProgress } from "@material-ui/core"
+import {
+  Grid,
+  InputLabel,
+  FormControlLabel,
+  MenuItem,
+  Paper,
+  Button,
+  LinearProgress,
+} from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { Formik, Field, Form } from "formik"
+import { Formik, Field, Form, FormikProps } from "formik"
 import {
   fieldToTextField,
   TextField,
@@ -10,6 +18,25 @@ import {
   Select,
   Checkbox,
 } from "formik-material-ui"
+import { gql } from 'apollo-boost'
+import { useQuery } from 'react-apollo-hooks'
+import { default as firebase } from "../../lib/firebase"
+import uuid from '../../../util/uuid'
+import * as Yup from 'yup'
+
+export const CourseQuery = gql`
+  query CourseDetails($slug: String) {
+    course(slug: $slug) {
+      id
+      name
+      slug
+      photo
+      promote
+      start_point
+      status
+    }
+  }
+`
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,10 +45,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "0.7em",
       marginBottom: "0.7em",
     },
+    paper: {
+      padding: "1em"
+    }
   }),
 )
 
-const Thumbnail = ({ file }) => {
+const Thumbnail = ({ file }) => {
   const [loading, setLoading] = useState(true)
   const [image, setImage] = useState<any>(undefined)
 
@@ -33,39 +63,53 @@ const Thumbnail = ({ file }) => {
     const reader = new FileReader()
 
     reader.onloadend = () => {
-      console.log('prööt')
       setLoading(false)
       setImage(reader.result)
     }
 
-    reader.readAsDataURL(file)
+    try {
+      reader.readAsDataURL(file)
+    } catch (e) {
+      setLoading(false)
+    }
   }, [file, loading, image])
 
-  if (loading || !image) {
+  if (loading || !image) {
     return null
   }
 
-  return (
-    <img
-      src={image}
-      height={250}
-    />
-  )
+  return <img src={image} height={250} />
 }
 
 const statuses = [
   {
-    value: 'Upcoming',
-    label: 'Upcoming'
-  }
+    value: "upcoming",
+    label: "Upcoming",
+  },
+  {
+    value: "active",
+    label: "Active",
+  },
+  {
+    value: "ended",
+    label: "Ended",
+  },
 ]
 
-const renderForm = ({ submitForm, isSubmitting, values, setFieldValue }) => (
-  <Form> 
+const CourseEditSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('required'),
+  slug: Yup.string()
+    .required('required'),
+})
+
+const renderForm = ({ submitForm, errors, isSubmitting, values, setFieldValue }: FormikProps<FormValues>) => (
+  <Form>
     <Field
       name="name"
       type="text"
       label="Name"
+      error={errors.name}
       fullWidth
       component={TextField}
     />
@@ -73,40 +117,60 @@ const renderForm = ({ submitForm, isSubmitting, values, setFieldValue }) => (
     <Field
       name="slug"
       type="text"
-      label="slug"
+      label="Slug"
+      error={errors.slug}
       fullWidth
       component={TextField}
     />
-    <Field 
-      label="promote" 
-      type="checkbox" 
-      name="promote" 
-      fullWidth
-      component={Checkbox} 
+    <FormControlLabel
+      control={
+        <Field
+          label="Promote"
+          type="checkbox"
+          name="promote"
+          component={Checkbox}
+        />
+      }
+      label="Promote"
     />
-    <Field
-      name="photo"
-      type="file"
-      label="photo"
-      fullWidth
-      component={SimpleFileUpload}
-      onChange={(event) => setFieldValue("photo", event.currentTarget.files[0])}
+    <FormControlLabel
+      control={
+        <Field
+          label="Start point"
+          type="checkbox"
+          name="start_point"
+          component={Checkbox}
+        />
+      }
+      label="Start point"
     />
+    <InputLabel>
+      Status
+    </InputLabel>
     <Field
       name="status"
       type="text"
-      label="status"
-      fullWidth
+      label="Status"
       component={Select}
+      fullWidth
     >
       {statuses.map(option => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}
-        </MenuItem> 
+        </MenuItem>
       ))}
     </Field>
+    <Field
+      name="photo"
+      type="file"
+      label="Photo"
+      fullWidth
+      component={SimpleFileUpload}
+      onChange={event => setFieldValue("photo", event.currentTarget.files[0])}
+    />
     <Thumbnail file={values.photo} />
     {isSubmitting && <LinearProgress />}
+    <br />
     <Button
       variant="contained"
       color="primary"
@@ -118,24 +182,60 @@ const renderForm = ({ submitForm, isSubmitting, values, setFieldValue }) => (
   </Form>
 )
 
-const CourseEditForm = ({ course }) => {
+const CourseEditForm = ({ slug }) => {
+  const [storageRef, setStorageRef] = useState(null)
+  const [course, setCourse] = useState(null)
+
   const classes = useStyles()
+
+  const { data, loading, error } = useQuery(CourseQuery, { variables: { slug: slug }})
+
+  useEffect(() => {
+    if (!firebase) {
+      return
+    }
+  
+    const storage = firebase.storage()
+    setStorageRef(storage.ref())
+  }, [firebase])
+
+  useEffect(() => {
+    if (loading || !data.course) {
+      return
+    }
+
+    setCourse(data.course)
+  }, [data, loading])
+
+  if (!storageRef) {
+    return null
+  }
+
 
   return (
     <section>
-      <Paper elevation={1} spacing={2}>      
+      <Paper elevation={1} className={classes.paper}>
         <Formik
-          initialValues = {{
-            name: '',
-            slug: '',
+          initialValues={course || {
+            name: "",
+            slug: "",
             photo: undefined,
             start_point: false,
             promote: false,
-            status: 'Upcoming',
-            study_module: null
+            status: "Upcoming",
+            study_module: null,
           }}
+          validationSchema={CourseEditSchema}
           onSubmit={(values, { setSubmitting }) => {
-            console.log('submitted', JSON.stringify(values))
+            console.log("submitted", JSON.stringify(values))
+            if (values.photo) {
+              const imageRef = storageRef
+                .child(`images/${uuid()}-${values.photo.name}`)
+                .put(values.photo)
+                .then((snapshot) => {
+                  console.log('uploaded and got', snapshot)
+                })
+            }
             setSubmitting(false)
           }}
           render={renderForm}

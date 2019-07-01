@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     header: {
       marginTop: "1em",
-    }
+    },
   }),
 )
 
