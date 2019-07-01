@@ -18,11 +18,11 @@ import {
   Select,
   Checkbox,
 } from "formik-material-ui"
-import { gql } from 'apollo-boost'
-import { useQuery } from 'react-apollo-hooks'
+import { gql } from "apollo-boost"
+import { useQuery } from "react-apollo-hooks"
 import { default as firebase } from "../../lib/firebase"
-import uuid from '../../../util/uuid'
-import * as Yup from 'yup'
+import uuid from "../../../util/uuid"
+import * as Yup from "yup"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: "0.7em",
     },
     paper: {
-      padding: "1em"
-    }
+      padding: "1em",
+    },
   }),
 )
 
@@ -97,13 +97,17 @@ const statuses = [
 ]
 
 const CourseEditSchema = Yup.object().shape({
-  name: Yup.string()
-    .required('required'),
-  slug: Yup.string()
-    .required('required'),
+  name: Yup.string().required("required"),
+  slug: Yup.string().required("required"),
 })
 
-const renderForm = ({ submitForm, errors, isSubmitting, values, setFieldValue }: FormikProps<FormValues>) => (
+const renderForm = ({
+  submitForm,
+  errors,
+  isSubmitting,
+  values,
+  setFieldValue,
+}: FormikProps<any>) => (
   <Form>
     <Field
       name="name"
@@ -144,9 +148,7 @@ const renderForm = ({ submitForm, errors, isSubmitting, values, setFieldValue }:
       }
       label="Start point"
     />
-    <InputLabel>
-      Status
-    </InputLabel>
+    <InputLabel>Status</InputLabel>
     <Field
       name="status"
       type="text"
@@ -188,13 +190,15 @@ const CourseEditForm = ({ slug }) => {
 
   const classes = useStyles()
 
-  const { data, loading, error } = useQuery(CourseQuery, { variables: { slug: slug }})
+  const { data, loading, error } = useQuery(CourseQuery, {
+    variables: { slug: slug },
+  })
 
   useEffect(() => {
     if (!firebase) {
       return
     }
-  
+
     const storage = firebase.storage()
     setStorageRef(storage.ref())
   }, [firebase])
@@ -211,20 +215,21 @@ const CourseEditForm = ({ slug }) => {
     return null
   }
 
-
   return (
     <section>
       <Paper elevation={1} className={classes.paper}>
         <Formik
-          initialValues={course || {
-            name: "",
-            slug: "",
-            photo: undefined,
-            start_point: false,
-            promote: false,
-            status: "Upcoming",
-            study_module: null,
-          }}
+          initialValues={
+            course || {
+              name: "",
+              slug: "",
+              photo: undefined,
+              start_point: false,
+              promote: false,
+              status: "Upcoming",
+              study_module: null,
+            }
+          }
           validationSchema={CourseEditSchema}
           onSubmit={(values, { setSubmitting }) => {
             console.log("submitted", JSON.stringify(values))
@@ -232,8 +237,8 @@ const CourseEditForm = ({ slug }) => {
               const imageRef = storageRef
                 .child(`images/${uuid()}-${values.photo.name}`)
                 .put(values.photo)
-                .then((snapshot) => {
-                  console.log('uploaded and got', snapshot)
+                .then(snapshot => {
+                  console.log("uploaded and got", snapshot)
                 })
             }
             setSubmitting(false)

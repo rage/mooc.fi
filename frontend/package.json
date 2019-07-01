@@ -24,6 +24,7 @@
     "@next/bundle-analyzer": "^8.1.0",
     "@types/material-ui": "^0.21.6",
     "@types/react-fontawesome": "^1.6.4",
+    "@types/yup": "^0.26.19",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
     "apollo-boost": "^0.4.3",

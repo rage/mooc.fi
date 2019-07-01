@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const EditCourse = withRouter(props => {
-  const { admin, router } = props
+  const { admin, router } = props
   const slug = router.query.course
 
   const classes = useStyles()
@@ -38,7 +38,7 @@ const EditCourse = withRouter(props => {
           align="center"
           className={classes.header}
         >
-          {slug ? 'Edit course' : 'Create a new course'}
+          {slug ? "Edit course" : "Create a new course"}
         </Typography>
         <CourseEditForm slug={slug} />
       </WideContainer>
