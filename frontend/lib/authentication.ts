@@ -31,12 +31,6 @@ export const signIn = async ({
   const res = await tmcClient.authenticate({ username: email, password })
 
   const details = await userDetails(res.accessToken)
-  const firstName = (get(details, "user_field.first_name") || "").trim()
-  const lastName = (get(details, "user_field.last_name") || "").trim()
-  console.log("first name", firstName, "last name", lastName)
-  if (firstName === "" || lastName === "") {
-    throw new Error("Etunimi tai sukunimi puuttuu.")
-  }
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
   if (details.administrator) {

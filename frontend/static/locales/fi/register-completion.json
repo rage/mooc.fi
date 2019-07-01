@@ -12,5 +12,7 @@
     "NB": "Jos olet Helsingin yliopiston perustutkinto-opiskelija, ilmoittatumisohjeet koskevat myös sinua!",
     "grades": "Opintopisteet kirjautuvat kuuden viikon kuluessa.",
     "link": "Rekisteröitymislomakkeeseen",
-    "linkAria": "Linkki rekisteröitymislomakkeeseen. Avautuu uudessa välilehdessä. Siirtyy avoimen yliopiston palveluun."
+    "linkAria": "Linkki rekisteröitymislomakkeeseen. Avautuu uudessa välilehdessä. Siirtyy avoimen yliopiston palveluun.",
+    "course_completion_not_found_title": "Suoritusta ei löytynyt",
+    "course_completion_not_found": "Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?"
 }
