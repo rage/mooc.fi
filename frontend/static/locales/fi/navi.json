@@ -22,7 +22,7 @@
               "Opettaja! Haluatko kurssime luokkaasi omilla pistelistoillasi ja omalla aikataulullasi.",
             "linkText": "Opettajien sivut",
             "img": "Opettajien.jpg",
-            "link": "https://mooc.fi/teachers"
+            "link": "/teachers"
 
           }
          

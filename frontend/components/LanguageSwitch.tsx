@@ -14,7 +14,7 @@ const SwitchButton = styled(Button)`
   }
 `
 
-function LanguageSwitch() {
+const LanguageSwitch = ({ t }) => {
   return (
     <SwitchButton
       onClick={() =>
@@ -31,4 +31,4 @@ function LanguageSwitch() {
   )
 }
 
-export default LanguageSwitch
+export default NextI18Next.withTranslation("common")(LanguageSwitch)
