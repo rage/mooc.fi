@@ -106,7 +106,10 @@ const ForTeachers = ({ t, i18n }) => {
       <ContentBlock>
         <StyledIcon icon={faComments} size="3x" />
         <Header variant="h4">{t("contactTitle")}</Header>
-        <TextBlock>{t("contactText")}</TextBlock>
+        <NextI18Next.Trans i18nKey="contactText">
+          Saat meihin parhaiten yhteyden lähettämällä sähköpostia osoitteeseen{" "}
+          <a href="https://tmc.mooc.fi/">mooc@cs.helsinki.fi</a>{" "}
+        </NextI18Next.Trans>
       </ContentBlock>
     </section>
   )
