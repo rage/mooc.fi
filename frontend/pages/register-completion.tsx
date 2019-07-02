@@ -83,7 +83,12 @@ const RegisterCompletion = ({ t, router }) => {
     c => c.course.slug === courseSlug,
   )
 
-  if (!completion) {
+  const mapLanguageToLink = {
+    fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+    en_EN: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+  }
+
+  /*if (!completion) {
     return (
       <Container>
         <Typography
@@ -98,7 +103,7 @@ const RegisterCompletion = ({ t, router }) => {
         <Typography>{t("course_completion_not_found")}</Typography>
       </Container>
     )
-  }
+  }*/
 
   return (
     <Container>
