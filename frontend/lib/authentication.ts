@@ -28,7 +28,6 @@ export const signIn = async ({
   email: string
   password: string
 }) => {
-  console.log("sign in", email, password)
   const res = await tmcClient.authenticate({ username: email, password })
 
   const details = await userDetails(res.accessToken)
