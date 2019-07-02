@@ -27,7 +27,6 @@ function SignIn(t: Function) {
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
   const [error, setError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
 
   const classes = useStyles()
 
@@ -78,6 +77,7 @@ function SignIn(t: Function) {
           try {
             await signIn({ email, password })
           } catch (e) {
+            console.log("fail")
             setError(true)
             setTimeout(() => {
               setError(false)

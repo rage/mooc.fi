@@ -14,7 +14,7 @@
               "Teacher! You can have your own courses, with point lists and schedules tailored for you.",
             "linkText": "For teachers",
             "img": "Opettajien.jpg",
-            "link": "https://mooc.fi/teachers"
+            "link": "/teachers"
           }
         ]
 }
