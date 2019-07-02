@@ -83,6 +83,12 @@ const RegisterCompletion = ({ t, router }) => {
     c => c.course.slug === courseSlug,
   )
 
+  const mapLanguageToLink = {
+    fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+    en_EN: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+    se_SE: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+  }
+
   if (!completion) {
     return (
       <Container>
@@ -133,7 +139,7 @@ const RegisterCompletion = ({ t, router }) => {
       <ImportantNotice email={data.currentUser.email} />
       <RegisterCompletionText
         email={data.currentUser.email}
-        link=" https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002"
+        link={mapLanguageToLink[completion.completion_language]}
       />
       <Paper className={classes.paperWithRow}>
         <SvgIcon className={classes.icon} color="primary">
