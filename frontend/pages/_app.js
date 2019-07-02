@@ -22,7 +22,6 @@ fontAwesomeConfig.autoAddCss = false
 
 class MyApp extends App {
   componentDidMount() {
-    // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side")
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)
@@ -37,12 +36,8 @@ class MyApp extends App {
         <Head>
           <title>Points</title>
         </Head>
-        {/* Wrap every page in Jss and Theme providers */}
-        {/* MuiThemeProvider makes the theme available down the React
-              tree thanks to React context. */}
         <StylesProvider injectFirst>
           <MuiThemeProvider theme={theme}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
 
             <ApolloProvider client={apollo}>
