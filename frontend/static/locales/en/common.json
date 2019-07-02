@@ -1,13 +1,9 @@
 {
-    "login": "Log in",
+    "login": "Log in with your mooc.fi account",
     "logout": "Log out",
     "forgottenpw": "Forgot your password?",
-    "error": "Login failed. Wrong password or username/e-mail",
-    "password": "password",
-    "username": "email or username",
-    "form-info": "Use your TMC login details to log into Mooc.points",
+    "error": "Login failed. Wrong password or email address/username",
+    "password": "Password",
+    "username": "Email or username",
     "skiplink": "To main content"
-
 }
-
-
