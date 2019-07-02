@@ -71,6 +71,7 @@ MyApp.getInitialProps = async arg => {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
+    initialLanguage: "fi",
   }
 }
 

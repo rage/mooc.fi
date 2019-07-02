@@ -51,10 +51,10 @@ const ForTeachers = ({ t, i18n }) => {
         <TextBlock>
           <NextI18Next.Trans i18nKey="teachers:siteIntro">
             You can utilize most of our materials freely. Most of them are
-            licenced with{" "}
+            licenced with
             <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">
-              Creative Commons BY-NC-SA{" "}
-            </a>{" "}
+              Creative Commons BY-NC-SA
+            </a>
             -licence, but check the course materials for confirmation. Creative
             Commons BY-NC-SA -licence means that you can use the materials
             either as is or modify them to better suit your teaching purposes as
@@ -71,8 +71,8 @@ const ForTeachers = ({ t, i18n }) => {
             Voit hyödyntää suurinta osaa tarjoamistamme materiaaleista vapaasti.
             Materiaaleissamme on lähes poikkeuksetta käytetty
             <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fi">
-              Creative Commons BY-NC-SA{" "}
-            </a>{" "}
+              Creative Commons BY-NC-SA
+            </a>
             -lisenssiä, mutta tarkista vielä lisenssi materiaalista. Creative
             Commons BY-NC-SA -lisenssi tarkoittaa sitä, että voit käyttää
             materiaaleja joko sellaisenaan tai muokata niitä paremmin omaan

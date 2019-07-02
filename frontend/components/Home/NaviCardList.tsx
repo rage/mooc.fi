@@ -23,18 +23,22 @@ const GridContainer = styled.section`
 `
 
 function NaviCardList() {
-  const { t, i18n } = NextI18Next.useTranslation("navi")
-  const items = t("naviItems")
+  const { t, i18n, ready } = NextI18Next.useTranslation("navi")
 
-  return (
-    <GridContainer>
-      <Grid container spacing={3}>
-        {items.map(item => (
-          <NaviCard key={item.title} item={item} />
-        ))}
-      </Grid>
-    </GridContainer>
-  )
+  if (ready) {
+    const items = t("naviItems")
+
+    return (
+      <GridContainer>
+        <Grid container spacing={3}>
+          {items.map(item => (
+            <NaviCard key={item.title} item={item} />
+          ))}
+        </Grid>
+      </GridContainer>
+    )
+  }
+  return <p>Loading</p>
 }
 
 export default NaviCardList
