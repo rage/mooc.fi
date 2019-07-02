@@ -42,7 +42,7 @@ const AllModulesQuery = gql`
   }
 `
 
-const Home = ({ t }) => {
+const Home = ({ t, tReady }) => {
   const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
   const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
   useEffect(() => {
@@ -56,7 +56,7 @@ const Home = ({ t }) => {
     </div>
   }
 
-  if (loading) {
+  if (loading || !tReady) {
     return <div>Loading</div>
   }
 
