@@ -29,7 +29,7 @@ function LinkButton(props: any) {
   const classes = useStyles()
   return (
     <Tooltip
-      title={<NextI18Next.Trans i18nKey="linkAria" />}
+      title={<NextI18Next.Trans i18nKey="register-completion:linkAria" />}
       classes={{ tooltip: classes.tooltip }}
       placement="bottom"
     >
@@ -41,7 +41,7 @@ function LinkButton(props: any) {
         {...props}
         role="link"
       >
-        <NextI18Next.Trans i18nKey="link" />
+        <NextI18Next.Trans i18nKey="register-completion:link" />
       </Button>
     </Tooltip>
   )
@@ -62,19 +62,20 @@ function RegisterCompletionText(props: RegProps) {
         gutterBottom={true}
         align="center"
       >
-        <NextI18Next.Trans i18nKey="instructions-title" />
+        <NextI18Next.Trans i18nKey="register-completion:instructions-title" />
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="Instructions2" />
+        <NextI18Next.Trans i18nKey="register-completion:Instructions2" />
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="Instructions3" /> {props.email}
+        <NextI18Next.Trans i18nKey="register-completion:Instructions3" />{" "}
+        {props.email}
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="Instructions4" />
+        <NextI18Next.Trans i18nKey="register-completion:Instructions4" />
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="grades" />
+        <NextI18Next.Trans i18nKey="register-completion:grades" />
       </Typography>
       <LinkButton className={classes.button} link={props.link} />
     </Paper>
