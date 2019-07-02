@@ -86,9 +86,10 @@ const RegisterCompletion = ({ t, router }) => {
   const mapLanguageToLink = {
     fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
     en_EN: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+    se_SE: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
   }
 
-  /*if (!completion) {
+  if (!completion) {
     return (
       <Container>
         <Typography
@@ -103,7 +104,7 @@ const RegisterCompletion = ({ t, router }) => {
         <Typography>{t("course_completion_not_found")}</Typography>
       </Container>
     )
-  }*/
+  }
 
   return (
     <Container>
@@ -138,7 +139,7 @@ const RegisterCompletion = ({ t, router }) => {
       <ImportantNotice email={data.currentUser.email} />
       <RegisterCompletionText
         email={data.currentUser.email}
-        link=" https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002"
+        link={mapLanguageToLink[completion.completion_language]}
       />
       <Paper className={classes.paperWithRow}>
         <SvgIcon className={classes.icon} color="primary">
