@@ -65,6 +65,7 @@ const originalGetIntialProps = MyApp.getInitialProps
 
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
+
   let originalProps = {}
 
   if (originalGetIntialProps) {
@@ -78,4 +79,6 @@ MyApp.getInitialProps = async arg => {
   }
 }
 
-export default withApolloClient(NextI18Next.appWithTranslation(MyApp))
+const withTranslation = NextI18Next.appWithTranslation(MyApp)
+
+export default withApolloClient(withTranslation)

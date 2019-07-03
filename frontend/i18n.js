@@ -3,7 +3,7 @@ const I18Next = require("next-i18next/dist/commonjs")
 //create new NextI18Next instance
 const NextI18Next = new I18Next({
   defaultLanguage: "fi",
-  fallbackLng: "en",
+  fallbackLng: "fi",
   otherLanguages: ["en", "se"],
   localeSubpaths: "foreign",
   returnObjects: true,
