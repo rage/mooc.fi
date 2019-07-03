@@ -65,6 +65,7 @@
     "react-apollo-hooks": "^0.4.5",
     "react-dom": "^16.8.6",
     "react-fontawesome": "^1.6.1",
+    "react-ga": "^2.6.0",
     "responsive-loader": "^1.2.0",
     "sharp": "^0.22.1",
     "styled-components": "^4.3.2",
