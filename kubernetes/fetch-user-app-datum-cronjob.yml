@@ -1,0 +1,98 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: fetch-ai-completions
+  namespace: moocfi
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 3600 * 24
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: fetch-ai-completions
+              image: ${BACKEND_IMAGE}
+              command: ["sh", "-c", "npm run fetch-user-app-datum"]
+              env:
+                - name: DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: POSTGRES_DATABASE
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: POSTGRES_HOST
+                - name: DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: POSTGRES_PORT
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: POSTGRES_PASSWORD
+                - name: DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: POSTGRES_USERNAME
+                - name: PRISMA_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: PRISMA_SECRET
+                - name: PRISMA_MANAGEMENT_API_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: PRISMA_MANAGEMENT_API_SECRET
+                - name: PRISMA_ENDPOINT
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: PRISMA_ENDPOINT
+                - name: TMC_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: TMC_USERNAME
+                - name: TMC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: TMC_PASSWORD
+                - name: QUIZNATOR_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: QUIZNATOR_TOKEN
+                - name: TMC_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: TMC_TOKEN
+                - name: TMC_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: TMC_CLIENT_ID
+                - name: TMC_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: TMC_CLIENT_SECRET
+                - name: QUIZNATOR_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: QUIZNATOR_HOST
+                - name: TMC_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: TMC_HOST
