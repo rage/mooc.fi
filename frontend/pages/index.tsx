@@ -49,7 +49,7 @@ const Home = ({ t, tReady }) => {
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)
   }, [NextI18Next.i18n.language])
-  const courses = filterAndModifyCoursesByLanguage(Courses.allcourses, language)
+  const courses = filterAndModifyCoursesByLanguage(Courses.allcourses, "fi")
 
   if (error) {
     ;<div>

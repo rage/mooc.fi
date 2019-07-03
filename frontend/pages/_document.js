@@ -27,7 +27,6 @@ class MyDocument extends Document {
       })
 
     const initialProps = await Document.getInitialProps(ctx)
-
     return {
       ...initialProps,
 
@@ -47,12 +46,10 @@ class MyDocument extends Document {
       <html lang="fi" dir="ltr">
         <Head>
           <meta charSet="utf-8" />
-          {/* Use minimum-scale=1 to enable GPU rasterization */}
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
-          {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           <script
             async
@@ -72,7 +69,6 @@ class MyDocument extends Document {
           />
         </Head>
         <body>
-          <noscript>Please enable JavaScript to use this application</noscript>
           <Main />
           <NextScript />
         </body>
