@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const DashboardBreadCrumbs = ({ page }) => {
   const classes = useStyles()
   const isAdmin = React.useContext(UserDetailContext)
-  console.log(isAdmin)
 
   return (
     <div className={classes.baseDiv}>

@@ -44,6 +44,7 @@ const AllModulesQuery = gql`
 
 const Home = ({ t, tReady }) => {
   const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
+
   const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)

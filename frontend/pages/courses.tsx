@@ -72,7 +72,7 @@ const Courses = ({ admin }) => {
 
 Courses.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
-  console.log(admin)
+
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
