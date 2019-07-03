@@ -12,6 +12,7 @@
     "prisma-deploy": "prisma deploy --force",
     "fetch-ai-completions": "ts-node ./bin/fetchAiCompletions.ts",
     "fetch-organizations": "ts-node ./bin/importOrganizations.ts",
+    "fetch-user-app-datum":"ts-node ./bin/fetchUserAppDatum.ts",
     "start-kafka-consumers": "concurrently npm:kafka-consumer-*",
     "kafka-consumer-user-course-progress": "ts-node ./bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.ts",
     "kafka-consumer-user-points": "ts-node ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",

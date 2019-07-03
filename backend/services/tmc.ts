@@ -40,4 +40,11 @@ export default class TmcClient {
     })
     return res.data
   }
+
+  async getUserAppDatum(after : String ) : Promise<any[]> {
+    const res = await axios.get(`${BASE_URL}/api/v8/user_app_datum?after=${after}`, {
+      headers: { Authorization: `Bearer ${await getAccessToken()}` },
+    })
+    return res.data
+  }
 }

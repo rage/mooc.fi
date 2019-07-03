@@ -209,3 +209,17 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   completed: Boolean @default(value: false)
   required_actions: String
 }
+
+type UserCourseSettings {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  user: User
+  course: Course
+  language: String
+  country: String
+  research: Boolean
+  marketing: Boolean
+  course_variant: String
+  other: Json
+}
