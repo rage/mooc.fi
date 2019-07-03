@@ -72,6 +72,7 @@ class MyDocument extends Document {
           />
         </Head>
         <body>
+          <noscript>Please enable JavaScript to use this application</noscript>
           <Main />
           <NextScript />
         </body>
