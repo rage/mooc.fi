@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
+    "export": "next export",
     "start": "NODE_ENV=production PORT=3021 node server.js",
     "upgrade-interactive": "npm-check --update",
     "generate-graphql-types": "apollo codegen:generate --tagName=gql --target=typescript __generated__"
