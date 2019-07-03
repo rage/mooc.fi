@@ -13,7 +13,7 @@ import UserDetailContext from "../contexes/UserDetailContext"
 import withApolloClient from "../lib/with-apollo-client"
 import NextI18Next from "../i18n"
 import theme from "../src/theme"
-
+import { ParseLanguageFromUrl } from "../util/parseLanguageFromUrl"
 import OpenSansCondensed from "typeface-open-sans-condensed"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
@@ -64,14 +64,15 @@ const originalGetIntialProps = MyApp.getInitialProps
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
   let originalProps = {}
+
   if (originalGetIntialProps) {
     originalProps = (await originalGetIntialProps(arg)) || {}
   }
+
   return {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
-    initialLanguage: "fi",
   }
 }
 
