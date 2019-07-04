@@ -18,7 +18,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <FooterDownPusherWrapper>
         <div>
           <Header />
-          <main id="main">{children}</main>
+          {/*add top margin to main to push the content from under the header*/}
+          <main id="main" style={{ marginTop: 100 }}>
+            {children}
+          </main>
         </div>
         <Footer />
       </FooterDownPusherWrapper>
