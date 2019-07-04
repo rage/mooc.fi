@@ -57,7 +57,7 @@ function Explanation({ t }) {
       <Title component="h1">MOOC.fi</Title>
       <div>
         <Subtitle component="p">{t("intro")}</Subtitle>
-        <CourseButton variant="contained" href="#coursesAndModules">
+        <CourseButton variant="contained" href="#courses-and-modules">
           {t("courseButton")}
         </CourseButton>
       </div>
