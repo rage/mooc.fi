@@ -3,7 +3,7 @@
         {
             "title": "Kaikille avoimia kursseja",
             "text":
-              "Verkko-oppimista parhaimmillaan. Älä huolehdi kurssimaksuista tai koulumatkoista, vaan opiskele siellä missä sinulle sopii.",
+              "Verkko-oppimista parhaimmillaan. Älä huolehdi kurssimaksuista tai koulumatkoista, vaan opiskele siellä missä sinulle sopii. MOOCit eli kaikille avoimet verkkokurssit (Massive Open Online Course) ovat nimensä mukaisesti avoimia, ilmaisia ja  verkkopohjaisia kursseja.",
             "linkText": "Kurssit ",
             "img": "AllCourses.jpg",
             "link": "#coursesAndModules"
@@ -11,7 +11,7 @@
           {
             "title": "Ensimmäisen vuoden opinnot kaikille",
             "text":
-              "Digital Education for All -hanke avaa tietojenkäsittelytieteen ensimmäisen vuoden kaikille.",
+              "Digital Education for All -hanke avaa tietojenkäsittelytieteen ensimmäisen vuoden kaikille. Helsingin yliopiston johtamassa Digital Education for All -hankkeessa ovat myös mukana Aalto-yliopisto, Jyväskylän yliopisto, Oulun yliopisto ja Turun yliopisto.",
             "linkText": "DEFA -hanke",
             "img": "DEFA.jpg",
             "link": "https://www.helsinki.fi/fi/projektit/digital-education-for-all"
@@ -19,7 +19,7 @@
           {
             "title": "Opeta kursseja omassa luokassasi.",
             "text":
-              "Opettaja! Haluatko kurssime luokkaasi omilla pistelistoillasi ja omalla aikataulullasi.",
+              "Opettaja! Haluatko kurssime luokkaasi omilla pistelistoillasi ja omalla aikataulullasi. Kaikkia kurssejamme saa käyttää osana omaa opetustaan. Katso lisää Opettajalle-sivulta!",
             "linkText": "Opettajien sivut",
             "img": "Opettajien.jpg",
             "link": "/teachers"

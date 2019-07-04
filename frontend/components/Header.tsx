@@ -32,12 +32,18 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontFamily: "Open Sans Condensed Light, sans-serif",
       fontSize: "1.75rem",
-      flex: 1,
+      marginTop: "1.6rem",
     },
     avatar: {
       margin: "1em",
       height: "3em",
       width: "3em",
+    },
+    link: {
+      color: "black",
+      textDecoration: "none",
+      display: "flex",
+      flexDirection: "row",
     },
   }),
 )
@@ -50,13 +56,14 @@ function Header() {
   return (
     <AppBar position="static" color="inherit">
       <Toolbar>
-        <NextI18Next.Link href="/">
-          <a href="/" aria-label="MOOC.fi homepage">
-            <LogoImage classes={{ root: classes.avatar }} />
-          </a>
-        </NextI18Next.Link>
-        <TitleText className={classes.title} />
-
+        <div style={{ flex: 1 }}>
+          <NextI18Next.Link href="/">
+            <a href="/" aria-label="MOOC.fi homepage" className={classes.link}>
+              <LogoImage classes={{ root: classes.avatar }} />
+              <TitleText className={classes.title} />
+            </a>
+          </NextI18Next.Link>
+        </div>
         <LanguageSwitch />
         {loggedIn && <LogOutButton onclick={() => signOut(client)} />}
       </Toolbar>
