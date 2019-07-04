@@ -77,7 +77,6 @@ function SignIn(t: Function) {
           try {
             await signIn({ email, password })
           } catch (e) {
-            console.log("fail")
             setError(true)
             setTimeout(() => {
               setError(false)

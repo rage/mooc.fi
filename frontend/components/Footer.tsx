@@ -66,6 +66,7 @@ function Footer() {
       <UniversityLogo />
       <SocialContainer>
         <a
+          aria-label="MOOC.fi twitter"
           href="https://twitter.com/moocfi"
           target="_blank"
           rel="noopener noreferrer"
@@ -73,6 +74,7 @@ function Footer() {
           <StyledIcon icon={faTwitter} size="3x" />
         </a>
         <a
+          aria-label="MOOC.fi Facebook"
           href="https://www.facebook.com/Moocfi"
           target="_blank"
           rel="noopener noreferrer"
@@ -80,6 +82,7 @@ function Footer() {
           <StyledIcon icon={faFacebook} size="3x" />
         </a>
         <a
+          aria-label="MOOC.fi Youtube channel"
           href="https://www.youtube.com/channel/UCkHoQ5p9skFdyjrV3_tnUrA"
           target="_blank"
           rel="noopener noreferrer"
@@ -90,6 +93,7 @@ function Footer() {
       <MaintainedContainer>
         This site is maintained by the{" "}
         <a
+          aria-label="Rage research group homepage"
           href="https://www.helsinki.fi/en/researchgroups/data-driven-education"
           target="_blank"
           rel="noopener noreferrer"

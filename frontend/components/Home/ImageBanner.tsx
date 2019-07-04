@@ -52,7 +52,7 @@ function ImageBanner({ image, title, subtitle }) {
     <BannerRoot>
       <Title component="h2">{title}</Title>
       <Subtitle component="p">{subtitle}</Subtitle>
-      <BackgroundImage srcSet={image.srcSet} src={image.src} />
+      <BackgroundImage srcSet={image.srcSet} src={image.src} alt="" />
     </BannerRoot>
   )
 }
