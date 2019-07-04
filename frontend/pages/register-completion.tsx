@@ -154,7 +154,8 @@ const RegisterCompletion = ({ t, router }) => {
 
 RegisterCompletion.getInitialProps = function(context: NextContext) {
   if (!isSignedIn(context)) {
-    nookies.set(context, "redirect-back", context.asPath, {
+    console.log(context.req)
+    nookies.set(context, "redirect-back", context.req.originalUrl, {
       maxAge: 20 * 60,
       path: "/",
     })
