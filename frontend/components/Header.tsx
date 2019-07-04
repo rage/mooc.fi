@@ -51,7 +51,7 @@ function Header() {
     <AppBar position="static" color="inherit">
       <Toolbar>
         <NextI18Next.Link href="/">
-          <a href="/">
+          <a href="/" aria-label="MOOC.fi homepage">
             <LogoImage classes={{ root: classes.avatar }} />
           </a>
         </NextI18Next.Link>

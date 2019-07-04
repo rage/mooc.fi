@@ -119,7 +119,7 @@ function CourseCard({ course }) {
           <picture>
             <source srcSet={course.photo[0]} type="image/webp" />
             <source srcSet={course.photo[1]} type="image/png" />
-            <BackgroundImage src={course.photo[1]} />
+            <BackgroundImage src={course.photo[1]} alt="" />
           </picture>
         </span>
 
