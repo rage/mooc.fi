@@ -130,7 +130,8 @@ export const Courses = {
           language: "fi",
           description:
             "Course gives a practical introduction to data analysis using a large number of programming exercises and a project delving into the realm of a selected field of science. Starts on June 19th.",
-          link: "https://courses.helsinki.fi/en/aycsm90004en/129660063",
+          link:
+            "https://saskeli.github.io/data-analysis-with-python-summer-2019/",
         },
         {
           id: "sefdtgw4ya",
@@ -138,7 +139,8 @@ export const Courses = {
           language: "en",
           description:
             "Course gives a practical introduction to data analysis using a large number of programming exercises and a project delving into the realm of a selected field of science. Starts on June 19th.",
-          link: "https://courses.helsinki.fi/en/aycsm90004en/129660063",
+          link:
+            "https://saskeli.github.io/data-analysis-with-python-summer-2019/",
         },
       ],
       promote: false,
@@ -180,7 +182,7 @@ export const Courses = {
         },
       ],
       promote: true,
-      status: "Active",
+      status: "Ended",
       start_point: true,
     },
     {
@@ -226,7 +228,7 @@ export const Courses = {
         },
       ],
       promote: false,
-      status: "Active",
+      status: "Ended",
       start_point: true,
     },
     {
