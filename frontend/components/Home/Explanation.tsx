@@ -15,15 +15,17 @@ const ExplanationRoot = styled.div`
 const Title = styled(Typography)`
   padding-top: 2rem;
   padding-bottom: 2rem;
-  font-size: 72px;
+  font-size: 36px;
+  max-width: 60%;
   @media (min-width: 600px) {
-    font-size: 120px;
+    font-size: 48px;
   }
   @media (min-width: 960px) {
     margin-left: 1rem;
+    font-size: 52px;
   }
   @media (min-width: 1920px) {
-    font-size: 210px;
+    font-size: 82px;
   }
 `
 const Subtitle = styled(Typography)`
@@ -50,11 +52,16 @@ const CourseButton = styled(Button)`
   font-size: 24px;
   margin-left: 10%;
 `
-
-function Explanation({ t }) {
+interface ExplanationProps {
+  t: Function
+}
+function Explanation(props: ExplanationProps) {
+  const { t } = props
   return (
     <ExplanationRoot>
-      <Title component="h1">MOOC.fi</Title>
+      <Title component="h1" variant="h4">
+        {t("tagLine")}
+      </Title>
       <div>
         <Subtitle component="p">{t("intro")}</Subtitle>
         <CourseButton variant="contained" href="#courses-and-modules">

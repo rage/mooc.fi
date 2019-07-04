@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("md")]: {
         height: 500,
       },
-      maxWidth: 400,
     },
     imageSrc: {
       position: "absolute",
@@ -113,7 +112,7 @@ const BackgroundImage = styled.img`
 function CourseCard({ course }) {
   const classes = useStyles()
   return (
-    <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
+    <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
       <ButtonBase
         focusRipple
         className={classes.image}
