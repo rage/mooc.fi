@@ -74,7 +74,7 @@ const Home = (props: HomeProps) => {
   //on the current language
   const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
     Courses.allcourses,
-    "fi",
+    language,
   )
   console.log(courses)
 
@@ -92,7 +92,7 @@ const Home = (props: HomeProps) => {
     <div>
       <ExplanationHero />
       <NaviCardList />
-      <section id="coursesAndModules">
+      <section id="courses-and-modules">
         <CourseHighlights
           courses={courses.filter(c => c.promote === true)}
           title={t("highlightTitle")}

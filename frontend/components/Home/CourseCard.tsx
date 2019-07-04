@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       bottom: 0,
       backgroundColor: "white",
-      opacity: 0.8,
+      opacity: 0.6,
     },
     imageButton: {
       position: "absolute",
@@ -114,7 +114,12 @@ function CourseCard({ course }) {
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
-      <ButtonBase focusRipple className={classes.image} href={`${course.link}`}>
+      <ButtonBase
+        focusRipple
+        className={classes.image}
+        href={`${course.link}`}
+        disabled={course.status === "Upcoming"}
+      >
         <span className={classes.imageSrc}>
           <picture>
             <source srcSet={course.photo[0]} type="image/webp" />
@@ -122,7 +127,11 @@ function CourseCard({ course }) {
             <BackgroundImage src={course.photo[1]} alt="" />
           </picture>
         </span>
-
+        {course.status === "Upcoming" ? (
+          <span className={classes.imageBackdrop} />
+        ) : (
+          ""
+        )}
         <span className={classes.imageButton}>
           <Typography className={classes.title} align="left">
             {course.name}
