@@ -88,7 +88,11 @@ function NaviCard({ item }) {
           </Typography>
           <Typography align="left">
             <NextI18Next.Link href={item.link}>
-              <a href={item.link} className={classes.link}>
+              <a
+                href={item.link}
+                className={classes.link}
+                aria-label={item.linkText}
+              >
                 {item.linkText}
               </a>
             </NextI18Next.Link>

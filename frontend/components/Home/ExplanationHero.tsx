@@ -42,7 +42,7 @@ function ExplanationHero() {
     <ExplanationRoot>
       <Explanation />
       <BackDrop />
-      <BackgroundImage srcSet={image.srcSet} src={image.src} />
+      <BackgroundImage srcSet={image.srcSet} src={image.src} alt="" />
     </ExplanationRoot>
   )
 }

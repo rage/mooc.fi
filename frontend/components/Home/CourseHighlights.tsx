@@ -1,27 +1,42 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import Grid from "@material-ui/core/Grid"
 import ImageBanner from "./ImageBanner"
 import CourseCard from "./CourseCard"
 import Container from "../Container"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      marginTop: "1em",
-      display: "flex",
-      flexDirection: "column",
-      overflow: "hidden",
-      marginBottom: "5em",
-    },
-  }),
-)
+const Root = styled.section`
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 5em;
+`
 
-function CourseHighlights({ courses, title, headerImage, subtitle }) {
-  const classes = useStyles()
+type FilteredCourse = {
+  name: string
+  description: string
+  id: string
+  link: string
+  photo: any[]
+  promote: boolean
+  slug: string
+  start_point: boolean
+  status: string
+}
+
+interface CourseHighlightsProps {
+  courses: FilteredCourse[]
+  title: string
+  headerImage: any
+  subtitle: string
+}
+
+function CourseHighlights(props: CourseHighlightsProps) {
+  const { courses, title, headerImage, subtitle } = props
 
   return (
-    <section className={classes.root} id="coursesAndModules">
+    <Root>
       <ImageBanner title={title} image={headerImage} subtitle={subtitle} />
       <Container>
         <Grid container spacing={3}>
@@ -30,7 +45,7 @@ function CourseHighlights({ courses, title, headerImage, subtitle }) {
           ))}
         </Grid>
       </Container>
-    </section>
+    </Root>
   )
 }
 

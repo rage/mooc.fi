@@ -44,7 +44,10 @@ function CourseCard({ course }) {
             as={`/course/${course.slug}`}
             href={`/course?course=${course.slug}`}
           >
-            <a href={`/course?course=${course.slug}`}>
+            <a
+              href={`/course?course=${course.slug}`}
+              aria-label={`To the homepage of course ${course.name}`}
+            >
               <Button variant="contained" color="secondary" fullWidth>
                 <DashboardIcon />
                 Course Dashboard
