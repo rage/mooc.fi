@@ -9,6 +9,7 @@ import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "./__generated__/AllModules"
 import { Courses } from "../courseData"
+import CircularProgress from "@material-ui/core/CircularProgress"
 const highlightsBanner = require("../static/images/courseHighlightsBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
@@ -42,14 +43,40 @@ const AllModulesQuery = gql`
   }
 `
 
-const Home = ({ t, tReady }) => {
+type FilteredCourse = {
+  name: string
+  description: string
+  id: string
+  link: string
+  photo: any[]
+  promote: boolean
+  slug: string
+  start_point: boolean
+  status: string
+}
+
+interface HomeProps {
+  t: Function
+  tReady: boolean
+}
+
+const Home = (props: HomeProps) => {
+  const { t, tReady } = props
   const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
 
+  //save the default language of NextI18Next instance to state
   const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
+  //every time the i18n language changes, update the state
   useEffect(() => {
     setLanguage(NextI18Next.i18n.language)
   }, [NextI18Next.i18n.language])
-  const courses = filterAndModifyCoursesByLanguage(Courses.allcourses, "fi")
+  //use the language from state to filter shown courses to only those which have translations
+  //on the current language
+  const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
+    Courses.allcourses,
+    "fi",
+  )
+  console.log(courses)
 
   if (error) {
     ;<div>
@@ -58,38 +85,40 @@ const Home = ({ t, tReady }) => {
   }
 
   if (loading || !tReady) {
-    return <div>Loading</div>
+    return <CircularProgress />
   }
 
   return (
     <div>
       <ExplanationHero />
       <NaviCardList />
-      <CourseHighlights
-        courses={courses.filter(c => c.promote === true)}
-        title={t("highlightTitle")}
-        headerImage={highlightsBanner}
-        subtitle={t("highlightSubtitle")}
-      />
+      <section id="coursesAndModules">
+        <CourseHighlights
+          courses={courses.filter(c => c.promote === true)}
+          title={t("highlightTitle")}
+          headerImage={highlightsBanner}
+          subtitle={t("highlightSubtitle")}
+        />
 
-      <CourseHighlights
-        courses={courses.filter(c => c.status === "Active")}
-        title={t("allCoursesTitle")}
-        headerImage={allCoursesBanner}
-        subtitle={""}
-      />
-      <CourseHighlights
-        courses={courses.filter(c => c.status === "Upcoming")}
-        title={t("upcomingCoursesTitle")}
-        headerImage={allCoursesBanner}
-        subtitle={""}
-      />
-      <CourseHighlights
-        courses={courses.filter(c => c.status === "Ended")}
-        title={t("endedCoursesTitle")}
-        headerImage={oldCoursesBanner}
-        subtitle={""}
-      />
+        <CourseHighlights
+          courses={courses.filter(c => c.status === "Active")}
+          title={t("allCoursesTitle")}
+          headerImage={allCoursesBanner}
+          subtitle={""}
+        />
+        <CourseHighlights
+          courses={courses.filter(c => c.status === "Upcoming")}
+          title={t("upcomingCoursesTitle")}
+          headerImage={allCoursesBanner}
+          subtitle={""}
+        />
+        <CourseHighlights
+          courses={courses.filter(c => c.status === "Ended")}
+          title={t("endedCoursesTitle")}
+          headerImage={oldCoursesBanner}
+          subtitle={""}
+        />
+      </section>
       <EmailSubscribe />
     </div>
   )
