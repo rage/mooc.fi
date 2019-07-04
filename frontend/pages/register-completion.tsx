@@ -12,7 +12,6 @@ import Container from "../components/Container"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { withRouter } from "next/router"
-import nookies from "nookies"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -154,12 +153,7 @@ const RegisterCompletion = ({ t, router }) => {
 
 RegisterCompletion.getInitialProps = function(context: NextContext) {
   if (!isSignedIn(context)) {
-    console.log(context.req)
-    nookies.set(context, "redirect-back", context.req.originalUrl, {
-      maxAge: 20 * 60,
-      path: "/",
-    })
-    redirect(context, "/sign-in")
+    redirect(context, "/sign-in", true)
   }
   return {
     namespacesRequired: ["register-completion"],

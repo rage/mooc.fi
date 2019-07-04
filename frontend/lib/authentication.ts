@@ -40,7 +40,7 @@ export const signIn = async ({
   if (details.administrator) {
     Nexti18next.Router.push("/courses")
   } else {
-    Nexti18next.Router.push("/register-completion")
+    window.history.back()
   }
   return res
 }
