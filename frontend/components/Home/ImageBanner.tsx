@@ -20,6 +20,7 @@ const BackgroundImage = styled.img`
   z-index: -2;
 `
 const Title = styled(Typography)`
+  font-family: "Open Sans Condensed", sans-serif !important;
   margin-top: 2rem;
   margin-left: 2rem;
   margin-bottom: 1rem;
@@ -34,6 +35,7 @@ const Title = styled(Typography)`
   }
 `
 const Subtitle = styled(Typography)`
+  font-family: "Open Sans Condensed", sans-serif !important;
   margin-left: 2rem;
   width: 55%;
   @media (min-width: 320px) {
@@ -46,8 +48,14 @@ const Subtitle = styled(Typography)`
     font-size: 32px;
   }
 `
+interface ImageBannerProps {
+  image: any
+  title: string
+  subtitle: string
+}
 
-function ImageBanner({ image, title, subtitle }) {
+function ImageBanner(props: ImageBannerProps) {
+  const { image, title, subtitle } = props
   return (
     <BannerRoot>
       <Title component="h2">{title}</Title>
