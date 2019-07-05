@@ -16,6 +16,7 @@ import withApolloClient from "../lib/with-apollo-client"
 import NextI18Next from "../i18n"
 import theme from "../src/theme"
 import OpenSansCondensed from "typeface-open-sans-condensed"
+import Roboto from "typeface-roboto"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 
