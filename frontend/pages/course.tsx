@@ -10,9 +10,6 @@ import AdminError from "../components/Dashboard/AdminError"
 import CourseDashboard from "../components/Dashboard/CourseDashboard"
 import { NextContext } from "next"
 import { WideContainer } from "../components/Container"
-import { ApolloClient, gql } from "apollo-boost"
-import { CourseDetails as CourseDetailsData } from "./__generated__/CourseDetails"
-import { useQuery } from "react-apollo-hooks"
 import { withRouter } from "next/router"
 import CourseLanguageContext from "../contexes/CourseLanguageContext"
 
@@ -24,18 +21,12 @@ const MapTypeToComponent = {
   0: <CourseDashboard />,
 }
 
-export const CourseQuery = gql`
-  query CourseDetails($slug: String) {
-    course(slug: $slug) {
-      id
-      name
-    }
-  }
-`
-
 const Course = withRouter(props => {
   const { admin, router } = props
-  const slug = router.query.course
+  let slug
+  if (router && router.query) {
+    slug = router.query.course
+  }
 
   if (!admin) {
     return <AdminError />
@@ -47,7 +38,10 @@ const Course = withRouter(props => {
   //store which tab is open
   const [selection, setSelection] = useState(0)
 
-  const handleSelectionChange = (event, value) => {
+  const handleSelectionChange = (
+    event: React.ChangeEvent<{}>,
+    value: number,
+  ) => {
     setSelection(value)
   }
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
