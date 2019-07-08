@@ -1,6 +1,7 @@
 import React from "react"
 import App, { Container } from "next/app"
 import Router from "next/router"
+import { initGA, logPageView } from "../lib/gtag"
 import * as gtag from "../lib/gtag"
 import Head from "next/head"
 import { MuiThemeProvider } from "@material-ui/core/styles"
@@ -16,14 +17,17 @@ import withApolloClient from "../lib/with-apollo-client"
 import NextI18Next from "../i18n"
 import theme from "../src/theme"
 import OpenSansCondensed from "typeface-open-sans-condensed"
+import Roboto from "typeface-roboto"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 
 fontAwesomeConfig.autoAddCss = false
-Router.events.on("routeChangeComplete", url => gtag.pageview(url))
 
 class MyApp extends App {
   componentDidMount() {
+    initGA()
+    logPageView()
+    Router.router.events.on("routeChangeComplete", logPageView)
     const jssStyles = document.querySelector("#jss-server-side")
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)
