@@ -15,6 +15,9 @@ const ExplanationRoot = styled.div`
   @media (min-width: 425px) {
     max-width: 70%;
   }
+  @media (min-width: 1920px) {
+    max-width: 40%;
+  }
 `
 
 const Title = styled(Typography)`
