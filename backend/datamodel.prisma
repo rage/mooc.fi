@@ -223,3 +223,11 @@ type UserCourseSettings {
   course_variant: String
   other: Json
 }
+
+type UserAppDatumConfig {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  name: String @unique
+  timestamp: DateTime
+}
