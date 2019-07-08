@@ -19,6 +19,7 @@ export const AllCoursesQuery = gql`
       id
       name
       slug
+      photo
     }
     currentUser {
       id

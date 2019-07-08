@@ -1,5 +1,7 @@
 import React from "react"
 import App, { Container } from "next/app"
+import Router from "next/router"
+import * as gtag from "../lib/gtag"
 import Head from "next/head"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import { StylesProvider } from "@material-ui/styles"
@@ -13,12 +15,13 @@ import UserDetailContext from "../contexes/UserDetailContext"
 import withApolloClient from "../lib/with-apollo-client"
 import NextI18Next from "../i18n"
 import theme from "../src/theme"
-
 import OpenSansCondensed from "typeface-open-sans-condensed"
+import Roboto from "typeface-roboto"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 
 fontAwesomeConfig.autoAddCss = false
+Router.events.on("routeChangeComplete", url => gtag.pageview(url))
 
 class MyApp extends App {
   componentDidMount() {
@@ -34,7 +37,7 @@ class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>Points</title>
+          <title>MOOC.fi</title>
         </Head>
         <StylesProvider injectFirst>
           <MuiThemeProvider theme={theme}>
@@ -63,10 +66,13 @@ const originalGetIntialProps = MyApp.getInitialProps
 
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
+
   let originalProps = {}
+
   if (originalGetIntialProps) {
     originalProps = (await originalGetIntialProps(arg)) || {}
   }
+
   return {
     ...originalProps,
     signedIn: isSignedIn(ctx),
@@ -74,4 +80,6 @@ MyApp.getInitialProps = async arg => {
   }
 }
 
-export default withApolloClient(NextI18Next.appWithTranslation(MyApp))
+const withTranslation = NextI18Next.appWithTranslation(MyApp)
+
+export default withApolloClient(withTranslation)

@@ -5,7 +5,6 @@ import HeaderCard from "./HeaderCard"
 import CompletionPaginator from "./CompletionPaginator"
 
 const CompletionsListWithData = props => {
-  console.log(props)
   const { completions, onLoadMore, onGoBack, pageNumber } = props
   return (
     <Grid container spacing={3} justify="center">

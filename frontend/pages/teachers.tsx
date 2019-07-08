@@ -48,13 +48,39 @@ const ForTeachers = ({ t, i18n }) => {
     <section>
       <ContentBlock>
         <Header variant="h3">{t("siteTitle")}</Header>
-        <TextBlock>{t("siteIntro")}</TextBlock>
+        <TextBlock>
+          <NextI18Next.Trans i18nKey="teachers:siteIntro">
+            You can utilize most of our materials freely. Most of them are
+            licenced with
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">
+              Creative Commons BY-NC-SA
+            </a>
+            -licence, but check the course materials for confirmation. Creative
+            Commons BY-NC-SA -licence means that you can use the materials
+            either as is or modify them to better suit your teaching purposes as
+            long as you preserve the information of the original creators in the
+            materials, and the usage is non-commercial.
+          </NextI18Next.Trans>
+        </TextBlock>
       </ContentBlock>
       <ContentBlock>
         <StyledIcon icon={faGraduationCap} size="3x" />
         <Header variant="h4">{t("teachingTitle")}</Header>
-
-        <TextBlock>{t("teachingText")}</TextBlock>
+        <TextBlock>
+          <NextI18Next.Trans i18nKey="teachers:teachingText">
+            Voit hyödyntää suurinta osaa tarjoamistamme materiaaleista vapaasti.
+            Materiaaleissamme on lähes poikkeuksetta käytetty
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fi">
+              Creative Commons BY-NC-SA
+            </a>
+            -lisenssiä, mutta tarkista vielä lisenssi materiaalista. Creative
+            Commons BY-NC-SA -lisenssi tarkoittaa sitä, että voit käyttää
+            materiaaleja joko sellaisenaan tai muokata niitä paremmin omaan
+            opetukseesi sopivaksi, kunhan säilytät tiedon alkuperäisistä
+            tekijöistä materiaalissa ja et tavoittele materiaaleillamme
+            itsellesi kaupallista hyötyä.
+          </NextI18Next.Trans>
+        </TextBlock>
         <TextBlock>{t("teachingText2")}</TextBlock>
         <TextBlock>{t("teachingText3")}</TextBlock>
       </ContentBlock>
@@ -74,7 +100,12 @@ const ForTeachers = ({ t, i18n }) => {
       <ContentBlock>
         <StyledIcon icon={faPlusSquare} size="3x" />
         <Header variant="h4">{t("howtoTitle")}</Header>
-        <TextBlock>{t("howtoText")}</TextBlock>
+        <TextBlock>
+          <NextI18Next.Trans i18nKey="teachers:howtoText">
+            Aloita luomalla itsellesi käyttäjätunnus sivustolle
+            <a href="https://tmc.mooc.fi/">https://tmc.mooc.fi/</a>
+          </NextI18Next.Trans>
+        </TextBlock>
         <TextBlock>{t("howtoText2")}</TextBlock>
         <StyledButton
           variant="contained"
@@ -83,7 +114,9 @@ const ForTeachers = ({ t, i18n }) => {
         >
           {t("tmcButtonText")}
         </StyledButton>
-        <TextBlock>{t("howtoNB")}</TextBlock>
+        <TextBlock>
+          <NextI18Next.Trans i18nKey="teachers:howtoNB" />
+        </TextBlock>
       </ContentBlock>
       {i18n.language === "fi" ? (
         <section>
@@ -97,7 +130,17 @@ const ForTeachers = ({ t, i18n }) => {
           <ContentBlock>
             <StyledIcon icon={faBook} size="3x" />
             <Header variant="h4">{t("2016Title")}</Header>
-            <TextBlock>{t("2016Text")}</TextBlock>
+            <TextBlock>
+              <NextI18Next.Trans i18nKey="teachers:2016Text">
+                Lähivuosina kaikki opettelevat ohjelmointia peruskoulusta asti.
+                Tämä vaatii opettajilta ohjelmointiosaamista. Suosittelemme
+                opettajille opetuksen tueksi erityisesti
+                <a href="http://koodiaapinen.fi/">Koodiaapista</a>. Koodiaapinen
+                kerää ja tarjoaa opettajille suunnattuja resursseja, jotka
+                auttavat ohjelmointiopetuksen järjestämisessä. Voit osallistua
+                koodiaapisen luomiseen myös itse.
+              </NextI18Next.Trans>
+            </TextBlock>
           </ContentBlock>
         </section>
       ) : (
@@ -106,10 +149,12 @@ const ForTeachers = ({ t, i18n }) => {
       <ContentBlock>
         <StyledIcon icon={faComments} size="3x" />
         <Header variant="h4">{t("contactTitle")}</Header>
-        <NextI18Next.Trans i18nKey="contactText">
-          Saat meihin parhaiten yhteyden lähettämällä sähköpostia osoitteeseen{" "}
-          <a href="https://tmc.mooc.fi/">mooc@cs.helsinki.fi</a>{" "}
-        </NextI18Next.Trans>
+        <TextBlock>
+          <NextI18Next.Trans i18nKey="teachers:contactText">
+            Saat meihin parhaiten yhteyden lähettämällä sähköpostia osoitteeseen
+            <a href="https://tmc.mooc.fi/">mooc@cs.helsinki.fi</a>
+          </NextI18Next.Trans>
+        </TextBlock>
       </ContentBlock>
     </section>
   )

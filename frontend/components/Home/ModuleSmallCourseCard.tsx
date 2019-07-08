@@ -30,7 +30,11 @@ function ModuleSmallCourseCard({ course }) {
   return (
     <Grid item xs={12} sm={6} md={4} lg={4}>
       <Button>
-        <a href={`${course.link}`} style={{ textDecoration: "none" }}>
+        <a
+          href={`${course.link}`}
+          style={{ textDecoration: "none" }}
+          aria-label={`To the course homepage of ${course.name}`}
+        >
           <CourseTitle align="left">{course.name}</CourseTitle>
           <CourseText paragraph>{course.description}</CourseText>
         </a>

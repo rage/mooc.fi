@@ -18,8 +18,7 @@ const useStyles = makeStyles(theme => ({
 
 function LanguageSelectorForm({ handleLanguageChange, languageValue }) {
   const classes = useStyles()
-  console.log(languageValue)
-  console.log(handleLanguageChange)
+
   return (
     <FormControl component="fieldset">
       <RadioGroup
