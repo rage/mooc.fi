@@ -85,8 +85,8 @@ const RegisterCompletion = ({ t, router }) => {
 
   const mapLanguageToLink = {
     fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330",
-    en_EN: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202817",
-    se_SE: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+    en_US: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202817",
+    sv_SE: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
   }
 
   if (!completion) {
