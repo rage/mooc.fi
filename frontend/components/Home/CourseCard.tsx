@@ -3,6 +3,7 @@ import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
+import ReactGA from "react-ga"
 
 const CourseImage = styled.img`
   width: 100%;
@@ -12,6 +13,7 @@ const CourseImage = styled.img`
 
 const Background = styled(ButtonBase)`
   background-color: white;
+
   position: relative;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
@@ -32,6 +34,7 @@ const Background = styled(ButtonBase)`
 const TextArea = styled.div`
   padding: 0.5rem;
   height: 180px;
+  color: black;
   @media (max-width: 600px) {
     height: 100%;
     width: 80%;
@@ -96,45 +99,30 @@ function CourseCard(props: CourseCardProps) {
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <Background focusRipple disabled={course.status === "Upcoming"}>
-        <ImageArea>
-          <ImageInWebp
-            photo={course.photo}
-            isUpcoming={course.status === "Upcoming"}
-          />
-        </ImageArea>
-        <TextArea>
-          <Typography component="h3" variant="h6" gutterBottom={true}>
-            {course.name}
-          </Typography>
-          <Typography component="p" paragraph align="left">
-            {course.description}
-          </Typography>
-        </TextArea>
+        <ReactGA.OutboundLink
+          eventLabel={`coursesite:${course.name}`}
+          to={course.link}
+          target="_blank"
+          style={{ textDecoration: "none", display: "flex" }}
+        >
+          <ImageArea>
+            <ImageInWebp
+              photo={course.photo}
+              isUpcoming={course.status === "Upcoming"}
+            />
+          </ImageArea>
+          <TextArea>
+            <Typography component="h3" variant="h6" gutterBottom={true}>
+              {course.name}
+            </Typography>
+            <Typography component="p" paragraph align="left">
+              {course.description}
+            </Typography>
+          </TextArea>
+        </ReactGA.OutboundLink>
       </Background>
     </Grid>
   )
 }
 
 export default CourseCard
-
-/*<span className={classes.imageSrc}>
-<picture>
-  <source srcSet={course.photo[0]} type="image/webp" />
-  <source srcSet={course.photo[1]} type="image/png" />
-  <BackgroundImage src={course.photo[1]} alt="" />
-</picture>
-</span>
-{course.status === "Upcoming" ? (
-<span className={classes.imageBackdrop} />
-) : (
-""
-)}
-<span className={classes.imageButton}>
-<Typography className={classes.title} align="left">
-  {course.name}
-</Typography>
-<Typography className={classes.bodyText} paragraph>
-  {course.description}
-</Typography>
-</span>*/
-//href={`${course.link}`}
