@@ -33,10 +33,14 @@ export const signIn = async ({
   const details = await userDetails(res.accessToken)
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
+  const back = nookies.get()["redirect-back"]
+  if (back) {
+    Nexti18next.Router.push(back)
+  }
   if (details.administrator) {
     Nexti18next.Router.push("/courses")
   } else {
-    Nexti18next.Router.push("/register-completion")
+    window.history.back()
   }
   return res
 }

@@ -37,7 +37,7 @@ class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>Points</title>
+          <title>MOOC.fi</title>
         </Head>
         <StylesProvider injectFirst>
           <MuiThemeProvider theme={theme}>
