@@ -1,14 +1,19 @@
-const data = require("../appdatum.json")
+require("dotenv-safe").config()
 import { uniqBy } from "lodash"
 import { Prisma } from "../generated/prisma-client"
+import TmcClient from "../services/tmc"
+
+const tmc = new TmcClient()
 
 const doIt = async () => {
+  const data = await tmc.getUserAppDatum(null)
+  console.log(data)
   let x = data.filter(
     p =>
       p.namespace === "elements-of-ai" &&
       (p.field_name == "language" && p.value == "se"),
   )
-  x = uniqBy(x, x.user_id)
+  x = uniqBy(x, p => p.user_id)
   console.log(x.length)
   const prisma: Prisma = new Prisma()
   let counter = 0

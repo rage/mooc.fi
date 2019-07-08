@@ -7,7 +7,6 @@ import {
   User,
 } from "../generated/prisma-client"
 import { UserInfo } from "../domain/UserInfo"
-import * as fs from "fs"
 
 const prisma: Prisma = new Prisma()
 let course: Course
@@ -16,9 +15,25 @@ let old: UserCourseSettings
 const fetcUserAppDatum = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
-  const config = require("./userAppDatumConfig.json")
-  const latestTimeStamp = config.latest_timestamp
-  config.latest_timestamp = currentDate()
+
+  const prisma: Prisma = new Prisma()
+  const startTimestamp = new Date()
+  const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
+    name: "userAppDatum",
+  }))
+    ? (await prisma.userAppDatumConfig({ name: "userAppDatum" })).timestamp
+    : null
+  console.log(latestTimeStamp)
+  await prisma.upsertUserAppDatumConfig({
+    where: { name: "userAppDatum" },
+    create: {
+      name: "userAppDatum",
+      timestamp: new Date(),
+    },
+    update: {
+      timestamp: new Date(),
+    },
+  })
   const data = await tmc.getUserAppDatum(latestTimeStamp)
 
   console.log("data length", data.length)
@@ -92,12 +107,16 @@ const fetcUserAppDatum = async () => {
         saveOther(p)
     }
   }
-  console.log(config)
-  await fs.writeFile(
-    "./bin/userAppDatumConfig.json",
-    await JSON.stringify(config),
-    e => console.log(e),
-  )
+  await prisma.upsertUserAppDatumConfig({
+    where: { name: "userAppDatum" },
+    create: {
+      name: "userAppDatum",
+      timestamp: startTimestamp,
+    },
+    update: {
+      timestamp: startTimestamp,
+    },
+  })
   const stopTime = new Date().getTime()
   console.log("used", stopTime - startTime, "milliseconds")
 }
