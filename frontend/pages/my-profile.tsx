@@ -5,7 +5,7 @@ import { NextContext } from "next"
 import redirect from "../lib/redirect"
 
 function MyProfile() {
-  return <div>PROFIILISIVUJEEEEEE</div>
+  return <div>UNDER CONSTRUCTION</div>
 }
 
 MyProfile.getInitialProps = function(context: NextContext) {
