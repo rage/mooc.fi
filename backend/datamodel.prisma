@@ -26,13 +26,13 @@ type Course @db(name: "course") {
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   name: String!
-  "identify course in other api querys"
+  "identify course in other api Equerys"
   slug: String! @unique
   "aliases that can be used in this this api instead of slug "
   course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
   services: [Service] @relation(name: "CourseToService")
   photo: String
-  course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation")
+  course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation", onDelete: CASCADE)
   promote: Boolean
   status: CourseStatus
   study_module: StudyModule @relation(link: INLINE, name: "StudyModuleToCourse")
@@ -61,7 +61,7 @@ type CourseTranslation @db(name:"course_translation"){
   language: String!
   description: String!
   link: String!
-  course: Course! @relation(link: INLINE, name:"CourseToCourseTranslation")
+  course: Course! @relation(link: INLINE, name:"CourseToCourseTranslation", onDelete: SET_NULL)
 }
 
 type Completion @db(name: "completion") {

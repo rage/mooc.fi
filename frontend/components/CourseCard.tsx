@@ -27,6 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CourseCard({ course }) {
   const classes = useStyles()
+  console.log(course)
+  
   return (
     <Grid item xs={12} sm={6} lg={3}>
       <Card className={classes.card}>
@@ -35,7 +37,8 @@ function CourseCard({ course }) {
           alt="Course Logo"
           image={
             course
-              ? require(`../static/images/courseimages/${course.slug}.png`)
+              ? course.photo || 
+                require(`../static/images/courseimages/${course.slug}.png`)
               : ""
           }
           className={classes.media}
@@ -57,13 +60,17 @@ function CourseCard({ course }) {
           </Typography>
         </CardContent>
         <CardActionArea>
+
           {course ? (
             <React.Fragment>
               <NextI18Next.Link
                 as={`/course/${course.slug}`}
                 href={`/course?course=${course.slug}`}
               >
-                <a href={`/course?course=${course.slug}`}>
+                <a 
+                  href={`/course?course=${course.slug}`}
+                  aria-label={`To the homepage of course ${course.name}`}
+                >
                   <Button variant="contained" color="secondary" fullWidth>
                     <DashboardIcon />
                     Course Dashboard

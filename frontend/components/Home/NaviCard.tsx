@@ -1,100 +1,82 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import NextI18Next from "../../i18n"
 import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    image: {
-      position: "relative",
-      height: 250,
-      width: "100%",
-      boxShadow:
-        "0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2)",
-      overflow: "hidden",
-    },
-    imageSrc: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      backgroundSize: "cover",
-      backgroundPosition: "center 40%",
-    },
-    imageBackdrop: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    },
-    imageButton: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      alignItems: "left",
-      display: "flex",
-      flexDirection: "column",
-      paddingBottom: "1em",
-      paddingTop: "1em",
-    },
-    title: {
-      fontSize: 22,
-      marginBottom: "0.5rem",
-      marginLeft: "1rem",
-      maxWidth: "60%",
-    },
-    bodyText: {
-      fontSize: 16,
-      maxWidth: "55%",
-      textAlign: "left",
-      margin: 0,
-      marginLeft: "1rem",
-      flex: 1,
-    },
-    link: {
-      color: "#00A68D",
-      fontSize: 18,
-      maxWidth: "60%",
-      textAlign: "left",
-      marginLeft: "1rem",
-    },
-  }),
-)
+const NaviItemBase = styled(ButtonBase)`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+`
+const BackgroundImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+`
 
-function NaviCard({ item }) {
-  const classes = useStyles()
+const Link = styled.a`
+  color: #00a68d;
+  font-size: 18px;
+`
+const TextBackground = styled.span`
+  width: 75%;
+  height: 100%;
+  margin-right: 25%;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 0.5rem;
+`
+type NaviItem = {
+  title: string
+  text: string
+  linkText: string
+  img: string
+  link: string
+}
+
+interface NaviCardProps {
+  item: NaviItem
+}
+
+function NaviCard(props: NaviCardProps) {
+  const { item } = props
   const image = require(`../../static/images/${item.img}`)
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-      <ButtonBase focusRipple className={classes.image}>
-        <span
-          className={classes.imageSrc}
-          style={{ backgroundImage: `url(${image})` }}
-        />
-        <span className={classes.imageBackdrop} />
-        <span className={classes.imageButton}>
-          <Typography className={classes.title} align="left">
+    <Grid item xs={12} sm={6} md={6} lg={4}>
+      <NaviItemBase focusRipple>
+        <BackgroundImage src={image} alt="" />
+        <TextBackground>
+          <Typography
+            component="h3"
+            variant="h5"
+            gutterBottom={true}
+            align="left"
+          >
             {item.title}
           </Typography>
-          <Typography className={classes.bodyText} paragraph>
+          <Typography component="p" align="left" paragraph>
             {item.text}
           </Typography>
           <Typography align="left">
             <NextI18Next.Link href={item.link}>
-              <a href={item.link} className={classes.link}>
+              <Link href={item.link} aria-label={item.linkText}>
                 {item.linkText}
-              </a>
+              </Link>
             </NextI18Next.Link>
           </Typography>
-        </span>
-      </ButtonBase>
+        </TextBackground>
+      </NaviItemBase>
     </Grid>
   )
 }

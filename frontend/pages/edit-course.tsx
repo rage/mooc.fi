@@ -8,7 +8,7 @@ import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
 import CourseEditForm from "../components/Dashboard/CourseEdit"
 import { withRouter } from "next/router"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery, useMutation } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 
 // import { Courses as courseData } from "../courseData.js"
@@ -24,6 +24,7 @@ export const CourseQuery = gql`
       start_point
       status
       course_translations {
+        id
         name
         language
         description
@@ -78,7 +79,8 @@ const EditCourse = withRouter(props => {
         >
           {data.course ? "Edit course" : "Create a new course"}
         </Typography>
-        <CourseEditForm course={data.course} />
+        <CourseEditForm 
+          course={data.course} />
       </WideContainer>
     </section>
   )

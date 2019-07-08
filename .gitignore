@@ -8,3 +8,5 @@ dist
 *secret.yml
 backend/generated
 frontend/firebase.config.js
+frontend/MOOCfi-*.json
+backend/MOOCfi-*.json

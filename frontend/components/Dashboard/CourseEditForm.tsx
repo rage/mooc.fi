@@ -8,6 +8,7 @@ import {
   LinearProgress,
   Paper,
   Button,
+  ButtonBase
 } from "@material-ui/core"
 import { Formik, Field, FieldArray, Form, FormikProps } from "formik"
 import {
@@ -20,18 +21,22 @@ import {
 } from "formik-material-ui"
 import * as Yup from "yup"
 import get from "lodash/get"
+import pullAll from "lodash/pullAll"
+import { useApolloClient } from "react-apollo-hooks"
+import Dropzone, { useDropzone } from "react-dropzone"
+import styled from "styled-components"
 
 const statuses = [
   {
-    value: "upcoming",
+    value: "Upcoming",
     label: "Upcoming",
   },
   {
-    value: "active",
+    value: "Active",
     label: "Active",
   },
   {
-    value: "ended",
+    value: "Ended",
     label: "Ended",
   },
 ]
@@ -49,7 +54,7 @@ const languages = [
 
 const CourseEditSchema = Yup.object().shape({
   name: Yup.string().required("required"),
-  slug: Yup.string().required("required"),
+  new_slug: Yup.string().required("required"),
   status: Yup.mixed()
     .oneOf(statuses.map(s => s.value))
     .required("required"),
@@ -60,7 +65,7 @@ const CourseEditSchema = Yup.object().shape({
         .oneOf(languages.map(l => l.value))
         .required("required"),
       description: Yup.string(),
-      link: Yup.string().url(),
+      link: Yup.string().url().required("required"),
     }),
   ),
 })
@@ -68,7 +73,9 @@ const CourseEditSchema = Yup.object().shape({
 const initialValues = {
   name: "",
   slug: "",
+  new_slug: "",
   photo: undefined,
+  new_photo: undefined,
   start_point: false,
   promote: false,
   status: "Upcoming",
@@ -83,12 +90,49 @@ const initialTranslation = {
   link: undefined,
 }
 
-const Thumbnail = ({ file }: { file: Blob | undefined }) => {
-  const [loading, setLoading] = useState(true)
+const CloseButton = styled(ButtonBase)`
+  position: relative;
+  top: -10px;
+  right: -10px;
+  border-radius: 10em;
+  padding: 2px 6px 3px;
+  text-decoration: none;
+  font: 700 21px/20px sans-serif;
+  background: #555;
+  border: 3px solid #fff;
+  color: #FFF;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  -webkit-transition: background 0.5s;
+  transition: background 0.5s;
+
+  :hover {
+    background: #E54E4E;
+    padding: 3px 7px 5px;
+    top: -11px;
+    right: -11px;
+  }
+
+  :active {
+    background: #E54E4E;
+    top: -10px;
+    right: -11px;
+  }
+`
+
+const Thumbnail = ({ file, onDelete }: { file: string | undefined }) => {
+/*   const [loading, setLoading] = useState(true)
   const [image, setImage] = useState<any>(undefined)
 
   useEffect(() => {
     if (!file) {
+      return
+    }
+
+    if (typeof file === 'string') {
+      setImage(file)
+      setLoading(false)
+      
       return
     }
 
@@ -108,9 +152,76 @@ const Thumbnail = ({ file }: { file: Blob | undefined }) => {
 
   if (loading || !image) {
     return null
+  } */
+
+  if (!file) {
+    return null
   }
 
-  return <img src={image} height={250} />
+  return (
+    <div>
+      <CloseButton onClick={(e) => {
+        e.stopPropagation()
+        e.nativeEvent.stopImmediatePropagation()
+        onDelete(e) 
+      }}
+        >&times;
+      </CloseButton>
+      <img src={file} height={250} />
+    </div>
+  )
+}
+
+const ImageDropzoneInput = ({
+  field,
+  form,
+  ...props
+}) => {
+  const { touched, errors, setFieldValue } = form
+  const [error, setError] = useState<string | null>(null)
+
+  const onDrop = (accepted: any[], rejected: any[]) => {
+    const reader = new FileReader()
+
+    reader.onload = () => setFieldValue(field.name, reader.result)
+
+    if (accepted.length) {
+      reader.readAsDataURL(accepted[0])
+    }
+
+    if (rejected.length) {
+      setError("not an image!")
+    } else {
+      setError("")
+    }
+  }
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
+    onDrop,
+    accept: 'image/*',
+    multiple: false,
+    preventDropOnDocument: true
+  })
+
+  return (
+    <div {...getRootProps()}>
+      <Thumbnail 
+        file={form.values[field.name] || form.values.photo}
+        onDelete={() => setFieldValue(field.name, null)} 
+      />
+      <input {...getInputProps()} />
+      {
+        isDragActive ? 
+          <p>Drop an image file here</p> :
+          <p>Drop image or click to select</p>
+      }
+      {
+        error ?
+          <p>{error}</p>
+          : null
+      }
+    </div>
+  )
 }
 
 const languageFilter = (index: number, course_translations: Array<any>) =>
@@ -144,10 +255,10 @@ const renderForm = ({
     />
     <br />
     <Field
-      name="slug"
+      name="new_slug"
       type="text"
       label="Slug"
-      error={errors.slug}
+      error={errors.new_slug}
       fullWidth
       component={TextField}
     />
@@ -194,14 +305,15 @@ const renderForm = ({
         <div style={{ color: "red" }}>required</div>
       ) : null}
     </FormControl>
+    <br />
+    <InputLabel>Photo</InputLabel>
     <Field
-      name="photo"
+      name="new_photo"
       type="file"
-      label="Photo"
+      label="Upload new photo"
       fullWidth
-      component={SimpleFileUpload}
+      component={ImageDropzoneInput}
     />
-    <Thumbnail file={values.photo} />
     <br />
     <FieldArray
       name="course_translations"
@@ -261,6 +373,12 @@ const renderForm = ({
                   name={`course_translations[${index}].link`}
                   type="text"
                   label="Link"
+                  errors={getError(
+                    errors,
+                    "course_translations",
+                    index,
+                    "link",
+                  )}
                   fullWidth
                   component={TextField}
                 />
@@ -270,7 +388,7 @@ const renderForm = ({
                   0 ? (
                   <Button
                     variant="contained"
-                    onClick={() => helpers.push(initialTranslation)}
+                    onClick={() => helpers.push({ ...initialTranslation })}
                   >
                     +
                   </Button>
@@ -308,27 +426,111 @@ const renderForm = ({
   </Form>
 )
 
+const validate = props => values => {
+  // TODO: either use validationSchema here or validate otherwise
+  return new Promise(async resolve => {
+    let errors = {}
+
+    if (values.new_slug) {
+      let res
+
+      try {
+        res = await props.client.query({ query: props.checkSlug, variables: { slug: values.new_slug } })
+      } catch (e) {
+        return
+      }
+
+      const { data } = res
+
+      const existing = data.course && data.course.id
+  
+      if (existing) {
+        if (values.id && values.id !== existing) {
+          errors.new_slug = "must be unique"
+        }
+      }
+    } else {
+      errors.new_slug = "required"
+    }
+
+    return resolve(errors)
+  })
+  .then(errors => {
+    if (Object.keys(errors).length) {
+      throw errors
+    }
+  })
+}
+
 const CourseEditForm = ({
   course,
-  firebaseUpload,
+  addCourse,
+  updateCourse,
+  addCourseTranslation,
+  updateCourseTranslation,
+  deleteCourseTranslation,
+  checkSlug
 }: {
   course: any
-  firebaseUpload: Function
-}) => (
-  <Formik
-    initialValues={course || initialValues}
-    validationSchema={CourseEditSchema}
-    onSubmit={(values, { setSubmitting }) => {
-      console.log("submitted", JSON.stringify(values))
-      if (values.photo) {
-        firebaseUpload(values.photo).then((snapshot: any) => {
-          console.log("uploaded and got", snapshot)
-        })
-      }
-      setSubmitting(false)
-    }}
-    render={renderForm}
-  />
-)
+  firebaseUpload: Function,
+  addCourse: Function,
+  updateCourse: Function,
+  addCourseTranslation: Function,
+  updateCourseTranslation: Function,
+  deleteCourseTranslation: Function,
+  checkSlug: Function
+}) => {
+  const init = course ? { ...course, new_slug: course.slug } : initialValues
+  const initialTranslationIds = (init.course_translations || []).map(t => t.id)
+  const client = useApolloClient()
+
+  return (
+    <Formik 
+      initialValues={init} 
+      validate={validate({ client, checkSlug })}
+      onSubmit={async (values, { setSubmitting, setFieldValue }) => {
+        console.log(JSON.stringify(values))
+        if (values.id) {
+          const updated = await updateCourse({ variables: { ...values, id: undefined } })
+          
+          await Promise.all((values.course_translations || []).map(t => {
+            if (t.id) {
+              return updateCourseTranslation({ variables: { ...t, course: values.id } })
+            } else {
+              return addCourseTranslation({ variables: { ...t, course: values.id } })
+            }
+          }))
+
+          const removedTranslationIds = pullAll(
+            initialTranslationIds,
+            (values.course_translations || []).map(t => t.id)
+          )
+          await Promise.all(removedTranslationIds.map(id => 
+            deleteCourseTranslation({ variables: { id }})  
+          ))
+
+          if (values.new_photo) {
+            setFieldValue('photo', updated.data.updateCourse.photo)
+            setFieldValue('new_photo', undefined)
+          }
+        }
+        else {
+          const added = await addCourse({ variables: { ...values, slug: values.new_slug } })
+          await Promise.all((values.course_translations || []).map(t => {
+            return addCourseTranslation({ variables: { ...t, course: added.data.addCourse.id }})
+          }))
+
+          if (values.new_photo) {
+            setFieldValue('photo', added.data.addCourse.photo)
+            setFieldValue('new_photo', undefined)
+          }
+        }
+
+        setSubmitting(false)
+      }} 
+      render={renderForm} 
+    />
+  )
+}
 
 export default CourseEditForm

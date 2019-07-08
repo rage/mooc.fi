@@ -1,6 +1,6 @@
 import { Prisma, CourseTranslation } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, stringArg } from "nexus/dist"
+import { idArg, stringArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const addCourseTranslation = async (
@@ -64,11 +64,31 @@ const updateCourseTranslation = (
   })
 }
 
+const deleteCourseTranslation = (
+  t: PrismaObjectDefinitionBlock<"Mutation">,
+) => {
+  t.field("deleteCourseTranslation", {
+    type: "CourseTranslation",
+    args: {
+      id: idArg({ required: true })
+    },
+    resolve: (_, args, ctx) => {
+      checkAccess(ctx)
+      const { id } = args
+      const prisma: Prisma = ctx.prisma
+
+      return prisma.deleteCourseTranslation({
+        id: id
+      })
+    }
+  })
+}
 const addCourseTranslationMutations = (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   addCourseTranslation(t)
   updateCourseTranslation(t)
+  deleteCourseTranslation(t)
 }
 
 export default addCourseTranslationMutations

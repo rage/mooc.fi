@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export function HeaderCard({ course }) {
-  console.log(course)
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={12} lg={8}>

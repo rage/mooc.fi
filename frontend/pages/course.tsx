@@ -51,7 +51,6 @@ const Course = withRouter(props => {
     setSelection(value)
   }
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    console.log(languageValue)
     setLanguageValue((event.target as HTMLInputElement).value)
   }
   return (
