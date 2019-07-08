@@ -1,6 +1,7 @@
 import React from "react"
 import App, { Container } from "next/app"
 import Router from "next/router"
+import { initGA, logPageView } from "../lib/gtag"
 import * as gtag from "../lib/gtag"
 import Head from "next/head"
 import { MuiThemeProvider } from "@material-ui/core/styles"
@@ -21,10 +22,12 @@ import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 
 fontAwesomeConfig.autoAddCss = false
-Router.events.on("routeChangeComplete", url => gtag.pageview(url))
 
 class MyApp extends App {
   componentDidMount() {
+    initGA()
+    logPageView()
+    Router.router.events.on("routeChangeComplete", logPageView)
     const jssStyles = document.querySelector("#jss-server-side")
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)

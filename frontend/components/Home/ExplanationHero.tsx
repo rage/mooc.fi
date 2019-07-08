@@ -7,7 +7,7 @@ const ExplanationRoot = styled.section`
   display: flex;
   position: relative;
   margin-bottom: 2rem;
-  height: 80vh;
+  height: 65vh;
 `
 
 const BackgroundImage = styled.img`
