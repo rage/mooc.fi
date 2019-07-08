@@ -94,7 +94,9 @@ const Home = (props: HomeProps) => {
       <NaviCardList />
       <section id="courses-and-modules">
         <CourseHighlights
-          courses={courses.filter(c => c.promote === true)}
+          courses={courses.filter(
+            c => c.promote === true && c.status === "Active",
+          )}
           title={t("highlightTitle")}
           headerImage={highlightsBanner}
           subtitle={t("highlightSubtitle")}

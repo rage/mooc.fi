@@ -103,7 +103,7 @@ function CourseCard(props: CourseCardProps) {
           eventLabel={`coursesite:${course.name}`}
           to={course.link}
           target="_blank"
-          style={{ textDecoration: "none" }}
+          style={{ textDecoration: "none", display: "flex" }}
         >
           <ImageArea>
             <ImageInWebp
