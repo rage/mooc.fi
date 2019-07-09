@@ -17,7 +17,7 @@ const DirectFrom = Redirects.redirects_list
   server.use(compression())
   server.use(nextI18NextMiddleware(nextI18next))
 
-  server.get("/coursezz/:id", (req, res) => {
+  server.get("/course/:id", (req, res) => {
     const actualPage = "/course"
     const queryParams = { course: req.params.id }
     return app.render(req, res, actualPage, queryParams)
