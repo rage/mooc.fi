@@ -52,7 +52,6 @@ export default class TmcClient {
         },
       )
     } else {
-      console.log("yeaaa")
       res = await axios.get(`${BASE_URL}/api/v8/user_app_datum`, {
         headers: { Authorization: `Bearer ${await getAccessToken()}` },
       })
