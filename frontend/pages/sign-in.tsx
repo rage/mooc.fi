@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const SignInPage = ({ t }) => {
   const classes = useStyles()
   return (
-    <Container>
+    <Container style={{ width: "90%", maxWidth: 900 }}>
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
