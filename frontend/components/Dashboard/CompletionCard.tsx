@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const MapLangToLanguage = {
   en_US: "English",
   fi_FI: "Finnish",
-  se_SE: "Swedish",
+  sv_SE: "Swedish",
 }
 
 function CompletionCard({ completer }) {

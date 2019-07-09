@@ -32,6 +32,7 @@ function SignIn(t: Function) {
 
   return (
     <form className={classes.form}>
+      <NextI18Next.Trans i18nKey="loginDetails" />
       <FormControl required fullWidth error={error}>
         <InputLabel htmlFor="email">
           <NextI18Next.Trans i18nKey="username" />
