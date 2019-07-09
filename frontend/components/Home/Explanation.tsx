@@ -15,7 +15,7 @@ const ExplanationRoot = styled.div`
   @media (min-width: 425px) {
     max-width: 70%;
   }
-  @media (min-width: 1920px) {
+  @media (min-width: 2000px) {
     max-width: 40%;
   }
 `
@@ -35,13 +35,13 @@ const Title = styled(Typography)`
   }
 
   @media (min-width: 960px) {
-    font-size: 62px;
+    font-size: 58px;
     padding-left: 1em;
     padding-right: 1em;
   }
 
   @media (min-width: 1440px) {
-    font-size: 82px;
+    font-size: 68px;
   }
 `
 const Subtitle = styled(Typography)`
@@ -67,6 +67,7 @@ const Subtitle = styled(Typography)`
 const CourseButton = styled(Button)`
   margin: auto;
   background-color: #00a68d;
+  margin-bottom: 1rem;
   color: white;
   font-size: 24px;
   margin-left: 15%;

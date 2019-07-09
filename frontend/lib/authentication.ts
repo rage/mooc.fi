@@ -37,11 +37,8 @@ export const signIn = async ({
   if (back) {
     Nexti18next.Router.push(back)
   }
-  if (details.administrator) {
-    Nexti18next.Router.push("/courses")
-  } else {
-    window.history.back()
-  }
+  window.history.back()
+
   return res
 }
 
