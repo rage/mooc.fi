@@ -7,7 +7,7 @@ spec:
   schedule: "30 0 * * *"
   jobTemplate:
     spec:
-      activeDeadlineSeconds: 3600 * 24
+      activeDeadlineSeconds: 86400
       template:
         spec:
           restartPolicy: OnFailure
