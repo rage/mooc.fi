@@ -5,6 +5,7 @@ import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
+import NextI18Next from "../i18n"
 
 const Background = styled(Paper)`
   background-color: white;
@@ -65,18 +66,23 @@ interface CourseCardProps {
 function CompletedCourseCard(props: CourseCardProps) {
   const { completion } = props
   const isRegistered = completion.completions_registered.length > 0
+  const { i18n, t, ready } = NextI18Next.useTranslation("profile")
   return (
     <Grid item xs={12}>
       <Background>
         <CourseTitle component="h3" variant="h6" gutterBottom={true}>
           {completion.course.name}
         </CourseTitle>
-        <CardText>Completed: {completion.created_at}</CardText>
+        <CardText>
+          {t("completedDate")} {completion.created_at}
+        </CardText>
         <CardText>{completion.completion_language}</CardText>
         {isRegistered ? (
           completion.completions_registered.map(r => (
             <RegistrationDetails>
-              <CardText>Registered: {r.created_at}</CardText>
+              <CardText>
+                {t("registeredDate")} {r.created_at}
+              </CardText>
               <CardText>{r.organization}</CardText>
 
               <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
@@ -87,7 +93,7 @@ function CompletedCourseCard(props: CourseCardProps) {
             href={`/register-completion`}
             style={{ color: "red", marginRight: "0.5rem" }}
           >
-            Register
+            {t("registerButtonText")}
           </Button>
         )}
       </Background>

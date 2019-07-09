@@ -1,0 +1,7 @@
+{
+    "completionsTitle":"Completed courses",
+    "nocompletionsText": "You have not completed any courses yet.",
+    "completedDate": "Completed: ",
+    "registeredDate": "Registered: ",
+    "registerButtonText": "register"
+}

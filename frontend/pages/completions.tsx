@@ -8,6 +8,9 @@ import { useQuery } from "react-apollo-hooks"
 import { UserOverView as UserOverViewData } from "./__generated__/UserOverView"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
+import Container from "../components/Container"
+import Grid from "@material-ui/core/Grid"
+import CompletedCourseCard from "../components/CompletedCourseCard"
 
 export const UserOverViewQuery = gql`
   query UserOverView {
@@ -75,7 +78,19 @@ type Completion = {
   completions_registered: Registration[]
 }
 
-function MyProfile() {
+type I18NProps = {
+  namespacesRequired: string[]
+  t: Function
+  i18n: any
+  tReady: boolean
+}
+
+interface CompletionsProps {
+  translation: I18NProps
+}
+
+function Completions(props: CompletionsProps) {
+  const { namespacesRequired, t, i18n, tready } = props
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (error) {
@@ -93,18 +108,30 @@ function MyProfile() {
   return (
     <section>
       <Title component="h1" variant="h2" align="center">
-        Profile
+        {t("completionsTitle")}
       </Title>
+      <Container>
+        <Grid container spacing={2}>
+          {data.currentUser.completions.length > 0 ? (
+            data.currentUser.completions.map(c => (
+              <CompletedCourseCard completion={c} />
+            ))
+          ) : (
+            <Typography>{t("nocompletionsText")}</Typography>
+          )}
+        </Grid>
+      </Container>
     </section>
   )
 }
 
-MyProfile.getInitialProps = function(context: NextContext) {
-  redirect(context, "/my-profile/completions")
-
+Completions.getInitialProps = function(context: NextContext) {
+  if (!isSignedIn(context)) {
+    redirect(context, "/sign-in")
+  }
   return {
-    namespacesRequired: ["common"],
+    namespacesRequired: ["profile"],
   }
 }
 
-export default MyProfile
+export default NextI18Next.withTranslation("profile")(Completions)

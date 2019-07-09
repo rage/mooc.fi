@@ -10,7 +10,6 @@ import {
 import { signOut } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
 import { useApolloClient } from "react-apollo-hooks"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import NextI18Next from "../i18n"
 import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -21,20 +20,12 @@ import IconButton from "@material-ui/core/IconButton"
 import MenuIcon from "@material-ui/icons/Menu"
 import styled from "styled-components"
 
-function TitleText(props: any) {
-  return (
-    <Typography variant="body1" {...props}>
-      MOOC.fi
-    </Typography>
-  )
-}
-
 interface LogoutButtonProps {
   width: string
   onclick: any
 }
 
-function LogOutButtonNew(props: LogoutButtonProps) {
+function LogOutButton(props: LogoutButtonProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const { width, onclick } = props
 
@@ -51,7 +42,7 @@ function LogOutButtonNew(props: LogoutButtonProps) {
     return (
       <div>
         <IconButton onClick={handleClick}>
-          <MenuIcon />
+          <MenuIcon style={{ height: "2.5rem", width: "2.5rem" }} />
         </IconButton>
         <Popover
           open={open}
@@ -97,16 +88,6 @@ function LogInButton() {
   )
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      fontFamily: "Open Sans Condensed Light, sans-serif",
-      fontSize: "1.75rem",
-      marginTop: "1.6rem",
-    },
-  }),
-)
-
 interface Props {
   window?: () => Window
   children: React.ReactElement
@@ -123,10 +104,17 @@ function HideOnScroll(props: Props) {
   )
 }
 
-const MoocLogoText = styled(Typography)``
+const MoocLogoText = styled(Typography)`
+  font-family: "Open Sans Condensed Light", sans-serif;
+  font-size: 1.75rem;
+  margin-top: 1rem;
+`
 
 const MoocLogo = styled(Avatar)`
-  margin: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0px;
+  margin-right: 0.5rem;
   height: 3em;
   width: 3em;
 `
@@ -140,17 +128,8 @@ interface HeaderProps {
   width: string
 }
 
-function LogOutButton(props: any) {
-  return (
-    <Button color="inherit" onClick={props.onclick}>
-      <NextI18Next.Trans i18nKey="logout" />
-    </Button>
-  )
-}
-
 function Header(props: HeaderProps) {
   const { width } = props
-  const classes = useStyles()
   const loggedIn = React.useContext(LoginStateContext)
   const client = useApolloClient()
 
@@ -164,12 +143,16 @@ function Header(props: HeaderProps) {
               <NextI18Next.Link href="/">
                 <HomeLink href="/" aria-label="MOOC.fi homepage">
                   <MoocLogo alt="MOOC logo" src="../static/images/moocfi.svg" />
-                  <TitleText className={classes.title} />
+                  <MoocLogoText>MOOC.fi</MoocLogoText>
                 </HomeLink>
               </NextI18Next.Link>
             </div>
-            {loggedIn && <LogOutButton onclick={() => signOut(client)} />}
             <LanguageSwitch />
+            {loggedIn ? (
+              <LogOutButton onclick={() => signOut(client)} width={width} />
+            ) : (
+              <LogInButton />
+            )}
           </Toolbar>
         </AppBar>
       </HideOnScroll>
