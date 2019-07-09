@@ -4,10 +4,11 @@ import { Mutex } from "await-semaphore"
 
 import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
+const config = require("../kafkaConfig")
 
 import { handleMessage } from "./handleMessage"
 
-const TOPIC_NAME = ["user-points"]
+const TOPIC_NAME = [config.user_points_consumer.topic_name]
 
 const mutex = new Mutex()
 
