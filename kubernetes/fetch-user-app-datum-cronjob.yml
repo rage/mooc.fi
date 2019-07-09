@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: fetch-ai-completions
+  name: fetch-user-app-datum
   namespace: moocfi
 spec:
   schedule: "30 0 * * *"
