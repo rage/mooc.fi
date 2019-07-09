@@ -6,7 +6,7 @@ export default class SlackPoster {
     this.accessToken = accessToken
   }
 
-  async post(url: string, data: JSON) {
+  async post(url: string, data: any) {
     const res = await axios.post(url, data).catch(err => {
       if (err) console.log(err)
     })
