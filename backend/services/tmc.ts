@@ -40,4 +40,22 @@ export default class TmcClient {
     })
     return res.data
   }
+
+  async getUserAppDatum(after: string): Promise<any[]> {
+    let res
+    if (after != null) {
+      after = await encodeURI(after)
+      res = await axios.get(
+        `${BASE_URL}/api/v8/user_app_datum?after=${after}`,
+        {
+          headers: { Authorization: `Bearer ${await getAccessToken()}` },
+        },
+      )
+    } else {
+      res = await axios.get(`${BASE_URL}/api/v8/user_app_datum`, {
+        headers: { Authorization: `Bearer ${await getAccessToken()}` },
+      })
+    }
+    return res.data
+  }
 }
