@@ -1,4 +1,4 @@
-
+`Feel free to edit this documentation for better language`
 # Kafka
 https://kafka.apache.org/intro
 >Apache Kafka® is a distributed streaming platform. 
