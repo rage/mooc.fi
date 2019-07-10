@@ -5,6 +5,7 @@ import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
+import NextI18Next from "../i18n"
 
 const Background = styled(Paper)`
   background-color: white;
@@ -62,21 +63,48 @@ interface CourseCardProps {
   completion: Completion
 }
 
+const MapLangToLanguage = new Map(
+  Object.entries({
+    en_US: "English",
+    fi_FI: "Suomi",
+    sv_SE: "Swedish",
+  }),
+)
+
+function formatDateTime(date: string) {
+  const dateToFormat = new Date(date)
+  const formattedDate = dateToFormat.toUTCString()
+  return formattedDate
+}
+
 function CompletedCourseCard(props: CourseCardProps) {
   const { completion } = props
   const isRegistered = completion.completions_registered.length > 0
+  const { i18n, t, ready } = NextI18Next.useTranslation("profile")
+  const humanReadableLanguage =
+    MapLangToLanguage.get(completion.completion_language) ||
+    completion.completion_language
+  const RegisterButtonVisible = completion.course.slug === "elements-of-ai"
+
   return (
     <Grid item xs={12}>
       <Background>
         <CourseTitle component="h3" variant="h6" gutterBottom={true}>
           {completion.course.name}
         </CourseTitle>
-        <CardText>Completed: {completion.created_at}</CardText>
-        <CardText>{completion.completion_language}</CardText>
+        <CardText>
+          {t("completedDate")} {formatDateTime(completion.created_at)}
+        </CardText>
+        <CardText>
+          {t("completionLanguage")}
+          {humanReadableLanguage}
+        </CardText>
         {isRegistered ? (
           completion.completions_registered.map(r => (
             <RegistrationDetails>
-              <CardText>Registered: {r.created_at}</CardText>
+              <CardText>
+                {t("registeredDate")} {formatDateTime(r.created_at)}
+              </CardText>
               <CardText>{r.organization}</CardText>
 
               <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
@@ -84,10 +112,14 @@ function CompletedCourseCard(props: CourseCardProps) {
           ))
         ) : (
           <Button
-            href={`/register-completion`}
-            style={{ color: "red", marginRight: "0.5rem" }}
+            href={`/register-completion/${completion.course.slug}`}
+            style={{
+              color: "red",
+              marginRight: "0.5rem",
+              visibility: RegisterButtonVisible ? "visible" : "hidden",
+            }}
           >
-            Register
+            {t("registerButtonText")}
           </Button>
         )}
       </Background>
