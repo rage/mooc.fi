@@ -7,8 +7,10 @@ import * as winston from "winston"
 
 import { handleMessage } from "./handleMessage"
 
+const config = require("../kafkaConfig")
+
 const mutex = new Mutex()
-const TOPIC_NAME = ["user-course-progress"]
+const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
 
 const logger = winston.createLogger({
   level: "info",
