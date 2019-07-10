@@ -60,9 +60,9 @@ function LogOutButton(props: LogoutButtonProps) {
           <Button color="inherit" onClick={onclick}>
             <NextI18Next.Trans i18nKey="logout" />
           </Button>
-          {/*<Button color="inherit" href="/my-profile">
+          <Button color="inherit" href="/my-profile">
             <NextI18Next.Trans i18nKey="profile" />
-        </Button>*/}
+          </Button>
         </Popover>
       </div>
     )
@@ -73,9 +73,9 @@ function LogOutButton(props: LogoutButtonProps) {
       <Button color="inherit" onClick={onclick}>
         <NextI18Next.Trans i18nKey="logout" />
       </Button>
-      {/*<Button color="inherit" href="/my-profile">
+      <Button color="inherit" href="/my-profile">
         <NextI18Next.Trans i18nKey="profile" />
-        </Button>*/}
+      </Button>
     </span>
   )
 }
