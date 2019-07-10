@@ -18,21 +18,18 @@ const Background = styled(ButtonBase)`
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   display: flex;
-  flex-direction: column;
   height: 100%;
   width: 350px;
   @media (max-width: 600px) {
-    flex-direction: row;
     width: 100%;
   }
   @media (min-width: 600px) and (max-width: 960px) {
-    flex-direction: row;
     width: 500px;
   }
 `
 
 const TextArea = styled.div`
-  padding: 0.5rem;
+  padding: 1rem;
   height: 180px;
   color: black;
   @media (max-width: 600px) {
@@ -57,7 +54,14 @@ const ImageArea = styled.div`
     width: 40%;
   }
 `
-
+const CardLinkWithGA = styled(ReactGA.OutboundLink)`
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 960px) {
+    flex-direction: row;
+  }
+`
 interface ImageProps {
   photo: any[]
   isUpcoming: boolean
@@ -99,11 +103,10 @@ function CourseCard(props: CourseCardProps) {
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <Background focusRipple disabled={course.status === "Upcoming"}>
-        <ReactGA.OutboundLink
-          eventLabel={`coursesite:${course.name}`}
+        <CardLinkWithGA
+          eventLabel={`coursesite: ${course.name}`}
           to={course.link}
           target="_blank"
-          style={{ textDecoration: "none", display: "flex" }}
         >
           <ImageArea>
             <ImageInWebp
@@ -119,7 +122,7 @@ function CourseCard(props: CourseCardProps) {
               {course.description}
             </Typography>
           </TextArea>
-        </ReactGA.OutboundLink>
+        </CardLinkWithGA>
       </Background>
     </Grid>
   )
