@@ -110,7 +110,11 @@ function Completions(props: CompletionsProps) {
       <Title component="h1" variant="h2" align="center">
         {t("completionsTitle")}
       </Title>
+
       <Container>
+        <Typography component="p" variant="h5" style={{ marginBottom: "1rem" }}>
+          {t("completionNB")}
+        </Typography>
         <Grid container spacing={2}>
           {data.currentUser.completions.length > 0 ? (
             data.currentUser.completions.map(c => (

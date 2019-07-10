@@ -63,10 +63,29 @@ interface CourseCardProps {
   completion: Completion
 }
 
+const MapLangToLanguage = new Map(
+  Object.entries({
+    en_US: "English",
+    fi_FI: "Suomi",
+    sv_SE: "Swedish",
+  }),
+)
+
+function formatDateTime(date: string) {
+  const dateToFormat = new Date(date)
+  const formattedDate = dateToFormat.toUTCString()
+  return formattedDate
+}
+
 function CompletedCourseCard(props: CourseCardProps) {
   const { completion } = props
   const isRegistered = completion.completions_registered.length > 0
   const { i18n, t, ready } = NextI18Next.useTranslation("profile")
+  const humanReadableLanguage =
+    MapLangToLanguage.get(completion.completion_language) ||
+    completion.completion_language
+  const RegisterButtonVisible = completion.course.slug === "elements-of-ai"
+
   return (
     <Grid item xs={12}>
       <Background>
@@ -74,14 +93,17 @@ function CompletedCourseCard(props: CourseCardProps) {
           {completion.course.name}
         </CourseTitle>
         <CardText>
-          {t("completedDate")} {completion.created_at}
+          {t("completedDate")} {formatDateTime(completion.created_at)}
         </CardText>
-        <CardText>{completion.completion_language}</CardText>
+        <CardText>
+          {t("completionLanguage")}
+          {humanReadableLanguage}
+        </CardText>
         {isRegistered ? (
           completion.completions_registered.map(r => (
             <RegistrationDetails>
               <CardText>
-                {t("registeredDate")} {r.created_at}
+                {t("registeredDate")} {formatDateTime(r.created_at)}
               </CardText>
               <CardText>{r.organization}</CardText>
 
@@ -90,8 +112,12 @@ function CompletedCourseCard(props: CourseCardProps) {
           ))
         ) : (
           <Button
-            href={`/register-completion`}
-            style={{ color: "red", marginRight: "0.5rem" }}
+            href={`/register-completion/${completion.course.slug}`}
+            style={{
+              color: "red",
+              marginRight: "0.5rem",
+              visibility: RegisterButtonVisible ? "visible" : "hidden",
+            }}
           >
             {t("registerButtonText")}
           </Button>
