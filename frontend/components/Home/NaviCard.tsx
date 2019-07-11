@@ -30,11 +30,10 @@ const Link = styled.a`
   font-size: 18px;
 `
 const TextBackground = styled.span`
-  width: 75%;
+  width: 100%;
   height: 100%;
-  margin-right: 25%;
-  background-color: rgba(255, 255, 255, 0.6);
-  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 1rem;
 `
 type NaviItem = {
   title: string

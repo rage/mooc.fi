@@ -19,7 +19,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div>
           <Header />
           {/*add top margin to main to push the content from under the header*/}
-          <main id="main" style={{ marginTop: 100 }}>
+          <main id="main" style={{ marginTop: 75 }}>
             {children}
           </main>
         </div>

@@ -65,6 +65,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       id: idArg({ required: false }),
       name: stringArg(),
       slug: stringArg(),
+      new_slug: stringArg(),
       photo: stringArg(),
       /*       photos: arg({ type: "ImageArg" }), */
       start_point: booleanArg(),
@@ -81,11 +82,12 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         id,
         name,
         slug,
+        new_slug,
+        // photo,
         start_point,
         promote,
         status,
         study_module,
-        new_slug,
         new_photo,
       } = args
 

@@ -61,10 +61,23 @@ export const UserOverViewQuery = gql`
     }
   }
 `
+const mapLanguageToLink = new Map(
+  Object.entries({
+    fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330",
+    en_US: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202817",
+    sv_SE: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
+  }),
+)
 
-const RegisterCompletion = ({ t, router }) => {
+interface RegisterCompletionPageProps {
+  t: Function
+  router: any
+}
+const RegisterCompletion = (props: RegisterCompletionPageProps) => {
+  const { t, router } = props
   const classes = useStyles()
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+
   if (error) {
     return (
       <div>
@@ -83,11 +96,9 @@ const RegisterCompletion = ({ t, router }) => {
     c => c.course.slug === courseSlug,
   )
 
-  const mapLanguageToLink = {
-    fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330",
-    en_US: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202817",
-    sv_SE: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
-  }
+  const courseLinkWithLanguage =
+    mapLanguageToLink.get(completion.completion_language) ||
+    "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330"
 
   if (!completion) {
     return (
@@ -139,7 +150,7 @@ const RegisterCompletion = ({ t, router }) => {
       <ImportantNotice email={data.currentUser.email} />
       <RegisterCompletionText
         email={data.currentUser.email}
-        link={mapLanguageToLink[completion.completion_language]}
+        link={courseLinkWithLanguage}
       />
       <Paper className={classes.paperWithRow}>
         <SvgIcon className={classes.icon} color="primary">

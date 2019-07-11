@@ -22,6 +22,7 @@ module.exports = withPlugins([
         preset: "default",
         quality: 75,
       },
+      inlineImageLimit: -1,
       responsive: {
         adapter: sharp,
         placeholder: true,
