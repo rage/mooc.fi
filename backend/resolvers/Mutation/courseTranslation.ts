@@ -70,17 +70,17 @@ const deleteCourseTranslation = (
   t.field("deleteCourseTranslation", {
     type: "CourseTranslation",
     args: {
-      id: idArg({ required: true })
+      id: idArg({ required: true }),
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
-      const { id } = args
+      const { id } = args
       const prisma: Prisma = ctx.prisma
 
       return prisma.deleteCourseTranslation({
-        id: id
+        id: id,
       })
-    }
+    },
   })
 }
 const addCourseTranslationMutations = (

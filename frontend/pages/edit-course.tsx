@@ -79,8 +79,7 @@ const EditCourse = withRouter(props => {
         >
           {data.course ? "Edit course" : "Create a new course"}
         </Typography>
-        <CourseEditForm 
-          course={data.course} />
+        <CourseEditForm course={data.course} />
       </WideContainer>
     </section>
   )

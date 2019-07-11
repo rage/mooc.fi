@@ -3,7 +3,7 @@ import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType
 import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
-import { uploadBase64Image } from "../../services/google-cloud"
+import { uploadBase64Image } from "../../services/google-cloud"
 
 const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
@@ -19,20 +19,13 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
-      const {
-        name,
-        slug,
-        start_point,
-        promote,
-        status,
-        study_module,
-      } = args
+      const { name, slug, start_point, promote, status, study_module } = args
 
       let photo = args.photo
 
       if (photo) {
         try {
-          const uploadedPhoto = await uploadBase64Image(new_photo)
+          const uploadedPhoto = await uploadBase64Image(photo)
           photo = uploadedPhoto
         } catch (e) {
           console.log(e)
@@ -73,11 +66,12 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       name: stringArg(),
       slug: stringArg(),
       photo: stringArg(),
+      /*       photos: arg({ type: "ImageArg" }), */
       start_point: booleanArg(),
       promote: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
-      new_photo: stringArg({ required: false }),
+      //new_photo: stringArg({ required: false }),
       new_slug: stringArg({ required: false }),
     },
     resolve: async (_, args, ctx) => {
@@ -92,7 +86,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         status,
         study_module,
         new_slug,
-        new_photo
+        new_photo,
       } = args
 
       // TODO: delete old photo?
@@ -120,8 +114,8 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           start_point: start_point,
           promote: promote,
           status: status,
-          study_module: study_module != null ? { connect: { id: study_module } } : null,
-
+          study_module:
+            study_module != null ? { connect: { id: study_module } } : null,
         },
       })
     },
@@ -133,22 +127,19 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     type: "Course",
     args: {
       id: idArg({ required: false }),
-      slug: stringArg()
+      slug: stringArg(),
     },
-    resolve: async(_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx)
       const prisma: Prisma = ctx.prisma
-      const {
-        id,
-        slug
-      } = args
+      const { id, slug } = args
 
       // TODO: delete photo?
       return prisma.deleteCourse({
         id,
-        slug
+        slug,
       })
-    }
+    },
   })
 }
 
