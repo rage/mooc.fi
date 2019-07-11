@@ -1,7 +1,7 @@
 import * as React from "react"
-import { ApolloClient, gql } from "apollo-boost"
+import { gql } from "apollo-boost"
 import { NextContext } from "next"
-import { isSignedIn, userDetails } from "../lib/authentication"
+import { isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import { useQuery } from "react-apollo-hooks"
 import { UserOverView as UserOverViewData } from "./__generated__/UserOverView"
@@ -10,10 +10,10 @@ import RegisterCompletionText from "../components/RegisterCompletionText"
 import ImportantNotice from "../components/ImportantNotice"
 import Container from "../components/Container"
 import NextI18Next from "../i18n"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { withRouter } from "next/router"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: "1em",
@@ -53,14 +53,25 @@ export const UserOverViewQuery = gql`
         id
         completion_language
         student_number
+        created_at
         course {
           id
           slug
+          name
+        }
+        completions_registered {
+          id
+          created_at
+          organization {
+            slug
+          }
         }
       }
     }
   }
 `
+
+//return a link based on which language course has been completed in
 const mapLanguageToLink = new Map(
   Object.entries({
     fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330",
@@ -91,15 +102,17 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   }
 
   const courseSlug = router.query.slug
+  let completion = undefined
 
-  const completion = data.currentUser.completions.find(
-    c => c.course.slug === courseSlug,
-  )
+  //if currentuser has completions, find a completion
+  //corresponding to the given course slug
+  if (data.currentUser.completions) {
+    completion = data.currentUser.completions.find(
+      c => c.course.slug === courseSlug,
+    )
+  }
 
-  const courseLinkWithLanguage =
-    mapLanguageToLink.get(completion.completion_language) ||
-    "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330"
-
+  //if no completion fund, return completion not found message
   if (!completion) {
     return (
       <Container>
@@ -115,6 +128,20 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
         <Typography>{t("course_completion_not_found")}</Typography>
       </Container>
     )
+  }
+
+  //map completions language to a link
+  let courseLinkWithLanguage =
+    "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330"
+
+  //if completion has a language field defined
+  if (completion.completion_language) {
+    //map language field to correct registration link
+    //if there is no registration link for the completion language
+    //use the link for english registration page
+    courseLinkWithLanguage =
+      mapLanguageToLink.get(completion.completion_language) ||
+      "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330"
   }
 
   return (

@@ -101,16 +101,21 @@ class CompletionsQuery extends Query<AllCompletionsData, {}> {}
 const CompletionsList = withRouter(props => {
   const completionLanguage = React.useContext(CourseLanguageContext)
   const course = props.router.query.course
+  console.log(AllCompletionsData)
+
   const [queryDetails, setQueryDetails] = useState({
     start: null,
     end: null,
     back: false,
     page: 1,
   })
+
   const query = queryDetails.back
     ? PreviousPageCompletionsQuery
     : AllCompletionsQuery
+
   const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
+
   return (
     <CompletionsQuery
       query={query}
