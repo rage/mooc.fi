@@ -31,6 +31,7 @@ type Course @db(name: "course") {
   "aliases that can be used in this this api instead of slug "
   course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
   services: [Service] @relation(name: "CourseToService")
+  photos: [Image] @relation(name: "CourseToImage")
   photo: String
   course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation", onDelete: CASCADE)
   promote: Boolean
@@ -72,7 +73,7 @@ type Completion @db(name: "completion") {
   user_upstream_id: Int
   email: String!
   student_number: String
-  user: User!  @relation(link: INLINE, name: "CompletionToUser")
+  user: User! @relation(link: INLINE, name: "CompletionToUser")
   course: Course! @relation(link: INLINE, name: "CompletionToCourse")
   completion_language: String
   "Where this completion has been registered, can have multiple locations."
@@ -208,4 +209,17 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   timestamp: DateTime
   completed: Boolean @default(value: false)
   required_actions: String
+}
+
+type Image @db(name: "image") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  upated_at: DateTime @updatedAt
+  name: String
+  uncompressed: String!
+  uncompressed_mimetype: String!
+  compressed: String
+  compressed_mimetype: String
+  encoding: String
+  default: Boolean
 }
