@@ -1,13 +1,13 @@
 {
     "exercise_consumer": {
-        "topic_name": ""
+        "topic_name": "exercise"
     },
 
     "user_points_consumer": {
-        "topic_name": ""
+        "topic_name": "user-points"
     },
     "user_course_progress_consumer": {
-        "topic_name": ""
+        "topic_name": "progress"
     },
     "commit_interval": 100
 }

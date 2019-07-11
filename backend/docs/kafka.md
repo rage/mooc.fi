@@ -1,4 +1,4 @@
-
+`Feel free to edit this documentation for better language`
 # Kafka
 https://kafka.apache.org/intro
 >Apache Kafka® is a distributed streaming platform. 
@@ -27,10 +27,14 @@ Kafka cluster will mirror topics/partitions to multiple brokers for better fault
 What is the right amount of partitions per topic? According to `Jun Rao` in https://www.confluent.io/blog/how-choose-number-topics-partitions-kafka-cluster you need at least `max(t/p, t/c)` partitions where `p` is production troughout with one partition, `c` is same for consuption and `t` is your target troughput. You can read more in his blog post linked above.
 
 ## Commits
-In Kafka, committing means storing which message is the latest that has been processed by a specific consumer. This is done by saving the message offset.   
-MORE COMING SOON:
- * Commit interval
-* Where to store
+In Kafka, committing means storing which message is the latest that has been processed by a specific consumer. This is done by saving the message offset. Originally offset was saved locally to a file but in newer versions of kafka it is possible to commit to server. Server will save the submitted offset per consumer.
+
+Keep in mind that you can only commit the latest offset so any message with smaller offset is considered to be committed even if you use function like commitMessage(message).
+
+Committing can be rather heavy operation to be used after every message. This is why we have defined `commit interval` and set it to `100`. We wont commit every message but once in 100 messages. The downside is that if our consumer goes down it will re-handle some messages. However this should not cause problems because we include a timestamp with every message and wont save anything to database if messages timestamp is older than latest timestamp in database.
+
+### Autocommit
+Some libraries allow to use autocommit feature. Autocommit with commit every message, once in n seconds or once in n messages, depending on the setup. The problem with autocommit is that it commits all consumed messages, not those that have been handled. This may cause data loss.
 
 
 ---
@@ -39,7 +43,7 @@ MORE COMING SOON:
 ---
 ## In Points.mooc.fi
 
-At the moment we have four topics in points.mooc.fi kafka: 
+At the moment we have four topics in points.mooc.fi kafka:
 
 * user-course-progress
 * user-points

@@ -40,6 +40,17 @@ const DirectFrom = Redirects.redirects_list
     return app.render(req, res, actualPage, queryParams)
   })
 
+  server.get("/my-profile", (req, res) => {
+    const actualPage = "/my-profile"
+    return app.render(req, res, actualPage)
+  })
+
+  server.get("/my-profile/completions", (req, res) => {
+    const actualPage = "/completions"
+
+    return app.render(req, res, actualPage)
+  })
+
   server.get("*", (req, res) => {
     const redirectNeeded = DirectFrom.find(
       redirect => redirect.from === req.url,

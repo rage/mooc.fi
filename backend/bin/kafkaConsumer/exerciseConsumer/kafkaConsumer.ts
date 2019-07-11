@@ -6,8 +6,8 @@ import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
 
 import { handleMessage } from "./handleMessage"
-
-const TOPIC_NAME = ["exercise"]
+const config = require("../kafkaConfig.json")
+const TOPIC_NAME = [config.exercise_consumer.topic_name]
 
 const mutex = new Mutex()
 

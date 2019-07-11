@@ -211,6 +211,7 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   required_actions: String
 }
 
+<<<<<<< HEAD
 type Image @db(name: "image") {
   id: UUID! @id
   created_at: DateTime @createdAt
@@ -223,3 +224,26 @@ type Image @db(name: "image") {
   encoding: String
   default: Boolean
 }
+=======
+type UserCourseSettings {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  user: User
+  course: Course
+  language: String
+  country: String
+  research: Boolean
+  marketing: Boolean
+  course_variant: String
+  other: Json
+}
+
+type UserAppDatumConfig {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  name: String @unique
+  timestamp: DateTime
+}
+>>>>>>> 8fd9c52326afd63d871dfb44d1b897047f7c1147

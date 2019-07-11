@@ -78,6 +78,7 @@ const handleExercise = async (
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
         timestamp: timestamp,
+        deleted: false,
       },
     })
   } else {
