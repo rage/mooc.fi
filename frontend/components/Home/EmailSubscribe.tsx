@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import NexI18Next from "../../i18n"
+import NextI18Next from "../../i18n"
 import Send from "@material-ui/icons/Send"
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied"
 import Card from "@material-ui/core/Card"
@@ -53,9 +53,10 @@ const StyledButton = styled(Button)`
   }
 `
 
-function EmailSubscribe({ t }) {
+function EmailSubscribe() {
   const [sent, setSent] = React.useState(false)
-  const formRef = React.createRef()
+  const formRef = React.createRef<HTMLFormElement>()
+  const { t } = NextI18Next.useTranslation("home")
 
   function handleSubmit() {
     setSent(true)
@@ -90,8 +91,10 @@ function EmailSubscribe({ t }) {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    formRef.current.submit()
-                    handleSubmit()
+                    if (formRef && formRef.current) {
+                      formRef.current.submit()
+                      handleSubmit()
+                    }
                   }}
                 >
                   {t("emailButton")}
@@ -106,4 +109,4 @@ function EmailSubscribe({ t }) {
   )
 }
 
-export default NexI18Next.withTranslation("home")(EmailSubscribe)
+export default EmailSubscribe
