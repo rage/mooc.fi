@@ -8,7 +8,6 @@ import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import NextI18Next from "../../i18n"
 import Container from "../Container"
-import { AllModules_study_modules } from "./../../pages/__generated__/AllModules"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -49,7 +48,9 @@ const ModuleHomeLink = styled(Link)`
   padding-bottom: 1em;
 `
 
-function Modules(module: AllModules_study_modules) {
+type ModuleWithCoursesFilteredByUserLanguage = {}
+
+function Modules(module: any) {
   const { t } = NextI18Next.useTranslation("home")
   const startCourses = module.courses.filter(c => c.start_point === true)
   const otherCourses = module.courses.filter(c => c.start_point === false)

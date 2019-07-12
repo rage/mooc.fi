@@ -1,7 +1,10 @@
 import React, { useState } from "react"
 import { gql } from "apollo-boost"
 import { Query } from "react-apollo"
-import { AllCompletions as AllCompletionsData } from "./__generated__/AllCompletions"
+import {
+  AllCompletions as AllCompletionsData,
+  AllCompletions_completionsPaginated_edges_node,
+} from "./__generated__/AllCompletions"
 import { CircularProgress } from "@material-ui/core"
 import { withRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
@@ -100,12 +103,15 @@ class CompletionsQuery extends Query<AllCompletionsData, {}> {}
 
 const CompletionsList = withRouter(props => {
   const completionLanguage = React.useContext(CourseLanguageContext)
-  const course = props.router.query.course
-  console.log(AllCompletionsData)
+  const { router } = props
+  let course
+  if (router && router.query) {
+    course = router.query.course
+  }
 
   const [queryDetails, setQueryDetails] = useState({
-    start: null,
-    end: null,
+    start: "",
+    end: "",
     back: false,
     page: 1,
   })
@@ -126,20 +132,31 @@ const CompletionsList = withRouter(props => {
       }}
       fetchPolicy="network-only"
     >
-      {({
-        data: {
-          completionsPaginated: {
-            edges = [],
-            pageInfo: { startCursor = undefined, endCursor = undefined } = {},
-          } = {},
-        } = {},
-        error,
-        loading,
-      }) => {
-        const completions = edges.map(edge => edge.node)
+      {({ data, error, loading }) => {
+        //initialize empty variables for completions, start cursor and end cursor
+        let completions: AllCompletions_completionsPaginated_edges_node[] = []
+        let endCursor: string = ""
+        let startCursor: string = ""
+
+        //if query returns data
+        if (data) {
+          //extract all completions
+          completions = data.completionsPaginated.edges.map(edge => edge.node)
+          //if end cursor is not null
+          if (data.completionsPaginated.pageInfo.endCursor) {
+            //extract end cursor
+            endCursor = data.completionsPaginated.pageInfo.endCursor
+          }
+          if (data.completionsPaginated.pageInfo.startCursor) {
+            //extract end cursor
+            startCursor = data.completionsPaginated.pageInfo.startCursor
+          }
+        }
+
         if (loading) {
           return <CircularProgress color="secondary" />
         }
+
         if (error) {
           return (
             <div>
