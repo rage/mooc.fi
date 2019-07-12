@@ -49,7 +49,6 @@ function LinkButton(props: any) {
 
 type RegProps = {
   email: String
-  t: Function
   link: string
 }
 function RegisterCompletionText(props: RegProps) {
@@ -82,6 +81,4 @@ function RegisterCompletionText(props: RegProps) {
   )
 }
 
-export default NextI18Next.withTranslation("register-completion")(
-  RegisterCompletionText,
-)
+export default RegisterCompletionText
