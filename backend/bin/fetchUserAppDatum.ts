@@ -19,21 +19,10 @@ const fetcUserAppDatum = async () => {
   const prisma: Prisma = new Prisma()
   const startTimestamp = new Date()
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
-    name: "userAppDatum",
+    name: "userAppDatum2",
   }))
-    ? (await prisma.userAppDatumConfig({ name: "userAppDatum" })).timestamp
+    ? (await prisma.userAppDatumConfig({ name: "userAppDatum2" })).timestamp
     : null
-  console.log(latestTimeStamp)
-  await prisma.upsertUserAppDatumConfig({
-    where: { name: "userAppDatum" },
-    create: {
-      name: "userAppDatum",
-      timestamp: new Date(),
-    },
-    update: {
-      timestamp: new Date(),
-    },
-  })
   const data = await tmc.getUserAppDatum(latestTimeStamp)
 
   console.log("data length", data.length)
@@ -108,7 +97,7 @@ const fetcUserAppDatum = async () => {
     }
   }
   await prisma.upsertUserAppDatumConfig({
-    where: { name: "userAppDatum" },
+    where: { name: "userAppDatum2" },
     create: {
       name: "userAppDatum",
       timestamp: startTimestamp,
