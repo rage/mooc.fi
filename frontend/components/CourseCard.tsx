@@ -11,6 +11,7 @@ import {
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { AllCourses_courses } from "./../pages/__generated__/AllCourses"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseCard({ course }) {
+function CourseCard(course: AllCourses_courses) {
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={6} lg={3}>
