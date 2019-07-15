@@ -49,8 +49,8 @@ const CourseTranslationEditForm = ({
   values,
   errors,
 }: {
-  values: CourseTranslationFormValues[]
-  errors: (FormikErrors<CourseTranslationFormValues> | undefined)[] | undefined
+  values: (CourseTranslationFormValues | undefined)[]
+  errors: (FormikErrors<CourseTranslationFormValues | undefined>)[] | undefined
 }) => (
   <FieldArray
     name="course_translations"

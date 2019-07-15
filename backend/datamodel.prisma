@@ -213,7 +213,7 @@ type ExerciseCompletion @db(name: "exercise_completion") {
 type Image @db(name: "image") {
   id: UUID! @id
   created_at: DateTime @createdAt
-  upated_at: DateTime @updatedAt
+  updated_at: DateTime @updatedAt
   name: String
   uncompressed: String!
   uncompressed_mimetype: String!

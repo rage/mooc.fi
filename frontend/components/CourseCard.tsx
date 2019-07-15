@@ -27,7 +27,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseCard(course: AllCourses_courses) {
+function CourseCard({
+  course,
+  key,
+}: {
+  course: AllCourses_courses
+  key: string
+}) {
   const classes = useStyles()
   console.log(course)
 

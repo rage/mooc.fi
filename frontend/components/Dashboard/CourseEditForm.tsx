@@ -1,39 +1,28 @@
 import React, { useState, useEffect } from "react"
 import {
-  Grid,
   InputLabel,
   FormControl,
   FormControlLabel,
   MenuItem,
   LinearProgress,
-  Paper,
   Button,
   ButtonBase,
 } from "@material-ui/core"
 import {
   Formik,
   Field,
-  FieldArray,
   Form,
   FieldProps,
-  FormikValues,
   FormikActions,
   FormikProps,
   FormikErrors,
+  getIn,
 } from "formik"
-import {
-  fieldToTextField,
-  TextField,
-  TextFieldProps,
-  SimpleFileUpload,
-  Select,
-  Checkbox,
-} from "formik-material-ui"
+import { TextField, Select, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
-import get from "lodash/get"
 import pullAll from "lodash/pullAll"
 import { useApolloClient } from "react-apollo-hooks"
-import Dropzone, { useDropzone } from "react-dropzone"
+import { useDropzone } from "react-dropzone"
 import styled from "styled-components"
 import CourseTranslationEditForm, {
   CourseTranslationFormValues,
@@ -41,6 +30,7 @@ import CourseTranslationEditForm, {
 import { CourseStatus } from "../../__generated__/globalTypes"
 import { addImage_addImage as Image } from "./__generated__/addImage"
 import { updateCourseVariables as Course } from "./__generated__/updateCourse"
+import Next18next from "../../i18n"
 
 const statuses = [
   {
@@ -82,7 +72,7 @@ interface CourseFormValues extends Course {
   new_slug: string
   thumbnail?: string
   course_translations: (CourseTranslationFormValues | undefined)[]
-  study_module: any
+  study_module: string | null | undefined
 }
 
 const initialValues: CourseFormValues = {
@@ -137,39 +127,6 @@ const Thumbnail = ({
   file: string | undefined
   onDelete: Function
 }) => {
-  /*   const [loading, setLoading] = useState(true)
-  const [image, setImage] = useState<any>(undefined)
-
-  useEffect(() => {
-    if (!file) {
-      return
-    }
-
-    if (typeof file === 'string') {
-      setImage(file)
-      setLoading(false)
-      
-      return
-    }
-
-    const reader = new FileReader()
-
-    reader.onloadend = () => {
-      setLoading(false)
-      setImage(reader.result)
-    }
-
-    try {
-      reader.readAsDataURL(file)
-    } catch (e) {
-      setLoading(false)
-    }
-  }, [file, loading, image])
-
-  if (loading || !image) {
-    return null
-  } */
-
   if (!file) {
     return null
   }
@@ -324,7 +281,6 @@ const renderForm = ({
       fullWidth
       component={ImageDropzoneInput}
     />
-    {console.log(values)}
     <br />
     <CourseTranslationEditForm
       values={values.course_translations}
@@ -350,7 +306,6 @@ const validate = (props: any) => (
   return new Promise(async resolve => {
     let errors: FormikErrors<CourseFormValues> = {}
 
-    console.log("validate says", values)
     if (values.new_slug) {
       let res
 
@@ -392,7 +347,7 @@ const CourseEditForm = ({
   updateCourseTranslation,
   deleteCourseTranslation,
   checkSlug,
-  addImage,
+  uploadImage,
 }: // onSubmit
 {
   course: any
@@ -402,10 +357,11 @@ const CourseEditForm = ({
   updateCourseTranslation: Function
   deleteCourseTranslation: Function
   checkSlug: Function
-  addImage: Function
+  uploadImage: Function
   /*   onSubmit: Function
    */
 }) => {
+  console.log("course", course)
   const init = course
     ? {
         ...course,
@@ -418,44 +374,22 @@ const CourseEditForm = ({
   )
   const client = useApolloClient()
 
-  const uploadImage = async (
-    image: File | undefined,
-  ): Promise<Image | null> => {
-    if (!image) {
-      return null
-    }
-
-    const { data, error } = await addImage({ variables: { file: image } })
-
-    console.log(data)
-
-    if (error) {
-      throw new Error("error uploading image: " + error)
-    }
-
-    if (data && data.addImage) {
-      return data.addImage
-    }
-
-    return null
-  }
-
   const onSubmit = async (
     values: CourseFormValues,
     { setSubmitting, setFieldValue }: FormikActions<CourseFormValues>,
   ): Promise<void> => {
-    console.log(values)
-    console.log(JSON.stringify(values))
+    const newCourse = !values.id
 
-    const newValues = { ...values }
+    // try {
+    const newValues: CourseFormValues = {
+      ...values,
+      photo: getIn(values, "photo.id"),
+    }
     const { new_photo }: { new_photo: File | undefined } = values
-    const mutation = values.id ? updateCourse : addCourse
+    const mutation = newCourse ? addCourse : updateCourse
 
-    console.log("new photo?", new_photo)
     if (new_photo) {
       const uploadedImage: Image | null = await uploadImage(new_photo)
-
-      console.log(uploadedImage)
 
       if (uploadedImage) {
         newValues.photo = uploadedImage.id
@@ -464,13 +398,12 @@ const CourseEditForm = ({
       }
     }
 
-    console.log("about to mutate new", newValues, "form", values)
-
+    console.log("new values?", newValues)
     const course = await mutation({
       variables: {
         ...newValues,
         id: undefined,
-        slug: values.id ? values.new_slug : values.slug,
+        slug: values.id ? values.slug : values.new_slug,
       },
     })
 
@@ -492,19 +425,26 @@ const CourseEditForm = ({
       ),
     )
 
-    const removedTranslationIds: (string | undefined)[] = pullAll(
-      initialTranslationIds,
-      (values.course_translations || []).map(
-        (t: CourseTranslationFormValues | undefined) => t.id,
-      ),
-    )
-    await Promise.all(
-      removedTranslationIds.map(id =>
-        deleteCourseTranslation({ variables: { id } }),
-      ),
-    )
+    if (!newCourse) {
+      const removedTranslationIds: (string | undefined)[] = pullAll(
+        initialTranslationIds,
+        (values.course_translations || []).map(
+          (t: CourseTranslationFormValues | undefined) => t.id,
+        ),
+      )
+      await Promise.all(
+        removedTranslationIds.map(id =>
+          deleteCourseTranslation({ variables: { id } }),
+        ),
+      )
+    }
 
+    //  setSubmitting(false)
+    //  Next18next.Router.push("/courses")
+    //} catch (err) {
+    //  console.error(err)
     setSubmitting(false)
+    //}
   }
 
   return (
