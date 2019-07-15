@@ -1,6 +1,5 @@
 import React from "react"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import NextI18Next from "../i18n"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from "styled-components"
 import {
@@ -41,7 +40,7 @@ const MaintainedContainer = styled.div`
   }
 `
 
-function UniversityLogo(props: any) {
+function UniversityLogo() {
   const classes = useStyles()
   return (
     <img
@@ -106,4 +105,4 @@ function Footer() {
   )
 }
 
-export default NextI18Next.withTranslation("common")(Footer)
+export default Footer

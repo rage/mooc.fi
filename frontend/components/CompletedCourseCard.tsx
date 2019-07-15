@@ -6,6 +6,10 @@ import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
 import NextI18Next from "../i18n"
+import {
+  UserOverView_currentUser_completions,
+  UserOverView_currentUser_completions_completions_registered,
+} from "./../pages/__generated__/UserOverView"
 
 const Background = styled(Paper)`
   background-color: white;
@@ -38,29 +42,8 @@ const RegistrationDetails = styled.div`
   }
 `
 
-type Organization = {
-  slug: string
-}
-type Registration = {
-  id: any
-  created_at: any
-  organization: Organization
-}
-type Course = {
-  id: any
-  slug: string
-  name: string
-}
-type Completion = {
-  id: any
-  completion_language: string
-  student_number: string
-  created_at: any
-  course: Course
-  completions_registered: Registration[]
-}
 interface CourseCardProps {
-  completion: Completion
+  completion: UserOverView_currentUser_completions
 }
 
 const MapLangToLanguage = new Map(
@@ -79,11 +62,23 @@ function formatDateTime(date: string) {
 
 function CompletedCourseCard(props: CourseCardProps) {
   const { completion } = props
-  const isRegistered = completion.completions_registered.length > 0
-  const { i18n, t, ready } = NextI18Next.useTranslation("profile")
-  const humanReadableLanguage =
-    MapLangToLanguage.get(completion.completion_language) ||
-    completion.completion_language
+
+  let registeredCompletions: UserOverView_currentUser_completions_completions_registered[] = []
+  let isRegistered = false
+  if (completion.completions_registered) {
+    isRegistered = completion.completions_registered.length > 0
+    registeredCompletions = completion.completions_registered
+  }
+
+  const { t } = NextI18Next.useTranslation("profile")
+
+  let humanReadableLanguage = "no language available"
+  if (completion.completion_language) {
+    humanReadableLanguage =
+      MapLangToLanguage.get(completion.completion_language) ||
+      completion.completion_language
+  }
+
   const RegisterButtonVisible = completion.course.slug === "elements-of-ai"
 
   return (
@@ -100,7 +95,7 @@ function CompletedCourseCard(props: CourseCardProps) {
           {humanReadableLanguage}
         </CardText>
         {isRegistered ? (
-          completion.completions_registered.map(r => (
+          registeredCompletions.map(r => (
             <RegistrationDetails>
               <CardText>
                 {t("registeredDate")} {formatDateTime(r.created_at)}

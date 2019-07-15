@@ -13,7 +13,7 @@ type NaviItem = {
 }
 
 function NaviCardList() {
-  const { t, i18n, ready } = NextI18Next.useTranslation("navi")
+  const { t, ready } = NextI18Next.useTranslation("navi")
 
   if (ready) {
     const items: NaviItem[] = t("naviItems")

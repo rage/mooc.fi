@@ -1,18 +1,7 @@
 import React from "react"
 import { Table, TableRow, TableCell, TableBody } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tableChart: {
-      backgroundColor: "red",
-      width: `${100 * (7 / 10)}%`,
-    },
-  }),
-)
 
 function PointsListHeaderTable() {
-  const classes = useStyles()
   return (
     <Table size="small">
       <TableBody>

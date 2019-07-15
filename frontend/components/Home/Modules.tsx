@@ -48,8 +48,10 @@ const ModuleHomeLink = styled(Link)`
   padding-bottom: 1em;
 `
 
-function Modules({ module }) {
-  const { t, i18n } = NextI18Next.useTranslation("home")
+type ModuleWithCoursesFilteredByUserLanguage = {}
+
+function Modules(module: any) {
+  const { t } = NextI18Next.useTranslation("home")
   const startCourses = module.courses.filter(c => c.start_point === true)
   const otherCourses = module.courses.filter(c => c.start_point === false)
   return (

@@ -42,8 +42,13 @@ const StyledIcon = styled(FontAwesomeIcon)`
 const StyledButton = styled(Button)`
   margin: 2rem !important;
 `
+interface TeacherProps {
+  t: Function
+  i18n: any
+}
 
-const ForTeachers = ({ t, i18n }) => {
+const ForTeachers = (props: TeacherProps) => {
+  const { t, i18n } = props
   return (
     <section>
       <ContentBlock>
