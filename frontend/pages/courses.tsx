@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Courses = ({ admin }) => {
+const Courses = (admin: boolean) => {
   const classes = useStyles()
 
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
@@ -72,7 +72,7 @@ const Courses = ({ admin }) => {
 
 Courses.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
-  console.log(admin)
+
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }

@@ -1,0 +1,9 @@
+{
+    "completionsTitle":"Completed courses",
+    "nocompletionsText": "You have not completed any courses yet.",
+    "completedDate": "Completed: ",
+    "registeredDate": "Registered: ",
+    "registerButtonText": "register",
+    "completionLanguage":"course language: ",
+    "completionNB": "This page is currently under development, and all courses you have completed might not show here just yet."
+}

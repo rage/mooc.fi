@@ -5,9 +5,10 @@ metadata:
   namespace: moocfi
 spec:
   schedule: "30 0 * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
-      activeDeadlineSeconds: 3600 * 24
+      activeDeadlineSeconds: 604800
       template:
         spec:
           restartPolicy: OnFailure

@@ -5,6 +5,7 @@ metadata:
   namespace: moocfi
 spec:
   schedule: "5/10 * * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       activeDeadlineSeconds: 3600

@@ -7,25 +7,7 @@ const ExplanationRoot = styled.section`
   display: flex;
   position: relative;
   margin-bottom: 2rem;
-  min-height: 500px;
-  @media (min-width: 2000px) {
-    min-height: 750px;
-  }
-`
-
-const BackDrop = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  width: 70%;
-  @media (min-width: 960px) {
-    width: 45%;
-  }
-  top: 0;
-  bottom: 0;
-  background-color: white;
-  opacity: 0.9;
-  z-index: -1;
+  height: 80%;
 `
 
 const BackgroundImage = styled.img`
@@ -41,8 +23,7 @@ function ExplanationHero() {
   return (
     <ExplanationRoot>
       <Explanation />
-      <BackDrop />
-      <BackgroundImage srcSet={image.srcSet} src={image.src} />
+      <BackgroundImage srcSet={image.srcSet} src={image.src} alt="" />
     </ExplanationRoot>
   )
 }

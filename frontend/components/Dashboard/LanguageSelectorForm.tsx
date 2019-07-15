@@ -1,25 +1,19 @@
 import React from "react"
 import {
-  Checkbox,
-  FormGroup,
   FormControlLabel,
   FormControl,
-  FormLabel,
   RadioGroup,
   Radio,
 } from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
 
-const useStyles = makeStyles(theme => ({
-  checkbox: {
-    margin: 3,
-  },
-}))
+interface LanguageSelectorProps {
+  handleLanguageChange: any
+  languageValue: string
+}
 
-function LanguageSelectorForm({ handleLanguageChange, languageValue }) {
-  const classes = useStyles()
-  console.log(languageValue)
-  console.log(handleLanguageChange)
+function LanguageSelectorForm(props: LanguageSelectorProps) {
+  const { handleLanguageChange, languageValue } = props
+
   return (
     <FormControl component="fieldset">
       <RadioGroup

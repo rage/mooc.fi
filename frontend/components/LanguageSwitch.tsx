@@ -8,13 +8,14 @@ const SwitchButton = styled(Button)`
   font-size: 12px;
   line-height: 1.3;
   padding-right: 1px;
+  font-weight: bold;
 
   @media (min-width: 400px) {
     font-size: 14px;
   }
 `
 
-function LanguageSwitch() {
+const LanguageSwitch = () => {
   return (
     <SwitchButton
       onClick={() =>
@@ -23,10 +24,10 @@ function LanguageSwitch() {
         )
       }
     >
+      <Language style={{ marginRight: "0.5rem" }} />
       {NextI18Next.i18n.language === "en"
-        ? "Suomenkielinen versio"
-        : "English version"}
-      <Language style={{ marginLeft: "0.5rem" }} />
+        ? "SUOMENKIELINEN VERSIO"
+        : "ENGLISH VERSION"}
     </SwitchButton>
   )
 }

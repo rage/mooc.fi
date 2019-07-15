@@ -8,35 +8,29 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 })
 const withCSS = require("@zeit/next-css")
 
-module.exports = withPlugins(
+module.exports = withPlugins([
+  withFonts,
+  withTypescript,
   [
-    withFonts,
-    withTypescript,
-    [
-      withOptimizedImages,
-      {
-        handleImages: ["jpeg", "png", "svg", "webp", "gif"],
-        overwriteImageLoaderPaths: require.resolve.paths("")[0],
-        optimizeImages: true,
-        optimizeImagesInDev: true,
-        webp: {
-          preset: "default",
-          quality: 75,
-        },
-        responsive: {
-          adapter: sharp,
-          placeholder: true,
-          placeholderSize: 50,
-          optimizeImagesInDev: true,
-        },
+    withOptimizedImages,
+    {
+      handleImages: ["jpeg", "png", "svg", "webp", "gif"],
+      overwriteImageLoaderPaths: require.resolve.paths("")[0],
+      optimizeImages: true,
+      optimizeImagesInDev: true,
+      webp: {
+        preset: "default",
+        quality: 75,
       },
-    ],
-    withBundleAnalyzer,
-    withCSS,
-  ],
-  {
-    webpack: function(config) {
-      return config
+      inlineImageLimit: -1,
+      responsive: {
+        adapter: sharp,
+        placeholder: true,
+        placeholderSize: 50,
+        optimizeImagesInDev: true,
+      },
     },
-  },
-)
+  ],
+  withBundleAnalyzer,
+  withCSS,
+])

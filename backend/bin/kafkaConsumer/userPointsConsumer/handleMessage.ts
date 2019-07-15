@@ -2,8 +2,9 @@ import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
 import { Prisma } from "../../../generated/prisma-client"
 import { MessageYupSchema } from "./validate"
+const config = require("../kafkaConfig")
 let commitCounter = 0
-const commitInterval = 100
+const commitInterval = config.commit_interval
 export const handleMessage = async (
   kafkaMessage,
   mutex,

@@ -26,3 +26,7 @@ cd backend
 npm ci
 npm run dev
 ```
+
+## Documentation
+
+[Kafka](backend/docs/kafka.md)
