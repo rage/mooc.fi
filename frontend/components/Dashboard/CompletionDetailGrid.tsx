@@ -11,7 +11,7 @@ function formatDateTime(date: string) {
   return formattedDate
 }
 
-function CompletionDetailGrid(completer: completer) {
+function CompletionDetailGrid({ completer }: { completer: completer }) {
   let completionsregistered: completionsRegistered[] = []
 
   if (completer.completions_registered) {

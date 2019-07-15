@@ -4,11 +4,15 @@ import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
-import { filterAndModifyCoursesByLanguage } from "../util/moduleFunctions"
+import {
+  filterAndModifyCoursesByLanguage,
+  filterAndModifyByLanguage,
+} from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "./__generated__/AllModules"
 import { Courses } from "../courseData"
+import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
 const highlightsBanner = require("../static/images/courseHighlightsBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
@@ -76,7 +80,12 @@ const Home = (props: HomeProps) => {
     Courses.allcourses,
     language,
   )
-  console.log(courses)
+
+  const modules: any[] = filterAndModifyByLanguage(
+    mockModules.study_modules,
+    language,
+  )
+  console.log(modules)
 
   if (error) {
     ;<div>
