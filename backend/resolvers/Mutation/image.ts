@@ -13,6 +13,17 @@ const getImageBuffer = image => {
   return new Buffer(base64EncodedImageString, "base64")
 }
 
+const readFS = (stream: NodeJS.ReadStream) => {
+  let chunkList: any[] | Uint8Array[] = []
+
+  return new Promise((resolve, reject) =>
+    stream
+      .on("data", data => chunkList.push(data))
+      .on("error", err => reject(err))
+      .on("end", () => resolve(Buffer.concat(chunkList))),
+  )
+}
+
 const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addImage", {
     type: "Image",
@@ -22,37 +33,27 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
 
-      const { file } = args
+      const { createReadStream, mimetype, filename } = await args.file
 
-      console.log(args)
-
-      // Upload scalar should expose these - now we only get path?
-      const { createReadStream, mimetype, filename } = await args.file.file
-
-      console.log("got file", file)
-      console.log(filename, mimetype)
-
-      const image = getImageBuffer(file.blob)
+      const image = await readFS(createReadStream())
 
       const compressedImage = await sharp(image)
         .webp()
         .toBuffer()
 
-      const uncompressed = await uploadImage(image, file.mimetype, file.path)
+      const uncompressed = await uploadImage(image, mimetype, filename)
       const compressed = await uploadImage(
         compressedImage,
         "image/webp",
-        file.path,
+        filename,
       )
 
       const prisma: Prisma = ctx.prisma
 
       const newImage: Image = await prisma.createImage({
-        name: file.path,
+        name: filename,
         uncompressed,
-        uncompressed_mimetype: file.blob.match(
-          /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/,
-        )[1],
+        uncompressed_mimetype: mimetype,
         compressed,
         compressed_mimetype: "image/webp",
       })

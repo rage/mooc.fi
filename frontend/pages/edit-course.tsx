@@ -19,7 +19,13 @@ export const CourseQuery = gql`
       id
       name
       slug
-      photo
+      photo {
+        id
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
       promote
       start_point
       status

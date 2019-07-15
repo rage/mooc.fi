@@ -21,7 +21,11 @@ const AllModulesQuery = gql`
       courses {
         id
         slug
-        photo
+        photo {
+          id
+          compressed
+          uncompressed
+        }
         promote
         status
         start_point

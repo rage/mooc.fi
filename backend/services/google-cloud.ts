@@ -43,13 +43,14 @@ export const uploadImage = async (
   const file = bucket.file(filename)
 
   return new Promise((resolve, reject) => {
+    console.time("file save")
     file.save(
       imageBuffer,
-      /*       {
-        metadata: { contentType: mimeType },
+      {
+        // metadata: { contentType: mimeType },
         public: true,
         validation: "md5",
-      }, */
+      },
       error => {
         if (error) {
           reject(error)
@@ -58,6 +59,7 @@ export const uploadImage = async (
         resolve(`https://storage.googleapis.com/${bucketName}/${filename}`)
       },
     )
+    console.timeEnd("file save")
   })
 }
 
