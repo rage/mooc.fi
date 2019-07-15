@@ -13,6 +13,7 @@ import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import get from "lodash/get"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,8 +37,8 @@ function CourseCard({ course }) {
           component={course ? "img" : "div"}
           alt="Course Logo"
           image={
-            course
-              ? course.photo ||
+            get(course, "photo.compressed")
+              ? course.photo.compressed ||
                 require(`../static/images/courseimages/${course.slug}.png`)
               : ""
           }

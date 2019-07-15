@@ -10,7 +10,17 @@ import {
   Button,
   ButtonBase,
 } from "@material-ui/core"
-import { Formik, Field, FieldArray, Form, FormikProps } from "formik"
+import {
+  Formik,
+  Field,
+  FieldArray,
+  Form,
+  FieldProps,
+  FormikValues,
+  FormikActions,
+  FormikProps,
+  FormikErrors,
+} from "formik"
 import {
   fieldToTextField,
   TextField,
@@ -25,34 +35,29 @@ import pullAll from "lodash/pullAll"
 import { useApolloClient } from "react-apollo-hooks"
 import Dropzone, { useDropzone } from "react-dropzone"
 import styled from "styled-components"
+import CourseTranslationEditForm, {
+  CourseTranslationFormValues,
+} from "./CourseTranslationEditForm"
+import { CourseStatus } from "../../__generated__/globalTypes"
+import { addImage_addImage as Image } from "./__generated__/addImage"
+import { updateCourseVariables as Course } from "./__generated__/updateCourse"
 
 const statuses = [
   {
-    value: "Upcoming",
+    value: CourseStatus.Upcoming,
     label: "Upcoming",
   },
   {
-    value: "Active",
+    value: CourseStatus.Active,
     label: "Active",
   },
   {
-    value: "Ended",
+    value: CourseStatus.Ended,
     label: "Ended",
   },
 ]
 
-const languages = [
-  {
-    value: "en",
-    label: "English",
-  },
-  {
-    value: "fi",
-    label: "Finnish",
-  },
-]
-
-const CourseEditSchema = Yup.object().shape({
+/* const CourseEditSchema = Yup.object().shape({
   name: Yup.string().required("required"),
   new_slug: Yup.string().required("required"),
   status: Yup.mixed()
@@ -70,26 +75,29 @@ const CourseEditSchema = Yup.object().shape({
         .required("required"),
     }),
   ),
-})
+}) */
 
-const initialValues = {
+interface CourseFormValues extends Course {
+  new_photo: undefined | File
+  new_slug: string
+  thumbnail?: string
+  course_translations: (CourseTranslationFormValues | undefined)[]
+  study_module: any
+}
+
+const initialValues: CourseFormValues = {
+  id: null,
   name: "",
   slug: "",
   new_slug: "",
+  thumbnail: undefined,
   photo: undefined,
   new_photo: undefined,
   start_point: false,
   promote: false,
-  status: "Upcoming",
+  status: CourseStatus.Upcoming,
   study_module: null,
   course_translations: [],
-}
-
-const initialTranslation = {
-  language: undefined,
-  name: undefined,
-  description: undefined,
-  link: undefined,
 }
 
 const CloseButton = styled(ButtonBase)`
@@ -182,22 +190,21 @@ const Thumbnail = ({
   )
 }
 
-const ImageDropzoneInput = ({ field, form, ...props }) => {
+const ImageDropzoneInput = ({ field, form }: FieldProps<CourseFormValues>) => {
   const { touched, errors, setFieldValue } = form
   const [error, setError] = useState<string | null>(null)
 
-  const onDrop = (accepted: any[], rejected: any[], event) => {
+  const onDrop = (accepted: File[], rejected: File[]) => {
     const reader = new FileReader()
 
-    reader.onload = () =>
-      setFieldValue(field.name, { ...accepted[0], blob: reader.result })
+    reader.onload = () => {
+      setFieldValue("thumbnail", reader.result)
+    }
 
     if (accepted.length) {
-      const file = accepted[0]
-
       console.log(accepted[0])
       setFieldValue(field.name, accepted[0])
-      //reader.readAsDataURL(accepted[0])
+      reader.readAsDataURL(accepted[0])
     }
 
     if (rejected.length) {
@@ -222,7 +229,9 @@ const ImageDropzoneInput = ({ field, form, ...props }) => {
   return (
     <div {...getRootProps()}>
       <Thumbnail
-        file={form.values[field.name] || form.values.photo}
+        file={
+          form.values.thumbnail /*form.values[field.name] || form.values.photo*/
+        }
         onDelete={() => setFieldValue(field.name, null)}
       />
       <input {...getInputProps()} />
@@ -237,26 +246,13 @@ const ImageDropzoneInput = ({ field, form, ...props }) => {
   )
 }
 
-const languageFilter = (index: number, course_translations: Array<any>) =>
-  languages.filter(
-    l =>
-      !course_translations
-        .filter((_, idx) => idx !== index)
-        .map((c: any) => c.language)
-        .includes(l.value),
-  )
-
-const getError = (errors: any, path: string, index: number, field: string) => {
-  return get(errors, `${path}[${index}].${field}`)
-}
-
 const renderForm = ({
   submitForm,
   errors,
   isSubmitting,
   values,
   setFieldValue,
-}: FormikProps<any>) => (
+}: FormikProps<CourseFormValues>) => (
   <Form>
     <Field
       name="name"
@@ -320,6 +316,7 @@ const renderForm = ({
     </FormControl>
     <br />
     <InputLabel>Photo</InputLabel>
+    <Field name="thumbnail" type="hidden" />
     <Field
       name="new_photo"
       type="file"
@@ -329,104 +326,9 @@ const renderForm = ({
     />
     {console.log(values)}
     <br />
-    <FieldArray
-      name="course_translations"
-      render={helpers => (
-        <>
-          {values.course_translations &&
-          values.course_translations.length > 0 ? (
-            values.course_translations.map((_: any, index: number) => (
-              <React.Fragment key={`translation-${index}`}>
-                <InputLabel>Language</InputLabel>
-                <Field
-                  name={`course_translations[${index}].language`}
-                  type="select"
-                  label="Language"
-                  errors={getError(
-                    errors,
-                    "course_translations",
-                    index,
-                    "language",
-                  )}
-                  fullWidth
-                  component={Select}
-                >
-                  {languages.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Field>
-                <Field
-                  name={`course_translations[${index}].name`}
-                  type="text"
-                  label="Name"
-                  errors={getError(
-                    errors,
-                    "course_translations",
-                    index,
-                    "name",
-                  )}
-                  fullWidth
-                  component={TextField}
-                />
-                <Field
-                  name={`course_translations[${index}].description`}
-                  type="text"
-                  label="Description"
-                  errors={getError(
-                    errors,
-                    "course_translations",
-                    index,
-                    "description",
-                  )}
-                  fullWidth
-                  component={TextField}
-                />
-                <Field
-                  name={`course_translations[${index}].link`}
-                  type="text"
-                  label="Link"
-                  errors={getError(
-                    errors,
-                    "course_translations",
-                    index,
-                    "link",
-                  )}
-                  fullWidth
-                  component={TextField}
-                />
-                {/* TODO here: don't actually remove in case of misclicks */}
-                {index === values.course_translations.length - 1 &&
-                index < languages.length - 1 &&
-                languageFilter(index + 1, values.course_translations).length >
-                  0 ? (
-                  <Button
-                    variant="contained"
-                    onClick={() => helpers.push({ ...initialTranslation })}
-                  >
-                    +
-                  </Button>
-                ) : null}
-                <Button
-                  variant="contained"
-                  onClick={() => helpers.remove(index)}
-                >
-                  -
-                </Button>
-              </React.Fragment>
-            ))
-          ) : (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => helpers.push({})}
-            >
-              Add a translation
-            </Button>
-          )}
-        </>
-      )}
+    <CourseTranslationEditForm
+      values={values.course_translations}
+      errors={errors.course_translations}
     />
     {isSubmitting && <LinearProgress />}
     <br />
@@ -441,11 +343,14 @@ const renderForm = ({
   </Form>
 )
 
-const validate = props => values => {
+const validate = (props: any) => (
+  values: CourseFormValues,
+): Promise<FormikErrors<CourseFormValues>> => {
   // TODO: either use validationSchema here or validate otherwise
   return new Promise(async resolve => {
-    let errors = {}
+    let errors: FormikErrors<CourseFormValues> = {}
 
+    console.log("validate says", values)
     if (values.new_slug) {
       let res
 
@@ -460,10 +365,10 @@ const validate = props => values => {
 
       const { data } = res
 
-      const existing = data.course && data.course.id
+      const existing = data.course_exists
 
       if (existing) {
-        if (values.id && values.id !== existing) {
+        if (values.new_slug && values.new_slug !== values.slug) {
           errors.new_slug = "must be unique"
         }
       }
@@ -472,7 +377,7 @@ const validate = props => values => {
     }
 
     return resolve(errors)
-  }).then(errors => {
+  }).then((errors: FormikErrors<CourseFormValues>) => {
     if (Object.keys(errors).length) {
       throw errors
     }
@@ -488,7 +393,8 @@ const CourseEditForm = ({
   deleteCourseTranslation,
   checkSlug,
   addImage,
-}: {
+}: // onSubmit
+{
   course: any
   addCourse: Function
   updateCourse: Function
@@ -497,94 +403,115 @@ const CourseEditForm = ({
   deleteCourseTranslation: Function
   checkSlug: Function
   addImage: Function
+  /*   onSubmit: Function
+   */
 }) => {
-  const init = course ? { ...course, new_slug: course.slug } : initialValues
-  const initialTranslationIds = (init.course_translations || []).map(t => t.id)
+  const init = course
+    ? {
+        ...course,
+        new_slug: course.slug,
+        thumbnail: course.photo ? course.photo.compressed : null,
+      }
+    : initialValues
+  const initialTranslationIds = init.course_translations.map(
+    (t: CourseTranslationFormValues) => t.id,
+  )
   const client = useApolloClient()
+
+  const uploadImage = async (
+    image: File | undefined,
+  ): Promise<Image | null> => {
+    if (!image) {
+      return null
+    }
+
+    const { data, error } = await addImage({ variables: { file: image } })
+
+    console.log(data)
+
+    if (error) {
+      throw new Error("error uploading image: " + error)
+    }
+
+    if (data && data.addImage) {
+      return data.addImage
+    }
+
+    return null
+  }
+
+  const onSubmit = async (
+    values: CourseFormValues,
+    { setSubmitting, setFieldValue }: FormikActions<CourseFormValues>,
+  ): Promise<void> => {
+    console.log(values)
+    console.log(JSON.stringify(values))
+
+    const newValues = { ...values }
+    const { new_photo }: { new_photo: File | undefined } = values
+    const mutation = values.id ? updateCourse : addCourse
+
+    console.log("new photo?", new_photo)
+    if (new_photo) {
+      const uploadedImage: Image | null = await uploadImage(new_photo)
+
+      console.log(uploadedImage)
+
+      if (uploadedImage) {
+        newValues.photo = uploadedImage.id
+        setFieldValue("new_photo", null)
+        setFieldValue("thumbnail", uploadedImage.compressed)
+      }
+    }
+
+    console.log("about to mutate new", newValues, "form", values)
+
+    const course = await mutation({
+      variables: {
+        ...newValues,
+        id: undefined,
+        slug: values.id ? values.new_slug : values.slug,
+      },
+    })
+
+    const courseId = values.id ? values.id : course.data.addCourse.id
+
+    await Promise.all(
+      (values.course_translations || []).map(
+        (t: CourseTranslationFormValues | undefined) => {
+          if (!!t && t.id) {
+            return updateCourseTranslation({
+              variables: { ...t, course: courseId },
+            })
+          } else {
+            return addCourseTranslation({
+              variables: { ...t, course: courseId },
+            })
+          }
+        },
+      ),
+    )
+
+    const removedTranslationIds: (string | undefined)[] = pullAll(
+      initialTranslationIds,
+      (values.course_translations || []).map(
+        (t: CourseTranslationFormValues | undefined) => t.id,
+      ),
+    )
+    await Promise.all(
+      removedTranslationIds.map(id =>
+        deleteCourseTranslation({ variables: { id } }),
+      ),
+    )
+
+    setSubmitting(false)
+  }
 
   return (
     <Formik
       initialValues={init}
       validate={validate({ client, checkSlug })}
-      onSubmit={async (values, { setSubmitting, setFieldValue }) => {
-        console.log(values)
-        console.log(JSON.stringify(values))
-        if (values.id) {
-          const newValues = { ...values }
-
-          if (values.new_photo) {
-            const { new_photo } = values
-
-            /*             const photoFile = {
-              lastModified: new_photo.lastModified,
-              lastModifiedDate: new_photo.lastModifiedDate,
-              name: new_photo.name,
-              path: new_photo.path,
-              type: new_photo.type,
-              size: new_photo.size
-            }
- */
-            const addedImage = await addImage({
-              variables: { file: new_photo },
-            })
-
-            console.log(addedImage)
-
-            newValues.photo = get(addedImage, "data.addImage.compressed")
-          }
-
-          const updated = await updateCourse({
-            variables: { ...newValues, id: undefined },
-          })
-
-          await Promise.all(
-            (values.course_translations || []).map(t => {
-              if (t.id) {
-                return updateCourseTranslation({
-                  variables: { ...t, course: values.id },
-                })
-              } else {
-                return addCourseTranslation({
-                  variables: { ...t, course: values.id },
-                })
-              }
-            }),
-          )
-
-          const removedTranslationIds = pullAll(
-            initialTranslationIds,
-            (values.course_translations || []).map(t => t.id),
-          )
-          await Promise.all(
-            removedTranslationIds.map(id =>
-              deleteCourseTranslation({ variables: { id } }),
-            ),
-          )
-
-          if (values.new_photo) {
-            setFieldValue("photo", updated.data.updateCourse.photo)
-            setFieldValue("new_photo", undefined)
-          }
-        } else {
-          const added = await addCourse({
-            variables: { ...values, slug: values.new_slug },
-          })
-          await Promise.all(
-            (values.course_translations || []).map(t => {
-              return addCourseTranslation({
-                variables: { ...t, course: added.data.addCourse.id },
-              })
-            }),
-          )
-
-          if (values.new_photo) {
-            setFieldValue("photo", added.data.addCourse.photo)
-            setFieldValue("new_photo", undefined)
-          }
-        }
-
-        setSubmitting(false)
-      }}
+      onSubmit={onSubmit}
       render={renderForm}
     />
   )

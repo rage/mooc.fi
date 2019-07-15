@@ -11,7 +11,8 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     args: {
       name: stringArg(),
       slug: stringArg(),
-      photo: stringArg(),
+      // photo: stringArg(),
+      photo: idArg(),
       start_point: booleanArg(),
       promote: booleanArg(),
       status: arg({ type: "CourseStatus" }),
@@ -19,18 +20,15 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
-      const { name, slug, start_point, promote, status, study_module } = args
-
-      let photo = args.photo
-
-      if (photo) {
-        try {
-          const uploadedPhoto = await uploadBase64Image(photo)
-          photo = uploadedPhoto
-        } catch (e) {
-          console.log(e)
-        }
-      }
+      const {
+        name,
+        slug,
+        start_point,
+        photo,
+        promote,
+        status,
+        study_module,
+      } = args
 
       const prisma: Prisma = ctx.prisma
       const course: Course = await prisma.createCourse({
@@ -66,14 +64,11 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       name: stringArg(),
       slug: stringArg(),
       new_slug: stringArg(),
-      photo: stringArg(),
-      /*       photos: arg({ type: "ImageArg" }), */
+      photo: idArg(),
       start_point: booleanArg(),
       promote: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
-      //new_photo: stringArg({ required: false }),
-      new_slug: stringArg({ required: false }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -83,26 +78,12 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         name,
         slug,
         new_slug,
-        // photo,
+        photo,
         start_point,
         promote,
         status,
         study_module,
-        new_photo,
       } = args
-
-      // TODO: delete old photo?
-
-      let photo = args.photo
-
-      if (new_photo) {
-        try {
-          const uploadedPhoto = await uploadBase64Image(new_photo)
-          photo = uploadedPhoto
-        } catch (e) {
-          console.log(e)
-        }
-      }
 
       return prisma.updateCourse({
         where: {
@@ -112,12 +93,12 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         data: {
           name: name,
           slug: new_slug ? new_slug : slug,
-          photo: photo,
+          photo: photo !== null ? { connect: { id: photo } } : null,
           start_point: start_point,
           promote: promote,
           status: status,
           study_module:
-            study_module != null ? { connect: { id: study_module } } : null,
+            study_module !== null ? { connect: { id: study_module } } : null,
         },
       })
     },

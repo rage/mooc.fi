@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react"
 import { Paper } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import uuid from "../../../util/uuid"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
-import omit from "lodash/omit"
 
 export const AddCourseMutation = gql`
   mutation addCourse(
     $name: String
     $slug: String
-    $photo: String
+    $photo: ID
     $promote: Boolean
     $start_point: Boolean
     $status: CourseStatus
@@ -26,7 +24,13 @@ export const AddCourseMutation = gql`
     ) {
       id
       slug
-      photo
+      photo {
+        id
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
     }
   }
 `
@@ -36,12 +40,11 @@ export const UpdateCourseMutation = gql`
     $id: ID
     $name: String
     $slug: String
-    $photo: String
+    $photo: ID
     $promote: Boolean
     $start_point: Boolean
     $status: CourseStatus
     $new_slug: String
-    $new_photo: String
   ) {
     updateCourse(
       id: $id
@@ -49,14 +52,19 @@ export const UpdateCourseMutation = gql`
       slug: $slug
       new_slug: $new_slug
       photo: $photo
-      new_photo: $new_photo
       promote: $promote
       start_point: $start_point
       status: $status
     ) {
       id
       slug
-      photo
+      photo {
+        id
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
     }
   }
 `
@@ -112,10 +120,8 @@ export const DeleteCourseTranslationMutation = gql`
 `
 
 export const CheckSlugQuery = gql`
-  query checkSlug($slug: String!) {
-    course(slug: $slug) {
-      id
-    }
+  query checkSlug($slug: String) {
+    course_exists(slug: $slug)
   }
 `
 
@@ -169,6 +175,7 @@ const CourseEdit = ({ course }: { course: any }) => {
           updateCourseTranslation={updateCourseTranslation}
           deleteCourseTranslation={deleteCourseTranslation}
           addImage={addImage}
+          //onSubmit={onSubmit}
         />
       </Paper>
     </section>

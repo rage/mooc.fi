@@ -8,6 +8,13 @@ import { CourseStatus } from "./../../__generated__/globalTypes";
 // GraphQL query operation: AllModules
 // ====================================================
 
+export interface AllModules_study_modules_courses_photo {
+  __typename: "Image";
+  id: any;
+  compressed: string | null;
+  uncompressed: string;
+}
+
 export interface AllModules_study_modules_courses_course_translations {
   __typename: "CourseTranslation";
   id: any;
@@ -21,7 +28,7 @@ export interface AllModules_study_modules_courses {
   __typename: "Course";
   id: any;
   slug: string;
-  photo: string | null;
+  photo: AllModules_study_modules_courses_photo | null;
   promote: boolean | null;
   status: CourseStatus | null;
   start_point: boolean | null;

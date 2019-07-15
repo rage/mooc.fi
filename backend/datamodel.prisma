@@ -31,8 +31,7 @@ type Course @db(name: "course") {
   "aliases that can be used in this this api instead of slug "
   course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
   services: [Service] @relation(name: "CourseToService")
-  photos: [Image] @relation(name: "CourseToImage")
-  photo: String
+  photo: Image @relation(name: "CourseToImage", onDelete: CASCADE)
   course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation", onDelete: CASCADE)
   promote: Boolean
   status: CourseStatus
@@ -211,7 +210,6 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   required_actions: String
 }
 
-<<<<<<< HEAD
 type Image @db(name: "image") {
   id: UUID! @id
   created_at: DateTime @createdAt
@@ -224,7 +222,7 @@ type Image @db(name: "image") {
   encoding: String
   default: Boolean
 }
-=======
+
 type UserCourseSettings {
   id: UUID! @id
   created_at: DateTime @createdAt
@@ -246,4 +244,3 @@ type UserAppDatumConfig {
   name: String @unique
   timestamp: DateTime
 }
->>>>>>> 8fd9c52326afd63d871dfb44d1b897047f7c1147
