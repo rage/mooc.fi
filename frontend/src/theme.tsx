@@ -12,7 +12,7 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: "Open Sans Condensed, sans-serif",
+    fontFamily: "roboto",
   },
 })
 

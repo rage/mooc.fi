@@ -20,10 +20,11 @@ const fetcUserAppDatum = async () => {
   const prisma: Prisma = new Prisma()
 
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
-    name: "userAppDatum",
+    name: "userAppDatum2",
   }))
-    ? (await prisma.userAppDatumConfig({ name: "userAppDatum" })).timestamp
+    ? (await prisma.userAppDatumConfig({ name: "userAppDatum2" })).timestamp
     : null
+
   console.log(latestTimeStamp)
   await prisma.upsertUserAppDatumConfig({
     where: { name: "userAppDatum" },
@@ -47,6 +48,7 @@ const fetcUserAppDatum = async () => {
   console.log("sorted")
   const saveInterval = 10000
   let saveCounter = 0
+  
   for (let i = 0; i < data.length; i++) {
     saveCounter++
     let p = data[i]
@@ -120,7 +122,9 @@ const fetcUserAppDatum = async () => {
     if (saveCounter % saveInterval == 0)
       saveProgress(prisma, new Date(p.updated_at))
   }
+
   await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
+
   const stopTime = new Date().getTime()
   console.log("used", stopTime - startTime, "milliseconds")
 }

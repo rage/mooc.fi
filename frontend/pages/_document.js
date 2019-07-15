@@ -16,14 +16,16 @@ class MyDocument extends Document {
     ctx.renderPage = () =>
       originalRenderPage({
         enhanceApp: App => props => {
-          const muiStylesData = sheets.collect(<App {...props} />)
-          const styledComponentsData = sheet.collectStyles(<App {...props} />)
-          return [muiStylesData, styledComponentsData]
+          const MuiStylesDataWrapper = sheets.collect(<App {...props} />)
+
+          const styledComponentsDataWrapper = sheet.collectStyles(
+            MuiStylesDataWrapper,
+          )
+          return styledComponentsDataWrapper
         },
       })
 
     const initialProps = await Document.getInitialProps(ctx)
-
     return {
       ...initialProps,
 
@@ -31,6 +33,7 @@ class MyDocument extends Document {
         <React.Fragment>
           {sheets.getStyleElement()}
           {sheet.getStyleElement()}
+
           {flush() || null}
         </React.Fragment>
       ),
@@ -42,12 +45,10 @@ class MyDocument extends Document {
       <html lang="fi" dir="ltr">
         <Head>
           <meta charSet="utf-8" />
-          {/* Use minimum-scale=1 to enable GPU rasterization */}
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
-          {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
         </Head>
         <body>

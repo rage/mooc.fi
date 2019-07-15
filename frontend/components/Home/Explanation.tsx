@@ -5,62 +5,97 @@ import NextI18Next from "../../i18n"
 import styled from "styled-components"
 
 const ExplanationRoot = styled.div`
-  max-width: 70%;
+  max-width: 80%;
+  height: 100%;
   position: relative;
-  margin-left: 1em;
-  margin-bottom: 1rem;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.9);
+  @media (min-width: 425px) {
+    max-width: 70%;
+  }
+  @media (min-width: 2000px) {
+    max-width: 40%;
+  }
 `
 
 const Title = styled(Typography)`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  font-size: 72px;
+  font-family: "Open Sans Condensed", sans-serif !important;
+  padding-top: 0.7em;
+  padding-bottom: 0.7em;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: 32px;
+
   @media (min-width: 600px) {
-    font-size: 120px;
+    font-size: 42px;
+    padding-top: 1em;
+    padding-bottom: 1em;
   }
+
   @media (min-width: 960px) {
-    margin-left: 1rem;
+    font-size: 58px;
+    padding-left: 1em;
+    padding-right: 1em;
   }
-  @media (min-width: 1920px) {
-    font-size: 210px;
+
+  @media (min-width: 1440px) {
+    font-size: 68px;
   }
 `
 const Subtitle = styled(Typography)`
-  padding-right: 1rem;
-  padding-bottom: 2rem;
+  padding-right: 1.5rem;
+  padding-left: 1.5rem;
+  padding-bottom: 1em;
   font-size: 18px;
   @media (min-width: 600px) {
     font-size: 22px;
   }
+
   @media (min-width: 960px) {
-    max-width: 47%;
-    margin-left: 1rem;
+    padding-left: 62px;
+    padding-right: 62px;
   }
-  @media (min-width: 1920px) {
+  @media (min-width: 1440px) {
     font-size: 32px;
-    margin-bottom: 3rem;
+    padding-left: 82px;
+    padding-right: 82px;
   }
 `
 
 const CourseButton = styled(Button)`
-  margin: auto;
+  font-family: "Open Sans Condensed", sans-serif !important;
   background-color: #00a68d;
+  margin-bottom: 1rem;
   color: white;
-  font-size: 24px;
-  margin-left: 10%;
+  font-size: 22px;
+  width: 40%;
+  margin: auto;
+  @media (min-width: 600px) {
+    font-size: 26px;
+  }
+  @media (min-width: 800px) {
+  }
+  @media (min-width: 1440px) {
+    font-size: 36px;
+  }
 `
-
-function Explanation({ t }) {
+interface ExplanationProps {
+  t: Function
+}
+function Explanation(props: ExplanationProps) {
+  const { t } = props
   return (
     <ExplanationRoot>
-      <Title component="h1">MOOC.fi</Title>
-      <div>
-        <Subtitle component="p">{t("intro")}</Subtitle>
-        <CourseButton variant="contained" href="#coursesAndModules">
-          {t("courseButton")}
-        </CourseButton>
-      </div>
+      <Title component="h1" variant="h4">
+        {t("tagLine")}
+      </Title>
+
+      <Subtitle component="p">{t("intro")}</Subtitle>
+      <CourseButton variant="contained" href="#courses-and-modules">
+        {t("courseButton")}
+      </CourseButton>
     </ExplanationRoot>
   )
 }

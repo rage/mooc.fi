@@ -1,137 +1,139 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
+import ReactGA from "react-ga"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    image: {
-      position: "relative",
-      width: "100%",
-      boxShadow:
-        "0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2)",
-      [theme.breakpoints.up("xs")]: {
-        height: 350,
-      },
-      [theme.breakpoints.up("md")]: {
-        height: 500,
-      },
-      maxWidth: 400,
-    },
-    imageSrc: {
-      position: "absolute",
-      left: 0,
-      top: 0,
-      bottom: 0,
-      backgroundSize: "cover",
-      backgroundPosition: "center 40%",
-
-      [theme.breakpoints.up("xs")]: {
-        width: "45%",
-        left: 0,
-        top: 0,
-        bottom: 0,
-      },
-      [theme.breakpoints.up("md")]: {
-        width: "100%",
-        left: 0,
-        top: 0,
-        right: 0,
-        height: 200,
-      },
-    },
-    imageBackdrop: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      backgroundColor: "white",
-      opacity: 0.8,
-    },
-    imageButton: {
-      position: "absolute",
-      display: "flex",
-      flexDirection: "column",
-      paddingBottom: "1em",
-      paddingTop: "1em",
-      [theme.breakpoints.up("xs")]: {
-        width: "55%",
-        right: 0,
-        top: 0,
-        bottom: 0,
-      },
-      [theme.breakpoints.up("md")]: {
-        width: "100%",
-        height: 250,
-        right: 0,
-        left: 0,
-        bottom: 0,
-        marginTop: 200,
-      },
-    },
-    title: {
-      marginBottom: "0.5rem",
-      marginLeft: "0.5rem",
-      padding: "0.5rem",
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 20,
-      },
-      [theme.breakpoints.up("sm")]: {
-        fontSize: 28,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 32,
-      },
-    },
-    bodyText: {
-      textAlign: "left",
-      marginBottom: "1rem",
-      padding: "0.5rem",
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 16,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 18,
-      },
-    },
-  }),
-)
-
-const BackgroundImage = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
+const CourseImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -2;
 `
 
-function CourseCard({ course }) {
-  const classes = useStyles()
-  return (
-    <Grid item xs={12} sm={6} md={4} lg={4} xl={4}>
-      <ButtonBase focusRipple className={classes.image} href={`${course.link}`}>
-        <span className={classes.imageSrc}>
-          <picture>
-            <source srcSet={course.photo[0]} type="image/webp" />
-            <source srcSet={course.photo[1]} type="image/png" />
-            <BackgroundImage src={course.photo[1]} />
-          </picture>
-        </span>
+const Background = styled(ButtonBase)`
+  background-color: white;
+  position: relative;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  height: 100%;
+  width: 350px;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+  @media (min-width: 600px) and (max-width: 960px) {
+    width: 500px;
+  }
+`
 
-        <span className={classes.imageButton}>
-          <Typography className={classes.title} align="left">
-            {course.name}
-          </Typography>
-          <Typography className={classes.bodyText} paragraph>
-            {course.description}
-          </Typography>
-        </span>
-      </ButtonBase>
+const TextArea = styled.div`
+  padding: 1rem 1rem 2rem 1rem;
+  height: 200px;
+  color: black;
+  @media (min-width: 430px) and (max-width: 600px) {
+    width: 70%;
+  }
+  @media (max-width: 600px) {
+    padding: 1rem 0.7rem 1rem 1rem;
+    text-align: left;
+    height: 100%;
+    width: 80%;
+  }
+  @media (min-width: 600px) and (max-width: 960px) {
+    text-align: left;
+    height: 100%;
+    width: 60%;
+  }
+`
+const ImageArea = styled.div`
+  height: 250px;
+  @media (max-width: 430px) {
+    height: 345px;
+    width: 20%;
+  }
+  @media (min-width: 430px) and (max-width: 470px) {
+    width: 30%;
+    height: 290px;
+  }
+  @media (min-width: 470px) and (max-width: 600px) {
+    height: 290px;
+    width: 30%;
+  }
+  @media (min-width: 600px) and (max-width: 960px) {
+    width: 40%;
+  }
+`
+const CardLinkWithGA = styled(ReactGA.OutboundLink)`
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 960px) {
+    flex-direction: row;
+  }
+`
+interface ImageProps {
+  photo: any[]
+  isUpcoming: boolean
+}
+function ImageInWebp(props: ImageProps) {
+  const { photo, isUpcoming } = props
+
+  return (
+    <picture>
+      <source srcSet={photo[0]} type="image/webp" />
+      <source srcSet={photo[1]} type="image/png" />
+      <CourseImage
+        src={photo[1]}
+        alt=""
+        style={{ opacity: isUpcoming ? 0.6 : 1 }}
+      />
+    </picture>
+  )
+}
+
+type FilteredCourse = {
+  name: string
+  description: string
+  id: string
+  link: string
+  photo: any[]
+  promote: boolean
+  slug: string
+  start_point: boolean
+  status: string
+}
+
+interface CourseCardProps {
+  course: FilteredCourse
+}
+
+function CourseCard(props: CourseCardProps) {
+  const { course } = props
+  return (
+    <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+      <Background focusRipple disabled={course.status === "Upcoming"}>
+        <CardLinkWithGA
+          eventLabel={`coursesite: ${course.name}`}
+          to={course.link}
+          target="_blank"
+        >
+          <ImageArea>
+            <ImageInWebp
+              photo={course.photo}
+              isUpcoming={course.status === "Upcoming"}
+            />
+          </ImageArea>
+          <TextArea>
+            <Typography component="h3" variant="h6" gutterBottom={true}>
+              {course.name}
+            </Typography>
+            <Typography component="p" paragraph align="left">
+              {course.description}
+            </Typography>
+          </TextArea>
+        </CardLinkWithGA>
+      </Background>
     </Grid>
   )
 }

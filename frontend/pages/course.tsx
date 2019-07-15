@@ -10,32 +10,32 @@ import AdminError from "../components/Dashboard/AdminError"
 import CourseDashboard from "../components/Dashboard/CourseDashboard"
 import { NextContext } from "next"
 import { WideContainer } from "../components/Container"
-import { ApolloClient, gql } from "apollo-boost"
-import { CourseDetails as CourseDetailsData } from "./__generated__/CourseDetails"
-import { useQuery } from "react-apollo-hooks"
-import { withRouter } from "next/router"
+import { withRouter, SingletonRouter } from "next/router"
 import CourseLanguageContext from "../contexes/CourseLanguageContext"
 
 //map selection value of tab navigation
 //to the component to be rendered
-const MapTypeToComponent = {
-  1: <CompletionsList />,
-  2: <PointsList />,
-  0: <CourseDashboard />,
+const MapTypeToComponent = new Map(
+  Object.entries({
+    1: <CompletionsList />,
+    2: <PointsList />,
+    0: <CourseDashboard />,
+  }),
+)
+
+interface CourseProps {
+  router: SingletonRouter
+  admin: boolean
+  nameSpacesRequired: string[]
 }
 
-export const CourseQuery = gql`
-  query CourseDetails($slug: String) {
-    course(slug: $slug) {
-      id
-      name
-    }
-  }
-`
-
-const Course = withRouter(props => {
+const Course = (props: CourseProps) => {
   const { admin, router } = props
-  const slug = router.query.course
+
+  let slug
+  if (router.query) {
+    slug = router.query.course
+  }
 
   if (!admin) {
     return <AdminError />
@@ -47,13 +47,17 @@ const Course = withRouter(props => {
   //store which tab is open
   const [selection, setSelection] = useState(0)
 
-  const handleSelectionChange = (event, value) => {
+  const handleSelectionChange = (
+    event: React.ChangeEvent<{}>,
+    value: number,
+  ) => {
     setSelection(value)
   }
+
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    console.log(languageValue)
     setLanguageValue((event.target as HTMLInputElement).value)
   }
+
   return (
     <CourseLanguageContext.Provider value={languageValue}>
       <section>
@@ -67,12 +71,12 @@ const Course = withRouter(props => {
             handleLanguageChange={handleLanguageChange}
             languageValue={languageValue}
           />
-          {MapTypeToComponent[selection]}
+          {MapTypeToComponent.get(selection.toString())}
         </WideContainer>
       </section>
     </CourseLanguageContext.Provider>
   )
-})
+}
 
 Course.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
@@ -86,4 +90,4 @@ Course.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default Course
+export default withRouter(Course)

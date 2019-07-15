@@ -34,7 +34,6 @@ function AlertIcon(props: any) {
 
 type RegProps = {
   email: String
-  t: Function
 }
 function ImportantNotice(props: RegProps) {
   const classes = useStyles()
@@ -42,12 +41,11 @@ function ImportantNotice(props: RegProps) {
     <Paper className={classes.paper}>
       <AlertIcon className={classes.icon} />
       <Typography>
-        <NextI18Next.Trans i18nKey="Instructions1" /> {props.email}
+        <NextI18Next.Trans i18nKey="register-completion:Instructions1" />{" "}
+        {props.email}
       </Typography>
     </Paper>
   )
 }
 
-export default NextI18Next.withTranslation("register-completion")(
-  ImportantNotice,
-)
+export default ImportantNotice
