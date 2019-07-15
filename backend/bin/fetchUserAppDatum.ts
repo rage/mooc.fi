@@ -7,6 +7,7 @@ import {
   User,
 } from "../generated/prisma-client"
 import { UserInfo } from "../domain/UserInfo"
+import { DateTime } from "luxon"
 
 const prisma: Prisma = new Prisma()
 let course: Course
@@ -17,16 +18,39 @@ const fetcUserAppDatum = async () => {
   const tmc = new TmcClient()
 
   const prisma: Prisma = new Prisma()
-  const startTimestamp = new Date()
+
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
     name: "userAppDatum2",
   }))
     ? (await prisma.userAppDatumConfig({ name: "userAppDatum2" })).timestamp
     : null
-  const data = await tmc.getUserAppDatum(latestTimeStamp)
 
-  console.log("data length", data.length)
+  console.log(latestTimeStamp)
+  await prisma.upsertUserAppDatumConfig({
+    where: { name: "userAppDatum" },
+    create: {
+      name: "userAppDatum",
+      timestamp: new Date(),
+    },
+    update: {
+      timestamp: new Date(),
+    },
+  })
+  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp)
+  console.log("Got data from tmc")
+  console.log("data length", data_from_tmc.length)
+  console.log("sorting")
+  const data = data_from_tmc.sort(
+    (a, b) =>
+      DateTime.fromISO(a.updated_at).toMillis() -
+      DateTime.fromISO(b.updated_at).toMillis(),
+  )
+  console.log("sorted")
+  const saveInterval = 10000
+  let saveCounter = 0
+
   for (let i = 0; i < data.length; i++) {
+    saveCounter++
     let p = data[i]
     if (i % 1000 == 0) console.log(i)
     if (!p || p == "undefined" || p == null) {
@@ -95,17 +119,12 @@ const fetcUserAppDatum = async () => {
       default:
         saveOther(p)
     }
+    if (saveCounter % saveInterval == 0)
+      saveProgress(prisma, new Date(p.updated_at))
   }
-  await prisma.upsertUserAppDatumConfig({
-    where: { name: "userAppDatum2" },
-    create: {
-      name: "userAppDatum",
-      timestamp: startTimestamp,
-    },
-    update: {
-      timestamp: startTimestamp,
-    },
-  })
+
+  await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
+
   const stopTime = new Date().getTime()
   console.log("used", stopTime - startTime, "milliseconds")
 }
@@ -205,5 +224,21 @@ const currentDate = () => {
   return encodeURIComponent(dateTime)
 }
 const delay = ms => new Promise(res => setTimeout(res, ms))
+
+async function saveProgress(prisma: Prisma, dateToDB: Date) {
+  console.log("saving")
+  dateToDB.setMinutes(dateToDB.getMinutes() - 10)
+
+  await prisma.upsertUserAppDatumConfig({
+    where: { name: "userAppDatum" },
+    create: {
+      name: "userAppDatum",
+      timestamp: dateToDB,
+    },
+    update: {
+      timestamp: dateToDB,
+    },
+  })
+}
 
 fetcUserAppDatum().catch(e => console.log(e))
