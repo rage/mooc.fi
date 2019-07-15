@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Courses = ({ admin }) => {
+const Courses = (admin: boolean) => {
   const classes = useStyles()
 
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)

@@ -34,7 +34,6 @@ function AlertIcon(props: any) {
 
 type RegProps = {
   email: String
-  t: Function
 }
 function ImportantNotice(props: RegProps) {
   const classes = useStyles()
@@ -49,6 +48,4 @@ function ImportantNotice(props: RegProps) {
   )
 }
 
-export default NextI18Next.withTranslation("register-completion")(
-  ImportantNotice,
-)
+export default ImportantNotice

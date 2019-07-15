@@ -10,8 +10,13 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function LanguageSelector({ handleLanguageChange, languageValue }) {
+interface LanguageSelectorProps {
+  handleLanguageChange: any
+  languageValue: string
+}
+function LanguageSelector(props: LanguageSelectorProps) {
   const classes = useStyles()
+  const { handleLanguageChange, languageValue } = props
   return (
     <Card className={classes.baseCard}>
       <CardHeader title="Select course language" />

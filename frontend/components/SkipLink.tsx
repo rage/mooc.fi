@@ -47,8 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function SkipLink({ t }) {
+function SkipLink() {
   const classes = useStyles()
+  const { t } = NextI18Next.useTranslation("common")
   return (
     <a href="#main" className={classes.link}>
       <Typography variant="body1">{t("skiplink")}</Typography>
@@ -56,4 +57,4 @@ function SkipLink({ t }) {
   )
 }
 
-export default NextI18Next.withTranslation("common")(SkipLink)
+export default SkipLink
