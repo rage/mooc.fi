@@ -48,7 +48,7 @@ const fetcUserAppDatum = async () => {
   console.log("sorted")
   const saveInterval = 10000
   let saveCounter = 0
-  
+
   for (let i = 0; i < data.length; i++) {
     saveCounter++
     let p = data[i]
