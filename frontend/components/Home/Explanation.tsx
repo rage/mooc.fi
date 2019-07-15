@@ -65,20 +65,20 @@ const Subtitle = styled(Typography)`
 `
 
 const CourseButton = styled(Button)`
-  margin: auto;
+  font-family: "Open Sans Condensed", sans-serif !important;
   background-color: #00a68d;
   margin-bottom: 1rem;
   color: white;
-  font-size: 24px;
-  margin-left: 15%;
+  font-size: 22px;
+  width: 40%;
+  margin: auto;
   @media (min-width: 600px) {
-    margin-left: 20%;
+    font-size: 26px;
   }
   @media (min-width: 800px) {
-    margin-left: 25%;
   }
-  @media (min-width: 800px) {
-    margin-left: 30%;
+  @media (min-width: 1440px) {
+    font-size: 36px;
   }
 `
 interface ExplanationProps {

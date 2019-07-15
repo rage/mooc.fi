@@ -13,7 +13,6 @@ const CourseImage = styled.img`
 
 const Background = styled(ButtonBase)`
   background-color: white;
-
   position: relative;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
@@ -29,14 +28,20 @@ const Background = styled(ButtonBase)`
 `
 
 const TextArea = styled.div`
-  padding: 1rem;
-  height: 180px;
+  padding: 1rem 1rem 2rem 1rem;
+  height: 200px;
   color: black;
+  @media (min-width: 430px) and (max-width: 600px) {
+    width: 70%;
+  }
   @media (max-width: 600px) {
+    padding: 1rem 0.7rem 1rem 1rem;
+    text-align: left;
     height: 100%;
     width: 80%;
   }
   @media (min-width: 600px) and (max-width: 960px) {
+    text-align: left;
     height: 100%;
     width: 60%;
   }
@@ -44,10 +49,15 @@ const TextArea = styled.div`
 const ImageArea = styled.div`
   height: 250px;
   @media (max-width: 430px) {
-    height: 295px;
+    height: 345px;
     width: 20%;
   }
-  @media (min-width: 430px) and (max-width: 600px) {
+  @media (min-width: 430px) and (max-width: 470px) {
+    width: 30%;
+    height: 290px;
+  }
+  @media (min-width: 470px) and (max-width: 600px) {
+    height: 290px;
     width: 30%;
   }
   @media (min-width: 600px) and (max-width: 960px) {

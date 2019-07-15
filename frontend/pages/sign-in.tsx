@@ -28,8 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
-
-const SignInPage = ({ t }) => {
+interface Props {
+  t: Function
+}
+const SignInPage = (props: Props) => {
+  const { t } = props
   const classes = useStyles()
   return (
     <Container style={{ width: "90%", maxWidth: 900 }}>

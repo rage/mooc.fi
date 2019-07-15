@@ -53,27 +53,6 @@ const Title = styled(Typography)`
     font-size: 72px;
   }
 `
-type Organization = {
-  slug: string
-}
-type Registration = {
-  id: any
-  created_at: any
-  organization: Organization
-}
-type Course = {
-  id: any
-  slug: string
-  name: string
-}
-type Completion = {
-  id: any
-  completion_language: string
-  student_number: string
-  created_at: any
-  course: Course
-  completions_registered: Registration[]
-}
 
 function MyProfile() {
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
