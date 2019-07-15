@@ -17,6 +17,8 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       promote: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
+      // this works like it should, but disabled it because update doesn't
+      // course_translations: arg({ type: "CourseTranslationCreateWithoutCourseInput", list: true, required: false })
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -28,7 +30,10 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         promote,
         status,
         study_module,
+        course_translations,
       } = args
+
+      console.log(args)
 
       const prisma: Prisma = ctx.prisma
       const course: Course = await prisma.createCourse({
@@ -36,11 +41,10 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         slug: slug,
         promote: promote,
         start_point: start_point,
-        photo: photo,
-        course_translations: null,
+        photo: !!photo ? { connect: { id: photo } } : null,
+        // course_translations: !!course_translations ? { create: course_translations } : null,
         status: status,
-        study_module:
-          study_module != null ? { connect: { id: study_module } } : null,
+        study_module: !!study_module ? { connect: { id: study_module } } : null,
       })
 
       const kafkaProducer = await new KafkaProducer()
@@ -69,6 +73,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       promote: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
+      // course_translations: arg({ type: "CourseTranslationUpdateWithWhereUniqueWithoutCourseInput", list: true })
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -83,7 +88,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         promote,
         status,
         study_module,
+        course_translations,
       } = args
+
+      // TODO: check if course translations exist and build the update/upsert/delete thing
 
       return prisma.updateCourse({
         where: {
@@ -93,12 +101,13 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         data: {
           name: name,
           slug: new_slug ? new_slug : slug,
-          photo: photo !== null ? { connect: { id: photo } } : null,
+          photo: !!photo ? { connect: { id: photo } } : null,
           start_point: start_point,
           promote: promote,
           status: status,
-          study_module:
-            study_module !== null ? { connect: { id: study_module } } : null,
+          study_module: !!study_module
+            ? { connect: { id: study_module } }
+            : null,
         },
       })
     },
