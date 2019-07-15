@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function SignIn(t: Function) {
+function SignIn() {
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
   const [error, setError] = useState(false)
@@ -32,10 +32,10 @@ function SignIn(t: Function) {
 
   return (
     <form className={classes.form}>
-      <NextI18Next.Trans i18nKey="loginDetails" />
+      <NextI18Next.Trans i18nKey="common:loginDetails" />
       <FormControl required fullWidth error={error}>
         <InputLabel htmlFor="email">
-          <NextI18Next.Trans i18nKey="username" />
+          <NextI18Next.Trans i18nKey="common:username" />
         </InputLabel>
         <Input
           id="email"
@@ -50,7 +50,7 @@ function SignIn(t: Function) {
       </FormControl>
       <FormControl margin="normal" required fullWidth error={error}>
         <InputLabel htmlFor="password">
-          <NextI18Next.Trans i18nKey="password" />
+          <NextI18Next.Trans i18nKey="common:password" />
         </InputLabel>
         <Input
           name="password"
@@ -63,7 +63,7 @@ function SignIn(t: Function) {
           }}
         />
         <FormHelperText error={error}>
-          {error && <NextI18Next.Trans i18nKey="error" />}
+          {error && <NextI18Next.Trans i18nKey="common:error" />}
         </FormHelperText>
       </FormControl>
 
@@ -85,13 +85,13 @@ function SignIn(t: Function) {
           }
         }}
       >
-        <NextI18Next.Trans i18nKey="login" />
+        <NextI18Next.Trans i18nKey="common:login" />
       </Button>
       <NextI18Next.Link href="https://tmc.mooc.fi/password_reset_keys/new">
-        <NextI18Next.Trans i18nKey="forgottenpw" />
+        <NextI18Next.Trans i18nKey="common:forgottenpw" />
       </NextI18Next.Link>
     </form>
   )
 }
 
-export default NextI18Next.withTranslation("common")(SignIn)
+export default SignIn

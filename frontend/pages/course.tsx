@@ -10,21 +10,30 @@ import AdminError from "../components/Dashboard/AdminError"
 import CourseDashboard from "../components/Dashboard/CourseDashboard"
 import { NextContext } from "next"
 import { WideContainer } from "../components/Container"
-import { withRouter } from "next/router"
+import { withRouter, SingletonRouter } from "next/router"
 import CourseLanguageContext from "../contexes/CourseLanguageContext"
 
 //map selection value of tab navigation
 //to the component to be rendered
-const MapTypeToComponent = {
-  1: <CompletionsList />,
-  2: <PointsList />,
-  0: <CourseDashboard />,
+const MapTypeToComponent = new Map(
+  Object.entries({
+    1: <CompletionsList />,
+    2: <PointsList />,
+    0: <CourseDashboard />,
+  }),
+)
+
+interface CourseProps {
+  router: SingletonRouter
+  admin: boolean
+  nameSpacesRequired: string[]
 }
 
-const Course = withRouter(props => {
+const Course = (props: CourseProps) => {
   const { admin, router } = props
+
   let slug
-  if (router && router.query) {
+  if (router.query) {
     slug = router.query.course
   }
 
@@ -44,9 +53,11 @@ const Course = withRouter(props => {
   ) => {
     setSelection(value)
   }
+
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     setLanguageValue((event.target as HTMLInputElement).value)
   }
+
   return (
     <CourseLanguageContext.Provider value={languageValue}>
       <section>
@@ -60,12 +71,12 @@ const Course = withRouter(props => {
             handleLanguageChange={handleLanguageChange}
             languageValue={languageValue}
           />
-          {MapTypeToComponent[selection]}
+          {MapTypeToComponent.get(selection.toString())}
         </WideContainer>
       </section>
     </CourseLanguageContext.Provider>
   )
-})
+}
 
 Course.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
@@ -79,4 +90,4 @@ Course.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default Course
+export default withRouter(Course)

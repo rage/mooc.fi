@@ -5,7 +5,10 @@ import { NextContext } from "next"
 import redirect from "../lib/redirect"
 import { ApolloClient, gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { UserOverView as UserOverViewData } from "./__generated__/UserOverView"
+import {
+  UserOverView as UserOverViewData,
+  UserOverView_currentUser_completions,
+} from "./__generated__/UserOverView"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import Container from "../components/Container"
@@ -56,42 +59,18 @@ const Title = styled(Typography)`
     font-size: 72px;
   }
 `
-type Organization = {
-  slug: string
-}
-type Registration = {
-  id: any
-  created_at: any
-  organization: Organization
-}
-type Course = {
-  id: any
-  slug: string
-  name: string
-}
-type Completion = {
-  id: any
-  completion_language: string
-  student_number: string
-  created_at: any
-  course: Course
-  completions_registered: Registration[]
-}
 
-type I18NProps = {
+interface CompletionsProps {
   namespacesRequired: string[]
   t: Function
   i18n: any
   tReady: boolean
 }
 
-interface CompletionsProps {
-  translation: I18NProps
-}
-
 function Completions(props: CompletionsProps) {
-  const { namespacesRequired, t, i18n, tready } = props
+  const { t } = props
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+  let completions: UserOverView_currentUser_completions[] = []
 
   if (error) {
     return (
@@ -105,6 +84,9 @@ function Completions(props: CompletionsProps) {
     return <div>Loading</div>
   }
 
+  if (data.currentUser && data.currentUser.completions) {
+    completions = data.currentUser.completions
+  }
   return (
     <section>
       <Title component="h1" variant="h2" align="center">
@@ -116,10 +98,8 @@ function Completions(props: CompletionsProps) {
           {t("completionNB")}
         </Typography>
         <Grid container spacing={2}>
-          {data.currentUser.completions.length > 0 ? (
-            data.currentUser.completions.map(c => (
-              <CompletedCourseCard completion={c} />
-            ))
+          {completions.length > 0 ? (
+            completions.map(c => <CompletedCourseCard completion={c} />)
           ) : (
             <Typography>{t("nocompletionsText")}</Typography>
           )}

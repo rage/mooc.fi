@@ -58,10 +58,10 @@ function LogOutButton(props: LogoutButtonProps) {
           }}
         >
           <Button color="inherit" onClick={onclick}>
-            <NextI18Next.Trans i18nKey="logout" />
+            <NextI18Next.Trans i18nKey="common:logout" />
           </Button>
           <Button color="inherit" href="/my-profile">
-            <NextI18Next.Trans i18nKey="profile" />
+            <NextI18Next.Trans i18nKey="common:profile" />
           </Button>
         </Popover>
       </div>
@@ -71,10 +71,10 @@ function LogOutButton(props: LogoutButtonProps) {
   return (
     <span style={{ padding: "1rem" }}>
       <Button color="inherit" onClick={onclick}>
-        <NextI18Next.Trans i18nKey="logout" />
+        <NextI18Next.Trans i18nKey="common:logout" />
       </Button>
       <Button color="inherit" href="/my-profile">
-        <NextI18Next.Trans i18nKey="profile" />
+        <NextI18Next.Trans i18nKey="common:profile" />
       </Button>
     </span>
   )
@@ -83,7 +83,7 @@ function LogOutButton(props: LogoutButtonProps) {
 function LogInButton() {
   return (
     <Button color="inherit" href="/sign-in" style={{ padding: "1rem" }}>
-      <NextI18Next.Trans i18nKey="loginShort" />
+      <NextI18Next.Trans i18nKey="common:loginShort" />
     </Button>
   )
 }
@@ -160,4 +160,4 @@ function Header(props: HeaderProps) {
   )
 }
 
-export default NextI18Next.withTranslation("common")(withWidth()(Header))
+export default withWidth()(Header)
