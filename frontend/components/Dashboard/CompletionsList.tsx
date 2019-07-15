@@ -159,7 +159,6 @@ const CompletionsList = withRouter(props => {
           endCursor = data.completionsPaginated.pageInfo.endCursor
         }
 
-        console.log(data)
         return (
           <CompletionsListWithData
             completions={completions}

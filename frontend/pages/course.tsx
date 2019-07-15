@@ -61,7 +61,7 @@ const Course = (props: CourseProps) => {
   return (
     <CourseLanguageContext.Provider value={languageValue}>
       <section>
-        <DashboardBreadCrumbs page={slug} />
+        <DashboardBreadCrumbs current_page={slug} />
         <DashboardTabBar
           value={selection}
           handleChange={handleSelectionChange}
