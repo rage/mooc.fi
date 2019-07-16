@@ -47,6 +47,7 @@ const fetcUserAppDatum = async () => {
       DateTime.fromISO(a.updated_at).toMillis() -
       DateTime.fromISO(b.updated_at).toMillis(),
   )
+  console.log(data)
   console.log("sorted")
   const saveInterval = 10000
   let saveCounter = 0
