@@ -25,7 +25,7 @@ async function getElementsOfAiInfo() {
         usernames.length
       } students have passed ${tag} so far.`,
     )
-    usernames = await removeDataThatIsInDBAlready(usernames)
+    usernames = await removeDataThatIsInDBAlready(usernames, "elements-of-ai")
     let basicInfo = await tmcService.getBasicInfoByUsernames(usernames)
     console.log(`Got info from ${basicInfo.length} ${tag} students`)
     await saveCompletionsAndUsersToDatabase(basicInfo, "elements-of-ai", tag)
@@ -33,10 +33,13 @@ async function getElementsOfAiInfo() {
   await Promise.all(promises)
 }
 
-async function removeDataThatIsInDBAlready(data: string[]) {
+async function removeDataThatIsInDBAlready(data: string[], course_slug) {
   const users: User[] = await prisma.users({
     where: {
-      username_in: data,
+      AND: {
+        username_in: data,
+        completions_some: { course: { slug: course_slug } },
+      },
     },
   })
   const usernames = users.map(user => user.username)
