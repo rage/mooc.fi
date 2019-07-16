@@ -22,7 +22,7 @@ const fetcUserAppDatum = async () => {
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
     name: "userAppDatum2",
   }))
-    ? (await prisma.userAppDatumConfig({ name: "userAppDatum2" })).timestamp
+    ? (await prisma.userAppDatumConfig({ name: "userAppDatum" })).timestamp
     : null
 
   console.log(latestTimeStamp)
@@ -62,14 +62,14 @@ const fetcUserAppDatum = async () => {
     })
     if (!isUser) {
       try {
-        await getUserFromTmc(p.user_id, tmc)
+        await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {
         console.log(
           "error in getting user data from tmc, trying again in 30s...",
         )
         console.log("above error is:", error)
         delay(30 * 1000)
-        await getUserFromTmc(p.user_id, tmc)
+        await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       }
     }
     const isCourse: Boolean = await prisma.$exists.course({ slug: p.namespace })
@@ -197,7 +197,10 @@ const saveOther = async p => {
   })
 }
 
-const getUserFromTmc = async (user_id: Number, tmc): Promise<User> => {
+const getUserFromTmcAndSaveToDB = async (
+  user_id: Number,
+  tmc,
+): Promise<User> => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
     upstream_id: details.id,
