@@ -3,8 +3,16 @@ import { Grid } from "@material-ui/core"
 import CompletionCard from "./CompletionCard"
 import HeaderCard from "./HeaderCard"
 import CompletionPaginator from "./CompletionPaginator"
+import { AllCompletions_completionsPaginated_edges_node } from "./__generated__/AllCompletions"
 
-const CompletionsListWithData = props => {
+interface CompletionsListWithDataProps {
+  completions: AllCompletions_completionsPaginated_edges_node[]
+  onLoadMore: () => void
+  onGoBack: () => void
+  pageNumber: number
+}
+
+const CompletionsListWithData = (props: CompletionsListWithDataProps) => {
   const { completions, onLoadMore, onGoBack, pageNumber } = props
   return (
     <Grid container spacing={3} justify="center">

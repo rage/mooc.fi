@@ -3,6 +3,7 @@ import { Grid, Card, CardContent, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CardContentGrid from "./CardContentGrid"
 import CompletionDetailGrid from "./CompletionDetailGrid"
+import { AllCompletions_completionsPaginated_edges_node } from "./__generated__/AllCompletions"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,14 +20,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const MapLangToLanguage = {
-  en_US: "English",
-  fi_FI: "Finnish",
-  sv_SE: "Swedish",
-}
+const MapLangToLanguage = new Map(
+  Object.entries({
+    en_US: "English",
+    fi_FI: "Finnish",
+    sv_SE: "Swedish",
+  }),
+)
 
-function CompletionCard({ completer }) {
+function CompletionCard({
+  completer,
+}: {
+  completer: AllCompletions_completionsPaginated_edges_node
+}) {
   const classes = useStyles()
+  let completionLanguage: string | null = null
+  if (completer.completion_language) {
+    completionLanguage = completer.completion_language
+  }
+
   return (
     <Grid item xs={12} sm={12} lg={8}>
       <Card>
@@ -35,7 +47,9 @@ function CompletionCard({ completer }) {
           <Grid item className={classes.language}>
             <Typography variant="body1">
               Course language:{" "}
-              {MapLangToLanguage[completer.completion_language]}
+              {completionLanguage
+                ? MapLangToLanguage.get(completionLanguage)
+                : "No language available"}
             </Typography>
           </Grid>
           <CompletionDetailGrid completer={completer} />

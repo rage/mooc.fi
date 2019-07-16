@@ -16,7 +16,7 @@ export default (context: NextContext, target: string, savePage = false) => {
   }
   // @ts-ignore
   const targetWithLanguage = `/${context.req.language}${sep}${target}`
-  if (context.res) {
+  if (context.res && context.res.writeHead && context.res.end) {
     // server
     // 303: "See other"
     context.res.writeHead(303, { Location: targetWithLanguage })

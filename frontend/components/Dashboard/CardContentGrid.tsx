@@ -1,6 +1,7 @@
 import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { AllCompletions_completionsPaginated_edges_node } from "./__generated__/AllCompletions"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,8 +18,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CardContentGrid({ completer }) {
+interface Props {
+  completer: AllCompletions_completionsPaginated_edges_node
+}
+
+function CardContentGrid(props: Props) {
   const classes = useStyles()
+  const { completer } = props
+
   return (
     <Grid
       container
