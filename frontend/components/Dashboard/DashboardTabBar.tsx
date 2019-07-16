@@ -13,10 +13,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
-
-function DashboardTabBar({ value, handleChange }) {
+interface Props {
+  value: number
+  handleChange: (event: React.ChangeEvent<{}>, value: number) => void
+}
+function DashboardTabBar(props: Props) {
   const classes = useStyles()
-
+  const { value, handleChange } = props
   return (
     <Tabs
       indicatorColor="primary"

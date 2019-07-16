@@ -8,6 +8,7 @@ import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import NextI18Next from "../../i18n"
 import Container from "../Container"
+import { Module } from "../../util/moduleFunctions"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -48,9 +49,7 @@ const ModuleHomeLink = styled(Link)`
   padding-bottom: 1em;
 `
 
-type ModuleWithCoursesFilteredByUserLanguage = {}
-
-function Modules(module: any) {
+function Modules({ module }: { module: Module }) {
   const { t } = NextI18Next.useTranslation("home")
   const startCourses = module.courses.filter(c => c.start_point === true)
   const otherCourses = module.courses.filter(c => c.start_point === false)

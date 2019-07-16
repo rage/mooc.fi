@@ -1,6 +1,7 @@
 import React from "react"
 import { Grid, Card, CardContent, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { AllCompletions_completionsPaginated_edges_node } from "./__generated__/AllCompletions"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,7 +11,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export function HeaderCard({ course }) {
+export function HeaderCard({
+  course,
+}: {
+  course: AllCompletions_completionsPaginated_edges_node["course"]
+}) {
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={12} lg={8}>

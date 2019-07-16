@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseCard(course: AllCourses_courses) {
+function CourseCard({ course }: { course: AllCourses_courses }) {
   const classes = useStyles()
   return (
     <Grid item xs={12} sm={6} lg={3}>
