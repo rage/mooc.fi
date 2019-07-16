@@ -81,12 +81,6 @@ const Home = (props: HomeProps) => {
     language,
   )
 
-  const modules: any[] = filterAndModifyByLanguage(
-    mockModules.study_modules,
-    language,
-  )
-  console.log(modules)
-
   if (error) {
     ;<div>
       Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>

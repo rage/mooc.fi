@@ -1,5 +1,3 @@
-import { link } from "fs"
-
 const objectifyTranslations = modules => {
   return modules.map(({ study_module_translations, courses, ...module }) => {
     let newModuleTranslations = {}
@@ -112,25 +110,4 @@ export const getPromotedCourses = modules => {
     })
     return acc
   }, [])
-}
-
-//TS interfaces the data produced by modulefunctions
-export interface Module {
-  name: string
-  image: string
-  id: string
-  description: string
-  courses: ModuleCourse[]
-}
-
-export interface ModuleCourse {
-  name: string
-  description: string
-  id: string
-  link: string
-  photo: any[]
-  promote: boolean
-  slug: string
-  start_point: boolean
-  status: string
 }
