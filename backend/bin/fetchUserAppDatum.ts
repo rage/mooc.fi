@@ -28,6 +28,7 @@ const fetcUserAppDatum = async () => {
   console.log("data length", data.length)
   for (let i = 0; i < data.length; i++) {
     let p = data[i]
+    if (p.user_id == null) continue
     if (i % 1000 == 0) console.log(i)
     if (!p || p == "undefined" || p == null) {
       console.log("not p:", p, "i is", i, "while data.length is", data.length)
