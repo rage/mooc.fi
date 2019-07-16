@@ -17,7 +17,7 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
       before: idArg(),
     },
     resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: true, disallowAdmin: true })
+      checkAccess(ctx, { allowOrganizations: true, disallowAdmin: false })
       const { first, after, last, before, completion_language } = args
       let { course } = args
       if ((!first && !last) || (first > 50 || last > 50)) {
