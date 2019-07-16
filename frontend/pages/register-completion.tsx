@@ -106,6 +106,7 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
 
   //if currentuser has completions, find a completion
   //corresponding to the given course slug
+
   if (data.currentUser.completions) {
     completion = data.currentUser.completions.find(
       c => c.course.slug === courseSlug,

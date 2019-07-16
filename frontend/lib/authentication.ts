@@ -4,7 +4,6 @@ import { NextContext } from "next"
 import nookies from "nookies"
 import { ApolloClient } from "apollo-boost"
 import axios from "axios"
-import { get } from "lodash"
 
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
