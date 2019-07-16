@@ -28,16 +28,7 @@ const fetcUserAppDatum = async () => {
     : null
 
   console.log(latestTimeStamp)
-  await prisma.upsertUserAppDatumConfig({
-    where: { name: CONFIG_NAME },
-    create: {
-      name: CONFIG_NAME,
-      timestamp: new Date(),
-    },
-    update: {
-      timestamp: new Date(),
-    },
-  })
+
   const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp)
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
