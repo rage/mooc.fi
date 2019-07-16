@@ -6,15 +6,10 @@
 // GraphQL query operation: checkSlug
 // ====================================================
 
-export interface checkSlug_course {
-  __typename: "Course";
-  id: any;
-}
-
 export interface checkSlug {
-  course: checkSlug_course;
+  course_exists: boolean;
 }
 
 export interface checkSlugVariables {
-  slug: string;
+  slug?: string | null;
 }

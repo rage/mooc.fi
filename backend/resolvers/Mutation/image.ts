@@ -36,16 +36,26 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const { createReadStream, mimetype, filename } = await args.file
 
       const image = await readFS(createReadStream())
+      const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)[1]
+
+      const uncompressedImage = await sharp(image)
+        .jpeg()
+        .toBuffer()
 
       const compressedImage = await sharp(image)
+        .resize({ height: 250 })
         .webp()
         .toBuffer()
 
-      const uncompressed = await uploadImage(image, mimetype, filename)
+      const uncompressed = await uploadImage(
+        uncompressedImage,
+        "image/jpeg",
+        filenameWithoutExtension,
+      )
       const compressed = await uploadImage(
         compressedImage,
         "image/webp",
-        filename,
+        filenameWithoutExtension,
       )
 
       const prisma: Prisma = ctx.prisma
@@ -53,7 +63,7 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const newImage: Image = await prisma.createImage({
         name: filename,
         uncompressed,
-        uncompressed_mimetype: mimetype,
+        uncompressed_mimetype: "image/jpeg",
         compressed,
         compressed_mimetype: "image/webp",
       })

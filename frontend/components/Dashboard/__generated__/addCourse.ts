@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { CourseStatus } from "./../../../__generated__/globalTypes";
+import { CourseStatus, CourseTranslationCreateInput } from "./../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: addCourse
@@ -17,11 +17,21 @@ export interface addCourse_addCourse_photo {
   uncompressed_mimetype: string;
 }
 
+export interface addCourse_addCourse_course_translations {
+  __typename: "CourseTranslation";
+  id: any;
+  language: string;
+  name: string;
+  description: string;
+  link: string;
+}
+
 export interface addCourse_addCourse {
   __typename: "Course";
   id: any;
   slug: string;
   photo: addCourse_addCourse_photo | null;
+  course_translations: addCourse_addCourse_course_translations[] | null;
 }
 
 export interface addCourse {
@@ -35,4 +45,5 @@ export interface addCourseVariables {
   promote?: boolean | null;
   start_point?: boolean | null;
   status?: CourseStatus | null;
+  course_translations?: CourseTranslationCreateInput[] | null;
 }

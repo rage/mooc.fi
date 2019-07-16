@@ -2,9 +2,10 @@ import React from "react"
 import { Button, InputLabel, MenuItem } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { Select, TextField, TextAreaField } from "formik-material-ui"
-import { updateCourseTranslationVariables as CourseTranslation } from "./__generated__/updateCourseTranslation"
+import { updateCourse_updateCourse_course_translations } from "./__generated__/updateCourse"
 
-export interface CourseTranslationFormValues extends CourseTranslation {
+export interface CourseTranslationFormValues
+  extends updateCourse_updateCourse_course_translations {
   /* 
   id?: string | undefined
   language: string | undefined,
