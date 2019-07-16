@@ -18,6 +18,7 @@ export const AddCourseMutation = gql`
     $promote: Boolean
     $start_point: Boolean
     $status: CourseStatus
+    $course_translations: [CourseTranslationCreateInput!]
   ) {
     addCourse(
       name: $name
@@ -26,6 +27,7 @@ export const AddCourseMutation = gql`
       promote: $promote
       start_point: $start_point
       status: $status
+      course_translations: $course_translations
     ) {
       id
       slug
@@ -57,6 +59,7 @@ export const UpdateCourseMutation = gql`
     $start_point: Boolean
     $status: CourseStatus
     $new_slug: String
+    $course_translations: [CourseTranslationWithIdInput!]
   ) {
     updateCourse(
       id: $id
@@ -67,6 +70,7 @@ export const UpdateCourseMutation = gql`
       promote: $promote
       start_point: $start_point
       status: $status
+      course_translations: $course_translations
     ) {
       id
       slug
@@ -84,56 +88,6 @@ export const UpdateCourseMutation = gql`
         description
         link
       }
-    }
-  }
-`
-
-export const AddCourseTranslationMutation = gql`
-  mutation addCourseTranslation(
-    $language: String!
-    $name: String!
-    $description: String
-    $link: String
-    $course: ID!
-  ) {
-    addCourseTranslation(
-      language: $language
-      name: $name
-      description: $description
-      link: $link
-      course: $course
-    ) {
-      id
-    }
-  }
-`
-
-export const UpdateCourseTranslationMutation = gql`
-  mutation updateCourseTranslation(
-    $id: ID!
-    $language: String!
-    $name: String!
-    $description: String
-    $link: String
-    $course: ID
-  ) {
-    updateCourseTranslation(
-      id: $id
-      language: $language
-      name: $name
-      description: $description
-      link: $link
-      course: $course
-    ) {
-      id
-    }
-  }
-`
-
-export const DeleteCourseTranslationMutation = gql`
-  mutation deleteCourseTranslation($id: ID!) {
-    deleteCourseTranslation(id: $id) {
-      id
     }
   }
 `
@@ -184,9 +138,6 @@ const CourseEdit = ({ course }: { course: any }) => {
 
   const addCourse = useMutation(AddCourseMutation)
   const updateCourse = useMutation(UpdateCourseMutation)
-  const addCourseTranslation = useMutation(AddCourseTranslationMutation)
-  const updateCourseTranslation = useMutation(UpdateCourseTranslationMutation)
-  const deleteCourseTranslation = useMutation(DeleteCourseTranslationMutation)
   const addImage = useMutation(AddImageMutation)
   const checkSlug = CheckSlugQuery
 
@@ -220,11 +171,7 @@ const CourseEdit = ({ course }: { course: any }) => {
           checkSlug={checkSlug}
           addCourse={addCourse}
           updateCourse={updateCourse}
-          addCourseTranslation={addCourseTranslation}
-          updateCourseTranslation={updateCourseTranslation}
-          deleteCourseTranslation={deleteCourseTranslation}
           uploadImage={uploadImage}
-          //onSubmit={onSubmit}
         />
       </Paper>
     </section>

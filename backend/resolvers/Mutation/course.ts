@@ -1,9 +1,16 @@
-import { Prisma, Course } from "../../generated/prisma-client"
+import {
+  Prisma,
+  Course,
+  CourseTranslationUpdateManyWithoutCourseInput,
+  CourseTranslationCreateWithoutCourseInput,
+  CourseTranslationUpdateManyWithWhereNestedInput,
+  CourseTranslationScalarWhereInput,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
-import { uploadBase64Image } from "../../services/google-cloud"
+import * as pullAll from "lodash/pullAll"
 
 const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
@@ -18,7 +25,11 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
       // this works like it should, but disabled it because update doesn't
-      // course_translations: arg({ type: "CourseTranslationCreateWithoutCourseInput", list: true, required: false })
+      course_translations: arg({
+        type: "CourseTranslationCreateInput",
+        list: true,
+        required: false,
+      }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -33,8 +44,6 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations,
       } = args
 
-      console.log(args)
-
       const prisma: Prisma = ctx.prisma
       const course: Course = await prisma.createCourse({
         name: name,
@@ -42,7 +51,9 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         promote: promote,
         start_point: start_point,
         photo: !!photo ? { connect: { id: photo } } : null,
-        // course_translations: !!course_translations ? { create: course_translations } : null,
+        course_translations: !!course_translations
+          ? { create: course_translations }
+          : null,
         status: status,
         study_module: !!study_module ? { connect: { id: study_module } } : null,
       })
@@ -73,7 +84,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       promote: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
-      // course_translations: arg({ type: "CourseTranslationUpdateWithWhereUniqueWithoutCourseInput", list: true })
+      course_translations: arg({
+        type: "CourseTranslationWithIdInput",
+        list: true,
+      }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -91,7 +105,29 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations,
       } = args
 
-      // TODO: check if course translations exist and build the update/upsert/delete thing
+      const existingTranslations = await prisma
+        .course({ slug })
+        .course_translations()
+      const newTranslations: CourseTranslationCreateWithoutCourseInput[] = course_translations.filter(
+        t => !t.id,
+      )
+      const updatedTranslations: CourseTranslationUpdateManyWithWhereNestedInput[] = course_translations
+        .filter(t => !!t.id)
+        .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+      const removedTranslationIds: CourseTranslationScalarWhereInput[] = pullAll(
+        existingTranslations.map(t => t.id),
+        course_translations.map(t => t.id).filter(v => !!v),
+      ).map(_id => ({ id: _id }))
+
+      const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = {
+        create: newTranslations.length ? newTranslations : undefined,
+        updateMany: updatedTranslations.length
+          ? updatedTranslations
+          : undefined,
+        deleteMany: removedTranslationIds.length
+          ? removedTranslationIds
+          : undefined,
+      }
 
       return prisma.updateCourse({
         where: {
@@ -105,6 +141,9 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           start_point: start_point,
           promote: promote,
           status: status,
+          course_translations: Object.keys(translationMutation).length
+            ? translationMutation
+            : null,
           study_module: !!study_module
             ? { connect: { id: study_module } }
             : null,

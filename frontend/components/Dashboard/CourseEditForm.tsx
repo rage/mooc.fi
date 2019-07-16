@@ -29,7 +29,10 @@ import CourseTranslationEditForm, {
 } from "./CourseTranslationEditForm"
 import { CourseStatus } from "../../__generated__/globalTypes"
 import { addImage_addImage as Image } from "./__generated__/addImage"
-import { updateCourseVariables as Course } from "./__generated__/updateCourse"
+import {
+  updateCourseVariables as Course,
+  updateCourse_updateCourse_course_translations,
+} from "./__generated__/updateCourse"
 import Next18next from "../../i18n"
 
 const statuses = [
@@ -343,9 +346,6 @@ const CourseEditForm = ({
   course,
   addCourse,
   updateCourse,
-  addCourseTranslation,
-  updateCourseTranslation,
-  deleteCourseTranslation,
   checkSlug,
   uploadImage,
 }: // onSubmit
@@ -353,9 +353,6 @@ const CourseEditForm = ({
   course: any
   addCourse: Function
   updateCourse: Function
-  addCourseTranslation: Function
-  updateCourseTranslation: Function
-  deleteCourseTranslation: Function
   checkSlug: Function
   uploadImage: Function
   /*   onSubmit: Function
@@ -369,9 +366,6 @@ const CourseEditForm = ({
         thumbnail: course.photo ? course.photo.compressed : null,
       }
     : initialValues
-  const initialTranslationIds = init.course_translations.map(
-    (t: CourseTranslationFormValues) => t.id,
-  )
   const client = useApolloClient()
 
   const onSubmit = async (
@@ -404,40 +398,18 @@ const CourseEditForm = ({
         ...newValues,
         id: undefined,
         slug: values.id ? values.slug : values.new_slug,
+        course_translations: values.course_translations.length
+          ? values.course_translations.map(
+              (c: updateCourse_updateCourse_course_translations) => ({
+                ...c,
+                id: c.id === "" ? null : c.id,
+                // course: values.id ? values.id : null,
+                __typename: undefined,
+              }),
+            )
+          : null,
       },
     })
-
-    const courseId = values.id ? values.id : course.data.addCourse.id
-
-    await Promise.all(
-      (values.course_translations || []).map(
-        (t: CourseTranslationFormValues | undefined) => {
-          if (!!t && t.id) {
-            return updateCourseTranslation({
-              variables: { ...t, course: courseId },
-            })
-          } else {
-            return addCourseTranslation({
-              variables: { ...t, course: courseId },
-            })
-          }
-        },
-      ),
-    )
-
-    if (!newCourse) {
-      const removedTranslationIds: (string | undefined)[] = pullAll(
-        initialTranslationIds,
-        (values.course_translations || []).map(
-          (t: CourseTranslationFormValues | undefined) => t.id,
-        ),
-      )
-      await Promise.all(
-        removedTranslationIds.map(id =>
-          deleteCourseTranslation({ variables: { id } }),
-        ),
-      )
-    }
 
     //  setSubmitting(false)
     //  Next18next.Router.push("/courses")
