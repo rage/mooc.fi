@@ -50,6 +50,7 @@ const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
 const addUserQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
   users(t)
   currentUser(t)
+  user(t)
 }
 
 export default addUserQueries
