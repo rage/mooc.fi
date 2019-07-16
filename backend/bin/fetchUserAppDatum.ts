@@ -9,6 +9,8 @@ import {
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 
+const CONFIG_NAME = "userAppDatum"
+
 const prisma: Prisma = new Prisma()
 let course: Course
 let old: UserCourseSettings
@@ -20,16 +22,16 @@ const fetcUserAppDatum = async () => {
   const prisma: Prisma = new Prisma()
 
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
-    name: "userAppDatum2",
+    name: CONFIG_NAME,
   }))
-    ? (await prisma.userAppDatumConfig({ name: "userAppDatum" })).timestamp
+    ? (await prisma.userAppDatumConfig({ name: CONFIG_NAME })).timestamp
     : null
 
   console.log(latestTimeStamp)
   await prisma.upsertUserAppDatumConfig({
-    where: { name: "userAppDatum" },
+    where: { name: CONFIG_NAME },
     create: {
-      name: "userAppDatum",
+      name: CONFIG_NAME,
       timestamp: new Date(),
     },
     update: {
@@ -233,9 +235,9 @@ async function saveProgress(prisma: Prisma, dateToDB: Date) {
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
   await prisma.upsertUserAppDatumConfig({
-    where: { name: "userAppDatum" },
+    where: { name: CONFIG_NAME },
     create: {
-      name: "userAppDatum",
+      name: CONFIG_NAME,
       timestamp: dateToDB,
     },
     update: {
