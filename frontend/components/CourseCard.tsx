@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseCard({ course }: { course: AllCourses_courses }) {
+function CourseCard({ course, key }: { course?: AllCourses_courses, key: string }) {
   const classes = useStyles()
   console.log(course)
 
@@ -37,12 +37,9 @@ function CourseCard({ course }: { course: AllCourses_courses }) {
         <CardMedia
           component={course ? "img" : "div"}
           alt="Course Logo"
-          image={
-            get(course, "photo.compressed")
-              ? course.photo.compressed ||
-                require(`../static/images/courseimages/${course.slug}.png`)
-              : ""
-          }
+          image={course 
+            ? get(course, "photo.compressed", require(`../static/images/courseimages/${course.slug}.png`))
+            : ""}
           className={classes.media}
         >
           {!course ? (

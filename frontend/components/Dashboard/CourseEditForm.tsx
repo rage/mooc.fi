@@ -108,12 +108,19 @@ const courseEditSchema = ({
     ),
   })
 
-interface CourseFormValues extends updateCourseVariables {
+interface CourseFormValues {
+  id?: string | null
+  name: string
+  slug: string
+  photo: any
+  start_point: boolean
+  promote: boolean
+  status: CourseStatus
+  course_translations: CourseTranslationFormValues[]
+  study_module: string | null | undefined
+  thumbnail?: string
   new_photo: undefined | File
   new_slug: string
-  thumbnail?: string
-  study_module: string | null | undefined
-  course_translations: updateCourseTranslationVariables[]
 }
 
 const initialValues: CourseFormValues = {
