@@ -7,19 +7,19 @@
 // ====================================================
 
 export interface AllCourses_courses {
-  __typename: "Course";
-  id: any;
-  name: string;
-  slug: string;
+  __typename: "Course"
+  id: any
+  name: string
+  slug: string
 }
 
 export interface AllCourses_currentUser {
-  __typename: "User";
-  id: any;
-  administrator: boolean;
+  __typename: "User"
+  id: any
+  administrator: boolean
 }
 
 export interface AllCourses {
-  courses: AllCourses_courses[];
-  currentUser: AllCourses_currentUser;
+  courses: AllCourses_courses[]
+  currentUser: AllCourses_currentUser
 }

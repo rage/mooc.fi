@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { Module } from "../../util/moduleFunctions"
+import { Module } from "../../static/types/moduleTypes"
 
 const ModuleBannerContainer = styled.section`
   display: flex;

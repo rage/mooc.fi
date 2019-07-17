@@ -1,5 +1,4 @@
 const withPlugins = require("next-compose-plugins")
-const withTypescript = require("@zeit/next-typescript")
 const withFonts = require("next-fonts")
 const withOptimizedImages = require("next-optimized-images")
 const sharp = require("responsive-loader/sharp")
@@ -10,7 +9,6 @@ const withCSS = require("@zeit/next-css")
 
 module.exports = withPlugins([
   withFonts,
-  withTypescript,
   [
     withOptimizedImages,
     {
