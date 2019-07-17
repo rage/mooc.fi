@@ -35,7 +35,8 @@
     "isolatedModules": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "schema.graphql"
   ],
   "include": [
     "next-env.d.ts",
