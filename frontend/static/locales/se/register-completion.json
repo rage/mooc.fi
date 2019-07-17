@@ -1,18 +1,18 @@
 {
     "title": "Registrering av studiepoäng",
-    "course": "Kurset: The Elements of AI.",
-    "credits":"Studiepoäng som registreras i Helsingfors universitets studieregister: 2 (finländsk personbeteckning krävs).",
+    "course": "Kurs: The Elements of AI.",
+    "credits": "Studiepoäng som registreras i Helsingfors universitets studieregister: 2 (finländsk personbeteckning krävs).",
     "credits_details": "Öppna universitetet vid Helsingfors universitet sköter om registreringen av prestationer. Registreringen är gratis. ",
     "donow": "Anmäl dig till Öppna universitetet så att vi kan registrera din prestation.",
     "instructions-title": "Gör så här: ",
-    "Instructions1":"I anmälningsblanketten ska du ange e-postadress:",
+    "Instructions1": "I anmälningsblanketten ska du ange e-postadress:",
     "Instructions2": "1. Fyll i anmälningsblanketten.",
     "Instructions3": "2. På anmälningsblanketten ska du ange e-postadressen som du använder på MOOC-kursen:  ",
     "Instructions4": "3. Om du vill bli meddelad per e-post då dina studiepoäng registrerats ska du kryssa för “Meddelanden om studieprestationer skickas till min e-post (innehåller vitsordet)”. ",
-    "NB": "Denna anvisning gäller dig också om du är grundexamensstuderande vid Helsingfors universitet!",
+    "NB": "Denna anvisning gäller dig även om du är grundexamensstuderande vid Helsingfors universitet!",
     "grades": "Studiepoängen registreras senast sex veckor efter att anmälan har lämnats in.",
-    "link": "Till anmälningsblankette",
-    "linkAria": "To the registration form. Opens in a new tab. Moves to the service of the open university.",
-    "course_completion_not_found_title": "Completion not found",
-    "course_completion_not_found": "Cannot find course completion. Are you logged in with the right account?"
+    "link": "Till anmälningsblanketten",
+    "linkAria": "Till anmälningsblanketten. Öppnas i en ny flik. Flyttas till Öppna universitetets tjänst.",
+    "course_completion_not_found_title": "Prestation hittas ej",
+    "course_completion_not_found": "Prestation hittas ej. Är du inloggad med rätt inloggningsuppgifter?"
 }
