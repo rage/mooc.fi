@@ -8,7 +8,7 @@ export interface CourseTranslationFormValues {
   id?: string | undefined
   language: string | undefined
   name: string | undefined
-  description: string | undefined
+  description: string | null | undefined
   link: string | undefined
   course?: string | undefined
 }
@@ -34,7 +34,7 @@ const initialTranslation: CourseTranslationFormValues = {
 
 const languageFilter = (
   index: number,
-  course_translations: (updateCourseTranslationVariables[] | undefined)[],
+  course_translations: CourseTranslationFormValues[],
 ) =>
   languages.filter(
     l =>
@@ -48,9 +48,9 @@ const CourseTranslationEditForm = ({
   values,
   errors,
 }: {
-  values: updateCourseTranslationVariables[]
+  values: CourseTranslationFormValues[]
   errors:
-    | (FormikErrors<updateCourseTranslationVariables> | undefined)[]
+    | (FormikErrors<CourseTranslationFormValues> | undefined)[]
     | undefined
 }) => (
   <FieldArray

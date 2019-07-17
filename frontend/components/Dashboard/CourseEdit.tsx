@@ -7,7 +7,6 @@ import { gql } from "apollo-boost"
 import { CourseStatus } from "../../__generated__/globalTypes"
 import { CourseTranslationFormValues } from "./CourseTranslationEditForm"
 import { addImage_addImage as Image } from "./__generated__/addImage"
-import { updateCourseVariables as Course } from "./__generated__/updateCourse"
 import Next18next from "../../i18n"
 
 export const AddCourseMutation = gql`
@@ -111,14 +110,6 @@ export const AddImageMutation = gql`
     }
   }
 `
-
-interface CourseFormValues extends Course {
-  new_photo: undefined | File
-  new_slug: string
-  thumbnail?: string
-  course_translations: (CourseTranslationFormValues | undefined)[]
-  study_module: string | null | undefined
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

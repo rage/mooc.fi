@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { Typography, CircularProgress } from "@material-ui/core"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
 import CourseEditForm from "../components/Dashboard/CourseEdit"
-import { withRouter } from "next/router"
+import { withRouter, SingletonRouter } from "next/router"
 import { useQuery, useMutation } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 
@@ -51,7 +51,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const EditCourse = withRouter(props => {
+interface EditCourseProps {
+  router: SingletonRouter
+  admin: boolean
+  nameSpacesRequired: string[]
+}
+
+const EditCourse = (props: EditCourseProps) => {
   const { admin, router } = props
   const slug = router.query.course
 
@@ -89,7 +95,7 @@ const EditCourse = withRouter(props => {
       </WideContainer>
     </section>
   )
-})
+}
 
 EditCourse.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
@@ -102,4 +108,4 @@ EditCourse.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default EditCourse
+export default withRouter(EditCourse)
