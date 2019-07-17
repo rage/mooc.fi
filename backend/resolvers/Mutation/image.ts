@@ -1,9 +1,12 @@
 import { Prisma, Image } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { arg } from "nexus/dist"
+import { arg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
-import { uploadImage } from "../../services/google-cloud"
+import {
+  uploadImage,
+  deleteImage as deleteStorageImage,
+} from "../../services/google-cloud"
 
 const sharp = require("sharp")
 
@@ -91,8 +94,45 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
+const deleteImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+  t.field("deleteImage", {
+    type: "Boolean",
+    args: {
+      id: arg({ type: "UUID", required: true }),
+    },
+    resolve: async (_, args, ctx) => {
+      checkAccess(ctx)
+
+      console.log("deleting?", args)
+
+      const { id } = args
+
+      const prisma: Prisma = ctx.prisma
+
+      const image = await prisma.image({ id })
+
+      if (!image) {
+        return false
+      }
+
+      console.log("hmmm?", image)
+
+      const compressed = await deleteStorageImage(image.compressed)
+      const uncompressed = await deleteStorageImage(image.uncompressed)
+      const original = await deleteStorageImage(image.original)
+
+      console.log(compressed, uncompressed, original)
+
+      await prisma.deleteImage({ id })
+
+      return true
+    },
+  })
+}
+
 const addImageMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   addImage(t)
+  deleteImage(t)
 }
 
 export default addImageMutations

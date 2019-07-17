@@ -27,9 +27,18 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseCard({ course, key }: { course?: AllCourses_courses, key: string }) {
+function CourseCard({
+  course,
+  key,
+}: {
+  course?: AllCourses_courses
+  key: string
+}) {
   const classes = useStyles()
   console.log(course)
+
+  //  require(`../static/images/courseimages/${course.slug}.png`)
+  // doggos now as a placeholder
 
   return (
     <Grid item xs={12} sm={6} lg={3}>
@@ -37,9 +46,12 @@ function CourseCard({ course, key }: { course?: AllCourses_courses, key: string 
         <CardMedia
           component={course ? "img" : "div"}
           alt="Course Logo"
-          image={course 
-            ? get(course, "photo.compressed", require(`../static/images/courseimages/${course.slug}.png`))
-            : ""}
+          image={
+            course
+              ? get(course, "photo.compressed") ||
+                require(`../static/images/courseimages/doggos.png`)
+              : undefined
+          }
           className={classes.media}
         >
           {!course ? (
