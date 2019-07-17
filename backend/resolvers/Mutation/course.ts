@@ -18,13 +18,11 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     args: {
       name: stringArg(),
       slug: stringArg(),
-      // photo: stringArg(),
       photo: idArg(),
       start_point: booleanArg(),
       promote: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
-      // this works like it should, but disabled it because update doesn't
       course_translations: arg({
         type: "CourseTranslationCreateInput",
         list: true,

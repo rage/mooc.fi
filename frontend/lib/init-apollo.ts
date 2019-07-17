@@ -6,8 +6,7 @@ import {
 import { onError } from "apollo-link-error"
 import { ApolloLink } from "apollo-link"
 import { getAccessToken } from "./authentication"
-import { createHttpLink } from "apollo-link-http"
-import { createUploadLink, split } from "apollo-upload-client"
+import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "apollo-link-context"
 import { NextContext } from "next"
 import fetch from "isomorphic-unfetch"
@@ -17,12 +16,6 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 const production = process.env.NODE_ENV === "production"
 
 function create(initialState: any, ctx: NextContext | undefined) {
-  /*   const httpLink = createHttpLink({
-    uri: production ? "https://points.mooc.fi/api/" : "http://localhost:4000",
-    credentials: "same-origin",
-    fetch: fetch,
-  }) */
-
   const authLink = setContext((_, { headers }) => {
     const token = getAccessToken(ctx)
     // return the headers to the context so httpLink can read them

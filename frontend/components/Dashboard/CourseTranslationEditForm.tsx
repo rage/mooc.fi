@@ -1,18 +1,16 @@
 import React from "react"
 import { Button, InputLabel, MenuItem } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
-import { Select, TextField, TextAreaField } from "formik-material-ui"
-import { updateCourse_updateCourse_course_translations } from "./__generated__/updateCourse"
+import { Select, TextField } from "formik-material-ui"
+import { updateCourseTranslationVariables } from "./__generated__/updateCourseTranslation"
 
-export interface CourseTranslationFormValues
-  extends updateCourse_updateCourse_course_translations {
-  /* 
-  id?: string | undefined
-  language: string | undefined,
-  name: string | undefined,
-  description: string | undefined,
-  link: string | undefined
- */
+export interface CourseTranslationFormValues {
+  id?: string | undefined
+  language: string | undefined
+  name: string | undefined
+  description: string | undefined
+  link: string | undefined
+  course?: string | undefined
 }
 
 const languages = [
@@ -27,7 +25,7 @@ const languages = [
 ]
 
 const initialTranslation: CourseTranslationFormValues = {
-  id: "",
+  id: undefined,
   language: "",
   name: "",
   description: undefined,
@@ -36,7 +34,7 @@ const initialTranslation: CourseTranslationFormValues = {
 
 const languageFilter = (
   index: number,
-  course_translations: CourseTranslationFormValues[],
+  course_translations: (updateCourseTranslationVariables[] | undefined)[],
 ) =>
   languages.filter(
     l =>
@@ -50,8 +48,10 @@ const CourseTranslationEditForm = ({
   values,
   errors,
 }: {
-  values: (CourseTranslationFormValues | undefined)[]
-  errors: (FormikErrors<CourseTranslationFormValues | undefined>)[] | undefined
+  values: updateCourseTranslationVariables[]
+  errors:
+    | (FormikErrors<updateCourseTranslationVariables> | undefined)[]
+    | undefined
 }) => (
   <FieldArray
     name="course_translations"
@@ -65,7 +65,7 @@ const CourseTranslationEditForm = ({
                 name={`course_translations[${index}].language`}
                 type="select"
                 label="Language"
-                errors={getIn(errors, `course_translations[${index}].language`)}
+                errors={getIn(errors, `[${index}].language`)}
                 fullWidth
                 component={Select}
               >
@@ -79,7 +79,7 @@ const CourseTranslationEditForm = ({
                 name={`course_translations[${index}].name`}
                 type="text"
                 label="Name"
-                errors={getIn(errors, `course_translations[${index}].name`)}
+                errors={getIn(errors, `[${index}].name`)}
                 fullWidth
                 component={TextField}
               />
@@ -87,10 +87,7 @@ const CourseTranslationEditForm = ({
                 name={`course_translations[${index}].description`}
                 type="textarea"
                 label="Description"
-                errors={getIn(
-                  errors,
-                  `course_translations[${index}].description`,
-                )}
+                errors={getIn(errors, `[${index}].description`)}
                 fullWidth
                 multiline
                 component={TextField}
@@ -99,7 +96,7 @@ const CourseTranslationEditForm = ({
                 name={`course_translations[${index}].link`}
                 type="text"
                 label="Link"
-                errors={getIn(errors, `course_translations[${index}].link`)}
+                errors={getIn(errors, `[${index}].link`)}
                 fullWidth
                 component={TextField}
               />
@@ -125,7 +122,7 @@ const CourseTranslationEditForm = ({
             color="secondary"
             onClick={() => helpers.push({})}
           >
-            Add a translation
+            Add translations
           </Button>
         )}
       </>

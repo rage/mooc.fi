@@ -215,6 +215,8 @@ type Image @db(name: "image") {
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   name: String
+  original: String!
+  original_mimetype: String!
   uncompressed: String!
   uncompressed_mimetype: String!
   compressed: String
