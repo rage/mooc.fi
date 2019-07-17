@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
+import { Module } from "../../static/types/moduleTypes"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -84,7 +85,7 @@ const NaviCardBodyText = styled(Typography)`
     font-size: 24px;
   }
 `
-function ModuleNaviCard({ module }) {
+function ModuleNaviCard({ module }: { module: Module }) {
   return (
     <Grid item xs={12} md={6} lg={6}>
       <Base focusRipple>

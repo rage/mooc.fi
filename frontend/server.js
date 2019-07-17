@@ -1,4 +1,10 @@
+process.on("unhandledRejection", (...args) => {
+  console.log("lolled")
+  console.log(JSON.stringify(args, undefined, 2))
+})
+
 const express = require("express")
+
 const next = require("next")
 const nextI18NextMiddleware = require("next-i18next/middleware")
 const compression = require("compression")
@@ -11,8 +17,14 @@ const handle = app.getRequestHandler()
 
 const DirectFrom = Redirects.redirects_list
 
-;(async () => {
-  await app.prepare()
+const main = async () => {
+  try {
+    await app.prepare()
+  } catch (e) {
+    console.error("Prepairing Next.js app failed", e)
+    throw e
+  }
+
   const server = express()
   server.use(compression())
   server.use(nextI18NextMiddleware(nextI18next))
@@ -63,4 +75,14 @@ const DirectFrom = Redirects.redirects_list
 
   await server.listen(port)
   console.log(`> Ready on http://localhost:${port}`) // eslint-disable-line no-console
-})()
+}
+
+const main2 = async () => {
+  try {
+    await main()
+  } catch (e) {
+    console.error("Server crashed :(", e)
+  }
+}
+
+main2()

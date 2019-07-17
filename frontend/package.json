@@ -9,7 +9,7 @@
     "export": "next export",
     "start": "NODE_ENV=production PORT=3021 node server.js",
     "upgrade-interactive": "npm-check --update",
-    "generate-graphql-types": "apollo codegen:generate --tagName=gql --target=typescript __generated__"
+    "generate-graphql-types": "apollo codegen:generate  --outputFlat --tagName=gql --target=typescript ./static/types"
   },
   "keywords": [],
   "author": "",
@@ -48,7 +48,7 @@
     "graphql-tag": "^2.10.1",
     "i18next": "^17.0.6",
     "i18next-browser-languagedetector": "^3.0.1",
-    "imagemin": "^6.1.0",
+    "imagemin": "^7.0.0",
     "imagemin-webp": "^5.1.0",
     "install": "^0.12.2",
     "isomorphic-unfetch": "^3.0.0",
@@ -57,7 +57,7 @@
     "luxon": "^1.17.1",
     "material-ui": "^0.20.2",
     "module-resolver": "^1.0.0",
-    "next": "^8.1.0",
+    "next": "^9.0.1",
     "next-compose-plugins": "^2.2.0",
     "next-fonts": "^0.17.0",
     "next-i18next": "^0.44.0",
@@ -78,16 +78,16 @@
     "tmc-client-js": "0.0.9",
     "typeface-open-sans-condensed": "0.0.72",
     "typeface-roboto": "0.0.54",
+    "typescript": "^3.5.3",
     "webp-loader": "^0.5.0",
     "yup": "^0.27.0"
   },
   "devDependencies": {
     "@types/luxon": "^1.15.2",
-    "@types/next": "^8.0.6",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
     "@types/styled-components": "^4.1.18",
-    "apollo": "^2.15.0",
+    "apollo": "^2.16.0",
     "babel-plugin-lodash": "^3.3.4",
     "npm-check": "^5.9.0"
   }
