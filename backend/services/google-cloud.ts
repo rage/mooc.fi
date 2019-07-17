@@ -22,13 +22,11 @@ export const uploadImage = async ({
   name?: string
   directory?: string
 }): Promise<string> => {
-  const filename = `${shortid.generate()}${
+  const filename = `${directory ? directory + "/" : ""}${shortid.generate()}${
     name && name !== "" ? "-" + name : ""
   }.${mimeTypes.detectExtension(mimeType)}`
   const file = bucket.file(filename)
-  const outputFilename = `https://storage.googleapis.com/${bucketName}/${
-    directory && directory !== "" ? directory + "/" : ""
-  }${filename}`
+  const outputFilename = `https://storage.googleapis.com/${bucketName}/${filename}`
 
   return new Promise((resolve, reject) => {
     console.time("file save")
@@ -49,4 +47,19 @@ export const uploadImage = async ({
     )
     console.timeEnd("file save")
   })
+}
+
+export const deleteImage = async (filename: string): Promise<boolean> => {
+  if (!filename || filename === "") {
+    return Promise.resolve(false)
+  }
+
+  const file = bucket.file(
+    filename.replace(`https://storage.googleapis.com/${bucketName}/`, ""),
+  )
+
+  return file
+    .delete()
+    .then(() => true)
+    .catch(err => (console.error("image delete error", err), false))
 }

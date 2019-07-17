@@ -59,6 +59,7 @@ interface EditCourseProps {
 
 const EditCourse = (props: EditCourseProps) => {
   const { admin, router } = props
+  const isNew = router.asPath === "/courses/new"
   const slug = router.query.course
 
   const classes = useStyles()
@@ -77,6 +78,10 @@ const EditCourse = (props: EditCourseProps) => {
 
   if (loading) {
     return null
+  }
+
+  if (!data.course && !isNew) {
+    router.push("/courses/new")
   }
 
   return (

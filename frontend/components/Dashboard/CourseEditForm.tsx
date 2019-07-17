@@ -260,6 +260,7 @@ const CourseEditForm = ({
   updateCourse,
   checkSlug,
   uploadImage,
+  deleteImage,
 }: // onSubmit
 {
   course: any
@@ -267,6 +268,7 @@ const CourseEditForm = ({
   updateCourse: Function
   checkSlug: Function
   uploadImage: Function
+  deleteImage: Function
   /*   onSubmit: Function
    */
 }) => {
@@ -293,6 +295,8 @@ const CourseEditForm = ({
     const { new_photo }: { new_photo: File | undefined } = values
     const mutation = newCourse ? addCourse : updateCourse
 
+    let deletablePhoto: Image | null = null
+
     if (new_photo) {
       const uploadedImage: Image | null = await uploadImage(new_photo)
 
@@ -300,10 +304,19 @@ const CourseEditForm = ({
         newValues.photo = uploadedImage.id
         setFieldValue("new_photo", null)
         setFieldValue("thumbnail", uploadedImage.compressed)
+
+        if (values.photo) {
+          deletablePhoto = values.photo
+        }
       }
     } else if (values.photo) {
       // delete existing photo
       newValues.photo = undefined
+      deletablePhoto = values.photo
+    }
+
+    if (deletablePhoto) {
+      await deleteImage({ variables: { id: deletablePhoto.id } })
     }
 
     const course = await mutation({

@@ -111,6 +111,12 @@ export const AddImageMutation = gql`
   }
 `
 
+export const DeleteImageMutation = gql`
+  mutation deleteImage($id: UUID!) {
+    deleteImage(id: $id)
+  }
+`
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
@@ -130,6 +136,7 @@ const CourseEdit = ({ course }: { course: any }) => {
   const addCourse = useMutation(AddCourseMutation)
   const updateCourse = useMutation(UpdateCourseMutation)
   const addImage = useMutation(AddImageMutation)
+  const deleteImage = useMutation(DeleteImageMutation)
   const checkSlug = CheckSlugQuery
 
   const uploadImage = async (
@@ -163,6 +170,7 @@ const CourseEdit = ({ course }: { course: any }) => {
           addCourse={addCourse}
           updateCourse={updateCourse}
           uploadImage={uploadImage}
+          deleteImage={deleteImage}
         />
       </Paper>
     </section>
