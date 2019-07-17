@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import {
   InputLabel,
   FormControl,
@@ -6,7 +6,6 @@ import {
   MenuItem,
   LinearProgress,
   Button,
-  ButtonBase,
 } from "@material-ui/core"
 import {
   Formik,
@@ -15,24 +14,21 @@ import {
   FieldProps,
   FormikActions,
   FormikProps,
-  FormikErrors,
   getIn,
 } from "formik"
 import { TextField, Select, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
-import pullAll from "lodash/pullAll"
 import { useApolloClient } from "react-apollo-hooks"
-import { useDropzone } from "react-dropzone"
-import styled from "styled-components"
+import { ApolloClient } from "apollo-client"
 import CourseTranslationEditForm, {
   CourseTranslationFormValues,
 } from "./CourseTranslationEditForm"
+import ImageDropzoneInput from "./ImageDropzoneInput"
+import ImagePreview from "./ImagePreview"
 import { CourseStatus } from "../../__generated__/globalTypes"
 import { addImage_addImage as Image } from "./__generated__/addImage"
-import {
-  updateCourseVariables as Course,
-  updateCourse_updateCourse_course_translations,
-} from "./__generated__/updateCourse"
+import { updateCourseVariables } from "./__generated__/updateCourse"
+import { updateCourseTranslationVariables } from "./__generated__/updateCourseTranslation"
 import Next18next from "../../i18n"
 
 const statuses = [
@@ -50,32 +46,74 @@ const statuses = [
   },
 ]
 
-/* const CourseEditSchema = Yup.object().shape({
-  name: Yup.string().required("required"),
-  new_slug: Yup.string().required("required"),
-  status: Yup.mixed()
-    .oneOf(statuses.map(s => s.value))
-    .required("required"),
-  course_translations: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string().required("required"),
-      language: Yup.mixed()
-        .oneOf(languages.map(l => l.value))
-        .required("required"),
-      description: Yup.string(),
-      link: Yup.string()
-        .url()
-        .required("required"),
-    }),
-  ),
-}) */
+const validateSlug = ({
+  slug,
+  checkSlug,
+  client,
+}: {
+  slug: string
+  checkSlug: Function
+  client: any
+}) => async (value: string) => {
+  let res
 
-interface CourseFormValues extends Course {
+  try {
+    res = await client.query({
+      query: checkSlug,
+      variables: { slug: value },
+    })
+  } catch (e) {
+    return true
+  }
+
+  const { data } = res
+  const existing = data.course_exists
+
+  return existing ? value === slug : !existing
+}
+
+const courseEditSchema = ({
+  client,
+  checkSlug,
+  slug,
+}: {
+  client: ApolloClient<object>
+  checkSlug: Function
+  slug: string
+}) =>
+  Yup.object().shape({
+    name: Yup.string().required("required"),
+    new_slug: Yup.string()
+      .required("required")
+      .test(
+        "unique",
+        `slug is already in use`,
+        validateSlug({ client, checkSlug, slug }),
+      ),
+    status: Yup.mixed()
+      .oneOf(statuses.map(s => s.value))
+      .required("required"),
+    course_translations: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string().required("required"),
+        language: Yup.string().required("required"),
+        /*       mixed()
+        .oneOf(languages.map(l => l.value))
+        .required("required"), */
+        description: Yup.string(),
+        link: Yup.string()
+          .url("must be a valid URL")
+          .required("required"),
+      }),
+    ),
+  })
+
+interface CourseFormValues extends updateCourseVariables {
   new_photo: undefined | File
   new_slug: string
   thumbnail?: string
-  course_translations: (CourseTranslationFormValues | undefined)[]
   study_module: string | null | undefined
+  course_translations: updateCourseTranslationVariables[]
 }
 
 const initialValues: CourseFormValues = {
@@ -91,119 +129,6 @@ const initialValues: CourseFormValues = {
   status: CourseStatus.Upcoming,
   study_module: null,
   course_translations: [],
-}
-
-const CloseButton = styled(ButtonBase)`
-  position: relative;
-  top: -10px;
-  right: -10px;
-  border-radius: 10em;
-  padding: 2px 6px 3px;
-  text-decoration: none;
-  font: 700 21px/20px sans-serif;
-  background: #555;
-  border: 3px solid #fff;
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  -webkit-transition: background 0.5s;
-  transition: background 0.5s;
-
-  :hover {
-    background: #e54e4e;
-    padding: 3px 7px 5px;
-    top: -11px;
-    right: -11px;
-  }
-
-  :active {
-    background: #e54e4e;
-    top: -10px;
-    right: -11px;
-  }
-`
-
-const Thumbnail = ({
-  file,
-  onDelete,
-}: {
-  file: string | undefined
-  onDelete: Function
-}) => {
-  if (!file) {
-    return null
-  }
-
-  return (
-    <div>
-      <CloseButton
-        onClick={e => {
-          e.stopPropagation()
-          e.nativeEvent.stopImmediatePropagation()
-          onDelete(e)
-        }}
-      >
-        &times;
-      </CloseButton>
-      <img src={file} height={250} />
-    </div>
-  )
-}
-
-const ImageDropzoneInput = ({ field, form }: FieldProps<CourseFormValues>) => {
-  const { touched, errors, setFieldValue } = form
-  const [error, setError] = useState<string | null>(null)
-
-  const onDrop = (accepted: File[], rejected: File[]) => {
-    const reader = new FileReader()
-
-    reader.onload = () => {
-      setFieldValue("thumbnail", reader.result)
-    }
-
-    if (accepted.length) {
-      console.log(accepted[0])
-      setFieldValue(field.name, accepted[0])
-      reader.readAsDataURL(accepted[0])
-    }
-
-    if (rejected.length) {
-      setError("not an image!")
-    } else {
-      setError("")
-    }
-  }
-
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    acceptedFiles,
-  } = useDropzone({
-    onDrop,
-    accept: "image/*",
-    multiple: false,
-    preventDropOnDocument: true,
-  })
-
-  return (
-    <div {...getRootProps()}>
-      <Thumbnail
-        file={
-          form.values.thumbnail /*form.values[field.name] || form.values.photo*/
-        }
-        onDelete={() => setFieldValue(field.name, null)}
-      />
-      <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop an image file here</p>
-      ) : (
-        <p>Drop image or click to select</p>
-      )}
-      {acceptedFiles.map(f => console.log(f))}
-      {error ? <p>{error}</p> : null}
-    </div>
-  )
 }
 
 const renderForm = ({
@@ -275,15 +200,35 @@ const renderForm = ({
       ) : null}
     </FormControl>
     <br />
-    <InputLabel>Photo</InputLabel>
-    <Field name="thumbnail" type="hidden" />
-    <Field
-      name="new_photo"
-      type="file"
-      label="Upload new photo"
-      fullWidth
-      component={ImageDropzoneInput}
-    />
+    <FormControl>
+      <InputLabel htmlFor="new_photo">Photo</InputLabel>
+      <Field name="thumbnail" type="hidden" />
+      <Field
+        name="new_photo"
+        type="file"
+        label="Upload new photo"
+        fullWidth
+        render={({ field, form }: FieldProps<CourseFormValues>) => (
+          <ImageDropzoneInput
+            field={field}
+            form={form}
+            onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
+          >
+            <ImagePreview
+              file={values.thumbnail}
+              onClose={(
+                e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+              ): void => {
+                e.stopPropagation()
+                e.nativeEvent.stopImmediatePropagation()
+                setFieldValue("new_photo", undefined)
+                setFieldValue("thumbnail", undefined)
+              }}
+            />
+          </ImageDropzoneInput>
+        )}
+      />
+    </FormControl>
     <br />
     <CourseTranslationEditForm
       values={values.course_translations}
@@ -302,46 +247,6 @@ const renderForm = ({
   </Form>
 )
 
-const validate = (props: any) => (
-  values: CourseFormValues,
-): Promise<FormikErrors<CourseFormValues>> => {
-  // TODO: either use validationSchema here or validate otherwise
-  return new Promise(async resolve => {
-    let errors: FormikErrors<CourseFormValues> = {}
-
-    if (values.new_slug) {
-      let res
-
-      try {
-        res = await props.client.query({
-          query: props.checkSlug,
-          variables: { slug: values.new_slug },
-        })
-      } catch (e) {
-        return
-      }
-
-      const { data } = res
-
-      const existing = data.course_exists
-
-      if (existing) {
-        if (values.new_slug && values.new_slug !== values.slug) {
-          errors.new_slug = "must be unique"
-        }
-      }
-    } else {
-      errors.new_slug = "required"
-    }
-
-    return resolve(errors)
-  }).then((errors: FormikErrors<CourseFormValues>) => {
-    if (Object.keys(errors).length) {
-      throw errors
-    }
-  })
-}
-
 const CourseEditForm = ({
   course,
   addCourse,
@@ -358,7 +263,6 @@ const CourseEditForm = ({
   /*   onSubmit: Function
    */
 }) => {
-  console.log("course", course)
   const init = course
     ? {
         ...course,
@@ -390,9 +294,11 @@ const CourseEditForm = ({
         setFieldValue("new_photo", null)
         setFieldValue("thumbnail", uploadedImage.compressed)
       }
+    } else if (values.photo) {
+      // delete existing photo
+      newValues.photo = undefined
     }
 
-    console.log("new values?", newValues)
     const course = await mutation({
       variables: {
         ...newValues,
@@ -400,10 +306,9 @@ const CourseEditForm = ({
         slug: values.id ? values.slug : values.new_slug,
         course_translations: values.course_translations.length
           ? values.course_translations.map(
-              (c: updateCourse_updateCourse_course_translations) => ({
+              (c: CourseTranslationFormValues) => ({
                 ...c,
-                id: c.id === "" ? null : c.id,
-                // course: values.id ? values.id : null,
+                id: !c.id || c.id === "" ? null : c.id,
                 __typename: undefined,
               }),
             )
@@ -422,7 +327,11 @@ const CourseEditForm = ({
   return (
     <Formik
       initialValues={init}
-      validate={validate({ client, checkSlug })}
+      validationSchema={courseEditSchema({
+        client,
+        checkSlug,
+        slug: init.slug,
+      })}
       onSubmit={onSubmit}
       render={renderForm}
     />

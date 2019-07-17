@@ -1,5 +1,4 @@
 import { Storage } from "@google-cloud/storage"
-import { createReadStream } from "fs"
 import * as shortid from "shortid"
 import * as mimeTypes from "mimetypes"
 
@@ -12,16 +11,24 @@ const storage = new Storage({
 
 const bucket = storage.bucket(bucketName)
 
-export const uploadImage = async (
+export const uploadImage = async ({
   imageBuffer,
   mimeType,
-  name,
-): Promise<any> => {
+  name = "",
+  directory = "",
+}: {
+  imageBuffer: Buffer
+  mimeType: string
+  name?: string
+  directory?: string
+}): Promise<string> => {
   const filename = `${shortid.generate()}${
-    name ? "-" + name : ""
+    name && name !== "" ? "-" + name : ""
   }.${mimeTypes.detectExtension(mimeType)}`
-
   const file = bucket.file(filename)
+  const outputFilename = `https://storage.googleapis.com/${bucketName}/${
+    directory && directory !== "" ? directory + "/" : ""
+  }${filename}`
 
   return new Promise((resolve, reject) => {
     console.time("file save")
@@ -37,7 +44,7 @@ export const uploadImage = async (
           reject(error)
         }
 
-        resolve(`https://storage.googleapis.com/${bucketName}/${filename}`)
+        resolve(outputFilename)
       },
     )
     console.timeEnd("file save")
