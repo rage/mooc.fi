@@ -9,6 +9,8 @@ import {
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 
+const CONFIG_NAME = "userAppDatum"
+
 const prisma: Prisma = new Prisma()
 let course: Course
 let old: UserCourseSettings
@@ -20,22 +22,13 @@ const fetcUserAppDatum = async () => {
   const prisma: Prisma = new Prisma()
 
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
-    name: "userAppDatum2",
+    name: CONFIG_NAME,
   }))
-    ? (await prisma.userAppDatumConfig({ name: "userAppDatum2" })).timestamp
+    ? (await prisma.userAppDatumConfig({ name: CONFIG_NAME })).timestamp
     : null
 
   console.log(latestTimeStamp)
-  await prisma.upsertUserAppDatumConfig({
-    where: { name: "userAppDatum" },
-    create: {
-      name: "userAppDatum",
-      timestamp: new Date(),
-    },
-    update: {
-      timestamp: new Date(),
-    },
-  })
+
   const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp)
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
@@ -45,6 +38,7 @@ const fetcUserAppDatum = async () => {
       DateTime.fromISO(a.updated_at).toMillis() -
       DateTime.fromISO(b.updated_at).toMillis(),
   )
+  console.log(data)
   console.log("sorted")
   const saveInterval = 10000
   let saveCounter = 0
@@ -52,6 +46,7 @@ const fetcUserAppDatum = async () => {
   for (let i = 0; i < data.length; i++) {
     saveCounter++
     let p = data[i]
+    if (p.user_id == null) continue
     if (i % 1000 == 0) console.log(i)
     if (!p || p == "undefined" || p == null) {
       console.log("not p:", p, "i is", i, "while data.length is", data.length)
@@ -62,14 +57,14 @@ const fetcUserAppDatum = async () => {
     })
     if (!isUser) {
       try {
-        await getUserFromTmc(p.user_id, tmc)
+        await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {
         console.log(
           "error in getting user data from tmc, trying again in 30s...",
         )
         console.log("above error is:", error)
         delay(30 * 1000)
-        await getUserFromTmc(p.user_id, tmc)
+        await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       }
     }
     const isCourse: Boolean = await prisma.$exists.course({ slug: p.namespace })
@@ -197,7 +192,10 @@ const saveOther = async p => {
   })
 }
 
-const getUserFromTmc = async (user_id: Number, tmc): Promise<User> => {
+const getUserFromTmcAndSaveToDB = async (
+  user_id: Number,
+  tmc,
+): Promise<User> => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
     upstream_id: details.id,
@@ -230,9 +228,9 @@ async function saveProgress(prisma: Prisma, dateToDB: Date) {
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
   await prisma.upsertUserAppDatumConfig({
-    where: { name: "userAppDatum" },
+    where: { name: CONFIG_NAME },
     create: {
-      name: "userAppDatum",
+      name: CONFIG_NAME,
       timestamp: dateToDB,
     },
     update: {

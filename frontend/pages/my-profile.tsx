@@ -1,11 +1,11 @@
 import React from "react"
 import NextI18Next from "../i18n"
 import { isSignedIn } from "../lib/authentication"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import redirect from "../lib/redirect"
 import { ApolloClient, gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { UserOverView as UserOverViewData } from "./__generated__/UserOverView"
+import { UserOverView as UserOverViewData } from "../static/types/UserOverView"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 

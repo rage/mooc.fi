@@ -14,7 +14,7 @@ import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import get from "lodash/get"
-import { AllCourses_courses } from "./../pages/__generated__/AllCourses"
+import { AllCourses_courses } from "./../static/types/AllCourses"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,13 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseCard({
-  course,
-  key,
-}: {
-  course: AllCourses_courses
-  key: string
-}) {
+function CourseCard({ course }: { course: AllCourses_courses }) {
   const classes = useStyles()
   console.log(course)
 

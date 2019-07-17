@@ -8,7 +8,7 @@ import { ApolloLink } from "apollo-link"
 import { getAccessToken } from "./authentication"
 import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "apollo-link-context"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import fetch from "isomorphic-unfetch"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
