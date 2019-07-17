@@ -1,16 +1,19 @@
-export = index
+declare module "tmc-client-js" {
+  class TMCClient {
+    constructor(clientId: string, clientSecret: string, oAuthSite?: string)
 
-interface Credentials {
-  username: string
-  password: string
-}
+    authenticate({
+      username,
+      password,
+    }: {
+      username: string
+      password: string
+    }): Promise<any>
 
-declare class index {
-  constructor(clientId: string, clientSecret: string, ...args: any[])
-  clientId: any
-  clientSecret: any
-  api: any
-  authenticate(credentials: Credentials)
-  getUser(): any
-  unauthenticate(): any
+    unauthenticate(): any
+
+    getUser(): any
+  }
+
+  export = TMCClient
 }

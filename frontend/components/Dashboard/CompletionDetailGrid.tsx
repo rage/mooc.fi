@@ -2,8 +2,8 @@ import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 import DoneIcon from "@material-ui/icons/Done"
 import CloseIcon from "@material-ui/icons/Close"
-import { AllCompletions_completionsPaginated_edges_node as completer } from "./__generated__/AllCompletions"
-import { AllCompletions_completionsPaginated_edges_node_completions_registered as completionsRegistered } from "./__generated__/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node as completer } from "../../static/types/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node_completions_registered as completionsRegistered } from "../../static/types/AllCompletions"
 
 function formatDateTime(date: string) {
   const dateToFormat = new Date(date)

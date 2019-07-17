@@ -2,7 +2,7 @@ import React from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
-import { ModuleCourse } from "../../util/moduleFunctions"
+import { ModuleCourse } from "../../static/types/moduleTypes"
 
 const CourseTitle = styled(Typography)`
   margin-bottom: 0.5rem;
