@@ -4,9 +4,9 @@ import Head from "next/head"
 import { getDataFromTree } from "react-apollo"
 import { getMarkupFromTree } from "react-apollo-hooks"
 import { renderToString } from "react-dom/server"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import { ApolloClient, NormalizedCacheObject } from "apollo-boost"
-import { AppComponentContext } from "next/app"
+import { AppContext } from "next/app"
 
 interface Props {
   ctx: NextContext
@@ -18,7 +18,7 @@ const withApolloClient = (App: any) => {
     static displayName = "withApollo(App)"
 
     apolloClient: ApolloClient<NormalizedCacheObject>
-    static async getInitialProps(appComponentContext: AppComponentContext) {
+    static async getInitialProps(appComponentContext: AppContext) {
       const { Component, router } = appComponentContext
 
       let appProps = {}

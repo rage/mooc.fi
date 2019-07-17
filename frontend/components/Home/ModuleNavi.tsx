@@ -5,7 +5,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
 import NextI18Next from "../../i18n"
 import Container from "../Container"
-import { Module } from "../../util/moduleFunctions"
+import { Module } from "../../static/types/moduleTypes"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

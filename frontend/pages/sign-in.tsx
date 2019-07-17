@@ -1,5 +1,5 @@
 import * as React from "react"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import { isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import Paper from "@material-ui/core/Paper"
