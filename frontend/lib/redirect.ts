@@ -1,5 +1,5 @@
 import Nexti18next from "../i18n"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
 
 export default (context: NextContext, target: string, savePage = false) => {

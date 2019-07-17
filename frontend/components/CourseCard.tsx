@@ -11,7 +11,7 @@ import {
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { AllCourses_courses } from "./../pages/__generated__/AllCourses"
+import { AllCourses_courses } from "./../static/types/AllCourses"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

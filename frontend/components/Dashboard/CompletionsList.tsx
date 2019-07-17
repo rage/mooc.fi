@@ -4,7 +4,7 @@ import { Query } from "react-apollo"
 import {
   AllCompletions as AllCompletionsData,
   AllCompletions_completionsPaginated_edges_node,
-} from "./__generated__/AllCompletions"
+} from "../../static/types/AllCompletions"
 import { CircularProgress } from "@material-ui/core"
 import { withRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
