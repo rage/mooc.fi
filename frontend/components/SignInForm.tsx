@@ -87,7 +87,7 @@ function SignIn() {
       >
         <NextI18Next.Trans i18nKey="common:login" />
       </Button>
-      <NextI18Next.Link>
+      <NextI18Next.Link href="https://tmc.mooc.fi/password_reset_keys/new">
         <a href="https://tmc.mooc.fi/password_reset_keys/new">
           <NextI18Next.Trans i18nKey="common:forgottenpw" />
         </a>
