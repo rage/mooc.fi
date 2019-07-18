@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback } from "react"
 import {
   InputLabel,
   FormControl,
@@ -6,6 +6,8 @@ import {
   MenuItem,
   LinearProgress,
   Button,
+  Grid,
+  Container,
 } from "@material-ui/core"
 import {
   Formik,
@@ -15,6 +17,7 @@ import {
   FormikActions,
   FormikProps,
   getIn,
+  yupToFormErrors,
 } from "formik"
 import { TextField, Select, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
@@ -27,8 +30,6 @@ import ImageDropzoneInput from "./ImageDropzoneInput"
 import ImagePreview from "./ImagePreview"
 import { CourseStatus } from "../../__generated__/globalTypes"
 import { addImage_addImage as Image } from "./__generated__/addImage"
-import { updateCourseVariables } from "./__generated__/updateCourse"
-import { updateCourseTranslationVariables } from "./__generated__/updateCourseTranslation"
 import Next18next from "../../i18n"
 
 const statuses = [
@@ -45,6 +46,8 @@ const statuses = [
     label: "Ended",
   },
 ]
+
+const study_modules: { value: any; label: any }[] = []
 
 const validateSlug = ({
   slug,
@@ -97,6 +100,7 @@ const courseEditSchema = ({
       Yup.object().shape({
         name: Yup.string().required("required"),
         language: Yup.string().required("required"),
+        /* TODO: checking that there's no more than one translation per lanaguage per course needs custom validation */
         /*       mixed()
         .oneOf(languages.map(l => l.value))
         .required("required"), */
@@ -145,113 +149,158 @@ const renderForm = ({
   values,
   setFieldValue,
 }: FormikProps<CourseFormValues>) => (
-  <Form>
-    <Field
-      name="name"
-      type="text"
-      label="Name"
-      error={errors.name}
-      fullWidth
-      component={TextField}
-    />
-    <br />
-    <Field
-      name="new_slug"
-      type="text"
-      label="Slug"
-      error={errors.new_slug}
-      fullWidth
-      component={TextField}
-    />
-    <FormControlLabel
-      control={
+  <Grid container direction="column">
+    <Form style={{ lineHeight: "2" }}>
+      <Grid item>
         <Field
-          label="Promote"
-          type="checkbox"
-          name="promote"
-          component={Checkbox}
+          name="name"
+          type="text"
+          label="Name"
+          error={errors.name}
+          fullWidth
+          component={TextField}
         />
-      }
-      label="Promote"
-    />
-    <FormControlLabel
-      control={
         <Field
-          label="Start point"
-          type="checkbox"
-          name="start_point"
-          component={Checkbox}
+          name="new_slug"
+          type="text"
+          label="Slug"
+          error={errors.new_slug}
+          fullWidth
+          component={TextField}
         />
-      }
-      label="Start point"
-    />
-    <br />
-    <FormControl>
-      <InputLabel htmlFor="status">Status</InputLabel>
-      <Field
-        name="status"
-        type="text"
-        label="Status"
-        component={Select}
-        errors={errors.status}
-        fullWidth
-      >
-        {statuses.map(option => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Field>
-      {errors && errors.status ? (
-        <div style={{ color: "red" }}>required</div>
-      ) : null}
-    </FormControl>
-    <br />
-    <FormControl>
-      <InputLabel htmlFor="new_photo">Photo</InputLabel>
-      <Field name="thumbnail" type="hidden" />
-      <Field
-        name="new_photo"
-        type="file"
-        label="Upload new photo"
-        fullWidth
-        render={({ field, form }: FieldProps<CourseFormValues>) => (
-          <ImageDropzoneInput
-            field={field}
-            form={form}
-            onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
-          >
-            <ImagePreview
-              file={values.thumbnail}
-              onClose={(
-                e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-              ): void => {
-                e.stopPropagation()
-                e.nativeEvent.stopImmediatePropagation()
-                setFieldValue("new_photo", undefined)
-                setFieldValue("thumbnail", undefined)
-              }}
+      </Grid>
+      <Grid item container direction="row">
+        <Grid item xs={12} sm={6}>
+          <FormControlLabel
+            control={
+              <Field
+                label="Promote"
+                type="checkbox"
+                name="promote"
+                component={Checkbox}
+              />
+            }
+            label="Promote"
+          />
+          <FormControlLabel
+            control={
+              <Field
+                label="Start point"
+                type="checkbox"
+                name="start_point"
+                component={Checkbox}
+              />
+            }
+            label="Start point"
+          />
+        </Grid>
+        <Grid item container xs={12} sm={6} justify="space-between">
+          <Grid item>
+            <FormControl>
+              <InputLabel htmlFor="study_module" shrink>
+                Study module
+              </InputLabel>
+              <Field
+                name="study_module"
+                type="text"
+                label="Study module"
+                component={Select}
+                errors={errors.study_module}
+                width="100%"
+              >
+                {study_modules.map(option => (
+                  <MenuItem key={`module-${option.value}`} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Field>
+            </FormControl>
+          </Grid>
+          <Grid item>
+            <FormControl>
+              <InputLabel htmlFor="status" shrink>
+                Status
+              </InputLabel>
+              <Field
+                name="status"
+                type="text"
+                label="Status"
+                component={Select}
+                errors={errors.status}
+                fullWidth
+              >
+                {statuses.map(option => (
+                  <MenuItem key={`status-${option.value}`} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Field>
+              {errors && errors.status ? (
+                <div style={{ color: "red" }}>required</div>
+              ) : null}
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item container direction="column">
+        <Grid item>
+          <InputLabel htmlFor="new_photo" shrink>
+            Photo
+          </InputLabel>
+        </Grid>
+        <Grid item>
+          <FormControl>
+            <Field name="thumbnail" type="hidden" />
+            <Field
+              name="new_photo"
+              type="file"
+              label="Upload new photo"
+              fullWidth
+              render={({ field, form }: FieldProps<CourseFormValues>) => (
+                <ImageDropzoneInput
+                  field={field}
+                  form={form}
+                  onImageLoad={(value: any) =>
+                    setFieldValue("thumbnail", value)
+                  }
+                >
+                  <ImagePreview
+                    file={values.thumbnail}
+                    onClose={(
+                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ): void => {
+                      e.stopPropagation()
+                      e.nativeEvent.stopImmediatePropagation()
+                      setFieldValue("photo", undefined)
+                      setFieldValue("new_photo", undefined)
+                      setFieldValue("thumbnail", undefined)
+                    }}
+                  />
+                </ImageDropzoneInput>
+              )}
             />
-          </ImageDropzoneInput>
-        )}
-      />
-    </FormControl>
-    <br />
-    <CourseTranslationEditForm
-      values={values.course_translations}
-      errors={errors.course_translations}
-    />
-    {isSubmitting && <LinearProgress />}
-    <br />
-    <Button
-      variant="contained"
-      color="primary"
-      disabled={isSubmitting}
-      onClick={submitForm}
-    >
-      Submit
-    </Button>
-  </Form>
+          </FormControl>
+        </Grid>
+      </Grid>
+      <Grid item container direction="column">
+        <CourseTranslationEditForm
+          values={values.course_translations}
+          errors={errors.course_translations}
+          isSubmitting={isSubmitting}
+        />
+      </Grid>
+      {isSubmitting && <LinearProgress />}
+      <br />
+      <Button
+        variant="contained"
+        color="primary"
+        disabled={isSubmitting}
+        onClick={submitForm}
+      >
+        Submit
+      </Button>
+    </Form>
+  </Grid>
 )
 
 const CourseEditForm = ({
@@ -281,68 +330,74 @@ const CourseEditForm = ({
     : initialValues
   const client = useApolloClient()
 
-  const onSubmit = async (
-    values: CourseFormValues,
-    { setSubmitting, setFieldValue }: FormikActions<CourseFormValues>,
-  ): Promise<void> => {
-    const newCourse = !values.id
+  const onSubmit = useCallback(
+    async (
+      values: CourseFormValues,
+      { setSubmitting, setFieldValue }: FormikActions<CourseFormValues>,
+    ): Promise<void> => {
+      const newCourse = !values.id
 
-    // try {
-    const newValues: CourseFormValues = {
-      ...values,
-      photo: getIn(values, "photo.id"),
-    }
-    const { new_photo }: { new_photo: File | undefined } = values
-    const mutation = newCourse ? addCourse : updateCourse
-
-    let deletablePhoto: Image | null = null
-
-    if (new_photo) {
-      const uploadedImage: Image | null = await uploadImage(new_photo)
-
-      if (uploadedImage) {
-        newValues.photo = uploadedImage.id
-        setFieldValue("new_photo", null)
-        setFieldValue("thumbnail", uploadedImage.compressed)
-
-        if (values.photo) {
-          deletablePhoto = values.photo
-        }
+      // try {
+      const newValues: CourseFormValues = {
+        ...values,
+        photo: getIn(values, "photo.id"),
       }
-    } else if (values.photo) {
-      // delete existing photo
-      newValues.photo = undefined
-      deletablePhoto = values.photo
-    }
+      const { new_photo }: { new_photo: File | undefined } = values
+      const mutation = newCourse ? addCourse : updateCourse
 
-    if (deletablePhoto) {
-      await deleteImage({ variables: { id: deletablePhoto.id } })
-    }
+      let deletablePhoto: Image | null = null
 
-    const course = await mutation({
-      variables: {
-        ...newValues,
-        id: undefined,
-        slug: values.id ? values.slug : values.new_slug,
-        course_translations: values.course_translations.length
-          ? values.course_translations.map(
-              (c: CourseTranslationFormValues) => ({
-                ...c,
-                id: !c.id || c.id === "" ? null : c.id,
-                __typename: undefined,
-              }),
-            )
-          : null,
-      },
-    })
+      if (new_photo) {
+        const uploadedImage: Image | null = await uploadImage(new_photo)
 
-    //  setSubmitting(false)
-    //  Next18next.Router.push("/courses")
-    //} catch (err) {
-    //  console.error(err)
-    setSubmitting(false)
-    //}
-  }
+        if (uploadedImage) {
+          newValues.photo = uploadedImage.id
+          setFieldValue("new_photo", null)
+          setFieldValue("thumbnail", uploadedImage.compressed)
+
+          if (init.photo) {
+            deletablePhoto = init.photo
+          }
+
+          setFieldValue("photo", uploadedImage.id)
+        }
+      } else if (init.photo && !values.photo) {
+        // delete existing photo
+        newValues.photo = undefined
+        deletablePhoto = init.photo
+      }
+
+      if (deletablePhoto) {
+        // TODO? does return boolean on delete status
+        await deleteImage({ variables: { id: deletablePhoto.id } })
+      }
+
+      const course = await mutation({
+        variables: {
+          ...newValues,
+          id: undefined,
+          slug: values.id ? values.slug : values.new_slug,
+          course_translations: values.course_translations.length
+            ? values.course_translations.map(
+                (c: CourseTranslationFormValues) => ({
+                  ...c,
+                  id: !c.id || c.id === "" ? null : c.id,
+                  __typename: undefined,
+                }),
+              )
+            : null,
+        },
+      })
+
+      //  setSubmitting(false)
+      //  Next18next.Router.push("/courses")
+      //} catch (err) {
+      //  console.error(err)
+      setSubmitting(false)
+      //}
+    },
+    [],
+  )
 
   return (
     <Formik

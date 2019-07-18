@@ -29,7 +29,6 @@ export const uploadImage = async ({
   const outputFilename = `https://storage.googleapis.com/${bucketName}/${filename}`
 
   return new Promise((resolve, reject) => {
-    console.time("file save")
     file.save(
       imageBuffer,
       {
@@ -45,7 +44,6 @@ export const uploadImage = async ({
         resolve(outputFilename)
       },
     )
-    console.timeEnd("file save")
   })
 }
 

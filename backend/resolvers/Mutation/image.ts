@@ -103,8 +103,6 @@ const deleteImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
 
-      console.log("deleting?", args)
-
       const { id } = args
 
       const prisma: Prisma = ctx.prisma
@@ -115,13 +113,9 @@ const deleteImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         return false
       }
 
-      console.log("hmmm?", image)
-
       const compressed = await deleteStorageImage(image.compressed)
       const uncompressed = await deleteStorageImage(image.uncompressed)
       const original = await deleteStorageImage(image.original)
-
-      console.log(compressed, uncompressed, original)
 
       await prisma.deleteImage({ id })
 
