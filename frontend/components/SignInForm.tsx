@@ -73,6 +73,7 @@ function SignIn() {
         fullWidth
         variant="contained"
         color="secondary"
+        disabled={email.trim() === "" || password.trim() === ""}
         onClick={async e => {
           e.preventDefault()
           try {
