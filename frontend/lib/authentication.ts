@@ -33,11 +33,13 @@ export const signIn = async ({
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
   const back = nookies.get()["redirect-back"]
-  if (back) {
-    Nexti18next.Router.push(back)
-  }
-  window.history.back()
-
+  setTimeout(() => {
+    if (back) {
+      Nexti18next.Router.push(back)
+    } else {
+      window.history.back()
+    }
+  }, 200)
   return res
 }
 
