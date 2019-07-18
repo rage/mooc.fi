@@ -18,3 +18,6 @@ export {
 export { default as addCourseTranslationQueries } from "./courseTranslation"
 export { default as addExerciseQueries } from "./Exercise"
 export { default as addExerciseComlpetionQueries } from "./ExerciseCompletion"
+export {
+  default as addOpenUniversityRegistrationLinkQueries,
+} from "./OpenUniversityRegistrationLink"
