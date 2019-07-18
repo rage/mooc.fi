@@ -4,10 +4,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
-import { CourseStatus } from "../../__generated__/globalTypes"
-import { CourseTranslationFormValues } from "./CourseTranslationEditForm"
 import { addImage_addImage as Image } from "./__generated__/addImage"
-import Next18next from "../../i18n"
 
 export const AddCourseMutation = gql`
   mutation addCourse(

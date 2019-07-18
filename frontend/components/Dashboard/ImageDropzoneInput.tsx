@@ -1,6 +1,31 @@
 import React, { useState } from "react"
 import { FieldProps } from "formik"
 import { useDropzone } from "react-dropzone"
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    dropzoneContainer: {
+      width: "100%",
+      alignItems: "center",
+      borderWidth: 2,
+      borderRadius: 2,
+      borderStyle: "dashed",
+      padding: "20px",
+      /*       (props: { [key: string]: any }) => 
+        props.isDragActive
+          ? "dashed"
+          : "solid", */
+      borderColor: (props: { [key: string]: any }) =>
+        props.isDragActive
+          ? props.isDragReject
+            ? "#FF0000"
+            : "#00A000"
+          : "#A0A0A0",
+      transition: "border .24s ease-in-out",
+    },
+  }),
+)
 
 const ImageDropzoneInput = ({
   field,
@@ -35,6 +60,8 @@ const ImageDropzoneInput = ({
     getRootProps,
     getInputProps,
     isDragActive,
+    isDragAccept,
+    isDragReject,
     // acceptedFiles,
   } = useDropzone({
     onDrop,
@@ -43,12 +70,18 @@ const ImageDropzoneInput = ({
     preventDropOnDocument: true,
   })
 
+  const classes = useStyles({ isDragActive, isDragAccept, isDragReject })
+
   return (
-    <div {...getRootProps()}>
+    <div className={classes.dropzoneContainer} {...getRootProps()}>
       {children}
       <input {...getInputProps()} />
       {isDragActive ? (
-        <p>Drop an image file here</p>
+        isDragReject ? (
+          <p>Not an acceptable format!</p>
+        ) : (
+          <p>Drop an image file here</p>
+        )
       ) : (
         <p>Drop image or click to select</p>
       )}
