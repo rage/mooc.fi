@@ -61,10 +61,16 @@ function NaviCard(props: NaviCardProps) {
             variant="h5"
             gutterBottom={true}
             align="left"
+            style={{ maxWidth: "70%" }}
           >
             {item.title}
           </Typography>
-          <Typography component="p" align="left" paragraph>
+          <Typography
+            component="p"
+            align="left"
+            paragraph
+            style={{ maxWidth: "70%" }}
+          >
             {item.text}
           </Typography>
           <Typography align="left">
