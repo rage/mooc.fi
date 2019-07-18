@@ -1,12 +1,5 @@
 import * as React from "react"
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Avatar,
-  Popover,
-} from "@material-ui/core"
+import { AppBar, Toolbar, Typography, Button, Avatar } from "@material-ui/core"
 import { signOut } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
 import { useApolloClient } from "react-apollo-hooks"
@@ -15,74 +8,54 @@ import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import useScrollTrigger from "@material-ui/core/useScrollTrigger"
 import Slide from "@material-ui/core/Slide"
-import withWidth from "@material-ui/core/withWidth"
-import IconButton from "@material-ui/core/IconButton"
-import MenuIcon from "@material-ui/icons/Menu"
 import styled from "styled-components"
 
-interface LogoutButtonProps {
-  width: string
+interface MenuProps {
   onclick: any
+  isLoggedIn: boolean
 }
 
-function LogOutButton(props: LogoutButtonProps) {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const { width, onclick } = props
-
-  function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    setAnchorEl(event.currentTarget)
+const HeaderButtonContainer = styled.div`
+  display: flex;
+  flexdirection: row;
+  @media (max-width: 500px) {
+    flex-direction: column;
   }
-  function handleClose() {
-    setAnchorEl(null)
+`
+
+const LogOutButtonContainer = styled.div`
+  display: flex;
+  flexdirection: row;
+  @media (max-width: 500px) {
+    flex-direction: column;
   }
+`
 
-  const open = Boolean(anchorEl)
+function HeaderMenu(props: MenuProps) {
+  const { onclick, isLoggedIn } = props
 
-  if (width === "xs") {
-    return (
-      <div>
-        <IconButton onClick={handleClick}>
-          <MenuIcon style={{ height: "2.5rem", width: "2.5rem" }} />
-        </IconButton>
-        <Popover
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-        >
+  return (
+    <HeaderButtonContainer>
+      <LanguageSwitch />
+      {isLoggedIn ? (
+        <LogOutButtonContainer>
           <Button color="inherit" onClick={onclick}>
             <NextI18Next.Trans i18nKey="common:logout" />
           </Button>
           <Button color="inherit" href="/my-profile">
             <NextI18Next.Trans i18nKey="common:profile" />
           </Button>
-        </Popover>
-      </div>
-    )
-  }
-
-  return (
-    <span style={{ padding: "1rem" }}>
-      <Button color="inherit" onClick={onclick}>
-        <NextI18Next.Trans i18nKey="common:logout" />
-      </Button>
-      <Button color="inherit" href="/my-profile">
-        <NextI18Next.Trans i18nKey="common:profile" />
-      </Button>
-    </span>
+        </LogOutButtonContainer>
+      ) : (
+        <LogInButton />
+      )}
+    </HeaderButtonContainer>
   )
 }
 
 function LogInButton() {
   return (
-    <Button color="inherit" href="/sign-in" style={{ padding: "1rem" }}>
+    <Button color="inherit" href="/sign-in">
       <NextI18Next.Trans i18nKey="common:loginShort" />
     </Button>
   )
@@ -124,12 +97,8 @@ const HomeLink = styled.a`
   display: flex;
   flex-direction: row;
 `
-interface HeaderProps {
-  width: string
-}
 
-function Header(props: HeaderProps) {
-  const { width } = props
+function Header() {
   const loggedIn = React.useContext(LoginStateContext)
   const client = useApolloClient()
 
@@ -147,12 +116,8 @@ function Header(props: HeaderProps) {
                 </HomeLink>
               </NextI18Next.Link>
             </div>
-            <LanguageSwitch />
-            {loggedIn ? (
-              <LogOutButton onclick={() => signOut(client)} width={width} />
-            ) : (
-              <LogInButton />
-            )}
+
+            <HeaderMenu onclick={() => signOut(client)} isLoggedIn={loggedIn} />
           </Toolbar>
         </AppBar>
       </HideOnScroll>
@@ -160,4 +125,4 @@ function Header(props: HeaderProps) {
   )
 }
 
-export default withWidth()(Header)
+export default Header
