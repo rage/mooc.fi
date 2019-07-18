@@ -17,3 +17,6 @@ export {
 export { default as addExerciseMutations } from "./Exercise"
 export { default as addExerciseCompletionMutations } from "./ExerciseCompletion"
 export { default as addCompletionMutations } from "./completion"
+export {
+  default as addOpenUniversityRegistrationLinkMutations,
+} from "./openUniversityRegistrationLink"
