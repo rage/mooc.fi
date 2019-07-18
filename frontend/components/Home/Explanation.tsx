@@ -12,6 +12,7 @@ const ExplanationRoot = styled.div`
   display: flex;
   flex-direction: column;
   background-color: rgba(255, 255, 255, 0.9);
+  padding-bottom: 1.5rem;
   @media (min-width: 425px) {
     max-width: 70%;
   }
@@ -67,7 +68,6 @@ const Subtitle = styled(Typography)`
 const CourseButton = styled(Button)`
   font-family: "Open Sans Condensed", sans-serif !important;
   background-color: #00a68d;
-  margin-bottom: 1rem;
   color: white;
   font-size: 22px;
   width: 40%;
