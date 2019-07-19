@@ -12,9 +12,10 @@ function CourseGrid(props: CourseGridProps) {
   return (
     <section>
       <Grid container spacing={3}>
-        {courses.map(course => (
+        {(courses || []).map(course => (
           <CourseCard key={course.id} course={course} />
         ))}
+        <CourseCard key={"newcourse"} />
       </Grid>
     </section>
   )

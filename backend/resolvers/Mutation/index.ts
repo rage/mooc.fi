@@ -16,4 +16,5 @@ export {
 } from "./studyModuleTranslation"
 export { default as addExerciseMutations } from "./Exercise"
 export { default as addExerciseCompletionMutations } from "./ExerciseCompletion"
+export { default as addImageMutations } from "./image"
 export { default as addCompletionMutations } from "./completion"
