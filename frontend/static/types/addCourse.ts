@@ -44,6 +44,7 @@ export interface addCourseVariables {
   photo?: string | null
   promote?: boolean | null
   start_point?: boolean | null
+  hidden?: boolean | null
   status?: CourseStatus | null
   course_translations?: CourseTranslationCreateInput[] | null
 }

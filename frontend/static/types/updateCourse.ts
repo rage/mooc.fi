@@ -45,6 +45,7 @@ export interface updateCourseVariables {
   photo?: string | null
   promote?: boolean | null
   start_point?: boolean | null
+  hidden?: boolean | null
   status?: CourseStatus | null
   new_slug?: string | null
   course_translations?: CourseTranslationWithIdInput[] | null
