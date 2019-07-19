@@ -1,65 +1,12 @@
 import * as React from "react"
-import { AppBar, Toolbar, Typography, Button, Avatar } from "@material-ui/core"
-import { signOut } from "../lib/authentication"
-import LoginStateContext from "../contexes/LoginStateContext"
-import { useApolloClient } from "react-apollo-hooks"
+import { AppBar, Toolbar, Typography, Avatar } from "@material-ui/core"
 import NextI18Next from "../i18n"
 import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import useScrollTrigger from "@material-ui/core/useScrollTrigger"
 import Slide from "@material-ui/core/Slide"
 import styled from "styled-components"
-
-interface MenuProps {
-  onclick: any
-  isLoggedIn: boolean
-}
-
-const HeaderButtonContainer = styled.div`
-  display: flex;
-  flexdirection: row;
-  @media (max-width: 500px) {
-    flex-direction: column;
-  }
-`
-
-const LogOutButtonContainer = styled.div`
-  display: flex;
-  flexdirection: row;
-  @media (max-width: 500px) {
-    flex-direction: column;
-  }
-`
-
-function HeaderMenu(props: MenuProps) {
-  const { onclick, isLoggedIn } = props
-
-  return (
-    <HeaderButtonContainer>
-      <LanguageSwitch />
-      {isLoggedIn ? (
-        <LogOutButtonContainer>
-          <Button color="inherit" onClick={onclick}>
-            <NextI18Next.Trans i18nKey="common:logout" />
-          </Button>
-          <Button color="inherit" href="/my-profile">
-            <NextI18Next.Trans i18nKey="common:profile" />
-          </Button>
-        </LogOutButtonContainer>
-      ) : (
-        <LogInButton />
-      )}
-    </HeaderButtonContainer>
-  )
-}
-
-function LogInButton() {
-  return (
-    <Button color="inherit" href="/sign-in">
-      <NextI18Next.Trans i18nKey="common:loginShort" />
-    </Button>
-  )
-}
+import UserMenu from "./UserMenu"
 
 interface Props {
   window?: () => Window
@@ -97,27 +44,28 @@ const HomeLink = styled.a`
   display: flex;
   flex-direction: row;
 `
-
+const ResponsiveMoocLogoContainer = styled.div`
+  @media (max-width: 750px) {
+    flex: 1;
+  }
+`
 function Header() {
-  const loggedIn = React.useContext(LoginStateContext)
-  const client = useApolloClient()
-
   return (
     <React.Fragment>
       <CssBaseline />
       <HideOnScroll>
         <AppBar color="inherit">
           <Toolbar>
-            <div style={{ flex: 1 }}>
+            <ResponsiveMoocLogoContainer>
               <NextI18Next.Link href="/">
                 <HomeLink href="/" aria-label="MOOC.fi homepage">
                   <MoocLogo alt="MOOC logo" src="../static/images/moocfi.svg" />
                   <MoocLogoText>MOOC.fi</MoocLogoText>
                 </HomeLink>
               </NextI18Next.Link>
-            </div>
-
-            <HeaderMenu onclick={() => signOut(client)} isLoggedIn={loggedIn} />
+            </ResponsiveMoocLogoContainer>
+            <UserMenu />
+            <LanguageSwitch />
           </Toolbar>
         </AppBar>
       </HideOnScroll>

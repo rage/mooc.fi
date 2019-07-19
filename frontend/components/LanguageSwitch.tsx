@@ -20,9 +20,7 @@ const LanguageSwitch = () => {
       }
     >
       <Language style={{ marginRight: "0.4rem" }} />
-      {NextI18Next.i18n.language === "en"
-        ? "SUOMENKIELINEN VERSIO"
-        : "ENGLISH VERSION"}
+      {NextI18Next.i18n.language === "en" ? "SUOMI" : "ENGLISH"}
     </SwitchButton>
   )
 }
