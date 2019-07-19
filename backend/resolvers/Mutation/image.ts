@@ -1,6 +1,6 @@
 import { Prisma, Image } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { arg, idArg } from "nexus/dist"
+import { arg, booleanArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import {
@@ -9,6 +9,8 @@ import {
 } from "../../services/google-cloud"
 
 const sharp = require("sharp")
+const path = require("path")
+const getRootDir = () => path.parse(process.cwd()).root
 
 const getImageBuffer = image => {
   const base64EncodedImageString = image.replace(/^data:image\/\w+;base64,/, "")
@@ -32,10 +34,12 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     type: "Image",
     args: {
       file: arg({ type: "Upload", required: true }),
+      base64: booleanArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
 
+      const { base64 } = args
       const {
         createReadStream,
         mimetype,
@@ -62,19 +66,22 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         imageBuffer: image,
         mimeType: mimetype,
         name: filenameWithoutExtension,
-        directory: "original",
+        directory: `original`,
+        base64,
       })
       const uncompressed = await uploadImage({
         imageBuffer: uncompressedImage,
         mimeType: "image/jpeg",
         name: filenameWithoutExtension,
-        directory: "jpeg",
+        directory: `jpeg`,
+        base64,
       })
       const compressed = await uploadImage({
         imageBuffer: compressedImage,
         mimeType: "image/webp",
         name: filenameWithoutExtension,
-        directory: "webp",
+        directory: `webp`,
+        base64,
       })
 
       const prisma: Prisma = ctx.prisma

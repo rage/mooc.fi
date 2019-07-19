@@ -38,6 +38,7 @@
     "lodash": "^4.17.11",
     "luxon": "^1.16.0",
     "mimetypes": "^0.1.1",
+    "mkdirp": "^0.5.1",
     "next-i18next": "^0.37.0",
     "nexus": "^0.11.7",
     "nexus-prisma": "^0.3.7",

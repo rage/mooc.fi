@@ -23,4 +23,5 @@ export interface addImage {
 
 export interface addImageVariables {
   file: any
+  local?: boolean | null
 }

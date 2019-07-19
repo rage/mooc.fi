@@ -120,6 +120,7 @@ export interface CourseCreateInput {
   course_aliases?: CourseAliasCreateManyWithoutCourseInput | null
   course_translations?: CourseTranslationCreateManyWithoutCourseInput | null
   created_at?: any | null
+  hidden?: boolean | null
   id?: any | null
   name: string
   photo?: ImageCreateOneInput | null
@@ -150,6 +151,7 @@ export interface CourseCreateOneWithoutCourse_translationsInput {
 export interface CourseCreateWithoutCourse_translationsInput {
   course_aliases?: CourseAliasCreateManyWithoutCourseInput | null
   created_at?: any | null
+  hidden?: boolean | null
   id?: any | null
   name: string
   photo?: ImageCreateOneInput | null
@@ -166,6 +168,7 @@ export interface CourseCreateWithoutServicesInput {
   course_aliases?: CourseAliasCreateManyWithoutCourseInput | null
   course_translations?: CourseTranslationCreateManyWithoutCourseInput | null
   created_at?: any | null
+  hidden?: boolean | null
   id?: any | null
   name: string
   photo?: ImageCreateOneInput | null
