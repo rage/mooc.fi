@@ -48,5 +48,5 @@ export interface UserOverView_currentUser {
 }
 
 export interface UserOverView {
-  currentUser: UserOverView_currentUser
+  currentUser: UserOverView_currentUser | null
 }
