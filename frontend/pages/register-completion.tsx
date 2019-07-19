@@ -107,6 +107,10 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   //if currentuser has completions, find a completion
   //corresponding to the given course slug
 
+  if (!data.currentUser) {
+    return <div>You are not logged in. Please log in to the site</div>
+  }
+
   if (data.currentUser.completions) {
     completion = data.currentUser.completions.find(
       c => c.course.slug === courseSlug,

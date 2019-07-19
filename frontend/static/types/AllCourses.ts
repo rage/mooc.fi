@@ -29,5 +29,5 @@ export interface AllCourses_currentUser {
 
 export interface AllCourses {
   courses: AllCourses_courses[]
-  currentUser: AllCourses_currentUser
+  currentUser: AllCourses_currentUser | null
 }

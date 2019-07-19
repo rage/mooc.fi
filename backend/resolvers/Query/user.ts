@@ -39,6 +39,7 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
 const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("currentUser", {
     type: "User",
+    nullable: true,
     args: { email: stringArg() },
     resolve: (_, args, ctx) => {
       const { email } = args
