@@ -97,3 +97,18 @@ spec:
                     secretKeyRef:
                       name: backend-secret
                       key: TMC_HOST
+                - name: GOOGLE_CLOUD_STORAGE_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: GOOGLE_CLOUD_STORAGE_BUCKET
+                - name: GOOGLE_CLOUD_STORAGE_PROJECT
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: GOOGLE_CLOUD_STORAGE_PROJECT
+                - name: GOOGLE_CLOUD_STORAGE_KEYFILE
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: GOOGLE_CLOUD_STORAGE_KEYFILE

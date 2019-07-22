@@ -1,4 +1,6 @@
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 import { uniqBy } from "lodash"
 import { Prisma } from "../generated/prisma-client"
 import TmcClient from "../services/tmc"
