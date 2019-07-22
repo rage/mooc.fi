@@ -37,6 +37,7 @@ type Course @db(name: "course") {
   status: CourseStatus
   study_module: StudyModule @relation(link: INLINE, name: "StudyModuleToCourse")
   start_point: Boolean
+  open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
 }
 
 type CourseAlias  @db(name: "course_alias"){
@@ -48,6 +49,19 @@ type CourseAlias  @db(name: "course_alias"){
   "Which course this code links to"
   course: Course! @relation(link: INLINE, name: "CourseToCourseAlias")
 }
+
+type OpenUniversityRegistrationLink  @db(name: "open_university_registration_link"){
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  "University of Helsinki course code"
+  course_code: String!
+  "Which course this code links to"
+  course: Course! @relation(link: INLINE, name: "OpenUniversityRegistrationLinkToCourse")
+  language: String!
+  link: String
+}
+
 
 enum CourseStatus @db(name:"course_status"){
   Active, Ended, Upcoming
