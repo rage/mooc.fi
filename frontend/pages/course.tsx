@@ -8,7 +8,7 @@ import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import AdminError from "../components/Dashboard/AdminError"
 import CourseDashboard from "../components/Dashboard/CourseDashboard"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "../components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import CourseLanguageContext from "../contexes/CourseLanguageContext"
@@ -61,7 +61,7 @@ const Course = (props: CourseProps) => {
   return (
     <CourseLanguageContext.Provider value={languageValue}>
       <section>
-        <DashboardBreadCrumbs page={slug} />
+        <DashboardBreadCrumbs current_page={slug} />
         <DashboardTabBar
           value={selection}
           handleChange={handleSelectionChange}

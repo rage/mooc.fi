@@ -3,19 +3,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: CourseDetails
+// GraphQL query operation: checkSlug
 // ====================================================
 
-export interface CourseDetails_course {
-  __typename: "Course";
-  id: any;
-  name: string;
+export interface checkSlug {
+  course_exists: boolean;
 }
 
-export interface CourseDetails {
-  course: CourseDetails_course;
-}
-
-export interface CourseDetailsVariables {
+export interface checkSlugVariables {
   slug?: string | null;
 }

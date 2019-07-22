@@ -73,6 +73,7 @@ function SignIn() {
         fullWidth
         variant="contained"
         color="secondary"
+        disabled={email.trim() === "" || password.trim() === ""}
         onClick={async e => {
           e.preventDefault()
           try {
@@ -88,7 +89,9 @@ function SignIn() {
         <NextI18Next.Trans i18nKey="common:login" />
       </Button>
       <NextI18Next.Link href="https://tmc.mooc.fi/password_reset_keys/new">
-        <NextI18Next.Trans i18nKey="common:forgottenpw" />
+        <a href="https://tmc.mooc.fi/password_reset_keys/new">
+          <NextI18Next.Trans i18nKey="common:forgottenpw" />
+        </a>
       </NextI18Next.Link>
     </form>
   )

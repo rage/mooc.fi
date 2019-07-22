@@ -1,3 +1,5 @@
+require("sharp") // image library sharp seems to crash without this require
+
 import { prisma } from "./generated/prisma-client"
 import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"

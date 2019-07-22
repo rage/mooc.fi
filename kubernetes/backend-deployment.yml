@@ -101,7 +101,32 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: TMC_HOST
-
+            - name: GOOGLE_CLOUD_STORAGE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: GOOGLE_CLOUD_STORAGE_BUCKET
+            - name: GOOGLE_CLOUD_STORAGE_PROJECT
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: GOOGLE_CLOUD_STORAGE_PROJECT
+            - name: GOOGLE_CLOUD_STORAGE_KEYFILE
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: GOOGLE_CLOUD_STORAGE_KEYFILE
+          volumeMounts:
+            - name: google-cloud-storage-serviceaccount
+              mountPath: "/etc/gcs"
+              readOnly: true
+      volumes:
+        - name: google-cloud-storage-serviceaccount
+          secret:
+            secretName: google-cloud-storage-serviceaccount
+            items:
+              - key: account.json
+                path: account.json
       initContainers:
         - name: moocfi-backend-run-migrations
           image: ${BACKEND_IMAGE}

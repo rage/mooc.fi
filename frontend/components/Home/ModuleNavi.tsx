@@ -5,6 +5,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
 import NextI18Next from "../../i18n"
 import Container from "../Container"
+import { Module } from "../../static/types/moduleTypes"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function ModuleNavi({ modules }) {
+function ModuleNavi({ modules }: { modules: Module[] }) {
   const { t, i18n } = NextI18Next.useTranslation("home")
   const classes = useStyles()
   return (
@@ -32,7 +33,7 @@ function ModuleNavi({ modules }) {
       <Container>
         <Grid container spacing={5}>
           {modules.map(module => (
-            <ModuleNaviCard key={module.title} module={module} />
+            <ModuleNaviCard key={module.name} module={module} />
           ))}
         </Grid>
       </Container>

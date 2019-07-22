@@ -26,13 +26,13 @@ type Course @db(name: "course") {
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   name: String!
-  "identify course in other api querys"
+  "identify course in other api Equerys"
   slug: String! @unique
   "aliases that can be used in this this api instead of slug "
   course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
   services: [Service] @relation(name: "CourseToService")
-  photo: String
-  course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation")
+  photo: Image @relation(name: "CourseToImage", onDelete: CASCADE)
+  course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation", onDelete: CASCADE)
   promote: Boolean
   status: CourseStatus
   study_module: StudyModule @relation(link: INLINE, name: "StudyModuleToCourse")
@@ -75,7 +75,7 @@ type CourseTranslation @db(name:"course_translation"){
   language: String!
   description: String!
   link: String!
-  course: Course! @relation(link: INLINE, name:"CourseToCourseTranslation")
+  course: Course! @relation(link: INLINE, name:"CourseToCourseTranslation", onDelete: SET_NULL)
 }
 
 type Completion @db(name: "completion") {
@@ -86,7 +86,7 @@ type Completion @db(name: "completion") {
   user_upstream_id: Int
   email: String!
   student_number: String
-  user: User!  @relation(link: INLINE, name: "CompletionToUser")
+  user: User! @relation(link: INLINE, name: "CompletionToUser")
   course: Course! @relation(link: INLINE, name: "CompletionToCourse")
   completion_language: String
   "Where this completion has been registered, can have multiple locations."
@@ -222,6 +222,21 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   timestamp: DateTime
   completed: Boolean @default(value: false)
   required_actions: String
+}
+
+type Image @db(name: "image") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  name: String
+  original: String!
+  original_mimetype: String!
+  uncompressed: String!
+  uncompressed_mimetype: String!
+  compressed: String
+  compressed_mimetype: String
+  encoding: String
+  default: Boolean
 }
 
 type UserCourseSettings {

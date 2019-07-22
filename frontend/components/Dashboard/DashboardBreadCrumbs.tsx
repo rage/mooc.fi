@@ -28,7 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const DashboardBreadCrumbs = ({ page }) => {
+const DashboardBreadCrumbs = ({
+  current_page,
+}: {
+  current_page: string | string[] | undefined
+}) => {
   const classes = useStyles()
   const isAdmin = React.useContext(UserDetailContext)
 
@@ -45,7 +49,7 @@ const DashboardBreadCrumbs = ({ page }) => {
         <Link className={classes.link} href={`/courses`} underline="hover">
           Courses
         </Link>
-        <Link className={classes.link}>{page}</Link>
+        <Link className={classes.link}>{current_page}</Link>
       </Breadcrumbs>
       {isAdmin ? (
         <Typography variant="body1" component="p" className={classes.userInfo}>

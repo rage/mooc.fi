@@ -5,14 +5,9 @@ import NextI18Next from "../i18n"
 import styled from "styled-components"
 
 const SwitchButton = styled(Button)`
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.3;
-  padding-right: 1px;
   font-weight: bold;
-
-  @media (min-width: 400px) {
-    font-size: 14px;
-  }
 `
 
 const LanguageSwitch = () => {
@@ -24,7 +19,7 @@ const LanguageSwitch = () => {
         )
       }
     >
-      <Language style={{ marginRight: "0.5rem" }} />
+      <Language style={{ marginRight: "0.4rem" }} />
       {NextI18Next.i18n.language === "en"
         ? "SUOMENKIELINEN VERSIO"
         : "ENGLISH VERSION"}
