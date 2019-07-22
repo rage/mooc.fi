@@ -6,7 +6,7 @@ process.on("unhandledRejection", (...args) => {
 const express = require("express")
 
 const next = require("next")
-const nextI18NextMiddleware = require("next-i18next/middleware")
+const nextI18NextMiddleware = require("next-i18next/middleware").default
 const compression = require("compression")
 const nextI18next = require("./i18n")
 

@@ -1,4 +1,4 @@
-const I18Next = require("next-i18next/dist/commonjs")
+const I18Next = require("next-i18next/dist/commonjs").default
 
 //create new NextI18Next instance
 const NextI18Next = new I18Next({
