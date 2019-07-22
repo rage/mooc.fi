@@ -6,7 +6,7 @@ import {
   AllCompletions_completionsPaginated_edges_node,
 } from "../../static/types/AllCompletions"
 import { CircularProgress } from "@material-ui/core"
-import { withRouter } from "next/router"
+import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
 import CourseLanguageContext from "../../contexes/CourseLanguageContext"
 
@@ -101,13 +101,13 @@ export const PreviousPageCompletionsQuery = gql`
 `
 class CompletionsQuery extends Query<AllCompletionsData, {}> {}
 
-const CompletionsList = withRouter(props => {
-  const { router } = props
+const CompletionsList = () => {
+  const router = useRouter()
   const completionLanguage = React.useContext(CourseLanguageContext)
   let course: string | string[] = ""
 
-  if (router && router.query && router.query.course) {
-    course = router.query.course
+  if (router && router.query) {
+    course = router.query.slug
   }
 
   interface queryDetailsInterface {
@@ -184,6 +184,6 @@ const CompletionsList = withRouter(props => {
       }}
     </CompletionsQuery>
   )
-})
+}
 
 export default CompletionsList
