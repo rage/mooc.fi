@@ -5,13 +5,11 @@ import SlackPoster from "../services/slackPoster"
 import {
   Prisma,
   UserCourseSettings,
-  User,
   Completion,
 } from "../generated/prisma-client"
 
 const slackPoster: SlackPoster = new SlackPoster()
-const url: string =
-  "https://hooks.slack.com/services/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"
+const url: string = process.env.AI_SLACK_URL
 let data = { text: "Hello! This is a test!" }
 const prisma: Prisma = new Prisma()
 
