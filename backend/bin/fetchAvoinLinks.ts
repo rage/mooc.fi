@@ -10,6 +10,7 @@ const prisma: Prisma = new Prisma()
 
 const fetch = async () => {
   const avoinObjects: OpenUniversityRegistrationLink[] = await prisma.openUniversityRegistrationLinks()
+  console.log(await getInfoWithCourseCode("AYTKT21018"))
 }
 
 const getInfoWithCourseCode = async (course_code: string) => {
