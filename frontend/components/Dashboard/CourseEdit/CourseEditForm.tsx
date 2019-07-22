@@ -15,6 +15,7 @@ import {
   FieldProps,
   FormikActions,
   FormikProps,
+  yupToFormErrors,
 } from "formik"
 import { TextField, Select, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
@@ -33,7 +34,9 @@ const RenderForm = ({
   dirty,
   isSubmitting,
   values,
+  status,
   setFieldValue,
+  setStatus,
   onCancel,
   onDelete,
   confirmationVisible,
@@ -221,7 +224,7 @@ const RenderForm = ({
         <Button
           variant="contained"
           color="primary"
-          disabled={isSubmitting}
+          disabled={Object.keys(errors).length > 0 || isSubmitting}
           onClick={submitForm}
         >
           Submit
@@ -252,6 +255,12 @@ const RenderForm = ({
             Delete
           </Button>
         ) : null}
+        {status && status.message ? (
+          <p style={status.error ? { color: "red" } : {}}>
+            {status.error ? "Error submitting: " : null}
+            <b>{status.message}</b>
+          </p>
+        ) : null}
       </Form>
     </Grid>
   )
@@ -278,7 +287,13 @@ const CourseEditForm = ({
   return (
     <Formik
       initialValues={course}
-      validationSchema={validationSchema}
+      validate={async (values: CourseFormValues) =>
+        validationSchema
+          .validate(values, { context: { values } })
+          .catch(err => {
+            throw yupToFormErrors(err)
+          })
+      }
       onSubmit={onSubmit}
       render={formikProps => (
         <RenderForm

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useCallback } from "react"
 import { Paper } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CourseEditForm from "./CourseEditForm"
@@ -49,11 +49,6 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
 
   const client = useApolloClient()
 
-  const [submitStatus, setSubmitStatus] = useState<{
-    message: String | null
-    error?: boolean
-  }>({ message: null })
-
   const _course: CourseFormValues = course
     ? {
         ...course,
@@ -68,7 +63,6 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const validationSchema = courseEditSchema({
     client,
     checkSlug,
-    slug: _course.slug,
   })
 
   const uploadImage = useCallback(
@@ -80,7 +74,7 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
       base64?: Boolean
     }): Promise<Image | null> => {
       if (!image) {
-        return null
+        throw new Error("no image to upload!")
       }
 
       const { data, error } = await addImage({
@@ -95,7 +89,7 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
         return data.addImage
       }
 
-      return null
+      throw new Error("didn't get an image in reply from server")
     },
     [],
   )
@@ -103,22 +97,26 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const onSubmit = useCallback(
     async (
       values: CourseFormValues,
-      { setSubmitting, setFieldValue }: FormikActions<CourseFormValues>,
+      {
+        setSubmitting,
+        setFieldValue,
+        setStatus,
+      }: FormikActions<CourseFormValues>,
     ): Promise<void> => {
       const newCourse = !values.id
 
-      try {
-        const newValues: CourseFormValues = {
-          ...values,
-          photo: getIn(values, "photo.id"),
-        }
-        const { new_photo }: { new_photo: File | undefined } = values
-        const mutation = newCourse ? addCourse : updateCourse
+      const newValues: CourseFormValues = {
+        ...values,
+        photo: getIn(values, "photo.id"),
+      }
+      const { new_photo }: { new_photo: File | undefined } = values
+      const courseMutation = newCourse ? addCourse : updateCourse
 
+      try {
         let deletablePhoto: Image | null = null
 
         if (new_photo) {
-          setSubmitStatus({ message: "Uploading image..." })
+          setStatus({ message: "Uploading image..." })
 
           const uploadedImage: Image | null = await uploadImage({
             image: new_photo,
@@ -143,13 +141,13 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
         }
 
         if (deletablePhoto) {
-          // TODO? does return boolean on delete status
-          setSubmitStatus({ message: "Deleting previous image..." })
+          setStatus({ message: "Deleting previous image..." })
+          // TODO: do something with boolean return status?
           await deleteImage({ variables: { id: deletablePhoto.id } })
         }
 
-        setSubmitStatus({ message: "Saving..." })
-        const course = await mutation({
+        setStatus({ message: "Saving..." })
+        const course = await courseMutation({
           variables: {
             ...newValues,
             id: undefined,
@@ -166,11 +164,11 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
           },
         })
 
-        setSubmitStatus({ message: null })
+        setStatus({ message: null })
         setSubmitting(false)
         Next18next.Router.push("/courses")
       } catch (err) {
-        setSubmitStatus({ message: err.message, error: true })
+        setStatus({ message: err.message, error: true })
         console.error(err)
         setSubmitting(false)
       }
@@ -203,12 +201,6 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
           onCancel={onCancel}
           onDelete={onDelete}
         />
-        {submitStatus && submitStatus.message ? (
-          <p style={submitStatus.error ? { color: "red" } : {}}>
-            {submitStatus.error ? "Error submitting: " : null}
-            <b>{submitStatus.message}</b>
-          </p>
-        ) : null}
       </Paper>
     </section>
   )
