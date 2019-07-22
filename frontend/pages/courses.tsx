@@ -11,12 +11,19 @@ import CourseGrid from "../components/CourseGrid"
 import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
 
+import { Courses as courseData } from "../courseData.js"
+
 export const AllCoursesQuery = gql`
   query AllCourses {
     courses {
       id
       name
       slug
+      photo {
+        id
+        compressed
+        uncompressed
+      }
     }
     currentUser {
       id
@@ -35,6 +42,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Courses = (admin: boolean) => {
   const classes = useStyles()
+
+  // use mock data
+  /*   const data = { courses: courseData.allcourses.slice(0,3) }
+  const error = false
+  const loading = false */
 
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
 
@@ -72,7 +84,6 @@ const Courses = (admin: boolean) => {
 
 Courses.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
-
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
