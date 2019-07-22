@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
+import { Module } from "../../static/types/moduleTypes"
 
 const ModuleBannerContainer = styled.section`
   display: flex;
@@ -47,7 +48,7 @@ const ImageBackground = styled.div`
   background-position: center;
 `
 
-function ModuleBanner({ module }) {
+function ModuleBanner({ module }: { module: Module }) {
   return (
     <ModuleBannerContainer>
       <img style={{ display: "none" }} src={module.image} alt="" />

@@ -11,6 +11,7 @@ USER node
 WORKDIR /app
 
 RUN npm ci \
+  && rm schema.graphql \
   && npm run build
 
 ENV NODE_ENV=production

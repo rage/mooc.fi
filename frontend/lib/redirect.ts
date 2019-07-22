@@ -1,5 +1,5 @@
 import Nexti18next from "../i18n"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
 
 export default (context: NextContext, target: string, savePage = false) => {
@@ -16,10 +16,10 @@ export default (context: NextContext, target: string, savePage = false) => {
   }
   // @ts-ignore
   const targetWithLanguage = `/${context.req.language}${sep}${target}`
-  if (context.res) {
+  if (context.res && context.res.writeHead && context.res.end) {
     // server
     // 303: "See other"
-    context.res.writeHead(303, { Location: targetWithLanguage })
+    context.res.writeHead(307, { Location: targetWithLanguage })
     context.res.end()
   } else {
     // In the browser, we just pretend like this never even happened ;)

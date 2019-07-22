@@ -1,4 +1,6 @@
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 import TmcClient from "../services/tmc"
 import {
   Prisma,
@@ -46,6 +48,7 @@ const fetcUserAppDatum = async () => {
   for (let i = 0; i < data.length; i++) {
     saveCounter++
     let p = data[i]
+    if (p.user_id == null) continue
     if (i % 1000 == 0) console.log(i)
     if (!p || p == "undefined" || p == null) {
       console.log("not p:", p, "i is", i, "while data.length is", data.length)

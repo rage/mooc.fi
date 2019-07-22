@@ -1,10 +1,10 @@
 import * as React from "react"
 import { gql } from "apollo-boost"
-import { NextContext } from "next"
+import { NextPageContext as NextContext } from "next"
 import { isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import { useQuery } from "react-apollo-hooks"
-import { UserOverView as UserOverViewData } from "./__generated__/UserOverView"
+import { UserOverView as UserOverViewData } from "../static/types/UserOverView"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import RegisterCompletionText from "../components/RegisterCompletionText"
 import ImportantNotice from "../components/ImportantNotice"
@@ -106,6 +106,11 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
 
   //if currentuser has completions, find a completion
   //corresponding to the given course slug
+
+  if (!data.currentUser) {
+    return <div>You are not logged in. Please log in to the site</div>
+  }
+
   if (data.currentUser.completions) {
     completion = data.currentUser.completions.find(
       c => c.course.slug === courseSlug,
