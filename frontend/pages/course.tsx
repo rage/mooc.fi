@@ -10,7 +10,7 @@ import AdminError from "../components/Dashboard/AdminError"
 import CourseDashboard from "../components/Dashboard/CourseDashboard"
 import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "../components/Container"
-import { withRouter, SingletonRouter } from "next/router"
+import { useRouter } from "next/router"
 import CourseLanguageContext from "../contexes/CourseLanguageContext"
 
 //map selection value of tab navigation
@@ -24,17 +24,17 @@ const MapTypeToComponent = new Map(
 )
 
 interface CourseProps {
-  router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
 }
-
 const Course = (props: CourseProps) => {
-  const { admin, router } = props
+  const { admin } = props
+  const router = useRouter()
+  console.log(router)
 
   let slug
   if (router.query) {
-    slug = router.query.course
+    slug = router.query.id
   }
 
   if (!admin) {
@@ -90,4 +90,6 @@ Course.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(Course)
+export default Course
+
+//
