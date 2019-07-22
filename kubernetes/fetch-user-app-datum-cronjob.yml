@@ -97,6 +97,11 @@ spec:
                     secretKeyRef:
                       name: backend-secret
                       key: TMC_HOST
+                - name: AI_SLACK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: AI_SLACK_URL
                 - name: GOOGLE_CLOUD_STORAGE_BUCKET
                   valueFrom:
                     secretKeyRef:
