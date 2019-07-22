@@ -9,8 +9,6 @@ import {
 } from "../../services/google-cloud"
 
 const sharp = require("sharp")
-const path = require("path")
-const getRootDir = () => path.parse(process.cwd()).root
 
 const getImageBuffer = image => {
   const base64EncodedImageString = image.replace(/^data:image\/\w+;base64,/, "")

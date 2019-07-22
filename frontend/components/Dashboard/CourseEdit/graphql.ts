@@ -9,7 +9,7 @@ export const AddCourseMutation = gql`
     $start_point: Boolean
     $hidden: Boolean
     $status: CourseStatus
-    $course_translations: [CourseTranslationCreateInput!]
+    $course_translations: [CourseTranslationCreateWithoutCourseInput!]
   ) {
     addCourse(
       name: $name
@@ -88,6 +88,15 @@ export const UpdateCourseMutation = gql`
         description
         link
       }
+    }
+  }
+`
+
+export const DeleteCourseMutation = gql`
+  mutation deleteCourse($id: ID) {
+    deleteCourse(id: $id) {
+      id
+      slug
     }
   }
 `
