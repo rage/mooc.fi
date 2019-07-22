@@ -73,7 +73,6 @@ const EditCourse = (props: EditCourseProps) => {
     variables: { slug: slug },
   })
 
-  console.log("huh?", data)
   if (!admin) {
     return <AdminError />
   }

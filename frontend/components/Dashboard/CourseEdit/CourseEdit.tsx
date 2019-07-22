@@ -7,6 +7,7 @@ import { addImage_addImage as Image } from "../__generated__/addImage"
 import {
   AddCourseMutation,
   UpdateCourseMutation,
+  DeleteCourseMutation,
   CheckSlugQuery,
   AddImageMutation,
   DeleteImageMutation,
@@ -15,6 +16,7 @@ import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import courseEditSchema, { initialValues } from "./form-validation"
 import { FormikActions, getIn } from "formik"
 import Next18next from "../../../i18n"
+import { AllCoursesQuery } from "../../../pages/courses"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -34,15 +36,23 @@ const useStyles = makeStyles((theme: Theme) =>
 const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const classes = useStyles()
 
-  const addCourse = useMutation(AddCourseMutation)
+  const addCourse = useMutation(AddCourseMutation, {
+    refetchQueries: [{ query: AllCoursesQuery }],
+  })
   const updateCourse = useMutation(UpdateCourseMutation)
+  const deleteCourse = useMutation(DeleteCourseMutation, {
+    refetchQueries: [{ query: AllCoursesQuery }],
+  })
   const addImage = useMutation(AddImageMutation)
   const deleteImage = useMutation(DeleteImageMutation)
   const checkSlug = CheckSlugQuery
 
   const client = useApolloClient()
 
-  const [submitError, setSubmitError] = useState<String | null>(null)
+  const [submitStatus, setSubmitStatus] = useState<{
+    message: String | null
+    error?: boolean
+  }>({ message: null })
 
   const _course: CourseFormValues = course
     ? {
@@ -108,6 +118,8 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
         let deletablePhoto: Image | null = null
 
         if (new_photo) {
+          setSubmitStatus({ message: "Uploading image..." })
+
           const uploadedImage: Image | null = await uploadImage({
             image: new_photo,
             base64: !isProduction,
@@ -132,9 +144,11 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
 
         if (deletablePhoto) {
           // TODO? does return boolean on delete status
+          setSubmitStatus({ message: "Deleting previous image..." })
           await deleteImage({ variables: { id: deletablePhoto.id } })
         }
 
+        setSubmitStatus({ message: "Saving..." })
         const course = await mutation({
           variables: {
             ...newValues,
@@ -152,16 +166,32 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
           },
         })
 
+        setSubmitStatus({ message: null })
         setSubmitting(false)
         Next18next.Router.push("/courses")
       } catch (err) {
-        setSubmitError(err.message)
+        setSubmitStatus({ message: err.message, error: true })
         console.error(err)
         setSubmitting(false)
       }
     },
     [],
   )
+
+  const onDelete = useCallback(async (values: CourseFormValues) => {
+    if (values.id) {
+      if (values.photo) {
+        await deleteImage({ variables: { id: values.photo.id } })
+      }
+
+      await deleteCourse({ variables: { id: values.id } })
+      Next18next.Router.push("/courses")
+    }
+  }, [])
+
+  const onCancel = useCallback(() => {
+    Next18next.Router.push("/courses")
+  }, [])
 
   return (
     <section>
@@ -170,10 +200,13 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
           course={_course}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          onCancel={onCancel}
+          onDelete={onDelete}
         />
-        {submitError ? (
-          <p style={{ color: "red" }}>
-            Error submitting: <b>{submitError}</b>
+        {submitStatus && submitStatus.message ? (
+          <p style={submitStatus.error ? { color: "red" } : {}}>
+            {submitStatus.error ? "Error submitting: " : null}
+            <b>{submitStatus.message}</b>
           </p>
         ) : null}
       </Paper>

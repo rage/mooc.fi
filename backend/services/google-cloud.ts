@@ -13,7 +13,10 @@ const storage = isProduction
     })
   : {
       bucket: () => ({
-        file: () => ({ save: () => {}, delete: () => new Promise(null) }),
+        file: () => ({
+          save: () => Promise.resolve(true),
+          delete: () => Promise.resolve(true),
+        }),
       }),
     } // heh
 
@@ -32,8 +35,6 @@ export const uploadImage = async ({
   directory?: string
   base64?: boolean
 }): Promise<string> => {
-  return Promise.reject(false)
-
   const filename = `${directory ? directory + "/" : ""}${shortid.generate()}${
     name && name !== "" ? "-" + name : ""
   }.${mimeTypes.detectExtension(mimeType)}`

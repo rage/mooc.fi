@@ -25,7 +25,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
       course_translations: arg({
-        type: "CourseTranslationCreateInput",
+        type: "CourseTranslationCreateWithoutCourseInput",
         list: true,
         required: false,
       }),
