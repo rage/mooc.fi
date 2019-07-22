@@ -92,11 +92,16 @@ const CourseTranslationEditForm = ({
                         >
                           Language
                         </InputLabel>
+                        {console.log(
+                          "translation errors in index",
+                          index,
+                          errors,
+                        )}
                         <Field
                           name={`course_translations[${index}].language`}
                           type="select"
                           label="Language"
-                          errors={getIn(errors, `[${index}].language`)}
+                          errors={[getIn(errors, `[${index}].language`)]}
                           fullWidth
                           component={Select}
                         >
@@ -106,11 +111,16 @@ const CourseTranslationEditForm = ({
                             </MenuItem>
                           ))}
                         </Field>
+                        {getIn(errors, `[${index}].language`) ? (
+                          <InputLabel shrink style={{ color: "red" }}>
+                            {getIn(errors, `[${index}].language`)}
+                          </InputLabel>
+                        ) : null}
                         <Field
                           name={`course_translations[${index}].name`}
                           type="text"
                           label="Name"
-                          errors={getIn(errors, `[${index}].name`)}
+                          error={getIn(errors, `[${index}].name`)}
                           fullWidth
                           component={TextField}
                         />
@@ -118,7 +128,7 @@ const CourseTranslationEditForm = ({
                           name={`course_translations[${index}].description`}
                           type="textarea"
                           label="Description"
-                          errors={getIn(errors, `[${index}].description`)}
+                          error={getIn(errors, `[${index}].description`)}
                           fullWidth
                           multiline
                           rows={5}
@@ -128,7 +138,7 @@ const CourseTranslationEditForm = ({
                           name={`course_translations[${index}].link`}
                           type="text"
                           label="Link"
-                          errors={getIn(errors, `[${index}].link`)}
+                          error={getIn(errors, `[${index}].link`)}
                           fullWidth
                           component={TextField}
                         />

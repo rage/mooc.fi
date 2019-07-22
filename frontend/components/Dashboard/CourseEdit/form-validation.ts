@@ -1,7 +1,7 @@
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../__generated__/globalTypes"
-import { CourseFormValues } from "./types"
+import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
 export const initialValues: CourseFormValues = {
   id: null,
@@ -50,11 +50,9 @@ export const study_modules: { value: any; label: any }[] = []
 const courseEditSchema = ({
   client,
   checkSlug,
-  slug,
 }: {
   client: ApolloClient<object>
   checkSlug: Function
-  slug: string
 }) =>
   Yup.object().shape({
     name: Yup.string().required("required"),
@@ -63,7 +61,7 @@ const courseEditSchema = ({
       .test(
         "unique",
         `slug is already in use`,
-        validateSlug({ client, checkSlug, slug }),
+        validateSlug({ client, checkSlug /*, slug*/ }),
       ),
     status: Yup.mixed()
       .oneOf(statuses.map(s => s.value))
@@ -71,7 +69,38 @@ const courseEditSchema = ({
     course_translations: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required("required"),
-        language: Yup.string().required("required"),
+        language: Yup.string()
+          .required("required")
+          .test(
+            "unique",
+            "cannot have more than one translation per language",
+            function(this: Yup.TestContext, value?: any): boolean {
+              const {
+                context,
+                path,
+              }: { context?: any; path?: string | undefined } = this.options
+              if (!context) {
+                return true
+              }
+
+              const {
+                values: { course_translations },
+              } = context
+
+              const currentIndexMatch =
+                (path || "").match(/^.*\[(\d+)\].*$/) || []
+              const currentIndex =
+                currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+              const otherTranslationLanguages = course_translations
+                .filter(
+                  (c: CourseTranslationFormValues, index: Number) =>
+                    c.language !== "" && index !== currentIndex,
+                )
+                .map((c: CourseTranslationFormValues) => c.language)
+
+              return otherTranslationLanguages.indexOf(value) === -1
+            },
+          ),
         /* TODO: checking that there's no more than one translation per lanaguage per course needs custom validation */
         /*       mixed()
         .oneOf(languages.map(l => l.value))
@@ -85,29 +114,30 @@ const courseEditSchema = ({
   })
 
 const validateSlug = ({
-  slug,
   checkSlug,
   client,
 }: {
-  slug: string
   checkSlug: Function
   client: any
-}) => async (value: string) => {
-  let res
+}) =>
+  async function(this: Yup.TestContext, value: string): Promise<boolean> {
+    let res
 
-  try {
-    res = await client.query({
-      query: checkSlug,
-      variables: { slug: value },
-    })
-  } catch (e) {
-    return true
+    const { slug } = this.parent
+
+    try {
+      res = await client.query({
+        query: checkSlug,
+        variables: { slug },
+      })
+    } catch (e) {
+      return true
+    }
+
+    const { data } = res
+    const existing = data.course_exists
+
+    return existing ? value === slug : !existing
   }
-
-  const { data } = res
-  const existing = data.course_exists
-
-  return existing ? value === slug : !existing
-}
 
 export default courseEditSchema
