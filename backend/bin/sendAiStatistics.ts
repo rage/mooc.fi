@@ -1,3 +1,6 @@
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 import SlackPoster from "../services/slackPoster"
 import { Prisma, UserCourseSettings, User } from "../generated/prisma-client"
 
