@@ -1,4 +1,6 @@
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 import { prisma, User, Course, Completion } from "../generated/prisma-client"
 const getPassedUsernamesByTag = require("../services/quiznator")
   .getPassedUsernamesByTag
