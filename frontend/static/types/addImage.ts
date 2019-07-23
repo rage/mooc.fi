@@ -9,6 +9,9 @@
 export interface addImage_addImage {
   __typename: "Image"
   id: any
+  name: string | null
+  original: string
+  original_mimetype: string
   compressed: string | null
   compressed_mimetype: string | null
   uncompressed: string
@@ -23,5 +26,5 @@ export interface addImage {
 
 export interface addImageVariables {
   file: any
-  local?: boolean | null
+  base64?: boolean | null
 }

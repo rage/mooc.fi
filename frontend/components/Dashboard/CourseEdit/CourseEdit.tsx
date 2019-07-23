@@ -3,7 +3,7 @@ import { Paper } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "react-apollo-hooks"
-import { addImage_addImage as Image } from "../__generated__/addImage"
+import { addImage_addImage as Image } from "../../../static/types/addImage"
 import {
   AddCourseMutation,
   UpdateCourseMutation,

@@ -1,6 +1,6 @@
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
-import { CourseStatus } from "../../../__generated__/globalTypes"
+import { CourseStatus } from "../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
 export const initialValues: CourseFormValues = {
@@ -61,14 +61,14 @@ const courseEditSchema = ({
       .test(
         "unique",
         `slug is already in use`,
-        validateSlug({ client, checkSlug /*, slug*/ }),
+        validateSlug({ client, checkSlug }),
       ),
     status: Yup.mixed()
       .oneOf(statuses.map(s => s.value))
       .required("required"),
     course_translations: Yup.array().of(
       Yup.object().shape({
-        name: Yup.string().required("required"),
+        name: Yup.number().required("required"),
         language: Yup.string()
           .required("required")
           .test(
@@ -101,10 +101,6 @@ const courseEditSchema = ({
               return otherTranslationLanguages.indexOf(value) === -1
             },
           ),
-        /* TODO: checking that there's no more than one translation per lanaguage per course needs custom validation */
-        /*       mixed()
-        .oneOf(languages.map(l => l.value))
-        .required("required"), */
         description: Yup.string(),
         link: Yup.string()
           .url("must be a valid URL")

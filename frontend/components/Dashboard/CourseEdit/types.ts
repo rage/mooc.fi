@@ -1,4 +1,4 @@
-import { CourseStatus } from "../../../__generated__/globalTypes"
+import { CourseStatus } from "../../../static/types/globalTypes"
 
 export interface CourseFormValues {
   id?: string | null
