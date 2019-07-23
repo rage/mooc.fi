@@ -1,7 +1,6 @@
 import { Storage } from "@google-cloud/storage"
 import * as shortid from "shortid"
 import * as mimeTypes from "mimetypes"
-import { createWriteStream } from "fs"
 
 const isProduction = process.env.NODE_ENV === "production"
 const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
@@ -14,8 +13,8 @@ const storage = isProduction
   : {
       bucket: () => ({
         file: () => ({
-          save: () => Promise.resolve(true),
-          delete: () => Promise.resolve(true),
+          save: (): any => Promise.resolve(true),
+          delete: (): any => Promise.resolve(true),
         }),
       }),
     } // heh
