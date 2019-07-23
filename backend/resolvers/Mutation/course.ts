@@ -126,6 +126,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         open_university_registration_links,
       } = args
 
+      // FIXME: I know there's probably a better way to do this
       const existingTranslations = await prisma
         .course({ slug })
         .course_translations()
@@ -166,6 +167,23 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         .filter(t => !!t.id)
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
 
+      const removedRegistrationLinkIds: OpenUniversityRegistrationLinkScalarWhereInput[] = pullAll(
+        (existingRegistrationLinks || []).map(t => t.id),
+        (open_university_registration_links || [])
+          .map(t => t.id)
+          .filter(v => !!v),
+      ).map(_id => ({ id: _id }))
+
+      const registrationLinkMutation: OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput = {
+        create: newRegistrationLinks.length ? newRegistrationLinks : undefined,
+        updateMany: updatedRegistrationLinks.length
+          ? updatedRegistrationLinks
+          : undefined,
+        deleteMany: removedRegistrationLinkIds.length
+          ? removedRegistrationLinkIds
+          : undefined,
+      }
+
       return prisma.updateCourse({
         where: {
           id: id,
@@ -185,6 +203,11 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           study_module: !!study_module
             ? { connect: { id: study_module } }
             : null,
+          open_university_registration_links: Object.keys(
+            registrationLinkMutation,
+          ).length
+            ? registrationLinkMutation
+            : null,
         },
       })
     },
@@ -203,7 +226,7 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const prisma: Prisma = ctx.prisma
       const { id, slug } = args
 
-      // TODO: delete photo?
+      // TODO: delete photo here?
       return prisma.deleteCourse({
         id,
         slug,

@@ -17,6 +17,7 @@ export const initialValues: CourseFormValues = {
   status: CourseStatus.Upcoming,
   study_module: null,
   course_translations: [],
+  open_university_registration_links: [],
 }
 
 export const statuses = [
