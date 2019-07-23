@@ -68,7 +68,7 @@ const courseEditSchema = ({
       .required("required"),
     course_translations: Yup.array().of(
       Yup.object().shape({
-        name: Yup.number().required("required"),
+        name: Yup.string().required("required"),
         language: Yup.string()
           .required("required")
           .test(
