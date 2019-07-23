@@ -17,6 +17,8 @@ import courseEditSchema, { initialValues } from "./form-validation"
 import { FormikActions, getIn } from "formik"
 import Next18next from "../../../i18n"
 import { AllCoursesQuery } from "../../../pages/courses"
+import get from "lodash/get"
+import { updateCourse_updateCourse_open_university_registration_links } from "../../../static/types/updateCourse"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -54,7 +56,15 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
         ...course,
         course_translations: !course.course_translations
           ? []
-          : course.course_translations,
+          : course.course_translations.map(c => ({
+              ...c,
+              open_university_course_code: get(
+                (course.open_university_registration_links || []).find(
+                  l => l.language === c.language,
+                ),
+                "course_code",
+              ),
+            })),
         new_slug: course.slug,
         thumbnail: course.photo ? course.photo.compressed : null,
       }
@@ -146,21 +156,55 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
           await deleteImage({ variables: { id: deletablePhoto.id } })
         }
 
+        const courseTranslations = values.course_translations.length
+          ? values.course_translations.map(
+              (c: CourseTranslationFormValues) => ({
+                ...c,
+                open_university_course_code: undefined,
+                id: !c.id || c.id === "" ? null : c.id,
+                __typename: undefined,
+              }),
+            )
+          : null
+
+        const registrationLinks = values.course_translations.length
+          ? values.course_translations
+              .map((c: CourseTranslationFormValues) => {
+                if (
+                  !c.open_university_course_code ||
+                  c.open_university_course_code === ""
+                ) {
+                  return null
+                }
+
+                const prevLink = (
+                  _course.open_university_registration_links || []
+                ).find(l => l.language === c.language)
+
+                if (!prevLink) {
+                  return {
+                    language: c.language,
+                    course_code: c.open_university_course_code,
+                  }
+                }
+
+                return {
+                  ...prevLink,
+                  course_code: c.open_university_course_code,
+                  __typename: undefined,
+                }
+              })
+              .filter(v => !!v)
+          : null
+
         setStatus({ message: "Saving..." })
         const course = await courseMutation({
           variables: {
             ...newValues,
             id: undefined,
             slug: values.id ? values.slug : values.new_slug,
-            course_translations: values.course_translations.length
-              ? values.course_translations.map(
-                  (c: CourseTranslationFormValues) => ({
-                    ...c,
-                    id: !c.id || c.id === "" ? null : c.id,
-                    __typename: undefined,
-                  }),
-                )
-              : null,
+            course_translations: courseTranslations,
+            open_university_registration_links: registrationLinks,
           },
         })
 
