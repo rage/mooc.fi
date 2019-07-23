@@ -21,10 +21,11 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       photo: idArg(),
       start_point: booleanArg(),
       promote: booleanArg(),
+      hidden: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
       course_translations: arg({
-        type: "CourseTranslationCreateInput",
+        type: "CourseTranslationCreateWithoutCourseInput",
         list: true,
         required: false,
       }),
@@ -35,6 +36,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         name,
         slug,
         start_point,
+        hidden,
         photo,
         promote,
         status,
@@ -48,6 +50,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         slug: slug,
         promote: promote,
         start_point: start_point,
+        hidden: hidden,
         photo: !!photo ? { connect: { id: photo } } : null,
         course_translations: !!course_translations
           ? { create: course_translations }
@@ -80,6 +83,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       photo: idArg(),
       start_point: booleanArg(),
       promote: booleanArg(),
+      hidden: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_module: idArg(),
       course_translations: arg({
@@ -98,6 +102,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         photo,
         start_point,
         promote,
+        hidden,
         status,
         study_module,
         course_translations,
@@ -106,15 +111,17 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const existingTranslations = await prisma
         .course({ slug })
         .course_translations()
-      const newTranslations: CourseTranslationCreateWithoutCourseInput[] = course_translations.filter(
-        t => !t.id,
+      const newTranslations: CourseTranslationCreateWithoutCourseInput[] = (
+        course_translations || []
+      ).filter(t => !t.id)
+      const updatedTranslations: CourseTranslationUpdateManyWithWhereNestedInput[] = (
+        course_translations || []
       )
-      const updatedTranslations: CourseTranslationUpdateManyWithWhereNestedInput[] = course_translations
         .filter(t => !!t.id)
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
       const removedTranslationIds: CourseTranslationScalarWhereInput[] = pullAll(
-        existingTranslations.map(t => t.id),
-        course_translations.map(t => t.id).filter(v => !!v),
+        (existingTranslations || []).map(t => t.id),
+        (course_translations || []).map(t => t.id).filter(v => !!v),
       ).map(_id => ({ id: _id }))
 
       const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = {
@@ -138,6 +145,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           photo: !!photo ? { connect: { id: photo } } : null,
           start_point: start_point,
           promote: promote,
+          hidden: hidden,
           status: status,
           course_translations: Object.keys(translationMutation).length
             ? translationMutation

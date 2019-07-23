@@ -2,7 +2,10 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { CourseStatus, CourseTranslationCreateInput } from "./globalTypes"
+import {
+  CourseStatus,
+  CourseTranslationCreateWithoutCourseInput,
+} from "./globalTypes"
 
 // ====================================================
 // GraphQL mutation operation: addCourse
@@ -11,6 +14,9 @@ import { CourseStatus, CourseTranslationCreateInput } from "./globalTypes"
 export interface addCourse_addCourse_photo {
   __typename: "Image"
   id: any
+  name: string | null
+  original: string
+  original_mimetype: string
   compressed: string | null
   compressed_mimetype: string | null
   uncompressed: string
@@ -44,6 +50,7 @@ export interface addCourseVariables {
   photo?: string | null
   promote?: boolean | null
   start_point?: boolean | null
+  hidden?: boolean | null
   status?: CourseStatus | null
-  course_translations?: CourseTranslationCreateInput[] | null
+  course_translations?: CourseTranslationCreateWithoutCourseInput[] | null
 }
