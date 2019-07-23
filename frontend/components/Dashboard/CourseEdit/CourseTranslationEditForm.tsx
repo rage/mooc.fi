@@ -28,6 +28,7 @@ const initialTranslation: CourseTranslationFormValues = {
   name: undefined,
   description: undefined,
   link: undefined,
+  open_university_course_code: undefined,
 }
 
 const languageFilter = (
@@ -134,6 +135,17 @@ const CourseTranslationEditForm = ({
                           type="text"
                           label="Link"
                           error={getIn(errors, `[${index}].link`)}
+                          fullWidth
+                          component={TextField}
+                        />
+                        <Field
+                          name={`course_translations[${index}].open_university_course_code`}
+                          type="text"
+                          label="Open university course code"
+                          error={getIn(
+                            errors,
+                            `[${index}].open_university_course_code`,
+                          )}
                           fullWidth
                           component={TextField}
                         />

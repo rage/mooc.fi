@@ -5,6 +5,7 @@
 import {
   CourseStatus,
   CourseTranslationCreateWithoutCourseInput,
+  OpenUniversityRegistrationLinkCreateWithoutCourseInput,
 } from "./globalTypes"
 
 // ====================================================
@@ -32,12 +33,23 @@ export interface addCourse_addCourse_course_translations {
   link: string
 }
 
+export interface addCourse_addCourse_open_university_registration_links {
+  __typename: "OpenUniversityRegistrationLink"
+  id: any
+  course_code: string
+  language: string
+  link: string | null
+}
+
 export interface addCourse_addCourse {
   __typename: "Course"
   id: any
   slug: string
   photo: addCourse_addCourse_photo | null
   course_translations: addCourse_addCourse_course_translations[] | null
+  open_university_registration_links:
+    | addCourse_addCourse_open_university_registration_links[]
+    | null
 }
 
 export interface addCourse {
@@ -53,4 +65,7 @@ export interface addCourseVariables {
   hidden?: boolean | null
   status?: CourseStatus | null
   course_translations?: CourseTranslationCreateWithoutCourseInput[] | null
+  open_university_registration_links?:
+    | OpenUniversityRegistrationLinkCreateWithoutCourseInput[]
+    | null
 }

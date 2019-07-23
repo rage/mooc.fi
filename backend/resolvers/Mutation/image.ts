@@ -118,6 +118,7 @@ const deleteImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         return false
       }
 
+      // TODO: (?) do something with return statuses
       const compressed = await deleteStorageImage(image.compressed)
       const uncompressed = await deleteStorageImage(image.uncompressed)
       const original = await deleteStorageImage(image.original)

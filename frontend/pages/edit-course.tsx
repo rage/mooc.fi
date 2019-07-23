@@ -37,6 +37,12 @@ export const CourseQuery = gql`
         description
         link
       }
+      open_university_registration_links {
+        id
+        course_code
+        language
+        link
+      }
       study_module {
         id
       }
