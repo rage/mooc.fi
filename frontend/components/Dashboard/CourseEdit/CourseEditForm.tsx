@@ -241,7 +241,7 @@ const RenderForm = ({
           <input
             type="checkbox"
             style={{ float: "right" }}
-            checked={deleteVisible}
+            defaultChecked={deleteVisible}
             onClick={() => setDeleteVisible(!deleteVisible)}
           />
         ) : null}
