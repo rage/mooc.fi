@@ -184,13 +184,13 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
                 if (!prevLink) {
                   return {
                     language: c.language,
-                    course_code: c.open_university_course_code,
+                    course_code: c.open_university_course_code.trim(),
                   }
                 }
 
                 return {
                   ...prevLink,
-                  course_code: c.open_university_course_code,
+                  course_code: c.open_university_course_code.trim(),
                   __typename: undefined,
                 }
               })
