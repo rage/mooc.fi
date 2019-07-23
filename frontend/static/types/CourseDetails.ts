@@ -26,6 +26,14 @@ export interface CourseDetails_course_course_translations {
   link: string
 }
 
+export interface CourseDetails_course_open_university_registration_links {
+  __typename: "OpenUniversityRegistrationLink"
+  id: any
+  course_code: string
+  language: string
+  link: string | null
+}
+
 export interface CourseDetails_course_study_module {
   __typename: "StudyModule"
   id: any
@@ -42,6 +50,9 @@ export interface CourseDetails_course {
   hidden: boolean | null
   status: CourseStatus | null
   course_translations: CourseDetails_course_course_translations[] | null
+  open_university_registration_links:
+    | CourseDetails_course_open_university_registration_links[]
+    | null
   study_module: CourseDetails_course_study_module | null
 }
 

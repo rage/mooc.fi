@@ -1,7 +1,6 @@
 import { Storage } from "@google-cloud/storage"
 import * as shortid from "shortid"
 import * as mimeTypes from "mimetypes"
-import { createWriteStream } from "fs"
 
 const isProduction = process.env.NODE_ENV === "production"
 const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
