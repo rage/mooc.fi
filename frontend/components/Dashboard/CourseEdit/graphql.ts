@@ -10,6 +10,7 @@ export const AddCourseMutation = gql`
     $hidden: Boolean
     $status: CourseStatus
     $course_translations: [CourseTranslationCreateWithoutCourseInput!]
+    $open_university_registration_links: [OpenUniversityRegistrationLinkCreateWithoutCourseInput!]
   ) {
     addCourse(
       name: $name
@@ -20,6 +21,7 @@ export const AddCourseMutation = gql`
       hidden: $hidden
       status: $status
       course_translations: $course_translations
+      open_university_registration_links: $open_university_registration_links
     ) {
       id
       slug
@@ -40,6 +42,12 @@ export const AddCourseMutation = gql`
         description
         link
       }
+      open_university_registration_links {
+        id
+        course_code
+        language
+        link
+      }
     }
   }
 `
@@ -56,6 +64,7 @@ export const UpdateCourseMutation = gql`
     $status: CourseStatus
     $new_slug: String
     $course_translations: [CourseTranslationWithIdInput!]
+    $open_university_registration_links: [OpenUniversityRegistrationLinkWithIdInput!]
   ) {
     updateCourse(
       id: $id
@@ -68,6 +77,7 @@ export const UpdateCourseMutation = gql`
       hidden: $hidden
       status: $status
       course_translations: $course_translations
+      open_university_registration_links: $open_university_registration_links
     ) {
       id
       slug
@@ -86,6 +96,12 @@ export const UpdateCourseMutation = gql`
         language
         name
         description
+        link
+      }
+      open_university_registration_links {
+        id
+        course_code
+        language
         link
       }
     }
