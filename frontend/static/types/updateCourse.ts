@@ -11,6 +11,9 @@ import { CourseStatus, CourseTranslationWithIdInput } from "./globalTypes"
 export interface updateCourse_updateCourse_photo {
   __typename: "Image"
   id: any
+  name: string | null
+  original: string
+  original_mimetype: string
   compressed: string | null
   compressed_mimetype: string | null
   uncompressed: string
@@ -45,6 +48,7 @@ export interface updateCourseVariables {
   photo?: string | null
   promote?: boolean | null
   start_point?: boolean | null
+  hidden?: boolean | null
   status?: CourseStatus | null
   new_slug?: string | null
   course_translations?: CourseTranslationWithIdInput[] | null

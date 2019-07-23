@@ -39,6 +39,7 @@ export interface CourseDetails_course {
   photo: CourseDetails_course_photo | null
   promote: boolean | null
   start_point: boolean | null
+  hidden: boolean | null
   status: CourseStatus | null
   course_translations: CourseDetails_course_course_translations[] | null
   study_module: CourseDetails_course_study_module | null
