@@ -17,6 +17,7 @@ const Mutation = prismaObjectType({
     mutations.addExerciseCompletionMutations(t)
     mutations.addImageMutations(t)
     mutations.addCompletionMutations(t)
+    mutations.addOpenUniversityRegistrationLinkMutations(t)
   },
 })
 
