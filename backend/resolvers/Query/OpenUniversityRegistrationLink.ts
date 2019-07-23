@@ -29,7 +29,7 @@ const openUniversityRegistrationLinks = (
     type: "OpenUniversityRegistrationLink",
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
-      return ctx.prisma.courses()
+      return ctx.prisma.openUniversityRegistrationLinks()
     },
   })
 }
