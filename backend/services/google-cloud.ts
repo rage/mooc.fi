@@ -14,8 +14,8 @@ const storage = isProduction
   : {
       bucket: () => ({
         file: () => ({
-          save: () => Promise.resolve(true),
-          delete: () => Promise.resolve(true),
+          save: (): any => Promise.resolve(true),
+          delete: (): any => Promise.resolve(true),
         }),
       }),
     } // heh
