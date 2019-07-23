@@ -289,7 +289,7 @@ const CourseEditForm = ({
       initialValues={course}
       validate={async (values: CourseFormValues) =>
         validationSchema
-          .validate(values, { context: { values } })
+          .validate(values, { abortEarly: false, context: { values } })
           .catch(err => {
             throw yupToFormErrors(err)
           })

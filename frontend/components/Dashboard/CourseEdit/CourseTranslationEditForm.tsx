@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
-  language: "",
-  name: "",
+  language: undefined,
+  name: undefined,
   description: undefined,
   link: undefined,
 }
@@ -92,11 +92,6 @@ const CourseTranslationEditForm = ({
                         >
                           Language
                         </InputLabel>
-                        {console.log(
-                          "translation errors in index",
-                          index,
-                          errors,
-                        )}
                         <Field
                           name={`course_translations[${index}].language`}
                           type="select"
