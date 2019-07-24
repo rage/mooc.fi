@@ -72,15 +72,6 @@ export const UserOverViewQuery = gql`
   }
 `
 
-//return a link based on which language course has been completed in
-const mapLanguageToLink = new Map(
-  Object.entries({
-    fi_FI: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330",
-    en_US: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202817",
-    sv_SE: "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=127290002",
-  }),
-)
-
 interface RegisterCompletionPageProps {
   t: Function
   router: any
@@ -137,22 +128,14 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   }
 
   //map completions language to a link
-  let courseLinkWithLanguage =
-    "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330"
+  let courseLinkWithLanguage = null
 
   //if completion has a language field defined
-  if (completion.completion_language) {
-    //map language field to correct registration link
-    //if there is no registration link for the completion language
-    //use the link for english registration page
-    courseLinkWithLanguage =
-      mapLanguageToLink.get(completion.completion_language) ||
-      "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330"
+  if (completion.completion_link) {
+    courseLinkWithLanguage = completion.completion_link
   }
 
-  let link = null
-
-  if (!link) {
+  if (!courseLinkWithLanguage) {
     return <div>Open University registration is not open at the moment.</div>
   }
 
