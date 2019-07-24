@@ -18,7 +18,6 @@ const Root = styled.div<RootProps>`
   padding-bottom: 4em;
   position: relative;
   ${props => `background-color: ${props.backgroundColor};`}
-  z-index: -5;
 `
 
 interface BackgroundProps {
@@ -32,7 +31,7 @@ const BackgroundImage = styled.img<BackgroundProps>`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -2;
+
   ${props =>
     `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${
       props.brightness
@@ -128,7 +127,7 @@ function CourseHighlights(props: CourseHighlightsProps) {
         brightness={brightness}
       />
 
-      <div>
+      <div style={{ zIndex: 20 }}>
         <Title
           component="h2"
           fontColor={fontColor}
