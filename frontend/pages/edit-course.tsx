@@ -6,7 +6,7 @@ import redirect from "../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
-import CourseEditForm from "../components/Dashboard/CourseEdit"
+import CourseEdit from "../components/Dashboard/CourseEdit/CourseEdit"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery, useMutation } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
@@ -28,12 +28,19 @@ export const CourseQuery = gql`
       }
       promote
       start_point
+      hidden
       status
       course_translations {
         id
         name
         language
         description
+        link
+      }
+      open_university_registration_links {
+        id
+        course_code
+        language
         link
       }
       study_module {
@@ -96,7 +103,7 @@ const EditCourse = (props: EditCourseProps) => {
         >
           {data.course ? "Edit course" : "Create a new course"}
         </Typography>
-        <CourseEditForm course={data.course} />
+        <CourseEdit course={data.course} />
       </WideContainer>
     </section>
   )

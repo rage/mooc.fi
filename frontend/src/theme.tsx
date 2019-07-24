@@ -1,11 +1,10 @@
 import { createMuiTheme } from "@material-ui/core/styles"
-import purple from "@material-ui/core/colors/purple"
 import amber from "@material-ui/core/colors/amber"
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: purple[500],
+      main: "#00A68D",
     },
     secondary: {
       main: amber[500],
@@ -13,6 +12,26 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: "roboto",
+  },
+  props: {
+    MuiTextField: {
+      variant: "outlined",
+      fullWidth: true,
+    },
+    MuiButton: {
+      variant: "contained",
+      color: "primary",
+    },
+  },
+  overrides: {
+    MuiButton: {
+      label: {
+        textTransform: "none",
+      },
+      root: {
+        textTransform: "none",
+      },
+    },
   },
 })
 

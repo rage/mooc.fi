@@ -39,10 +39,10 @@ function HeaderMenu(props: MenuProps) {
       <LanguageSwitch />
       {isLoggedIn ? (
         <LogOutButtonContainer>
-          <Button color="inherit" onClick={onclick}>
+          <Button variant="text" color="default" onClick={onclick}>
             <NextI18Next.Trans i18nKey="common:logout" />
           </Button>
-          <Button color="inherit" href="/my-profile">
+          <Button variant="text" color="default" href="/my-profile">
             <NextI18Next.Trans i18nKey="common:profile" />
           </Button>
         </LogOutButtonContainer>
@@ -55,7 +55,7 @@ function HeaderMenu(props: MenuProps) {
 
 function LogInButton() {
   return (
-    <Button color="inherit" href="/sign-in">
+    <Button variant="text" color="default" href="/sign-in">
       <NextI18Next.Trans i18nKey="common:loginShort" />
     </Button>
   )
