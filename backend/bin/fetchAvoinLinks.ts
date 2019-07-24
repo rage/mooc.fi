@@ -55,4 +55,7 @@ interface Link {
   stopDate: DateTime
 }
 
-fetch()
+fetch().catch(error => {
+  console.log(error)
+  throw error
+})
