@@ -37,12 +37,12 @@ export const statuses = [
 
 export const languages = [
   {
-    value: "en_US",
-    label: "English",
-  },
-  {
     value: "fi_FI",
     label: "Finnish",
+  },
+  {
+    value: "en_US",
+    label: "English",
   },
   {
     value: "sv_SE",
