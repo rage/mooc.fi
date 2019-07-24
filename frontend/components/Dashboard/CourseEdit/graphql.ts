@@ -1,10 +1,4 @@
-import React, { useState, useEffect } from "react"
-import { Paper } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import CourseEditForm from "./CourseEditForm"
-import { useMutation, useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
-import { addImage_addImage as Image } from "./__generated__/addImage"
 
 export const AddCourseMutation = gql`
   mutation addCourse(
@@ -13,8 +7,10 @@ export const AddCourseMutation = gql`
     $photo: ID
     $promote: Boolean
     $start_point: Boolean
+    $hidden: Boolean
     $status: CourseStatus
-    $course_translations: [CourseTranslationCreateInput!]
+    $course_translations: [CourseTranslationCreateWithoutCourseInput!]
+    $open_university_registration_links: [OpenUniversityRegistrationLinkCreateWithoutCourseInput!]
   ) {
     addCourse(
       name: $name
@@ -22,13 +18,18 @@ export const AddCourseMutation = gql`
       photo: $photo
       promote: $promote
       start_point: $start_point
+      hidden: $hidden
       status: $status
       course_translations: $course_translations
+      open_university_registration_links: $open_university_registration_links
     ) {
       id
       slug
       photo {
         id
+        name
+        original
+        original_mimetype
         compressed
         compressed_mimetype
         uncompressed
@@ -39,6 +40,12 @@ export const AddCourseMutation = gql`
         language
         name
         description
+        link
+      }
+      open_university_registration_links {
+        id
+        course_code
+        language
         link
       }
     }
@@ -53,9 +60,11 @@ export const UpdateCourseMutation = gql`
     $photo: ID
     $promote: Boolean
     $start_point: Boolean
+    $hidden: Boolean
     $status: CourseStatus
     $new_slug: String
     $course_translations: [CourseTranslationWithIdInput!]
+    $open_university_registration_links: [OpenUniversityRegistrationLinkWithIdInput!]
   ) {
     updateCourse(
       id: $id
@@ -65,13 +74,18 @@ export const UpdateCourseMutation = gql`
       photo: $photo
       promote: $promote
       start_point: $start_point
+      hidden: $hidden
       status: $status
       course_translations: $course_translations
+      open_university_registration_links: $open_university_registration_links
     ) {
       id
       slug
       photo {
         id
+        name
+        original
+        original_mimetype
         compressed
         compressed_mimetype
         uncompressed
@@ -84,6 +98,21 @@ export const UpdateCourseMutation = gql`
         description
         link
       }
+      open_university_registration_links {
+        id
+        course_code
+        language
+        link
+      }
+    }
+  }
+`
+
+export const DeleteCourseMutation = gql`
+  mutation deleteCourse($id: ID) {
+    deleteCourse(id: $id) {
+      id
+      slug
     }
   }
 `
@@ -95,9 +124,12 @@ export const CheckSlugQuery = gql`
 `
 
 export const AddImageMutation = gql`
-  mutation addImage($file: Upload!) {
-    addImage(file: $file) {
+  mutation addImage($file: Upload!, $base64: Boolean) {
+    addImage(file: $file, base64: $base64) {
       id
+      name
+      original
+      original_mimetype
       compressed
       compressed_mimetype
       uncompressed
@@ -113,65 +145,3 @@ export const DeleteImageMutation = gql`
     deleteImage(id: $id)
   }
 `
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      textTransform: "uppercase",
-      marginTop: "0.7em",
-      marginBottom: "0.7em",
-    },
-    paper: {
-      padding: "1em",
-    },
-  }),
-)
-
-const CourseEdit = ({ course }: { course: any }) => {
-  const classes = useStyles()
-
-  const addCourse = useMutation(AddCourseMutation)
-  const updateCourse = useMutation(UpdateCourseMutation)
-  const addImage = useMutation(AddImageMutation)
-  const deleteImage = useMutation(DeleteImageMutation)
-  const checkSlug = CheckSlugQuery
-
-  const uploadImage = async (
-    image: File | undefined,
-  ): Promise<Image | null> => {
-    if (!image) {
-      return null
-    }
-
-    const { data, error } = await addImage({ variables: { file: image } })
-
-    console.log(data)
-
-    if (error) {
-      throw new Error("error uploading image: " + error)
-    }
-
-    if (data && data.addImage) {
-      return data.addImage
-    }
-
-    return null
-  }
-
-  return (
-    <section>
-      <Paper elevation={1} className={classes.paper}>
-        <CourseEditForm
-          course={course}
-          checkSlug={checkSlug}
-          addCourse={addCourse}
-          updateCourse={updateCourse}
-          uploadImage={uploadImage}
-          deleteImage={deleteImage}
-        />
-      </Paper>
-    </section>
-  )
-}
-
-export default CourseEdit

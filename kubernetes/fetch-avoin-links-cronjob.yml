@@ -1,21 +1,21 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: fetch-user-app-datum
+  name: fetch-avoin-links
   namespace: moocfi
 spec:
-  schedule: "30 0 * * *"
+  schedule: "15 0 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
-      activeDeadlineSeconds: 604800
+      activeDeadlineSeconds: 1800
       template:
         spec:
           restartPolicy: OnFailure
           containers:
             - name: fetch-ai-completions
               image: ${BACKEND_IMAGE}
-              command: ["sh", "-c", "npm run fetch-user-app-datum"]
+              command: ["sh", "-c", "npm run fetch-avoin-links"]
               env:
                 - name: DB_NAME
                   valueFrom:
@@ -111,7 +111,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: backend-secret
-                      key: AVOIN_TOKEN 
+                      key: AVOIN_TOKEN
                 - name: GOOGLE_CLOUD_STORAGE_BUCKET
                   valueFrom:
                     secretKeyRef:

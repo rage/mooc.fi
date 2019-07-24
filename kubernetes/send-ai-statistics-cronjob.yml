@@ -1,21 +1,21 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: fetch-user-app-datum
+  name: send-ai-statistics
   namespace: moocfi
 spec:
-  schedule: "30 0 * * *"
+  schedule: "0 10 * * 1"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
-      activeDeadlineSeconds: 604800
+      activeDeadlineSeconds: 1000
       template:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: fetch-ai-completions
+            - name: send-ai-statistics
               image: ${BACKEND_IMAGE}
-              command: ["sh", "-c", "npm run fetch-user-app-datum"]
+              command: ["sh", "-c", "npm run send-ai-statistics"]
               env:
                 - name: DB_NAME
                   valueFrom:
@@ -102,16 +102,6 @@ spec:
                     secretKeyRef:
                       name: backend-secret
                       key: AI_SLACK_URL
-                - name: AVOIN_COURSE_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: backend-secret
-                      key: AVOIN_COURSE_URL
-                - name: AVOIN_TOKEN
-                  valueFrom:
-                    secretKeyRef:
-                      name: backend-secret
-                      key: AVOIN_TOKEN 
                 - name: GOOGLE_CLOUD_STORAGE_BUCKET
                   valueFrom:
                     secretKeyRef:
