@@ -28,9 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "0.7em",
       marginBottom: "0.7em",
     },
-    paper: {
-      padding: "1em",
-    },
   }),
 )
 
@@ -234,15 +231,13 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
 
   return (
     <section>
-      <Paper elevation={1} className={classes.paper}>
-        <CourseEditForm
-          course={_course}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-          onCancel={onCancel}
-          onDelete={onDelete}
-        />
-      </Paper>
+      <CourseEditForm
+        course={_course}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+        onDelete={onDelete}
+      />
     </section>
   )
 }
