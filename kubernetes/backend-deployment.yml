@@ -122,10 +122,10 @@ spec:
                   name: backend-secret
                   key: AI_SLACK_URL
             - name: AVOIN_COURSE_URL
-                valueFrom:
-                  secretKeyRef:
-                    name: backend-secret
-                    key: AVOIN_COURSE_URL  
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: AVOIN_COURSE_URL  
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"
