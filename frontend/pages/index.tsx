@@ -16,6 +16,7 @@ import { AllCourses as AllCoursesData } from "../static/types/AllCourses"
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import { Button } from "@material-ui/core"
 const highlightsBanner = require("../static/images/courseHighlightsBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
