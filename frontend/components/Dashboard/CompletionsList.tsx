@@ -107,7 +107,7 @@ const CompletionsList = () => {
   let course: string | string[] = ""
 
   if (router && router.query) {
-    course = router.query.slug
+    course = router.query.id
   }
 
   interface queryDetailsInterface {

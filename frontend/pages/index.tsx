@@ -14,9 +14,7 @@ import { AllModules as AllModulesData } from "../static/types/AllModules"
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
-const highlightsBanner = require("../static/images/courseHighlightsBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
-const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
-const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const highlightsBanner = "../static/images/backgroundPattern.svg"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -107,25 +105,41 @@ const Home = (props: HomeProps) => {
           title={t("highlightTitle")}
           headerImage={highlightsBanner}
           subtitle={t("highlightSubtitle")}
+          backgroundColor="#009CA6"
+          hueRotateAngle={177}
+          brightness={5.5}
+          fontColor="black"
+          titleBackground="#ffffff"
         />
-
         <CourseHighlights
           courses={courses.filter(c => c.status === "Active")}
           title={t("allCoursesTitle")}
-          headerImage={allCoursesBanner}
-          subtitle={""}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={34}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#008EBD"
         />
         <CourseHighlights
           courses={courses.filter(c => c.status === "Upcoming")}
           title={t("upcomingCoursesTitle")}
-          headerImage={allCoursesBanner}
-          subtitle={""}
+          headerImage={highlightsBanner}
+          backgroundColor="#007DC8"
+          hueRotateAngle={0}
+          brightness={5.5}
+          fontColor="black"
+          titleBackground="#ffffff"
         />
         <CourseHighlights
           courses={courses.filter(c => c.status === "Ended")}
           title={t("endedCoursesTitle")}
-          headerImage={oldCoursesBanner}
-          subtitle={""}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={58}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#3066C0"
         />
       </section>
       <EmailSubscribe />

@@ -5,28 +5,56 @@ import Container from "../Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 
-const Root = styled.div`
+interface RootProps {
+  backgroundColor: string
+}
+
+const Root = styled.div<RootProps>`
   margin-top: 1em;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   margin-bottom: 5em;
+  padding-bottom: 4em;
   position: relative;
+  ${props => `background-color: ${props.backgroundColor};`}
+  z-index: -5;
 `
-const BackgroundImage = styled.img`
+
+interface BackgroundProps {
+  hueRotateAngle: number
+  brightness: number
+}
+const BackgroundImage = styled.img<BackgroundProps>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 50%;
+  height: 100%;
   object-fit: cover;
   z-index: -2;
+  ${props =>
+    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${
+      props.brightness
+    });`}
 `
-const Title = styled(Typography)`
+
+interface TitleProps {
+  fontColor: string
+  titleBackground: string
+}
+
+const Title = styled(Typography)<TitleProps>`
   font-family: "Open Sans Condensed", sans-serif !important;
-  margin-top: 2rem;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
+  margin: 5rem auto 1rem auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: table;
+
+  ${props =>
+    ` background-color: ${props.titleBackground}; color: ${props.fontColor};`}
   @media (min-width: 320px) {
     font-size: 46px;
   }
@@ -39,7 +67,10 @@ const Title = styled(Typography)`
 `
 const Subtitle = styled(Typography)`
   font-family: "Open Sans Condensed", sans-serif !important;
-  margin-left: 2rem;
+  margin: 0rem auto 3rem auto;
+  padding: 1rem;
+  display: table;
+  background-color: white;
   @media (min-width: 320px) {
     font-size: 22px;
   }
@@ -49,11 +80,6 @@ const Subtitle = styled(Typography)`
   @media (min-width: 960px) {
     font-size: 32px;
   }
-`
-const TextBackground = styled.span`
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 0.5rem;
-  height: 100%;
 `
 
 type FilteredCourse = {
@@ -72,31 +98,53 @@ interface CourseHighlightsProps {
   courses: FilteredCourse[]
   title: string
   headerImage: any
-  subtitle: string
+  subtitle?: string
+  backgroundColor: string
+  hueRotateAngle: number
+  brightness: number
+  fontColor: string
+  titleBackground: string
 }
 
 function CourseHighlights(props: CourseHighlightsProps) {
-  const { courses, title, headerImage, subtitle } = props
+  const {
+    courses,
+    title,
+    headerImage,
+    subtitle,
+    backgroundColor,
+    hueRotateAngle,
+    brightness,
+    fontColor,
+    titleBackground,
+  } = props
 
   return (
-    <Root>
+    <Root backgroundColor={backgroundColor}>
       <BackgroundImage
-        srcSet={headerImage.srcSet}
-        src={headerImage.src}
-        alt=""
+        src={headerImage}
+        aria-hidden
+        hueRotateAngle={hueRotateAngle}
+        brightness={brightness}
       />
-      <TextBackground>
-        <Title align="center">{title}</Title>
-        <Subtitle align="center">{subtitle}</Subtitle>
 
-        <Container>
-          <Grid container spacing={3}>
-            {courses.map(course => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </Grid>
-        </Container>
-      </TextBackground>
+      <div>
+        <Title
+          component="h2"
+          fontColor={fontColor}
+          titleBackground={titleBackground}
+        >
+          {title}
+        </Title>
+        {subtitle && <Subtitle component="div">{subtitle}</Subtitle>}
+      </div>
+      <Container>
+        <Grid container spacing={3}>
+          {courses.map(course => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </Grid>
+      </Container>
     </Root>
   )
 }

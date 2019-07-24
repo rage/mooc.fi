@@ -5,12 +5,11 @@ const NextI18Next = new I18Next({
   defaultLanguage: "fi",
   fallbackLng: "fi",
   otherLanguages: ["en", "se"],
-  localeSubpaths: "foreign",
+  //localeSubpaths: "foreign",
   returnObjects: true,
   defaultNS: "common",
   detection: {
     order: ["querystring", "path"],
-    lookupQuerystring: "lng",
     caches: [],
   },
   load: "languageOnly",
