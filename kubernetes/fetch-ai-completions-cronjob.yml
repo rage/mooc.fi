@@ -102,6 +102,11 @@ spec:
                     secretKeyRef:
                       name: backend-secret
                       key: AI_SLACK_URL
+                - name: AVOIN_COURSE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: AVOIN_COURSE_URL  
                 - name: GOOGLE_CLOUD_STORAGE_BUCKET
                   valueFrom:
                     secretKeyRef:
