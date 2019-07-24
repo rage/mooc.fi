@@ -22,6 +22,11 @@ import { updateCourse_updateCourse_open_university_registration_links } from "..
 
 const isProduction = process.env.NODE_ENV === "production"
 
+/* if (!isProduction) {
+  const { whyDidYouUpdate } = require('why-did-you-update')
+  whyDidYouUpdate(React)
+
+} */
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {

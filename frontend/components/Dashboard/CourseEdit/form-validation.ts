@@ -44,6 +44,10 @@ export const languages = [
     value: "fi",
     label: "Finnish",
   },
+  {
+    value: "se",
+    label: "Swedish",
+  },
 ]
 
 export const study_modules: { value: any; label: any }[] = []
