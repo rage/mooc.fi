@@ -106,7 +106,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: backend-secret
-                      key: AVOIN_COURSE_URL  
+                      key: AVOIN_COURSE_URL    
                 - name: GOOGLE_CLOUD_STORAGE_BUCKET
                   valueFrom:
                     secretKeyRef:
