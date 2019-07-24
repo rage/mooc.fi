@@ -13,6 +13,8 @@ const SwitchButton = styled(Button)`
 const LanguageSwitch = () => {
   return (
     <SwitchButton
+      variant="text"
+      color="default"
       onClick={() =>
         NextI18Next.i18n.changeLanguage(
           NextI18Next.i18n.language === "en" ? "fi" : "en",
@@ -21,8 +23,8 @@ const LanguageSwitch = () => {
     >
       <Language style={{ marginRight: "0.4rem" }} />
       {NextI18Next.i18n.language === "en"
-        ? "SUOMENKIELINEN VERSIO"
-        : "ENGLISH VERSION"}
+        ? "Suomenkielinen versio"
+        : "English Version"}
     </SwitchButton>
   )
 }
