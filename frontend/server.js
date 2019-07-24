@@ -1,12 +1,11 @@
 process.on("unhandledRejection", (...args) => {
-  console.log("lolled")
   console.log(JSON.stringify(args, undefined, 2))
 })
 
 const express = require("express")
 
 const next = require("next")
-const nextI18NextMiddleware = require("next-i18next/middleware")
+const nextI18NextMiddleware = require("next-i18next/middleware").default
 const compression = require("compression")
 const nextI18next = require("./i18n")
 
@@ -70,6 +69,7 @@ const main = async () => {
     if (redirectNeeded) {
       res.redirect(redirectNeeded.to)
     }
+
     return handle(req, res)
   })
 
