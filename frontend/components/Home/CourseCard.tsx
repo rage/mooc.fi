@@ -72,19 +72,33 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
     flex-direction: row;
   }
 `
+interface Image {
+  id: any
+  name: string | null
+  original: string
+  original_mimetype: string
+  compressed: string
+  compressed_mimetype: string
+  uncompressed: string
+  uncompressed_mimetype: string
+  encoding: string | null
+  default: boolean | null
+}
+
 interface ImageProps {
-  photo: any[]
+  photo: Image
   isUpcoming: boolean
 }
+
 function ImageInWebp(props: ImageProps) {
   const { photo, isUpcoming } = props
 
   return (
     <picture>
-      <source srcSet={photo[0]} type="image/webp" />
-      <source srcSet={photo[1]} type="image/png" />
+      <source srcSet={photo.compressed} type="image/webp" />
+      <source srcSet={photo.uncompressed} type="image/png" />
       <CourseImage
-        src={photo[1]}
+        src={photo.compressed}
         alt=""
         style={{ opacity: isUpcoming ? 0.6 : 1 }}
       />
@@ -97,7 +111,7 @@ type FilteredCourse = {
   description: string
   id: string
   link: string
-  photo: any[]
+  photo: Image
   promote: boolean
   slug: string
   start_point: boolean
