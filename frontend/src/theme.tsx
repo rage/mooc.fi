@@ -18,6 +18,10 @@ const theme = createMuiTheme({
       variant: "outlined",
       fullWidth: true,
     },
+    MuiFormControl: {
+      variant: "outlined",
+      fullWidth: true,
+    },
     MuiButton: {
       variant: "contained",
       color: "primary",
