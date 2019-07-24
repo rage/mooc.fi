@@ -20,14 +20,21 @@ import OpenSansCondensed from "typeface-open-sans-condensed"
 import Roboto from "typeface-roboto"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-
 fontAwesomeConfig.autoAddCss = false
+
+const handleRouteChange = url => {
+  console.log("App is changing to: ", url)
+}
 
 class MyApp extends App {
   componentDidMount() {
     initGA()
     logPageView()
+    if (!Router.asPath.startsWith)
+      Router.router.events.on("routeChangeStart", handleRouteChange)
+    Router.router.events.on("routeChangeComplete", handleRouteChange)
     Router.router.events.on("routeChangeComplete", logPageView)
+
     const jssStyles = document.querySelector("#jss-server-side")
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)

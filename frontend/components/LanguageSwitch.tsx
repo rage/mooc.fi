@@ -11,6 +11,7 @@ const SwitchButton = styled(Button)`
 `
 
 const LanguageSwitch = () => {
+  console.log(NextI18Next.i18n.language)
   return (
     <SwitchButton
       onClick={() =>
