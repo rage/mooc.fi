@@ -63,6 +63,7 @@
     "module-resolver": "^1.0.0",
     "next": "^9.0.1",
     "next-compose-plugins": "^2.2.0",
+    "next-env": "^1.1.0",
     "next-fonts": "^0.17.0",
     "next-i18next": "^0.49.0",
     "next-optimized-images": "^2.5.3",
@@ -93,6 +94,7 @@
     "@types/styled-components": "^4.1.18",
     "apollo": "^2.16.0",
     "babel-plugin-lodash": "^3.3.4",
-    "npm-check": "^5.9.0"
+    "npm-check": "^5.9.0",
+    "why-did-you-update": "^1.0.6"
   }
 }
