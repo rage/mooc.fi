@@ -52,6 +52,7 @@ export const UserOverViewQuery = gql`
       completions {
         id
         completion_language
+        completion_link
         student_number
         created_at
         course {
@@ -147,6 +148,12 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
     courseLinkWithLanguage =
       mapLanguageToLink.get(completion.completion_language) ||
       "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=129202330"
+  }
+
+  let link = null
+
+  if (!link) {
+    return <div>Open University registration is not open at the moment.</div>
   }
 
   return (
