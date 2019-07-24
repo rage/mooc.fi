@@ -1,11 +1,16 @@
 module.exports = {
   client: {
     tagName: "gql",
-    includes: ["./components/**/*.tsx", "./pages/**/*.tsx"],
+    includes: [
+      "./components/**/*.tsx",
+      "./pages/**/*.tsx",
+      "./components/**/*.ts",
+      "./pages/**/*.ts",
+    ],
     excludes: ["node_modules"],
     service: {
       name: "backend",
-      localSchemaFile: `${__dirname}/../backend/generated/schema.graphql`,
+      localSchemaFile: `schema.graphql`,
     },
   },
 }

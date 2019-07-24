@@ -37,6 +37,7 @@ type Course @db(name: "course") {
   status: CourseStatus
   study_module: StudyModule @relation(link: INLINE, name: "StudyModuleToCourse")
   start_point: Boolean
+  hidden: Boolean
   open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
 }
 
