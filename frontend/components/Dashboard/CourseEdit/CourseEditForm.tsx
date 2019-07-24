@@ -83,13 +83,14 @@ const RenderForm = ({
           />
         </Grid>
         <Grid item container direction="row">
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={8}>
             <FormControlLabel
               control={
                 <Field
                   label="Promote"
                   type="checkbox"
                   name="promote"
+                  value={values.promote}
                   component={Checkbox}
                 />
               }
@@ -101,6 +102,7 @@ const RenderForm = ({
                   label="Start point"
                   type="checkbox"
                   name="start_point"
+                  value={values.start_point}
                   component={Checkbox}
                 />
               }
@@ -112,13 +114,14 @@ const RenderForm = ({
                   label="Hidden"
                   type="checkbox"
                   name="hidden"
+                  value={values.hidden}
                   component={Checkbox}
                 />
               }
               label="Hidden"
             />
           </Grid>
-          <Grid item container xs={12} sm={6} justify="space-between">
+          <Grid item container xs={12} sm={4} justify="space-between">
             <Grid item>
               <FormControl>
                 <InputLabel htmlFor="study_module" shrink>
