@@ -18,15 +18,9 @@ import { FormikActions, getIn } from "formik"
 import Next18next from "../../../i18n"
 import { AllCoursesQuery } from "../../../pages/courses"
 import get from "lodash/get"
-import { updateCourse_updateCourse_open_university_registration_links } from "../../../static/types/updateCourse"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-/* if (!isProduction) {
-  const { whyDidYouUpdate } = require('why-did-you-update')
-  whyDidYouUpdate(React)
-
-} */
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
@@ -59,17 +53,15 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const _course: CourseFormValues = course
     ? {
         ...course,
-        course_translations: !course.course_translations
-          ? []
-          : course.course_translations.map(c => ({
-              ...c,
-              open_university_course_code: get(
-                (course.open_university_registration_links || []).find(
-                  l => l.language === c.language,
-                ),
-                "course_code",
-              ),
-            })),
+        course_translations: (course.course_translations || []).map(c => ({
+          ...c,
+          open_university_course_code: get(
+            (course.open_university_registration_links || []).find(
+              l => l.language === c.language,
+            ),
+            "course_code",
+          ),
+        })),
         new_slug: course.slug,
         thumbnail: course.photo ? course.photo.compressed : null,
       }
