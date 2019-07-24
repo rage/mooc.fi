@@ -125,7 +125,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: backend-secret
-                  key: AVOIN_COURSE_URL  
+                  key: AVOIN_COURSE_URL
+            - name: AVOIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: AVOIN_TOKEN
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"
