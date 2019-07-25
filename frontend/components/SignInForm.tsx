@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import {
   FormControl,
   InputLabel,
@@ -28,6 +28,33 @@ function SignIn() {
   const [email, setEmail] = useState("")
   const [error, setError] = useState(false)
 
+  const emailFieldRef = useRef<HTMLInputElement>(null)
+  const passwordFieldRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const inputFieldSetter = () => {
+      if (
+        password == "" &&
+        passwordFieldRef &&
+        passwordFieldRef.current &&
+        passwordFieldRef.current.value
+      ) {
+        setPassword(passwordFieldRef.current.value)
+      }
+      if (
+        email == "" &&
+        emailFieldRef &&
+        emailFieldRef.current &&
+        emailFieldRef.current.value
+      ) {
+        setEmail(emailFieldRef.current.value)
+      }
+    }
+    setTimeout(inputFieldSetter, 10)
+    setTimeout(inputFieldSetter, 1000)
+    setTimeout(inputFieldSetter, 5000)
+  }, [])
+
   const classes = useStyles()
 
   return (
@@ -40,8 +67,8 @@ function SignIn() {
         <Input
           id="email"
           name="email"
-          autoComplete="email"
-          autoFocus
+          inputRef={emailFieldRef}
+          autoComplete="nope"
           onChange={o => {
             setEmail(o.target.value)
             setError(false)
@@ -56,7 +83,8 @@ function SignIn() {
           name="password"
           type="password"
           id="password"
-          autoComplete="current-password"
+          inputRef={passwordFieldRef}
+          autoComplete="nope"
           onChange={o => {
             setPassword(o.target.value)
             setError(false)
