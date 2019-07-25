@@ -39,7 +39,7 @@ const StyledSelect = styled(Select)`
 
 const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
-  language: undefined,
+  language: "",
   name: undefined,
   description: undefined,
   link: undefined,
@@ -110,6 +110,7 @@ const CourseTranslationEditForm = ({
                           fullWidth
                           variant="outlined"
                           select
+                          autocomplete="off"
                           component={StyledTextField}
                         >
                           {languages.map(option => (
@@ -118,17 +119,13 @@ const CourseTranslationEditForm = ({
                             </MenuItem>
                           ))}
                         </Field>
-                        {getIn(errors, `[${index}].language`) ? (
-                          <InputLabel shrink style={{ color: "red" }}>
-                            {getIn(errors, `[${index}].language`)}
-                          </InputLabel>
-                        ) : null}
                         <Field
                           name={`course_translations[${index}].name`}
                           type="text"
                           label="Name"
                           error={getIn(errors, `[${index}].name`)}
                           fullWidth
+                          autocomplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -140,6 +137,7 @@ const CourseTranslationEditForm = ({
                           fullWidth
                           multiline
                           rows={5}
+                          autocomplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -149,6 +147,7 @@ const CourseTranslationEditForm = ({
                           label="Link"
                           error={getIn(errors, `[${index}].link`)}
                           fullWidth
+                          autocomplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -161,6 +160,7 @@ const CourseTranslationEditForm = ({
                             `[${index}].open_university_course_code`,
                           )}
                           fullWidth
+                          autocomplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />

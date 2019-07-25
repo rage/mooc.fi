@@ -67,6 +67,7 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const validationSchema = courseEditSchema({
     client,
     checkSlug,
+    initialSlug: course.slug && course.slug !== "" ? course.slug : null,
   })
 
   const uploadImage = useCallback(
@@ -75,7 +76,7 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
       base64 = false,
     }: {
       image: File | undefined
-      base64?: Boolean
+      base64?: boolean
     }): Promise<Image | null> => {
       if (!image) {
         throw new Error("no image to upload!")
