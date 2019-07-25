@@ -15,6 +15,7 @@
     "fetch-user-app-datum": "ts-node ./bin/fetchUserAppDatum.ts",
     "fetch-avoin-links": "ts-node ./bin/fetchAvoinLinks.ts",
     "send-ai-statistics": "ts-node ./bin/sendAiStatistics.ts",
+    "import-organizations":"ts-node ./bin/importOrganizations.ts",
     "parse-file": "ts-node ./bin/parseFile.ts",
     "start-kafka-consumers": "concurrently npm:kafka-consumer-*",
     "kafka-consumer-user-course-progress": "ts-node ./bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.ts",
