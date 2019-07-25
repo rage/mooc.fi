@@ -20,7 +20,6 @@ import OpenSansCondensed from "typeface-open-sans-condensed"
 import Roboto from "typeface-roboto"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-
 fontAwesomeConfig.autoAddCss = false
 
 class MyApp extends App {
@@ -28,6 +27,7 @@ class MyApp extends App {
     initGA()
     logPageView()
     Router.router.events.on("routeChangeComplete", logPageView)
+
     const jssStyles = document.querySelector("#jss-server-side")
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)
