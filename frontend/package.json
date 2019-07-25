@@ -65,7 +65,7 @@
     "next-compose-plugins": "^2.2.0",
     "next-env": "^1.1.0",
     "next-fonts": "^0.17.0",
-    "next-i18next": "^0.49.0",
+    "next-i18next": "^0.51.1",
     "next-optimized-images": "^2.5.3",
     "next-with-apollo": "^3.4.0",
     "nookies": "^2.0.8",

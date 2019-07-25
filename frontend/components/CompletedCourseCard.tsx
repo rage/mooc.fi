@@ -100,7 +100,9 @@ function CompletedCourseCard(props: CourseCardProps) {
               <CardText>
                 {t("registeredDate")} {formatDateTime(r.created_at)}
               </CardText>
-              <CardText>{r.organization}</CardText>
+              <CardText>
+                {r.organization ? r.organization.slug : "Unknown organization"}
+              </CardText>
 
               <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
             </RegistrationDetails>
