@@ -60,7 +60,7 @@ function ImageBanner(props: ImageBannerProps) {
     <BannerRoot>
       <Title component="h2">{title}</Title>
       <Subtitle component="p">{subtitle}</Subtitle>
-      <BackgroundImage srcSet={image.srcSet} src={image.src} alt="" />
+      <BackgroundImage src={image} alt="" />
     </BannerRoot>
   )
 }

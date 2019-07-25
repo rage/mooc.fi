@@ -15,4 +15,6 @@ const NextI18Next = new I18Next({
   load: "languageOnly",
 })
 
+NextI18Next.i18n.languages = ["en", "fi", "se"]
+
 module.exports = NextI18Next
