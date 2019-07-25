@@ -266,7 +266,9 @@ const RenderForm = ({
               </Button>
               <Button
                 color="primary"
-                disabled={Object.keys(errors).length > 0 || isSubmitting}
+                disabled={
+                  !dirty || Object.keys(errors).length > 0 || isSubmitting
+                }
                 onClick={submitForm}
               >
                 {isSubmitting ? <CircularProgress size={20} /> : "Save"}

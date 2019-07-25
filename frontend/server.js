@@ -1,5 +1,4 @@
 process.on("unhandledRejection", (...args) => {
-  console.log("lolled")
   console.log(JSON.stringify(args, undefined, 2))
 })
 
@@ -70,6 +69,7 @@ const main = async () => {
     if (redirectNeeded) {
       res.redirect(redirectNeeded.to)
     }
+
     return handle(req, res)
   })
 
