@@ -20,7 +20,8 @@
     "kafka-consumer-user-course-progress": "ts-node ./bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.ts",
     "kafka-consumer-user-points": "ts-node ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",
     "kafka-consumer-exercises": "ts-node ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
-    "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma"
+    "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma",
+    "seed": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seed.ts"
   },
   "keywords": [],
   "author": "",

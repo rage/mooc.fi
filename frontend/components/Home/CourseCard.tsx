@@ -93,6 +93,10 @@ interface ImageProps {
 function ImageInWebp(props: ImageProps) {
   const { photo, isUpcoming } = props
 
+  if (!photo) {
+    return null
+  }
+
   return (
     <picture>
       <source srcSet={photo.compressed} type="image/webp" />

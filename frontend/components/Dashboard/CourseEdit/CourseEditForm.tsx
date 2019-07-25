@@ -92,6 +92,7 @@ const RenderForm = ({
             label="Name"
             error={errors.name}
             fullWidth
+            autocomplete="off"
             variant="outlined"
             component={StyledTextField}
           />
@@ -102,6 +103,7 @@ const RenderForm = ({
             error={errors.new_slug}
             fullWidth
             variant="outlined"
+            autocomplete="off"
             component={StyledTextField}
           />
           <Grid container direction="row">
