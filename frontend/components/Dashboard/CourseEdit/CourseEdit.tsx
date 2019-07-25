@@ -18,24 +18,15 @@ import { FormikActions, getIn } from "formik"
 import Next18next from "../../../i18n"
 import { AllCoursesQuery } from "../../../pages/courses"
 import get from "lodash/get"
-import { updateCourse_updateCourse_open_university_registration_links } from "../../../static/types/updateCourse"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-/* if (!isProduction) {
-  const { whyDidYouUpdate } = require('why-did-you-update')
-  whyDidYouUpdate(React)
-
-} */
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       textTransform: "uppercase",
       marginTop: "0.7em",
       marginBottom: "0.7em",
-    },
-    paper: {
-      padding: "1em",
     },
   }),
 )
@@ -59,17 +50,15 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const _course: CourseFormValues = course
     ? {
         ...course,
-        course_translations: !course.course_translations
-          ? []
-          : course.course_translations.map(c => ({
-              ...c,
-              open_university_course_code: get(
-                (course.open_university_registration_links || []).find(
-                  l => l.language === c.language,
-                ),
-                "course_code",
-              ),
-            })),
+        course_translations: (course.course_translations || []).map(c => ({
+          ...c,
+          open_university_course_code: get(
+            (course.open_university_registration_links || []).find(
+              l => l.language === c.language,
+            ),
+            "course_code",
+          ),
+        })),
         new_slug: course.slug,
         thumbnail: course.photo ? course.photo.compressed : null,
       }
@@ -78,6 +67,7 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const validationSchema = courseEditSchema({
     client,
     checkSlug,
+    initialSlug: course.slug && course.slug !== "" ? course.slug : null,
   })
 
   const uploadImage = useCallback(
@@ -86,7 +76,7 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
       base64 = false,
     }: {
       image: File | undefined
-      base64?: Boolean
+      base64?: boolean
     }): Promise<Image | null> => {
       if (!image) {
         throw new Error("no image to upload!")
@@ -242,15 +232,13 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
 
   return (
     <section>
-      <Paper elevation={1} className={classes.paper}>
-        <CourseEditForm
-          course={_course}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-          onCancel={onCancel}
-          onDelete={onDelete}
-        />
-      </Paper>
+      <CourseEditForm
+        course={_course}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+        onDelete={onDelete}
+      />
     </section>
   )
 }
