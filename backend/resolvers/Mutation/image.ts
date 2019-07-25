@@ -60,13 +60,14 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         .webp()
         .toBuffer()
 
-      const original = await uploadImage({
+      let original = await uploadImage({
         imageBuffer: image,
         mimeType: mimetype,
         name: filenameWithoutExtension,
         directory: `original`,
         base64,
       })
+
       const uncompressed = await uploadImage({
         imageBuffer: uncompressedImage,
         mimeType: "image/jpeg",
@@ -74,6 +75,7 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         directory: `jpeg`,
         base64,
       })
+
       const compressed = await uploadImage({
         imageBuffer: compressedImage,
         mimeType: "image/webp",
@@ -83,6 +85,12 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       })
 
       const prisma: Prisma = ctx.prisma
+
+      if (base64 && original.length > 262144) {
+        // Image upload fails if the original pic is too big converted to base64.
+        // Since we're only base64'ing in dev, this is not a production problem
+        original = uncompressed
+      }
 
       const newImage: Image = await prisma.createImage({
         name: filename,
