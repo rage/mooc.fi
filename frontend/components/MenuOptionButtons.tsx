@@ -19,16 +19,20 @@ const MenuOptionButtons = () => {
     <React.Fragment>
       {loggedIn ? (
         <div>
-          <Button color="inherit" onClick={() => signOut(client)}>
+          <Button
+            color="inherit"
+            variant="text"
+            onClick={() => signOut(client)}
+          >
             <NextI18Next.Trans i18nKey="common:logout" />
           </Button>
-          <Button color="inherit" href="/my-profile">
+          <Button color="inherit" variant="text" href="/my-profile">
             <StyledIcon icon={profileIcon} />
             <NextI18Next.Trans i18nKey="common:profile" />
           </Button>
         </div>
       ) : (
-        <Button color="inherit" href="/sign-in">
+        <Button color="inherit" variant="text" href="/sign-in">
           <NextI18Next.Trans i18nKey="common:loginShort" />
         </Button>
       )}
