@@ -7,7 +7,7 @@ const express = require("express")
 const next = require("next")
 const nextI18NextMiddleware = require("next-i18next/middleware").default
 const compression = require("compression")
-const nextI18next = require("./i18n").default
+const nextI18next = require("./i18n")
 
 const Redirects = require("./Redirects")
 const port = process.env.PORT || 3000
@@ -27,17 +27,6 @@ const main = async () => {
   const server = express()
   server.use(compression())
   server.use(nextI18NextMiddleware(nextI18next))
-
-  server.get("/courses/:id/edit", (req, res) => {
-    const actualPage = "/edit-course"
-    const queryParams = { course: req.params.id }
-    return app.render(req, res, actualPage, queryParams)
-  })
-
-  server.get("/courses/new", (req, res) => {
-    const actualPage = "/edit-course"
-    return app.render(req, res, actualPage, {})
-  })
 
   server.get("/course/:id", (req, res) => {
     const actualPage = "/course"

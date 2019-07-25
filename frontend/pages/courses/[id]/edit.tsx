@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
 import { Typography, CircularProgress } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "../lib/authentication"
-import redirect from "../lib/redirect"
+import { isSignedIn, isAdmin } from "../../../lib/authentication"
+import redirect from "../../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import AdminError from "../components/Dashboard/AdminError"
-import { WideContainer } from "../components/Container"
-import CourseEdit from "../components/Dashboard/CourseEdit/CourseEdit"
+import AdminError from "../../../components/Dashboard/AdminError"
+import { WideContainer } from "../../../components/Container"
+import CourseEdit from "../../../components/Dashboard/CourseEdit/CourseEdit"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery, useMutation } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
@@ -66,8 +66,7 @@ interface EditCourseProps {
 
 const EditCourse = (props: EditCourseProps) => {
   const { admin, router } = props
-  const isNew = router.asPath === "/courses/new"
-  const slug = router.query.course
+  const slug = router.query.id
 
   const classes = useStyles()
 
@@ -87,7 +86,7 @@ const EditCourse = (props: EditCourseProps) => {
     return null
   }
 
-  if (!data.course && !isNew) {
+  if (!data.course) {
     router.push("/courses/new")
   }
 
@@ -101,7 +100,7 @@ const EditCourse = (props: EditCourseProps) => {
           align="center"
           className={classes.header}
         >
-          {data.course ? "Edit course" : "Create a new course"}
+          Edit course
         </Typography>
         <CourseEdit course={data.course} />
       </WideContainer>
