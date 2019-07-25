@@ -22,8 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: "0.8em",
     },
     media: {
+      // minHeight: 250,
       width: "100%",
-      height: "100%",
+      height: 250,
       objectFit: "cover",
     },
   }),
@@ -60,7 +61,7 @@ function CourseCard({
               container
               justify="center"
               alignItems="center"
-              style={{ display: "flex", height: "100%" }}
+              // style={{ display: "flex", height: "100%" }}
             >
               <AddCircleIcon fontSize="large" />
             </Grid>
@@ -90,9 +91,9 @@ function CourseCard({
               </NextI18Next.Link>
               <NextI18Next.Link
                 as={`/courses/${course.slug}/edit`}
-                href={`/edit-course?course=${course.slug}`}
+                href={`/courses/${course.slug}/edit`}
               >
-                <a href={`/edit-course?course=${course.slug}`}>
+                <a href={`/courses/${course.slug}/edit`}>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
                     Edit
@@ -101,8 +102,8 @@ function CourseCard({
               </NextI18Next.Link>
             </React.Fragment>
           ) : (
-            <NextI18Next.Link as={`/courses/new`} href={`/edit-course`}>
-              <a href="/edit-course">
+            <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
+              <a href="/courses/new">
                 <Button variant="contained" color="secondary" fullWidth>
                   <AddIcon />
                   Create

@@ -107,7 +107,7 @@ const RenderForm = ({
             component={StyledTextField}
           />
           <Grid container direction="row">
-            <Grid container item xs={12} sm={8} justify="space-between">
+            <Grid container item xs={12} sm={6} justify="space-between">
               <FormControlLabel
                 control={
                   <Field
@@ -145,7 +145,7 @@ const RenderForm = ({
                 label="Hidden"
               />
             </Grid>
-            <Grid container item xs={12} sm={4} justify="space-between">
+            <Grid container item xs={12} sm={6} justify="space-between">
               <FormControl>
                 <Field
                   name="study_module"
@@ -186,9 +186,6 @@ const RenderForm = ({
                     </MenuItem>
                   ))}
                 </Field>
-                {errors && errors.status ? (
-                  <div style={{ color: "red" }}>required</div>
-                ) : null}
               </FormControl>
             </Grid>
           </Grid>
