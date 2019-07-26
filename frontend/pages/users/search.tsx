@@ -2,6 +2,7 @@ import * as React from "react"
 import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
 import { Query, ApolloConsumer } from "react-apollo"
+import { UserEmailContains } from "../../static/types/generated/UserEmailContains"
 
 interface UserSearchProps {
   namespacesRequired: string[]
@@ -13,6 +14,7 @@ interface UserSearchProps {
 
 const UserSearch = (props: UserSearchProps) => {
   const [searchText, setSearchText] = React.useState("")
+  const [result, setResult]: [any[], any] = React.useState([])
 
   const onTextBoxChange = (event: any) => {
     setSearchText(event.target.value)
@@ -24,43 +26,56 @@ const UserSearch = (props: UserSearchProps) => {
         <div>
           <form>
             <label>
-              Name:
+              Email:
               <input type="text" name="name" onChange={onTextBoxChange} />
             </label>
             <button
-              onClick={async () => {
+              onClick={async (event: any) => {
+                event.preventDefault()
                 const { data } = await client.query({
                   query: GET_DATA,
-                  variables: "",
+                  variables: { email: searchText },
                 })
+                setResult(data.userEmailContains)
+                console.log(data.userEmailContains)
               }}
-            />
+            >
+              Search
+            </button>
           </form>
+          <RenderResults data={result} />
         </div>
       )}
     </ApolloConsumer>
   )
 }
+interface RenderResultsProps {
+  data: any[]
+}
+const RenderResults = (props: RenderResultsProps) => {
+  const data = props.data
+  console.log("DATA IN THING", data)
+  if (data.length < 1) return <p>Not found</p>
+
+  return (
+    <ol>
+      {data.map((p: any) => (
+        <li>{JSON.stringify(p)}</li>
+      ))}
+    </ol>
+  )
+}
 
 const GET_DATA = gql`
-  query UserCourseProgesses($course_slug: String!) {
-    UserCourseProgresses(course_slug: $course_slug) {
+  query UserEmailContains($email: String!) {
+    userEmailContains(email: $email) {
       id
-      user {
-        id
-        email
-        student_number
-        real_student_number
-        upstream_id
-        first_name
-        last_name
-      }
-      progress
-      UserCourseSettings {
-        course_variant
-        country
-        language
-      }
+      email
+      student_number
+      real_student_number
+      upstream_id
+      first_name
+      last_name
     }
   }
 `
