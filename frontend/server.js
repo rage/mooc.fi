@@ -27,10 +27,29 @@ const main = async () => {
   const server = express()
   server.use(compression())
   server.use(nextI18NextMiddleware(nextI18next))
+
   server.use((req, res, next) => {
-    if (["en", "se"].indexOf(req.url.split("/")[0]) === -1) {
-      console.log(req.url)
-      req.language = "fi"
+    //if it is a request to _next or /static/, do nothing
+    if (
+      req.originalUrl.split("/")[1] === "_next" ||
+      req.originalUrl.split("/")[1] === "static"
+    ) {
+    } else {
+      //if there is no language path
+      if (
+        ["en", "se"].indexOf(req.originalUrl.split("/")[1]) === -1 &&
+        req.i18n
+      ) {
+        //change request language to finnish, and i18n language to finnish
+        req.language = "fi"
+        req.i18n.changeLanguage("fi")
+      } else {
+        //change the request language and the i18n language to match the language path
+        req.language = req.originalUrl.split("/")[1]
+        if (req.i18n) {
+          req.i18n.changeLanguage(req.originalUrl.split("/")[1])
+        }
+      }
     }
 
     next()
