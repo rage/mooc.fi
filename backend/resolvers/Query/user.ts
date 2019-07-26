@@ -39,13 +39,21 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
 }
 
 const UserEmailContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
-  t.field("userEmailContains", {
+  t.list.field("userEmailContains", {
     type: "User",
     args: {
       email: stringArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
+      const { email } = args
+      const prisma: Prisma = ctx.prisma
+      return await prisma.users({
+        where: {
+          email_contains: email,
+        },
+        first: 100,
+      })
     },
   })
 }
