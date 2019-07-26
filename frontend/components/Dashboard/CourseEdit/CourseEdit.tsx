@@ -205,7 +205,8 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
         })
 
         setStatus({ message: null })
-        setSubmitting(false)
+        // prevent the very rare chance of pressing submit while redirecting
+        // setSubmitting(false)
         Next18next.Router.push("/courses")
       } catch (err) {
         setStatus({ message: err.message, error: true })
