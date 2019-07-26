@@ -38,6 +38,18 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
+const UserEmailContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+  t.field("userEmailContains", {
+    type: "User",
+    args: {
+      email: stringArg(),
+    },
+    resolve: async (_, args, ctx) => {
+      checkAccess(ctx)
+    },
+  })
+}
+
 const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("currentUser", {
     type: "User",
@@ -54,6 +66,7 @@ const addUserQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
   users(t)
   currentUser(t)
   user(t)
+  UserEmailContains(t)
 }
 
 export default addUserQueries
