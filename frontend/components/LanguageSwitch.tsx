@@ -3,8 +3,6 @@ import Language from "@material-ui/icons/Language"
 import NextI18Next from "../i18n"
 import styled from "styled-components"
 import { useRouter } from "next/router"
-import Button from "@material-ui/core/Button"
-import Link from "next/link"
 import LanguageContext from "../contexes/LanguageContext"
 
 const SwitchLink = styled.a`
@@ -14,37 +12,48 @@ const SwitchLink = styled.a`
   display: flex;
   flex-direction: row;
 `
+interface Props {
+  path: string
+}
+function createPath(props: Props) {
+  const { path } = props
+  if (path.startsWith("/en")) {
+    return path.slice(3)
+  } else {
+    return `/en${path}`
+  }
+}
 
-const LanguageSwitch = () => {
-  let path: string = ""
-
+const Link = () => {
   const router = useRouter()
 
-  if (router) {
-    path = router.asPath
-
-    if (path.startsWith("/en")) {
-      path = path.slice(3)
-    } else {
-      path = `/en${path}`
+  React.useEffect(() => {
+    console.log("doing the effectnow")
+    if (router) {
+      console.log("doing the path thing now")
+      let path1 = createPath({ path: router.asPath })
+      console.log(path1)
     }
-  }
-
-  /*NextI18Next.i18n
-            .changeLanguage(NextI18Next.i18n.language === "en" ? "fi" : "en")*/
-
+  }, [])
+  return (
+    <SwitchLink href={createPath({ path: router.asPath })}>
+      <Language style={{ marginRight: "0.4rem" }} />
+      <p style={{ marginTop: "0.2rem" }}>
+        {NextI18Next.i18n.language === "en" ? "Suomi" : "English"}
+      </p>
+    </SwitchLink>
+  )
+}
+const LanguageSwitch = () => {
   return (
     <LanguageContext.Consumer>
       {language => (
-        <Link href={path}>
-          <SwitchLink href={path}>
-            <p>{language}</p>
-            <Language style={{ marginRight: "0.4rem" }} />
-            <p style={{ marginTop: "0.2rem" }}>
-              {NextI18Next.i18n.language === "en" ? "Suomi" : "English"}
-            </p>
-          </SwitchLink>
-        </Link>
+        <SwitchLink href={language.languageSwitchLink}>
+          <Language style={{ marginRight: "0.4rem" }} />
+          <p style={{ marginTop: "0.2rem" }}>
+            {NextI18Next.i18n.language === "en" ? "Suomi" : "English"}
+          </p>
+        </SwitchLink>
       )}
     </LanguageContext.Consumer>
   )

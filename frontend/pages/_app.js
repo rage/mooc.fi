@@ -43,6 +43,7 @@ class MyApp extends App {
       signedIn,
       admin,
       language,
+      url,
     } = this.props
 
     console.log("language", language)
@@ -59,7 +60,7 @@ class MyApp extends App {
               <ApolloHooksProvider client={apollo}>
                 <LoginStateContext.Provider value={signedIn}>
                   <UserDetailContext.Provider value={admin}>
-                    <LanguageContext.Provider value={language}>
+                    <LanguageContext.Provider value={{ language, url }}>
                       <Layout>
                         <Component {...pageProps} />
                       </Layout>
@@ -78,6 +79,15 @@ class MyApp extends App {
 // We're probably not supposed to do this
 const originalGetInitialProps = MyApp.getInitialProps
 
+//add language subpath to url
+function createPath(originalUrl) {
+  if (originalUrl.startsWith("/en")) {
+    return originalUrl.slice(3)
+  } else {
+    return `/en${originalUrl}`
+  }
+}
+
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
 
@@ -93,6 +103,7 @@ MyApp.getInitialProps = async arg => {
     admin: isAdmin(ctx),
     // @ts-ignore
     language: ctx && ctx.req ? ctx.req.language : "",
+    url: ctx && ctx.req ? createPath(ctx.req.originalUrl) : "",
   }
 }
 
