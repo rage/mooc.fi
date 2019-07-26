@@ -94,7 +94,10 @@ const EditCourse = (props: EditCourseProps) => {
   }
 
   if (!data.course) {
-    redirectTimeout = setTimeout(() => router.push(`/${language ? language + "/" : ""}courses`), 5000)
+    redirectTimeout = setTimeout(
+      () => router.push(`/${language ? language + "/" : ""}courses`),
+      5000,
+    )
   }
 
   return (
