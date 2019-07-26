@@ -1,6 +1,6 @@
 import React from "react"
 import NextI18Next from "../../../i18n"
-import { isSignedIn } from "../../../lib/authentication"
+import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "../../../lib/redirect"
 import { ApolloClient, gql } from "apollo-boost"
@@ -85,6 +85,9 @@ function CompletionsPage(props: CompletionsProps) {
 }
 
 CompletionsPage.getInitialProps = function(context: NextContext) {
+  if (!isAdmin(context)) {
+    redirect(context, "/")
+  }
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
