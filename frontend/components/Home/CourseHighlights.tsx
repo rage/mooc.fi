@@ -39,8 +39,8 @@ const BackgroundImage = styled.img<BackgroundProps>`
 `
 
 interface TitleProps {
-  fontColor: string
-  titleBackground: string
+  fontcolor: string
+  titlebackground: string
 }
 
 const Title = styled(Typography)<TitleProps>`
@@ -53,7 +53,7 @@ const Title = styled(Typography)<TitleProps>`
   display: table;
 
   ${props =>
-    ` background-color: ${props.titleBackground}; color: ${props.fontColor};`}
+    ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
   @media (min-width: 320px) {
     font-size: 46px;
   }
@@ -143,8 +143,8 @@ function CourseHighlights(props: CourseHighlightsProps) {
       <div style={{ zIndex: 20 }}>
         <Title
           component="h2"
-          fontColor={fontColor}
-          titleBackground={titleBackground}
+          fontcolor={fontColor}
+          titlebackground={titleBackground}
         >
           {title}
         </Title>
