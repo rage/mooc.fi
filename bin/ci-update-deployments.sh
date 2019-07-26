@@ -26,6 +26,7 @@ envsubst < "$CURRENT_DIR/../kubernetes/frontend-deployment.yml" > "$CURRENT_DIR/
 envsubst < "$CURRENT_DIR/../kubernetes/fetch-user-app-datum-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/fetch-user-app-datum-cronjob.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/send-ai-statistics-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/send-ai-statistics-cronjob.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/fetch-avoin-links-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/fetch-avoin-links-cronjob.yml"
+envsubst < "$CURRENT_DIR/../kubernetes/import-organizations-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/import-organizations-cronjob.yml"
 
 echo "Applying changes"
 kubectl replace -f "$CURRENT_DIR/../updated-kubernetes-configs"
