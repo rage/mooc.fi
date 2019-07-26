@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Courses = (admin: boolean) => {
   const classes = useStyles()
-
   // use mock data
   /*   const data = { courses: courseData.allcourses.slice(0,3) }
   const error = false

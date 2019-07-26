@@ -7,6 +7,7 @@ import {
   CardMedia,
   Typography,
   Button,
+  ButtonBase,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
@@ -57,14 +58,19 @@ function CourseCard({
           className={classes.media}
         >
           {!course ? (
-            <Grid
-              container
-              justify="center"
-              alignItems="center"
-              // style={{ display: "flex", height: "100%" }}
-            >
-              <AddCircleIcon fontSize="large" />
-            </Grid>
+            <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
+              <a href="/courses/new">
+                <Grid
+                  container
+                  justify="center"
+                  alignItems="center"
+                  style={{ height: "100%" }}
+                  // style={{ display: "flex", height: "100%" }}
+                >
+                  <AddCircleIcon fontSize="large" />
+                </Grid>
+              </a>
+            </NextI18Next.Link>
           ) : null}
         </CardMedia>
         <CardContent>
