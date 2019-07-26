@@ -67,7 +67,8 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const validationSchema = courseEditSchema({
     client,
     checkSlug,
-    initialSlug: course.slug && course.slug !== "" ? course.slug : null,
+    initialSlug:
+      course && course.slug && course.slug !== "" ? course.slug : null,
   })
 
   const uploadImage = useCallback(
