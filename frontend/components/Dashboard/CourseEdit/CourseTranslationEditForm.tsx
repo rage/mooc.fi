@@ -194,9 +194,11 @@ const CourseTranslationEditForm = ({
                   ),
                 )
               ) : (
-                <Typography variant="body1">
-                  Please add at least one translation!
-                </Typography>
+                <Paper className={classes.paper} elevation={2}>
+                  <Typography variant="body1">
+                    Please add at least one translation!
+                  </Typography>
+                </Paper>
               )}
               {values && values.length < languages.length && (
                 <Button
