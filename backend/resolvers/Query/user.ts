@@ -1,5 +1,5 @@
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg } from "nexus/dist"
+import { stringArg, idArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import { Prisma, User } from "../../generated/prisma-client"
 import { UserInputError } from "apollo-server-core"
@@ -20,14 +20,16 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       id: idArg(),
       email: stringArg(),
+      upstream_id: intArg(),
     },
     resolve: async (_, args, ctx) => {
-      const { id, email } = args
+      const { id, email, upstream_id } = args
       const prisma: Prisma = ctx.prisma
       const users: User[] = await prisma.users({
         where: {
           email: email,
           id: id,
+          upstream_id: upstream_id,
         },
       })
       if (!users.length) throw new UserInputError("User not found")
