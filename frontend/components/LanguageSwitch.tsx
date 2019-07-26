@@ -15,23 +15,26 @@ const SwitchLink = styled.a`
 `
 
 const LanguageSwitch = () => {
+  let path: string = ""
+
   const router = useRouter()
-  let path = router.asPath
-  if (path.startsWith("/en")) {
-    path = path.slice(3)
-  } else {
-    path = `/en${path}`
+
+  if (router) {
+    path = router.asPath
+
+    if (path.startsWith("/en")) {
+      path = path.slice(3)
+    } else {
+      path = `/en${path}`
+    }
   }
+
+  /*NextI18Next.i18n
+            .changeLanguage(NextI18Next.i18n.language === "en" ? "fi" : "en")*/
 
   return (
     <Link href={path}>
-      <SwitchLink
-        onClick={() => {
-          NextI18Next.i18n
-            .changeLanguage(NextI18Next.i18n.language === "en" ? "fi" : "en")
-            .then(() => router.push(path))
-        }}
-      >
+      <SwitchLink href={path}>
         <Language style={{ marginRight: "0.4rem" }} />
         <p style={{ marginTop: "0.2rem" }}>
           {NextI18Next.i18n.language === "en" ? "Suomi" : "English"}
