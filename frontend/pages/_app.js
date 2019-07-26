@@ -13,6 +13,7 @@ import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
 import UserDetailContext from "../contexes/UserDetailContext"
+import LanguageContext from "../contexes/LanguageContext"
 import withApolloClient from "../lib/with-apollo-client"
 import NextI18Next from "../i18n"
 import theme from "../src/theme"
@@ -35,8 +36,16 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, apollo } = this.props
+    const {
+      Component,
+      pageProps,
+      apollo,
+      signedIn,
+      admin,
+      language,
+    } = this.props
 
+    console.log("language", language)
     return (
       <Container>
         <Head>
@@ -48,11 +57,13 @@ class MyApp extends App {
 
             <ApolloProvider client={apollo}>
               <ApolloHooksProvider client={apollo}>
-                <LoginStateContext.Provider value={this.props.signedIn}>
-                  <UserDetailContext.Provider value={this.props.admin}>
-                    <Layout>
-                      <Component {...pageProps} />
-                    </Layout>
+                <LoginStateContext.Provider value={signedIn}>
+                  <UserDetailContext.Provider value={admin}>
+                    <LanguageContext.Provider value={language}>
+                      <Layout>
+                        <Component {...pageProps} />
+                      </Layout>
+                    </LanguageContext.Provider>
                   </UserDetailContext.Provider>
                 </LoginStateContext.Provider>
               </ApolloHooksProvider>
@@ -65,21 +76,23 @@ class MyApp extends App {
 }
 
 // We're probably not supposed to do this
-const originalGetIntialProps = MyApp.getInitialProps
+const originalGetInitialProps = MyApp.getInitialProps
 
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
 
   let originalProps = {}
 
-  if (originalGetIntialProps) {
-    originalProps = (await originalGetIntialProps(arg)) || {}
+  if (originalGetInitialProps) {
+    originalProps = (await originalGetInitialProps(arg)) || {}
   }
 
   return {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
+    // @ts-ignore
+    language: ctx && ctx.req ? ctx.req.language : "",
   }
 }
 

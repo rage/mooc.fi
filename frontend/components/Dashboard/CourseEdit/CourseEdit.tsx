@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const CourseEdit = ({ course }: { course: CourseFormValues }) => {
+const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
   const classes = useStyles()
 
   const addCourse = useMutation(AddCourseMutation, {
@@ -67,7 +67,8 @@ const CourseEdit = ({ course }: { course: CourseFormValues }) => {
   const validationSchema = courseEditSchema({
     client,
     checkSlug,
-    initialSlug: course.slug && course.slug !== "" ? course.slug : null,
+    initialSlug:
+      course && course.slug && course.slug !== "" ? course.slug : null,
   })
 
   const uploadImage = useCallback(

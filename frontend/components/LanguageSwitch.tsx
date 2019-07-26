@@ -5,6 +5,7 @@ import styled from "styled-components"
 import { useRouter } from "next/router"
 import Button from "@material-ui/core/Button"
 import Link from "next/link"
+import LanguageContext from "../contexes/LanguageContext"
 
 const SwitchLink = styled.a`
   font-size: 14px;
@@ -33,14 +34,19 @@ const LanguageSwitch = () => {
             .changeLanguage(NextI18Next.i18n.language === "en" ? "fi" : "en")*/
 
   return (
-    <Link href={path}>
-      <SwitchLink href={path}>
-        <Language style={{ marginRight: "0.4rem" }} />
-        <p style={{ marginTop: "0.2rem" }}>
-          {NextI18Next.i18n.language === "en" ? "Suomi" : "English"}
-        </p>
-      </SwitchLink>
-    </Link>
+    <LanguageContext.Consumer>
+      {language => (
+        <Link href={path}>
+          <SwitchLink href={path}>
+            <p>{language}</p>
+            <Language style={{ marginRight: "0.4rem" }} />
+            <p style={{ marginTop: "0.2rem" }}>
+              {NextI18Next.i18n.language === "en" ? "Suomi" : "English"}
+            </p>
+          </SwitchLink>
+        </Link>
+      )}
+    </LanguageContext.Consumer>
   )
 }
 

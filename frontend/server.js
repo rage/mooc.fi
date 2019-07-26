@@ -27,6 +27,14 @@ const main = async () => {
   const server = express()
   server.use(compression())
   server.use(nextI18NextMiddleware(nextI18next))
+  server.use((req, res, next) => {
+    if (["en", "se"].indexOf(req.url.split("/")[0]) === -1) {
+      console.log(req.url)
+      req.language = "fi"
+    }
+
+    next()
+  })
 
   server.get("/courses/:id/edit", (req, res) => {
     const actualPage = "/edit-course"
