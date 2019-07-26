@@ -3,7 +3,7 @@ import { Grid, Card, CardContent, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CardContentGrid from "./CardContentGrid"
 import CompletionDetailGrid from "./CompletionDetailGrid"
-import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/generated/AllCompletions"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

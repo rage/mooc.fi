@@ -3,7 +3,7 @@ import { Paper } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "react-apollo-hooks"
-import { addImage_addImage as Image } from "../../../static/types/addImage"
+import { addImage_addImage as Image } from "../../../static/types/generated/addImage"
 import {
   AddCourseMutation,
   UpdateCourseMutation,
@@ -18,7 +18,7 @@ import { FormikActions, getIn } from "formik"
 import Next18next from "../../../i18n"
 import { AllCoursesQuery } from "../../../pages/courses"
 import get from "lodash/get"
-import { updateCourse_updateCourse_open_university_registration_links } from "../../../static/types/updateCourse"
+import { updateCourse_updateCourse_open_university_registration_links } from "../../../static/types/generated/updateCourse"
 
 const isProduction = process.env.NODE_ENV === "production"
 
