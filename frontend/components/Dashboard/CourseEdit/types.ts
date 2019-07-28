@@ -18,6 +18,7 @@ export interface CourseFormValues {
   thumbnail?: string
   new_photo: undefined | File
   new_slug: string
+  base64: boolean
 }
 
 export interface CourseTranslationFormValues {
