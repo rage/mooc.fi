@@ -110,7 +110,7 @@ const CourseTranslationEditForm = ({
                           fullWidth
                           variant="outlined"
                           select
-                          autocomplete="off"
+                          autoComplete="off"
                           component={StyledTextField}
                         >
                           {languages.map(option => (
@@ -125,7 +125,7 @@ const CourseTranslationEditForm = ({
                           label="Name"
                           error={getIn(errors, `[${index}].name`)}
                           fullWidth
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -137,7 +137,7 @@ const CourseTranslationEditForm = ({
                           fullWidth
                           multiline
                           rows={5}
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -147,7 +147,7 @@ const CourseTranslationEditForm = ({
                           label="Link"
                           error={getIn(errors, `[${index}].link`)}
                           fullWidth
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -160,7 +160,7 @@ const CourseTranslationEditForm = ({
                             `[${index}].open_university_course_code`,
                           )}
                           fullWidth
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -181,6 +181,7 @@ const CourseTranslationEditForm = ({
                           <Button
                             variant="contained"
                             disabled={isSubmitting}
+                            color="secondary"
                             onClick={() => {
                               setDialogVisible(true)
                               setRemovableIndex(index)

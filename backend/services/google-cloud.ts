@@ -13,11 +13,16 @@ const storage = isProduction
   : {
       bucket: () => ({
         file: () => ({
-          save: (): any => Promise.resolve(true),
+          save: (
+            buffer: any,
+            options: any,
+            cb: (error?: string) => void,
+          ): any => cb(),
           delete: (): any => Promise.resolve(true),
         }),
       }),
-    } // heh
+    }
+// FIXME: doesn't actually upload in dev even with base64 set to false unless isproduction is true
 
 const bucket = storage.bucket(bucketName)
 

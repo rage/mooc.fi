@@ -11,6 +11,7 @@ export const initialValues: CourseFormValues = {
   thumbnail: undefined,
   photo: undefined,
   new_photo: undefined,
+  base64: false,
   start_point: false,
   promote: false,
   hidden: false,
