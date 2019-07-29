@@ -58,7 +58,7 @@ function NaviCard(props: NaviCardProps) {
         <TextBackground>
           <Typography
             component="h3"
-            variant="h5"
+            variant="h3"
             gutterBottom={true}
             align="left"
             style={{ maxWidth: "70%" }}
