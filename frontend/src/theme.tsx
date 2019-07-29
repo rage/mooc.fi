@@ -31,14 +31,8 @@ const rawTheme = createMuiTheme({
     MuiButton: {
       label: {
         textTransform: "none",
-        fontSize: 22,
+
         fontFamily: "Open Sans Condensed",
-        "@media (min-width: 600px)": {
-          fontSize: 26,
-        },
-        "@media (min-width: 1440px)": {
-          fontSize: 36,
-        },
       },
       root: {
         textTransform: "none",
@@ -53,6 +47,7 @@ const theme = {
     ...rawTheme.typography,
     h1: {
       ...rawTheme.typography.h1,
+      paddingBottom: "1rem",
       fontSize: 32,
       fontFamily: "Open Sans Condensed",
       "@media (min-width: 600px)": {
@@ -67,6 +62,7 @@ const theme = {
     },
     h2: {
       ...rawTheme.typography.h2,
+      paddingBottom: "1rem",
       fontFamily: "Open Sans Condensed",
       fontSize: 46,
       "@media (min-width: 600px)": {
@@ -78,6 +74,8 @@ const theme = {
     },
     h3: {
       ...rawTheme.typography.h3,
+      paddingBottom: "0.5rem",
+      paddingTop: "0.7rem",
       fontSize: 16,
       "@media (min-width: 600px)": {
         fontSize: 20,
