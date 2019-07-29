@@ -28,6 +28,7 @@ const AllModulesQuery = gql`
       courses {
         id
         slug
+        name
         photo {
           id
           compressed
@@ -60,6 +61,7 @@ const AllCoursesQuery = gql`
     courses {
       id
       slug
+      name
       photo {
         id
         compressed

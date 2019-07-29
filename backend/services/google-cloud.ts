@@ -50,7 +50,8 @@ export const uploadImage = async ({
   }
 
   const file = bucket.file(filename)
-  const outputFilename = `https://storage.googleapis.com/${bucketName}/${filename}`
+  /*   const outputFilename = `https://images.mooc.fi/${filename}`
+  //`https://storage.googleapis.com/${bucketName}/${filename}` */
 
   return new Promise((resolve, reject) => {
     file.save(
@@ -65,7 +66,7 @@ export const uploadImage = async ({
           reject(error)
         }
 
-        resolve(outputFilename)
+        resolve(filename)
       },
     )
   })
@@ -80,9 +81,7 @@ export const deleteImage = async (filename: string): Promise<boolean> => {
     return Promise.resolve(true)
   }
 
-  const file = bucket.file(
-    filename.replace(`https://storage.googleapis.com/${bucketName}/`, ""),
-  )
+  const file = bucket.file(filename)
 
   return file
     .delete()

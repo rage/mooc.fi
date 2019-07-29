@@ -260,7 +260,6 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         await deleteImage({ prisma, id: photo.id })
       }
 
-      // TODO: delete photo here?
       return prisma.deleteCourse({
         id,
         slug,

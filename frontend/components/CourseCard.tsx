@@ -16,6 +16,8 @@ import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import get from "lodash/get"
 import { AllCourses_courses } from "./../static/types/AllCourses"
+import { addDomain } from "../util/imageUtils"
+import CourseImage from "./CourseImage"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,17 +49,18 @@ function CourseCard({
     <Grid item xs={12} sm={6} lg={3}>
       <Card className={classes.card}>
         <CardMedia
-          component={course ? "img" : "div"}
+          /*           component={course ? "img" : "div"}
           alt="Course Logo"
           image={
             course
-              ? get(course, "photo.compressed")
-              : /*                 || require(`../static/images/courseimages/doggos.png`) */
-                undefined
-          }
+              ? addDomain(get(course, "photo.compressed"))
+              : undefined
+          }*/
           className={classes.media}
         >
-          {!course ? (
+          {course ? (
+            <CourseImage photo={course.photo} status={course.status} />
+          ) : (
             <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
               <a href="/courses/new">
                 <Grid
@@ -71,7 +74,7 @@ function CourseCard({
                 </Grid>
               </a>
             </NextI18Next.Link>
-          ) : null}
+          )}
         </CardMedia>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom={true}>
