@@ -61,6 +61,8 @@ export interface updateCourseVariables {
   name?: string | null
   slug?: string | null
   photo?: string | null
+  new_photo?: any | null
+  base64?: boolean | null
   promote?: boolean | null
   start_point?: boolean | null
   hidden?: boolean | null
