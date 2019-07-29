@@ -67,6 +67,7 @@ function NaviCard(props: NaviCardProps) {
           </Typography>
           <Typography
             component="p"
+            variant="body1"
             align="left"
             paragraph
             style={{ maxWidth: "70%" }}
