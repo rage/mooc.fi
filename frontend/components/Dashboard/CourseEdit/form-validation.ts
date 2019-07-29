@@ -3,6 +3,15 @@ import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
+export const initialTranslation: CourseTranslationFormValues = {
+  id: undefined,
+  language: "",
+  name: undefined,
+  description: undefined,
+  link: undefined,
+  open_university_course_code: undefined,
+}
+
 export const initialValues: CourseFormValues = {
   id: null,
   name: "",
@@ -17,7 +26,7 @@ export const initialValues: CourseFormValues = {
   hidden: false,
   status: CourseStatus.Upcoming,
   study_module: null,
-  course_translations: [],
+  course_translations: [initialTranslation],
   open_university_registration_links: [],
 }
 
@@ -115,9 +124,7 @@ const courseEditSchema = ({
             },
           ),
         description: Yup.string(),
-        link: Yup.string()
-          .url("must be a valid URL")
-          .required("required"),
+        link: Yup.string(),
       }),
     ),
   })
@@ -132,8 +139,6 @@ const validateSlug = ({
   initialSlug: string | null
 }) =>
   async function(this: Yup.TestContext, value: string): Promise<boolean> {
-    let res
-
     if (!value || value === "") {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
@@ -143,18 +148,17 @@ const validateSlug = ({
     }
 
     try {
-      res = await client.query({
+      const { data } = await client.query({
         query: checkSlug,
         variables: { slug: value },
       })
+
+      const existing = data.course_exists
+
+      return !existing
     } catch (e) {
       return true
     }
-
-    const { data } = res
-    const existing = data.course_exists
-
-    return !existing
   }
 
 export default courseEditSchema

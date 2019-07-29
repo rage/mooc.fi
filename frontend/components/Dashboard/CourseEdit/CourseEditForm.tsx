@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import {
   InputLabel,
   FormControl,
@@ -21,7 +21,7 @@ import {
   FormikProps,
   yupToFormErrors,
 } from "formik"
-import { TextField, Select, Checkbox } from "formik-material-ui"
+import { TextField, Checkbox } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
@@ -31,6 +31,8 @@ import ConfirmationDialog from "../ConfirmationDialog"
 import { statuses, study_modules } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
+import { addDomain } from "../../../util/imageUtils"
+
 const isProduction = process.env.NODE_ENV === "production"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -208,7 +210,7 @@ const RenderForm = ({
                   }
                 >
                   <ImagePreview
-                    file={values.thumbnail}
+                    file={addDomain(values.thumbnail)}
                     onClose={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ): void => {
@@ -302,16 +304,20 @@ const CourseEditForm = ({
 }) => {
   const [confirmationVisible, setConfirmationVisible] = useState(false)
 
+  const validate = useCallback(
+    async (values: CourseFormValues) =>
+      validationSchema
+        .validate(values, { abortEarly: false, context: { values } })
+        .catch(err => {
+          throw yupToFormErrors(err)
+        }),
+    [],
+  )
+
   return (
     <Formik
       initialValues={course}
-      validate={async (values: CourseFormValues) =>
-        validationSchema
-          .validate(values, { abortEarly: false, context: { values } })
-          .catch(err => {
-            throw yupToFormErrors(err)
-          })
-      }
+      validate={validate}
       onSubmit={onSubmit}
       render={formikProps => (
         <RenderForm
