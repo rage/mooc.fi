@@ -11,7 +11,11 @@ const SwitchLink = styled.a`
   display: flex;
   flex-direction: row;
   text-decoration: none;
+  color: black;
   &:visited {
+    color: black;
+  }
+  &:focus {
     color: black;
   }
 `
