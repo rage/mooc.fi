@@ -2,7 +2,7 @@ import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType
 import { stringArg, idArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import { Prisma, User } from "../../generated/prisma-client"
-import { UserInputError } from "apollo-server-core"
+import { UserInputError, ForbiddenError } from "apollo-server-core"
 
 const users = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("users", {
@@ -39,20 +39,30 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
 }
 
 const UserEmailContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
-  t.list.field("userEmailContains", {
-    type: "User",
+  t.field("userEmailContains", {
+    type: "UserConnection",
     args: {
       email: stringArg(),
+      first: intArg(),
+      after: idArg(),
+      last: intArg(),
+      before: idArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
-      const { email } = args
+      const { email, first, after, last, before } = args
+      if ((!first && !last) || (first > 50 || last > 50)) {
+        throw new ForbiddenError("Cannot query more than 50 objects")
+      }
       const prisma: Prisma = ctx.prisma
-      return await prisma.users({
+      return prisma.usersConnection({
         where: {
           email_contains: email,
         },
-        first: 100,
+        first: first,
+        last: last,
+        after: after,
+        before: before,
       })
     },
   })

@@ -6,7 +6,7 @@
 // GraphQL query operation: UserEmailContains
 // ====================================================
 
-export interface UserEmailContains_userEmailContains {
+export interface UserEmailContains_userEmailContains_edges_node {
   __typename: "User"
   id: any
   email: string
@@ -17,10 +17,24 @@ export interface UserEmailContains_userEmailContains {
   last_name: string | null
 }
 
+export interface UserEmailContains_userEmailContains_edges {
+  __typename: "UserEdge"
+  node: UserEmailContains_userEmailContains_edges_node
+}
+
+export interface UserEmailContains_userEmailContains {
+  __typename: "UserConnection"
+  edges: UserEmailContains_userEmailContains_edges[]
+}
+
 export interface UserEmailContains {
-  userEmailContains: UserEmailContains_userEmailContains[]
+  userEmailContains: UserEmailContains_userEmailContains
 }
 
 export interface UserEmailContainsVariables {
   email: string
+  before?: string | null
+  after?: string | null
+  first?: number | null
+  last?: number | null
 }
