@@ -74,6 +74,7 @@ const fetcUserAppDatum = async () => {
       await prisma.createCourse({
         slug: p.namespace,
         name: p.namespace,
+        hidden: true,
       })
     }
     course = await prisma.course({ slug: p.namespace })
