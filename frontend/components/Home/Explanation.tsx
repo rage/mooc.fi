@@ -55,7 +55,13 @@ const Subtitle = styled(Typography)`
 const CourseButton = styled(Button)`
   background-color: #00a68d;
   color: white;
-
+  font-size: 18px;
+  @media (min-width: 600px) {
+    font-size: 26px;
+  }
+  @media (min-width: 1440px) {
+    font-size: 34px;
+  }
   width: 40%;
   margin: auto;
 `

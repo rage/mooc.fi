@@ -31,14 +31,8 @@ const rawTheme = createMuiTheme({
     MuiButton: {
       label: {
         textTransform: "none",
-        fontSize: 22,
+
         fontFamily: "Open Sans Condensed",
-        "@media (min-width: 600px)": {
-          fontSize: 26,
-        },
-        "@media (min-width: 1440px)": {
-          fontSize: 36,
-        },
       },
       root: {
         textTransform: "none",
