@@ -21,24 +21,30 @@ const ImageComponent = styled.img`
   object-fit: cover;
 `
 
-const CourseImage = React.memo(
-  ({ photo, status }: { photo?: Image | null; status?: string | null }) => {
-    if (!photo) {
-      return null
-    }
+interface CourseImageProps {
+  photo?: Image | null
+  status?: string | null
+  [k: string]: any
+}
 
-    return (
-      <picture>
-        <source srcSet={addDomain(photo.compressed)} type="image/webp" />
-        <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
-        <ImageComponent
-          src={addDomain(photo.compressed)}
-          alt=""
-          style={{ opacity: status === "Upcoming" ? 0.6 : 1 }}
-        />
-      </picture>
-    )
-  },
-)
+const CourseImage = React.memo((props: CourseImageProps) => {
+  const { photo, status, ...rest } = props
+
+  if (!photo) {
+    return null
+  }
+
+  return (
+    <picture>
+      <source srcSet={addDomain(photo.compressed)} type="image/webp" />
+      <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
+      <ImageComponent
+        src={addDomain(photo.compressed)}
+        style={{ opacity: status === "Upcoming" ? 0.6 : 1 }}
+        {...rest}
+      />
+    </picture>
+  )
+})
 
 export default CourseImage

@@ -48,18 +48,13 @@ function CourseCard({
   return (
     <Grid item xs={12} sm={6} lg={3}>
       <Card className={classes.card}>
-        <CardMedia
-          /*           component={course ? "img" : "div"}
-          alt="Course Logo"
-          image={
-            course
-              ? addDomain(get(course, "photo.compressed"))
-              : undefined
-          }*/
-          className={classes.media}
-        >
+        <CardMedia className={classes.media}>
           {course ? (
-            <CourseImage photo={course.photo} status={course.status} />
+            <CourseImage
+              photo={course.photo}
+              status={course.status}
+              alt={course.name}
+            />
           ) : (
             <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
               <a href="/courses/new">
@@ -68,7 +63,6 @@ function CourseCard({
                   justify="center"
                   alignItems="center"
                   style={{ height: "100%" }}
-                  // style={{ display: "flex", height: "100%" }}
                 >
                   <AddCircleIcon fontSize="large" />
                 </Grid>
