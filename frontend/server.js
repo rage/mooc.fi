@@ -29,29 +29,22 @@ const main = async () => {
   server.use(nextI18NextMiddleware(nextI18next))
 
   server.use((req, res, next) => {
+    const urlLanguagePath = req.originalUrl.split("/")[1]
     //if it is a request to _next or /static/, do nothing
-    if (
-      req.originalUrl.split("/")[1] === "_next" ||
-      req.originalUrl.split("/")[1] === "static"
-    ) {
+    if (urlLanguagePath === "_next" || urlLanguagePath === "static") {
     } else {
-      //if there is no language path
-      if (
-        ["en", "se"].indexOf(req.originalUrl.split("/")[1]) === -1 &&
-        req.i18n
-      ) {
-        //change request language to finnish, and i18n language to finnish
-        req.language = "fi"
-        req.i18n.changeLanguage("fi")
-      } else {
-        //change the request language and the i18n language to match the language path
-        req.language = req.originalUrl.split("/")[1]
+      if (urlLanguagePath === "se" || urlLanguagePath === "en") {
+        req.language = urlLanguagePath
         if (req.i18n) {
-          req.i18n.changeLanguage(req.originalUrl.split("/")[1])
+          req.i18n.changeLanguage(urlLanguagePath)
+        }
+      } else {
+        req.language = "fi"
+        if (req.i18n) {
+          req.i18n.changeLanguage("fi")
         }
       }
     }
-
     next()
   })
 
