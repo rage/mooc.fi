@@ -125,10 +125,10 @@ function CourseCard(props: CourseCardProps) {
             />
           </ImageArea>
           <TextArea>
-            <Typography component="h3" variant="h6" gutterBottom={true}>
+            <Typography component="h3" variant="h3" gutterBottom={true}>
               {course.name}
             </Typography>
-            <Typography component="p" paragraph align="left">
+            <Typography component="p" variant="body1" paragraph align="left">
               {course.description}
             </Typography>
           </TextArea>
