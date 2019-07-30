@@ -3,6 +3,12 @@ import { FieldProps } from "formik"
 import { useDropzone } from "react-dropzone"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
+/* TODO/FIXME: isDragReject (coming from react-dropzone) seems to equal true 
+  in some cases even if the dragged file is accepted. This means that sometimes 
+  the error is shown and the box styling changes to error state 
+  with correct input!
+*/
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dropzoneContainer: {
@@ -14,15 +20,15 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: "20px",
       backgroundColor: (props: { [key: string]: any }) =>
         props.isDragActive
-          ? props.isDragReject
-            ? "#FFC0C0"
-            : "#E0FFE0"
+          ? props.isDragAccept
+            ? "#E0FFE0"
+            : "#FFC0C0"
           : "#FFFFFF",
       borderColor: (props: { [key: string]: any }) =>
         props.isDragActive
-          ? props.isDragReject
-            ? "#FF0000"
-            : "#00A000"
+          ? props.isDragAccept
+            ? "#00A000"
+            : "#FF0000"
           : "#A0A0A0",
       transition: "border .24s ease-in-out",
     },
@@ -34,6 +40,11 @@ interface MessageProps {
   error?: boolean
 }
 
+interface DropzoneProps extends FieldProps {
+  onImageLoad: (result: string | ArrayBuffer | null) => void
+  children: any
+}
+
 const defaultMessage = {
   message: "Drop image or click to select",
 }
@@ -43,10 +54,7 @@ const ImageDropzoneInput = ({
   form,
   onImageLoad,
   children,
-}: FieldProps & {
-  onImageLoad: (result: string | ArrayBuffer | null) => void
-  children: any
-}) => {
+}: DropzoneProps) => {
   const { touched, errors, setFieldValue } = form
   const [status, setStatus] = useState<MessageProps>(defaultMessage)
 
@@ -76,7 +84,7 @@ const ImageDropzoneInput = ({
     // acceptedFiles,
   } = useDropzone({
     onDrop,
-    accept: ".jpeg,.png,.webp,image/*",
+    accept: "image/*",
     multiple: false,
     preventDropOnDocument: true,
   })
