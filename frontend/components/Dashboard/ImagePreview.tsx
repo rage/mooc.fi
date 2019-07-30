@@ -1,11 +1,11 @@
 import * as React from "react"
-import { ButtonBase } from "@material-ui/core"
+import { ButtonBase, Tooltip } from "@material-ui/core"
 import styled from "styled-components"
 
 const CloseButton = styled(ButtonBase)`
   position: relative;
   top: -10px;
-  right: -10px;
+  right: 20px;
   border-radius: 10em;
   padding: 2px 6px 3px;
   text-decoration: none;
@@ -17,18 +17,20 @@ const CloseButton = styled(ButtonBase)`
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   -webkit-transition: background 0.5s;
   transition: background 0.5s;
+  margin-bottom: 2px;
 
   :hover {
     background: #e54e4e;
     padding: 3px 7px 5px;
+    margin-bottom: -1px;
     top: -11px;
-    right: -11px;
+    right: 21px;
   }
 
   :active {
     background: #e54e4e;
     top: -10px;
-    right: -11px;
+    right: 210x;
   }
 `
 
@@ -47,12 +49,14 @@ const ImagePreview = ({
 
   return (
     <div>
-      {onClose && (
-        <CloseButton onClick={(e: React.MouseEvent) => onClose(e)}>
-          &times;
-        </CloseButton>
-      )}
       <img src={file} height={height} />
+      {onClose && (
+        <Tooltip title="Remove picture">
+          <CloseButton onClick={(e: React.MouseEvent) => onClose(e)}>
+            &times;
+          </CloseButton>
+        </Tooltip>
+      )}
     </div>
   )
 }

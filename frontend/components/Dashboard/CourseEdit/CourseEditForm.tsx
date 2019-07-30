@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: "1em",
     },
+    status: (props: { [key: string]: any }) => ({
+      color: props.error ? "#FF0000" : "default",
+    }),
   }),
 )
 
@@ -70,7 +73,7 @@ const RenderForm = ({
   setConfirmationVisible: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const [deleteVisible, setDeleteVisible] = useState(false)
-  const classes = useStyles()
+  const classes = useStyles({ error: status ? status.error : null })
 
   return (
     <Container maxWidth="md" className={classes.form}>
@@ -200,6 +203,7 @@ const RenderForm = ({
               name="new_photo"
               type="file"
               label="Upload new photo"
+              errors={errors.new_photo}
               fullWidth
               render={({ field, form }: FieldProps<CourseFormValues>) => (
                 <ImageDropzoneInput
@@ -275,7 +279,7 @@ const RenderForm = ({
             </Grid>
           </Grid>
           {status && status.message ? (
-            <p style={status.error ? { color: "red" } : {}}>
+            <p className={classes.status}>
               {status.error ? "Error submitting: " : null}
               <b>{status.message}</b>
             </p>

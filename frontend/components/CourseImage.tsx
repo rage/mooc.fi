@@ -23,12 +23,11 @@ const ImageComponent = styled.img`
 
 interface CourseImageProps {
   photo?: Image | null
-  status?: string | null
   [k: string]: any
 }
 
 const CourseImage = React.memo((props: CourseImageProps) => {
-  const { photo, status, ...rest } = props
+  const { photo, ...rest } = props
 
   if (!photo) {
     return null
@@ -38,11 +37,7 @@ const CourseImage = React.memo((props: CourseImageProps) => {
     <picture>
       <source srcSet={addDomain(photo.compressed)} type="image/webp" />
       <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
-      <ImageComponent
-        src={addDomain(photo.compressed)}
-        style={{ opacity: status === "Upcoming" ? 0.6 : 1 }}
-        {...rest}
-      />
+      <ImageComponent src={addDomain(photo.compressed)} {...rest} />
     </picture>
   )
 })

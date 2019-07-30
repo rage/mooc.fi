@@ -103,7 +103,7 @@ function CourseCard(props: CourseCardProps) {
           target="_blank"
         >
           <ImageArea>
-            <CourseImage photo={course.photo} status={course.status} />
+            <CourseImage photo={course.photo} />
           </ImageArea>
           <TextArea>
             <Typography component="h3" variant="h3" gutterBottom={true}>
