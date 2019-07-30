@@ -75,11 +75,11 @@ function CourseCard({
           {course ? (
             <React.Fragment>
               <NextI18Next.Link
-                as={`/course/${course.slug}`}
-                href={`/course?course=${course.slug}`}
+                as={`/courses/${course.slug}`}
+                href={`/courses?id=${course.slug}`}
               >
                 <a
-                  href={`/course?course=${course.slug}`}
+                  href={`/courses?id=${course.slug}`}
                   aria-label={`To the homepage of course ${course.name}`}
                 >
                   <Button variant="contained" color="secondary" fullWidth>
@@ -90,9 +90,9 @@ function CourseCard({
               </NextI18Next.Link>
               <NextI18Next.Link
                 as={`/courses/${course.slug}/edit`}
-                href={`/edit-course?course=${course.slug}`}
+                href={`/courses/${course.slug}/edit`}
               >
-                <a href={`/edit-course?course=${course.slug}`}>
+                <a href={`courses/${course.slug}/edit`}>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
                     Edit
@@ -101,7 +101,7 @@ function CourseCard({
               </NextI18Next.Link>
             </React.Fragment>
           ) : (
-            <NextI18Next.Link as={`/courses/new`} href={`/edit-course`}>
+            <NextI18Next.Link as={`/courses/new`} href={`/courses/edit`}>
               <a href="/edit-course">
                 <Button variant="contained" color="secondary" fullWidth>
                   <AddIcon />

@@ -6,6 +6,7 @@ import styled from "styled-components"
 import ViewListIcon from "@material-ui/icons/ViewList"
 import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
+import EditIcon from "@material-ui/icons/Edit"
 
 const TabContainer = styled.div`
   flex-grow: 1;
@@ -80,6 +81,12 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
             icon={<ScatterplotIcon />}
             href={`/courses/${slug}/points`}
             {...a11yProps(2)}
+          />
+          <LinkTab
+            label="Edit"
+            icon={<EditIcon />}
+            href={`/courses/${slug}/edit`}
+            {...a11yProps(3)}
           />
         </StyledTabs>
       </AppBar>
