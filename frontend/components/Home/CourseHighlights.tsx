@@ -44,7 +44,6 @@ interface TitleProps {
 }
 
 const Title = styled(Typography)<TitleProps>`
-  font-family: "Open Sans Condensed", sans-serif !important;
   margin: 5rem auto 1rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -54,31 +53,12 @@ const Title = styled(Typography)<TitleProps>`
 
   ${props =>
     ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
-  @media (min-width: 320px) {
-    font-size: 46px;
-  }
-  @media (min-width: 600px) {
-    font-size: 56px;
-  }
-  @media (min-width: 960px) {
-    font-size: 72px;
-  }
 `
 const Subtitle = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
   margin: 0rem auto 3rem auto;
   padding: 1rem;
   display: table;
   background-color: white;
-  @media (min-width: 320px) {
-    font-size: 22px;
-  }
-  @media (min-width: 600px) {
-    font-size: 28px;
-  }
-  @media (min-width: 960px) {
-    font-size: 32px;
-  }
 `
 
 interface Image {
@@ -143,12 +123,17 @@ function CourseHighlights(props: CourseHighlightsProps) {
       <div style={{ zIndex: 20 }}>
         <Title
           component="h2"
+          variant="h2"
           fontcolor={fontColor}
           titlebackground={titleBackground}
         >
           {title}
         </Title>
-        {subtitle && <Subtitle component="div">{subtitle}</Subtitle>}
+        {subtitle && (
+          <Subtitle component="div" variant="subtitle1">
+            {subtitle}
+          </Subtitle>
+        )}
       </div>
       <Container>
         <Grid container spacing={3}>
