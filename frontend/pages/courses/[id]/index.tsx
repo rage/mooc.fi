@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
-import PointsList from "../../../components/Dashboard/PointsList"
+
 import LanguageSelector from "../../../components/Dashboard/LanguageSelector"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
@@ -20,9 +20,11 @@ interface CourseProps {
 const Course = (props: CourseProps) => {
   const { admin, router } = props
 
-  let slug
+  let slug: string = ""
   if (router && router.query) {
-    slug = router.query.id
+    if (typeof router.query.id === "string") {
+      slug = router.query.id
+    }
   }
 
   if (!admin) {
@@ -49,12 +51,8 @@ const Course = (props: CourseProps) => {
   return (
     <CourseLanguageContext.Provider value={languageValue}>
       <section>
+        <DashboardTabBar slug={slug} selectedValue={0} />
         <DashboardBreadCrumbs current_page={slug} />
-        <DashboardTabBar
-          value={selection}
-          handleChange={handleSelectionChange}
-          courseSlug={slug}
-        />
         <WideContainer>
           <LanguageSelector
             handleLanguageChange={handleLanguageChange}

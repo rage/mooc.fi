@@ -11,12 +11,13 @@ import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
+import PointsList from "../../../components/Dashboard/PointsList"
 
 interface CompletionsProps {
   admin: boolean
   router: SingletonRouter
 }
-const Completions = (props: CompletionsProps) => {
+const Points = (props: CompletionsProps) => {
   const { admin, router } = props
   const [languageValue, setLanguageValue] = useState("fi_FI")
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
@@ -43,7 +44,7 @@ const Completions = (props: CompletionsProps) => {
   }
   return (
     <CourseLanguageContext.Provider value={languageValue}>
-      <DashboardTabBar slug={slug} selectedValue={1} />
+      <DashboardTabBar slug={slug} selectedValue={2} />
       <DashboardBreadCrumbs current_page={slug} />
       <WideContainer>
         <Typography
@@ -60,19 +61,19 @@ const Completions = (props: CompletionsProps) => {
           align="center"
           style={{ marginBottom: "2rem" }}
         >
-          Completions
+          Points
         </Typography>
         <LanguageSelector
           handleLanguageChange={handleLanguageChange}
           languageValue={languageValue}
         />
-        <CompletionsList />
+        <PointsList />
       </WideContainer>
     </CourseLanguageContext.Provider>
   )
 }
 
-Completions.getInitialProps = function(context: NextContext) {
+Points.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
 
   if (!isSignedIn(context)) {
@@ -84,4 +85,4 @@ Completions.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(Completions)
+export default withRouter(Points)
