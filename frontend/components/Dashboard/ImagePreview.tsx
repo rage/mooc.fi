@@ -38,17 +38,19 @@ const ImagePreview = ({
   file,
   onClose = null,
   height = 250,
+  ...rest
 }: {
   file: string | undefined
   onClose: Function | null
   height?: number
+  [key: string]: any
 }) => {
   if (!file) {
     return null
   }
 
   return (
-    <div>
+    <div {...rest}>
       <img src={file} height={height} />
       {onClose && (
         <Tooltip title="Remove picture">
