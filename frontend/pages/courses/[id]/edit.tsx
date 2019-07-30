@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react"
-import { Typography, CircularProgress } from "@material-ui/core"
+import React from "react"
+import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "../lib/authentication"
-import redirect from "../lib/redirect"
+import { isSignedIn, isAdmin } from "../../../lib/authentication"
+import redirect from "../../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import AdminError from "../components/Dashboard/AdminError"
-import { WideContainer } from "../components/Container"
-import CourseEdit from "../components/Dashboard/CourseEdit/CourseEdit"
+import AdminError from "../../../components/Dashboard/AdminError"
+import { WideContainer } from "../../../components/Container"
+import CourseEdit from "../../../components/Dashboard/CourseEdit/CourseEdit"
 import { withRouter, SingletonRouter } from "next/router"
-import { useQuery, useMutation } from "react-apollo-hooks"
+import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
-
-// import { Courses as courseData } from "../courseData.js"
+import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -67,13 +66,14 @@ interface EditCourseProps {
 const EditCourse = (props: EditCourseProps) => {
   const { admin, router } = props
   const isNew = router.asPath === "/courses/new"
-  const slug = router.query.course
+  let slug: string = ""
+  if (router && router.query) {
+    if (typeof router.query.id === "string") {
+      slug = router.query.id
+    }
+  }
 
   const classes = useStyles()
-
-  // use mock data
-  /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
-  const loading = false */
 
   const { data, loading, error } = useQuery(CourseQuery, {
     variables: { slug: slug },
@@ -93,6 +93,7 @@ const EditCourse = (props: EditCourseProps) => {
 
   return (
     <section>
+      {data.course ? <DashboardTabBar slug={slug} selectedValue={3} /> : ""}
       <WideContainer>
         <Typography
           component="h1"

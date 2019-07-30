@@ -48,14 +48,8 @@ const main = async () => {
     next()
   })
 
-  server.get("/courses/:id/edit", (req, res) => {
-    const actualPage = "/edit-course"
-    const queryParams = { course: req.params.id }
-    return app.render(req, res, actualPage, queryParams)
-  })
-
   server.get("/courses/new", (req, res) => {
-    const actualPage = "/edit-course"
+    const actualPage = "/courses/new/edit"
     return app.render(req, res, actualPage, {})
   })
 
