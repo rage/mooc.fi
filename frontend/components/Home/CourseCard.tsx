@@ -103,7 +103,10 @@ function CourseCard(props: CourseCardProps) {
           target="_blank"
         >
           <ImageArea>
-            <CourseImage photo={course.photo} />
+            <CourseImage
+              photo={course.photo}
+              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+            />
           </ImageArea>
           <TextArea>
             <Typography component="h3" variant="h3" gutterBottom={true}>
