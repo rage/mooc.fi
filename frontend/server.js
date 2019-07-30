@@ -28,6 +28,26 @@ const main = async () => {
   server.use(compression())
   server.use(nextI18NextMiddleware(nextI18next))
 
+  server.use((req, res, next) => {
+    const urlLanguagePath = req.originalUrl.split("/")[1]
+    //if it is a request to _next or /static/, do nothing
+    if (urlLanguagePath === "_next" || urlLanguagePath === "static") {
+    } else {
+      if (urlLanguagePath === "se" || urlLanguagePath === "en") {
+        req.language = urlLanguagePath
+        if (req.i18n) {
+          req.i18n.changeLanguage(urlLanguagePath)
+        }
+      } else {
+        req.language = "fi"
+        if (req.i18n) {
+          req.i18n.changeLanguage("fi")
+        }
+      }
+    }
+    next()
+  })
+
   server.get("/course/:id", (req, res) => {
     const actualPage = "/course"
     const queryParams = { course: req.params.id }

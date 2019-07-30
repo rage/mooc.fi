@@ -22,64 +22,48 @@ const ExplanationRoot = styled.div`
 `
 
 const Title = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
   padding-top: 0.7em;
   padding-bottom: 0.7em;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-  font-size: 32px;
 
   @media (min-width: 600px) {
-    font-size: 42px;
     padding-top: 1em;
     padding-bottom: 1em;
   }
 
   @media (min-width: 960px) {
-    font-size: 58px;
     padding-left: 1em;
     padding-right: 1em;
-  }
-
-  @media (min-width: 1440px) {
-    font-size: 68px;
   }
 `
 const Subtitle = styled(Typography)`
   padding-right: 1.5rem;
   padding-left: 1.5rem;
   padding-bottom: 1em;
-  font-size: 18px;
-  @media (min-width: 600px) {
-    font-size: 22px;
-  }
 
   @media (min-width: 960px) {
     padding-left: 62px;
     padding-right: 62px;
   }
   @media (min-width: 1440px) {
-    font-size: 32px;
     padding-left: 82px;
     padding-right: 82px;
   }
 `
 
 const CourseButton = styled(Button)`
-  font-family: "Open Sans Condensed", sans-serif !important;
   background-color: #00a68d;
   color: white;
-  font-size: 22px;
-  width: 40%;
-  margin: auto;
+  font-size: 18px;
   @media (min-width: 600px) {
     font-size: 26px;
   }
-  @media (min-width: 800px) {
-  }
   @media (min-width: 1440px) {
-    font-size: 36px;
+    font-size: 34px;
   }
+  width: 40%;
+  margin: auto;
 `
 interface ExplanationProps {
   t: Function
@@ -88,11 +72,13 @@ function Explanation(props: ExplanationProps) {
   const { t } = props
   return (
     <ExplanationRoot>
-      <Title component="h1" variant="h4">
+      <Title component="h1" variant="h1">
         {t("tagLine")}
       </Title>
 
-      <Subtitle component="p">{t("intro")}</Subtitle>
+      <Subtitle component="p" variant="subtitle1">
+        {t("intro")}
+      </Subtitle>
       <CourseButton variant="contained" href="#courses-and-modules">
         {t("courseButton")}
       </CourseButton>
