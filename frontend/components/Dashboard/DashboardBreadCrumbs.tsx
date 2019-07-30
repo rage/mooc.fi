@@ -1,29 +1,21 @@
 import React from "react"
 import { Breadcrumbs, Link, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import UserDetailContext from "../../contexes/UserDetailContext"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     breadcrumb: {
       marginTop: 5,
       marginLeft: 5,
-      color: "white",
+
       flex: 1,
     },
     link: {
       display: "flex",
-      color: "white",
     },
     baseDiv: {
       display: "flex",
-      backgroundColor: "#4e1259",
-      color: "white",
-    },
-    userInfo: {
-      marginTop: 5,
-      marginBottom: 5,
-      marginRight: "1em",
+      marginTop: "0.7rem",
     },
   }),
 )
@@ -34,7 +26,6 @@ const DashboardBreadCrumbs = ({
   current_page: string | string[] | undefined
 }) => {
   const classes = useStyles()
-  const isAdmin = React.useContext(UserDetailContext)
 
   return (
     <div className={classes.baseDiv}>
@@ -51,13 +42,6 @@ const DashboardBreadCrumbs = ({
         </Link>
         <Link className={classes.link}>{current_page}</Link>
       </Breadcrumbs>
-      {isAdmin ? (
-        <Typography variant="body1" component="p" className={classes.userInfo}>
-          Role: Admin
-        </Typography>
-      ) : (
-        ""
-      )}
     </div>
   )
 }
