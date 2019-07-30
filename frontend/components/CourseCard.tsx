@@ -33,13 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function CourseCard({
-  course,
-  key,
-}: {
-  course?: AllCourses_courses
-  key: string
-}) {
+function CourseCard({ course }: { course?: AllCourses_courses }) {
   const classes = useStyles()
 
   //  require(`../static/images/courseimages/${course.slug}.png`)
@@ -52,7 +46,7 @@ function CourseCard({
           {course ? (
             <CourseImage
               photo={course.photo}
-              status={course.status}
+              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
               alt={course.name}
             />
           ) : (
