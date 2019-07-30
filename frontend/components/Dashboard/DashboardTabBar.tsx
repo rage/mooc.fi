@@ -1,72 +1,88 @@
 import React from "react"
-import { Tabs, Tab } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import AppBar from "@material-ui/core/AppBar"
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
+import styled from "styled-components"
 import ViewListIcon from "@material-ui/icons/ViewList"
 import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tabs: {
-      backgroundColor: "#6d1b7b",
-      color: "white",
-    },
-  }),
-)
+const TabContainer = styled.div`
+  flex-grow: 1;
+  background-color: inherit;
+`
+
+const StyledTabs = styled(Tabs)`
+  box-shadow: 0 0 0 0;
+`
+
+function a11yProps(index: any) {
+  return {
+    id: `nav-tab-${index}`,
+    "aria-controls": `nav-tabpanel-${index}`,
+  }
+}
 
 interface LinkTabProps {
-  label: string
-  href: string
-  disabled?: boolean
+  label?: string
+  href?: string
   icon: any
 }
+
 function LinkTab(props: LinkTabProps) {
   return (
     <Tab
+      style={{ marginTop: "1rem" }}
       component="a"
-      onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        event.preventDefault()
-      }}
+      onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {}}
       {...props}
     />
   )
 }
-interface Props {
-  value: number
-  handleChange: (event: React.ChangeEvent<{}>, value: number) => void
-  courseSlug: string | undefined | string[]
+
+interface DashboardTabsProps {
+  slug: string
+  selectedValue: number
 }
-function DashboardTabBar(props: Props) {
-  const classes = useStyles()
-  const { value, handleChange, courseSlug } = props
+
+export default function DashboardTabBar(props: DashboardTabsProps) {
+  const { slug, selectedValue } = props
+
+  const [value, setValue] = React.useState(selectedValue)
+
+  function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
+    setValue(newValue)
+  }
 
   return (
-    <Tabs
-      indicatorColor="primary"
-      value={value}
-      onChange={handleChange}
-      className={classes.tabs}
-      variant="fullWidth"
-      centered
-    >
-      {" "}
-      <LinkTab
-        icon={<DashboardIcon />}
-        label="Course home"
-        href={`courses/${courseSlug}`}
-      />
-      <LinkTab
-        icon={<ViewListIcon />}
-        label="Completions"
-        href={`courses/${courseSlug}/completions`}
-      />
-      <LinkTab
-        icon={<ScatterplotIcon />}
-        label="Points"
-        href={`courses/${courseSlug}/points`}
-      />
-    </Tabs>
+    <TabContainer>
+      <AppBar position="static" style={{ boxShadow: "0 0 0 0" }}>
+        <StyledTabs
+          variant="fullWidth"
+          value={value}
+          onChange={handleChange}
+          aria-label="course dashboard navi"
+        >
+          <LinkTab
+            label="Course Home"
+            icon={<DashboardIcon />}
+            href={`/courses/${slug}`}
+            {...a11yProps(0)}
+          />
+          <LinkTab
+            label="Completions"
+            icon={<ViewListIcon />}
+            href={`/courses/${slug}/completions`}
+            {...a11yProps(1)}
+          />
+          <LinkTab
+            label="Points"
+            icon={<ScatterplotIcon />}
+            href={`/courses/${slug}/points`}
+            {...a11yProps(2)}
+          />
+        </StyledTabs>
+      </AppBar>
+    </TabContainer>
   )
 }
-
-export default DashboardTabBar
