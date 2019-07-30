@@ -1,25 +1,19 @@
 import React from "react"
-import { Grid, Card, CardContent, Typography } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import CardContentGrid from "./CardContentGrid"
-import CompletionDetailGrid from "./CompletionDetailGrid"
+import {
+  ListItem,
+  ListItemText,
+  Divider,
+  Typography,
+  ListItemIcon,
+  Icon,
+} from "@material-ui/core"
 import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node_completions_registered as completionsRegistered } from "../../static/types/AllCompletions"
+import DoneIcon from "@material-ui/icons/Done"
+import CloseIcon from "@material-ui/icons/Close"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    titleCard: {
-      borderLeft: "7px solid #af52bf",
-    },
-    contentGrid: {
-      borderBottom: "1.5px dotted gray",
-    },
-    language: {
-      marginTop: "0.7em",
-      marginBottom: "0.7em",
-    },
-  }),
-)
-
+//map language code stored to database to human readable language
 const MapLangToLanguage = new Map(
   Object.entries({
     en_US: "English",
@@ -28,34 +22,73 @@ const MapLangToLanguage = new Map(
   }),
 )
 
+//format registration time stored to db to human readable text
+function formatDateTime(date: string) {
+  const dateToFormat = new Date(date)
+  const formattedDate = dateToFormat.toUTCString()
+  return formattedDate
+}
+
+const StyledIcon = styled(Icon)`
+  margin-top: 1rem;
+`
+
 function CompletionCard({
   completer,
 }: {
   completer: AllCompletions_completionsPaginated_edges_node
 }) {
-  const classes = useStyles()
   let completionLanguage: string | null = null
   if (completer.completion_language) {
     completionLanguage = completer.completion_language
   }
 
+  let completionsregistered: completionsRegistered[] = []
+  if (completer.completions_registered) {
+    completionsregistered = completer.completions_registered
+  }
+  console.log("completer", completer)
+
   return (
-    <Grid item xs={12} sm={12} lg={8}>
-      <Card>
-        <CardContent>
-          <CardContentGrid completer={completer} />
-          <Grid item className={classes.language}>
-            <Typography variant="body1">
-              Course language:{" "}
-              {completionLanguage
-                ? MapLangToLanguage.get(completionLanguage)
-                : "No language available"}
-            </Typography>
-          </Grid>
-          <CompletionDetailGrid completer={completer} />
-        </CardContent>
-      </Card>
-    </Grid>
+    <>
+      <ListItem alignItems="flex-start">
+        <ListItemIcon>
+          {completionsregistered.length > 0 ? (
+            <StyledIcon>
+              <DoneIcon />
+            </StyledIcon>
+          ) : (
+            <StyledIcon>
+              <CloseIcon />
+            </StyledIcon>
+          )}
+        </ListItemIcon>
+        <ListItemText
+          primary={`${completer.user.first_name} ${completer.user.last_name}`}
+          secondary={
+            <React.Fragment>
+              <Typography>
+                {completer.email}{" "}
+                {completer.user.student_number
+                  ? `HY SID: ${completer.user.student_number}`
+                  : "No student number"}
+              </Typography>
+              <Typography>
+                {completionLanguage
+                  ? MapLangToLanguage.get(completionLanguage)
+                  : "No language available"}
+              </Typography>
+              <Typography>
+                {completionsregistered.length > 0
+                  ? `HY ${formatDateTime(completer.created_at)}`
+                  : ""}
+              </Typography>
+            </React.Fragment>
+          }
+        />
+      </ListItem>
+      <Divider component="li" />
+    </>
   )
 }
 
