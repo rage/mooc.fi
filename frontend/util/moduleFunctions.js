@@ -111,3 +111,12 @@ export const getPromotedCourses = modules => {
     return acc
   }, [])
 }
+
+const nextLanguageToLocale = {
+  fi: "fi_FI",
+  se: "sv_SE",
+  en: "en_US",
+}
+
+export const mapNextLanguageToLocaleCode = language =>
+  nextLanguageToLocale[language] || "fi_FI"

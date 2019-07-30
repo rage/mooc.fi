@@ -4,12 +4,7 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
-
-const CourseImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`
+import CourseImage from "../CourseImage"
 
 const Background = styled(ButtonBase)`
   background-color: white;
@@ -68,24 +63,17 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
     flex-direction: row;
   }
 `
-interface ImageProps {
-  photo: any[]
-  isUpcoming: boolean
-}
-function ImageInWebp(props: ImageProps) {
-  const { photo, isUpcoming } = props
-
-  return (
-    <picture>
-      <source srcSet={photo[0]} type="image/webp" />
-      <source srcSet={photo[1]} type="image/png" />
-      <CourseImage
-        src={photo[1]}
-        alt=""
-        style={{ opacity: isUpcoming ? 0.6 : 1 }}
-      />
-    </picture>
-  )
+interface Image {
+  id: any
+  name: string | null
+  original: string
+  original_mimetype: string
+  compressed: string
+  compressed_mimetype: string
+  uncompressed: string
+  uncompressed_mimetype: string
+  encoding: string | null
+  default: boolean | null
 }
 
 type FilteredCourse = {
@@ -93,7 +81,7 @@ type FilteredCourse = {
   description: string
   id: string
   link: string
-  photo: any[]
+  photo: Image
   promote: boolean
   slug: string
   start_point: boolean
@@ -115,9 +103,9 @@ function CourseCard(props: CourseCardProps) {
           target="_blank"
         >
           <ImageArea>
-            <ImageInWebp
+            <CourseImage
               photo={course.photo}
-              isUpcoming={course.status === "Upcoming"}
+              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
             />
           </ImageArea>
           <TextArea>

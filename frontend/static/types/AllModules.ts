@@ -28,10 +28,12 @@ export interface AllModules_study_modules_courses {
   __typename: "Course"
   id: any
   slug: string
+  name: string
   photo: AllModules_study_modules_courses_photo | null
   promote: boolean | null
   status: CourseStatus | null
   start_point: boolean | null
+  hidden: boolean | null
   course_translations:
     | AllModules_study_modules_courses_course_translations[]
     | null

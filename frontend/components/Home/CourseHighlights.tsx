@@ -61,12 +61,25 @@ const Subtitle = styled(Typography)`
   background-color: white;
 `
 
+interface Image {
+  id: any
+  name: string | null
+  original: string
+  original_mimetype: string
+  compressed: string
+  compressed_mimetype: string
+  uncompressed: string
+  uncompressed_mimetype: string
+  encoding: string | null
+  default: boolean | null
+}
+
 type FilteredCourse = {
   name: string
   description: string
   id: string
   link: string
-  photo: any[]
+  photo: Image
   promote: boolean
   slug: string
   start_point: boolean

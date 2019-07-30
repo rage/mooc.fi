@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import {
   InputLabel,
   FormControl,
@@ -21,7 +21,7 @@ import {
   FormikProps,
   yupToFormErrors,
 } from "formik"
-import { TextField, Select, Checkbox } from "formik-material-ui"
+import { TextField, Checkbox } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
@@ -31,6 +31,8 @@ import ConfirmationDialog from "../ConfirmationDialog"
 import { statuses, study_modules } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
+import { addDomain } from "../../../util/imageUtils"
+
 const isProduction = process.env.NODE_ENV === "production"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,6 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: "1em",
     },
+    status: (props: { [key: string]: any }) => ({
+      color: props.error ? "#FF0000" : "default",
+    }),
   }),
 )
 
@@ -68,7 +73,7 @@ const RenderForm = ({
   setConfirmationVisible: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const [deleteVisible, setDeleteVisible] = useState(false)
-  const classes = useStyles()
+  const classes = useStyles({ error: status ? status.error : null })
 
   return (
     <Container maxWidth="md" className={classes.form}>
@@ -107,7 +112,7 @@ const RenderForm = ({
             component={StyledTextField}
           />
           <Grid container direction="row">
-            <Grid container item xs={12} sm={8} justify="space-between">
+            <Grid container item xs={12} sm={6} justify="space-between">
               <FormControlLabel
                 control={
                   <Field
@@ -145,7 +150,7 @@ const RenderForm = ({
                 label="Hidden"
               />
             </Grid>
-            <Grid container item xs={12} sm={4} justify="space-between">
+            <Grid container item xs={12} sm={6} justify="space-between">
               <FormControl>
                 <Field
                   name="study_module"
@@ -186,9 +191,6 @@ const RenderForm = ({
                     </MenuItem>
                   ))}
                 </Field>
-                {errors && errors.status ? (
-                  <div style={{ color: "red" }}>required</div>
-                ) : null}
               </FormControl>
             </Grid>
           </Grid>
@@ -201,6 +203,7 @@ const RenderForm = ({
               name="new_photo"
               type="file"
               label="Upload new photo"
+              errors={errors.new_photo}
               fullWidth
               render={({ field, form }: FieldProps<CourseFormValues>) => (
                 <ImageDropzoneInput
@@ -211,7 +214,7 @@ const RenderForm = ({
                   }
                 >
                   <ImagePreview
-                    file={values.thumbnail}
+                    file={addDomain(values.thumbnail)}
                     onClose={(
                       e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ): void => {
@@ -276,7 +279,7 @@ const RenderForm = ({
             </Grid>
           </Grid>
           {status && status.message ? (
-            <p style={status.error ? { color: "red" } : {}}>
+            <p className={classes.status}>
               {status.error ? "Error submitting: " : null}
               <b>{status.message}</b>
             </p>
@@ -305,16 +308,20 @@ const CourseEditForm = ({
 }) => {
   const [confirmationVisible, setConfirmationVisible] = useState(false)
 
+  const validate = useCallback(
+    async (values: CourseFormValues) =>
+      validationSchema
+        .validate(values, { abortEarly: false, context: { values } })
+        .catch(err => {
+          throw yupToFormErrors(err)
+        }),
+    [],
+  )
+
   return (
     <Formik
       initialValues={course}
-      validate={async (values: CourseFormValues) =>
-        validationSchema
-          .validate(values, { abortEarly: false, context: { values } })
-          .catch(err => {
-            throw yupToFormErrors(err)
-          })
-      }
+      validate={validate}
       onSubmit={onSubmit}
       render={formikProps => (
         <RenderForm
