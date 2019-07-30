@@ -46,7 +46,6 @@ class MyApp extends App {
       url,
     } = this.props
 
-    console.log("language", language)
     return (
       <Container>
         <Head>

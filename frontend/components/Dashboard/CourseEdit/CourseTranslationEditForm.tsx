@@ -8,11 +8,11 @@ import {
   Paper,
 } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors, FieldProps } from "formik"
-import { Select, TextField } from "formik-material-ui"
+import { TextField } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "../ConfirmationDialog"
-import { languages } from "./form-validation"
+import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,19 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
-
-const StyledSelect = styled(Select)`
-  margin-bottom: 1rem;
-`
-
-const initialTranslation: CourseTranslationFormValues = {
-  id: undefined,
-  language: "",
-  name: undefined,
-  description: undefined,
-  link: undefined,
-  open_university_course_code: undefined,
-}
 
 const languageFilter = (
   index: number,

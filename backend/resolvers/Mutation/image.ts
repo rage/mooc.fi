@@ -65,6 +65,7 @@ export const uploadImage = async ({
     directory: `original`,
     base64,
   })
+  let originalMimetype = mimetype
 
   const uncompressed = await uploadStorageImage({
     imageBuffer: uncompressedImage,
@@ -86,12 +87,13 @@ export const uploadImage = async ({
     // Image upload fails if the original pic is too big converted to base64.
     // Since we're only base64'ing in dev, this is not a production problem
     original = uncompressed
+    originalMimetype = "image/jpeg"
   }
 
   const newImage: Image = await prisma.createImage({
     name: filename,
     original,
-    original_mimetype: mimetype,
+    original_mimetype: originalMimetype,
     uncompressed,
     uncompressed_mimetype: "image/jpeg",
     compressed,
