@@ -44,11 +44,7 @@ function CourseCard({ course }: { course?: AllCourses_courses }) {
       <Card className={classes.card}>
         <CardMedia className={classes.media}>
           {course ? (
-            <CourseImage
-              photo={course.photo}
-              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
-              alt={course.name}
-            />
+            <CourseImage photo={course.photo} alt={course.name} />
           ) : (
             <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
               <a href="/courses/new">
