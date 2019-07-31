@@ -1,51 +1,31 @@
 import React from "react"
-import { Typography, Paper } from "@material-ui/core"
+import { gql } from "apollo-boost"
+import { useQuery } from "react-apollo-hooks"
+import { SingletonRouter, withRouter } from "next/router"
+import AdminError from "../../../components/Dashboard/AdminError"
+import { Paper, Typography } from "@material-ui/core"
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { WideContainer } from "../../../components/Container"
+import NextI18Next from "../../../i18n"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import AdminError from "../../../components/Dashboard/AdminError"
-import { WideContainer } from "../../../components/Container"
-import CourseEdit from "../../../components/Dashboard/CourseEdit/CourseEdit"
-import { withRouter, SingletonRouter } from "next/router"
-import { useQuery, useMutation } from "react-apollo-hooks"
-import { gql } from "apollo-boost"
-import NextI18Next from "../../../i18n"
+import StudyModuleEdit from "../../../components/Dashboard/StudyModuleEdit/StudyModuleEdit"
 
-// import { Courses as courseData } from "../courseData.js"
-
-export const CourseQuery = gql`
-  query CourseDetails($slug: String) {
-    course(slug: $slug) {
+export const StudyModuleQuery = gql`
+  query StudyModuleDetails($id: ID!) {
+    study_module(id: $id) {
       id
-      name
-      slug
-      photo {
+      courses {
         id
-        compressed
-        compressed_mimetype
-        uncompressed
-        uncompressed_mimetype
+        name
+        slug
       }
-      promote
-      start_point
-      hidden
-      status
-      course_translations {
+      study_module_translations {
         id
         name
         language
         description
-        link
-      }
-      open_university_registration_links {
-        id
-        course_code
-        language
-        link
-      }
-      study_module {
-        id
       }
     }
   }
@@ -62,27 +42,23 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-interface EditCourseProps {
+interface EditStudyModuleProps {
   router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
   language: string
 }
 
-const EditCourse = (props: EditCourseProps) => {
+const EditStudyModule = (props: EditStudyModuleProps) => {
   const { admin, router, language } = props
-  const slug = router.query.id
+  const id = router.query.id
 
   const classes = useStyles()
 
   let redirectTimeout: number | null = null
 
-  // use mock data
-  /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
-  const loading = false */
-
-  const { data, loading, error } = useQuery(CourseQuery, {
-    variables: { slug: slug },
+  const { data, loading, error } = useQuery(StudyModuleQuery, {
+    variables: { id },
   })
 
   if (!admin) {
@@ -94,9 +70,9 @@ const EditCourse = (props: EditCourseProps) => {
     return null
   }
 
-  const listLink = `${language ? "/" + language : ""}/courses`
+  const listLink = `${language ? "/" + language : ""}/study-modules`
 
-  if (!data.course) {
+  if (!data.study_module) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
@@ -110,17 +86,17 @@ const EditCourse = (props: EditCourseProps) => {
           align="center"
           className={classes.header}
         >
-          Edit course
+          Edit study module
         </Typography>
-        {data.course ? (
-          <CourseEdit course={data.course} />
+        {data.study_module ? (
+          <StudyModuleEdit module={data.study_module} />
         ) : (
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="body1">
-              Course with id <b>{slug}</b> not found!
+              Study module with id <b>{id}</b> not found!
             </Typography>
             <Typography variant="body2">
-              You will be redirected back to the course list in 5 seconds -
+              You will be redirected back to the module list in 5 seconds -
               press{" "}
               <NextI18Next.Link href={listLink}>
                 <a
@@ -141,7 +117,7 @@ const EditCourse = (props: EditCourseProps) => {
   )
 }
 
-EditCourse.getInitialProps = function(context: NextContext) {
+EditStudyModule.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
@@ -154,4 +130,4 @@ EditCourse.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(EditCourse)
+export default withRouter(EditStudyModule)

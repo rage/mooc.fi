@@ -1,0 +1,39 @@
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: StudyModuleDetails
+// ====================================================
+
+export interface StudyModuleDetails_study_module_courses {
+  __typename: "Course"
+  id: any
+  name: string
+  slug: string
+}
+
+export interface StudyModuleDetails_study_module_study_module_translations {
+  __typename: "StudyModuleTranslation"
+  id: any
+  name: string
+  language: string
+  description: string
+}
+
+export interface StudyModuleDetails_study_module {
+  __typename: "StudyModule"
+  id: any
+  courses: StudyModuleDetails_study_module_courses[] | null
+  study_module_translations:
+    | StudyModuleDetails_study_module_study_module_translations[]
+    | null
+}
+
+export interface StudyModuleDetails {
+  study_module: StudyModuleDetails_study_module
+}
+
+export interface StudyModuleDetailsVariables {
+  id: string
+}
