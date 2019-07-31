@@ -4,6 +4,7 @@ import CourseCard from "./CourseCard"
 import Container from "../Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
+import { AllCourses_courses_photo } from "../../static/types/AllCourses"
 
 interface RootProps {
   backgroundColor: string
@@ -61,25 +62,12 @@ const Subtitle = styled(Typography)`
   background-color: white;
 `
 
-interface Image {
-  id: any
-  name: string | null
-  original: string
-  original_mimetype: string
-  compressed: string
-  compressed_mimetype: string
-  uncompressed: string
-  uncompressed_mimetype: string
-  encoding: string | null
-  default: boolean | null
-}
-
 type FilteredCourse = {
   name: string
   description: string
   id: string
   link: string
-  photo: Image
+  photo: AllCourses_courses_photo
   promote: boolean
   slug: string
   start_point: boolean

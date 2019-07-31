@@ -1,19 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 import { addDomain } from "../util/imageUtils"
-
-interface Image {
-  id: any
-  /*   name: string | null
-  original: string
-  original_mimetype: string */
-  compressed: string | null
-  /*   compressed_mimetype: string */
-  uncompressed: string | null
-  /*   uncompressed_mimetype: string
-  encoding: string | null
-  default: boolean | null */
-}
+import { AllCourses_courses_photo } from "../static/types/AllCourses"
+import { AllModules_study_modules_courses_photo } from "../static/types/AllModules"
 
 const ImageComponent = styled.img`
   width: 100%;
@@ -22,7 +11,10 @@ const ImageComponent = styled.img`
 `
 
 interface CourseImageProps {
-  photo?: Image | null
+  photo?:
+    | AllCourses_courses_photo
+    | AllModules_study_modules_courses_photo
+    | null // Image | null
   [k: string]: any
 }
 
@@ -37,7 +29,7 @@ const CourseImage = React.memo((props: CourseImageProps) => {
     <picture>
       <source srcSet={addDomain(photo.compressed)} type="image/webp" />
       <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
-      <ImageComponent src={addDomain(photo.compressed)} {...rest} />
+      <ImageComponent src={addDomain(photo.uncompressed)} {...rest} />
     </picture>
   )
 })
