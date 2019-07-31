@@ -11,11 +11,23 @@ import { withRouter, SingletonRouter } from "next/router"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
 import PointsList from "../../../components/Dashboard/PointsList"
+import { useQuery } from "react-apollo-hooks"
+import { gql } from "apollo-boost"
+
+export const CourseDetailsFromSlugQuery = gql`
+  query CourseDetails($slug: String) {
+    course(slug: $slug) {
+      id
+      name
+    }
+  }
+`
 
 interface CompletionsProps {
   admin: boolean
   router: SingletonRouter
 }
+
 const Points = (props: CompletionsProps) => {
   const { admin, router } = props
   const [languageValue, setLanguageValue] = useState("fi_FI")
@@ -41,10 +53,25 @@ const Points = (props: CompletionsProps) => {
   if (!admin) {
     return <AdminError />
   }
+
+  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
+    variables: { slug: slug },
+  })
+
+  //TODO add circular progress
+  if (loading) {
+    return null
+  }
+  //TODO fix error message
+  if (error || !data) {
+    return <p>Error has occurred</p>
+  }
+
   return (
     <CourseLanguageContext.Provider value={languageValue}>
+      <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={2} />
-      <DashboardBreadCrumbs current_page={slug} />
+
       <WideContainer>
         <Typography
           component="h1"
@@ -52,7 +79,7 @@ const Points = (props: CompletionsProps) => {
           align="center"
           style={{ marginTop: "2rem", marginBottom: "0.5rem" }}
         >
-          Elements of Ai
+          {data.course.name}
         </Typography>
         <Typography
           component="p"

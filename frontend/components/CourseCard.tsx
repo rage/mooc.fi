@@ -38,21 +38,13 @@ function CourseCard({
 }) {
   const classes = useStyles()
 
-  //  require(`../static/images/courseimages/${course.slug}.png`)
-  // removed doggos as a placeholder for the time being
-
   return (
     <Grid item xs={12} sm={6} lg={3}>
       <Card className={classes.card}>
         <CardMedia
           component={course ? "img" : "div"}
           alt="Course Logo"
-          image={
-            course
-              ? get(course, "photo.compressed")
-              : /*                 || require(`../static/images/courseimages/doggos.png`) */
-                undefined
-          }
+          image={course ? get(course, "photo.compressed") : undefined}
           className={classes.media}
         >
           {!course ? (
@@ -76,10 +68,10 @@ function CourseCard({
             <React.Fragment>
               <NextI18Next.Link
                 as={`/courses/${course.slug}`}
-                href={`/courses?id=${course.slug}`}
+                href={`/courses/${course.slug}`}
               >
                 <a
-                  href={`/courses?id=${course.slug}`}
+                  href={`/courses/${course.slug}`}
                   aria-label={`To the homepage of course ${course.name}`}
                 >
                   <Button variant="contained" color="secondary" fullWidth>
