@@ -5,6 +5,7 @@ import Container from "../Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { AllCourses_courses_photo } from "../../static/types/AllCourses"
+import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 interface RootProps {
   backgroundColor: string
@@ -75,7 +76,7 @@ type FilteredCourse = {
 }
 
 interface CourseHighlightsProps {
-  courses: FilteredCourse[]
+  courses: ObjectifiedCourse[]
   title: string
   headerImage: any
   subtitle?: string

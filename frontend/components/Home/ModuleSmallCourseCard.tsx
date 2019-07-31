@@ -2,7 +2,10 @@ import React from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
-import { ModuleCourse } from "../../static/types/moduleTypes"
+import {
+  ModuleCourse,
+  ObjectifiedModuleCourse,
+} from "../../static/types/moduleTypes"
 
 const CourseTitle = styled(Typography)`
   margin-bottom: 0.5rem;
@@ -27,7 +30,11 @@ const Button = styled.div`
   display: flex;
   flex-direction: column;
 `
-function ModuleSmallCourseCard({ course }: { course: ModuleCourse }) {
+function ModuleSmallCourseCard({
+  course,
+}: {
+  course: ObjectifiedModuleCourse
+}) {
   return (
     <Grid item xs={12} sm={6} md={4} lg={4}>
       <Button>

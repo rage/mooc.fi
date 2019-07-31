@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "../CourseImage"
 import { AllCourses_courses_photo } from "../../static/types/AllCourses"
+import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 const Background = styled(ButtonBase)`
   background-color: white;
@@ -77,7 +78,7 @@ type FilteredCourse = {
 }
 
 interface CourseCardProps {
-  course: FilteredCourse
+  course: ObjectifiedCourse
 }
 
 function CourseCard(props: CourseCardProps) {
@@ -87,7 +88,7 @@ function CourseCard(props: CourseCardProps) {
       <Background focusRipple disabled={course.status === "Upcoming"}>
         <CardLinkWithGA
           eventLabel={`coursesite: ${course.name}`}
-          to={course.link}
+          to={course.link || ""}
           target="_blank"
         >
           <ImageArea>
