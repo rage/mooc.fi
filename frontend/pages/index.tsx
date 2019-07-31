@@ -15,10 +15,12 @@ import { AllModules as AllModulesData } from "../static/types/AllModules"
 import {
   AllCourses as AllCoursesData,
   AllCourses_courses_photo,
+  AllCourses_courses,
 } from "../static/types/AllCourses"
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import { ObjectifiedCourse } from "../static/types/moduleTypes"
 
 const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
@@ -85,19 +87,6 @@ const AllCoursesQuery = gql`
   }
 `
 
-type FilteredCourse = {
-  name: string
-  description: string
-  id: string
-  link: string
-  photo: AllCourses_courses_photo
-  promote: boolean
-  slug: string
-  start_point: boolean
-  hidden: boolean
-  status: string
-}
-
 interface HomeProps {
   t: Function
   tReady: boolean
@@ -138,7 +127,7 @@ const Home = (props: HomeProps) => {
     return <div>Error: no data?</div>
   }
 
-  const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
+  const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
     data.courses,
     language,
   )
