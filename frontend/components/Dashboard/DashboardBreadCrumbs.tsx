@@ -1,5 +1,7 @@
 import React from "react"
-import { Breadcrumbs, Link } from "@material-ui/core"
+import dynamic from "next/dynamic"
+const Breadcrumbs = dynamic(import("@material-ui/core/Breadcrumbs"))
+const Link = dynamic(import("@material-ui/core/Link"))
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 

@@ -1,6 +1,4 @@
 import React, { useCallback } from "react"
-import { Paper } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "react-apollo-hooks"
 import { addImage_addImage as Image } from "../../../static/types/addImage"
@@ -21,19 +19,7 @@ import get from "lodash/get"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      textTransform: "uppercase",
-      marginTop: "0.7em",
-      marginBottom: "0.7em",
-    },
-  }),
-)
-
 const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
-  const classes = useStyles()
-
   const addCourse = useMutation(AddCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
