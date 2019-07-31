@@ -12,7 +12,10 @@ import {
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "../static/types/AllModules"
-import { AllCourses as AllCoursesData } from "../static/types/AllCourses"
+import {
+  AllCourses as AllCoursesData,
+  AllCourses_courses_photo,
+} from "../static/types/AllCourses"
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
@@ -81,25 +84,13 @@ const AllCoursesQuery = gql`
     }
   }
 `
-interface Image {
-  id: any
-  name: string | null
-  original: string
-  original_mimetype: string
-  compressed: string
-  compressed_mimetype: string
-  uncompressed: string
-  uncompressed_mimetype: string
-  encoding: string | null
-  default: boolean | null
-}
 
 type FilteredCourse = {
   name: string
   description: string
   id: string
   link: string
-  photo: Image
+  photo: AllCourses_courses_photo
   promote: boolean
   slug: string
   start_point: boolean
