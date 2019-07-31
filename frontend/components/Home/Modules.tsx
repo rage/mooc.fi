@@ -9,6 +9,7 @@ import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import NextI18Next from "../../i18n"
 import Container from "../Container"
 import { Module, ModuleCourse } from "../../static/types/moduleTypes"
+import { AllCourses_courses } from "../../static/types/AllCourses"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
