@@ -63,18 +63,6 @@ const Subtitle = styled(Typography)`
   background-color: white;
 `
 
-type FilteredCourse = {
-  name: string
-  description: string
-  id: string
-  link: string
-  photo: AllCourses_courses_photo
-  promote: boolean
-  slug: string
-  start_point: boolean
-  status: string
-}
-
 interface CourseHighlightsProps {
   courses: ObjectifiedCourse[]
   title: string

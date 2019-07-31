@@ -87,19 +87,6 @@ const AllCoursesQuery = gql`
   }
 `
 
-type FilteredCourse = {
-  name: string
-  description: string
-  id: string
-  link: string
-  photo: AllCourses_courses_photo
-  promote: boolean
-  slug: string
-  start_point: boolean
-  hidden: boolean
-  status: string
-}
-
 interface HomeProps {
   t: Function
   tReady: boolean
