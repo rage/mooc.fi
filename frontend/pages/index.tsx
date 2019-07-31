@@ -4,15 +4,12 @@ import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
-import {
-  filterAndModifyCoursesByLanguage,
-  filterAndModifyByLanguage,
-} from "../util/moduleFunctions"
+import { filterAndModifyCoursesByLanguage } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "../static/types/AllModules"
 import { Courses } from "../courseData"
-import { mockModules } from "../mockModuleData"
+//import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import ErrorBoundary from "../components/ErrorBoundary"
 const highlightsBanner = "../static/images/backgroundPattern.svg"

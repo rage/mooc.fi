@@ -1,4 +1,5 @@
-import React, { ReactChildren } from "react"
+import React from "react"
+
 import ErrorMessage from "./ErrorMessage"
 
 type ErrorBoundaryState = {

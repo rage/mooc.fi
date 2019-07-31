@@ -21,7 +21,7 @@ import {
   FormikProps,
   yupToFormErrors,
 } from "formik"
-import { TextField, Select, Checkbox } from "formik-material-ui"
+import { TextField, Checkbox } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
