@@ -147,7 +147,7 @@ const Home = (props: HomeProps) => {
     return <div>Error: no data?</div>
   }
 
-  const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
+  const courses: FilteredCourse[] = filterAndModifyCoursesByLanguage(
     data.courses,
     language,
   )
