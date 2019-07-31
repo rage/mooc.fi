@@ -14,6 +14,7 @@ import { AllModules as AllModulesData } from "../static/types/AllModules"
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import ErrorBoundary from "../components/ErrorBoundary"
 const highlightsBanner = "../static/images/backgroundPattern.svg"
 
 const AllModulesQuery = gql`
@@ -95,32 +96,40 @@ const Home = (props: HomeProps) => {
 
   return (
     <div>
-      <ExplanationHero />
-      <NaviCardList />
+      <ErrorBoundary>
+        <ExplanationHero />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <NaviCardList />
+      </ErrorBoundary>
       <section id="courses-and-modules">
-        <CourseHighlights
-          courses={courses.filter(
-            c => c.promote === true && c.status === "Active",
-          )}
-          title={t("highlightTitle")}
-          headerImage={highlightsBanner}
-          subtitle={t("highlightSubtitle")}
-          backgroundColor="#009CA6"
-          hueRotateAngle={177}
-          brightness={5.5}
-          fontColor="black"
-          titleBackground="#ffffff"
-        />
-        <CourseHighlights
-          courses={courses.filter(c => c.status === "Active")}
-          title={t("allCoursesTitle")}
-          headerImage={highlightsBanner}
-          backgroundColor="#ffffff"
-          hueRotateAngle={34}
-          brightness={1}
-          fontColor="white"
-          titleBackground="#008EBD"
-        />
+        <ErrorBoundary>
+          <CourseHighlights
+            courses={courses.filter(
+              c => c.promote === true && c.status === "Active",
+            )}
+            title={t("highlightTitle")}
+            headerImage={highlightsBanner}
+            subtitle={t("highlightSubtitle")}
+            backgroundColor="#009CA6"
+            hueRotateAngle={177}
+            brightness={5.5}
+            fontColor="black"
+            titleBackground="#ffffff"
+          />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <CourseHighlights
+            courses={courses.filter(c => c.status === "Active")}
+            title={t("allCoursesTitle")}
+            headerImage={highlightsBanner}
+            backgroundColor="#ffffff"
+            hueRotateAngle={34}
+            brightness={1}
+            fontColor="white"
+            titleBackground="#008EBD"
+          />
+        </ErrorBoundary>
         <CourseHighlights
           courses={courses.filter(c => c.status === "Upcoming")}
           title={t("upcomingCoursesTitle")}
@@ -131,18 +140,22 @@ const Home = (props: HomeProps) => {
           fontColor="black"
           titleBackground="#ffffff"
         />
-        <CourseHighlights
-          courses={courses.filter(c => c.status === "Ended")}
-          title={t("endedCoursesTitle")}
-          headerImage={highlightsBanner}
-          backgroundColor="#ffffff"
-          hueRotateAngle={58}
-          brightness={1}
-          fontColor="white"
-          titleBackground="#3066C0"
-        />
+        <ErrorBoundary>
+          <CourseHighlights
+            courses={courses.filter(c => c.status === "Ended")}
+            title={t("endedCoursesTitle")}
+            headerImage={highlightsBanner}
+            backgroundColor="#ffffff"
+            hueRotateAngle={58}
+            brightness={1}
+            fontColor="white"
+            titleBackground="#3066C0"
+          />
+        </ErrorBoundary>
       </section>
-      <EmailSubscribe />
+      <ErrorBoundary>
+        <EmailSubscribe />
+      </ErrorBoundary>
     </div>
   )
 }
