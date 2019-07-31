@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
-
 import LanguageSelector from "../../../components/Dashboard/LanguageSelector"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
@@ -11,6 +10,18 @@ import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "../../../components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import CourseLanguageContext from "../../../contexes/CourseLanguageContext"
+import { useQuery } from "react-apollo-hooks"
+import { gql } from "apollo-boost"
+import Typography from "@material-ui/core/Typography"
+
+export const CourseDetailsFromSlugQuery = gql`
+  query CourseDetails($slug: String) {
+    course(slug: $slug) {
+      id
+      name
+    }
+  }
+`
 
 interface CourseProps {
   admin: boolean
@@ -29,6 +40,19 @@ const Course = (props: CourseProps) => {
 
   if (!admin) {
     return <AdminError />
+  }
+
+  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
+    variables: { slug: slug },
+  })
+
+  //TODO add circular progress
+  if (loading) {
+    return null
+  }
+  //TODO fix error message
+  if (error || !data) {
+    return <p>Error has occurred</p>
   }
 
   //store which languages are selected
@@ -51,9 +75,26 @@ const Course = (props: CourseProps) => {
   return (
     <CourseLanguageContext.Provider value={languageValue}>
       <section>
+        <DashboardBreadCrumbs />
         <DashboardTabBar slug={slug} selectedValue={0} />
-        <DashboardBreadCrumbs current_page={slug} />
+
         <WideContainer>
+          <Typography
+            component="h1"
+            variant="h1"
+            align="center"
+            style={{ marginTop: "2rem", marginBottom: "0.5rem" }}
+          >
+            {data.course.name}
+          </Typography>
+          <Typography
+            component="p"
+            variant="subtitle1"
+            align="center"
+            style={{ marginBottom: "2rem" }}
+          >
+            Home
+          </Typography>
           <LanguageSelector
             handleLanguageChange={handleLanguageChange}
             languageValue={languageValue}
