@@ -122,7 +122,7 @@ type StudyModule @db(name:"study_module"){
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   courses: [Course!]! @relation(name: "StudyModuleToCourse")
-  study_module_translations: [StudyModuleTranslation!]! @relation(name: "StudyModuleToStudyModuleTranslation")
+  study_module_translations: [StudyModuleTranslation!]! @relation(name: "StudyModuleToStudyModuleTranslation", onDelete: CASCADE)
 }
 
 type StudyModuleTranslation @db(name:"study_module_translation"){
@@ -132,7 +132,7 @@ type StudyModuleTranslation @db(name:"study_module_translation"){
   name: String!
   language: String!
   description: String!
-  study_module: StudyModule! @relation(link: INLINE, name: "StudyModuleToStudyModuleTranslation")
+  study_module: StudyModule! @relation(link: INLINE, name: "StudyModuleToStudyModuleTranslation", onDelete: SET_NULL)
 }
 
 type UserCourseProgress @db(name: "user_course_progress") {
