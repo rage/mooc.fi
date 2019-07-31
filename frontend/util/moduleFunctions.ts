@@ -7,7 +7,6 @@ import {
   ObjectifiedModuleTranslations,
   ObjectifiedModuleCourse,
   ObjectifiedCourse,
-  ObjectifiedModuleCourseTranslations,
   ObjectifiedCourseTranslations,
 } from "../static/types/moduleTypes"
 
@@ -113,7 +112,7 @@ export const filterAndModifyByLanguage = (
       const filteredCourses = (courses || [])
         .filter(
           course =>
-            (course.course_translations as ObjectifiedModuleCourseTranslations)[
+            (course.course_translations as ObjectifiedCourseTranslations)[
               language
             ],
         )
@@ -123,9 +122,7 @@ export const filterAndModifyByLanguage = (
             name,
             description,
             link,
-          } = (course_translations as ObjectifiedModuleCourseTranslations)[
-            language
-          ]
+          } = (course_translations as ObjectifiedCourseTranslations)[language]
           return {
             ...course,
             name: name,

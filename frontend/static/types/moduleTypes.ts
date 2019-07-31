@@ -34,19 +34,16 @@ export interface ModuleCourse {
   hidden: boolean
   status: string
 }
-
-export interface ObjectifiedModuleCourseTranslations {
-  [language: string]: AllModules_study_modules_courses_course_translations
-}
-
 export interface ObjectifiedCourseTranslations {
-  [language: string]: AllCourses_courses_course_translations
+  [language: string]:
+    | AllCourses_courses_course_translations
+    | AllModules_study_modules_courses_course_translations
 }
 
 export interface ObjectifiedModuleCourse
   extends Omit<AllModules_study_modules_courses, "course_translations"> {
   course_translations:
-    | ObjectifiedModuleCourseTranslations
+    | ObjectifiedCourseTranslations
     | AllModules_study_modules_courses_course_translations[]
     | null
   link?: string
