@@ -5,6 +5,7 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "../CourseImage"
+import { AllCourses_courses_photo } from "../../static/types/AllCourses"
 
 const Background = styled(ButtonBase)`
   background-color: white;
@@ -63,25 +64,12 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
     flex-direction: row;
   }
 `
-interface Image {
-  id: any
-  name: string | null
-  original: string
-  original_mimetype: string
-  compressed: string
-  compressed_mimetype: string
-  uncompressed: string
-  uncompressed_mimetype: string
-  encoding: string | null
-  default: boolean | null
-}
-
 type FilteredCourse = {
   name: string
   description: string
   id: string
   link: string
-  photo: Image
+  photo: AllCourses_courses_photo
   promote: boolean
   slug: string
   start_point: boolean
