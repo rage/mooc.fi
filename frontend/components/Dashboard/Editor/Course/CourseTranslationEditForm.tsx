@@ -54,7 +54,7 @@ const CourseTranslationEditForm = ({
   isSubmitting: boolean
 }) => {
   const classes = useStyles()
-  const [dialogVisible, setDialogVisible] = useState(false)
+  const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
   return (
@@ -70,15 +70,15 @@ const CourseTranslationEditForm = ({
                 acceptText="Yes"
                 rejectText="No"
                 onAccept={() => {
-                  setDialogVisible(false)
+                  setRemoveDialogVisible(false)
                   removableIndex >= 0 && helpers.remove(removableIndex)
                   setRemovableIndex(-1)
                 }}
                 onReject={() => {
-                  setDialogVisible(false)
+                  setRemoveDialogVisible(false)
                   setRemovableIndex(-1)
                 }}
-                open={dialogVisible}
+                open={removeDialogVisible}
               />
               {values.length ? (
                 values.map(
@@ -170,7 +170,7 @@ const CourseTranslationEditForm = ({
                             disabled={isSubmitting}
                             color="secondary"
                             onClick={() => {
-                              setDialogVisible(true)
+                              setRemoveDialogVisible(true)
                               setRemovableIndex(index)
                             }}
                           >

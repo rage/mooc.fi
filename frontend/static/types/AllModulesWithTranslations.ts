@@ -3,10 +3,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: AllStudyModules
+// GraphQL query operation: AllModulesWithTranslations
 // ====================================================
 
-export interface AllStudyModules_study_modules_study_module_translations {
+export interface AllModulesWithTranslations_study_modules_study_module_translations {
   __typename: "StudyModuleTranslation"
   id: any
   language: string
@@ -14,15 +14,16 @@ export interface AllStudyModules_study_modules_study_module_translations {
   description: string
 }
 
-export interface AllStudyModules_study_modules {
+export interface AllModulesWithTranslations_study_modules {
   __typename: "StudyModule"
   id: any
   slug: string
+  name: string
   study_module_translations:
-    | AllStudyModules_study_modules_study_module_translations[]
+    | AllModulesWithTranslations_study_modules_study_module_translations[]
     | null
 }
 
-export interface AllStudyModules {
-  study_modules: AllStudyModules_study_modules[]
+export interface AllModulesWithTranslations {
+  study_modules: AllModulesWithTranslations_study_modules[]
 }

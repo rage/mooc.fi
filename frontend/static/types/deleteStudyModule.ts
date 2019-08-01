@@ -9,6 +9,7 @@
 export interface deleteStudyModule_deleteStudyModule {
   __typename: "StudyModule"
   id: any
+  slug: string
 }
 
 export interface deleteStudyModule {
@@ -16,5 +17,5 @@ export interface deleteStudyModule {
 }
 
 export interface deleteStudyModuleVariables {
-  id: string
+  slug: string
 }
