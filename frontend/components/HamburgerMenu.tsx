@@ -10,7 +10,10 @@ const MobileHamburgerMenu = styled.div`
     display: none;
   }
 `
-
+const StyledPopover = styled(Popover)`
+  display: flex;
+  flex-direction: column;
+`
 const HamburgerMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   function handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -25,7 +28,7 @@ const HamburgerMenu = () => {
       <IconButton onClick={handleClick}>
         <MenuIcon />
       </IconButton>
-      <Popover
+      <StyledPopover
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
@@ -39,7 +42,7 @@ const HamburgerMenu = () => {
         }}
       >
         <MenuOptionButtons />
-      </Popover>
+      </StyledPopover>
     </MobileHamburgerMenu>
   )
 }
