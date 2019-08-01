@@ -1,5 +1,8 @@
 export interface StudyModuleFormValues {
   id?: string | null
+  slug: string
+  new_slug: string
+  name: string
   // courses: any[]
   study_module_translations: StudyModuleTranslationFormValues[]
 }

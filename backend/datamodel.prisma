@@ -119,6 +119,8 @@ type Service @db(name: "service") {
 
 type StudyModule @db(name:"study_module"){
   id: UUID! @id
+  slug: String! @unique
+  name: String!
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   courses: [Course!]! @relation(name: "StudyModuleToCourse")

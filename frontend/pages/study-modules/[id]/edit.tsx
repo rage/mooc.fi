@@ -14,9 +14,11 @@ import Editor from "../../../components/Dashboard/Editor"
 // import StudyModuleEdit from "../../../components/Dashboard/Editor/StudyModule"
 
 export const StudyModuleQuery = gql`
-  query StudyModuleDetails($id: ID!) {
-    study_module(id: $id) {
+  query StudyModuleDetails($slug: String!) {
+    study_module(slug: $slug) {
       id
+      slug
+      name
       courses {
         id
         name
@@ -59,7 +61,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   let redirectTimeout: number | null = null
 
   const { data, loading, error } = useQuery(StudyModuleQuery, {
-    variables: { id },
+    variables: { slug: id },
   })
 
   if (!admin) {
@@ -94,7 +96,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
         ) : (
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="body1">
-              Study module with id <b>{id}</b> not found!
+              Study module with slug <b>{id}</b> not found!
             </Typography>
             <Typography variant="body2">
               You will be redirected back to the module list in 5 seconds -

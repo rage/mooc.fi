@@ -46,12 +46,31 @@ const renderForm = ({
   "errors" | "values" | "isSubmitting" | "setFieldValue"
 >) => {
   const classes = useStyles()
-  const [dialogVisible, setDialogVisible] = useState(false)
+  const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
   return (
     <Form>
-      {/* study module doesn't really have any own fields (yet) */}
+      <Field
+        name="new_slug"
+        type="text"
+        label="Slug"
+        error={errors.new_slug}
+        fullWidth
+        variant="outlined"
+        autoComplete="off"
+        component={StyledTextField}
+      />
+      <Field
+        name="name"
+        type="text"
+        label="Name"
+        error={errors.name}
+        fullWidth
+        variant="outlined"
+        autoComplete="off"
+        component={StyledTextField}
+      />
       <Grid container direction="column">
         <FieldArray
           name="study_module_translations"
@@ -63,15 +82,15 @@ const renderForm = ({
                 acceptText="Yes"
                 rejectText="No"
                 onAccept={() => {
-                  setDialogVisible(false)
+                  setRemoveDialogVisible(false)
                   removableIndex >= 0 && helpers.remove(removableIndex)
                   setRemovableIndex(-1)
                 }}
                 onReject={() => {
-                  setDialogVisible(false)
+                  setRemoveDialogVisible(false)
                   setRemovableIndex(-1)
                 }}
-                open={dialogVisible}
+                open={removeDialogVisible}
               />
               {values && values.study_module_translations.length ? (
                 values.study_module_translations.map(
@@ -139,7 +158,7 @@ const renderForm = ({
                             disabled={isSubmitting}
                             color="secondary"
                             onClick={() => {
-                              setDialogVisible(true)
+                              setRemoveDialogVisible(true)
                               setRemovableIndex(index)
                             }}
                           >

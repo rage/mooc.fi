@@ -7,14 +7,16 @@ import {
   StudyModuleTranslationUpdateManyWithoutStudy_moduleInput,
 } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
+import { stringArg, arg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
-import pullAll from "lodash/pullAll"
+import * as pullAll from "lodash/pullAll"
 
 const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addStudyModule", {
     type: "StudyModule",
     args: {
+      slug: stringArg({ required: true }),
+      name: stringArg(),
       study_module_translations: arg({
         type: "StudyModuleTranslationCreateWithoutStudy_moduleInput",
         list: true,
@@ -23,11 +25,13 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
-      const { study_module_translations } = args
+      const { slug, name, study_module_translations } = args
 
       const prisma: Prisma = ctx.prisma
 
       const newStudyModule: StudyModule = await prisma.createStudyModule({
+        slug,
+        name,
         study_module_translations: !!study_module_translations
           ? { create: study_module_translations }
           : null,
@@ -45,6 +49,9 @@ const updateStudyModule = async (
     type: "StudyModule",
     args: {
       id: idArg({ required: false }),
+      slug: stringArg(),
+      new_slug: stringArg(),
+      name: stringArg(),
       study_module_translations: arg({
         type: "StudyModuleTranslationWithIdInput",
         list: true,
@@ -55,10 +62,10 @@ const updateStudyModule = async (
 
       const prisma: Prisma = ctx.prisma
 
-      const { id, study_module_translations } = args
+      const { id, slug, new_slug, name, study_module_translations } = args
 
       const existingTranslations = await prisma
-        .studyModule({ id })
+        .studyModule({ slug })
         .study_module_translations()
       const newTranslations: StudyModuleTranslationCreateWithoutStudy_moduleInput[] = (
         study_module_translations || []
@@ -86,8 +93,11 @@ const updateStudyModule = async (
       return prisma.updateStudyModule({
         where: {
           id,
+          slug,
         },
         data: {
+          name,
+          slug: new_slug ? new_slug : slug,
           study_module_translations: Object.keys(translationMutation).length
             ? translationMutation
             : null,
@@ -101,16 +111,18 @@ const deleteStudyModule = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteStudyModule", {
     type: "StudyModule",
     args: {
-      id: idArg({ required: true }),
+      id: idArg({ required: false }),
+      slug: stringArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
 
       const prisma: Prisma = ctx.prisma
-      const { id } = args
+      const { id, slug } = args
 
       return prisma.deleteStudyModule({
         id,
+        slug,
       })
     },
   })

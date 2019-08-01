@@ -24,6 +24,8 @@ export interface StudyModuleDetails_study_module_study_module_translations {
 export interface StudyModuleDetails_study_module {
   __typename: "StudyModule"
   id: any
+  slug: string
+  name: string
   courses: StudyModuleDetails_study_module_courses[] | null
   study_module_translations:
     | StudyModuleDetails_study_module_study_module_translations[]
@@ -35,5 +37,5 @@ export interface StudyModuleDetails {
 }
 
 export interface StudyModuleDetailsVariables {
-  id: string
+  slug: string
 }

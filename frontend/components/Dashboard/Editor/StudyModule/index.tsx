@@ -4,11 +4,12 @@ import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { useMutation } from "react-apollo-hooks"
+import { useMutation, useApolloClient } from "react-apollo-hooks"
 import {
   AddStudyModuleMutation,
   UpdateStudyModuleMutation,
   DeleteStudyModuleMutation,
+  CheckModuleSlugQuery,
 } from "./graphql"
 import { AllModulesQuery } from "../../../../pages/study-modules"
 import { initialValues } from "./form-validation"
@@ -24,14 +25,23 @@ const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
   const deleteStudyModule = useMutation(DeleteStudyModuleMutation, {
     refetchQueries: [{ query: AllModulesQuery }],
   })
+  const checkSlug = CheckModuleSlugQuery
+
+  const client = useApolloClient()
 
   const _module: StudyModuleFormValues = module
     ? {
         ...module,
+        new_slug: module.slug,
       }
     : initialValues
 
-  const validationSchema = studyModuleEditSchema
+  const validationSchema = studyModuleEditSchema({
+    client,
+    checkSlug,
+    initialSlug:
+      module && module.slug && module.slug !== "" ? module.slug : null,
+  })
 
   const onSubmit = useCallback(
     async (
@@ -50,13 +60,19 @@ const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
           )
         : null
 
+      const newValues: StudyModuleFormValues = {
+        ...values,
+        id: undefined,
+        slug: values.id ? values.slug : values.new_slug,
+      }
+
       const moduleMutation = newStudyModule ? addStudyModule : updateStudyModule
 
       try {
         setStatus({ message: "Saving..." })
         const study_module = await moduleMutation({
           variables: {
-            ...values,
+            ...newValues,
             study_module_translations,
           },
         })

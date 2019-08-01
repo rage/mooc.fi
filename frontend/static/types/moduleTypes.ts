@@ -67,7 +67,7 @@ export interface ObjectifiedModuleTranslations {
 export interface ObjectifiedModule
   extends Omit<
     AllModules_study_modules,
-    "study_module_translations" | "courses"
+    "name" | "study_module_translations" | "courses"
   > {
   study_module_translations:
     | ObjectifiedModuleTranslations

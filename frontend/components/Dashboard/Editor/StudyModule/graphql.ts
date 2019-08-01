@@ -2,10 +2,18 @@ import { gql } from "apollo-boost"
 
 export const AddStudyModuleMutation = gql`
   mutation addStudyModule(
+    $slug: String!
+    $name: String!
     $study_module_translations: [StudyModuleTranslationCreateWithoutStudy_moduleInput!]
   ) {
-    addStudyModule(study_module_translations: $study_module_translations) {
+    addStudyModule(
+      slug: $slug
+      name: $name
+      study_module_translations: $study_module_translations
+    ) {
       id
+      slug
+      name
       study_module_translations {
         id
         language
@@ -18,14 +26,22 @@ export const AddStudyModuleMutation = gql`
 
 export const UpdateStudyModuleMutation = gql`
   mutation updateStudyModule(
-    $id: ID!
+    $id: ID
+    $slug: String!
+    $new_slug: String
+    $name: String!
     $study_module_translations: [StudyModuleTranslationWithIdInput!]
   ) {
     updateStudyModule(
       id: $id
+      slug: $slug
+      new_slug: $new_slug
+      name: $name
       study_module_translations: $study_module_translations
     ) {
       id
+      slug
+      name
       study_module_translations {
         id
         language
@@ -37,9 +53,16 @@ export const UpdateStudyModuleMutation = gql`
 `
 
 export const DeleteStudyModuleMutation = gql`
-  mutation deleteStudyModule($id: ID!) {
-    deleteStudyModule(id: $id) {
+  mutation deleteStudyModule($slug: String!) {
+    deleteStudyModule(slug: $slug) {
       id
+      slug
     }
+  }
+`
+
+export const CheckModuleSlugQuery = gql`
+  query checkModuleSlug($slug: String) {
+    study_module_exists(slug: $slug)
   }
 `

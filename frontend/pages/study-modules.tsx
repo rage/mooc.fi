@@ -15,11 +15,18 @@ import { isAdmin, isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleGrid from "../components/ModuleGrid"
+import { ObjectifiedModule } from "../static/types/moduleTypes"
+import {
+  filterAndModifyByLanguage,
+  mapNextLanguageToLocaleCode,
+} from "../util/moduleFunctions"
 
 export const AllModulesQuery = gql`
-  query AllStudyModules {
+  query AllModulesWithTranslations {
     study_modules {
       id
+      slug
+      name
       study_module_translations {
         id
         language
@@ -38,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const StudyModules = (admin: boolean) => {
+const StudyModules = (admin: boolean, language: string) => {
   const classes = useStyles()
 
   const { loading, error, data } = useQuery<AllModules>(AllModulesQuery)
@@ -72,7 +79,7 @@ const StudyModules = (admin: boolean) => {
       >
         All Study Modules
       </Typography>
-      {<ModuleGrid modules={data.study_modules} />}
+      <ModuleGrid modules={data.study_modules} />
     </WideContainer>
   )
 }
@@ -84,6 +91,8 @@ StudyModules.getInitialProps = function(context: NextContext) {
   }
   return {
     admin,
+    // @ts-ignore
+    language: context && context.req ? context.req.language : "",
     namespacesRequired: ["common"],
   }
 }

@@ -1,10 +1,10 @@
 import React from "react"
 import { Grid } from "@material-ui/core"
 import ModuleCard from "./ModuleCard"
-import { AllModules_study_modules } from "./../static/types/AllModules"
+import { ObjectifiedModule } from "./../static/types/moduleTypes"
 
 interface ModuleGridProps {
-  modules: AllModules_study_modules[]
+  modules: ObjectifiedModule[]
 }
 
 function ModuleGrid(props: ModuleGridProps) {
@@ -13,7 +13,7 @@ function ModuleGrid(props: ModuleGridProps) {
     <section>
       <Grid container spacing={3}>
         {(modules || []).map(module => (
-          <ModuleCard key={module.id} module={module} />
+          <ModuleCard key={module.slug} module={module} />
         ))}
         <ModuleCard key={"newmodule"} />
       </Grid>

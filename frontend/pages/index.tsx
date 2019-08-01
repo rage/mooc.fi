@@ -30,6 +30,7 @@ const AllModulesQuery = gql`
   query AllModules {
     study_modules {
       id
+      slug
       courses {
         id
         slug
@@ -105,13 +106,6 @@ const Home = (props: HomeProps) => {
   useEffect(() => {
     setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
   }, [NextI18Next.i18n.language])
-  //use the language from state to filter shown courses to only those which have translations
-  //on the current language
-
-  /*   const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
-    Courses.allcourses,
-    language,
-  ) */
 
   if (error) {
     ;<div>
@@ -127,6 +121,8 @@ const Home = (props: HomeProps) => {
     return <div>Error: no data?</div>
   }
 
+  //use the language from state to filter shown courses to only those which have translations
+  //on the current language
   const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
     data.courses,
     language,

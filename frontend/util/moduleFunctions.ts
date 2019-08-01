@@ -94,6 +94,7 @@ export const filterAndModifyByLanguage = (
 ) => {
   const modifiedModules = objectifyTranslations(modules)
 
+  console.log("modifiedModules", modifiedModules, language)
   return modifiedModules
     .filter(
       mod =>

@@ -15,7 +15,7 @@ import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import get from "lodash/get"
-import { AllModules_study_modules } from "./../static/types/AllModules"
+import { ObjectifiedModule } from "./../static/types/moduleTypes"
 /* import { addDomain } from "../util/imageUtils"
 import CourseImage from "./CourseImage" */
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function ModuleCard({ module }: { module?: AllModules_study_modules }) {
+function ModuleCard({ module }: { module?: ObjectifiedModule }) {
   const classes = useStyles()
 
   //  require(`../static/images/courseimages/${course.slug}.png`)
@@ -65,19 +65,19 @@ function ModuleCard({ module }: { module?: AllModules_study_modules }) {
         </CardMedia>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom={true}>
-            {module ? "Module name placeholder" : "New Module"}
+            {module ? module.name : "New Module"}
           </Typography>
         </CardContent>
         <CardActionArea>
           {module ? (
             <React.Fragment>
               <NextI18Next.Link
-                as={`/study-modules/${module.id}`}
-                href={`/study-modules/${module.id}`}
+                as={`/study-modules/${module.slug}`}
+                href={`/study-modules/${module.slug}`}
               >
                 <a
-                  href={`/study-modules/${module.id}`}
-                  aria-label={`To the homepage of study module ${"placeholder"}`}
+                  href={`/study-modules/${module.slug}`}
+                  aria-label={`To the homepage of study module ${module.name}`}
                 >
                   <Button variant="contained" color="secondary" fullWidth>
                     <DashboardIcon />
@@ -86,10 +86,10 @@ function ModuleCard({ module }: { module?: AllModules_study_modules }) {
                 </a>
               </NextI18Next.Link>
               <NextI18Next.Link
-                as={`/study-modules/${module.id}/edit`}
-                href={`/study-modules/${module.id}/edit`}
+                as={`/study-modules/${module.slug}/edit`}
+                href={`/study-modules/${module.slug}/edit`}
               >
-                <a href={`/study-modules/${module.id}/edit`}>
+                <a href={`/study-modules/${module.slug}/edit`}>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
                     Edit
@@ -102,7 +102,7 @@ function ModuleCard({ module }: { module?: AllModules_study_modules }) {
               as={`/study-modules/new`}
               href={`/study-modules/new`}
             >
-              <a href="/study-mdules/new">
+              <a href="/study-modules/new">
                 <Button variant="contained" color="secondary" fullWidth>
                   <AddIcon />
                   Create
