@@ -28,7 +28,6 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("courses", {
     type: "Course",
     resolve: (_, args, ctx) => {
-      checkAccess(ctx)
       return ctx.prisma.courses()
     },
   })

@@ -13,11 +13,16 @@ const storage = isProduction
   : {
       bucket: () => ({
         file: () => ({
-          save: (): any => Promise.resolve(true),
+          save: (
+            buffer: any,
+            options: any,
+            cb: (error?: string) => void,
+          ): any => cb(),
           delete: (): any => Promise.resolve(true),
         }),
       }),
-    } // heh
+    }
+// FIXME: doesn't actually upload in dev even with base64 set to false unless isproduction is true
 
 const bucket = storage.bucket(bucketName)
 
@@ -45,7 +50,8 @@ export const uploadImage = async ({
   }
 
   const file = bucket.file(filename)
-  const outputFilename = `https://storage.googleapis.com/${bucketName}/${filename}`
+  /*   const outputFilename = `https://images.mooc.fi/${filename}`
+  //`https://storage.googleapis.com/${bucketName}/${filename}` */
 
   return new Promise((resolve, reject) => {
     file.save(
@@ -60,7 +66,7 @@ export const uploadImage = async ({
           reject(error)
         }
 
-        resolve(outputFilename)
+        resolve(filename)
       },
     )
   })
@@ -75,9 +81,7 @@ export const deleteImage = async (filename: string): Promise<boolean> => {
     return Promise.resolve(true)
   }
 
-  const file = bucket.file(
-    filename.replace(`https://storage.googleapis.com/${bucketName}/`, ""),
-  )
+  const file = bucket.file(filename)
 
   return file
     .delete()

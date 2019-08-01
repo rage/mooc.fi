@@ -1,5 +1,10 @@
 import * as React from "react"
-import { Typography, CircularProgress } from "@material-ui/core"
+import {
+  Typography,
+  Container,
+  Grid,
+  CircularProgress,
+} from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
@@ -17,6 +22,7 @@ export const AllCoursesQuery = gql`
       id
       name
       slug
+      status
       photo {
         id
         compressed
@@ -54,7 +60,13 @@ const Courses = (admin: boolean) => {
   }
 
   if (loading || !data) {
-    return <CircularProgress color="primary" />
+    return (
+      <Container style={{ display: "flex", height: "600px" }}>
+        <Grid item container justify="center" alignItems="center">
+          <CircularProgress color="primary" size={60} />
+        </Grid>
+      </Container>
+    )
   }
 
   return (

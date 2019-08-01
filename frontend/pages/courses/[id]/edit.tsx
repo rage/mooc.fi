@@ -1,16 +1,18 @@
 import React from "react"
-import { Typography } from "@material-ui/core"
+import { Typography, Paper } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../../../components/Dashboard/AdminError"
 import { WideContainer } from "../../../components/Container"
 import CourseEdit from "../../../components/Dashboard/CourseEdit/CourseEdit"
 import { withRouter, SingletonRouter } from "next/router"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery, useMutation } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
-import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
-import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
+import NextI18Next from "../../../i18n"
+
+// import { Courses as courseData } from "../courseData.js"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -49,21 +51,35 @@ export const CourseQuery = gql`
   }
 `
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    header: {
+      marginTop: "1em",
+    },
+    paper: {
+      padding: "1em",
+    },
+  }),
+)
+
 interface EditCourseProps {
   router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
+  language: string
 }
 
 const EditCourse = (props: EditCourseProps) => {
-  const { admin, router } = props
-  const isNew = router.asPath === "/courses/new"
-  let slug: string = ""
-  if (router && router.query) {
-    if (typeof router.query.id === "string") {
-      slug = router.query.id
-    }
-  }
+  const { admin, router, language } = props
+  const slug = router.query.id
+
+  const classes = useStyles()
+
+  let redirectTimeout: number | null = null
+
+  // use mock data
+  /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
+  const loading = false */
 
   const { data, loading, error } = useQuery(CourseQuery, {
     variables: { slug: slug },
@@ -77,45 +93,49 @@ const EditCourse = (props: EditCourseProps) => {
     return null
   }
 
-  if (!data.course && !isNew) {
-    router.push("/courses/new")
+  if (!data.course) {
+    redirectTimeout = setTimeout(
+      () => router.push(`/${language ? language + "/" : ""}courses`),
+      5000,
+    )
   }
 
   return (
     <section>
-      <DashboardBreadCrumbs />
-      {data.course ? <DashboardTabBar slug={slug} selectedValue={3} /> : ""}
       <WideContainer>
+        <Typography
+          component="h1"
+          variant="h2"
+          gutterBottom={true}
+          align="center"
+          className={classes.header}
+        >
+          Edit course
+        </Typography>
         {data.course ? (
-          <>
-            <Typography
-              component="h1"
-              variant="h1"
-              align="center"
-              style={{ marginTop: "2rem", marginBottom: "0.5rem" }}
-            >
-              {data.course.name}
-            </Typography>
-            <Typography
-              component="p"
-              variant="subtitle1"
-              align="center"
-              style={{ marginBottom: "2rem" }}
-            >
-              Edit course
-            </Typography>
-          </>
+          <CourseEdit course={data.course} />
         ) : (
-          <Typography
-            component="h1"
-            variant="h1"
-            align="center"
-            style={{ marginTop: "2rem", marginBottom: "0.5rem" }}
-          >
-            Create a new course
-          </Typography>
+          <Paper className={classes.paper} elevation={2}>
+            <Typography variant="body1">
+              Course with id <b>{slug}</b> not found!
+            </Typography>
+            <Typography variant="body2">
+              You will be redirected back to the course list in 5 seconds -
+              press{" "}
+              <NextI18Next.Link href="/courses">
+                <a
+                  onClick={() =>
+                    redirectTimeout && clearTimeout(redirectTimeout)
+                  }
+                  href="/courses"
+                >
+                  here
+                </a>
+              </NextI18Next.Link>{" "}
+              to go there now.
+            </Typography>
+          </Paper>
         )}
-        <CourseEdit course={data.course} />
       </WideContainer>
     </section>
   )
@@ -128,6 +148,8 @@ EditCourse.getInitialProps = function(context: NextContext) {
   }
   return {
     admin,
+    // @ts-ignore
+    language: context.req.language,
     namespacesRequired: ["common"],
   }
 }

@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors, FieldProps } from "formik"
-import { Select, TextField } from "formik-material-ui"
+import { TextField } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "../ConfirmationDialog"
-import { languages } from "./form-validation"
+import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,19 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
-
-const StyledSelect = styled(Select)`
-  margin-bottom: 1rem;
-`
-
-const initialTranslation: CourseTranslationFormValues = {
-  id: undefined,
-  language: "",
-  name: undefined,
-  description: undefined,
-  link: undefined,
-  open_university_course_code: undefined,
-}
 
 const languageFilter = (
   index: number,
@@ -103,7 +90,7 @@ const CourseTranslationEditForm = ({
                           fullWidth
                           variant="outlined"
                           select
-                          autocomplete="off"
+                          autoComplete="off"
                           component={StyledTextField}
                         >
                           {languages.map(option => (
@@ -118,7 +105,7 @@ const CourseTranslationEditForm = ({
                           label="Name"
                           error={getIn(errors, `[${index}].name`)}
                           fullWidth
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -130,7 +117,7 @@ const CourseTranslationEditForm = ({
                           fullWidth
                           multiline
                           rows={5}
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -140,7 +127,7 @@ const CourseTranslationEditForm = ({
                           label="Link"
                           error={getIn(errors, `[${index}].link`)}
                           fullWidth
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -153,7 +140,7 @@ const CourseTranslationEditForm = ({
                             `[${index}].open_university_course_code`,
                           )}
                           fullWidth
-                          autocomplete="off"
+                          autoComplete="off"
                           variant="outlined"
                           component={StyledTextField}
                         />
@@ -174,6 +161,7 @@ const CourseTranslationEditForm = ({
                           <Button
                             variant="contained"
                             disabled={isSubmitting}
+                            color="secondary"
                             onClick={() => {
                               setDialogVisible(true)
                               setRemovableIndex(index)
