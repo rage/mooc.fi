@@ -4,7 +4,8 @@ export const AddCourseMutation = gql`
   mutation addCourse(
     $name: String
     $slug: String
-    $photo: ID
+    $new_photo: Upload
+    $base64: Boolean
     $promote: Boolean
     $start_point: Boolean
     $hidden: Boolean
@@ -15,7 +16,8 @@ export const AddCourseMutation = gql`
     addCourse(
       name: $name
       slug: $slug
-      photo: $photo
+      new_photo: $new_photo
+      base64: $base64
       promote: $promote
       start_point: $start_point
       hidden: $hidden
@@ -58,6 +60,8 @@ export const UpdateCourseMutation = gql`
     $name: String
     $slug: String
     $photo: ID
+    $new_photo: Upload
+    $base64: Boolean
     $promote: Boolean
     $start_point: Boolean
     $hidden: Boolean
@@ -72,6 +76,8 @@ export const UpdateCourseMutation = gql`
       slug: $slug
       new_slug: $new_slug
       photo: $photo
+      new_photo: $new_photo
+      base64: $base64
       promote: $promote
       start_point: $start_point
       hidden: $hidden

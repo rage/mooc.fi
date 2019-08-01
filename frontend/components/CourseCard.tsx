@@ -7,6 +7,7 @@ import {
   CardMedia,
   Typography,
   Button,
+  ButtonBase,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
@@ -15,6 +16,8 @@ import NextI18Next from "../i18n"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import get from "lodash/get"
 import { AllCourses_courses } from "./../static/types/AllCourses"
+import { addDomain } from "../util/imageUtils"
+import CourseImage from "./CourseImage"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -22,41 +25,37 @@ const useStyles = makeStyles(() =>
       padding: "0.8em",
     },
     media: {
+      // minHeight: 250,
       width: "100%",
-      height: "100%",
+      height: 250,
       objectFit: "cover",
     },
   }),
 )
 
-function CourseCard({
-  course,
-  key,
-}: {
-  course?: AllCourses_courses
-  key: string
-}) {
+function CourseCard({ course }: { course?: AllCourses_courses }) {
   const classes = useStyles()
 
   return (
     <Grid item xs={12} sm={6} lg={3}>
       <Card className={classes.card}>
-        <CardMedia
-          component={course ? "img" : "div"}
-          alt="Course Logo"
-          image={course ? get(course, "photo.compressed") : undefined}
-          className={classes.media}
-        >
-          {!course ? (
-            <Grid
-              container
-              justify="center"
-              alignItems="center"
-              style={{ display: "flex", height: "100%" }}
-            >
-              <AddCircleIcon fontSize="large" />
-            </Grid>
-          ) : null}
+        <CardMedia className={classes.media}>
+          {course ? (
+            <CourseImage photo={course.photo} alt={course.name} />
+          ) : (
+            <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
+              <a href="/courses/new">
+                <Grid
+                  container
+                  justify="center"
+                  alignItems="center"
+                  style={{ height: "100%" }}
+                >
+                  <AddCircleIcon fontSize="large" />
+                </Grid>
+              </a>
+            </NextI18Next.Link>
+          )}
         </CardMedia>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom={true}>
@@ -84,7 +83,7 @@ function CourseCard({
                 as={`/courses/${course.slug}/edit`}
                 href={`/courses/${course.slug}/edit`}
               >
-                <a href={`courses/${course.slug}/edit`}>
+                <a href={`/courses/${course.slug}/edit`}>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
                     Edit
@@ -93,8 +92,8 @@ function CourseCard({
               </NextI18Next.Link>
             </React.Fragment>
           ) : (
-            <NextI18Next.Link as={`/courses/new`} href={`/courses/edit`}>
-              <a href="/edit-course">
+            <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
+              <a href="/courses/new">
                 <Button variant="contained" color="secondary" fullWidth>
                   <AddIcon />
                   Create

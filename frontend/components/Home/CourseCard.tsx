@@ -4,12 +4,9 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
-
-const CourseImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`
+import CourseImage from "../CourseImage"
+import { AllCourses_courses_photo } from "../../static/types/AllCourses"
+import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 const Background = styled(ButtonBase)`
   background-color: white;
@@ -68,32 +65,12 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
     flex-direction: row;
   }
 `
-interface ImageProps {
-  photo: any[]
-  isUpcoming: boolean
-}
-function ImageInWebp(props: ImageProps) {
-  const { photo, isUpcoming } = props
-
-  return (
-    <picture>
-      <source srcSet={photo[0]} type="image/webp" />
-      <source srcSet={photo[1]} type="image/png" />
-      <CourseImage
-        src={photo[1]}
-        alt=""
-        style={{ opacity: isUpcoming ? 0.6 : 1 }}
-      />
-    </picture>
-  )
-}
-
 type FilteredCourse = {
   name: string
   description: string
   id: string
   link: string
-  photo: any[]
+  photo: AllCourses_courses_photo
   promote: boolean
   slug: string
   start_point: boolean
@@ -101,7 +78,7 @@ type FilteredCourse = {
 }
 
 interface CourseCardProps {
-  course: FilteredCourse
+  course: ObjectifiedCourse
 }
 
 function CourseCard(props: CourseCardProps) {
@@ -111,13 +88,13 @@ function CourseCard(props: CourseCardProps) {
       <Background focusRipple disabled={course.status === "Upcoming"}>
         <CardLinkWithGA
           eventLabel={`coursesite: ${course.name}`}
-          to={course.link}
+          to={course.link || ""}
           target="_blank"
         >
           <ImageArea>
-            <ImageInWebp
+            <CourseImage
               photo={course.photo}
-              isUpcoming={course.status === "Upcoming"}
+              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
             />
           </ImageArea>
           <TextArea>

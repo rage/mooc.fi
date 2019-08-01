@@ -4,13 +4,23 @@ import ExplanationHero from "../components/Home/ExplanationHero"
 import NaviCardList from "../components/Home/NaviCardList"
 import CourseHighlights from "../components/Home/CourseHighlights"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
-import { filterAndModifyCoursesByLanguage } from "../util/moduleFunctions"
+import {
+  filterAndModifyCoursesByLanguage,
+  filterAndModifyByLanguage,
+  mapNextLanguageToLocaleCode,
+} from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import { AllModules as AllModulesData } from "../static/types/AllModules"
+import {
+  AllCourses as AllCoursesData,
+  AllCourses_courses_photo,
+  AllCourses_courses,
+} from "../static/types/AllCourses"
 import { Courses } from "../courseData"
 //import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import { ObjectifiedCourse } from "../static/types/moduleTypes"
 import ErrorBoundary from "../components/ErrorBoundary"
 const highlightsBanner = "../static/images/backgroundPattern.svg"
 
@@ -21,6 +31,7 @@ const AllModulesQuery = gql`
       courses {
         id
         slug
+        name
         photo {
           id
           compressed
@@ -29,6 +40,7 @@ const AllModulesQuery = gql`
         promote
         status
         start_point
+        hidden
         course_translations {
           id
           language
@@ -47,17 +59,31 @@ const AllModulesQuery = gql`
   }
 `
 
-type FilteredCourse = {
-  name: string
-  description: string
-  id: string
-  link: string
-  photo: any[]
-  promote: boolean
-  slug: string
-  start_point: boolean
-  status: string
-}
+const AllCoursesQuery = gql`
+  query AllCourses {
+    courses {
+      id
+      slug
+      name
+      photo {
+        id
+        compressed
+        uncompressed
+      }
+      promote
+      status
+      start_point
+      hidden
+      course_translations {
+        id
+        language
+        name
+        description
+        link
+      }
+    }
+  }
+`
 
 interface HomeProps {
   t: Function
@@ -66,20 +92,24 @@ interface HomeProps {
 
 const Home = (props: HomeProps) => {
   const { t, tReady } = props
-  const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
+  // const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
+  const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
 
   //save the default language of NextI18Next instance to state
-  const [language, setLanguage] = useState(NextI18Next.config.defaultLanguage)
+  const [language, setLanguage] = useState(
+    mapNextLanguageToLocaleCode(NextI18Next.config.defaultLanguage),
+  )
   //every time the i18n language changes, update the state
   useEffect(() => {
-    setLanguage(NextI18Next.i18n.language)
+    setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
   }, [NextI18Next.i18n.language])
   //use the language from state to filter shown courses to only those which have translations
   //on the current language
-  const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
+
+  /*   const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
     Courses.allcourses,
     language,
-  )
+  ) */
 
   if (error) {
     ;<div>
@@ -90,6 +120,15 @@ const Home = (props: HomeProps) => {
   if (loading || !tReady) {
     return <CircularProgress />
   }
+
+  if (!data) {
+    return <div>Error: no data?</div>
+  }
+
+  const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
+    data.courses,
+    language,
+  )
 
   return (
     <div>
@@ -128,7 +167,7 @@ const Home = (props: HomeProps) => {
           />
         </ErrorBoundary>
         <CourseHighlights
-          courses={courses.filter(c => c.status === "Upcoming")}
+          courses={courses.filter(c => !c.hidden && c.status === "Upcoming")}
           title={t("upcomingCoursesTitle")}
           headerImage={highlightsBanner}
           backgroundColor="#007DC8"

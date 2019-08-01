@@ -53,12 +53,6 @@ const main = async () => {
     return app.render(req, res, actualPage, {})
   })
 
-  server.get("/course/:id", (req, res) => {
-    const actualPage = "/course"
-    const queryParams = { course: req.params.id }
-    return app.render(req, res, actualPage, queryParams)
-  })
-
   server.get("/register-completion/:slug", (req, res) => {
     const actualPage = "/register-completion"
     const queryParams = { slug: req.params.slug }
