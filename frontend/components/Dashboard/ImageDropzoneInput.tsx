@@ -1,7 +1,13 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { FieldProps } from "formik"
 import { useDropzone } from "react-dropzone"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+
+/* TODO/FIXME: isDragReject (coming from react-dropzone) seems to equal true 
+  in some cases even if the dragged file is accepted. This means that sometimes 
+  the error is shown and the box styling changes to error state 
+  with correct input!
+*/
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,32 +18,45 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 2,
       borderStyle: "dashed",
       padding: "20px",
-      /*       (props: { [key: string]: any }) => 
+      backgroundColor: (props: { [key: string]: any }) =>
         props.isDragActive
-          ? "dashed"
-          : "solid", */
+          ? props.isDragAccept
+            ? "#E0FFE0"
+            : "#FFC0C0"
+          : "#FFFFFF",
       borderColor: (props: { [key: string]: any }) =>
         props.isDragActive
-          ? props.isDragReject
-            ? "#FF0000"
-            : "#00A000"
+          ? props.isDragAccept
+            ? "#00A000"
+            : "#FF0000"
           : "#A0A0A0",
       transition: "border .24s ease-in-out",
     },
   }),
 )
 
+interface MessageProps {
+  message: string
+  error?: boolean
+}
+
+interface DropzoneProps extends FieldProps {
+  onImageLoad: (result: string | ArrayBuffer | null) => void
+  children: any
+}
+
+const defaultMessage = {
+  message: "Drop image or click to select",
+}
+
 const ImageDropzoneInput = ({
   field,
   form,
   onImageLoad,
   children,
-}: FieldProps & {
-  onImageLoad: (result: string | ArrayBuffer | null) => void
-  children: any
-}) => {
+}: DropzoneProps) => {
   const { touched, errors, setFieldValue } = form
-  const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<MessageProps>(defaultMessage)
 
   const onDrop = (accepted: File[], rejected: File[]) => {
     const reader = new FileReader()
@@ -50,9 +69,8 @@ const ImageDropzoneInput = ({
     }
 
     if (rejected.length) {
-      setError("not an image!")
-    } else {
-      setError("")
+      setStatus({ message: "That was not an image!", error: true })
+      setTimeout(() => setStatus(defaultMessage), 2000)
     }
   }
 
@@ -62,6 +80,7 @@ const ImageDropzoneInput = ({
     isDragActive,
     isDragAccept,
     isDragReject,
+    draggedFiles,
     // acceptedFiles,
   } = useDropzone({
     onDrop,
@@ -70,22 +89,29 @@ const ImageDropzoneInput = ({
     preventDropOnDocument: true,
   })
 
-  const classes = useStyles({ isDragActive, isDragAccept, isDragReject })
+  useEffect(() => {
+    if (isDragActive && isDragReject && draggedFiles.length) {
+      setStatus({ message: "Not an acceptable format!", error: true })
+    } else if (isDragActive) {
+      setStatus({ message: "Drop image file here" })
+    } else {
+      setStatus(defaultMessage)
+    }
+  }, [isDragActive, isDragReject, draggedFiles])
+
+  const classes = useStyles({
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  })
 
   return (
     <div className={classes.dropzoneContainer} {...getRootProps()}>
       {children}
       <input {...getInputProps()} />
-      {isDragActive ? (
-        isDragReject ? (
-          <p>Not an acceptable format!</p>
-        ) : (
-          <p>Drop an image file here</p>
-        )
-      ) : (
-        <p>Drop image or click to select</p>
-      )}
-      {error ? <p>{error}</p> : null}
+      <p style={{ color: status.error ? "#FF0000" : "#000000" }}>
+        {status.message}
+      </p>
     </div>
   )
 }

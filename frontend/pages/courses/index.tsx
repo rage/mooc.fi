@@ -1,17 +1,20 @@
 import * as React from "react"
-import { Typography, CircularProgress } from "@material-ui/core"
+import {
+  Typography,
+  Container,
+  Grid,
+  CircularProgress,
+} from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "../lib/authentication"
-import redirect from "../lib/redirect"
+import { isSignedIn, isAdmin } from "../../lib/authentication"
+import redirect from "../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { ApolloClient, gql } from "apollo-boost"
-import { AllCourses as AllCoursesData } from "../static/types/generated/AllCourses"
+import { AllCourses as AllCoursesData } from "../../static/types/generated/AllCourses"
+import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import CourseGrid from "../components/CourseGrid"
-import AdminError from "../components/Dashboard/AdminError"
-import { WideContainer } from "../components/Container"
-
-import { Courses as courseData } from "../courseData.js"
+import CourseGrid from "../../components/CourseGrid"
+import AdminError from "../../components/Dashboard/AdminError"
+import { WideContainer } from "../../components/Container"
 
 export const AllCoursesQuery = gql`
   query AllCourses {
@@ -19,6 +22,7 @@ export const AllCoursesQuery = gql`
       id
       name
       slug
+      status
       photo {
         id
         compressed
@@ -43,11 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const Courses = (admin: boolean) => {
   const classes = useStyles()
 
-  // use mock data
-  /*   const data = { courses: courseData.allcourses.slice(0,3) }
-  const error = false
-  const loading = false */
-
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
 
   if (error) {
@@ -61,7 +60,13 @@ const Courses = (admin: boolean) => {
   }
 
   if (loading || !data) {
-    return <CircularProgress color="primary" />
+    return (
+      <Container style={{ display: "flex", height: "600px" }}>
+        <Grid item container justify="center" alignItems="center">
+          <CircularProgress color="primary" size={60} />
+        </Grid>
+      </Container>
+    )
   }
 
   return (

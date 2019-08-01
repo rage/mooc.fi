@@ -24,6 +24,7 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
     resolve: async (_, args, ctx) => {
       const { id, email, upstream_id } = args
+      checkAccess(ctx)
       const prisma: Prisma = ctx.prisma
       const users: User[] = await prisma.users({
         where: {

@@ -9,6 +9,7 @@ import {
   OpenUniversityRegistrationLinkCreateWithoutCourseInput,
   OpenUniversityRegistrationLinkUpdateManyWithWhereNestedInput,
   OpenUniversityRegistrationLinkScalarWhereInput,
+  Image,
 } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
@@ -16,13 +17,17 @@ import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import * as pullAll from "lodash/pullAll"
 
+import { uploadImage, deleteImage } from "./image"
+
 const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
     type: "Course",
     args: {
       name: stringArg(),
       slug: stringArg(),
-      photo: idArg(),
+      // photo: idArg(),
+      new_photo: arg({ type: "Upload", required: false }),
+      base64: booleanArg(),
       start_point: booleanArg(),
       promote: booleanArg(),
       hidden: booleanArg(),
@@ -46,7 +51,8 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         slug,
         start_point,
         hidden,
-        photo,
+        new_photo,
+        base64,
         promote,
         status,
         study_module,
@@ -55,6 +61,15 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       } = args
 
       const prisma: Prisma = ctx.prisma
+
+      let photo = null
+
+      if (new_photo) {
+        const newImage = await uploadImage({ prisma, file: new_photo, base64 })
+
+        photo = newImage.id
+      }
+
       const course: Course = await prisma.createCourse({
         name: name,
         slug: slug,
@@ -94,6 +109,8 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       slug: stringArg(),
       new_slug: stringArg(),
       photo: idArg(),
+      new_photo: arg({ type: "Upload", required: false }),
+      base64: booleanArg(),
       start_point: booleanArg(),
       promote: booleanArg(),
       hidden: booleanArg(),
@@ -110,13 +127,15 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
+
       const prisma: Prisma = ctx.prisma
       const {
         id,
         name,
         slug,
         new_slug,
-        photo,
+        new_photo,
+        base64,
         start_point,
         promote,
         hidden,
@@ -125,6 +144,18 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations,
         open_university_registration_links,
       } = args
+
+      let photo = args.photo
+
+      if (new_photo) {
+        const newImage = await uploadImage({ prisma, file: new_photo, base64 })
+
+        if (photo && photo !== newImage.id) {
+          // TODO: do something with return value
+          await deleteImage({ prisma, id: photo })
+        }
+        photo = newImage.id
+      }
 
       // FIXME: I know there's probably a better way to do this
       const existingTranslations = await prisma
@@ -156,17 +187,14 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const existingRegistrationLinks = await prisma
         .course({ slug })
         .open_university_registration_links()
-
       const newRegistrationLinks: OpenUniversityRegistrationLinkCreateWithoutCourseInput[] = (
         open_university_registration_links || []
       ).filter(t => !t.id)
-
       const updatedRegistrationLinks: OpenUniversityRegistrationLinkUpdateManyWithWhereNestedInput[] = (
         open_university_registration_links || []
       )
         .filter(t => !!t.id)
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-
       const removedRegistrationLinkIds: OpenUniversityRegistrationLinkScalarWhereInput[] = pullAll(
         (existingRegistrationLinks || []).map(t => t.id),
         (open_university_registration_links || [])
@@ -226,7 +254,12 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const prisma: Prisma = ctx.prisma
       const { id, slug } = args
 
-      // TODO: delete photo here?
+      const photo: Image = await prisma.course({ id, slug }).photo()
+
+      if (photo) {
+        await deleteImage({ prisma, id: photo.id })
+      }
+
       return prisma.deleteCourse({
         id,
         slug,
