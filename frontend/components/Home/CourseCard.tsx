@@ -16,11 +16,11 @@ const Background = styled(ButtonBase)`
   display: flex;
   height: 100%;
   width: 350px;
-  @media (max-width: 600px) {
+  @media (max-width: 960px) {
     width: 100%;
   }
   @media (min-width: 600px) and (max-width: 960px) {
-    width: 500px;
+    width: 100%;
   }
 `
 

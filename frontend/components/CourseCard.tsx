@@ -13,13 +13,13 @@ import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import NextI18Next from "../i18n"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import get from "lodash/get"
 import { AllCourses_courses } from "./../static/types/AllCourses"
 import { addDomain } from "../util/imageUtils"
 import CourseImage from "./CourseImage"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     card: {
       padding: "0.8em",
@@ -35,9 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CourseCard({ course }: { course?: AllCourses_courses }) {
   const classes = useStyles()
-
-  //  require(`../static/images/courseimages/${course.slug}.png`)
-  // removed doggos as a placeholder for the time being
 
   return (
     <Grid item xs={12} sm={6} lg={3}>
@@ -69,11 +66,11 @@ function CourseCard({ course }: { course?: AllCourses_courses }) {
           {course ? (
             <React.Fragment>
               <NextI18Next.Link
-                as={`/course/${course.slug}`}
-                href={`/course?course=${course.slug}`}
+                as={`/courses/${course.slug}`}
+                href={`/courses/${course.slug}`}
               >
                 <a
-                  href={`/course?course=${course.slug}`}
+                  href={`/courses/${course.slug}`}
                   aria-label={`To the homepage of course ${course.name}`}
                 >
                   <Button variant="contained" color="secondary" fullWidth>

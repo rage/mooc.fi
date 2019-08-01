@@ -11,6 +11,17 @@ import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
+import { useQuery } from "react-apollo-hooks"
+import { gql } from "apollo-boost"
+
+export const CourseDetailsFromSlugQuery = gql`
+  query CourseDetails($slug: String) {
+    course(slug: $slug) {
+      id
+      name
+    }
+  }
+`
 
 interface CompletionsProps {
   admin: boolean
@@ -21,14 +32,6 @@ const Completions = (props: CompletionsProps) => {
   const [languageValue, setLanguageValue] = useState("fi_FI")
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     setLanguageValue((event.target as HTMLInputElement).value)
-  }
-  const [selection, setSelection] = useState(0)
-
-  const handleSelectionChange = (
-    event: React.ChangeEvent<{}>,
-    value: number,
-  ) => {
-    setSelection(value)
   }
 
   let slug: string = ""
@@ -41,10 +44,24 @@ const Completions = (props: CompletionsProps) => {
   if (!admin) {
     return <AdminError />
   }
+
+  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
+    variables: { slug: slug },
+  })
+
+  //TODO add circular progress
+  if (loading) {
+    return null
+  }
+  //TODO fix error message
+  if (error || !data) {
+    return <p>Error has occurred</p>
+  }
   return (
     <CourseLanguageContext.Provider value={languageValue}>
+      <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={1} />
-      <DashboardBreadCrumbs current_page={slug} />
+
       <WideContainer>
         <Typography
           component="h1"
@@ -52,7 +69,7 @@ const Completions = (props: CompletionsProps) => {
           align="center"
           style={{ marginTop: "2rem", marginBottom: "0.5rem" }}
         >
-          Elements of Ai
+          {data.course.name}
         </Typography>
         <Typography
           component="p"

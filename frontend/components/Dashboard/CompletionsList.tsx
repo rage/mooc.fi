@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { ApolloClient, gql } from "apollo-boost"
+import { gql } from "apollo-boost"
 import { Query } from "react-apollo"
 import {
   AllCompletions as AllCompletionsData,
