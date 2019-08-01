@@ -6,7 +6,7 @@ import { WideContainer } from "../../components/Container"
 import { Typography } from "@material-ui/core"
 import { isAdmin, isSignedIn } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
-import StudyModuleEdit from "../../components/Dashboard/StudyModuleEdit/StudyModuleEdit"
+import Editor from "../../components/Dashboard/Editor"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,7 +43,7 @@ const NewStudyModule = (props: NewStudyModuleProps) => {
         >
           Create a new study module
         </Typography>
-        <StudyModuleEdit />
+        <Editor type="StudyModule" />
       </WideContainer>
     </section>
   )

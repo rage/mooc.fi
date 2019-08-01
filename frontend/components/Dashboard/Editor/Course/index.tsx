@@ -16,25 +16,13 @@ import {
 } from "./types"
 import courseEditSchema, { initialValues } from "./form-validation"
 import { FormikActions, getIn } from "formik"
-import Next18next from "../../../i18n"
-import { AllCoursesQuery } from "../../../pages/courses"
+import Next18next from "../../../../i18n"
+import { AllCoursesQuery } from "../../../../pages/courses"
 import get from "lodash/get"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      textTransform: "uppercase",
-      marginTop: "0.7em",
-      marginBottom: "0.7em",
-    },
-  }),
-)
-
 const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
-  const classes = useStyles()
-
   const addCourse = useMutation(AddCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
@@ -107,7 +95,7 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
 
               if (!prevLink) {
                 return {
-                  language: c.language,
+                  language: c.language || "",
                   course_code: c.open_university_course_code.trim(),
                 }
               }
@@ -165,15 +153,13 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
   }, [])
 
   return (
-    <section>
-      <CourseEditForm
-        course={_course}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        onDelete={onDelete}
-      />
-    </section>
+    <CourseEditForm
+      course={_course}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
+      onDelete={onDelete}
+    />
   )
 }
 

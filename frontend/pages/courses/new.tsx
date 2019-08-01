@@ -6,7 +6,8 @@ import redirect from "../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
-import CourseEdit from "../../components/Dashboard/CourseEdit/CourseEdit"
+import Editor from "../../components/Dashboard/Editor"
+// import CourseEdit from "../../components/Dashboard/Editor/Course"
 import { withRouter, SingletonRouter } from "next/router"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,7 +44,7 @@ const NewCourse = (props: NewCourseProps) => {
         >
           Create a new course
         </Typography>
-        <CourseEdit />
+        <Editor type="Course" />
       </WideContainer>
     </section>
   )

@@ -10,11 +10,11 @@ import {
   UpdateStudyModuleMutation,
   DeleteStudyModuleMutation,
 } from "./graphql"
-import { AllModulesQuery } from "../../../pages/study-modules"
+import { AllModulesQuery } from "../../../../pages/study-modules"
 import { initialValues } from "./form-validation"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import Next18next from "../../../i18n"
+import Next18next from "../../../../i18n"
 
 const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
   const addStudyModule = useMutation(AddStudyModuleMutation, {
@@ -85,15 +85,13 @@ const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
   )
 
   return (
-    <section>
-      <StudyModuleEditForm
-        module={_module}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        onDelete={onDelete}
-      />
-    </section>
+    <StudyModuleEditForm
+      module={_module}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
+      onDelete={onDelete}
+    />
   )
 }
 
