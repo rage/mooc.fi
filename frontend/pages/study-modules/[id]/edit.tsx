@@ -10,7 +10,8 @@ import NextI18Next from "../../../i18n"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
-import StudyModuleEdit from "../../../components/Dashboard/StudyModuleEdit/StudyModuleEdit"
+import Editor from "../../../components/Dashboard/Editor"
+// import StudyModuleEdit from "../../../components/Dashboard/Editor/StudyModule"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($id: ID!) {
@@ -89,7 +90,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
           Edit study module
         </Typography>
         {data.study_module ? (
-          <StudyModuleEdit module={data.study_module} />
+          <Editor type="StudyModule" module={data.study_module} />
         ) : (
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="body1">

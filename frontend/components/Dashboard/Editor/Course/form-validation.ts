@@ -1,6 +1,6 @@
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
-import { CourseStatus } from "../../../static/types/globalTypes"
+import { CourseStatus } from "../../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
 export const initialTranslation: CourseTranslationFormValues = {

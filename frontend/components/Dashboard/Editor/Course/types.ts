@@ -1,9 +1,7 @@
-import {
-  CourseStatus,
-  OpenUniversityRegistrationLinkWithIdInput,
-} from "../../../static/types/globalTypes"
+import { CourseStatus } from "../../../../static/types/globalTypes"
+import { FormValues } from "../types"
 
-export interface CourseFormValues {
+export interface CourseFormValues extends FormValues {
   id?: string | null
   name: string
   slug: string
@@ -21,7 +19,7 @@ export interface CourseFormValues {
   base64: boolean
 }
 
-export interface CourseTranslationFormValues {
+export interface CourseTranslationFormValues extends FormValues {
   id?: string | undefined
   language: string | undefined
   name: string | undefined
@@ -31,7 +29,7 @@ export interface CourseTranslationFormValues {
   open_university_course_code?: string | undefined
 }
 
-export interface OpenUniversityRegistrationValues {
+export interface OpenUniversityRegistrationValues extends FormValues {
   id?: string | undefined
   course_code: string
   language: string

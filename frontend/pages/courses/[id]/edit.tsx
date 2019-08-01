@@ -6,7 +6,8 @@ import redirect from "../../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../../../components/Dashboard/AdminError"
 import { WideContainer } from "../../../components/Container"
-import CourseEdit from "../../../components/Dashboard/CourseEdit/CourseEdit"
+import Editor from "../../../components/Dashboard/Editor"
+// import CourseEdit from "../../../components/Dashboard/Editor/Course"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery, useMutation } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
@@ -113,7 +114,7 @@ const EditCourse = (props: EditCourseProps) => {
           Edit course
         </Typography>
         {data.course ? (
-          <CourseEdit course={data.course} />
+          <Editor type="Course" course={data.course} />
         ) : (
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="body1">

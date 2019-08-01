@@ -11,7 +11,7 @@ import { Field, FieldArray, getIn, FormikErrors, FieldProps } from "formik"
 import { TextField } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { CourseTranslationFormValues } from "./types"
-import ConfirmationDialog from "../ConfirmationDialog"
+import ConfirmationDialog from "../../ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 
