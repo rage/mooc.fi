@@ -6,18 +6,11 @@ import CourseHighlights from "../components/Home/CourseHighlights"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
 import {
   filterAndModifyCoursesByLanguage,
-  filterAndModifyByLanguage,
   mapNextLanguageToLocaleCode,
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { AllModules as AllModulesData } from "../static/types/AllModules"
-import {
-  AllCourses as AllCoursesData,
-  AllCourses_courses_photo,
-  AllCourses_courses,
-} from "../static/types/AllCourses"
-import { Courses } from "../courseData"
+import { AllCourses as AllCoursesData } from "../static/types/generated/AllCourses"
 //import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { ObjectifiedCourse } from "../static/types/moduleTypes"

@@ -15,7 +15,7 @@ import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import NextI18Next from "../i18n"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import get from "lodash/get"
-import { AllCourses_courses } from "./../static/types/AllCourses"
+import { AllCourses_courses } from "./../static/types/generated/AllCourses"
 import { addDomain } from "../util/imageUtils"
 import CourseImage from "./CourseImage"
 

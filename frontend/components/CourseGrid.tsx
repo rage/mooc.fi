@@ -1,7 +1,7 @@
 import React from "react"
 import { Grid } from "@material-ui/core"
 import CourseCard from "./CourseCard"
-import { AllCourses_courses } from "./../static/types/AllCourses"
+import { AllCourses_courses } from "./../static/types/generated/AllCourses"
 
 interface CourseGridProps {
   courses: AllCourses_courses[]

@@ -7,11 +7,7 @@ import {
   DeleteCourseMutation,
   CheckSlugQuery,
 } from "./graphql"
-import {
-  CourseFormValues,
-  CourseTranslationFormValues,
-  OpenUniversityRegistrationValues,
-} from "./types"
+import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import courseEditSchema, { initialValues } from "./form-validation"
 import { FormikActions, getIn } from "formik"
 import Next18next from "../../../i18n"
