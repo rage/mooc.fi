@@ -25,12 +25,18 @@ function buildHref(props: BuildHrefProps) {
   for (i = 0; i < components.length; i++) {
     if (i === 0) {
       BreadCrumbLinks.push(
-        <Link href={`/${components[i]}`}>{components[i]}</Link>,
+        <Link href={`/${components[i]}`} key={components[i]}>
+          {components[i]}
+        </Link>,
       )
     } else {
       let componentsSoFar = components.slice(0, i + 1)
       let href = componentsSoFar.join("/")
-      BreadCrumbLinks.push(<Link href={`/${href}`}>{components[i]}</Link>)
+      BreadCrumbLinks.push(
+        <Link href={`/${href}`} key={components[i]}>
+          {components[i]}
+        </Link>,
+      )
     }
   }
 
