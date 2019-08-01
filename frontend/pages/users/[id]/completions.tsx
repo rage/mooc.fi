@@ -84,9 +84,11 @@ function CompletionsPage(props: CompletionsProps) {
     completions = data.user.completions
   }
   return (
-    <div>
-      <Completions completions={completions} />
-    </div>
+    <Container>
+      <div>
+        <Completions completions={completions} />
+      </div>
+    </Container>
   )
 }
 

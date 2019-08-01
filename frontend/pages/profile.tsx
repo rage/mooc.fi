@@ -77,7 +77,7 @@ function MyProfile() {
 }
 
 MyProfile.getInitialProps = function(context: NextContext) {
-  redirect(context, "/my-profile/completions")
+  redirect(context, "/profile/completions")
 
   return {
     namespacesRequired: ["common"],
