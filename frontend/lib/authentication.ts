@@ -56,7 +56,7 @@ export const getAccessToken = (ctx: NextContext | undefined) => {
   return nookies.get(ctx)["access_token"]
 }
 
-export async function userDetails(accessToken: String) {
+export async function userDetails(accessToken: string) {
   const res = await axios.get(
     `https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`,
     {

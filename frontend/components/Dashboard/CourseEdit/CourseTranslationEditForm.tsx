@@ -1,35 +1,30 @@
 import React, { useState } from "react"
-import {
-  Button,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Typography,
-} from "@material-ui/core"
-import { Field, FieldArray, getIn, FormikErrors } from "formik"
-import { Select, TextField } from "formik-material-ui"
+import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
+import { Field, FieldArray, getIn, FormikErrors, FieldProps } from "formik"
+import { TextField } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "../ConfirmationDialog"
-import { languages } from "./form-validation"
+import { languages, initialTranslation } from "./form-validation"
+import styled from "styled-components"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     languageEntry: {
-      padding: "20px",
+      spacing: "10px",
+      lineHeight: "2",
+      padding: "0 0 20px 0",
+    },
+    paper: {
       borderLeft: "2px solid #A0A0FF",
+      padding: "20px",
     },
   }),
 )
 
-const initialTranslation: CourseTranslationFormValues = {
-  id: undefined,
-  language: undefined,
-  name: undefined,
-  description: undefined,
-  link: undefined,
-  open_university_course_code: undefined,
-}
+const StyledTextField = styled(TextField)`
+  margin-bottom: 1rem;
+`
 
 const languageFilter = (
   index: number,
@@ -57,8 +52,7 @@ const CourseTranslationEditForm = ({
 
   return (
     <section>
-      <Typography variant="h4">Course translations</Typography>
-      <Grid item container direction="column">
+      <Grid container direction="column">
         <FieldArray
           name="course_translations"
           render={helpers => (
@@ -79,27 +73,25 @@ const CourseTranslationEditForm = ({
                 }}
                 open={dialogVisible}
               />
-              {values.length
-                ? values.map(
-                    (value: CourseTranslationFormValues, index: number) => (
-                      <Grid
-                        item
-                        className={classes.languageEntry}
-                        key={`translation-${index}`}
-                      >
-                        <InputLabel
-                          htmlFor={`course_translations[${index}].language`}
-                          shrink
-                        >
-                          Language
-                        </InputLabel>
+              {values.length ? (
+                values.map(
+                  (value: CourseTranslationFormValues, index: number) => (
+                    <Grid
+                      item
+                      className={classes.languageEntry}
+                      key={`translation-${index}`}
+                    >
+                      <Paper className={classes.paper} elevation={2}>
                         <Field
                           name={`course_translations[${index}].language`}
                           type="select"
                           label="Language"
                           errors={[getIn(errors, `[${index}].language`)]}
                           fullWidth
-                          component={Select}
+                          variant="outlined"
+                          select
+                          autoComplete="off"
+                          component={StyledTextField}
                         >
                           {languages.map(option => (
                             <MenuItem key={option.value} value={option.value}>
@@ -107,18 +99,15 @@ const CourseTranslationEditForm = ({
                             </MenuItem>
                           ))}
                         </Field>
-                        {getIn(errors, `[${index}].language`) ? (
-                          <InputLabel shrink style={{ color: "red" }}>
-                            {getIn(errors, `[${index}].language`)}
-                          </InputLabel>
-                        ) : null}
                         <Field
                           name={`course_translations[${index}].name`}
                           type="text"
                           label="Name"
                           error={getIn(errors, `[${index}].name`)}
                           fullWidth
-                          component={TextField}
+                          autoComplete="off"
+                          variant="outlined"
+                          component={StyledTextField}
                         />
                         <Field
                           name={`course_translations[${index}].description`}
@@ -128,7 +117,9 @@ const CourseTranslationEditForm = ({
                           fullWidth
                           multiline
                           rows={5}
-                          component={TextField}
+                          autoComplete="off"
+                          variant="outlined"
+                          component={StyledTextField}
                         />
                         <Field
                           name={`course_translations[${index}].link`}
@@ -136,7 +127,9 @@ const CourseTranslationEditForm = ({
                           label="Link"
                           error={getIn(errors, `[${index}].link`)}
                           fullWidth
-                          component={TextField}
+                          autoComplete="off"
+                          variant="outlined"
+                          component={StyledTextField}
                         />
                         <Field
                           name={`course_translations[${index}].open_university_course_code`}
@@ -147,9 +140,10 @@ const CourseTranslationEditForm = ({
                             `[${index}].open_university_course_code`,
                           )}
                           fullWidth
-                          component={TextField}
+                          autoComplete="off"
+                          variant="outlined"
+                          component={StyledTextField}
                         />
-                        <br />
                         {/* TODO here: don't actually remove in case of misclicks */}
                         {/*index === values.length - 1 &&
                         index < languages.length - 1 &&
@@ -162,25 +156,36 @@ const CourseTranslationEditForm = ({
                           </Button>
                         ) : null
                       */}
-                        <Button
-                          style={{ float: "right" }}
-                          variant="contained"
-                          disabled={isSubmitting}
-                          onClick={() => {
-                            setDialogVisible(true)
-                            setRemovableIndex(index)
-                          }}
-                        >
-                          Remove translation
-                        </Button>
-                      </Grid>
-                    ),
-                  )
-                : null}
+                        <br />
+                        <Grid container justify="flex-end">
+                          <Button
+                            variant="contained"
+                            disabled={isSubmitting}
+                            color="secondary"
+                            onClick={() => {
+                              setDialogVisible(true)
+                              setRemovableIndex(index)
+                            }}
+                          >
+                            Remove translation
+                          </Button>
+                        </Grid>
+                      </Paper>
+                    </Grid>
+                  ),
+                )
+              ) : (
+                <Paper className={classes.paper} elevation={2}>
+                  <Typography variant="body1">
+                    Please add at least one translation!
+                  </Typography>
+                </Paper>
+              )}
               {values && values.length < languages.length && (
                 <Button
                   variant="contained"
-                  color="secondary"
+                  color="primary"
+                  fullWidth
                   disabled={isSubmitting}
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >

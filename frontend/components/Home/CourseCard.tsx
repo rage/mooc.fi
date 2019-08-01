@@ -4,12 +4,9 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
-
-const CourseImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`
+import CourseImage from "../CourseImage"
+import { AllCourses_courses_photo } from "../../static/types/AllCourses"
+import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 const Background = styled(ButtonBase)`
   background-color: white;
@@ -19,11 +16,11 @@ const Background = styled(ButtonBase)`
   display: flex;
   height: 100%;
   width: 350px;
-  @media (max-width: 600px) {
+  @media (max-width: 960px) {
     width: 100%;
   }
   @media (min-width: 600px) and (max-width: 960px) {
-    width: 500px;
+    width: 100%;
   }
 `
 
@@ -31,37 +28,33 @@ const TextArea = styled.div`
   padding: 1rem 1rem 2rem 1rem;
   height: 200px;
   color: black;
-  @media (min-width: 430px) and (max-width: 600px) {
+  @media (max-width: 430px) {
     width: 70%;
-  }
-  @media (max-width: 600px) {
-    padding: 1rem 0.7rem 1rem 1rem;
     text-align: left;
-    height: 100%;
-    width: 80%;
+  }
+  @media (min-width: 430px) and (max-width: 600px) {
+    text-align: left;
+    width: 65%;
   }
   @media (min-width: 600px) and (max-width: 960px) {
     text-align: left;
-    height: 100%;
     width: 60%;
   }
 `
+
 const ImageArea = styled.div`
-  height: 250px;
+  height: 200px;
   @media (max-width: 430px) {
-    height: 345px;
-    width: 20%;
-  }
-  @media (min-width: 430px) and (max-width: 470px) {
+    height: 235px;
     width: 30%;
-    height: 290px;
   }
-  @media (min-width: 470px) and (max-width: 600px) {
-    height: 290px;
-    width: 30%;
+  @media (min-width: 430px) and (max-width: 600px) {
+    width: 45%;
+    height: 215px;
   }
   @media (min-width: 600px) and (max-width: 960px) {
     width: 40%;
+    height: 240px;
   }
 `
 const CardLinkWithGA = styled(ReactGA.OutboundLink)`
@@ -72,32 +65,12 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
     flex-direction: row;
   }
 `
-interface ImageProps {
-  photo: any[]
-  isUpcoming: boolean
-}
-function ImageInWebp(props: ImageProps) {
-  const { photo, isUpcoming } = props
-
-  return (
-    <picture>
-      <source srcSet={photo[0]} type="image/webp" />
-      <source srcSet={photo[1]} type="image/png" />
-      <CourseImage
-        src={photo[1]}
-        alt=""
-        style={{ opacity: isUpcoming ? 0.6 : 1 }}
-      />
-    </picture>
-  )
-}
-
 type FilteredCourse = {
   name: string
   description: string
   id: string
   link: string
-  photo: any[]
+  photo: AllCourses_courses_photo
   promote: boolean
   slug: string
   start_point: boolean
@@ -105,7 +78,7 @@ type FilteredCourse = {
 }
 
 interface CourseCardProps {
-  course: FilteredCourse
+  course: ObjectifiedCourse
 }
 
 function CourseCard(props: CourseCardProps) {
@@ -115,20 +88,20 @@ function CourseCard(props: CourseCardProps) {
       <Background focusRipple disabled={course.status === "Upcoming"}>
         <CardLinkWithGA
           eventLabel={`coursesite: ${course.name}`}
-          to={course.link}
+          to={course.link || ""}
           target="_blank"
         >
           <ImageArea>
-            <ImageInWebp
+            <CourseImage
               photo={course.photo}
-              isUpcoming={course.status === "Upcoming"}
+              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
             />
           </ImageArea>
           <TextArea>
-            <Typography component="h3" variant="h6" gutterBottom={true}>
+            <Typography component="h3" variant="h3" gutterBottom={true}>
               {course.name}
             </Typography>
-            <Typography component="p" paragraph align="left">
+            <Typography component="p" variant="body1" paragraph align="left">
               {course.description}
             </Typography>
           </TextArea>

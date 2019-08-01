@@ -4,6 +4,8 @@ import CourseCard from "./CourseCard"
 import Container from "../Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
+import { AllCourses_courses_photo } from "../../static/types/AllCourses"
+import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 interface RootProps {
   backgroundColor: string
@@ -39,12 +41,11 @@ const BackgroundImage = styled.img<BackgroundProps>`
 `
 
 interface TitleProps {
-  fontColor: string
-  titleBackground: string
+  fontcolor: string
+  titlebackground: string
 }
 
 const Title = styled(Typography)<TitleProps>`
-  font-family: "Open Sans Condensed", sans-serif !important;
   margin: 5rem auto 1rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -53,48 +54,17 @@ const Title = styled(Typography)<TitleProps>`
   display: table;
 
   ${props =>
-    ` background-color: ${props.titleBackground}; color: ${props.fontColor};`}
-  @media (min-width: 320px) {
-    font-size: 46px;
-  }
-  @media (min-width: 600px) {
-    font-size: 56px;
-  }
-  @media (min-width: 960px) {
-    font-size: 72px;
-  }
+    ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
 `
 const Subtitle = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
   margin: 0rem auto 3rem auto;
   padding: 1rem;
   display: table;
   background-color: white;
-  @media (min-width: 320px) {
-    font-size: 22px;
-  }
-  @media (min-width: 600px) {
-    font-size: 28px;
-  }
-  @media (min-width: 960px) {
-    font-size: 32px;
-  }
 `
 
-type FilteredCourse = {
-  name: string
-  description: string
-  id: string
-  link: string
-  photo: any[]
-  promote: boolean
-  slug: string
-  start_point: boolean
-  status: string
-}
-
 interface CourseHighlightsProps {
-  courses: FilteredCourse[]
+  courses: ObjectifiedCourse[]
   title: string
   headerImage: any
   subtitle?: string
@@ -130,12 +100,17 @@ function CourseHighlights(props: CourseHighlightsProps) {
       <div style={{ zIndex: 20 }}>
         <Title
           component="h2"
-          fontColor={fontColor}
-          titleBackground={titleBackground}
+          variant="h2"
+          fontcolor={fontColor}
+          titlebackground={titleBackground}
         >
           {title}
         </Title>
-        {subtitle && <Subtitle component="div">{subtitle}</Subtitle>}
+        {subtitle && (
+          <Subtitle component="div" variant="subtitle1">
+            {subtitle}
+          </Subtitle>
+        )}
       </div>
       <Container>
         <Grid container spacing={3}>

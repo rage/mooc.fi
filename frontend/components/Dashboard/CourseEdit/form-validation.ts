@@ -3,6 +3,15 @@ import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
+export const initialTranslation: CourseTranslationFormValues = {
+  id: undefined,
+  language: "",
+  name: undefined,
+  description: undefined,
+  link: undefined,
+  open_university_course_code: undefined,
+}
+
 export const initialValues: CourseFormValues = {
   id: null,
   name: "",
@@ -11,12 +20,13 @@ export const initialValues: CourseFormValues = {
   thumbnail: undefined,
   photo: undefined,
   new_photo: undefined,
+  base64: false,
   start_point: false,
   promote: false,
   hidden: false,
   status: CourseStatus.Upcoming,
   study_module: null,
-  course_translations: [],
+  course_translations: [initialTranslation],
   open_university_registration_links: [],
 }
 
@@ -37,12 +47,12 @@ export const statuses = [
 
 export const languages = [
   {
-    value: "en_US",
-    label: "English",
-  },
-  {
     value: "fi_FI",
     label: "Finnish",
+  },
+  {
+    value: "en_US",
+    label: "English",
   },
   {
     value: "sv_SE",
@@ -55,9 +65,11 @@ export const study_modules: { value: any; label: any }[] = []
 const courseEditSchema = ({
   client,
   checkSlug,
+  initialSlug,
 }: {
   client: ApolloClient<object>
   checkSlug: Function
+  initialSlug: string | null
 }) =>
   Yup.object().shape({
     name: Yup.string().required("required"),
@@ -66,7 +78,7 @@ const courseEditSchema = ({
       .test(
         "unique",
         `slug is already in use`,
-        validateSlug({ client, checkSlug }),
+        validateSlug({ client, checkSlug, initialSlug }),
       ),
     status: Yup.mixed()
       .oneOf(statuses.map(s => s.value))
@@ -93,13 +105,17 @@ const courseEditSchema = ({
                 values: { course_translations },
               } = context
 
+              if (!value || value === "") {
+                return true // previous should have caught the empty
+              }
+
               const currentIndexMatch =
                 (path || "").match(/^.*\[(\d+)\].*$/) || []
               const currentIndex =
                 currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
               const otherTranslationLanguages = course_translations
                 .filter(
-                  (c: CourseTranslationFormValues, index: Number) =>
+                  (c: CourseTranslationFormValues, index: number) =>
                     c.language !== "" && index !== currentIndex,
                 )
                 .map((c: CourseTranslationFormValues) => c.language)
@@ -108,9 +124,7 @@ const courseEditSchema = ({
             },
           ),
         description: Yup.string(),
-        link: Yup.string()
-          .url("must be a valid URL")
-          .required("required"),
+        link: Yup.string(),
       }),
     ),
   })
@@ -118,28 +132,33 @@ const courseEditSchema = ({
 const validateSlug = ({
   checkSlug,
   client,
+  initialSlug,
 }: {
   checkSlug: Function
-  client: any
+  client: ApolloClient<object>
+  initialSlug: string | null
 }) =>
   async function(this: Yup.TestContext, value: string): Promise<boolean> {
-    let res
+    if (!value || value === "") {
+      return true // if it's empty, it's ok by this validation and required will catch it
+    }
 
-    const { slug } = this.parent
-
-    try {
-      res = await client.query({
-        query: checkSlug,
-        variables: { slug },
-      })
-    } catch (e) {
+    if (value === initialSlug) {
       return true
     }
 
-    const { data } = res
-    const existing = data.course_exists
+    try {
+      const { data } = await client.query({
+        query: checkSlug,
+        variables: { slug: value },
+      })
 
-    return existing ? value === slug : !existing
+      const existing = data.course_exists
+
+      return !existing
+    } catch (e) {
+      return true
+    }
   }
 
 export default courseEditSchema
