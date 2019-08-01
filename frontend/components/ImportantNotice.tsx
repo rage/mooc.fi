@@ -2,9 +2,9 @@ import React from "react"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
 
 import NextI18Next from "../i18n"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       padding: "1em",

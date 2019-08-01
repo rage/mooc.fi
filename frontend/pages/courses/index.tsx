@@ -6,17 +6,15 @@ import {
   CircularProgress,
 } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "../lib/authentication"
-import redirect from "../lib/redirect"
+import { isSignedIn, isAdmin } from "../../lib/authentication"
+import redirect from "../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { ApolloClient, gql } from "apollo-boost"
-import { AllCourses as AllCoursesData } from "../static/types/AllCourses"
+import { gql } from "apollo-boost"
+import { AllCourses as AllCoursesData } from "../../static/types/AllCourses"
 import { useQuery } from "react-apollo-hooks"
-import CourseGrid from "../components/CourseGrid"
-import AdminError from "../components/Dashboard/AdminError"
-import { WideContainer } from "../components/Container"
-
-import { Courses as courseData } from "../courseData.js"
+import CourseGrid from "../../components/CourseGrid"
+import AdminError from "../../components/Dashboard/AdminError"
+import { WideContainer } from "../../components/Container"
 
 export const AllCoursesQuery = gql`
   query AllCourses {
@@ -48,10 +46,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Courses = (admin: boolean) => {
   const classes = useStyles()
-  // use mock data
-  /*   const data = { courses: courseData.allcourses.slice(0,3) }
-  const error = false
-  const loading = false */
 
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
 

@@ -1,49 +1,65 @@
 import React from "react"
-import { Breadcrumbs, Link, Typography } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import dynamic from "next/dynamic"
+const Breadcrumbs = dynamic(import("@material-ui/core/Breadcrumbs"))
+const Link = dynamic(import("@material-ui/core/Link"))
+import { withRouter, SingletonRouter } from "next/router"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    breadcrumb: {
-      marginTop: 5,
-      marginLeft: 5,
+const BreadCrumbsBase = styled.div`
+  display: flex;
+  margin-top: 0.7rem;
+`
+const StyledBreadCrumbs = styled(Breadcrumbs)`
+  margin-top: 5px;
+  margin-left: 5px;
+  flex: 1;
+`
+interface BuildHrefProps {
+  components: string[]
+}
+function buildHref(props: BuildHrefProps) {
+  const { components } = props
+  let BreadCrumbLinks: JSX.Element[] = []
+  let i
 
-      flex: 1,
-    },
-    link: {
-      display: "flex",
-    },
-    baseDiv: {
-      display: "flex",
-      marginTop: "0.7rem",
-    },
-  }),
-)
+  for (i = 0; i < components.length; i++) {
+    if (i === 0) {
+      BreadCrumbLinks.push(
+        <Link href={`/${components[i]}`}>{components[i]}</Link>,
+      )
+    } else {
+      let componentsSoFar = components.slice(0, i + 1)
+      let href = componentsSoFar.join("/")
+      BreadCrumbLinks.push(<Link href={`/${href}`}>{components[i]}</Link>)
+    }
+  }
 
-const DashboardBreadCrumbs = ({
-  current_page,
-}: {
-  current_page: string | string[] | undefined
-}) => {
-  const classes = useStyles()
+  return BreadCrumbLinks
+}
+interface Props {
+  router: SingletonRouter
+}
+const DashboardBreadCrumbs = (props: Props) => {
+  const { router } = props
+
+  //if router prop exists, take the current URL
+  let currentUrl: string = ""
+  if (router) {
+    currentUrl = router.asPath
+  }
+
+  //split the url path into parts
+  //remove the first item, as we know it to be homepage
+  const urlRouteComponents = currentUrl.split("/").slice(1)
 
   return (
-    <div className={classes.baseDiv}>
-      <Breadcrumbs
-        separator=">"
-        aria-label="Breadcrumb"
-        className={classes.breadcrumb}
-      >
-        <Link className={classes.link} href={"/"}>
-          Home
-        </Link>
-        <Link className={classes.link} href={`/courses`} underline="hover">
-          Courses
-        </Link>
-        <Link className={classes.link}>{current_page}</Link>
-      </Breadcrumbs>
-    </div>
+    <BreadCrumbsBase>
+      <StyledBreadCrumbs separator=">" aria-label="Breadcrumb">
+        <Link href={"/"}>Home</Link>
+        {buildHref({ components: urlRouteComponents })}
+      </StyledBreadCrumbs>
+    </BreadCrumbsBase>
   )
 }
 
-export default DashboardBreadCrumbs
+export default withRouter(DashboardBreadCrumbs)
