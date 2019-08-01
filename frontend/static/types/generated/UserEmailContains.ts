@@ -6,6 +6,14 @@
 // GraphQL query operation: UserEmailContains
 // ====================================================
 
+export interface UserEmailContains_userEmailContains_pageInfo {
+  __typename: "PageInfo"
+  startCursor: string | null
+  endCursor: string | null
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
 export interface UserEmailContains_userEmailContains_edges_node {
   __typename: "User"
   id: any
@@ -24,7 +32,9 @@ export interface UserEmailContains_userEmailContains_edges {
 
 export interface UserEmailContains_userEmailContains {
   __typename: "UserConnection"
+  pageInfo: UserEmailContains_userEmailContains_pageInfo
   edges: UserEmailContains_userEmailContains_edges[]
+  count: number
 }
 
 export interface UserEmailContains {

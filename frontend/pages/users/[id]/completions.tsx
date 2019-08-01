@@ -16,6 +16,7 @@ import Grid from "@material-ui/core/Grid"
 import CompletedCourseCard from "../../../components/CompletedCourseCard"
 import Completions from "../../../components/Completions"
 import { SingletonRouter, withRouter } from "next/router"
+import AdminError from "../../../components/Dashboard/AdminError"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -52,10 +53,15 @@ interface CompletionsProps {
   t: Function
   i18n: any
   tReady: boolean
+  admin: boolean
 }
 
 function CompletionsPage(props: CompletionsProps) {
   const { t, router } = props
+
+  if (!props.admin) {
+    return <AdminError />
+  }
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
     { variables: { upstream_id: Number(router.query.id) } },
@@ -85,14 +91,13 @@ function CompletionsPage(props: CompletionsProps) {
 }
 
 CompletionsPage.getInitialProps = function(context: NextContext) {
-  if (!isAdmin(context)) {
-    redirect(context, "/")
-  }
+  const admin = isAdmin(context)
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
   return {
-    namespacesRequired: ["profile"],
+    admin,
+    namespacesRequired: ["common"],
   }
 }
 
