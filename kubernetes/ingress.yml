@@ -9,11 +9,13 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "6000"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
   tls:
   - hosts:
     - points.mooc.fi
     - mooc.fi
+    - www.mooc.fi
     secretName: quizzes-moocfi-cert-secret
   rules:
     - host: points.mooc.fi
@@ -28,17 +30,6 @@ spec:
             serviceName: moocfi-frontend
             servicePort: 80
     - host: mooc.fi
-      http:
-        paths:
-        - path: /api
-          backend:
-            serviceName: moocfi-backend
-            servicePort: 80
-        - path: /
-          backend:
-            serviceName: moocfi-frontend
-            servicePort: 80
-    - host: www.mooc.fi
       http:
         paths:
         - path: /api
