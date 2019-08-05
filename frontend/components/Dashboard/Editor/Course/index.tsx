@@ -1,6 +1,4 @@
 import React, { useCallback } from "react"
-import { Paper } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "react-apollo-hooks"
 import {
@@ -16,13 +14,24 @@ import {
 } from "./types"
 import courseEditSchema, { initialValues } from "./form-validation"
 import { FormikActions, getIn } from "formik"
-import Next18next from "../../../../i18n"
-import { AllCoursesQuery } from "../../../../pages/courses"
+import Next18next from "/i18n"
+import { AllCoursesQuery } from "/pages/courses"
 import get from "lodash/get"
+import {
+  CourseDetails_course_photo,
+  CourseDetails_course_study_modules,
+} from "/static/types/CourseDetails"
+import { StudyModules_study_modules } from "/static/types/StudyModules"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
+const CourseEdit = ({
+  course,
+  modules,
+}: {
+  course?: CourseFormValues
+  modules?: StudyModules_study_modules[]
+}) => {
   const addCourse = useMutation(AddCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
@@ -46,8 +55,15 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
             "course_code",
           ),
         })),
+        study_modules: course.study_modules
+          ? (course.study_modules as CourseDetails_course_study_modules[]).map(
+              module => module.id,
+            )
+          : null,
         new_slug: course.slug,
-        thumbnail: course.photo ? course.photo.compressed : null,
+        thumbnail: course.photo
+          ? (course.photo as CourseDetails_course_photo).compressed
+          : null,
       }
     : initialValues
 
@@ -155,6 +171,7 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
   return (
     <CourseEditForm
       course={_course}
+      studyModules={modules}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
       onCancel={onCancel}

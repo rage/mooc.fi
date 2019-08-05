@@ -1,11 +1,20 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import {
+  Checkbox,
   InputLabel,
   FormControl,
   FormControlLabel,
+  FormGroup,
   MenuItem,
   Grid,
   Typography,
+  Chip,
+  Input,
+  OutlinedInput,
+  Select,
+  FormLabel,
+  List,
+  ListItem,
 } from "@material-ui/core"
 import {
   Formik,
@@ -16,7 +25,7 @@ import {
   FormikProps,
   yupToFormErrors,
 } from "formik"
-import { TextField, Checkbox } from "formik-material-ui"
+import { TextField } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import ImageDropzoneInput from "../../ImageDropzoneInput"
@@ -26,19 +35,67 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "../../../../util/imageUtils"
 import FormWrapper from "../FormWrapper"
+import { StudyModules_study_modules } from "/static/types/StudyModules"
+import includes from "lodash/includes"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
+const OutlinedInputLabel = styled(InputLabel)`
+  background-color: #ffffff;
+  padding: 0 4px 0 4px;
+`
+
+const OutlinedFormControl = styled(FormControl)`
+  margin-bottom: 1rem;
+`
+
+const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
+  border-radius: 4px;
+  border: 1px solid
+    ${props => (props.error ? "#F44336" : "rgba(0, 0, 0, 0.23)")};
+  padding: 18.5px 14px;
+  transition: padding-left 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    border-color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    border-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
+  &:hover {
+    border: 1px solid rgba(0, 0, 0, 0.87);
+  }
+
+  &:focus {
+    bordercolor: "#3f51b5";
+  }
+
+  @media (hover: none) {
+    border: 1px solid rgba(0, 0, 0, 0.23);
+  }
+`
+
+const ModuleList = styled(List)`
+  padding: 0px;
+  max-height: 400px;
+  overflow: auto;
+`
+
+const ModuleListItem = styled(ListItem)<any>`
+  padding: 0px;
+`
+
 const renderForm = ({
+  studyModules,
+}: {
+  studyModules?: StudyModules_study_modules[]
+}) => ({
   errors,
   values,
   isSubmitting,
   setFieldValue,
+  initialValues,
 }: Pick<
   FormikProps<CourseFormValues>,
-  "errors" | "values" | "isSubmitting" | "setFieldValue"
+  "errors" | "values" | "isSubmitting" | "setFieldValue" | "initialValues"
 >) => (
   <Form>
     <Field
@@ -51,73 +108,20 @@ const renderForm = ({
       variant="outlined"
       component={StyledTextField}
     />
-    <Field
-      name="new_slug"
-      type="text"
-      label="Slug"
-      error={errors.new_slug}
-      fullWidth
-      variant="outlined"
-      autoComplete="off"
-      component={StyledTextField}
-    />
-    <Grid container direction="row">
-      <Grid container item xs={12} sm={6} justify="space-between">
-        <FormControlLabel
-          control={
-            <Field
-              label="Promote"
-              type="checkbox"
-              name="promote"
-              value={values.promote}
-              component={Checkbox}
-            />
-          }
-          label="Promote"
-        />
-        <FormControlLabel
-          control={
-            <Field
-              label="Start point"
-              type="checkbox"
-              name="start_point"
-              value={values.start_point}
-              component={Checkbox}
-            />
-          }
-          label="Start point"
-        />
-        <FormControlLabel
-          control={
-            <Field
-              label="Hidden"
-              type="checkbox"
-              name="hidden"
-              value={values.hidden}
-              component={Checkbox}
-            />
-          }
-          label="Hidden"
+    <Grid container direction="row" justify="space-between" spacing={2}>
+      <Grid item xs={12} sm={6}>
+        <Field
+          name="new_slug"
+          type="text"
+          label="Slug"
+          error={errors.new_slug}
+          fullWidth
+          variant="outlined"
+          autoComplete="off"
+          component={StyledTextField}
         />
       </Grid>
-      <Grid container item xs={12} sm={6} justify="space-between">
-        <FormControl>
-          <Field
-            name="study_module"
-            type="text"
-            label="Study module"
-            component={StyledTextField}
-            variant="outlined"
-            select
-            fullWidth
-          >
-            {study_modules.map(option => (
-              <MenuItem key={`module-${option.value}`} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Field>
-        </FormControl>
+      <Grid item xs={12} sm={6}>
         <FormControl>
           <Field
             name="status"
@@ -136,6 +140,96 @@ const renderForm = ({
             ))}
           </Field>
         </FormControl>
+      </Grid>
+    </Grid>
+    <Grid container direction="row" justify="space-between" spacing={2}>
+      <Grid
+        container
+        item
+        xs={12}
+        sm={6}
+        direction="column"
+        justify="space-between"
+      >
+        <OutlinedFormControl variant="outlined">
+          <OutlinedInputLabel shrink>Properties</OutlinedInputLabel>
+          <OutlinedFormGroup>
+            <FormControlLabel
+              control={
+                <Field
+                  label="Promote"
+                  type="checkbox"
+                  name="promote"
+                  value={values.promote}
+                  component={Checkbox}
+                />
+              }
+              label="Promote"
+            />
+            <FormControlLabel
+              control={
+                <Field
+                  label="Start point"
+                  type="checkbox"
+                  name="start_point"
+                  value={values.start_point}
+                  component={Checkbox}
+                />
+              }
+              label="Start point"
+            />
+            <FormControlLabel
+              control={
+                <Field
+                  label="Hidden"
+                  type="checkbox"
+                  name="hidden"
+                  value={values.hidden}
+                  component={Checkbox}
+                />
+              }
+              label="Hidden"
+            />
+          </OutlinedFormGroup>
+        </OutlinedFormControl>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <OutlinedFormControl>
+          <OutlinedInputLabel shrink>Study modules</OutlinedInputLabel>
+          <OutlinedFormGroup>
+            <ModuleList>
+              {(studyModules || []).map(
+                (module: StudyModules_study_modules) => (
+                  <ModuleListItem key={module.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={includes(values.study_modules, module.id)}
+                          onChange={() => {
+                            if (includes(values.study_modules, module.id)) {
+                              setFieldValue(
+                                "study_modules",
+                                ((values.study_modules ||
+                                  []) as string[]).filter(m => m !== module.id),
+                              )
+                            } else {
+                              setFieldValue(
+                                "study_modules",
+                                ((values.study_modules ||
+                                  []) as string[]).concat(module.id),
+                              )
+                            }
+                          }}
+                        />
+                      }
+                      label={module.name}
+                    />
+                  </ModuleListItem>
+                ),
+              )}
+            </ModuleList>
+          </OutlinedFormGroup>
+        </OutlinedFormControl>
       </Grid>
     </Grid>
     <InputLabel htmlFor="new_photo" shrink>
@@ -184,12 +278,14 @@ const renderForm = ({
 
 const CourseEditForm = ({
   course,
+  studyModules,
   validationSchema,
   onSubmit,
   onCancel,
   onDelete,
 }: {
   course: CourseFormValues
+  studyModules?: StudyModules_study_modules[]
   validationSchema: Yup.ObjectSchema
   onSubmit: (
     values: CourseFormValues,
@@ -216,7 +312,7 @@ const CourseEditForm = ({
       render={formikProps => (
         <FormWrapper<CourseFormValues>
           {...formikProps}
-          renderForm={renderForm}
+          renderForm={renderForm({ studyModules })}
           onCancel={onCancel}
           onDelete={onDelete}
         />

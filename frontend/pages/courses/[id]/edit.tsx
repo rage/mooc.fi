@@ -7,9 +7,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../../../components/Dashboard/AdminError"
 import { WideContainer } from "../../../components/Container"
 import Editor from "../../../components/Dashboard/Editor"
-// import CourseEdit from "../../../components/Dashboard/Editor/Course"
 import { withRouter, SingletonRouter } from "next/router"
-import { useQuery, useMutation } from "react-apollo-hooks"
+import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 import NextI18Next from "../../../i18n"
 
@@ -45,9 +44,19 @@ export const CourseQuery = gql`
         language
         link
       }
-      study_module {
+      study_modules {
         id
       }
+    }
+  }
+`
+
+export const StudyModuleQuery = gql`
+  query StudyModules {
+    study_modules {
+      id
+      name
+      slug
     }
   }
 `
@@ -82,22 +91,31 @@ const EditCourse = (props: EditCourseProps) => {
   /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
   const loading = false */
 
-  const { data, loading, error } = useQuery(CourseQuery, {
+  const {
+    data: courseData,
+    loading: courseLoading,
+    error: courseError,
+  } = useQuery(CourseQuery, {
     variables: { slug: slug },
   })
+  const {
+    data: studyModulesData,
+    loading: studyModulesLoading,
+    error: studyModulesError,
+  } = useQuery(StudyModuleQuery)
 
   if (!admin) {
     return <AdminError />
   }
 
-  if (loading) {
+  if (courseLoading || studyModulesLoading) {
     // TODO: spinner
     return null
   }
 
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (!data.course) {
+  if (!courseData.course) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
@@ -113,8 +131,12 @@ const EditCourse = (props: EditCourseProps) => {
         >
           Edit course
         </Typography>
-        {data.course ? (
-          <Editor type="Course" course={data.course} />
+        {courseData.course ? (
+          <Editor
+            type="Course"
+            course={courseData.course}
+            modules={studyModulesData.study_modules}
+          />
         ) : (
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="body1">

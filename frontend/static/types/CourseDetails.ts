@@ -34,7 +34,7 @@ export interface CourseDetails_course_open_university_registration_links {
   link: string | null
 }
 
-export interface CourseDetails_course_study_module {
+export interface CourseDetails_course_study_modules {
   __typename: "StudyModule"
   id: any
 }
@@ -53,7 +53,7 @@ export interface CourseDetails_course {
   open_university_registration_links:
     | CourseDetails_course_open_university_registration_links[]
     | null
-  study_module: CourseDetails_course_study_module | null
+  study_modules: CourseDetails_course_study_modules[] | null
 }
 
 export interface CourseDetails {

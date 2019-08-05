@@ -67,7 +67,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
             onCancel()
           }}
           onReject={() => setCancelConfirmationVisible(false)}
-          open={cancelConfirmationVisible}
+          show={cancelConfirmationVisible}
         />
         {renderForm(props)}
         <br />

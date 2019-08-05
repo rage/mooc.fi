@@ -19,6 +19,7 @@ export interface AllModulesWithTranslations_study_modules {
   id: any
   slug: string
   name: string
+  image: string | null
   study_module_translations:
     | AllModulesWithTranslations_study_modules_study_module_translations[]
     | null

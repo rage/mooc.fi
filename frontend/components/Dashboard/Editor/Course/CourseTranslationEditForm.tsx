@@ -78,7 +78,7 @@ const CourseTranslationEditForm = ({
                   setRemoveDialogVisible(false)
                   setRemovableIndex(-1)
                 }}
-                open={removeDialogVisible}
+                show={removeDialogVisible}
               />
               {values.length ? (
                 values.map(
@@ -151,18 +151,6 @@ const CourseTranslationEditForm = ({
                           variant="outlined"
                           component={StyledTextField}
                         />
-                        {/* TODO here: don't actually remove in case of misclicks */}
-                        {/*index === values.length - 1 &&
-                        index < languages.length - 1 &&
-                        languageFilter(index + 1, values).length > 0 ? (
-                          <Button
-                            variant="contained"
-                            onClick={() => helpers.push({ ...initialTranslation })}
-                          >
-                            +
-                          </Button>
-                        ) : null
-                      */}
                         <br />
                         <Grid container justify="flex-end">
                           <Button

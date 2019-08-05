@@ -1,19 +1,23 @@
 import { CourseStatus } from "../../../../static/types/globalTypes"
 import { FormValues } from "../types"
+import {
+  CourseDetails_course_photo,
+  CourseDetails_course_study_modules,
+} from "../../../../static/types/CourseDetails"
 
 export interface CourseFormValues extends FormValues {
   id?: string | null
   name: string
   slug: string
-  photo: any
+  photo: string | CourseDetails_course_photo | undefined
   start_point: boolean
   promote: boolean
   hidden: boolean
   status: CourseStatus
   course_translations: CourseTranslationFormValues[]
   open_university_registration_links?: OpenUniversityRegistrationValues[]
-  study_module: string | null | undefined
-  thumbnail?: string
+  study_modules?: string[] | CourseDetails_course_study_modules[] | null
+  thumbnail?: string | null
   new_photo: undefined | File
   new_slug: string
   base64: boolean
