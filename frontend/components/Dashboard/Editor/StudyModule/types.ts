@@ -3,6 +3,7 @@ export interface StudyModuleFormValues {
   slug: string
   new_slug: string
   name: string
+  image: string
   // courses: any[]
   study_module_translations: StudyModuleTranslationFormValues[]
 }

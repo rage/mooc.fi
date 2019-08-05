@@ -19,6 +19,7 @@ export const StudyModuleQuery = gql`
       id
       slug
       name
+      image
       courses {
         id
         name

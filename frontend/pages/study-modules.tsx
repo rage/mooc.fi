@@ -27,6 +27,7 @@ export const AllModulesQuery = gql`
       id
       slug
       name
+      image
       study_module_translations {
         id
         language

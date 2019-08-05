@@ -17,6 +17,7 @@ export const initialValues: StudyModuleFormValues = {
   slug: "",
   new_slug: "",
   name: "",
+  image: "",
   study_module_translations: [initialTranslation],
 }
 

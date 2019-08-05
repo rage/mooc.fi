@@ -10,23 +10,23 @@ import {
 const ConfirmationDialog = ({
   title,
   content,
-  acceptText,
-  rejectText,
+  acceptText = "OK",
+  rejectText = "Cancel",
   onAccept,
   onReject,
-  open,
+  show,
 }: {
   title: string
   content: string
-  acceptText: string
-  rejectText: string
+  acceptText?: string
+  rejectText?: string
   onAccept: (event: React.MouseEvent) => void
   onReject: (event: React.MouseEvent) => void
-  open: boolean
+  show: boolean
 }) => {
   return (
     <div>
-      <Dialog open={open}>
+      <Dialog open={show}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>{content}</DialogContent>
         <DialogActions>

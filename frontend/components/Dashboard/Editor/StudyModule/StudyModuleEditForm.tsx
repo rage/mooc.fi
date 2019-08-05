@@ -90,7 +90,7 @@ const renderForm = ({
                   setRemoveDialogVisible(false)
                   setRemovableIndex(-1)
                 }}
-                open={removeDialogVisible}
+                show={removeDialogVisible}
               />
               {values && values.study_module_translations.length ? (
                 values.study_module_translations.map(

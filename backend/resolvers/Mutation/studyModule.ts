@@ -17,6 +17,7 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     args: {
       slug: stringArg({ required: true }),
       name: stringArg(),
+      image: stringArg(),
       study_module_translations: arg({
         type: "StudyModuleTranslationCreateWithoutStudy_moduleInput",
         list: true,
@@ -25,13 +26,14 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
-      const { slug, name, study_module_translations } = args
+      const { slug, name, image, study_module_translations } = args
 
       const prisma: Prisma = ctx.prisma
 
       const newStudyModule: StudyModule = await prisma.createStudyModule({
         slug,
         name,
+        image,
         study_module_translations: !!study_module_translations
           ? { create: study_module_translations }
           : null,
@@ -52,6 +54,7 @@ const updateStudyModule = async (
       slug: stringArg(),
       new_slug: stringArg(),
       name: stringArg(),
+      image: stringArg(),
       study_module_translations: arg({
         type: "StudyModuleTranslationWithIdInput",
         list: true,
@@ -62,7 +65,14 @@ const updateStudyModule = async (
 
       const prisma: Prisma = ctx.prisma
 
-      const { id, slug, new_slug, name, study_module_translations } = args
+      const {
+        id,
+        slug,
+        new_slug,
+        name,
+        image,
+        study_module_translations,
+      } = args
 
       const existingTranslations = await prisma
         .studyModule({ slug })
@@ -97,6 +107,7 @@ const updateStudyModule = async (
         },
         data: {
           name,
+          image,
           slug: new_slug ? new_slug : slug,
           study_module_translations: Object.keys(translationMutation).length
             ? translationMutation

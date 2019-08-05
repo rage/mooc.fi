@@ -21,6 +21,7 @@ export interface addStudyModule_addStudyModule {
   id: any
   slug: string
   name: string
+  image: string | null
   study_module_translations:
     | addStudyModule_addStudyModule_study_module_translations[]
     | null
@@ -33,6 +34,7 @@ export interface addStudyModule {
 export interface addStudyModuleVariables {
   slug: string
   name: string
+  image?: string | null
   study_module_translations?:
     | StudyModuleTranslationCreateWithoutStudy_moduleInput[]
     | null

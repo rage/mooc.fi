@@ -41,6 +41,11 @@ export interface addCourse_addCourse_open_university_registration_links {
   link: string | null
 }
 
+export interface addCourse_addCourse_study_modules {
+  __typename: "StudyModule"
+  id: any
+}
+
 export interface addCourse_addCourse {
   __typename: "Course"
   id: any
@@ -50,6 +55,7 @@ export interface addCourse_addCourse {
   open_university_registration_links:
     | addCourse_addCourse_open_university_registration_links[]
     | null
+  study_modules: addCourse_addCourse_study_modules[] | null
 }
 
 export interface addCourse {
@@ -69,4 +75,5 @@ export interface addCourseVariables {
   open_university_registration_links?:
     | OpenUniversityRegistrationLinkCreateWithoutCourseInput[]
     | null
+  study_modules?: string[] | null
 }
