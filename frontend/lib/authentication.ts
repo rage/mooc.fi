@@ -23,9 +23,11 @@ export const isAdmin = (ctx: NextContext) => {
 export const signIn = async ({
   email,
   password,
+  redirect = true,
 }: {
   email: string
   password: string
+  redirect?: boolean
 }) => {
   const res = await tmcClient.authenticate({ username: email, password })
 
@@ -33,13 +35,15 @@ export const signIn = async ({
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
   const back = nookies.get()["redirect-back"]
-  setTimeout(() => {
-    if (back) {
-      Nexti18next.Router.push(back)
-    } else {
-      window.history.back()
-    }
-  }, 200)
+  if (redirect) {
+    setTimeout(() => {
+      if (back) {
+        Nexti18next.Router.push(back)
+      } else {
+        window.history.back()
+      }
+    }, 200)
+  }
   return res
 }
 
