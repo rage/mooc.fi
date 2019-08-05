@@ -42,7 +42,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       checkAccess(ctx)
       const { first, last, before, after, user_id, course_id } = args
       const prisma: Prisma = ctx.prisma
-      return prisma.userCourseProgresses({
+      return prisma.userCourseSettingses({
         first: first,
         last: last,
         before: before,
