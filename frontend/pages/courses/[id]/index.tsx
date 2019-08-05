@@ -32,7 +32,11 @@ const Course = (props: CourseProps) => {
   const { admin, router } = props
 
   let slug: string = ""
+  let lng: string = ""
   if (router && router.query) {
+    if (typeof router.query.lng === "string") {
+      lng = router.query.lng
+    }
     if (typeof router.query.id === "string") {
       slug = router.query.id
     }
@@ -55,25 +59,14 @@ const Course = (props: CourseProps) => {
     return <p>Error has occurred</p>
   }
 
-  //store which languages are selected
-  const [languageValue, setLanguageValue] = useState("fi_FI")
-
-  //store which tab is open
-  const [selection, setSelection] = useState(0)
-
-  const handleSelectionChange = (
-    event: React.ChangeEvent<{}>,
-    value: number,
-  ) => {
-    setSelection(value)
-  }
-
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    setLanguageValue((event.target as HTMLInputElement).value)
+    router.push(
+      `/courses/${slug}?lng=${(event.target as HTMLInputElement).value}`,
+    )
   }
 
   return (
-    <CourseLanguageContext.Provider value={languageValue}>
+    <CourseLanguageContext.Provider value={lng}>
       <section>
         <DashboardBreadCrumbs />
         <DashboardTabBar slug={slug} selectedValue={0} />
@@ -97,7 +90,7 @@ const Course = (props: CourseProps) => {
           </Typography>
           <LanguageSelector
             handleLanguageChange={handleLanguageChange}
-            languageValue={languageValue}
+            languageValue={lng}
           />
           <CourseDashboard />
         </WideContainer>
@@ -119,3 +112,7 @@ Course.getInitialProps = function(context: NextContext) {
 }
 
 export default withRouter(Course)
+
+/**/
+
+//
