@@ -14,10 +14,12 @@ import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import NextI18Next from "i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import get from "lodash/get"
+import { addDomain } from "../util/imageUtils"
 import CourseImage from "./CourseImage"
-import { AllCourses_courses } from "static/types/AllCourses"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     card: {
       padding: "0.8em",
@@ -33,9 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CourseCard({ course }: { course?: AllCourses_courses }) {
   const classes = useStyles()
-
-  //  require(`../static/images/courseimages/${course.slug}.png`)
-  // removed doggos as a placeholder for the time being
 
   return (
     <Grid item xs={12} sm={6} lg={3}>

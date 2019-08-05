@@ -11,16 +11,21 @@ import {
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { AllModules as AllModulesData } from "../static/types/AllModules"
+import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import {
   AllCourses as AllCoursesData,
   AllCourses_courses_photo,
   AllCourses_courses,
-} from "../static/types/AllCourses"
+} from "/static/types/generated/AllCourses"
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
-import { ObjectifiedCourse } from "../static/types/moduleTypes"
+import {
+  ObjectifiedCourse,
+  ObjectifiedModule,
+} from "../static/types/moduleTypes"
+import ModuleNavi from "/components/Home/ModuleNavi"
+import Modules from "/components/Home/Modules"
 
 const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
@@ -31,6 +36,7 @@ const AllModulesQuery = gql`
     study_modules {
       id
       slug
+      name
       courses {
         id
         slug
@@ -95,8 +101,16 @@ interface HomeProps {
 
 const Home = (props: HomeProps) => {
   const { t, tReady } = props
-  // const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
-  const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
+  const {
+    loading: modulesLoading,
+    error: modulesError,
+    data: modulesData,
+  } = useQuery<AllModulesData>(AllModulesQuery)
+  const {
+    loading: coursesLoading,
+    error: coursesError,
+    data: coursesData,
+  } = useQuery<AllCoursesData>(AllCoursesQuery)
 
   //save the default language of NextI18Next instance to state
   const [language, setLanguage] = useState(
@@ -107,24 +121,30 @@ const Home = (props: HomeProps) => {
     setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
   }, [NextI18Next.i18n.language])
 
-  if (error) {
+  if (modulesError || coursesError) {
     ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      Error:{" "}
+      <pre>{JSON.stringify(modulesError || coursesError, undefined, 2)}</pre>
     </div>
   }
 
-  if (loading || !tReady) {
+  if (modulesLoading || coursesLoading || !tReady) {
     return <CircularProgress />
   }
 
-  if (!data) {
+  if (!modulesData || !coursesData) {
     return <div>Error: no data?</div>
   }
 
   //use the language from state to filter shown courses to only those which have translations
   //on the current language
   const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
-    data.courses,
+    coursesData.courses,
+    language,
+  )
+
+  const modules: ObjectifiedModule[] = filterAndModifyByLanguage(
+    modulesData.study_modules,
     language,
   )
 
@@ -146,6 +166,7 @@ const Home = (props: HomeProps) => {
           fontColor="black"
           titleBackground="#ffffff"
         />
+        <ModuleNavi modules={modules} />
         <CourseHighlights
           courses={courses.filter(c => !c.hidden && c.status === "Active")}
           title={t("allCoursesTitle")}
@@ -176,6 +197,9 @@ const Home = (props: HomeProps) => {
           fontColor="white"
           titleBackground="#3066C0"
         />
+        {modules.map(module => (
+          <Modules module={module} />
+        ))}
       </section>
       <EmailSubscribe />
     </div>

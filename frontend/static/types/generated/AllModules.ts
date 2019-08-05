@@ -51,6 +51,7 @@ export interface AllModules_study_modules {
   __typename: "StudyModule"
   id: any
   slug: string
+  name: string
   courses: AllModules_study_modules_courses[] | null
   study_module_translations:
     | AllModules_study_modules_study_module_translations[]

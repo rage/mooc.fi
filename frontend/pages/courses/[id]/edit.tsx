@@ -108,7 +108,7 @@ const EditCourse = (props: EditCourseProps) => {
     return <AdminError />
   }
 
-  if (courseLoading || studyModulesLoading) {
+  if (!(!courseLoading && !studyModulesLoading)) {
     // TODO: spinner
     return null
   }

@@ -443,6 +443,8 @@ const seed = async () => {
           },
         })
       }
+
+      return Promise.resolve()
     }),
   )
 }

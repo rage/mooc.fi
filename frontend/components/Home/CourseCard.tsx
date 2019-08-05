@@ -5,7 +5,7 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "../CourseImage"
-import { AllCourses_courses_photo } from "../../static/types/AllCourses"
+import { AllCourses_courses_photo } from "../../static/types/generated/AllCourses"
 import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 const Background = styled(ButtonBase)`
@@ -16,11 +16,11 @@ const Background = styled(ButtonBase)`
   display: flex;
   height: 100%;
   width: 350px;
-  @media (max-width: 600px) {
+  @media (max-width: 960px) {
     width: 100%;
   }
   @media (min-width: 600px) and (max-width: 960px) {
-    width: 500px;
+    width: 100%;
   }
 `
 

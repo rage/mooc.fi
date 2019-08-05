@@ -9,9 +9,9 @@ import {
 
 import { signIn } from "../lib/authentication"
 import NextI18Next from "../i18n"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     form: {
       widht: "100%",

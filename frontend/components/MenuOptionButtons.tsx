@@ -26,7 +26,7 @@ const MenuOptionButtons = () => {
           >
             <NextI18Next.Trans i18nKey="common:logout" />
           </Button>
-          <Button color="inherit" variant="text" href="/my-profile">
+          <Button color="inherit" variant="text" href="/profile">
             <StyledIcon icon={profileIcon} />
             <NextI18Next.Trans i18nKey="common:profile" />
           </Button>

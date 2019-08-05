@@ -7,11 +7,7 @@ import {
   DeleteCourseMutation,
   CheckSlugQuery,
 } from "./graphql"
-import {
-  CourseFormValues,
-  CourseTranslationFormValues,
-  OpenUniversityRegistrationValues,
-} from "./types"
+import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import courseEditSchema, { initialValues } from "./form-validation"
 import { FormikActions, getIn } from "formik"
 import Next18next from "/i18n"
@@ -20,7 +16,7 @@ import get from "lodash/get"
 import {
   CourseDetails_course_photo,
   CourseDetails_course_study_modules,
-} from "/static/types/CourseDetails"
+} from "/static/types/generated/CourseDetails"
 import { StudyModules_study_modules } from "/static/types/StudyModules"
 
 const isProduction = process.env.NODE_ENV === "production"

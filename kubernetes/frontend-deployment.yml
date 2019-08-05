@@ -20,3 +20,8 @@ spec:
           ports:
             - name: frontend-http
               containerPort: 3021
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              memory: 150Mi

@@ -1,9 +1,9 @@
 import React from "react"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
 import NextI18Next from "../i18n"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     link: {
       left: -999,

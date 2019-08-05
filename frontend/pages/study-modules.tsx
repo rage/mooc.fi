@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@material-ui/core"
 import { WideContainer } from "../components/Container"
-import { AllModules } from "../static/types/AllModules"
+import { AllModules } from "/static/types/generated/AllModules"
 import { isAdmin, isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
