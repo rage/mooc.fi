@@ -1,19 +1,11 @@
 import React from "react"
-import NextI18Next from "../i18n"
-import { isSignedIn } from "../lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "../lib/redirect"
-import { ApolloClient, gql } from "apollo-boost"
+import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import {
-  UserOverView as UserOverViewData,
-  UserOverView_currentUser_completions,
-} from "../static/types/UserOverView"
+import { UserOverView as UserOverViewData } from "../static/types/generated/UserOverView"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import Container from "../components/Container"
-import Grid from "@material-ui/core/Grid"
-import CompletedCourseCard from "../components/CompletedCourseCard"
 
 export const UserOverViewQuery = gql`
   query UserOverView {
@@ -60,17 +52,8 @@ const Title = styled(Typography)`
   }
 `
 
-interface CompletionsProps {
-  namespacesRequired: string[]
-  t: Function
-  i18n: any
-  tReady: boolean
-}
-
-function Completions(props: CompletionsProps) {
-  const { t } = props
+function MyProfile() {
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
-  let completions: UserOverView_currentUser_completions[] = []
 
   if (error) {
     return (
@@ -84,38 +67,21 @@ function Completions(props: CompletionsProps) {
     return <div>Loading</div>
   }
 
-  if (data.currentUser && data.currentUser.completions) {
-    completions = data.currentUser.completions
-  }
   return (
     <section>
       <Title component="h1" variant="h2" align="center">
-        {t("completionsTitle")}
+        Profile
       </Title>
-
-      <Container>
-        <Typography component="p" variant="h5" style={{ marginBottom: "1rem" }}>
-          {t("completionNB")}
-        </Typography>
-        <Grid container spacing={2}>
-          {completions.length > 0 ? (
-            completions.map(c => <CompletedCourseCard completion={c} />)
-          ) : (
-            <Typography>{t("nocompletionsText")}</Typography>
-          )}
-        </Grid>
-      </Container>
     </section>
   )
 }
 
-Completions.getInitialProps = function(context: NextContext) {
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
+MyProfile.getInitialProps = function(context: NextContext) {
+  redirect(context, "/profile/completions")
+
   return {
-    namespacesRequired: ["profile"],
+    namespacesRequired: ["common"],
   }
 }
 
-export default NextI18Next.withTranslation("profile")(Completions)
+export default MyProfile

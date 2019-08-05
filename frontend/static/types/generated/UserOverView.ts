@@ -29,7 +29,6 @@ export interface UserOverView_currentUser_completions {
   __typename: "Completion"
   id: any
   completion_language: string | null
-  completion_link: string | null
   student_number: string | null
   created_at: any | null
   course: UserOverView_currentUser_completions_course

@@ -10,7 +10,7 @@ import {
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { AllCourses as AllCoursesData } from "../static/types/AllCourses"
+import { AllCourses as AllCoursesData } from "../static/types/generated/AllCourses"
 //import { mockModules } from "../mockModuleData"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { ObjectifiedCourse } from "../static/types/moduleTypes"
