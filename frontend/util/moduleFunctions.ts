@@ -1,7 +1,7 @@
-import { AllCourses_courses } from "../static/types/AllCourses"
-import { AllCourses_courses_course_translations } from "../static/types/AllCourses"
-import { AllModules_study_modules_courses } from "../static/types/AllModules"
-import { AllModules_study_modules } from "../static/types/AllModules"
+import { AllCourses_courses } from "../static/types/generated/AllCourses"
+import { AllCourses_courses_course_translations } from "../static/types/generated/AllCourses"
+import { AllModules_study_modules_courses } from "../static/types/generated/AllModules"
+import { AllModules_study_modules } from "../static/types/generated/AllModules"
 import {
   ObjectifiedModule,
   ObjectifiedModuleTranslations,
@@ -20,14 +20,15 @@ const objectifyTranslations = (
       study_module_translations || []
     ).reduce(
       (acc, translation) => ({
-        [translation.language]: translation,
         ...acc,
+        [translation.language]: translation,
       }),
       {},
     )
 
     const newCourses: ObjectifiedModuleCourse[] = (courses || []).map(
       course => ({
+        ...course,
         course_translations: (course.course_translations || []).reduce(
           (acc, course_translation) => ({
             [course_translation.language]: course_translation,
@@ -35,7 +36,6 @@ const objectifyTranslations = (
           }),
           {},
         ),
-        ...course,
       }),
     )
 
@@ -54,8 +54,8 @@ const ObjectifyCourses = (
     const { course_translations } = course
     const courseTranslations = (course_translations || []).reduce(
       (acc, translation: AllCourses_courses_course_translations) => ({
-        [translation.language]: translation,
         ...acc,
+        [translation.language]: translation,
       }),
       {},
     )
@@ -94,7 +94,6 @@ export const filterAndModifyByLanguage = (
 ) => {
   const modifiedModules = objectifyTranslations(modules)
 
-  console.log("modifiedModules", modifiedModules, language)
   return modifiedModules
     .filter(
       mod =>

@@ -1,9 +1,9 @@
-import { CourseStatus } from "../../../../static/types/globalTypes"
+import { CourseStatus } from "/static/types/globalTypes"
 import { FormValues } from "../types"
 import {
   CourseDetails_course_photo,
   CourseDetails_course_study_modules,
-} from "../../../../static/types/CourseDetails"
+} from "/static/types/generated/CourseDetails"
 
 export interface CourseFormValues extends FormValues {
   id?: string | null

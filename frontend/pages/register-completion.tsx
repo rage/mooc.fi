@@ -4,7 +4,7 @@ import { NextPageContext as NextContext } from "next"
 import { isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
 import { useQuery } from "react-apollo-hooks"
-import { UserOverView as UserOverViewData } from "../static/types/UserOverView"
+import { RegisterCompletionUserOverView as UserOverViewData } from "../static/types/generated/RegisterCompletionUserOverView"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import RegisterCompletionText from "../components/RegisterCompletionText"
 import ImportantNotice from "../components/ImportantNotice"
@@ -42,7 +42,7 @@ const useStyles = makeStyles(() =>
 )
 
 export const UserOverViewQuery = gql`
-  query UserOverView {
+  query RegisterCompletionUserOverView {
     currentUser {
       id
       upstream_id

@@ -6,7 +6,7 @@
       "@static/*": ["./static/*"],
       "@pages/*": ["pages/*"],
       "@lib/*": ["./lib/*"],
-      "@components/*": ["./components/*"],
+      "@components/*": ["./components/*"]
       // "*": [
       //   "types/*"
       // ],
@@ -14,15 +14,11 @@
     "typeRoots": [
       "node_modules/@types",
       "types/",
-      "static/types"
     ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "es2017"
-    ],
+    "lib": ["dom", "es2017"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -40,13 +36,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "exclude": [
-    "node_modules",
-    "schema.graphql"
-  ],
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ]
+  "exclude": ["node_modules", "schema.graphql"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

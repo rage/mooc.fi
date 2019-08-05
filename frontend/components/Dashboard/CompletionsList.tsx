@@ -1,10 +1,10 @@
 import React, { useState } from "react"
-import { ApolloClient, gql } from "apollo-boost"
+import { gql } from "apollo-boost"
 import { Query } from "react-apollo"
 import {
   AllCompletions as AllCompletionsData,
   AllCompletions_completionsPaginated_edges_node,
-} from "../../static/types/AllCompletions"
+} from "../../static/types/generated/AllCompletions"
 import { CircularProgress } from "@material-ui/core"
 import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"

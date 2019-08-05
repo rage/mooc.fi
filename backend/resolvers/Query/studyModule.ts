@@ -25,8 +25,8 @@ const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
 const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("study_modules", {
     type: "StudyModule",
-    resolve: (_, args, ctx) => {
-      return ctx.prisma.studyModules()
+    resolve: async (_, args, ctx) => {
+      return await ctx.prisma.studyModules()
     },
   })
 }

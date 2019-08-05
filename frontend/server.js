@@ -48,10 +48,9 @@ const main = async () => {
     next()
   })
 
-  server.get("/course/:id", (req, res) => {
-    const actualPage = "/course"
-    const queryParams = { course: req.params.id }
-    return app.render(req, res, actualPage, queryParams)
+  server.get("/courses/new", (req, res) => {
+    const actualPage = "/courses/new/edit"
+    return app.render(req, res, actualPage, {})
   })
 
   server.get("/register-completion/:slug", (req, res) => {
@@ -62,12 +61,6 @@ const main = async () => {
 
   server.get("/my-profile", (req, res) => {
     const actualPage = "/my-profile"
-    return app.render(req, res, actualPage)
-  })
-
-  server.get("/my-profile/completions", (req, res) => {
-    const actualPage = "/completions"
-
     return app.render(req, res, actualPage)
   })
 

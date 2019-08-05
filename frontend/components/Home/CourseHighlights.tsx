@@ -4,7 +4,7 @@ import CourseCard from "./CourseCard"
 import Container from "../Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { AllCourses_courses_photo } from "../../static/types/AllCourses"
+import { AllCourses_courses_photo } from "../../static/types/generated/AllCourses"
 import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 interface RootProps {
