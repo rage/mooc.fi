@@ -11,7 +11,7 @@ import AdminIcon from "@material-ui/icons/AssignmentInd"
 import styled from "styled-components"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { UserOverView } from "../static/types/UserOverView"
+import { UserOverView } from "../static/types/generated/UserOverView"
 import ErrorBoundary from "./ErrorBoundary"
 
 export const UserDetailQuery = gql`

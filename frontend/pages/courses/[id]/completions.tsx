@@ -29,16 +29,24 @@ interface CompletionsProps {
 }
 const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
-  const [languageValue, setLanguageValue] = useState("fi_FI")
-  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    setLanguageValue((event.target as HTMLInputElement).value)
-  }
 
   let slug: string = ""
+  let lng: string = ""
   if (router && router.query) {
+    if (typeof router.query.lng === "string") {
+      lng = router.query.lng
+    }
     if (typeof router.query.id === "string") {
       slug = router.query.id
     }
+  }
+
+  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
+    router.push(
+      `/courses/${slug}/completions?lng=${
+        (event.target as HTMLInputElement).value
+      }`,
+    )
   }
 
   if (!admin) {
@@ -58,7 +66,7 @@ const Completions = (props: CompletionsProps) => {
     return <p>Error has occurred</p>
   }
   return (
-    <CourseLanguageContext.Provider value={languageValue}>
+    <CourseLanguageContext.Provider value={lng}>
       <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={1} />
 
@@ -81,7 +89,7 @@ const Completions = (props: CompletionsProps) => {
         </Typography>
         <LanguageSelector
           handleLanguageChange={handleLanguageChange}
-          languageValue={languageValue}
+          languageValue={lng}
         />
         <CompletionsList />
       </WideContainer>
