@@ -28,8 +28,8 @@ const userCourseSettings = async (t: PrismaObjectDefinitionBlock<"Query">) => {
 }
 
 const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
-  t.list.field("UserCourseSettingses", {
-    type: "UserCourseSettings",
+  t.field("UserCourseSettingses", {
+    type: "UserCourseSettingsConnection",
     args: {
       user_id: idArg(),
       course_id: idArg(),
@@ -42,7 +42,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       checkAccess(ctx)
       const { first, last, before, after, user_id, course_id } = args
       const prisma: Prisma = ctx.prisma
-      return prisma.userCourseSettingses({
+      return prisma.userCourseSettingsesConnection({
         first: first,
         last: last,
         before: before,
