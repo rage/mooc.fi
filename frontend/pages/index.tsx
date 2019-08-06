@@ -43,6 +43,41 @@ const AllCoursesQuery = gql`
   }
 `
 
+const AllModulesQuery = gql`
+  query AllModules {
+    study_modules {
+      id
+      courses {
+        id
+        slug
+        name
+        photo {
+          id
+          compressed
+          uncompressed
+        }
+        promote
+        status
+        start_point
+        hidden
+        course_translations {
+          id
+          language
+          name
+          description
+          link
+        }
+      }
+      study_module_translations {
+        id
+        language
+        name
+        description
+      }
+    }
+  }
+`
+
 interface HomeProps {
   t: Function
   tReady: boolean
@@ -50,7 +85,7 @@ interface HomeProps {
 
 const Home = (props: HomeProps) => {
   const { t, tReady } = props
-  // const { loading, error, data } = useQuery<AllModulesData>(AllModulesQuery)
+
   const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
 
   //save the default language of NextI18Next instance to state

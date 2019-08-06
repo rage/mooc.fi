@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
 import { NextPageContext as NextContext } from "next"
@@ -19,6 +19,18 @@ export const CourseDetailsFromSlugQuery = gql`
     course(slug: $slug) {
       id
       name
+    }
+  }
+`
+
+//test query. TODO: replace with correct one
+export const UserPointsQuery = gql`
+  query User($email: String, $course_id: ID) {
+    user(email: $email) {
+      id
+      user_course_progressess(course_id: $course_id) {
+        id
+      }
     }
   }
 `
@@ -64,6 +76,15 @@ const Points = (props: CompletionsProps) => {
   if (error || !data) {
     return <p>Error has occurred</p>
   }
+
+  const userData = useQuery(UserPointsQuery, {
+    variables: {
+      email: "ava.r.h.einonen@gmail.com",
+      course_id: data.id,
+    },
+  })
+
+  console.log(userData)
 
   return (
     <CourseLanguageContext.Provider value={lng}>
