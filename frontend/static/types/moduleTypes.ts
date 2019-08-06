@@ -33,7 +33,9 @@ export interface ModuleCourse {
   start_point: boolean
   hidden: boolean
   status: string
+  order: number
 }
+
 export interface ObjectifiedCourseTranslations {
   [language: string]:
     | AllCourses_courses_course_translations
@@ -75,6 +77,5 @@ export interface ObjectifiedModule
     | null
   courses: ObjectifiedModuleCourse[] | null
   name?: string
-  image?: string
   description?: string
 }

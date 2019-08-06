@@ -28,6 +28,7 @@ export const initialValues: CourseFormValues = {
   study_modules: [],
   course_translations: [initialTranslation],
   open_university_registration_links: [],
+  order: undefined,
 }
 
 export const statuses = [
@@ -127,6 +128,9 @@ const courseEditSchema = ({
         link: Yup.string(),
       }),
     ),
+    order: Yup.number()
+      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .integer("must be integer"),
   })
 
 const validateSlug = ({

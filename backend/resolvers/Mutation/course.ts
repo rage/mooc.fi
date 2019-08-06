@@ -14,7 +14,7 @@ import {
   StudyModuleWhereUniqueInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
+import { stringArg, booleanArg, arg, idArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import * as pullAll from "lodash/pullAll"
@@ -45,6 +45,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         list: true,
         required: false,
       }),
+      order: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -60,6 +61,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_modules,
         course_translations,
         open_university_registration_links,
+        order,
       } = args
 
       const prisma: Prisma = ctx.prisma
@@ -89,6 +91,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         open_university_registration_links: !!open_university_registration_links
           ? { create: open_university_registration_links }
           : null,
+        order,
       })
 
       const kafkaProducer = await new KafkaProducer()
@@ -128,6 +131,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         type: "OpenUniversityRegistrationLinkWithIdInput",
         list: true,
       }),
+      order: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -147,6 +151,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_modules,
         course_translations,
         open_university_registration_links,
+        order,
       } = args
 
       let photo = args.photo
@@ -251,6 +256,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           ).length
             ? registrationLinkMutation
             : null,
+          order,
         },
       })
     },

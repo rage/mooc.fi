@@ -50,6 +50,8 @@ export interface updateCourse_updateCourse {
   __typename: "Course"
   id: any
   slug: string
+  name: string
+  order: number | null
   photo: updateCourse_updateCourse_photo | null
   course_translations: updateCourse_updateCourse_course_translations[] | null
   open_university_registration_links:
@@ -79,4 +81,5 @@ export interface updateCourseVariables {
     | OpenUniversityRegistrationLinkWithIdInput[]
     | null
   study_modules?: string[] | null
+  order?: number | null
 }

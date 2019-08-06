@@ -20,10 +20,11 @@ import { Courses as courseData } from "../courseData.js"
 
 export const AllCoursesQuery = gql`
   query AllCourses {
-    courses {
+    courses(orderBy: order_ASC) {
       id
       name
       slug
+      order
       status
       photo {
         id

@@ -98,16 +98,32 @@ const renderForm = ({
   "errors" | "values" | "isSubmitting" | "setFieldValue" | "initialValues"
 >) => (
   <Form>
-    <Field
-      name="name"
-      type="text"
-      label="Name"
-      error={errors.name}
-      fullWidth
-      autoComplete="off"
-      variant="outlined"
-      component={StyledTextField}
-    />
+    <Grid container direction="row" spacing={2}>
+      <Grid item xs={10}>
+        <Field
+          name="name"
+          type="text"
+          label="Name"
+          error={errors.name}
+          fullWidth
+          autoComplete="off"
+          variant="outlined"
+          component={StyledTextField}
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <Field
+          name="order"
+          type="number"
+          label="Order"
+          error={errors.order}
+          fullWidth
+          autoComplete="off"
+          variant="outlined"
+          component={StyledTextField}
+        />
+      </Grid>
+    </Grid>
     <Grid container direction="row" justify="space-between" spacing={2}>
       <Grid item xs={12} sm={6}>
         <Field
@@ -276,49 +292,51 @@ const renderForm = ({
   </Form>
 )
 
-const CourseEditForm = ({
-  course,
-  studyModules,
-  validationSchema,
-  onSubmit,
-  onCancel,
-  onDelete,
-}: {
-  course: CourseFormValues
-  studyModules?: StudyModules_study_modules[]
-  validationSchema: Yup.ObjectSchema
-  onSubmit: (
-    values: CourseFormValues,
-    formikActions: FormikActions<CourseFormValues>,
-  ) => void
-  onCancel: () => void
-  onDelete: (values: CourseFormValues) => void
-}) => {
-  const validate = useCallback(
-    async (values: CourseFormValues) =>
-      validationSchema
-        .validate(values, { abortEarly: false, context: { values } })
-        .catch(err => {
-          throw yupToFormErrors(err)
-        }),
-    [],
-  )
+const CourseEditForm = React.memo(
+  ({
+    course,
+    studyModules,
+    validationSchema,
+    onSubmit,
+    onCancel,
+    onDelete,
+  }: {
+    course: CourseFormValues
+    studyModules?: StudyModules_study_modules[]
+    validationSchema: Yup.ObjectSchema
+    onSubmit: (
+      values: CourseFormValues,
+      formikActions: FormikActions<CourseFormValues>,
+    ) => void
+    onCancel: () => void
+    onDelete: (values: CourseFormValues) => void
+  }) => {
+    const validate = useCallback(
+      async (values: CourseFormValues) =>
+        validationSchema
+          .validate(values, { abortEarly: false, context: { values } })
+          .catch(err => {
+            throw yupToFormErrors(err)
+          }),
+      [],
+    )
 
-  return (
-    <Formik
-      initialValues={course}
-      validate={validate}
-      onSubmit={onSubmit}
-      render={formikProps => (
-        <FormWrapper<CourseFormValues>
-          {...formikProps}
-          renderForm={renderForm({ studyModules })}
-          onCancel={onCancel}
-          onDelete={onDelete}
-        />
-      )}
-    />
-  )
-}
+    return (
+      <Formik
+        initialValues={course}
+        validate={validate}
+        onSubmit={onSubmit}
+        render={formikProps => (
+          <FormWrapper<CourseFormValues>
+            {...formikProps}
+            renderForm={renderForm({ studyModules })}
+            onCancel={onCancel}
+            onDelete={onDelete}
+          />
+        )}
+      />
+    )
+  },
+)
 
 export default CourseEditForm

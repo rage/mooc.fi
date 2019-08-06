@@ -13,6 +13,7 @@ export const AddCourseMutation = gql`
     $course_translations: [CourseTranslationCreateWithoutCourseInput!]
     $open_university_registration_links: [OpenUniversityRegistrationLinkCreateWithoutCourseInput!]
     $study_modules: [ID!]
+    $order: Int
   ) {
     addCourse(
       name: $name
@@ -26,9 +27,12 @@ export const AddCourseMutation = gql`
       course_translations: $course_translations
       open_university_registration_links: $open_university_registration_links
       study_modules: $study_modules
+      order: $order
     ) {
       id
       slug
+      name
+      order
       photo {
         id
         name
@@ -75,6 +79,7 @@ export const UpdateCourseMutation = gql`
     $course_translations: [CourseTranslationWithIdInput!]
     $open_university_registration_links: [OpenUniversityRegistrationLinkWithIdInput!]
     $study_modules: [ID!]
+    $order: Int
   ) {
     updateCourse(
       id: $id
@@ -91,9 +96,12 @@ export const UpdateCourseMutation = gql`
       course_translations: $course_translations
       open_university_registration_links: $open_university_registration_links
       study_modules: $study_modules
+      order: $order
     ) {
       id
       slug
+      name
+      order
       photo {
         id
         name
