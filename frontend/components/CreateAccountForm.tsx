@@ -2,6 +2,7 @@ import React from "react"
 import { TextField, Button, Link } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
+import NextI18next from "../i18n"
 
 import styled from "styled-components"
 
@@ -41,6 +42,7 @@ export function capitalizeFirstLetter(string: String) {
 
 export interface CreateAccountFormProps {
   onComplete: Function
+  t: any
 }
 
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
@@ -272,4 +274,4 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 }
 
-export default CreateAccountForm
+export default NextI18next.withTranslation("sign-up")(CreateAccountForm)
