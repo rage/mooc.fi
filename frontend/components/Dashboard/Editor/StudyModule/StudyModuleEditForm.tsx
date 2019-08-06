@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Field,
@@ -16,8 +16,21 @@ import FormWrapper from "../FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 import { TextField } from "formik-material-ui"
-import { Grid, MenuItem, Typography, Button, Paper } from "@material-ui/core"
+import {
+  Grid,
+  MenuItem,
+  Typography,
+  Button,
+  Paper,
+  InputLabel,
+  FormControl,
+  FormGroup,
+  InputAdornment,
+  Tooltip,
+} from "@material-ui/core"
 import ConfirmationDialog from "../../ConfirmationDialog"
+import useDebounce from "/util/useDebounce"
+import HelpIcon from "@material-ui/icons/Help"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,6 +50,45 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
+const OutlinedInputLabel = styled(InputLabel)`
+  background-color: #ffffff;
+  padding: 0 4px 0 4px;
+`
+
+const OutlinedFormControl = styled(FormControl)`
+  margin-bottom: 1rem;
+`
+
+const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
+  border-radius: 4px;
+  border: 1px solid;
+  border-color: ${props => (props.error ? "#F44336" : "rgba(0, 0, 0, 0.23)")};
+  padding: 18.5px 14px;
+  transition: padding-left 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    border-color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    border-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
+  &:hover {
+    border: 1px solid rgba(0, 0, 0, 0.87);
+  }
+
+  &:focus {
+    bordercolor: "#3f51b5";
+  }
+
+  @media (hover: none) {
+    border: 1px solid rgba(0, 0, 0, 0.23);
+  }
+`
+
+const ModuleImage = styled.img<{ error?: boolean }>`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  max-height: 250px;
+  display: ${props => (props.error ? "none" : "")};
+`
+
 const renderForm = ({
   errors,
   values,
@@ -46,8 +98,16 @@ const renderForm = ({
   "errors" | "values" | "isSubmitting" | "setFieldValue"
 >) => {
   const classes = useStyles()
+  const [image, setImage] = useState(values.image)
+  const [imageError, setImageError] = useState("")
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
+
+  const debouncedImage = useDebounce(values.image, 500)
+
+  useEffect(() => {
+    setImage(debouncedImage)
+  }, [debouncedImage])
 
   return (
     <Form>
@@ -71,6 +131,47 @@ const renderForm = ({
         autoComplete="off"
         component={StyledTextField}
       />
+      <Field
+        name="image"
+        type="text"
+        label="Image filename"
+        fullWidth
+        variant="outlined"
+        autoComplete="off"
+        component={StyledTextField}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Tooltip title="By default, the module image filename is the slug followed by .jpg. Enter a filename with an extension here to override it">
+                <HelpIcon />
+              </Tooltip>
+            </InputAdornment>
+          ),
+        }}
+      />
+      <OutlinedFormControl variant="outlined" error={!!imageError}>
+        <OutlinedInputLabel shrink>Image preview</OutlinedInputLabel>
+        <OutlinedFormGroup>
+          <ModuleImage
+            src={
+              image
+                ? `../../../static/images/${image}`
+                : `../../../../static/images/${values.new_slug}.jpg`
+            }
+            error={!!imageError}
+            onError={() =>
+              setImageError("Image not found! If image filename is not sp")
+            }
+            onLoad={() => setImageError("")}
+          />
+          {!!imageError ? (
+            <Typography variant="body2" style={{ color: "#FF0000" }}>
+              {imageError}
+            </Typography>
+          ) : null}
+        </OutlinedFormGroup>
+      </OutlinedFormControl>
+
       <Grid container direction="column">
         <FieldArray
           name="study_module_translations"
@@ -92,7 +193,7 @@ const renderForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values && values.study_module_translations.length ? (
+              {values!.study_module_translations!.length ? (
                 values.study_module_translations.map(
                   (_: any, index: number) => (
                     <Grid
@@ -176,19 +277,17 @@ const renderForm = ({
                   </Typography>
                 </Paper>
               )}
-              {values &&
-                values.study_module_translations &&
-                values.study_module_translations.length < languages.length && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    disabled={isSubmitting}
-                    onClick={() => helpers.push({ ...initialTranslation })}
-                  >
-                    Add translation
-                  </Button>
-                )}
+              {values!.study_module_translations!.length < languages.length && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={isSubmitting}
+                  onClick={() => helpers.push({ ...initialTranslation })}
+                >
+                  Add translation
+                </Button>
+              )}
             </>
           )}
         />

@@ -15,6 +15,7 @@ const Modules = [
     id: "21d838c9-54c7-4fbb-8e4c-91e8f14f0d73",
     slug: "webdev",
     name: "Web development",
+    image: "WebModule.jpg",
     study_module_translations: [
       {
         id: "0616fba6-e119-4d77-9b71-2b0fae2101b3",
@@ -34,6 +35,7 @@ const Modules = [
     id: "662f537e-4395-40db-a32d-710b51fa169e",
     slug: "program",
     name: "Programming skills",
+    image: "CodeModule.jpg",
     study_module_translations: [
       {
         id: "9fa46739-8993-4b32-8624-00d30e47830b",
