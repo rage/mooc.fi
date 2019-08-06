@@ -11,6 +11,7 @@ import { withRouter, SingletonRouter } from "next/router"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
 import PointsList from "../../../components/Dashboard/PointsList"
+import PaginatedPointsList from "../../../components/Dashboard/PaginatedPointsList"
 import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 
@@ -23,18 +24,6 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-//test query. TODO: replace with correct one
-export const UserPointsQuery = gql`
-  query User($email: String, $course_id: ID) {
-    user(email: $email) {
-      id
-      user_course_progressess(course_id: $course_id) {
-        id
-      }
-    }
-  }
-`
-
 interface CompletionsProps {
   admin: boolean
   router: SingletonRouter
@@ -42,6 +31,9 @@ interface CompletionsProps {
 
 const Points = (props: CompletionsProps) => {
   const { admin, router } = props
+  if (!admin) {
+    return <AdminError />
+  }
 
   let slug: string = ""
   let lng: string = ""
@@ -52,10 +44,6 @@ const Points = (props: CompletionsProps) => {
     if (typeof router.query.id === "string") {
       slug = router.query.id
     }
-  }
-
-  if (!admin) {
-    return <AdminError />
   }
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
@@ -76,15 +64,6 @@ const Points = (props: CompletionsProps) => {
   if (error || !data) {
     return <p>Error has occurred</p>
   }
-
-  const userData = useQuery(UserPointsQuery, {
-    variables: {
-      email: "ava.r.h.einonen@gmail.com",
-      course_id: data.id,
-    },
-  })
-
-  console.log(userData)
 
   return (
     <CourseLanguageContext.Provider value={lng}>
@@ -112,7 +91,7 @@ const Points = (props: CompletionsProps) => {
           handleLanguageChange={handleLanguageChange}
           languageValue={lng}
         />
-        <PointsList />
+        <PaginatedPointsList courseID={data.course.id} />
       </WideContainer>
     </CourseLanguageContext.Provider>
   )
