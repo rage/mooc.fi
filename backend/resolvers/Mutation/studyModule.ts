@@ -7,7 +7,7 @@ import {
   StudyModuleTranslationUpdateManyWithoutStudy_moduleInput,
 } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, arg, idArg } from "nexus/dist"
+import { stringArg, arg, idArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import * as pullAll from "lodash/pullAll"
 
@@ -18,6 +18,7 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       slug: stringArg({ required: true }),
       name: stringArg(),
       image: stringArg(),
+      order: intArg(),
       study_module_translations: arg({
         type: "StudyModuleTranslationCreateWithoutStudy_moduleInput",
         list: true,
@@ -26,7 +27,7 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
-      const { slug, name, image, study_module_translations } = args
+      const { slug, name, image, order, study_module_translations } = args
 
       const prisma: Prisma = ctx.prisma
 
@@ -34,6 +35,7 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         slug,
         name,
         image,
+        order,
         study_module_translations: !!study_module_translations
           ? { create: study_module_translations }
           : null,
@@ -55,6 +57,7 @@ const updateStudyModule = async (
       new_slug: stringArg(),
       name: stringArg(),
       image: stringArg(),
+      order: intArg(),
       study_module_translations: arg({
         type: "StudyModuleTranslationWithIdInput",
         list: true,
@@ -71,6 +74,7 @@ const updateStudyModule = async (
         new_slug,
         name,
         image,
+        order,
         study_module_translations,
       } = args
 
@@ -108,6 +112,7 @@ const updateStudyModule = async (
         data: {
           name,
           image,
+          order,
           slug: new_slug ? new_slug : slug,
           study_module_translations: Object.keys(translationMutation).length
             ? translationMutation

@@ -5,18 +5,21 @@ export const AddStudyModuleMutation = gql`
     $slug: String!
     $name: String!
     $image: String
+    $order: Int
     $study_module_translations: [StudyModuleTranslationCreateWithoutStudy_moduleInput!]
   ) {
     addStudyModule(
       slug: $slug
       name: $name
       image: $image
+      order: $order
       study_module_translations: $study_module_translations
     ) {
       id
       slug
       name
       image
+      order
       study_module_translations {
         id
         language
@@ -34,6 +37,7 @@ export const UpdateStudyModuleMutation = gql`
     $new_slug: String
     $name: String!
     $image: String
+    $order: Int
     $study_module_translations: [StudyModuleTranslationWithIdInput!]
   ) {
     updateStudyModule(
@@ -42,12 +46,14 @@ export const UpdateStudyModuleMutation = gql`
       new_slug: $new_slug
       name: $name
       image: $image
+      order: $order
       study_module_translations: $study_module_translations
     ) {
       id
       slug
       name
       image
+      order
       study_module_translations {
         id
         language

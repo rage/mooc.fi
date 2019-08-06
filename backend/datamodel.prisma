@@ -123,6 +123,7 @@ type StudyModule @db(name:"study_module"){
   slug: String! @unique
   name: String!
   image: String
+  order: Int
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   courses: [Course!]! @relation(name: "StudyModuleToCourse")

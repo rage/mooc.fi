@@ -4,6 +4,7 @@ export interface StudyModuleFormValues {
   new_slug: string
   name: string
   image: string
+  order?: number
   // courses: any[]
   study_module_translations: StudyModuleTranslationFormValues[]
 }

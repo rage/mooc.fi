@@ -11,6 +11,7 @@ import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 import NextI18Next from "../../../i18n"
+import Spinner from "/components/Spinner"
 
 // import { Courses as courseData } from "../courseData.js"
 
@@ -109,9 +110,8 @@ const EditCourse = (props: EditCourseProps) => {
     return <AdminError />
   }
 
-  if (!(!courseLoading && !studyModulesLoading)) {
-    // TODO: spinner
-    return null
+  if (courseLoading || studyModulesLoading) {
+    return <Spinner />
   }
 
   const listLink = `${language ? "/" + language : ""}/courses`

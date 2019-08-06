@@ -98,34 +98,50 @@ const renderForm = ({
   "errors" | "values" | "isSubmitting" | "setFieldValue"
 >) => {
   const classes = useStyles()
-  const [image, setImage] = useState(values.image)
+  // const [image, setImage] = useState(values.image)
   const [imageError, setImageError] = useState("")
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
-  const debouncedImage = useDebounce(values.image, 500)
+  const /*debounced*/ image = useDebounce(values.image, 500)
 
-  useEffect(() => {
+  /*   useEffect(() => {
     setImage(debouncedImage)
-  }, [debouncedImage])
+  }, [debouncedImage]) */
 
   return (
     <Form>
+      <Grid container direction="row" spacing={2}>
+        <Grid item xs={10}>
+          <Field
+            name="name"
+            type="text"
+            label="Name"
+            error={errors.name}
+            fullWidth
+            autoComplete="off"
+            variant="outlined"
+            component={StyledTextField}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <Field
+            name="order"
+            type="number"
+            label="Order"
+            error={errors.order}
+            fullWidth
+            autoComplete="off"
+            variant="outlined"
+            component={StyledTextField}
+          />
+        </Grid>
+      </Grid>
       <Field
         name="new_slug"
         type="text"
         label="Slug"
         error={errors.new_slug}
-        fullWidth
-        variant="outlined"
-        autoComplete="off"
-        component={StyledTextField}
-      />
-      <Field
-        name="name"
-        type="text"
-        label="Name"
-        error={errors.name}
         fullWidth
         variant="outlined"
         autoComplete="off"
