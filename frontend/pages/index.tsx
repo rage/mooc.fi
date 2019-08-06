@@ -37,6 +37,7 @@ const AllModulesQuery = gql`
       id
       slug
       name
+      image
       courses {
         id
         slug

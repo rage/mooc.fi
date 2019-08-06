@@ -8,11 +8,11 @@ import {
   AllModules_study_modules_courses,
   AllModules_study_modules_study_module_translations,
   AllModules_study_modules,
-} from "./generated/AllModules"
+} from "/static/types/generated/AllModules"
 import {
   AllCourses_courses_course_translations,
   AllCourses_courses,
-} from "./generated/AllCourses"
+} from "/static/types/generated/AllCourses"
 
 export interface Module {
   name: string

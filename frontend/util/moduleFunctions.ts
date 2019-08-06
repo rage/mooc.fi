@@ -1,7 +1,11 @@
-import { AllCourses_courses } from "../static/types/generated/AllCourses"
-import { AllCourses_courses_course_translations } from "../static/types/generated/AllCourses"
-import { AllModules_study_modules_courses } from "../static/types/generated/AllModules"
-import { AllModules_study_modules } from "../static/types/generated/AllModules"
+import {
+  AllCourses_courses,
+  AllCourses_courses_course_translations,
+} from "/static/types/generated/AllCourses"
+import {
+  AllModules_study_modules,
+  AllModules_study_modules_courses,
+} from "/static/types/generated/AllModules"
 import {
   ObjectifiedModule,
   ObjectifiedModuleTranslations,
