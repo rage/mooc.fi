@@ -1,6 +1,6 @@
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg, booleanArg } from "nexus/dist"
+import { stringArg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
