@@ -40,9 +40,12 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
+
       const { first, last, before, after, user_id, course_id } = args
-      const prisma: Prisma = ctx.prisma
-      return prisma.userCourseSettingsesConnection({
+      if ((!first && !last) || (first > 50 || last > 50)) {
+        throw new ForbiddenError("Cannot query more than 50 objects")
+      }
+      return ctx.prisma.userCourseSettingsesConnection({
         first: first,
         last: last,
         before: before,
