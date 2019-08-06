@@ -20,6 +20,7 @@ export const CourseQuery = gql`
       id
       name
       slug
+      order
       photo {
         id
         compressed

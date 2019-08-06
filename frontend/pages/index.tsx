@@ -71,7 +71,7 @@ const AllModulesQuery = gql`
 
 const AllCoursesQuery = gql`
   query AllCourses {
-    courses {
+    courses(orderBy: order_ASC) {
       id
       slug
       name

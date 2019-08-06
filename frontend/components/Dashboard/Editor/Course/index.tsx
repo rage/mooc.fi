@@ -127,7 +127,11 @@ const CourseEdit = ({
         slug: values.id ? values.slug : values.new_slug,
         base64: !isProduction,
         photo: getIn(values, "photo.id"),
+        // despite order being a number in the typings, it comes back as an empty string without TS yelling at you
+        // @ts-ignore
+        order: values.order === "" ? null : values.order,
       }
+
       const courseMutation = newCourse ? addCourse : updateCourse
 
       try {

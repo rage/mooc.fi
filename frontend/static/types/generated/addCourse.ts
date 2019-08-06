@@ -50,6 +50,8 @@ export interface addCourse_addCourse {
   __typename: "Course"
   id: any
   slug: string
+  name: string
+  order: number | null
   photo: addCourse_addCourse_photo | null
   course_translations: addCourse_addCourse_course_translations[] | null
   open_university_registration_links:
@@ -76,4 +78,5 @@ export interface addCourseVariables {
     | OpenUniversityRegistrationLinkCreateWithoutCourseInput[]
     | null
   study_modules?: string[] | null
+  order?: number | null
 }

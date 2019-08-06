@@ -21,6 +21,7 @@ export interface CourseFormValues extends FormValues {
   new_photo: undefined | File
   new_slug: string
   base64: boolean
+  order?: number
 }
 
 export interface CourseTranslationFormValues extends FormValues {

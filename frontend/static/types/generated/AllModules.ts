@@ -52,6 +52,7 @@ export interface AllModules_study_modules {
   id: any
   slug: string
   name: string
+  image: string | null
   courses: AllModules_study_modules_courses[] | null
   study_module_translations:
     | AllModules_study_modules_study_module_translations[]
