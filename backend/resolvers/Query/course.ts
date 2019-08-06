@@ -1,6 +1,6 @@
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg, booleanArg } from "nexus/dist"
+import { stringArg, idArg, booleanArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
@@ -29,6 +29,28 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "Course",
     resolve: (_, args, ctx) => {
       return ctx.prisma.courses()
+    },
+  })
+}
+
+const courseUsers = (t: PrismaObjectDefinitionBlock<"Query">) => {
+  t.field("courseUsers", {
+    type: "UserConnection",
+    args: {
+      course: stringArg(),
+      first: intArg(),
+      after: idArg(),
+      last: intArg(),
+      before: idArg(),
+    },
+    resolve: async (_, args, ctx) => {
+      checkAccess(ctx)
+      const { course, first, after, last, before } = args
+      const settings = ctx.prisma.userCourseSettingses({
+        where: {
+          course: { id: course },
+        },
+      })
     },
   })
 }
