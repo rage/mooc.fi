@@ -1,6 +1,6 @@
 import { prismaObjectType } from "nexus-prisma"
-import * as resolvers from "../resolvers/Completion"
-import { Prisma, Course } from "../generated/prisma-client"
+import { Course } from "../generated/prisma-client"
+import { ForbiddenError } from "apollo-server-core"
 
 const Completion = prismaObjectType({
   name: "Completion",
@@ -19,17 +19,23 @@ const Completion = prismaObjectType({
 
     t.field("user", {
       type: "User",
-      resolve: (parent, args, ctx) => resolvers.Completion(parent, args, ctx), //TODO: tämänkin voisi ehkä kirjoittaa suoraan tähän jotta tyypit saa oikein
+      resolve: async (parent, args, ctx) => {
+        if (ctx.disableRelations) {
+          throw new ForbiddenError(
+            "Cannot query relations when asking for more than 50 objects",
+          )
+        }
+        return ctx.prisma.completion({ id: parent.id }).user()
+      },
     }),
       t.field("completion_link", {
         type: "String",
         nullable: true,
         resolve: async (parent, args, ctx) => {
-          const prisma: Prisma = ctx.prisma
-          const course: Course = await prisma
+          const course: Course = await ctx.prisma
             .completion({ id: parent.id })
             .course()
-          const avoinLinks = await prisma.openUniversityRegistrationLinks({
+          const avoinLinks = await ctx.prisma.openUniversityRegistrationLinks({
             where: {
               course: course,
               language: parent.completion_language,
