@@ -21,3 +21,4 @@ export { default as addExerciseComlpetionQueries } from "./ExerciseCompletion"
 export {
   default as addOpenUniversityRegistrationLinkQueries,
 } from "./OpenUniversityRegistrationLink"
+export { default as addUserCourseSettingsQueries } from "./userCourseSettings"
