@@ -19,7 +19,7 @@ import {
 } from "/static/types/generated/AllCourses"
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
-import CircularProgress from "@material-ui/core/CircularProgress"
+import Spinner from "/components/Spinner"
 import {
   ObjectifiedCourse,
   ObjectifiedModule,
@@ -33,11 +33,12 @@ const highlightsBanner = "../static/images/backgroundPattern.svg"
 
 const AllModulesQuery = gql`
   query AllModules {
-    study_modules {
+    study_modules(orderBy: order_ASC) {
       id
       slug
       name
       image
+      order
       courses {
         id
         slug
@@ -130,7 +131,7 @@ const Home = (props: HomeProps) => {
   }
 
   if (modulesLoading || coursesLoading || !tReady) {
-    return <CircularProgress />
+    return <Spinner />
   }
 
   if (!modulesData || !coursesData) {

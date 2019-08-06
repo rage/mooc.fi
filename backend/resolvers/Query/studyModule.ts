@@ -1,6 +1,6 @@
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg } from "nexus/dist"
+import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
@@ -25,8 +25,11 @@ const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
 const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("study_modules", {
     type: "StudyModule",
+    args: {
+      orderBy: arg({ type: "StudyModuleOrderByInput" }),
+    },
     resolve: async (_, args, ctx) => {
-      return await ctx.prisma.studyModules()
+      return await ctx.prisma.studyModules({ orderBy: args.orderBy })
     },
   })
 }

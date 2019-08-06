@@ -27,6 +27,7 @@ export interface StudyModuleDetails_study_module {
   slug: string
   name: string
   image: string | null
+  order: number | null
   courses: StudyModuleDetails_study_module_courses[] | null
   study_module_translations:
     | StudyModuleDetails_study_module_study_module_translations[]

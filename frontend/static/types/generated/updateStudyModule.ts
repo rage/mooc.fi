@@ -22,6 +22,7 @@ export interface updateStudyModule_updateStudyModule {
   slug: string
   name: string
   image: string | null
+  order: number | null
   study_module_translations:
     | updateStudyModule_updateStudyModule_study_module_translations[]
     | null
@@ -37,5 +38,6 @@ export interface updateStudyModuleVariables {
   new_slug?: string | null
   name: string
   image?: string | null
+  order?: number | null
   study_module_translations?: StudyModuleTranslationWithIdInput[] | null
 }

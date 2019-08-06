@@ -23,11 +23,12 @@ import {
 
 export const AllModulesQuery = gql`
   query AllModulesWithTranslations {
-    study_modules {
+    study_modules(orderBy: order_ASC) {
       id
       slug
       name
       image
+      order
       study_module_translations {
         id
         language

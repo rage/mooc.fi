@@ -97,6 +97,9 @@ const studyModuleEditSchema = ({
         description: Yup.string().required("required"),
       }),
     ),
+    order: Yup.number()
+      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .integer("must be integer"),
   })
 
 const validateSlug = ({
