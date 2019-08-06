@@ -1,0 +1,17 @@
+{
+    "signupTitle":"Luo käyttäjätunnus",
+    "emailTaken": "Sähköpostiosoitteesi on jo käytössä. Oletko tehnyt aikaisemmin mooc.fi:n kursseja?",
+    "commonProblem":"Ongelma tunnuksen luonnissa. Virhe oli: ",
+    "emailNoAt":"Sähköpostiosoitteessa ei ole '@'-merkkiä. ",
+    "emailNoPoint":"Sähköpostiosoitessa ei ole '.'-merkkiä. ",
+    "passwordNoMatch":"Salasana ja salasana uudestaan eivät olleet samoja. ",
+    "formLabelEmail":"Sähköpostiosoite",
+    "formLabelFirstName":"Etunimi",
+    "formLabelLastName":"Sukunimi",
+    "formLabelPassword": "Salasana",
+    "formLabelPasswordAgain":"Salasana uudestaan",
+    "error": "Virhe: ",
+    "signIn": "Onko sinulla jo käyttäjätunnus? Kirjaudu sisään",
+    "confirmEmailTitle": "Mooc.fi käyttäjätunnuksesi on luotu",
+    "confirmEmailInfo": "Olemme lähettäneet sähköpostiisi sähköpostiosoitteen\nvarmistuslinkin. Käy nyt sähköpostissasi ja varmista osoitteesi."
+}

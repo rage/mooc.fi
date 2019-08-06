@@ -54,7 +54,7 @@ const SignInPage = (props: Props) => {
 //register-completion page
 SignInPage.getInitialProps = function(context: NextContext) {
   if (isSignedIn(context)) {
-    redirect(context, "/register-completion")
+    redirect(context, "/")
   }
   return {
     namespacesRequired: ["common"],
