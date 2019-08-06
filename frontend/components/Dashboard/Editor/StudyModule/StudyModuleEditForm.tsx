@@ -175,9 +175,7 @@ const renderForm = ({
                 : `../../../../static/images/${values.new_slug}.jpg`
             }
             error={!!imageError}
-            onError={() =>
-              setImageError("Image not found! If image filename is not sp")
-            }
+            onError={() => setImageError("no image found")}
             onLoad={() => setImageError("")}
           />
           {!!imageError ? (

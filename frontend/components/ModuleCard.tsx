@@ -131,11 +131,30 @@ const NaviCardBodyText = styled(Typography)`
 function ModuleCard({ module }: { module?: ObjectifiedModule }) {
   const classes = useStyles()
 
-  const imageUrl = module
-    ? module.image
-      ? `../../static/images/${module.image}`
-      : `../../static/images/${module.slug}.jpg`
-    : ""
+  const imageUrl = () => {
+    if (!module) {
+      return null
+    }
+
+    try {
+      const image = require(`../static/images/${
+        module.image
+      }?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000`)
+
+      return image
+    } catch (e) {
+      try {
+        const image = require(`../static/images/${
+          module.slug
+        }.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000`)
+
+        return image
+      } catch (e) {
+        // TODO: (?) placeholder
+        return null
+      }
+    }
+  }
 
   //  require(`../static/images/courseimages/${course.slug}.png`)
   // removed doggos as a placeholder for the time being
@@ -144,7 +163,7 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
     <Grid item xs={12} sm={6} lg={6}>
       <Base>
         {module ? (
-          <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
+          <ImageBackground style={{ backgroundImage: `url(${imageUrl()})` }} />
         ) : (
           <IconBackground>
             <AddCircleIcon

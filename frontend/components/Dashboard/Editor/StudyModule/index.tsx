@@ -90,7 +90,7 @@ const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
 
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
-      await deleteStudyModule({ variables: { id: values.id } })
+      await deleteStudyModule({ variables: { slug: values.slug } })
       Next18next.Router.push("/study-modules")
     }
   }, [])
