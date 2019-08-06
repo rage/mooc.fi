@@ -38,16 +38,25 @@ function CompletionCard({
 }: {
   completer: AllCompletions_completionsPaginated_edges_node
 }) {
-  let completionLanguage: string | null = null
+  let completionLanguage: string | undefined = "No language available"
   if (completer.completion_language) {
-    completionLanguage = completer.completion_language
+    completionLanguage = MapLangToLanguage.get(completer.completion_language)
   }
 
   let completionsregistered: completionsRegistered[] = []
   if (completer.completions_registered) {
     completionsregistered = completer.completions_registered
   }
-  console.log("completer", completer)
+
+  let studentId: string = "No student number"
+  if (completer.user.student_number) {
+    studentId = `HY SID: ${completer.user.student_number}`
+  }
+
+  let completionDate = ""
+  if (completionsregistered.length > 0) {
+    completionDate = formatDateTime(completer.created_at)
+  }
 
   return (
     <>
@@ -67,22 +76,11 @@ function CompletionCard({
           primary={`${completer.user.first_name} ${completer.user.last_name}`}
           secondary={
             <React.Fragment>
-              <Typography>
-                {completer.email}{" "}
-                {completer.user.student_number
-                  ? `HY SID: ${completer.user.student_number}`
-                  : "No student number"}
+              <Typography component="span" style={{ display: "block" }}>
+                {completer.email} {studentId}
               </Typography>
-              <Typography>
-                {completionLanguage
-                  ? MapLangToLanguage.get(completionLanguage)
-                  : "No language available"}
-              </Typography>
-              <Typography>
-                {completionsregistered.length > 0
-                  ? `HY ${formatDateTime(completer.created_at)}`
-                  : ""}
-              </Typography>
+              {completionLanguage}
+              {completionDate}
             </React.Fragment>
           }
         />
