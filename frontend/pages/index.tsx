@@ -17,41 +17,6 @@ import { ObjectifiedCourse } from "../static/types/moduleTypes"
 import ErrorBoundary from "../components/ErrorBoundary"
 const highlightsBanner = "../static/images/backgroundPattern.svg"
 
-const AllModulesQuery = gql`
-  query AllModules {
-    study_modules {
-      id
-      courses {
-        id
-        slug
-        name
-        photo {
-          id
-          compressed
-          uncompressed
-        }
-        promote
-        status
-        start_point
-        hidden
-        course_translations {
-          id
-          language
-          name
-          description
-          link
-        }
-      }
-      study_module_translations {
-        id
-        language
-        name
-        description
-      }
-    }
-  }
-`
-
 const AllCoursesQuery = gql`
   query AllCourses {
     courses {

@@ -1,7 +1,6 @@
 import React from "react"
-import dynamic from "next/dynamic"
-const Breadcrumbs = dynamic(import("@material-ui/core/Breadcrumbs"))
-const Link = dynamic(import("@material-ui/core/Link"))
+import Breadcrumbs from "@material-ui/core/Breadcrumbs"
+import Link from "@material-ui/core/Link"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 
@@ -25,12 +24,18 @@ function buildHref(props: BuildHrefProps) {
   for (i = 0; i < components.length; i++) {
     if (i === 0) {
       BreadCrumbLinks.push(
-        <Link href={`/${components[i]}`}>{components[i]}</Link>,
+        <Link href={`/${components[i]}`} key={components[i]}>
+          {components[i]}
+        </Link>,
       )
     } else {
       let componentsSoFar = components.slice(0, i + 1)
       let href = componentsSoFar.join("/")
-      BreadCrumbLinks.push(<Link href={`/${href}`}>{components[i]}</Link>)
+      BreadCrumbLinks.push(
+        <Link href={`/${href}`} key={components[i]}>
+          {components[i]}
+        </Link>,
+      )
     }
   }
 
@@ -50,7 +55,8 @@ const DashboardBreadCrumbs = (props: Props) => {
 
   //split the url path into parts
   //remove the first item, as we know it to be homepage
-  const urlRouteComponents = currentUrl.split("/").slice(1)
+  const urlWithQueryRemoved = currentUrl.split("?")[0]
+  const urlRouteComponents = urlWithQueryRemoved.split("/").slice(1)
 
   return (
     <BreadCrumbsBase>
