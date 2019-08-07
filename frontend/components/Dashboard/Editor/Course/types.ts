@@ -1,27 +1,30 @@
+import { CourseStatus } from "/static/types/globalTypes"
+import { FormValues } from "../types"
 import {
-  CourseStatus,
-  OpenUniversityRegistrationLinkWithIdInput,
-} from "../../../static/types/globalTypes"
+  CourseDetails_course_photo,
+  CourseDetails_course_study_modules,
+} from "/static/types/generated/CourseDetails"
 
-export interface CourseFormValues {
+export interface CourseFormValues extends FormValues {
   id?: string | null
   name: string
   slug: string
-  photo: any
+  photo: string | CourseDetails_course_photo | undefined
   start_point: boolean
   promote: boolean
   hidden: boolean
   status: CourseStatus
   course_translations: CourseTranslationFormValues[]
   open_university_registration_links?: OpenUniversityRegistrationValues[]
-  study_module: string | null | undefined
-  thumbnail?: string
+  study_modules?: string[] | CourseDetails_course_study_modules[] | null
+  thumbnail?: string | null
   new_photo: undefined | File
   new_slug: string
   base64: boolean
+  order?: number
 }
 
-export interface CourseTranslationFormValues {
+export interface CourseTranslationFormValues extends FormValues {
   id?: string | undefined
   language: string | undefined
   name: string | undefined
@@ -31,7 +34,7 @@ export interface CourseTranslationFormValues {
   open_university_course_code?: string | undefined
 }
 
-export interface OpenUniversityRegistrationValues {
+export interface OpenUniversityRegistrationValues extends FormValues {
   id?: string | undefined
   course_code: string
   language: string

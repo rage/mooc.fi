@@ -12,12 +12,12 @@ import {
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
-import NextI18Next from "../i18n"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
+import NextI18Next from "i18n"
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import get from "lodash/get"
-import { AllCourses_courses } from "./../static/types/generated/AllCourses"
-import { addDomain } from "../util/imageUtils"
+import { addDomain } from "/util/imageUtils"
 import CourseImage from "./CourseImage"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -43,8 +43,8 @@ function CourseCard({ course }: { course?: AllCourses_courses }) {
           {course ? (
             <CourseImage photo={course.photo} alt={course.name} />
           ) : (
-            <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
-              <a href="/courses/new">
+            <NextI18Next.Link href={`/courses/new`}>
+              <a>
                 <Grid
                   container
                   justify="center"
@@ -65,25 +65,16 @@ function CourseCard({ course }: { course?: AllCourses_courses }) {
         <CardActionArea>
           {course ? (
             <React.Fragment>
-              <NextI18Next.Link
-                as={`/courses/${course.slug}`}
-                href={`/courses/${course.slug}`}
-              >
-                <a
-                  href={`/courses/${course.slug}`}
-                  aria-label={`To the homepage of course ${course.name}`}
-                >
+              <NextI18Next.Link href={`/courses/${course.slug}`}>
+                <a aria-label={`To the homepage of course ${course.name}`}>
                   <Button variant="contained" color="secondary" fullWidth>
                     <DashboardIcon />
                     Course Dashboard
                   </Button>
                 </a>
               </NextI18Next.Link>
-              <NextI18Next.Link
-                as={`/courses/${course.slug}/edit`}
-                href={`/courses/${course.slug}/edit`}
-              >
-                <a href={`/courses/${course.slug}/edit`}>
+              <NextI18Next.Link href={`/courses/${course.slug}/edit`}>
+                <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
                     Edit
@@ -92,8 +83,8 @@ function CourseCard({ course }: { course?: AllCourses_courses }) {
               </NextI18Next.Link>
             </React.Fragment>
           ) : (
-            <NextI18Next.Link as={`/courses/new`} href={`/courses/new`}>
-              <a href="/courses/new">
+            <NextI18Next.Link href={`/courses/new`}>
+              <a>
                 <Button variant="contained" color="secondary" fullWidth>
                   <AddIcon />
                   Create

@@ -6,11 +6,12 @@ import redirect from "../../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../../../components/Dashboard/AdminError"
 import { WideContainer } from "../../../components/Container"
-import CourseEdit from "../../../components/Dashboard/CourseEdit/CourseEdit"
+import Editor from "../../../components/Dashboard/Editor"
 import { withRouter, SingletonRouter } from "next/router"
-import { useQuery, useMutation } from "react-apollo-hooks"
+import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 import NextI18Next from "../../../i18n"
+import Spinner from "/components/Spinner"
 
 // import { Courses as courseData } from "../courseData.js"
 
@@ -20,6 +21,7 @@ export const CourseQuery = gql`
       id
       name
       slug
+      order
       photo {
         id
         compressed
@@ -44,9 +46,19 @@ export const CourseQuery = gql`
         language
         link
       }
-      study_module {
+      study_modules {
         id
       }
+    }
+  }
+`
+
+export const StudyModuleQuery = gql`
+  query StudyModules {
+    study_modules {
+      id
+      name
+      slug
     }
   }
 `
@@ -81,23 +93,31 @@ const EditCourse = (props: EditCourseProps) => {
   /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
   const loading = false */
 
-  const { data, loading, error } = useQuery(CourseQuery, {
+  const {
+    data: courseData,
+    loading: courseLoading,
+    error: courseError,
+  } = useQuery(CourseQuery, {
     variables: { slug: slug },
   })
+  const {
+    data: studyModulesData,
+    loading: studyModulesLoading,
+    error: studyModulesError,
+  } = useQuery(StudyModuleQuery)
 
   if (!admin) {
     return <AdminError />
   }
 
-  if (loading) {
-    return null
+  if (courseLoading || studyModulesLoading) {
+    return <Spinner />
   }
 
-  if (!data.course) {
-    redirectTimeout = setTimeout(
-      () => router.push(`/${language ? language + "/" : ""}courses`),
-      5000,
-    )
+  const listLink = `${language ? "/" + language : ""}/courses`
+
+  if (!courseData.course) {
+    redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
   return (
@@ -112,8 +132,12 @@ const EditCourse = (props: EditCourseProps) => {
         >
           Edit course
         </Typography>
-        {data.course ? (
-          <CourseEdit course={data.course} />
+        {courseData.course ? (
+          <Editor
+            type="Course"
+            course={courseData.course}
+            modules={studyModulesData.study_modules}
+          />
         ) : (
           <Paper className={classes.paper} elevation={2}>
             <Typography variant="body1">
@@ -122,12 +146,12 @@ const EditCourse = (props: EditCourseProps) => {
             <Typography variant="body2">
               You will be redirected back to the course list in 5 seconds -
               press{" "}
-              <NextI18Next.Link href="/courses">
+              <NextI18Next.Link href={listLink}>
                 <a
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
                   }
-                  href="/courses"
+                  href={listLink}
                 >
                   here
                 </a>
