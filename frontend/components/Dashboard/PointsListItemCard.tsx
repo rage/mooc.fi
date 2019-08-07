@@ -1,65 +1,69 @@
 import React from "react"
 import { Typography, Grid } from "@material-ui/core"
-import PointsItemChart from "./PointsItemChart"
+import { UserCourseSettingses_UserCourseSettingses_edges_node as UserPointsData } from "../../static/types/generated/UserCourseSettingses"
 import PointsItemTable from "./PointsItemTable"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    userName: {
-      color: "#6d1b7b",
-      textTransform: "uppercase",
-      fontWeight: "bold",
-      fontSize: 14,
-    },
-    userInfo: {
-      color: "gray",
-      fontSize: 12,
-    },
-    title: {
-      textTransform: "uppercase",
-      marginTop: "0.7em",
-      marginBottom: "0.7em",
-    },
-  }),
-)
+const Name = styled(Typography)`
+  font-weight: bold;
+`
+const UserInformation = styled(Typography)`
+  color: gray;
+`
 
-function PointsListItemCard() {
-  const classes = useStyles()
+const Root = styled(Grid)`
+  background-color: white;
+  margin: 1rem;
+  padding: 1rem;
+`
+interface Props {
+  studentPointsPerGroup: UserPointsData
+}
+
+function PointsListItemCard(props: Props) {
+  const { studentPointsPerGroup } = props
+
+  let firstName: string = "n/a"
+  let lastName: string = "n/a"
+  let email: string = "no email"
+  let studentId: string = "no SID"
+  let studentProgressData
+  if (studentPointsPerGroup.user) {
+    if (studentPointsPerGroup.user.first_name) {
+      firstName = studentPointsPerGroup.user.first_name
+    }
+    if (studentPointsPerGroup.user.last_name) {
+      lastName = studentPointsPerGroup.user.last_name
+    }
+    if (studentPointsPerGroup.user.email) {
+      email = studentPointsPerGroup.user.email
+    }
+    if (studentPointsPerGroup.user.student_number) {
+      studentId = studentPointsPerGroup.user.student_number
+    }
+    if (studentPointsPerGroup.user.user_course_progressess) {
+      studentProgressData = studentPointsPerGroup.user.user_course_progressess
+    }
+  }
 
   return (
-    <Grid item xs={12} sm={12} lg={12}>
-      <Grid container>
-        <Grid item xs={8} sm={6} lg={6}>
-          <Typography
-            variant="body1"
-            component="p"
-            className={classes.userName}
-          >
-            Milla Makkonen
-          </Typography>
-          <Typography
-            variant="body1"
-            component="p"
-            className={classes.userInfo}
-          >
-            test.mail@test.com
-          </Typography>
-          <Typography
-            variant="body1"
-            component="p"
-            className={classes.userInfo}
-          >
-            12345678
-          </Typography>
-          <PointsItemChart />
-        </Grid>
+    <Root item xs={12} sm={12} lg={12}>
+      <Name variant="body1" component="h4">
+        {firstName} {lastName}
+      </Name>
+      <UserInformation variant="body1" component="p">
+        {email}
+      </UserInformation>
+      <UserInformation variant="body1" component="p">
+        {studentId}
+      </UserInformation>
 
-        <Grid item xs={4} sm={6} lg={6}>
-          <PointsItemTable />
-        </Grid>
-      </Grid>
-    </Grid>
+      {studentProgressData ? (
+        <PointsItemTable studentPoints={studentProgressData} />
+      ) : (
+        <p>No points data available</p>
+      )}
+    </Root>
   )
 }
 

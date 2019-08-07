@@ -3,7 +3,7 @@ import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
 import { NextPageContext as NextContext } from "next"
 import AdminError from "../../../components/Dashboard/AdminError"
-import { WideContainer } from "../../../components/Container"
+import Container from "../../../components/Container"
 import CourseLanguageContext from "../../../contexes/CourseLanguageContext"
 import LanguageSelector from "../../../components/Dashboard/LanguageSelector"
 import Typography from "@material-ui/core/Typography"
@@ -70,7 +70,7 @@ const Points = (props: CompletionsProps) => {
       <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={2} />
 
-      <WideContainer>
+      <Container>
         <Typography
           component="h1"
           variant="h1"
@@ -92,7 +92,7 @@ const Points = (props: CompletionsProps) => {
           languageValue={lng}
         />
         <PaginatedPointsList courseID={data.course.id} />
-      </WideContainer>
+      </Container>
     </CourseLanguageContext.Provider>
   )
 }
