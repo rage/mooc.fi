@@ -18,7 +18,6 @@ import {
   CourseDetails_course_study_modules,
 } from "/static/types/generated/CourseDetails"
 import { StudyModules_study_modules } from "/static/types/StudyModules"
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -29,8 +28,6 @@ const CourseEdit = ({
   course?: CourseFormValues
   modules?: StudyModules_study_modules[]
 }) => {
-  useWhyDidYouUpdate("CourseEdit", { course, modules })
-
   const addCourse = useMutation(AddCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
@@ -170,12 +167,6 @@ const CourseEdit = ({
   const onCancel = useCallback(() => {
     Next18next.Router.push("/courses")
   }, [])
-
-  if (!_course || !modules) {
-    return <p>loadingggg</p>
-  }
-
-  console.log("rerender")
 
   return (
     <CourseEditForm

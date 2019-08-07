@@ -52,18 +52,20 @@ const ModuleHomeLink = styled(Link)`
 function Modules({ module }: { module: ObjectifiedModule }) {
   const { t } = NextI18Next.useTranslation("home")
   const startCourses = (module.courses || []).filter(
-    c => c.start_point === true,
+    c => !c.hidden && c.start_point === true,
   )
   const otherCourses = (module.courses || []).filter(
-    c => c.start_point === false,
+    c => !c.hidden && c.start_point === false,
   )
   return (
     <section style={{ marginBottom: "3em" }}>
       <ModuleBanner module={module} />
       <Container>
-        <IntroText>{module.description}</IntroText>
+        <IntroText variant="subtitle1">{module.description}</IntroText>
 
-        <SubHeader align="center">{t("modulesSubtitleStart")}</SubHeader>
+        <SubHeader align="center" variant="h3">
+          {t("modulesSubtitleStart")}
+        </SubHeader>
 
         <Grid container spacing={3}>
           {startCourses.map(course => (
@@ -71,15 +73,19 @@ function Modules({ module }: { module: ObjectifiedModule }) {
           ))}
         </Grid>
 
-        <SubHeader align="center">{t("modulesSubtitleContinue")}</SubHeader>
+        {otherCourses.length > 0 ? (
+          <>
+            <SubHeader align="center" variant="h3">
+              {t("modulesSubtitleContinue")}
+            </SubHeader>
 
-        <Grid container spacing={3}>
-          {otherCourses
-            ? otherCourses.map(c => (
+            <Grid container spacing={3}>
+              {otherCourses.map(c => (
                 <ModuleSmallCourseCard key={module.id} course={c} />
-              ))
-            : ""}
-        </Grid>
+              ))}
+            </Grid>
+          </>
+        ) : null}
 
         <div
           style={{
@@ -87,9 +93,11 @@ function Modules({ module }: { module: ObjectifiedModule }) {
             marginTop: "3em",
           }}
         >
-          <ModuleHomeLink underline="always">
-            {t("modulesLinkToHome")}
-          </ModuleHomeLink>
+          <NextI18Next.Link href={`/study-modules/${module.slug}`}>
+            <ModuleHomeLink underline="always" style={{ cursor: "pointer" }}>
+              {t("modulesLinkToHome")}
+            </ModuleHomeLink>
+          </NextI18Next.Link>
         </div>
       </Container>
     </section>
