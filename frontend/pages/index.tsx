@@ -11,7 +11,6 @@ import {
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import {
   AllCourses as AllCoursesData,
   AllCourses_courses_photo,
@@ -20,12 +19,7 @@ import {
 import { Courses } from "../courseData"
 import { mockModules } from "../mockModuleData"
 import Spinner from "/components/Spinner"
-import {
-  ObjectifiedCourse,
-  ObjectifiedModule,
-} from "../static/types/moduleTypes"
-import ModuleNavi from "/components/Home/ModuleNavi"
-import Modules from "/components/Home/Modules"
+import { ObjectifiedCourse } from "../static/types/moduleTypes"
 
 const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
@@ -105,11 +99,6 @@ interface HomeProps {
 const Home = (props: HomeProps) => {
   const { t, tReady } = props
   const {
-    loading: modulesLoading,
-    error: modulesError,
-    data: modulesData,
-  } = useQuery<AllModulesData>(AllModulesQuery)
-  const {
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
@@ -124,18 +113,17 @@ const Home = (props: HomeProps) => {
     setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
   }, [NextI18Next.i18n.language])
 
-  if (modulesError || coursesError) {
+  if (coursesError) {
     ;<div>
-      Error:{" "}
-      <pre>{JSON.stringify(modulesError || coursesError, undefined, 2)}</pre>
+      Error: <pre>{JSON.stringify(coursesError, undefined, 2)}</pre>
     </div>
   }
 
-  if (modulesLoading || coursesLoading || !tReady) {
+  if (coursesLoading || !tReady) {
     return <Spinner />
   }
 
-  if (!modulesData || !coursesData) {
+  if (!coursesData) {
     return <div>Error: no data?</div>
   }
 
@@ -143,11 +131,6 @@ const Home = (props: HomeProps) => {
   //on the current language
   const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
     coursesData.courses,
-    language,
-  )
-
-  const modules: ObjectifiedModule[] = filterAndModifyByLanguage(
-    modulesData.study_modules,
     language,
   )
 
@@ -169,7 +152,6 @@ const Home = (props: HomeProps) => {
           fontColor="black"
           titleBackground="#ffffff"
         />
-        <ModuleNavi modules={modules} />
         <CourseHighlights
           courses={courses.filter(c => !c.hidden && c.status === "Active")}
           title={t("allCoursesTitle")}
@@ -200,9 +182,6 @@ const Home = (props: HomeProps) => {
           fontColor="white"
           titleBackground="#3066C0"
         />
-        {modules.map(module => (
-          <Modules module={module} />
-        ))}
       </section>
       <EmailSubscribe />
     </div>
