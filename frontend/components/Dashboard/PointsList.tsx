@@ -1,20 +1,24 @@
 import React from "react"
 import { Grid } from "@material-ui/core"
-import PointsListHeader from "./PointsListHeader"
 import PointsListItemCard from "./PointsListItemCard"
-import { UserCourseSettingses as Points } from "../../static/types/generated/UserCourseSettingses"
+import { UserCourseSettingses_UserCourseSettingses_edges as Points } from "../../static/types/generated/UserCourseSettingses"
 
 interface Props {
-  studentProgresses: Points
+  pointsForUser: Points[]
 }
 
 const PointsList = (props: Props) => {
-  const { studentProgresses } = props
+  const { pointsForUser } = props
+
   return (
     <section>
       <Grid container spacing={3}>
-        <PointsListHeader />
-        <PointsListItemCard />
+        {pointsForUser.map(user => (
+          <PointsListItemCard
+            studentPointsPerGroup={user.node}
+            key={user.node.id}
+          />
+        ))}
       </Grid>
     </section>
   )

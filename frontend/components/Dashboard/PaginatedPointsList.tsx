@@ -50,8 +50,13 @@ function PaginatedPointsList(props: Props) {
         }}
       >
         {({ loading, error, data }) => {
+          if (loading) {
+            return <p>Loading...</p>
+          }
           if (data) {
-            return <PointsList studentProgresses={data} />
+            return (
+              <PointsList pointsForUser={data.UserCourseSettingses.edges} />
+            )
           }
           return <p>Oh noes</p>
         }}

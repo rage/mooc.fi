@@ -76,6 +76,7 @@ const theme = {
       ...rawTheme.typography.h3,
       paddingBottom: "0.5rem",
       paddingTop: "0.7rem",
+      fontFamily: "Open Sans Condensed",
       fontSize: 16,
       "@media (min-width: 600px)": {
         fontSize: 20,
