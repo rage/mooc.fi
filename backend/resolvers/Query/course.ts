@@ -31,6 +31,7 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       orderBy: arg({ type: "CourseOrderByInput" }),
     },
     resolve: (_, args, ctx) => {
+      // @ts-ignore
       return ctx.prisma.courses({ orderBy: args.orderBy })
     },
   })
