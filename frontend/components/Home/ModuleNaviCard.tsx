@@ -86,10 +86,14 @@ const NaviCardBodyText = styled(Typography)`
   }
 `
 function ModuleNaviCard({ module }: { module: ObjectifiedModule }) {
+  const imageUrl = module.image
+    ? require(`../../static/images/${module.image}`)
+    : require(`../../static/images/${module.slug}.jpg`)
+
   return (
     <Grid item xs={12} md={6} lg={6}>
       <Base focusRipple>
-        <ImageBackground style={{ backgroundImage: `url(${module.image})` }} />
+        <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
         <ImageCover />
         <ContentArea>
           <NaviCardTitle align="left">{module.name}</NaviCardTitle>

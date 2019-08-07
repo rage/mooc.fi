@@ -1,6 +1,6 @@
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg } from "nexus/dist"
+import { stringArg, idArg, booleanArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
@@ -27,8 +27,13 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
 const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("courses", {
     type: "Course",
+    args: {
+      orderBy: arg({ type: "CourseOrderByInput" }),
+    },
     resolve: (_, args, ctx) => {
-      return ctx.prisma.courses()
+      // FIXME: this maps as CourseOrderByInput, but still doesn't quite get it
+      // @ts-ignore
+      return ctx.prisma.courses({ orderBy: args.orderBy })
     },
   })
 }

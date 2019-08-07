@@ -65,18 +65,6 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
     flex-direction: row;
   }
 `
-type FilteredCourse = {
-  name: string
-  description: string
-  id: string
-  link: string
-  photo: AllCourses_courses_photo
-  promote: boolean
-  slug: string
-  start_point: boolean
-  status: string
-}
-
 interface CourseCardProps {
   course: ObjectifiedCourse
 }

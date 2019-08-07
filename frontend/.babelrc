@@ -3,11 +3,19 @@
   "plugins": [
     ["styled-components", 
       {
-         "ssr": true
-       }
+        "ssr": true
+      }
     ],
     ["module-resolver", {
-      "root": ["./"]
+      "root": ["./"],
+      "alias": {
+        "/": ".",
+        "@static": "./static",
+        "@pages": "./pages",
+        "@lib": "./lib",
+        "@components": "./components"
+      },
+      "extensions": [".ts", ".tsx", ".js", ".jpg", ".png", ".webp"]
     }],
     "lodash"
   ]

@@ -15,6 +15,7 @@ import { useQuery } from "react-apollo-hooks"
 import CourseGrid from "../../components/CourseGrid"
 import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
+import Spinner from "/components/Spinner"
 
 export const AllCoursesQuery = gql`
   query AllCourses {
@@ -60,13 +61,7 @@ const Courses = (admin: boolean) => {
   }
 
   if (loading || !data) {
-    return (
-      <Container style={{ display: "flex", height: "600px" }}>
-        <Grid item container justify="center" alignItems="center">
-          <CircularProgress color="primary" size={60} />
-        </Grid>
-      </Container>
-    )
+    return <Spinner />
   }
 
   return (

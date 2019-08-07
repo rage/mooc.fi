@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FieldProps } from "formik"
 import { useDropzone } from "react-dropzone"
+import { Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-
-/* TODO/FIXME: isDragReject (coming from react-dropzone) seems to equal true 
-  in some cases even if the dragged file is accepted. This means that sometimes 
-  the error is shown and the box styling changes to error state 
-  with correct input!
-*/
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,8 +10,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       alignItems: "center",
       borderWidth: 2,
-      borderRadius: 2,
-      borderStyle: "dashed",
+      borderRadius: 4,
+      borderStyle: (props: { [key: string]: any }) =>
+        props.isDragActive ? "solid" : "dashed",
       padding: "20px",
       backgroundColor: (props: { [key: string]: any }) =>
         props.isDragActive
@@ -29,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
           ? props.isDragAccept
             ? "#00A000"
             : "#FF0000"
-          : "#A0A0A0",
+          : "rgba(0,0,0,0.23)",
       transition: "border .24s ease-in-out",
     },
   }),
@@ -109,9 +105,12 @@ const ImageDropzoneInput = ({
     <div className={classes.dropzoneContainer} {...getRootProps()}>
       {children}
       <input {...getInputProps()} />
-      <p style={{ color: status.error ? "#FF0000" : "#000000" }}>
+      <Typography
+        variant="body1"
+        style={{ color: status.error ? "#FF0000" : "#000000" }}
+      >
         {status.message}
-      </p>
+      </Typography>
     </div>
   )
 }
