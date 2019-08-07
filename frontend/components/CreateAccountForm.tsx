@@ -46,10 +46,6 @@ export interface CreateAccountFormProps {
 }
 
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
-  constructor(props: CreateAccountFormProps) {
-    super(props)
-    var t = props.t
-  }
   onClick = async (e: any) => {
     e.preventDefault()
     this.setState({ submitting: true, triedSubmitting: true })
@@ -84,16 +80,14 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               `${key.replace(/_/g, " ")} ${msg}.`,
             )
             if (newMessage === "Email has already been taken.") {
-              newMessage =
-                "Sähköpostiosoitteesi on jo käytössä. Oletko tehnyt aikaisemmin mooc.fi:n kursseja?"
+              newMessage = this.props.t("emailTaken")
             }
             message = `${message} ${newMessage}`
           })
         })
 
         if (message === "") {
-          message =
-            "Ongelma tunnuksen luonnissa. Virhe oli: " + JSON.stringify(error)
+          message = this.props.t("commonProblem") + JSON.stringify(error)
         }
         this.setState({ error: message, submitting: false, errorObj: error })
       } catch (_error2) {
@@ -127,22 +121,20 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
     } = this.state
     if (email && validateEmail) {
       if (email.indexOf("@") === -1) {
-        newState.error += "Sähköpostiosoitessa ei ole '@'-merkkiä. "
-        newState.errorObj.email = "Sähköpostiosoitessa ei ole '@'-merkkiä. "
+        newState.error += this.props.t("emailNoAt")
+        newState.errorObj.email = true
       }
       if (email && email.indexOf(".") === -1) {
-        newState.error += "Sähköpostiosoitessa ei ole '.'-merkkiä. "
-        newState.errorObj.email = "Sähköpostiosoitessa ei ole '.'-merkkiä. "
+        newState.error += this.props.t("emailNoPoint")
+        newState.errorObj.email = true
       }
     }
 
     if (password && password_confirmation && validatePassword) {
       if (password !== password_confirmation) {
-        newState.error += "Salasana ja salasana uudestaan eivät olleet samoja. "
-        newState.errorObj.password =
-          "Salasana ja salasana uudestaan eivät olleet samoja."
-        newState.errorObj.password_confirmation =
-          "Salasana ja salasana uudestaan eivät olleet samoja."
+        newState.error += this.props.t("passwordNoMatch")
+        newState.errorObj.password = true
+        newState.errorObj.password_confirmation = true
       }
     }
 
@@ -177,7 +169,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   render() {
     return (
       <FormContainer>
-        <h1>Luo käyttäjätunnus</h1>
+        <h1>{this.props.t("signupTitle")}</h1>
         <Form onChange={this.validate}>
           <Row>
             <TextField
@@ -185,10 +177,10 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               type="email"
               name="email"
               autoComplete="email"
-              label="Sähköpostiosoite"
+              label={this.props.t("formLabelEmail")}
               error={this.state.errorObj.email}
               fullWidth
-              value={this.state.email}
+              //value={this.state.email}
               onChange={this.handleInput}
               onBlur={() => {
                 this.setState({ validateEmail: true }, () => {
@@ -201,10 +193,10 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type="text"
-              label="Etunimi"
+              label={this.props.t("formLabelFirstName")}
               name="first_name"
               fullWidth
-              value={this.state.first_name}
+              //value={this.state.first_name}
               onChange={this.handleInput}
             />
           </Row>
@@ -212,10 +204,10 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type="text"
-              label="Sukunimi"
+              label={this.props.t("formLabelLastName")}
               name="last_name"
               fullWidth
-              value={this.state.last_name}
+              //value={this.state.last_name}
               onChange={this.handleInput}
             />
           </Row>
@@ -223,11 +215,11 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
-              label="Salasana"
+              label={this.props.t("formLabelPassword")}
               name="password"
               error={this.state.errorObj.password}
               fullWidth
-              value={this.state.password}
+              //value={this.state.password}
               onChange={this.handleInput}
             />
           </Row>
@@ -235,11 +227,11 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
-              label="Salasana uudestaan"
+              label={this.props.t("formLabelPasswordAgain")}
               name="password_confirmation"
               error={this.state.errorObj.password_confirmation}
               fullWidth
-              value={this.state.password_confirmation}
+              //value={this.state.password_confirmation}
               onChange={this.handleInput}
               onBlur={() => {
                 this.setState({ validatePassword: true }, () => {
@@ -258,19 +250,20 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               fullWidth
               type="submit"
             >
-              Luo käyttäjätunnus
+              {this.props.t("signupTitle")}
             </Button>
           </Row>
         </Form>
 
         <Row>
-          <Link href="/sign-in">
-            Onko sinulla jo käyttäjätunnus? Kirjaudu sisään
-          </Link>
+          <Link href="/sign-in">{this.props.t("signIn")}</Link>
         </Row>
         {this.state.error && (
           <InfoBox>
-            <b>Virhe: {this.state.error}</b>
+            <b>
+              {" "}
+              {this.props.t("error")} {this.state.error}
+            </b>
           </InfoBox>
         )}
       </FormContainer>
