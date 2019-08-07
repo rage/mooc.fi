@@ -91,41 +91,6 @@ const AllCoursesQuery = gql`
   }
 `
 
-const AllModulesQuery = gql`
-  query AllModules {
-    study_modules {
-      id
-      courses {
-        id
-        slug
-        name
-        photo {
-          id
-          compressed
-          uncompressed
-        }
-        promote
-        status
-        start_point
-        hidden
-        course_translations {
-          id
-          language
-          name
-          description
-          link
-        }
-      }
-      study_module_translations {
-        id
-        language
-        name
-        description
-      }
-    }
-  }
-`
-
 interface HomeProps {
   t: Function
   tReady: boolean

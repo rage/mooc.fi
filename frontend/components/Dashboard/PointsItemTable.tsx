@@ -16,7 +16,7 @@ interface ProgressBarProps {
   n: number
 }
 const ProgressBar = styled.div<ProgressBarProps>`
-  ${props => `width: ${(props.n / props.max) * 100}%`}
+  ${props => `width: ${(props.n / props.max) * 100}%;`}
   background-color: #ffc400;
   padding: 0.3rem;
 `
