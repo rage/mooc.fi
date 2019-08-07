@@ -30,21 +30,13 @@ interface CompletionsProps {
 
 const Points = (props: CompletionsProps) => {
   const { admin, router } = props
-  const [languageValue, setLanguageValue] = useState("fi_FI")
-  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    setLanguageValue((event.target as HTMLInputElement).value)
-  }
-  const [selection, setSelection] = useState(0)
-
-  const handleSelectionChange = (
-    event: React.ChangeEvent<{}>,
-    value: number,
-  ) => {
-    setSelection(value)
-  }
 
   let slug: string = ""
+  let lng: string = ""
   if (router && router.query) {
+    if (typeof router.query.lng === "string") {
+      lng = router.query.lng
+    }
     if (typeof router.query.id === "string") {
       slug = router.query.id
     }
@@ -52,6 +44,12 @@ const Points = (props: CompletionsProps) => {
 
   if (!admin) {
     return <AdminError />
+  }
+
+  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
+    router.push(
+      `/courses/${slug}/points?lng=${(event.target as HTMLInputElement).value}`,
+    )
   }
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
@@ -68,7 +66,7 @@ const Points = (props: CompletionsProps) => {
   }
 
   return (
-    <CourseLanguageContext.Provider value={languageValue}>
+    <CourseLanguageContext.Provider value={lng}>
       <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={2} />
 
@@ -91,7 +89,7 @@ const Points = (props: CompletionsProps) => {
         </Typography>
         <LanguageSelector
           handleLanguageChange={handleLanguageChange}
-          languageValue={languageValue}
+          languageValue={lng}
         />
         <PointsList />
       </WideContainer>

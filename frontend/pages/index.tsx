@@ -76,6 +76,7 @@ const AllCoursesQuery = gql`
       id
       slug
       name
+      order
       photo {
         id
         compressed

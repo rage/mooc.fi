@@ -59,11 +59,6 @@ const main = async () => {
     return app.render(req, res, actualPage, queryParams)
   })
 
-  server.get("/my-profile", (req, res) => {
-    const actualPage = "/my-profile"
-    return app.render(req, res, actualPage)
-  })
-
   server.get("*", (req, res) => {
     const redirectNeeded = DirectFrom.find(
       redirect => redirect.from === req.url,
