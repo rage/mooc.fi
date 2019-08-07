@@ -158,7 +158,7 @@ const renderForm = ({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <Tooltip title="By default, the module image filename is the slug followed by .jpg. Enter a filename with an extension here to override it">
+              <Tooltip title="By default, the module image filename is the slug followed by .jpg. Enter a filename with an extension here to override it.">
                 <HelpIcon />
               </Tooltip>
             </InputAdornment>

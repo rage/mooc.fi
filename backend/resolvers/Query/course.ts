@@ -31,6 +31,8 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       orderBy: arg({ type: "CourseOrderByInput" }),
     },
     resolve: (_, args, ctx) => {
+      // FIXME: this maps as CourseOrderByInput, but still doesn't quite get it
+      // @ts-ignore
       return ctx.prisma.courses({ orderBy: args.orderBy })
     },
   })
