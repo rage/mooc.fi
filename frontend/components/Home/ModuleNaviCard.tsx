@@ -87,8 +87,8 @@ const NaviCardBodyText = styled(Typography)`
 `
 function ModuleNaviCard({ module }: { module: ObjectifiedModule }) {
   const imageUrl = module.image
-    ? `../../static/images/${module.image}`
-    : `../../static/images/${module.slug}.jpg`
+    ? require(`../../static/images/${module.image}`)
+    : require(`../../static/images/${module.slug}.jpg`)
 
   return (
     <Grid item xs={12} md={6} lg={6}>
