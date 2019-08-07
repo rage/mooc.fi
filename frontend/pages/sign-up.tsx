@@ -32,12 +32,11 @@ const SignUpPage = (props: SignUpPageProps) => {
   if (state.step === 1) {
     stepComponent = <CreateAccountForm onComplete={onStepComplete} />
   } else {
-    stepComponent = <ConfirmEmail onComplete={onStepComplete} />
+    stepComponent = <ConfirmEmail onComplete={onStepComplete} t={t} />
   }
 
   return (
     <div>
-      <h1>{t("signupTitle")}</h1>
       <Container>{stepComponent}</Container>
     </div>
   )
