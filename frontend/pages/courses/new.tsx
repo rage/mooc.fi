@@ -6,8 +6,20 @@ import redirect from "../../lib/redirect"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
-import CourseEdit from "../../components/Dashboard/CourseEdit/CourseEdit"
+import Editor from "../../components/Dashboard/Editor"
 import { withRouter, SingletonRouter } from "next/router"
+import { gql } from "apollo-boost"
+import { useQuery } from "react-apollo-hooks"
+
+export const StudyModuleQuery = gql`
+  query StudyModules {
+    study_modules {
+      id
+      name
+      slug
+    }
+  }
+`
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,8 +39,15 @@ const NewCourse = (props: NewCourseProps) => {
   const { admin, router } = props
   const classes = useStyles()
 
+  const { data, loading, error } = useQuery(StudyModuleQuery)
+
   if (!admin) {
     return <AdminError />
+  }
+
+  if (loading) {
+    // TODO: spinner
+    return null
   }
 
   return (
@@ -43,7 +62,7 @@ const NewCourse = (props: NewCourseProps) => {
         >
           Create a new course
         </Typography>
-        <CourseEdit />
+        <Editor type="Course" modules={data.study_modules} />
       </WideContainer>
     </section>
   )

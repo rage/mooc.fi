@@ -49,13 +49,17 @@ const ImageBackground = styled.div`
 `
 
 function ModuleBanner({ module }: { module: ObjectifiedModule }) {
+  const imageUrl = module!.image
+    ? require(`../../static/images/${module.image}`)
+    : require(`../../static/images/${module.slug}.jpg`)
+
   return (
     <ModuleBannerContainer>
-      <img style={{ display: "none" }} src={module.image} alt="" />
+      <img style={{ display: "none" }} src={imageUrl} alt="" />
       <Title component="h2" align="center">
         {module.name}
       </Title>
-      <ImageBackground style={{ backgroundImage: `url(${module.image}` }} />
+      <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />
     </ModuleBannerContainer>
   )
 }

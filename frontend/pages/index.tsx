@@ -6,23 +6,71 @@ import CourseHighlights from "../components/Home/CourseHighlights"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
 import {
   filterAndModifyCoursesByLanguage,
+  filterAndModifyByLanguage,
   mapNextLanguageToLocaleCode,
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-import { AllCourses as AllCoursesData } from "../static/types/generated/AllCourses"
-//import { mockModules } from "../mockModuleData"
-import CircularProgress from "@material-ui/core/CircularProgress"
+import {
+  AllCourses as AllCoursesData,
+  AllCourses_courses_photo,
+  AllCourses_courses,
+} from "/static/types/generated/AllCourses"
+import { Courses } from "../courseData"
+import { mockModules } from "../mockModuleData"
+import Spinner from "/components/Spinner"
 import { ObjectifiedCourse } from "../static/types/moduleTypes"
-import ErrorBoundary from "../components/ErrorBoundary"
+
+const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const highlightsBanner = "../static/images/backgroundPattern.svg"
 
-const AllCoursesQuery = gql`
-  query AllCourses {
-    courses {
+const AllModulesQuery = gql`
+  query AllModules {
+    study_modules(orderBy: order_ASC) {
       id
       slug
       name
+      image
+      order
+      courses {
+        id
+        slug
+        name
+        photo {
+          id
+          compressed
+          uncompressed
+        }
+        promote
+        status
+        start_point
+        hidden
+        course_translations {
+          id
+          language
+          name
+          description
+          link
+        }
+      }
+      study_module_translations {
+        id
+        language
+        name
+        description
+      }
+    }
+  }
+`
+
+const AllCoursesQuery = gql`
+  query AllCourses {
+    courses(orderBy: order_ASC) {
+      id
+      slug
+      name
+      order
       photo {
         id
         compressed
@@ -85,8 +133,11 @@ interface HomeProps {
 
 const Home = (props: HomeProps) => {
   const { t, tReady } = props
-
-  const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
+  const {
+    loading: coursesLoading,
+    error: coursesError,
+    data: coursesData,
+  } = useQuery<AllCoursesData>(AllCoursesQuery)
 
   //save the default language of NextI18Next instance to state
   const [language, setLanguage] = useState(
@@ -96,69 +147,56 @@ const Home = (props: HomeProps) => {
   useEffect(() => {
     setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
   }, [NextI18Next.i18n.language])
-  //use the language from state to filter shown courses to only those which have translations
-  //on the current language
 
-  /*   const courses: [FilteredCourse] = filterAndModifyCoursesByLanguage(
-    Courses.allcourses,
-    language,
-  ) */
-
-  if (error) {
+  if (coursesError) {
     ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      Error: <pre>{JSON.stringify(coursesError, undefined, 2)}</pre>
     </div>
   }
 
-  if (loading || !tReady) {
-    return <CircularProgress />
+  if (coursesLoading || !tReady) {
+    return <Spinner />
   }
 
-  if (!data) {
+  if (!coursesData) {
     return <div>Error: no data?</div>
   }
 
+  //use the language from state to filter shown courses to only those which have translations
+  //on the current language
   const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
-    data.courses,
+    coursesData.courses,
     language,
   )
 
   return (
     <div>
-      <ErrorBoundary>
-        <ExplanationHero />
-      </ErrorBoundary>
-      <ErrorBoundary>
-        <NaviCardList />
-      </ErrorBoundary>
+      <ExplanationHero />
+      <NaviCardList />
       <section id="courses-and-modules">
-        <ErrorBoundary>
-          <CourseHighlights
-            courses={courses.filter(
-              c => c.promote === true && c.status === "Active",
-            )}
-            title={t("highlightTitle")}
-            headerImage={highlightsBanner}
-            subtitle={t("highlightSubtitle")}
-            backgroundColor="#009CA6"
-            hueRotateAngle={177}
-            brightness={5.5}
-            fontColor="black"
-            titleBackground="#ffffff"
-          />
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <CourseHighlights
-            courses={courses.filter(c => c.status === "Active")}
-            title={t("allCoursesTitle")}
-            headerImage={highlightsBanner}
-            backgroundColor="#ffffff"
-            hueRotateAngle={34}
-            brightness={1}
-            fontColor="white"
-            titleBackground="#008EBD"
-          />
-        </ErrorBoundary>
+        <CourseHighlights
+          courses={courses.filter(
+            c => !c.hidden && c.promote === true && c.status === "Active",
+          )}
+          title={t("highlightTitle")}
+          headerImage={highlightsBanner}
+          subtitle={t("highlightSubtitle")}
+          backgroundColor="#009CA6"
+          hueRotateAngle={177}
+          brightness={5.5}
+          fontColor="black"
+          titleBackground="#ffffff"
+        />
+        <CourseHighlights
+          courses={courses.filter(c => !c.hidden && c.status === "Active")}
+          title={t("allCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={34}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#008EBD"
+        />
         <CourseHighlights
           courses={courses.filter(c => !c.hidden && c.status === "Upcoming")}
           title={t("upcomingCoursesTitle")}
@@ -169,22 +207,18 @@ const Home = (props: HomeProps) => {
           fontColor="black"
           titleBackground="#ffffff"
         />
-        <ErrorBoundary>
-          <CourseHighlights
-            courses={courses.filter(c => c.status === "Ended")}
-            title={t("endedCoursesTitle")}
-            headerImage={highlightsBanner}
-            backgroundColor="#ffffff"
-            hueRotateAngle={58}
-            brightness={1}
-            fontColor="white"
-            titleBackground="#3066C0"
-          />
-        </ErrorBoundary>
+        <CourseHighlights
+          courses={courses.filter(c => !c.hidden && c.status === "Ended")}
+          title={t("endedCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={58}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#3066C0"
+        />
       </section>
-      <ErrorBoundary>
-        <EmailSubscribe />
-      </ErrorBoundary>
+      <EmailSubscribe />
     </div>
   )
 }

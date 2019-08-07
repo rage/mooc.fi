@@ -41,15 +41,23 @@ export interface updateCourse_updateCourse_open_university_registration_links {
   link: string | null
 }
 
+export interface updateCourse_updateCourse_study_modules {
+  __typename: "StudyModule"
+  id: any
+}
+
 export interface updateCourse_updateCourse {
   __typename: "Course"
   id: any
   slug: string
+  name: string
+  order: number | null
   photo: updateCourse_updateCourse_photo | null
   course_translations: updateCourse_updateCourse_course_translations[] | null
   open_university_registration_links:
     | updateCourse_updateCourse_open_university_registration_links[]
     | null
+  study_modules: updateCourse_updateCourse_study_modules[] | null
 }
 
 export interface updateCourse {
@@ -72,4 +80,6 @@ export interface updateCourseVariables {
   open_university_registration_links?:
     | OpenUniversityRegistrationLinkWithIdInput[]
     | null
+  study_modules?: string[] | null
+  order?: number | null
 }

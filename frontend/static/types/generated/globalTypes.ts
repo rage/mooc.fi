@@ -48,6 +48,23 @@ export interface OpenUniversityRegistrationLinkWithIdInput {
   link?: string | null
 }
 
+export interface StudyModuleTranslationCreateWithoutStudy_moduleInput {
+  created_at?: any | null
+  description: string
+  id?: any | null
+  language: string
+  name: string
+  updated_at?: any | null
+}
+
+export interface StudyModuleTranslationWithIdInput {
+  description: string
+  id?: string | null
+  language: string
+  name: string
+  study_module?: string | null
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================
