@@ -10,13 +10,27 @@ import {
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import courseEditSchema, { initialValues } from "./form-validation"
 import { FormikActions, getIn } from "formik"
-import Next18next from "../../../i18n"
-import { AllCoursesQuery } from "../../../pages/courses"
+import Next18next from "/i18n"
+import { AllCoursesQuery } from "/pages/courses"
 import get from "lodash/get"
+import {
+  CourseDetails_course_photo,
+  CourseDetails_course_study_modules,
+} from "/static/types/generated/CourseDetails"
+import { StudyModules_study_modules } from "/static/types/StudyModules"
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
+const CourseEdit = ({
+  course,
+  modules,
+}: {
+  course?: CourseFormValues
+  modules?: StudyModules_study_modules[]
+}) => {
+  useWhyDidYouUpdate("CourseEdit", { course, modules })
+
   const addCourse = useMutation(AddCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
@@ -40,8 +54,15 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
             "course_code",
           ),
         })),
+        study_modules: course.study_modules
+          ? (course.study_modules as CourseDetails_course_study_modules[]).map(
+              module => module.id,
+            )
+          : null,
         new_slug: course.slug,
-        thumbnail: course.photo ? course.photo.compressed : null,
+        thumbnail: course.photo
+          ? (course.photo as CourseDetails_course_photo).compressed
+          : null,
       }
     : initialValues
 
@@ -89,7 +110,7 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
 
               if (!prevLink) {
                 return {
-                  language: c.language,
+                  language: c.language || "",
                   course_code: c.open_university_course_code.trim(),
                 }
               }
@@ -109,7 +130,11 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
         slug: values.id ? values.slug : values.new_slug,
         base64: !isProduction,
         photo: getIn(values, "photo.id"),
+        // despite order being a number in the typings, it comes back as an empty string without TS yelling at you
+        // @ts-ignore
+        order: values.order === "" ? null : values.order,
       }
+
       const courseMutation = newCourse ? addCourse : updateCourse
 
       try {
@@ -146,16 +171,21 @@ const CourseEdit = ({ course }: { course?: CourseFormValues }) => {
     Next18next.Router.push("/courses")
   }, [])
 
+  if (!_course || !modules) {
+    return <p>loadingggg</p>
+  }
+
+  console.log("rerender")
+
   return (
-    <section>
-      <CourseEditForm
-        course={_course}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        onDelete={onDelete}
-      />
-    </section>
+    <CourseEditForm
+      course={_course}
+      studyModules={modules}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
+      onDelete={onDelete}
+    />
   )
 }
 

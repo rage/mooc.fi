@@ -9,7 +9,7 @@ import NextI18Next from "../i18n"
 import {
   UserOverView_currentUser_completions,
   UserOverView_currentUser_completions_completions_registered,
-} from "./../static/types/generated/UserOverView"
+} from "/static/types/generated/UserOverView"
 
 const Background = styled(Paper)`
   background-color: white;
