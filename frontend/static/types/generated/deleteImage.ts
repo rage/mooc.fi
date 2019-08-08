@@ -7,9 +7,9 @@
 // ====================================================
 
 export interface deleteImage {
-  deleteImage: boolean;
+  deleteImage: boolean
 }
 
 export interface deleteImageVariables {
-  id: any;
+  id: any
 }

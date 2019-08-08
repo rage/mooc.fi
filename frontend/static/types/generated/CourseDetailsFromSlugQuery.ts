@@ -7,15 +7,15 @@
 // ====================================================
 
 export interface CourseDetailsFromSlugQuery_course {
-  __typename: "Course";
-  id: any;
-  name: string;
+  __typename: "Course"
+  id: any
+  name: string
 }
 
 export interface CourseDetailsFromSlugQuery {
-  course: CourseDetailsFromSlugQuery_course;
+  course: CourseDetailsFromSlugQuery_course
 }
 
 export interface CourseDetailsFromSlugQueryVariables {
-  slug?: string | null;
+  slug?: string | null
 }
