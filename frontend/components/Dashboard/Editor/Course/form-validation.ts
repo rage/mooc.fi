@@ -25,7 +25,7 @@ export const initialValues: CourseFormValues = {
   promote: false,
   hidden: false,
   status: CourseStatus.Upcoming,
-  study_modules: [],
+  study_modules: {},
   course_translations: [initialTranslation],
   open_university_registration_links: [],
   order: undefined,

@@ -30,7 +30,7 @@ export interface addCourse_addCourse_course_translations {
   language: string
   name: string
   description: string
-  link: string
+  link: string | null
 }
 
 export interface addCourse_addCourse_open_university_registration_links {

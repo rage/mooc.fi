@@ -196,7 +196,7 @@ const renderForm = ({
                 show={removeDialogVisible}
               />
               {values!.study_module_translations!.length ? (
-                values.study_module_translations.map(
+                (values.study_module_translations || []).map(
                   (_: any, index: number) => (
                     <LanguageEntry item key={`translation-${index}`}>
                       <EntryContainer elevation={2}>

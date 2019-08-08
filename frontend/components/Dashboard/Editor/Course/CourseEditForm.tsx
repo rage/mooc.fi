@@ -1,14 +1,15 @@
 import React, { useCallback } from "react"
-import Checkbox from "@material-ui/core/Checkbox"
-import InputLabel from "@material-ui/core/InputLabel"
-import FormGroup from "@material-ui/core/FormGroup"
-import FormControl from "@material-ui/core/FormControl/FormControl"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import Grid from "@material-ui/core/Grid"
-import MenuItem from "@material-ui/core/MenuItem"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import Typography from "@material-ui/core/Typography"
+import {
+  InputLabel,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  MenuItem,
+  Grid,
+  Typography,
+  List,
+  ListItem,
+} from "@material-ui/core"
 import {
   Formik,
   Field,
@@ -17,8 +18,9 @@ import {
   FormikActions,
   FormikProps,
   yupToFormErrors,
+  getIn,
 } from "formik"
-import { TextField } from "formik-material-ui"
+import { TextField, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import ImageDropzoneInput from "../../ImageDropzoneInput"
@@ -29,7 +31,6 @@ import styled from "styled-components"
 import { addDomain } from "../../../../util/imageUtils"
 import FormWrapper from "../FormWrapper"
 import { StudyModules_study_modules } from "../../../../static/types/StudyModules"
-import includes from "lodash/includes"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -211,7 +212,15 @@ const renderForm = ({
                   <ModuleListItem key={module.id}>
                     <FormControlLabel
                       control={
-                        <Checkbox
+                        <Field
+                          label={module.name}
+                          type="checkbox"
+                          name={`study_modules[${module.id}]`}
+                          value={getIn(values, `study_modules[${module.id}]`)}
+                          component={Checkbox}
+                        />
+                        /*                        <Checkbox
+                          value={getIn(values, `study_modules[${module.id}]`)}
                           checked={includes(values.study_modules, module.id)}
                           onChange={() => {
                             if (includes(values.study_modules, module.id)) {
@@ -226,9 +235,9 @@ const renderForm = ({
                                 ((values.study_modules ||
                                   []) as string[]).concat(module.id),
                               )
-                            }
+                            } 
                           }}
-                        />
+                        />*/
                       }
                       label={module.name}
                     />

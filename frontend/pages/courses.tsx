@@ -24,6 +24,7 @@ export const AllCoursesQuery = gql`
       slug
       order
       status
+      hidden
       photo {
         id
         compressed

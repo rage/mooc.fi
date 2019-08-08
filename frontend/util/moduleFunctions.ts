@@ -129,15 +129,15 @@ export const filterAndModifyByLanguage = (
           } = (course_translations as ObjectifiedCourseTranslations)[language]
           return {
             ...course,
-            name: name,
-            description: description,
-            link: link,
+            name,
+            description,
+            link: link || "",
           }
         })
       return {
         ...mod,
-        name: name,
-        description: description,
+        name,
+        description,
         courses: filteredCourses,
       }
     })
@@ -163,9 +163,9 @@ export const filterAndModifyCoursesByLanguage = (
 
       return {
         ...course,
-        name: name,
-        description: description,
-        link: link,
+        name,
+        description,
+        link: link || "",
       }
     })
 }

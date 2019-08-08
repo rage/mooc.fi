@@ -16,8 +16,9 @@ import CourseImage from "./CourseImage"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import styled from "styled-components"
 
-const CardBase = styled(Card)`
+const CardBase = styled(Card)<{ ishidden?: boolean | null }>`
   padding: 0.8em;
+  background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
 `
 
 const CardMedia = styled(MUICardMedia)`
@@ -28,7 +29,7 @@ const CardMedia = styled(MUICardMedia)`
 
 const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
   <Grid item xs={12} sm={6} lg={3}>
-    <CardBase>
+    <CardBase ishidden={course && course.hidden}>
       <CardMedia>
         {course ? (
           <CourseImage photo={course.photo} alt={course.name} />

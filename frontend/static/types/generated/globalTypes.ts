@@ -17,7 +17,7 @@ export interface CourseTranslationCreateWithoutCourseInput {
   description: string
   id?: any | null
   language: string
-  link: string
+  link?: string | null
   name: string
   updated_at?: any | null
 }

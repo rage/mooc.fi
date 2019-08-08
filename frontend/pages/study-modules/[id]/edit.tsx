@@ -12,6 +12,7 @@ import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
 import Editor from "../../../components/Dashboard/Editor"
 import styled from "styled-components"
+import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -57,9 +58,12 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   let redirectTimeout: number | null = null
 
-  const { data, loading, error } = useQuery(StudyModuleQuery, {
-    variables: { slug: id },
-  })
+  const { data, loading, error } = useQuery<StudyModuleDetails>(
+    StudyModuleQuery,
+    {
+      variables: { slug: id },
+    },
+  )
 
   if (!admin) {
     return <AdminError />
@@ -76,7 +80,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
 
-  if (!data.study_module) {
+  if (!data!.study_module) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
@@ -86,8 +90,8 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Edit study module
         </Header>
-        {data.study_module ? (
-          <Editor type="StudyModule" module={data.study_module} />
+        {data!.study_module ? (
+          <Editor type="StudyModule" module={data!.study_module} />
         ) : (
           <ErrorContainer elevation={2}>
             <Typography variant="body1">
