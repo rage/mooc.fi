@@ -28,16 +28,14 @@ const fetchUser = async (resolve, root, args, context, info) => {
 
 export default fetchUser
 
-const getOrganization = async (prisma, rawToken, context) => {
-  let org
-  try {
-    const secret: string = rawToken.split(" ")[1]
-    org = await prisma.organizations({ where: { secret_key: secret } })
-    org = org[0]
-  } catch (e) {
-    return new AuthenticationError("Please log in.")
+const getOrganization = async (prisma: Prisma, rawToken, context) => {
+  const secret: string = rawToken.split(" ")[1]
+  const org = await prisma.organizations({ where: { secret_key: secret } })
+  if (org.length < 1) {
+    throw new AuthenticationError("Please log in.")
   }
-  context.organization = org
+
+  context.organization = org[0]
   context.role = Role.ORGANIZATION
 }
 async function getUser(rawToken: string, context: any, prisma: Prisma) {
