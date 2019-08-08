@@ -7,15 +7,15 @@
 // ====================================================
 
 export interface CourseDetailsFromSlug_course {
-  __typename: "Course";
-  id: any;
-  name: string;
+  __typename: "Course"
+  id: any
+  name: string
 }
 
 export interface CourseDetailsFromSlug {
-  course: CourseDetailsFromSlug_course;
+  course: CourseDetailsFromSlug_course
 }
 
 export interface CourseDetailsFromSlugVariables {
-  slug?: string | null;
+  slug?: string | null
 }

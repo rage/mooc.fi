@@ -5,7 +5,7 @@
     "emailNoAt":"There is no '@' -sign in the e-mail address.",
     "emailNoPoint":"There is no '.' in the e-mail address.",
     "passwordNoMatch":"The passwords did not match.",
-    "formLabelEmail":"e-mail address",
+    "formLabelEmail":"E-mail address",
     "formLabelFirstName":"First name",
     "formLabelLastName":"Last name",
     "formLabelPassword": "Password",
