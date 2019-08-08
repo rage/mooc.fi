@@ -1,6 +1,6 @@
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
-import { CourseStatus } from "../../../static/types/globalTypes"
+import { CourseStatus } from "../../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 
 export const initialTranslation: CourseTranslationFormValues = {
@@ -25,9 +25,10 @@ export const initialValues: CourseFormValues = {
   promote: false,
   hidden: false,
   status: CourseStatus.Upcoming,
-  study_module: null,
+  study_modules: [],
   course_translations: [initialTranslation],
   open_university_registration_links: [],
+  order: undefined,
 }
 
 export const statuses = [
@@ -127,6 +128,9 @@ const courseEditSchema = ({
         link: Yup.string(),
       }),
     ),
+    order: Yup.number()
+      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .integer("must be integer"),
   })
 
 const validateSlug = ({

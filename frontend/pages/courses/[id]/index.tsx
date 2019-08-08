@@ -15,7 +15,7 @@ import { gql } from "apollo-boost"
 import Typography from "@material-ui/core/Typography"
 
 export const CourseDetailsFromSlugQuery = gql`
-  query CourseDetails($slug: String) {
+  query CourseDetailsFromSlugQuery($slug: String) {
     course(slug: $slug) {
       id
       name

@@ -10,9 +10,11 @@ import {
   OpenUniversityRegistrationLinkUpdateManyWithWhereNestedInput,
   OpenUniversityRegistrationLinkScalarWhereInput,
   Image,
-} from "../../generated/prisma-client"
+  StudyModuleUpdateManyWithoutCoursesInput,
+  StudyModuleWhereUniqueInput,
+} from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
+import { stringArg, booleanArg, arg, idArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import * as pullAll from "lodash/pullAll"
@@ -32,7 +34,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       promote: booleanArg(),
       hidden: booleanArg(),
       status: arg({ type: "CourseStatus" }),
-      study_module: idArg(),
+      study_modules: idArg({ list: true }),
       course_translations: arg({
         type: "CourseTranslationCreateWithoutCourseInput",
         list: true,
@@ -43,6 +45,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         list: true,
         required: false,
       }),
+      order: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -55,9 +58,10 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         base64,
         promote,
         status,
-        study_module,
+        study_modules,
         course_translations,
         open_university_registration_links,
+        order,
       } = args
 
       const prisma: Prisma = ctx.prisma
@@ -81,10 +85,13 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           ? { create: course_translations }
           : null,
         status: status,
-        study_module: !!study_module ? { connect: { id: study_module } } : null,
+        study_modules: !!study_modules
+          ? { connect: study_modules.map(module => ({ id: module })) }
+          : null,
         open_university_registration_links: !!open_university_registration_links
           ? { create: open_university_registration_links }
           : null,
+        order,
       })
 
       const kafkaProducer = await new KafkaProducer()
@@ -115,7 +122,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       promote: booleanArg(),
       hidden: booleanArg(),
       status: arg({ type: "CourseStatus" }),
-      study_module: idArg(),
+      study_modules: idArg({ list: true }),
       course_translations: arg({
         type: "CourseTranslationWithIdInput",
         list: true,
@@ -124,6 +131,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         type: "OpenUniversityRegistrationLinkWithIdInput",
         list: true,
       }),
+      order: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -140,9 +148,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         promote,
         hidden,
         status,
-        study_module,
+        study_modules,
         course_translations,
         open_university_registration_links,
+        order,
       } = args
 
       let photo = args.photo
@@ -212,6 +221,17 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           : undefined,
       }
 
+      const existingStudyModules = await prisma.course({ slug }).study_modules()
+      //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
+      const removedModules: StudyModuleWhereUniqueInput[] = (
+        pullAll(existingStudyModules.map(module => module.id), study_modules) ||
+        []
+      ).map(id => ({ id }))
+      const studyModuleMutation: StudyModuleUpdateManyWithoutCoursesInput = {
+        connect: study_modules.map(id => ({ id })),
+        disconnect: removedModules,
+      }
+
       return prisma.updateCourse({
         where: {
           id: id,
@@ -228,14 +248,15 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           course_translations: Object.keys(translationMutation).length
             ? translationMutation
             : null,
-          study_module: !!study_module
-            ? { connect: { id: study_module } }
+          study_modules: Object.keys(studyModuleMutation).length
+            ? studyModuleMutation
             : null,
           open_university_registration_links: Object.keys(
             registrationLinkMutation,
           ).length
             ? registrationLinkMutation
             : null,
+          order,
         },
       })
     },

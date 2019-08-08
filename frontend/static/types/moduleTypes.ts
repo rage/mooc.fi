@@ -8,11 +8,11 @@ import {
   AllModules_study_modules_courses,
   AllModules_study_modules_study_module_translations,
   AllModules_study_modules,
-} from "./generated/AllModules"
+} from "/static/types/generated/AllModules"
 import {
   AllCourses_courses_course_translations,
   AllCourses_courses,
-} from "./generated/AllCourses"
+} from "/static/types/generated/AllCourses"
 
 export interface Module {
   name: string
@@ -33,7 +33,9 @@ export interface ModuleCourse {
   start_point: boolean
   hidden: boolean
   status: string
+  order: number
 }
+
 export interface ObjectifiedCourseTranslations {
   [language: string]:
     | AllCourses_courses_course_translations
@@ -67,7 +69,7 @@ export interface ObjectifiedModuleTranslations {
 export interface ObjectifiedModule
   extends Omit<
     AllModules_study_modules,
-    "study_module_translations" | "courses"
+    "name" | "study_module_translations" | "courses"
   > {
   study_module_translations:
     | ObjectifiedModuleTranslations
@@ -75,6 +77,5 @@ export interface ObjectifiedModule
     | null
   courses: ObjectifiedModuleCourse[] | null
   name?: string
-  image?: string
   description?: string
 }

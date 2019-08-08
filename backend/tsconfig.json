@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "/*": ["./*"],
+    },
     "lib": ["es2016", "esnext.asynciterable"],
     "outDir": "./dist",
     "skipLibCheck": true

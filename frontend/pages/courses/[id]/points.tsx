@@ -15,7 +15,7 @@ import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 
 export const CourseDetailsFromSlugQuery = gql`
-  query CourseDetails($slug: String) {
+  query CourseDetailsFromSlug($slug: String) {
     course(slug: $slug) {
       id
       name

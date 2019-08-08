@@ -37,9 +37,10 @@ type Course @db(name: "course") {
   course_translations: [CourseTranslation!] @relation(name: "CourseToCourseTranslation", onDelete: CASCADE)
   promote: Boolean
   status: CourseStatus
-  study_module: StudyModule @relation(link: INLINE, name: "StudyModuleToCourse")
+  study_modules: [StudyModule!] @relation(name: "StudyModuleToCourse")
   start_point: Boolean
   hidden: Boolean
+  order: Int
   open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
   
 }
@@ -122,10 +123,14 @@ type Service @db(name: "service") {
 
 type StudyModule @db(name:"study_module"){
   id: UUID! @id
+  slug: String! @unique
+  name: String!
+  image: String
+  order: Int
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   courses: [Course!]! @relation(name: "StudyModuleToCourse")
-  study_module_translations: [StudyModuleTranslation!]! @relation(name: "StudyModuleToStudyModuleTranslation")
+  study_module_translations: [StudyModuleTranslation!]! @relation(name: "StudyModuleToStudyModuleTranslation", onDelete: CASCADE)
 }
 
 type StudyModuleTranslation @db(name:"study_module_translation"){
@@ -135,7 +140,7 @@ type StudyModuleTranslation @db(name:"study_module_translation"){
   name: String!
   language: String!
   description: String!
-  study_module: StudyModule! @relation(link: INLINE, name: "StudyModuleToStudyModuleTranslation")
+  study_module: StudyModule! @relation(link: INLINE, name: "StudyModuleToStudyModuleTranslation", onDelete: SET_NULL)
 }
 
 type UserCourseProgress @db(name: "user_course_progress") {

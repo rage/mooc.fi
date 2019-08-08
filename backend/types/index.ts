@@ -13,3 +13,6 @@ export {
 export {
   default as OpenUniversityRegistrationLinkWithIdInput,
 } from "./OpenUniversityRegistrationLinkWithIdInput"
+export {
+  default as StudyModuleTranslationWithIdInput,
+} from "./StudyModuleTranslationWithIdInput"
