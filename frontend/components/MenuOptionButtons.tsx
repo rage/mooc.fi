@@ -71,7 +71,7 @@ const MenuOptionButtons = () => {
             >
               <NextI18Next.Trans i18nKey="common:logout" />
             </StyledButton>
-            <StyledButton color="inherit" variant="text" href="/my-profile">
+            <StyledButton color="inherit" variant="text" href="/profile">
               {isAdmin ? (
                 <>
                   <AdminIcon style={{ marginRight: "0.2rem" }} /> Admin:{" "}

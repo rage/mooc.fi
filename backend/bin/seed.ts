@@ -384,6 +384,20 @@ const Courses = [
   },
 ]
 
+const UserCourseProgressess = [
+  {
+    id: "",
+    created_at: "",
+    updated_at: "",
+    user: "",
+    course: "",
+    progress: "",
+    user_course_service_progresses: "",
+  },
+  {},
+  {},
+]
+
 const prisma = new Prisma({ endpoint: "http://localhost:4466/default/default" })
 
 const seed = async () => {

@@ -1,14 +1,9 @@
 import * as React from "react"
-import {
-  Typography,
-  Container,
-  Grid,
-  CircularProgress,
-} from "@material-ui/core"
+import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { AllCourses as AllCoursesData } from "../../static/types/generated/AllCourses"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
@@ -37,7 +32,7 @@ export const AllCoursesQuery = gql`
   }
 `
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     header: {
       marginTop: "1em",

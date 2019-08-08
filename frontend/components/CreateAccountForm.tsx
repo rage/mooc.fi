@@ -46,6 +46,9 @@ export interface CreateAccountFormProps {
 }
 
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
+  constructor(props: CreateAccountFormProps) {
+    super(props)
+  }
   onClick = async (e: any) => {
     e.preventDefault()
     this.setState({ submitting: true, triedSubmitting: true })

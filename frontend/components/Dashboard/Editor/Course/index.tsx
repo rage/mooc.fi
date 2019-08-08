@@ -78,7 +78,7 @@ const CourseEdit = ({
       values: CourseFormValues,
       {
         setSubmitting,
-        setFieldValue,
+
         setStatus,
       }: FormikActions<CourseFormValues>,
     ): Promise<void> => {
@@ -139,7 +139,7 @@ const CourseEdit = ({
 
       try {
         setStatus({ message: "Saving..." })
-        const course = await courseMutation({
+        await courseMutation({
           variables: {
             ...newValues,
             course_translations,

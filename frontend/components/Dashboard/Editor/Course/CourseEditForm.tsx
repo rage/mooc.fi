@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useCallback } from "react"
 import {
   Checkbox,
   InputLabel,
@@ -8,11 +8,6 @@ import {
   MenuItem,
   Grid,
   Typography,
-  Chip,
-  Input,
-  OutlinedInput,
-  Select,
-  FormLabel,
   List,
   ListItem,
 } from "@material-ui/core"
@@ -30,7 +25,7 @@ import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import ImageDropzoneInput from "../../ImageDropzoneInput"
 import ImagePreview from "../../ImagePreview"
-import { statuses, study_modules } from "./form-validation"
+import { statuses } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "../../../../util/imageUtils"
@@ -92,7 +87,6 @@ const renderForm = ({
   values,
   isSubmitting,
   setFieldValue,
-  initialValues,
 }: Pick<
   FormikProps<CourseFormValues>,
   "errors" | "values" | "isSubmitting" | "setFieldValue" | "initialValues"

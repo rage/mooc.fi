@@ -1,14 +1,14 @@
 import React, { useState } from "react"
 import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
-import { Field, FieldArray, getIn, FormikErrors, FieldProps } from "formik"
+import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { TextField } from "formik-material-ui"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "../../ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     languageEntry: {
       spacing: "10px",
@@ -25,17 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
-
-const languageFilter = (
-  index: number,
-  course_translations: CourseTranslationFormValues[] | null,
-) =>
-  languages.filter(l =>
-    (course_translations || [])
-      .filter((_, idx) => idx !== index)
-      .map((c: any) => c.language)
-      .includes(l.value),
-  )
 
 const CourseTranslationEditForm = ({
   values,
@@ -75,6 +64,7 @@ const CourseTranslationEditForm = ({
               />
               {values.length ? (
                 values.map(
+                  //@ts-ignore
                   (value: CourseTranslationFormValues, index: number) => (
                     <Grid
                       item
