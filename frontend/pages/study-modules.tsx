@@ -13,13 +13,8 @@ import { WideContainer } from "../components/Container"
 import { AllModules } from "/static/types/generated/AllModules"
 import { isAdmin, isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import ModuleGrid from "../components/ModuleGrid"
-import { ObjectifiedModule } from "../static/types/moduleTypes"
-import {
-  filterAndModifyByLanguage,
-  mapNextLanguageToLocaleCode,
-} from "../util/moduleFunctions"
 
 export const AllModulesQuery = gql`
   query AllModulesWithTranslations {
@@ -39,14 +34,14 @@ export const AllModulesQuery = gql`
   }
 `
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     header: {
       marginTop: "1em",
     },
   }),
 )
-
+//@ts-ignore
 const StudyModules = (admin: boolean, language: string) => {
   const classes = useStyles()
 

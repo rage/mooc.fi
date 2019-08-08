@@ -1,16 +1,16 @@
-import React, { useState } from "react"
+import React from "react"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
 import { NextPageContext as NextContext } from "next"
 import AdminError from "../../../components/Dashboard/AdminError"
-import { WideContainer } from "../../../components/Container"
+import Container from "../../../components/Container"
 import CourseLanguageContext from "../../../contexes/CourseLanguageContext"
 import LanguageSelector from "../../../components/Dashboard/LanguageSelector"
 import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
-import PointsList from "../../../components/Dashboard/PointsList"
+import PaginatedPointsList from "../../../components/Dashboard/PaginatedPointsList"
 import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 
@@ -30,6 +30,9 @@ interface CompletionsProps {
 
 const Points = (props: CompletionsProps) => {
   const { admin, router } = props
+  if (!admin) {
+    return <AdminError />
+  }
 
   let slug: string = ""
   let lng: string = ""
@@ -40,10 +43,6 @@ const Points = (props: CompletionsProps) => {
     if (typeof router.query.id === "string") {
       slug = router.query.id
     }
-  }
-
-  if (!admin) {
-    return <AdminError />
   }
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
@@ -70,7 +69,7 @@ const Points = (props: CompletionsProps) => {
       <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={2} />
 
-      <WideContainer>
+      <Container>
         <Typography
           component="h1"
           variant="h1"
@@ -91,8 +90,8 @@ const Points = (props: CompletionsProps) => {
           handleLanguageChange={handleLanguageChange}
           languageValue={lng}
         />
-        <PointsList />
-      </WideContainer>
+        <PaginatedPointsList courseID={data.course.id} />
+      </Container>
     </CourseLanguageContext.Provider>
   )
 }

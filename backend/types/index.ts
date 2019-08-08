@@ -6,6 +6,7 @@ export { default as PointsByGroup } from "./PointsByGroup"
 export { default as Organization } from "./Organization"
 export { default as Upload } from "./Upload"
 export { default as UserConnection } from "./UserConnection"
+export { default as User } from "./User"
 export {
   default as CourseTranslationWithIdInput,
 } from "./CourseTranslationWithIdInput"

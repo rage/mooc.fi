@@ -19,6 +19,8 @@ type User @db(name: "user") {
   registered_completions: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToUser")
   created_organizations: [Organization!]! @relation(name: "OrganizationToUser")
   exercise_completions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToUser")
+  "User's points in courses"
+  user_course_progresses: [UserCourseProgress!]!  @relation( name: "UserCourseProgressToUser")
 }
 
 type Course @db(name: "course") {
@@ -40,6 +42,7 @@ type Course @db(name: "course") {
   hidden: Boolean
   order: Int
   open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
+  
 }
 
 type CourseAlias  @db(name: "course_alias"){

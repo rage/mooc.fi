@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Field,
@@ -11,7 +11,7 @@ import {
   getIn,
 } from "formik"
 import * as Yup from "yup"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import FormWrapper from "../FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
@@ -32,7 +32,7 @@ import ConfirmationDialog from "../../ConfirmationDialog"
 import useDebounce from "/util/useDebounce"
 import HelpIcon from "@material-ui/icons/Help"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     languageEntry: {
       spacing: "10px",

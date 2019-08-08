@@ -7,9 +7,9 @@ import { Typography } from "@material-ui/core"
 import { isAdmin, isSignedIn } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
 import Editor from "../../components/Dashboard/Editor"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     header: {
       marginTop: "1em",
@@ -24,7 +24,7 @@ interface NewStudyModuleProps {
 }
 
 const NewStudyModule = (props: NewStudyModuleProps) => {
-  const { admin, router } = props
+  const { admin } = props
   const classes = useStyles()
 
   if (!admin) {

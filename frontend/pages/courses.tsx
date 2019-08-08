@@ -8,15 +8,13 @@ import {
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { ApolloClient, gql } from "apollo-boost"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
+import { gql } from "apollo-boost"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import { useQuery } from "react-apollo-hooks"
 import CourseGrid from "../components/CourseGrid"
 import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
-
-import { Courses as courseData } from "../courseData.js"
 
 export const AllCoursesQuery = gql`
   query AllCourses {
@@ -39,7 +37,7 @@ export const AllCoursesQuery = gql`
   }
 `
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     header: {
       marginTop: "1em",
