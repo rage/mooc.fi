@@ -3,7 +3,7 @@ import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
 import Editor from "../../components/Dashboard/Editor"
@@ -21,7 +21,7 @@ export const StudyModuleQuery = gql`
   }
 `
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     header: {
       marginTop: "1em",
@@ -36,10 +36,10 @@ interface NewCourseProps {
 }
 
 const NewCourse = (props: NewCourseProps) => {
-  const { admin, router } = props
+  const { admin } = props
   const classes = useStyles()
 
-  const { data, loading, error } = useQuery(StudyModuleQuery)
+  const { data, loading } = useQuery(StudyModuleQuery)
 
   if (!admin) {
     return <AdminError />

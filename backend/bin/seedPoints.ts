@@ -131,15 +131,11 @@ const UserCourseSettingsess = [
 
 const prisma = new Prisma({ endpoint: "http://localhost:4466/default/default" })
 
+const _users = Users.map(async user => {})
 const seedPointsData = async () => {
   return await Promise.all(
     UserCourseSettingsess.map(async ucs => {
-      const _data: UserCourseSettingsCreateInput = {
-        ...ucs,
-        id: undefined,
-      }
-
-      return await prisma.createUserCourseSettings(_data)
+      return await prisma.createUserCourseSettings(ucs)
     }),
   )
 }

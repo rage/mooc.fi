@@ -1,39 +1,15 @@
 import React from "react"
-import {
-  Grid,
-  Card,
-  CardContent,
-  CardActionArea,
-  CardMedia,
-  Typography,
-  Button,
-  ButtonBase,
-} from "@material-ui/core"
-import DashboardIcon from "@material-ui/icons/Dashboard"
+import { Grid, Typography, Button } from "@material-ui/core"
+
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import NextI18Next from "../i18n"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import get from "lodash/get"
+
 import { ObjectifiedModule } from "./../static/types/moduleTypes"
 /* import { addDomain } from "../util/imageUtils"*/
-import CourseImage from "./CourseImage"
-import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      padding: "0.8em",
-    },
-    media: {
-      // minHeight: 250,
-      width: "100%",
-      height: 250,
-      objectFit: "cover",
-    },
-  }),
-)
+import styled from "styled-components"
 
 const Base = styled.div`
   position: relative;
@@ -129,8 +105,6 @@ const NaviCardBodyText = styled(Typography)`
 `
 
 function ModuleCard({ module }: { module?: ObjectifiedModule }) {
-  const classes = useStyles()
-
   const imageUrl = () => {
     if (!module) {
       return null

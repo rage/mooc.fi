@@ -4,7 +4,7 @@ import { useQuery } from "react-apollo-hooks"
 import { SingletonRouter, withRouter } from "next/router"
 import AdminError from "../../../components/Dashboard/AdminError"
 import { Paper, Typography } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { WideContainer } from "../../../components/Container"
 import NextI18Next from "../../../i18n"
 import { NextPageContext as NextContext } from "next"
@@ -36,7 +36,7 @@ export const StudyModuleQuery = gql`
   }
 `
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     header: {
       marginTop: "1em",
@@ -62,7 +62,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   let redirectTimeout: number | null = null
 
-  const { data, loading, error } = useQuery(StudyModuleQuery, {
+  const { data, loading } = useQuery(StudyModuleQuery, {
     variables: { slug: id },
   })
 

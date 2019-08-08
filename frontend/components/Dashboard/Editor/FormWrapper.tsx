@@ -8,14 +8,14 @@ import {
   Checkbox as MUICheckbox,
   Tooltip,
 } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { FormikProps } from "formik"
 import { FormValues } from "./types"
 import ConfirmationDialog from "../ConfirmationDialog"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     form: {
       spacing: "4",
@@ -62,6 +62,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           content="Are you sure you want to leave without saving?"
           acceptText="Yes"
           rejectText="No"
+          //@ts-ignore
           onAccept={(e: React.MouseEvent) => {
             setCancelConfirmationVisible(false)
             onCancel()
