@@ -15,9 +15,13 @@ import { AllCoursesQuery } from "/pages/courses"
 import get from "lodash/get"
 import {
   CourseDetails_course_photo,
-  CourseDetails_course_study_modules,
-} from "../../../../static/types/generated/CourseDetails"
-import { StudyModules_study_modules } from "../../../../static/types/StudyModules"
+  CourseDetails_course,
+  CourseDetails_course_open_university_registration_links,
+} from "/static/types/generated/CourseDetails"
+import { StudyModules_study_modules } from "/static/types/StudyModules"
+import { CourseStatus } from "/static/types/globalTypes"
+import { CourseQuery } from "/pages/courses/[id]/edit"
+import { FetchResult, PureQueryOptions } from "apollo-boost"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -25,13 +29,21 @@ const CourseEdit = ({
   course,
   modules,
 }: {
-  course?: CourseFormValues
+  course?: CourseDetails_course
   modules?: StudyModules_study_modules[]
 }) => {
   const addCourse = useMutation(AddCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
-  const updateCourse = useMutation(UpdateCourseMutation)
+  const updateCourse = useMutation(UpdateCourseMutation, {
+    refetchQueries: [
+      { query: AllCoursesQuery },
+      /*       {
+        query: CourseQuery,
+        variables: course ? { slug: course!.slug } : undefined,
+      } */
+    ],
+  })
   const deleteCourse = useMutation(DeleteCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
@@ -39,21 +51,36 @@ const CourseEdit = ({
 
   const client = useApolloClient()
 
+  // TODO: (de)normalization to somewhere else
+  const courseStudyModules = course
+    ? (course.study_modules || []).map(module => module.id)
+    : []
+
   const _course: CourseFormValues = course
     ? {
         ...course,
+        start_point: course.start_point || false,
+        promote: course.promote || false,
+        hidden: course.hidden || false,
+        order: course.order || undefined,
+        status: course.status || CourseStatus.Upcoming,
         course_translations: (course.course_translations || []).map(c => ({
           ...c,
           open_university_course_code: get(
             (course.open_university_registration_links || []).find(
-              l => l.language === c.language,
+              (l: CourseDetails_course_open_university_registration_links) =>
+                l.language === c.language,
             ),
             "course_code",
           ),
         })),
-        study_modules: course.study_modules
-          ? (course.study_modules as CourseDetails_course_study_modules[]).map(
-              module => module.id,
+        study_modules: modules
+          ? modules.reduce(
+              (acc, module) => ({
+                ...acc,
+                [module.id]: courseStudyModules.includes(module.id),
+              }),
+              {},
             )
           : null,
         new_slug: course.slug,
@@ -117,6 +144,10 @@ const CourseEdit = ({
             .filter(v => !!v)
         : null
 
+      const study_modules = Object.keys(values.study_modules || {}).filter(
+        key => (values.study_modules || {})[key],
+      )
+
       const newValues: CourseFormValues = {
         ...values,
         id: undefined,
@@ -132,13 +163,26 @@ const CourseEdit = ({
 
       try {
         setStatus({ message: "Saving..." })
+
+        // - if we create a new course, we refetch all courses so the new one is on the list
+        // - if we update, we also need to refetch that course with a potentially updated slug
+        const refetchQueries = [
+          { query: AllCoursesQuery },
+          values.id
+            ? { query: CourseQuery, variables: { slug: values.new_slug } }
+            : undefined,
+        ].filter(v => !!v) as PureQueryOptions[]
+
         // TODO/FIXME: return value?
         await courseMutation({
           variables: {
             ...newValues,
             course_translations,
             open_university_registration_links,
+            study_modules,
           },
+          // @ts-ignore
+          refetchQueries: (result: FetchResult) => refetchQueries,
         })
 
         setStatus({ message: null })

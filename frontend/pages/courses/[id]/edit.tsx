@@ -13,6 +13,7 @@ import { gql } from "apollo-boost"
 import NextI18Next from "../../../i18n"
 import Spinner from "/components/Spinner"
 import styled from "styled-components"
+import { CourseDetails } from "/static/types/generated/CourseDetails"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -91,7 +92,7 @@ const EditCourse = (props: EditCourseProps) => {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = useQuery(CourseQuery, {
+  } = useQuery<CourseDetails>(CourseQuery, {
     variables: { slug: slug },
   })
   const {
@@ -112,9 +113,13 @@ const EditCourse = (props: EditCourseProps) => {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>
   }
 
+  if (!courseData) {
+    return <div>Hmm, no course data</div>
+  }
+
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (!courseData.course) {
+  if (!courseData!.course) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 

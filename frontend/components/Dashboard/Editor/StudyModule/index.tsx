@@ -16,12 +16,19 @@ import { initialValues } from "./form-validation"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
 import Next18next from "../../../../i18n"
+import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
 
-const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
+const StudyModuleEdit = ({
+  module,
+}: {
+  module?: StudyModuleDetails_study_module
+}) => {
   const addStudyModule = useMutation(AddStudyModuleMutation, {
     refetchQueries: [{ query: AllModulesQuery }],
   })
-  const updateStudyModule = useMutation(UpdateStudyModuleMutation)
+  const updateStudyModule = useMutation(UpdateStudyModuleMutation, {
+    refetchQueries: [{ query: AllModulesQuery }],
+  })
   const deleteStudyModule = useMutation(DeleteStudyModuleMutation, {
     refetchQueries: [{ query: AllModulesQuery }],
   })
@@ -32,6 +39,7 @@ const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
   const _module: StudyModuleFormValues = module
     ? {
         ...module,
+        image: module.image || "",
         new_slug: module.slug,
       }
     : initialValues
@@ -50,8 +58,9 @@ const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
     ): Promise<void> => {
       const newStudyModule = !values.id
 
-      const study_module_translations = values.study_module_translations.length
-        ? values.study_module_translations.map(
+      const study_module_translations = (values.study_module_translations || [])
+        .length
+        ? (values.study_module_translations || []).map(
             (c: StudyModuleTranslationFormValues) => ({
               ...c,
               id: !c.id || c.id === "" ? null : c.id,

@@ -23,7 +23,7 @@ export interface CourseDetails_course_course_translations {
   name: string
   language: string
   description: string
-  link: string
+  link: string | null
 }
 
 export interface CourseDetails_course_open_university_registration_links {

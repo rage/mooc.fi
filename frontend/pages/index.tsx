@@ -6,26 +6,25 @@ import CourseHighlights from "../components/Home/CourseHighlights"
 import EmailSubscribe from "../components/Home/EmailSubscribe"
 import {
   filterAndModifyCoursesByLanguage,
-  // filterAndModifyByLanguage,
+  filterAndModifyByLanguage,
   mapNextLanguageToLocaleCode,
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
-// import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
+import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import Spinner from "/components/Spinner"
 import {
   ObjectifiedCourse,
-  // ObjectifiedModule,
+  ObjectifiedModule,
 } from "../static/types/moduleTypes"
-// import ModuleNavi from "/components/Home/ModuleNavi"
-// import Modules from "/components/Home/Modules"
+import ModuleNavi from "/components/Home/ModuleNavi"
+import Modules from "/components/Home/Modules"
 
 /* const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000") */
 const highlightsBanner = "../static/images/backgroundPattern.svg"
 
-// @ts-ignore
 const AllModulesQuery = gql`
   query AllModules {
     study_modules(orderBy: order_ASC) {
@@ -38,6 +37,7 @@ const AllModulesQuery = gql`
         id
         slug
         name
+        order
         photo {
           id
           compressed
@@ -99,11 +99,11 @@ interface HomeProps {
 
 const Home = (props: HomeProps) => {
   const { t, tReady } = props
-  /*   const {
+  const {
     loading: modulesLoading,
     error: modulesError,
     data: modulesData,
-  } = useQuery<AllModulesData>(AllModulesQuery) */
+  } = useQuery<AllModulesData>(AllModulesQuery)
   const {
     loading: coursesLoading,
     error: coursesError,
@@ -119,20 +119,18 @@ const Home = (props: HomeProps) => {
     setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
   }, [NextI18Next.i18n.language])
 
-  if (/*modulesError || */ coursesError) {
+  if (modulesError || coursesError) {
     ;<div>
       Error:{" "}
-      <pre>
-        {JSON.stringify(/*modulesError || */ coursesError, undefined, 2)}
-      </pre>
+      <pre>{JSON.stringify(modulesError || coursesError, undefined, 2)}</pre>
     </div>
   }
 
-  if (/*modulesLoading || */ coursesLoading || !tReady) {
+  if (modulesLoading || coursesLoading || !tReady) {
     return <Spinner />
   }
 
-  if (/*!modulesData || */ !coursesData) {
+  if (!modulesData || !coursesData) {
     return <div>Error: no data?</div>
   }
 
@@ -143,10 +141,10 @@ const Home = (props: HomeProps) => {
     language,
   )
 
-  /*   const modules: ObjectifiedModule[] = filterAndModifyByLanguage(
+  const modules: ObjectifiedModule[] = filterAndModifyByLanguage(
     modulesData.study_modules,
     language,
-  ) */
+  )
 
   return (
     <div>
@@ -166,7 +164,7 @@ const Home = (props: HomeProps) => {
           fontColor="black"
           titleBackground="#ffffff"
         />
-        {/*<ModuleNavi modules={modules} />*/}
+        <ModuleNavi modules={modules} />
         <CourseHighlights
           courses={courses.filter(c => !c.hidden && c.status === "Active")}
           title={t("allCoursesTitle")}
@@ -197,9 +195,9 @@ const Home = (props: HomeProps) => {
           fontColor="white"
           titleBackground="#3066C0"
         />
-        {/*modules.map(module => (
+        {modules.map(module => (
           <Modules module={module} />
-        ))*/}
+        ))}
       </section>
       <EmailSubscribe />
     </div>
