@@ -13,13 +13,8 @@ import { WideContainer } from "../components/Container"
 import { AllModules } from "/static/types/generated/AllModules"
 import { isAdmin, isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleGrid from "../components/ModuleGrid"
-import { ObjectifiedModule } from "../static/types/moduleTypes"
-import {
-  filterAndModifyByLanguage,
-  mapNextLanguageToLocaleCode,
-} from "../util/moduleFunctions"
+import styled from "styled-components"
 
 export const AllModulesQuery = gql`
   query AllModulesWithTranslations {
@@ -39,17 +34,11 @@ export const AllModulesQuery = gql`
   }
 `
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    header: {
-      marginTop: "1em",
-    },
-  }),
-)
+const Header = styled(Typography)`
+  margin-top: 1em;
+`
 
-const StudyModules = (admin: boolean, language: string) => {
-  const classes = useStyles()
-
+const StudyModules = (admin: boolean) => {
   const { loading, error, data } = useQuery<AllModules>(AllModulesQuery)
 
   if (error) {
@@ -72,15 +61,9 @@ const StudyModules = (admin: boolean, language: string) => {
 
   return (
     <WideContainer>
-      <Typography
-        component="h1"
-        variant="h2"
-        gutterBottom={true}
-        align="center"
-        className={classes.header}
-      >
+      <Header component="h1" variant="h2" gutterBottom={true} align="center">
         All Study Modules
-      </Typography>
+      </Header>
       <ModuleGrid modules={data.study_modules} />
     </WideContainer>
   )

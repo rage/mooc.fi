@@ -1,39 +1,11 @@
 import React from "react"
-import {
-  Grid,
-  Card,
-  CardContent,
-  CardActionArea,
-  CardMedia,
-  Typography,
-  Button,
-  ButtonBase,
-} from "@material-ui/core"
-import DashboardIcon from "@material-ui/icons/Dashboard"
+import { Grid, Typography, Button } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import NextI18Next from "../i18n"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import get from "lodash/get"
 import { ObjectifiedModule } from "./../static/types/moduleTypes"
-/* import { addDomain } from "../util/imageUtils"*/
-import CourseImage from "./CourseImage"
 import styled from "styled-components"
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      padding: "0.8em",
-    },
-    media: {
-      // minHeight: 250,
-      width: "100%",
-      height: 250,
-      objectFit: "cover",
-    },
-  }),
-)
 
 const Base = styled.div`
   position: relative;
@@ -129,32 +101,11 @@ const NaviCardBodyText = styled(Typography)`
 `
 
 function ModuleCard({ module }: { module?: ObjectifiedModule }) {
-  const classes = useStyles()
-
-  const imageUrl = () => {
-    if (!module) {
-      return null
-    }
-
-    try {
-      const image = require(`../static/images/${
-        module.image
-      }?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000`)
-
-      return image
-    } catch (e) {
-      try {
-        const image = require(`../static/images/${
-          module.slug
-        }.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000`)
-
-        return image
-      } catch (e) {
-        // TODO: (?) placeholder
-        return null
-      }
-    }
-  }
+  const imageUrl = module
+    ? module.image
+      ? `../static/images/${module.image}`
+      : `../static/images/${module.slug}.jpg`
+    : "" // TODO: placeholder
 
   //  require(`../static/images/courseimages/${course.slug}.png`)
   // removed doggos as a placeholder for the time being
@@ -163,7 +114,7 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
     <Grid item xs={12} sm={6} lg={6}>
       <Base>
         {module ? (
-          <ImageBackground style={{ backgroundImage: `url(${imageUrl()})` }} />
+          <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
         ) : (
           <IconBackground>
             <AddCircleIcon
@@ -182,7 +133,10 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
           </NaviCardTitle>
           <NaviCardBodyText paragraph>
             {module ? (
-              <NextI18Next.Link href={`/study-modules/${module.slug}/edit`}>
+              <NextI18Next.Link
+                as={`/study-modules/${module.slug}/edit`}
+                href="/study-modules/[id]/edit"
+              >
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />

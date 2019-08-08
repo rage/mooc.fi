@@ -51,7 +51,7 @@ const ImageDropzoneInput = ({
   onImageLoad,
   children,
 }: DropzoneProps) => {
-  const { touched, errors, setFieldValue } = form
+  const { setFieldValue } = form
   const [status, setStatus] = useState<MessageProps>(defaultMessage)
 
   const onDrop = (accepted: File[], rejected: File[]) => {

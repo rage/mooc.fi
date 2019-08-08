@@ -8,26 +8,24 @@ import {
   Checkbox as MUICheckbox,
   Tooltip,
 } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { FormikProps } from "formik"
 import { FormValues } from "./types"
 import ConfirmationDialog from "../ConfirmationDialog"
+import styled from "styled-components"
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    form: {
-      spacing: "4",
-    },
-    paper: {
-      padding: "1em",
-    },
-    status: (props: { [key: string]: any }) => ({
-      color: props.error ? "#FF0000" : "default",
-    }),
-  }),
-)
+const FormContainer = styled(Container)`
+  spacing: 4;
+`
+
+const FormBackground = styled(Paper)`
+  padding: 1em;
+`
+
+const Status = styled.p<any>`
+  color: ${(props: any) => (props.error ? "#FF0000" : "default")};
+`
 
 interface FormWrapperProps<T> extends FormikProps<T> {
   onCancel: () => void
@@ -48,20 +46,20 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
     renderForm,
   } = props
 
-  const classes = useStyles({ error: status ? status.error : null })
   const [deleteVisible, setDeleteVisible] = useState(false)
   const [cancelConfirmationVisible, setCancelConfirmationVisible] = useState(
     false,
   )
 
   return (
-    <Container maxWidth="md" className={classes.form}>
-      <Paper elevation={1} className={classes.paper}>
+    <FormContainer maxWidth="md">
+      <FormBackground elevation={1}>
         <ConfirmationDialog
           title="You have unsaved changes"
           content="Are you sure you want to leave without saving?"
           acceptText="Yes"
           rejectText="No"
+          // @ts-ignore
           onAccept={(e: React.MouseEvent) => {
             setCancelConfirmationVisible(false)
             onCancel()
@@ -115,13 +113,13 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           </Grid>
         </Grid>
         {status && status.message ? (
-          <p className={classes.status}>
+          <Status error={status!.error}>
             {status.error ? "Error submitting: " : null}
             <b>{status.message}</b>
-          </p>
+          </Status>
         ) : null}
-      </Paper>
-    </Container>
+      </FormBackground>
+    </FormContainer>
   )
 }
 

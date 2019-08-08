@@ -5,7 +5,6 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "../CourseImage"
-import { AllCourses_courses_photo } from "../../static/types/generated/AllCourses"
 import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 const Background = styled(ButtonBase)`

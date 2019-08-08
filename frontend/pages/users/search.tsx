@@ -6,12 +6,7 @@ import {
   UserEmailContains,
   UserEmailContains_userEmailContains_edges,
 } from "../../static/types/generated/UserEmailContains"
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  useTheme,
-} from "@material-ui/core/styles"
+import { useTheme } from "@material-ui/core/styles"
 import Button from "@material-ui/core/Button"
 import TextField from "@material-ui/core/TextField"
 import Table from "@material-ui/core/Table"
@@ -112,6 +107,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   } = props
 
   async function handleFirstPageButtonClick(
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({
@@ -122,6 +118,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   }
 
   async function handleBackButtonClick(
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({
@@ -136,6 +133,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   }
 
   async function handleNextButtonClick(
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({
@@ -151,6 +149,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   }
 
   async function handleLastPageButtonClick(
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({

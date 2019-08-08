@@ -22,13 +22,6 @@ const CourseText = styled(Typography)`
   color: black;
 `
 
-const Button = styled.div`
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-`
-
 const Background = styled(ButtonBase)`
   background-color: white;
   position: relative;
