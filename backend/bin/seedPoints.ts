@@ -1,11 +1,5 @@
-import {
-  Prisma,
-  UserCreateInput,
-  UserCourseProgressCreateInput,
-  UserCourseSettingsCreateInput,
-} from "../generated/prisma-client"
+import { Prisma } from "../generated/prisma-client"
 
-//seed users, already added to the database previously
 const Users = [
   {
     upstream_id: 1,
@@ -29,66 +23,68 @@ const Users = [
   },
 ]
 
-interface UserCourseProgressInterface {
-  user: any
-  course: any
-  progress: any
+function makeUserCourseProgressData() {
+  let i = 0
+  let UserCourseProgressess = []
+  while (i < 100) {
+    const newUserCourseProgressForJaneDoe = {
+      user: {
+        connect: {
+          id: "494245b6-3a90-4d6e-82d9-b05fd0330ff8",
+        },
+      },
+      course: {
+        connect: {
+          id: "622a3ba6-2333-4054-908c-268246c07da0",
+        },
+      },
+      progress: [
+        {
+          group: "week1",
+          max_points: 10,
+          n_points: Math.floor(Math.random() * 10),
+          progress: Math.random(),
+        },
+        {
+          group: "week2",
+          max_points: 8,
+          n_points: Math.floor(Math.random() * 8),
+          progress: Math.random(),
+        },
+      ],
+    }
+    const newUserCourseProgressForJohnDoe = {
+      user: {
+        connect: {
+          id: "c9386661-1350-41cc-9cc3-3896b386e0e1",
+        },
+      },
+      course: {
+        connect: {
+          id: "622a3ba6-2333-4054-908c-268246c07da0",
+        },
+      },
+      progress: [
+        {
+          group: "week1",
+          max_points: 10,
+          n_points: Math.floor(Math.random() * 10),
+          progress: Math.random(),
+        },
+        {
+          groups: "week2",
+          max_points: 8,
+          n_points: Math.floor(Math.random() * 8),
+          progress: Math.random(),
+        },
+      ],
+    }
+    UserCourseProgressess.push(newUserCourseProgressForJaneDoe)
+    UserCourseProgressess.push(newUserCourseProgressForJohnDoe)
+    i += 1
+  }
+  return UserCourseProgressess
 }
-const UserCourseProgressess: UserCourseProgressInterface[] = [
-  {
-    user: {
-      connect: {
-        id: "494245b6-3a90-4d6e-82d9-b05fd0330ff8",
-      },
-    },
-
-    course: {
-      connect: {
-        id: "622a3ba6-2333-4054-908c-268246c07da0",
-      },
-    },
-    progress: [
-      {
-        group: "week1",
-        max_points: 10,
-        n_points: 5,
-        progress: 0.5,
-      },
-      {
-        group: "week2",
-        max_points: 8,
-        n_points: 8,
-        progress: 1,
-      },
-    ],
-  },
-  {
-    user: {
-      connect: {
-        id: "c9386661-1350-41cc-9cc3-3896b386e0e1",
-      },
-    },
-    course: {
-      connect: {
-        id: "622a3ba6-2333-4054-908c-268246c07da0",
-      },
-    },
-    progress: [
-      {
-        group: "week1",
-        max_points: 10,
-        n_points: 2,
-        progress: 0.2,
-      },
-      {
-        groups: "week2",
-        max_points: 8,
-        n_points: 4,
-        progress: 0.5,
-      },
-    ],
-  },
-]
 
 const UserCourseSettingsess = [
   {
@@ -131,8 +127,26 @@ const UserCourseSettingsess = [
 
 const prisma = new Prisma({ endpoint: "http://localhost:4466/default/default" })
 
-const _users = Users.map(async user => {})
+const addUsers = async () => {
+  return await Promise.all(
+    Users.map(async user => {
+      return await prisma.createUser(user)
+    }),
+  )
+}
+
+const addUserCourseProgressess = async () => {
+  const UserCourseProgressess = makeUserCourseProgressData()
+  return await Promise.all(
+    UserCourseProgressess.map(async ucp => {
+      return await prisma.createUserCourseProgress(ucp)
+    }),
+  )
+}
+
 const seedPointsData = async () => {
+  addUsers()
+  addUserCourseProgressess()
   return await Promise.all(
     UserCourseSettingsess.map(async ucs => {
       return await prisma.createUserCourseSettings(ucs)
