@@ -7,15 +7,13 @@ import {
   CardMedia,
   Typography,
   Button,
-  ButtonBase,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import NextI18Next from "i18n"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import get from "lodash/get"
-import { addDomain } from "/util/imageUtils"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
+
 import CourseImage from "./CourseImage"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 

@@ -2,24 +2,9 @@ import React from "react"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess as UserPointsData } from "../../static/types/generated/UserCourseSettingses"
-import styled from "styled-components"
 
-const ChartBase = styled.div`
-  width: 100%;
-  display: flex;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-`
+import LinearProgress from "@material-ui/core/LinearProgress"
 
-interface ProgressBarProps {
-  max: number
-  n: number
-}
-const ProgressBar = styled.div<ProgressBarProps>`
-  ${props => `width: ${(props.n / props.max) * 100}%;`}
-  background-color: #ffc400;
-  padding: 0.3rem;
-`
 interface ChartProps {
   pointsForAGroup: any
 }
@@ -37,18 +22,10 @@ function PointsItemTableChart(props: ChartProps) {
     groupName = pointsForAGroup.groups
   }
 
-  console.log(pointsForAGroup)
   return (
     <ListItem>
       {groupName}
-      <ChartBase>
-        <ProgressBar
-          n={pointsForAGroup.n_points}
-          max={pointsForAGroup.max_points}
-        >
-          {pointsForAGroup.n_points} / {pointsForAGroup.max_points}
-        </ProgressBar>
-      </ChartBase>
+      <LinearProgress variant="determinate" value={50} />
     </ListItem>
   )
 }
@@ -74,3 +51,9 @@ function PointsItemTable(props: TableProps) {
 }
 
 export default PointsItemTable
+
+/* <ProgressBar
+          n={pointsForAGroup.n_points}
+          max={pointsForAGroup.max_points}
+        >
+          {pointsForAGroup.n_points} / {pointsForAGroup.max_points}*/

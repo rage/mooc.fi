@@ -49,7 +49,7 @@ function PaginatedPointsList(props: Props) {
           course_id: courseID,
         }}
       >
-        {({ loading, error, data }) => {
+        {({ loading, data }) => {
           if (loading) {
             return <p>Loading...</p>
           }

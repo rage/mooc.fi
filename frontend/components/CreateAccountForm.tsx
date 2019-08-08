@@ -48,7 +48,6 @@ export interface CreateAccountFormProps {
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   constructor(props: CreateAccountFormProps) {
     super(props)
-    var t = props.t
   }
   onClick = async (e: any) => {
     e.preventDefault()
