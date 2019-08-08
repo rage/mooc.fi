@@ -7,11 +7,11 @@ import Avatar from "@material-ui/core/Avatar"
 import Typography from "@material-ui/core/Typography"
 import NextI18Next from "../i18n"
 import SignInForm from "../components/SignInForm"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
 import Container from "../components/Container"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       widht: "auto",
@@ -54,7 +54,7 @@ const SignInPage = (props: Props) => {
 //register-completion page
 SignInPage.getInitialProps = function(context: NextContext) {
   if (isSignedIn(context)) {
-    redirect(context, "/register-completion")
+    redirect(context, "/")
   }
   return {
     namespacesRequired: ["common"],

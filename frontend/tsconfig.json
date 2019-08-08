@@ -23,8 +23,8 @@
     "moduleResolution": "node",
     "noEmit": true,
     //when NextJs9 up and running, set these two to true and fix the small errors
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "preserveConstEnums": true,
     "removeComments": false,
     "skipLibCheck": true,

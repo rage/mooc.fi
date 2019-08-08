@@ -1,8 +1,5 @@
 import * as React from "react"
-import {
-  UserOverView,
-  UserOverView_currentUser_completions,
-} from "/static/types/generated/UserOverView"
+import { UserOverView_currentUser_completions } from "/static/types/generated/UserOverView"
 import NextI18Next from "../i18n"
 import { Container } from "next/app"
 import { Grid, Typography } from "@material-ui/core"

@@ -5,7 +5,6 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "../CourseImage"
-import { AllCourses_courses_photo } from "../../static/types/generated/AllCourses"
 import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 
 const Background = styled(ButtonBase)`
@@ -14,10 +13,10 @@ const Background = styled(ButtonBase)`
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   display: flex;
-  height: 100%;
+  flex-direction: column;
   width: 350px;
   @media (max-width: 960px) {
-    width: 100%;
+    flex-direction: row;
   }
   @media (min-width: 600px) and (max-width: 960px) {
     width: 100%;
@@ -44,6 +43,7 @@ const TextArea = styled.div`
 
 const ImageArea = styled.div`
   height: 200px;
+  width: 350px;
   @media (max-width: 430px) {
     height: 235px;
     width: 30%;
@@ -59,11 +59,6 @@ const ImageArea = styled.div`
 `
 const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  @media (max-width: 960px) {
-    flex-direction: row;
-  }
 `
 interface CourseCardProps {
   course: ObjectifiedCourse
@@ -73,12 +68,12 @@ function CourseCard(props: CourseCardProps) {
   const { course } = props
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-      <Background focusRipple disabled={course.status === "Upcoming"}>
-        <CardLinkWithGA
-          eventLabel={`coursesite: ${course.name}`}
-          to={course.link || ""}
-          target="_blank"
-        >
+      <CardLinkWithGA
+        eventLabel={`coursesite: ${course.name}`}
+        to={course.link || ""}
+        target="_blank"
+      >
+        <Background focusRipple disabled={course.status === "Upcoming"}>
           <ImageArea>
             <CourseImage
               photo={course.photo}
@@ -93,8 +88,8 @@ function CourseCard(props: CourseCardProps) {
               {course.description}
             </Typography>
           </TextArea>
-        </CardLinkWithGA>
-      </Background>
+        </Background>
+      </CardLinkWithGA>
     </Grid>
   )
 }

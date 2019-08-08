@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
-import { Module, ObjectifiedModule } from "../../static/types/moduleTypes"
+import { ObjectifiedModule } from "../../static/types/moduleTypes"
 
 const Base = styled(ButtonBase)`
   position: relative;

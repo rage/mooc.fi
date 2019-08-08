@@ -3,17 +3,14 @@ import NextI18Next from "../../../i18n"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "../../../lib/redirect"
-import { ApolloClient, gql } from "apollo-boost"
+import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import {
   ShowUserUserOverView as UserOverViewData,
   ShowUserUserOverView_user_completions,
 } from "../../../static/types/generated/ShowUserUserOverView"
-import styled from "styled-components"
-import Typography from "@material-ui/core/Typography"
 import Container from "../../../components/Container"
-import Grid from "@material-ui/core/Grid"
-import CompletedCourseCard from "../../../components/CompletedCourseCard"
+
 import Completions from "../../../components/Completions"
 import { SingletonRouter, withRouter } from "next/router"
 import AdminError from "../../../components/Dashboard/AdminError"
@@ -31,21 +28,6 @@ export const UserOverViewQuery = gql`
   }
   ${Completions.fragments.completions}
 `
-const Title = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
-  margin-top: 7rem;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
-  @media (min-width: 320px) {
-    font-size: 46px;
-  }
-  @media (min-width: 600px) {
-    font-size: 56px;
-  }
-  @media (min-width: 960px) {
-    font-size: 72px;
-  }
-`
 
 interface CompletionsProps {
   namespacesRequired: string[]
@@ -57,7 +39,7 @@ interface CompletionsProps {
 }
 
 function CompletionsPage(props: CompletionsProps) {
-  const { t, router } = props
+  const { router } = props
 
   if (!props.admin) {
     return <AdminError />
