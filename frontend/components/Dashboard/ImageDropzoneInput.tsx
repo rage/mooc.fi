@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react"
 import { FieldProps } from "formik"
 import { useDropzone } from "react-dropzone"
 import { Typography } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     dropzoneContainer: {
       width: "100%",
@@ -51,7 +51,7 @@ const ImageDropzoneInput = ({
   onImageLoad,
   children,
 }: DropzoneProps) => {
-  const { touched, errors, setFieldValue } = form
+  const { setFieldValue } = form
   const [status, setStatus] = useState<MessageProps>(defaultMessage)
 
   const onDrop = (accepted: File[], rejected: File[]) => {

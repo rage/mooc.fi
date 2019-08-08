@@ -1,9 +1,9 @@
 import React from "react"
 import { Grid, Card, CardContent, Typography } from "@material-ui/core"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/generated/AllCompletions"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     titleCard: {
       borderLeft: "7px solid #af52bf",

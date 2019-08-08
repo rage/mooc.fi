@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 function ModuleNavi({ modules }: { modules: ObjectifiedModule[] }) {
-  const { t, i18n } = NextI18Next.useTranslation("home")
+  const { t } = NextI18Next.useTranslation("home")
   const classes = useStyles()
   return (
     <section style={{ marginBottom: "5em" }}>

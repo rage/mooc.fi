@@ -22,7 +22,8 @@
     "kafka-consumer-user-points": "ts-node ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",
     "kafka-consumer-exercises": "ts-node ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
     "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma",
-    "seed": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seed.ts"
+    "seed": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seed.ts",
+    "seedPoints": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seedPoints.ts"
   },
   "keywords": [],
   "author": "",

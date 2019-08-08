@@ -17,16 +17,6 @@ export interface ConfrimEmailProps {
 }
 const ConfirmEmail = (props: ConfrimEmailProps) => {
   const { t } = props
-  const onClick = async (e: any) => {
-    e.preventDefault()
-  }
-
-  const state = {
-    email: undefined,
-    password: undefined,
-    submitting: false,
-    error: false,
-  }
 
   return (
     <FormContainer>
