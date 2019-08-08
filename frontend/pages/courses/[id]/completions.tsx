@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
 import { NextPageContext as NextContext } from "next"
@@ -65,6 +65,7 @@ const Completions = (props: CompletionsProps) => {
   if (error || !data) {
     return <p>Error has occurred</p>
   }
+
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardBreadCrumbs />

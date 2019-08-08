@@ -70,7 +70,8 @@ const StudyModuleEdit = ({ module }: { module?: StudyModuleFormValues }) => {
 
       try {
         setStatus({ message: "Saving..." })
-        const study_module = await moduleMutation({
+        // TODO/FIXME: return value?
+        await moduleMutation({
           variables: {
             ...newValues,
             study_module_translations,

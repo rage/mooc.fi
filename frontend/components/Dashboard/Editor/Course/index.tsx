@@ -16,8 +16,8 @@ import get from "lodash/get"
 import {
   CourseDetails_course_photo,
   CourseDetails_course_study_modules,
-} from "/static/types/generated/CourseDetails"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
+} from "../../../../static/types/generated/CourseDetails"
+import { StudyModules_study_modules } from "../../../../static/types/StudyModules"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -73,11 +73,7 @@ const CourseEdit = ({
   const onSubmit = useCallback(
     async (
       values: CourseFormValues,
-      {
-        setSubmitting,
-        setFieldValue,
-        setStatus,
-      }: FormikActions<CourseFormValues>,
+      { setSubmitting, setStatus }: FormikActions<CourseFormValues>,
     ): Promise<void> => {
       const newCourse = !values.id
 
@@ -136,7 +132,8 @@ const CourseEdit = ({
 
       try {
         setStatus({ message: "Saving..." })
-        const course = await courseMutation({
+        // TODO/FIXME: return value?
+        await courseMutation({
           variables: {
             ...newValues,
             course_translations,
@@ -145,8 +142,6 @@ const CourseEdit = ({
         })
 
         setStatus({ message: null })
-        // prevent the very rare chance of pressing submit while redirecting
-        // setSubmitting(false)
         Next18next.Router.push("/courses")
       } catch (err) {
         setStatus({ message: err.message, error: true })

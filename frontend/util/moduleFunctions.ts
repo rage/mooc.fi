@@ -72,7 +72,7 @@ const ObjectifyCourses = (
 }
 
 // I think this isn't used, so I any'ed it
-const filterByLanguage = (
+/* const filterByLanguage = (
   modules: AllModules_study_modules[],
   language: string,
 ) => {
@@ -90,7 +90,7 @@ const filterByLanguage = (
         courses: filteredCourses,
       }
     })
-}
+} */
 
 export const filterAndModifyByLanguage = (
   modules: AllModules_study_modules[],

@@ -3,17 +3,15 @@ import NextI18Next from "../../i18n"
 import { isSignedIn } from "../../lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "../../lib/redirect"
-import { ApolloClient, gql } from "apollo-boost"
+import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import {
   CurrentUserUserOverView as UserOverViewData,
   CurrentUserUserOverView_currentUser_completions,
 } from "../../static/types/generated/CurrentUserUserOverView"
-import styled from "styled-components"
-import Typography from "@material-ui/core/Typography"
+/* import styled from "styled-components"
+import Typography from "@material-ui/core/Typography" */
 import Container from "../../components/Container"
-import Grid from "@material-ui/core/Grid"
-import CompletedCourseCard from "../../components/CompletedCourseCard"
 import Completions from "../../components/Completions"
 
 export const UserOverViewQuery = gql`
@@ -29,7 +27,7 @@ export const UserOverViewQuery = gql`
   }
   ${Completions.fragments.completions}
 `
-const Title = styled(Typography)`
+/* const Title = styled(Typography)`
   font-family: "Open Sans Condensed", sans-serif !important;
   margin-top: 7rem;
   margin-left: 2rem;
@@ -43,7 +41,7 @@ const Title = styled(Typography)`
   @media (min-width: 960px) {
     font-size: 72px;
   }
-`
+` */
 
 interface CompletionsProps {
   namespacesRequired: string[]
@@ -53,6 +51,8 @@ interface CompletionsProps {
 }
 
 function CompletionsPage(props: CompletionsProps) {
+  // FIXME: do the props have any use?
+  // @ts-ignore
   const { t } = props
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
   let completions: CurrentUserUserOverView_currentUser_completions[] = []

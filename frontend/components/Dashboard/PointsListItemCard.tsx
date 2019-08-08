@@ -4,6 +4,7 @@ import PointsItemChart from "./PointsItemChart"
 import PointsItemTable from "./PointsItemTable"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
+// @ts-ignore
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     userName: {

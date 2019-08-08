@@ -1,21 +1,14 @@
-import React, { useState, useCallback, useEffect } from "react"
-import {
-  Checkbox,
-  InputLabel,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  MenuItem,
-  Grid,
-  Typography,
-  Chip,
-  Input,
-  OutlinedInput,
-  Select,
-  FormLabel,
-  List,
-  ListItem,
-} from "@material-ui/core"
+import React, { useCallback } from "react"
+import Checkbox from "@material-ui/core/Checkbox"
+import InputLabel from "@material-ui/core/InputLabel"
+import FormGroup from "@material-ui/core/FormGroup"
+import FormControl from "@material-ui/core/FormControl/FormControl"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import Grid from "@material-ui/core/Grid"
+import MenuItem from "@material-ui/core/MenuItem"
+import FormControlLabel from "@material-ui/core/FormControlLabel"
+import Typography from "@material-ui/core/Typography"
 import {
   Formik,
   Field,
@@ -30,12 +23,12 @@ import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import ImageDropzoneInput from "../../ImageDropzoneInput"
 import ImagePreview from "../../ImagePreview"
-import { statuses, study_modules } from "./form-validation"
+import { statuses } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "../../../../util/imageUtils"
 import FormWrapper from "../FormWrapper"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
+import { StudyModules_study_modules } from "../../../../static/types/StudyModules"
 import includes from "lodash/includes"
 
 const StyledTextField = styled(TextField)`
@@ -92,7 +85,6 @@ const renderForm = ({
   values,
   isSubmitting,
   setFieldValue,
-  initialValues,
 }: Pick<
   FormikProps<CourseFormValues>,
   "errors" | "values" | "isSubmitting" | "setFieldValue" | "initialValues"
