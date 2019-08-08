@@ -29,6 +29,7 @@
     "@types/material-ui": "^0.21.6",
     "@types/react-fontawesome": "^1.6.4",
     "@types/react-select": "^3.0.0",
+    "@types/uuid": "^3.4.5",
     "@types/yup": "^0.26.21",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
