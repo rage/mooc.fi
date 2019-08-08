@@ -29,7 +29,7 @@ spec:
           backend:
             serviceName: moocfi-frontend
             servicePort: 80
-    - host: mooc.fi
+    - host: www.mooc.fi
       http:
         paths:
         - path: /api
