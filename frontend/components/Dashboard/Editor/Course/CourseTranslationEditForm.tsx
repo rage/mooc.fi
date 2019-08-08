@@ -4,7 +4,7 @@ import { Field, FieldArray, getIn, FormikErrors, FieldProps } from "formik"
 import { TextField } from "formik-material-ui"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { CourseTranslationFormValues } from "./types"
-import ConfirmationDialog from "../ConfirmationDialog"
+import ConfirmationDialog from "../../ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 
@@ -47,7 +47,7 @@ const CourseTranslationEditForm = ({
   isSubmitting: boolean
 }) => {
   const classes = useStyles()
-  const [dialogVisible, setDialogVisible] = useState(false)
+  const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
   return (
@@ -63,15 +63,15 @@ const CourseTranslationEditForm = ({
                 acceptText="Yes"
                 rejectText="No"
                 onAccept={() => {
-                  setDialogVisible(false)
+                  setRemoveDialogVisible(false)
                   removableIndex >= 0 && helpers.remove(removableIndex)
                   setRemovableIndex(-1)
                 }}
                 onReject={() => {
-                  setDialogVisible(false)
+                  setRemoveDialogVisible(false)
                   setRemovableIndex(-1)
                 }}
-                open={dialogVisible}
+                show={removeDialogVisible}
               />
               {values.length ? (
                 values.map(
@@ -144,18 +144,6 @@ const CourseTranslationEditForm = ({
                           variant="outlined"
                           component={StyledTextField}
                         />
-                        {/* TODO here: don't actually remove in case of misclicks */}
-                        {/*index === values.length - 1 &&
-                        index < languages.length - 1 &&
-                        languageFilter(index + 1, values).length > 0 ? (
-                          <Button
-                            variant="contained"
-                            onClick={() => helpers.push({ ...initialTranslation })}
-                          >
-                            +
-                          </Button>
-                        ) : null
-                      */}
                         <br />
                         <Grid container justify="flex-end">
                           <Button
@@ -163,7 +151,7 @@ const CourseTranslationEditForm = ({
                             disabled={isSubmitting}
                             color="secondary"
                             onClick={() => {
-                              setDialogVisible(true)
+                              setRemoveDialogVisible(true)
                               setRemovableIndex(index)
                             }}
                           >

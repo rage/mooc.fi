@@ -4,7 +4,54 @@ import {
   CourseStatus,
   CourseTranslationCreateWithoutCourseInput,
   CourseTranslationCreateManyWithoutCourseInput,
+  StudyModuleCreateInput,
+  StudyModuleTranslationCreateWithoutStudy_moduleInput,
+  StudyModuleTranslationCreateManyWithoutStudy_moduleInput,
+  StudyModuleWhereUniqueInput,
 } from "../generated/prisma-client"
+
+const Modules = [
+  {
+    id: "21d838c9-54c7-4fbb-8e4c-91e8f14f0d73",
+    slug: "webdev",
+    name: "Web development",
+    image: "WebModule.jpg",
+    study_module_translations: [
+      {
+        id: "0616fba6-e119-4d77-9b71-2b0fae2101b3",
+        language: "en_US",
+        name: "Web development",
+        description: "Become a super professional web developer and unicorn",
+      },
+      {
+        id: "948698ce-837c-4e0e-93f6-679ea2688691",
+        language: "fi_FI",
+        name: "Verkko-ohjelmointi",
+        description: "Opi ohjelmoimaan verkkosovelluksia ja ole yksisarvinen",
+      },
+    ],
+  },
+  {
+    id: "662f537e-4395-40db-a32d-710b51fa169e",
+    slug: "program",
+    name: "Programming skills",
+    image: "CodeModule.jpg",
+    study_module_translations: [
+      {
+        id: "9fa46739-8993-4b32-8624-00d30e47830b",
+        language: "fi_FI",
+        name: "Ohjelmointitaidot",
+        description: "Opi ohjelmoitsemaan taitavasti.",
+      },
+      {
+        id: "b6781675-4b03-4bfa-b717-ae40f4262b74",
+        language: "en_US",
+        name: "Programming skills",
+        description: "Learn programming.",
+      },
+    ],
+  },
+]
 
 const Courses = [
   {
@@ -23,6 +70,7 @@ const Courses = [
     promote: true,
     status: "Active",
     start_point: true,
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "dgoijdgoijf8904",
@@ -49,6 +97,7 @@ const Courses = [
     promote: false,
     status: "Active",
     start_point: true,
+    study_modules: ["21d838c9-54c7-4fbb-8e4c-91e8f14f0d73"],
   },
   {
     id: "tfujhgfdgrs",
@@ -121,6 +170,7 @@ const Courses = [
     promote: false,
     status: "Ended",
     start_point: false,
+    study_modules: ["21d838c9-54c7-4fbb-8e4c-91e8f14f0d73"],
   },
   {
     id: "gsrhrthrs",
@@ -183,6 +233,7 @@ const Courses = [
     promote: false,
     status: "Ended",
     start_point: true,
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "dhyrrtutrutrik",
@@ -201,6 +252,7 @@ const Courses = [
     promote: false,
     status: "Upcoming",
     start_point: true,
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "hdtry565656465",
@@ -219,6 +271,7 @@ const Courses = [
     promote: false,
     status: "Upcoming",
     start_point: true,
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "hfdhgdrdeetteet4et4",
@@ -263,6 +316,7 @@ const Courses = [
     promote: false,
     status: "Ended",
     start_point: true,
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "4545thythyggh",
@@ -307,6 +361,7 @@ const Courses = [
     promote: true,
     status: "Active",
     start_point: true,
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "<rwjghrsyt",
@@ -325,12 +380,36 @@ const Courses = [
     promote: false,
     status: "Active",
     start_point: true,
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
 ]
 
 const prisma = new Prisma({ endpoint: "http://localhost:4466/default/default" })
 
 const seed = async () => {
+  await prisma.deleteManyStudyModules()
+  await prisma.deleteManyCourses()
+
+  const modules = await Promise.all(
+    Modules.map(async module => {
+      const _module: StudyModuleCreateInput = {
+        ...module,
+        study_module_translations: module.study_module_translations
+          ? ({
+              create: (module.study_module_translations || []).map(
+                (t: StudyModuleTranslationCreateWithoutStudy_moduleInput) => ({
+                  ...t,
+                  id: undefined,
+                }),
+              ),
+            } as StudyModuleTranslationCreateManyWithoutStudy_moduleInput)
+          : null,
+      }
+
+      return await prisma.createStudyModule(_module)
+    }),
+  )
+
   return await Promise.all(
     Courses.map(async course => {
       const _course: CourseCreateInput = {
@@ -348,9 +427,26 @@ const seed = async () => {
               ),
             } as CourseTranslationCreateManyWithoutCourseInput)
           : null,
+        study_modules: null,
       }
 
-      return await prisma.createCourse(_course)
+      const newCourse = await prisma.createCourse(_course)
+      if (course.study_modules) {
+        await prisma.updateCourse({
+          where: {
+            id: newCourse.id,
+          },
+          data: {
+            study_modules: {
+              connect: course.study_modules.map(id => ({
+                id,
+              })) as StudyModuleWhereUniqueInput[],
+            },
+          },
+        })
+      }
+
+      return Promise.resolve()
     }),
   )
 }
