@@ -27,7 +27,7 @@ export interface CourseTranslationWithIdInput {
   description: string
   id?: string | null
   language: string
-  link: string
+  link?: string | null
   name: string
 }
 
@@ -63,6 +63,11 @@ export interface StudyModuleTranslationWithIdInput {
   language: string
   name: string
   study_module?: string | null
+}
+
+export interface StudyModuleWhereUniqueInput {
+  id?: any | null
+  slug?: string | null
 }
 
 //==============================================================
