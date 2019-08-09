@@ -8,13 +8,13 @@ import {
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import redirect from "../lib/redirect"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { gql } from "apollo-boost"
-import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
+import { AllCourses as AllCoursesData } from "../static/types/generated/AllCourses"
 import { useQuery } from "react-apollo-hooks"
 import CourseGrid from "../components/CourseGrid"
 import AdminError from "../components/Dashboard/AdminError"
 import { WideContainer } from "../components/Container"
+import styled from "styled-components"
 
 export const AllCoursesQuery = gql`
   query AllCourses {
@@ -24,6 +24,7 @@ export const AllCoursesQuery = gql`
       slug
       order
       status
+      hidden
       photo {
         id
         compressed
@@ -37,16 +38,11 @@ export const AllCoursesQuery = gql`
   }
 `
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    header: {
-      marginTop: "1em",
-    },
-  }),
-)
+const Header = styled(Typography)`
+  margin-top: 1em;
+`
 
 const Courses = (admin: boolean) => {
-  const classes = useStyles()
   // use mock data
   /*   const data = { courses: courseData.allcourses.slice(0,3) }
   const error = false
@@ -77,15 +73,9 @@ const Courses = (admin: boolean) => {
   return (
     <section>
       <WideContainer>
-        <Typography
-          component="h1"
-          variant="h2"
-          gutterBottom={true}
-          align="center"
-          className={classes.header}
-        >
+        <Header component="h1" variant="h2" gutterBottom={true} align="center">
           All Courses
-        </Typography>
+        </Header>
         <CourseGrid courses={data.courses} />
       </WideContainer>
     </section>
