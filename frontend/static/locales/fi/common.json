@@ -2,6 +2,7 @@
     "login": "Kirjaudu sisään mooc.fi käyttäjätunnuksillasi",
     "loginShort": "Kirjaudu sisään",
     "loginDetails": "Kirjaudu sisään samoilla käyttäjätunnuksilla, joilla olet rekisteröitynyt kurssille.",
+    "signUp":"Luo uusi tunnus",
     "profile": "Oma profiili",
     "logout": "Kirjaudu ulos",
     "forgottenpw": "Unohditko salasanasi?",
