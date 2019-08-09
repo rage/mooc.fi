@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import CreateAccountForm from "../components/CreateAccountForm"
 import ConfirmEmail from "../components/ConfirmEmail"
 
-import Container from "../components/Container"
+import { RegularContainer } from "../components/Container"
 import { NextPageContext } from "next"
 import { isSignedIn } from "../lib/authentication"
 import redirect from "../lib/redirect"
@@ -37,7 +37,7 @@ const SignUpPage = (props: SignUpPageProps) => {
 
   return (
     <div>
-      <Container>{stepComponent}</Container>
+      <RegularContainer>{stepComponent}</RegularContainer>
     </div>
   )
 }

@@ -10,6 +10,7 @@
     "formLabelLastName":"Sukunimi",
     "formLabelPassword": "Salasana",
     "formLabelPasswordAgain":"Salasana uudestaan",
+    "formInfoText":"Tällä sivulla voit luoda uuden tunnuksen, joka toimii suurimmassa osassa mooc.fi:n kursseissa ja palveluissa. Jos olet aikaisemmin tehnyt mooc.fi -kursseja, voit käyttää sisäänkirjautumissivulla olemassaolevia tunnuksiasi.",
     "error": "Virhe: ",
     "signIn": "Onko sinulla jo käyttäjätunnus? Kirjaudu sisään",
     "confirmEmailTitle": "Mooc.fi käyttäjätunnuksesi on luotu",

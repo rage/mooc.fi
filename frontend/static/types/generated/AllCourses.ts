@@ -29,7 +29,6 @@ export interface AllCourses_courses {
   id: any
   slug: string
   name: string
-  order: number | null
   photo: AllCourses_courses_photo | null
   promote: boolean | null
   status: CourseStatus | null
