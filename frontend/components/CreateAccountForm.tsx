@@ -55,7 +55,13 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
 
   componentDidMount() {
     setTimeout(() => {
-      this.setState({ email: "", password: "", password_confirmation: "" })
+      this.setState({
+        email: "",
+        password: "",
+        password_confirmation: "",
+        first_name: "",
+        last_name: "",
+      })
     }, 200)
   }
 
