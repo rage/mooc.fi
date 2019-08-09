@@ -14,6 +14,7 @@ const ChartContainer = styled.div`
 
 const ChartTitle = styled(Typography)`
   margin-right: 5px;
+  width: 7%;
 `
 interface ChartProps {
   pointsForAGroup: any
@@ -33,13 +34,14 @@ function PointsItemTableChart(props: ChartProps) {
 
   return (
     <ChartContainer>
-      <ChartTitle>{groupName}</ChartTitle>
-
+      <ChartTitle style={{ marginRight: "1rem" }}>{groupName}</ChartTitle>
+      <ChartTitle align="right">
+        {pointsForAGroup.n_points} / {pointsForAGroup.max_points}
+      </ChartTitle>
       <LinearProgress
         variant="determinate"
         value={(pointsForAGroup.n_points / pointsForAGroup.max_points) * 100}
         style={{ padding: "0.5rem", flex: 1 }}
-        color="secondary"
       />
     </ChartContainer>
   )
@@ -54,10 +56,16 @@ function PointsItemTable(props: TableProps) {
   if (studentPoints.progress) {
     progressData = studentPoints.progress
   }
+
   return (
     <>
       {progressData ? (
-        progressData.map(p => <PointsItemTableChart pointsForAGroup={p} />)
+        progressData.map(p => (
+          <PointsItemTableChart
+            pointsForAGroup={p}
+            key={Math.floor(Math.random() * 100000)}
+          />
+        ))
       ) : (
         <p>No points data available</p>
       )}
