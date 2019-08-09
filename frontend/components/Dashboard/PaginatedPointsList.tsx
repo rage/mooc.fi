@@ -1,9 +1,9 @@
 import React from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "../ErrorBoundary"
-import { Query } from "react-apollo"
-import { UserCourseSettingses as StudentProgressData } from "../../static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
+import Button from "@material-ui/core/Button"
+import { useQuery } from "react-apollo-hooks"
 
 export const StudentProgresses = gql`
   query UserCourseSettingses($course_id: ID, $cursor: ID) {
@@ -37,30 +37,53 @@ interface Props {
   cursor?: string
 }
 
-class StudentProgressQuery extends Query<StudentProgressData, {}> {}
-
 function PaginatedPointsList(props: Props) {
   const { courseID } = props
+  const { data, loading, error, fetchMore } = useQuery(StudentProgresses, {
+    variables: {
+      course_id: courseID,
+      cursor: undefined,
+    },
+  })
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
+  if (error) {
+    return <p>ERROR</p>
+  }
   return (
     <ErrorBoundary>
-      <StudentProgressQuery
-        query={StudentProgresses}
-        variables={{
-          course_id: courseID,
-        }}
+      <PointsList pointsForUser={data.UserCourseSettingses.edges} />
+      <Button
+        onClick={() =>
+          fetchMore({
+            query: StudentProgresses,
+            variables: {
+              course_id: courseID,
+              cursor: data.UserCourseSettingses.pageInfo.endCursor,
+            },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              const previousData = previousResult.UserCourseSettingses.edges
+              const newData = fetchMoreResult.UserCourseSettingses.edges
+              const newPageInfo = fetchMoreResult.UserCourseSettingses.pageInfo
+              return {
+                UserCourseSettingses: {
+                  pageInfo: {
+                    ...newPageInfo,
+                    __typename: "PageInfo",
+                  },
+                  edges: [...previousData, ...newData],
+                  __typename: "UserCourseSettingses",
+                },
+              }
+            },
+          })
+        }
+        disabled={!data.UserCourseSettingses.pageInfo.hasNextPage}
       >
-        {({ loading, data }) => {
-          if (loading) {
-            return <p>Loading...</p>
-          }
-          if (data) {
-            return (
-              <PointsList pointsForUser={data.UserCourseSettingses.edges} />
-            )
-          }
-          return <p>Oh noes</p>
-        }}
-      </StudentProgressQuery>
+        Load more
+      </Button>
     </ErrorBoundary>
   )
 }
