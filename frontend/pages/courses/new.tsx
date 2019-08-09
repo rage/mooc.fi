@@ -3,13 +3,13 @@ import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
 import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
 import Editor from "../../components/Dashboard/Editor"
 import { withRouter, SingletonRouter } from "next/router"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
+import styled from "styled-components"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -21,13 +21,9 @@ export const StudyModuleQuery = gql`
   }
 `
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    header: {
-      marginTop: "1em",
-    },
-  }),
-)
+const Header = styled(Typography)`
+  margin-top: 1em;
+`
 
 interface NewCourseProps {
   router: SingletonRouter
@@ -37,9 +33,8 @@ interface NewCourseProps {
 
 const NewCourse = (props: NewCourseProps) => {
   const { admin } = props
-  const classes = useStyles()
 
-  const { data, loading } = useQuery(StudyModuleQuery)
+  const { data, loading, error } = useQuery(StudyModuleQuery)
 
   if (!admin) {
     return <AdminError />
@@ -50,18 +45,16 @@ const NewCourse = (props: NewCourseProps) => {
     return null
   }
 
+  if (error) {
+    return <div>{JSON.stringify(error)}</div>
+  }
+
   return (
     <section>
       <WideContainer>
-        <Typography
-          component="h1"
-          variant="h2"
-          gutterBottom={true}
-          align="center"
-          className={classes.header}
-        >
+        <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Create a new course
-        </Typography>
+        </Header>
         <Editor type="Course" modules={data.study_modules} />
       </WideContainer>
     </section>
