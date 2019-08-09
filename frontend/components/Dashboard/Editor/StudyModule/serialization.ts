@@ -6,7 +6,7 @@ import { initialValues } from "./form-validation"
 import { addStudyModule_addStudyModule_study_module_translations } from "/static/types/generated/addStudyModule"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
 import { updateStudyModule_updateStudyModule_study_module_translations } from "/static/types/generated/updateStudyModule"
-import omit from "lodash/omit"
+import { omit } from "lodash"
 
 export const toStudyModuleForm = ({
   module,

@@ -5,11 +5,11 @@ import { isSignedIn, isAdmin } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
 import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
-import Editor from "../../components/Dashboard/Editor"
 import { withRouter, SingletonRouter } from "next/router"
 import { gql } from "apollo-boost"
 import { useQuery } from "react-apollo-hooks"
 import styled from "styled-components"
+import CourseEdit from "/components/Dashboard/Editor/Course"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -55,7 +55,7 @@ const NewCourse = (props: NewCourseProps) => {
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Create a new course
         </Header>
-        <Editor type="Course" modules={data.study_modules} />
+        <CourseEdit modules={data.study_modules} />
       </WideContainer>
     </section>
   )
