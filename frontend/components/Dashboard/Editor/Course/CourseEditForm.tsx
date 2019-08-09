@@ -1,6 +1,5 @@
 import React, { useCallback } from "react"
 import {
-  Checkbox,
   InputLabel,
   FormControl,
   FormControlLabel,
@@ -19,8 +18,9 @@ import {
   FormikActions,
   FormikProps,
   yupToFormErrors,
+  // getIn,
 } from "formik"
-import { TextField } from "formik-material-ui"
+import { TextField, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import ImageDropzoneInput from "../../ImageDropzoneInput"
@@ -30,8 +30,7 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "../../../../util/imageUtils"
 import FormWrapper from "../FormWrapper"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
-import includes from "lodash/includes"
+import { StudyModules_study_modules } from "../../../../static/types/StudyModules"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -213,23 +212,12 @@ const renderForm = ({
                   <ModuleListItem key={module.id}>
                     <FormControlLabel
                       control={
-                        <Checkbox
-                          checked={includes(values.study_modules, module.id)}
-                          onChange={() => {
-                            if (includes(values.study_modules, module.id)) {
-                              setFieldValue(
-                                "study_modules",
-                                ((values.study_modules ||
-                                  []) as string[]).filter(m => m !== module.id),
-                              )
-                            } else {
-                              setFieldValue(
-                                "study_modules",
-                                ((values.study_modules ||
-                                  []) as string[]).concat(module.id),
-                              )
-                            }
-                          }}
+                        <Field
+                          label={module.name}
+                          type="checkbox"
+                          name={`study_modules[${module.id}]`}
+                          value={(values.study_modules || {})[module.id]}
+                          component={Checkbox}
                         />
                       }
                       label={module.name}

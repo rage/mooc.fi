@@ -12,7 +12,7 @@ export const AddCourseMutation = gql`
     $status: CourseStatus
     $course_translations: [CourseTranslationCreateWithoutCourseInput!]
     $open_university_registration_links: [OpenUniversityRegistrationLinkCreateWithoutCourseInput!]
-    $study_modules: [ID!]
+    $study_modules: [StudyModuleWhereUniqueInput!]
     $order: Int
   ) {
     addCourse(
@@ -78,7 +78,7 @@ export const UpdateCourseMutation = gql`
     $new_slug: String
     $course_translations: [CourseTranslationWithIdInput!]
     $open_university_registration_links: [OpenUniversityRegistrationLinkWithIdInput!]
-    $study_modules: [ID!]
+    $study_modules: [StudyModuleWhereUniqueInput!]
     $order: Int
   ) {
     updateCourse(

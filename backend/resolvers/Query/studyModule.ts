@@ -29,6 +29,7 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
       orderBy: arg({ type: "StudyModuleOrderByInput" }),
     },
     resolve: async (_, args, ctx) => {
+      // @ts-ignore
       return await ctx.prisma.studyModules({ orderBy: args.orderBy })
     },
   })

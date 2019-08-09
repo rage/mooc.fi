@@ -11,40 +11,23 @@ import {
   getIn,
 } from "formik"
 import * as Yup from "yup"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
 import FormWrapper from "../FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 import { TextField } from "formik-material-ui"
-import {
-  Grid,
-  MenuItem,
-  Typography,
-  Button,
-  Paper,
-  InputLabel,
-  FormControl,
-  FormGroup,
-  InputAdornment,
-  Tooltip,
-} from "@material-ui/core"
+import InputLabel from "@material-ui/core/InputLabel"
+import FormGroup from "@material-ui/core/FormGroup"
+import FormControl from "@material-ui/core/FormControl"
+import Grid from "@material-ui/core/Grid"
+import MenuItem from "@material-ui/core/MenuItem"
+import Typography from "@material-ui/core/Typography"
+import InputAdornment from "@material-ui/core/InputAdornment"
+import Tooltip from "@material-ui/core/Tooltip"
+import Paper from "@material-ui/core/Paper"
+import Button from "@material-ui/core/Button"
 import ConfirmationDialog from "../../ConfirmationDialog"
 import useDebounce from "/util/useDebounce"
 import HelpIcon from "@material-ui/icons/Help"
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    languageEntry: {
-      spacing: "10px",
-      lineHeight: "2",
-      padding: "0 0 20px 0",
-    },
-    paper: {
-      borderLeft: "2px solid #A0A0FF",
-      padding: "20px",
-    },
-  }),
-)
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -89,6 +72,17 @@ const ModuleImage = styled.img<{ error?: boolean }>`
   display: ${props => (props.error ? "none" : "")};
 `
 
+const LanguageEntry = styled(Grid)`
+  spacing: 10px;
+  line-height: 2;
+  padding: 0 0 20px 0;
+`
+
+const EntryContainer = styled(Paper)`
+  border-left: 2px solid #a0a0ff;
+  padding: 20px;
+`
+
 const renderForm = ({
   errors,
   values,
@@ -97,18 +91,12 @@ const renderForm = ({
   FormikProps<StudyModuleFormValues>,
   "errors" | "values" | "isSubmitting" | "setFieldValue"
 >) => {
-  const classes = useStyles()
-  // const [image, setImage] = useState(values.image)
   const [imageError, setImageError] = useState("")
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
-  const /*debounced*/ image = useDebounce(values.image, 500)
-
-  /*   useEffect(() => {
-    setImage(debouncedImage)
-  }, [debouncedImage]) */
-
+  const image = useDebounce(values.image, 500)
+  const slug = useDebounce(values.new_slug, 500)
   return (
     <Form>
       <Grid container direction="row" spacing={2}>
@@ -172,7 +160,7 @@ const renderForm = ({
             src={
               image
                 ? `../../../static/images/${image}`
-                : `../../../../static/images/${values.new_slug}.jpg`
+                : `../../../static/images/${slug}.jpg`
             }
             error={!!imageError}
             onError={() => setImageError("no image found")}
@@ -208,14 +196,10 @@ const renderForm = ({
                 show={removeDialogVisible}
               />
               {values!.study_module_translations!.length ? (
-                values.study_module_translations.map(
+                (values.study_module_translations || []).map(
                   (_: any, index: number) => (
-                    <Grid
-                      item
-                      className={classes.languageEntry}
-                      key={`translation-${index}`}
-                    >
-                      <Paper className={classes.paper} elevation={2}>
+                    <LanguageEntry item key={`translation-${index}`}>
+                      <EntryContainer elevation={2}>
                         <Field
                           name={`study_module_translations[${index}].language`}
                           type="select"
@@ -280,16 +264,16 @@ const renderForm = ({
                             Remove translation
                           </Button>
                         </Grid>
-                      </Paper>
-                    </Grid>
+                      </EntryContainer>
+                    </LanguageEntry>
                   ),
                 )
               ) : (
-                <Paper className={classes.paper} elevation={2}>
+                <EntryContainer elevation={2}>
                   <Typography variant="body1">
                     Please add at least one translation!
                   </Typography>
-                </Paper>
+                </EntryContainer>
               )}
               {values!.study_module_translations!.length < languages.length && (
                 <Button

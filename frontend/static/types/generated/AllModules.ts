@@ -21,7 +21,7 @@ export interface AllModules_study_modules_courses_course_translations {
   language: string
   name: string
   description: string
-  link: string
+  link: string | null
 }
 
 export interface AllModules_study_modules_courses {
@@ -29,6 +29,7 @@ export interface AllModules_study_modules_courses {
   id: any
   slug: string
   name: string
+  order: number | null
   photo: AllModules_study_modules_courses_photo | null
   promote: boolean | null
   status: CourseStatus | null

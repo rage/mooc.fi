@@ -56,7 +56,7 @@ function ModuleBanner({ module }: { module: ObjectifiedModule }) {
   return (
     <ModuleBannerContainer>
       <img style={{ display: "none" }} src={imageUrl} alt="" />
-      <Title component="h2" align="center">
+      <Title component="h2" variant="h2" align="center">
         {module.name}
       </Title>
       <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />

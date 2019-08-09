@@ -1,5 +1,4 @@
 import React from "react"
-
 import CourseEdit from "./Course"
 import StudyModuleEdit from "./StudyModule"
 
