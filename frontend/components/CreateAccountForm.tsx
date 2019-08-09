@@ -1,5 +1,5 @@
 import React from "react"
-import { TextField, Button, Link } from "@material-ui/core"
+import { TextField, Button, Link, Typography } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
 import NextI18next from "../i18n"
@@ -19,6 +19,9 @@ const InfoBox = styled.div`
 const FormContainer = styled.div`
   height: 100%;
   margin-top: 2rem;
+`
+const StyledTypography = styled(Typography)`
+  margin-bottom: 2rem;
 `
 interface state {
   email?: string | undefined
@@ -172,14 +175,22 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   render() {
     return (
       <FormContainer>
-        <h1>{this.props.t("signupTitle")}</h1>
+        <Typography
+          component="h1"
+          variant="h2"
+          gutterBottom={true}
+          align="center"
+        >
+          {this.props.t("signupTitle")}
+        </Typography>
+        <StyledTypography> {this.props.t("formInfoText")}</StyledTypography>
         <Form onChange={this.validate}>
           <Row>
             <TextField
               variant="outlined"
               type="email"
               name="email"
-              autoComplete="email"
+              autoComplete="lolled"
               label={this.props.t("formLabelEmail")}
               error={this.state.errorObj.email}
               fullWidth
