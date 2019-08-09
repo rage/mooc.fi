@@ -83,9 +83,14 @@ const MenuOptionButtons = () => {
             </StyledButton>
           </div>
         ) : (
-          <StyledButton color="inherit" variant="text" href="/sign-in">
-            <NextI18Next.Trans i18nKey="common:loginShort" />
-          </StyledButton>
+          <>
+            <StyledButton color="inherit" variant="text" href="/sign-in">
+              <NextI18Next.Trans i18nKey="common:loginShort" />
+            </StyledButton>
+            <StyledButton color="inherit" variant="text" href="/sign-up">
+              <NextI18Next.Trans i18nKey="common:signUp" />
+            </StyledButton>
+          </>
         )}
       </React.Fragment>
     </ErrorBoundary>
