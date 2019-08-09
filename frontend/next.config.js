@@ -15,6 +15,25 @@ const nextConfiguration = {
         : "none",
   },
   pageExtensions: ["js", "tsx", "ts"],
+  webpack(config) {
+    if (config.optimization && !config.optimization.splitChunks) {
+      return config
+    }
+
+    config.optimization.splitChunks.cacheGroups.commons.enforce = true
+    config.optimization.splitChunks.cacheGroups.commons.priority = 9
+    config.optimization.splitChunks.cacheGroups.react.priority = 12
+    config.optimization.splitChunks.cacheGroups.formikCommons = {
+      chunks: "all",
+      enforce: true,
+      minChunks: 1,
+      name: "formik-commons",
+      priority: 10,
+      test: /[\\\/](node_modules[\\\/](lodash[\\\/]|(formik|lodash-es|yup)[\\\/]))/,
+    }
+
+    return config
+  },
 }
 
 module.exports = withPlugins(

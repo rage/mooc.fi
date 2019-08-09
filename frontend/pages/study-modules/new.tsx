@@ -6,8 +6,8 @@ import { WideContainer } from "../../components/Container"
 import { Typography } from "@material-ui/core"
 import { isAdmin, isSignedIn } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
-import Editor from "../../components/Dashboard/Editor"
 import styled from "styled-components"
+import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 
 const Header = styled(Typography)`
   margin-top: 1em;
@@ -32,7 +32,7 @@ const NewStudyModule = (props: NewStudyModuleProps) => {
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Create a new study module
         </Header>
-        <Editor type="StudyModule" />
+        <StudyModuleEdit />
       </WideContainer>
     </section>
   )
