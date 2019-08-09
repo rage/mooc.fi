@@ -127,7 +127,7 @@ EditStudyModule.getInitialProps = function(context: NextContext) {
   return {
     admin,
     // @ts-ignore
-    language: context.req.language,
+    language: context && context.req ? context.req.language : "",
     namespacesRequired: ["common"],
   }
 }

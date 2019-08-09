@@ -6,6 +6,7 @@ import {
   CourseStatus,
   CourseTranslationWithIdInput,
   OpenUniversityRegistrationLinkWithIdInput,
+  StudyModuleWhereUniqueInput,
 } from "./globalTypes"
 
 // ====================================================
@@ -80,6 +81,6 @@ export interface updateCourseVariables {
   open_university_registration_links?:
     | OpenUniversityRegistrationLinkWithIdInput[]
     | null
-  study_modules?: string[] | null
+  study_modules?: StudyModuleWhereUniqueInput[] | null
   order?: number | null
 }

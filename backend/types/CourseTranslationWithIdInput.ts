@@ -7,7 +7,7 @@ const CourseTranslationWithIdInput = inputObjectType({
     t.string("name", { required: true })
     t.string("language", { required: true })
     t.string("description", { required: true })
-    t.string("link", { required: true })
+    t.string("link")
     t.id("course")
   },
 })

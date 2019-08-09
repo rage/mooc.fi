@@ -34,7 +34,10 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       promote: booleanArg(),
       hidden: booleanArg(),
       status: arg({ type: "CourseStatus" }),
-      study_modules: idArg({ list: true }),
+      study_modules: arg({
+        type: "StudyModuleWhereUniqueInput",
+        list: true,
+      }),
       course_translations: arg({
         type: "CourseTranslationCreateWithoutCourseInput",
         list: true,
@@ -85,9 +88,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           ? { create: course_translations }
           : null,
         status: status,
-        study_modules: !!study_modules
-          ? { connect: study_modules.map(module => ({ id: module })) }
-          : null,
+        study_modules: !!study_modules ? { connect: study_modules } : null,
         open_university_registration_links: !!open_university_registration_links
           ? { create: open_university_registration_links }
           : null,
@@ -122,7 +123,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       promote: booleanArg(),
       hidden: booleanArg(),
       status: arg({ type: "CourseStatus" }),
-      study_modules: idArg({ list: true }),
+      study_modules: arg({
+        type: "StudyModuleWhereUniqueInput",
+        list: true,
+      }),
       course_translations: arg({
         type: "CourseTranslationWithIdInput",
         list: true,
@@ -222,13 +226,16 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
 
       const existingStudyModules = await prisma.course({ slug }).study_modules()
+      const studyModuleIds = study_modules.map(module => module.id)
       //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
-      const removedModules: StudyModuleWhereUniqueInput[] = (
-        pullAll(existingStudyModules.map(module => module.id), study_modules) ||
+      const removedModules: StudyModuleWhereUniqueInput[] = existingStudyModules.filter(
+        module => !studyModuleIds.includes(module.id),
+      )
+      /*         pullAll(existingStudyModules.map(module => module.id), study_modules) ||
         []
-      ).map(id => ({ id }))
+      ).map(id => ({ id })) */
       const studyModuleMutation: StudyModuleUpdateManyWithoutCoursesInput = {
-        connect: study_modules.map(id => ({ id })),
+        connect: study_modules,
         disconnect: removedModules,
       }
 

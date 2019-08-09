@@ -1,9 +1,6 @@
 import React, { useCallback } from "react"
 import StudyModuleEditForm from "./StudyModuleEditForm"
-import {
-  StudyModuleFormValues,
-  StudyModuleTranslationFormValues,
-} from "./types"
+import { StudyModuleFormValues } from "./types"
 import { useMutation, useApolloClient } from "react-apollo-hooks"
 import {
   AddStudyModuleMutation,
@@ -12,23 +9,21 @@ import {
   CheckModuleSlugQuery,
 } from "./graphql"
 import { AllModulesQuery } from "../../../../pages/study-modules"
-import { initialValues } from "./form-validation"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
 import Next18next from "../../../../i18n"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
+import { StudyModuleQuery } from "/pages/study-modules/[id]/edit"
+import { PureQueryOptions } from "apollo-boost"
+import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 
 const StudyModuleEdit = ({
   module,
 }: {
   module?: StudyModuleDetails_study_module
 }) => {
-  const addStudyModule = useMutation(AddStudyModuleMutation, {
-    refetchQueries: [{ query: AllModulesQuery }],
-  })
-  const updateStudyModule = useMutation(UpdateStudyModuleMutation, {
-    refetchQueries: [{ query: AllModulesQuery }],
-  })
+  const addStudyModule = useMutation(AddStudyModuleMutation)
+  const updateStudyModule = useMutation(UpdateStudyModuleMutation)
   const deleteStudyModule = useMutation(DeleteStudyModuleMutation, {
     refetchQueries: [{ query: AllModulesQuery }],
   })
@@ -36,13 +31,7 @@ const StudyModuleEdit = ({
 
   const client = useApolloClient()
 
-  const _module: StudyModuleFormValues = module
-    ? {
-        ...module,
-        image: module.image || "",
-        new_slug: module.slug,
-      }
-    : initialValues
+  const initialValues = toStudyModuleForm({ module })
 
   const validationSchema = studyModuleEditSchema({
     client,
@@ -58,22 +47,13 @@ const StudyModuleEdit = ({
     ): Promise<void> => {
       const newStudyModule = !values.id
 
-      const study_module_translations = (values.study_module_translations || [])
-        .length
-        ? (values.study_module_translations || []).map(
-            (c: StudyModuleTranslationFormValues) => ({
-              ...c,
-              id: !c.id || c.id === "" ? null : c.id,
-              __typename: undefined,
-            }),
-          )
-        : null
-
-      const newValues: StudyModuleFormValues = {
-        ...values,
-        id: undefined,
-        slug: values.id ? values.slug : values.new_slug,
-      }
+      const mutationVariables = fromStudyModuleForm({ values })
+      const refetchQueries = [
+        { query: AllModulesQuery },
+        !newStudyModule
+          ? { query: StudyModuleQuery, variables: { slug: values.new_slug } }
+          : undefined,
+      ].filter(v => !!v) as PureQueryOptions[]
 
       const moduleMutation = newStudyModule ? addStudyModule : updateStudyModule
 
@@ -81,10 +61,9 @@ const StudyModuleEdit = ({
         setStatus({ message: "Saving..." })
         // TODO/FIXME: return value?
         await moduleMutation({
-          variables: {
-            ...newValues,
-            study_module_translations,
-          },
+          variables: mutationVariables,
+          // @ts-ignore
+          refetchQueries: (result: FetchResult) => refetchQueries,
         })
 
         setStatus({ message: null })
@@ -112,7 +91,7 @@ const StudyModuleEdit = ({
 
   return (
     <StudyModuleEditForm
-      module={_module}
+      module={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
       onCancel={onCancel}

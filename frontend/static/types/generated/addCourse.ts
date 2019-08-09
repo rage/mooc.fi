@@ -6,6 +6,7 @@ import {
   CourseStatus,
   CourseTranslationCreateWithoutCourseInput,
   OpenUniversityRegistrationLinkCreateWithoutCourseInput,
+  StudyModuleWhereUniqueInput,
 } from "./globalTypes"
 
 // ====================================================
@@ -77,6 +78,6 @@ export interface addCourseVariables {
   open_university_registration_links?:
     | OpenUniversityRegistrationLinkCreateWithoutCourseInput[]
     | null
-  study_modules?: string[] | null
+  study_modules?: StudyModuleWhereUniqueInput[] | null
   order?: number | null
 }
