@@ -1,8 +1,7 @@
 import { initialValues } from "./form-validation"
 import { getIn } from "formik"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import get from "lodash/get"
-import omit from "lodash/omit"
+import { get, omit } from "lodash"
 import {
   CourseDetails_course_photo,
   CourseDetails_course,
@@ -44,6 +43,7 @@ export const toCourseForm = ({
         status: course.status || CourseStatus.Upcoming,
         course_translations: (course.course_translations || []).map(c => ({
           ...omit(c, "__typename"),
+          link: c.link || "",
           open_university_course_code: get(
             (course.open_university_registration_links || []).find(
               (l: CourseDetails_course_open_university_registration_links) =>
