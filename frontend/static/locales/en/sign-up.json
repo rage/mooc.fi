@@ -10,7 +10,7 @@
     "formLabelLastName":"Last name",
     "formLabelPassword": "Password",
     "formLabelPasswordAgain":"Repeat password",
-    "formInfoText":"Here you can create a new account which works on most mooc.fi courses and services. If you have participated in mooc.fi courses before, you can use your existing account on signin page.",
+    "formInfoText":"Here you can create a new account which works on most mooc.fi courses and services. If you have participated in mooc.fi courses before, you can use your existing account on login page.",
     "error": "Error: ",
     "signIn": "Already have an account? Log in.",
     "confirmEmailTitle": "Your Mooc.fi account has been created.",
