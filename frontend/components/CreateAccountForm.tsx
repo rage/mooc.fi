@@ -52,6 +52,19 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   constructor(props: CreateAccountFormProps) {
     super(props)
   }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        email: "",
+        password: "",
+        password_confirmation: "",
+        first_name: "",
+        last_name: "",
+      })
+    }, 200)
+  }
+
   onClick = async (e: any) => {
     e.preventDefault()
     this.setState({ submitting: true, triedSubmitting: true })
@@ -160,9 +173,9 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 
   state: state = {
-    email: undefined,
-    password: undefined,
-    password_confirmation: undefined,
+    email: "",
+    password: "",
+    password_confirmation: "",
     submitting: false,
     error: false,
     errorObj: {},
@@ -194,7 +207,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               label={this.props.t("formLabelEmail")}
               error={this.state.errorObj.email}
               fullWidth
-              //value={this.state.email}
+              value={this.state.email}
               onChange={this.handleInput}
               onBlur={() => {
                 this.setState({ validateEmail: true }, () => {
@@ -211,7 +224,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               name="first_name"
               autoComplete="lolled"
               fullWidth
-              //value={this.state.first_name}
+              value={this.state.first_name}
               onChange={this.handleInput}
             />
           </Row>
@@ -223,7 +236,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               name="last_name"
               autoComplete="lolled"
               fullWidth
-              //value={this.state.last_name}
+              value={this.state.last_name}
               onChange={this.handleInput}
             />
           </Row>
@@ -236,7 +249,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               autoComplete="lolled"
               error={this.state.errorObj.password}
               fullWidth
-              //value={this.state.password}
+              value={this.state.password}
               onChange={this.handleInput}
             />
           </Row>
@@ -249,7 +262,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               autoComplete="lolled"
               error={this.state.errorObj.password_confirmation}
               fullWidth
-              //value={this.state.password_confirmation}
+              value={this.state.password_confirmation}
               onChange={this.handleInput}
               onBlur={() => {
                 this.setState({ validatePassword: true }, () => {
