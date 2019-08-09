@@ -14,6 +14,7 @@ const nextConfiguration = {
         ? process.env.LOCALE_SUBPATHS
         : "none",
   },
+  pageExtensions: ["js", "tsx", "ts"],
 }
 
 module.exports = withPlugins(

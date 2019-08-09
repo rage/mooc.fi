@@ -51,4 +51,5 @@ export interface UserCourseSettingses {
 
 export interface UserCourseSettingsesVariables {
   course_id?: string | null
+  cursor?: string | null
 }

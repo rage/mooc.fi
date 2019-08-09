@@ -1,4 +1,6 @@
-export interface StudyModuleFormValues {
+import { FormValues } from "/components/Dashboard/Editor/types"
+
+export interface StudyModuleFormValues extends FormValues {
   id?: string | null
   slug: string
   new_slug: string
@@ -6,13 +8,12 @@ export interface StudyModuleFormValues {
   image: string
   order?: number
   // courses: any[]
-  study_module_translations: StudyModuleTranslationFormValues[]
+  study_module_translations: StudyModuleTranslationFormValues[] | null
 }
 
-export interface StudyModuleTranslationFormValues {
+export interface StudyModuleTranslationFormValues extends FormValues {
   id?: string | null
   name: string
   language: string
   description: string
-  study_module?: string | undefined
 }

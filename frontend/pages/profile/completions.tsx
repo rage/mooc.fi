@@ -9,9 +9,9 @@ import {
   CurrentUserUserOverView as UserOverViewData,
   CurrentUserUserOverView_currentUser_completions,
 } from "../../static/types/generated/CurrentUserUserOverView"
-
+/* import styled from "styled-components"
+import Typography from "@material-ui/core/Typography" */
 import Container from "../../components/Container"
-
 import Completions from "../../components/Completions"
 
 export const UserOverViewQuery = gql`
@@ -27,8 +27,33 @@ export const UserOverViewQuery = gql`
   }
   ${Completions.fragments.completions}
 `
+/* const Title = styled(Typography)`
+  font-family: "Open Sans Condensed", sans-serif !important;
+  margin-top: 7rem;
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+  @media (min-width: 320px) {
+    font-size: 46px;
+  }
+  @media (min-width: 600px) {
+    font-size: 56px;
+  }
+  @media (min-width: 960px) {
+    font-size: 72px;
+  }
+` */
 
-function CompletionsPage() {
+interface CompletionsProps {
+  namespacesRequired: string[]
+  t: Function
+  i18n: any
+  tReady: boolean
+}
+
+function CompletionsPage(props: CompletionsProps) {
+  // FIXME: do the props have any use?
+  // @ts-ignore
+  const { t } = props
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
   let completions: CurrentUserUserOverView_currentUser_completions[] = []
 
