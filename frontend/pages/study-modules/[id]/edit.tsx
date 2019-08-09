@@ -10,9 +10,9 @@ import NextI18Next from "../../../i18n"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
-import Editor from "../../../components/Dashboard/Editor"
 import styled from "styled-components"
 import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
+import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -91,7 +91,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
           Edit study module
         </Header>
         {data!.study_module ? (
-          <Editor type="StudyModule" module={data!.study_module} />
+          <StudyModuleEdit module={data!.study_module} />
         ) : (
           <ErrorContainer elevation={2}>
             <Typography variant="body1">

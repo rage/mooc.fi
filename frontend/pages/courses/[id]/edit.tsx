@@ -6,7 +6,6 @@ import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
 import AdminError from "../../../components/Dashboard/AdminError"
 import { WideContainer } from "../../../components/Container"
-import Editor from "../../../components/Dashboard/Editor"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
@@ -14,6 +13,7 @@ import NextI18Next from "../../../i18n"
 import Spinner from "/components/Spinner"
 import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
+import CourseEdit from "/components/Dashboard/Editor/Course"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -132,8 +132,7 @@ const EditCourse = (props: EditCourseProps) => {
           Edit course
         </Header>
         {courseData.course ? (
-          <Editor
-            type="Course"
+          <CourseEdit
             course={courseData.course}
             modules={studyModulesData.study_modules}
           />
