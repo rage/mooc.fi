@@ -1,7 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
+
 import { CourseStatus } from "./globalTypes"
+
 // ====================================================
 // GraphQL query operation: CourseDetails
 // ====================================================
