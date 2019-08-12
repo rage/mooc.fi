@@ -65,6 +65,8 @@ type OpenUniversityRegistrationLink  @db(name: "open_university_registration_lin
   course: Course! @relation(link: INLINE, name: "OpenUniversityRegistrationLinkToCourse")
   language: String!
   link: String
+  start_date: DateTime
+  stop_date: DateTime
 }
 
 
