@@ -13,10 +13,12 @@ const fetch = async () => {
   const avoinObjects: OpenUniversityRegistrationLink[] = await prisma.openUniversityRegistrationLinks()
 
   avoinObjects.forEach(async p => {
+    console.log("Processing link", p.course_code, p.language)
     const res = await getInfoWithCourseCode(p.course_code).catch(error => {
       console.log(error)
       throw error
     })
+    console.log("Open university info: ", JSON.stringify(res, undefined, 2))
     const now: DateTime = DateTime.fromJSDate(new Date())
     let latestLink: Link = { link: null, stopDate: null }
     res.forEach(k => {
@@ -34,6 +36,8 @@ const fetch = async () => {
         ? null
         : "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=" +
           latestLink.link
+
+    console.log("Updating link to", url)
     await prisma.updateOpenUniversityRegistrationLink({
       where: {
         id: p.id,
