@@ -73,6 +73,7 @@ export interface addCourseVariables {
   promote?: boolean | null
   start_point?: boolean | null
   hidden?: boolean | null
+  study_module_start_point?: boolean | null
   status?: CourseStatus | null
   course_translations?: CourseTranslationCreateWithoutCourseInput[] | null
   open_university_registration_links?:
