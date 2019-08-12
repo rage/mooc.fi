@@ -7,7 +7,7 @@ import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { gql } from "apollo-boost"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import styled from "styled-components"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 

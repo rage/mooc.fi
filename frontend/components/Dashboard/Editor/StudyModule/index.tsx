@@ -1,7 +1,7 @@
 import React, { useCallback } from "react"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import { useMutation, useApolloClient } from "react-apollo-hooks"
+import { useMutation, useApolloClient } from "@apollo/react-hooks"
 import {
   AddStudyModuleMutation,
   UpdateStudyModuleMutation,
@@ -22,9 +22,9 @@ const StudyModuleEdit = ({
 }: {
   module?: StudyModuleDetails_study_module
 }) => {
-  const addStudyModule = useMutation(AddStudyModuleMutation)
-  const updateStudyModule = useMutation(UpdateStudyModuleMutation)
-  const deleteStudyModule = useMutation(DeleteStudyModuleMutation, {
+  const addStudyModule: any = useMutation(AddStudyModuleMutation)
+  const updateStudyModule: any = useMutation(UpdateStudyModuleMutation)
+  const deleteStudyModule: any = useMutation(DeleteStudyModuleMutation, {
     refetchQueries: [{ query: AllModulesQuery }],
   })
   const checkSlug = CheckModuleSlugQuery

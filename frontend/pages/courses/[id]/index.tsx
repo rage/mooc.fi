@@ -10,7 +10,7 @@ import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "../../../components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import CourseLanguageContext from "../../../contexes/CourseLanguageContext"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import Typography from "@material-ui/core/Typography"
 

@@ -7,8 +7,7 @@ import Head from "next/head"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import { StylesProvider } from "@material-ui/styles"
 import CssBaseline from "@material-ui/core/CssBaseline"
-import { ApolloProvider } from "react-apollo"
-import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks"
+import { ApolloProvider } from "@apollo/react-common"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
@@ -56,17 +55,15 @@ class MyApp extends App {
             <CssBaseline />
 
             <ApolloProvider client={apollo}>
-              <ApolloHooksProvider client={apollo}>
-                <LoginStateContext.Provider value={signedIn}>
-                  <UserDetailContext.Provider value={admin}>
-                    <LanguageContext.Provider value={{ language, url }}>
-                      <Layout>
-                        <Component {...pageProps} />
-                      </Layout>
-                    </LanguageContext.Provider>
-                  </UserDetailContext.Provider>
-                </LoginStateContext.Provider>
-              </ApolloHooksProvider>
+              <LoginStateContext.Provider value={signedIn}>
+                <UserDetailContext.Provider value={admin}>
+                  <LanguageContext.Provider value={{ language, url }}>
+                    <Layout>
+                      <Component {...pageProps} />
+                    </Layout>
+                  </LanguageContext.Provider>
+                </UserDetailContext.Provider>
+              </LoginStateContext.Provider>
             </ApolloProvider>
           </MuiThemeProvider>
         </StylesProvider>
