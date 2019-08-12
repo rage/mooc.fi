@@ -50,8 +50,8 @@ const ImageBackground = styled.div`
 
 function ModuleBanner({ module }: { module: ObjectifiedModule }) {
   const imageUrl = module!.image
-    ? require(`../../static/images/${module.image}`)
-    : require(`../../static/images/${module.slug}.jpg`)
+    ? `../../static/images/${module.image}`
+    : `../../static/images/${module.slug}.jpg`
 
   return (
     <ModuleBannerContainer>

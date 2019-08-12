@@ -24,6 +24,7 @@ export const initialValues: CourseFormValues = {
   start_point: false,
   promote: false,
   hidden: false,
+  study_module_start_point: false,
   status: CourseStatus.Upcoming,
   study_modules: {},
   course_translations: [initialTranslation],
@@ -74,6 +75,7 @@ const courseEditSchema = ({
 }) =>
   Yup.object().shape({
     name: Yup.string().required("required"),
+    // TODO: prevent spaces in slug
     new_slug: Yup.string()
       .required("required")
       .test(

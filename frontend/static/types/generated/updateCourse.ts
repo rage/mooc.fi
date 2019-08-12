@@ -75,6 +75,7 @@ export interface updateCourseVariables {
   promote?: boolean | null
   start_point?: boolean | null
   hidden?: boolean | null
+  study_module_start_point?: boolean | null
   status?: CourseStatus | null
   new_slug?: string | null
   course_translations?: CourseTranslationWithIdInput[] | null

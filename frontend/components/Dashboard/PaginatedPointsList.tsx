@@ -83,6 +83,7 @@ function PaginatedPointsList(props: Props) {
           })
         }
         disabled={!data.UserCourseSettingses.pageInfo.hasNextPage}
+        fullWidth
       >
         Load more
       </Button>

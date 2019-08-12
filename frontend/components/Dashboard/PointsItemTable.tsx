@@ -14,8 +14,9 @@ const ChartContainer = styled.div`
 
 const ChartTitle = styled(Typography)`
   margin-right: 5px;
-  width: 7%;
+  width: 9%;
 `
+
 interface ChartProps {
   pointsForAGroup: any
 }
