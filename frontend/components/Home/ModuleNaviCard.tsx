@@ -4,6 +4,7 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import NextI18Next from "/i18n"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -87,19 +88,21 @@ const NaviCardBodyText = styled(Typography)`
 `
 function ModuleNaviCard({ module }: { module: ObjectifiedModule }) {
   const imageUrl = module.image
-    ? require(`../../static/images/${module.image}`)
-    : require(`../../static/images/${module.slug}.jpg`)
+    ? `../../static/images/${module.image}`
+    : `../../static/images/${module.slug}.jpg`
 
   return (
     <Grid item xs={12} md={6} lg={6}>
-      <Base focusRipple>
-        <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
-        <ImageCover />
-        <ContentArea>
-          <NaviCardTitle align="left">{module.name}</NaviCardTitle>
-          <NaviCardBodyText paragraph>{module.description}</NaviCardBodyText>
-        </ContentArea>
-      </Base>
+      <NextI18Next.Link href={`#${module.slug}`}>
+        <Base focusRipple>
+          <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
+          <ImageCover />
+          <ContentArea>
+            <NaviCardTitle align="left">{module.name}</NaviCardTitle>
+            <NaviCardBodyText paragraph>{module.description}</NaviCardBodyText>
+          </ContentArea>
+        </Base>
+      </NextI18Next.Link>
     </Grid>
   )
 }
