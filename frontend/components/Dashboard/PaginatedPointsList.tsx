@@ -84,6 +84,7 @@ function PaginatedPointsList(props: Props) {
         }
         disabled={!data.UserCourseSettingses.pageInfo.hasNextPage}
         fullWidth
+        style={{ marginTop: "1rem", fontSize: 22 }}
       >
         Load more
       </Button>

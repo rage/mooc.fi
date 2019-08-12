@@ -17,6 +17,15 @@ const ChartTitle = styled(Typography)`
   width: 9%;
 `
 
+const ColoredProgressBar = styled(({ ...props }) => (
+  <LinearProgress {...props} />
+))`
+  background-color: #f5f5f5;
+  & .MuiLinearProgress-barColorPrimary {
+    background-color: #3066c0;
+  }
+`
+
 interface ChartProps {
   pointsForAGroup: any
 }
@@ -39,10 +48,11 @@ function PointsItemTableChart(props: ChartProps) {
       <ChartTitle align="right">
         {pointsForAGroup.n_points} / {pointsForAGroup.max_points}
       </ChartTitle>
-      <LinearProgress
+      <ColoredProgressBar
         variant="determinate"
         value={(pointsForAGroup.n_points / pointsForAGroup.max_points) * 100}
         style={{ padding: "0.5rem", flex: 1 }}
+        color="primary"
       />
     </ChartContainer>
   )
