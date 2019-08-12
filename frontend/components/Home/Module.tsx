@@ -52,10 +52,10 @@ const ModuleHomeLink = styled(Link)`
 function Module({ module }: { module: ObjectifiedModule }) {
   const { t } = NextI18Next.useTranslation("home")
   const startCourses = (module.courses || []).filter(
-    c => !c.hidden && c.start_point === true,
+    c => !c.hidden && c.study_module_start_point,
   )
   const otherCourses = (module.courses || []).filter(
-    c => !c.hidden && c.start_point === false,
+    c => !c.hidden && !c.study_module_start_point,
   )
 
   return (

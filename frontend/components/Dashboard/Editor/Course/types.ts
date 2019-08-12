@@ -13,6 +13,7 @@ export interface CourseFormValues extends FormValues {
   start_point: boolean
   promote: boolean
   hidden: boolean
+  study_module_start_point: boolean
   status: CourseStatus
   course_translations: CourseTranslationFormValues[]
   open_university_registration_links?: OpenUniversityRegistrationValues[] | null
