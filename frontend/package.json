@@ -70,7 +70,6 @@
     "next-fonts": "^0.17.0",
     "next-i18next": "^0.51.1",
     "next-optimized-images": "^2.5.3",
-    "next-transpile-modules": "^2.3.1",
     "next-with-apollo": "^3.4.0",
     "nookies": "^2.0.8",
     "npm": "^6.10.1",

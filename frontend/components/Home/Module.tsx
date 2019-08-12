@@ -1,7 +1,7 @@
 import React from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
-import Link from "@material-ui/core/Link"
+// import Link from "@material-ui/core/Link"
 import styled from "styled-components"
 import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
@@ -37,7 +37,7 @@ const SubHeader = styled(Typography)`
     font-size: 48px;
   }
 `
-
+/* 
 const ModuleHomeLink = styled(Link)`
   color: #00a68d;
   font-size: 22px;
@@ -47,9 +47,9 @@ const ModuleHomeLink = styled(Link)`
   }
   margin-bottom: 1em;
   padding-bottom: 1em;
-`
+` */
 
-function Modules({ module }: { module: ObjectifiedModule }) {
+function Module({ module }: { module: ObjectifiedModule }) {
   const { t } = NextI18Next.useTranslation("home")
   const startCourses = (module.courses || []).filter(
     c => !c.hidden && c.start_point === true,
@@ -57,6 +57,7 @@ function Modules({ module }: { module: ObjectifiedModule }) {
   const otherCourses = (module.courses || []).filter(
     c => !c.hidden && c.start_point === false,
   )
+
   return (
     <section style={{ marginBottom: "3em" }}>
       <ModuleBanner module={module} />
@@ -87,6 +88,7 @@ function Modules({ module }: { module: ObjectifiedModule }) {
           </>
         ) : null}
 
+        {/*
         <div
           style={{
             textAlign: "center",
@@ -99,9 +101,10 @@ function Modules({ module }: { module: ObjectifiedModule }) {
             </ModuleHomeLink>
           </NextI18Next.Link>
         </div>
+        */}
       </Container>
     </section>
   )
 }
 
-export default Modules
+export default Module
