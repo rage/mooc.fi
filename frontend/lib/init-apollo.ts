@@ -51,6 +51,16 @@ function create(initialState: any, ctx: NextContext | undefined) {
     ]),
     cache: new InMemoryCache().restore(initialState || {}),
     ssrMode: !isBrowser,
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: "no-cache",
+        errorPolicy: "ignore",
+      },
+      query: {
+        fetchPolicy: "no-cache",
+        errorPolicy: "all",
+      },
+    },
   })
 }
 

@@ -13,32 +13,19 @@ const FormContainer = styled.div`
 
 export interface ConfrimEmailProps {
   onComplete: Function
+  t: Function
 }
-class ConfirmEmail extends React.Component<ConfrimEmailProps> {
-  onClick = async (e: any) => {
-    e.preventDefault()
-  }
+const ConfirmEmail = (props: ConfrimEmailProps) => {
+  const { t } = props
 
-  state = {
-    email: undefined,
-    password: undefined,
-    submitting: false,
-    error: false,
-  }
-
-  render() {
-    return (
-      <FormContainer>
-        <h1>Mooc.fi käyttäjätunnuksesi on luotu</h1>
-        <InfoBox>
-          <p>
-            Olemme lähettäneet sähköpostiisi sähköpostiosoitteen
-            varmistuslinkin. Käy nyt sähköpostissasi ja varmista osoitteesi.
-          </p>
-        </InfoBox>
-      </FormContainer>
-    )
-  }
+  return (
+    <FormContainer>
+      <h1>{t("confirmEmailTitle")}</h1>
+      <InfoBox>
+        <p>{t("confirmEmailInfo")}</p>
+      </InfoBox>
+    </FormContainer>
+  )
 }
 
 export default ConfirmEmail
