@@ -50,15 +50,14 @@ export const uploadImage = async ({
   }
 
   const file = bucket.file(filename)
-  /*   const outputFilename = `https://images.mooc.fi/${filename}`
-  //`https://storage.googleapis.com/${bucketName}/${filename}` */
 
   return new Promise((resolve, reject) => {
     file.save(
       imageBuffer,
       {
-        // metadata: { contentType: mimeType },
-        public: true,
+        metadata: { cacheControl: "public, max-age=2628000" },
+        // can't set this with ACL disabled; images will (hopefully) be public by default
+        // public: true,
         validation: "md5",
       },
       error => {
