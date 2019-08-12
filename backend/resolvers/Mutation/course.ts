@@ -33,6 +33,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       start_point: booleanArg(),
       promote: booleanArg(),
       hidden: booleanArg(),
+      study_module_start_point: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_modules: arg({
         type: "StudyModuleWhereUniqueInput",
@@ -57,6 +58,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         slug,
         start_point,
         hidden,
+        study_module_start_point,
         new_photo,
         base64,
         promote,
@@ -78,16 +80,17 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
 
       const course: Course = await prisma.createCourse({
-        name: name,
-        slug: slug,
-        promote: promote,
-        start_point: start_point,
-        hidden: hidden,
+        name,
+        slug,
+        promote,
+        start_point,
+        hidden,
+        study_module_start_point,
         photo: !!photo ? { connect: { id: photo } } : null,
         course_translations: !!course_translations
           ? { create: course_translations }
           : null,
-        status: status,
+        status,
         study_modules: !!study_modules ? { connect: study_modules } : null,
         open_university_registration_links: !!open_university_registration_links
           ? { create: open_university_registration_links }
@@ -122,6 +125,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       start_point: booleanArg(),
       promote: booleanArg(),
       hidden: booleanArg(),
+      study_module_start_point: booleanArg(),
       status: arg({ type: "CourseStatus" }),
       study_modules: arg({
         type: "StudyModuleWhereUniqueInput",
@@ -151,6 +155,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         start_point,
         promote,
         hidden,
+        study_module_start_point,
         status,
         study_modules,
         course_translations,
@@ -228,12 +233,9 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const existingStudyModules = await prisma.course({ slug }).study_modules()
       const studyModuleIds = study_modules.map(module => module.id)
       //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
-      const removedModules: StudyModuleWhereUniqueInput[] = existingStudyModules.filter(
-        module => !studyModuleIds.includes(module.id),
-      )
-      /*         pullAll(existingStudyModules.map(module => module.id), study_modules) ||
-        []
-      ).map(id => ({ id })) */
+      const removedModules: StudyModuleWhereUniqueInput[] = (
+        existingStudyModules || []
+      ).filter(module => !studyModuleIds.includes(module.id))
       const studyModuleMutation: StudyModuleUpdateManyWithoutCoursesInput = {
         connect: study_modules,
         disconnect: removedModules,
@@ -241,17 +243,18 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       return prisma.updateCourse({
         where: {
-          id: id,
-          slug: slug,
+          id,
+          slug,
         },
         data: {
-          name: name,
+          name,
           slug: new_slug ? new_slug : slug,
           photo: !!photo ? { connect: { id: photo } } : null,
-          start_point: start_point,
-          promote: promote,
-          hidden: hidden,
-          status: status,
+          start_point,
+          promote,
+          hidden,
+          status,
+          study_module_start_point,
           course_translations: Object.keys(translationMutation).length
             ? translationMutation
             : null,

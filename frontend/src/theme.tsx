@@ -8,6 +8,7 @@ const rawTheme = createMuiTheme({
     },
     secondary: {
       main: amber[500],
+      dark: "#3066C0",
     },
   },
   typography: {

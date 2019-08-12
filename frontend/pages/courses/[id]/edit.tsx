@@ -32,6 +32,7 @@ export const CourseQuery = gql`
       promote
       start_point
       hidden
+      study_module_start_point
       status
       course_translations {
         id
