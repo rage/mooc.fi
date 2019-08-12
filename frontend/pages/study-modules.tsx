@@ -1,7 +1,7 @@
 import * as React from "react"
 import { NextPageContext as NextContext } from "next"
 import { gql } from "apollo-boost"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import AdminError from "../components/Dashboard/AdminError"
 import {
   Container,

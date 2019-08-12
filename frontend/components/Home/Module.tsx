@@ -70,7 +70,7 @@ function Module({ module }: { module: ObjectifiedModule }) {
 
         <Grid container spacing={3}>
           {startCourses.map(course => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard key={`module-course-${course.id}`} course={course} />
           ))}
         </Grid>
 
@@ -82,7 +82,10 @@ function Module({ module }: { module: ObjectifiedModule }) {
 
             <Grid container spacing={3}>
               {otherCourses.map(c => (
-                <ModuleSmallCourseCard key={module.id} course={c} />
+                <ModuleSmallCourseCard
+                  key={`module-course-${c.id}`}
+                  course={c}
+                />
               ))}
             </Grid>
           </>

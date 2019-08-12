@@ -1,7 +1,7 @@
 import React from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "../ErrorBoundary"
-import { Query } from "react-apollo"
+import { useQuery } from "@apollo/react-hooks"
 import { UserCourseSettingses as StudentProgressData } from "../../static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
 
@@ -37,30 +37,29 @@ interface Props {
   cursor?: string
 }
 
-class StudentProgressQuery extends Query<StudentProgressData, {}> {}
-
 function PaginatedPointsList(props: Props) {
   const { courseID } = props
+
+  const { data, loading, error } = useQuery<StudentProgressData>(
+    StudentProgresses,
+    { variables: { course_id: courseID } },
+  )
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
+
+  if (error) {
+    return <div>{JSON.stringify(error)}</div>
+  }
+
+  if (!data) {
+    return <p>no data</p>
+  }
+
   return (
     <ErrorBoundary>
-      <StudentProgressQuery
-        query={StudentProgresses}
-        variables={{
-          course_id: courseID,
-        }}
-      >
-        {({ loading, data }) => {
-          if (loading) {
-            return <p>Loading...</p>
-          }
-          if (data) {
-            return (
-              <PointsList pointsForUser={data.UserCourseSettingses.edges} />
-            )
-          }
-          return <p>Oh noes</p>
-        }}
-      </StudentProgressQuery>
+      <PointsList pointsForUser={data.UserCourseSettingses.edges} />
     </ErrorBoundary>
   )
 }

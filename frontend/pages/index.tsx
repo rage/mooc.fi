@@ -10,7 +10,7 @@ import {
   filterAndModifyByLanguage,
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import Spinner from "/components/Spinner"
