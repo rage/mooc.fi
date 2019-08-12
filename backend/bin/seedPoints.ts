@@ -56,7 +56,7 @@ const addUsers = async () => {
   }
 }
 
-const addUserCourseProgressess = async () => {
+const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })
   return await Promise.all(
     UsersInDb.map(async user => {
@@ -68,7 +68,7 @@ const addUserCourseProgressess = async () => {
         },
         course: {
           connect: {
-            id: "622a3ba6-2333-4054-908c-268246c07da0",
+            id: courseId,
           },
         },
         progress: [
@@ -109,7 +109,7 @@ const addUserCourseProgressess = async () => {
   )
 }
 
-const addUserCourseSettingses = async () => {
+const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })
   return await Promise.all(
     UsersInDb.map(async user => {
@@ -121,7 +121,7 @@ const addUserCourseSettingses = async () => {
         },
         course: {
           connect: {
-            id: "622a3ba6-2333-4054-908c-268246c07da0",
+            id: courseId,
           },
         },
         language: "fi_FI",
@@ -136,10 +136,11 @@ const addUserCourseSettingses = async () => {
   )
 }
 
-const seedPointsData = () => {
+const seedPointsData = async () => {
+  const course = await prisma.course({ slug: "elements-of-ai" })
   addUsers()
-  addUserCourseProgressess()
-  addUserCourseSettingses()
+  addUserCourseProgressess({ courseId: course.id })
+  addUserCourseSettingses({ courseId: course.id })
 }
 
 seedPointsData()

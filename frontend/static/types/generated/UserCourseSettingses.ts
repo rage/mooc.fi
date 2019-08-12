@@ -12,10 +12,25 @@ export interface UserCourseSettingses_UserCourseSettingses_pageInfo {
   endCursor: string | null
 }
 
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses_service {
+  __typename: "Service"
+  id: any
+}
+
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses {
+  __typename: "UserCourseServiceProgress"
+  service: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses_service
+  progress: any
+  id: any
+}
+
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess {
   __typename: "UserCourseProgress"
   id: any
   progress: any
+  user_course_service_progresses:
+    | UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses[]
+    | null
 }
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user {
