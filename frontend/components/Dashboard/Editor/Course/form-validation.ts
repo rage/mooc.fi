@@ -74,6 +74,7 @@ const courseEditSchema = ({
 }) =>
   Yup.object().shape({
     name: Yup.string().required("required"),
+    // TODO: prevent spaces in slug
     new_slug: Yup.string()
       .required("required")
       .test(
