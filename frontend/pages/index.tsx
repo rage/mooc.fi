@@ -46,6 +46,7 @@ const AllModulesQuery = gql`
         promote
         status
         start_point
+        study_module_start_point
         hidden
         course_translations {
           id

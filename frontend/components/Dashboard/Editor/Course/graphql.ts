@@ -9,6 +9,7 @@ export const AddCourseMutation = gql`
     $promote: Boolean
     $start_point: Boolean
     $hidden: Boolean
+    $study_module_start_point: Boolean
     $status: CourseStatus
     $course_translations: [CourseTranslationCreateWithoutCourseInput!]
     $open_university_registration_links: [OpenUniversityRegistrationLinkCreateWithoutCourseInput!]
@@ -23,6 +24,7 @@ export const AddCourseMutation = gql`
       promote: $promote
       start_point: $start_point
       hidden: $hidden
+      study_module_start_point: $study_module_start_point
       status: $status
       course_translations: $course_translations
       open_university_registration_links: $open_university_registration_links
@@ -74,6 +76,7 @@ export const UpdateCourseMutation = gql`
     $promote: Boolean
     $start_point: Boolean
     $hidden: Boolean
+    $study_module_start_point: Boolean
     $status: CourseStatus
     $new_slug: String
     $course_translations: [CourseTranslationWithIdInput!]
@@ -92,6 +95,7 @@ export const UpdateCourseMutation = gql`
       promote: $promote
       start_point: $start_point
       hidden: $hidden
+      study_module_start_point: $study_module_start_point
       status: $status
       course_translations: $course_translations
       open_university_registration_links: $open_university_registration_links
