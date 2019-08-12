@@ -49,6 +49,7 @@ export interface CourseDetails_course {
   promote: boolean | null
   start_point: boolean | null
   hidden: boolean | null
+  study_module_start_point: boolean | null
   status: CourseStatus | null
   course_translations: CourseDetails_course_course_translations[] | null
   open_university_registration_links:
