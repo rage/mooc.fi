@@ -1,6 +1,7 @@
 {
     "login": "Log in with your mooc.fi account",
     "loginShort": "Log in",
+    "signUp":"Sign up",
     "logout": "Log out",
     "loginDetails": "If you have registered for a course, login with the same login details you used to register to the course.",
     "profile": "My profile",

@@ -1,22 +1,44 @@
 {
   "presets": ["next/babel", "@zeit/next-typescript/babel"],
   "plugins": [
-    ["styled-components", 
+    [
+      "styled-components",
       {
         "ssr": true
       }
     ],
-    ["module-resolver", {
-      "root": ["./"],
-      "alias": {
-        "/": ".",
-        "@static": "./static",
-        "@pages": "./pages",
-        "@lib": "./lib",
-        "@components": "./components"
+    [
+      "module-resolver",
+      {
+        "root": ["./"],
+        "alias": {
+          "/": ".",
+          "@static": "./static",
+          "@pages": "./pages",
+          "@lib": "./lib",
+          "@components": "./components"
+        },
+        "extensions": [".ts", ".tsx", ".js", ".jpg", ".png", ".webp"]
+      }
+    ],
+    [
+      "babel-plugin-import",
+      {
+        "libraryName": "@material-ui/core",
+        "libraryDirectory": "", //"esm", // or '' if your bundler does not support ES modules
+        "camel2DashComponentName": false
       },
-      "extensions": [".ts", ".tsx", ".js", ".jpg", ".png", ".webp"]
-    }],
+      "core"
+    ],
+    [
+      "babel-plugin-import",
+      {
+        "libraryName": "@material-ui/icons",
+        "libraryDirectory": "", // "esm", // or '' if your bundler does not support ES modules
+        "camel2DashComponentName": false
+      },
+      "icons"
+    ],
     "lodash"
   ]
 }

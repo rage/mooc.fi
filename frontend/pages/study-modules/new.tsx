@@ -6,16 +6,12 @@ import { WideContainer } from "../../components/Container"
 import { Typography } from "@material-ui/core"
 import { isAdmin, isSignedIn } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
-import Editor from "../../components/Dashboard/Editor"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
+import styled from "styled-components"
+import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    header: {
-      marginTop: "1em",
-    },
-  }),
-)
+const Header = styled(Typography)`
+  margin-top: 1em;
+`
 
 interface NewStudyModuleProps {
   router: SingletonRouter
@@ -25,7 +21,6 @@ interface NewStudyModuleProps {
 
 const NewStudyModule = (props: NewStudyModuleProps) => {
   const { admin } = props
-  const classes = useStyles()
 
   if (!admin) {
     return <AdminError />
@@ -34,16 +29,10 @@ const NewStudyModule = (props: NewStudyModuleProps) => {
   return (
     <section>
       <WideContainer>
-        <Typography
-          component="h1"
-          variant="h2"
-          gutterBottom={true}
-          align="center"
-          className={classes.header}
-        >
+        <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Create a new study module
-        </Typography>
-        <Editor type="StudyModule" />
+        </Header>
+        <StudyModuleEdit />
       </WideContainer>
     </section>
   )

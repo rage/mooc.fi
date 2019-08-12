@@ -1,7 +1,8 @@
 import React from "react"
-
 import CourseEdit from "./Course"
 import StudyModuleEdit from "./StudyModule"
+
+// FIXME: delete or something - not used right now
 
 const mapEditorComponent: { [key: string]: (props: any) => JSX.Element } = {
   Course: CourseEdit,

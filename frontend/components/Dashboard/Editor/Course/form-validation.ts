@@ -6,9 +6,9 @@ import { CourseFormValues, CourseTranslationFormValues } from "./types"
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
   language: "",
-  name: undefined,
-  description: undefined,
-  link: undefined,
+  name: "",
+  description: "",
+  link: "",
   open_university_course_code: undefined,
 }
 
@@ -25,7 +25,7 @@ export const initialValues: CourseFormValues = {
   promote: false,
   hidden: false,
   status: CourseStatus.Upcoming,
-  study_modules: [],
+  study_modules: {},
   course_translations: [initialTranslation],
   open_university_registration_links: [],
   order: undefined,
