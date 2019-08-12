@@ -46,6 +46,7 @@ const AllModulesQuery = gql`
         promote
         status
         start_point
+        study_module_start_point
         hidden
         course_translations {
           id
@@ -185,6 +186,11 @@ const Home = (props: HomeProps) => {
           fontColor="black"
           titleBackground="#ffffff"
         />
+        {modules.map(module => (
+          <section id={module.slug}>
+            <Module module={module} />
+          </section>
+        ))}
         <CourseHighlights
           courses={courses.filter(c => !c.hidden && c.status === "Ended")}
           title={t("endedCoursesTitle")}
@@ -195,11 +201,6 @@ const Home = (props: HomeProps) => {
           fontColor="white"
           titleBackground="#3066C0"
         />
-        {modules.map(module => (
-          <section id={module.slug}>
-            <Module module={module} />
-          </section>
-        ))}
       </section>
       <EmailSubscribe />
     </div>
