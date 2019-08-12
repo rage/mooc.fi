@@ -79,7 +79,7 @@ type CourseTranslation @db(name:"course_translation"){
   name: String!
   language: String!
   description: String!
-  link: String!
+  link: String
   course: Course! @relation(link: INLINE, name:"CourseToCourseTranslation", onDelete: SET_NULL)
 }
 

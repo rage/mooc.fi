@@ -1,19 +1,19 @@
 import React from "react"
-import { Typography, Paper } from "@material-ui/core"
+import Typography from "@material-ui/core/Typography"
+import Paper from "@material-ui/core/Paper"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
 import AdminError from "../../../components/Dashboard/AdminError"
 import { WideContainer } from "../../../components/Container"
-import Editor from "../../../components/Dashboard/Editor"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "react-apollo-hooks"
 import { gql } from "apollo-boost"
 import NextI18Next from "../../../i18n"
 import Spinner from "/components/Spinner"
-
-// import { Courses as courseData } from "../courseData.js"
+import styled from "styled-components"
+import { CourseDetails } from "/static/types/generated/CourseDetails"
+import CourseEdit from "/components/Dashboard/Editor/Course"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -63,16 +63,13 @@ export const StudyModuleQuery = gql`
   }
 `
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    header: {
-      marginTop: "1em",
-    },
-    paper: {
-      padding: "1em",
-    },
-  }),
-)
+const Header = styled(Typography)`
+  margin-top: 1em;
+`
+
+const ErrorContainer = styled(Paper)`
+  padding: 1em;
+`
 
 interface EditCourseProps {
   router: SingletonRouter
@@ -85,8 +82,6 @@ const EditCourse = (props: EditCourseProps) => {
   const { admin, router, language } = props
   const slug = router.query.id
 
-  const classes = useStyles()
-
   let redirectTimeout: number | null = null
 
   // use mock data
@@ -98,7 +93,7 @@ const EditCourse = (props: EditCourseProps) => {
     loading: courseLoading,
     //@ts-ignore
     error: courseError,
-  } = useQuery(CourseQuery, {
+  } = useQuery<CourseDetails>(CourseQuery, {
     variables: { slug: slug },
   })
   const {
@@ -116,32 +111,33 @@ const EditCourse = (props: EditCourseProps) => {
     return <Spinner />
   }
 
+  if (courseError || studyModulesError) {
+    return <div>{JSON.stringify(courseError || studyModulesError)}</div>
+  }
+
+  if (!courseData) {
+    return <div>Hmm, no course data</div>
+  }
+
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (!courseData.course) {
+  if (!courseData!.course) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
   return (
     <section>
       <WideContainer>
-        <Typography
-          component="h1"
-          variant="h2"
-          gutterBottom={true}
-          align="center"
-          className={classes.header}
-        >
+        <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Edit course
-        </Typography>
+        </Header>
         {courseData.course ? (
-          <Editor
-            type="Course"
+          <CourseEdit
             course={courseData.course}
             modules={studyModulesData.study_modules}
           />
         ) : (
-          <Paper className={classes.paper} elevation={2}>
+          <ErrorContainer elevation={2}>
             <Typography variant="body1">
               Course with id <b>{slug}</b> not found!
             </Typography>
@@ -153,14 +149,13 @@ const EditCourse = (props: EditCourseProps) => {
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
                   }
-                  href={listLink}
                 >
                   here
                 </a>
               </NextI18Next.Link>{" "}
               to go there now.
             </Typography>
-          </Paper>
+          </ErrorContainer>
         )}
       </WideContainer>
     </section>
@@ -175,7 +170,7 @@ EditCourse.getInitialProps = function(context: NextContext) {
   return {
     admin,
     // @ts-ignore
-    language: context.req.language,
+    language: context && context.req ? context.req.language : "",
     namespacesRequired: ["common"],
   }
 }

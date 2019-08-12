@@ -423,6 +423,7 @@ const seed = async () => {
                 (t: CourseTranslationCreateWithoutCourseInput) => ({
                   ...t,
                   id: undefined,
+                  link: t.link || "",
                 }),
               ),
             } as CourseTranslationCreateManyWithoutCourseInput)

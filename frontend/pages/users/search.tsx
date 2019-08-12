@@ -107,7 +107,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   } = props
 
   async function handleFirstPageButtonClick(
-    //@ts-ignore
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({
@@ -118,7 +118,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   }
 
   async function handleBackButtonClick(
-    //@ts-ignore
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({
@@ -133,7 +133,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   }
 
   async function handleNextButtonClick(
-    //@ts-ignore
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({
@@ -149,7 +149,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   }
 
   async function handleLastPageButtonClick(
-    //@ts-ignore
+    // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     const { data } = await client.query({

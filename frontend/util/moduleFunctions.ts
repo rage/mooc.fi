@@ -71,6 +71,27 @@ const ObjectifyCourses = (
   })
 }
 
+// I think this isn't used, so I any'ed it
+/* const filterByLanguage = (
+  modules: AllModules_study_modules[],
+  language: string,
+) => {
+  const modifiedModules = objectifyTranslations(modules)
+
+  return modifiedModules
+    .filter((mod: any) => mod.study_module_translations[language])
+    .map((module: any) => {
+      const { courses } = module
+      const filteredCourses = (courses || []).filter(
+        (course: any) => (course.course_translations || {})[language],
+      )
+      return {
+        ...module,
+        courses: filteredCourses,
+      }
+    })
+} */
+
 export const filterAndModifyByLanguage = (
   modules: AllModules_study_modules[],
   language: string,
@@ -108,15 +129,15 @@ export const filterAndModifyByLanguage = (
           } = (course_translations as ObjectifiedCourseTranslations)[language]
           return {
             ...course,
-            name: name,
-            description: description,
-            link: link,
+            name,
+            description,
+            link: link || "",
           }
         })
       return {
         ...mod,
-        name: name,
-        description: description,
+        name,
+        description,
         courses: filteredCourses,
       }
     })
@@ -142,9 +163,9 @@ export const filterAndModifyCoursesByLanguage = (
 
       return {
         ...course,
-        name: name,
-        description: description,
-        link: link,
+        name,
+        description,
+        link: link || "",
       }
     })
 }

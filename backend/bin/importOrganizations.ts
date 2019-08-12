@@ -1,7 +1,7 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import { prisma, User } from "../generated/prisma-client"
+import { prisma, User, Organization } from "../generated/prisma-client"
 import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../resolvers/Mutation/organization"
@@ -34,11 +34,22 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     website: org.website,
     pinned: org.pinned || false,
   }
-  const organization = await prisma.upsertOrganization({
-    where: { slug: org.slug },
-    create: await detailsWithSecret(details),
-    update: details,
+  const organizationExists = await prisma.$exists.organization({
+    slug: org.slug,
   })
+  let organization: Organization
+  if (organizationExists) {
+    organization = await prisma.updateOrganization({
+      where: {
+        slug: org.slug,
+      },
+      data: details,
+    })
+  } else {
+    organization = await prisma.createOrganization(
+      await detailsWithSecret(details),
+    )
+  }
   const translationDetails = {
     language: "fi_FI", //placholder since there is no language information
     name: org.name,

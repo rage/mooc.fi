@@ -35,7 +35,7 @@ function LinkTab(props: LinkTabProps) {
     <Tab
       style={{ marginTop: "1rem" }}
       component="a"
-      //@ts-ignore
+      // @ts-ignore
       onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {}}
       {...props}
     />
@@ -51,7 +51,8 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
 
   const [value, setValue] = React.useState(selectedValue)
-  //@ts-ignore
+
+  // @ts-ignore
   function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
     setValue(newValue)
   }

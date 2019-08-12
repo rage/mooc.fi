@@ -65,6 +65,7 @@ const Completions = (props: CompletionsProps) => {
   if (error || !data) {
     return <p>Error has occurred</p>
   }
+
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardBreadCrumbs />
