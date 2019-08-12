@@ -47,7 +47,8 @@ export const fromStudyModuleForm = ({
   return {
     ...values,
     id: undefined,
-    slug: values.id ? values.slug : values.new_slug,
+    slug: values.id ? values.slug : values.new_slug.trim(),
+    new_slug: values.new_slug.trim(),
     study_module_translations,
   }
 }
