@@ -24,6 +24,7 @@ export const initialValues: CourseFormValues = {
   start_point: false,
   promote: false,
   hidden: false,
+  study_module_start_point: false,
   status: CourseStatus.Upcoming,
   study_modules: {},
   course_translations: [initialTranslation],
