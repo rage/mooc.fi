@@ -1,16 +1,36 @@
 import React from "react"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
 import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess as UserPointsData } from "../../static/types/generated/UserCourseSettingses"
-
 import LinearProgress from "@material-ui/core/LinearProgress"
+import Typography from "@material-ui/core/Typography"
+import styled from "styled-components"
+
+const ChartContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`
+
+const ChartTitle = styled(Typography)`
+  margin-right: 5px;
+  width: 9%;
+`
+
+const ColoredProgressBar = styled(({ ...props }) => (
+  <LinearProgress {...props} />
+))`
+  background-color: #f5f5f5;
+  & .MuiLinearProgress-barColorPrimary {
+    background-color: #3066c0;
+  }
+`
 
 interface ChartProps {
   pointsForAGroup: any
 }
 function PointsItemTableChart(props: ChartProps) {
   const { pointsForAGroup } = props
-
   //This is due to a mistake in the seed code,
   //which caused there to be two different terms for the group field
   //will be removed
@@ -23,10 +43,18 @@ function PointsItemTableChart(props: ChartProps) {
   }
 
   return (
-    <ListItem>
-      {groupName}
-      <LinearProgress variant="determinate" value={50} />
-    </ListItem>
+    <ChartContainer>
+      <ChartTitle style={{ marginRight: "1rem" }}>{groupName}</ChartTitle>
+      <ChartTitle align="right">
+        {pointsForAGroup.n_points} / {pointsForAGroup.max_points}
+      </ChartTitle>
+      <ColoredProgressBar
+        variant="determinate"
+        value={(pointsForAGroup.n_points / pointsForAGroup.max_points) * 100}
+        style={{ padding: "0.5rem", flex: 1 }}
+        color="primary"
+      />
+    </ChartContainer>
   )
 }
 
@@ -39,21 +67,21 @@ function PointsItemTable(props: TableProps) {
   if (studentPoints.progress) {
     progressData = studentPoints.progress
   }
+
   return (
-    <List>
+    <>
       {progressData ? (
-        progressData.map(p => <PointsItemTableChart pointsForAGroup={p} />)
+        progressData.map(p => (
+          <PointsItemTableChart
+            pointsForAGroup={p}
+            key={Math.floor(Math.random() * 100000)}
+          />
+        ))
       ) : (
         <p>No points data available</p>
       )}
-    </List>
+    </>
   )
 }
 
 export default PointsItemTable
-
-/* <ProgressBar
-          n={pointsForAGroup.n_points}
-          max={pointsForAGroup.max_points}
-        >
-          {pointsForAGroup.n_points} / {pointsForAGroup.max_points}*/
