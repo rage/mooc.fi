@@ -20,9 +20,14 @@ const nextConfiguration = {
       return config
     }
 
-    config.optimization.splitChunks.cacheGroups.commons.enforce = true
-    config.optimization.splitChunks.cacheGroups.commons.priority = 9
-    config.optimization.splitChunks.cacheGroups.react.priority = 12
+    if (config.optimization.splitChunks.cacheGroups.commons) {
+      config.optimization.splitChunks.cacheGroups.commons.enforce = true
+      config.optimization.splitChunks.cacheGroups.commons.priority = 9
+    }
+    if (config.optimization.splitChunks.cacheGroups.react) {
+      config.optimization.splitChunks.cacheGroups.react.priority = 12
+    }
+
     config.optimization.splitChunks.cacheGroups.formikCommons = {
       chunks: "all",
       enforce: true,
