@@ -81,6 +81,13 @@ const MenuOptionButtons = () => {
               )}
               {userDisplayName}
             </StyledButton>
+            {isAdmin ? (
+              <StyledButton color="inherit" variant="text" href="/courses">
+                Courses
+              </StyledButton>
+            ) : (
+              ""
+            )}
           </div>
         ) : (
           <>
