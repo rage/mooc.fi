@@ -1,6 +1,5 @@
 import React from "react"
 import { Typography, Grid } from "@material-ui/core"
-// import PointsListHeaderTable from "./PointsListHeaderTable"
 import styled from "styled-components"
 
 const TitleCard = styled(Grid)`
