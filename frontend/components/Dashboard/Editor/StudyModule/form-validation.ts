@@ -46,6 +46,7 @@ const studyModuleEditSchema = ({
   initialSlug: string | null
 }) =>
   Yup.object().shape({
+    // TODO: prevent spaces in slug
     new_slug: Yup.string()
       .required("required")
       .test(
