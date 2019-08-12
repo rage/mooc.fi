@@ -39,6 +39,7 @@ export const toCourseForm = ({
         start_point: course.start_point || false,
         promote: course.promote || false,
         hidden: course.hidden || false,
+        study_module_start_point: course.study_module_start_point || false,
         order: course.order || undefined,
         status: course.status || CourseStatus.Upcoming,
         course_translations: (course.course_translations || []).map(c => ({
