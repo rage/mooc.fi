@@ -190,6 +190,18 @@ const renderForm = ({
             <FormControlLabel
               control={
                 <Field
+                  label="Study module start point"
+                  type="checkbox"
+                  name="study_module_start_point"
+                  value={values.study_module_start_point}
+                  component={Checkbox}
+                />
+              }
+              label="Study module start point"
+            />
+            <FormControlLabel
+              control={
+                <Field
                   label="Hidden"
                   type="checkbox"
                   name="hidden"
