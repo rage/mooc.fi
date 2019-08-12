@@ -42,8 +42,9 @@ function PaginatedPointsList(props: Props) {
   const { data, loading, error, fetchMore } = useQuery(StudentProgresses, {
     variables: {
       course_id: courseID,
-      cursor: undefined,
+      cursor: null,
     },
+    fetchPolicy: "cache-first",
   })
 
   if (loading) {
@@ -63,6 +64,7 @@ function PaginatedPointsList(props: Props) {
               course_id: courseID,
               cursor: data.UserCourseSettingses.pageInfo.endCursor,
             },
+
             updateQuery: (previousResult, { fetchMoreResult }) => {
               const previousData = previousResult.UserCourseSettingses.edges
               const newData = fetchMoreResult.UserCourseSettingses.edges
