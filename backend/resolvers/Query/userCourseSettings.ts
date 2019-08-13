@@ -1,8 +1,9 @@
 import { Prisma } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg } from "nexus/dist"
+import { idArg, intArg, stringArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { buildSearch } from "../../util/db-functions"
 
 const userCourseSettings = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("UserCourseSettings", {
@@ -37,21 +38,34 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       after: idArg(),
       last: intArg(),
       before: idArg(),
+      search: stringArg(),
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
 
-      const { first, last, before, after, user_id, course_id } = args
+      const { first, last, before, after, user_id, course_id, search } = args
       if ((!first && !last) || (first > 50 || last > 50)) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
+
       return ctx.prisma.userCourseSettingsesConnection({
         first: first,
         last: last,
         before: before,
         after: after,
         where: {
-          user: { id: user_id },
+          user: {
+            OR: buildSearch(
+              [
+                "first_name_contains",
+                "last_name_contains",
+                "username_contains",
+                "email_contains",
+              ],
+              search,
+            ),
+            id: user_id,
+          },
           course: { id: course_id },
         },
       })
@@ -65,15 +79,27 @@ const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       user_id: idArg(),
       course_id: idArg(),
+      search: stringArg(),
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
-      const { user_id, course_id } = args
+      const { user_id, course_id, search } = args
       const prisma: Prisma = ctx.prisma
       return prisma
         .userCourseSettingsesConnection({
           where: {
-            user: { id: user_id },
+            user: {
+              OR: buildSearch(
+                [
+                  "first_name_contains",
+                  "last_name_contains",
+                  "username_contains",
+                  "email_contains",
+                ],
+                search,
+              ),
+              id: user_id,
+            },
             course: { id: course_id },
           },
         })

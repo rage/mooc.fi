@@ -3,9 +3,9 @@ import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
 import { ApolloConsumer } from "@apollo/react-common"
 import {
-  UserEmailContains,
-  UserEmailContains_userEmailContains_edges,
-} from "../../static/types/generated/UserEmailContains"
+  UserDetailsContains,
+  UserDetailsContains_userDetailsContains_edges,
+} from "../../static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
 import Button from "@material-ui/core/Button"
 import TextField from "@material-ui/core/TextField"
@@ -112,7 +112,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   ) {
     const { data } = await client.query({
       query: GET_DATA,
-      variables: { email: searchText, first: rowsPerPage },
+      variables: { search: searchText, first: rowsPerPage },
     })
     saveState(setResult, data, setCursor, setPage, 0, setCount)
   }
@@ -124,7 +124,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     const { data } = await client.query({
       query: GET_DATA,
       variables: {
-        email: searchText,
+        search: searchText,
         last: rowsPerPage,
         before: cursor.before,
       },
@@ -139,12 +139,12 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     const { data } = await client.query({
       query: GET_DATA,
       variables: {
-        email: searchText,
+        search: searchText,
         first: rowsPerPage,
         after: cursor.after,
       },
     })
-    setCount(data.userEmailContains.count)
+    setCount(data.userDetailsContains.count)
     saveState(setResult, data, setCursor, setPage, page + 1, setCount)
   }
 
@@ -155,7 +155,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     const { data } = await client.query({
       query: GET_DATA,
       variables: {
-        email: searchText,
+        search: searchText,
         last: rowsPerPage,
       },
     })
@@ -236,7 +236,7 @@ const UserSearch = (props: UserSearchProps) => {
     if (searchText !== "") {
       const { data } = await client.query({
         query: GET_DATA,
-        variables: { email: searchText, first: parseInt(eventValue, 10) },
+        variables: { search: searchText, first: parseInt(eventValue, 10) },
       })
       saveState(setResult, data, setCursor, setPage, 0, setCount)
     } else setPage(0)
@@ -260,16 +260,17 @@ const UserSearch = (props: UserSearchProps) => {
                 event.preventDefault()
                 const { data } = await client.query({
                   query: GET_DATA,
-                  variables: { email: searchText, first: rowsPerPage },
+                  variables: { search: searchText, first: rowsPerPage },
                 })
                 saveState(setResult, data, setCursor, setPage, 0, setCount)
               }}
             >
               <StyledTextField
                 id="standard-search"
-                label="Search by email"
+                label="Search by string"
                 type="search"
                 margin="normal"
+                autoComplete="off"
                 onChange={onTextBoxChange}
               />
 
@@ -279,7 +280,7 @@ const UserSearch = (props: UserSearchProps) => {
                   event.preventDefault()
                   const { data } = await client.query({
                     query: GET_DATA,
-                    variables: { email: searchText, first: rowsPerPage },
+                    variables: { search: searchText, first: rowsPerPage },
                   })
                   saveState(setResult, data, setCursor, setPage, 0, setCount)
                 }}
@@ -363,7 +364,7 @@ const UserSearch = (props: UserSearchProps) => {
   )
 }
 interface RenderResultsProps {
-  data: UserEmailContains_userEmailContains_edges[]
+  data: UserDetailsContains_userDetailsContains_edges[]
 }
 const RenderResults = (props: RenderResultsProps) => {
   const data = props.data
@@ -402,15 +403,15 @@ const RenderResults = (props: RenderResultsProps) => {
 }
 
 const GET_DATA = gql`
-  query UserEmailContains(
-    $email: String!
+  query UserDetailsContains(
+    $search: String!
     $before: ID
     $after: ID
     $first: Int
     $last: Int
   ) {
-    userEmailContains(
-      email: $email
+    userDetailsContains(
+      search: $search
       first: $first
       last: $last
       after: $after
@@ -433,7 +434,7 @@ const GET_DATA = gql`
           last_name
         }
       }
-      count(email: $email)
+      count(search: $search)
     }
   }
 `
@@ -453,17 +454,17 @@ export default UserSearch
 
 function saveState(
   setResult: any,
-  data: UserEmailContains,
+  data: UserDetailsContains,
   setCursor: any,
   setPage: any,
   newPage: number,
   setCount: any,
 ) {
-  setResult(data.userEmailContains.edges)
+  setResult(data.userDetailsContains.edges)
   setCursor({
-    before: data.userEmailContains.pageInfo.startCursor,
-    after: data.userEmailContains.pageInfo.endCursor,
+    before: data.userDetailsContains.pageInfo.startCursor,
+    after: data.userDetailsContains.pageInfo.endCursor,
   })
-  setCount(data.userEmailContains.count)
+  setCount(data.userDetailsContains.count)
   setPage(newPage)
 }

@@ -23,15 +23,18 @@ interface Props {
 function PointsListItemCard(props: Props) {
   const { studentPointsPerGroup } = props
 
-  let firstName: string = "n/a"
+  const firstName = studentPointsPerGroup!.user!.first_name || "n/a"
+  const username = studentPointsPerGroup!.user!.username || "n/a"
+
+  //  let firstName: string = "n/a"
   let lastName: string = "n/a"
   let email: string = "no email"
   let studentId: string = "no SID"
   let studentProgressData
   if (studentPointsPerGroup.user) {
-    if (studentPointsPerGroup.user.first_name) {
+    /*     if (studentPointsPerGroup.user.first_name) {
       firstName = studentPointsPerGroup.user.first_name
-    }
+    } */
     if (studentPointsPerGroup.user.last_name) {
       lastName = studentPointsPerGroup.user.last_name
     }
@@ -53,6 +56,9 @@ function PointsListItemCard(props: Props) {
       </Name>
       <UserInformation variant="body1" component="p">
         {email}
+      </UserInformation>
+      <UserInformation variant="body1" component="p">
+        {username}
       </UserInformation>
       <UserInformation variant="body1" component="p">
         {studentId}
