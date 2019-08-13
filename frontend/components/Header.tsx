@@ -59,7 +59,7 @@ function Header() {
             <ResponsiveMoocLogoContainer>
               <NextI18Next.Link href="/" as="/">
                 <HomeLink href="/" aria-label="MOOC.fi homepage">
-                  <MoocLogo alt="MOOC logo" src="../static/images/moocfi.svg" />
+                  <MoocLogo alt="MOOC logo" src="/static/images/moocfi.svg" />
                   <MoocLogoText>MOOC.fi</MoocLogoText>
                 </HomeLink>
               </NextI18Next.Link>

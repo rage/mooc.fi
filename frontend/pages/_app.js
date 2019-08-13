@@ -20,6 +20,7 @@ import OpenSansCondensed from "typeface-open-sans-condensed"
 import Roboto from "typeface-roboto"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
+
 fontAwesomeConfig.autoAddCss = false
 
 class MyApp extends App {
@@ -53,7 +54,6 @@ class MyApp extends App {
         <StylesProvider injectFirst>
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
-
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={signedIn}>
                 <UserDetailContext.Provider value={admin}>
