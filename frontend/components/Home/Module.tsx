@@ -82,7 +82,7 @@ function Module({ module }: { module: ObjectifiedModule }) {
 
             <Grid container spacing={3}>
               {otherCourses.map(c => (
-                <ModuleSmallCourseCard key={module.id} course={c} />
+                <ModuleSmallCourseCard key={c.id} course={c} />
               ))}
             </Grid>
           </>
