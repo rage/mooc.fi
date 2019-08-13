@@ -12,10 +12,25 @@ export interface UserCourseSettingses_UserCourseSettingses_pageInfo {
   endCursor: string | null
 }
 
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses_service {
+  __typename: "Service"
+  id: any
+}
+
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses {
+  __typename: "UserCourseServiceProgress"
+  service: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses_service
+  progress: any
+  id: any
+}
+
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess {
   __typename: "UserCourseProgress"
   id: any
   progress: any
+  user_course_service_progresses:
+    | UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses[]
+    | null
 }
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user {
@@ -25,6 +40,7 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user {
   last_name: string | null
   email: string
   student_number: string | null
+  username: string
   user_course_progressess: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess | null
 }
 
@@ -47,9 +63,11 @@ export interface UserCourseSettingses_UserCourseSettingses {
 
 export interface UserCourseSettingses {
   UserCourseSettingses: UserCourseSettingses_UserCourseSettingses
+  userCourseSettingsCount: number
 }
 
 export interface UserCourseSettingsesVariables {
   course_id?: string | null
   cursor?: string | null
+  search?: string | null
 }

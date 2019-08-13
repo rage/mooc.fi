@@ -65,7 +65,9 @@ const Completions = (props: CompletionsProps) => {
         </Typography>
         <Grid container spacing={2}>
           {completions.length > 0 ? (
-            completions.map(c => <CompletedCourseCard completion={c} />)
+            completions.map(c => (
+              <CompletedCourseCard key={`completion-${c.id}`} completion={c} />
+            ))
           ) : (
             <Typography>{t("nocompletionsText")}</Typography>
           )}

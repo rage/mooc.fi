@@ -1,6 +1,7 @@
 import { prismaObjectType } from "nexus-prisma"
 import { Prisma } from "../generated/prisma-client"
 import { stringArg } from "nexus/dist"
+import { buildSearch } from "../util/db-functions"
 
 const UserConnection = prismaObjectType({
   name: "UserConnection",
@@ -10,14 +11,23 @@ const UserConnection = prismaObjectType({
     t.field("count", {
       type: "Int",
       args: {
-        email: stringArg(),
+        search: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
+        const { search } = args
         const prisma: Prisma = ctx.prisma
         return await prisma
           .usersConnection({
             where: {
-              email_contains: args.email, //tää args ei taida toimia :d
+              OR: buildSearch(
+                [
+                  "first_name_contains",
+                  "last_name_contains",
+                  "username_contains",
+                  "email_contains",
+                ],
+                search,
+              ), //tää args ei taida toimia :d
             },
           })
           .aggregate()
