@@ -92,7 +92,7 @@ const renderForm = ({
 >) => (
   <Form>
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={8}>
+      <Grid item xs={12} sm={6} md={8}>
         <Field
           name="name"
           type="text"
@@ -104,7 +104,7 @@ const renderForm = ({
           component={StyledTextField}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={6} sm={3} md={2}>
         <Field
           name="order"
           type="number"
@@ -116,12 +116,12 @@ const renderForm = ({
           component={StyledTextField}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={6} sm={3} md={2}>
         <Field
           name="study_module_order"
           type="number"
-          label="Order in module"
-          error={errors.order}
+          label="In-module order"
+          error={errors.study_module_order}
           fullWidth
           autoComplete="off"
           variant="outlined"
