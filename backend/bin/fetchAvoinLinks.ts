@@ -38,8 +38,8 @@ const fetch = async () => {
         : "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=" +
           latestLink.link
 
-    console.log("Updating link to", url)
-    if (url == null && p.start_date < now && p.stop_date > now)
+    if (!(url == null && p.start_date < now && p.stop_date > now)) {
+      console.log("Updating link to", url)
       await prisma.updateOpenUniversityRegistrationLink({
         where: {
           id: p.id,
@@ -50,6 +50,7 @@ const fetch = async () => {
           stop_date: latestLink.stopDate,
         },
       })
+    }
   })
 }
 
