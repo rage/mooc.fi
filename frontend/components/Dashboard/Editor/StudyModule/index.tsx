@@ -22,9 +22,9 @@ const StudyModuleEdit = ({
 }: {
   module?: StudyModuleDetails_study_module
 }) => {
-  const addStudyModule: any = useMutation(AddStudyModuleMutation)
-  const updateStudyModule: any = useMutation(UpdateStudyModuleMutation)
-  const deleteStudyModule: any = useMutation(DeleteStudyModuleMutation, {
+  const [addStudyModule] = useMutation(AddStudyModuleMutation)
+  const [updateStudyModule] = useMutation(UpdateStudyModuleMutation)
+  const [deleteStudyModule] = useMutation(DeleteStudyModuleMutation, {
     refetchQueries: [{ query: AllModulesQuery }],
   })
   const checkSlug = CheckModuleSlugQuery

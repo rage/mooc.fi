@@ -23,6 +23,7 @@ export interface CourseFormValues extends FormValues {
   new_slug: string
   base64?: boolean
   order?: number
+  study_module_order?: number
 }
 
 export interface CourseTranslationFormValues extends FormValues {
