@@ -1,7 +1,7 @@
 import React, { useCallback } from "react"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import { useMutation, useApolloClient } from "react-apollo-hooks"
+import { useMutation, useApolloClient } from "@apollo/react-hooks"
 import {
   AddStudyModuleMutation,
   UpdateStudyModuleMutation,
@@ -11,7 +11,7 @@ import {
 import { AllModulesQuery } from "../../../../pages/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import Next18next from "../../../../i18n"
+import NextI18Next from "../../../../i18n"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
@@ -22,9 +22,9 @@ const StudyModuleEdit = ({
 }: {
   module?: StudyModuleDetails_study_module
 }) => {
-  const addStudyModule = useMutation(AddStudyModuleMutation)
-  const updateStudyModule = useMutation(UpdateStudyModuleMutation)
-  const deleteStudyModule = useMutation(DeleteStudyModuleMutation, {
+  const addStudyModule: any = useMutation(AddStudyModuleMutation)
+  const updateStudyModule: any = useMutation(UpdateStudyModuleMutation)
+  const deleteStudyModule: any = useMutation(DeleteStudyModuleMutation, {
     refetchQueries: [{ query: AllModulesQuery }],
   })
   const checkSlug = CheckModuleSlugQuery
@@ -67,7 +67,7 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        Next18next.Router.push("/study-modules")
+        NextI18Next.Router.push("/study-modules")
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -80,12 +80,12 @@ const StudyModuleEdit = ({
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
       await deleteStudyModule({ variables: { slug: values.slug } })
-      Next18next.Router.push("/study-modules")
+      NextI18Next.Router.push("/study-modules")
     }
   }, [])
 
   const onCancel = useCallback(
-    () => Next18next.Router.push("/study-modules"),
+    () => NextI18Next.Router.push("/study-modules"),
     [],
   )
 

@@ -2,7 +2,7 @@ import React from "react"
 import { TextField, Button, Link, Typography } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
-import NextI18next from "../i18n"
+import NextI18Next from "../i18n"
 
 import styled from "styled-components"
 
@@ -307,4 +307,4 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 }
 
-export default NextI18next.withTranslation("sign-up")(CreateAccountForm)
+export default NextI18Next.withTranslation("sign-up")(CreateAccountForm)
