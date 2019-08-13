@@ -1,6 +1,6 @@
 import React from "react"
 import { gql } from "apollo-boost"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { SingletonRouter, withRouter } from "next/router"
 import AdminError from "../../../components/Dashboard/AdminError"
 import Typography from "@material-ui/core/Typography"

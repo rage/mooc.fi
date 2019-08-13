@@ -10,7 +10,7 @@ import { withRouter, SingletonRouter } from "next/router"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "../../../components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "../../../components/Dashboard/PaginatedPointsList"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 
 export const CourseDetailsFromSlugQuery = gql`

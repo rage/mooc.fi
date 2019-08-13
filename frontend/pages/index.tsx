@@ -10,7 +10,7 @@ import {
   filterAndModifyByLanguage,
 } from "../util/moduleFunctions"
 import { gql } from "apollo-boost"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import Spinner from "/components/Spinner"
@@ -188,7 +188,7 @@ const Home = (props: HomeProps) => {
         />
         {modules.map(module => (
           <section id={module.slug}>
-            <Module module={module} />
+            <Module key={`study-module-${module.id}`} module={module} />
           </section>
         ))}
         <CourseHighlights

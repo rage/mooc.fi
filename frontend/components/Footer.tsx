@@ -45,7 +45,7 @@ function UniversityLogo() {
   return (
     <img
       alt="Logo of the University of Helsinki"
-      src="../static/images/uh-logo.png"
+      src="/static/images/uh-logo.png"
       className={classes.logoImage}
     />
   )

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
-import { ApolloConsumer } from "react-apollo"
+import { ApolloConsumer } from "@apollo/react-common"
 import {
   UserEmailContains,
   UserEmailContains_userEmailContains_edges,

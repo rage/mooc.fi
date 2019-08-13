@@ -34,7 +34,7 @@ function ModuleNavi({ modules }: { modules: ObjectifiedModule[] }) {
       <Container>
         <Grid container spacing={5}>
           {modules.map(module => (
-            <ModuleNaviCard key={module.name} module={module} />
+            <ModuleNaviCard key={`module-${module.name}`} module={module} />
           ))}
         </Grid>
       </Container>
