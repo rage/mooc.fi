@@ -5,7 +5,6 @@ import { NextPageContext as NextContext } from "next"
 import AdminError from "../../../components/Dashboard/AdminError"
 import Container from "../../../components/Container"
 import CourseLanguageContext from "../../../contexes/CourseLanguageContext"
-import LanguageSelector from "../../../components/Dashboard/LanguageSelector"
 import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardBreadCrumbs from "../../../components/Dashboard/DashboardBreadCrumbs"
@@ -45,12 +44,12 @@ const Points = (props: CompletionsProps) => {
     }
   }
 
-  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
+  /*const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     router.push(
       `/courses/${slug}/points?lng=${(event.target as HTMLInputElement).value}`,
     )
   }
-
+*/
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },
   })
@@ -86,10 +85,6 @@ const Points = (props: CompletionsProps) => {
         >
           Points
         </Typography>
-        <LanguageSelector
-          handleLanguageChange={handleLanguageChange}
-          languageValue={lng}
-        />
         <PaginatedPointsList courseID={data.course.id} />
       </Container>
     </CourseLanguageContext.Provider>

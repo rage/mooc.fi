@@ -24,9 +24,9 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 2rem;
 `
 interface state {
-  email?: string | undefined
-  password?: string | undefined
-  password_confirmation?: string | undefined
+  email?: string
+  password?: string
+  password_confirmation?: string
   submitting?: boolean
   error?: any
   errorObj?: any
@@ -54,7 +54,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 
   componentDidMount() {
-    setTimeout(() => {
+    const clearFields = () => {
       this.setState({
         email: "",
         password: "",
@@ -62,7 +62,10 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
         first_name: "",
         last_name: "",
       })
-    }, 200)
+    }
+    setTimeout(clearFields, 200)
+    setTimeout(clearFields, 500)
+    setTimeout(clearFields, 1000)
   }
 
   onClick = async (e: any) => {
@@ -176,6 +179,8 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
     email: "",
     password: "",
     password_confirmation: "",
+    first_name: "",
+    last_name: "",
     submitting: false,
     error: false,
     errorObj: {},
