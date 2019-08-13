@@ -33,7 +33,7 @@ const AllModulesQuery = gql`
       name
       image
       order
-      courses {
+      courses(orderBy: study_module_order_ASC) {
         id
         slug
         name
