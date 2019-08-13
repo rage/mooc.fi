@@ -73,7 +73,7 @@ function CourseCard(props: CourseCardProps) {
         to={course.link || ""}
         target="_blank"
       >
-        <Background focusRipple disabled={course.status === "Upcoming"}>
+        <Background focusRipple disabled={!course.link || course.link === ""}>
           <ImageArea>
             <CourseImage
               photo={course.photo}
