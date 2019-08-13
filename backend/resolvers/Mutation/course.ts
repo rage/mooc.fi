@@ -17,7 +17,6 @@ import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType
 import { stringArg, booleanArg, arg, idArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
-import * as pullAll from "lodash/pullAll"
 
 import { uploadImage, deleteImage } from "./image"
 
@@ -50,6 +49,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         required: false,
       }),
       order: intArg(),
+      study_module_order: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -67,6 +67,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations,
         open_university_registration_links,
         order,
+        study_module_order,
       } = args
 
       const prisma: Prisma = ctx.prisma
@@ -96,6 +97,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           ? { create: open_university_registration_links }
           : null,
         order,
+        study_module_order,
       })
 
       const kafkaProducer = await new KafkaProducer()
@@ -140,6 +142,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         list: true,
       }),
       order: intArg(),
+      study_module_order: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -161,6 +164,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations,
         open_university_registration_links,
         order,
+        study_module_order,
       } = args
 
       let photo = args.photo
@@ -187,10 +191,16 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       )
         .filter(t => !!t.id)
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-      const removedTranslationIds: CourseTranslationScalarWhereInput[] = pullAll(
+      const existingTranslationIds = (existingTranslations || []).map(t => t.id)
+      const courseTranslationIds = (course_translations || []).map(t => t.id)
+      const removedTranslationIds: CourseTranslationScalarWhereInput[] = existingTranslationIds
+        .filter(id => !courseTranslationIds.includes(id))
+        .map(id => ({ id }))
+
+      /*       const removedTranslationIds: CourseTranslationScalarWhereInput[] = pullAll(
         (existingTranslations || []).map(t => t.id),
         (course_translations || []).map(t => t.id).filter(v => !!v),
-      ).map(_id => ({ id: _id }))
+      ).map(_id => ({ id: _id })) */
 
       const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = {
         create: newTranslations.length ? newTranslations : undefined,
@@ -213,12 +223,21 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       )
         .filter(t => !!t.id)
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-      const removedRegistrationLinkIds: OpenUniversityRegistrationLinkScalarWhereInput[] = pullAll(
+      const existingRegistrationLinkIds = (existingRegistrationLinks || []).map(
+        t => t.id,
+      )
+      const registrationLinkIds = (
+        open_university_registration_links || []
+      ).map(t => t.id)
+      const removedRegistrationLinkIds = existingRegistrationLinkIds
+        .filter(id => !registrationLinkIds.includes(id))
+        .map(id => ({ id }))
+      /*       const removedRegistrationLinkIds: OpenUniversityRegistrationLinkScalarWhereInput[] = pullAll(
         (existingRegistrationLinks || []).map(t => t.id),
         (open_university_registration_links || [])
           .map(t => t.id)
           .filter(v => !!v),
-      ).map(_id => ({ id: _id }))
+      ).map(_id => ({ id: _id })) */
 
       const registrationLinkMutation: OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput = {
         create: newRegistrationLinks.length ? newRegistrationLinks : undefined,
@@ -267,6 +286,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             ? registrationLinkMutation
             : null,
           order,
+          study_module_order,
         },
       })
     },

@@ -53,6 +53,7 @@ export interface updateCourse_updateCourse {
   slug: string
   name: string
   order: number | null
+  study_module_order: number | null
   photo: updateCourse_updateCourse_photo | null
   course_translations: updateCourse_updateCourse_course_translations[] | null
   open_university_registration_links:
@@ -84,4 +85,5 @@ export interface updateCourseVariables {
     | null
   study_modules?: StudyModuleWhereUniqueInput[] | null
   order?: number | null
+  study_module_order?: number | null
 }

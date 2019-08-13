@@ -41,6 +41,7 @@ export const toCourseForm = ({
         hidden: course.hidden || false,
         study_module_start_point: course.study_module_start_point || false,
         order: course.order || undefined,
+        study_module_order: course.study_module_order || undefined,
         status: course.status || CourseStatus.Upcoming,
         course_translations: (course.course_translations || []).map(c => ({
           ...omit(c, "__typename"),
@@ -148,6 +149,9 @@ export const fromCourseForm = ({
     // despite order being a number in the typings, it comes back as an empty string without TS yelling at you
     // @ts-ignore
     order: values.order === "" ? null : values.order,
+    // @ts-ignore
+    // prettier-ignore
+    study_module_order: values.study_module_order === "" ? null : values.study_module_order,
     course_translations,
     open_university_registration_links,
     study_modules,

@@ -30,6 +30,7 @@ export const initialValues: CourseFormValues = {
   course_translations: [initialTranslation],
   open_university_registration_links: [],
   order: undefined,
+  study_module_order: undefined,
 }
 
 export const statuses = [
@@ -132,6 +133,9 @@ const courseEditSchema = ({
       }),
     ),
     order: Yup.number()
+      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .integer("must be integer"),
+    study_module_order: Yup.number()
       .transform(value => (isNaN(value) ? undefined : Number(value)))
       .integer("must be integer"),
   })
