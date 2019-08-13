@@ -15,5 +15,6 @@
     "emailField": "Sähköpostiosoite",
     "emailButton": "LIITY",
     "emailThanks": "Kiitos listalle liittymisestä!",
-    "langSwitch": "English version"
+    "langSwitch": "English version",
+    "upcomingShort": "Tulossa"
 }
