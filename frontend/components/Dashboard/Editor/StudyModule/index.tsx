@@ -11,7 +11,7 @@ import {
 import { AllModulesQuery } from "../../../../pages/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import Next18next from "../../../../i18n"
+import NextI18Next from "../../../../i18n"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
@@ -67,7 +67,7 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        Next18next.Router.push("/study-modules")
+        NextI18Next.Router.push("/study-modules")
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -80,12 +80,12 @@ const StudyModuleEdit = ({
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
       await deleteStudyModule({ variables: { slug: values.slug } })
-      Next18next.Router.push("/study-modules")
+      NextI18Next.Router.push("/study-modules")
     }
   }, [])
 
   const onCancel = useCallback(
-    () => Next18next.Router.push("/study-modules"),
+    () => NextI18Next.Router.push("/study-modules"),
     [],
   )
 

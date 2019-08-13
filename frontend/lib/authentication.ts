@@ -1,5 +1,5 @@
 import TmcClient from "tmc-client-js"
-import Nexti18next from "../i18n"
+import NextI18Next from "../i18n"
 import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
 import { ApolloClient } from "apollo-boost"
@@ -38,7 +38,7 @@ export const signIn = async ({
   if (redirect) {
     setTimeout(() => {
       if (back) {
-        Nexti18next.Router.push(back)
+        NextI18Next.Router.push(back)
       } else {
         window.history.back()
       }
@@ -51,7 +51,7 @@ export const signOut = async (apollo: ApolloClient<any>) => {
   await apollo.resetStore().then(() => {
     document.cookie =
       "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
-    Nexti18next.Router.push("/sign-in")
+    NextI18Next.Router.push("/sign-in")
   })
 }
 

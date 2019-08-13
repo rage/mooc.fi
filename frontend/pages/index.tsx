@@ -188,7 +188,7 @@ const Home = (props: HomeProps) => {
         />
         {modules.map(module => (
           <section id={module.slug}>
-            <Module module={module} />
+            <Module key={`study-module-${module.id}`} module={module} />
           </section>
         ))}
         <CourseHighlights
