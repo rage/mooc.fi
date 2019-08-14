@@ -43,6 +43,7 @@ type Course @db(name: "course") {
   study_module_start_point: Boolean
   order: Int
   open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
+  exercises: [Exercise!]! @relation(name:"ExerciseToCourse")
   
 }
 
@@ -217,7 +218,7 @@ type Exercise @db(name: "exercise") {
   part: Int
   section: Int
   max_points: Int
-  course: Course!
+  course: Course! @relation(name:"ExerciseToCourse" )
   service: Service @relation(link: INLINE, name: "ExerciseToService")
   ExerciseCompletions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToExercise")
   timestamp: DateTime
