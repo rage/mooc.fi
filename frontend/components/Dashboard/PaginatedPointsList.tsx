@@ -36,6 +36,7 @@ export const StudentProgresses = gql`
               progress
               user_course_service_progresses {
                 service {
+                  name
                   id
                 }
                 progress

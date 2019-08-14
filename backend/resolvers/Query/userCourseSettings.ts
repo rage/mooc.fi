@@ -33,6 +33,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "UserCourseSettingsConnection",
     args: {
       user_id: idArg(),
+      user_upstream_id: intArg(),
       course_id: idArg(),
       first: intArg(),
       after: idArg(),
@@ -43,10 +44,21 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
 
-      const { first, last, before, after, user_id, course_id, search } = args
+      const {
+        first,
+        last,
+        before,
+        after,
+        user_id,
+        course_id,
+        user_upstream_id,
+        search,
+      } = args
       if ((!first && !last) || (first > 50 || last > 50)) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
+
+      // user: { OR: { id: user_id, upstream_id: user_upstream_id } },
 
       return ctx.prisma.userCourseSettingsesConnection({
         first: first,
@@ -55,16 +67,19 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
         after: after,
         where: {
           user: {
-            OR: buildSearch(
-              [
-                "first_name_contains",
-                "last_name_contains",
-                "username_contains",
-                "email_contains",
-              ],
-              search,
-            ),
-            id: user_id,
+            OR: {
+              id: user_id,
+              upstream_id: user_upstream_id,
+              ...buildSearch(
+                [
+                  "first_name_contains",
+                  "last_name_contains",
+                  "username_contains",
+                  "email_contains",
+                ],
+                search,
+              ),
+            },
           },
           course: { id: course_id },
         },
