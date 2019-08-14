@@ -32,6 +32,7 @@ export interface ModuleCourse {
   promote: boolean
   slug: string
   start_point: boolean
+  study_module_start_point: boolean
   hidden: boolean
   status: string
   order: number

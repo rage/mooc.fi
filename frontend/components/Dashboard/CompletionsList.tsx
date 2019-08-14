@@ -1,14 +1,14 @@
 import React, { useState } from "react"
 import { gql } from "apollo-boost"
-import { Query } from "react-apollo"
 import {
   AllCompletions as AllCompletionsData,
-  AllCompletions_completionsPaginated_edges_node,
+  AllCompletions_completionsPaginated_edges,
 } from "../../static/types/generated/AllCompletions"
 import { CircularProgress } from "@material-ui/core"
 import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
 import CourseLanguageContext from "../../contexes/CourseLanguageContext"
+import { useQuery } from "@apollo/react-hooks"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions(
@@ -99,8 +99,6 @@ export const PreviousPageCompletionsQuery = gql`
     }
   }
 `
-class CompletionsQuery extends Query<AllCompletionsData, {}> {}
-
 const CompletionsList = () => {
   const router = useRouter()
   const completionLanguage = React.useContext(CourseLanguageContext)
@@ -130,7 +128,59 @@ const CompletionsList = () => {
 
   const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
 
+  if (!course) {
+    return <div>no course!</div>
+  }
+
+  const { data, loading, error } = useQuery<AllCompletionsData>(query, {
+    variables: { cursor, completion_language: completionLanguage, course },
+    fetchPolicy: "network-only",
+  })
+
+  if (loading) {
+    return <CircularProgress color="secondary" />
+  }
+  if (error) {
+    ;<div>
+      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+    </div>
+  }
+
+  if (!data) {
+    return <div>no data</div>
+  }
+
+  const completions = data.completionsPaginated.edges.map(
+    (edge: AllCompletions_completionsPaginated_edges) => edge.node,
+  )
+  const startCursor = data.completionsPaginated.pageInfo.startCursor
+  const endCursor = data.completionsPaginated.pageInfo.endCursor
+
   return (
+    <CompletionsListWithData
+      completions={completions}
+      onLoadMore={() =>
+        setQueryDetails({
+          start: endCursor,
+          end: startCursor,
+          back: false,
+          page: queryDetails.page + 1,
+        })
+      }
+      onGoBack={() =>
+        setQueryDetails({
+          start: endCursor,
+          end: startCursor,
+          back: true,
+          page: queryDetails.page - 1,
+        })
+      }
+      pageNumber={queryDetails.page}
+    />
+  )
+}
+
+/*
     <CompletionsQuery
       query={query}
       variables={{
@@ -183,7 +233,5 @@ const CompletionsList = () => {
         )
       }}
     </CompletionsQuery>
-  )
-}
-
+*/
 export default CompletionsList

@@ -21,7 +21,7 @@ function NaviCardList() {
       <Container>
         <Grid container spacing={3}>
           {items.map(item => (
-            <NaviCard key={item.title} item={item} />
+            <NaviCard key={`navi-${item.title}`} item={item} />
           ))}
         </Grid>
       </Container>

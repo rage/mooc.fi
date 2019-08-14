@@ -114,7 +114,7 @@ function CourseHighlights(props: CourseHighlightsProps) {
       <Container>
         <Grid container spacing={3}>
           {courses.map(course => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard key={`course-${course.id}`} course={course} />
           ))}
         </Grid>
       </Container>

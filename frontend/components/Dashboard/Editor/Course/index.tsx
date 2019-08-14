@@ -1,6 +1,6 @@
 import React, { useCallback } from "react"
 import CourseEditForm from "./CourseEditForm"
-import { useMutation, useApolloClient } from "react-apollo-hooks"
+import { useMutation, useApolloClient } from "@apollo/react-hooks"
 import {
   AddCourseMutation,
   UpdateCourseMutation,
@@ -10,7 +10,7 @@ import {
 import { CourseFormValues } from "./types"
 import courseEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import Next18next from "/i18n"
+import NextI18Next from "/i18n"
 import { AllCoursesQuery } from "/pages/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { StudyModules_study_modules } from "/static/types/StudyModules"
@@ -25,9 +25,9 @@ const CourseEdit = ({
   course?: CourseDetails_course
   modules?: StudyModules_study_modules[]
 }) => {
-  const addCourse = useMutation(AddCourseMutation)
-  const updateCourse = useMutation(UpdateCourseMutation)
-  const deleteCourse = useMutation(DeleteCourseMutation, {
+  const [addCourse] = useMutation(AddCourseMutation)
+  const [updateCourse] = useMutation(UpdateCourseMutation)
+  const [deleteCourse] = useMutation(DeleteCourseMutation, {
     refetchQueries: [{ query: AllCoursesQuery }],
   })
   const checkSlug = CheckSlugQuery
@@ -73,7 +73,7 @@ const CourseEdit = ({
         })
 
         setStatus({ message: null })
-        Next18next.Router.push("/courses")
+        NextI18Next.Router.push("/courses")
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -86,12 +86,12 @@ const CourseEdit = ({
   const onDelete = useCallback(async (values: CourseFormValues) => {
     if (values.id) {
       await deleteCourse({ variables: { id: values.id } })
-      Next18next.Router.push("/courses")
+      NextI18Next.Router.push("/courses")
     }
   }, [])
 
   const onCancel = useCallback(() => {
-    Next18next.Router.push("/courses")
+    NextI18Next.Router.push("/courses")
   }, [])
 
   return (

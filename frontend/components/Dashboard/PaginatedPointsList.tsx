@@ -1,9 +1,10 @@
 import React from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "../ErrorBoundary"
+import { useQuery } from "@apollo/react-hooks"
+import { UserCourseSettingses as StudentProgressData } from "../../static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
 import Button from "@material-ui/core/Button"
-import { useQuery } from "react-apollo-hooks"
 
 export const StudentProgresses = gql`
   query UserCourseSettingses($course_id: ID, $cursor: ID) {
@@ -47,24 +48,31 @@ interface Props {
 
 function PaginatedPointsList(props: Props) {
   const { courseID } = props
-  const { data, loading, error, fetchMore } = useQuery(StudentProgresses, {
-    variables: {
-      course_id: courseID,
-      cursor: null,
+  const { data, loading, error, fetchMore } = useQuery<StudentProgressData>(
+    StudentProgresses,
+    {
+      variables: {
+        course_id: courseID,
+        cursor: null,
+      },
+      fetchPolicy: "cache-first",
     },
-    fetchPolicy: "cache-first",
-  })
+  )
 
   if (loading) {
     return <p>Loading...</p>
   }
+  if (!data) {
+    return <p>no data</p>
+  }
+
   if (error) {
     return <p>ERROR</p>
   }
 
   return (
     <ErrorBoundary>
-      <PointsList pointsForUser={data.UserCourseSettingses.edges} />
+      <PointsList pointsForUser={data!.UserCourseSettingses.edges} />
       <Button
         onClick={() =>
           fetchMore({
@@ -76,8 +84,8 @@ function PaginatedPointsList(props: Props) {
 
             updateQuery: (previousResult, { fetchMoreResult }) => {
               const previousData = previousResult.UserCourseSettingses.edges
-              const newData = fetchMoreResult.UserCourseSettingses.edges
-              const newPageInfo = fetchMoreResult.UserCourseSettingses.pageInfo
+              const newData = fetchMoreResult!.UserCourseSettingses.edges
+              const newPageInfo = fetchMoreResult!.UserCourseSettingses.pageInfo
               return {
                 UserCourseSettingses: {
                   pageInfo: {
@@ -85,7 +93,7 @@ function PaginatedPointsList(props: Props) {
                     __typename: "PageInfo",
                   },
                   edges: [...previousData, ...newData],
-                  __typename: "UserCourseSettingses",
+                  __typename: "UserCourseSettingsConnection",
                 },
               }
             },
