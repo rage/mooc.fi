@@ -49,7 +49,7 @@ const UserPage = (props: UserPageProps) => {
 
   return (
     <Container>
-      {JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}
+      <pre>{JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}</pre>
     </Container>
   )
 }
