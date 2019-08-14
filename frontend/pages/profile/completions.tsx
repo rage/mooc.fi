@@ -1,5 +1,4 @@
 import React from "react"
-import NextI18Next from "../../i18n"
 import { isSignedIn } from "../../lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "../../lib/redirect"
@@ -27,33 +26,11 @@ export const UserOverViewQuery = gql`
   }
   ${Completions.fragments.completions}
 `
-/* const Title = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
-  margin-top: 7rem;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
-  @media (min-width: 320px) {
-    font-size: 46px;
-  }
-  @media (min-width: 600px) {
-    font-size: 56px;
-  }
-  @media (min-width: 960px) {
-    font-size: 72px;
-  }
-` */
 
-interface CompletionsProps {
-  namespacesRequired: string[]
-  t: Function
-  i18n: any
-  tReady: boolean
-}
-
-function CompletionsPage(props: CompletionsProps) {
+function CompletionsPage() {
   // FIXME: do the props have any use?
   // @ts-ignore
-  const { t } = props
+
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
   let completions: CurrentUserUserOverView_currentUser_completions[] = []
 
@@ -90,4 +67,4 @@ CompletionsPage.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default NextI18Next.withTranslation("profile")(CompletionsPage)
+export default CompletionsPage
