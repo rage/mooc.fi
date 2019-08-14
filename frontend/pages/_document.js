@@ -13,30 +13,34 @@ class MyDocument extends Document {
 
     const originalRenderPage = ctx.renderPage
 
-    ctx.renderPage = () =>
-      originalRenderPage({
-        enhanceApp: App => props => {
-          const MuiStylesDataWrapper = sheets.collect(<App {...props} />)
+    try {
+      ctx.renderPage = () =>
+        originalRenderPage({
+          enhanceApp: App => props => {
+            const MuiStylesDataWrapper = sheets.collect(<App {...props} />)
 
-          const styledComponentsDataWrapper = sheet.collectStyles(
-            MuiStylesDataWrapper,
-          )
-          return styledComponentsDataWrapper
-        },
-      })
+            const styledComponentsDataWrapper = sheet.collectStyles(
+              MuiStylesDataWrapper,
+            )
+            return styledComponentsDataWrapper
+          },
+        })
 
-    const initialProps = await Document.getInitialProps(ctx)
-    return {
-      ...initialProps,
+      const initialProps = await Document.getInitialProps(ctx)
+      return {
+        ...initialProps,
 
-      styles: (
-        <React.Fragment>
-          {sheets.getStyleElement()}
-          {sheet.getStyleElement()}
+        styles: (
+          <React.Fragment>
+            {sheets.getStyleElement()}
+            {sheet.getStyleElement()}
 
-          {flush() || null}
-        </React.Fragment>
-      ),
+            {flush() || null}
+          </React.Fragment>
+        ),
+      }
+    } finally {
+      sheet.seal()
     }
   }
 
@@ -50,6 +54,11 @@ class MyDocument extends Document {
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           <meta name="theme-color" content={theme.palette.primary.main} />
+          <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="/static/favicon.ico"
+          />
         </Head>
         <body>
           <Main />

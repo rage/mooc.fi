@@ -56,6 +56,7 @@ const addUsers = async () => {
   }
 }
 
+<<<<<<< HEAD
 const addServices = async () => {
   let i = 0
   while (i < 5) {
@@ -178,6 +179,8 @@ const addUserCourseServiceProgressess = async ({
   )
 }
 
+=======
+>>>>>>> abdefc88d32a24c2261394bf9a970c2e6f349666
 const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })
   return await Promise.all(
@@ -261,8 +264,12 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
 const seedPointsData = async () => {
   const course = await prisma.course({ slug: "elements-of-ai" })
   addUsers()
+<<<<<<< HEAD
   addServices()
   addUserCourseServiceProgressess({ courseId: course.id })
+=======
+  addUserCourseProgressess({ courseId: course.id })
+>>>>>>> abdefc88d32a24c2261394bf9a970c2e6f349666
   addUserCourseSettingses({ courseId: course.id })
 }
 

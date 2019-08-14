@@ -15,6 +15,7 @@ const checkAccess = (
     allowUsers = false,
   } = {},
 ) => {
+  // console.log(`role: ${Role[ctx.role]}, orgs ${allowOrganizations} no-admins ${disallowAdmin}, visitor ${allowVisitors}, users ${allowUsers}`)
   if (allowOrganizations && ctx.role == Role.ORGANIZATION) return true
   if (ctx.role == Role.ADMIN && !disallowAdmin) return true
   if (ctx.role == Role.USER && allowUsers) return true

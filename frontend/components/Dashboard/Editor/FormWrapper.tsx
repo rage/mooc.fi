@@ -45,7 +45,6 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
     onDelete,
     renderForm,
   } = props
-
   const [deleteVisible, setDeleteVisible] = useState(false)
   const [cancelConfirmationVisible, setCancelConfirmationVisible] = useState(
     false,
