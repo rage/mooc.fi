@@ -26,6 +26,7 @@ export const StudentProgresses = gql`
               progress
               user_course_service_progresses {
                 service {
+                  name
                   id
                 }
                 progress
@@ -60,6 +61,7 @@ function PaginatedPointsList(props: Props) {
   if (error) {
     return <p>ERROR</p>
   }
+
   return (
     <ErrorBoundary>
       <PointsList pointsForUser={data.UserCourseSettingses.edges} />
