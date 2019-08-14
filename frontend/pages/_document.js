@@ -33,7 +33,6 @@ class MyDocument extends Document {
           <React.Fragment>
             {sheets.getStyleElement()}
             {sheet.getStyleElement()}
-
             {flush() || null}
           </React.Fragment>
         ),
