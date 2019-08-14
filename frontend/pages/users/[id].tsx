@@ -21,20 +21,19 @@ interface UserPageProps {
 }
 
 const UserPage = (props: UserPageProps) => {
-  const { admin } = props
+  const { admin, router } = props
+  if (!admin) {
+    return <AdminError />
+  }
   const { loading, error, data } = useQuery<UserCourseSettingsesForUserPage>(
     GET_DATA,
-    { variables: { $upstream_id: Number(props.router.query.id) } },
+    { variables: { upstream_id: Number(router.query.id) } },
   )
 
   if (error) {
     ;<div>
       Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
     </div>
-  }
-
-  if (!admin) {
-    return <AdminError />
   }
 
   if (loading || !data) {
