@@ -5,7 +5,7 @@ import { SingletonRouter, withRouter } from "next/router"
 import AdminError from "../../../components/Dashboard/AdminError"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
-import { WideContainer } from "../../../components/Container"
+import EditorContainer from "/components/Dashboard/Editor/EditorContainer"
 import NextI18Next from "../../../i18n"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
@@ -35,10 +35,6 @@ export const StudyModuleQuery = gql`
       }
     }
   }
-`
-
-const Header = styled(Typography)`
-  margin-top: 1em;
 `
 
 const ErrorContainer = styled(Paper)`
@@ -85,37 +81,29 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   }
 
   return (
-    <section>
-      <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
-          Edit study module
-        </Header>
-        {data!.study_module ? (
-          <StudyModuleEdit module={data!.study_module} />
-        ) : (
-          <ErrorContainer elevation={2}>
-            <Typography variant="body1">
-              Study module with slug <b>{id}</b> not found!
-            </Typography>
-            <Typography variant="body2">
-              You will be redirected back to the module list in 5 seconds -
-              press{" "}
-              <NextI18Next.Link href={listLink}>
-                <a
-                  onClick={() =>
-                    redirectTimeout && clearTimeout(redirectTimeout)
-                  }
-                  href={listLink}
-                >
-                  here
-                </a>
-              </NextI18Next.Link>{" "}
-              to go there now.
-            </Typography>
-          </ErrorContainer>
-        )}
-      </WideContainer>
-    </section>
+    <EditorContainer title="Edit study module">
+      {data!.study_module ? (
+        <StudyModuleEdit module={data!.study_module} />
+      ) : (
+        <ErrorContainer elevation={2}>
+          <Typography variant="body1">
+            Study module with slug <b>{id}</b> not found!
+          </Typography>
+          <Typography variant="body2">
+            You will be redirected back to the module list in 5 seconds - press{" "}
+            <NextI18Next.Link href={listLink}>
+              <a
+                onClick={() => redirectTimeout && clearTimeout(redirectTimeout)}
+                href={listLink}
+              >
+                here
+              </a>
+            </NextI18Next.Link>{" "}
+            to go there now.
+          </Typography>
+        </ErrorContainer>
+      )}
+    </EditorContainer>
   )
 }
 

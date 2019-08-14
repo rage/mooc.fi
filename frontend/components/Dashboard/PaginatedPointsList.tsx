@@ -1,12 +1,13 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "../ErrorBoundary"
-import { useQuery } from "@apollo/react-hooks"
+import { useLazyQuery } from "@apollo/react-hooks"
 import { UserCourseSettingses as StudentProgressData } from "/static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
-import { TextField } from "@material-ui/core"
+import { TextField, Grid, Slider } from "@material-ui/core"
+import { range } from "lodash"
 
 export const StudentProgresses = gql`
   query UserCourseSettingses($course_id: ID, $cursor: ID, $search: String) {
@@ -44,8 +45,8 @@ export const StudentProgresses = gql`
           }
         }
       }
+      count(search: $search)
     }
-    userCourseSettingsCount(course_id: $course_id, search: $search)
   }
 `
 
@@ -57,52 +58,98 @@ interface Props {
 function PaginatedPointsList(props: Props) {
   const { courseID } = props
   const [searchString, setSearchString] = useState("")
-  const search = useDebounce(searchString, 800)
+  const [cutterValue, setCutterValue] = useState(0)
+  const search = useDebounce(searchString, 1000)
 
-  const { data, loading, error, fetchMore } = useQuery<StudentProgressData>(
-    StudentProgresses,
-    {
-      variables: {
-        course_id: courseID,
-        cursor: null,
-        search: search !== "" ? search : undefined,
-      },
-      fetchPolicy: "cache-first",
-    },
+  // use lazy query to prevent running query on each render
+  const [getData, { data, loading, error, fetchMore }] = useLazyQuery<
+    StudentProgressData
+  >(StudentProgresses, {
+    fetchPolicy: "cache-first",
+  })
+
+  useEffect(
+    () =>
+      getData({
+        variables: {
+          course_id: courseID,
+          cursor: null,
+          search: search !== "" ? search : undefined,
+        },
+      }),
+    [search],
   )
 
   if (error) {
-    return <p>ERROR</p>
+    return <p>ERROR: {JSON.stringify(error)}</p>
   }
 
   if (!data) {
     return null
   }
 
+  const { UserCourseSettingses } = data
+
+  if (!UserCourseSettingses) {
+    return null
+  }
+
+  const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
+
   return (
     <ErrorBoundary>
-      <TextField
-        id="searchString"
-        label="Search"
-        value={searchString}
-        autoComplete="off"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setSearchString(e.target.value)
-        }
-      />
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TextField
+            id="searchString"
+            label="Search"
+            value={searchString}
+            autoComplete="off"
+            variant="outlined"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchString(e.target.value)
+            }
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Slider
+            value={cutterValue}
+            onChangeCommitted={(_, value) => setCutterValue(value as number)}
+            marks={sliderMarks}
+            min={0}
+            max={100}
+            valueLabelDisplay="auto"
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            id="cutter"
+            label="Cutter"
+            value={cutterValue}
+            autoComplete="off"
+            variant="outlined"
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
+              setCutterValue(e.target.value as number)
+            }
+          />
+        </Grid>
+      </Grid>
       {loading ? (
         <div>Loading....</div>
       ) : (
         <>
-          <div>{data!.userCourseSettingsCount} results</div>
-          <PointsList pointsForUser={data!.UserCourseSettingses.edges} />
+          <div>{UserCourseSettingses!.count || 0} results</div>
+          <PointsList
+            pointsForUser={UserCourseSettingses!.edges}
+            cutterValue={cutterValue}
+          />
           <Button
             onClick={() =>
               fetchMore({
                 query: StudentProgresses,
                 variables: {
                   course_id: courseID,
-                  cursor: data!.UserCourseSettingses.pageInfo.endCursor,
+                  cursor: UserCourseSettingses.pageInfo.endCursor,
                   search: search !== "" ? search : undefined,
                 },
 
@@ -119,14 +166,13 @@ function PaginatedPointsList(props: Props) {
                       },
                       edges: [...previousData, ...newData],
                       __typename: "UserCourseSettingsConnection",
+                      count: fetchMoreResult!.UserCourseSettingses.count,
                     },
-                    userCourseSettingsCount: fetchMoreResult!
-                      .userCourseSettingsCount,
                   }
                 },
               })
             }
-            disabled={!data.UserCourseSettingses.pageInfo.hasNextPage}
+            disabled={!UserCourseSettingses.pageInfo.hasNextPage}
             fullWidth
             style={{ marginTop: "1rem", fontSize: 22 }}
           >

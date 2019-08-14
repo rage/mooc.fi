@@ -5,7 +5,7 @@ import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../../lib/authentication"
 import redirect from "../../../lib/redirect"
 import AdminError from "../../../components/Dashboard/AdminError"
-import { WideContainer } from "../../../components/Container"
+import EditorContainer from "/components/Dashboard/Editor/EditorContainer"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
@@ -62,10 +62,6 @@ export const StudyModuleQuery = gql`
       slug
     }
   }
-`
-
-const Header = styled(Typography)`
-  margin-top: 1em;
 `
 
 const ErrorContainer = styled(Paper)`
@@ -127,39 +123,31 @@ const EditCourse = (props: EditCourseProps) => {
   }
 
   return (
-    <section>
-      <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
-          Edit course
-        </Header>
-        {courseData.course ? (
-          <CourseEdit
-            course={courseData.course}
-            modules={studyModulesData.study_modules}
-          />
-        ) : (
-          <ErrorContainer elevation={2}>
-            <Typography variant="body1">
-              Course with id <b>{slug}</b> not found!
-            </Typography>
-            <Typography variant="body2">
-              You will be redirected back to the course list in 5 seconds -
-              press{" "}
-              <NextI18Next.Link href={listLink}>
-                <a
-                  onClick={() =>
-                    redirectTimeout && clearTimeout(redirectTimeout)
-                  }
-                >
-                  here
-                </a>
-              </NextI18Next.Link>{" "}
-              to go there now.
-            </Typography>
-          </ErrorContainer>
-        )}
-      </WideContainer>
-    </section>
+    <EditorContainer title="Edit course">
+      {courseData.course ? (
+        <CourseEdit
+          course={courseData.course}
+          modules={studyModulesData.study_modules}
+        />
+      ) : (
+        <ErrorContainer elevation={2}>
+          <Typography variant="body1">
+            Course with id <b>{slug}</b> not found!
+          </Typography>
+          <Typography variant="body2">
+            You will be redirected back to the course list in 5 seconds - press{" "}
+            <NextI18Next.Link href={listLink}>
+              <a
+                onClick={() => redirectTimeout && clearTimeout(redirectTimeout)}
+              >
+                here
+              </a>
+            </NextI18Next.Link>{" "}
+            to go there now.
+          </Typography>
+        </ErrorContainer>
+      )}
+    </EditorContainer>
   )
 }
 

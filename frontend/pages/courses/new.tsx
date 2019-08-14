@@ -1,14 +1,12 @@
 import React from "react"
-import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
 import AdminError from "../../components/Dashboard/AdminError"
-import { WideContainer } from "../../components/Container"
+import EditorContainer from "/components/Dashboard/Editor/EditorContainer"
 import { withRouter, SingletonRouter } from "next/router"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import styled from "styled-components"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 
 export const StudyModuleQuery = gql`
@@ -19,10 +17,6 @@ export const StudyModuleQuery = gql`
       slug
     }
   }
-`
-
-const Header = styled(Typography)`
-  margin-top: 1em;
 `
 
 interface NewCourseProps {
@@ -50,14 +44,9 @@ const NewCourse = (props: NewCourseProps) => {
   }
 
   return (
-    <section>
-      <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
-          Create a new course
-        </Header>
-        <CourseEdit modules={data.study_modules} />
-      </WideContainer>
-    </section>
+    <EditorContainer title="Create a new course">
+      <CourseEdit modules={data.study_modules} />
+    </EditorContainer>
   )
 }
 

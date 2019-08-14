@@ -5,10 +5,11 @@ import { UserCourseSettingses_UserCourseSettingses_edges as Points } from "../..
 
 interface Props {
   pointsForUser: Points[]
+  cutterValue: number
 }
 
 const PointsList = (props: Props) => {
-  const { pointsForUser } = props
+  const { pointsForUser, cutterValue } = props
 
   return (
     <section>
@@ -16,6 +17,7 @@ const PointsList = (props: Props) => {
         {pointsForUser.map(user => (
           <PointsListItemCard
             studentPointsPerGroup={user.node}
+            cutterValue={cutterValue}
             key={user.node.id}
           />
         ))}

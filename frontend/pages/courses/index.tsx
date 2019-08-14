@@ -12,6 +12,7 @@ import AdminError from "../../components/Dashboard/AdminError"
 import { WideContainer } from "../../components/Container"
 import Spinner from "/components/Spinner"
 
+// FIXME: is this used or does it get to /pages/courses?
 export const AllCoursesQuery = gql`
   query AllCourses {
     courses {
