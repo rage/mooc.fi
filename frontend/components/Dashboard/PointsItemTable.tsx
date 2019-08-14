@@ -28,19 +28,16 @@ const ColoredProgressBar = styled(({ ...props }) => (
 
 interface ChartProps {
   pointsForAGroup: any
+  cutterValue: number
 }
+
 function PointsItemTableChart(props: ChartProps) {
-  const { pointsForAGroup } = props
+  const { pointsForAGroup, cutterValue } = props
   //This is due to a mistake in the seed code,
   //which caused there to be two different terms for the group field
   //will be removed
-  let groupName: string = ""
-  if (pointsForAGroup.group) {
-    groupName = pointsForAGroup.group
-  }
-  if (pointsForAGroup.groups) {
-    groupName = pointsForAGroup.groups
-  }
+  const groupName = pointsForAGroup.group || pointsForAGroup.groups
+  const value = (pointsForAGroup.n_points / pointsForAGroup.max_points) * 100
 
   return (
     <ChartContainer>
@@ -50,9 +47,9 @@ function PointsItemTableChart(props: ChartProps) {
       </ChartTitle>
       <ColoredProgressBar
         variant="determinate"
-        value={(pointsForAGroup.n_points / pointsForAGroup.max_points) * 100}
+        value={value}
         style={{ padding: "0.5rem", flex: 1 }}
-        color="primary"
+        color={value >= cutterValue ? "primary" : "secondary"}
       />
     </ChartContainer>
   )
@@ -60,9 +57,10 @@ function PointsItemTableChart(props: ChartProps) {
 
 interface TableProps {
   studentPoints: UserPointsData
+  cutterValue: number
 }
 function PointsItemTable(props: TableProps) {
-  const { studentPoints } = props
+  const { studentPoints, cutterValue } = props
   let progressData: any[] = []
   if (studentPoints.progress) {
     progressData = studentPoints.progress
@@ -74,6 +72,7 @@ function PointsItemTable(props: TableProps) {
         progressData.map(p => (
           <PointsItemTableChart
             pointsForAGroup={p}
+            cutterValue={cutterValue}
             key={Math.floor(Math.random() * 100000)}
           />
         ))

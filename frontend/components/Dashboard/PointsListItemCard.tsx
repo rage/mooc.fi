@@ -18,26 +18,29 @@ const Root = styled(Grid)`
 `
 interface Props {
   studentPointsPerGroup: UserPointsData
+  cutterValue: number
 }
 
 function PointsListItemCard(props: Props) {
-  const { studentPointsPerGroup } = props
+  const { studentPointsPerGroup, cutterValue } = props
 
-  const firstName = studentPointsPerGroup!.user!.first_name || "n/a"
+  const {
+    first_name: firstName = "n/a",
+    last_name: lastName = "n/a",
+    username = "n/a",
+    email = "no email",
+    student_number: studentId = "no SID",
+    user_course_progressess: studentProgressData,
+  } = studentPointsPerGroup!.user!
+
+  /*   const firstName = studentPointsPerGroup!.user!.first_name || "n/a"
+  const lastName = studentPointsPerGroup!.user!.last_name || "n/a"
   const username = studentPointsPerGroup!.user!.username || "n/a"
 
-  //  let firstName: string = "n/a"
-  let lastName: string = "n/a"
   let email: string = "no email"
   let studentId: string = "no SID"
   let studentProgressData
   if (studentPointsPerGroup.user) {
-    /*     if (studentPointsPerGroup.user.first_name) {
-      firstName = studentPointsPerGroup.user.first_name
-    } */
-    if (studentPointsPerGroup.user.last_name) {
-      lastName = studentPointsPerGroup.user.last_name
-    }
     if (studentPointsPerGroup.user.email) {
       email = studentPointsPerGroup.user.email
     }
@@ -47,7 +50,7 @@ function PointsListItemCard(props: Props) {
     if (studentPointsPerGroup.user.user_course_progressess) {
       studentProgressData = studentPointsPerGroup.user.user_course_progressess
     }
-  }
+  } */
 
   return (
     <Root item xs={12} sm={12} lg={12}>
@@ -65,7 +68,10 @@ function PointsListItemCard(props: Props) {
       </UserInformation>
 
       {studentProgressData ? (
-        <PointsItemTable studentPoints={studentProgressData} />
+        <PointsItemTable
+          studentPoints={studentProgressData}
+          cutterValue={cutterValue}
+        />
       ) : (
         <p>No points data available</p>
       )}

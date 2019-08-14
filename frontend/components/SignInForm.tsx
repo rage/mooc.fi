@@ -50,9 +50,13 @@ function SignIn() {
         setEmail(emailFieldRef.current.value)
       }
     }
-    setTimeout(inputFieldSetter, 10)
-    setTimeout(inputFieldSetter, 1000)
-    setTimeout(inputFieldSetter, 5000)
+    const timeouts = [
+      setTimeout(inputFieldSetter, 10),
+      setTimeout(inputFieldSetter, 1000),
+      setTimeout(inputFieldSetter, 5000),
+    ]
+
+    return () => timeouts.forEach(t => clearTimeout(t))
   }, [])
 
   const classes = useStyles()

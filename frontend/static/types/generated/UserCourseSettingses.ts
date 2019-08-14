@@ -59,11 +59,11 @@ export interface UserCourseSettingses_UserCourseSettingses {
   __typename: "UserCourseSettingsConnection"
   pageInfo: UserCourseSettingses_UserCourseSettingses_pageInfo
   edges: UserCourseSettingses_UserCourseSettingses_edges[]
+  count: number
 }
 
 export interface UserCourseSettingses {
   UserCourseSettingses: UserCourseSettingses_UserCourseSettingses
-  userCourseSettingsCount: number
 }
 
 export interface UserCourseSettingsesVariables {

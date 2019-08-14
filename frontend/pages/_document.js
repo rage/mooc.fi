@@ -34,7 +34,6 @@ class MyDocument extends Document {
           <React.Fragment>
             {sheets.getStyleElement()}
             {sheet.getStyleElement()}
-
             {flush() || null}
           </React.Fragment>
         ),
@@ -54,6 +53,11 @@ class MyDocument extends Document {
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           <meta name="theme-color" content={theme.palette.primary.main} />
+          <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="/static/favicon.ico"
+          />
         </Head>
         <body>
           <Main />
