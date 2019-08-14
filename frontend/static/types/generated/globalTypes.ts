@@ -37,8 +37,6 @@ export interface OpenUniversityRegistrationLinkCreateWithoutCourseInput {
   id?: any | null
   language: string
   link?: string | null
-  start_date?: any | null
-  stop_date?: any | null
   updated_at?: any | null
 }
 
