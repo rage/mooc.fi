@@ -5,20 +5,53 @@ import { isAdmin, isSignedIn } from "../../lib/authentication"
 import redirect from "../../lib/redirect"
 import AdminError from "../../components/Dashboard/AdminError"
 import gql from "graphql-tag"
+import { useQuery } from "react-apollo-hooks"
+import { UserCourseSettingsesForUserPage } from "../../static/types/generated/UserCourseSettingsesForUserPage"
+import { Grid } from "@material-ui/core"
+import { CircularProgress } from "@material-ui/core"
+import { SingletonRouter, withRouter } from "next/router"
+import NextI18Next from "../../i18n"
 
 interface UserPageProps {
   namespacesRequired: string[]
   t: Function
+  router: SingletonRouter
   i18n: any
   admin: boolean
 }
 
 const UserPage = (props: UserPageProps) => {
-  if (!props.admin) {
+  const { admin } = props
+  const { loading, error, data } = useQuery<UserCourseSettingsesForUserPage>(
+    GET_DATA,
+    { variables: { $upstream_id: props.router.query.id } },
+  )
+
+  if (error) {
+    ;<div>
+      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+    </div>
+  }
+
+  if (!admin) {
     return <AdminError />
   }
 
-  return <Container>User Page</Container>
+  if (loading || !data) {
+    return (
+      <Container style={{ display: "flex", height: "600px" }}>
+        <Grid item container justify="center" alignItems="center">
+          <CircularProgress color="primary" size={60} />
+        </Grid>
+      </Container>
+    )
+  }
+
+  return (
+    <Container>
+      {JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}
+    </Container>
+  )
 }
 
 UserPage.getInitialProps = function(context: NextPageContext) {
@@ -31,10 +64,10 @@ UserPage.getInitialProps = function(context: NextPageContext) {
     namespacesRequired: ["common"],
   }
 }
-export default UserPage
+export default withRouter(NextI18Next.withTranslation("common")(UserPage))
 
 const GET_DATA = gql`
-  query UserCourseSettingses($upstream_id: number) {
+  query UserCourseSettingsesForUserPage($upstream_id: Int) {
     UserCourseSettingses(user_upstream_id: $upstream_id, first: 50) {
       edges {
         node {
