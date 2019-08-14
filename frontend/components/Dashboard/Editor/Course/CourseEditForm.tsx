@@ -86,9 +86,15 @@ const renderForm = ({
   values,
   isSubmitting,
   setFieldValue,
-}: Pick<
+}: // setStatus
+Pick<
   FormikProps<CourseFormValues>,
-  "errors" | "values" | "isSubmitting" | "setFieldValue" | "initialValues"
+  | "errors"
+  | "values"
+  | "isSubmitting"
+  | "setFieldValue"
+  | "initialValues"
+  | "setStatus"
 >) => (
   <Form>
     <Grid container direction="row" spacing={2}>
