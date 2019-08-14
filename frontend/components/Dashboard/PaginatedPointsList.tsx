@@ -25,6 +25,14 @@ export const StudentProgresses = gql`
             user_course_progressess(course_id: $course_id) {
               id
               progress
+              user_course_service_progresses {
+                service {
+                  name
+                  id
+                }
+                progress
+                id
+              }
             }
           }
         }

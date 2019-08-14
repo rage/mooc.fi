@@ -1,8 +1,9 @@
 import React from "react"
-import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess as UserPointsData } from "../../static/types/generated/UserCourseSettingses"
 import LinearProgress from "@material-ui/core/LinearProgress"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
+
+import { pointsDataByGroup } from "../../static/types/PointsByService"
 
 const ChartContainer = styled.div`
   display: flex;
@@ -24,62 +25,90 @@ const ColoredProgressBar = styled(({ ...props }) => (
   & .MuiLinearProgress-barColorPrimary {
     background-color: #3066c0;
   }
+  & .MuiLinearProgress-barColorSecondary {
+    background-color: #789fff;
+  }
 `
 
 interface ChartProps {
-  pointsForAGroup: any
+  pointsForAGroup: pointsDataByGroup
+  showDetailed: boolean
 }
 function PointsItemTableChart(props: ChartProps) {
-  const { pointsForAGroup } = props
-  //This is due to a mistake in the seed code,
-  //which caused there to be two different terms for the group field
-  //will be removed
-  let groupName: string = ""
-  if (pointsForAGroup.group) {
-    groupName = pointsForAGroup.group
-  }
-  if (pointsForAGroup.groups) {
-    groupName = pointsForAGroup.groups
-  }
+  const { pointsForAGroup, showDetailed } = props
 
   return (
-    <ChartContainer>
-      <ChartTitle style={{ marginRight: "1rem" }}>{groupName}</ChartTitle>
-      <ChartTitle align="right">
-        {pointsForAGroup.n_points} / {pointsForAGroup.max_points}
-      </ChartTitle>
-      <ColoredProgressBar
-        variant="determinate"
-        value={(pointsForAGroup.n_points / pointsForAGroup.max_points) * 100}
-        style={{ padding: "0.5rem", flex: 1 }}
-        color="primary"
-      />
-    </ChartContainer>
+    <>
+      <ChartContainer>
+        <ChartTitle style={{ marginRight: "1rem" }}>
+          {pointsForAGroup.group}
+        </ChartTitle>
+        <ChartTitle align="right">
+          {pointsForAGroup.summary_n_points} /{" "}
+          {pointsForAGroup.summary_max_points}
+        </ChartTitle>
+        <ColoredProgressBar
+          variant="determinate"
+          value={
+            (pointsForAGroup.summary_n_points /
+              pointsForAGroup.summary_max_points) *
+            100
+          }
+          style={{ padding: "0.5rem", flex: 1 }}
+          color="primary"
+        />
+      </ChartContainer>
+      {showDetailed ? (
+        pointsForAGroup.services.length > 0 ? (
+          //@ts-ignore
+          pointsForAGroup.services.map(s => (
+            <ChartContainer
+              style={{ width: "72%", marginLeft: "18%" }}
+              key={Math.floor(Math.random() * 100000)}
+            >
+              <Typography style={{ marginRight: 5, width: "25%" }}>
+                {s.service}
+              </Typography>
+              <Typography
+                style={{ marginRight: 5, width: "25%" }}
+                align="right"
+              >
+                {s.points.n_points} / {s.points.max_points}
+              </Typography>
+              <ColoredProgressBar
+                variant="determinate"
+                value={(s.points.n_points / s.points.max_points) * 100}
+                style={{ padding: "0.5rem", flex: 1 }}
+                color="secondary"
+              />
+            </ChartContainer>
+          ))
+        ) : (
+          <p>No Data</p>
+        )
+      ) : (
+        ""
+      )}
+    </>
   )
 }
 
 interface TableProps {
-  studentPoints: UserPointsData
+  studentPoints: pointsDataByGroup[]
+  showDetailedBreakdown: boolean
 }
 function PointsItemTable(props: TableProps) {
-  const { studentPoints } = props
-  let progressData: any[] = []
-  if (studentPoints.progress) {
-    progressData = studentPoints.progress
-  }
+  const { studentPoints, showDetailedBreakdown } = props
 
   return (
     <>
-      {progressData ? (
-        progressData.map(p => (
-          <PointsItemTableChart
-            pointsForAGroup={p}
-            key={Math.floor(Math.random() * 100000)}
-          />
-        ))
-      ) : (
-        <p>No points data available</p>
-      )}
+      {studentPoints.map(p => (
+        <PointsItemTableChart
+          pointsForAGroup={p}
+          showDetailed={showDetailedBreakdown}
+          key={Math.floor(Math.random() * 100000)}
+        />
+      ))}
     </>
   )
 }
