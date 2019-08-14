@@ -3,7 +3,7 @@ import { isSignedIn } from "../../lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "../../lib/redirect"
 import { gql } from "apollo-boost"
-import { useQuery } from "react-apollo-hooks"
+import { useQuery } from "@apollo/react-hooks"
 
 export const UserPointsQuery = gql`
   query UserPoints {
