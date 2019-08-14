@@ -60,6 +60,128 @@ const addUsers = async () => {
   }
 }
 
+const addServices = async () => {
+  let i = 0
+  while (i < 5) {
+    const newService = {
+      url: generateRandomString(),
+      name: generateRandomString(),
+    }
+    await prisma.createService(newService)
+    i += 1
+  }
+}
+
+const addUserCourseServiceProgressess = async ({
+  courseId,
+}: {
+  courseId: string
+}) => {
+  const UsersInDb = await prisma.users({ first: 100 })
+  const ServicesInDb = await prisma.services({ first: 5 })
+  const AllServiceIds = ServicesInDb.map(s => s.id)
+  return await Promise.all(
+    UsersInDb.map(async user => {
+      const ucsp = {
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        course: {
+          connect: {
+            id: courseId,
+          },
+        },
+        service: {
+          connect: {
+            id: AllServiceIds[Math.floor(Math.random() * 5)],
+          },
+        },
+        progress: [
+          {
+            group: "week1",
+            max_points: 10,
+            n_points: Math.floor(Math.random() * 10),
+            progress: Math.random(),
+          },
+          {
+            group: "week2",
+            max_points: 8,
+            n_points: Math.floor(Math.random() * 8),
+            progress: Math.random(),
+          },
+          {
+            group: "week3",
+            max_points: 12,
+            n_points: Math.floor(Math.random() * 12),
+            progress: Math.random(),
+          },
+          {
+            group: "week4",
+            max_points: 20,
+            n_points: Math.floor(Math.random() * 20),
+            progress: Math.random(),
+          },
+          {
+            group: "week5",
+            max_points: 18,
+            n_points: Math.floor(Math.random() * 18),
+            progress: Math.random(),
+          },
+        ],
+        user_course_progress: {
+          create: {
+            user: {
+              connect: {
+                id: user.id,
+              },
+            },
+            course: {
+              connect: {
+                id: courseId,
+              },
+            },
+            progress: [
+              {
+                group: "week1",
+                max_points: 10,
+                n_points: Math.floor(Math.random() * 10),
+                progress: Math.random(),
+              },
+              {
+                group: "week2",
+                max_points: 8,
+                n_points: Math.floor(Math.random() * 8),
+                progress: Math.random(),
+              },
+              {
+                group: "week3",
+                max_points: 12,
+                n_points: Math.floor(Math.random() * 12),
+                progress: Math.random(),
+              },
+              {
+                group: "week4",
+                max_points: 20,
+                n_points: Math.floor(Math.random() * 20),
+                progress: Math.random(),
+              },
+              {
+                group: "week5",
+                max_points: 18,
+                n_points: Math.floor(Math.random() * 18),
+                progress: Math.random(),
+              },
+            ],
+          },
+        },
+      }
+      await prisma.createUserCourseServiceProgress(ucsp)
+    }),
+  )
+}
+
 const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })
   return await Promise.all(
@@ -143,6 +265,7 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
 const seedPointsData = async () => {
   const course = await prisma.course({ slug: "elements-of-ai" })
   await addUsers()
+  await addServices()
   await addUserCourseProgressess({ courseId: course.id })
   await addUserCourseSettingses({ courseId: course.id })
 }

@@ -14,6 +14,7 @@ export interface UserCourseSettingses_UserCourseSettingses_pageInfo {
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses_service {
   __typename: "Service"
+  name: string
   id: any
 }
 
