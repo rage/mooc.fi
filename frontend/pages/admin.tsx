@@ -1,11 +1,11 @@
 import * as React from "react"
-import Container from "/components/Container"
+import Container from "../components/Container"
 import { Card, Typography, Link } from "@material-ui/core"
 import styled from "styled-components"
 import { NextPageContext } from "next"
-import { isAdmin, isSignedIn } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
+import { isAdmin, isSignedIn } from "../lib/authentication"
+import redirect from "../lib/redirect"
+import AdminError from "../components/Dashboard/AdminError"
 
 const StyledCard = styled(Card)`
   width: 100%;
