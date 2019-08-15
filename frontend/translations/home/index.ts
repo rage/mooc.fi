@@ -1,8 +1,11 @@
 import en from "./en.json"
 import fi from "./fi.json"
+import getTranslator from "/translations"
 
-type HomeTranslations = Partial<typeof en>
-type Keys = keyof HomeTranslations
+type HomeTranslations = typeof en | typeof fi // Partial<typeof en>
+
+export default getTranslator<HomeTranslations>({ en, fi })
+/* type Keys = keyof HomeTranslations
 
 const dicts: { [lng: string]: HomeTranslations } = { en, fi }
 
@@ -18,4 +21,4 @@ function getHomeTranslator(lng: string) {
   return getTranslation
 }
 
-export default getHomeTranslator
+export default getHomeTranslator */

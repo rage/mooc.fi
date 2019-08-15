@@ -1,8 +1,11 @@
 import en from "./en.json"
 import fi from "./fi.json"
+import getTranslator from "/translations"
 
-type RegisterCompletionTranslations = Partial<typeof en>
-type Keys = keyof RegisterCompletionTranslations
+type RegisterCompletionTranslations = typeof en | typeof fi
+
+export default getTranslator<RegisterCompletionTranslations>({ en, fi })
+/* type Keys = keyof RegisterCompletionTranslations
 
 const dicts: { [lng: string]: RegisterCompletionTranslations } = { en, fi }
 
@@ -18,4 +21,4 @@ function getRegisterCompletionTranslator(lng: string) {
   return getTranslation
 }
 
-export default getRegisterCompletionTranslator
+export default getRegisterCompletionTranslator */

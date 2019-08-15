@@ -10,22 +10,24 @@ import {
   FieldArray,
   getIn,
 } from "formik"
+import {
+  InputLabel,
+  FormGroup,
+  FormControl,
+  Grid,
+  MenuItem,
+  Typography,
+  InputAdornment,
+  Tooltip,
+  Paper,
+  Button,
+} from "@material-ui/core"
 import * as Yup from "yup"
-import FormWrapper from "../FormWrapper"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 import { TextField } from "formik-material-ui"
-import InputLabel from "@material-ui/core/InputLabel"
-import FormGroup from "@material-ui/core/FormGroup"
-import FormControl from "@material-ui/core/FormControl"
-import Grid from "@material-ui/core/Grid"
-import MenuItem from "@material-ui/core/MenuItem"
-import Typography from "@material-ui/core/Typography"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import Tooltip from "@material-ui/core/Tooltip"
-import Paper from "@material-ui/core/Paper"
-import Button from "@material-ui/core/Button"
-import ConfirmationDialog from "../../ConfirmationDialog"
+import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import useDebounce from "/util/useDebounce"
 import HelpIcon from "@material-ui/icons/Help"
 
@@ -158,9 +160,7 @@ const renderForm = ({
         <OutlinedFormGroup>
           <ModuleImage
             src={
-              image
-                ? `../../../static/images/${image}`
-                : `../../../static/images/${slug}.jpg`
+              image ? `/static/images/${image}` : `/static/images/${slug}.jpg`
             }
             error={!!imageError}
             onError={() => setImageError("no image found")}

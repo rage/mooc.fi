@@ -103,11 +103,11 @@ const NaviCardBodyText = styled(Typography)`
 function ModuleCard({ module }: { module?: ObjectifiedModule }) {
   const imageUrl = module
     ? module.image
-      ? `../static/images/${module.image}`
-      : `../static/images/${module.slug}.jpg`
+      ? `/static/images/${module.image}`
+      : `/static/images/${module.slug}.jpg`
     : "" // TODO: placeholder
 
-  //  require(`../static/images/courseimages/${course.slug}.png`)
+  //  require(`/static/images/courseimages/${course.slug}.png`)
   // removed doggos as a placeholder for the time being
 
   return (

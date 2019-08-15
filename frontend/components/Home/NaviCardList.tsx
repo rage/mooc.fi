@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Grid } from "@material-ui/core"
 import NaviCard from "./NaviCard"
 
-import Container from "../Container"
+import Container from "/components/Container"
 import LanguageContext from "/contexes/LanguageContext"
 import getNaviTranslator from "/translations/navi"
 
@@ -18,7 +18,7 @@ function NaviCardList() {
   const lng = useContext(LanguageContext)
   const t = getNaviTranslator(lng.language)
 
-  const items = t("naviItem") as NaviItem[]
+  const items = t("naviItems") as NaviItem[]
 
   return (
     <Container>

@@ -1,5 +1,5 @@
 import React from "react"
-import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/generated/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
 import {
   ListItem,
   ListItemText,
@@ -8,7 +8,7 @@ import {
   ListItemIcon,
   Icon,
 } from "@material-ui/core"
-import { AllCompletions_completionsPaginated_edges_node_completions_registered as completionsRegistered } from "../../static/types/generated/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node_completions_registered as completionsRegistered } from "/static/types/generated/AllCompletions"
 import DoneIcon from "@material-ui/icons/Done"
 import CloseIcon from "@material-ui/icons/Close"
 import styled from "styled-components"

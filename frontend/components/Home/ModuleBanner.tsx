@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import { ObjectifiedModule } from "/static/types/moduleTypes"
 
 const ModuleBannerContainer = styled.section`
   display: flex;
@@ -50,8 +50,8 @@ const ImageBackground = styled.div`
 
 function ModuleBanner({ module }: { module: ObjectifiedModule }) {
   const imageUrl = module!.image
-    ? `../../static/images/${module.image}`
-    : `../../static/images/${module.slug}.jpg`
+    ? `/static/images/${module.image}`
+    : `/static/images/${module.slug}.jpg`
 
   return (
     <ModuleBannerContainer>

@@ -1,7 +1,7 @@
 import React from "react"
 import { Grid } from "@material-ui/core"
 import ModuleCard from "./ModuleCard"
-import { ObjectifiedModule } from "./../static/types/moduleTypes"
+import { ObjectifiedModule } from "/static/types/moduleTypes"
 
 interface ModuleGridProps {
   modules: ObjectifiedModule[]
