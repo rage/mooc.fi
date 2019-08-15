@@ -1,10 +1,12 @@
 import en from "./en.json"
 import fi from "./fi.json"
+import getTranslator from "/translations"
 
-type NaviTranslations = Partial<typeof en>
-type Keys = keyof NaviTranslations
+type NaviTranslations = typeof en | typeof fi
+export default getTranslator<NaviTranslations>({ en, fi })
+// type Keys = keyof NaviTranslations
 
-const dicts: { [lng: string]: NaviTranslations } = { en, fi }
+/* const dicts: { [lng: string]: NaviTranslations } = { en, fi }
 
 function getNaviTranslator(lng: string) {
   const dictionary = dicts[lng] || {}
@@ -18,4 +20,4 @@ function getNaviTranslator(lng: string) {
   return getTranslation
 }
 
-export default getNaviTranslator
+export default getNaviTranslator */

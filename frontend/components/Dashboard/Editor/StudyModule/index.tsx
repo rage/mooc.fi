@@ -8,12 +8,12 @@ import {
   DeleteStudyModuleMutation,
   CheckModuleSlugQuery,
 } from "./graphql"
-import { AllModulesQuery } from "../../../../pages/study-modules"
+import { AllModulesQuery } from "/pages/[lng]/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import NextI18Next from "../../../../i18n"
+import NextI18Next from "/i18n"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
-import { StudyModuleQuery } from "/pages/study-modules/[id]/edit"
+import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 

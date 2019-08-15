@@ -23,14 +23,14 @@ import {
 import { TextField, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
-import ImageDropzoneInput from "../../ImageDropzoneInput"
-import ImagePreview from "../../ImagePreview"
+import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
+import ImagePreview from "/components/Dashboard/ImagePreview"
 import { statuses } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
-import { addDomain } from "../../../../util/imageUtils"
-import FormWrapper from "../FormWrapper"
-import { StudyModules_study_modules } from "../../../../static/types/StudyModules"
+import { addDomain } from "/util/imageUtils"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
+import { StudyModules_study_modules } from "/static/types/StudyModules"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;

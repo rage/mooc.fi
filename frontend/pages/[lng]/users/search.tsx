@@ -5,7 +5,7 @@ import { ApolloConsumer } from "@apollo/react-common"
 import {
   UserEmailContains,
   UserEmailContains_userEmailContains_edges,
-} from "../../static/types/generated/UserEmailContains"
+} from "/static/types/generated/UserEmailContains"
 import { useTheme } from "@material-ui/core/styles"
 import Button from "@material-ui/core/Button"
 import TextField from "@material-ui/core/TextField"
@@ -22,14 +22,14 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
 import LastPageIcon from "@material-ui/icons/LastPage"
 import { ApolloClient } from "apollo-boost"
-import Container from "../../components/Container"
+import Container from "/components/Container"
 import { TableHead, Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { NextPageContext as NextContext } from "next"
-import { isAdmin } from "../../lib/authentication"
-import redirect from "../../lib/redirect"
-import { isSignedIn } from "../../lib/authentication"
-import AdminError from "../../components/Dashboard/AdminError"
+import { isAdmin } from "/lib/authentication"
+import redirect from "/lib/redirect"
+import { isSignedIn } from "/lib/authentication"
+import AdminError from "/components/Dashboard/AdminError"
 
 interface UserSearchProps {
   namespacesRequired: string[]

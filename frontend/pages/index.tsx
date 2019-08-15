@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from "react"
-import NextI18Next from "../i18n"
-import ExplanationHero from "../components/Home/ExplanationHero"
-import NaviCardList from "../components/Home/NaviCardList"
-import CourseHighlights from "../components/Home/CourseHighlights"
-import EmailSubscribe from "../components/Home/EmailSubscribe"
+import NextI18Next from "/i18n"
+import ExplanationHero from "/components/Home/ExplanationHero"
+import NaviCardList from "/components/Home/NaviCardList"
+import CourseHighlights from "/components/Home/CourseHighlights"
+import EmailSubscribe from "/components/Home/EmailSubscribe"
 import {
   filterAndModifyCoursesByLanguage,
   mapNextLanguageToLocaleCode,
   filterAndModifyByLanguage,
-} from "../util/moduleFunctions"
+} from "/util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
+// import Spinner from "/components/Spinner"
+import { ObjectifiedCourse, ObjectifiedModule } from "/static/types/moduleTypes"
 import Spinner from "/components/Spinner"
-import {
-  ObjectifiedCourse,
-  ObjectifiedModule,
-} from "../static/types/moduleTypes"
 import ModuleNavi from "/components/Home/ModuleNavi"
 import Module from "/components/Home/Module"
 
-/* const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
-const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000") */
-const highlightsBanner = "../static/images/backgroundPattern.svg"
+/* const allCoursesBanner = require("/static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const oldCoursesBanner = require("/static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000") */
+const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 const AllModulesQuery = gql`
   query AllModules {

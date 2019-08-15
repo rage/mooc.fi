@@ -1,6 +1,6 @@
 import * as React from "react"
 import { AppBar, Toolbar, Typography, Avatar } from "@material-ui/core"
-import NextI18Next from "../i18n"
+import NextI18Next from "/i18n"
 import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import useScrollTrigger from "@material-ui/core/useScrollTrigger"

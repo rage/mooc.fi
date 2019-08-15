@@ -1,9 +1,9 @@
 import React from "react"
 import { NextPageContext as NextContext } from "next"
-import redirect from "../lib/redirect"
+import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import { UserOverView as UserOverViewData } from "../static/types/generated/UserOverView"
+import { UserOverView as UserOverViewData } from "/static/types/generated/UserOverView"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 

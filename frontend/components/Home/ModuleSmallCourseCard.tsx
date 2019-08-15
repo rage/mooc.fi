@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { Grid, Typography, ButtonBase, Badge } from "@material-ui/core"
 import styled from "styled-components"
-import { ObjectifiedModuleCourse } from "../../static/types/moduleTypes"
+import { ObjectifiedModuleCourse } from "/static/types/moduleTypes"
 import { CourseStatus } from "/static/types/globalTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"

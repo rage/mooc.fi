@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
-import NextI18Next from "../i18n"
+import NextI18Next from "/i18n"
 import {
   UserOverView_currentUser_completions,
   UserOverView_currentUser_completions_completions_registered,

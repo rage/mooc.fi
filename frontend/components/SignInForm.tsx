@@ -7,8 +7,8 @@ import {
   FormHelperText,
 } from "@material-ui/core"
 
-import { signIn } from "../lib/authentication"
-import NextI18Next from "../i18n"
+import { signIn } from "/lib/authentication"
+import NextI18Next from "/i18n"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles(() =>

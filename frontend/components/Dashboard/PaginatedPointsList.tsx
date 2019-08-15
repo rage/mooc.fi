@@ -1,8 +1,8 @@
 import React from "react"
 import { gql } from "apollo-boost"
-import ErrorBoundary from "../ErrorBoundary"
+import ErrorBoundary from "/components/ErrorBoundary"
 import { useQuery } from "@apollo/react-hooks"
-import { UserCourseSettingses as StudentProgressData } from "../../static/types/generated/UserCourseSettingses"
+import { UserCourseSettingses as StudentProgressData } from "/static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
 import Button from "@material-ui/core/Button"
 
