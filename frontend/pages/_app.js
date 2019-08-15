@@ -2,7 +2,6 @@ import React from "react"
 import App, { Container } from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
-import * as gtag from "../lib/gtag"
 import Head from "next/head"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import { StylesProvider } from "@material-ui/styles"
@@ -36,8 +35,15 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, apollo, signedIn, admin, url } = this.props
-    const { lng = "fi" } = pageProps
+    const {
+      Component,
+      pageProps,
+      apollo,
+      signedIn,
+      admin,
+      url,
+      lng,
+    } = this.props
 
     return (
       <Container>
@@ -79,7 +85,7 @@ function createPath(originalUrl) {
 
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
-
+  const lng = ctx.req.query.lng || "fi"
   let originalProps = {}
 
   if (originalGetInitialProps) {
@@ -91,7 +97,7 @@ MyApp.getInitialProps = async arg => {
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
     // @ts-ignore
-    language: ctx && ctx.req ? ctx.req.language : "",
+    lng,
     url: ctx && ctx.req ? createPath(ctx.req.originalUrl) : "",
   }
 }
