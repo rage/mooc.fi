@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import NextI18Next from "/i18n"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
@@ -13,6 +13,8 @@ import {
   faBook,
   faComments,
 } from "@fortawesome/free-solid-svg-icons"
+import LanguageContext from "/contexes/LanguageContext"
+import getTeachersTranslator from "/translations/teachers"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;
@@ -42,13 +44,10 @@ const StyledIcon = styled(FontAwesomeIcon)`
 const StyledButton = styled(Button)`
   margin: 2rem !important;
 `
-interface TeacherProps {
-  t: Function
-  i18n: any
-}
 
-const ForTeachers = (props: TeacherProps) => {
-  const { t, i18n } = props
+const ForTeachers = () => {
+  const lng = useContext(LanguageContext)
+  const t = getTeachersTranslator(lng.language)
   return (
     <section>
       <ContentBlock>
@@ -123,7 +122,7 @@ const ForTeachers = (props: TeacherProps) => {
           <NextI18Next.Trans i18nKey="teachers:howtoNB" />
         </TextBlock>
       </ContentBlock>
-      {i18n.language === "fi" ? (
+      {lng.language === "fi" ? (
         <section>
           <ContentBlock>
             <StyledIcon icon={faUserFriends} size="3x" />
@@ -165,10 +164,4 @@ const ForTeachers = (props: TeacherProps) => {
   )
 }
 
-ForTeachers.getInitialProps = function() {
-  return {
-    namespacesRequired: ["teachers"],
-  }
-}
-
-export default NextI18Next.withTranslation("teachers")(ForTeachers)
+export default ForTeachers

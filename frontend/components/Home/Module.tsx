@@ -7,7 +7,7 @@ import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import Container from "../Container"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import { ObjectifiedModule } from "/static/types/moduleTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 
