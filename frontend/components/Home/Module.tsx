@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 // import Link from "@material-ui/core/Link"
@@ -6,9 +6,10 @@ import styled from "styled-components"
 import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
-import NextI18Next from "../../i18n"
 import Container from "../Container"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -50,7 +51,8 @@ const ModuleHomeLink = styled(Link)`
 ` */
 
 function Module({ module }: { module: ObjectifiedModule }) {
-  const { t } = NextI18Next.useTranslation("home")
+  const lng = useContext(LanguageContext)
+  const t = getHomeTranslator(lng.language)
   const startCourses = (module.courses || []).filter(
     c => !c.hidden && c.study_module_start_point,
   )

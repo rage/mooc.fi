@@ -36,15 +36,8 @@ class MyApp extends App {
   }
 
   render() {
-    const {
-      Component,
-      pageProps,
-      apollo,
-      signedIn,
-      admin,
-      language,
-      url,
-    } = this.props
+    const { Component, pageProps, apollo, signedIn, admin, url } = this.props
+    const { lng = "fi" } = pageProps
 
     return (
       <Container>
@@ -57,7 +50,7 @@ class MyApp extends App {
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={signedIn}>
                 <UserDetailContext.Provider value={admin}>
-                  <LanguageContext.Provider value={{ language, url }}>
+                  <LanguageContext.Provider value={{ lng, url }}>
                     <Layout>
                       <Component {...pageProps} />
                     </Layout>
