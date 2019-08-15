@@ -13,7 +13,6 @@ import LoginStateContext from "../contexes/LoginStateContext"
 import UserDetailContext from "../contexes/UserDetailContext"
 import LanguageContext from "../contexes/LanguageContext"
 import withApolloClient from "../lib/with-apollo-client"
-import NextI18Next from "../i18n"
 import theme from "../src/theme"
 import OpenSansCondensed from "typeface-open-sans-condensed"
 import Roboto from "typeface-roboto"
@@ -102,6 +101,4 @@ MyApp.getInitialProps = async arg => {
   }
 }
 
-const withTranslation = NextI18Next.appWithTranslation(MyApp)
-
-export default withApolloClient(withTranslation)
+export default withApolloClient(MyApp)

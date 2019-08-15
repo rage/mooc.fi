@@ -9,11 +9,11 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
-import NextI18Next from "/i18n"
 import Spinner from "/components/Spinner"
 import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
+import Link from "next/link"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -145,7 +145,7 @@ const EditCourse = (props: EditCourseProps) => {
             <Typography variant="body2">
               You will be redirected back to the course list in 5 seconds -
               press{" "}
-              <NextI18Next.Link href={listLink}>
+              <Link href={listLink}>
                 <a
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
@@ -153,7 +153,7 @@ const EditCourse = (props: EditCourseProps) => {
                 >
                   here
                 </a>
-              </NextI18Next.Link>{" "}
+              </Link>{" "}
               to go there now.
             </Typography>
           </ErrorContainer>

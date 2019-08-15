@@ -4,7 +4,7 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
-import NextI18Next from "/i18n"
+import Link from "next/link"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -93,7 +93,7 @@ function ModuleNaviCard({ module }: { module: ObjectifiedModule }) {
 
   return (
     <Grid item xs={12} md={6} lg={6}>
-      <NextI18Next.Link href={`#${module.slug}`}>
+      <Link href={`#${module.slug}`}>
         <Base focusRipple>
           <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
           <ImageCover />
@@ -102,7 +102,7 @@ function ModuleNaviCard({ module }: { module: ObjectifiedModule }) {
             <NaviCardBodyText paragraph>{module.description}</NaviCardBodyText>
           </ContentArea>
         </Base>
-      </NextI18Next.Link>
+      </Link>
     </Grid>
   )
 }

@@ -10,13 +10,13 @@ import {
 import { CourseFormValues } from "./types"
 import courseEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import NextI18Next from "/i18n"
 import { AllCoursesQuery } from "/pages/[lng]/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { StudyModules_study_modules } from "/static/types/StudyModules"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
 import { FetchResult, PureQueryOptions } from "apollo-boost"
 import { toCourseForm, fromCourseForm } from "./serialization"
+import Router from "next/router"
 
 const CourseEdit = ({
   course,
@@ -73,7 +73,7 @@ const CourseEdit = ({
         })
 
         setStatus({ message: null })
-        NextI18Next.Router.push("/courses")
+        Router.push("/courses")
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -86,12 +86,12 @@ const CourseEdit = ({
   const onDelete = useCallback(async (values: CourseFormValues) => {
     if (values.id) {
       await deleteCourse({ variables: { id: values.id } })
-      NextI18Next.Router.push("/courses")
+      Router.push("/courses")
     }
   }, [])
 
   const onCancel = useCallback(() => {
-    NextI18Next.Router.push("/courses")
+    Router.push("/courses")
   }, [])
 
   return (
