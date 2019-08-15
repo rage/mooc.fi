@@ -116,7 +116,7 @@ function SignIn() {
       </Button>
       <Link href="https://tmc.mooc.fi/password_reset_keys/new">
         <a href="https://tmc.mooc.fi/password_reset_keys/new">
-          {t("forgottenPw")}
+          {t("forgottenpw")}
         </a>
       </Link>
     </form>
