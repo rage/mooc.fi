@@ -7,7 +7,7 @@ const NextI18Next = new I18Next({
   otherLanguages: ["en", "se"],
   localeSubpaths: "foreign",
   returnObjects: true,
-  defaultNS: "common",
+  defaultNS: "home", // was: common
   browserLanguageDetection: false,
   serverLanguageDetection: false,
   load: "languageOnly",

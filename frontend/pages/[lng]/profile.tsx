@@ -79,9 +79,7 @@ function MyProfile() {
 MyProfile.getInitialProps = function(context: NextContext) {
   redirect(context, "/profile/completions")
 
-  return {
-    namespacesRequired: ["common"],
-  }
+  return {}
 }
 
 export default MyProfile
