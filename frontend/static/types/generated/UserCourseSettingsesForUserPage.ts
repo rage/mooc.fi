@@ -28,9 +28,16 @@ export interface UserCourseSettingsesForUserPage_UserCourseSettingses_edges {
   node: UserCourseSettingsesForUserPage_UserCourseSettingses_edges_node
 }
 
+export interface UserCourseSettingsesForUserPage_UserCourseSettingses_pageInfo {
+  __typename: "PageInfo"
+  endCursor: string | null
+  hasNextPage: boolean
+}
+
 export interface UserCourseSettingsesForUserPage_UserCourseSettingses {
   __typename: "UserCourseSettingsConnection"
   edges: UserCourseSettingsesForUserPage_UserCourseSettingses_edges[]
+  pageInfo: UserCourseSettingsesForUserPage_UserCourseSettingses_pageInfo
 }
 
 export interface UserCourseSettingsesForUserPage {
