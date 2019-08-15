@@ -3,7 +3,7 @@ import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { TextField } from "formik-material-ui"
 import { CourseTranslationFormValues } from "./types"
-import ConfirmationDialog from "../../ConfirmationDialog"
+import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 

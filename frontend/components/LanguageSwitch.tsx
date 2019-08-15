@@ -1,8 +1,7 @@
 import React from "react"
 import Language from "@material-ui/icons/Language"
-
 import styled from "styled-components"
-import LanguageContext from "../contexes/LanguageContext"
+import LanguageContext from "/contexes/LanguageContext"
 
 const SwitchLink = styled.a`
   font-size: 14px;

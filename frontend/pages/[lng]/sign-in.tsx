@@ -10,7 +10,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
 import Container from "/components/Container"
 import LanguageContext from "/contexes/LanguageContext"
-import getSignInTranslator from "/translations/home"
+import getSignInTranslator from "/translations/common"
 import { useContext } from "react"
 
 const useStyles = makeStyles(() =>

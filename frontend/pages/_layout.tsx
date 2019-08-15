@@ -1,7 +1,7 @@
 import * as React from "react"
-import Header from "../components/Header"
-import Footer from "../components/Footer"
-import SkipLink from "../components/SkipLink"
+import Header from "/components/Header"
+import Footer from "/components/Footer"
+import SkipLink from "/components/SkipLink"
 import styled from "styled-components"
 
 const FooterDownPusherWrapper = styled.div`
