@@ -1,17 +1,17 @@
 import React from "react"
-import { isSignedIn } from "../../lib/authentication"
+import { isSignedIn } from "/lib/authentication"
 import { NextPageContext as NextContext } from "next"
-import redirect from "../../lib/redirect"
+import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import {
   CurrentUserUserOverView as UserOverViewData,
   CurrentUserUserOverView_currentUser_completions,
-} from "../../static/types/generated/CurrentUserUserOverView"
+} from "/static/types/generated/CurrentUserUserOverView"
 /* import styled from "styled-components"
 import Typography from "@material-ui/core/Typography" */
-import Container from "../../components/Container"
-import Completions from "../../components/Completions"
+import Container from "/components/Container"
+import Completions from "/components/Completions"
 
 export const UserOverViewQuery = gql`
   query CurrentUserUserOverView {

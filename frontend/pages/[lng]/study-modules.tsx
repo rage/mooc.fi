@@ -2,18 +2,18 @@ import * as React from "react"
 import { NextPageContext as NextContext } from "next"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import AdminError from "../components/Dashboard/AdminError"
+import AdminError from "/components/Dashboard/AdminError"
 import {
   Container,
   Grid,
   CircularProgress,
   Typography,
 } from "@material-ui/core"
-import { WideContainer } from "../components/Container"
+import { WideContainer } from "/components/Container"
 import { AllModules } from "/static/types/generated/AllModules"
-import { isAdmin, isSignedIn } from "../lib/authentication"
-import redirect from "../lib/redirect"
-import ModuleGrid from "../components/ModuleGrid"
+import { isAdmin, isSignedIn } from "/lib/authentication"
+import redirect from "/lib/redirect"
+import ModuleGrid from "/components/ModuleGrid"
 import styled from "styled-components"
 
 export const AllModulesQuery = gql`

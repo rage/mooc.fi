@@ -1,14 +1,14 @@
 import React from "react"
-import { isSignedIn } from "../../lib/authentication"
+import { isSignedIn } from "/lib/authentication"
 import { NextPageContext as NextContext } from "next"
-import redirect from "../../lib/redirect"
+import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 //import PointsListItemCard from "../../components/Dashboard/PointsListItemCard"
 import {
   UserPoints,
   UserPoints_currentUser_user_course_progresses as UserPointsData,
-} from "../../static/types/generated/UserPoints"
+} from "/static/types/generated/UserPoints"
 
 export const UserPointsQuery = gql`
   query UserPoints {

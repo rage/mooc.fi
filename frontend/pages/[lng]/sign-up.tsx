@@ -1,13 +1,13 @@
 import React, { useState } from "react"
 
-import CreateAccountForm from "../components/CreateAccountForm"
-import ConfirmEmail from "../components/ConfirmEmail"
+import CreateAccountForm from "/components/CreateAccountForm"
+import ConfirmEmail from "/components/ConfirmEmail"
 
-import { RegularContainer } from "../components/Container"
+import { RegularContainer } from "/components/Container"
 import { NextPageContext } from "next"
-import { isSignedIn } from "../lib/authentication"
-import redirect from "../lib/redirect"
-import NextI18Next from "../i18n"
+import { isSignedIn } from "/lib/authentication"
+import redirect from "/lib/redirect"
+import NextI18Next from "/i18n"
 
 interface SignUpPageProps {
   t: Function
