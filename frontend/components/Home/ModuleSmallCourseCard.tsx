@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Grid, Typography, ButtonBase, Badge } from "@material-ui/core"
 import styled from "styled-components"
 import { ObjectifiedModuleCourse } from "../../static/types/moduleTypes"
 import { CourseStatus } from "/static/types/globalTypes"
-import NextI18Next from "/i18n"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const CourseTitle = styled(Typography)`
   margin-bottom: 0.5rem;
@@ -70,7 +71,8 @@ function ModuleSmallCourseCard({
 }: {
   course: ObjectifiedModuleCourse
 }) {
-  const { t } = NextI18Next.useTranslation("home")
+  const lng = useContext(LanguageContext)
+  const t = getHomeTranslator(lng.language)
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={4}>

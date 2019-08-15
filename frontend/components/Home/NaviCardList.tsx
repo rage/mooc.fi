@@ -1,8 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Grid } from "@material-ui/core"
 import NaviCard from "./NaviCard"
-import NextI18Next from "../../i18n"
+
 import Container from "../Container"
+import LanguageContext from "/contexes/LanguageContext"
+import getNaviTranslator from "/translations/navi"
 
 type NaviItem = {
   title: string
@@ -13,21 +15,20 @@ type NaviItem = {
 }
 
 function NaviCardList() {
-  const { t, ready } = NextI18Next.useTranslation("navi")
-  if (ready) {
-    const items: NaviItem[] = t("naviItems")
+  const lng = useContext(LanguageContext)
+  const t = getNaviTranslator(lng.language)
 
-    return (
-      <Container>
-        <Grid container spacing={3}>
-          {items.map(item => (
-            <NaviCard key={`navi-${item.title}`} item={item} />
-          ))}
-        </Grid>
-      </Container>
-    )
-  }
-  return <p>Loading</p>
+  const items = t("naviItem") as NaviItem[]
+
+  return (
+    <Container>
+      <Grid container spacing={3}>
+        {items.map(item => (
+          <NaviCard key={`navi-${item.title}`} item={item} />
+        ))}
+      </Grid>
+    </Container>
+  )
 }
 
 export default NaviCardList

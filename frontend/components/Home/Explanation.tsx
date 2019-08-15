@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useContext } from "react"
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
-import NextI18Next from "../../i18n"
 import styled from "styled-components"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const ExplanationRoot = styled.div`
   max-width: 80%;
@@ -65,11 +66,11 @@ const CourseButton = styled(Button)`
   width: 40%;
   margin: auto;
 `
-interface ExplanationProps {
-  t: Function
-}
-function Explanation(props: ExplanationProps) {
-  const { t } = props
+
+function Explanation() {
+  const lng = useContext(LanguageContext)
+  const t = getHomeTranslator(lng.language)
+
   return (
     <ExplanationRoot>
       <Title component="h1" variant="h1">
@@ -85,4 +86,4 @@ function Explanation(props: ExplanationProps) {
     </ExplanationRoot>
   )
 }
-export default NextI18Next.withTranslation("home")(Explanation)
+export default Explanation

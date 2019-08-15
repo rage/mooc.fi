@@ -1,11 +1,12 @@
-import React from "react"
+import React, { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Grid from "@material-ui/core/Grid"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
-import NextI18Next from "../../i18n"
 import Container from "../Container"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 function ModuleNavi({ modules }: { modules: ObjectifiedModule[] }) {
-  const { t } = NextI18Next.useTranslation("home")
+  const lng = useContext(LanguageContext)
+  const t = getHomeTranslator(lng.language)
+
   const classes = useStyles()
 
   return (
