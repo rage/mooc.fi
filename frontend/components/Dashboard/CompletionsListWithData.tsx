@@ -2,7 +2,7 @@ import React from "react"
 import { List } from "@material-ui/core"
 import CompletionCard from "./CompletionCard"
 import CompletionPaginator from "./CompletionPaginator"
-import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/generated/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
 
 interface CompletionsListWithDataProps {
   completions: AllCompletions_completionsPaginated_edges_node[]

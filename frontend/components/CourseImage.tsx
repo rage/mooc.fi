@@ -1,8 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import { addDomain } from "../util/imageUtils"
-import { AllCourses_courses_photo } from "../static/types/generated/AllCourses"
-import { AllModules_study_modules_courses_photo } from "../static/types/generated/AllModules"
+import { addDomain } from "/util/imageUtils"
+import { AllCourses_courses_photo } from "/static/types/generated/AllCourses"
+import { AllModules_study_modules_courses_photo } from "/static/types/generated/AllModules"
 
 const ImageComponent = styled.img`
   width: 100%;

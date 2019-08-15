@@ -3,8 +3,8 @@ import { Grid, Typography, Button } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
-import NextI18Next from "../i18n"
-import { ObjectifiedModule } from "./../static/types/moduleTypes"
+import NextI18Next from "/i18n"
+import { ObjectifiedModule } from "/static/types/moduleTypes"
 import styled from "styled-components"
 
 const Base = styled.div`
@@ -103,11 +103,11 @@ const NaviCardBodyText = styled(Typography)`
 function ModuleCard({ module }: { module?: ObjectifiedModule }) {
   const imageUrl = module
     ? module.image
-      ? `../static/images/${module.image}`
-      : `../static/images/${module.slug}.jpg`
+      ? `/static/images/${module.image}`
+      : `/static/images/${module.slug}.jpg`
     : "" // TODO: placeholder
 
-  //  require(`../static/images/courseimages/${course.slug}.png`)
+  //  require(`/static/images/courseimages/${course.slug}.png`)
   // removed doggos as a placeholder for the time being
 
   return (
@@ -164,11 +164,11 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
 /*
       <Card className={classes.card}>
         <CardMedia className={classes.media}
-          image={module ? module.image ? require(`../static/images/${module.image}`) : require(`../static/images/${module.slug}.jpg`) : ''}
+          image={module ? module.image ? require(`/static/images/${module.image}`) : require(`/static/images/${module.slug}.jpg`) : ''}
         >
           {module ? (
             null
-             <img src={module.image ? `../static/images/${module.image}` : `../static/images/${module.slug}.jpg`} alt={module.name} />
+             <img src={module.image ? `/static/images/${module.image}` : `/static/images/${module.slug}.jpg`} alt={module.name} />
           ) : (
   <NextI18Next.Link
   as={`/study-modules/new`}

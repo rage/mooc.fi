@@ -1,7 +1,7 @@
 import React from "react"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
 
-import NextI18Next from "../i18n"
+import NextI18Next from "/i18n"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles(() =>

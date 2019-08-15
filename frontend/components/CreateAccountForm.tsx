@@ -1,8 +1,8 @@
 import React from "react"
 import { TextField, Button, Link, Typography } from "@material-ui/core"
-import { createAccount } from "../lib/create-account"
-import { signIn as authenticate } from "../lib/authentication"
-import NextI18Next from "../i18n"
+import { createAccount } from "/lib/create-account"
+import { signIn as authenticate } from "/lib/authentication"
+import NextI18Next from "/i18n"
 
 import styled from "styled-components"
 

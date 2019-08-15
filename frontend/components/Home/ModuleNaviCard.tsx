@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import { ObjectifiedModule } from "/static/types/moduleTypes"
 import NextI18Next from "/i18n"
 
 const Base = styled(ButtonBase)`
@@ -88,8 +88,8 @@ const NaviCardBodyText = styled(Typography)`
 `
 function ModuleNaviCard({ module }: { module: ObjectifiedModule }) {
   const imageUrl = module.image
-    ? `../../static/images/${module.image}`
-    : `../../static/images/${module.slug}.jpg`
+    ? `/static/images/${module.image}`
+    : `/static/images/${module.slug}.jpg`
 
   return (
     <Grid item xs={12} md={6} lg={6}>

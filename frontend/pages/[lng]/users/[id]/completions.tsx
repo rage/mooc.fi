@@ -1,20 +1,20 @@
 import React from "react"
-import NextI18Next from "../../../i18n"
-import { isSignedIn, isAdmin } from "../../../lib/authentication"
+import NextI18Next from "/i18n"
+import { isSignedIn, isAdmin } from "/lib/authentication"
 import { NextPageContext as NextContext } from "next"
-import redirect from "../../../lib/redirect"
+import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import {
   ShowUserUserOverView as UserOverViewData,
   ShowUserUserOverView_user_completions,
-} from "../../../static/types/generated/ShowUserUserOverView"
+} from "/static/types/generated/ShowUserUserOverView"
 /* import styled from "styled-components"
 import Typography from "@material-ui/core/Typography" */
-import Container from "../../../components/Container"
-import Completions from "../../../components/Completions"
+import Container from "/components/Container"
+import Completions from "/components/Completions"
 import { SingletonRouter, withRouter } from "next/router"
-import AdminError from "../../../components/Dashboard/AdminError"
+import AdminError from "/components/Dashboard/AdminError"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {

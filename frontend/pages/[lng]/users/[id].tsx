@@ -1,16 +1,16 @@
 import * as React from "react"
-import Container from "../../components/Container"
+import Container from "/components/Container"
 import { NextPageContext } from "next"
-import { isAdmin, isSignedIn } from "../../lib/authentication"
-import redirect from "../../lib/redirect"
-import AdminError from "../../components/Dashboard/AdminError"
+import { isAdmin, isSignedIn } from "/lib/authentication"
+import redirect from "/lib/redirect"
+import AdminError from "/components/Dashboard/AdminError"
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
-import { UserCourseSettingsesForUserPage } from "../../static/types/generated/UserCourseSettingsesForUserPage"
+import { UserCourseSettingsesForUserPage } from "/static/types/generated/UserCourseSettingsesForUserPage"
 import { Grid } from "@material-ui/core"
 import { CircularProgress } from "@material-ui/core"
 import { SingletonRouter, withRouter } from "next/router"
-import NextI18Next from "../../i18n"
+import NextI18Next from "/i18n"
 
 interface UserPageProps {
   namespacesRequired: string[]

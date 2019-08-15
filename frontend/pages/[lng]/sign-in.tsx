@@ -1,15 +1,15 @@
 import * as React from "react"
 import { NextPageContext as NextContext } from "next"
-import { isSignedIn } from "../lib/authentication"
-import redirect from "../lib/redirect"
+import { isSignedIn } from "/lib/authentication"
+import redirect from "/lib/redirect"
 import Paper from "@material-ui/core/Paper"
 import Avatar from "@material-ui/core/Avatar"
 import Typography from "@material-ui/core/Typography"
-import NextI18Next from "../i18n"
-import SignInForm from "../components/SignInForm"
+import NextI18Next from "/i18n"
+import SignInForm from "/components/SignInForm"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
-import Container from "../components/Container"
+import Container from "/components/Container"
 
 const useStyles = makeStyles(() =>
   createStyles({

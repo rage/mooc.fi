@@ -1,7 +1,7 @@
 import React from "react"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
-import NextI18Next from "../i18n"
+import NextI18Next from "/i18n"
 
 const useStyles = makeStyles(() =>
   createStyles({
