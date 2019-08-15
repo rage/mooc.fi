@@ -1,5 +1,5 @@
 import React from "react"
-import NextI18Next from "../i18n"
+import NextI18Next from "/i18n"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import styled from "styled-components"
