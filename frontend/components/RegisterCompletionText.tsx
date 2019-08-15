@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Typography, Paper, Button, Tooltip } from "@material-ui/core"
-import NextI18Next from "../i18n"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import LanguageContext from "/contexes/LanguageContext"
+import getRegisterCompletionTranslator from "/translations/register-completion"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,9 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function LinkButton(props: any) {
   const classes = useStyles()
+  const lng = useContext(LanguageContext)
+  const t = getRegisterCompletionTranslator(lng.language)
   return (
     <Tooltip
-      title={<NextI18Next.Trans i18nKey="register-completion:linkAria" />}
+      title={t("linkAria")}
       classes={{ tooltip: classes.tooltip }}
       placement="bottom"
     >
@@ -41,7 +44,7 @@ function LinkButton(props: any) {
         {...props}
         role="link"
       >
-        <NextI18Next.Trans i18nKey="register-completion:link" />
+        {t("link")}
       </Button>
     </Tooltip>
   )
@@ -53,6 +56,8 @@ type RegProps = {
 }
 function RegisterCompletionText(props: RegProps) {
   const classes = useStyles()
+  const lng = useContext(LanguageContext)
+  const t = getRegisterCompletionTranslator(lng.language)
   return (
     <Paper className={classes.paper}>
       <Typography
@@ -61,20 +66,19 @@ function RegisterCompletionText(props: RegProps) {
         gutterBottom={true}
         align="center"
       >
-        <NextI18Next.Trans i18nKey="register-completion:instructions-title" />
+        {t("instructions-title")}
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="register-completion:Instructions2" />
+        {t("Instructions2")}
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="register-completion:Instructions3" />{" "}
-        {props.email}
+        {t("Instructions3")} {props.email}
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="register-completion:Instructions4" />
+        {t("Instructions4")}
       </Typography>
       <Typography variant="body1" paragraph>
-        <NextI18Next.Trans i18nKey="register-completion:grades" />
+        {t("grades")}
       </Typography>
       <LinkButton className={classes.button} link={props.link} />
     </Paper>

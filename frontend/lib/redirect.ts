@@ -1,6 +1,6 @@
-import NextI18Next from "../i18n"
 import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
+import Router from "next/router"
 
 export default (context: NextContext, target: string, savePage = false) => {
   if (savePage) {
@@ -23,6 +23,6 @@ export default (context: NextContext, target: string, savePage = false) => {
     context.res.end()
   } else {
     // In the browser, we just pretend like this never even happened ;)
-    NextI18Next.Router.replace(targetWithLanguage)
+    Router.replace(targetWithLanguage)
   }
 }

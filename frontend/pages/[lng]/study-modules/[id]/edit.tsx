@@ -6,13 +6,13 @@ import AdminError from "/components/Dashboard/AdminError"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { WideContainer } from "/components/Container"
-import NextI18Next from "/i18n"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import styled from "styled-components"
 import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
+import Link from "next/link"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -100,7 +100,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             <Typography variant="body2">
               You will be redirected back to the module list in 5 seconds -
               press{" "}
-              <NextI18Next.Link href={listLink}>
+              <Link href={listLink}>
                 <a
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
@@ -109,7 +109,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
                 >
                   here
                 </a>
-              </NextI18Next.Link>{" "}
+              </Link>{" "}
               to go there now.
             </Typography>
           </ErrorContainer>

@@ -5,9 +5,8 @@ process.on("unhandledRejection", (...args) => {
 const express = require("express")
 
 const next = require("next")
-const nextI18NextMiddleware = require("next-i18next/middleware").default
+
 const compression = require("compression")
-const nextI18next = require("./i18n")
 
 const Redirects = require("./Redirects")
 const port = process.env.PORT || 3000
@@ -26,7 +25,6 @@ const main = async () => {
 
   const server = express()
   server.use(compression())
-  server.use(nextI18NextMiddleware(nextI18next))
 
   server.use((req, res, next) => {
     const urlLanguagePath = req.originalUrl.split("/")[1]

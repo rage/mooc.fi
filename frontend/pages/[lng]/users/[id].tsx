@@ -10,7 +10,6 @@ import { UserCourseSettingsesForUserPage } from "/static/types/generated/UserCou
 import { Grid } from "@material-ui/core"
 import { CircularProgress } from "@material-ui/core"
 import { SingletonRouter, withRouter } from "next/router"
-import NextI18Next from "/i18n"
 
 interface UserPageProps {
   namespacesRequired: string[]
@@ -63,7 +62,7 @@ UserPage.getInitialProps = function(context: NextPageContext) {
     namespacesRequired: ["common"],
   }
 }
-export default withRouter(NextI18Next.withTranslation("common")(UserPage))
+export default withRouter(UserPage)
 
 const GET_DATA = gql`
   query UserCourseSettingsesForUserPage($upstream_id: Int) {

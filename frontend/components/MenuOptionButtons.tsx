@@ -4,7 +4,6 @@ import { signOut } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
 import UserDetailContext from "../contexes/UserDetailContext"
 import { useApolloClient, useQuery } from "@apollo/react-hooks"
-import NextI18Next from "../i18n"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser as profileIcon } from "@fortawesome/free-solid-svg-icons"
 import AdminIcon from "@material-ui/icons/AssignmentInd"
@@ -12,6 +11,9 @@ import styled from "styled-components"
 import { gql } from "apollo-boost"
 import { UserOverView } from "../static/types/generated/UserOverView"
 import ErrorBoundary from "./ErrorBoundary"
+import LanguageContext from "/contexes/LanguageContext"
+import getCommonTranslator from "/translations/common"
+import { useContext } from "react"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -36,6 +38,8 @@ const StyledButton = styled(Button)`
 const MenuOptionButtons = () => {
   const loggedIn = React.useContext(LoginStateContext)
   const isAdmin = React.useContext(UserDetailContext)
+  const lng = useContext(LanguageContext)
+  const t = getCommonTranslator(lng.language)
   const client = useApolloClient()
   const { loading, error, data } = useQuery<UserOverView>(UserDetailQuery)
 
@@ -68,7 +72,7 @@ const MenuOptionButtons = () => {
               variant="text"
               onClick={() => signOut(client)}
             >
-              <NextI18Next.Trans i18nKey="common:logout" />
+              {t("logout")}
             </StyledButton>
             <StyledButton color="inherit" variant="text" href="/profile">
               {isAdmin ? (
@@ -91,10 +95,10 @@ const MenuOptionButtons = () => {
         ) : (
           <>
             <StyledButton color="inherit" variant="text" href="/sign-in">
-              <NextI18Next.Trans i18nKey="common:loginShort" />
+              {t("loginShort")}
             </StyledButton>
             <StyledButton color="inherit" variant="text" href="/sign-up">
-              <NextI18Next.Trans i18nKey="common:signUp" />
+              {t("signUp")}
             </StyledButton>
           </>
         )}

@@ -1,11 +1,13 @@
 import * as React from "react"
 import { UserOverView_currentUser_completions } from "/static/types/generated/UserOverView"
-import NextI18Next from "../i18n"
 import { Container } from "next/app"
 import { Grid, Typography } from "@material-ui/core"
 import CompletedCourseCard from "./CompletedCourseCard"
 import styled from "styled-components"
 import { gql } from "apollo-boost"
+import LanguageContext from "/contexes/LanguageContext"
+import getProfileTranslator from "/translations/home"
+import { useContext } from "react"
 
 const completionsFragment = gql`
   fragment UserCompletions on User {
@@ -49,8 +51,8 @@ const Title = styled(Typography)`
   }
 `
 const Completions = (props: CompletionsProps) => {
-  const { t } = NextI18Next.useTranslation("profile")
-
+  const lng = useContext(LanguageContext)
+  const t = getProfileTranslator(lng.language)
   const completions = props.completions || []
 
   return (

@@ -8,8 +8,11 @@ import {
 } from "@material-ui/core"
 
 import { signIn } from "../lib/authentication"
-import NextI18Next from "../i18n"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
+import LanguageContext from "/contexes/LanguageContext"
+import getCommonTranslator from "/translations/common"
+import { useContext } from "react"
+import Link from "next/link"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -56,14 +59,13 @@ function SignIn() {
   }, [])
 
   const classes = useStyles()
-
+  const lng = useContext(LanguageContext)
+  const t = getCommonTranslator(lng.language)
   return (
     <form className={classes.form}>
-      <NextI18Next.Trans i18nKey="common:loginDetails" />
+      {t("loginDetails")}
       <FormControl required fullWidth error={error}>
-        <InputLabel htmlFor="email">
-          <NextI18Next.Trans i18nKey="common:username" />
-        </InputLabel>
+        <InputLabel htmlFor="email">{t("username")}</InputLabel>
         <Input
           id="email"
           name="email"
@@ -76,9 +78,7 @@ function SignIn() {
         />
       </FormControl>
       <FormControl margin="normal" required fullWidth error={error}>
-        <InputLabel htmlFor="password">
-          <NextI18Next.Trans i18nKey="common:password" />
-        </InputLabel>
+        <InputLabel htmlFor="password">{t("password")}</InputLabel>
         <Input
           name="password"
           type="password"
@@ -90,9 +90,7 @@ function SignIn() {
             setError(false)
           }}
         />
-        <FormHelperText error={error}>
-          {error && <NextI18Next.Trans i18nKey="common:error" />}
-        </FormHelperText>
+        <FormHelperText error={error}>{error && t("error")}</FormHelperText>
       </FormControl>
 
       <Button
@@ -114,13 +112,13 @@ function SignIn() {
           }
         }}
       >
-        <NextI18Next.Trans i18nKey="common:login" />
+        {t("login")}
       </Button>
-      <NextI18Next.Link href="https://tmc.mooc.fi/password_reset_keys/new">
+      <Link href="https://tmc.mooc.fi/password_reset_keys/new">
         <a href="https://tmc.mooc.fi/password_reset_keys/new">
-          <NextI18Next.Trans i18nKey="common:forgottenpw" />
+          {t("forgottenPw")}
         </a>
-      </NextI18Next.Link>
+      </Link>
     </form>
   )
 }

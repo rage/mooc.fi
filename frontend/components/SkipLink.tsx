@@ -1,7 +1,9 @@
 import React from "react"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
-import NextI18Next from "../i18n"
+import LanguageContext from "/contexes/LanguageContext"
+import getCommonTranslator from "/translations/common"
+import { useContext } from "react"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -49,7 +51,8 @@ const useStyles = makeStyles(() =>
 
 function SkipLink() {
   const classes = useStyles()
-  const { t } = NextI18Next.useTranslation("common")
+  const lng = useContext(LanguageContext)
+  const t = getCommonTranslator(lng.language)
   return (
     <a href="#main" className={classes.link}>
       <Typography variant="body1">{t("skiplink")}</Typography>

@@ -11,11 +11,11 @@ import {
 import { AllModulesQuery } from "/pages/[lng]/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import NextI18Next from "../../../../i18n"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
+import Router from "next/router"
 
 const StudyModuleEdit = ({
   module,
@@ -67,7 +67,7 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        NextI18Next.Router.push("/study-modules")
+        Router.push("/study-modules")
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -80,14 +80,11 @@ const StudyModuleEdit = ({
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
       await deleteStudyModule({ variables: { slug: values.slug } })
-      NextI18Next.Router.push("/study-modules")
+      Router.push("/study-modules")
     }
   }, [])
 
-  const onCancel = useCallback(
-    () => NextI18Next.Router.push("/study-modules"),
-    [],
-  )
+  const onCancel = useCallback(() => Router.push("/study-modules"), [])
 
   return (
     <StudyModuleEditForm
