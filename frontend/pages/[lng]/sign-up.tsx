@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 
 import CreateAccountForm from "/components/CreateAccountForm"
 import ConfirmEmail from "/components/ConfirmEmail"
@@ -7,15 +7,12 @@ import { RegularContainer } from "/components/Container"
 import { NextPageContext } from "next"
 import { isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
-import NextI18Next from "/i18n"
+import LanguageContext from "/contexes/LanguageContext"
+import getSignUpTranslator from "/translations/sign-up"
 
-interface SignUpPageProps {
-  t: Function
-}
-
-const SignUpPage = (props: SignUpPageProps) => {
-  const { t } = props
-
+const SignUpPage = () => {
+  const lng = useContext(LanguageContext)
+  const t = getSignUpTranslator(lng.language)
   const [state, setState] = useState({
     step: 1,
   })
@@ -46,9 +43,7 @@ SignUpPage.getInitialProps = function(context: NextPageContext) {
   if (isSignedIn(context)) {
     redirect(context, "/")
   }
-  return {
-    namespacesRequired: ["sign-up"],
-  }
+  return {}
 }
 
-export default NextI18Next.withTranslation("sign-up")(SignUpPage)
+export default SignUpPage

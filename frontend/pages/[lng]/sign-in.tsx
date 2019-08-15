@@ -5,11 +5,13 @@ import redirect from "/lib/redirect"
 import Paper from "@material-ui/core/Paper"
 import Avatar from "@material-ui/core/Avatar"
 import Typography from "@material-ui/core/Typography"
-import NextI18Next from "/i18n"
 import SignInForm from "/components/SignInForm"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
 import Container from "/components/Container"
+import LanguageContext from "/contexes/LanguageContext"
+import getSignInTranslator from "/translations/home"
+import { useContext } from "react"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -29,11 +31,10 @@ const useStyles = makeStyles(() =>
     },
   }),
 )
-interface Props {
-  t: Function
-}
-const SignInPage = (props: Props) => {
-  const { t } = props
+
+const SignInPage = () => {
+  const lng = useContext(LanguageContext)
+  const t = getSignInTranslator(lng.language)
   const classes = useStyles()
   return (
     <Container style={{ width: "90%", maxWidth: 900 }}>
@@ -56,9 +57,7 @@ SignInPage.getInitialProps = function(context: NextContext) {
   if (isSignedIn(context)) {
     redirect(context, "/")
   }
-  return {
-    namespacesRequired: ["common"],
-  }
+  return {}
 }
 
-export default NextI18Next.withTranslation("common")(SignInPage)
+export default SignInPage

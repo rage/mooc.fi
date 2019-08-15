@@ -9,9 +9,11 @@ import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import ImportantNotice from "/components/ImportantNotice"
 import Container from "/components/Container"
-import NextI18Next from "/i18n"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { withRouter } from "next/router"
+import LanguageContext from "/contexes/LanguageContext"
+import getRegisterCompletionTranslator from "/translations/register-completion"
+import { useContext } from "react"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -73,12 +75,13 @@ export const UserOverViewQuery = gql`
 `
 
 interface RegisterCompletionPageProps {
-  t: Function
   router: any
 }
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
-  const { t, router } = props
+  const { router } = props
   const classes = useStyles()
+  const lng = useContext(LanguageContext)
+  const t = getRegisterCompletionTranslator(lng.language)
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (error) {
@@ -188,11 +191,7 @@ RegisterCompletion.getInitialProps = function(context: NextContext) {
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in", true)
   }
-  return {
-    namespacesRequired: ["register-completion"],
-  }
+  return {}
 }
 
-export default withRouter(
-  NextI18Next.withTranslation("register-completion")(RegisterCompletion),
-)
+export default withRouter(RegisterCompletion)

@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from "react"
-import NextI18Next from "../i18n"
-import ExplanationHero from "../components/Home/ExplanationHero"
-import NaviCardList from "../components/Home/NaviCardList"
-import CourseHighlights from "../components/Home/CourseHighlights"
-import EmailSubscribe from "../components/Home/EmailSubscribe"
+import React, { useContext } from "react"
+import ExplanationHero from "/components/Home/ExplanationHero"
+import NaviCardList from "/components/Home/NaviCardList"
+import CourseHighlights from "/components/Home/CourseHighlights"
+import EmailSubscribe from "/components/Home/EmailSubscribe"
 import {
   filterAndModifyCoursesByLanguage,
   mapNextLanguageToLocaleCode,
   filterAndModifyByLanguage,
-} from "../util/moduleFunctions"
+} from "/util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import Spinner from "/components/Spinner"
-import {
-  ObjectifiedCourse,
-  ObjectifiedModule,
-} from "../static/types/moduleTypes"
+import { ObjectifiedCourse, ObjectifiedModule } from "/static/types/moduleTypes"
 import ModuleNavi from "/components/Home/ModuleNavi"
 import Module from "/components/Home/Module"
 
 /* const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
 const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000") */
-const highlightsBanner = "../static/images/backgroundPattern.svg"
+const highlightsBanner = "/static/images/backgroundPattern.svg"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -93,13 +91,7 @@ const AllCoursesQuery = gql`
   }
 `
 
-interface HomeProps {
-  t: Function
-  tReady: boolean
-}
-
-const Home = (props: HomeProps) => {
-  const { t, tReady } = props
+const Home = () => {
   const {
     loading: coursesLoading,
     error: coursesError,
@@ -111,14 +103,13 @@ const Home = (props: HomeProps) => {
     data: modulesData,
   } = useQuery<AllModulesData>(AllModulesQuery)
 
+  const lng = useContext(LanguageContext)
+  const t = getHomeTranslator(lng.language)
   //save the default language of NextI18Next instance to state
-  const [language, setLanguage] = useState(
-    mapNextLanguageToLocaleCode(NextI18Next.config.defaultLanguage),
-  )
+
+  const language = mapNextLanguageToLocaleCode(lng.language)
+
   //every time the i18n language changes, update the state
-  useEffect(() => {
-    setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
-  }, [NextI18Next.i18n.language])
 
   if (coursesError || modulesError) {
     ;<div>
@@ -127,7 +118,7 @@ const Home = (props: HomeProps) => {
     </div>
   }
 
-  if (coursesLoading || modulesLoading || !tReady) {
+  if (coursesLoading || modulesLoading) {
     return <Spinner />
   }
 
@@ -207,13 +198,7 @@ const Home = (props: HomeProps) => {
   )
 }
 
-Home.getInitialProps = function() {
-  return {
-    namespacesRequired: ["home", "navi"],
-  }
-}
-
-export default NextI18Next.withTranslation("home")(Home)
+export default Home
 
 /*<ModuleNavi modules={modules} />
       {modules.map(module => (

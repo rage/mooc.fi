@@ -1,5 +1,4 @@
 import React from "react"
-import NextI18Next from "/i18n"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
@@ -46,11 +45,7 @@ export const UserOverViewQuery = gql`
 ` */
 
 interface CompletionsProps {
-  namespacesRequired: string[]
   router: SingletonRouter
-  t: Function
-  i18n: any
-  tReady: boolean
   admin: boolean
 }
 
@@ -97,10 +92,7 @@ CompletionsPage.getInitialProps = function(context: NextContext) {
   }
   return {
     admin,
-    namespacesRequired: ["common"],
   }
 }
 
-export default withRouter(
-  NextI18Next.withTranslation("profile")(CompletionsPage),
-)
+export default withRouter(CompletionsPage)
