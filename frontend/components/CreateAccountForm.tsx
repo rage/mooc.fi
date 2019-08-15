@@ -3,7 +3,7 @@ import { TextField, Button, Link, Typography } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
-import getSignUpTranslator from "/translations/home"
+import getSignUpTranslator from "/translations/sign-up"
 import { useContext } from "react"
 
 import styled from "styled-components"

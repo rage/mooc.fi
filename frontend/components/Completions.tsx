@@ -6,7 +6,7 @@ import CompletedCourseCard from "./CompletedCourseCard"
 import styled from "styled-components"
 import { gql } from "apollo-boost"
 import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/home"
+import getProfileTranslator from "/translations/profile"
 import { useContext } from "react"
 
 const completionsFragment = gql`

@@ -10,7 +10,7 @@ import {
   UserOverView_currentUser_completions_completions_registered,
 } from "/static/types/generated/UserOverView"
 import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/home"
+import getProfileTranslator from "/translations/profile"
 
 const Background = styled(Paper)`
   background-color: white;
