@@ -8,9 +8,11 @@ import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks"
 import { UserCourseSettingsesForUserPage } from "../../static/types/generated/UserCourseSettingsesForUserPage"
 import { Grid } from "@material-ui/core"
+import Button from "@material-ui/core/Button"
 import { CircularProgress } from "@material-ui/core"
 import { SingletonRouter, withRouter } from "next/router"
 import NextI18Next from "../../i18n"
+import { ApolloConsumer } from "@apollo/react-common"
 
 interface UserPageProps {
   namespacesRequired: string[]
@@ -25,6 +27,9 @@ const UserPage = (props: UserPageProps) => {
   if (!admin) {
     return <AdminError />
   }
+
+  const [more, setMore]: any[] = React.useState([])
+
   const { loading, error, data } = useQuery<UserCourseSettingsesForUserPage>(
     GET_DATA,
     { variables: { upstream_id: Number(router.query.id) } },
@@ -45,10 +50,29 @@ const UserPage = (props: UserPageProps) => {
       </Container>
     )
   }
-
+  data.UserCourseSettingses.edges.push(...more)
   return (
     <Container>
       <pre>{JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}</pre>
+      <ApolloConsumer>
+        {client => (
+          <Button
+            variant="contained"
+            onClick={async () => {
+              const { data } = await client.query({
+                query: GET_DATA,
+                variables: { upstream_id: Number(router.query.id) },
+              })
+              let newData = more
+              newData.push(...data.UserCourseSettingses.edges)
+              setMore(newData)
+            }}
+            disabled={false} //{!data.UserCourseSettingses.pageInfo.hasNextPage}
+          >
+            Load more
+          </Button>
+        )}
+      </ApolloConsumer>
     </Container>
   )
 }
@@ -81,6 +105,10 @@ const GET_DATA = gql`
           course_variant
           other
         }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
       }
     }
   }
