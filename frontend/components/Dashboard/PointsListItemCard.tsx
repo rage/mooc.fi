@@ -32,28 +32,30 @@ function FormatStudentProgressServiceData(props: FormatProps) {
   const { pointsAll } = props
 
   let formattedPointsData: pointsDataByGroup[] = []
-  //@ts-ignore
-  pointsAll.progress.map(p => {
-    let ServiceData: serviceData[] = []
-    if (pointsAll.user_course_service_progresses) {
-      ServiceData = pointsAll.user_course_service_progresses.map(ucsp => {
-        const ServiceDataByGroup: serviceData = {
-          service: ucsp.service.name,
-          //@ts-ignore
-          points: ucsp.progress.find(u => u.group === p.group),
-        }
-        return ServiceDataByGroup
-      })
-    }
+  if (pointsAll && pointsAll.progress) {
+    //@ts-ignore
+    pointsAll.progress.map(p => {
+      let ServiceData: serviceData[] = []
+      if (pointsAll.user_course_service_progresses) {
+        ServiceData = pointsAll.user_course_service_progresses.map(ucsp => {
+          const ServiceDataByGroup: serviceData = {
+            service: ucsp.service.name,
+            //@ts-ignore
+            points: ucsp.progress.find(u => u.group === p.group),
+          }
+          return ServiceDataByGroup
+        })
+      }
 
-    const newFormattedProgress = {
-      group: p.group,
-      summary_max_points: p.max_points,
-      summary_n_points: p.n_points,
-      services: ServiceData,
-    }
-    formattedPointsData = formattedPointsData.concat(newFormattedProgress)
-  })
+      const newFormattedProgress = {
+        group: p.group,
+        summary_max_points: p.max_points,
+        summary_n_points: p.n_points,
+        services: ServiceData,
+      }
+      formattedPointsData = formattedPointsData.concat(newFormattedProgress)
+    })
+  }
 
   return formattedPointsData
 }
@@ -121,7 +123,7 @@ function PointsListItemCard(props: Props) {
         {studentId}
       </UserInformation>
 
-      {studentProgressData ? (
+      {formattedPointsByService.length !== 0 ? (
         <PointsItemTable
           studentPoints={formattedPointsByService}
           showDetailedBreakdown={showDetails}
