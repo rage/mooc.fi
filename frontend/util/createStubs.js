@@ -32,7 +32,7 @@ const walkDir = (dir, list) => {
 const createStubs = () => {
   const fileList = walkDir(`${PAGES_DIR}/`, [])
 
-  fileList.map(file => {
+  fileList.map(file =>
     STUBBABLE_DIRECTORIES.map(dir => {
       const stripped = file.replace(`/${dir}`, "")
       const pathname = path.dirname(stripped)
@@ -53,8 +53,8 @@ const createStubs = () => {
       fs.writeFileSync(exportFilename, exportFile)
 
       console.log("generated", exportFilename)
-    })
-  })
+    }),
+  )
 }
 
 createStubs()
