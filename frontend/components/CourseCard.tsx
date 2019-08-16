@@ -14,7 +14,7 @@ import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
 import CourseImage from "./CourseImage"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import styled from "styled-components"
-import Link from "next/link"
+import Link from "/components/LangLink"
 
 const CardBase = styled(Card)<{ ishidden?: boolean | null }>`
   padding: 0.8em;
@@ -56,7 +56,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
       <CardActionArea>
         {course ? (
           <React.Fragment>
-            <Link as={`/courses/${course.slug}`} href="/courses/[id]">
+            <Link as={`/courses/${course.slug}`} href="/[lng]/courses/[id]">
               <a aria-label={`To the homepage of course ${course.name}`}>
                 <Button variant="contained" color="secondary" fullWidth>
                   <DashboardIcon />
@@ -66,7 +66,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
             </Link>
             <Link
               as={`/courses/${course.slug}/edit`}
-              href={`/courses/[id]/edit`}
+              href={`/[lng]/courses/[id]/edit`}
             >
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
@@ -77,7 +77,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
             </Link>
           </React.Fragment>
         ) : (
-          <Link href={`/courses/new`}>
+          <Link href={`/[lng]/courses/new`}>
             <a>
               <Button variant="contained" color="secondary" fullWidth>
                 <AddIcon />

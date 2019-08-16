@@ -1,5 +1,5 @@
 import React from "react"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
@@ -75,11 +75,11 @@ function NaviCard(props: NaviCardProps) {
             {item.text}
           </Typography>
           <Typography align="left">
-            <Link href={item.link}>
+            <LangLink href={item.link}>
               <StyledLink href={item.link} aria-label={item.linkText}>
                 {item.linkText}
               </StyledLink>
-            </Link>
+            </LangLink>
           </Typography>
         </TextBackground>
       </NaviItemBase>
