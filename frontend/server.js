@@ -26,7 +26,7 @@ const main = async () => {
   const server = express()
   server.use(compression())
 
-  server.use((req, res, next) => {
+  /*   server.use((req, res, next) => {
     const urlLanguagePath = req.originalUrl.split("/")[1]
     //if it is a request to _next or /static/, do nothing
     if (urlLanguagePath === "_next" || urlLanguagePath === "static") {
@@ -44,7 +44,7 @@ const main = async () => {
       }
     }
     next()
-  })
+  }) */
 
   server.get("/register-completion/:slug", (req, res) => {
     const actualPage = "/register-completion"
@@ -57,6 +57,7 @@ const main = async () => {
       redirect => redirect.from === req.url,
     )
     if (redirectNeeded) {
+      console.log(`redirecting to ${redirectNeeded.to}`)
       res.redirect(redirectNeeded.to)
     }
 

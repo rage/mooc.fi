@@ -55,7 +55,7 @@ class MyApp extends App {
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={signedIn}>
                 <UserDetailContext.Provider value={admin}>
-                  <LanguageContext.Provider value={{ lng, url }}>
+                  <LanguageContext.Provider value={{ language: lng, url }}>
                     <Layout>
                       <Component {...pageProps} />
                     </Layout>
@@ -84,7 +84,7 @@ function createPath(originalUrl) {
 
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
-  const lng = ctx.req.query.lng || "fi"
+  const lng = ctx.query.lng || "fi"
   let originalProps = {}
 
   if (originalGetInitialProps) {

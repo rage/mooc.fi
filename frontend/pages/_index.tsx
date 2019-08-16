@@ -12,16 +12,17 @@ import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
-import Spinner from "/components/Spinner"
+// import Spinner from "/components/Spinner"
 import { ObjectifiedCourse, ObjectifiedModule } from "/static/types/moduleTypes"
+import Spinner from "/components/Spinner"
 import ModuleNavi from "/components/Home/ModuleNavi"
 import Module from "/components/Home/Module"
-import getHomeTranslator from "/translations/home"
-import LanguageContext from "/contexes/LanguageContext"
 
-/* const allCoursesBanner = require("/static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
-const oldCoursesBanner = require("/static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000") */
+/* const allCoursesBanner = require("../static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
+const oldCoursesBanner = require("../static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000") */
 const highlightsBanner = "/static/images/backgroundPattern.svg"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const AllModulesQuery = gql`
   query AllModules {
@@ -92,8 +93,6 @@ const AllCoursesQuery = gql`
 `
 
 const Home = () => {
-  console.log("[lng]/index")
-  const lngCtx = useContext(LanguageContext)
   const {
     loading: coursesLoading,
     error: coursesError,
@@ -105,9 +104,14 @@ const Home = () => {
     data: modulesData,
   } = useQuery<AllModulesData>(AllModulesQuery)
 
+  const lngCtx = useContext(LanguageContext)
+  const t = getHomeTranslator(lngCtx.language)
+
   //save the default language of NextI18Next instance to state
 
   const language = mapNextLanguageToLocaleCode(lngCtx.language)
+
+  //every time the i18n language changes, update the state
 
   if (coursesError || modulesError) {
     ;<div>
@@ -135,8 +139,6 @@ const Home = () => {
     modulesData.study_modules,
     language,
   )
-
-  const t = getHomeTranslator(lngCtx.language)
 
   return (
     <div>

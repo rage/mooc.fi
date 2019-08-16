@@ -9,7 +9,8 @@
     "export": "next export",
     "start": "NODE_ENV=production PORT=3021 node server.js",
     "upgrade-interactive": "npm-check --update",
-    "generate-graphql-types": "rm -rf ./static/types/generated/ && mkdir -p ./static/types/generated/  && apollo codegen:generate  --outputFlat --tagName=gql --target=typescript ./static/types/generated/"
+    "generate-graphql-types": "rm -rf ./static/types/generated/ && mkdir -p ./static/types/generated/  && apollo codegen:generate  --outputFlat --tagName=gql --target=typescript ./static/types/generated/",
+    "generate-page-stubs": "node util/createStubs.js"
   },
   "keywords": [],
   "author": "",
