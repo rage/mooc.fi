@@ -28,6 +28,7 @@ const LangLink = (props: LangLinkProps) => {
   const { path, hash } = parsedHref
   let { href } = parsedHref
 
+  // FIXME: (?) as not needed
   if (path === "/" && isFi) {
     as = "/"
   } else if (!path && hash) {

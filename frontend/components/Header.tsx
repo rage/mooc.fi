@@ -57,7 +57,7 @@ function Header() {
         <AppBar color="inherit">
           <Toolbar>
             <ResponsiveMoocLogoContainer>
-              <LangLink href="/" as="/">
+              <LangLink href="/">
                 <HomeLink href="/" aria-label="MOOC.fi homepage">
                   <MoocLogo alt="MOOC logo" src="/static/images/moocfi.svg" />
                   <MoocLogoText>MOOC.fi</MoocLogoText>

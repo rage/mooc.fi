@@ -56,7 +56,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
       <CardActionArea>
         {course ? (
           <React.Fragment>
-            <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
+            <LangLink href={`/courses/${course.slug}`}>
               <a aria-label={`To the homepage of course ${course.name}`}>
                 <Button variant="contained" color="secondary" fullWidth>
                   <DashboardIcon />
@@ -64,10 +64,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
                 </Button>
               </a>
             </LangLink>
-            <LangLink
-              as={`/courses/${course.slug}/edit`}
-              href={`/courses/[id]/edit`}
-            >
+            <LangLink href={`/courses/${course.slug}/edit`}>
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
                   <EditIcon />
