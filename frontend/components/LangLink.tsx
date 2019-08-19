@@ -1,30 +1,44 @@
 import React, { useContext } from "react"
 import Link, { LinkProps } from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
-import path from "path"
+import { parse, format } from "url"
 
 interface LangLinkProps extends LinkProps {
   children: React.ReactNode
 }
 
 const LangLink = (props: LangLinkProps) => {
-  const { as: _as, href, children } = props
+  const { as: _as, href: _href, children } = props
   const lng = useContext(LanguageContext)
   const isFi = lng.language === "fi"
 
-  const basename = path.basename((_as as string) || "")
+  const parsedHref: any =
+    typeof _href === "object" ? _href : parse(_href || "", true)
+  const parsedAs = (_as || format(parsedHref, { unicode: true })) as string
 
-  const [__as, _href] =
-    isFi && (basename.includes("index") || basename === "fi")
-      ? ["/", "/"]
-      : [_as ? `/${lng.language}${_as}` : undefined, href]
+  const isOutsideLink = parsedAs.startsWith("http")
 
-  /*   const _as = lng.language === "fi" ? as : `/${lng.language}${as}`
-  const _href =
-    lng.language === "fi" ? (href as string).replace("[lng]/", "") : href */
+  let as = isOutsideLink
+    ? parsedAs
+    : ["en", "fi", "se", "[lng]"].reduce(
+        (acc, curr) => acc.replace(`\/${curr}`, ""),
+        parsedAs,
+      )
+
+  const { path, hash } = parsedHref
+  let { href } = parsedHref
+
+  if (path === "/" && isFi) {
+    as = "/"
+  } else if (!path && hash) {
+    as = hash
+  } else if (!isOutsideLink) {
+    as = `/${lng.language}${as}`.replace(/\/$/, "")
+    href = `/[lng]${href.replace("/[lng]", "")}`
+  }
 
   return (
-    <Link {...props} as={__as} href={_href}>
+    <Link {...props} as={as} href={href}>
       {children}
     </Link>
   )

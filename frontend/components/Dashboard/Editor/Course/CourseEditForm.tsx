@@ -86,13 +86,19 @@ const renderForm = ({
   values,
   isSubmitting,
   setFieldValue,
-}: Pick<
+}: // setStatus
+Pick<
   FormikProps<CourseFormValues>,
-  "errors" | "values" | "isSubmitting" | "setFieldValue" | "initialValues"
+  | "errors"
+  | "values"
+  | "isSubmitting"
+  | "setFieldValue"
+  | "initialValues"
+  | "setStatus"
 >) => (
   <Form>
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={10}>
+      <Grid item xs={12} sm={6} md={8}>
         <Field
           name="name"
           type="text"
@@ -104,12 +110,24 @@ const renderForm = ({
           component={StyledTextField}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={6} sm={3} md={2}>
         <Field
           name="order"
           type="number"
           label="Order"
           error={errors.order}
+          fullWidth
+          autoComplete="off"
+          variant="outlined"
+          component={StyledTextField}
+        />
+      </Grid>
+      <Grid item xs={6} sm={3} md={2}>
+        <Field
+          name="study_module_order"
+          type="number"
+          label="In-module order"
+          error={errors.study_module_order}
           fullWidth
           autoComplete="off"
           variant="outlined"

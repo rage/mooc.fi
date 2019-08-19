@@ -6,7 +6,7 @@ import useScrollTrigger from "@material-ui/core/useScrollTrigger"
 import Slide from "@material-ui/core/Slide"
 import styled from "styled-components"
 import UserMenu from "./UserMenu"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 
 interface Props {
   window?: () => Window
@@ -57,12 +57,12 @@ function Header() {
         <AppBar color="inherit">
           <Toolbar>
             <ResponsiveMoocLogoContainer>
-              <Link href="/" as="/">
+              <LangLink href="/" as="/">
                 <HomeLink href="/" aria-label="MOOC.fi homepage">
                   <MoocLogo alt="MOOC logo" src="/static/images/moocfi.svg" />
                   <MoocLogoText>MOOC.fi</MoocLogoText>
                 </HomeLink>
-              </Link>
+              </LangLink>
             </ResponsiveMoocLogoContainer>
             <UserMenu />
             <LanguageSwitch />

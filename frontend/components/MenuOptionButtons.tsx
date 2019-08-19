@@ -14,6 +14,7 @@ import ErrorBoundary from "./ErrorBoundary"
 import LanguageContext from "/contexes/LanguageContext"
 import getCommonTranslator from "/translations/common"
 import { useContext } from "react"
+import LangLink from "/components/LangLink"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -74,32 +75,40 @@ const MenuOptionButtons = () => {
             >
               {t("logout")}
             </StyledButton>
-            <StyledButton color="inherit" variant="text" href="/profile">
-              {isAdmin ? (
-                <>
-                  <AdminIcon style={{ marginRight: "0.2rem" }} /> Admin:{" "}
-                </>
-              ) : (
-                <StyledIcon icon={profileIcon} />
-              )}
-              {userDisplayName}
-            </StyledButton>
-            {isAdmin ? (
-              <StyledButton color="inherit" variant="text" href="/courses">
-                Courses
+            <LangLink href="/[lng]/profile">
+              <StyledButton color="inherit" variant="text">
+                {isAdmin ? (
+                  <>
+                    <AdminIcon style={{ marginRight: "0.2rem" }} /> Admin:{" "}
+                  </>
+                ) : (
+                  <StyledIcon icon={profileIcon} />
+                )}
+                {userDisplayName}
               </StyledButton>
+            </LangLink>
+            {isAdmin ? (
+              <LangLink href="/[lng]/courses">
+                <StyledButton color="inherit" variant="text">
+                  Courses
+                </StyledButton>
+              </LangLink>
             ) : (
               ""
             )}
           </div>
         ) : (
           <>
-            <StyledButton color="inherit" variant="text" href="/sign-in">
-              {t("loginShort")}
-            </StyledButton>
-            <StyledButton color="inherit" variant="text" href="/sign-up">
-              {t("signUp")}
-            </StyledButton>
+            <LangLink href="/[lng]/sign-in">
+              <StyledButton color="inherit" variant="text">
+                {t("loginShort")}
+              </StyledButton>
+            </LangLink>
+            <LangLink href="/[lng]/sign-up">
+              <StyledButton color="inherit" variant="text">
+                {t("signUp")}
+              </StyledButton>
+            </LangLink>
           </>
         )}
       </React.Fragment>
