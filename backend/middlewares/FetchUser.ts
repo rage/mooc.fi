@@ -2,7 +2,8 @@ import { AuthenticationError } from "apollo-server-core"
 import TmcClient from "../services/tmc"
 import { Prisma } from "../generated/prisma-client"
 import { Role } from "../accessControl"
-import redisClient from "../services/redis"
+import { redisify } from "../services/redis"
+import { UserInfo } from "/domain/UserInfo"
 
 const fetchUser = async (resolve, root, args, context, info) => {
   const prisma: Prisma = context.prisma
@@ -41,19 +42,11 @@ const getOrganization = async (prisma: Prisma, rawToken, context) => {
 }
 async function getUser(rawToken: string, context: any, prisma: Prisma) {
   const client = new TmcClient(rawToken)
-  const details = await redisClient
-    .getAsync(`userdetails-${rawToken}`)
-    .then(async res => {
-      if (res) {
-        return await JSON.parse(res)
-      }
-
-      const ret = await client.getCurrentUserDetails()
-      redisClient.setex(`userdetails-${rawToken}`, 3600, JSON.stringify(ret))
-
-      return ret
-    })
-    .catch(() => client.getCurrentUserDetails())
+  const details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
+    prefix: "userdetails",
+    expireTime: 3600,
+    key: rawToken,
+  })
 
   context.userDetails = details
   context.tmcClient = client
