@@ -9,7 +9,6 @@ import {
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, arg, idArg, intArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
-import * as pullAll from "lodash/pullAll"
 
 const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addStudyModule", {
@@ -89,10 +88,17 @@ const updateStudyModule = async (
       )
         .filter(t => !!t.id)
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-      const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = pullAll(
+      const existingTranslationIds = (existingTranslations || []).map(t => t.id)
+      const moduleTranslationIds = (study_module_translations || []).map(
+        t => t.id,
+      )
+      const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = existingTranslationIds
+        .filter(id => !moduleTranslationIds.includes(id))
+        .map(id => ({ id }))
+      /*       const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = pullAll(
         (existingTranslations || []).map(t => t.id),
         (study_module_translations || []).map(t => t.id).filter(v => !!v),
-      ).map(_id => ({ id: _id }))
+      ).map(_id => ({ id: _id })) */
 
       const translationMutation: StudyModuleTranslationUpdateManyWithoutStudy_moduleInput = {
         create: newTranslations.length ? newTranslations : undefined,

@@ -5,6 +5,7 @@ import {
   Input,
   Button,
   FormHelperText,
+  Link,
 } from "@material-ui/core"
 
 import { signIn } from "../lib/authentication"
@@ -12,7 +13,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LanguageContext from "/contexes/LanguageContext"
 import getCommonTranslator from "/translations/common"
 import { useContext } from "react"
-import Link from "next/link"
+// import LangLink from "/components/LangLink"
 
 const useStyles = makeStyles(() =>
   createStyles({

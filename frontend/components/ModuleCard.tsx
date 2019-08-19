@@ -5,7 +5,7 @@ import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import { ObjectifiedModule } from "./../static/types/moduleTypes"
 import styled from "styled-components"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 
 const Base = styled.div`
   position: relative;
@@ -133,7 +133,7 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
           </NaviCardTitle>
           <NaviCardBodyText paragraph>
             {module ? (
-              <Link
+              <LangLink
                 as={`/study-modules/${module.slug}/edit`}
                 href="/study-modules/[id]/edit"
               >
@@ -143,16 +143,16 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
                     Edit
                   </Button>
                 </a>
-              </Link>
+              </LangLink>
             ) : (
-              <Link href={`/study-modules/new`}>
+              <LangLink href={`/study-modules/new`}>
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <AddIcon />
                     Create
                   </Button>
                 </a>
-              </Link>
+              </LangLink>
             )}
           </NaviCardBodyText>
         </ContentArea>

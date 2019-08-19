@@ -12,7 +12,7 @@ import redirect from "/lib/redirect"
 import styled from "styled-components"
 import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -100,16 +100,16 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             <Typography variant="body2">
               You will be redirected back to the module list in 5 seconds -
               press{" "}
-              <Link href={listLink}>
+              <LangLink href={listLink}>
                 <a
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
                   }
-                  href={listLink}
+                  href=""
                 >
                   here
                 </a>
-              </Link>{" "}
+              </LangLink>{" "}
               to go there now.
             </Typography>
           </ErrorContainer>

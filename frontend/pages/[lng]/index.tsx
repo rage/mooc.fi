@@ -92,7 +92,6 @@ const AllCoursesQuery = gql`
 `
 
 const Home = () => {
-  console.log("[lng]/index")
   const lngCtx = useContext(LanguageContext)
   const {
     loading: coursesLoading,
