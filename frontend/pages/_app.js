@@ -26,12 +26,19 @@ class MyApp extends App {
     super(props)
     this.toggleLanguage = () => {
       const languageToChangeTo = this.state.language === "fi" ? "en" : "fi"
-      let urlToGoTo = Router.asPath.slice(3)
-      if (Router.pathname === "/") {
-        Router.asPath.startsWith("/en") ? "/" : `/en/`
+      let urlToGoTo = ""
+      //Remove "fi" language subpath from the home page url
+      if (Router.route === "/[lng]" || Router.route === "/") {
+        this.state.language === "fi" ? (urlToGoTo = "/en") : (urlToGoTo = "/")
+      } else {
+        urlToGoTo = `/${Router.route.replace(
+          "/[lng]",
+          `${languageToChangeTo}`,
+        )}`
       }
+
       this.setState({ language: languageToChangeTo })
-      Router.push(`/${languageToChangeTo}${urlToGoTo}`)
+      Router.push(`${urlToGoTo}`)
     }
     this.state = {
       language: props.lng,
