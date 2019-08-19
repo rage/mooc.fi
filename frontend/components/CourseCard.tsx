@@ -66,7 +66,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
             </LangLink>
             <LangLink
               as={`/courses/${course.slug}/edit`}
-              href={`//courses/[id]/edit`}
+              href={`/courses/[id]/edit`}
             >
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
