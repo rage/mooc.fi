@@ -10,6 +10,7 @@ import Container from "/components/Container"
 import { ObjectifiedModule } from "/static/types/moduleTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { CourseStatus } from "/static/types/globalTypes"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -54,10 +55,16 @@ function Module({ module }: { module: ObjectifiedModule }) {
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
   const startCourses = (module.courses || []).filter(
-    c => !c.hidden && c.study_module_start_point,
+    c =>
+      !c.hidden &&
+      c.status !== CourseStatus.Ended &&
+      c.study_module_start_point,
   )
   const otherCourses = (module.courses || []).filter(
-    c => !c.hidden && !c.study_module_start_point,
+    c =>
+      !c.hidden &&
+      c.status !== CourseStatus.Ended &&
+      !c.study_module_start_point,
   )
 
   return (
