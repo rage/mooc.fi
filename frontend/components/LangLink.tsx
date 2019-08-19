@@ -21,7 +21,7 @@ const LangLink = (props: LangLinkProps) => {
   let as = isOutsideLink
     ? parsedAs
     : ["en", "fi", "se", "[lng]"].reduce(
-        (acc, curr) => acc.replace(`\/${curr}`, ""),
+        (acc, curr) => acc.replace(`\/${curr}\/`, "/"),
         parsedAs,
       )
 
