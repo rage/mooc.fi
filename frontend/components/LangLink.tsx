@@ -15,7 +15,7 @@ const LangLink = (props: LangLinkProps) => {
     lng.language === "fi" ? (href as string).replace("[lng]/", "") : href
 
   return (
-    <Link {...props} as={_as} href={_href}>
+    <Link as={_as} href={_href}>
       {children}
     </Link>
   )
