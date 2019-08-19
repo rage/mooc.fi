@@ -57,7 +57,6 @@ const main = async () => {
       redirect => redirect.from === req.url,
     )
     if (redirectNeeded) {
-      console.log(`redirecting to ${redirectNeeded.to}`)
       res.redirect(redirectNeeded.to)
     }
 
