@@ -6,8 +6,10 @@ import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
 import { ObjectifiedCourse } from "/static/types/moduleTypes"
-
-const Background = styled(ButtonBase)`
+interface BackgroundProps {
+  component: string
+}
+const Background = styled(ButtonBase)<BackgroundProps>`
   background-color: white;
   position: relative;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -73,7 +75,11 @@ function CourseCard(props: CourseCardProps) {
         to={course.link || ""}
         target="_blank"
       >
-        <Background focusRipple disabled={!course.link || course.link === ""}>
+        <Background
+          component="div"
+          focusRipple
+          disabled={!course.link || course.link === ""}
+        >
           <ImageArea>
             <CourseImage
               photo={course.photo}
