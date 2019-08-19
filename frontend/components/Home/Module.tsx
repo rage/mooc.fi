@@ -9,6 +9,7 @@ import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import NextI18Next from "../../i18n"
 import Container from "../Container"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import { CourseStatus } from "/static/types/globalTypes"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -52,10 +53,16 @@ const ModuleHomeLink = styled(Link)`
 function Module({ module }: { module: ObjectifiedModule }) {
   const { t } = NextI18Next.useTranslation("home")
   const startCourses = (module.courses || []).filter(
-    c => !c.hidden && c.study_module_start_point,
+    c =>
+      !c.hidden &&
+      c.status !== CourseStatus.Ended &&
+      c.study_module_start_point,
   )
   const otherCourses = (module.courses || []).filter(
-    c => !c.hidden && !c.study_module_start_point,
+    c =>
+      !c.hidden &&
+      c.status !== CourseStatus.Ended &&
+      !c.study_module_start_point,
   )
 
   return (
