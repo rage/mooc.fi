@@ -133,10 +133,7 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
           </NaviCardTitle>
           <NaviCardBodyText paragraph>
             {module ? (
-              <NextI18Next.Link
-                as={`/study-modules/${module.slug}/edit`}
-                href="/study-modules/[id]/edit"
-              >
+              <NextI18Next.Link href={`/study-modules/${module.slug}/edit`}>
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
