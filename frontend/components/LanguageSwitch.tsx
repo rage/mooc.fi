@@ -1,38 +1,29 @@
 import React from "react"
-//import Language from "@material-ui/icons/Language"
-//import styled from "styled-components"
+import Language from "@material-ui/icons/Language"
+import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
+import Button from "@material-ui/core/Button"
 
-/*const SwitchLink = styled.a`
+const SwitchLink = styled(Button)`
   font-size: 14px;
   line-height: 1.3;
-  font-weight: bold;
   display: flex;
   flex-direction: row;
   text-decoration: none;
   color: black;
-  &:visited {
-    color: black;
-  }
-  &:focus {
-    color: black;
-  }
-`*/
+`
 
 const LanguageSwitch = () => {
-  //const language = React.useContext(LanguageContext)
-  //console.log("Language Context", language)
   return (
     <LanguageContext.Consumer>
       {({ language, toggleLanguage }) => (
-        <button onClick={toggleLanguage}>
-          {language}:{language === "en" ? "Suomi" : "English"}
-        </button>
+        <SwitchLink onClick={toggleLanguage} variant="text">
+          <Language style={{ marginRight: "0.4rem" }} />
+          {language === "en" ? "Suomi" : "English"}
+        </SwitchLink>
       )}
     </LanguageContext.Consumer>
   )
 }
 
 export default LanguageSwitch
-
-//<Language style={{ marginRight: "0.4rem" }} />
