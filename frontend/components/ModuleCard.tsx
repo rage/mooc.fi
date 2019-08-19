@@ -133,10 +133,7 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
           </NaviCardTitle>
           <NaviCardBodyText paragraph>
             {module ? (
-              <LangLink
-                as={`/study-modules/${module.slug}/edit`}
-                href="/study-modules/[id]/edit"
-              >
+              <LangLink href={`/study-modules/${module.slug}/edit`}>
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />

@@ -21,20 +21,21 @@ const LangLink = (props: LangLinkProps) => {
   let as = isOutsideLink
     ? parsedAs
     : ["en", "fi", "se", "[lng]"].reduce(
-        (acc, curr) => acc.replace(`\/${curr}`, ""),
+        (acc, curr) => acc.replace(`\/${curr}\/`, "/"),
         parsedAs,
       )
 
   const { path, hash } = parsedHref
   let { href } = parsedHref
 
+  // FIXME: (?) as not needed
   if (path === "/" && isFi) {
     as = "/"
   } else if (!path && hash) {
     as = hash
   } else if (!isOutsideLink) {
     as = `/${lng.language}${as}`.replace(/\/$/, "")
-    href = `/[lng]${href.replace("/[lng]", "")}`
+    href = `/[lng]${href.replace("/[lng]", "")}`.replace(/\/+/g, "/")
   }
 
   return (
