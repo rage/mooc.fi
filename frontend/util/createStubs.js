@@ -3,30 +3,33 @@ const path = require("path")
 
 const PAGES_DIR = `pages`
 const STUBBABLE_DIRECTORIES = ["[lng]"]
-const IGNORED_FILES = []
+const IGNORED_FILES = [] // not used yet
 
 const walkDir = (dir, list) => {
   const files = fs.readdirSync(dir)
 
-  files.forEach(f => {
-    const fileWithDir = dir + f
+  return files
+    .filter(filename => !IGNORED_FILES.includes(filename))
+    .map(filename => {
+      const fileWithDir = dir + filename
 
-    if (
-      !STUBBABLE_DIRECTORIES.some(d =>
-        fileWithDir.includes(`${PAGES_DIR}/${d}`),
-      )
-    ) {
-      return
-    }
+      if (
+        !STUBBABLE_DIRECTORIES.some(d =>
+          fileWithDir.includes(`${PAGES_DIR}/${d}`),
+        )
+      ) {
+        return
+      }
 
-    if (fs.statSync(fileWithDir).isDirectory()) {
-      list = walkDir(`${dir}${f}/`, list)
-    } else {
-      list.push(path.normalize(dir + f))
-    }
-  })
+      if (fs.statSync(fileWithDir).isDirectory()) {
+        walkDir(`${dir}${filename}/`, list)
+      } else {
+        list.push(path.normalize(dir + filename))
+      }
 
-  return list
+      return list
+    })
+    .filter(v => !!v)[0]
 }
 
 const createStubs = () => {
@@ -34,8 +37,7 @@ const createStubs = () => {
 
   fileList.map(file =>
     STUBBABLE_DIRECTORIES.map(dir => {
-      const stripped = file.replace(`/${dir}`, "")
-      const pathname = path.dirname(stripped)
+      const pathname = path.dirname(file.replace(`/${dir}`, ""))
 
       if (pathname !== PAGES_DIR) {
         try {
