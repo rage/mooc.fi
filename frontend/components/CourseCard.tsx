@@ -34,7 +34,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
         {course ? (
           <CourseImage photo={course.photo} alt={course.name} />
         ) : (
-          <LangLink href={`/[lng]/courses/new`}>
+          <LangLink href={`/courses/new`}>
             <a>
               <Grid
                 container
@@ -56,7 +56,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
       <CardActionArea>
         {course ? (
           <React.Fragment>
-            <LangLink as={`/courses/${course.slug}`} href="/[lng]/courses/[id]">
+            <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
               <a aria-label={`To the homepage of course ${course.name}`}>
                 <Button variant="contained" color="secondary" fullWidth>
                   <DashboardIcon />
@@ -66,7 +66,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
             </LangLink>
             <LangLink
               as={`/courses/${course.slug}/edit`}
-              href={`/[lng]/courses/[id]/edit`}
+              href={`//courses/[id]/edit`}
             >
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
@@ -77,7 +77,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
             </LangLink>
           </React.Fragment>
         ) : (
-          <LangLink href={`/[lng]/courses/new`}>
+          <LangLink href={`/courses/new`}>
             <a>
               <Button variant="contained" color="secondary" fullWidth>
                 <AddIcon />

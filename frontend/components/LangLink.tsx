@@ -34,7 +34,7 @@ const LangLink = (props: LangLinkProps) => {
     as = hash
   } else if (!isOutsideLink) {
     as = `/${lng.language}${as}`.replace(/\/$/, "")
-    href = `/[lng]${href.replace("/[lng]", "")}`
+    href = `/[lng]${href.replace("/[lng]", "")}`.replace(/\/+/g, "/")
   }
 
   return (
