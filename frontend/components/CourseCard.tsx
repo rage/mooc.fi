@@ -56,10 +56,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
       <CardActionArea>
         {course ? (
           <React.Fragment>
-            <NextI18Next.Link
-              as={`/courses/${course.slug}`}
-              href="/courses/[id]"
-            >
+            <NextI18Next.Link href={`/courses/${course.slug}`}>
               <a aria-label={`To the homepage of course ${course.name}`}>
                 <Button variant="contained" color="secondary" fullWidth>
                   <DashboardIcon />
@@ -67,10 +64,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
                 </Button>
               </a>
             </NextI18Next.Link>
-            <NextI18Next.Link
-              as={`/courses/${course.slug}/edit`}
-              href={`/courses/[id]/edit`}
-            >
+            <NextI18Next.Link href={`/courses/${course.slug}/edit`}>
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
                   <EditIcon />
