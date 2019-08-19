@@ -25,15 +25,16 @@ class MyApp extends App {
   constructor(props) {
     super(props)
     this.toggleLanguage = () => {
-      console.log(this.state)
-      this.setState(state => ({
-        language: state.language === "fi" ? "en" : "fi",
-      }))
+      const languageToChangeTo = this.state.language === "fi" ? "en" : "fi"
+      const urlToGoTo = Router.asPath.startsWith("/en")
+        ? Router.asPath.slice(3)
+        : `/en${Router.asPath}`
+      this.setState({ language: languageToChangeTo })
+      Router.push(`${urlToGoTo}`)
     }
     this.state = {
       language: props.lng,
       toggleLanguage: this.toggleLanguage,
-      url: props.url,
     }
   }
   componentDidMount() {
@@ -79,15 +80,6 @@ class MyApp extends App {
 // We're probably not supposed to do this
 const originalGetInitialProps = MyApp.getInitialProps
 
-//add language subpath to url
-function createPath(originalUrl) {
-  if (originalUrl.startsWith("/en")) {
-    return originalUrl.slice(3)
-  } else {
-    return `${originalUrl}`
-  }
-}
-
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
   const lng = ctx.query.lng || "fi"
@@ -103,7 +95,6 @@ MyApp.getInitialProps = async arg => {
     admin: isAdmin(ctx),
     // @ts-ignore
     lng,
-    url: ctx && ctx.req ? createPath(ctx.req.originalUrl) : "",
   }
 }
 
