@@ -22,6 +22,21 @@ import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 fontAwesomeConfig.autoAddCss = false
 
 class MyApp extends App {
+  constructor(props) {
+    super(props)
+    this.toggleLanguage = () => {
+      const languageToChangeTo = this.state.language === "fi" ? "en" : "fi"
+      const urlToGoTo = Router.asPath.startsWith("/en")
+        ? Router.asPath.slice(3)
+        : `/en${Router.asPath}`
+      this.setState({ language: languageToChangeTo })
+      Router.push(`${urlToGoTo}`)
+    }
+    this.state = {
+      language: props.lng,
+      toggleLanguage: this.toggleLanguage,
+    }
+  }
   componentDidMount() {
     initGA()
     logPageView()
@@ -34,15 +49,7 @@ class MyApp extends App {
   }
 
   render() {
-    const {
-      Component,
-      pageProps,
-      apollo,
-      signedIn,
-      admin,
-      url,
-      lng,
-    } = this.props
+    const { Component, pageProps, apollo, signedIn, admin } = this.props
 
     return (
       <Container>
@@ -55,7 +62,7 @@ class MyApp extends App {
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={signedIn}>
                 <UserDetailContext.Provider value={admin}>
-                  <LanguageContext.Provider value={{ language: lng, url }}>
+                  <LanguageContext.Provider value={this.state}>
                     <Layout>
                       <Component {...pageProps} />
                     </Layout>
@@ -73,15 +80,6 @@ class MyApp extends App {
 // We're probably not supposed to do this
 const originalGetInitialProps = MyApp.getInitialProps
 
-//add language subpath to url
-function createPath(originalUrl) {
-  if (originalUrl.startsWith("/en")) {
-    return originalUrl.slice(3)
-  } else {
-    return `/en${originalUrl}`
-  }
-}
-
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
   const lng = ctx.query.lng || "fi"
@@ -97,7 +95,6 @@ MyApp.getInitialProps = async arg => {
     admin: isAdmin(ctx),
     // @ts-ignore
     lng,
-    url: ctx && ctx.req ? createPath(ctx.req.originalUrl) : "",
   }
 }
 
