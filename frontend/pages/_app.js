@@ -22,6 +22,20 @@ import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 fontAwesomeConfig.autoAddCss = false
 
 class MyApp extends App {
+  constructor(props) {
+    super(props)
+    this.toggleLanguage = () => {
+      console.log(this.state)
+      this.setState(state => ({
+        language: state.language === "fi" ? "en" : "fi",
+      }))
+    }
+    this.state = {
+      language: props.lng,
+      toggleLanguage: this.toggleLanguage,
+      url: props.url,
+    }
+  }
   componentDidMount() {
     initGA()
     logPageView()
@@ -34,15 +48,7 @@ class MyApp extends App {
   }
 
   render() {
-    const {
-      Component,
-      pageProps,
-      apollo,
-      signedIn,
-      admin,
-      url,
-      lng,
-    } = this.props
+    const { Component, pageProps, apollo, signedIn, admin } = this.props
 
     return (
       <Container>
@@ -55,7 +61,7 @@ class MyApp extends App {
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={signedIn}>
                 <UserDetailContext.Provider value={admin}>
-                  <LanguageContext.Provider value={{ language: lng, url }}>
+                  <LanguageContext.Provider value={this.state}>
                     <Layout>
                       <Component {...pageProps} />
                     </Layout>
@@ -78,7 +84,7 @@ function createPath(originalUrl) {
   if (originalUrl.startsWith("/en")) {
     return originalUrl.slice(3)
   } else {
-    return `/en${originalUrl}`
+    return `${originalUrl}`
   }
 }
 
