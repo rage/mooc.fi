@@ -26,11 +26,12 @@ class MyApp extends App {
     super(props)
     this.toggleLanguage = () => {
       const languageToChangeTo = this.state.language === "fi" ? "en" : "fi"
-      const urlToGoTo = Router.asPath.startsWith("/en")
-        ? Router.asPath.slice(3)
-        : `/en${Router.asPath}`
+      let urlToGoTo = Router.asPath.slice(3)
+      if (Router.pathname === "/") {
+        Router.asPath.startsWith("/en") ? "/" : `/en/`
+      }
       this.setState({ language: languageToChangeTo })
-      Router.push(`${urlToGoTo}`)
+      Router.push(`/${languageToChangeTo}${urlToGoTo}`)
     }
     this.state = {
       language: props.lng,
