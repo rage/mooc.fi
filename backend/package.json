@@ -52,6 +52,7 @@
     "prisma": "^1.33.0",
     "prisma-client-lib": "^1.33.0",
     "react": "^16.8.6",
+    "redis": "^2.8.0",
     "sharp": "^0.22.1",
     "shortid": "^2.2.14",
     "uuid": "^3.3.2",
