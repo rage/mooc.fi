@@ -22,29 +22,6 @@ import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 fontAwesomeConfig.autoAddCss = false
 
 class MyApp extends App {
-  constructor(props) {
-    super(props)
-    this.toggleLanguage = () => {
-      const languageToChangeTo = this.state.language === "fi" ? "en" : "fi"
-      let urlToGoTo = ""
-      //Remove "fi" language subpath from the home page url
-      if (Router.route === "/[lng]" || Router.route === "/") {
-        this.state.language === "fi" ? (urlToGoTo = "/en") : (urlToGoTo = "/")
-      } else {
-        urlToGoTo = `/${Router.route.replace(
-          "/[lng]",
-          `${languageToChangeTo}`,
-        )}`
-      }
-
-      this.setState({ language: languageToChangeTo })
-      Router.push(`${urlToGoTo}`)
-    }
-    this.state = {
-      language: props.lng,
-      toggleLanguage: this.toggleLanguage,
-    }
-  }
   componentDidMount() {
     initGA()
     logPageView()
@@ -57,8 +34,17 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, apollo, signedIn, admin } = this.props
-
+    const {
+      Component,
+      pageProps,
+      apollo,
+      signedIn,
+      admin,
+      lng,
+      url,
+    } = this.props
+    console.log("language", lng)
+    console.log("url", url)
     return (
       <Container>
         <Head>
@@ -70,7 +56,7 @@ class MyApp extends App {
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={signedIn}>
                 <UserDetailContext.Provider value={admin}>
-                  <LanguageContext.Provider value={this.state}>
+                  <LanguageContext.Provider value={{ language: lng, url }}>
                     <Layout>
                       <Component {...pageProps} />
                     </Layout>
@@ -88,9 +74,34 @@ class MyApp extends App {
 // We're probably not supposed to do this
 const originalGetInitialProps = MyApp.getInitialProps
 
+function createPath(originalUrl) {
+  let url = ""
+  if (originalUrl === "/") {
+    url = "/en"
+  } else if (originalUrl === "/en") {
+    url = "/"
+  } else {
+    originalUrl.startsWith("/en")
+      ? (url = originalUrl.replace("/en/", "/fi/"))
+      : (url = originalUrl.replace("/fi/", "/en/"))
+  }
+
+  return url
+}
+
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
-  const lng = ctx.query.lng || "fi"
+
+  let lng = "fi"
+  let url = "/"
+  if (typeof window !== "undefined") {
+    lng = window.location.pathname.substring(1, 4) || "fi"
+    url = window.location.pathname
+  } else {
+    lng = ctx.query.lng || "fi"
+    url = ctx.req.originalUrl
+  }
+
   let originalProps = {}
 
   if (originalGetInitialProps) {
@@ -103,6 +114,7 @@ MyApp.getInitialProps = async arg => {
     admin: isAdmin(ctx),
     // @ts-ignore
     lng,
+    url: createPath(url),
   }
 }
 
