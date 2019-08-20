@@ -2,12 +2,12 @@ import * as React from "react"
 
 interface PageLanguageDetails {
   language: string
-  toggleLanguage: () => void
+  url: string
 }
 
 const LanguageContext = React.createContext<PageLanguageDetails>({
   language: "fi",
-  toggleLanguage: () => {},
+  url: "",
 })
 
 export default LanguageContext
