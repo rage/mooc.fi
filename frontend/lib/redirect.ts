@@ -1,8 +1,11 @@
 import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
 import Router from "next/router"
+import LanguageContext from "/contexes/LanguageContext"
+import React from "react"
 
 export default (context: NextContext, target: string, savePage = false) => {
+  const { language } = React.useContext(LanguageContext)
   if (savePage) {
     // @ts-ignore
     nookies.set(context, "redirect-back", context.req.originalUrl, {
@@ -10,12 +13,13 @@ export default (context: NextContext, target: string, savePage = false) => {
       path: "/",
     })
   }
+
   let sep = ""
   if (!target.startsWith("/")) {
     sep = "/"
   }
   // @ts-ignore
-  const targetWithLanguage = `/${context.req.language}${sep}${target}`
+  const targetWithLanguage = `/${language}${sep}${target}`
   if (context.res && context.res.writeHead && context.res.end) {
     // server
     // 303: "See other"

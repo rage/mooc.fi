@@ -11,6 +11,7 @@ import {
 import { signIn } from "../lib/authentication"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LanguageContext from "/contexes/LanguageContext"
+import LoginStateContext from "/contexes/LoginStateContext"
 import getCommonTranslator from "/translations/common"
 import { useContext } from "react"
 // import LangLink from "/components/LangLink"
@@ -63,64 +64,68 @@ function SignIn() {
   const lng = useContext(LanguageContext)
   const t = getCommonTranslator(lng.language)
   return (
-    <form className={classes.form}>
-      {t("loginDetails")}
-      <FormControl required fullWidth error={error}>
-        <InputLabel htmlFor="email">{t("username")}</InputLabel>
-        <Input
-          id="email"
-          name="email"
-          inputRef={emailFieldRef}
-          autoComplete="nope"
-          onChange={o => {
-            setEmail(o.target.value)
-            setError(false)
-          }}
-        />
-      </FormControl>
-      <FormControl margin="normal" required fullWidth error={error}>
-        <InputLabel htmlFor="password">{t("password")}</InputLabel>
-        <Input
-          name="password"
-          type="password"
-          id="password"
-          inputRef={passwordFieldRef}
-          autoComplete="nope"
-          onChange={o => {
-            setPassword(o.target.value)
-            setError(false)
-          }}
-        />
-        <FormHelperText error={error}>{error && t("error")}</FormHelperText>
-      </FormControl>
+    <LoginStateContext.Consumer>
+      {({ logInOrOut }) => (
+        <form className={classes.form}>
+          {t("loginDetails")}
+          <FormControl required fullWidth error={error}>
+            <InputLabel htmlFor="email">{t("username")}</InputLabel>
+            <Input
+              id="email"
+              name="email"
+              inputRef={emailFieldRef}
+              autoComplete="nope"
+              onChange={o => {
+                setEmail(o.target.value)
+                setError(false)
+              }}
+            />
+          </FormControl>
+          <FormControl margin="normal" required fullWidth error={error}>
+            <InputLabel htmlFor="password">{t("password")}</InputLabel>
+            <Input
+              name="password"
+              type="password"
+              id="password"
+              inputRef={passwordFieldRef}
+              autoComplete="nope"
+              onChange={o => {
+                setPassword(o.target.value)
+                setError(false)
+              }}
+            />
+            <FormHelperText error={error}>{error && t("error")}</FormHelperText>
+          </FormControl>
 
-      <Button
-        className={classes.submit}
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="secondary"
-        disabled={email.trim() === "" || password.trim() === ""}
-        onClick={async e => {
-          e.preventDefault()
-          try {
-            await signIn({ email, password })
-          } catch (e) {
-            setError(true)
-            setTimeout(() => {
-              setError(false)
-            }, 5000)
-          }
-        }}
-      >
-        {t("login")}
-      </Button>
-      <Link href="https://tmc.mooc.fi/password_reset_keys/new">
-        <a href="https://tmc.mooc.fi/password_reset_keys/new">
-          {t("forgottenpw")}
-        </a>
-      </Link>
-    </form>
+          <Button
+            className={classes.submit}
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            disabled={email.trim() === "" || password.trim() === ""}
+            onClick={async e => {
+              e.preventDefault()
+              try {
+                await signIn({ email, password }).then(logInOrOut)
+              } catch (e) {
+                setError(true)
+                setTimeout(() => {
+                  setError(false)
+                }, 5000)
+              }
+            }}
+          >
+            {t("login")}
+          </Button>
+          <Link href="https://tmc.mooc.fi/password_reset_keys/new">
+            <a href="https://tmc.mooc.fi/password_reset_keys/new">
+              {t("forgottenpw")}
+            </a>
+          </Link>
+        </form>
+      )}
+    </LoginStateContext.Consumer>
   )
 }
 
