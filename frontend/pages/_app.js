@@ -22,6 +22,16 @@ import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 fontAwesomeConfig.autoAddCss = false
 
 class MyApp extends App {
+  constructor(props) {
+    super(props)
+    this.toggleLogin = () => {
+      this.setState({ loggedIn: !this.state.loggedIn })
+    }
+    this.state = {
+      loggedIn: this.props.signedIn,
+      logInOrOut: this.toggleLogin,
+    }
+  }
   componentDidMount() {
     initGA()
     logPageView()
@@ -34,17 +44,8 @@ class MyApp extends App {
   }
 
   render() {
-    const {
-      Component,
-      pageProps,
-      apollo,
-      signedIn,
-      admin,
-      lng,
-      url,
-    } = this.props
-    console.log("language", lng)
-    console.log("url", url)
+    const { Component, pageProps, apollo, admin, lng, url } = this.props
+
     return (
       <Container>
         <Head>
@@ -54,7 +55,7 @@ class MyApp extends App {
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
             <ApolloProvider client={apollo}>
-              <LoginStateContext.Provider value={signedIn}>
+              <LoginStateContext.Provider value={this.state}>
                 <UserDetailContext.Provider value={admin}>
                   <LanguageContext.Provider value={{ language: lng, url }}>
                     <Layout>
@@ -91,7 +92,6 @@ function createPath(originalUrl) {
 
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
-
   let lng = "fi"
   let url = "/"
   if (typeof window !== "undefined") {
