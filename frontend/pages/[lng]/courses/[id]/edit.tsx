@@ -173,7 +173,6 @@ EditCourse.getInitialProps = function(context: NextContext) {
     admin,
     // @ts-ignore
     language: context && context.req ? context.req.language : "",
-    namespacesRequired: ["common"],
   }
 }
 
