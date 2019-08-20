@@ -39,17 +39,6 @@ const SubHeader = styled(Typography)`
     font-size: 48px;
   }
 `
-/* 
-const ModuleHomeLink = styled(Link)`
-  color: #00a68d;
-  font-size: 22px;
-  margin: auto;
-  @media (min-width: 425px) {
-    font-size: 28px;
-  }
-  margin-bottom: 1em;
-  padding-bottom: 1em;
-` */
 
 function Module({ module }: { module: ObjectifiedModule }) {
   const lng = useContext(LanguageContext)
@@ -99,21 +88,6 @@ function Module({ module }: { module: ObjectifiedModule }) {
             </Grid>
           </>
         ) : null}
-
-        {/*
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "3em",
-          }}
-        >
-          <NextI18Next.Link href={`/study-modules/${module.slug}`}>
-            <ModuleHomeLink underline="always" style={{ cursor: "pointer" }}>
-              {t("modulesLinkToHome")}
-            </ModuleHomeLink>
-          </NextI18Next.Link>
-        </div>
-        */}
       </Container>
     </section>
   )

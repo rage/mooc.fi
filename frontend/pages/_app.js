@@ -24,18 +24,12 @@ fontAwesomeConfig.autoAddCss = false
 class MyApp extends App {
   constructor(props) {
     super(props)
-    this.toggleLanguage = () => {
-      const languageToChangeTo = this.state.language === "fi" ? "en" : "fi"
-      let urlToGoTo = Router.asPath.slice(3)
-      if (Router.pathname === "/") {
-        Router.asPath.startsWith("/en") ? "/" : `/en/`
-      }
-      this.setState({ language: languageToChangeTo })
-      Router.push(`/${languageToChangeTo}${urlToGoTo}`)
+    this.toggleLogin = () => {
+      this.setState({ loggedIn: !this.state.loggedIn })
     }
     this.state = {
-      language: props.lng,
-      toggleLanguage: this.toggleLanguage,
+      loggedIn: this.props.signedIn,
+      logInOrOut: this.toggleLogin,
     }
   }
   componentDidMount() {
@@ -50,7 +44,7 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, apollo, signedIn, admin } = this.props
+    const { Component, pageProps, apollo, admin, lng, url } = this.props
 
     return (
       <Container>
@@ -61,9 +55,9 @@ class MyApp extends App {
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
             <ApolloProvider client={apollo}>
-              <LoginStateContext.Provider value={signedIn}>
+              <LoginStateContext.Provider value={this.state}>
                 <UserDetailContext.Provider value={admin}>
-                  <LanguageContext.Provider value={this.state}>
+                  <LanguageContext.Provider value={{ language: lng, url }}>
                     <Layout>
                       <Component {...pageProps} />
                     </Layout>
@@ -81,9 +75,33 @@ class MyApp extends App {
 // We're probably not supposed to do this
 const originalGetInitialProps = MyApp.getInitialProps
 
+function createPath(originalUrl) {
+  let url = ""
+  if (originalUrl === "/") {
+    url = "/en"
+  } else if (originalUrl === "/en") {
+    url = "/"
+  } else {
+    originalUrl.startsWith("/en")
+      ? (url = originalUrl.replace("/en/", "/fi/"))
+      : (url = originalUrl.replace("/fi/", "/en/"))
+  }
+
+  return url
+}
+
 MyApp.getInitialProps = async arg => {
   const { ctx } = arg
-  const lng = ctx.query.lng || "fi"
+  let lng = "fi"
+  let url = "/"
+  if (typeof window !== "undefined") {
+    lng = window.location.pathname.substring(1, 3) || "fi"
+    url = window.location.pathname
+  } else {
+    lng = ctx.query.lng || "fi"
+    url = ctx.req.originalUrl
+  }
+
   let originalProps = {}
 
   if (originalGetInitialProps) {
@@ -96,6 +114,7 @@ MyApp.getInitialProps = async arg => {
     admin: isAdmin(ctx),
     // @ts-ignore
     lng,
+    url: createPath(url),
   }
 }
 

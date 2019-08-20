@@ -37,7 +37,6 @@ const StyledButton = styled(Button)`
   font-size: 18px;
 `
 const MenuOptionButtons = () => {
-  const loggedIn = React.useContext(LoginStateContext)
   const isAdmin = React.useContext(UserDetailContext)
   const lng = useContext(LanguageContext)
   const t = getCommonTranslator(lng.language)
@@ -65,53 +64,57 @@ const MenuOptionButtons = () => {
 
   return (
     <ErrorBoundary>
-      <React.Fragment>
-        {loggedIn ? (
-          <div>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              onClick={() => signOut(client)}
-            >
-              {t("logout")}
-            </StyledButton>
-            <LangLink href="/[lng]/profile">
-              <StyledButton color="inherit" variant="text">
-                {isAdmin ? (
-                  <>
-                    <AdminIcon style={{ marginRight: "0.2rem" }} /> Admin:{" "}
-                  </>
-                ) : (
-                  <StyledIcon icon={profileIcon} />
-                )}
-                {userDisplayName}
-              </StyledButton>
-            </LangLink>
-            {isAdmin ? (
-              <LangLink href="/[lng]/courses">
-                <StyledButton color="inherit" variant="text">
-                  Courses
+      <LoginStateContext.Consumer>
+        {({ loggedIn, logInOrOut }) => (
+          <React.Fragment>
+            {loggedIn ? (
+              <div>
+                <StyledButton
+                  color="inherit"
+                  variant="text"
+                  onClick={() => signOut(client).then(logInOrOut)}
+                >
+                  {t("logout")}
                 </StyledButton>
-              </LangLink>
+                <LangLink href="/[lng]/profile">
+                  <StyledButton color="inherit" variant="text">
+                    {isAdmin ? (
+                      <>
+                        <AdminIcon style={{ marginRight: "0.2rem" }} /> Admin:{" "}
+                      </>
+                    ) : (
+                      <StyledIcon icon={profileIcon} />
+                    )}
+                    {userDisplayName}
+                  </StyledButton>
+                </LangLink>
+                {isAdmin ? (
+                  <LangLink href="/[lng]/courses">
+                    <StyledButton color="inherit" variant="text">
+                      Courses
+                    </StyledButton>
+                  </LangLink>
+                ) : (
+                  ""
+                )}
+              </div>
             ) : (
-              ""
+              <>
+                <LangLink href="/[lng]/sign-in">
+                  <StyledButton color="inherit" variant="text">
+                    {t("loginShort")}
+                  </StyledButton>
+                </LangLink>
+                <LangLink href="/[lng]/sign-up">
+                  <StyledButton color="inherit" variant="text">
+                    {t("signUp")}
+                  </StyledButton>
+                </LangLink>
+              </>
             )}
-          </div>
-        ) : (
-          <>
-            <LangLink href="/[lng]/sign-in">
-              <StyledButton color="inherit" variant="text">
-                {t("loginShort")}
-              </StyledButton>
-            </LangLink>
-            <LangLink href="/[lng]/sign-up">
-              <StyledButton color="inherit" variant="text">
-                {t("signUp")}
-              </StyledButton>
-            </LangLink>
-          </>
+          </React.Fragment>
         )}
-      </React.Fragment>
+      </LoginStateContext.Consumer>
     </ErrorBoundary>
   )
 }

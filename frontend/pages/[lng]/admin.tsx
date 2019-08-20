@@ -52,7 +52,6 @@ Admin.getInitialProps = function(context: NextPageContext) {
   }
   return {
     admin,
-    namespacesRequired: ["admin"],
   }
 }
 
