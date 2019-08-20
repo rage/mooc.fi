@@ -18,9 +18,6 @@ import ModuleNavi from "/components/Home/ModuleNavi"
 import Module from "/components/Home/Module"
 import getHomeTranslator from "/translations/home"
 import LanguageContext from "/contexes/LanguageContext"
-
-/* const allCoursesBanner = require("/static/images/AllCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
-const oldCoursesBanner = require("/static/images/oldCoursesBanner.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000") */
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 const AllModulesQuery = gql`
@@ -198,8 +195,3 @@ const Home = () => {
 }
 
 export default Home
-
-/*<ModuleNavi modules={modules} />
-      {modules.map(module => (
-        <Modules key={module.id} module={module} />
-      ))}*/

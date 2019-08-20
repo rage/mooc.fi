@@ -82,7 +82,6 @@ UserPage.getInitialProps = function(context: NextPageContext) {
   }
   return {
     admin,
-    namespacesRequired: ["common"],
   }
 }
 export default withRouter(UserPage)

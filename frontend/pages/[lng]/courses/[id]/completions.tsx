@@ -106,7 +106,6 @@ Completions.getInitialProps = function(context: NextContext) {
   }
   return {
     admin,
-    namespacesRequired: ["common"],
   }
 }
 

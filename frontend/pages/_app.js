@@ -95,7 +95,7 @@ MyApp.getInitialProps = async arg => {
   let lng = "fi"
   let url = "/"
   if (typeof window !== "undefined") {
-    lng = window.location.pathname.substring(1, 4) || "fi"
+    lng = window.location.pathname.substring(1, 3) || "fi"
     url = window.location.pathname
   } else {
     lng = ctx.query.lng || "fi"
