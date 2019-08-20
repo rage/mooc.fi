@@ -445,7 +445,6 @@ UserSearch.getInitialProps = function(context: NextContext) {
   }
   return {
     admin,
-    namespacesRequired: ["common"],
   }
 }
 

@@ -62,9 +62,7 @@ CompletionsPage.getInitialProps = function(context: NextContext) {
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
-  return {
-    namespacesRequired: ["profile"],
-  }
+  return {}
 }
 
 export default CompletionsPage
