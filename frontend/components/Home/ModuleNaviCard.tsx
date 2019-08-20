@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import NextI18Next from "/i18n"
+import Skeleton from "@material-ui/lab/Skeleton"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -86,21 +87,44 @@ const NaviCardBodyText = styled(Typography)`
     font-size: 24px;
   }
 `
-function ModuleNaviCard({ module }: { module: ObjectifiedModule }) {
-  const imageUrl = module.image
-    ? `../../static/images/${module.image}`
-    : `../../static/images/${module.slug}.jpg`
+function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
+  const imageUrl = module
+    ? module.image
+      ? `../../static/images/${module!.image}`
+      : `../../static/images/${module!.slug}.jpg`
+    : ""
 
   return (
     <Grid item xs={12} md={6} lg={6}>
-      <NextI18Next.Link href={`#${module.slug}`}>
+      <NextI18Next.Link href={`#${module ? module.slug : ""}`}>
         <Base focusRipple>
-          <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
-          <ImageCover />
-          <ContentArea>
-            <NaviCardTitle align="left">{module.name}</NaviCardTitle>
-            <NaviCardBodyText paragraph>{module.description}</NaviCardBodyText>
-          </ContentArea>
+          {module ? (
+            <>
+              <ImageBackground
+                style={{ backgroundImage: `url(${imageUrl})` }}
+              />
+              <ImageCover />
+              <ContentArea>
+                <NaviCardTitle align="left">{module!.name}</NaviCardTitle>
+                <NaviCardBodyText paragraph>
+                  {module!.description}
+                </NaviCardBodyText>
+              </ContentArea>
+            </>
+          ) : (
+            <>
+              <ImageCover />
+              <ContentArea>
+                <NaviCardTitle align="left">
+                  <Skeleton variant="text" />
+                </NaviCardTitle>
+                <NaviCardBodyText paragraph>
+                  <Skeleton />
+                  <Skeleton />
+                </NaviCardBodyText>
+              </ContentArea>
+            </>
+          )}
         </Base>
       </NextI18Next.Link>
     </Grid>
