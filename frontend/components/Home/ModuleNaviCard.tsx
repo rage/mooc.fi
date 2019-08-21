@@ -6,6 +6,7 @@ import styled from "styled-components"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import NextI18Next from "/i18n"
 import Skeleton from "@material-ui/lab/Skeleton"
+import mime from "mime-types"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -50,43 +51,60 @@ const ContentArea = styled.span`
   padding-top: 1em;
 `
 
-const NaviCardTitle = styled(Typography)`
+const TitleStyle = `
   margin-bottom: 1rem;
   margin-left: 1rem;
   max-width: 60%;
   line-height: 1.2em;
   @media (min-width: 320px) {
-    font-size: 26px;
+    font-size: 22px;
   }
   @media (min-width: 420px) {
-    font-size: 32px;
+    font-size: 28px;
   }
   @media (min-width: 720px) {
-    font-size: 46px;
+    font-size: 38px;
   }
   @media (min-width: 720px) {
-    font-size: 48px;
+    font-size: 40px;
   }
 `
-const NaviCardBodyText = styled(Typography)`
+
+const NaviCardTitle = styled(Typography)`
+  ${TitleStyle}
+`
+const SkeletonTitle = styled(Skeleton)`
+  ${TitleStyle}
+`
+
+const BodyStyle = `
   max-width: 60%;
   text-align: left;
   margin: 0;
   margin-left: 1rem;
   flex: 1;
   @media (min-width: 320px) {
-    font-size: 18px;
+    font-size: 14px;
   }
   @media (min-width: 420px) {
-    font-size: 20px;
+    font-size: 16px;
   }
   @media (min-width: 720px) {
-    font-size: 24px;
+    font-size: 18px;
   }
   @media (min-width: 1000px) {
-    font-size: 24px;
+    font-size: 20px;
   }
 `
+
+const NaviCardBodyText = styled(Typography)`
+  ${BodyStyle}
+`
+
+const SkeletonBodyText = styled(Skeleton)`
+  ${BodyStyle}
+`
+
 function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
   const imageUrl = module
     ? module.image
@@ -94,15 +112,24 @@ function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
       : `../../static/images/${module!.slug}.jpg`
     : ""
 
+  console.log(<NaviCardTitle />)
+
   return (
     <Grid item xs={12} md={6} lg={6}>
       <NextI18Next.Link href={`#${module ? module.slug : ""}`}>
         <Base focusRipple>
           {module ? (
             <>
-              <ImageBackground
-                style={{ backgroundImage: `url(${imageUrl})` }}
-              />
+              <picture>
+                <source
+                  srcSet={imageUrl}
+                  type={mime.lookup(imageUrl) || "image/jpeg"}
+                />
+                <source srcSet={`${imageUrl}?webp`} type="image/webp" />
+                <ImageBackground
+                  style={{ backgroundImage: `url(${imageUrl})` }}
+                />
+              </picture>
               <ImageCover />
               <ContentArea>
                 <NaviCardTitle align="left">{module!.name}</NaviCardTitle>
@@ -115,13 +142,8 @@ function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
             <>
               <ImageCover />
               <ContentArea>
-                <NaviCardTitle align="left">
-                  <Skeleton variant="text" />
-                </NaviCardTitle>
-                <NaviCardBodyText paragraph>
-                  <Skeleton />
-                  <Skeleton />
-                </NaviCardBodyText>
+                <SkeletonTitle width="100%" />
+                <SkeletonBodyText variant="text" />
               </ContentArea>
             </>
           )}
@@ -130,5 +152,7 @@ function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
     </Grid>
   )
 }
+
+//
 
 export default ModuleNaviCard

@@ -19,8 +19,3 @@ const Home = () => {
 }
 
 export default Home
-
-/*<ModuleNavi modules={modules} />
-      {modules.map(module => (
-        <Modules key={module.id} module={module} />
-      ))}*/

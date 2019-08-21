@@ -28,6 +28,7 @@ const TextArea = styled.div`
   padding: 1rem 1rem 2rem 1rem;
   height: 200px;
   color: black;
+  width: 100%;
   @media (max-width: 430px) {
     width: 70%;
     text-align: left;
@@ -67,6 +68,7 @@ interface CourseCardProps {
 
 function CourseCard(props: CourseCardProps) {
   const { course } = props
+
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <CardLinkWithGA
@@ -85,30 +87,20 @@ function CourseCard(props: CourseCardProps) {
                 style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
               />
             ) : (
-              <Skeleton variant="rect" height={250} />
+              <Skeleton variant="rect" height="100%" />
             )}
           </ImageArea>
           <TextArea>
-            {course ? (
-              <>
-                <Typography component="h3" variant="h3" gutterBottom={true}>
-                  {course.name}
-                </Typography>
-                <Typography
-                  component="p"
-                  variant="body1"
-                  paragraph
-                  align="left"
-                >
-                  {course.description}
-                </Typography>
-              </>
-            ) : (
-              <>
-                <Skeleton />
-                <Skeleton />
-              </>
-            )}
+            <Typography component="h3" variant="h3" gutterBottom={true}>
+              {course ? course.name : <Skeleton variant="text" width="100%" />}
+            </Typography>
+            <Typography component="p" variant="body1" paragraph align="left">
+              {course ? (
+                course.description
+              ) : (
+                <Skeleton variant="text" width="100%" />
+              )}
+            </Typography>
           </TextArea>
         </Background>
       </CardLinkWithGA>
