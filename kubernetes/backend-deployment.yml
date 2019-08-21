@@ -136,6 +136,13 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: AVOIN_TOKEN
+            - name: REDIS_URL
+              value: "redis://redis-master.moocfi.svc.cluster.local:6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"
