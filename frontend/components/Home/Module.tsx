@@ -10,6 +10,7 @@ import NextI18Next from "../../i18n"
 import Container from "../Container"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import { CourseStatus } from "/static/types/globalTypes"
+import Skeleton from "@material-ui/lab/Skeleton"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -50,35 +51,53 @@ const ModuleHomeLink = styled(Link)`
   padding-bottom: 1em;
 ` */
 
-function Module({ module }: { module: ObjectifiedModule }) {
+function Module({ module }: { module?: ObjectifiedModule }) {
   const { t } = NextI18Next.useTranslation("home")
-  const startCourses = (module.courses || []).filter(
-    c =>
-      !c.hidden &&
-      c.status !== CourseStatus.Ended &&
-      c.study_module_start_point,
-  )
-  const otherCourses = (module.courses || []).filter(
-    c =>
-      !c.hidden &&
-      c.status !== CourseStatus.Ended &&
-      !c.study_module_start_point,
-  )
+  const startCourses = module
+    ? (module!.courses || []).filter(
+        c =>
+          !c.hidden &&
+          c.status !== CourseStatus.Ended &&
+          c.study_module_start_point,
+      )
+    : []
+
+  const otherCourses = module
+    ? (module!.courses || []).filter(
+        c =>
+          !c.hidden &&
+          c.status !== CourseStatus.Ended &&
+          !c.study_module_start_point,
+      )
+    : []
 
   return (
-    <section style={{ marginBottom: "3em" }}>
+    <section
+      id={`module-list-${module ? module.slug : "skeleton"}`}
+      style={{ marginBottom: "3em" }}
+    >
       <ModuleBanner module={module} />
       <Container>
-        <IntroText variant="subtitle1">{module.description}</IntroText>
-
+        {module ? (
+          <IntroText variant="subtitle1">{module.description}</IntroText>
+        ) : (
+          <Skeleton />
+        )}
         <SubHeader align="center" variant="h3">
           {t("modulesSubtitleStart")}
         </SubHeader>
 
         <Grid container spacing={3}>
-          {startCourses.map(course => (
-            <CourseCard key={`module-course-${course.id}`} course={course} />
-          ))}
+          {module ? (
+            startCourses.map(course => (
+              <CourseCard key={`module-course-${course.id}`} course={course} />
+            ))
+          ) : (
+            <>
+              <CourseCard key="module-course-skeleton1" />
+              <CourseCard key="module-course-skeleton2" />
+            </>
+          )}
         </Grid>
 
         {otherCourses.length > 0 ? (
@@ -97,7 +116,6 @@ function Module({ module }: { module: ObjectifiedModule }) {
             </Grid>
           </>
         ) : null}
-
         {/*
         <div
           style={{

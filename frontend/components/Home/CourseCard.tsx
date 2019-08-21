@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "../CourseImage"
 import { ObjectifiedCourse } from "../../static/types/moduleTypes"
+import Skeleton from "@material-ui/lab/Skeleton"
 
 const Background = styled(ButtonBase)`
   background-color: white;
@@ -27,6 +28,7 @@ const TextArea = styled.div`
   padding: 1rem 1rem 2rem 1rem;
   height: 200px;
   color: black;
+  width: 100%;
   @media (max-width: 430px) {
     width: 70%;
     text-align: left;
@@ -61,32 +63,57 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
 interface CourseCardProps {
-  course: ObjectifiedCourse
+  course?: ObjectifiedCourse
 }
 
 function CourseCard(props: CourseCardProps) {
   const { course } = props
+
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
       <CardLinkWithGA
-        eventLabel={`coursesite: ${course.name}`}
-        to={course.link || ""}
+        eventLabel={`coursesite: ${course ? course.name : ""}`}
+        to={course ? course.link || "" : ""}
         target="_blank"
       >
-        <Background focusRipple disabled={!course.link || course.link === ""}>
+        <Background
+          focusRipple
+          disabled={!course || (!course.link || course.link === "")}
+        >
           <ImageArea>
-            <CourseImage
-              photo={course.photo}
-              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
-            />
+            {course ? (
+              <CourseImage
+                photo={course.photo}
+                style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+              />
+            ) : (
+              <Skeleton variant="rect" height="100%" />
+            )}
           </ImageArea>
           <TextArea>
-            <Typography component="h3" variant="h3" gutterBottom={true}>
-              {course.name}
-            </Typography>
-            <Typography component="p" variant="body1" paragraph align="left">
-              {course.description}
-            </Typography>
+            {course ? (
+              <>
+                <Typography component="h3" variant="h3" gutterBottom={true}>
+                  {course.name}
+                </Typography>
+                <Typography
+                  component="p"
+                  variant="body1"
+                  paragraph
+                  align="left"
+                >
+                  {course.description}
+                </Typography>
+              </>
+            ) : (
+              <>
+                <h3>
+                  <Skeleton variant="text" width="100%" />
+                </h3>
+                <Skeleton variant="text" width="100%" />
+                <Skeleton variant="text" width="100%" />
+              </>
+            )}
           </TextArea>
         </Background>
       </CardLinkWithGA>
