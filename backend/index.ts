@@ -43,6 +43,8 @@ const schema = makePrismaSchema({
   },
 })
 
+// DEBUG:   context: req => { console.log(req.request.headers, req.request.body.query); return ({ prisma, ...req }) },
+
 const server = new GraphQLServer({
   schema,
   context: req => ({ prisma, ...req }),
@@ -51,7 +53,9 @@ const server = new GraphQLServer({
 
 const serverStartOptions = {
   formatParams(o) {
-    logger.info("Query")
+    logger.info(
+      `Query: ${o.operationName}, variables: ${JSON.stringify(o.variables)}`,
+    )
     return o
   },
   formatError: error => {

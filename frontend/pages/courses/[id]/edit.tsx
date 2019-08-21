@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { NextPageContext as NextContext } from "next"
@@ -90,24 +90,31 @@ const EditCourse = (props: EditCourseProps) => {
   /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
   const loading = false */
 
-  const {
-    data: courseData,
-    loading: courseLoading,
-    //@ts-ignore
-    error: courseError,
-  } = useQuery<CourseDetails>(CourseQuery, {
-    variables: { slug: slug },
-  })
-  const {
-    data: studyModulesData,
-    loading: studyModulesLoading,
-    //@ts-ignore
-    error: studyModulesError,
-  } = useQuery(StudyModuleQuery)
-
   if (!admin) {
     return <AdminError />
   }
+  const runQueries = useCallback(
+    () => [
+      useQuery<CourseDetails>(CourseQuery, {
+        variables: { slug: slug },
+      }),
+      useQuery(StudyModuleQuery),
+    ],
+    [],
+  )
+
+  const [courseQuery, moduleQuery] = runQueries()
+
+  const {
+    data: courseData,
+    loading: courseLoading,
+    error: courseError,
+  } = courseQuery
+  const {
+    data: studyModulesData,
+    loading: studyModulesLoading,
+    error: studyModulesError,
+  } = moduleQuery
 
   if (courseLoading || studyModulesLoading) {
     return <Spinner />
@@ -169,6 +176,7 @@ EditCourse.getInitialProps = function(context: NextContext) {
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
+
   return {
     admin,
     // @ts-ignore
