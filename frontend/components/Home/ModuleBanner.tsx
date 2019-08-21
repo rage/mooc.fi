@@ -3,6 +3,7 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
+import mime from "mime-types"
 
 const ModuleBannerContainer = styled.section`
   display: flex;
@@ -69,11 +70,17 @@ function ModuleBanner({ module }: { module?: ObjectifiedModule }) {
     <ModuleBannerContainer>
       {module ? (
         <>
-          <img style={{ display: "none" }} src={imageUrl} alt="" />
           <Title component="h2" variant="h2" align="center">
             {module.name}
           </Title>
-          <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />
+          <picture>
+            <source
+              srcSet={imageUrl}
+              type={mime.lookup(imageUrl) || "image/jpeg"}
+            />
+            <source srcSet={`${imageUrl}?webp`} type="image/webp" />
+            <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />
+          </picture>
         </>
       ) : (
         <>
