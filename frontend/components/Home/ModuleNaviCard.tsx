@@ -112,8 +112,6 @@ function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
       : `../../static/images/${module!.slug}.jpg`
     : ""
 
-  console.log(<NaviCardTitle />)
-
   return (
     <Grid item xs={12} md={6} lg={6}>
       <NextI18Next.Link href={`#${module ? module.slug : ""}`}>
