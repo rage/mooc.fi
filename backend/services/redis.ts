@@ -25,13 +25,13 @@ redisClient.on("error", err => logger.error("Redis error: " + err))
 const getAsync = promisify(redisClient.get).bind(redisClient)
 
 export async function redisify<T>(
-  fn: ((props: any) => Promise<T> | T) | Promise<T>,
+  fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
   options: { prefix: string; expireTime: number; key: string; params?: any },
 ) {
   const { prefix, expireTime, key, params } = options
 
   if (!redisClient || (redisClient && !redisClient.connected)) {
-    return fn instanceof Promise ? fn : fn(params)
+    return fn instanceof Promise ? fn : fn(...params)
   }
 
   const prefixedKey = `${prefix}:${key}`
@@ -42,13 +42,13 @@ export async function redisify<T>(
         return await JSON.parse(res)
       }
 
-      const value = fn instanceof Promise ? await fn : await fn(params)
+      const value = fn instanceof Promise ? await fn : await fn(...params)
 
       redisClient.setex(prefixedKey, expireTime, JSON.stringify(value))
 
       return value
     })
-    .catch(() => (fn instanceof Promise ? fn : fn(params)))
+    .catch(() => (fn instanceof Promise ? fn : fn(...params)))
 }
 
 export default redisClient
