@@ -51,18 +51,7 @@ const ForTeachers = () => {
     <section>
       <ContentBlock>
         <Header variant="h3">{t("siteTitle")}</Header>
-        <TextBlock>
-          You can utilize most of our materials freely. Most of them are
-          licenced with
-          <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">
-            Creative Commons BY-NC-SA
-          </a>
-          -licence, but check the course materials for confirmation. Creative
-          Commons BY-NC-SA -licence means that you can use the materials either
-          as is or modify them to better suit your teaching purposes as long as
-          you preserve the information of the original creators in the
-          materials, and the usage is non-commercial.
-        </TextBlock>
+        <TextBlock>{t("siteIntro")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
         <StyledIcon icon={faGraduationCap} size="3x" />
