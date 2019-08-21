@@ -3,8 +3,12 @@ import * as winston from "winston"
 import { promisify } from "util"
 
 const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:7001"
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD
 
-const redisClient = redis.createClient({ url: REDIS_URL })
+const redisClient = redis.createClient({
+  url: REDIS_URL,
+  password: REDIS_PASSWORD,
+})
 
 const logger = winston.createLogger({
   level: "info",
