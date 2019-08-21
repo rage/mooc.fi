@@ -91,16 +91,29 @@ function CourseCard(props: CourseCardProps) {
             )}
           </ImageArea>
           <TextArea>
-            <Typography component="h3" variant="h3" gutterBottom={true}>
-              {course ? course.name : <Skeleton variant="text" width="100%" />}
-            </Typography>
-            <Typography component="p" variant="body1" paragraph align="left">
-              {course ? (
-                course.description
-              ) : (
+            {course ? (
+              <>
+                <Typography component="h3" variant="h3" gutterBottom={true}>
+                  {course.name}
+                </Typography>
+                <Typography
+                  component="p"
+                  variant="body1"
+                  paragraph
+                  align="left"
+                >
+                  {course.description}
+                </Typography>
+              </>
+            ) : (
+              <>
+                <h3>
+                  <Skeleton variant="text" width="100%" />
+                </h3>
                 <Skeleton variant="text" width="100%" />
-              )}
-            </Typography>
+                <Skeleton variant="text" width="100%" />
+              </>
+            )}
           </TextArea>
         </Background>
       </CardLinkWithGA>
