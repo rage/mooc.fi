@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
@@ -6,6 +6,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import { WideContainer } from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
+import LanguageContext from "/contexes/LanguageContext"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
 import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
@@ -29,12 +30,12 @@ interface CompletionsProps {
 }
 const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
-
+  const { language } = useContext(LanguageContext)
   let slug: string = ""
   let lng: string = ""
   if (router && router.query) {
-    if (typeof router.query.lng === "string") {
-      lng = router.query.lng
+    if (typeof router.query.language === "string") {
+      lng = router.query.language
     }
     if (typeof router.query.id === "string") {
       slug = router.query.id
@@ -43,7 +44,7 @@ const Completions = (props: CompletionsProps) => {
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     router.push(
-      `/courses/${slug}/completions?lng=${
+      `/${language}/courses/${slug}/completions?language=${
         (event.target as HTMLInputElement).value
       }`,
     )
