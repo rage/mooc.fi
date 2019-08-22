@@ -3,10 +3,10 @@ import { Grid, Typography, Button } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
-import { ObjectifiedModule } from "./../static/types/moduleTypes"
 import styled from "styled-components"
-import LangLink from "/components/LangLink"
 import mime from "mime-types"
+import LangLink from "/components/LangLink"
+import { AllModulesWithTranslations_study_modules } from "/static/types/AllModulesWithTranslations"
 
 const Base = styled.div`
   position: relative;
@@ -101,7 +101,11 @@ const NaviCardBodyText = styled(Typography)`
   }
 `
 
-function ModuleCard({ module }: { module?: ObjectifiedModule }) {
+function ModuleCard({
+  module,
+}: {
+  module?: AllModulesWithTranslations_study_modules
+}) {
   const imageUrl = module
     ? module.image
       ? `/static/images/${module.image}`

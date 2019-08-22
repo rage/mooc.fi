@@ -12,6 +12,7 @@ interface Props {
   ctx: NextContext
   apolloState: any
   accessToken?: string
+  apollo: ApolloClient<NormalizedCacheObject>
 }
 
 const withApolloClient = (App: any) => {
@@ -58,14 +59,6 @@ const withApolloClient = (App: any) => {
             }),
           ])
           // Run all GraphQL queries
-          /*          await getDataFromTree(
-            <App
-              {...appProps}
-              Component={Component}
-              router={router}
-              apollo={apollo}
-            />,
-          )*/
         } catch (error) {
           // Prevent Apollo Client GraphQL errors from crashing SSR.
           // Handle them in components via the data.error prop:
@@ -75,7 +68,9 @@ const withApolloClient = (App: any) => {
 
         // getDataFromTree does not call componentWillUnmount
         // head side effect therefore need to be cleared manually
-        Head.rewind()
+        if (!process.browser) {
+          Head.rewind()
+        }
       }
 
       // Extract query data from the Apollo store
