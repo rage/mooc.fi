@@ -66,59 +66,50 @@ interface CourseCardProps {
   course?: ObjectifiedCourse
 }
 
-function CourseCard(props: CourseCardProps) {
-  const { course } = props
-
-  return (
-    <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-      <CardLinkWithGA
-        eventLabel={`coursesite: ${course ? course.name : ""}`}
-        to={course ? course.link || "" : ""}
-        target="_blank"
+const CourseCard = ({ course }: CourseCardProps) => (
+  <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+    <CardLinkWithGA
+      eventLabel={`coursesite: ${course ? course.name : ""}`}
+      to={course ? course.link || "" : ""}
+      target="_blank"
+    >
+      <Background
+        focusRipple
+        disabled={!course || (!course.link || course.link === "")}
       >
-        <Background
-          focusRipple
-          disabled={!course || (!course.link || course.link === "")}
-        >
-          <ImageArea>
-            {course ? (
-              <CourseImage
-                photo={course.photo}
-                style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
-              />
-            ) : (
-              <Skeleton variant="rect" height="100%" />
-            )}
-          </ImageArea>
-          <TextArea>
-            {course ? (
-              <>
-                <Typography component="h3" variant="h3" gutterBottom={true}>
-                  {course.name}
-                </Typography>
-                <Typography
-                  component="p"
-                  variant="body1"
-                  paragraph
-                  align="left"
-                >
-                  {course.description}
-                </Typography>
-              </>
-            ) : (
-              <>
-                <h3>
-                  <Skeleton variant="text" width="100%" />
-                </h3>
+        <ImageArea>
+          {course ? (
+            <CourseImage
+              photo={course.photo}
+              style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+            />
+          ) : (
+            <Skeleton variant="rect" height="100%" />
+          )}
+        </ImageArea>
+        <TextArea>
+          {course ? (
+            <>
+              <Typography component="h3" variant="h3" gutterBottom={true}>
+                {course.name}
+              </Typography>
+              <Typography component="p" variant="body1" paragraph align="left">
+                {course.description}
+              </Typography>
+            </>
+          ) : (
+            <>
+              <h3>
                 <Skeleton variant="text" width="100%" />
-                <Skeleton variant="text" width="100%" />
-              </>
-            )}
-          </TextArea>
-        </Background>
-      </CardLinkWithGA>
-    </Grid>
-  )
-}
+              </h3>
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="text" width="100%" />
+            </>
+          )}
+        </TextArea>
+      </Background>
+    </CardLinkWithGA>
+  </Grid>
+)
 
 export default CourseCard

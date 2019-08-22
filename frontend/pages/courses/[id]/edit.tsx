@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { NextPageContext as NextContext } from "next"
@@ -93,28 +93,19 @@ const EditCourse = (props: EditCourseProps) => {
   if (!admin) {
     return <AdminError />
   }
-  const runQueries = useCallback(
-    () => [
-      useQuery<CourseDetails>(CourseQuery, {
-        variables: { slug: slug },
-      }),
-      useQuery(StudyModuleQuery),
-    ],
-    [],
-  )
-
-  const [courseQuery, moduleQuery] = runQueries()
 
   const {
     data: courseData,
     loading: courseLoading,
     error: courseError,
-  } = courseQuery
+  } = useQuery<CourseDetails>(CourseQuery, {
+    variables: { slug: slug },
+  })
   const {
     data: studyModulesData,
     loading: studyModulesLoading,
     error: studyModulesError,
-  } = moduleQuery
+  } = useQuery(StudyModuleQuery)
 
   if (courseLoading || studyModulesLoading) {
     return <Spinner />
