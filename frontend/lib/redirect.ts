@@ -1,8 +1,10 @@
-import NextI18Next from "../i18n"
 import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
+import Router from "next/router"
 
 export default (context: NextContext, target: string, savePage = false) => {
+  let language = context && context.query ? context.query.lng : "fi"
+
   if (savePage) {
     // @ts-ignore
     nookies.set(context, "redirect-back", context.req.originalUrl, {
@@ -10,12 +12,13 @@ export default (context: NextContext, target: string, savePage = false) => {
       path: "/",
     })
   }
+
   let sep = ""
   if (!target.startsWith("/")) {
     sep = "/"
   }
   // @ts-ignore
-  const targetWithLanguage = `/${context.req.language}${sep}${target}`
+  const targetWithLanguage = `/${language}${sep}${target}`
   if (context.res && context.res.writeHead && context.res.end) {
     // server
     // 303: "See other"
@@ -23,6 +26,6 @@ export default (context: NextContext, target: string, savePage = false) => {
     context.res.end()
   } else {
     // In the browser, we just pretend like this never even happened ;)
-    NextI18Next.Router.replace(targetWithLanguage)
+    Router.push(targetWithLanguage)
   }
 }

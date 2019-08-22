@@ -1,12 +1,9 @@
 import React from "react"
 import { Typography, Grid } from "@material-ui/core"
 
-import { UserCourseSettingses_UserCourseSettingses_edges_node as UserPointsData } from "../../static/types/generated/UserCourseSettingses"
-import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess as UserProgressData } from "../../static/types/generated/UserCourseSettingses"
-import {
-  pointsDataByGroup,
-  serviceData,
-} from "../../static/types/PointsByService"
+import { UserCourseSettingses_UserCourseSettingses_edges_node as UserPointsData } from "/static/types/generated/UserCourseSettingses"
+import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess as UserProgressData } from "/static/types/generated/UserCourseSettingses"
+import { pointsDataByGroup, serviceData } from "/static/types/PointsByService"
 
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"

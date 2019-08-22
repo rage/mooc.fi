@@ -1,12 +1,12 @@
 import * as React from "react"
 
 interface PageLanguageDetails {
-  language: string | null
+  language: string
   url: string
 }
 
 const LanguageContext = React.createContext<PageLanguageDetails>({
-  language: null,
+  language: "fi",
   url: "",
 })
 

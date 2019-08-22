@@ -1,5 +1,11 @@
 import * as React from "react"
-
-const LoginStateContext = React.createContext(false)
+interface LoginState {
+  loggedIn: boolean
+  logInOrOut: () => void
+}
+const LoginStateContext = React.createContext<LoginState>({
+  loggedIn: false,
+  logInOrOut: () => {},
+})
 
 export default LoginStateContext

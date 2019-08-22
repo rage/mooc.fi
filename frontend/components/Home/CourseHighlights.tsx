@@ -1,10 +1,10 @@
 import React from "react"
 import Grid from "@material-ui/core/Grid"
 import CourseCard from "./CourseCard"
-import Container from "../Container"
+import Container from "/components/Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedCourse } from "../../static/types/moduleTypes"
+import { ObjectifiedCourse } from "/static/types/moduleTypes"
 
 interface RootProps {
   backgroundColor: string

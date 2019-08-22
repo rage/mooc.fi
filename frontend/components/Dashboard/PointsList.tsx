@@ -1,7 +1,7 @@
 import React from "react"
 import { Grid } from "@material-ui/core"
 import PointsListItemCard from "./PointsListItemCard"
-import { UserCourseSettingses_UserCourseSettingses_edges as Points } from "../../static/types/generated/UserCourseSettingses"
+import { UserCourseSettingses_UserCourseSettingses_edges as Points } from "/static/types/generated/UserCourseSettingses"
 
 interface Props {
   pointsForUser: Points[]

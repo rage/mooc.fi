@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import CourseHighlights from "./CourseHighlights"
 import {
   filterAndModifyCoursesByLanguage,
@@ -10,9 +10,10 @@ import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import { ObjectifiedCourse, ObjectifiedModule } from "/static/types/moduleTypes"
-import NextI18Next from "/i18n"
 import ModuleNavi from "./ModuleNavi"
 import ModuleList from "./ModuleList"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
@@ -84,13 +85,9 @@ const AllCoursesQuery = gql`
   }
 `
 
-interface CourseAndModuleListProps {
-  t: Function
-  tReady: boolean
-}
-
-const CourseAndModuleList = (props: CourseAndModuleListProps) => {
-  const { t, tReady } = props
+const CourseAndModuleList = () => {
+  const lng = useContext(LanguageContext)
+  const t = getHomeTranslator(lng.language)
   const {
     loading: coursesLoading,
     error: coursesError,
@@ -103,12 +100,12 @@ const CourseAndModuleList = (props: CourseAndModuleListProps) => {
   } = useQuery<AllModulesData>(AllModulesQuery)
 
   const [language, setLanguage] = useState(
-    mapNextLanguageToLocaleCode(NextI18Next.config.defaultLanguage),
+    mapNextLanguageToLocaleCode(lng.language),
   )
   //every time the i18n language changes, update the state
   useEffect(() => {
-    setLanguage(mapNextLanguageToLocaleCode(NextI18Next.i18n.language))
-  }, [NextI18Next.i18n.language])
+    setLanguage(mapNextLanguageToLocaleCode(lng.language))
+  }, [lng.language])
 
   if (coursesError || modulesError) {
     ;<div>
@@ -119,10 +116,6 @@ const CourseAndModuleList = (props: CourseAndModuleListProps) => {
 
   if (!coursesData || !modulesData) {
     return <div>Error: no data?</div>
-  }
-
-  if (!tReady) {
-    return null // <div>waiting for translation</div>
   }
 
   const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
@@ -195,9 +188,7 @@ const CourseAndModuleList = (props: CourseAndModuleListProps) => {
 }
 
 CourseAndModuleList.getInitialProps = function() {
-  return {
-    namespacesRequired: ["home", "navi"],
-  }
+  return {}
 }
 
-export default NextI18Next.withTranslation("home")(CourseAndModuleList)
+export default CourseAndModuleList
