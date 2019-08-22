@@ -14,9 +14,7 @@ import { SingletonRouter, withRouter } from "next/router"
 
 interface UserPageProps {
   namespacesRequired: string[]
-  t: Function
   router: SingletonRouter
-  i18n: any
   admin: boolean
 }
 
@@ -65,7 +63,7 @@ const UserPage = (props: UserPageProps) => {
               newData.push(...data.UserCourseSettingses.edges)
               setMore(newData)
             }}
-            disabled={false} //{!data.UserCourseSettingses.pageInfo.hasNextPage}
+            disabled={false}
           >
             Load more
           </Button>

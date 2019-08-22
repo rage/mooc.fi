@@ -40,9 +40,10 @@ const SubHeader = styled(Typography)`
   }
 `
 
-const Module = ({ module }: { module?: ObjectifiedModule }) => {
+function Module({ module }: { module?: ObjectifiedModule }) {
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
+
   const startCourses = module
     ? (module!.courses || []).filter(
         c =>

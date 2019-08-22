@@ -34,9 +34,6 @@ import AdminError from "/components/Dashboard/AdminError"
 interface UserSearchProps {
   namespacesRequired: string[]
   router: SingletonRouter
-  t: Function
-  i18n: any
-  tReady: boolean
   admin: boolean
 }
 

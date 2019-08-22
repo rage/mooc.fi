@@ -6,8 +6,6 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { ObjectifiedCourse } from "/static/types/moduleTypes"
 
-import useWhyDidYouUpdate from "/lib/why-did-you-update"
-
 interface RootProps {
   backgroundColor: string
 }
@@ -78,8 +76,6 @@ interface CourseHighlightsProps {
 }
 
 const CourseHighlights = (props: CourseHighlightsProps) => {
-  useWhyDidYouUpdate(`CourseHighlights/${props.title}`, props)
-
   const {
     courses,
     title,

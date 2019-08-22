@@ -4,9 +4,9 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"
 import mime from "mime-types"
-import LangLink from "/components/LangLink"
 
 const Base = styled(ButtonBase)`
   position: relative;

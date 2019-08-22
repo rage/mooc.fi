@@ -4,14 +4,12 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
-import CourseImage from "../CourseImage"
-import { ObjectifiedCourse } from "../../static/types/moduleTypes"
+import CourseImage from "/components/CourseImage"
+import { ObjectifiedCourse } from "/static/types/moduleTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
-
 interface BackgroundProps {
   component: string
 }
-
 const Background = styled(ButtonBase)<BackgroundProps>`
   background-color: white;
   position: relative;

@@ -102,6 +102,14 @@ const CourseAndModuleList = () => {
     data: modulesData,
   } = useQuery<AllModulesData>(AllModulesQuery)
 
+  /*   const [language, setLanguage] = useState(
+    mapNextLanguageToLocaleCode(lngCtx.language),
+  )
+  //every time the i18n language changes, update the state
+  useEffect(() => {
+    setLanguage(mapNextLanguageToLocaleCode(lngCtx.language))
+  }, [lngCtx.language]) */
+
   if (coursesError || modulesError) {
     ;<div>
       Error:{" "}

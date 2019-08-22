@@ -52,33 +52,14 @@ const ForTeachers = () => {
       <ContentBlock>
         <Header variant="h3">{t("siteTitle")}</Header>
         <TextBlock>
-          You can utilize most of our materials freely. Most of them are
-          licenced with
-          <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">
-            Creative Commons BY-NC-SA
-          </a>
-          -licence, but check the course materials for confirmation. Creative
-          Commons BY-NC-SA -licence means that you can use the materials either
-          as is or modify them to better suit your teaching purposes as long as
-          you preserve the information of the original creators in the
-          materials, and the usage is non-commercial.
+          <span dangerouslySetInnerHTML={{ __html: t("siteIntro") }} />
         </TextBlock>
       </ContentBlock>
       <ContentBlock>
         <StyledIcon icon={faGraduationCap} size="3x" />
         <Header variant="h4">{t("teachingTitle")}</Header>
         <TextBlock>
-          Voit hyödyntää suurinta osaa tarjoamistamme materiaaleista vapaasti.
-          Materiaaleissamme on lähes poikkeuksetta käytetty
-          <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fi">
-            Creative Commons BY-NC-SA
-          </a>
-          -lisenssiä, mutta tarkista vielä lisenssi materiaalista. Creative
-          Commons BY-NC-SA -lisenssi tarkoittaa sitä, että voit käyttää
-          materiaaleja joko sellaisenaan tai muokata niitä paremmin omaan
-          opetukseesi sopivaksi, kunhan säilytät tiedon alkuperäisistä
-          tekijöistä materiaalissa ja et tavoittele materiaaleillamme itsellesi
-          kaupallista hyötyä.
+          <span dangerouslySetInnerHTML={{ __html: t("teachingText") }} />
         </TextBlock>
         <TextBlock>{t("teachingText2")}</TextBlock>
         <TextBlock>{t("teachingText3")}</TextBlock>
@@ -100,8 +81,7 @@ const ForTeachers = () => {
         <StyledIcon icon={faPlusSquare} size="3x" />
         <Header variant="h4">{t("howtoTitle")}</Header>
         <TextBlock>
-          Aloita luomalla itsellesi käyttäjätunnus sivustolle
-          <a href="https://tmc.mooc.fi/">https://tmc.mooc.fi/</a>
+          <span dangerouslySetInnerHTML={{ __html: t("howtoText") }} />
         </TextBlock>
         <TextBlock>{t("howtoText2")}</TextBlock>
         <StyledButton
@@ -126,13 +106,7 @@ const ForTeachers = () => {
             <StyledIcon icon={faBook} size="3x" />
             <Header variant="h4">{t("2016Title")}</Header>
             <TextBlock>
-              Lähivuosina kaikki opettelevat ohjelmointia peruskoulusta asti.
-              Tämä vaatii opettajilta ohjelmointiosaamista. Suosittelemme
-              opettajille opetuksen tueksi erityisesti
-              <a href="http://koodiaapinen.fi/">Koodiaapista</a>. Koodiaapinen
-              kerää ja tarjoaa opettajille suunnattuja resursseja, jotka
-              auttavat ohjelmointiopetuksen järjestämisessä. Voit osallistua
-              koodiaapisen luomiseen myös itse.
+              <span dangerouslySetInnerHTML={{ __html: t("2016Text") }} />
             </TextBlock>
           </ContentBlock>
         </section>
@@ -143,8 +117,7 @@ const ForTeachers = () => {
         <StyledIcon icon={faComments} size="3x" />
         <Header variant="h4">{t("contactTitle")}</Header>
         <TextBlock>
-          Saat meihin parhaiten yhteyden lähettämällä sähköpostia osoitteeseen
-          <a href="https://tmc.mooc.fi/">mooc@cs.helsinki.fi</a>
+          <span dangerouslySetInnerHTML={{ __html: t("contactText") }} />
         </TextBlock>
       </ContentBlock>
     </section>
