@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
-// import Link from "@material-ui/core/Link"
 import styled from "styled-components"
 import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
@@ -41,21 +40,27 @@ const SubHeader = styled(Typography)`
   }
 `
 
-function Module({ module }: { module: ObjectifiedModule }) {
+function Module({ module }: { module?: ObjectifiedModule }) {
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
-  const startCourses = (module.courses || []).filter(
-    c =>
-      !c.hidden &&
-      c.status !== CourseStatus.Ended &&
-      c.study_module_start_point,
-  )
-  const otherCourses = (module.courses || []).filter(
-    c =>
-      !c.hidden &&
-      c.status !== CourseStatus.Ended &&
-      !c.study_module_start_point,
-  )
+
+  const startCourses = module
+    ? (module!.courses || []).filter(
+        c =>
+          !c.hidden &&
+          c.status !== CourseStatus.Ended &&
+          c.study_module_start_point,
+      )
+    : []
+
+  const otherCourses = module
+    ? (module!.courses || []).filter(
+        c =>
+          !c.hidden &&
+          c.status !== CourseStatus.Ended &&
+          !c.study_module_start_point,
+      )
+    : []
 
   return (
     <section

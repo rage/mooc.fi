@@ -23,7 +23,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-function ModuleNavi({ modules }: { modules: ObjectifiedModule[] }) {
+function ModuleNavi({
+  modules,
+  loading,
+}: {
+  modules: ObjectifiedModule[]
+  loading: boolean
+}) {
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
 

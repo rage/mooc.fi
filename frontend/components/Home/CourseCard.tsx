@@ -76,6 +76,7 @@ const CourseCard = ({ course }: CourseCardProps) => (
       target="_blank"
     >
       <Background
+        component="div"
         focusRipple
         disabled={!course || (!course.link || course.link === "")}
       >
