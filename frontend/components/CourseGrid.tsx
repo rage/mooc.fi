@@ -1,10 +1,10 @@
 import React from "react"
 import { Grid } from "@material-ui/core"
 import CourseCard from "./CourseCard"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 
 interface CourseGridProps {
-  courses: AllCourses_courses[]
+  courses: AllEditorCourses_courses[]
 }
 
 function CourseGrid(props: CourseGridProps) {
