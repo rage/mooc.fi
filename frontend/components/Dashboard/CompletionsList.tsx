@@ -3,11 +3,11 @@ import { gql } from "apollo-boost"
 import {
   AllCompletions as AllCompletionsData,
   AllCompletions_completionsPaginated_edges,
-} from "../../static/types/generated/AllCompletions"
+} from "/static/types/generated/AllCompletions"
 import { CircularProgress } from "@material-ui/core"
 import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
-import CourseLanguageContext from "../../contexes/CourseLanguageContext"
+import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import { useQuery } from "@apollo/react-hooks"
 
 export const AllCompletionsQuery = gql`

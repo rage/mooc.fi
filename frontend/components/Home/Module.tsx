@@ -1,14 +1,14 @@
-import React from "react"
+import React, { useContext } from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
-// import Link from "@material-ui/core/Link"
 import styled from "styled-components"
 import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
-import NextI18Next from "../../i18n"
-import Container from "../Container"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import Container from "/components/Container"
+import { ObjectifiedModule } from "/static/types/moduleTypes"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 import { CourseStatus } from "/static/types/globalTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
 
@@ -39,20 +39,11 @@ const SubHeader = styled(Typography)`
     font-size: 48px;
   }
 `
-/* 
-const ModuleHomeLink = styled(Link)`
-  color: #00a68d;
-  font-size: 22px;
-  margin: auto;
-  @media (min-width: 425px) {
-    font-size: 28px;
-  }
-  margin-bottom: 1em;
-  padding-bottom: 1em;
-` */
 
 function Module({ module }: { module?: ObjectifiedModule }) {
-  const { t } = NextI18Next.useTranslation("home")
+  const lng = useContext(LanguageContext)
+  const t = getHomeTranslator(lng.language)
+
   const startCourses = module
     ? (module!.courses || []).filter(
         c =>
@@ -116,20 +107,6 @@ function Module({ module }: { module?: ObjectifiedModule }) {
             </Grid>
           </>
         ) : null}
-        {/*
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "3em",
-          }}
-        >
-          <NextI18Next.Link href={`/study-modules/${module.slug}`}>
-            <ModuleHomeLink underline="always" style={{ cursor: "pointer" }}>
-              {t("modulesLinkToHome")}
-            </ModuleHomeLink>
-          </NextI18Next.Link>
-        </div>
-        */}
       </Container>
     </section>
   )

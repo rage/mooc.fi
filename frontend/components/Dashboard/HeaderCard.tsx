@@ -1,6 +1,6 @@
 import React from "react"
 import { Grid, Card, CardContent, Typography } from "@material-ui/core"
-import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/generated/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
 import styled from "styled-components"
 
 const TitleCard = styled(Card)`

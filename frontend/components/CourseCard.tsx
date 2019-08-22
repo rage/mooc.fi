@@ -11,10 +11,10 @@ import {
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
-import NextI18Next from "i18n"
 import CourseImage from "./CourseImage"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import styled from "styled-components"
+import LangLink from "/components/LangLink"
 
 const CardBase = styled(Card)<{ ishidden?: boolean | null }>`
   padding: 0.8em;
@@ -34,7 +34,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
         {course ? (
           <CourseImage photo={course.photo} alt={course.name} />
         ) : (
-          <NextI18Next.Link href={`/courses/new`}>
+          <LangLink href={`/courses/new`}>
             <a>
               <Grid
                 container
@@ -45,7 +45,7 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
                 <AddCircleIcon fontSize="large" />
               </Grid>
             </a>
-          </NextI18Next.Link>
+          </LangLink>
         )}
       </CardMedia>
       <CardContent>
@@ -56,32 +56,32 @@ const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
       <CardActionArea>
         {course ? (
           <React.Fragment>
-            <NextI18Next.Link href={`/courses/${course.slug}`}>
+            <LangLink href={`/courses/${course.slug}`}>
               <a aria-label={`To the homepage of course ${course.name}`}>
                 <Button variant="contained" color="secondary" fullWidth>
                   <DashboardIcon />
                   Course Dashboard
                 </Button>
               </a>
-            </NextI18Next.Link>
-            <NextI18Next.Link href={`/courses/${course.slug}/edit`}>
+            </LangLink>
+            <LangLink href={`/courses/${course.slug}/edit`}>
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
                   <EditIcon />
                   Edit
                 </Button>
               </a>
-            </NextI18Next.Link>
+            </LangLink>
           </React.Fragment>
         ) : (
-          <NextI18Next.Link href={`/courses/new`}>
+          <LangLink href={`/courses/new`}>
             <a>
               <Button variant="contained" color="secondary" fullWidth>
                 <AddIcon />
                 Create
               </Button>
             </a>
-          </NextI18Next.Link>
+          </LangLink>
         )}
       </CardActionArea>
     </CardBase>

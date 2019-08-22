@@ -56,12 +56,16 @@ const DashboardBreadCrumbs = (props: Props) => {
   //split the url path into parts
   //remove the first item, as we know it to be homepage
   const urlWithQueryRemoved = currentUrl.split("?")[0]
-  const urlRouteComponents = urlWithQueryRemoved.split("/").slice(1)
+  let homeLink: string = "/"
+  if (urlWithQueryRemoved.startsWith("/en")) {
+    homeLink = "/en"
+  }
+  const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
 
   return (
     <BreadCrumbsBase>
       <StyledBreadCrumbs separator=">" aria-label="Breadcrumb">
-        <Link href={"/"}>Home</Link>
+        <Link href={`${homeLink}`}>Home</Link>
         {buildHref({ components: urlRouteComponents })}
       </StyledBreadCrumbs>
     </BreadCrumbsBase>

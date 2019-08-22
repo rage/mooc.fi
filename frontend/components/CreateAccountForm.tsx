@@ -2,7 +2,8 @@ import React from "react"
 import { TextField, Button, Link, Typography } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
-import NextI18Next from "../i18n"
+import LanguageContext from "/contexes/LanguageContext"
+import getSignUpTranslator from "/translations/sign-up"
 
 import styled from "styled-components"
 
@@ -45,10 +46,10 @@ export function capitalizeFirstLetter(string: String) {
 
 export interface CreateAccountFormProps {
   onComplete: Function
-  t: any
 }
 
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
+  static contextType = LanguageContext
   constructor(props: CreateAccountFormProps) {
     super(props)
   }
@@ -70,6 +71,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
 
   onClick = async (e: any) => {
     e.preventDefault()
+    const t = getSignUpTranslator(this.context.language)
     this.setState({ submitting: true, triedSubmitting: true })
     if (!this.validate()) {
       this.setState({ canSubmit: false, submitting: false })
@@ -102,14 +104,14 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               `${key.replace(/_/g, " ")} ${msg}.`,
             )
             if (newMessage === "Email has already been taken.") {
-              newMessage = this.props.t("emailTaken")
+              newMessage = t("emailTaken")
             }
             message = `${message} ${newMessage}`
           })
         })
 
         if (message === "") {
-          message = this.props.t("commonProblem") + JSON.stringify(error)
+          message = t("commonProblem") + JSON.stringify(error)
         }
         this.setState({ error: message, submitting: false, errorObj: error })
       } catch (_error2) {
@@ -129,6 +131,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 
   validate = () => {
+    const t = getSignUpTranslator(this.context.language)
     let newState: state = {
       error: "",
       errorObj: {},
@@ -143,18 +146,18 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
     } = this.state
     if (email && validateEmail) {
       if (email.indexOf("@") === -1) {
-        newState.error += this.props.t("emailNoAt")
+        newState.error += t("emailNoAt")
         newState.errorObj.email = true
       }
       if (email && email.indexOf(".") === -1) {
-        newState.error += this.props.t("emailNoPoint")
+        newState.error += t("emailNoPoint")
         newState.errorObj.email = true
       }
     }
 
     if (password && password_confirmation && validatePassword) {
       if (password !== password_confirmation) {
-        newState.error += this.props.t("passwordNoMatch")
+        newState.error += t("passwordNoMatch")
         newState.errorObj.password = true
         newState.errorObj.password_confirmation = true
       }
@@ -191,6 +194,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 
   render() {
+    const t = getSignUpTranslator(this.context.language)
     return (
       <FormContainer>
         <Typography
@@ -199,9 +203,9 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
           gutterBottom={true}
           align="center"
         >
-          {this.props.t("signupTitle")}
+          {t("signupTitle")}
         </Typography>
-        <StyledTypography> {this.props.t("formInfoText")}</StyledTypography>
+        <StyledTypography> {t("formInfoText")}</StyledTypography>
         <Form onChange={this.validate}>
           <Row>
             <TextField
@@ -209,7 +213,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               type="email"
               name="email"
               autoComplete="lolled"
-              label={this.props.t("formLabelEmail")}
+              label={t("formLabelEmail")}
               error={this.state.errorObj.email}
               fullWidth
               value={this.state.email}
@@ -225,7 +229,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type="text"
-              label={this.props.t("formLabelFirstName")}
+              label={t("formLabelFirstName")}
               name="first_name"
               autoComplete="lolled"
               fullWidth
@@ -237,7 +241,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type="text"
-              label={this.props.t("formLabelLastName")}
+              label={t("formLabelLastName")}
               name="last_name"
               autoComplete="lolled"
               fullWidth
@@ -249,7 +253,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
-              label={this.props.t("formLabelPassword")}
+              label={t("formLabelPassword")}
               name="password"
               autoComplete="lolled"
               error={this.state.errorObj.password}
@@ -262,7 +266,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <TextField
               variant="outlined"
               type={this.state.showPassword ? "text" : "password"}
-              label={this.props.t("formLabelPasswordAgain")}
+              label={t("formLabelPasswordAgain")}
               name="password_confirmation"
               autoComplete="lolled"
               error={this.state.errorObj.password_confirmation}
@@ -286,19 +290,19 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               fullWidth
               type="submit"
             >
-              {this.props.t("signupTitle")}
+              {t("signupTitle")}
             </Button>
           </Row>
         </Form>
 
         <Row>
-          <Link href="/sign-in">{this.props.t("signIn")}</Link>
+          <Link href="/sign-in">{t("signIn")}</Link>
         </Row>
         {this.state.error && (
           <InfoBox>
             <b>
               {" "}
-              {this.props.t("error")} {this.state.error}
+              {t("error")} {this.state.error}
             </b>
           </InfoBox>
         )}
@@ -307,4 +311,4 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 }
 
-export default NextI18Next.withTranslation("sign-up")(CreateAccountForm)
+export default CreateAccountForm

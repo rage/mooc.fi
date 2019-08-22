@@ -3,9 +3,9 @@ import { Grid, Typography, Button } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
-import NextI18Next from "../i18n"
 import { ObjectifiedModule } from "./../static/types/moduleTypes"
 import styled from "styled-components"
+import LangLink from "/components/LangLink"
 import mime from "mime-types"
 
 const Base = styled.div`
@@ -104,11 +104,11 @@ const NaviCardBodyText = styled(Typography)`
 function ModuleCard({ module }: { module?: ObjectifiedModule }) {
   const imageUrl = module
     ? module.image
-      ? `../static/images/${module.image}`
-      : `../static/images/${module.slug}.jpg`
+      ? `/static/images/${module.image}`
+      : `/static/images/${module.slug}.jpg`
     : "" // TODO: placeholder
 
-  //  require(`../static/images/courseimages/${course.slug}.png`)
+  //  require(`/static/images/courseimages/${course.slug}.png`)
   // removed doggos as a placeholder for the time being
 
   return (
@@ -141,23 +141,23 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
           </NaviCardTitle>
           <NaviCardBodyText paragraph>
             {module ? (
-              <NextI18Next.Link href={`/study-modules/${module.slug}/edit`}>
+              <LangLink href={`/study-modules/${module.slug}/edit`}>
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
                     Edit
                   </Button>
                 </a>
-              </NextI18Next.Link>
+              </LangLink>
             ) : (
-              <NextI18Next.Link href={`/study-modules/new`}>
+              <LangLink href={`/study-modules/new`}>
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <AddIcon />
                     Create
                   </Button>
                 </a>
-              </NextI18Next.Link>
+              </LangLink>
             )}
           </NaviCardBodyText>
         </ContentArea>
@@ -166,80 +166,4 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
   )
 }
 
-/*
-      <Card className={classes.card}>
-        <CardMedia className={classes.media}
-          image={module ? module.image ? require(`../static/images/${module.image}`) : require(`../static/images/${module.slug}.jpg`) : ''}
-        >
-          {module ? (
-            null
-             <img src={module.image ? `../static/images/${module.image}` : `../static/images/${module.slug}.jpg`} alt={module.name} />
-          ) : (
-  <NextI18Next.Link
-  as={`/study-modules/new`}
-  href={`/study-modules/new`}
->
-  <a href="/study-modules/new">
-    <Grid
-      container
-      justify="center"
-      alignItems="center"
-      style={{ height: "100%" }}
-    >
-      <AddCircleIcon fontSize="large" />
-    </Grid>
-  </a>
-</NextI18Next.Link>
-)}
-</CardMedia>
-<CardContent>
-<Typography variant="h5" component="h2" gutterBottom={true}>
-{module ? module.name : "New Module"}
-</Typography>
-</CardContent>
-<CardActionArea>
-{module ? (
-<React.Fragment>
-  <NextI18Next.Link
-    as={`/study-modules/${module.slug}`}
-    href={`/study-modules/${module.slug}`}
-  >
-    <a
-      href={`/study-modules/${module.slug}`}
-      aria-label={`To the homepage of study module ${module.name}`}
-    >
-      <Button variant="contained" color="secondary" fullWidth>
-        <DashboardIcon />
-        Module Dashboard
-      </Button>
-    </a>
-  </NextI18Next.Link>
-  <NextI18Next.Link
-    as={`/study-modules/${module.slug}/edit`}
-    href={`/study-modules/${module.slug}/edit`}
-  >
-    <a href={`/study-modules/${module.slug}/edit`}>
-      <Button variant="contained" color="secondary" fullWidth>
-        <EditIcon />
-        Edit
-      </Button>
-    </a>
-  </NextI18Next.Link>
-</React.Fragment>
-) : (
-<NextI18Next.Link
-  as={`/study-modules/new`}
-  href={`/study-modules/new`}
->
-  <a href="/study-modules/new">
-    <Button variant="contained" color="secondary" fullWidth>
-      <AddIcon />
-      Create
-    </Button>
-  </a>
-</NextI18Next.Link>
-)}
-</CardActionArea>
-</Card>
-*/
 export default ModuleCard
