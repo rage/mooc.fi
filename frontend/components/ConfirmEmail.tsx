@@ -13,16 +13,14 @@ const FormContainer = styled.div`
 
 export interface ConfrimEmailProps {
   onComplete: Function
-  t: Function
 }
+//@ts-ignore
 const ConfirmEmail = (props: ConfrimEmailProps) => {
-  const { t } = props
-
   return (
     <FormContainer>
-      <h1>{t("confirmEmailTitle")}</h1>
+      <h1>"confirmEmailTitle"</h1>
       <InfoBox>
-        <p>{t("confirmEmailInfo")}</p>
+        <p>"confirmEmailInfo"</p>
       </InfoBox>
     </FormContainer>
   )

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useContext } from "react"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
 import { useMutation, useApolloClient } from "@apollo/react-hooks"
@@ -8,24 +8,31 @@ import {
   DeleteStudyModuleMutation,
   CheckModuleSlugQuery,
 } from "./graphql"
-import { AllModulesQuery } from "../../../../pages/study-modules"
+import { AllModulesQuery } from "/components/Home/CourseAndModuleList"
+import { AllEditorModulesQuery } from "/pages/[lng]/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import NextI18Next from "../../../../i18n"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
-import { StudyModuleQuery } from "/pages/study-modules/[id]/edit"
+import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
+import Router from "next/router"
+import LanguageContext from "/contexes/LanguageContext"
 
 const StudyModuleEdit = ({
   module,
 }: {
   module?: StudyModuleDetails_study_module
 }) => {
+  const { language } = useContext(LanguageContext)
+
   const [addStudyModule] = useMutation(AddStudyModuleMutation)
   const [updateStudyModule] = useMutation(UpdateStudyModuleMutation)
   const [deleteStudyModule] = useMutation(DeleteStudyModuleMutation, {
-    refetchQueries: [{ query: AllModulesQuery }],
+    refetchQueries: [
+      { query: AllModulesQuery },
+      { query: AllEditorModulesQuery },
+    ],
   })
   const checkSlug = CheckModuleSlugQuery
 
@@ -50,6 +57,7 @@ const StudyModuleEdit = ({
       const mutationVariables = fromStudyModuleForm({ values })
       const refetchQueries = [
         { query: AllModulesQuery },
+        { query: AllEditorModulesQuery },
         !newStudyModule
           ? { query: StudyModuleQuery, variables: { slug: values.new_slug } }
           : undefined,
@@ -67,7 +75,7 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        NextI18Next.Router.push("/study-modules")
+        Router.push(`/${language}/study-modules`)
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -80,14 +88,11 @@ const StudyModuleEdit = ({
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
       await deleteStudyModule({ variables: { slug: values.slug } })
-      NextI18Next.Router.push("/study-modules")
+      Router.push(`/${language}/study-modules`)
     }
   }, [])
 
-  const onCancel = useCallback(
-    () => NextI18Next.Router.push("/study-modules"),
-    [],
-  )
+  const onCancel = useCallback(() => Router.push("/study-modules"), [])
 
   return (
     <StudyModuleEditForm

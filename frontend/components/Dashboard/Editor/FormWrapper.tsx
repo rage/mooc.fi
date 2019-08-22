@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core"
 import { FormikProps } from "formik"
 import { FormValues } from "./types"
-import ConfirmationDialog from "../ConfirmationDialog"
+import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import styled from "styled-components"
 
 const isProduction = process.env.NODE_ENV === "production"

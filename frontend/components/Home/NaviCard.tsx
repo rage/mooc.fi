@@ -1,5 +1,5 @@
 import React from "react"
-import NextI18Next from "../../i18n"
+import LangLink from "/components/LangLink"
 import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
@@ -25,7 +25,7 @@ const BackgroundImage = styled.img`
   z-index: -2;
 `
 
-const Link = styled.a`
+const StyledLink = styled.a`
   color: #00a68d;
   font-size: 18px;
 `
@@ -75,11 +75,11 @@ function NaviCard(props: NaviCardProps) {
             {item.text}
           </Typography>
           <Typography align="left">
-            <NextI18Next.Link href={item.link}>
-              <Link href={item.link} aria-label={item.linkText}>
+            <LangLink href={item.link}>
+              <StyledLink href={item.link} aria-label={item.linkText}>
                 {item.linkText}
-              </Link>
-            </NextI18Next.Link>
+              </StyledLink>
+            </LangLink>
           </Typography>
         </TextBackground>
       </NaviItemBase>

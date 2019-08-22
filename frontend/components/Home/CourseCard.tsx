@@ -8,7 +8,11 @@ import CourseImage from "../CourseImage"
 import { ObjectifiedCourse } from "../../static/types/moduleTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
 
-const Background = styled(ButtonBase)`
+interface BackgroundProps {
+  component: string
+}
+
+const Background = styled(ButtonBase)<BackgroundProps>`
   background-color: white;
   position: relative;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -74,6 +78,7 @@ const CourseCard = ({ course }: CourseCardProps) => (
       target="_blank"
     >
       <Background
+        component="div"
         focusRipple
         disabled={!course || (!course.link || course.link === "")}
       >
