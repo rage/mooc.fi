@@ -4,3 +4,17 @@ export const addDomain = (file?: string | null): string =>
       ? `https://images.mooc.fi/${file}`
       : file
     : ""
+
+const mimetypes: { [key: string]: string } = {
+  jpg: "image/jpeg",
+  png: "image/png",
+  gif: "image/gif",
+  webp: "image/webp",
+}
+
+export const mime = (filename?: string): string => {
+  // @ts-ignore
+  const { length: l, [l - 1]: type } = (filename || "").split(".")
+
+  return mimetypes[type] || mimetypes.jpg
+}
