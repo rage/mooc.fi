@@ -122,7 +122,7 @@ const CourseAndModuleList = (props: CourseAndModuleListProps) => {
   }
 
   if (!tReady) {
-    return <div>waiting for translation</div>
+    return null // <div>waiting for translation</div>
   }
 
   const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
