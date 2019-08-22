@@ -55,8 +55,41 @@ export const signOut = async (apollo: ApolloClient<any>) => {
   Router.push(Router.asPath)
 }
 
+const getCookie = (key: string) => {
+  if (
+    typeof document === "undefined" ||
+    !document ||
+    (document && !document.cookie)
+  ) {
+    return
+  }
+
+  const vals = document.cookie
+    .split("; ")
+    .reduce<{ [key: string]: string }>((acc, curr) => {
+      try {
+        // @ts-ignore
+        const [key, value] = curr.split("=")
+
+        return {
+          ...acc,
+          [key]: value,
+        }
+      } catch (e) {
+        //
+      }
+
+      return acc
+    }, {})
+
+  return vals[key] || ""
+}
+
 export const getAccessToken = (ctx: NextContext | undefined) => {
-  // @ts-ignore
+  if (!ctx) {
+    return getCookie("access_token")
+  }
+
   return nookies.get(ctx)["access_token"]
 }
 

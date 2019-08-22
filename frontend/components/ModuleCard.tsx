@@ -6,6 +6,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle"
 import { ObjectifiedModule } from "./../static/types/moduleTypes"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
+import mime from "mime-types"
 
 const Base = styled.div`
   position: relative;
@@ -114,7 +115,14 @@ function ModuleCard({ module }: { module?: ObjectifiedModule }) {
     <Grid item xs={12} sm={6} lg={6}>
       <Base>
         {module ? (
-          <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
+          <picture>
+            <source
+              srcSet={imageUrl}
+              type={mime.lookup(imageUrl) || "image/jpeg"}
+            />
+            <source srcSet={`${imageUrl}?webp`} type="image/webp" />
+            <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
+          </picture>
         ) : (
           <IconBackground>
             <AddCircleIcon
