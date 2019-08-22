@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import AppBar from "@material-ui/core/AppBar"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
@@ -7,6 +7,7 @@ import ViewListIcon from "@material-ui/icons/ViewList"
 import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
+import LanguageContext from "/contexes/LanguageContext"
 
 const TabContainer = styled.div`
   flex-grow: 1;
@@ -49,7 +50,7 @@ interface DashboardTabsProps {
 
 export default function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
-
+  const { language } = useContext(LanguageContext)
   const [value, setValue] = React.useState(selectedValue)
 
   // @ts-ignore
@@ -69,25 +70,25 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
           <LinkTab
             label="Course Home"
             icon={<DashboardIcon />}
-            href={`/courses/${slug}`}
+            href={`/${language}/courses/${slug}`}
             {...a11yProps(0)}
           />
           <LinkTab
             label="Completions"
             icon={<ViewListIcon />}
-            href={`/courses/${slug}/completions`}
+            href={`/${language}/courses/${slug}/completions`}
             {...a11yProps(1)}
           />
           <LinkTab
             label="Points"
             icon={<ScatterplotIcon />}
-            href={`/courses/${slug}/points`}
+            href={`/${language}/courses/${slug}/points`}
             {...a11yProps(2)}
           />
           <LinkTab
             label="Edit"
             icon={<EditIcon />}
-            href={`/courses/${slug}/edit`}
+            href={`/${language}/courses/${slug}/edit`}
             {...a11yProps(3)}
           />
         </StyledTabs>
