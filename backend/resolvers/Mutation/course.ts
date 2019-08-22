@@ -248,12 +248,14 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       const existingStudyModules = await prisma.course({ slug }).study_modules()
       //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
-      const removedModules: StudyModuleWhereUniqueInput[] = (
+      const removedModuleIds: StudyModuleWhereUniqueInput[] = (
         existingStudyModules || []
-      ).filter(module => !getIds(study_modules).includes(module.id))
+      )
+        .filter(module => !getIds(study_modules).includes(module.id))
+        .map(module => ({ id: module.id }))
       const studyModuleMutation: StudyModuleUpdateManyWithoutCoursesInput = {
         connect: study_modules,
-        disconnect: removedModules,
+        disconnect: removedModuleIds,
       }
 
       return prisma.updateCourse({

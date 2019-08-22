@@ -1,15 +1,16 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
-import NextI18Next from "../i18n"
 import {
   UserOverView_currentUser_completions,
   UserOverView_currentUser_completions_completions_registered,
 } from "/static/types/generated/UserOverView"
+import LanguageContext from "/contexes/LanguageContext"
+import getProfileTranslator from "/translations/profile"
 
 const Background = styled(Paper)`
   background-color: white;
@@ -70,7 +71,8 @@ function CompletedCourseCard(props: CourseCardProps) {
     registeredCompletions = completion.completions_registered
   }
 
-  const { t } = NextI18Next.useTranslation("profile")
+  const lng = useContext(LanguageContext)
+  const t = getProfileTranslator(lng.language)
 
   let humanReadableLanguage = "no language available"
   if (completion.completion_language) {

@@ -1,10 +1,12 @@
 import React from "react"
 import Grid from "@material-ui/core/Grid"
 import CourseCard from "./CourseCard"
-import Container from "../Container"
+import Container from "/components/Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedCourse } from "../../static/types/moduleTypes"
+import { ObjectifiedCourse } from "/static/types/moduleTypes"
+
+import useWhyDidYouUpdate from "/lib/why-did-you-update"
 
 interface RootProps {
   backgroundColor: string
@@ -72,10 +74,12 @@ interface CourseHighlightsProps {
   brightness: number
   fontColor: string
   titleBackground: string
-  loading: boolean
+  // loading: boolean
 }
 
 const CourseHighlights = (props: CourseHighlightsProps) => {
+  useWhyDidYouUpdate(`CourseHighlights/${props.title}`, props)
+
   const {
     courses,
     title,
@@ -86,7 +90,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
     brightness,
     fontColor,
     titleBackground,
-    loading,
+    // loading,
   } = props
 
   return (
@@ -115,7 +119,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
       </div>
       <Container>
         <Grid container spacing={3}>
-          {loading ? (
+          {!(courses || []).length ? (
             <>
               <CourseCard key="skeletoncard1" />
               <CourseCard key="skeletoncard2" />

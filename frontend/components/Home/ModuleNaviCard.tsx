@@ -4,9 +4,9 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
-import NextI18Next from "/i18n"
 import Skeleton from "@material-ui/lab/Skeleton"
 import mime from "mime-types"
+import LangLink from "/components/LangLink"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -96,7 +96,6 @@ const BodyStyle = `
     font-size: 20px;
   }
 `
-
 const NaviCardBodyText = styled(Typography)`
   ${BodyStyle}
 `
@@ -105,7 +104,7 @@ const SkeletonBodyText = styled(Skeleton)`
   ${BodyStyle}
 `
 
-function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
+const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
   const imageUrl = module
     ? module.image
       ? `../../static/images/${module!.image}`
@@ -114,7 +113,7 @@ function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
 
   return (
     <Grid item xs={12} md={6} lg={6}>
-      <NextI18Next.Link href={`#${module ? module.slug : ""}`}>
+      <LangLink href={`#${module ? module.slug : ""}`}>
         <Base focusRipple>
           {module ? (
             <>
@@ -146,11 +145,9 @@ function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
             </>
           )}
         </Base>
-      </NextI18Next.Link>
+      </LangLink>
     </Grid>
   )
 }
-
-//
 
 export default ModuleNaviCard
