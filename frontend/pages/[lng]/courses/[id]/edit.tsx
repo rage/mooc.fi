@@ -90,10 +90,13 @@ const EditCourse = (props: EditCourseProps) => {
   /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
   const loading = false */
 
+  if (!admin) {
+    return <AdminError />
+  }
+
   const {
     data: courseData,
     loading: courseLoading,
-    //@ts-ignore
     error: courseError,
   } = useQuery<CourseDetails>(CourseQuery, {
     variables: { slug: slug },
@@ -101,13 +104,8 @@ const EditCourse = (props: EditCourseProps) => {
   const {
     data: studyModulesData,
     loading: studyModulesLoading,
-    //@ts-ignore
     error: studyModulesError,
   } = useQuery(StudyModuleQuery)
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   if (courseLoading || studyModulesLoading) {
     return <Spinner />
@@ -169,6 +167,7 @@ EditCourse.getInitialProps = function(context: NextContext) {
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
+
   return {
     admin,
     // @ts-ignore

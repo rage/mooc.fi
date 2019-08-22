@@ -36,9 +36,16 @@ function ModuleNavi({ modules }: { modules: ObjectifiedModule[] }) {
       </Typography>
       <Container>
         <Grid container spacing={5}>
-          {modules.map(module => (
-            <ModuleNaviCard key={`module-${module.name}`} module={module} />
-          ))}
+          {loading ? (
+            <>
+              <ModuleNaviCard key="skeletonnavicard1" />
+              <ModuleNaviCard key="skeletonnavicard2" />
+            </>
+          ) : (
+            (modules || []).map(module => (
+              <ModuleNaviCard key={`module-${module.name}`} module={module} />
+            ))
+          )}
         </Grid>
       </Container>
     </section>

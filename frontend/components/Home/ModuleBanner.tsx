@@ -1,7 +1,9 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedModule } from "/static/types/moduleTypes"
+import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import Skeleton from "@material-ui/lab/Skeleton"
+import mime from "mime-types"
 
 const ModuleBannerContainer = styled.section`
   display: flex;
@@ -48,18 +50,46 @@ const ImageBackground = styled.div`
   background-position: center;
 `
 
-function ModuleBanner({ module }: { module: ObjectifiedModule }) {
-  const imageUrl = module!.image
-    ? `/static/images/${module.image}`
-    : `/static/images/${module.slug}.jpg`
+const SkeletonBackground = styled(Skeleton)`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -2;
+`
+
+function ModuleBanner({ module }: { module?: ObjectifiedModule }) {
+  const imageUrl = module
+    ? module!.image
+      ? `../../static/images/${module.image}`
+      : `../../static/images/${module.slug}.jpg`
+    : ""
 
   return (
     <ModuleBannerContainer>
-      <img style={{ display: "none" }} src={imageUrl} alt="" />
-      <Title component="h2" variant="h2" align="center">
-        {module.name}
-      </Title>
-      <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />
+      {module ? (
+        <>
+          <Title component="h2" variant="h2" align="center">
+            {module.name}
+          </Title>
+          <picture>
+            <source
+              srcSet={imageUrl}
+              type={mime.lookup(imageUrl) || "image/jpeg"}
+            />
+            <source srcSet={`${imageUrl}?webp`} type="image/webp" />
+            <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />
+          </picture>
+        </>
+      ) : (
+        <>
+          <Title component="h2" variant="h2" align="center">
+            <Skeleton variant="text" />
+          </Title>
+          <SkeletonBackground variant="rect" height="100%" />
+        </>
+      )}
     </ModuleBannerContainer>
   )
 }

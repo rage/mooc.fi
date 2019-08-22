@@ -11,6 +11,7 @@ import { ObjectifiedModule } from "/static/types/moduleTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { CourseStatus } from "/static/types/globalTypes"
+import Skeleton from "@material-ui/lab/Skeleton"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -57,19 +58,32 @@ function Module({ module }: { module: ObjectifiedModule }) {
   )
 
   return (
-    <section style={{ marginBottom: "3em" }}>
+    <section
+      id={`module-list-${module ? module.slug : "skeleton"}`}
+      style={{ marginBottom: "3em" }}
+    >
       <ModuleBanner module={module} />
       <Container>
-        <IntroText variant="subtitle1">{module.description}</IntroText>
-
+        {module ? (
+          <IntroText variant="subtitle1">{module.description}</IntroText>
+        ) : (
+          <Skeleton />
+        )}
         <SubHeader align="center" variant="h3">
           {t("modulesSubtitleStart")}
         </SubHeader>
 
         <Grid container spacing={3}>
-          {startCourses.map(course => (
-            <CourseCard key={`module-course-${course.id}`} course={course} />
-          ))}
+          {module ? (
+            startCourses.map(course => (
+              <CourseCard key={`module-course-${course.id}`} course={course} />
+            ))
+          ) : (
+            <>
+              <CourseCard key="module-course-skeleton1" />
+              <CourseCard key="module-course-skeleton2" />
+            </>
+          )}
         </Grid>
 
         {otherCourses.length > 0 ? (
