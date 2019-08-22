@@ -33,9 +33,7 @@ const withApolloClient = (App: any) => {
       // and extract the resulting data
       const accessToken = getAccessToken(appComponentContext.ctx)
 
-      const apollo = process.browser
-        ? initApollo(undefined, undefined)
-        : initApollo(undefined, accessToken)
+      const apollo = initApollo(undefined, accessToken)
 
       if (!process.browser) {
         try {
