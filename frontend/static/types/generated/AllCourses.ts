@@ -15,29 +15,23 @@ export interface AllCourses_courses_photo {
   uncompressed: string
 }
 
-export interface AllCourses_courses_course_translations {
-  __typename: "CourseTranslation"
-  id: any
-  language: string
-  name: string
-  description: string
-  link: string | null
-}
-
 export interface AllCourses_courses {
   __typename: "Course"
   id: any
-  slug: string
   name: string
-  order: number | null
-  photo: AllCourses_courses_photo | null
-  promote: boolean | null
+  slug: string
   status: CourseStatus | null
-  start_point: boolean | null
   hidden: boolean | null
-  course_translations: AllCourses_courses_course_translations[] | null
+  photo: AllCourses_courses_photo | null
+}
+
+export interface AllCourses_currentUser {
+  __typename: "User"
+  id: any
+  administrator: boolean
 }
 
 export interface AllCourses {
   courses: AllCourses_courses[]
+  currentUser: AllCourses_currentUser | null
 }

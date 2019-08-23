@@ -6,15 +6,6 @@
 // GraphQL query operation: UserPoints
 // ====================================================
 
-export interface UserPoints_currentUser_user_course_progresses_user {
-  __typename: "User"
-  id: any
-  first_name: string | null
-  last_name: string | null
-  email: string
-  student_number: string | null
-}
-
 export interface UserPoints_currentUser_user_course_progresses_course {
   __typename: "Course"
   id: any
@@ -43,7 +34,6 @@ export interface UserPoints_currentUser_user_course_progresses_user_course_servi
 export interface UserPoints_currentUser_user_course_progresses {
   __typename: "UserCourseProgress"
   id: any
-  user: UserPoints_currentUser_user_course_progresses_user
   course: UserPoints_currentUser_user_course_progresses_course
   progress: any
   user_course_service_progresses:
@@ -54,6 +44,10 @@ export interface UserPoints_currentUser_user_course_progresses {
 export interface UserPoints_currentUser {
   __typename: "User"
   id: any
+  first_name: string | null
+  last_name: string | null
+  email: string
+  student_number: string | null
   user_course_progresses: UserPoints_currentUser_user_course_progresses[] | null
 }
 

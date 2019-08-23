@@ -2,6 +2,7 @@ export type pointsDataByGroup = {
   group: string
   summary_max_points: number
   summary_n_points: number
+  progress: number
   services: serviceData[]
 }
 

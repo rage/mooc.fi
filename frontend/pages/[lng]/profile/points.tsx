@@ -14,15 +14,12 @@ export const UserPointsQuery = gql`
   query UserPoints {
     currentUser {
       id
+      first_name
+      last_name
+      email
+      student_number
       user_course_progresses {
         id
-        user {
-          id
-          first_name
-          last_name
-          email
-          student_number
-        }
         course {
           id
           name
