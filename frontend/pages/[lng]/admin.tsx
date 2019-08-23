@@ -6,6 +6,8 @@ import { NextPageContext } from "next"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import AdminError from "/components/Dashboard/AdminError"
+import LanguageContext from "/contexes/LanguageContext"
+import { useContext } from "react"
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -17,24 +19,24 @@ const Admin = (admin: boolean) => {
   if (!admin) {
     return <AdminError />
   }
-
+  const { language } = useContext(LanguageContext)
   return (
     <Container>
-      <Link href="/courses">
+      <Link href={`/${language}/courses`}>
         <StyledCard>
           <Typography variant="h2" component="h2">
             Courses
           </Typography>
         </StyledCard>
       </Link>
-      <Link href="/study-modules">
+      <Link href={`/${language}/study-modules`}>
         <StyledCard>
           <Typography variant="h2" component="h2">
             Study Modules
           </Typography>
         </StyledCard>
       </Link>
-      <Link href="/users/search">
+      <Link href={`/${language}/users/search`}>
         <StyledCard>
           <Typography variant="h2" component="h2">
             User search

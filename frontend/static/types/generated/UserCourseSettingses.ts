@@ -12,25 +12,38 @@ export interface UserCourseSettingses_UserCourseSettingses_pageInfo {
   endCursor: string | null
 }
 
-export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses_service {
-  __typename: "Service"
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_course {
+  __typename: "Course"
+  id: any
   name: string
-  id: any
 }
 
-export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses {
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_user_course_service_progresses_course {
+  __typename: "Course"
+  id: any
+  name: string
+}
+
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_user_course_service_progresses_service {
+  __typename: "Service"
+  id: any
+  name: string
+}
+
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_user_course_service_progresses {
   __typename: "UserCourseServiceProgress"
-  service: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses_service
+  course: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_user_course_service_progresses_course
+  service: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_user_course_service_progresses_service
   progress: any
-  id: any
 }
 
-export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess {
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses {
   __typename: "UserCourseProgress"
   id: any
+  course: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_course
   progress: any
   user_course_service_progresses:
-    | UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess_user_course_service_progresses[]
+    | UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses_user_course_service_progresses[]
     | null
 }
 
@@ -41,13 +54,15 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user {
   last_name: string | null
   email: string
   student_number: string | null
-  user_course_progressess: UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess | null
+  user_course_progresses:
+    | UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses[]
+    | null
 }
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node {
   __typename: "UserCourseSettings"
   id: any
-  user: UserCourseSettingses_UserCourseSettingses_edges_node_user | null
+  user: UserCourseSettingses_UserCourseSettingses_edges_node_user
 }
 
 export interface UserCourseSettingses_UserCourseSettingses_edges {
