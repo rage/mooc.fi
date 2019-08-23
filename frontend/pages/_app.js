@@ -85,6 +85,7 @@ function createPath(originalUrl) {
     originalUrl.startsWith("/en")
       ? (url = originalUrl.replace("/en/", "/fi/"))
       : (url = originalUrl.replace("/fi/", "/en/"))
+    originalUrl.startsWith("/se") && (url = originalUrl.replace("/se/", "/fi/"))
   }
 
   return url

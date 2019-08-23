@@ -3,9 +3,7 @@ import { Typography, Grid } from "@material-ui/core"
 
 import { UserCourseSettingses_UserCourseSettingses_edges_node as UserPointsData } from "/static/types/generated/UserCourseSettingses"
 import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as UserProgressData } from "/static/types/generated/UserCourseSettingses"
-//@ts-ignore
 import { pointsDataByGroup, serviceData } from "/static/types/PointsByService"
-//@ts-ignore
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
@@ -32,35 +30,48 @@ function FormatStudentProgressServiceData(props: FormatProps) {
   let formattedPointsData: pointsDataByGroup[] = []
 
   pointsAll.map(oneUCP => {
-    //@ts-ignore
-    const groups = oneUCP.progress.map(p => p.group)
-    //@ts-ignore
-    formattedPointsData = groups.map(g => {
-      //@ts-ignore
-      const summaryPoints = oneUCP.progress.filter(p => p.group === g)
+    //create a list of groups userCourseProgress has data for
+    const groups = oneUCP.progress.map((p: any) => p.group)
+
+    //for all groups found
+    formattedPointsData = groups.map((g: string) => {
+      //find points for that group from the progress object
+      const summaryPoints = oneUCP.progress.filter((p: any) => p.group === g)
+      //find all services userCourseProgress has data from
       const serviceData = oneUCP.user_course_service_progresses || []
-      let ServiceDataByWeek: any = []
+      //if services found
+      let ServiceDataByWeek: serviceData[] = []
       if (serviceData.length > 0) {
+        //create a list containing a service data object for each service
         ServiceDataByWeek = serviceData.map(s => {
+          //find points data from that service for the group
+          const dataForOneServiceForGroup = s.progress.filter(
+            (p: any) => p.group === g,
+          )
+          //create a new service data object
           const newSD = {
             service: s.service.name,
-            //@ts-ignore
-            points: s.progress.map(p => p.group === g),
+            points: {
+              group: g,
+              n_points: dataForOneServiceForGroup[0].n_points,
+              max_points: dataForOneServiceForGroup[0].max_points,
+              progress: dataForOneServiceForGroup[0].progress,
+            },
           }
           return newSD
         })
       }
+      //create a PointsByService data object from the points and the service data list
       const newFormattedPointsDatum = {
         group: g,
         summary_max_points: summaryPoints[0].max_points,
         summary_n_points: summaryPoints[0].n_points,
         progress: summaryPoints[0].progress,
-        ...ServiceDataByWeek,
+        services: ServiceDataByWeek,
       }
       return newFormattedPointsDatum
     })
   })
-  console.log(formattedPointsData)
   return formattedPointsData
 }
 interface Props {
@@ -77,7 +88,6 @@ function PointsListItemCard(props: Props) {
   const email = user.email || "no email available"
   const studentId = user.student_number || "no SID"
   const studentProgressData = user.user_course_progresses! || []
-  //@ts-ignore
   const formattedPointsByService = FormatStudentProgressServiceData({
     pointsAll: studentProgressData,
   })
@@ -100,17 +110,16 @@ function PointsListItemCard(props: Props) {
       <UserInformation variant="body1" component="p">
         {studentId}
       </UserInformation>
+      {formattedPointsByService.length !== 0 ? (
+        <PointsItemTable
+          studentPoints={formattedPointsByService}
+          showDetailedBreakdown={showDetails}
+        />
+      ) : (
+        <p>No points data available</p>
+      )}
     </Root>
   )
 }
 
 export default PointsListItemCard
-
-/*{formattedPointsByService.length !== 0 ? (
-        <PointsItemTable
-        studentPoints={formattedPointsByService}
-        showDetailedBreakdown={showDetails}
-      />
-      ) : (
-        <p>No points data available</p>
-      )}*/

@@ -42,7 +42,6 @@ export const UserPointsQuery = gql`
 `
 
 function Points() {
-  //@ts-ignore
   const { data, error, loading } = useQuery<UserPoints>(UserPointsQuery)
 
   if (loading) {
@@ -52,12 +51,14 @@ function Points() {
   if (error || !data) {
     return <p>Error</p>
   }
+
+  console.log(data)
   let coursesUserHasPointsFor: UserPointsData[] =
     data!.currentUser!.user_course_progresses! || []
   if (coursesUserHasPointsFor.length === 0) {
     return <p>No points for courses yet</p>
   }
-
+  console.log(coursesUserHasPointsFor)
   return (
     //@ts-ignore
     <>
