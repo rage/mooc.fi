@@ -19,6 +19,7 @@ export const AllCoursesQuery = gql`
       name
       slug
       status
+      hidden
       photo {
         id
         compressed

@@ -14,7 +14,7 @@ export interface UserCourseSettingsesForUserPage_UserCourseSettingses_edges_node
 export interface UserCourseSettingsesForUserPage_UserCourseSettingses_edges_node {
   __typename: "UserCourseSettings"
   id: any
-  course: UserCourseSettingsesForUserPage_UserCourseSettingses_edges_node_course | null
+  course: UserCourseSettingsesForUserPage_UserCourseSettingses_edges_node_course
   language: string | null
   country: string | null
   research: boolean | null

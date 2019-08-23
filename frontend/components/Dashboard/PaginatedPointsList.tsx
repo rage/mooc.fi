@@ -22,16 +22,23 @@ export const StudentProgresses = gql`
             last_name
             email
             student_number
-            user_course_progressess(course_id: $course_id) {
+            user_course_progresses {
               id
+              course {
+                id
+                name
+              }
               progress
               user_course_service_progresses {
-                service {
-                  name
+                course {
                   id
+                  name
+                }
+                service {
+                  id
+                  name
                 }
                 progress
-                id
               }
             }
           }

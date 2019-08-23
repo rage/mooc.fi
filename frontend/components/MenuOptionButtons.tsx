@@ -89,9 +89,9 @@ const MenuOptionButtons = () => {
                   </StyledButton>
                 </LangLink>
                 {isAdmin ? (
-                  <LangLink href="/[lng]/courses">
+                  <LangLink href="/[lng]/admin">
                     <StyledButton color="inherit" variant="text">
-                      Courses
+                      Admin panel
                     </StyledButton>
                   </LangLink>
                 ) : (
