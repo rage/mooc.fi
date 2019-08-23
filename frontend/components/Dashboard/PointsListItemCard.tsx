@@ -30,8 +30,8 @@ interface FormatProps {
 function FormatStudentProgressServiceData(props: FormatProps) {
   const { pointsAll } = props
   let formattedPointsData: pointsDataByGroup[] = []
-  //@ts-ignore
-  const progressByWeek = pointsAll.map(oneUCP => {
+
+  pointsAll.map(oneUCP => {
     //@ts-ignore
     const groups = oneUCP.progress.map(p => p.group)
     //@ts-ignore
@@ -39,13 +39,23 @@ function FormatStudentProgressServiceData(props: FormatProps) {
       //@ts-ignore
       const summaryPoints = oneUCP.progress.filter(p => p.group === g)
       const serviceData = oneUCP.user_course_service_progresses || []
-      if (serviceData) {
+      let ServiceDataByWeek: any = []
+      if (serviceData.length > 0) {
+        ServiceDataByWeek = serviceData.map(s => {
+          const newSD = {
+            service: s.service.name,
+            //@ts-ignore
+            points: s.progress.map(p => p.group === g),
+          }
+          return newSD
+        })
       }
       const newFormattedPointsDatum = {
         group: g,
         summary_max_points: summaryPoints[0].max_points,
         summary_n_points: summaryPoints[0].n_points,
         progress: summaryPoints[0].progress,
+        ...ServiceDataByWeek,
       }
       return newFormattedPointsDatum
     })
