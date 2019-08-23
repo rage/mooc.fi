@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
 import {
   filterAndModifyCoursesByLanguage,
@@ -17,7 +17,7 @@ import getHomeTranslator from "/translations/home"
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
-const AllModulesQuery = gql`
+export const AllModulesQuery = gql`
   query AllModules {
     study_modules(orderBy: order_ASC) {
       id
@@ -58,7 +58,7 @@ const AllModulesQuery = gql`
   }
 `
 
-const AllCoursesQuery = gql`
+export const AllCoursesQuery = gql`
   query AllCourses {
     courses(orderBy: order_ASC) {
       id
@@ -86,9 +86,12 @@ const AllCoursesQuery = gql`
 `
 
 const CourseAndModuleList = () => {
-  const lng = useContext(LanguageContext)
-  const t = getHomeTranslator(lng.language)
+  const lngCtx = useContext(LanguageContext)
+  const t = getHomeTranslator(lngCtx.language)
+  const language = mapNextLanguageToLocaleCode(lngCtx.language)
+
   const {
+    // @ts-ignore
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
@@ -99,13 +102,13 @@ const CourseAndModuleList = () => {
     data: modulesData,
   } = useQuery<AllModulesData>(AllModulesQuery)
 
-  const [language, setLanguage] = useState(
-    mapNextLanguageToLocaleCode(lng.language),
+  /*   const [language, setLanguage] = useState(
+    mapNextLanguageToLocaleCode(lngCtx.language),
   )
   //every time the i18n language changes, update the state
   useEffect(() => {
-    setLanguage(mapNextLanguageToLocaleCode(lng.language))
-  }, [lng.language])
+    setLanguage(mapNextLanguageToLocaleCode(lngCtx.language))
+  }, [lngCtx.language]) */
 
   if (coursesError || modulesError) {
     ;<div>
@@ -118,22 +121,32 @@ const CourseAndModuleList = () => {
     return <div>Error: no data?</div>
   }
 
-  const courses: ObjectifiedCourse[] = filterAndModifyCoursesByLanguage(
-    coursesData.courses,
-    language,
+  const courses: ObjectifiedCourse[] = useMemo(
+    () => filterAndModifyCoursesByLanguage(coursesData.courses, language),
+    [coursesData.courses, language],
   )
 
-  const modules: ObjectifiedModule[] = filterAndModifyByLanguage(
-    modulesData.study_modules,
-    language,
+  const modules: ObjectifiedModule[] = useMemo(
+    () => filterAndModifyByLanguage(modulesData.study_modules, language),
+    [modulesData.study_modules, language],
+  )
+
+  const [activeCourses, upcomingCourses, endedCourses] = useMemo(
+    () =>
+      ["Active", "Upcoming", "Ended"].map(status =>
+        courses.filter(c => !c.hidden && c.status === status),
+      ),
+    [courses],
+  )
+  const promotedCourses = useMemo(
+    () => (activeCourses || []).filter(c => c.promote),
+    [activeCourses],
   )
 
   return (
     <section id="courses-and-modules">
       <CourseHighlights
-        courses={(courses || []).filter(
-          c => !c.hidden && c.promote === true && c.status === "Active",
-        )}
+        courses={promotedCourses}
         title={t("highlightTitle")}
         headerImage={highlightsBanner}
         subtitle={t("highlightSubtitle")}
@@ -142,13 +155,11 @@ const CourseAndModuleList = () => {
         brightness={5.5}
         fontColor="black"
         titleBackground="#ffffff"
-        loading={coursesLoading}
+        // loading={coursesLoading}
       />
       <ModuleNavi modules={modules} loading={modulesLoading} />
       <CourseHighlights
-        courses={(courses || []).filter(
-          c => !c.hidden && c.status === "Active",
-        )}
+        courses={activeCourses}
         title={t("allCoursesTitle")}
         headerImage={highlightsBanner}
         backgroundColor="#ffffff"
@@ -156,12 +167,10 @@ const CourseAndModuleList = () => {
         brightness={1}
         fontColor="white"
         titleBackground="#008EBD"
-        loading={coursesLoading}
+        // loading={coursesLoading}
       />
       <CourseHighlights
-        courses={(courses || []).filter(
-          c => !c.hidden && c.status === "Upcoming",
-        )}
+        courses={upcomingCourses}
         title={t("upcomingCoursesTitle")}
         headerImage={highlightsBanner}
         backgroundColor="#007DC8"
@@ -169,11 +178,11 @@ const CourseAndModuleList = () => {
         brightness={5.5}
         fontColor="black"
         titleBackground="#ffffff"
-        loading={coursesLoading}
+        // loading={coursesLoading}
       />
       <ModuleList modules={modules} loading={modulesLoading} />
       <CourseHighlights
-        courses={(courses || []).filter(c => !c.hidden && c.status === "Ended")}
+        courses={endedCourses}
         title={t("endedCoursesTitle")}
         headerImage={highlightsBanner}
         backgroundColor="#ffffff"
@@ -181,14 +190,10 @@ const CourseAndModuleList = () => {
         brightness={1}
         fontColor="white"
         titleBackground="#3066C0"
-        loading={coursesLoading}
+        // loading={coursesLoading}
       />
     </section>
   )
 }
 
-CourseAndModuleList.getInitialProps = function() {
-  return {}
-}
-
-export default CourseAndModuleList
+export default React.memo(CourseAndModuleList)

@@ -96,7 +96,6 @@ const BodyStyle = `
     font-size: 20px;
   }
 `
-
 const NaviCardBodyText = styled(Typography)`
   ${BodyStyle}
 `
@@ -105,7 +104,7 @@ const SkeletonBodyText = styled(Skeleton)`
   ${BodyStyle}
 `
 
-function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
+const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
   const imageUrl = module
     ? module.image
       ? `../../static/images/${module!.image}`
@@ -150,7 +149,5 @@ function ModuleNaviCard({ module }: { module?: ObjectifiedModule }) {
     </Grid>
   )
 }
-
-//
 
 export default ModuleNaviCard
