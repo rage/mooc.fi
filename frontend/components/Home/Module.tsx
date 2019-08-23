@@ -107,6 +107,22 @@ function Module({ module }: { module?: ObjectifiedModule }) {
             </Grid>
           </>
         ) : null}
+
+        {/* FIXME: study module home link - enable when that's done */
+        /*
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "3em",
+          }}
+        >
+          <LangLink href={`/study-modules/${module.slug}`}>
+            <ModuleHomeLink underline="always" style={{ cursor: "pointer" }}>
+              {t("modulesLinkToHome")}
+            </ModuleHomeLink>
+          </LangLink>
+        </div>
+        */}
       </Container>
     </section>
   )

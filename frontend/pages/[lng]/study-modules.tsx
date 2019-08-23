@@ -10,14 +10,14 @@ import {
   Typography,
 } from "@material-ui/core"
 import { WideContainer } from "/components/Container"
-import { AllModules } from "/static/types/generated/AllModules"
+import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import ModuleGrid from "/components/ModuleGrid"
 import styled from "styled-components"
 
-export const AllModulesQuery = gql`
-  query AllModulesWithTranslations {
+export const AllEditorModulesQuery = gql`
+  query AllEditorModulesWithTranslations {
     study_modules(orderBy: order_ASC) {
       id
       slug
@@ -39,7 +39,9 @@ const Header = styled(Typography)`
 `
 
 const StudyModules = (admin: boolean) => {
-  const { loading, error, data } = useQuery<AllModules>(AllModulesQuery)
+  const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
+    AllEditorModulesQuery,
+  )
 
   if (error) {
     return <div>Error: {JSON.stringify(error)}</div>

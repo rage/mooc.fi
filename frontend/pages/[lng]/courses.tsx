@@ -1,23 +1,19 @@
 import * as React from "react"
-import {
-  Typography,
-  Container,
-  Grid,
-  CircularProgress,
-} from "@material-ui/core"
+import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
-import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
+import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
 import { useQuery } from "@apollo/react-hooks"
 import CourseGrid from "/components/CourseGrid"
 import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"
+import Spinner from "/components/Spinner"
 
-export const AllCoursesQuery = gql`
-  query AllCourses {
+export const AllEditorCoursesQuery = gql`
+  query AllEditorCourses {
     courses(orderBy: order_ASC) {
       id
       name
@@ -48,7 +44,9 @@ const Courses = (admin: boolean) => {
   const error = false
   const loading = false */
 
-  const { loading, error, data } = useQuery<AllCoursesData>(AllCoursesQuery)
+  const { loading, error, data } = useQuery<AllEditorCourses>(
+    AllEditorCoursesQuery,
+  )
 
   if (error) {
     ;<div>
@@ -61,13 +59,7 @@ const Courses = (admin: boolean) => {
   }
 
   if (loading || !data) {
-    return (
-      <Container style={{ display: "flex", height: "600px" }}>
-        <Grid item container justify="center" alignItems="center">
-          <CircularProgress color="primary" size={60} />
-        </Grid>
-      </Container>
-    )
+    return <Spinner />
   }
 
   return (
