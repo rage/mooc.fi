@@ -257,8 +257,8 @@ type UserCourseSettings {
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
-  user: User
-  course: Course
+  user: User!
+  course: Course!
   language: String
   country: String
   research: Boolean

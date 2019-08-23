@@ -2,12 +2,14 @@ import React from "react"
 import { Typography, Grid } from "@material-ui/core"
 
 import { UserCourseSettingses_UserCourseSettingses_edges_node as UserPointsData } from "/static/types/generated/UserCourseSettingses"
-import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progressess as UserProgressData } from "/static/types/generated/UserCourseSettingses"
+import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as UserProgressData } from "/static/types/generated/UserCourseSettingses"
+//@ts-ignore
 import { pointsDataByGroup, serviceData } from "/static/types/PointsByService"
-
+//@ts-ignore
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
+import _ from "lodash"
 
 const Name = styled(Typography)`
   font-weight: bold;
@@ -22,38 +24,43 @@ const Root = styled(Grid)`
   padding: 1rem;
 `
 interface FormatProps {
-  pointsAll: UserProgressData
+  pointsAll: UserProgressData[]
 }
 
 function FormatStudentProgressServiceData(props: FormatProps) {
   const { pointsAll } = props
-
   let formattedPointsData: pointsDataByGroup[] = []
-  if (pointsAll && pointsAll.progress) {
+
+  pointsAll.map(oneUCP => {
     //@ts-ignore
-    pointsAll.progress.map(p => {
-      let ServiceData: serviceData[] = []
-      if (pointsAll.user_course_service_progresses) {
-        ServiceData = pointsAll.user_course_service_progresses.map(ucsp => {
-          const ServiceDataByGroup: serviceData = {
-            service: ucsp.service.name,
+    const groups = oneUCP.progress.map(p => p.group)
+    //@ts-ignore
+    formattedPointsData = groups.map(g => {
+      //@ts-ignore
+      const summaryPoints = oneUCP.progress.filter(p => p.group === g)
+      const serviceData = oneUCP.user_course_service_progresses || []
+      let ServiceDataByWeek: any = []
+      if (serviceData.length > 0) {
+        ServiceDataByWeek = serviceData.map(s => {
+          const newSD = {
+            service: s.service.name,
             //@ts-ignore
-            points: ucsp.progress.find(u => u.group === p.group),
+            points: s.progress.map(p => p.group === g),
           }
-          return ServiceDataByGroup
+          return newSD
         })
       }
-
-      const newFormattedProgress = {
-        group: p.group,
-        summary_max_points: p.max_points,
-        summary_n_points: p.n_points,
-        services: ServiceData,
+      const newFormattedPointsDatum = {
+        group: g,
+        summary_max_points: summaryPoints[0].max_points,
+        summary_n_points: summaryPoints[0].n_points,
+        progress: summaryPoints[0].progress,
+        ...ServiceDataByWeek,
       }
-      formattedPointsData = formattedPointsData.concat(newFormattedProgress)
+      return newFormattedPointsDatum
     })
-  }
-
+  })
+  console.log(formattedPointsData)
   return formattedPointsData
 }
 interface Props {
@@ -63,15 +70,14 @@ interface Props {
 function PointsListItemCard(props: Props) {
   const { studentPointsPerGroup } = props
   const [showDetails, setShowDetails] = React.useState(false)
+  const user = studentPointsPerGroup.user
 
-  let firstName: string = studentPointsPerGroup!.user!.first_name! || "n/a"
-  let lastName: string = studentPointsPerGroup!.user!.last_name! || "n/a"
-  let email: string =
-    studentPointsPerGroup!.user!.email! || "no email available"
-  let studentId: string =
-    studentPointsPerGroup!.user!.student_number! || "no SID"
-  let studentProgressData: UserProgressData = studentPointsPerGroup!.user!
-    .user_course_progressess!
+  const firstName = user.first_name || "n/a"
+  const lastName = user.last_name || "n/a"
+  const email = user.email || "no email available"
+  const studentId = user.student_number || "no SID"
+  const studentProgressData = user.user_course_progresses! || []
+  //@ts-ignore
   const formattedPointsByService = FormatStudentProgressServiceData({
     pointsAll: studentProgressData,
   })
@@ -94,17 +100,17 @@ function PointsListItemCard(props: Props) {
       <UserInformation variant="body1" component="p">
         {studentId}
       </UserInformation>
-
-      {formattedPointsByService.length !== 0 ? (
-        <PointsItemTable
-          studentPoints={formattedPointsByService}
-          showDetailedBreakdown={showDetails}
-        />
-      ) : (
-        <p>No points data available</p>
-      )}
     </Root>
   )
 }
 
 export default PointsListItemCard
+
+/*{formattedPointsByService.length !== 0 ? (
+        <PointsItemTable
+        studentPoints={formattedPointsByService}
+        showDetailedBreakdown={showDetails}
+      />
+      ) : (
+        <p>No points data available</p>
+      )}*/

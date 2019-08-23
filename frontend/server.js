@@ -26,12 +26,6 @@ const main = async () => {
   const server = express()
   server.use(compression())
 
-  server.get("/register-completion/:slug", (req, res) => {
-    const actualPage = "/register-completion"
-    const queryParams = { slug: req.params.slug }
-    return app.render(req, res, actualPage, queryParams)
-  })
-
   server.get("*", (req, res) => {
     const redirectNeeded = DirectFrom.find(
       redirect => redirect.from === req.url,
