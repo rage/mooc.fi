@@ -81,7 +81,9 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const { router } = props
   const classes = useStyles()
   const lng = useContext(LanguageContext)
+
   const t = getRegisterCompletionTranslator(lng.language)
+  console.log("translator thing", t)
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (error) {
@@ -99,9 +101,6 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const courseSlug = router.query.slug
   let completion = undefined
 
-  //if currentuser has completions, find a completion
-  //corresponding to the given course slug
-
   if (!data.currentUser) {
     return <div>You are not logged in. Please log in to the site</div>
   }
@@ -112,7 +111,6 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
     )
   }
 
-  //if no completion fund, return completion not found message
   if (!completion) {
     return (
       <Container>

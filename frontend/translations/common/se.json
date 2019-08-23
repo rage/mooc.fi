@@ -1,0 +1,13 @@
+{
+    "login": "Logga in med mooc.fi inloggningsuppgifter",
+    "loginShort": "Logga in",
+    "loginDetails": "Logga in med inloggningsuppgifterna du använde vid registrering till kursen.",
+    "profile": "Din profil",
+    "logout": "Logga ut",
+    "forgottenpw": "Glömt ditt lösenord?",
+    "error": "Inloggning misslyckades. Felaktigt lösenord eller e-post/användarnamn",
+    "password": "Lösenord",
+    "username": "E-post eller användarnamn",
+    "skiplink": "till huvudinnehållet",
+    "signUp":"Create a new account"
+}
