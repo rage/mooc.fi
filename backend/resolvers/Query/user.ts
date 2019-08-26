@@ -76,6 +76,7 @@ const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: { email: stringArg() },
     resolve: (_, args, ctx) => {
       const { email } = args
+      console.log("wrong user", ctx.user)
       return ctx.user
     },
   })

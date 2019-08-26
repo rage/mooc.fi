@@ -8,8 +8,6 @@ import {
   CurrentUserUserOverView as UserOverViewData,
   CurrentUserUserOverView_currentUser_completions,
 } from "/static/types/generated/CurrentUserUserOverView"
-/* import styled from "styled-components"
-import Typography from "@material-ui/core/Typography" */
 import Container from "/components/Container"
 import Completions from "/components/Completions"
 
