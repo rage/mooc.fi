@@ -15,6 +15,7 @@ import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
+import { StudyModules } from "/static/types/generated/StudyModules"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -107,7 +108,7 @@ const EditCourse = (props: EditCourseProps) => {
     data: studyModulesData,
     loading: studyModulesLoading,
     error: studyModulesError,
-  } = useQuery(StudyModuleQuery)
+  } = useQuery<StudyModules>(StudyModuleQuery)
 
   if (courseLoading || studyModulesLoading) {
     return <Spinner />
@@ -136,7 +137,7 @@ const EditCourse = (props: EditCourseProps) => {
         {courseData.course ? (
           <CourseEdit
             course={courseData.course}
-            modules={studyModulesData.study_modules}
+            modules={studyModulesData ? studyModulesData.study_modules : []}
           />
         ) : (
           <ErrorContainer elevation={2}>
