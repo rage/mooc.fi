@@ -9,15 +9,16 @@ interface Props {
 
 const PointsList = (props: Props) => {
   const { pointsForUser } = props
-
   return (
     <section>
       <Grid container spacing={3}>
         {pointsForUser.map(user => (
-          <PointsListItemCard
-            studentPointsPerGroup={user.node}
-            key={user.node.id}
-          />
+          <>
+            <p>{user.node.user.first_name}</p>
+            {user!.node!.user!.user_course_progresses!.map(ucp => (
+              <PointsListItemCard studentPoints={ucp} key={user.node.id} />
+            ))}
+          </>
         ))}
       </Grid>
     </section>
