@@ -20,6 +20,7 @@ export interface AllEditorCourses_courses {
   id: any
   name: string
   slug: string
+  order: number | null
   status: CourseStatus | null
   hidden: boolean | null
   photo: AllEditorCourses_courses_photo | null

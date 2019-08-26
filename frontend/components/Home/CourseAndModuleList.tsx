@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
 import {
-  filterAndModifyCoursesByLanguage,
+  // filterAndModifyCoursesByLanguage,
   mapNextLanguageToLocaleCode,
   filterAndModifyByLanguage,
 } from "/util/moduleFunctions"
@@ -9,7 +9,9 @@ import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
-import { ObjectifiedCourse, ObjectifiedModule } from "/static/types/moduleTypes"
+import {
+  /* ObjectifiedCourse, */ ObjectifiedModule,
+} from "/static/types/moduleTypes"
 import ModuleNavi from "./ModuleNavi"
 import ModuleList from "./ModuleList"
 import LanguageContext from "/contexes/LanguageContext"
@@ -59,8 +61,8 @@ export const AllModulesQuery = gql`
 `
 
 export const AllCoursesQuery = gql`
-  query AllCourses {
-    courses(orderBy: order_ASC) {
+  query AllCourses($language: String) {
+    courses(orderBy: order_ASC, language: $language) {
       id
       slug
       name
@@ -74,17 +76,19 @@ export const AllCoursesQuery = gql`
       status
       start_point
       hidden
-      course_translations {
+      description
+      link
+    }
+  }
+`
+
+/*       course_translations {
         id
         language
         name
         description
         link
-      }
-    }
-  }
-`
-
+      }*/
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)
@@ -95,7 +99,7 @@ const CourseAndModuleList = () => {
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
-  } = useQuery<AllCoursesData>(AllCoursesQuery)
+  } = useQuery<AllCoursesData>(AllCoursesQuery, { variables: { language } })
   const {
     loading: modulesLoading,
     error: modulesError,
@@ -121,10 +125,12 @@ const CourseAndModuleList = () => {
     return <div>Error: no data?</div>
   }
 
-  const courses: ObjectifiedCourse[] = useMemo(
+  const { courses } = coursesData
+
+  /*   const courses: ObjectifiedCourse[] = useMemo(
     () => filterAndModifyCoursesByLanguage(coursesData.courses, language),
     [coursesData.courses, language],
-  )
+  ) */
 
   const modules: ObjectifiedModule[] = useMemo(
     () => filterAndModifyByLanguage(modulesData.study_modules, language),
@@ -134,7 +140,7 @@ const CourseAndModuleList = () => {
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
       ["Active", "Upcoming", "Ended"].map(status =>
-        courses.filter(c => !c.hidden && c.status === status),
+        (courses || []).filter(c => !c.hidden && c.status === status),
       ),
     [courses],
   )
