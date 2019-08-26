@@ -64,7 +64,7 @@ function Module({ module }: { module?: ObjectifiedModule }) {
 
   return (
     <section
-      id={`module-list-${module ? module.slug : "skeleton"}`}
+      id={module ? module.slug : "module-skeleton"}
       style={{ marginBottom: "3em" }}
     >
       <ModuleBanner module={module} />
