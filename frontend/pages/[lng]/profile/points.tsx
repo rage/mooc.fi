@@ -54,7 +54,9 @@ function Points() {
 
   console.log(data)
   let coursesUserHasPointsFor: UserPointsData[] =
-    data!.currentUser!.user_course_progresses! || []
+    data && data.currentUser
+      ? data.currentUser.user_course_progresses || []
+      : []
   if (coursesUserHasPointsFor.length === 0) {
     return <p>No points for courses yet</p>
   }
