@@ -61,7 +61,7 @@ const SkeletonBackground = styled(Skeleton)`
 
 function ModuleBanner({ module }: { module?: ObjectifiedModule }) {
   const imageUrl = module
-    ? module!.image
+    ? module.image
       ? `../../static/images/${module.image}`
       : `../../static/images/${module.slug}.jpg`
     : ""

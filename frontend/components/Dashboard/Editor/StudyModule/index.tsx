@@ -92,7 +92,10 @@ const StudyModuleEdit = ({
     }
   }, [])
 
-  const onCancel = useCallback(() => Router.push("/study-modules"), [])
+  const onCancel = useCallback(
+    () => Router.push(`/${language}/study-modules`),
+    [],
+  )
 
   return (
     <StudyModuleEditForm

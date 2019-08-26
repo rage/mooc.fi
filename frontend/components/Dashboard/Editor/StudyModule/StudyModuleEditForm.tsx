@@ -195,7 +195,7 @@ const renderForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values!.study_module_translations!.length ? (
+              {values && (values.study_module_translations || []).length ? (
                 (values.study_module_translations || []).map(
                   (_: any, index: number) => (
                     <LanguageEntry item key={`translation-${index}`}>
@@ -275,17 +275,19 @@ const renderForm = ({
                   </Typography>
                 </EntryContainer>
               )}
-              {values!.study_module_translations!.length < languages.length && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  disabled={isSubmitting}
-                  onClick={() => helpers.push({ ...initialTranslation })}
-                >
-                  Add translation
-                </Button>
-              )}
+              {values &&
+                (values.study_module_translations || []).length <
+                  languages.length && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={isSubmitting}
+                    onClick={() => helpers.push({ ...initialTranslation })}
+                  >
+                    Add translation
+                  </Button>
+                )}
             </>
           )}
         />

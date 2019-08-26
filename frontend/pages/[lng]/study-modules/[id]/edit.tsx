@@ -81,7 +81,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
 
-  if (!data!.study_module) {
+  if (data && !data.study_module) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
@@ -91,8 +91,8 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Edit study module
         </Header>
-        {data!.study_module ? (
-          <StudyModuleEdit module={data!.study_module} />
+        {data && data.study_module ? (
+          <StudyModuleEdit module={data.study_module} />
         ) : (
           <ErrorContainer elevation={2}>
             <Typography variant="body1">

@@ -45,7 +45,7 @@ function Module({ module }: { module?: ObjectifiedModule }) {
   const t = getHomeTranslator(lng.language)
 
   const startCourses = module
-    ? (module!.courses || []).filter(
+    ? (module.courses || []).filter(
         c =>
           !c.hidden &&
           c.status !== CourseStatus.Ended &&
@@ -54,7 +54,7 @@ function Module({ module }: { module?: ObjectifiedModule }) {
     : []
 
   const otherCourses = module
-    ? (module!.courses || []).filter(
+    ? (module.courses || []).filter(
         c =>
           !c.hidden &&
           c.status !== CourseStatus.Ended &&
