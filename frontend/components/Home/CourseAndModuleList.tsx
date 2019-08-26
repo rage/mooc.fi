@@ -144,54 +144,54 @@ const CourseAndModuleList = () => {
   )
 
   return (
-    <section id="courses-and-modules">
-      <CourseHighlights
-        courses={promotedCourses}
-        title={t("highlightTitle")}
-        headerImage={highlightsBanner}
-        subtitle={t("highlightSubtitle")}
-        backgroundColor="#009CA6"
-        hueRotateAngle={177}
-        brightness={5.5}
-        fontColor="black"
-        titleBackground="#ffffff"
-        // loading={coursesLoading}
-      />
-      <ModuleNavi modules={modules} loading={modulesLoading} />
-      <CourseHighlights
-        courses={activeCourses}
-        title={t("allCoursesTitle")}
-        headerImage={highlightsBanner}
-        backgroundColor="#ffffff"
-        hueRotateAngle={34}
-        brightness={1}
-        fontColor="white"
-        titleBackground="#008EBD"
-        // loading={coursesLoading}
-      />
-      <CourseHighlights
-        courses={upcomingCourses}
-        title={t("upcomingCoursesTitle")}
-        headerImage={highlightsBanner}
-        backgroundColor="#007DC8"
-        hueRotateAngle={0}
-        brightness={5.5}
-        fontColor="black"
-        titleBackground="#ffffff"
-        // loading={coursesLoading}
-      />
-      <ModuleList modules={modules} loading={modulesLoading} />
-      <CourseHighlights
-        courses={endedCourses}
-        title={t("endedCoursesTitle")}
-        headerImage={highlightsBanner}
-        backgroundColor="#ffffff"
-        hueRotateAngle={58}
-        brightness={1}
-        fontColor="white"
-        titleBackground="#3066C0"
-        // loading={coursesLoading}
-      />
+    <section>
+      <section id="courses">
+        <CourseHighlights
+          courses={promotedCourses}
+          title={t("highlightTitle")}
+          headerImage={highlightsBanner}
+          subtitle={t("highlightSubtitle")}
+          backgroundColor="#009CA6"
+          hueRotateAngle={177}
+          brightness={5.5}
+          fontColor="black"
+          titleBackground="#ffffff"
+        />
+        <CourseHighlights
+          courses={activeCourses}
+          title={t("allCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={34}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#008EBD"
+        />
+        <CourseHighlights
+          courses={upcomingCourses}
+          title={t("upcomingCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#007DC8"
+          hueRotateAngle={0}
+          brightness={5.5}
+          fontColor="black"
+          titleBackground="#ffffff"
+        />
+      </section>
+      <section id="modules">
+        <ModuleNavi modules={modules} loading={modulesLoading} />
+        <ModuleList modules={modules} loading={modulesLoading} />
+        <CourseHighlights
+          courses={endedCourses}
+          title={t("endedCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={58}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#3066C0"
+        />
+      </section>
     </section>
   )
 }
