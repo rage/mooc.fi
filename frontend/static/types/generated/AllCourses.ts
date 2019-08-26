@@ -41,3 +41,7 @@ export interface AllCourses_courses {
 export interface AllCourses {
   courses: AllCourses_courses[]
 }
+
+export interface AllCoursesVariables {
+  language?: string | null
+}

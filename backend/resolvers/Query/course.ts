@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma-client"
+import { Prisma, CourseOrderByInput } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, booleanArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -9,17 +9,33 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       slug: stringArg(),
       id: idArg(),
+      language: stringArg(),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx)
 
-      const { slug, id } = args
+      const { slug, id, language } = args
       const prisma: Prisma = ctx.prisma
 
-      return prisma.course({
+      const course = await prisma.course({
         slug: slug,
         id: id,
       })
+
+      if (language) {
+        const course_translations = await prisma.courseTranslations({
+          where: { course, language },
+        })
+
+        if (!course_translations.length) {
+          return Promise.resolve(null)
+        }
+
+        const { name, description, link = "" } = course_translations[0]
+        return { ...course, name, description, link }
+      }
+
+      return course
     },
   })
 }
@@ -29,11 +45,33 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "Course",
     args: {
       orderBy: arg({ type: "CourseOrderByInput" }),
+      language: stringArg(),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
+      const { orderBy, language } = args
       // FIXME: this maps as CourseOrderByInput, but still doesn't quite get it
       // @ts-ignore
-      return ctx.prisma.courses({ orderBy: args.orderBy })
+      const courses = await ctx.prisma.courses({ orderBy })
+
+      const filtered = language
+        ? (await Promise.all(
+            courses.map(async course => {
+              const course_translations = await ctx.prisma.courseTranslations({
+                where: { course, language },
+              })
+
+              if (!course_translations.length) {
+                return Promise.resolve(null)
+              }
+
+              const { name, description, link = "" } = course_translations[0]
+
+              return { ...course, name, description, link }
+            }),
+          )).filter(v => !!v)
+        : courses
+
+      return filtered
     },
   })
 }
