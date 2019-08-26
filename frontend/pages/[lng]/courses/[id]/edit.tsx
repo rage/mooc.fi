@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { NextPageContext as NextContext } from "next"
@@ -14,6 +14,7 @@ import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import Link from "next/link"
+import LanguageContext from "/contexes/LanguageContext"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -77,11 +78,12 @@ interface EditCourseProps {
   router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
-  language: string
 }
 
 const EditCourse = (props: EditCourseProps) => {
-  const { admin, router, language } = props
+  const { admin, router } = props
+  const { language } = useContext(LanguageContext)
+
   const slug = router.query.id
 
   let redirectTimeout: number | null = null
@@ -170,8 +172,6 @@ EditCourse.getInitialProps = function(context: NextContext) {
 
   return {
     admin,
-    // @ts-ignore
-    language: context && context.req ? context.req.language : "",
   }
 }
 
