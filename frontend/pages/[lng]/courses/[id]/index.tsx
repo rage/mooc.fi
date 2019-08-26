@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
@@ -13,6 +13,7 @@ import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import Typography from "@material-ui/core/Typography"
+import LanguageContext from "/contexes/LanguageContext"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -30,6 +31,7 @@ interface CourseProps {
 }
 const Course = (props: CourseProps) => {
   const { admin, router } = props
+  const { language } = useContext(LanguageContext)
 
   let slug: string = ""
   let lng: string = ""
@@ -61,7 +63,9 @@ const Course = (props: CourseProps) => {
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     router.push(
-      `/courses/${slug}?lng=${(event.target as HTMLInputElement).value}`,
+      `/${language}/courses/${slug}?lng=${
+        (event.target as HTMLInputElement).value
+      }`,
     )
   }
 
