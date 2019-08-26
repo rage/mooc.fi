@@ -4,7 +4,7 @@ import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
 import styled from "styled-components"
-import mime from "mime-types"
+import { mime } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
 import { AllModulesWithTranslations_study_modules } from "/static/types/AllModulesWithTranslations"
 
@@ -120,10 +120,7 @@ function ModuleCard({
       <Base>
         {module ? (
           <picture>
-            <source
-              srcSet={imageUrl}
-              type={mime.lookup(imageUrl) || "image/jpeg"}
-            />
+            <source srcSet={imageUrl} type={mime(imageUrl)} />
             <source srcSet={`${imageUrl}?webp`} type="image/webp" />
             <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
           </picture>
