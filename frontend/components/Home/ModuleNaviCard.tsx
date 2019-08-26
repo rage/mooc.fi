@@ -107,8 +107,8 @@ const SkeletonBodyText = styled(Skeleton)`
 const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
   const imageUrl = module
     ? module.image
-      ? `../../static/images/${module!.image}`
-      : `../../static/images/${module!.slug}.jpg`
+      ? `../../static/images/${module.image}`
+      : `../../static/images/${module.slug}.jpg`
     : ""
 
   return (
@@ -126,9 +126,9 @@ const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
               </picture>
               <ImageCover />
               <ContentArea>
-                <NaviCardTitle align="left">{module!.name}</NaviCardTitle>
+                <NaviCardTitle align="left">{module.name}</NaviCardTitle>
                 <NaviCardBodyText paragraph>
-                  {module!.description}
+                  {module.description}
                 </NaviCardBodyText>
               </ContentArea>
             </>

@@ -69,7 +69,7 @@ const CourseTranslationEditForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values!.length ? (
+              {values && values.length ? (
                 values.map((_: any, index: number) => (
                   <LanguageEntry item key={`translation-${index}`}>
                     <EntryContainer elevation={2}>
@@ -159,7 +159,7 @@ const CourseTranslationEditForm = ({
                   </Typography>
                 </EntryContainer>
               )}
-              {values!.length < languages.length && (
+              {values && values.length < languages.length && (
                 <Button
                   variant="contained"
                   color="primary"
