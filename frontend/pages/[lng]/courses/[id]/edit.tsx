@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { NextPageContext as NextContext } from "next"
@@ -14,6 +14,8 @@ import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import Link from "next/link"
+import LanguageContext from "/contexes/LanguageContext"
+import { StudyModules } from "/static/types/generated/StudyModules"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -77,11 +79,12 @@ interface EditCourseProps {
   router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
-  language: string
 }
 
 const EditCourse = (props: EditCourseProps) => {
-  const { admin, router, language } = props
+  const { admin, router } = props
+  const { language } = useContext(LanguageContext)
+
   const slug = router.query.id
 
   let redirectTimeout: number | null = null
@@ -105,7 +108,7 @@ const EditCourse = (props: EditCourseProps) => {
     data: studyModulesData,
     loading: studyModulesLoading,
     error: studyModulesError,
-  } = useQuery(StudyModuleQuery)
+  } = useQuery<StudyModules>(StudyModuleQuery)
 
   if (courseLoading || studyModulesLoading) {
     return <Spinner />
@@ -121,7 +124,7 @@ const EditCourse = (props: EditCourseProps) => {
 
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (!courseData!.course) {
+  if (courseData && !courseData.course) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
@@ -134,7 +137,7 @@ const EditCourse = (props: EditCourseProps) => {
         {courseData.course ? (
           <CourseEdit
             course={courseData.course}
-            modules={studyModulesData.study_modules}
+            modules={studyModulesData ? studyModulesData.study_modules : []}
           />
         ) : (
           <ErrorContainer elevation={2}>
@@ -170,8 +173,6 @@ EditCourse.getInitialProps = function(context: NextContext) {
 
   return {
     admin,
-    // @ts-ignore
-    language: context && context.req ? context.req.language : "",
   }
 }
 

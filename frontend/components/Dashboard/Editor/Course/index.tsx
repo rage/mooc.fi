@@ -94,12 +94,12 @@ const CourseEdit = ({
   const onDelete = useCallback(async (values: CourseFormValues) => {
     if (values.id) {
       await deleteCourse({ variables: { id: values.id } })
-      Router.push("/courses")
+      Router.push(`/${language}/courses`)
     }
   }, [])
 
   const onCancel = useCallback(() => {
-    Router.push("/courses")
+    Router.push(`/${language}/courses`)
   }, [])
 
   return (
