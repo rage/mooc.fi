@@ -31,7 +31,7 @@ const ColoredProgressBar = styled(({ ...props }) => (
 `
 
 interface ChartProps {
-  pointsForAGroup: pointsDataByGroup
+  pointsForAGroup: any
   showDetailed: boolean
 }
 function PointsItemTableChart(props: ChartProps) {
