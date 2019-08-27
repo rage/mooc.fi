@@ -76,14 +76,14 @@ export const UserOverViewQuery = gql`
 
 interface RegisterCompletionPageProps {
   router: any
+  slug?: string | string[]
 }
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
-  const { router } = props
+  const { router, slug } = props
   const classes = useStyles()
   const lng = useContext(LanguageContext)
 
   const t = getRegisterCompletionTranslator(lng.language)
-  console.log("translator thing", t)
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (error) {
@@ -98,7 +98,7 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
     return <div>Loading</div>
   }
 
-  const courseSlug = router.query.slug
+  const courseSlug = slug || router.query.slug
   let completion = undefined
 
   if (!data.currentUser) {

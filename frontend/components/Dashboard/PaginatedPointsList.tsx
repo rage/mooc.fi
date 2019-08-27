@@ -2,7 +2,11 @@ import React from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "/components/ErrorBoundary"
 import { useQuery } from "@apollo/react-hooks"
-import { UserCourseSettingses as StudentProgressData } from "/static/types/generated/UserCourseSettingses"
+import {
+  UserCourseSettingses as StudentProgressData,
+  UserCourseSettingses_UserCourseSettingses_edges,
+  UserCourseSettingses_UserCourseSettingses_pageInfo,
+} from "/static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
 import Button from "@material-ui/core/Button"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
@@ -58,7 +62,11 @@ function PaginatedPointsList(props: Props) {
 
   return (
     <ErrorBoundary>
-      <PointsList pointsForUser={data!.UserCourseSettingses.edges} />
+      <PointsList
+        pointsForUser={
+          data.UserCourseSettingses ? data.UserCourseSettingses.edges : []
+        }
+      />
       <Button
         onClick={() =>
           fetchMore({
@@ -70,8 +78,12 @@ function PaginatedPointsList(props: Props) {
 
             updateQuery: (previousResult, { fetchMoreResult }) => {
               const previousData = previousResult.UserCourseSettingses.edges
-              const newData = fetchMoreResult!.UserCourseSettingses.edges
-              const newPageInfo = fetchMoreResult!.UserCourseSettingses.pageInfo
+              const newData = fetchMoreResult
+                ? fetchMoreResult.UserCourseSettingses.edges
+                : ([] as UserCourseSettingses_UserCourseSettingses_edges[])
+              const newPageInfo = fetchMoreResult
+                ? fetchMoreResult.UserCourseSettingses.pageInfo
+                : ({} as UserCourseSettingses_UserCourseSettingses_pageInfo)
               return {
                 UserCourseSettingses: {
                   pageInfo: {

@@ -6,7 +6,7 @@ import styled from "styled-components"
 import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"
-import mime from "mime-types"
+import { mime } from "/util/imageUtils"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -107,8 +107,8 @@ const SkeletonBodyText = styled(Skeleton)`
 const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
   const imageUrl = module
     ? module.image
-      ? `../../static/images/${module!.image}`
-      : `../../static/images/${module!.slug}.jpg`
+      ? `../../static/images/${module.image}`
+      : `../../static/images/${module.slug}.jpg`
     : ""
 
   return (
@@ -118,10 +118,7 @@ const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
           {module ? (
             <>
               <picture>
-                <source
-                  srcSet={imageUrl}
-                  type={mime.lookup(imageUrl) || "image/jpeg"}
-                />
+                <source srcSet={imageUrl} type={mime(imageUrl)} />
                 <source srcSet={`${imageUrl}?webp`} type="image/webp" />
                 <ImageBackground
                   style={{ backgroundImage: `url(${imageUrl})` }}
@@ -129,9 +126,9 @@ const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
               </picture>
               <ImageCover />
               <ContentArea>
-                <NaviCardTitle align="left">{module!.name}</NaviCardTitle>
+                <NaviCardTitle align="left">{module.name}</NaviCardTitle>
                 <NaviCardBodyText paragraph>
-                  {module!.description}
+                  {module.description}
                 </NaviCardBodyText>
               </ContentArea>
             </>

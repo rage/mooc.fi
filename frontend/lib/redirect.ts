@@ -3,7 +3,8 @@ import nookies from "nookies"
 import Router from "next/router"
 
 export default (context: NextContext, target: string, savePage = false) => {
-  let language = context && context.query ? context.query.lng : "fi"
+  let language =
+    context && context.query && context.query.lng ? context.query.lng : "fi"
 
   if (savePage) {
     // @ts-ignore

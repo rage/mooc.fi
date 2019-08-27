@@ -112,7 +112,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           </Grid>
         </Grid>
         {status && status.message ? (
-          <Status error={status!.error}>
+          <Status error={status.error}>
             {status.error ? "Error submitting: " : null}
             <b>{status.message}</b>
           </Status>
