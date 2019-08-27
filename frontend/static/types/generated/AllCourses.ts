@@ -15,13 +15,9 @@ export interface AllCourses_courses_photo {
   uncompressed: string
 }
 
-export interface AllCourses_courses_course_translations {
-  __typename: "CourseTranslation"
+export interface AllCourses_courses_study_modules {
+  __typename: "StudyModule"
   id: any
-  language: string
-  name: string
-  description: string
-  link: string | null
 }
 
 export interface AllCourses_courses {
@@ -34,8 +30,11 @@ export interface AllCourses_courses {
   promote: boolean | null
   status: CourseStatus | null
   start_point: boolean | null
+  study_module_start_point: boolean | null
   hidden: boolean | null
-  course_translations: AllCourses_courses_course_translations[] | null
+  description: string
+  link: string
+  study_modules: AllCourses_courses_study_modules[] | null
 }
 
 export interface AllCourses {

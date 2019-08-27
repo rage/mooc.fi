@@ -1,12 +1,12 @@
 import React from "react"
 import Module from "./Module"
-import { ObjectifiedModule } from "/static/types/moduleTypes"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 const ModuleList = ({
   modules,
   loading,
 }: {
-  modules: ObjectifiedModule[]
+  modules: AllModules_study_modules_with_courses[]
   loading: boolean
 }) =>
   loading ? (

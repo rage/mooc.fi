@@ -6,11 +6,11 @@ import ModuleBanner from "./ModuleBanner"
 import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import Container from "/components/Container"
-import { ObjectifiedModule } from "/static/types/moduleTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { CourseStatus } from "/static/types/globalTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -40,7 +40,11 @@ const SubHeader = styled(Typography)`
   }
 `
 
-function Module({ module }: { module?: ObjectifiedModule }) {
+function Module({
+  module,
+}: {
+  module?: AllModules_study_modules_with_courses
+}) {
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
 

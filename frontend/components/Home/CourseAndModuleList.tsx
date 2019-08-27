@@ -3,59 +3,32 @@ import CourseHighlights from "./CourseHighlights"
 import {
   // filterAndModifyCoursesByLanguage,
   mapNextLanguageToLocaleCode,
-  filterAndModifyByLanguage,
+  // filterAndModifyByLanguage,
 } from "/util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
-import {
-  /* ObjectifiedCourse, */ ObjectifiedModule,
-} from "/static/types/moduleTypes"
+/* import {
+  ObjectifiedCourse,  ObjectifiedModule,
+} from "/static/types/moduleTypes" */
 import ModuleNavi from "./ModuleNavi"
 import ModuleList from "./ModuleList"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 export const AllModulesQuery = gql`
-  query AllModules {
-    study_modules(orderBy: order_ASC) {
+  query AllModules($language: String) {
+    study_modules(orderBy: order_ASC, language: $language) {
       id
       slug
       name
+      description
       image
       order
-      courses(orderBy: study_module_order_ASC) {
-        id
-        slug
-        name
-        order
-        photo {
-          id
-          compressed
-          uncompressed
-        }
-        promote
-        status
-        start_point
-        study_module_start_point
-        hidden
-        course_translations {
-          id
-          language
-          name
-          description
-          link
-        }
-      }
-      study_module_translations {
-        id
-        language
-        name
-        description
-      }
     }
   }
 `
@@ -75,20 +48,17 @@ export const AllCoursesQuery = gql`
       promote
       status
       start_point
+      study_module_start_point
       hidden
       description
       link
+      study_modules {
+        id
+      }
     }
   }
 `
 
-/*       course_translations {
-        id
-        language
-        name
-        description
-        link
-      }*/
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)
@@ -104,15 +74,7 @@ const CourseAndModuleList = () => {
     loading: modulesLoading,
     error: modulesError,
     data: modulesData,
-  } = useQuery<AllModulesData>(AllModulesQuery)
-
-  /*   const [language, setLanguage] = useState(
-    mapNextLanguageToLocaleCode(lngCtx.language),
-  )
-  //every time the i18n language changes, update the state
-  useEffect(() => {
-    setLanguage(mapNextLanguageToLocaleCode(lngCtx.language))
-  }, [lngCtx.language]) */
+  } = useQuery<AllModulesData>(AllModulesQuery, { variables: { language } })
 
   if (coursesError || modulesError) {
     ;<div>
@@ -126,15 +88,21 @@ const CourseAndModuleList = () => {
   }
 
   const { courses } = coursesData
+  const { study_modules } = modulesData
 
-  /*   const courses: ObjectifiedCourse[] = useMemo(
-    () => filterAndModifyCoursesByLanguage(coursesData.courses, language),
-    [coursesData.courses, language],
-  ) */
+  const modulesWithCourses = useMemo(
+    (): AllModules_study_modules_with_courses[] =>
+      (study_modules || []).map(module => {
+        const moduleCourses = (courses || []).filter(
+          course =>
+            (course!.study_modules || []).filter(
+              courseModule => courseModule.id === module.id,
+            ).length,
+        )
 
-  const modules: ObjectifiedModule[] = useMemo(
-    () => filterAndModifyByLanguage(modulesData.study_modules, language),
-    [modulesData.study_modules, language],
+        return { ...module, courses: moduleCourses }
+      }),
+    [study_modules, courses],
   )
 
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
@@ -161,9 +129,8 @@ const CourseAndModuleList = () => {
         brightness={5.5}
         fontColor="black"
         titleBackground="#ffffff"
-        // loading={coursesLoading}
       />
-      <ModuleNavi modules={modules} loading={modulesLoading} />
+      <ModuleNavi modules={study_modules} loading={modulesLoading} />
       <CourseHighlights
         courses={activeCourses}
         title={t("allCoursesTitle")}
@@ -173,7 +140,6 @@ const CourseAndModuleList = () => {
         brightness={1}
         fontColor="white"
         titleBackground="#008EBD"
-        // loading={coursesLoading}
       />
       <CourseHighlights
         courses={upcomingCourses}
@@ -184,9 +150,8 @@ const CourseAndModuleList = () => {
         brightness={5.5}
         fontColor="black"
         titleBackground="#ffffff"
-        // loading={coursesLoading}
       />
-      <ModuleList modules={modules} loading={modulesLoading} />
+      <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
       <CourseHighlights
         courses={endedCourses}
         title={t("endedCoursesTitle")}
@@ -196,7 +161,6 @@ const CourseAndModuleList = () => {
         brightness={1}
         fontColor="white"
         titleBackground="#3066C0"
-        // loading={coursesLoading}
       />
     </section>
   )

@@ -1,10 +1,10 @@
 import React, { useContext } from "react"
 import { Grid, Typography, ButtonBase, Badge } from "@material-ui/core"
 import styled from "styled-components"
-import { ObjectifiedModuleCourse } from "/static/types/moduleTypes"
 import { CourseStatus } from "/static/types/globalTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 
 const CourseTitle = styled(Typography)`
   margin-bottom: 0.5rem;
@@ -66,11 +66,7 @@ const Background = styled(ButtonBase)<{ upcoming?: boolean }>`
   }
 `
 
-function ModuleSmallCourseCard({
-  course,
-}: {
-  course: ObjectifiedModuleCourse
-}) {
+function ModuleSmallCourseCard({ course }: { course: AllCourses_courses }) {
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
 
