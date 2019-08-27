@@ -9,17 +9,26 @@ interface Props {
 
 const PointsList = (props: Props) => {
   const { pointsForUser } = props
+  console.log(pointsForUser)
   return (
     <section>
       <Grid container spacing={3}>
-        {pointsForUser.map(user => (
-          <>
-            <p>{user.node.user.first_name}</p>
-            {user!.node!.user!.user_course_progresses!.map(ucp => (
-              <PointsListItemCard studentPoints={ucp} key={user.node.id} />
-            ))}
-          </>
-        ))}
+        {pointsForUser.map(user =>
+          user &&
+          user.node &&
+          user.node.user &&
+          user.node.user.user_course_progresses ? (
+            <PointsListItemCard
+              studentPoints={user.node.user.user_course_progresses[0]}
+              name={user.node.user.first_name + " " + user.node.user.last_name}
+              email={user.node.user.email}
+              SID={user.node.user.student_number}
+              key={user.node.id}
+            />
+          ) : (
+            <p>User course settings without progress data found</p>
+          ),
+        )}
       </Grid>
     </section>
   )
