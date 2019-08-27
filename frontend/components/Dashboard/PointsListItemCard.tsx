@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid } from "@material-ui/core"
+import { Grid, Typography } from "@material-ui/core"
 //import { UserCourseSettingses_UserCourseSettingses_edges_node_user as UserPointsData } from "/static/types/generated/UserCourseSettingses"
 //import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as UserProgressData } from "/static/types/generated/UserCourseSettingses"
 import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as StudentPointsData } from "/static/types/generated/UserCourseSettingses"
@@ -97,18 +97,27 @@ function FormatStudentProgressServiceData(props: FormatProps) {
 
   return formattedPointsData
 }
+const Name = styled(Typography)`
+  font-weight: bold;
+`
 
+const UserInformation = styled(Typography)`
+  color: gray;
+`
 interface Props {
   studentPoints: StudentPointsData
+  name?: string
+  SID?: string | null | undefined
+  email?: string
 }
 
 function PointsListItemCard(props: Props) {
-  const { studentPoints } = props
+  const { studentPoints, name, SID, email } = props
   const [showDetails, setShowDetails] = React.useState(false)
   const formattedPoints: pointsDataByGroup[] = FormatStudentProgressServiceData(
     { pointsAll: studentPoints },
   )
-  console.log("at card", studentPoints)
+
   return (
     <Root item sm={12} lg={12}>
       <Button
@@ -118,7 +127,9 @@ function PointsListItemCard(props: Props) {
       >
         {showDetails ? "show less" : "show detailed breakdown"}
       </Button>
-
+      <Name>{name}</Name>
+      <UserInformation>{email}</UserInformation>
+      <UserInformation>{SID}</UserInformation>
       <PointsItemTable
         studentPoints={formattedPoints}
         showDetailedBreakdown={showDetails}

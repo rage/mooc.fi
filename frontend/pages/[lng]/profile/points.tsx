@@ -37,8 +37,6 @@ function Points() {
     dataFound = true
     userProgressData = data.currentUser.user_course_progresses
   }
-  console.log(userProgressData)
-  console.log(dataFound)
 
   return (
     <section>
@@ -55,8 +53,7 @@ function Points() {
           {dataFound ? (
             userProgressData.map(p => (
               <>
-                <p>{p.course.name}</p>
-                <PointsListItemCard studentPoints={p} />
+                <PointsListItemCard studentPoints={p} name={p.course.name} />
               </>
             ))
           ) : (
