@@ -30,10 +30,10 @@ const IntroText = styled(Typography)`
 `
 
 const SubHeader = styled(Typography)`
-  margin-bottom: 3rem;
-  padding-bottom: 1rem;
-  margin-left: 1rem;
-  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  margin-left: 0rem;
+  margin-top: 1rem;
   font-size: 32px;
   background-color: rgba(255, 255, 255, 0.8);
   @media (min-width: 425px) {
@@ -44,7 +44,11 @@ const SubHeader = styled(Typography)`
   }
 `
 
-const Root = styled.div`
+interface RootProps {
+  backgroundColor: string
+}
+
+const Root = styled.div<RootProps>`
   margin-top: 1em;
   display: flex;
   flex-direction: column;
@@ -52,15 +56,26 @@ const Root = styled.div`
   margin-bottom: 5em;
   padding-bottom: 4em;
   position: relative;
+  ${props => `background-color: ${props.backgroundColor};`}
 `
 
-const BackgroundImage = styled.img`
+interface BackgroundProps {
+  hueRotateAngle: number
+  brightness: number
+}
+
+const BackgroundImage = styled.img<BackgroundProps>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+
+  ${props =>
+    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${
+      props.brightness
+    });`}
 `
 
 const Title = styled(Typography)`
@@ -86,6 +101,7 @@ const Block = styled.div`
   position: relative;
 `
 
+// @ts-ignore
 const BlockBackground = styled.div`
   margin-left: 1rem;
   margin-top: 2rem;
@@ -93,8 +109,16 @@ const BlockBackground = styled.div`
   padding: 1rem;
   background-color: rgba(255, 255, 255, 0.8);
 `
+interface ModuleProps {
+  module?: ObjectifiedModule
+  hueRotateAngle: number
+  brightness: number
+  backgroundColor: string
+}
 
-function Module({ module }: { module?: ObjectifiedModule }) {
+function Module(props: ModuleProps) {
+  const { module, hueRotateAngle, brightness, backgroundColor } = props
+
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
 
@@ -116,18 +140,19 @@ function Module({ module }: { module?: ObjectifiedModule }) {
       )
     : []
 
-  const imageUrl = module
+  const imageUrl = "/static/images/backgroundPattern.svg"
+  /*   module
     ? module.image
       ? `../../static/images/${module.image}`
       : `../../static/images/${module.slug}.jpg`
-    : ""
+    : "" */
 
   return (
     <section
       id={module ? module.slug : "module-skeleton"}
       style={{ marginBottom: "3em" }}
     >
-      <Root>
+      <Root backgroundColor={backgroundColor}>
         <Block>
           <Title component="h2" variant="h2" align="center">
             {module ? module.name : <Skeleton variant="text" />}
@@ -137,7 +162,12 @@ function Module({ module }: { module?: ObjectifiedModule }) {
           <source srcSet={imageUrl} type={mime(imageUrl)} />
           <source srcSet={`${imageUrl}?webp`} type="image/webp" />
 
-          <BackgroundImage src={imageUrl} aria-hidden />
+          <BackgroundImage
+            src={imageUrl}
+            aria-hidden
+            hueRotateAngle={hueRotateAngle}
+            brightness={brightness}
+          />
         </picture>
         {/*       <ModuleBanner module={module} /> */}
         <Container>
@@ -151,44 +181,42 @@ function Module({ module }: { module?: ObjectifiedModule }) {
             )}
           </Block>
           <Block style={{ width: "100%", flexDirection: "column" }}>
-            <BlockBackground style={{ width: "100%" }}>
-              <SubHeader align="center" variant="h3">
-                {t("modulesSubtitleStart")}
-              </SubHeader>
+            <SubHeader align="center" variant="h3">
+              {t("modulesSubtitleStart")}
+            </SubHeader>
 
-              <Grid container spacing={3}>
-                {module ? (
-                  startCourses.map(course => (
-                    <CourseCard
-                      key={`module-course-${course.id}`}
-                      course={course}
-                    />
-                  ))
-                ) : (
-                  <>
-                    <CourseCard key="module-course-skeleton1" />
-                    <CourseCard key="module-course-skeleton2" />
-                  </>
-                )}
-              </Grid>
-              <div style={{ marginTop: "2rem" }} />
-              {otherCourses.length > 0 ? (
+            <Grid container spacing={3}>
+              {module ? (
+                startCourses.map(course => (
+                  <CourseCard
+                    key={`module-course-${course.id}`}
+                    course={course}
+                  />
+                ))
+              ) : (
                 <>
-                  <SubHeader align="center" variant="h3">
-                    {t("modulesSubtitleContinue")}
-                  </SubHeader>
-
-                  <Grid container spacing={3}>
-                    {otherCourses.map(c => (
-                      <ModuleSmallCourseCard
-                        key={`module-course-${c.id}`}
-                        course={c}
-                      />
-                    ))}
-                  </Grid>
+                  <CourseCard key="module-course-skeleton1" />
+                  <CourseCard key="module-course-skeleton2" />
                 </>
-              ) : null}
-            </BlockBackground>
+              )}
+            </Grid>
+            <div style={{ marginTop: "2rem" }} />
+            {otherCourses.length > 0 ? (
+              <>
+                <SubHeader align="center" variant="h3">
+                  {t("modulesSubtitleContinue")}
+                </SubHeader>
+
+                <Grid container spacing={3}>
+                  {otherCourses.map(c => (
+                    <ModuleSmallCourseCard
+                      key={`module-course-${c.id}`}
+                      course={c}
+                    />
+                  ))}
+                </Grid>
+              </>
+            ) : null}
           </Block>
           {/* FIXME: study module home link - enable when that's done */
           /*
