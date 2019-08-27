@@ -1,4 +1,8 @@
-import { Prisma, CourseOrderByInput } from "../../generated/prisma-client"
+import {
+  Prisma,
+  CourseOrderByInput,
+  Course,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, booleanArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -35,7 +39,7 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
         return { ...course, name, description, link }
       }
 
-      return course
+      return { ...course, description: "", link: "" }
     },
   })
 }
@@ -49,14 +53,15 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
     resolve: async (_, args, ctx) => {
       const { orderBy, language } = args
+      const { prisma } = ctx
       // FIXME: this maps as CourseOrderByInput, but still doesn't quite get it
       // @ts-ignore
-      const courses = await ctx.prisma.courses({ orderBy })
+      const courses = await prisma.courses({ orderBy })
 
       const filtered = language
         ? (await Promise.all(
-            courses.map(async course => {
-              const course_translations = await ctx.prisma.courseTranslations({
+            courses.map(async (course: Course) => {
+              const course_translations = await prisma.courseTranslations({
                 where: { course, language },
               })
 
@@ -69,7 +74,11 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
               return { ...course, name, description, link }
             }),
           )).filter(v => !!v)
-        : courses
+        : courses.map((course: Course) => ({
+            ...course,
+            description: "",
+            link: "",
+          }))
 
       return filtered
     },
