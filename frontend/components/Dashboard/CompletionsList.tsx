@@ -14,11 +14,11 @@ export const AllCompletionsQuery = gql`
   query AllCompletions(
     $course: String
     $cursor: ID
-    $completion_language: String
+    $completionLanguage: String
   ) {
     completionsPaginated(
       course: $course
-      completion_language: $completion_language
+      completion_language: $completionLanguage
       first: 15
       after: $cursor
     ) {
@@ -57,11 +57,11 @@ export const PreviousPageCompletionsQuery = gql`
   query AllCompletions(
     $course: String
     $cursor: ID
-    $completion_language: String
+    $completionLanguage: String
   ) {
     completionsPaginated(
       course: $course
-      completion_language: $completion_language
+      completion_language: $completionLanguage
       last: 15
       before: $cursor
     ) {
@@ -132,8 +132,18 @@ const CompletionsList = () => {
     return <div>no course!</div>
   }
 
+  interface Variables {
+    cursor: string | null
+    course: string | string[]
+    completionLanguage?: string
+  }
+  let variables: Variables = { cursor, course }
+  if (completionLanguage) {
+    variables = { cursor, course, completionLanguage }
+  }
+
   const { data, loading, error } = useQuery<AllCompletionsData>(query, {
-    variables: { cursor, completion_language: completionLanguage, course },
+    variables,
     fetchPolicy: "network-only",
   })
 
@@ -180,58 +190,4 @@ const CompletionsList = () => {
   )
 }
 
-/*
-    <CompletionsQuery
-      query={query}
-      variables={{
-        cursor,
-        completion_language: completionLanguage,
-        course,
-      }}
-      fetchPolicy="network-only"
-    >
-      {({ loading, error, data }) => {
-        let completions: AllCompletions_completionsPaginated_edges_node[] = []
-        let startCursor: string | null = null
-        let endCursor: string | null = null
-
-        if (loading) {
-          return <CircularProgress color="secondary" />
-        }
-        if (error) {
-          ;<div>
-            Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-          </div>
-        }
-        if (data) {
-          completions = data.completionsPaginated.edges.map(edge => edge.node)
-          startCursor = data.completionsPaginated.pageInfo.startCursor
-          endCursor = data.completionsPaginated.pageInfo.endCursor
-        }
-
-        return (
-          <CompletionsListWithData
-            completions={completions}
-            onLoadMore={() =>
-              setQueryDetails({
-                start: endCursor,
-                end: startCursor,
-                back: false,
-                page: queryDetails.page + 1,
-              })
-            }
-            onGoBack={() =>
-              setQueryDetails({
-                start: endCursor,
-                end: startCursor,
-                back: true,
-                page: queryDetails.page - 1,
-              })
-            }
-            pageNumber={queryDetails.page}
-          />
-        )
-      }}
-    </CompletionsQuery>
-*/
 export default CompletionsList
