@@ -16,3 +16,5 @@ export {
 export {
   default as StudyModuleTranslationWithIdInput,
 } from "./StudyModuleTranslationWithIdInput"
+export { default as Course } from "./Course"
+export { default as StudyModule } from "./StudyModule"

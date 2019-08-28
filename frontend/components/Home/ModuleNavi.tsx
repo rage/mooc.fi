@@ -4,9 +4,9 @@ import Grid from "@material-ui/core/Grid"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
-import { ObjectifiedModule } from "/static/types/moduleTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { AllModules_study_modules } from "/static/types/generated/AllModules"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +27,7 @@ function ModuleNavi({
   modules,
   loading,
 }: {
-  modules: ObjectifiedModule[]
+  modules: AllModules_study_modules[]
   loading: boolean
 }) {
   const lng = useContext(LanguageContext)

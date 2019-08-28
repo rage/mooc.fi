@@ -45,18 +45,6 @@ function create(initialState: any, accessToken?: string) {
     link: process.browser
       ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
       : authLink.concat(uploadLink),
-    /*       ApolloLink.from([
-      onError(({ graphQLErrors, networkError }) => {
-        if (graphQLErrors)
-          graphQLErrors.map(({ message, locations, path }) =>
-            console.log(
-              `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-            ),
-          )
-        if (networkError) console.log(`[Network error]: ${networkError}`)
-      }),
-      authLink.concat(uploadLink),
-    ]), */
     cache: new InMemoryCache().restore(initialState || {}),
     ssrMode: !process.browser, // isBrowser,
     ssrForceFetchDelay: 100,

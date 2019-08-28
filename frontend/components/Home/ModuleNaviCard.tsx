@@ -3,10 +3,10 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { mime } from "/util/imageUtils"
+import { AllModules_study_modules } from "/static/types/generated/AllModules"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -104,7 +104,7 @@ const SkeletonBodyText = styled(Skeleton)`
   ${BodyStyle}
 `
 
-const ModuleNaviCard = ({ module }: { module?: ObjectifiedModule }) => {
+const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => {
   const imageUrl = module
     ? module.image
       ? `../../static/images/${module.image}`

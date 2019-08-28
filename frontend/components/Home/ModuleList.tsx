@@ -1,12 +1,22 @@
 import React from "react"
 import Module from "./Module"
-import { ObjectifiedModule } from "/static/types/moduleTypes"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 const moduleColors: Array<{
   backgroundColor: string
   hueRotateAngle: number
   brightness: number
 }> = [
+  {
+    backgroundColor: "#265A6C",
+    hueRotateAngle: 0,
+    brightness: 2,
+  },
+  {
+    backgroundColor: "#7748A4",
+    hueRotateAngle: 60,
+    brightness: 5,
+  },
   {
     backgroundColor: "#00a68d",
     hueRotateAngle: 0,
@@ -23,7 +33,7 @@ const ModuleList = ({
   modules,
   loading,
 }: {
-  modules: ObjectifiedModule[]
+  modules: AllModules_study_modules_with_courses[]
   loading: boolean
 }) =>
   loading ? (
