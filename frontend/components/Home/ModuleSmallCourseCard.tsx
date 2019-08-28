@@ -98,7 +98,7 @@ const Header = styled.div<HeaderProps>`
   top: 0;
   left: 0;
   color: #ffffff;
-  background-color: ${({ startPoint }) => (startPoint ? "#31a3e8" : "#e831a3")};
+  background-color: ${({ startPoint }) => (startPoint ? "#31a3e8" : "#158278")};
   width: 100%;
   display: flex;
 `
