@@ -9,13 +9,24 @@ import AdminError from "/components/Dashboard/AdminError"
 import LanguageContext from "/contexes/LanguageContext"
 import { useContext } from "react"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
+import ImageBanner from "/components/Home/ImageBanner"
+const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 const StyledCard = styled(Card)`
-  width: 100%;
-  height: 100px;
   margin: 1rem;
+  padding: 1rem;
+`
+const CardListContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 `
 
+const LinkTitle = styled(Typography)`
+  @media (min-width: 350px) {
+    font-size: 24px;
+  }
+`
 const Admin = (admin: boolean) => {
   if (!admin) {
     return <AdminError />
@@ -24,28 +35,31 @@ const Admin = (admin: boolean) => {
   return (
     <>
       <DashboardBreadCrumbs />
+      <ImageBanner title="Admin dashboard" image={highlightsBanner} />
       <Container>
-        <Link href={`/${language}/courses`}>
-          <StyledCard>
-            <Typography variant="h2" component="h2">
-              Courses
-            </Typography>
-          </StyledCard>
-        </Link>
-        <Link href={`/${language}/study-modules`}>
-          <StyledCard>
-            <Typography variant="h2" component="h2">
-              Study Modules
-            </Typography>
-          </StyledCard>
-        </Link>
-        <Link href={`/${language}/users/search`}>
-          <StyledCard>
-            <Typography variant="h2" component="h2">
-              User search
-            </Typography>
-          </StyledCard>
-        </Link>
+        <CardListContainer>
+          <Link href={`/${language}/courses`}>
+            <StyledCard>
+              <LinkTitle variant="h3" component="h2">
+                Courses
+              </LinkTitle>
+            </StyledCard>
+          </Link>
+          <Link href={`/${language}/study-modules`}>
+            <StyledCard>
+              <LinkTitle variant="h3" component="h2">
+                Study Modules
+              </LinkTitle>
+            </StyledCard>
+          </Link>
+          <Link href={`/${language}/users/search`}>
+            <StyledCard>
+              <LinkTitle variant="h3" component="h2">
+                User search
+              </LinkTitle>
+            </StyledCard>
+          </Link>
+        </CardListContainer>
       </Container>
     </>
   )
