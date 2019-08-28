@@ -113,6 +113,7 @@ interface Props {
 
 function PointsListItemCard(props: Props) {
   const { studentPoints, name, SID, email } = props
+  console.log("points at card", studentPoints)
   const [showDetails, setShowDetails] = React.useState(false)
   const formattedPoints: pointsDataByGroup[] = FormatStudentProgressServiceData(
     { pointsAll: studentPoints },
