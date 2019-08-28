@@ -8,7 +8,8 @@ const BannerRoot = styled.section`
   flex-direction: column;
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  min-height: 450px;
+  min-height: 200px;
+  max-height: 350px;
 `
 const BackgroundImage = styled.img`
   position: absolute;
@@ -21,9 +22,6 @@ const BackgroundImage = styled.img`
 `
 const Title = styled(Typography)`
   font-family: "Open Sans Condensed", sans-serif !important;
-  margin-top: 2rem;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
   @media (min-width: 320px) {
     font-size: 46px;
   }
@@ -33,33 +31,23 @@ const Title = styled(Typography)`
   @media (min-width: 960px) {
     font-size: 72px;
   }
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 45%;
+  margin: auto;
 `
-const Subtitle = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
-  margin-left: 2rem;
-  width: 55%;
-  @media (min-width: 320px) {
-    font-size: 22px;
-  }
-  @media (min-width: 600px) {
-    font-size: 28px;
-  }
-  @media (min-width: 960px) {
-    font-size: 32px;
-  }
-`
+
 interface ImageBannerProps {
   image: any
   title: string
-  subtitle: string
 }
 
 function ImageBanner(props: ImageBannerProps) {
-  const { image, title, subtitle } = props
+  const { image, title } = props
   return (
     <BannerRoot>
-      <Title component="h2">{title}</Title>
-      <Subtitle component="p">{subtitle}</Subtitle>
+      <Title component="h2" align="center">
+        {title}
+      </Title>
       <BackgroundImage src={image} alt="" />
     </BannerRoot>
   )
