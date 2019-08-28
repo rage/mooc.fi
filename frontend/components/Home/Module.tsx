@@ -1,17 +1,14 @@
-import React, { useContext } from "react"
+import React, { useMemo } from "react"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
-// import ModuleBanner from "./ModuleBanner"
-import CourseCard from "./CourseCard"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import Container from "/components/Container"
-import { ObjectifiedModule } from "/static/types/moduleTypes"
-import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
-import { CourseStatus } from "/static/types/globalTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { mime } from "/util/imageUtils"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import { orderBy } from "lodash"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -26,21 +23,6 @@ const IntroText = styled(Typography)`
   @media (min-width: 1000px) {
     font-size: 32px;
     width: 60%;
-  }
-`
-
-const SubHeader = styled(Typography)`
-  margin-bottom: 2rem;
-  padding: 1rem;
-  margin-left: 0rem;
-  margin-top: 1rem;
-  font-size: 32px;
-  background-color: rgba(255, 255, 255, 0.8);
-  @media (min-width: 425px) {
-    font-size: 32px;
-  }
-  @media (min-width: 1000px) {
-    font-size: 48px;
   }
 `
 
@@ -110,7 +92,7 @@ const BlockBackground = styled.div`
   background-color: rgba(255, 255, 255, 0.8);
 `
 interface ModuleProps {
-  module?: ObjectifiedModule
+  module?: AllModules_study_modules_with_courses
   hueRotateAngle: number
   brightness: number
   backgroundColor: string
@@ -119,10 +101,18 @@ interface ModuleProps {
 function Module(props: ModuleProps) {
   const { module, hueRotateAngle, brightness, backgroundColor } = props
 
-  const lng = useContext(LanguageContext)
-  const t = getHomeTranslator(lng.language)
+  const orderedCourses = module
+    ? useMemo(
+        () =>
+          orderBy(module.courses || [], [
+            course => course.study_module_start_point !== true,
+            course => course.status === CourseStatus.Upcoming,
+          ]),
+        [module.courses],
+      )
+    : []
 
-  const startCourses = module
+  /*   const startCourses = module
     ? (module.courses || []).filter(
         c =>
           !c.hidden &&
@@ -138,14 +128,9 @@ function Module(props: ModuleProps) {
           c.status !== CourseStatus.Ended &&
           !c.study_module_start_point,
       )
-    : []
+    : [] */
 
   const imageUrl = "/static/images/backgroundPattern.svg"
-  /*   module
-    ? module.image
-      ? `../../static/images/${module.image}`
-      : `../../static/images/${module.slug}.jpg`
-    : "" */
 
   return (
     <section
@@ -171,7 +156,7 @@ function Module(props: ModuleProps) {
         </picture>
         {/*       <ModuleBanner module={module} /> */}
         <Container>
-          <Block style={{ width: "100%" }}>
+          <Block style={{ width: "100%", marginBottom: "1rem" }}>
             {module ? (
               <IntroText variant="subtitle1" style={{ width: "100%" }}>
                 {module.description}
@@ -181,42 +166,22 @@ function Module(props: ModuleProps) {
             )}
           </Block>
           <Block style={{ width: "100%", flexDirection: "column" }}>
-            <SubHeader align="center" variant="h3">
-              {t("modulesSubtitleStart")}
-            </SubHeader>
-
             <Grid container spacing={3}>
               {module ? (
-                startCourses.map(course => (
-                  <CourseCard
+                orderedCourses.map(course => (
+                  <ModuleSmallCourseCard
                     key={`module-course-${course.id}`}
                     course={course}
+                    showHeader={true}
                   />
                 ))
               ) : (
                 <>
-                  <CourseCard key="module-course-skeleton1" />
-                  <CourseCard key="module-course-skeleton2" />
+                  <ModuleSmallCourseCard key="module-course-skeleton1" />
+                  <ModuleSmallCourseCard key="module-course-skeleton2" />
                 </>
               )}
             </Grid>
-            <div style={{ marginTop: "2rem" }} />
-            {otherCourses.length > 0 ? (
-              <>
-                <SubHeader align="center" variant="h3">
-                  {t("modulesSubtitleContinue")}
-                </SubHeader>
-
-                <Grid container spacing={3}>
-                  {otherCourses.map(c => (
-                    <ModuleSmallCourseCard
-                      key={`module-course-${c.id}`}
-                      course={c}
-                    />
-                  ))}
-                </Grid>
-              </>
-            ) : null}
           </Block>
           {/* FIXME: study module home link - enable when that's done */
           /*

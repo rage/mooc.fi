@@ -1,9 +1,9 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { mime } from "/util/imageUtils"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 const ModuleBannerContainer = styled.section`
   display: flex;
@@ -59,7 +59,11 @@ const SkeletonBackground = styled(Skeleton)`
   z-index: -2;
 `
 
-function ModuleBanner({ module }: { module?: ObjectifiedModule }) {
+function ModuleBanner({
+  module,
+}: {
+  module?: AllModules_study_modules_with_courses
+}) {
   const imageUrl = module
     ? module.image
       ? `../../static/images/${module.image}`

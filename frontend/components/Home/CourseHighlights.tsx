@@ -4,7 +4,7 @@ import CourseCard from "./CourseCard"
 import Container from "/components/Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedCourse } from "/static/types/moduleTypes"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 
 interface RootProps {
   backgroundColor: string
@@ -63,7 +63,7 @@ const Subtitle = styled(Typography)`
 `
 
 interface CourseHighlightsProps {
-  courses?: ObjectifiedCourse[]
+  courses?: AllCourses_courses[]
   title: string
   headerImage: any
   subtitle?: string

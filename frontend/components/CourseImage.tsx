@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import { addDomain } from "/util/imageUtils"
 import { AllCourses_courses_photo } from "/static/types/generated/AllCourses"
-import { AllModules_study_modules_courses_photo } from "/static/types/generated/AllModules"
 
 const ImageComponent = styled.img`
   width: 100%;
@@ -11,10 +10,7 @@ const ImageComponent = styled.img`
 `
 
 interface CourseImageProps {
-  photo?:
-    | AllCourses_courses_photo
-    | AllModules_study_modules_courses_photo
-    | null // Image | null
+  photo?: AllCourses_courses_photo | null
   [k: string]: any
 }
 
