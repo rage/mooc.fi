@@ -14,6 +14,7 @@ const NaviItemBase = styled(ButtonBase)`
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  align-items: flex-start;
 `
 const BackgroundImage = styled.img`
   position: absolute;
@@ -70,7 +71,7 @@ function NaviCard(props: NaviCardProps) {
             variant="body1"
             align="left"
             paragraph
-            style={{ maxWidth: "70%" }}
+            style={{ minWidth: "70%" }}
           >
             {item.text}
           </Typography>

@@ -144,9 +144,8 @@ function Module(props: ModuleProps) {
           </Title>
         </Block>
         <picture>
-          <source srcSet={imageUrl} type={mime(imageUrl)} />
           <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-
+          <source srcSet={imageUrl} type={mime(imageUrl)} />
           <BackgroundImage
             src={imageUrl}
             aria-hidden

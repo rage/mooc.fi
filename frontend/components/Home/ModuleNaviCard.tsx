@@ -5,8 +5,9 @@ import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"
-import { mime } from "/util/imageUtils"
+// import { mime } from "/util/imageUtils"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
+import ModuleImage from "/components/Home/ModuleImage"
 
 const Base = styled(ButtonBase)`
   position: relative;
@@ -19,15 +20,7 @@ const Base = styled(ButtonBase)`
     height: 300px;
   }
 `
-const ImageBackground = styled.span`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-size: cover;
-  background-position: center 40%;
-`
+
 const ImageCover = styled.span`
   position: absolute;
   left: 0;
@@ -96,6 +89,7 @@ const BodyStyle = `
     font-size: 20px;
   }
 `
+
 const NaviCardBodyText = styled(Typography)`
   ${BodyStyle}
 `
@@ -104,47 +98,33 @@ const SkeletonBodyText = styled(Skeleton)`
   ${BodyStyle}
 `
 
-const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => {
-  const imageUrl = module
-    ? module.image
-      ? `../../static/images/${module.image}`
-      : `../../static/images/${module.slug}.jpg`
-    : ""
-
-  return (
-    <Grid item xs={12} md={6} lg={6}>
-      <LangLink href={`#${module ? module.slug : ""}`}>
-        <Base focusRipple>
-          {module ? (
-            <>
-              <picture>
-                <source srcSet={imageUrl} type={mime(imageUrl)} />
-                <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-                <ImageBackground
-                  style={{ backgroundImage: `url(${imageUrl})` }}
-                />
-              </picture>
-              <ImageCover />
-              <ContentArea>
-                <NaviCardTitle align="left">{module.name}</NaviCardTitle>
-                <NaviCardBodyText paragraph>
-                  {module.description}
-                </NaviCardBodyText>
-              </ContentArea>
-            </>
-          ) : (
-            <>
-              <ImageCover />
-              <ContentArea>
-                <SkeletonTitle width="100%" />
-                <SkeletonBodyText variant="text" />
-              </ContentArea>
-            </>
-          )}
-        </Base>
-      </LangLink>
-    </Grid>
-  )
-}
+const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
+  <Grid item xs={12} md={6} lg={6}>
+    <LangLink href={`#${module ? module.slug : ""}`}>
+      <Base focusRipple>
+        {module ? (
+          <>
+            <ModuleImage module={module} />
+            <ImageCover />
+            <ContentArea>
+              <NaviCardTitle align="left">{module.name}</NaviCardTitle>
+              <NaviCardBodyText paragraph>
+                {module.description}
+              </NaviCardBodyText>
+            </ContentArea>
+          </>
+        ) : (
+          <>
+            <ImageCover />
+            <ContentArea>
+              <SkeletonTitle width="100%" />
+              <SkeletonBodyText variant="text" />
+            </ContentArea>
+          </>
+        )}
+      </Base>
+    </LangLink>
+  </Grid>
+)
 
 export default ModuleNaviCard

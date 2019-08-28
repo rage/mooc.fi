@@ -44,7 +44,7 @@ const ModuleList = ({
         <Module
           key={`module-list-module-${module.id}`}
           module={module}
-          {...moduleColors[idx]}
+          {...moduleColors[idx % moduleColors.length]}
         />
       ))}
     </>
