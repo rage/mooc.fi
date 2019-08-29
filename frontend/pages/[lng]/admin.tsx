@@ -18,10 +18,9 @@ const StyledCard = styled(Card)<ColorProps>`
   color: white;
 `
 const CardListContainer = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  margin: auto;
 `
 
 interface ColorProps {
@@ -57,7 +56,7 @@ const Admin = (admin: boolean) => {
   return (
     <>
       <DashboardBreadCrumbs />
-      <ImageBanner title="Admin dashboard" image={highlightsBanner} />
+      <ImageBanner title="Admin panel" image={highlightsBanner} />
       <Container>
         <Typography variant="body1" component="p" paragraph>
           From <ColorWord color="#00A68D">Courses</ColorWord> you find list of

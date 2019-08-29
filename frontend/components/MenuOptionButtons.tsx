@@ -76,7 +76,11 @@ const MenuOptionButtons = () => {
                 >
                   {t("logout")}
                 </StyledButton>
-                <LangLink href="/[lng]/profile">
+                <LangLink
+                  href="/[lng]/profile"
+                  as={`/${lng}/profile`}
+                  prefetch={false}
+                >
                   <StyledButton color="inherit" variant="text">
                     {isAdmin ? (
                       <>
@@ -89,7 +93,11 @@ const MenuOptionButtons = () => {
                   </StyledButton>
                 </LangLink>
                 {isAdmin ? (
-                  <LangLink href="/[lng]/admin">
+                  <LangLink
+                    href="/[lng]/admin"
+                    as={`/${lng}/admin`}
+                    prefetch={false}
+                  >
                     <StyledButton color="inherit" variant="text">
                       Admin panel
                     </StyledButton>
@@ -100,12 +108,20 @@ const MenuOptionButtons = () => {
               </div>
             ) : (
               <>
-                <LangLink href="/[lng]/sign-in">
+                <LangLink
+                  href="/[lng]/sign-in"
+                  as={`/${lng}/sign-in`}
+                  prefetch={false}
+                >
                   <StyledButton color="inherit" variant="text">
                     {t("loginShort")}
                   </StyledButton>
                 </LangLink>
-                <LangLink href="/[lng]/sign-up">
+                <LangLink
+                  href="/[lng]/sign-up"
+                  as={`/${lng}/sign-up`}
+                  prefetch={false}
+                >
                   <StyledButton color="inherit" variant="text">
                     {t("signUp")}
                   </StyledButton>
