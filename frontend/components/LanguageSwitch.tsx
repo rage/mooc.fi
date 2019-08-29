@@ -23,16 +23,18 @@ const SwitchLink = styled.a`
 const LanguageSwitch = () => {
   return (
     <LanguageContext.Consumer>
-      {({ language, url }) => (
-        <Link href={url}>
-          <SwitchLink href={url}>
-            <Language style={{ marginRight: "0.4rem" }} />
-            <p style={{ marginTop: "0.2rem" }}>
-              {language === "en" ? "Suomi" : "English"}
-            </p>
-          </SwitchLink>
-        </Link>
-      )}
+      {({ language, url, hrefUrl }) => {
+        return (
+          <Link as={url} href={hrefUrl} prefetch={false}>
+            <SwitchLink href={url}>
+              <Language style={{ marginRight: "0.4rem" }} />
+              <p style={{ marginTop: "0.2rem" }}>
+                {language === "en" ? "Suomi" : "English"}
+              </p>
+            </SwitchLink>
+          </Link>
+        )
+      }}
     </LanguageContext.Consumer>
   )
 }

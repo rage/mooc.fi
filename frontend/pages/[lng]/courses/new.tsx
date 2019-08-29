@@ -10,6 +10,7 @@ import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import styled from "styled-components"
 import CourseEdit from "/components/Dashboard/Editor/Course"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -51,6 +52,7 @@ const NewCourse = (props: NewCourseProps) => {
 
   return (
     <section>
+      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Create a new course
