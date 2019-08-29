@@ -15,6 +15,7 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
       id: idArg(),
       language: stringArg(),
     },
+    nullable: true,
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
 
