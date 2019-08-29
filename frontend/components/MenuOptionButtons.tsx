@@ -38,8 +38,8 @@ const StyledButton = styled(Button)`
 `
 const MenuOptionButtons = () => {
   const isAdmin = React.useContext(UserDetailContext)
-  const lng = useContext(LanguageContext)
-  const t = getCommonTranslator(lng.language)
+  const { language } = useContext(LanguageContext)
+  const t = getCommonTranslator(language)
   const client = useApolloClient()
   const { loading, error, data } = useQuery<UserOverView>(UserDetailQuery)
 
@@ -76,7 +76,7 @@ const MenuOptionButtons = () => {
                 >
                   {t("logout")}
                 </StyledButton>
-                <LangLink href="/[lng]/profile">
+                <LangLink href="/[lng]/profile" as={`/${language}/profile`}>
                   <StyledButton color="inherit" variant="text">
                     {isAdmin ? (
                       <>
@@ -89,7 +89,7 @@ const MenuOptionButtons = () => {
                   </StyledButton>
                 </LangLink>
                 {isAdmin ? (
-                  <LangLink href="/[lng]/admin">
+                  <LangLink href="/[lng]/admin" as={`/${language}/admin`}>
                     <StyledButton color="inherit" variant="text">
                       Admin panel
                     </StyledButton>
@@ -100,12 +100,16 @@ const MenuOptionButtons = () => {
               </div>
             ) : (
               <>
-                <LangLink href="/[lng]/sign-in">
+                <LangLink href="/[lng]/sign-in" as={`/${language}/sign-in`}>
                   <StyledButton color="inherit" variant="text">
                     {t("loginShort")}
                   </StyledButton>
                 </LangLink>
-                <LangLink href="/[lng]/sign-up">
+                <LangLink
+                  href="/[lng]/sign-up"
+                  as={`/${language}/sign-up`}
+                  prefetch={false}
+                >
                   <StyledButton color="inherit" variant="text">
                     {t("signUp")}
                   </StyledButton>
