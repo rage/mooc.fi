@@ -22,7 +22,7 @@ export const StudentProgresses = gql`
         node {
           id
           user {
-            ...UserPoints
+            ...UserPointsFragment
           }
         }
       }
