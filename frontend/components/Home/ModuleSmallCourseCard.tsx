@@ -131,8 +131,8 @@ function ModuleSmallCourseCard({
               <Header startPoint={course!.study_module_start_point}>
                 <Typography variant="body1">
                   {course!.study_module_start_point
-                    ? t("modulesSubtitleStart")
-                    : t("modulesSubtitleContinue")}
+                    ? t("moduleCourseBeginner")
+                    : t("moduleCourseIntermediate")}
                 </Typography>
               </Header>
             ) : null}
