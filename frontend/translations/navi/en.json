@@ -17,8 +17,8 @@
             "link": "/teachers"
           },
           {
-            "title": "Study modules",
-            "text": "",
+            "title": "Learn in study modules",
+            "text": "Pick your own courses from a range of study modules.",
             "linkText": "Study modules",
             "img": "taydennysKoulutus.jpg",
             "link": "#modules"
