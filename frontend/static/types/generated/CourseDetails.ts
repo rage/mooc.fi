@@ -60,7 +60,7 @@ export interface CourseDetails_course {
 }
 
 export interface CourseDetails {
-  course: CourseDetails_course
+  course: CourseDetails_course | null
 }
 
 export interface CourseDetailsVariables {

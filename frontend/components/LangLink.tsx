@@ -4,10 +4,10 @@ import LanguageContext from "/contexes/LanguageContext"
 import { parse, format } from "url"
 
 interface LangLinkProps extends LinkProps {
-  children: React.ReactNode
+  children: JSX.Element | JSX.Element[]
 }
 
-const LangLink = (props: LangLinkProps) => {
+const LangLink = (props: LangLinkProps): any => {
   const { as: _as, href: _href, children } = props
   const lng = useContext(LanguageContext)
   const isFi = lng.language === "fi"
@@ -17,6 +17,25 @@ const LangLink = (props: LangLinkProps) => {
   const parsedAs = (_as || format(parsedHref, { unicode: true })) as string
 
   const isOutsideLink = parsedAs.startsWith("http")
+
+  if (isOutsideLink) {
+    if (children) {
+      const _children = React.Children.map(children, (child, idx) => {
+        if (idx === 0) {
+          // @ts-ignore
+          if (child.type && child.type.target === "a") {
+            return React.cloneElement(child, { href: parsedAs })
+          }
+          console.warn(
+            "You're trying to link outside the site with a LangLink but you're not providing an <a> tag - just use a regular link or pass a link as the first child!",
+          )
+        }
+        return child
+      })
+
+      return _children
+    }
+  }
 
   let as = isOutsideLink
     ? parsedAs
@@ -30,9 +49,9 @@ const LangLink = (props: LangLinkProps) => {
 
   // FIXME: (?) as not needed
   if (path === "/" && isFi) {
-    as = "/"
+    as = href = "/"
   } else if (!path && hash) {
-    as = hash
+    as = href = hash
   } else if (!isOutsideLink) {
     as = `/${lng.language}${as}`.replace(/\/$/, "")
     href = `/[lng]${href.replace("/[lng]", "")}`.replace(/\/+/g, "/")

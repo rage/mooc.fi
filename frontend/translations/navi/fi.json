@@ -6,7 +6,7 @@
               "Verkko-oppimista parhaimmillaan. Älä huolehdi kurssimaksuista tai koulumatkoista, vaan opiskele siellä missä sinulle sopii. MOOCit eli kaikille avoimet verkkokurssit (Massive Open Online Course) ovat nimensä mukaisesti avoimia, ilmaisia ja  verkkopohjaisia kursseja.",
             "linkText": "Kurssit ",
             "img": "AllCourses.jpg",
-            "link": "#courses-and-modules"
+            "link": "#courses"
           },
           {
             "title": "Ensimmäisen vuoden opinnot kaikille",
@@ -19,12 +19,17 @@
           {
             "title": "Opeta kursseja omassa luokassasi.",
             "text":
-              "Opettaja! Haluatko kurssime luokkaasi omilla pistelistoillasi ja omalla aikataulullasi. Kaikkia kurssejamme saa käyttää osana omaa opetustaan. Katso lisää Opettajalle-sivulta!",
+              "Opettaja! Haluatko kurssimme luokkaasi omilla pistelistoillasi ja omalla aikataulullasi. Kaikkia kurssejamme saa käyttää osana omaa opetustaan. Katso lisää Opettajalle-sivulta!",
             "linkText": "Opettajien sivut",
             "img": "Opettajien.jpg",
             "link": "/teachers"
-
+          },
+          {
+            "title": "Opiskele kokonaisuuksia",
+            "text": "Kokoa oma kurssivalikoimasi laajemmista opintokokonaisuuksista.",
+            "linkText": "Opintokokonaisuudet",
+            "img": "taydennysKoulutus.jpg",
+            "link": "#modules"
           }
-
         ]
 }

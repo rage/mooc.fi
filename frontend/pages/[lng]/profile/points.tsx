@@ -16,7 +16,7 @@ import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 export const UserPointsQuery = gql`
   query UserPoints {
     currentUser {
-      ...UserPoints
+      ...UserPointsFragment
     }
   }
   ${PointsListItemCard.fragments.user}

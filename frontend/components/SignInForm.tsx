@@ -36,6 +36,8 @@ function SignIn() {
   const emailFieldRef = useRef<HTMLInputElement>(null)
   const passwordFieldRef = useRef<HTMLInputElement>(null)
 
+  let errorTimeout: number | null = null
+
   useEffect(() => {
     const inputFieldSetter = () => {
       if (
@@ -55,9 +57,14 @@ function SignIn() {
         setEmail(emailFieldRef.current.value)
       }
     }
-    setTimeout(inputFieldSetter, 10)
-    setTimeout(inputFieldSetter, 1000)
-    setTimeout(inputFieldSetter, 5000)
+
+    const timeouts = [
+      setTimeout(inputFieldSetter, 10),
+      setTimeout(inputFieldSetter, 1000),
+      setTimeout(inputFieldSetter, 5000),
+    ]
+
+    return () => timeouts.forEach(t => clearTimeout(t))
   }, [])
 
   const classes = useStyles()
@@ -108,10 +115,16 @@ function SignIn() {
               e.preventDefault()
               try {
                 await signIn({ email, password }).then(logInOrOut)
+                if (errorTimeout) {
+                  clearTimeout(errorTimeout)
+                }
               } catch (e) {
                 setError(true)
-                setTimeout(() => {
+                errorTimeout = setTimeout(() => {
                   setError(false)
+                  if (errorTimeout) {
+                    clearTimeout(errorTimeout)
+                  }
                 }, 5000)
               }
             }}

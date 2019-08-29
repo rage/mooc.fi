@@ -16,5 +16,7 @@
     "emailButton": "SUBSCRIBE",
     "emailThanks": "Thanks for joining the list!",
     "langSwitch": "Suomenkielinen versio",
-    "upcomingShort": "Upcoming"
+    "upcomingShort": "Upcoming",
+    "moduleCourseBeginner": "Beginner",
+    "moduleCourseIntermediate": "Intermediate"
 }

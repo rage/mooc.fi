@@ -14,6 +14,7 @@ const NaviItemBase = styled(ButtonBase)`
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  align-items: flex-start;
 `
 const BackgroundImage = styled.img`
   position: absolute;
@@ -45,17 +46,33 @@ type NaviItem = {
 
 interface NaviCardProps {
   item: NaviItem
+  odd: boolean
 }
 
+const gridLayout = (odd: boolean): { [key: string]: number } =>
+  odd
+    ? {
+        xs: 12,
+        sm: 6,
+        md: 4,
+        lg: 4,
+      }
+    : {
+        xs: 12,
+        sm: 6,
+        md: 6,
+        lg: 3,
+      }
+
 function NaviCard(props: NaviCardProps) {
-  const { item } = props
+  const { item, odd } = props
   const image = require(`../../static/images/${item.img}`)
 
   return (
-    <Grid item xs={12} sm={6} md={6} lg={4}>
+    <Grid item {...gridLayout(odd)}>
       <NaviItemBase focusRipple>
         <BackgroundImage src={image} alt="" />
-        <TextBackground>
+        <TextBackground style={{ width: "100%" }}>
           <Typography
             component="h3"
             variant="h3"
@@ -70,13 +87,13 @@ function NaviCard(props: NaviCardProps) {
             variant="body1"
             align="left"
             paragraph
-            style={{ maxWidth: "70%" }}
+            style={{ minWidth: "70%" }}
           >
             {item.text}
           </Typography>
           <Typography align="left">
             <LangLink href={item.link} prefetch={false}>
-              <StyledLink href={item.link} aria-label={item.linkText}>
+              <StyledLink aria-label={item.linkText}>
                 {item.linkText}
               </StyledLink>
             </LangLink>

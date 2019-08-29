@@ -1,66 +1,34 @@
 import React, { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
-import {
-  filterAndModifyCoursesByLanguage,
-  mapNextLanguageToLocaleCode,
-  filterAndModifyByLanguage,
-} from "/util/moduleFunctions"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
-import { ObjectifiedCourse, ObjectifiedModule } from "/static/types/moduleTypes"
 import ModuleNavi from "./ModuleNavi"
 import ModuleList from "./ModuleList"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 export const AllModulesQuery = gql`
-  query AllModules {
-    study_modules(orderBy: order_ASC) {
+  query AllModules($language: String) {
+    study_modules(orderBy: order_ASC, language: $language) {
       id
       slug
       name
+      description
       image
       order
-      courses(orderBy: study_module_order_ASC) {
-        id
-        slug
-        name
-        order
-        photo {
-          id
-          compressed
-          uncompressed
-        }
-        promote
-        status
-        start_point
-        study_module_start_point
-        hidden
-        course_translations {
-          id
-          language
-          name
-          description
-          link
-        }
-      }
-      study_module_translations {
-        id
-        language
-        name
-        description
-      }
     }
   }
 `
 
 export const AllCoursesQuery = gql`
-  query AllCourses {
-    courses(orderBy: order_ASC) {
+  query AllCourses($language: String) {
+    courses(orderBy: order_ASC, language: $language) {
       id
       slug
       name
@@ -73,13 +41,12 @@ export const AllCoursesQuery = gql`
       promote
       status
       start_point
+      study_module_start_point
       hidden
-      course_translations {
+      description
+      link
+      study_modules {
         id
-        language
-        name
-        description
-        link
       }
     }
   }
@@ -95,12 +62,12 @@ const CourseAndModuleList = () => {
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
-  } = useQuery<AllCoursesData>(AllCoursesQuery)
+  } = useQuery<AllCoursesData>(AllCoursesQuery, { variables: { language } })
   const {
     loading: modulesLoading,
     error: modulesError,
     data: modulesData,
-  } = useQuery<AllModulesData>(AllModulesQuery)
+  } = useQuery<AllModulesData>(AllModulesQuery, { variables: { language } })
 
   if (coursesError || modulesError) {
     ;<div>
@@ -113,20 +80,27 @@ const CourseAndModuleList = () => {
     return <div>Error: no data?</div>
   }
 
-  const courses: ObjectifiedCourse[] = useMemo(
-    () => filterAndModifyCoursesByLanguage(coursesData.courses, language),
-    [coursesData.courses, language],
-  )
+  const { courses } = coursesData
+  const { study_modules } = modulesData
 
-  const modules: ObjectifiedModule[] = useMemo(
-    () => filterAndModifyByLanguage(modulesData.study_modules, language),
-    [modulesData.study_modules, language],
+  const modulesWithCourses = useMemo(
+    (): AllModules_study_modules_with_courses[] =>
+      (study_modules || []).map(module => {
+        const moduleCourses = (courses || []).filter(course =>
+          (course!.study_modules || []).some(
+            courseModule => courseModule.id === module.id,
+          ),
+        )
+
+        return { ...module, courses: moduleCourses }
+      }),
+    [study_modules, courses],
   )
 
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
       ["Active", "Upcoming", "Ended"].map(status =>
-        courses.filter(c => !c.hidden && c.status === status),
+        (courses || []).filter(c => !c.hidden && c.status === status),
       ),
     [courses],
   )
@@ -136,54 +110,54 @@ const CourseAndModuleList = () => {
   )
 
   return (
-    <section id="courses-and-modules">
-      <CourseHighlights
-        courses={promotedCourses}
-        title={t("highlightTitle")}
-        headerImage={highlightsBanner}
-        subtitle={t("highlightSubtitle")}
-        backgroundColor="#009CA6"
-        hueRotateAngle={177}
-        brightness={5.5}
-        fontColor="black"
-        titleBackground="#ffffff"
-        // loading={coursesLoading}
-      />
-      <ModuleNavi modules={modules} loading={modulesLoading} />
-      <CourseHighlights
-        courses={activeCourses}
-        title={t("allCoursesTitle")}
-        headerImage={highlightsBanner}
-        backgroundColor="#ffffff"
-        hueRotateAngle={34}
-        brightness={1}
-        fontColor="white"
-        titleBackground="#008EBD"
-        // loading={coursesLoading}
-      />
-      <CourseHighlights
-        courses={upcomingCourses}
-        title={t("upcomingCoursesTitle")}
-        headerImage={highlightsBanner}
-        backgroundColor="#007DC8"
-        hueRotateAngle={0}
-        brightness={5.5}
-        fontColor="black"
-        titleBackground="#ffffff"
-        // loading={coursesLoading}
-      />
-      <ModuleList modules={modules} loading={modulesLoading} />
-      <CourseHighlights
-        courses={endedCourses}
-        title={t("endedCoursesTitle")}
-        headerImage={highlightsBanner}
-        backgroundColor="#ffffff"
-        hueRotateAngle={58}
-        brightness={1}
-        fontColor="white"
-        titleBackground="#3066C0"
-        // loading={coursesLoading}
-      />
+    <section>
+      <section id="courses">
+        <CourseHighlights
+          courses={promotedCourses}
+          title={t("highlightTitle")}
+          headerImage={highlightsBanner}
+          subtitle={t("highlightSubtitle")}
+          backgroundColor="#009CA6"
+          hueRotateAngle={177}
+          brightness={5.5}
+          fontColor="black"
+          titleBackground="#ffffff"
+        />
+        <CourseHighlights
+          courses={activeCourses}
+          title={t("allCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={34}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#008EBD"
+        />
+        <CourseHighlights
+          courses={upcomingCourses}
+          title={t("upcomingCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#007DC8"
+          hueRotateAngle={0}
+          brightness={5.5}
+          fontColor="black"
+          titleBackground="#ffffff"
+        />
+      </section>
+      <section id="modules">
+        <ModuleNavi modules={study_modules} loading={modulesLoading} />
+        <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
+        <CourseHighlights
+          courses={endedCourses}
+          title={t("endedCoursesTitle")}
+          headerImage={highlightsBanner}
+          backgroundColor="#ffffff"
+          hueRotateAngle={58}
+          brightness={1}
+          fontColor="white"
+          titleBackground="#3066C0"
+        />
+      </section>
     </section>
   )
 }

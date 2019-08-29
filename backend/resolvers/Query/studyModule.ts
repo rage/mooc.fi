@@ -1,4 +1,8 @@
-import { Prisma } from "../../generated/prisma-client"
+import {
+  Prisma,
+  StudyModuleOrderByInput,
+  StudyModule,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -9,15 +13,32 @@ const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       id: idArg(),
       slug: stringArg(),
+      language: stringArg(),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
-      const { id, slug } = args
+      const { id, slug, language } = args
       const prisma: Prisma = ctx.prisma
-      return prisma.studyModule({
+
+      const study_module = await prisma.studyModule({
         id,
         slug,
       })
+
+      if (language) {
+        const module_translations = await prisma.studyModuleTranslations({
+          where: { study_module, language },
+        })
+
+        if (!module_translations.length) {
+          return Promise.resolve(null)
+        }
+
+        const { name, description = "" } = module_translations[0]
+        return { ...study_module, name, description }
+      }
+
+      return { ...study_module, description: "" }
     },
   })
 }
@@ -27,10 +48,34 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "StudyModule",
     args: {
       orderBy: arg({ type: "StudyModuleOrderByInput" }),
+      language: stringArg(),
     },
-    resolve: async (_, args, ctx) => {
+    resolve: async (_, args, ctx, info) => {
+      const { orderBy, language } = args
+      const { prisma } = ctx
+
       // @ts-ignore
-      return await ctx.prisma.studyModules({ orderBy: args.orderBy })
+      const modules = await prisma.studyModules({ orderBy })
+
+      const filtered = language
+        ? (await Promise.all(
+            modules.map(async (module: StudyModule) => {
+              const module_translations = await prisma.studyModuleTranslations({
+                where: { study_module: module, language },
+              })
+
+              if (!module_translations.length) {
+                return Promise.resolve(null)
+              }
+
+              const { name, description = "" } = module_translations[0]
+
+              return { ...module, name, description }
+            }),
+          )).filter(v => !!v)
+        : modules.map((module: StudyModule) => ({ ...module, description: "" }))
+
+      return filtered
     },
   })
 }
