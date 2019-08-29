@@ -13,7 +13,7 @@ export interface CompletionCourseDetails_course {
 }
 
 export interface CompletionCourseDetails {
-  course: CompletionCourseDetails_course
+  course: CompletionCourseDetails_course | null
 }
 
 export interface CompletionCourseDetailsVariables {

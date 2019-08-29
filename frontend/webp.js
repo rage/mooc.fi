@@ -1,8 +1,8 @@
 const imagemin = require("imagemin")
 const webp = require("imagemin-webp")
-const outputFolder = "./static/images/courseimages"
-const PNG = "./static/images/courseimages/*.png"
-const JPEG = "./static/images/courseimages/*.jpg"
+const outputFolder = "./static/images"
+const PNG = "./static/images/*.png"
+const JPEG = "./static/images/*.jpg"
 
 imagemin([PNG], outputFolder, {
   plugins: [

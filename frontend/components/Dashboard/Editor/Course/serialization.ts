@@ -8,7 +8,6 @@ import {
   CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
 import { CourseStatus } from "/static/types/generated/globalTypes"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
 import {
   addCourse_addCourse_open_university_registration_links,
   addCourse_addCourse_study_modules,
@@ -19,6 +18,7 @@ import {
   updateCourse_updateCourse_study_modules,
   updateCourse_updateCourse_course_translations,
 } from "/static/types/generated/updateCourse"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -27,7 +27,7 @@ export const toCourseForm = ({
   modules,
 }: {
   course?: CourseDetails_course
-  modules?: StudyModules_study_modules[]
+  modules?: CourseEditorStudyModules_study_modules[]
 }): CourseFormValues => {
   const courseStudyModules = course
     ? (course.study_modules || []).map(module => module.id)

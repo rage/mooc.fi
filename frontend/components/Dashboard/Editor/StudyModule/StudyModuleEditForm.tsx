@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Field,
@@ -85,6 +85,10 @@ const EntryContainer = styled(Paper)`
   padding: 20px;
 `
 
+// prevent borked image on page load
+const pixel =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+
 const renderForm = ({
   errors,
   values,
@@ -99,6 +103,17 @@ const renderForm = ({
 
   const image = useDebounce(values.image, 500)
   const slug = useDebounce(values.new_slug, 500)
+
+  const [imageFilename, setImageFilename] = useState(pixel)
+
+  useEffect(() => {
+    if (image) {
+      setImageFilename(`/static/images/${image}`)
+    } else {
+      setImageFilename(`/static/images/${slug}.jpg`)
+    }
+  }, [image, slug])
+
   return (
     <Form>
       <Grid container direction="row" spacing={2}>
@@ -159,9 +174,7 @@ const renderForm = ({
         <OutlinedInputLabel shrink>Image preview</OutlinedInputLabel>
         <OutlinedFormGroup>
           <ModuleImage
-            src={
-              image ? `/static/images/${image}` : `/static/images/${slug}.jpg`
-            }
+            src={imageFilename}
             error={!!imageError}
             onError={() => setImageError("no image found")}
             onLoad={() => setImageError("")}

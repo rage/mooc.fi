@@ -15,7 +15,7 @@ import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
-import { StudyModules } from "/static/types/generated/StudyModules"
+import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -58,7 +58,7 @@ export const CourseQuery = gql`
 `
 
 export const StudyModuleQuery = gql`
-  query StudyModules {
+  query CourseEditorStudyModules {
     study_modules {
       id
       name
@@ -79,13 +79,12 @@ interface EditCourseProps {
   router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
+  slug: string
 }
 
 const EditCourse = (props: EditCourseProps) => {
-  const { admin, router } = props
+  const { admin, router, slug } = props
   const { language } = useContext(LanguageContext)
-
-  const slug = router.query.id
 
   let redirectTimeout: number | null = null
 
@@ -108,7 +107,7 @@ const EditCourse = (props: EditCourseProps) => {
     data: studyModulesData,
     loading: studyModulesLoading,
     error: studyModulesError,
-  } = useQuery<StudyModules>(StudyModuleQuery)
+  } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
   if (courseLoading || studyModulesLoading) {
     return <Spinner />
@@ -147,7 +146,7 @@ const EditCourse = (props: EditCourseProps) => {
             <Typography variant="body2">
               You will be redirected back to the course list in 5 seconds -
               press{" "}
-              <Link href={listLink}>
+              <Link as={listLink} href="[lng]/courses">
                 <a
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
@@ -173,6 +172,7 @@ EditCourse.getInitialProps = function(context: NextContext) {
 
   return {
     admin,
+    slug: context.query ? context.query.id : "",
   }
 }
 

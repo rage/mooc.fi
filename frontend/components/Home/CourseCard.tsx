@@ -5,11 +5,13 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
-import { ObjectifiedCourse } from "/static/types/moduleTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
+
 interface BackgroundProps {
   component: string
 }
+
 const Background = styled(ButtonBase)<BackgroundProps>`
   background-color: white;
   position: relative;
@@ -65,7 +67,7 @@ const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
 interface CourseCardProps {
-  course?: ObjectifiedCourse
+  course?: AllCourses_courses
 }
 
 const CourseCard = ({ course }: CourseCardProps) => (

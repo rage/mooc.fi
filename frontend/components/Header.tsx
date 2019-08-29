@@ -43,6 +43,10 @@ const HomeLink = styled.a`
   text-decoration: none;
   display: flex;
   flex-direction: row;
+
+  &:hover {
+    cursor: pointer;
+  }
 `
 const ResponsiveMoocLogoContainer = styled.div`
   @media (max-width: 750px) {
@@ -57,8 +61,8 @@ function Header() {
         <AppBar color="inherit">
           <Toolbar>
             <ResponsiveMoocLogoContainer>
-              <LangLink href="/">
-                <HomeLink href="/" aria-label="MOOC.fi homepage">
+              <LangLink as="/" href="/">
+                <HomeLink aria-label="MOOC.fi homepage">
                   <MoocLogo alt="MOOC logo" src="/static/images/moocfi.svg" />
                   <MoocLogoText>MOOC.fi</MoocLogoText>
                 </HomeLink>

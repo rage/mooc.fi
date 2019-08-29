@@ -4,7 +4,7 @@ import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import Link from "next/link"
 
-const SwitchLink = styled.a`
+const SwitchLink = styled.a<any>`
   font-size: 14px;
   line-height: 1.3;
   font-weight: bold;

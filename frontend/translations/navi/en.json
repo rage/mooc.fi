@@ -6,7 +6,7 @@
               "Online learning at its best. Don't worry about course fees or the commute. Study where it's convenient for you! As per their name, MOOCs (Massive Open Online Course) are all open, free of charge and fully available online.",
             "linkText": "Courses and Modules",
             "img": "AllCourses.jpg",
-            "link": "#courses-and-modules"
+            "link": "#courses"
           },
           {
             "title": "Teach courses in your own classroom.",
@@ -15,6 +15,13 @@
             "linkText": "For teachers",
             "img": "Opettajien.jpg",
             "link": "/teachers"
+          },
+          {
+            "title": "Learn in study modules",
+            "text": "Pick your own courses from a range of study modules.",
+            "linkText": "Study modules",
+            "img": "taydennysKoulutus.jpg",
+            "link": "#modules"
           }
         ]
 }

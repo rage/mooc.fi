@@ -16,5 +16,7 @@
     "emailButton": "LIITY",
     "emailThanks": "Kiitos listalle liittymisestä!",
     "langSwitch": "English version",
-    "upcomingShort": "Tulossa"
+    "upcomingShort": "Tulossa",
+    "moduleCourseBeginner": "Aloittelijalle",
+    "moduleCourseIntermediate": "Edistyneemmälle"
 }

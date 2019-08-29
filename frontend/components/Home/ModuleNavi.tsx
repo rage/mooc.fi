@@ -1,45 +1,39 @@
 import React, { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Grid from "@material-ui/core/Grid"
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
-import { ObjectifiedModule } from "/static/types/moduleTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { AllModules_study_modules } from "/static/types/generated/AllModules"
+import styled from "styled-components"
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      [theme.breakpoints.up("xs")]: {
-        fontSize: 46,
-      },
-      [theme.breakpoints.up("md")]: {
-        fontSize: 72,
-      },
-      marginTop: "2rem",
-      marginBottom: "1em",
-    },
-  }),
-)
+const Title = styled(Typography)`
+  margin: 2rem auto 1rem auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: table;
+  background-color: rgba(34, 141, 189);
+  color: #ffffff;
+`
 
-function ModuleNavi({
+const ModuleNavi = ({
   modules,
   loading,
 }: {
-  modules: ObjectifiedModule[]
+  modules: AllModules_study_modules[]
   loading: boolean
-}) {
+}) => {
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
 
-  const classes = useStyles()
-
   return (
     <section style={{ marginBottom: "5em" }}>
-      <Typography component="h2" className={classes.title} align="center">
+      <Title component="h2" variant="h2" align="center">
         {t("modulesTitle")}
-      </Typography>
+      </Title>
       <Container>
         <Grid container spacing={5}>
           {loading ? (

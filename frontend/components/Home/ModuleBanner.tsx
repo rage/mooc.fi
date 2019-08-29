@@ -1,9 +1,9 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
 import Skeleton from "@material-ui/lab/Skeleton"
-import { mime } from "/util/imageUtils"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import ModuleImage from "/components/Home/ModuleImage"
 
 const ModuleBannerContainer = styled.section`
   display: flex;
@@ -38,18 +38,6 @@ const Title = styled(Typography)`
   }
 `
 
-const ImageBackground = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-size: cover;
-  background-repeat: no-repeat;
-  z-index: -2;
-  background-position: center;
-`
-
 const SkeletonBackground = styled(Skeleton)`
   position: absolute;
   left: 0;
@@ -59,36 +47,28 @@ const SkeletonBackground = styled(Skeleton)`
   z-index: -2;
 `
 
-function ModuleBanner({ module }: { module?: ObjectifiedModule }) {
-  const imageUrl = module
-    ? module.image
-      ? `../../static/images/${module.image}`
-      : `../../static/images/${module.slug}.jpg`
-    : ""
-
-  return (
-    <ModuleBannerContainer>
-      {module ? (
-        <>
-          <Title component="h2" variant="h2" align="center">
-            {module.name}
-          </Title>
-          <picture>
-            <source srcSet={imageUrl} type={mime(imageUrl)} />
-            <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-            <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />
-          </picture>
-        </>
-      ) : (
-        <>
-          <Title component="h2" variant="h2" align="center">
-            <Skeleton variant="text" />
-          </Title>
-          <SkeletonBackground variant="rect" height="100%" />
-        </>
-      )}
-    </ModuleBannerContainer>
-  )
-}
+const ModuleBanner = ({
+  module,
+}: {
+  module?: AllModules_study_modules_with_courses
+}) => (
+  <ModuleBannerContainer>
+    {module ? (
+      <>
+        <Title component="h2" variant="h2" align="center">
+          {module.name}
+        </Title>
+        <ModuleImage module={module} />
+      </>
+    ) : (
+      <>
+        <Title component="h2" variant="h2" align="center">
+          <Skeleton variant="text" />
+        </Title>
+        <SkeletonBackground variant="rect" height="100%" />
+      </>
+    )}
+  </ModuleBannerContainer>
+)
 
 export default ModuleBanner

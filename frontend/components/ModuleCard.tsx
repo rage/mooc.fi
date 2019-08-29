@@ -108,8 +108,8 @@ function ModuleCard({
 }) {
   const imageUrl = module
     ? module.image
-      ? `/static/images/${module.image}`
-      : `/static/images/${module.slug}.jpg`
+      ? `../../static/images/${module.image}`
+      : `../../static/images/${module.slug}.jpg`
     : "" // TODO: placeholder
 
   //  require(`/static/images/courseimages/${course.slug}.png`)
@@ -120,8 +120,8 @@ function ModuleCard({
       <Base>
         {module ? (
           <picture>
-            <source srcSet={imageUrl} type={mime(imageUrl)} />
             <source srcSet={`${imageUrl}?webp`} type="image/webp" />
+            <source srcSet={imageUrl} type={mime(imageUrl)} />
             <ImageBackground style={{ backgroundImage: `url(${imageUrl})` }} />
           </picture>
         ) : (

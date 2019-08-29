@@ -3,9 +3,10 @@ import App, { Container } from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
 import Head from "next/head"
-import { MuiThemeProvider } from "@material-ui/core/styles"
-import { StylesProvider } from "@material-ui/styles"
-import CssBaseline from "@material-ui/core/CssBaseline"
+import {
+  StylesProvider,
+  ThemeProvider as MuiThemeProvider,
+} from "@material-ui/styles"
 import { ApolloProvider } from "@apollo/react-common"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
@@ -18,6 +19,7 @@ import OpenSansCondensed from "typeface-open-sans-condensed"
 import Roboto from "typeface-roboto"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
+import { CssBaseline } from "@material-ui/core"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -88,8 +90,8 @@ const originalGetInitialProps = MyApp.getInitialProps
 function createPath(originalUrl) {
   let url = ""
   if (originalUrl === "/") {
-    url = "/en"
-  } else if (originalUrl === "/en") {
+    url = "/en/"
+  } else if (originalUrl.match(/^\/en\/?$/)) {
     url = "/"
   } else {
     originalUrl.startsWith("/en")
