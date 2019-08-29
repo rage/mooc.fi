@@ -14,6 +14,7 @@ const User = prismaObjectType({
         course_id: idArg(),
       },
       resolve: async (parent, args, ctx) => {
+        console.log("I am using the User.ts resolver!!")
         const progresses = await ctx.prisma.userCourseProgresses({
           where: {
             user: { id: parent.id },

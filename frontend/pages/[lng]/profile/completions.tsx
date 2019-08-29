@@ -8,10 +8,9 @@ import {
   CurrentUserUserOverView as UserOverViewData,
   CurrentUserUserOverView_currentUser_completions,
 } from "/static/types/generated/CurrentUserUserOverView"
-/* import styled from "styled-components"
-import Typography from "@material-ui/core/Typography" */
 import Container from "/components/Container"
 import Completions from "/components/Completions"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 export const UserOverViewQuery = gql`
   query CurrentUserUserOverView {
@@ -50,11 +49,14 @@ function CompletionsPage() {
     completions = data.currentUser.completions
   }
   return (
-    <Container>
-      <div>
-        <Completions completions={completions} />
-      </div>
-    </Container>
+    <>
+      <DashboardBreadCrumbs />
+      <Container>
+        <div>
+          <Completions completions={completions} />
+        </div>
+      </Container>
+    </>
   )
 }
 

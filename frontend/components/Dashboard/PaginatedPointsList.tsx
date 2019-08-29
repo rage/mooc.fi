@@ -9,6 +9,7 @@ import {
 } from "/static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
 import Button from "@material-ui/core/Button"
+import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 
 export const StudentProgresses = gql`
   query UserCourseSettingses($course_id: ID, $cursor: ID) {
@@ -21,35 +22,13 @@ export const StudentProgresses = gql`
         node {
           id
           user {
-            id
-            first_name
-            last_name
-            email
-            student_number
-            user_course_progresses {
-              id
-              course {
-                id
-                name
-              }
-              progress
-              user_course_service_progresses {
-                course {
-                  id
-                  name
-                }
-                service {
-                  id
-                  name
-                }
-                progress
-              }
-            }
+            ...UserPoints
           }
         }
       }
     }
   }
+  ${PointsListItemCard.fragments.user}
 `
 
 interface Props {

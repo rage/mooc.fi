@@ -92,7 +92,7 @@ function NaviCard(props: NaviCardProps) {
             {item.text}
           </Typography>
           <Typography align="left">
-            <LangLink href={item.link}>
+            <LangLink href={item.link} prefetch={false}>
               <StyledLink aria-label={item.linkText}>
                 {item.linkText}
               </StyledLink>

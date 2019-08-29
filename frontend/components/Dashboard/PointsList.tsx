@@ -13,12 +13,23 @@ const PointsList = (props: Props) => {
   return (
     <section>
       <Grid container spacing={3}>
-        {pointsForUser.map(user => (
-          <PointsListItemCard
-            studentPointsPerGroup={user.node}
-            key={user.node.id}
-          />
-        ))}
+        {pointsForUser.map(p =>
+          p &&
+          p.node &&
+          p.node.user &&
+          p.node.user.user_course_progresses &&
+          p.node.user.user_course_progresses[0] ? (
+            <PointsListItemCard
+              studentPoints={p.node.user.user_course_progresses[0]}
+              name={p.node.user.first_name + " " + p.node.user.last_name}
+              email={p.node.user.email}
+              SID={p.node.user.student_number}
+              key={p.node.id}
+            />
+          ) : (
+            <></>
+          ),
+        )}
       </Grid>
     </section>
   )
