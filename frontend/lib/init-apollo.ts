@@ -38,9 +38,6 @@ function create(initialState: any, accessToken?: string) {
     if (networkError) console.log(`[Network error]: ${networkError}`)
   })
 
-  // @ts-ignore
-  const isBrowser = typeof window !== "undefined"
-
   return new ApolloClient({
     link: process.browser
       ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])

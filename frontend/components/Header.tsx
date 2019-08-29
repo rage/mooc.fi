@@ -43,6 +43,10 @@ const HomeLink = styled.a`
   text-decoration: none;
   display: flex;
   flex-direction: row;
+
+  &:hover {
+    cursor: pointer;
+  }
 `
 const ResponsiveMoocLogoContainer = styled.div`
   @media (max-width: 750px) {

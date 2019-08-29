@@ -120,7 +120,7 @@ function ModuleSmallCourseCard({
       <Background focusRipple>
         {course ? (
           <ReactGA.OutboundLink
-            eventLabel={`coursesite: ${course ? course.name : ""}`}
+            eventLabel={`modulecoursesite: ${course ? course.name : ""}`}
             to={course.link}
             target="_blank"
             style={{ textDecoration: "none" }}

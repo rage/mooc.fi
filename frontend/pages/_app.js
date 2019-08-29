@@ -79,7 +79,7 @@ function createPath(originalUrl) {
   let url = ""
   if (originalUrl === "/") {
     url = "/en/"
-  } else if (originalUrl === "/en/") {
+  } else if (originalUrl.match(/^\/en\/?$/)) {
     url = "/"
   } else {
     originalUrl.startsWith("/en")

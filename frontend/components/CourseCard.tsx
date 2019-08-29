@@ -66,7 +66,7 @@ const CourseCard = React.memo(
                 </a>
               </LangLink>
               {/* FIXME: does not work with proper as/href */}
-              <LangLink href={`/courses/${course.slug}/edit`}>
+              <LangLink href={`/courses/${course.slug}/edit`} prefetch={false}>
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
