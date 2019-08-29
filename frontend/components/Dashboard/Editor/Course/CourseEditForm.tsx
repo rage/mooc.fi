@@ -77,11 +77,7 @@ const ModuleListItem = styled(ListItem)<any>`
   padding: 0px;
 `
 
-const renderForm = ({
-  studyModules,
-}: {
-  studyModules?: StudyModules_study_modules[]
-}) => ({
+const renderForm = (studyModules?: StudyModules_study_modules[]) => ({
   errors,
   values,
   isSubmitting,
@@ -341,7 +337,7 @@ const CourseEditForm = React.memo(
         render={formikProps => (
           <FormWrapper<CourseFormValues>
             {...formikProps}
-            renderForm={renderForm({ studyModules })}
+            renderForm={renderForm(studyModules)}
             onCancel={onCancel}
             onDelete={onDelete}
           />

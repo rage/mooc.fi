@@ -107,7 +107,9 @@ const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
             <ModuleImage module={module} />
             <ImageCover />
             <ContentArea>
-              <NaviCardTitle align="left">{module.name}</NaviCardTitle>
+              <NaviCardTitle variant="h3" align="left">
+                {module.name}
+              </NaviCardTitle>
               <NaviCardBodyText paragraph>
                 {module.description}
               </NaviCardBodyText>

@@ -89,7 +89,7 @@ const MenuOptionButtons = () => {
                   </StyledButton>
                 </LangLink>
                 {isAdmin ? (
-                  <LangLink href="/[lng]/admin" passHref>
+                  <LangLink href="/[lng]/admin" passHref prefetch={false}>
                     <StyledButton color="inherit" variant="text">
                       Admin panel
                     </StyledButton>
