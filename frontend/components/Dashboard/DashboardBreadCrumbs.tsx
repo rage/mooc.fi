@@ -58,7 +58,7 @@ const DashboardBreadCrumbs = (props: Props) => {
   const urlWithQueryRemoved = currentUrl.split("?")[0]
   let homeLink: string = "/"
   if (urlWithQueryRemoved.startsWith("/en")) {
-    homeLink = "/en"
+    homeLink = "/en/"
   }
   const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
 

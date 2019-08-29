@@ -155,7 +155,7 @@ function Module(props: ModuleProps) {
         </picture>
         {/*       <ModuleBanner module={module} /> */}
         <Container>
-          <Block style={{ width: "100%", marginBottom: "1rem" }}>
+          <Block style={{ width: "100%", marginBottom: "5rem" }}>
             {module ? (
               <IntroText variant="subtitle1" style={{ width: "100%" }}>
                 {module.description}
