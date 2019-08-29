@@ -82,7 +82,7 @@ const Admin = (admin: boolean) => {
             color="#354B45"
           />
           <AdminPanelLinkCard
-            link="/users/search"
+            link="users/search"
             title="User search"
             color="#97B0AA"
           />
