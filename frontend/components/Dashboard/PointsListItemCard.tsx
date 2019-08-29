@@ -11,7 +11,7 @@ import _ from "lodash"
 import { gql } from "apollo-boost"
 
 const UserFragment = gql`
-  fragment UserPoints on User {
+  fragment UserPointsFragment on User {
     id
     first_name
     last_name
