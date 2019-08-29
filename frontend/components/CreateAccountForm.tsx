@@ -1,10 +1,10 @@
 import React from "react"
-import { TextField, Button, Link, Typography } from "@material-ui/core"
+import { TextField, Button, Typography } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
 import getSignUpTranslator from "/translations/sign-up"
-
+import LangLink from "/components/LangLink"
 import styled from "styled-components"
 
 const Row = styled.div`
@@ -296,7 +296,12 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <Link href="/sign-in">{t("signIn")}</Link>
+          <LangLink
+            href="/[lng]/sign-in"
+            as={`/${this.context.language}/sign-in`}
+          >
+            <a href="/[lng]/sign-in">{t("signIn")}</a>
+          </LangLink>
         </Row>
         {this.state.error && (
           <InfoBox>

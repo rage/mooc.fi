@@ -44,12 +44,6 @@ const Points = (props: CompletionsProps) => {
     }
   }
 
-  /*const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    router.push(
-      `/courses/${slug}/points?lng=${(event.target as HTMLInputElement).value}`,
-    )
-  }
-*/
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },
   })
