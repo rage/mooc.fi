@@ -78,8 +78,8 @@ const originalGetInitialProps = MyApp.getInitialProps
 function createPath(originalUrl) {
   let url = ""
   if (originalUrl === "/") {
-    url = "/en"
-  } else if (originalUrl === "/en") {
+    url = "/en/"
+  } else if (originalUrl === "/en/") {
     url = "/"
   } else {
     originalUrl.startsWith("/en")

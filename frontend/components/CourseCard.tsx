@@ -27,65 +27,68 @@ const CardMedia = styled(MUICardMedia)`
   object-fit: cover;
 `
 
-const CourseCard = ({ course }: { course?: AllEditorCourses_courses }) => (
-  <Grid item xs={12} sm={6} lg={3}>
-    <CardBase ishidden={course && course.hidden ? 1 : undefined}>
-      <CardMedia>
-        {course ? (
-          <CourseImage photo={course.photo} alt={course.name} />
-        ) : (
-          <LangLink href={`/courses/new`}>
-            <a>
-              <Grid
-                container
-                justify="center"
-                alignItems="center"
-                style={{ height: "100%" }}
-              >
-                <AddCircleIcon fontSize="large" />
-              </Grid>
-            </a>
-          </LangLink>
-        )}
-      </CardMedia>
-      <CardContent>
-        <Typography variant="h5" component="h2" gutterBottom={true}>
-          {course ? course.name : "New Course"}
-        </Typography>
-      </CardContent>
-      <CardActionArea>
-        {course ? (
-          <React.Fragment>
-            <LangLink href={`/courses/${course.slug}`}>
-              <a aria-label={`To the homepage of course ${course.name}`}>
-                <Button variant="contained" color="secondary" fullWidth>
-                  <DashboardIcon />
-                  Course Dashboard
-                </Button>
+const CourseCard = React.memo(
+  ({ course }: { course?: AllEditorCourses_courses }) => (
+    <Grid item xs={12} sm={6} lg={3}>
+      <CardBase ishidden={course && course.hidden ? 1 : undefined}>
+        <CardMedia>
+          {course ? (
+            <CourseImage photo={course.photo} alt={course.name} />
+          ) : (
+            <LangLink href={`/courses/new`}>
+              <a>
+                <Grid
+                  container
+                  justify="center"
+                  alignItems="center"
+                  style={{ height: "100%" }}
+                >
+                  <AddCircleIcon fontSize="large" />
+                </Grid>
               </a>
             </LangLink>
-            <LangLink href={`/courses/${course.slug}/edit`}>
+          )}
+        </CardMedia>
+        <CardContent>
+          <Typography variant="h5" component="h2" gutterBottom={true}>
+            {course ? course.name : "New Course"}
+          </Typography>
+        </CardContent>
+        <CardActionArea>
+          {course ? (
+            <React.Fragment>
+              <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
+                <a aria-label={`To the homepage of course ${course.name}`}>
+                  <Button variant="contained" color="secondary" fullWidth>
+                    <DashboardIcon />
+                    Course Dashboard
+                  </Button>
+                </a>
+              </LangLink>
+              {/* FIXME: does not work with proper as/href */}
+              <LangLink href={`/courses/${course.slug}/edit`}>
+                <a>
+                  <Button variant="contained" color="secondary" fullWidth>
+                    <EditIcon />
+                    Edit
+                  </Button>
+                </a>
+              </LangLink>
+            </React.Fragment>
+          ) : (
+            <LangLink href={`/courses/new`}>
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
-                  <EditIcon />
-                  Edit
+                  <AddIcon />
+                  Create
                 </Button>
               </a>
             </LangLink>
-          </React.Fragment>
-        ) : (
-          <LangLink href={`/courses/new`}>
-            <a>
-              <Button variant="contained" color="secondary" fullWidth>
-                <AddIcon />
-                Create
-              </Button>
-            </a>
-          </LangLink>
-        )}
-      </CardActionArea>
-    </CardBase>
-  </Grid>
+          )}
+        </CardActionArea>
+      </CardBase>
+    </Grid>
+  ),
 )
 
 export default CourseCard

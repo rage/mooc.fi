@@ -53,10 +53,10 @@ function NaviCard(props: NaviCardProps) {
   const image = require(`../../static/images/${item.img}`)
 
   return (
-    <Grid item xs={12} sm={6} md={6} lg={4}>
+    <Grid item xs={12} sm={6} md={6} lg={3}>
       <NaviItemBase focusRipple>
         <BackgroundImage src={image} alt="" />
-        <TextBackground>
+        <TextBackground style={{ width: "100%" }}>
           <Typography
             component="h3"
             variant="h3"
@@ -77,7 +77,7 @@ function NaviCard(props: NaviCardProps) {
           </Typography>
           <Typography align="left">
             <LangLink href={item.link}>
-              <StyledLink href={item.link} aria-label={item.linkText}>
+              <StyledLink aria-label={item.linkText}>
                 {item.linkText}
               </StyledLink>
             </LangLink>

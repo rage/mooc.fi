@@ -49,6 +49,9 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
   const [cancelConfirmationVisible, setCancelConfirmationVisible] = useState(
     false,
   )
+  const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(
+    false,
+  )
 
   return (
     <FormContainer maxWidth="md">
@@ -65,6 +68,19 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           }}
           onReject={() => setCancelConfirmationVisible(false)}
           show={cancelConfirmationVisible}
+        />
+        <ConfirmationDialog
+          title="About to delete"
+          content="Are you sure you want to delete?"
+          acceptText="Yes"
+          rejectText="No"
+          // @ts-ignore
+          onAccept={(e: React.MouseEvent) => {
+            setDeleteConfirmationVisible(false)
+            onDelete(values)
+          }}
+          onReject={() => setDeleteConfirmationVisible(false)}
+          show={deleteConfirmationVisible}
         />
         {renderForm(props)}
         <br />
@@ -83,7 +99,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
                 variant="contained"
                 color="secondary"
                 disabled={isSubmitting}
-                onClick={() => onDelete(values)}
+                onClick={() => setDeleteConfirmationVisible(true)}
               >
                 Delete
               </Button>

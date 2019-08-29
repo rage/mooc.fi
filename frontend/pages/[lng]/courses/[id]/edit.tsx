@@ -79,13 +79,12 @@ interface EditCourseProps {
   router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
+  slug: string
 }
 
 const EditCourse = (props: EditCourseProps) => {
-  const { admin, router } = props
+  const { admin, router, slug } = props
   const { language } = useContext(LanguageContext)
-
-  const slug = router.query.id
 
   let redirectTimeout: number | null = null
 
@@ -147,7 +146,7 @@ const EditCourse = (props: EditCourseProps) => {
             <Typography variant="body2">
               You will be redirected back to the course list in 5 seconds -
               press{" "}
-              <Link href={listLink}>
+              <Link as={listLink} href="[lng]/courses">
                 <a
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
@@ -173,6 +172,7 @@ EditCourse.getInitialProps = function(context: NextContext) {
 
   return {
     admin,
+    slug: context.query ? context.query.id : "",
   }
 }
 
