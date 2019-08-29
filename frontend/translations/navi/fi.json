@@ -25,8 +25,8 @@
             "link": "/teachers"
           },
           {
-            "title": "Opintokokonaisuudet",
-            "text": "Lorem ipsum",
+            "title": "Opiskele kokonaisuuksia",
+            "text": "Kokoa oma kurssivalikoimasi laajemmista opintokokonaisuuksista.",
             "linkText": "Opintokokonaisuudet",
             "img": "taydennysKoulutus.jpg",
             "link": "#modules"
