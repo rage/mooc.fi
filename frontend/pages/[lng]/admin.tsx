@@ -1,6 +1,6 @@
 import * as React from "react"
 import Container from "/components/Container"
-import { Card, Typography, Link } from "@material-ui/core"
+import { Card, Link, CardHeader, Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { NextPageContext } from "next"
 import { isAdmin, isSignedIn } from "/lib/authentication"
@@ -12,53 +12,80 @@ import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import ImageBanner from "/components/Home/ImageBanner"
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
-const StyledCard = styled(Card)`
+const StyledCard = styled(Card)<ColorProps>`
   margin: 1rem;
-  padding: 1rem;
+  ${props => `background-color:${props.color};`}
+  color: white;
 `
 const CardListContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
+  align-items: center;
 `
 
-const LinkTitle = styled(Typography)`
-  @media (min-width: 350px) {
-    font-size: 24px;
-  }
+interface ColorProps {
+  color: string
+}
+const ColorWord = styled.span<ColorProps>`
+  ${props => `color:${props.color};`}
 `
+
+function AdminPanelLinkCard({
+  title,
+  link,
+  color,
+}: {
+  title: string
+  link: string
+  color: string
+}) {
+  const { language } = useContext(LanguageContext)
+  return (
+    <Link href={`/${language}/${link}`}>
+      <StyledCard color={color}>
+        <CardHeader title={title} />
+      </StyledCard>
+    </Link>
+  )
+}
 const Admin = (admin: boolean) => {
   if (!admin) {
     return <AdminError />
   }
-  const { language } = useContext(LanguageContext)
+
   return (
     <>
       <DashboardBreadCrumbs />
       <ImageBanner title="Admin dashboard" image={highlightsBanner} />
       <Container>
+        <Typography variant="body1" component="p" paragraph>
+          From <ColorWord color="#00A68D">Courses</ColorWord> you find list of
+          all courses currently available at mooc.fi, and can access the
+          dashboard of an individual course and create new courses.
+        </Typography>
+        <Typography variant="body1" component="p" paragraph>
+          From <ColorWord color="#354B45">Study Modules</ColorWord> you find a
+          list of all study modules currently available at mooc.fi, and can
+          access the dashboard of an individual study module and create new
+          study modules.
+        </Typography>
+        <Typography variant="body1" component="p" paragraph>
+          <ColorWord color="#97B0AA">User search</ColorWord> allows you to
+          search for students to access their points and completions data.
+        </Typography>
         <CardListContainer>
-          <Link href={`/${language}/courses`}>
-            <StyledCard>
-              <LinkTitle variant="h3" component="h2">
-                Courses
-              </LinkTitle>
-            </StyledCard>
-          </Link>
-          <Link href={`/${language}/study-modules`}>
-            <StyledCard>
-              <LinkTitle variant="h3" component="h2">
-                Study Modules
-              </LinkTitle>
-            </StyledCard>
-          </Link>
-          <Link href={`/${language}/users/search`}>
-            <StyledCard>
-              <LinkTitle variant="h3" component="h2">
-                User search
-              </LinkTitle>
-            </StyledCard>
-          </Link>
+          <AdminPanelLinkCard link="courses" title="Courses" color="#00A68D" />
+          <AdminPanelLinkCard
+            link="study-modules"
+            title="Study Modules"
+            color="#354B45"
+          />
+          <AdminPanelLinkCard
+            link="/users/search"
+            title="User search"
+            color="#97B0AA"
+          />
         </CardListContainer>
       </Container>
     </>
