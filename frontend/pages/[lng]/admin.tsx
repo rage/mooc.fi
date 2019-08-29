@@ -1,6 +1,6 @@
 import * as React from "react"
 import Container from "/components/Container"
-import { Card, Link, CardHeader, Typography } from "@material-ui/core"
+import { Card, CardHeader, Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { NextPageContext } from "next"
 import { isAdmin, isSignedIn } from "/lib/authentication"
@@ -10,6 +10,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import { useContext } from "react"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import ImageBanner from "/components/Home/ImageBanner"
+import LangLink from "/components/LangLink"
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 const StyledCard = styled(Card)<ColorProps>`
@@ -41,11 +42,11 @@ function AdminPanelLinkCard({
 }) {
   const { language } = useContext(LanguageContext)
   return (
-    <Link href={`/${language}/${link}`}>
+    <LangLink href={`/[lng]/${link}`} as={`/${language}/${link}`}>
       <StyledCard color={color}>
         <CardHeader title={title} />
       </StyledCard>
-    </Link>
+    </LangLink>
   )
 }
 const Admin = (admin: boolean) => {
