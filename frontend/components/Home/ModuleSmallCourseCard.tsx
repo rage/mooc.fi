@@ -32,7 +32,13 @@ const SkeletonTitle = styled(Skeleton)`
 const SkeletonText = styled(Skeleton)`
   margin-bottom: 1rem;
 `
-const Background = styled(ButtonBase)<{ upcoming?: boolean }>`
+
+interface BackgroundProps {
+  upcoming?: boolean
+  component: string
+}
+
+const Background = styled(ButtonBase)<BackgroundProps>`
   background-color: white;
   position: relative;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -117,13 +123,13 @@ function ModuleSmallCourseCard({
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={4}>
-      <Background focusRipple>
+      <Background focusRipple component="div">
         {course ? (
           <ReactGA.OutboundLink
             eventLabel={`modulecoursesite: ${course ? course.name : ""}`}
             to={course.link}
             target="_blank"
-            style={{ textDecoration: "none" }}
+            style={{ textDecoration: "none", width: "100%" }}
             onClick={e => (course.link === "" ? e.preventDefault() : null)}
             aria-label={`To the course homepage of ${course.name}`}
           >
