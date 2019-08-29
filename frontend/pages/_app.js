@@ -44,7 +44,15 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, apollo, admin, lng, url } = this.props
+    const {
+      Component,
+      pageProps,
+      apollo,
+      admin,
+      lng,
+      url,
+      hrefUrl,
+    } = this.props
 
     return (
       <Container>
@@ -57,7 +65,9 @@ class MyApp extends App {
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
                 <UserDetailContext.Provider value={admin}>
-                  <LanguageContext.Provider value={{ language: lng, url }}>
+                  <LanguageContext.Provider
+                    value={{ language: lng, url, hrefUrl }}
+                  >
                     <Layout>
                       <Component {...pageProps} />
                     </Layout>
@@ -95,12 +105,15 @@ MyApp.getInitialProps = async arg => {
   const { ctx } = arg
   let lng = "fi"
   let url = "/"
+  let hrefUrl = "/"
   if (typeof window !== "undefined") {
     lng = ctx.asPath.substring(1, 3) || "fi"
     url = ctx.asPath
+    hrefUrl = ctx.pathname
   } else {
     lng = ctx.query.lng || "fi"
     url = ctx.req.originalUrl
+    hrefUrl = ctx.req.path
   }
 
   let originalProps = {}
@@ -116,6 +129,7 @@ MyApp.getInitialProps = async arg => {
     // @ts-ignore
     lng,
     url: createPath(url),
+    hrefUrl,
   }
 }
 
