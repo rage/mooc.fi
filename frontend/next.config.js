@@ -26,7 +26,7 @@ const nextConfiguration = {
         minChunks: 1,
         name: "formik-commons",
         priority: 10,
-        test: /[\\\/](node_modules[\\\/](lodash[\\\/]|(formik|lodash-es|yup)[\\\/]))/,
+        test: /[\\\/](node_modules[\\\/](lodash[\\\/]|(formik|lodash-es|yup|react-ga)[\\\/]))/,
       }
     } catch (e) {
       // fall through
