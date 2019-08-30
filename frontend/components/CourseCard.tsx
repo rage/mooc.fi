@@ -54,7 +54,7 @@ const CourseCard = React.memo(
             {course ? course.name : "New Course"}
           </Typography>
         </CardContent>
-        <CardActionArea>
+        <CardActionArea component="div">
           {course ? (
             <React.Fragment>
               <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
@@ -65,8 +65,11 @@ const CourseCard = React.memo(
                   </Button>
                 </a>
               </LangLink>
-              {/* FIXME: does not work with proper as/href */}
-              <LangLink href={`/courses/${course.slug}/edit`} prefetch={false}>
+              <LangLink
+                href="/courses/[id]/edit"
+                as={`/courses/${course.slug}/edit`}
+                prefetch={false}
+              >
                 <a>
                   <Button variant="contained" color="secondary" fullWidth>
                     <EditIcon />
