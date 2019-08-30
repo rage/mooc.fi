@@ -15,10 +15,10 @@ import UserDetailContext from "../contexes/UserDetailContext"
 import LanguageContext from "../contexes/LanguageContext"
 import withApolloClient from "../lib/with-apollo-client"
 import theme from "../src/theme"
-import OpenSansCondensed from "typeface-open-sans-condensed"
-import Roboto from "typeface-roboto"
-import "@fortawesome/fontawesome-svg-core/styles.css"
+// import OpenSansCondensed from "typeface-open-sans-condensed"
+// import Roboto from "typeface-roboto"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
+import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
 
 fontAwesomeConfig.autoAddCss = false

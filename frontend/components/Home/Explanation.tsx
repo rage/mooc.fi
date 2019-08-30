@@ -80,7 +80,7 @@ function Explanation() {
       <Subtitle component="p" variant="subtitle1">
         {t("intro")}
       </Subtitle>
-      <CourseButton variant="contained" href="#courses-and-modules">
+      <CourseButton variant="contained" href="#courses">
         {t("courseButton")}
       </CourseButton>
     </ExplanationRoot>

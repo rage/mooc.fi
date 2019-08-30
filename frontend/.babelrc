@@ -39,6 +39,7 @@
       },
       "icons"
     ],
-    "lodash"
+    "lodash",
+    "styled-jsx/babel"
   ]
 }
