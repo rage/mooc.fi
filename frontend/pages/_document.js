@@ -4,8 +4,9 @@ import flush from "styled-jsx/server"
 import { ServerStyleSheets } from "@material-ui/styles"
 import theme from "../src/theme"
 import { ServerStyleSheet } from "styled-components"
-import FontStyle from "/src/fonts"
+// import FontStyle from "/src/fonts"
 
+import { fontCss } from "/src/fonts"
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const sheets = new ServerStyleSheets()
@@ -35,7 +36,7 @@ class MyDocument extends Document {
             {initialProps.styles}
             {sheets.getStyleElement()}
             {sheet.getStyleElement()}
-            {/*             {flush() || null} */}
+            {flush() || null}
           </React.Fragment>
         ),
       }
@@ -61,7 +62,7 @@ class MyDocument extends Document {
           />
         </Head>
         <body>
-          <FontStyle />
+          <style dangerouslySetInnerHTML={{ __html: fontCss }} />
           <Main />
           <NextScript />
         </body>

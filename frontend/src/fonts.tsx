@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components"
 
-export default createGlobalStyle`
+export const fontCss = `
 /* roboto-100 - latin */
 @font-face {
   font-family: 'Roboto';
@@ -197,3 +197,5 @@ export default createGlobalStyle`
        url('/static/fonts/open-sans-condensed-v14-latin-700.svg#OpenSansCondensed') format('svg'); /* Legacy iOS */
 }
 `
+
+export default createGlobalStyle`${fontCss}`
