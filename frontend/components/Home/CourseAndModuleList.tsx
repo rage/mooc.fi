@@ -69,19 +69,8 @@ const CourseAndModuleList = () => {
     data: modulesData,
   } = useQuery<AllModulesData>(AllModulesQuery, { variables: { language } })
 
-  if (coursesError || modulesError) {
-    ;<div>
-      Error:{" "}
-      <pre>{JSON.stringify(coursesError || modulesError, undefined, 2)}</pre>
-    </div>
-  }
-
-  if (!coursesData || !modulesData) {
-    return <div>Error: no data?</div>
-  }
-
-  const { courses } = coursesData
-  const { study_modules } = modulesData
+  const courses = coursesData ? coursesData.courses : undefined
+  const study_modules = modulesData ? modulesData.study_modules : undefined
 
   const modulesWithCourses = useMemo(
     (): AllModules_study_modules_with_courses[] =>
@@ -108,6 +97,19 @@ const CourseAndModuleList = () => {
     () => (activeCourses || []).filter(c => c.promote),
     [activeCourses],
   )
+
+  if (coursesError || modulesError) {
+    return (
+      <div>
+        Error:{" "}
+        <pre>{JSON.stringify(coursesError || modulesError, undefined, 2)}</pre>
+      </div>
+    )
+  }
+
+  if (!coursesData || !modulesData) {
+    return <div>Error: no data?</div>
+  }
 
   return (
     <section>

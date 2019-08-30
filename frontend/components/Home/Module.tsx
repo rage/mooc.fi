@@ -14,6 +14,7 @@ const IntroText = styled(Typography)`
   font-size: 22px;
   width: 100%;
   margin-left: 1rem;
+  margin-right: 1rem;
   padding: 1rem;
   background-color: rgba(255, 255, 255, 0.8);
   @media (min-width: 425px) {
@@ -62,8 +63,7 @@ const BackgroundImage = styled.img<BackgroundProps>`
 
 const Title = styled(Typography)`
   font-size: 38px;
-  margin-top: 2rem;
-  margin-left: 2rem;
+  margin: 5rem auto 1rem auto;
   padding: 1rem;
   background-color: rgba(255, 255, 255, 0.8);
   width: 60%;
