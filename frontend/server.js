@@ -32,10 +32,6 @@ const main = async () => {
       res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
       next()
     })
-    server.get(/^\/\_next\/static\/css\//, (_, res, next) => {
-      res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
-      next()
-    })
   }
 
   server.get("*", (req, res) => {
@@ -43,6 +39,7 @@ const main = async () => {
       redirect => redirect.from === req.url,
     )
     if (redirectNeeded) {
+      console.log("")
       res.redirect(redirectNeeded.to)
     }
 
