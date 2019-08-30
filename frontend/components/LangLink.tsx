@@ -9,8 +9,8 @@ interface LangLinkProps extends LinkProps {
 
 const LangLink = (props: LangLinkProps): any => {
   const { as: _as, href: _href, children } = props
-  const lng = useContext(LanguageContext)
-  const isFi = lng.language === "fi"
+  const { language } = useContext(LanguageContext)
+  const isFi = language === "fi"
 
   const parsedHref: any =
     typeof _href === "object" ? _href : parse(_href || "", true)
@@ -47,13 +47,13 @@ const LangLink = (props: LangLinkProps): any => {
   const { path, hash } = parsedHref
   let { href } = parsedHref
 
-  // FIXME: (?) as not needed
-  if (path === "/" && isFi) {
-    as = href = "/"
+  if (path === "/") {
+    as = isFi ? "/" : `/${language}/`
+    href = isFi ? "/" : "/[lng]/"
   } else if (!path && hash) {
     as = href = hash
   } else if (!isOutsideLink) {
-    as = `/${lng.language}${as}`.replace(/\/$/, "")
+    as = `/${language}${as}`.replace(/\/$/, "")
     href = `/[lng]${href.replace("/[lng]", "")}`.replace(/\/+/g, "/")
   }
 
