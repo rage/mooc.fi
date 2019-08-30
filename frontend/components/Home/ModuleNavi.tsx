@@ -23,7 +23,7 @@ const ModuleNavi = ({
   modules,
   loading,
 }: {
-  modules: AllModules_study_modules[]
+  modules?: AllModules_study_modules[]
   loading: boolean
 }) => {
   const lng = useContext(LanguageContext)

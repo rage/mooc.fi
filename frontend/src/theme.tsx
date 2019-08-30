@@ -59,6 +59,7 @@ const theme = {
       "@media (min-width: 1440px)": {
         fontSize: 68,
       },
+      letterSpacing: "-1px",
     },
     h2: {
       ...rawTheme.typography.h2,

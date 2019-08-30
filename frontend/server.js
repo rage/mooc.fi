@@ -2,6 +2,7 @@ process.on("unhandledRejection", (...args) => {
   console.log(JSON.stringify(args, undefined, 2))
 })
 
+const isProduction = process.env.NODE_ENV === "production"
 const express = require("express")
 
 const next = require("next")
@@ -10,7 +11,7 @@ const compression = require("compression")
 
 const Redirects = require("./Redirects")
 const port = process.env.PORT || 3000
-const app = next({ dev: process.env.NODE_ENV !== "production" })
+const app = next({ dev: !isProduction })
 const handle = app.getRequestHandler()
 
 const DirectFrom = Redirects.redirects_list
@@ -25,6 +26,17 @@ const main = async () => {
 
   const server = express()
   server.use(compression())
+
+  if (isProduction) {
+    server.get(/^\/static\/fonts\//, (_, res, next) => {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+      next()
+    })
+    server.get(/^\/\_next\/static\/css\//, (_, res, next) => {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+      next()
+    })
+  }
 
   server.get("*", (req, res) => {
     const redirectNeeded = DirectFrom.find(
