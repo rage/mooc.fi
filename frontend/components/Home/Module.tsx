@@ -1,5 +1,5 @@
-import React, { useMemo } from "react"
-import Grid from "@material-ui/core/Grid"
+import React, { useMemo, useContext } from "react"
+import { Grid, Chip } from "@material-ui/core"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
@@ -9,6 +9,8 @@ import { mime } from "/util/imageUtils"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import { orderBy } from "lodash"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 const IntroText = styled(Typography)`
   font-size: 22px;
@@ -63,7 +65,7 @@ const BackgroundImage = styled.img<BackgroundProps>`
 
 const Title = styled(Typography)`
   font-size: 38px;
-  margin: 5rem auto 1rem auto;
+  margin: 1rem auto 1rem auto;
   padding: 1rem;
   background-color: rgba(255, 255, 255, 0.8);
   width: 60%;
@@ -75,6 +77,11 @@ const Title = styled(Typography)`
   }
 `
 
+const TitleChip = styled(Chip)`
+  margin: 5rem auto 0.5rem auto;
+  background-color: rgba(255, 255, 255, 0.8);
+`
+
 const Block = styled.div`
   z-index: 20;
   justify-content: center;
@@ -83,14 +90,6 @@ const Block = styled.div`
   position: relative;
 `
 
-// @ts-ignore
-const BlockBackground = styled.div`
-  margin-left: 1rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.8);
-`
 interface ModuleProps {
   module?: AllModules_study_modules_with_courses
   hueRotateAngle: number
@@ -100,6 +99,8 @@ interface ModuleProps {
 
 function Module(props: ModuleProps) {
   const { module, hueRotateAngle, brightness, backgroundColor } = props
+  const { language } = useContext(LanguageContext)
+  const t = getHomeTranslator(language)
 
   const orderedCourses = module
     ? useMemo(
@@ -138,6 +139,9 @@ function Module(props: ModuleProps) {
       style={{ marginBottom: "3em" }}
     >
       <Root backgroundColor={backgroundColor}>
+        <Block>
+          <TitleChip label={t("studyModule")} />
+        </Block>
         <Block>
           <Title component="h2" variant="h2" align="center">
             {module ? module.name : <Skeleton variant="text" />}
