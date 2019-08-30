@@ -31,6 +31,7 @@ class MyDocument extends Document {
       return {
         ...initialProps,
 
+        // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
         styles: (
           <React.Fragment>
             {initialProps.styles}
