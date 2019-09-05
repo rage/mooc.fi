@@ -13,7 +13,7 @@
     },
     "typeRoots": [
       "node_modules/@types",
-      "types/",
+      "types/"
     ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

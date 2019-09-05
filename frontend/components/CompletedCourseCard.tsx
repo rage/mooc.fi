@@ -6,9 +6,9 @@ import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
 import {
-  UserOverView_currentUser_completions,
-  UserOverView_currentUser_completions_completions_registered,
-} from "/static/types/generated/UserOverView"
+  ProfileUserOverView_currentUser_completions,
+  ProfileUserOverView_currentUser_completions_completions_registered,
+} from "/static/types/generated/ProfileUserOverView"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 
@@ -44,7 +44,7 @@ const RegistrationDetails = styled.div`
 `
 
 interface CourseCardProps {
-  completion: UserOverView_currentUser_completions
+  completion: ProfileUserOverView_currentUser_completions
 }
 
 const MapLangToLanguage = new Map(
@@ -64,7 +64,7 @@ function formatDateTime(date: string) {
 function CompletedCourseCard(props: CourseCardProps) {
   const { completion } = props
 
-  let registeredCompletions: UserOverView_currentUser_completions_completions_registered[] = []
+  let registeredCompletions: ProfileUserOverView_currentUser_completions_completions_registered[] = []
   let isRegistered = false
   if (completion.completions_registered) {
     isRegistered = completion.completions_registered.length > 0

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { UserOverView_currentUser_completions } from "/static/types/generated/UserOverView"
+import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import { Container } from "next/app"
 import { Grid, Typography } from "@material-ui/core"
 import CompletedCourseCard from "./CompletedCourseCard"
@@ -33,7 +33,7 @@ const completionsFragment = gql`
 `
 
 export interface CompletionsProps {
-  completions: UserOverView_currentUser_completions[]
+  completions: ProfileUserOverView_currentUser_completions[]
 }
 const Title = styled(Typography)`
   font-family: "Open Sans Condensed", sans-serif !important;

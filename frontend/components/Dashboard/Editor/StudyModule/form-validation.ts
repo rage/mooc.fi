@@ -3,7 +3,7 @@ import {
   StudyModuleFormValues,
   StudyModuleTranslationFormValues,
 } from "./types"
-import { ApolloClient } from "apollo-boost"
+import { ApolloClient, DocumentNode } from "apollo-boost"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   id: undefined,
@@ -42,7 +42,7 @@ const studyModuleEditSchema = ({
   initialSlug,
 }: {
   client: ApolloClient<object>
-  checkSlug: Function
+  checkSlug: DocumentNode
   initialSlug: string | null
 }) =>
   Yup.object().shape({
@@ -109,7 +109,7 @@ const validateSlug = ({
   client,
   initialSlug,
 }: {
-  checkSlug: Function
+  checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>

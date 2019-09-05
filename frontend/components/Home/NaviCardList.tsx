@@ -27,7 +27,7 @@ function NaviCardList() {
           <NaviCard
             key={`navi-${item.title}`}
             item={item}
-            odd={items.length % 2 === 1}
+            count={items.length}
           />
         ))}
       </Grid>
