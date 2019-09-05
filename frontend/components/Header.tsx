@@ -1,12 +1,12 @@
 import * as React from "react"
 import { AppBar, Toolbar, Typography, Avatar } from "@material-ui/core"
-import NextI18Next from "../i18n"
 import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import useScrollTrigger from "@material-ui/core/useScrollTrigger"
 import Slide from "@material-ui/core/Slide"
 import styled from "styled-components"
 import UserMenu from "./UserMenu"
+import LangLink from "/components/LangLink"
 
 interface Props {
   window?: () => Window
@@ -43,6 +43,10 @@ const HomeLink = styled.a`
   text-decoration: none;
   display: flex;
   flex-direction: row;
+
+  &:hover {
+    cursor: pointer;
+  }
 `
 const ResponsiveMoocLogoContainer = styled.div`
   @media (max-width: 750px) {
@@ -57,12 +61,12 @@ function Header() {
         <AppBar color="inherit">
           <Toolbar>
             <ResponsiveMoocLogoContainer>
-              <NextI18Next.Link href="/" as="/">
-                <HomeLink href="/" aria-label="MOOC.fi homepage">
+              <LangLink as="/" href="/">
+                <HomeLink aria-label="MOOC.fi homepage">
                   <MoocLogo alt="MOOC logo" src="/static/images/moocfi.svg" />
                   <MoocLogoText>MOOC.fi</MoocLogoText>
                 </HomeLink>
-              </NextI18Next.Link>
+              </LangLink>
             </ResponsiveMoocLogoContainer>
             <UserMenu />
             <LanguageSwitch />

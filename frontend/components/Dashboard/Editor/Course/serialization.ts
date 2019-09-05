@@ -8,7 +8,6 @@ import {
   CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
 import { CourseStatus } from "/static/types/generated/globalTypes"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
 import {
   addCourse_addCourse_open_university_registration_links,
   addCourse_addCourse_study_modules,
@@ -19,6 +18,7 @@ import {
   updateCourse_updateCourse_study_modules,
   updateCourse_updateCourse_course_translations,
 } from "/static/types/generated/updateCourse"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -27,7 +27,7 @@ export const toCourseForm = ({
   modules,
 }: {
   course?: CourseDetails_course
-  modules?: StudyModules_study_modules[]
+  modules?: CourseEditorStudyModules_study_modules[]
 }): CourseFormValues => {
   const courseStudyModules = course
     ? (course.study_modules || []).map(module => module.id)
@@ -41,6 +41,7 @@ export const toCourseForm = ({
         hidden: course.hidden || false,
         study_module_start_point: course.study_module_start_point || false,
         order: course.order || undefined,
+        study_module_order: course.study_module_order || undefined,
         status: course.status || CourseStatus.Upcoming,
         course_translations: (course.course_translations || []).map(c => ({
           ...omit(c, "__typename"),
@@ -148,6 +149,9 @@ export const fromCourseForm = ({
     // despite order being a number in the typings, it comes back as an empty string without TS yelling at you
     // @ts-ignore
     order: values.order === "" ? null : values.order,
+    // @ts-ignore
+    // prettier-ignore
+    study_module_order: values.study_module_order === "" ? null : values.study_module_order,
     course_translations,
     open_university_registration_links,
     study_modules,

@@ -5,27 +5,21 @@ import {
 } from "apollo-boost"
 import { onError } from "apollo-link-error"
 import { ApolloLink } from "apollo-link"
-import { getAccessToken } from "./authentication"
 import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "apollo-link-context"
-import { NextPageContext as NextContext } from "next"
 import fetch from "isomorphic-unfetch"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
 
-function create(initialState: any, ctx: NextContext | undefined) {
-  const authLink = setContext((_, { headers }) => {
-    const token = getAccessToken(ctx)
-    // return the headers to the context so httpLink can read them
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-      },
-    }
-  })
+function create(initialState: any, accessToken?: string) {
+  const authLink = setContext((_, { headers }) => ({
+    headers: {
+      ...headers,
+      authorization: accessToken ? `Bearer ${accessToken}` : "",
+    },
+  }))
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
@@ -34,49 +28,46 @@ function create(initialState: any, ctx: NextContext | undefined) {
     fetch: fetch,
   })
 
-  const isBrowser = typeof window !== "undefined"
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.map(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        ),
+      )
+    if (networkError) console.log(`[Network error]: ${networkError}`)
+  })
 
   return new ApolloClient({
-    link: ApolloLink.from([
-      onError(({ graphQLErrors, networkError }) => {
-        if (graphQLErrors)
-          graphQLErrors.map(({ message, locations, path }) =>
-            console.log(
-              `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-            ),
-          )
-        if (networkError) console.log(`[Network error]: ${networkError}`)
-      }),
-      authLink.concat(uploadLink),
-    ]),
+    link: process.browser
+      ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
+      : authLink.concat(uploadLink),
     cache: new InMemoryCache().restore(initialState || {}),
-    ssrMode: !isBrowser,
+    ssrMode: !process.browser, // isBrowser,
+    ssrForceFetchDelay: 100,
     defaultOptions: {
       watchQuery: {
-        fetchPolicy: "no-cache",
+        fetchPolicy: "cache-first", //"no-cache",
         errorPolicy: "ignore",
       },
       query: {
-        fetchPolicy: "no-cache",
+        fetchPolicy: "cache-first", //"no-cache",
         errorPolicy: "all",
       },
     },
   })
 }
 
-export default function initApollo(
-  initialState: any,
-  ctx: NextContext | undefined,
-) {
+export default function initApollo(initialState: any, accessToken?: string) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!process.browser) {
-    return create(initialState, ctx)
+    return create(initialState, accessToken)
   }
 
   // Reuse client on the client-side
   if (!apolloClient) {
-    apolloClient = create(initialState, ctx)
+    apolloClient = create(initialState, accessToken)
   }
 
   return apolloClient

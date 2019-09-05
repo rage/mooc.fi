@@ -2,9 +2,9 @@
   "presets": ["next/babel", "@zeit/next-typescript/babel"],
   "plugins": [
     [
-      "styled-components",
+      "babel-plugin-styled-components",
       {
-        "ssr": true
+        "ssr": true,
       }
     ],
     [
@@ -39,6 +39,7 @@
       },
       "icons"
     ],
-    "lodash"
+    "lodash",
+    "styled-jsx/babel"
   ]
 }

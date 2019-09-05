@@ -1,10 +1,10 @@
 import React from "react"
 import Grid from "@material-ui/core/Grid"
 import CourseCard from "./CourseCard"
-import Container from "../Container"
+import Container from "/components/Container"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedCourse } from "../../static/types/moduleTypes"
+import { AllCourses_courses } from "/static/types/generated/AllCourses"
 
 interface RootProps {
   backgroundColor: string
@@ -63,7 +63,7 @@ const Subtitle = styled(Typography)`
 `
 
 interface CourseHighlightsProps {
-  courses: ObjectifiedCourse[]
+  courses?: AllCourses_courses[]
   title: string
   headerImage: any
   subtitle?: string
@@ -72,9 +72,10 @@ interface CourseHighlightsProps {
   brightness: number
   fontColor: string
   titleBackground: string
+  // loading: boolean
 }
 
-function CourseHighlights(props: CourseHighlightsProps) {
+const CourseHighlights = (props: CourseHighlightsProps) => {
   const {
     courses,
     title,
@@ -85,6 +86,7 @@ function CourseHighlights(props: CourseHighlightsProps) {
     brightness,
     fontColor,
     titleBackground,
+    // loading,
   } = props
 
   return (
@@ -113,9 +115,16 @@ function CourseHighlights(props: CourseHighlightsProps) {
       </div>
       <Container>
         <Grid container spacing={3}>
-          {courses.map(course => (
-            <CourseCard key={`course-${course.id}`} course={course} />
-          ))}
+          {!(courses || []).length ? (
+            <>
+              <CourseCard key="skeletoncard1" />
+              <CourseCard key="skeletoncard2" />
+            </>
+          ) : (
+            (courses || []).map(course => (
+              <CourseCard key={`course-${course.id}`} course={course} />
+            ))
+          )}
         </Grid>
       </Container>
     </Root>

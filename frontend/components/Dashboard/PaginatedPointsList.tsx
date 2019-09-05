@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "../ErrorBoundary"
 import { useLazyQuery } from "@apollo/react-hooks"
-import { UserCourseSettingses as StudentProgressData } from "/static/types/generated/UserCourseSettingses"
 import PointsList from "./PointsList"
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
 import { TextField, Grid, Slider } from "@material-ui/core"
 import { range } from "lodash"
+import {
+  UserCourseSettingses as StudentProgressData,
+  UserCourseSettingses_UserCourseSettingses_edges,
+  UserCourseSettingses_UserCourseSettingses_pageInfo,
+} from "/static/types/generated/UserCourseSettingses"
+import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 
 export const StudentProgresses = gql`
   query UserCourseSettingses($course_id: ID, $cursor: ID, $search: String) {
@@ -25,30 +30,14 @@ export const StudentProgresses = gql`
         node {
           id
           user {
-            id
-            first_name
-            last_name
-            email
-            student_number
-            username
-            user_course_progressess(course_id: $course_id) {
-              id
-              progress
-              user_course_service_progresses {
-                service {
-                  name
-                  id
-                }
-                progress
-                id
-              }
-            }
+            ...UserPointsFragment
           }
         }
       }
       count(search: $search)
     }
   }
+  ${PointsListItemCard.fragments.user}
 `
 
 interface Props {
@@ -141,7 +130,9 @@ function PaginatedPointsList(props: Props) {
         <>
           <div>{UserCourseSettingses!.count || 0} results</div>
           <PointsList
-            pointsForUser={UserCourseSettingses!.edges}
+            pointsForUser={
+              data.UserCourseSettingses ? data.UserCourseSettingses.edges : []
+            }
             cutterValue={cutterValue}
           />
           <Button
@@ -156,9 +147,12 @@ function PaginatedPointsList(props: Props) {
 
                 updateQuery: (previousResult, { fetchMoreResult }) => {
                   const previousData = previousResult.UserCourseSettingses.edges
-                  const newData = fetchMoreResult!.UserCourseSettingses.edges
-                  const newPageInfo = fetchMoreResult!.UserCourseSettingses
-                    .pageInfo
+                  const newData = fetchMoreResult
+                    ? fetchMoreResult.UserCourseSettingses.edges
+                    : ([] as UserCourseSettingses_UserCourseSettingses_edges[])
+                  const newPageInfo = fetchMoreResult
+                    ? fetchMoreResult.UserCourseSettingses.pageInfo
+                    : ({} as UserCourseSettingses_UserCourseSettingses_pageInfo)
                   return {
                     UserCourseSettingses: {
                       pageInfo: {

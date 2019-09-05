@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useContext } from "react"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "@apollo/react-hooks"
 import {
@@ -10,13 +10,15 @@ import {
 import { CourseFormValues } from "./types"
 import courseEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import NextI18Next from "/i18n"
-import { AllCoursesQuery } from "/pages/courses"
+import { AllCoursesQuery } from "/components/Home/CourseAndModuleList"
+import { AllEditorCoursesQuery } from "/pages/[lng]/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { StudyModules_study_modules } from "/static/types/StudyModules"
-import { CourseQuery } from "/pages/courses/[id]/edit"
+import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
 import { FetchResult, PureQueryOptions } from "apollo-boost"
 import { toCourseForm, fromCourseForm } from "./serialization"
+import Router from "next/router"
+import LanguageContext from "/contexes/LanguageContext"
 
 const CourseEdit = ({
   course,
@@ -25,10 +27,15 @@ const CourseEdit = ({
   course?: CourseDetails_course
   modules?: StudyModules_study_modules[]
 }) => {
+  const { language } = useContext(LanguageContext)
+
   const [addCourse] = useMutation(AddCourseMutation)
   const [updateCourse] = useMutation(UpdateCourseMutation)
   const [deleteCourse] = useMutation(DeleteCourseMutation, {
-    refetchQueries: [{ query: AllCoursesQuery }],
+    refetchQueries: [
+      { query: AllCoursesQuery },
+      { query: AllEditorCoursesQuery },
+    ],
   })
   const checkSlug = CheckSlugQuery
 
@@ -55,6 +62,7 @@ const CourseEdit = ({
       // - if we update, we also need to refetch that course with a potentially updated slug
       const refetchQueries = [
         { query: AllCoursesQuery },
+        { query: AllEditorCoursesQuery },
         !newCourse
           ? { query: CourseQuery, variables: { slug: values.new_slug } }
           : undefined,
@@ -73,7 +81,7 @@ const CourseEdit = ({
         })
 
         setStatus({ message: null })
-        NextI18Next.Router.push("/courses")
+        Router.push(`/${language}/courses`)
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -86,12 +94,12 @@ const CourseEdit = ({
   const onDelete = useCallback(async (values: CourseFormValues) => {
     if (values.id) {
       await deleteCourse({ variables: { id: values.id } })
-      NextI18Next.Router.push("/courses")
+      Router.push(`/${language}/courses`)
     }
   }, [])
 
   const onCancel = useCallback(() => {
-    NextI18Next.Router.push("/courses")
+    Router.push(`/${language}/courses`)
   }, [])
 
   return (

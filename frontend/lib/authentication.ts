@@ -1,9 +1,9 @@
 import TmcClient from "tmc-client-js"
-import NextI18Next from "../i18n"
 import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
 import { ApolloClient } from "apollo-boost"
 import axios from "axios"
+import Router from "next/router"
 
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
@@ -38,7 +38,7 @@ export const signIn = async ({
   if (redirect) {
     setTimeout(() => {
       if (back) {
-        NextI18Next.Router.push(back)
+        Router.push(back)
       } else {
         window.history.back()
       }
@@ -51,12 +51,45 @@ export const signOut = async (apollo: ApolloClient<any>) => {
   await apollo.resetStore().then(() => {
     document.cookie =
       "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
-    NextI18Next.Router.push("/sign-in")
   })
+  Router.push(Router.asPath)
+}
+
+const getCookie = (key: string) => {
+  if (
+    typeof document === "undefined" ||
+    !document ||
+    (document && !document.cookie)
+  ) {
+    return
+  }
+
+  const vals = document.cookie
+    .split("; ")
+    .reduce<{ [key: string]: string }>((acc, curr) => {
+      try {
+        // @ts-ignore
+        const [key, value] = curr.split("=")
+
+        return {
+          ...acc,
+          [key]: value,
+        }
+      } catch (e) {
+        //
+      }
+
+      return acc
+    }, {})
+
+  return vals[key] || ""
 }
 
 export const getAccessToken = (ctx: NextContext | undefined) => {
-  // @ts-ignore
+  if (!ctx) {
+    return getCookie("access_token")
+  }
+
   return nookies.get(ctx)["access_token"]
 }
 

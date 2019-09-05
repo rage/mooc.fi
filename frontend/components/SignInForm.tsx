@@ -5,11 +5,16 @@ import {
   Input,
   Button,
   FormHelperText,
+  Link,
 } from "@material-ui/core"
 
 import { signIn } from "../lib/authentication"
-import NextI18Next from "../i18n"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
+import LanguageContext from "/contexes/LanguageContext"
+import LoginStateContext from "/contexes/LoginStateContext"
+import getCommonTranslator from "/translations/common"
+import { useContext } from "react"
+// import LangLink from "/components/LangLink"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -30,6 +35,8 @@ function SignIn() {
 
   const emailFieldRef = useRef<HTMLInputElement>(null)
   const passwordFieldRef = useRef<HTMLInputElement>(null)
+
+  let errorTimeout: number | null = null
 
   useEffect(() => {
     const inputFieldSetter = () => {
@@ -60,72 +67,77 @@ function SignIn() {
   }, [])
 
   const classes = useStyles()
-
+  const lng = useContext(LanguageContext)
+  const t = getCommonTranslator(lng.language)
   return (
-    <form className={classes.form}>
-      <NextI18Next.Trans i18nKey="common:loginDetails" />
-      <FormControl required fullWidth error={error}>
-        <InputLabel htmlFor="email">
-          <NextI18Next.Trans i18nKey="common:username" />
-        </InputLabel>
-        <Input
-          id="email"
-          name="email"
-          inputRef={emailFieldRef}
-          autoComplete="nope"
-          onChange={o => {
-            setEmail(o.target.value)
-            setError(false)
-          }}
-        />
-      </FormControl>
-      <FormControl margin="normal" required fullWidth error={error}>
-        <InputLabel htmlFor="password">
-          <NextI18Next.Trans i18nKey="common:password" />
-        </InputLabel>
-        <Input
-          name="password"
-          type="password"
-          id="password"
-          inputRef={passwordFieldRef}
-          autoComplete="nope"
-          onChange={o => {
-            setPassword(o.target.value)
-            setError(false)
-          }}
-        />
-        <FormHelperText error={error}>
-          {error && <NextI18Next.Trans i18nKey="common:error" />}
-        </FormHelperText>
-      </FormControl>
+    <LoginStateContext.Consumer>
+      {({ logInOrOut }) => (
+        <form className={classes.form}>
+          {t("loginDetails")}
+          <FormControl required fullWidth error={error}>
+            <InputLabel htmlFor="email">{t("username")}</InputLabel>
+            <Input
+              id="email"
+              name="email"
+              inputRef={emailFieldRef}
+              autoComplete="nope"
+              onChange={o => {
+                setEmail(o.target.value)
+                setError(false)
+              }}
+            />
+          </FormControl>
+          <FormControl margin="normal" required fullWidth error={error}>
+            <InputLabel htmlFor="password">{t("password")}</InputLabel>
+            <Input
+              name="password"
+              type="password"
+              id="password"
+              inputRef={passwordFieldRef}
+              autoComplete="nope"
+              onChange={o => {
+                setPassword(o.target.value)
+                setError(false)
+              }}
+            />
+            <FormHelperText error={error}>{error && t("error")}</FormHelperText>
+          </FormControl>
 
-      <Button
-        className={classes.submit}
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="secondary"
-        disabled={email.trim() === "" || password.trim() === ""}
-        onClick={async e => {
-          e.preventDefault()
-          try {
-            await signIn({ email, password })
-          } catch (e) {
-            setError(true)
-            setTimeout(() => {
-              setError(false)
-            }, 5000)
-          }
-        }}
-      >
-        <NextI18Next.Trans i18nKey="common:login" />
-      </Button>
-      <NextI18Next.Link href="https://tmc.mooc.fi/password_reset_keys/new">
-        <a href="https://tmc.mooc.fi/password_reset_keys/new">
-          <NextI18Next.Trans i18nKey="common:forgottenpw" />
-        </a>
-      </NextI18Next.Link>
-    </form>
+          <Button
+            className={classes.submit}
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            disabled={email.trim() === "" || password.trim() === ""}
+            onClick={async e => {
+              e.preventDefault()
+              try {
+                await signIn({ email, password }).then(logInOrOut)
+                if (errorTimeout) {
+                  clearTimeout(errorTimeout)
+                }
+              } catch (e) {
+                setError(true)
+                errorTimeout = setTimeout(() => {
+                  setError(false)
+                  if (errorTimeout) {
+                    clearTimeout(errorTimeout)
+                  }
+                }, 5000)
+              }
+            }}
+          >
+            {t("login")}
+          </Button>
+          <Link href="https://tmc.mooc.fi/password_reset_keys/new">
+            <a href="https://tmc.mooc.fi/password_reset_keys/new">
+              {t("forgottenpw")}
+            </a>
+          </Link>
+        </form>
+      )}
+    </LoginStateContext.Consumer>
   )
 }
 

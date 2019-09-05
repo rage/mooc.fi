@@ -1,7 +1,7 @@
 import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
-import { AllCompletions_completionsPaginated_edges_node } from "../../static/types/generated/AllCompletions"
+import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
 
 const useStyles = makeStyles(() =>
   createStyles({

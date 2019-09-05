@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Field,
@@ -10,22 +10,24 @@ import {
   FieldArray,
   getIn,
 } from "formik"
+import {
+  InputLabel,
+  FormGroup,
+  FormControl,
+  Grid,
+  MenuItem,
+  Typography,
+  InputAdornment,
+  Tooltip,
+  Paper,
+  Button,
+} from "@material-ui/core"
 import * as Yup from "yup"
-import FormWrapper from "../FormWrapper"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 import { TextField } from "formik-material-ui"
-import InputLabel from "@material-ui/core/InputLabel"
-import FormGroup from "@material-ui/core/FormGroup"
-import FormControl from "@material-ui/core/FormControl"
-import Grid from "@material-ui/core/Grid"
-import MenuItem from "@material-ui/core/MenuItem"
-import Typography from "@material-ui/core/Typography"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import Tooltip from "@material-ui/core/Tooltip"
-import Paper from "@material-ui/core/Paper"
-import Button from "@material-ui/core/Button"
-import ConfirmationDialog from "../../ConfirmationDialog"
+import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import useDebounce from "/util/useDebounce"
 import HelpIcon from "@material-ui/icons/Help"
 
@@ -83,6 +85,10 @@ const EntryContainer = styled(Paper)`
   padding: 20px;
 `
 
+// prevent borked image on page load
+const pixel =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+
 const renderForm = ({
   errors,
   values,
@@ -97,6 +103,17 @@ const renderForm = ({
 
   const image = useDebounce(values.image, 500)
   const slug = useDebounce(values.new_slug, 500)
+
+  const [imageFilename, setImageFilename] = useState(pixel)
+
+  useEffect(() => {
+    if (image) {
+      setImageFilename(`/static/images/${image}`)
+    } else {
+      setImageFilename(`/static/images/${slug}.jpg`)
+    }
+  }, [image, slug])
+
   return (
     <Form>
       <Grid container direction="row" spacing={2}>
@@ -157,11 +174,7 @@ const renderForm = ({
         <OutlinedInputLabel shrink>Image preview</OutlinedInputLabel>
         <OutlinedFormGroup>
           <ModuleImage
-            src={
-              image
-                ? `../../../static/images/${image}`
-                : `../../../static/images/${slug}.jpg`
-            }
+            src={imageFilename}
             error={!!imageError}
             onError={() => setImageError("no image found")}
             onLoad={() => setImageError("")}
@@ -195,7 +208,7 @@ const renderForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values!.study_module_translations!.length ? (
+              {values && (values.study_module_translations || []).length ? (
                 (values.study_module_translations || []).map(
                   (_: any, index: number) => (
                     <LanguageEntry item key={`translation-${index}`}>
@@ -275,17 +288,19 @@ const renderForm = ({
                   </Typography>
                 </EntryContainer>
               )}
-              {values!.study_module_translations!.length < languages.length && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  disabled={isSubmitting}
-                  onClick={() => helpers.push({ ...initialTranslation })}
-                >
-                  Add translation
-                </Button>
-              )}
+              {values &&
+                (values.study_module_translations || []).length <
+                  languages.length && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={isSubmitting}
+                    onClick={() => helpers.push({ ...initialTranslation })}
+                  >
+                    Add translation
+                  </Button>
+                )}
             </>
           )}
         />

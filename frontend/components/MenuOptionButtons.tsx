@@ -1,17 +1,20 @@
 import * as React from "react"
 import Button from "@material-ui/core/Button"
-import { signOut } from "../lib/authentication"
-import LoginStateContext from "../contexes/LoginStateContext"
-import UserDetailContext from "../contexes/UserDetailContext"
+import { signOut } from "/lib/authentication"
+import LoginStateContext from "/contexes/LoginStateContext"
+import UserDetailContext from "/contexes/UserDetailContext"
 import { useApolloClient, useQuery } from "@apollo/react-hooks"
-import NextI18Next from "../i18n"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser as profileIcon } from "@fortawesome/free-solid-svg-icons"
 import AdminIcon from "@material-ui/icons/AssignmentInd"
 import styled from "styled-components"
 import { gql } from "apollo-boost"
-import { UserOverView } from "../static/types/generated/UserOverView"
+import { UserOverView } from "/static/types/generated/UserOverView"
 import ErrorBoundary from "./ErrorBoundary"
+import LanguageContext from "/contexes/LanguageContext"
+import getCommonTranslator from "/translations/common"
+import { useContext } from "react"
+import LangLink from "/components/LangLink"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -34,8 +37,9 @@ const StyledButton = styled(Button)`
   font-size: 18px;
 `
 const MenuOptionButtons = () => {
-  const loggedIn = React.useContext(LoginStateContext)
   const isAdmin = React.useContext(UserDetailContext)
+  const { language } = useContext(LanguageContext)
+  const t = getCommonTranslator(language)
   const client = useApolloClient()
   const { loading, error, data } = useQuery<UserOverView>(UserDetailQuery)
 
@@ -60,45 +64,61 @@ const MenuOptionButtons = () => {
 
   return (
     <ErrorBoundary>
-      <React.Fragment>
-        {loggedIn ? (
-          <div>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              onClick={() => signOut(client)}
-            >
-              <NextI18Next.Trans i18nKey="common:logout" />
-            </StyledButton>
-            <StyledButton color="inherit" variant="text" href="/profile">
-              {isAdmin ? (
-                <>
-                  <AdminIcon style={{ marginRight: "0.2rem" }} /> Admin:{" "}
-                </>
-              ) : (
-                <StyledIcon icon={profileIcon} />
-              )}
-              {userDisplayName}
-            </StyledButton>
-            {isAdmin ? (
-              <StyledButton color="inherit" variant="text" href="/courses">
-                Courses
-              </StyledButton>
+      <LoginStateContext.Consumer>
+        {({ loggedIn, logInOrOut }) => (
+          <React.Fragment>
+            {loggedIn ? (
+              <div>
+                <StyledButton
+                  color="inherit"
+                  variant="text"
+                  onClick={() => signOut(client).then(logInOrOut)}
+                >
+                  {t("logout")}
+                </StyledButton>
+                <LangLink href="/[lng]/profile" as={`/${language}/profile`}>
+                  <StyledButton color="inherit" variant="text">
+                    {isAdmin ? (
+                      <>
+                        <AdminIcon style={{ marginRight: "0.2rem" }} /> Admin:{" "}
+                      </>
+                    ) : (
+                      <StyledIcon icon={profileIcon} />
+                    )}
+                    {userDisplayName}
+                  </StyledButton>
+                </LangLink>
+                {isAdmin ? (
+                  <LangLink href="/[lng]/admin" as={`/${language}/admin`}>
+                    <StyledButton color="inherit" variant="text">
+                      Admin panel
+                    </StyledButton>
+                  </LangLink>
+                ) : (
+                  ""
+                )}
+              </div>
             ) : (
-              ""
+              <>
+                <LangLink href="/[lng]/sign-in" as={`/${language}/sign-in`}>
+                  <StyledButton color="inherit" variant="text">
+                    {t("loginShort")}
+                  </StyledButton>
+                </LangLink>
+                <LangLink
+                  href="/[lng]/sign-up"
+                  as={`/${language}/sign-up`}
+                  prefetch={false}
+                >
+                  <StyledButton color="inherit" variant="text">
+                    {t("signUp")}
+                  </StyledButton>
+                </LangLink>
+              </>
             )}
-          </div>
-        ) : (
-          <>
-            <StyledButton color="inherit" variant="text" href="/sign-in">
-              <NextI18Next.Trans i18nKey="common:loginShort" />
-            </StyledButton>
-            <StyledButton color="inherit" variant="text" href="/sign-up">
-              <NextI18Next.Trans i18nKey="common:signUp" />
-            </StyledButton>
-          </>
+          </React.Fragment>
         )}
-      </React.Fragment>
+      </LoginStateContext.Consumer>
     </ErrorBoundary>
   )
 }

@@ -11,12 +11,12 @@ import {
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
-import NextI18Next from "i18n"
 import CourseImage from "./CourseImage"
-import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import styled from "styled-components"
+import LangLink from "/components/LangLink"
 
-const CardBase = styled(Card)<{ ishidden?: boolean | null }>`
+const CardBase = styled(Card)<{ ishidden?: number | null }>`
   padding: 0.8em;
   background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
 `
@@ -27,71 +27,71 @@ const CardMedia = styled(MUICardMedia)`
   object-fit: cover;
 `
 
-const CourseCard = ({ course }: { course?: AllCourses_courses }) => (
-  <Grid item xs={12} sm={6} lg={3}>
-    <CardBase ishidden={course && course.hidden}>
-      <CardMedia>
-        {course ? (
-          <CourseImage photo={course.photo} alt={course.name} />
-        ) : (
-          <NextI18Next.Link href={`/courses/new`}>
-            <a>
-              <Grid
-                container
-                justify="center"
-                alignItems="center"
-                style={{ height: "100%" }}
-              >
-                <AddCircleIcon fontSize="large" />
-              </Grid>
-            </a>
-          </NextI18Next.Link>
-        )}
-      </CardMedia>
-      <CardContent>
-        <Typography variant="h5" component="h2" gutterBottom={true}>
-          {course ? course.name : "New Course"}
-        </Typography>
-      </CardContent>
-      <CardActionArea>
-        {course ? (
-          <React.Fragment>
-            <NextI18Next.Link
-              as={`/courses/${course.slug}`}
-              href="/courses/[id]"
-            >
-              <a aria-label={`To the homepage of course ${course.name}`}>
-                <Button variant="contained" color="secondary" fullWidth>
-                  <DashboardIcon />
-                  Course Dashboard
-                </Button>
+const CourseCard = React.memo(
+  ({ course }: { course?: AllEditorCourses_courses }) => (
+    <Grid item xs={12} sm={6} lg={3}>
+      <CardBase ishidden={course && course.hidden ? 1 : undefined}>
+        <CardMedia>
+          {course ? (
+            <CourseImage photo={course.photo} alt={course.name} />
+          ) : (
+            <LangLink href={`/courses/new`}>
+              <a>
+                <Grid
+                  container
+                  justify="center"
+                  alignItems="center"
+                  style={{ height: "100%" }}
+                >
+                  <AddCircleIcon fontSize="large" />
+                </Grid>
               </a>
-            </NextI18Next.Link>
-            <NextI18Next.Link
-              as={`/courses/${course.slug}/edit`}
-              href={`/courses/[id]/edit`}
-            >
+            </LangLink>
+          )}
+        </CardMedia>
+        <CardContent>
+          <Typography variant="h5" component="h2" gutterBottom={true}>
+            {course ? course.name : "New Course"}
+          </Typography>
+        </CardContent>
+        <CardActionArea component="div">
+          {course ? (
+            <React.Fragment>
+              <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
+                <a aria-label={`To the homepage of course ${course.name}`}>
+                  <Button variant="contained" color="secondary" fullWidth>
+                    <DashboardIcon />
+                    Course Dashboard
+                  </Button>
+                </a>
+              </LangLink>
+              <LangLink
+                href="/courses/[id]/edit"
+                as={`/courses/${course.slug}/edit`}
+                prefetch={false}
+              >
+                <a>
+                  <Button variant="contained" color="secondary" fullWidth>
+                    <EditIcon />
+                    Edit
+                  </Button>
+                </a>
+              </LangLink>
+            </React.Fragment>
+          ) : (
+            <LangLink href={`/courses/new`}>
               <a>
                 <Button variant="contained" color="secondary" fullWidth>
-                  <EditIcon />
-                  Edit
+                  <AddIcon />
+                  Create
                 </Button>
               </a>
-            </NextI18Next.Link>
-          </React.Fragment>
-        ) : (
-          <NextI18Next.Link href={`/courses/new`}>
-            <a>
-              <Button variant="contained" color="secondary" fullWidth>
-                <AddIcon />
-                Create
-              </Button>
-            </a>
-          </NextI18Next.Link>
-        )}
-      </CardActionArea>
-    </CardBase>
-  </Grid>
+            </LangLink>
+          )}
+        </CardActionArea>
+      </CardBase>
+    </Grid>
+  ),
 )
 
 export default CourseCard
