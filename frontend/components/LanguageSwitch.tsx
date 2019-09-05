@@ -28,7 +28,7 @@ const LanguageSwitch = () => {
           <Link as={url} href={hrefUrl} prefetch={false}>
             <SwitchLink href={url}>
               <Language style={{ marginRight: "0.4rem" }} />
-              <p style={{ marginTop: "0.2rem" }}>
+              <p style={{ marginTop: "0.2rem" }} data-testid="language-switch">
                 {language === "en" ? "Suomi" : "English"}
               </p>
             </SwitchLink>

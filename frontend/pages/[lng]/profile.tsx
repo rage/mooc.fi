@@ -3,12 +3,12 @@ import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import { UserOverView as UserOverViewData } from "/static/types/generated/UserOverView"
+import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 
 export const UserOverViewQuery = gql`
-  query UserOverView {
+  query ProfileUserOverView {
     currentUser {
       id
       upstream_id

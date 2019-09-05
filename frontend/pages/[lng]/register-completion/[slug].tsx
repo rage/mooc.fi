@@ -78,12 +78,13 @@ interface RegisterCompletionPageProps {
   router: any
   slug?: string | string[]
 }
+
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const { router, slug } = props
   const classes = useStyles()
-  const lng = useContext(LanguageContext)
+  const { language } = useContext(LanguageContext)
+  const t = getRegisterCompletionTranslator(language)
 
-  const t = getRegisterCompletionTranslator(lng.language)
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (error) {

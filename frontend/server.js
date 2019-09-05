@@ -16,6 +16,15 @@ const handle = app.getRequestHandler()
 
 const DirectFrom = Redirects.redirects_list
 
+const { buildSchema } = require("graphql")
+const graphqlHTTP = require("express-graphql")
+const bodyParser = require("body-parser")
+const cors = require("cors")
+
+const cypress = process.env.CYPRESS === "true"
+const fs = require("fs")
+const path = require("path")
+
 const main = async () => {
   try {
     await app.prepare()
@@ -39,7 +48,6 @@ const main = async () => {
       redirect => redirect.from === req.url,
     )
     if (redirectNeeded) {
-      console.log("")
       res.redirect(redirectNeeded.to)
     }
 
@@ -48,6 +56,46 @@ const main = async () => {
 
   await server.listen(port)
   console.log(`> Ready on http://localhost:${port}`) // eslint-disable-line no-console
+
+  if (cypress) {
+    const mockBackend = express()
+    mockBackend.use(bodyParser.json())
+    mockBackend.use(cors({ origin: "http://localhost:3000" }))
+
+    const schemaCode = fs.readFileSync(
+      path.resolve(__dirname, "./schema.graphql"),
+      "utf8",
+    )
+    const schema = buildSchema(schemaCode)
+    const resolver = {}
+
+    /* 
+      POST to /mock in format 
+        { 
+          query: "QUERY_NAME", 
+          result: "QUERY_RESULT" 
+        }
+      creates (or replaces) a resolver for said query returning result
+    */
+
+    mockBackend.post("/mock", (req, res) => {
+      resolver[req.body.query] = () => req.body.result
+
+      res.json(req.body.result)
+    })
+
+    mockBackend.use("/", (req, res) => {
+      graphqlHTTP({
+        schema,
+        rootValue: resolver,
+        context: { schemaCode },
+        graphiql: true,
+      })(req, res)
+    })
+
+    await mockBackend.listen(4000)
+    console.log("> Mock backend ready on http://localhost:4000")
+  }
 }
 
 const main2 = async () => {
