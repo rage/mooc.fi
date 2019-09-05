@@ -12,6 +12,12 @@ import fetch from "isomorphic-unfetch"
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
+// @ts-ignore
+const cypress =
+  process.env.CYPRESS === "true" ||
+  (typeof window !== "undefined" &&
+    window.Cypress &&
+    window.Cypress.env("CYPRESS") === "true")
 
 function create(initialState: any, accessToken?: string) {
   const authLink = setContext((_, { headers }) => ({
