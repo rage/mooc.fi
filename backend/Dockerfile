@@ -17,5 +17,6 @@ RUN npm ci \
 ENV NODE_ENV=production
 
 EXPOSE 4000
+EXPOSE 7001
 
 CMD [ "npm", "run", "start" ]

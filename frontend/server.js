@@ -2,16 +2,16 @@ process.on("unhandledRejection", (...args) => {
   console.log(JSON.stringify(args, undefined, 2))
 })
 
+const isProduction = process.env.NODE_ENV === "production"
 const express = require("express")
 
 const next = require("next")
-const nextI18NextMiddleware = require("next-i18next/middleware").default
+
 const compression = require("compression")
-const nextI18next = require("./i18n")
 
 const Redirects = require("./Redirects")
 const port = process.env.PORT || 3000
-const app = next({ dev: process.env.NODE_ENV !== "production" })
+const app = next({ dev: !isProduction })
 const handle = app.getRequestHandler()
 
 const DirectFrom = Redirects.redirects_list
@@ -26,39 +26,20 @@ const main = async () => {
 
   const server = express()
   server.use(compression())
-  server.use(nextI18NextMiddleware(nextI18next))
 
-  server.use((req, res, next) => {
-    const urlLanguagePath = req.originalUrl.split("/")[1]
-    //if it is a request to _next or /static/, do nothing
-    if (urlLanguagePath === "_next" || urlLanguagePath === "static") {
-    } else {
-      if (urlLanguagePath === "se" || urlLanguagePath === "en") {
-        req.language = urlLanguagePath
-        if (req.i18n) {
-          req.i18n.changeLanguage(urlLanguagePath)
-        }
-      } else {
-        req.language = "fi"
-        if (req.i18n) {
-          req.i18n.changeLanguage("fi")
-        }
-      }
-    }
-    next()
-  })
-
-  server.get("/register-completion/:slug", (req, res) => {
-    const actualPage = "/register-completion"
-    const queryParams = { slug: req.params.slug }
-    return app.render(req, res, actualPage, queryParams)
-  })
+  if (isProduction) {
+    server.get(/^\/static\/fonts\//, (_, res, next) => {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+      next()
+    })
+  }
 
   server.get("*", (req, res) => {
     const redirectNeeded = DirectFrom.find(
       redirect => redirect.from === req.url,
     )
     if (redirectNeeded) {
+      console.log("")
       res.redirect(redirectNeeded.to)
     }
 

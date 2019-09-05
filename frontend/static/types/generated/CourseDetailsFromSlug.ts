@@ -13,7 +13,7 @@ export interface CourseDetailsFromSlug_course {
 }
 
 export interface CourseDetailsFromSlug {
-  course: CourseDetailsFromSlug_course
+  course: CourseDetailsFromSlug_course | null
 }
 
 export interface CourseDetailsFromSlugVariables {

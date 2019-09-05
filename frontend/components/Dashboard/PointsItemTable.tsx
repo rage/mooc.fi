@@ -3,7 +3,7 @@ import LinearProgress from "@material-ui/core/LinearProgress"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 
-import { pointsDataByGroup } from "../../static/types/PointsByService"
+import { pointsDataByGroup } from "/static/types/PointsByService"
 
 const ChartContainer = styled.div`
   display: flex;
@@ -99,6 +99,7 @@ interface TableProps {
   showDetailedBreakdown: boolean
   cutterValue: number
 }
+
 function PointsItemTable(props: TableProps) {
   const { studentPoints, showDetailedBreakdown, cutterValue } = props
 

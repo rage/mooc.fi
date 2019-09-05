@@ -2,6 +2,7 @@ import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import { DocumentNode } from "apollo-boost"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -30,6 +31,7 @@ export const initialValues: CourseFormValues = {
   course_translations: [initialTranslation],
   open_university_registration_links: [],
   order: undefined,
+  study_module_order: undefined,
 }
 
 export const statuses = [
@@ -70,7 +72,7 @@ const courseEditSchema = ({
   initialSlug,
 }: {
   client: ApolloClient<object>
-  checkSlug: Function
+  checkSlug: DocumentNode
   initialSlug: string | null
 }) =>
   Yup.object().shape({
@@ -134,6 +136,9 @@ const courseEditSchema = ({
     order: Yup.number()
       .transform(value => (isNaN(value) ? undefined : Number(value)))
       .integer("must be integer"),
+    study_module_order: Yup.number()
+      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .integer("must be integer"),
   })
 
 const validateSlug = ({
@@ -141,7 +146,7 @@ const validateSlug = ({
   client,
   initialSlug,
 }: {
-  checkSlug: Function
+  checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>

@@ -16,7 +16,7 @@ const CourseDashboard = () => (
     <Card>
       <CardMedia
         component="img"
-        image="../static/images/coming-soon.png"
+        image="/static/images/coming-soon.png"
         title="Dashboard coming soon"
         alt="Street sign stating coming soon"
       />

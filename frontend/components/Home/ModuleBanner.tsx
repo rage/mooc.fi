@@ -1,7 +1,9 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
-import { ObjectifiedModule } from "../../static/types/moduleTypes"
+import Skeleton from "@material-ui/lab/Skeleton"
+import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import ModuleImage from "/components/Home/ModuleImage"
 
 const ModuleBannerContainer = styled.section`
   display: flex;
@@ -36,32 +38,37 @@ const Title = styled(Typography)`
   }
 `
 
-const ImageBackground = styled.div`
+const SkeletonBackground = styled(Skeleton)`
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  background-size: cover;
-  background-repeat: no-repeat;
   z-index: -2;
-  background-position: center;
 `
 
-function ModuleBanner({ module }: { module: ObjectifiedModule }) {
-  const imageUrl = module!.image
-    ? `../../static/images/${module.image}`
-    : `../../static/images/${module.slug}.jpg`
-
-  return (
-    <ModuleBannerContainer>
-      <img style={{ display: "none" }} src={imageUrl} alt="" />
-      <Title component="h2" variant="h2" align="center">
-        {module.name}
-      </Title>
-      <ImageBackground style={{ backgroundImage: `url(${imageUrl}` }} />
-    </ModuleBannerContainer>
-  )
-}
+const ModuleBanner = ({
+  module,
+}: {
+  module?: AllModules_study_modules_with_courses
+}) => (
+  <ModuleBannerContainer>
+    {module ? (
+      <>
+        <Title component="h2" variant="h2" align="center">
+          {module.name}
+        </Title>
+        <ModuleImage module={module} />
+      </>
+    ) : (
+      <>
+        <Title component="h2" variant="h2" align="center">
+          <Skeleton variant="text" />
+        </Title>
+        <SkeletonBackground variant="rect" height="100%" />
+      </>
+    )}
+  </ModuleBannerContainer>
+)
 
 export default ModuleBanner

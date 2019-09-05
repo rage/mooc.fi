@@ -6,10 +6,13 @@ import { renderToString } from "react-dom/server"
 import { NextPageContext as NextContext } from "next"
 import { ApolloClient, NormalizedCacheObject } from "apollo-boost"
 import { AppContext } from "next/app"
+import { getAccessToken } from "/lib/authentication"
 
 interface Props {
   ctx: NextContext
   apolloState: any
+  accessToken?: string
+  apollo: ApolloClient<NormalizedCacheObject>
 }
 
 const withApolloClient = (App: any) => {
@@ -17,6 +20,7 @@ const withApolloClient = (App: any) => {
     static displayName = "withApollo(App)"
 
     apolloClient: ApolloClient<NormalizedCacheObject>
+
     static async getInitialProps(appComponentContext: AppContext) {
       const { Component, router } = appComponentContext
 
@@ -27,29 +31,34 @@ const withApolloClient = (App: any) => {
 
       // Run all GraphQL queries in the component tree
       // and extract the resulting data
-      const apollo = initApollo(undefined, appComponentContext.ctx)
+      const accessToken = getAccessToken(appComponentContext.ctx)
+
+      const apollo = initApollo(undefined, accessToken)
+
       if (!process.browser) {
         try {
-          // Run all GraphQL queries
-          await getDataFromTree(
-            <App
-              {...appProps}
-              Component={Component}
-              router={router}
-              apollo={apollo}
-            />,
-          )
-          await getMarkupFromTree({
-            renderFunction: renderToString,
-            tree: (
+          await Promise.all([
+            getDataFromTree(
               <App
                 {...appProps}
                 Component={Component}
                 router={router}
                 apollo={apollo}
-              />
+              />,
             ),
-          })
+            getMarkupFromTree({
+              renderFunction: renderToString,
+              tree: (
+                <App
+                  {...appProps}
+                  Component={Component}
+                  router={router}
+                  apollo={apollo}
+                />
+              ),
+            }),
+          ])
+          // Run all GraphQL queries
         } catch (error) {
           // Prevent Apollo Client GraphQL errors from crashing SSR.
           // Handle them in components via the data.error prop:
@@ -59,7 +68,9 @@ const withApolloClient = (App: any) => {
 
         // getDataFromTree does not call componentWillUnmount
         // head side effect therefore need to be cleared manually
-        Head.rewind()
+        if (!process.browser) {
+          Head.rewind()
+        }
       }
 
       // Extract query data from the Apollo store
@@ -68,12 +79,13 @@ const withApolloClient = (App: any) => {
       return {
         ...appProps,
         apolloState,
+        accessToken,
       }
     }
 
     constructor(props: Props) {
       super(props)
-      this.apolloClient = initApollo(props.apolloState, undefined)
+      this.apolloClient = initApollo(props.apolloState, props.accessToken)
     }
 
     render() {

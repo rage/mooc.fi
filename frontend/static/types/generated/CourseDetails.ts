@@ -45,6 +45,7 @@ export interface CourseDetails_course {
   name: string
   slug: string
   order: number | null
+  study_module_order: number | null
   photo: CourseDetails_course_photo | null
   promote: boolean | null
   start_point: boolean | null
@@ -59,7 +60,7 @@ export interface CourseDetails_course {
 }
 
 export interface CourseDetails {
-  course: CourseDetails_course
+  course: CourseDetails_course | null
 }
 
 export interface CourseDetailsVariables {

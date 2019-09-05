@@ -1,11 +1,12 @@
 import React from "react"
-import PropTypes from "prop-types"
 import Document, { Head, Main, NextScript } from "next/document"
 import flush from "styled-jsx/server"
 import { ServerStyleSheets } from "@material-ui/styles"
 import theme from "../src/theme"
 import { ServerStyleSheet } from "styled-components"
+// import FontStyle from "/src/fonts"
 
+import { fontCss } from "/src/fonts"
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const sheets = new ServerStyleSheets()
@@ -30,8 +31,10 @@ class MyDocument extends Document {
       return {
         ...initialProps,
 
+        // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
         styles: (
           <React.Fragment>
+            {initialProps.styles}
             {sheets.getStyleElement()}
             {sheet.getStyleElement()}
             {flush() || null}
@@ -60,6 +63,7 @@ class MyDocument extends Document {
           />
         </Head>
         <body>
+          <style dangerouslySetInnerHTML={{ __html: fontCss }} />
           <Main />
           <NextScript />
         </body>

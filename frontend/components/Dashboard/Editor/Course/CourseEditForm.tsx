@@ -23,14 +23,14 @@ import {
 import { TextField, Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
-import ImageDropzoneInput from "../../ImageDropzoneInput"
-import ImagePreview from "../../ImagePreview"
+import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
+import ImagePreview from "/components/Dashboard/ImagePreview"
 import { statuses } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
-import { addDomain } from "../../../../util/imageUtils"
-import FormWrapper from "../FormWrapper"
-import { StudyModules_study_modules } from "../../../../static/types/StudyModules"
+import { addDomain } from "/util/imageUtils"
+import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
+import { StudyModules_study_modules } from "/static/types/StudyModules"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -77,22 +77,24 @@ const ModuleListItem = styled(ListItem)<any>`
   padding: 0px;
 `
 
-const renderForm = ({
-  studyModules,
-}: {
-  studyModules?: StudyModules_study_modules[]
-}) => ({
+const renderForm = (studyModules?: StudyModules_study_modules[]) => ({
   errors,
   values,
   isSubmitting,
   setFieldValue,
-}: Pick<
+}: // setStatus
+Pick<
   FormikProps<CourseFormValues>,
-  "errors" | "values" | "isSubmitting" | "setFieldValue" | "initialValues"
+  | "errors"
+  | "values"
+  | "isSubmitting"
+  | "setFieldValue"
+  | "initialValues"
+  | "setStatus"
 >) => (
   <Form>
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={10}>
+      <Grid item xs={12} sm={6} md={8}>
         <Field
           name="name"
           type="text"
@@ -104,12 +106,24 @@ const renderForm = ({
           component={StyledTextField}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={6} sm={3} md={2}>
         <Field
           name="order"
           type="number"
           label="Order"
           error={errors.order}
+          fullWidth
+          autoComplete="off"
+          variant="outlined"
+          component={StyledTextField}
+        />
+      </Grid>
+      <Grid item xs={6} sm={3} md={2}>
+        <Field
+          name="study_module_order"
+          type="number"
+          label="In-module order"
+          error={errors.study_module_order}
           fullWidth
           autoComplete="off"
           variant="outlined"
@@ -323,7 +337,7 @@ const CourseEditForm = React.memo(
         render={formikProps => (
           <FormWrapper<CourseFormValues>
             {...formikProps}
-            renderForm={renderForm({ studyModules })}
+            renderForm={renderForm(studyModules)}
             onCancel={onCancel}
             onDelete={onDelete}
           />

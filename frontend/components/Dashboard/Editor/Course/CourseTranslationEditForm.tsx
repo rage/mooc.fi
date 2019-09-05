@@ -3,7 +3,7 @@ import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { TextField } from "formik-material-ui"
 import { CourseTranslationFormValues } from "./types"
-import ConfirmationDialog from "../../ConfirmationDialog"
+import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 
@@ -69,7 +69,7 @@ const CourseTranslationEditForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values!.length ? (
+              {values && values.length ? (
                 values.map((_: any, index: number) => (
                   <LanguageEntry item key={`translation-${index}`}>
                     <EntryContainer elevation={2}>
@@ -159,7 +159,7 @@ const CourseTranslationEditForm = ({
                   </Typography>
                 </EntryContainer>
               )}
-              {values!.length < languages.length && (
+              {values && values.length < languages.length && (
                 <Button
                   variant="contained"
                   color="primary"

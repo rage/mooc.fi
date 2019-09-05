@@ -70,7 +70,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
             OR: {
               id: user_id,
               upstream_id: user_upstream_id,
-              ...buildSearch(
+              OR: buildSearch(
                 [
                   "first_name_contains",
                   "last_name_contains",

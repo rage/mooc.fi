@@ -53,6 +53,7 @@ export interface addCourse_addCourse {
   slug: string
   name: string
   order: number | null
+  study_module_order: number | null
   photo: addCourse_addCourse_photo | null
   course_translations: addCourse_addCourse_course_translations[] | null
   open_university_registration_links:
@@ -81,4 +82,5 @@ export interface addCourseVariables {
     | null
   study_modules?: StudyModuleWhereUniqueInput[] | null
   order?: number | null
+  study_module_order?: number | null
 }
