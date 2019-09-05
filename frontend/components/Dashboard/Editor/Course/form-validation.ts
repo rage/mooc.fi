@@ -2,7 +2,7 @@ import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import { DocumentNode } from "graphql"
+import { DocumentNode } from "apollo-boost"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
