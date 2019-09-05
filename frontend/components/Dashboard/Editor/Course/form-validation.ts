@@ -2,6 +2,7 @@ import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../../static/types/globalTypes"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import { DocumentNode } from "graphql"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -71,7 +72,7 @@ const courseEditSchema = ({
   initialSlug,
 }: {
   client: ApolloClient<object>
-  checkSlug: Function
+  checkSlug: DocumentNode
   initialSlug: string | null
 }) =>
   Yup.object().shape({
@@ -145,7 +146,7 @@ const validateSlug = ({
   client,
   initialSlug,
 }: {
-  checkSlug: Function
+  checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
