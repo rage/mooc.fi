@@ -66,6 +66,7 @@ const gridLayout = (count: number): { [key: string]: number } =>
 
 function NaviCard(props: NaviCardProps) {
   const { item, count } = props
+  console.log(item)
   const image = require(`../../static/images/${item.img}`)
 
   return (
