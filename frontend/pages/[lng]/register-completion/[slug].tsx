@@ -44,7 +44,7 @@ const useStyles = makeStyles(() =>
 )
 
 export const UserOverViewQuery = gql`
-  query RegisterCompletionUserOverView {
+  query RegisterCompletionUserOverView($language: String) {
     currentUser {
       id
       upstream_id
@@ -57,10 +57,11 @@ export const UserOverViewQuery = gql`
         completion_link
         student_number
         created_at
-        course {
+        course(language: $language) {
           id
           slug
           name
+          ects
         }
         completions_registered {
           id
@@ -81,10 +82,13 @@ interface RegisterCompletionPageProps {
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const { router, slug } = props
   const classes = useStyles()
-  const lng = useContext(LanguageContext)
+  const { language } = useContext(LanguageContext)
 
-  const t = getRegisterCompletionTranslator(lng.language)
-  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const t = getRegisterCompletionTranslator(language)
+  const { loading, error, data } = useQuery<UserOverViewData>(
+    UserOverViewQuery,
+    { variables: { language } },
+  )
 
   if (error) {
     return (
@@ -152,7 +156,7 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
         {t("title")}
       </Typography>
       <Typography variant="h6" component="p" className={classes.courseInfo}>
-        {t("course")}
+        {t("course", { course: completion.course.name })}
       </Typography>
       <Typography
         variant="h6"
@@ -160,7 +164,7 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
         className={classes.courseInfo}
         gutterBottom={true}
       >
-        {t("credits")}
+        {t("credits", { ects: completion.course.ects })}
       </Typography>
       <Paper className={classes.paper}>
         <Typography variant="body1" paragraph>
