@@ -26,7 +26,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     args: {
       name: stringArg(),
       slug: stringArg(),
-      // photo: idArg(),
+      ects: stringArg(),
       new_photo: arg({ type: "Upload", required: false }),
       base64: booleanArg(),
       start_point: booleanArg(),
@@ -56,6 +56,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const {
         name,
         slug,
+        ects,
         start_point,
         hidden,
         study_module_start_point,
@@ -83,6 +84,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const course: Course = await prisma.createCourse({
         name,
         slug,
+        ects,
         promote,
         start_point,
         hidden,
@@ -135,6 +137,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       name: stringArg(),
       slug: stringArg(),
       new_slug: stringArg(),
+      ects: stringArg(),
       photo: idArg(),
       new_photo: arg({ type: "Upload", required: false }),
       base64: booleanArg(),
@@ -167,6 +170,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         name,
         slug,
         new_slug,
+        ects,
         new_photo,
         base64,
         start_point,
@@ -266,6 +270,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         data: {
           name,
           slug: new_slug ? new_slug : slug,
+          ects,
           photo: !!photo ? { connect: { id: photo } } : null,
           start_point,
           promote,

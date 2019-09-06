@@ -1,7 +1,7 @@
 {
     "title": "Opintopisteiden Rekisteröinti",
-    "course": "Kurssi: The elements of AI.",
-    "credits": "Opintopisteet: 2 (Vaatii suomalaisen henkilötunnuksen).",
+    "course": "Kurssi: {{course}}",
+    "credits": "Opintopisteet: {{ects}} (Vaatii suomalaisen henkilötunnuksen).",
     "credits_details": "Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin. Opintosuorituksen rekisteröinti on ilmaista.",
     "donow": "Sinun tulee ilmoittautua Helsingin yliopiston avoimeen yliopistoon, jotta voimme rekisteröidä suorituksesi.",
     "instructions-title": "Toimi näin:",
