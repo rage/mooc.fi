@@ -1,7 +1,7 @@
 {
     "title": "Register Completion",
-    "course": "Course: The Elements of AI.",
-    "credits":"Credits: 2 (Requires a Finnish social security number). ",
+    "course": "Course: {{course}}",
+    "credits":"Credits: {{ects}} (Requires a Finnish social security number). ",
     "credits_details": "The open university of the University of Helsinki is responsible for registering the credits. Registering the credits is free.",
     "donow": "Register to the Open University of the University of Helsinki, so we can process your credits.",
     "instructions-title": "Follow these instructions: ",

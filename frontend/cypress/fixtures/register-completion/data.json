@@ -38,9 +38,10 @@
           "completion_link": "what",
           "student_number": "123123",
           "course": {
-            "id": "course1",
+            "id": "course1en",
             "slug": "course1",
-            "name": "course 1"
+            "name": "Course in English",
+            "ects": "2"
           },
           "completions_registered": [
             {
@@ -59,7 +60,8 @@
           "course": {
             "id": "course1",
             "slug": "course1",
-            "name": "kurssi 1"
+            "name": "Kurssi suomeksi",
+            "ects": "2"
           },
           "completions_registered": [
             {

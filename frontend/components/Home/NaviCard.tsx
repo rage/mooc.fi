@@ -46,11 +46,11 @@ type NaviItem = {
 
 interface NaviCardProps {
   item: NaviItem
-  odd: boolean
+  count: number
 }
 
-const gridLayout = (odd: boolean): { [key: string]: number } =>
-  odd
+const gridLayout = (count: number): { [key: string]: number } =>
+  count % 2 === 1
     ? {
         xs: 12,
         sm: 6,
@@ -61,15 +61,16 @@ const gridLayout = (odd: boolean): { [key: string]: number } =>
         xs: 12,
         sm: 6,
         md: 6,
-        lg: 3,
+        lg: count <= 2 ? 6 : 3,
       }
 
 function NaviCard(props: NaviCardProps) {
-  const { item, odd } = props
+  const { item, count } = props
+  console.log(item)
   const image = require(`../../static/images/${item.img}`)
 
   return (
-    <Grid item {...gridLayout(odd)}>
+    <Grid item {...gridLayout(count)}>
       <NaviItemBase focusRipple>
         <BackgroundImage src={image} alt="" />
         <TextBackground style={{ width: "100%" }}>

@@ -42,7 +42,7 @@ describe("register completion", () => {
       })
     })
 
-    describe("shows completion not found with no completion", () => {
+    /*     describe("shows completion not found with no completion", () => {
       before(() => {
         cy.mockGraphQl(
           "currentUser",
@@ -66,32 +66,33 @@ describe("register completion", () => {
           test.texts.forEach(text => cy.getByText(text))
         }),
       )
+    }) */
 
-      describe("shows correct completion", () => {
-        before(() => {
-          cy.mockGraphQl(
-            "currentUser",
-            fixtures.loggedInCompletion.currentUserResult,
-          )
-        })
-
-        fixtures.loggedInCompletion.tests.forEach(test =>
-          it(`path ${test.pathSlug}`, () => {
-            cy.visit(`${test.pathSlug}register-completion/course1`)
-            cy.url().should("contain", `/${test.slug}/sign-in`)
-            cy.get("input[name=email]").type("fake-user")
-            cy.get("input[name=password").type("password")
-            cy.getByTestId("login-button").click()
-
-            cy.url().should(
-              "contain",
-              `/${test.slug}/register-completion/course1`,
-            )
-
-            test.texts.forEach(text => cy.getByText(text))
-          }),
+    describe("shows correct completion", () => {
+      before(() => {
+        cy.mockGraphQl(
+          "currentUser",
+          fixtures.loggedInCompletion.currentUserResult,
         )
       })
+
+      // TODO: can't have completions in different languages
+      fixtures.loggedInCompletion.tests.forEach(test =>
+        it(`path ${test.pathSlug}`, () => {
+          cy.visit(`${test.pathSlug}register-completion/course1`)
+          cy.url().should("contain", `/${test.slug}/sign-in`)
+          cy.get("input[name=email]").type("fake-user")
+          cy.get("input[name=password").type("password")
+          cy.getByTestId("login-button").click()
+
+          cy.url().should(
+            "contain",
+            `/${test.slug}/register-completion/course1`,
+          )
+
+          test.texts.forEach(text => cy.getByText(text))
+        }),
+      )
     })
 
     /*     it("shows correct completion", () => {

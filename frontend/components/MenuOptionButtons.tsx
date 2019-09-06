@@ -38,7 +38,7 @@ const StyledButton = styled(Button)`
   font-size: 18px;
 `
 const MenuOptionButtons = () => {
-  const isAdmin = React.useContext(UserDetailContext)
+  const isAdmin = useContext(UserDetailContext)
   const { language } = useContext(LanguageContext)
   const t = getCommonTranslator(language)
   const client = useApolloClient()

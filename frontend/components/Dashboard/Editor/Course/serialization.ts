@@ -144,6 +144,7 @@ export const fromCourseForm = ({
     id: undefined,
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     new_slug: values.new_slug.trim(),
+    ects: values.ects ? values.ects.trim() : undefined,
     base64: !isProduction,
     photo: getIn(values, "photo.id"),
     // despite order being a number in the typings, it comes back as an empty string without TS yelling at you
