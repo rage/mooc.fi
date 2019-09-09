@@ -67,6 +67,7 @@ export const toCourseForm = ({
         thumbnail: course.photo
           ? (course.photo as CourseDetails_course_photo).compressed
           : null,
+        ects: course.ects || undefined,
       }
     : initialValues
 }
