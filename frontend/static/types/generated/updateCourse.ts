@@ -51,6 +51,7 @@ export interface updateCourse_updateCourse {
   __typename: "Course"
   id: any
   slug: string
+  ects: string | null
   name: string
   order: number | null
   study_module_order: number | null
@@ -70,6 +71,7 @@ export interface updateCourseVariables {
   id?: string | null
   name?: string | null
   slug?: string | null
+  ects?: string | null
   photo?: string | null
   new_photo?: any | null
   base64?: boolean | null
