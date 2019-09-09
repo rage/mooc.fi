@@ -139,6 +139,10 @@ const courseEditSchema = ({
     study_module_order: Yup.number()
       .transform(value => (isNaN(value) ? undefined : Number(value)))
       .integer("must be integer"),
+    ects: Yup.string().matches(
+      /(^\d+(\-\d+)?$|^$)/,
+      "must be a number or a range",
+    ),
   })
 
 const validateSlug = ({

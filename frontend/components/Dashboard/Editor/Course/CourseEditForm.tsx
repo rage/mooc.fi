@@ -94,7 +94,7 @@ Pick<
 >) => (
   <Form>
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={12} sm={6} md={8}>
+      <Grid item xs={12} sm={12} md={6}>
         <Field
           name="name"
           type="text"
@@ -106,7 +106,19 @@ Pick<
           component={StyledTextField}
         />
       </Grid>
-      <Grid item xs={6} sm={3} md={2}>
+      <Grid item xs={4} sm={4} md={2}>
+        <Field
+          name="ects"
+          type="text"
+          label="ECTS"
+          errors={errors.ects}
+          fullWidth
+          autoComplete="off"
+          variant="outlined"
+          component={StyledTextField}
+        />
+      </Grid>
+      <Grid item xs={4} sm={4} md={2}>
         <Field
           name="order"
           type="number"
@@ -118,7 +130,7 @@ Pick<
           component={StyledTextField}
         />
       </Grid>
-      <Grid item xs={6} sm={3} md={2}>
+      <Grid item xs={4} sm={4} md={2}>
         <Field
           name="study_module_order"
           type="number"
