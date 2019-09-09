@@ -86,10 +86,7 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const { language } = useContext(LanguageContext)
 
   const t = getRegisterCompletionTranslator(language)
-  const { loading, error, data } = useQuery<UserOverViewData>(
-    UserOverViewQuery,
-    { variables: { language } },
-  )
+  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (error) {
     return (
