@@ -8,21 +8,29 @@
       "email": "fake@email.com",
       "completions": []
     },
-    "tests": [{
-      "pathSlug": "/",
-      "slug": "fi",
-      "texts": ["Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?"]
-    },
-    {
-      "pathSlug": "/fi/",
-      "slug": "fi",
-      "texts": ["Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?"]
-    },    
-    {
-      "pathSlug": "/en/",
-      "slug": "en",
-      "texts": ["Cannot find course completion. Are you logged in with the right account?"]
-    }] 
+    "tests": [
+      {
+        "pathSlug": "/",
+        "slug": "fi",
+        "texts": [
+          "Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?"
+        ]
+      },
+      {
+        "pathSlug": "/fi/",
+        "slug": "fi",
+        "texts": [
+          "Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?"
+        ]
+      },
+      {
+        "pathSlug": "/en/",
+        "slug": "en",
+        "texts": [
+          "Cannot find course completion. Are you logged in with the right account?"
+        ]
+      }
+    ]
   },
   "loggedInCompletion": {
     "currentUserResult": {
@@ -33,26 +41,6 @@
       "email": "fake@email.com",
       "completions": [
         {
-          "id": "coursecompletion_en",
-          "completion_language": "en_US",
-          "completion_link": "what",
-          "student_number": "123123",
-          "course": {
-            "id": "course1en",
-            "slug": "course1",
-            "name": "Course in English",
-            "ects": "2"
-          },
-          "completions_registered": [
-            {
-              "id": "complreg1",
-              "organization": {
-                "slug": "org"
-              }
-            }
-          ]
-        },
-        {
           "id": "coursecompletion_fi",
           "completion_language": "fi_FI",
           "completion_link": "what",
@@ -60,7 +48,7 @@
           "course": {
             "id": "course1",
             "slug": "course1",
-            "name": "Kurssi suomeksi",
+            "name": "Kurssi",
             "ects": "2"
           },
           "completions_registered": [
@@ -71,24 +59,24 @@
               }
             }
           ]
-        }      
+        }
       ]
     },
     "tests": [
       {
         "pathSlug": "/",
         "slug": "fi",
-        "texts": ["Opintopisteiden Rekisteröinti"]
+        "texts": ["Opintopisteiden Rekisteröinti", "Kurssi: Kurssi"]
       },
       {
         "pathSlug": "/fi/",
         "slug": "fi",
-        "texts": ["Opintopisteiden Rekisteröinti"]
+        "texts": ["Opintopisteiden Rekisteröinti", "Kurssi: Kurssi"]
       },
       {
         "pathSlug": "/en/",
         "slug": "en",
-        "texts": ["Register Completion"]
+        "texts": ["Register Completion", "Course: Kurssi"]
       }
     ]
   }
