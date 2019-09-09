@@ -1,6 +1,8 @@
 import React from "react"
-
 import styled from "styled-components"
+import { useContext } from "react"
+import LanguageContext from "/contexes/LanguageContext"
+import getSignUpTranslator from "/translations/sign-up"
 
 const InfoBox = styled.div`
   margin-bottom: 2rem;
@@ -11,16 +13,19 @@ const FormContainer = styled.div`
   margin-top: 2rem;
 `
 
-export interface ConfrimEmailProps {
+export interface ConfirmEmailProps {
   onComplete: Function
 }
 //@ts-ignore
-const ConfirmEmail = (props: ConfrimEmailProps) => {
+const ConfirmEmail = (props: ConfirmEmailProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getSignUpTranslator(language)
+
   return (
     <FormContainer>
-      <h1>"confirmEmailTitle"</h1>
+      <h1>{t("confirmEmailTitle")}</h1>
       <InfoBox>
-        <p>"confirmEmailInfo"</p>
+        <p>{t("confirmEmailInfo")}</p>
       </InfoBox>
     </FormContainer>
   )
