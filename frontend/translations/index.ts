@@ -7,8 +7,12 @@ type Translation = {
 const getTranslator = <T extends Translation>(dicts: { [lang: string]: T }) => (
   lng: string,
 ) => (key: keyof T, variables?: { [key: string]: any }) => {
-  const translation: T | keyof T | T[keyof T] =
-    (dicts[lng] || {})[key] || (dicts[defaultLanguage] || {})[key] || key
+  const translation: T[keyof T] =
+    (dicts[lng] || {})[key] || (dicts[defaultLanguage] || {})[key]
+
+  if (!translation) {
+    return key
+  }
 
   return Array.isArray(translation)
     ? translation.map(t => substitute<T>(t, variables))
@@ -16,13 +20,14 @@ const getTranslator = <T extends Translation>(dicts: { [lang: string]: T }) => (
 }
 
 const substitute = <T>(
-  translation: T | keyof T | T[keyof T],
+  translation: T[keyof T],
   variables?: { [key: string]: any },
 ): any => {
   if (typeof translation === "object") {
     return Object.keys(translation).reduce(
-      (obj, key) => ({
+      (obj, key: string) => ({
         ...obj,
+        // FIXME: type
         // @ts-ignore
         [key]: substitute(translation[key], variables),
       }),
@@ -30,7 +35,15 @@ const substitute = <T>(
     )
   }
 
-  const groups = (translation as string).match(/{{(.*?)}}/gm)
+  if (typeof translation !== "string") {
+    console.warn(
+      `WARNING: translation only supports strings or objects - got ${translation} of type ${typeof translation}`,
+    )
+
+    return translation
+  }
+
+  const groups = translation.match(/{{(.*?)}}/gm)
 
   if (!groups) {
     return translation
@@ -43,9 +56,9 @@ const substitute = <T>(
     return translation
   }
 
-  let ret = translation as string
+  let ret: string = translation
   ;(groups || []).forEach((g: string) => {
-    const key = (g.match(/{{(.*?)}}/) || [])[1]
+    const key = g.slice(2, g.length - 2)
     const variable = (variables || {})[key]
 
     if (!variable) {
