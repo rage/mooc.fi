@@ -23,6 +23,7 @@ export const CourseQuery = gql`
       id
       name
       slug
+      ects
       order
       study_module_order
       photo {

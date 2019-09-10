@@ -51,6 +51,7 @@ export interface addCourse_addCourse {
   __typename: "Course"
   id: any
   slug: string
+  ects: string | null
   name: string
   order: number | null
   study_module_order: number | null
@@ -69,6 +70,7 @@ export interface addCourse {
 export interface addCourseVariables {
   name?: string | null
   slug?: string | null
+  ects?: string | null
   new_photo?: any | null
   base64?: boolean | null
   promote?: boolean | null
