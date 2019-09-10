@@ -4,7 +4,7 @@
     [
       "babel-plugin-styled-components",
       {
-        "ssr": true,
+        "ssr": true
       }
     ],
     [
@@ -40,6 +40,7 @@
       "icons"
     ],
     "lodash",
-    "styled-jsx/babel"
+    "styled-jsx/babel",
+    "istanbul"
   ]
 }
