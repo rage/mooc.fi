@@ -66,17 +66,17 @@
       {
         "pathSlug": "/",
         "slug": "fi",
-        "texts": ["Opintopisteiden Rekisteröinti", "Kurssi: Kurssi"]
+        "texts": ["Opintopisteiden Rekisteröinti", "Kurssi: Kurssi", "Opintopisteet: 2 (Vaatii suomalaisen henkilötunnuksen)."]
       },
       {
         "pathSlug": "/fi/",
         "slug": "fi",
-        "texts": ["Opintopisteiden Rekisteröinti", "Kurssi: Kurssi"]
+        "texts": ["Opintopisteiden Rekisteröinti", "Kurssi: Kurssi", "Opintopisteet: 2 (Vaatii suomalaisen henkilötunnuksen)."]
       },
       {
         "pathSlug": "/en/",
         "slug": "en",
-        "texts": ["Register Completion", "Course: Kurssi"]
+        "texts": ["Register Completion", "Course: Kurssi", "Credits: 2 (Requires a Finnish social security number)."]
       }
     ]
   }
