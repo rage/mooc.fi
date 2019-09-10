@@ -27,9 +27,6 @@ export const UserOverViewQuery = gql`
 `
 
 function CompletionsPage() {
-  // FIXME: do the props have any use?
-  // @ts-ignore
-
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
   let completions: CurrentUserUserOverView_currentUser_completions[] = []
 

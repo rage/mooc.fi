@@ -52,7 +52,3 @@ export interface RegisterCompletionUserOverView_currentUser {
 export interface RegisterCompletionUserOverView {
   currentUser: RegisterCompletionUserOverView_currentUser | null
 }
-
-export interface RegisterCompletionUserOverViewVariables {
-  language?: string | null
-}
