@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
 /// <reference types="@testing-library/cypress" />
 
+const fixtures = require("../fixtures/home/data.json")
+
 Cypress.on("uncaught:exception", (err, runnable) => {
   return false
 })
