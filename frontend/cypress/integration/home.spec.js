@@ -7,6 +7,19 @@ Cypress.on("uncaught:exception", (err, runnable) => {
   return false
 })
 
+const viewports = [
+  "macbook-15",
+  "macbook-13",
+  "macbook-11",
+  "ipad-2",
+  "ipad-mini",
+  "iphone-6+",
+  "iphone-6",
+  "iphone-5",
+  "iphone-4",
+  "iphone-3",
+]
+
 describe("front page", () => {
   /*   it("/ loads and shows Finnish as default", () => {
     cy.visit("/")
@@ -20,6 +33,16 @@ describe("front page", () => {
     cy.get("h1").contains("High-quality, open, and free courses for everyone!")
   })
  */
+
+  describe("snapshots", () => {
+    ;[["/", "fi_FI"], ["/en", "en_US"]].forEach(([route, language]) => {
+      viewports.forEach(vp => {
+        it(`route ${route} should render ok on ${vp}`, () => {
+          cy.mockGraphQl("study_modules", fixtures[language].study_modules)
+        })
+      })
+    })
+  })
   describe("language switcher", () => {
     it("/ shows English and switches languages", () => {
       cy.visit("/")
