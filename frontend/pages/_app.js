@@ -109,7 +109,7 @@ MyApp.getInitialProps = async arg => {
   let url = "/"
   let hrefUrl = "/"
   if (typeof window !== "undefined") {
-    lng = ctx.asPath.substring(1, 3) || "fi"
+    lng = (ctx.asPath && ctx.asPath.substring(1, 3)) || "fi"
     url = ctx.asPath
     hrefUrl = ctx.pathname
   } else {
