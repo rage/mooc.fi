@@ -6,7 +6,8 @@ export default (context: NextContext, target: string, savePage = true) => {
   let language =
     context && context.query && context.query.lng ? context.query.lng : "fi"
 
-  if (savePage) {
+  // @ts-ignore
+  if (savePage && context && context.req && context.req.originalUrl) {
     // @ts-ignore
     nookies.set(context, "redirect-back", context.req.originalUrl, {
       maxAge: 20 * 60,
