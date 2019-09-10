@@ -44,6 +44,7 @@ export interface CourseDetails_course {
   id: any
   name: string
   slug: string
+  ects: string | null
   order: number | null
   study_module_order: number | null
   photo: CourseDetails_course_photo | null
