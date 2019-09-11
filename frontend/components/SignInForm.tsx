@@ -14,7 +14,6 @@ import LanguageContext from "/contexes/LanguageContext"
 import LoginStateContext from "/contexes/LoginStateContext"
 import getCommonTranslator from "/translations/common"
 import { useContext } from "react"
-// import LangLink from "/components/LangLink"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -107,6 +106,7 @@ function SignIn() {
           <Button
             className={classes.submit}
             type="submit"
+            data-testid="login-button"
             fullWidth
             variant="contained"
             color="secondary"
