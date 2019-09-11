@@ -19,7 +19,6 @@ const Background = styled(ButtonBase)<BackgroundProps>`
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  width: 350px;
   @media (max-width: 960px) {
     flex-direction: row;
   }
@@ -49,7 +48,7 @@ const TextArea = styled.div`
 
 const ImageArea = styled.div`
   height: 200px;
-  width: 350px;
+  width: 100%;
   @media (max-width: 430px) {
     height: 235px;
     width: 30%;
