@@ -1,8 +1,8 @@
 import React from "react"
 import initApollo from "./init-apollo"
 import Head from "next/head"
-import { getDataFromTree, getMarkupFromTree } from "@apollo/react-ssr"
-import { renderToString } from "react-dom/server"
+import { getDataFromTree /*, getMarkupFromTree */ } from "@apollo/react-ssr"
+// import { renderToString } from "react-dom/server"
 import { NextPageContext as NextContext } from "next"
 import { ApolloClient, NormalizedCacheObject } from "apollo-boost"
 import { AppContext } from "next/app"
@@ -37,6 +37,7 @@ const withApolloClient = (App: any) => {
 
       if (!process.browser) {
         try {
+          // getDataFromTree is using getMarkupFromTree anyway?
           await Promise.all([
             getDataFromTree(
               <App
@@ -46,7 +47,7 @@ const withApolloClient = (App: any) => {
                 apollo={apollo}
               />,
             ),
-            getMarkupFromTree({
+            /*            getMarkupFromTree({
               renderFunction: renderToString,
               tree: (
                 <App
@@ -56,7 +57,7 @@ const withApolloClient = (App: any) => {
                   apollo={apollo}
                 />
               ),
-            }),
+            }), */
           ])
           // Run all GraphQL queries
         } catch (error) {

@@ -79,6 +79,7 @@ interface RegisterCompletionPageProps {
   router: any
   slug?: string | string[]
 }
+
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const { router, slug } = props
   const classes = useStyles()
