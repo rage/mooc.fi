@@ -166,4 +166,4 @@ const CourseAndModuleList = () => {
   )
 }
 
-export default React.memo(CourseAndModuleList)
+export default CourseAndModuleList

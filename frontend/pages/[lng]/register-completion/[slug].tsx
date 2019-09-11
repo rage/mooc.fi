@@ -44,7 +44,7 @@ const useStyles = makeStyles(() =>
 )
 
 export const UserOverViewQuery = gql`
-  query RegisterCompletionUserOverView($language: String) {
+  query RegisterCompletionUserOverView {
     currentUser {
       id
       upstream_id
@@ -57,7 +57,7 @@ export const UserOverViewQuery = gql`
         completion_link
         student_number
         created_at
-        course(language: $language) {
+        course {
           id
           slug
           name
