@@ -15,11 +15,13 @@ const Completion = prismaObjectType({
       "student_number",
       "user_upstream_id",
       "completions_registered",
+      "course",
     ])
-    t.field("course", {
+    // we're not querying completion course languages for now, and this was buggy
+    /*     t.field("course", {
       type: "Course",
       args: {
-        language: stringArg(),
+        language: stringArg({ required: false }),
       },
       resolve: async (parent, args, ctx) => {
         const { language } = args
@@ -44,7 +46,7 @@ const Completion = prismaObjectType({
         return course
       },
     })
-
+ */
     t.field("user", {
       type: "User",
       resolve: async (parent, args, ctx) => {
