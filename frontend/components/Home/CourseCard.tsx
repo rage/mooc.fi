@@ -22,14 +22,11 @@ const Background = styled(ButtonBase)<BackgroundProps>`
   @media (max-width: 960px) {
     flex-direction: row;
   }
-  @media (min-width: 600px) and (max-width: 960px) {
-    width: 100%;
-  }
 `
 
 const TextArea = styled.div`
   padding: 1rem 1rem 2rem 1rem;
-  height: 200px;
+  height: 230px;
   color: black;
   width: 100%;
   @media (max-width: 430px) {
@@ -47,7 +44,7 @@ const TextArea = styled.div`
 `
 
 const ImageArea = styled.div`
-  height: 200px;
+  height: 230px;
   width: 100%;
   @media (max-width: 430px) {
     height: 235px;
