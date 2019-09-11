@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
+import { mime } from "/util/imageUtils"
 
 const NaviItemBase = styled(ButtonBase)`
   position: relative;
@@ -66,12 +67,24 @@ const gridLayout = (count: number): { [key: string]: number } =>
 
 function NaviCard(props: NaviCardProps) {
   const { item, count } = props
-  const image = require(`../../static/images/${item.img}`)
-
+  // const image = require(`../../static/images/${item.img}`)
   return (
     <Grid item {...gridLayout(count)}>
       <NaviItemBase focusRipple>
-        <BackgroundImage src={image} alt="" />
+        <picture>
+          <source
+            srcSet={require(`../../static/images/${item.img}?webp`)}
+            type="image/webp"
+          />
+          <source
+            srcSet={require(`../../static/images/${item.img}`)}
+            type={mime(item.img)}
+          />
+          <BackgroundImage
+            src={require(`../../static/images/${item.img}`)}
+            alt=""
+          />
+        </picture>
         <TextBackground style={{ width: "100%" }}>
           <Typography
             component="h3"

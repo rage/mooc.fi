@@ -10,3 +10,5 @@ backend/generated
 frontend/firebase.config.js
 frontend/MOOCfi-*.json
 backend/MOOCfi-*.json
+frontend/.nyc_output
+frontend/coverage
