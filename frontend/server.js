@@ -93,8 +93,8 @@ const main = async () => {
       })(req, res)
     })
 
-    await mockBackend.listen(4000)
-    console.log("> Mock backend ready on http://localhost:4000")
+    await mockBackend.listen(4001)
+    console.log("> Mock backend ready on http://localhost:4001")
   }
 }
 

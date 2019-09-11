@@ -28,7 +28,7 @@ import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command"
 
 Cypress.Commands.add("mockGraphQl", (query, result) =>
   cy.request({
-    url: "http://localhost:4000/mock",
+    url: "http://localhost:4001/mock",
     method: "POST",
     body: {
       query,
