@@ -37,12 +37,18 @@ describe("front page", () => {
   describe("snapshots", () => {
     ;[["/", "fi_FI"], ["/en", "en_US"]].forEach(([route, language]) => {
       viewports.forEach(vp => {
-        it(`route ${route} should render ok on ${vp}`, () => {
-          cy.mockGraphQl("study_modules", fixtures[language].study_modules)
+        describe(`viewport ${vp}`, () => {
+          it(`route ${route} should match snapshot`, () => {
+            cy.viewport(vp)
+            cy.mockGraphQl("study_modules", fixtures[language].study_modules)
+            cy.mockGraphQl("courses", fixtures[language].courses)
+            cy.visit(route).matchImageSnapshot(`home-${language}-${vp}`)
+          })
         })
       })
     })
   })
+
   describe("language switcher", () => {
     it("/ shows English and switches languages", () => {
       cy.visit("/")

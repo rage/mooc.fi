@@ -12,6 +12,8 @@ import fetch from "isomorphic-unfetch"
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
+const cypress = process.env.CYPRESS === "true"
+
 // @ts-ignore
 /* const cypress =
   process.env.CYPRESS === "true" ||
@@ -29,7 +31,10 @@ function create(initialState: any, accessToken?: string) {
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
-    uri: production ? "https://points.mooc.fi/api/" : "http://localhost:4000",
+    uri:
+      production && !cypress
+        ? "https://points.mooc.fi/api/"
+        : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
   })

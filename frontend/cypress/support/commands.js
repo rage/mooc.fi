@@ -24,6 +24,7 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 import "@testing-library/cypress/add-commands"
+import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command"
 
 Cypress.Commands.add("mockGraphQl", (query, result) =>
   cy.request({
@@ -36,3 +37,5 @@ Cypress.Commands.add("mockGraphQl", (query, result) =>
     options: { headers: { "Content-Type": "application/json" } },
   }),
 )
+
+addMatchImageSnapshotCommand()
