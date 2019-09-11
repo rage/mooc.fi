@@ -29,13 +29,11 @@ describe("register completion", () => {
         method: "GET",
         url: "https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true",
         response: {
-          data: {
-            administrator: false,
-            email: "fake@email.com",
-            first_name: "fake",
-            last_name: "user",
-            username: "fake-user",
-          },
+          administrator: "false",
+          email: "fake@email.com",
+          first_name: "fake",
+          last_name: "user",
+          username: "fake-user",
         },
       })
     })
@@ -53,7 +51,7 @@ describe("register completion", () => {
           cy.visit(`${test.pathSlug}register-completion/course1`)
           cy.url().should("contain", `/${test.slug}/sign-in`)
           cy.get("input[name=email]").type("fake-user")
-          cy.get("input[name=password").type("password")
+          cy.get("input[name=password]").type("password")
           cy.getByTestId("login-button").click()
 
           cy.url().should(

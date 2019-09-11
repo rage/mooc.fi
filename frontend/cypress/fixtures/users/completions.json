@@ -1,0 +1,31 @@
+{
+  "currentUserResult": {
+    "id": "123123",
+    "upstream_id": "12312323",
+    "first_name": "fake",
+    "last_name": "user",
+    "email": "fake@email.com",
+    "completions": [
+      {
+        "id": "coursecompletion_fi",
+        "completion_language": "fi_FI",
+        "completion_link": "what",
+        "student_number": "123123",
+        "course": {
+          "id": "course1",
+          "slug": "course1",
+          "name": "Kurssi",
+          "ects": "2"
+        },
+        "completions_registered": [
+          {
+            "id": "complreg1",
+            "organization": {
+              "slug": "org"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
