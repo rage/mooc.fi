@@ -15,6 +15,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import getCommonTranslator from "/translations/common"
 import { useContext } from "react"
 import LangLink from "/components/LangLink"
+import nookies from "nookies"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -100,8 +101,16 @@ const MenuOptionButtons = () => {
               </div>
             ) : (
               <>
-                <LangLink href="/[lng]/sign-in" as={`/${language}/sign-in`}>
-                  <StyledButton color="inherit" variant="text">
+                <LangLink
+                  href="/[lng]/sign-in"
+                  as={`/${language}/sign-in`}
+                  passHref
+                >
+                  <StyledButton
+                    color="inherit"
+                    variant="text"
+                    onClick={() => nookies.destroy({}, "redirect-back")}
+                  >
                     {t("loginShort")}
                   </StyledButton>
                 </LangLink>
@@ -109,6 +118,7 @@ const MenuOptionButtons = () => {
                   href="/[lng]/sign-up"
                   as={`/${language}/sign-up`}
                   prefetch={false}
+                  passHref
                 >
                   <StyledButton color="inherit" variant="text">
                     {t("signUp")}
