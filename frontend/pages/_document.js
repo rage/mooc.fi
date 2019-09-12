@@ -4,7 +4,6 @@ import flush from "styled-jsx/server"
 import { ServerStyleSheets } from "@material-ui/styles"
 import theme from "../src/theme"
 import { ServerStyleSheet } from "styled-components"
-// import FontStyle from "/src/fonts"
 
 import { fontCss } from "/src/fonts"
 class MyDocument extends Document {
