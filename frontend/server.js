@@ -43,7 +43,37 @@ const main = async () => {
     })
   }
 
+  const mockCookies = {}
+  let mockLogOut = false
+
   server.get("*", (req, res) => {
+    if (cypress) {
+      // add mockCookies to current cookie, or remove login details if logging out
+      const { cookie } = req.headers
+      const currentCookies = cookie
+        ? cookie.split("; ").reduce((acc, curr) => {
+            const [key, val] = curr.split("=")
+
+            if (mockLogOut && ["access_token", "admin"].indexOf(key) >= 0) {
+              return acc
+            }
+
+            return {
+              ...acc,
+              [key]: val,
+            }
+          }, {})
+        : {}
+
+      const newCookies = { ...currentCookies, ...mockCookies }
+      const cookieString = Object.keys(newCookies)
+        .map(k => `${k}=${newCookies[k]}`)
+        .join("; ")
+      req.headers.cookie = cookieString
+
+      mockLogout = false
+    }
+
     const redirectNeeded = DirectFrom.find(
       redirect => redirect.from === req.url,
     )
@@ -82,6 +112,29 @@ const main = async () => {
       resolver[req.body.query] = () => req.body.result
 
       res.json(req.body.result)
+    })
+
+    mockBackend.post("/signin", (req, res) => {
+      const {
+        email = "email@email.com",
+        password = "password",
+        details,
+        accessToken,
+      } = req.body
+
+      mockCookies.access_token = accessToken
+      mockCookies.admin = details.administrator
+
+      res.json(details)
+    })
+
+    mockBackend.post("/signout", (req, res) => {
+      delete mockCookies.access_token
+      delete mockCookies.admin
+
+      mockLogout = true
+
+      res.json({})
     })
 
     mockBackend.use("/", (req, res) => {

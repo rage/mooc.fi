@@ -38,4 +38,33 @@ Cypress.Commands.add("mockGraphQl", (query, result) =>
   }),
 )
 
+Cypress.Commands.add("signIn", ({ accessToken, details }) => {
+  cy.server()
+  cy.route({
+    method: "POST",
+    url: "https://tmc.mooc.fi/oauth/token",
+    response: {
+      accessToken,
+    },
+  })
+  cy.route({
+    method: "GET",
+    url: "https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true",
+    response: details,
+  })
+  cy.request({
+    url: "http://localhost:4001/signin",
+    method: "POST",
+    body: {
+      accessToken,
+      details,
+    },
+    options: { headers: { "Content-Type": "application/json" } },
+  })
+})
+
+Cypress.Commands.add("signOut", () =>
+  cy.request({ url: "http://localhost:4001/signout", method: "POST" }),
+)
+
 addMatchImageSnapshotCommand()
