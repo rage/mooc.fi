@@ -17,6 +17,7 @@ const fetchUser = async (resolve, root, args, context, info) => {
   } else if (context.connection) {
     rawToken = context.connection.context["Authorization"]
   }
+
   if (!rawToken) {
     context.role = Role.VISITOR
   } else if (rawToken.startsWith("Basic")) {

@@ -9,6 +9,7 @@ const MobileHamburgerMenu = styled.div`
   @media (min-width: 750px) {
     display: none;
   }
+  margin: auto;
 `
 const StyledPopover = styled(Popover)`
   display: flex;

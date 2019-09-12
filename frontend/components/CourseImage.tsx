@@ -25,7 +25,7 @@ const CourseImage = React.memo((props: CourseImageProps) => {
     <picture>
       <source srcSet={addDomain(photo.compressed)} type="image/webp" />
       <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
-      <ImageComponent src={addDomain(photo.uncompressed)} {...rest} />
+      <ImageComponent src={addDomain(photo.uncompressed)} {...rest} alt="" />
     </picture>
   )
 })

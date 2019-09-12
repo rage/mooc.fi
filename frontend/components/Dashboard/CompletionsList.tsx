@@ -4,6 +4,7 @@ import {
   AllCompletions as AllCompletionsData,
   AllCompletions_completionsPaginated_edges,
 } from "/static/types/generated/AllCompletions"
+import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
 import { CircularProgress } from "@material-ui/core"
 import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
@@ -23,6 +24,8 @@ export const AllCompletionsQuery = gql`
       after: $cursor
     ) {
       pageInfo {
+        hasNextPage
+        hasPreviousPage
         startCursor
         endCursor
       }
@@ -45,6 +48,7 @@ export const AllCompletionsQuery = gql`
           completions_registered {
             id
             organization {
+              id
               slug
             }
           }
@@ -54,7 +58,7 @@ export const AllCompletionsQuery = gql`
   }
 `
 export const PreviousPageCompletionsQuery = gql`
-  query AllCompletions(
+  query AllCompletionsPrevious(
     $course: String
     $cursor: ID
     $completionLanguage: String
@@ -142,7 +146,9 @@ const CompletionsList = () => {
     variables = { cursor, course, completionLanguage }
   }
 
-  const { data, loading, error } = useQuery<AllCompletionsData>(query, {
+  const { data, loading, error } = useQuery<
+    AllCompletionsData | AllCompletionsPreviousData
+  >(query, {
     variables,
     fetchPolicy: "network-only",
   })
