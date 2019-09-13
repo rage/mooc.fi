@@ -56,7 +56,6 @@ function SignIn() {
         setEmail(emailFieldRef.current.value)
       }
     }
-
     const timeouts = [
       setTimeout(inputFieldSetter, 10),
       setTimeout(inputFieldSetter, 1000),

@@ -3,7 +3,7 @@ import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
-import { gql } from "apollo-boost"
+// import { gql } from "apollo-boost"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
 import { useQuery } from "@apollo/react-hooks"
 import CourseGrid from "/components/CourseGrid"
@@ -12,7 +12,8 @@ import { WideContainer } from "/components/Container"
 import styled from "styled-components"
 import Spinner from "/components/Spinner"
 
-export const AllEditorCoursesQuery = gql`
+import { AllEditorCoursesQuery } from "/graphql/queries/courses"
+/* export const AllEditorCoursesQuery = gql`
   query AllEditorCourses {
     courses(orderBy: order_ASC) {
       id
@@ -32,7 +33,7 @@ export const AllEditorCoursesQuery = gql`
       administrator
     }
   }
-`
+` */
 
 const Header = styled(Typography)`
   margin-top: 1em;
