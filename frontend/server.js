@@ -44,17 +44,17 @@ const main = async () => {
   }
 
   const mockCookies = {}
-  let mockLogOut = false
+  let mockLogout = false
 
   server.get("*", (req, res) => {
-    if (cypress) {
+    if (cypress && (mockLogout || Object.keys(mockCookies).length)) {
       // add mockCookies to current cookie, or remove login details if logging out
       const { cookie } = req.headers
       const currentCookies = cookie
         ? cookie.split("; ").reduce((acc, curr) => {
             const [key, val] = curr.split("=")
 
-            if (mockLogOut && ["access_token", "admin"].indexOf(key) >= 0) {
+            if (mockLogout && ["access_token", "admin"].indexOf(key) >= 0) {
               return acc
             }
 
@@ -98,29 +98,48 @@ const main = async () => {
     )
     const schema = buildSchema(schemaCode)
     const resolver = {}
+    const results = {}
 
     /* 
       POST to /mock in format 
         { 
           query: "QUERY_NAME", 
+          variables?: { var1: "asdf", ... }
           result: "QUERY_RESULT" 
         }
-      creates (or replaces) a resolver for said query returning result
+      - creates (or replaces) a resolver for said query returning result
+      - if no variables specified, query return same result irregardless of arguments it gets
     */
 
-    mockBackend.post("/mock", (req, res) => {
-      resolver[req.body.query] = () => req.body.result
+    const sortObj = o =>
+      Object.keys(o)
+        .sort()
+        .reduce((acc, curr) => ({ ...acc, [curr]: o[curr] }), {})
+    const getKey = (query, variables) =>
+      `${query}#${JSON.stringify(sortObj(variables))}`
 
-      res.json(req.body.result)
+    mockBackend.post("/mock", (req, res) => {
+      const { query, variables, result } = req.body
+
+      if (variables) {
+        results[getKey(query, variables)] = result
+      }
+
+      resolver[query] = (_, args) =>
+        args ? results[getKey(query, args)] || result : result
+
+      res.json(result)
+    })
+
+    mockBackend.delete("/mock", (req, res) => {
+      Object.keys(resolver).forEach(k => delete resolver[k])
+      Object.keys(results).forEach(k => delete results[k])
+
+      res.json({ ok: true })
     })
 
     mockBackend.post("/signin", (req, res) => {
-      const {
-        email = "email@email.com",
-        password = "password",
-        details,
-        accessToken,
-      } = req.body
+      const { details, accessToken } = req.body
 
       mockCookies.access_token = accessToken
       mockCookies.admin = details.administrator

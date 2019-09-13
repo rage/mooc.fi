@@ -26,19 +26,27 @@
 import "@testing-library/cypress/add-commands"
 import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command"
 
-Cypress.Commands.add("mockGraphQl", (query, result) =>
+const mockGraphQl = ({ query, result, variables }) =>
   cy.request({
     url: "http://localhost:4001/mock",
     method: "POST",
     body: {
       query,
       result,
+      variables,
     },
     options: { headers: { "Content-Type": "application/json" } },
-  }),
-)
+  })
 
-Cypress.Commands.add("signIn", ({ accessToken, details }) => {
+Cypress.Commands.add("mockGraphQl", params => {
+  if (Array.isArray(params)) {
+    Promise.all(params.map(p => mockGraphQl(p)))
+  } else {
+    mockGraphQl(params)
+  }
+})
+
+Cypress.Commands.add("mockTmc", ({ accessToken, details }) => {
   cy.server()
   cy.route({
     method: "POST",
@@ -52,6 +60,9 @@ Cypress.Commands.add("signIn", ({ accessToken, details }) => {
     url: "https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true",
     response: details,
   })
+})
+
+Cypress.Commands.add("signIn", ({ accessToken, details }) => {
   cy.request({
     url: "http://localhost:4001/signin",
     method: "POST",
