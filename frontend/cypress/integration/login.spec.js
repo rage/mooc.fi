@@ -7,25 +7,11 @@ Cypress.on("uncaught:exception", (err, runnable) => {
 
 describe("login", () => {
   it("logs in with ok credentials", () => {
+    cy.mockTmc({ accessToken: "fake-token", details: "asdfasdf" })
+
     cy.visit("/")
     cy.getByText("Kirjaudu sisään").click()
     cy.url().should("include", "/fi/sign-in")
-
-    cy.server()
-    cy.route({
-      method: "POST",
-      url: "https://tmc.mooc.fi/oauth/token",
-      response: {
-        accessToken: "fake-token",
-      },
-    })
-    cy.route({
-      method: "GET",
-      url: "https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true",
-      response: {
-        data: "ok-data",
-      },
-    })
 
     cy.getByTestId("login-button").should("be.disabled")
     cy.get("input[name=email]").type("ok.user")
