@@ -1,17 +1,19 @@
 import React, { useCallback, useContext } from "react"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "@apollo/react-hooks"
+import { CourseFormValues } from "./types"
+import courseEditSchema from "./form-validation"
+import { FormikActions } from "formik"
+import {
+  AllCoursesQuery,
+  AllEditorCoursesQuery,
+  CheckSlugQuery,
+} from "/graphql/queries/courses"
 import {
   AddCourseMutation,
   UpdateCourseMutation,
   DeleteCourseMutation,
-  CheckSlugQuery,
-} from "./graphql"
-import { CourseFormValues } from "./types"
-import courseEditSchema from "./form-validation"
-import { FormikActions } from "formik"
-import { AllCoursesQuery } from "/components/Home/CourseAndModuleList"
-import { AllEditorCoursesQuery } from "/pages/[lng]/courses"
+} from "/graphql/mutations/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { StudyModules_study_modules } from "/static/types/StudyModules"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"

@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { gql } from "apollo-boost"
+// import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
@@ -13,7 +13,10 @@ import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
-export const AllModulesQuery = gql`
+import { AllCoursesQuery } from "/graphql/queries/courses"
+import { AllModulesQuery } from "/graphql/queries/study-modules"
+
+/* export const AllModulesQuery = gql`
   query AllModules($language: String) {
     study_modules(orderBy: order_ASC, language: $language) {
       id
@@ -24,9 +27,9 @@ export const AllModulesQuery = gql`
       order
     }
   }
-`
+` */
 
-export const AllCoursesQuery = gql`
+/* export const AllCoursesQuery = gql`
   query AllCourses($language: String) {
     courses(orderBy: order_ASC, language: $language) {
       id
@@ -50,7 +53,7 @@ export const AllCoursesQuery = gql`
       }
     }
   }
-`
+` */
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
