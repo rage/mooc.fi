@@ -55,7 +55,11 @@ function Points() {
           {dataFound ? (
             userProgressData.map(p => (
               <>
-                <PointsListItemCard studentPoints={p} name={p.course.name} />
+                <PointsListItemCard
+                  studentPoints={p}
+                  name={p.course.name}
+                  cutterValue={0}
+                />
               </>
             ))
           ) : (

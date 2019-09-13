@@ -31,11 +31,16 @@ const ColoredProgressBar = styled(({ ...props }) => (
 `
 
 interface ChartProps {
-  pointsForAGroup: any
+  pointsForAGroup: pointsDataByGroup
+  cutterValue: number
   showDetailed: boolean
 }
+
 function PointsItemTableChart(props: ChartProps) {
-  const { pointsForAGroup, showDetailed } = props
+  const { pointsForAGroup, cutterValue, showDetailed } = props
+  const value =
+    (pointsForAGroup.summary_n_points / pointsForAGroup.summary_max_points) *
+    100
 
   return (
     <>
@@ -49,13 +54,9 @@ function PointsItemTableChart(props: ChartProps) {
         </ChartTitle>
         <ColoredProgressBar
           variant="determinate"
-          value={
-            (pointsForAGroup.summary_n_points /
-              pointsForAGroup.summary_max_points) *
-            100
-          }
+          value={value}
           style={{ padding: "0.5rem", flex: 1 }}
-          color="primary"
+          color={value >= cutterValue ? "primary" : "secondary"}
         />
       </ChartContainer>
       {showDetailed ? (
@@ -96,9 +97,11 @@ function PointsItemTableChart(props: ChartProps) {
 interface TableProps {
   studentPoints: pointsDataByGroup[]
   showDetailedBreakdown: boolean
+  cutterValue: number
 }
+
 function PointsItemTable(props: TableProps) {
-  const { studentPoints, showDetailedBreakdown } = props
+  const { studentPoints, showDetailedBreakdown, cutterValue } = props
 
   return (
     <>
@@ -106,6 +109,7 @@ function PointsItemTable(props: TableProps) {
         <PointsItemTableChart
           pointsForAGroup={p}
           showDetailed={showDetailedBreakdown}
+          cutterValue={cutterValue}
           key={Math.floor(Math.random() * 100000)}
         />
       ))}

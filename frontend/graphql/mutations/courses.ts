@@ -156,32 +156,3 @@ export const DeleteCourseMutation = gql`
     }
   }
 `
-
-export const CheckSlugQuery = gql`
-  query checkSlug($slug: String) {
-    course_exists(slug: $slug)
-  }
-`
-
-export const AddImageMutation = gql`
-  mutation addImage($file: Upload!, $base64: Boolean) {
-    addImage(file: $file, base64: $base64) {
-      id
-      name
-      original
-      original_mimetype
-      compressed
-      compressed_mimetype
-      uncompressed
-      uncompressed_mimetype
-      encoding
-      default
-    }
-  }
-`
-
-export const DeleteImageMutation = gql`
-  mutation deleteImage($id: UUID!) {
-    deleteImage(id: $id)
-  }
-`

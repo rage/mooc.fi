@@ -1,4 +1,5 @@
 import { Prisma } from "../generated/prisma-client"
+import * as faker from "faker"
 
 const prisma = new Prisma({ endpoint: "http://localhost:4466/default/default" })
 
@@ -38,12 +39,15 @@ const addUsers = async () => {
   //and add them to the database
   let i = 0
   while (i < 100) {
+    const first_name = faker.name.firstName()
+    const last_name = faker.name.lastName()
+
     const newUser = {
       upstream_id: generateUniqueUpstreamId({ ExistingIds: UpstreamIdsInUse }),
-      first_name: generateRandomString(),
-      last_name: generateRandomString(),
-      username: generateRandomString(),
-      email: generateRandomString(),
+      first_name,
+      last_name,
+      username: faker.internet.userName(first_name, last_name),
+      email: faker.internet.email(first_name, last_name),
       administrator: false,
       student_number: generateRandomString(),
       real_student_number: generateRandomString(),
@@ -260,10 +264,10 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
 
 const seedPointsData = async () => {
   const course = await prisma.course({ slug: "elements-of-ai" })
-  addUsers()
-  addServices()
-  addUserCourseServiceProgressess({ courseId: course.id })
-  addUserCourseSettingses({ courseId: course.id })
+  await addUsers()
+  await addServices()
+  await addUserCourseProgressess({ courseId: course.id })
+  await addUserCourseSettingses({ courseId: course.id })
 }
 
 seedPointsData()

@@ -6,10 +6,12 @@ import {
   AddStudyModuleMutation,
   UpdateStudyModuleMutation,
   DeleteStudyModuleMutation,
+} from "/graphql/mutations/study-modules"
+import {
+  AllModulesQuery,
+  AllEditorModulesQuery,
   CheckModuleSlugQuery,
-} from "./graphql"
-import { AllModulesQuery } from "/components/Home/CourseAndModuleList"
-import { AllEditorModulesQuery } from "/pages/[lng]/study-modules"
+} from "/graphql/queries/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
 import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"

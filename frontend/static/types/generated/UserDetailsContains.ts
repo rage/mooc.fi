@@ -3,10 +3,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: UserEmailContains
+// GraphQL query operation: UserDetailsContains
 // ====================================================
 
-export interface UserEmailContains_userEmailContains_pageInfo {
+export interface UserDetailsContains_userDetailsContains_pageInfo {
   __typename: "PageInfo"
   startCursor: string | null
   endCursor: string | null
@@ -14,7 +14,7 @@ export interface UserEmailContains_userEmailContains_pageInfo {
   hasPreviousPage: boolean
 }
 
-export interface UserEmailContains_userEmailContains_edges_node {
+export interface UserDetailsContains_userDetailsContains_edges_node {
   __typename: "User"
   id: any
   email: string
@@ -25,24 +25,24 @@ export interface UserEmailContains_userEmailContains_edges_node {
   last_name: string | null
 }
 
-export interface UserEmailContains_userEmailContains_edges {
+export interface UserDetailsContains_userDetailsContains_edges {
   __typename: "UserEdge"
-  node: UserEmailContains_userEmailContains_edges_node
+  node: UserDetailsContains_userDetailsContains_edges_node
 }
 
-export interface UserEmailContains_userEmailContains {
+export interface UserDetailsContains_userDetailsContains {
   __typename: "UserConnection"
-  pageInfo: UserEmailContains_userEmailContains_pageInfo
-  edges: UserEmailContains_userEmailContains_edges[]
+  pageInfo: UserDetailsContains_userDetailsContains_pageInfo
+  edges: UserDetailsContains_userDetailsContains_edges[]
   count: number
 }
 
-export interface UserEmailContains {
-  userEmailContains: UserEmailContains_userEmailContains
+export interface UserDetailsContains {
+  userDetailsContains: UserDetailsContains_userDetailsContains
 }
 
-export interface UserEmailContainsVariables {
-  email: string
+export interface UserDetailsContainsVariables {
+  search: string
   before?: string | null
   after?: string | null
   first?: number | null

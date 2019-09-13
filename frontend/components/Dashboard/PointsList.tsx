@@ -5,10 +5,11 @@ import { UserCourseSettingses_UserCourseSettingses_edges as Points } from "/stat
 
 interface Props {
   pointsForUser: Points[]
+  cutterValue: number
 }
 
 const PointsList = (props: Props) => {
-  const { pointsForUser } = props
+  const { pointsForUser, cutterValue } = props
 
   return (
     <section>
@@ -25,6 +26,7 @@ const PointsList = (props: Props) => {
               email={p.node.user.email}
               SID={p.node.user.student_number}
               key={p.node.id}
+              cutterValue={cutterValue}
             />
           ) : (
             <></>
