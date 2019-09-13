@@ -72,9 +72,3 @@ export const DeleteStudyModuleMutation = gql`
     }
   }
 `
-
-export const CheckModuleSlugQuery = gql`
-  query checkModuleSlug($slug: String) {
-    study_module_exists(slug: $slug)
-  }
-`
