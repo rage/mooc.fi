@@ -1,6 +1,6 @@
 import { prismaObjectType } from "nexus-prisma"
 import { Prisma } from "../generated/prisma-client"
-import { stringArg } from "nexus/dist"
+import { stringArg, idArg } from "nexus/dist"
 import { buildSearch } from "../util/db-functions"
 
 const UserCourseSettingsConnection = prismaObjectType({
@@ -11,10 +11,14 @@ const UserCourseSettingsConnection = prismaObjectType({
     t.field("count", {
       type: "Int",
       args: {
+        course_id: idArg(),
         search: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
-        const { search } = args
+        const { search, course_id } = args
+
+        console.log("args", args)
+        console.log("parent", parent)
         const prisma: Prisma = ctx.prisma
         return await prisma
           .userCourseSettingsesConnection({
@@ -30,6 +34,7 @@ const UserCourseSettingsConnection = prismaObjectType({
                   search,
                 ),
               },
+              course: { id: course_id },
             },
           })
           .aggregate()

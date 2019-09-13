@@ -15,8 +15,6 @@ import UserDetailContext from "../contexes/UserDetailContext"
 import LanguageContext from "../contexes/LanguageContext"
 import withApolloClient from "../lib/with-apollo-client"
 import theme from "../src/theme"
-// import OpenSansCondensed from "typeface-open-sans-condensed"
-// import Roboto from "typeface-roboto"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
@@ -108,8 +106,8 @@ MyApp.getInitialProps = async arg => {
   let lng = "fi"
   let url = "/"
   let hrefUrl = "/"
-  if (typeof window !== "undefined") {
-    lng = ctx.asPath.substring(1, 3) || "fi"
+  if (typeof window !== undefined) {
+    lng = (ctx.asPath && ctx.asPath.substring(1, 3)) || "fi"
     url = ctx.asPath
     hrefUrl = ctx.pathname
   } else {

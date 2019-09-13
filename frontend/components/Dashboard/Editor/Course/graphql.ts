@@ -4,6 +4,7 @@ export const AddCourseMutation = gql`
   mutation addCourse(
     $name: String
     $slug: String
+    $ects: String
     $new_photo: Upload
     $base64: Boolean
     $promote: Boolean
@@ -20,6 +21,7 @@ export const AddCourseMutation = gql`
     addCourse(
       name: $name
       slug: $slug
+      ects: $ects
       new_photo: $new_photo
       base64: $base64
       promote: $promote
@@ -35,6 +37,7 @@ export const AddCourseMutation = gql`
     ) {
       id
       slug
+      ects
       name
       order
       study_module_order
@@ -73,6 +76,7 @@ export const UpdateCourseMutation = gql`
     $id: ID
     $name: String
     $slug: String
+    $ects: String
     $photo: ID
     $new_photo: Upload
     $base64: Boolean
@@ -93,6 +97,7 @@ export const UpdateCourseMutation = gql`
       name: $name
       slug: $slug
       new_slug: $new_slug
+      ects: $ects
       photo: $photo
       new_photo: $new_photo
       base64: $base64
@@ -109,6 +114,7 @@ export const UpdateCourseMutation = gql`
     ) {
       id
       slug
+      ects
       name
       order
       study_module_order

@@ -11,6 +11,7 @@ export interface RegisterCompletionUserOverView_currentUser_completions_course {
   id: any
   slug: string
   name: string
+  ects: string | null
 }
 
 export interface RegisterCompletionUserOverView_currentUser_completions_completions_registered_organization {

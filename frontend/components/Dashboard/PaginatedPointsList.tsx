@@ -34,7 +34,7 @@ export const StudentProgresses = gql`
           }
         }
       }
-      count(search: $search)
+      count(search: $search, course_id: $course_id)
     }
   }
   ${PointsListItemCard.fragments.user}
@@ -84,6 +84,7 @@ function PaginatedPointsList(props: Props) {
     return null
   }
 
+  // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
 
   return (
@@ -128,7 +129,9 @@ function PaginatedPointsList(props: Props) {
         <div>Loading....</div>
       ) : (
         <>
-          <div>{UserCourseSettingses!.count || 0} results</div>
+          <div style={{ marginBottom: "1rem" }}>
+            {UserCourseSettingses.count || 0} results
+          </div>
           <PointsList
             pointsForUser={
               data.UserCourseSettingses ? data.UserCourseSettingses.edges : []

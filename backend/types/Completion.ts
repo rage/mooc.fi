@@ -1,6 +1,7 @@
 import { prismaObjectType } from "nexus-prisma"
 import { Course } from "../generated/prisma-client"
 import { ForbiddenError } from "apollo-server-core"
+import { stringArg } from "nexus/dist"
 
 const Completion = prismaObjectType({
   name: "Completion",
@@ -9,14 +10,43 @@ const Completion = prismaObjectType({
       "id",
       "created_at",
       "updated_at",
-      "course",
       "completion_language",
       "email",
       "student_number",
       "user_upstream_id",
       "completions_registered",
+      "course",
     ])
+    // we're not querying completion course languages for now, and this was buggy
+    /*     t.field("course", {
+      type: "Course",
+      args: {
+        language: stringArg({ required: false }),
+      },
+      resolve: async (parent, args, ctx) => {
+        const { language } = args
+        const { prisma } = ctx
 
+        const course = await prisma.course({ id: parent.course })
+
+        if (language) {
+          const course_translations = await prisma.courseTranslations({
+            where: { course, language },
+          })
+
+          if (!course_translations.length) {
+            return course
+          }
+
+          const { name = course.name, description } = course_translations[0]
+
+          return { ...course, name, description }
+        }
+
+        return course
+      },
+    })
+ */
     t.field("user", {
       type: "User",
       resolve: async (parent, args, ctx) => {

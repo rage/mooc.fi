@@ -30,6 +30,8 @@ type Course @db(name: "course") {
   name: String!
   "identify course in other api Equerys"
   slug: String! @unique
+  "amount of ECTS you can get from this course, can be a range like 2-5"
+  ects: String
   "aliases that can be used in this this api instead of slug "
   course_aliases: [CourseAlias!]! @relation(name: "CourseToCourseAlias")
   services: [Service] @relation(name: "CourseToService")

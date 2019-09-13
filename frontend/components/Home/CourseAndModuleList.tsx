@@ -146,22 +146,24 @@ const CourseAndModuleList = () => {
           titleBackground="#ffffff"
         />
       </section>
-      <section id="modules">
-        <ModuleNavi modules={study_modules} loading={modulesLoading} />
-        <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
-        <CourseHighlights
-          courses={endedCourses}
-          title={t("endedCoursesTitle")}
-          headerImage={highlightsBanner}
-          backgroundColor="#ffffff"
-          hueRotateAngle={58}
-          brightness={1}
-          fontColor="white"
-          titleBackground="#3066C0"
-        />
-      </section>
+      {language === "fi_FI" ? (
+        <section id="modules">
+          <ModuleNavi modules={study_modules} loading={modulesLoading} />
+          <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
+          <CourseHighlights
+            courses={endedCourses}
+            title={t("endedCoursesTitle")}
+            headerImage={highlightsBanner}
+            backgroundColor="#ffffff"
+            hueRotateAngle={58}
+            brightness={1}
+            fontColor="white"
+            titleBackground="#3066C0"
+          />
+        </section>
+      ) : null}
     </section>
   )
 }
 
-export default React.memo(CourseAndModuleList)
+export default CourseAndModuleList

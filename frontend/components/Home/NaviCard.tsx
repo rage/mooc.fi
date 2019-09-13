@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
+import { mime } from "/util/imageUtils"
 
 const NaviItemBase = styled(ButtonBase)`
   position: relative;
@@ -46,11 +47,11 @@ type NaviItem = {
 
 interface NaviCardProps {
   item: NaviItem
-  odd: boolean
+  count: number
 }
 
-const gridLayout = (odd: boolean): { [key: string]: number } =>
-  odd
+const gridLayout = (count: number): { [key: string]: number } =>
+  count % 2 === 1
     ? {
         xs: 12,
         sm: 6,
@@ -61,17 +62,29 @@ const gridLayout = (odd: boolean): { [key: string]: number } =>
         xs: 12,
         sm: 6,
         md: 6,
-        lg: 3,
+        lg: count <= 2 ? 6 : 3,
       }
 
 function NaviCard(props: NaviCardProps) {
-  const { item, odd } = props
-  const image = require(`../../static/images/${item.img}`)
-
+  const { item, count } = props
+  // const image = require(`../../static/images/${item.img}`)
   return (
-    <Grid item {...gridLayout(odd)}>
+    <Grid item {...gridLayout(count)}>
       <NaviItemBase focusRipple>
-        <BackgroundImage src={image} alt="" />
+        <picture>
+          <source
+            srcSet={require(`../../static/images/${item.img}?webp`)}
+            type="image/webp"
+          />
+          <source
+            srcSet={require(`../../static/images/${item.img}`)}
+            type={mime(item.img)}
+          />
+          <BackgroundImage
+            src={require(`../../static/images/${item.img}`)}
+            alt=""
+          />
+        </picture>
         <TextBackground style={{ width: "100%" }}>
           <Typography
             component="h3"

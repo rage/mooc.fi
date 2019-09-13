@@ -32,7 +32,10 @@ const ModuleImage = ({
           srcSet={require(`../../static/images/${imageUrl}`)}
           type={mime(imageUrl)}
         />
-        <BackgroundImage src={require(`../../static/images/${imageUrl}`)} />
+        <BackgroundImage
+          src={require(`../../static/images/${imageUrl}`)}
+          alt=""
+        />
       </picture>
     )
   } catch (e) {
