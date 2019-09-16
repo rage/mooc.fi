@@ -133,15 +133,13 @@ function ModuleSmallCourseCard({
             onClick={e => (course.link === "" ? e.preventDefault() : null)}
             aria-label={`To the course homepage of ${course.name}`}
           >
-            {showHeader ? (
+            {showHeader && course!.study_module_start_point && (
               <Header startPoint={course!.study_module_start_point}>
                 <Typography variant="body1">
-                  {course!.study_module_start_point
-                    ? t("moduleCourseBeginner")
-                    : t("moduleCourseIntermediate")}
+                  {t("moduleCourseStartPoint")}
                 </Typography>
               </Header>
-            ) : null}
+            )}
             <ContentArea>
               <CourseTitle component="h3" align="center" variant="h3">
                 {course.name}
