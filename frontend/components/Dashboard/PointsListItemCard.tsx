@@ -1,7 +1,5 @@
 import React from "react"
 import { Grid, Typography } from "@material-ui/core"
-//import { UserCourseSettingses_UserCourseSettingses_edges_node_user as UserPointsData } from "/static/types/generated/UserCourseSettingses"
-//import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as UserProgressData } from "/static/types/generated/UserCourseSettingses"
 import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as StudentPointsData } from "/static/types/generated/UserCourseSettingses"
 import { pointsDataByGroup, serviceData } from "/static/types/PointsByService"
 import PointsItemTable from "./PointsItemTable"
@@ -105,7 +103,7 @@ const UserInformation = styled(Typography)`
   color: gray;
 `
 interface Props {
-  studentPoints: StudentPointsData
+  studentPoints?: StudentPointsData
   name?: string
   SID?: string | null | undefined
   email?: string
@@ -114,30 +112,7 @@ interface Props {
 
 function PointsListItemCard(props: Props) {
   const { studentPoints, name, SID, email, cutterValue } = props
-  console.log("points at card", studentPoints)
   const [showDetails, setShowDetails] = React.useState(false)
-  const formattedPoints: pointsDataByGroup[] = FormatStudentProgressServiceData(
-    { pointsAll: studentPoints },
-  )
-
-  /*   const firstName = studentPointsPerGroup!.user!.first_name || "n/a"
-  const lastName = studentPointsPerGroup!.user!.last_name || "n/a"
-  const username = studentPointsPerGroup!.user!.username || "n/a"
-
-  let email: string = "no email"
-  let studentId: string = "no SID"
-  let studentProgressData
-  if (studentPointsPerGroup.user) {
-    if (studentPointsPerGroup.user.email) {
-      email = studentPointsPerGroup.user.email
-    }
-    if (studentPointsPerGroup.user.student_number) {
-      studentId = studentPointsPerGroup.user.student_number
-    }
-    if (studentPointsPerGroup.user.user_course_progressess) {
-      studentProgressData = studentPointsPerGroup.user.user_course_progressess
-    }
-  } */
 
   return (
     <Root item sm={12} lg={12}>
@@ -151,11 +126,15 @@ function PointsListItemCard(props: Props) {
       <Name>{name}</Name>
       <UserInformation>{email}</UserInformation>
       <UserInformation>{SID}</UserInformation>
-      <PointsItemTable
-        studentPoints={formattedPoints}
-        showDetailedBreakdown={showDetails}
-        cutterValue={cutterValue}
-      />
+      {studentPoints && (
+        <PointsItemTable
+          studentPoints={FormatStudentProgressServiceData({
+            pointsAll: studentPoints,
+          })}
+          showDetailedBreakdown={showDetails}
+          cutterValue={cutterValue}
+        />
+      )}
     </Root>
   )
 }
