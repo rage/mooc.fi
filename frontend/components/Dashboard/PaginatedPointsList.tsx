@@ -6,6 +6,7 @@ import PointsList from "./PointsList"
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
 import { TextField, Grid, Slider } from "@material-ui/core"
+import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
 import {
   UserCourseSettingses as StudentProgressData,
@@ -64,7 +65,7 @@ function PaginatedPointsList(props: Props) {
         variables: {
           course_id: courseID,
           cursor: null,
-          search: search !== "" ? search : undefined,
+          search,
         },
       }),
     [search],
@@ -86,7 +87,7 @@ function PaginatedPointsList(props: Props) {
 
   // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
-
+  console.log("paginatedPointsList", data)
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>
@@ -126,7 +127,7 @@ function PaginatedPointsList(props: Props) {
         </Grid>
       </Grid>
       {loading ? (
-        <div>Loading....</div>
+        <Skeleton variant="rect" width={120} height={180} />
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
