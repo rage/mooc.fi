@@ -74,6 +74,7 @@ export interface UserCourseSettingses_UserCourseSettingses {
   __typename: "UserCourseSettingsConnection"
   pageInfo: UserCourseSettingses_UserCourseSettingses_pageInfo
   edges: UserCourseSettingses_UserCourseSettingses_edges[]
+  count: number
 }
 
 export interface UserCourseSettingses {
@@ -83,4 +84,5 @@ export interface UserCourseSettingses {
 export interface UserCourseSettingsesVariables {
   course_id?: string | null
   cursor?: string | null
+  search?: string | null
 }
