@@ -109,15 +109,35 @@ interface Props {
   name?: string
   SID?: string | null | undefined
   email?: string
+  cutterValue: number
 }
 
 function PointsListItemCard(props: Props) {
-  const { studentPoints, name, SID, email } = props
+  const { studentPoints, name, SID, email, cutterValue } = props
   console.log("points at card", studentPoints)
   const [showDetails, setShowDetails] = React.useState(false)
   const formattedPoints: pointsDataByGroup[] = FormatStudentProgressServiceData(
     { pointsAll: studentPoints },
   )
+
+  /*   const firstName = studentPointsPerGroup!.user!.first_name || "n/a"
+  const lastName = studentPointsPerGroup!.user!.last_name || "n/a"
+  const username = studentPointsPerGroup!.user!.username || "n/a"
+
+  let email: string = "no email"
+  let studentId: string = "no SID"
+  let studentProgressData
+  if (studentPointsPerGroup.user) {
+    if (studentPointsPerGroup.user.email) {
+      email = studentPointsPerGroup.user.email
+    }
+    if (studentPointsPerGroup.user.student_number) {
+      studentId = studentPointsPerGroup.user.student_number
+    }
+    if (studentPointsPerGroup.user.user_course_progressess) {
+      studentProgressData = studentPointsPerGroup.user.user_course_progressess
+    }
+  } */
 
   return (
     <Root item sm={12} lg={12}>
@@ -134,6 +154,7 @@ function PointsListItemCard(props: Props) {
       <PointsItemTable
         studentPoints={formattedPoints}
         showDetailedBreakdown={showDetails}
+        cutterValue={cutterValue}
       />
     </Root>
   )

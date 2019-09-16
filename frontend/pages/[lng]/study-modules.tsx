@@ -1,6 +1,6 @@
 import * as React from "react"
 import { NextPageContext as NextContext } from "next"
-import { gql } from "apollo-boost"
+// import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import AdminError from "/components/Dashboard/AdminError"
 import {
@@ -16,7 +16,8 @@ import redirect from "/lib/redirect"
 import ModuleGrid from "/components/ModuleGrid"
 import styled from "styled-components"
 
-export const AllEditorModulesQuery = gql`
+import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
+/* export const AllEditorModulesQuery = gql`
   query AllEditorModulesWithTranslations {
     study_modules(orderBy: order_ASC) {
       id
@@ -32,7 +33,7 @@ export const AllEditorModulesQuery = gql`
       }
     }
   }
-`
+` */
 
 const Header = styled(Typography)`
   margin-top: 1em;
