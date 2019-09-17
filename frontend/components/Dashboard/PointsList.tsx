@@ -14,9 +14,10 @@ const PointsList = (props: Props) => {
     <section>
       <Grid container spacing={3}>
         {pointsForUser.map(p =>
-          p && p.node && p.node.user && p.node.user.user_course_progresses ? (
+          p && p.node && p.node.user ? (
             <PointsListItemCard
               studentPoints={
+                p.node.user.user_course_progresses &&
                 p.node.user.user_course_progresses[0] &&
                 p.node.user.user_course_progresses[0]
               }
