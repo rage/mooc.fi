@@ -75,6 +75,10 @@ function PaginatedPointsList(props: Props) {
     return <p>ERROR: {JSON.stringify(error)}</p>
   }
 
+  if (loading) {
+    return <Skeleton variant="rect" width={100} height={180} />
+  }
+
   if (!data) {
     return null
   }
@@ -87,7 +91,6 @@ function PaginatedPointsList(props: Props) {
 
   // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
-  console.log("paginatedPointsList", data)
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>

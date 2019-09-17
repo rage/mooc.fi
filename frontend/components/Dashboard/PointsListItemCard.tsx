@@ -103,7 +103,7 @@ const UserInformation = styled(Typography)`
   color: gray;
 `
 interface Props {
-  studentPoints?: StudentPointsData
+  studentPoints?: StudentPointsData | null
   name?: string
   SID?: string | null | undefined
   email?: string
