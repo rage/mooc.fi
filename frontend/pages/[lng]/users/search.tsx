@@ -1,7 +1,6 @@
-import * as React from "react"
+import React, { useCallback } from "react"
 import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
-import { ApolloConsumer } from "@apollo/react-common"
 import {
   UserDetailsContains,
   UserDetailsContains_userDetailsContains_edges,
@@ -21,7 +20,6 @@ import FirstPageIcon from "@material-ui/icons/FirstPage"
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
 import LastPageIcon from "@material-ui/icons/LastPage"
-import { ApolloClient } from "apollo-boost"
 import Container from "/components/Container"
 import { TableHead, Typography } from "@material-ui/core"
 import styled from "styled-components"
@@ -30,6 +28,9 @@ import { isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { isSignedIn } from "/lib/authentication"
 import AdminError from "/components/Dashboard/AdminError"
+import { useLazyQuery } from "@apollo/react-hooks"
+import Skeleton from "@material-ui/lab/Skeleton"
+import range from "lodash/range"
 
 interface UserSearchProps {
   namespacesRequired: string[]
@@ -79,92 +80,80 @@ interface TablePaginationActionsProps {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     newPage: number,
   ) => void
-  client: ApolloClient<any>
-  setCount: Function
-  setResult: Function
-  setCursor: Function
+  data: UserDetailsContains
   setPage: Function
+  loadData: Function
   searchText: string
-  cursor: any
 }
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
   const theme = useTheme()
-  const {
-    count,
-    page,
-    rowsPerPage,
-    client,
-    setCount,
-    setResult,
-    setCursor,
-    setPage,
-    searchText,
-    cursor,
-  } = props
+  const { data, page, rowsPerPage, setPage, searchText, loadData } = props
 
-  async function handleFirstPageButtonClick(
+  const startCursor =
+    data &&
+    data.userDetailsContains &&
+    data.userDetailsContains.pageInfo &&
+    data.userDetailsContains.pageInfo.startCursor
+  const endCursor =
+    data &&
+    data.userDetailsContains &&
+    data.userDetailsContains.pageInfo &&
+    data.userDetailsContains.pageInfo.startCursor
+  const count =
+    (data && data.userDetailsContains && data.userDetailsContains.count) || 0
+
+  const handleFirstPageButtonClick = useCallback(async (
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) {
-    const { data } = await client.query({
-      query: GET_DATA,
+  ) => {
+    loadData({
       variables: { search: searchText, first: rowsPerPage },
     })
-    saveState(setResult, data, setCursor, setPage, 0, setCount)
-  }
+    setPage(0)
+  }, [])
 
-  async function handleBackButtonClick(
+  const handleBackButtonClick = useCallback(async (
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) {
-    const { data } = await client.query({
-      query: GET_DATA,
+  ) => {
+    loadData({
       variables: {
         search: searchText,
         last: rowsPerPage,
-        before: cursor.before,
+        before: startCursor, // cursor.before,
       },
     })
-    saveState(setResult, data, setCursor, setPage, page - 1, setCount)
-  }
+    setPage(page - 1)
+  }, [])
 
-  async function handleNextButtonClick(
+  const handleNextButtonClick = useCallback(async (
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) {
-    const { data } = await client.query({
-      query: GET_DATA,
+  ) => {
+    loadData({
       variables: {
         search: searchText,
         first: rowsPerPage,
-        after: cursor.after,
+        after: endCursor, // cursor.after,
       },
     })
-    setCount(data.userDetailsContains.count)
-    saveState(setResult, data, setCursor, setPage, page + 1, setCount)
-  }
+    // setCount(data.userDetailsContains.count)
+    setPage(page + 1)
+  }, [])
 
-  async function handleLastPageButtonClick(
+  const handleLastPageButtonClick = useCallback(async (
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) {
-    const { data } = await client.query({
-      query: GET_DATA,
+  ) => {
+    loadData({
       variables: {
         search: searchText,
         last: rowsPerPage,
       },
     })
-    saveState(
-      setResult,
-      data,
-      setCursor,
-      setPage,
-      Math.max(0, Math.ceil(count / rowsPerPage) - 1),
-      setCount,
-    )
-  }
+    setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+  }, [])
 
   return (
     <StyledFooter>
@@ -210,9 +199,10 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 
 const UserSearch = (props: UserSearchProps) => {
   const [searchText, setSearchText] = React.useState("")
-  const [result, setResult] = React.useState([])
-  const [cursor, setCursor] = React.useState({ after: null, before: null })
-  const [count, setCount] = React.useState(0)
+  const [page, setPage] = React.useState(0)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+
+  const [loadData, { data, loading }] = useLazyQuery(GET_DATA)
 
   if (!props.admin) {
     return <AdminError />
@@ -221,24 +211,23 @@ const UserSearch = (props: UserSearchProps) => {
   const onTextBoxChange = (event: any) => {
     setSearchText(event.target.value)
   }
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
-
   interface HandleChangeRowsPerPageProps {
     eventValue: string
-    client: ApolloClient<any>
   }
-  async function handleChangeRowsPerPage(props: HandleChangeRowsPerPageProps) {
-    const { eventValue, client } = props
-    if (searchText !== "") {
-      const { data } = await client.query({
-        query: GET_DATA,
-        variables: { search: searchText, first: parseInt(eventValue, 10) },
-      })
-      saveState(setResult, data, setCursor, setPage, 0, setCount)
-    } else setPage(0)
-    setRowsPerPage(parseInt(eventValue, 10))
-  }
+  const handleChangeRowsPerPage = useCallback(
+    async (props: HandleChangeRowsPerPageProps) => {
+      const { eventValue } = props
+      if (searchText !== "") {
+        loadData({
+          variables: { search: searchText, first: parseInt(eventValue, 10) },
+        })
+        setPage(0)
+      } else setPage(0)
+      setRowsPerPage(parseInt(eventValue, 10))
+    },
+    [],
+  )
+
   return (
     <Container>
       <Typography
@@ -249,124 +238,135 @@ const UserSearch = (props: UserSearchProps) => {
       >
         User Search
       </Typography>
-      <ApolloConsumer>
-        {client => (
-          <div>
-            <StyledForm
-              onSubmit={async (event: any) => {
-                event.preventDefault()
-                const { data } = await client.query({
-                  query: GET_DATA,
-                  variables: { search: searchText, first: rowsPerPage },
-                })
-                saveState(setResult, data, setCursor, setPage, 0, setCount)
-              }}
-            >
-              <StyledTextField
-                id="standard-search"
-                label="Search by string"
-                type="search"
-                margin="normal"
-                autoComplete="off"
-                onChange={onTextBoxChange}
+      <div>
+        <StyledForm
+          onSubmit={async (event: any) => {
+            event.preventDefault()
+            loadData({
+              variables: { search: searchText, first: rowsPerPage },
+            })
+            setPage(0)
+          }}
+        >
+          <StyledTextField
+            id="standard-search"
+            label="Search by string"
+            type="search"
+            margin="normal"
+            autoComplete="off"
+            onChange={onTextBoxChange}
+          />
+
+          <StyledButton
+            variant="contained"
+            onClick={async (event: any) => {
+              event.preventDefault()
+              loadData({
+                variables: { search: searchText, first: rowsPerPage },
+              })
+              setPage(0)
+            }}
+          >
+            Search
+          </StyledButton>
+        </StyledForm>
+
+        <StyledPaper>
+          <TableWrapper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Email</StyledTableCell>
+                  <StyledTableCell align="right">upstream_id</StyledTableCell>
+                  <StyledTableCell align="right">First Name</StyledTableCell>
+                  <StyledTableCell align="right">Last Name</StyledTableCell>
+                  <StyledTableCell align="right">
+                    Student Number
+                  </StyledTableCell>
+                  <StyledTableCell align="right">Completions</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <RenderResults
+                data={
+                  (data &&
+                    data.userDetailsContains &&
+                    data.userDetailsContains.edges) ||
+                  []
+                }
+                loading={loading}
               />
-
-              <StyledButton
-                variant="contained"
-                onClick={async (event: any) => {
-                  event.preventDefault()
-                  const { data } = await client.query({
-                    query: GET_DATA,
-                    variables: { search: searchText, first: rowsPerPage },
-                  })
-                  saveState(setResult, data, setCursor, setPage, 0, setCount)
-                }}
-              >
-                Search
-              </StyledButton>
-            </StyledForm>
-
-            <StyledPaper>
-              <TableWrapper>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell>Email</StyledTableCell>
-                      <StyledTableCell align="right">
-                        upstream_id
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        First Name
-                      </StyledTableCell>
-                      <StyledTableCell align="right">Last Name</StyledTableCell>
-                      <StyledTableCell align="right">
-                        Student Number
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        Completions
-                      </StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <RenderResults data={result} />
-                  <TableFooter>
-                    <TableRow>
-                      <td align="left">
-                        <TablePagination
-                          rowsPerPageOptions={[10, 20, 50]}
-                          colSpan={3}
-                          count={count}
-                          rowsPerPage={rowsPerPage}
-                          page={page}
-                          SelectProps={{
-                            inputProps: { "aria-label": "rows per page" },
-                            native: true,
-                          }}
-                          onChangePage={() => null}
-                          onChangeRowsPerPage={(
-                            event: React.ChangeEvent<
-                              HTMLInputElement | HTMLTextAreaElement
-                            >,
-                          ) => {
-                            const eventValue = event.target.value
-                            let newProps: HandleChangeRowsPerPageProps = {
-                              eventValue,
-                              client,
-                            }
-                            return handleChangeRowsPerPage(newProps)
-                          }}
-                          ActionsComponent={props => {
-                            const newProps: TablePaginationActionsProps = {
-                              ...props,
-                              client,
-                              setCount,
-                              setCursor,
-                              setPage,
-                              searchText,
-                              setResult,
-                              cursor,
-                            }
-                            return TablePaginationActions(newProps)
-                          }}
-                        />
-                      </td>
-                    </TableRow>
-                  </TableFooter>
-                </Table>
-              </TableWrapper>
-            </StyledPaper>
-          </div>
-        )}
-      </ApolloConsumer>
+              <TableFooter>
+                <TableRow>
+                  <td align="left">
+                    <TablePagination
+                      rowsPerPageOptions={[10, 20, 50]}
+                      colSpan={3}
+                      count={
+                        data && data.userDetailsContains
+                          ? data.userDetailsContains.count
+                          : 0
+                      }
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      SelectProps={{
+                        inputProps: { "aria-label": "rows per page" },
+                        native: true,
+                      }}
+                      onChangePage={() => null}
+                      onChangeRowsPerPage={(
+                        event: React.ChangeEvent<
+                          HTMLInputElement | HTMLTextAreaElement
+                        >,
+                      ) => {
+                        const eventValue = event.target.value
+                        let newProps: HandleChangeRowsPerPageProps = {
+                          eventValue,
+                        }
+                        return handleChangeRowsPerPage(newProps)
+                      }}
+                      ActionsComponent={props => {
+                        const newProps: TablePaginationActionsProps = {
+                          ...props,
+                          setPage,
+                          searchText,
+                          loadData,
+                          data,
+                        }
+                        return TablePaginationActions(newProps)
+                      }}
+                    />
+                  </td>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableWrapper>
+        </StyledPaper>
+      </div>
     </Container>
   )
 }
 interface RenderResultsProps {
   data: UserDetailsContains_userDetailsContains_edges[]
+  loading: boolean
 }
 const RenderResults = (props: RenderResultsProps) => {
-  const data = props.data
+  const { data, loading } = props
 
-  if (data.length < 1)
+  if (loading) {
+    return (
+      <TableBody>
+        {range(5).map(_ => (
+          <TableRow>
+            <TableCell colSpan={5}>
+              <Skeleton />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    )
+  }
+
+  if (!data || (data && data.length < 1))
     return (
       <TableBody>
         <TableRow>
@@ -386,6 +386,7 @@ const RenderResults = (props: RenderResultsProps) => {
           <TableCell align="right">{row.node.last_name}</TableCell>
           <TableCell align="right">{row.node.student_number}</TableCell>
           <TableCell align="right">
+            {/* FIXME: this should be a next link */}
             <Button
               variant="contained"
               href={row.node.upstream_id + "/completions"}
@@ -447,20 +448,3 @@ UserSearch.getInitialProps = function(context: NextContext) {
 }
 
 export default UserSearch
-
-function saveState(
-  setResult: any,
-  data: UserDetailsContains,
-  setCursor: any,
-  setPage: any,
-  newPage: number,
-  setCount: any,
-) {
-  setResult(data.userDetailsContains.edges)
-  setCursor({
-    before: data.userDetailsContains.pageInfo.startCursor,
-    after: data.userDetailsContains.pageInfo.endCursor,
-  })
-  setCount(data.userDetailsContains.count)
-  setPage(newPage)
-}
