@@ -31,6 +31,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
 import Skeleton from "@material-ui/lab/Skeleton"
 import range from "lodash/range"
+import LangLink from "/components/LangLink"
 
 interface UserSearchProps {
   namespacesRequired: string[]
@@ -278,8 +279,8 @@ const UserSearch = (props: UserSearchProps) => {
                 <TableRow>
                   <StyledTableCell>Email</StyledTableCell>
                   <StyledTableCell align="right">upstream_id</StyledTableCell>
-                  <StyledTableCell align="right">First Name</StyledTableCell>
-                  <StyledTableCell align="right">Last Name</StyledTableCell>
+                  <StyledTableCell align="right">First name</StyledTableCell>
+                  <StyledTableCell align="right">Last name</StyledTableCell>
                   <StyledTableCell align="right">
                     Student Number
                   </StyledTableCell>
@@ -370,7 +371,7 @@ const RenderResults = (props: RenderResultsProps) => {
     return (
       <TableBody>
         <TableRow>
-          <TableCell>Not Found</TableCell>
+          <TableCell>No results</TableCell>
         </TableRow>
       </TableBody>
     )
@@ -386,13 +387,13 @@ const RenderResults = (props: RenderResultsProps) => {
           <TableCell align="right">{row.node.last_name}</TableCell>
           <TableCell align="right">{row.node.student_number}</TableCell>
           <TableCell align="right">
-            {/* FIXME: this should be a next link */}
-            <Button
-              variant="contained"
-              href={row.node.upstream_id + "/completions"}
+            <LangLink
+              as={`/users/${row.node.upstream_id}/completions`}
+              href="/users/[id]/completions"
+              passHref
             >
-              Completions
-            </Button>
+              <Button variant="contained">Completions</Button>
+            </LangLink>
           </TableCell>
         </TableRow>
       ))}
