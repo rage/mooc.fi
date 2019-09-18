@@ -17,8 +17,6 @@ const UserCourseSettingsConnection = prismaObjectType({
       resolve: async (parent, args, ctx) => {
         const { search, course_id } = args
 
-        console.log("args", args)
-        console.log("parent", parent)
         const prisma: Prisma = ctx.prisma
         return await prisma
           .userCourseSettingsesConnection({

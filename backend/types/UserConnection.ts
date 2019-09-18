@@ -27,7 +27,7 @@ const UserConnection = prismaObjectType({
                   "email_contains",
                 ],
                 search,
-              ), //tää args ei taida toimia :d
+              ),
             },
           })
           .aggregate()
