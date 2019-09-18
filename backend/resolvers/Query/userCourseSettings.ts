@@ -88,11 +88,36 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
+const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
+  t.field("userCourseSettingsCount", {
+    type: "Int",
+    args: {
+      user_id: idArg(),
+      course_id: idArg(),
+    },
+    resolve: (_, args, ctx) => {
+      checkAccess(ctx)
+      const { user_id, course_id } = args
+      const prisma: Prisma = ctx.prisma
+      return prisma
+        .userCourseSettingsesConnection({
+          where: {
+            user: { id: user_id },
+            course: { id: course_id },
+          },
+        })
+        .aggregate()
+        .count()
+    },
+  })
+}
+
 const addUserCourseSettingsQueries = (
   t: PrismaObjectDefinitionBlock<"Query">,
 ) => {
   userCourseSettings(t)
   userCourseSettingses(t)
+  userCourseSettingsCount(t)
 }
 
 export default addUserCourseSettingsQueries
