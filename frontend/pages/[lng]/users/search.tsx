@@ -6,22 +6,25 @@ import {
   UserDetailsContains_userDetailsContains_edges,
 } from "/static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
-import Button from "@material-ui/core/Button"
-import TextField from "@material-ui/core/TextField"
-import Table from "@material-ui/core/Table"
-import TableBody from "@material-ui/core/TableBody"
-import TableCell from "@material-ui/core/TableCell"
-import TableFooter from "@material-ui/core/TableFooter"
-import TablePagination from "@material-ui/core/TablePagination"
-import TableRow from "@material-ui/core/TableRow"
-import Paper from "@material-ui/core/Paper"
-import IconButton from "@material-ui/core/IconButton"
+import {
+  Button,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TablePagination,
+  TableRow,
+  Paper,
+  TableHead,
+  Typography,
+  IconButton,
+} from "@material-ui/core"
 import FirstPageIcon from "@material-ui/icons/FirstPage"
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
 import LastPageIcon from "@material-ui/icons/LastPage"
 import Container from "/components/Container"
-import { TableHead, Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { NextPageContext as NextContext } from "next"
 import { isAdmin } from "/lib/authentication"
@@ -100,7 +103,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     data &&
     data.userDetailsContains &&
     data.userDetailsContains.pageInfo &&
-    data.userDetailsContains.pageInfo.startCursor
+    data.userDetailsContains.pageInfo.endCursor
   const count =
     (data && data.userDetailsContains && data.userDetailsContains.count) || 0
 
@@ -210,7 +213,7 @@ const UserSearch = (props: UserSearchProps) => {
   }
 
   const onTextBoxChange = (event: any) => {
-    setSearchText(event.target.value)
+    setSearchText(event.target.value as string)
   }
   interface HandleChangeRowsPerPageProps {
     eventValue: string
@@ -222,11 +225,11 @@ const UserSearch = (props: UserSearchProps) => {
         loadData({
           variables: { search: searchText, first: parseInt(eventValue, 10) },
         })
-        setPage(0)
-      } else setPage(0)
+      }
+      setPage(0)
       setRowsPerPage(parseInt(eventValue, 10))
     },
-    [],
+    [searchText],
   )
 
   return (
