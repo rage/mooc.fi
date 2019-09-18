@@ -9,23 +9,19 @@ import {
 } from "@material-ui/core"
 
 import { signIn } from "../lib/authentication"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LanguageContext from "/contexes/LanguageContext"
 import LoginStateContext from "/contexes/LoginStateContext"
 import getCommonTranslator from "/translations/common"
 import { useContext } from "react"
+import styled from "styled-components"
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    form: {
-      widht: "100%",
-      marginTop: "1em",
-    },
-    submit: {
-      marginTop: "1em",
-    },
-  }),
-)
+const StyledForm = styled.form`
+  padding: 1em;
+`
+const SubmitButton = styled(Button)`
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+`
 
 function SignIn() {
   const [password, setPassword] = useState("")
@@ -65,14 +61,12 @@ function SignIn() {
     return () => timeouts.forEach(t => clearTimeout(t))
   }, [])
 
-  const classes = useStyles()
   const lng = useContext(LanguageContext)
   const t = getCommonTranslator(lng.language)
   return (
     <LoginStateContext.Consumer>
       {({ logInOrOut }) => (
-        <form className={classes.form}>
-          {t("loginDetails")}
+        <StyledForm>
           <FormControl required fullWidth error={error}>
             <InputLabel htmlFor="email">{t("username")}</InputLabel>
             <Input
@@ -102,13 +96,12 @@ function SignIn() {
             <FormHelperText error={error}>{error && t("error")}</FormHelperText>
           </FormControl>
 
-          <Button
-            className={classes.submit}
+          <SubmitButton
             type="submit"
             data-testid="login-button"
-            fullWidth
             variant="contained"
             color="secondary"
+            fullWidth
             disabled={email.trim() === "" || password.trim() === ""}
             onClick={async e => {
               e.preventDefault()
@@ -129,13 +122,13 @@ function SignIn() {
             }}
           >
             {t("login")}
-          </Button>
+          </SubmitButton>
           <Link href="https://tmc.mooc.fi/password_reset_keys/new">
             <a href="https://tmc.mooc.fi/password_reset_keys/new">
               {t("forgottenpw")}
             </a>
           </Link>
-        </form>
+        </StyledForm>
       )}
     </LoginStateContext.Consumer>
   )
