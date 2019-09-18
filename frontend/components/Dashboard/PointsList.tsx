@@ -10,18 +10,17 @@ interface Props {
 
 const PointsList = (props: Props) => {
   const { pointsForUser, cutterValue } = props
-
   return (
     <section>
       <Grid container spacing={3}>
         {pointsForUser.map(p =>
-          p &&
-          p.node &&
-          p.node.user &&
-          p.node.user.user_course_progresses &&
-          p.node.user.user_course_progresses[0] ? (
+          p && p.node && p.node.user ? (
             <PointsListItemCard
-              studentPoints={p.node.user.user_course_progresses[0]}
+              studentPoints={
+                p.node.user.user_course_progresses &&
+                p.node.user.user_course_progresses[0] &&
+                p.node.user.user_course_progresses[0]
+              }
               name={p.node.user.first_name + " " + p.node.user.last_name}
               email={p.node.user.email}
               SID={p.node.user.student_number}
