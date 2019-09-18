@@ -3,50 +3,39 @@ import { NextPageContext as NextContext } from "next"
 import { isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import Paper from "@material-ui/core/Paper"
-import Avatar from "@material-ui/core/Avatar"
 import Typography from "@material-ui/core/Typography"
 import SignInForm from "/components/SignInForm"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
 import Container from "/components/Container"
 import LanguageContext from "/contexes/LanguageContext"
 import getSignInTranslator from "/translations/common"
 import { useContext } from "react"
+import styled from "styled-components"
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      widht: "auto",
-      display: "block",
-    },
-    paper: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      padding: "1em",
-      marginTop: "2em",
-    },
-    avatar: {
-      margin: "1rem",
-    },
-  }),
-)
-
+const StyledPaper = styled(Paper)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+`
+const Header = styled(Typography)`
+  margin: 1em;
+`
 const SignInPage = () => {
   const lng = useContext(LanguageContext)
   const t = getSignInTranslator(lng.language)
-  const classes = useStyles()
   return (
     <Container style={{ width: "90%", maxWidth: 900 }}>
-      <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5" gutterBottom={true}>
+      <StyledPaper>
+        <Header component="h1" variant="h4" gutterBottom={true}>
           {t("login")}
+        </Header>
+        <Typography component="p" paragraph>
+          {t("loginDetails")}
         </Typography>
         <SignInForm />
-      </Paper>
+      </StyledPaper>
     </Container>
   )
 }

@@ -1,5 +1,5 @@
 import React from "react"
-import { TextField, Button, Typography } from "@material-ui/core"
+import { TextField, Button, Typography, Paper } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
@@ -7,23 +7,36 @@ import getSignUpTranslator from "/translations/sign-up"
 import LangLink from "/components/LangLink"
 import styled from "styled-components"
 
+const StyledPaper = styled(Paper)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+`
 const Row = styled.div`
   margin-bottom: 1.5rem;
 `
-
-const Form = styled.form``
+const Form = styled.form`
+  width: 100%;
+`
+const Header = styled(Typography)`
+  margin: 1em;
+`
 
 const InfoBox = styled.div`
   margin-bottom: 2rem;
 `
 
-const FormContainer = styled.div`
-  height: 100%;
-  margin-top: 2rem;
-`
 const StyledTypography = styled(Typography)`
   margin-bottom: 2rem;
 `
+const SubmitButton = styled(Button)`
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+`
+
 interface state {
   email?: string
   password?: string
@@ -196,16 +209,13 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   render() {
     const t = getSignUpTranslator(this.context.language)
     return (
-      <FormContainer>
-        <Typography
-          component="h1"
-          variant="h2"
-          gutterBottom={true}
-          align="center"
-        >
+      <StyledPaper>
+        <Header component="h1" variant="h4" gutterBottom={true} align="center">
           {t("signupTitle")}
-        </Typography>
-        <StyledTypography> {t("formInfoText")}</StyledTypography>
+        </Header>
+        <StyledTypography component="p" paragraph>
+          {t("formInfoText")}
+        </StyledTypography>
         <Form onChange={this.validate}>
           <Row>
             <TextField
@@ -282,16 +292,16 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
           </Row>
 
           <Row>
-            <Button
+            <SubmitButton
               onClick={this.onClick}
               disabled={this.state.submitting || !this.state.canSubmit}
               variant="contained"
-              color="primary"
+              color="secondary"
               fullWidth
               type="submit"
             >
               {t("signupTitle")}
-            </Button>
+            </SubmitButton>
           </Row>
         </Form>
 
@@ -311,7 +321,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             </b>
           </InfoBox>
         )}
-      </FormContainer>
+      </StyledPaper>
     )
   }
 }
