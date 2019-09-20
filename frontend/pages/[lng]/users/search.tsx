@@ -1,22 +1,12 @@
 import React, { useCallback } from "react"
 import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
-import {
-  UserDetailsContains,
-  UserDetailsContains_userDetailsContains_edges,
-} from "/static/types/generated/UserDetailsContains"
+import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
 import {
   Button,
   TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TablePagination,
-  TableRow,
   Paper,
-  TableHead,
   Typography,
   IconButton,
 } from "@material-ui/core"
@@ -32,24 +22,13 @@ import redirect from "/lib/redirect"
 import { isSignedIn } from "/lib/authentication"
 import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
-import Skeleton from "@material-ui/lab/Skeleton"
-import range from "lodash/range"
-import LangLink from "/components/LangLink"
-
+// import WideGrid from "/components/Dashboard/Users/WideGrid"
+import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 interface UserSearchProps {
   namespacesRequired: string[]
   router: SingletonRouter
   admin: boolean
 }
-
-const TableWrapper = styled.div`
-  overflow-x: "auto";
-`
-
-const StyledTableCell = styled(TableCell)`
-  background-color: black;
-  color: white;
-`
 
 const StyledForm = styled.form`
   display: flex;
@@ -121,6 +100,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
+    console.log("prev page", rowsPerPage, page, startCursor)
     loadData({
       variables: {
         search: searchText,
@@ -135,6 +115,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
+    console.log("next page", rowsPerPage, page, endCursor)
     loadData({
       variables: {
         search: searchText,
@@ -153,7 +134,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     loadData({
       variables: {
         search: searchText,
-        last: rowsPerPage,
+        last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
       },
     })
     setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
@@ -276,131 +257,20 @@ const UserSearch = (props: UserSearchProps) => {
         </StyledForm>
 
         <StyledPaper>
-          <TableWrapper>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell>Email</StyledTableCell>
-                  <StyledTableCell align="right">upstream_id</StyledTableCell>
-                  <StyledTableCell align="right">First name</StyledTableCell>
-                  <StyledTableCell align="right">Last name</StyledTableCell>
-                  <StyledTableCell align="right">
-                    Student Number
-                  </StyledTableCell>
-                  <StyledTableCell align="right">Completions</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <RenderResults
-                data={
-                  (data &&
-                    data.userDetailsContains &&
-                    data.userDetailsContains.edges) ||
-                  []
-                }
-                loading={loading}
-              />
-              <TableFooter>
-                <TableRow>
-                  <td align="left">
-                    <TablePagination
-                      rowsPerPageOptions={[10, 20, 50]}
-                      colSpan={3}
-                      count={
-                        data && data.userDetailsContains
-                          ? data.userDetailsContains.count
-                          : 0
-                      }
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      SelectProps={{
-                        inputProps: { "aria-label": "rows per page" },
-                        native: true,
-                      }}
-                      onChangePage={() => null}
-                      onChangeRowsPerPage={(
-                        event: React.ChangeEvent<
-                          HTMLInputElement | HTMLTextAreaElement
-                        >,
-                      ) => {
-                        const eventValue = event.target.value
-                        let newProps: HandleChangeRowsPerPageProps = {
-                          eventValue,
-                        }
-                        return handleChangeRowsPerPage(newProps)
-                      }}
-                      ActionsComponent={props => {
-                        const newProps: TablePaginationActionsProps = {
-                          ...props,
-                          setPage,
-                          searchText,
-                          loadData,
-                          data,
-                        }
-                        return TablePaginationActions(newProps)
-                      }}
-                    />
-                  </td>
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </TableWrapper>
+          <MobileGrid
+            data={data}
+            loading={loading}
+            loadData={loadData}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+            TablePaginationActions={TablePaginationActions}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            searchText={searchText}
+            setPage={setPage}
+          />
         </StyledPaper>
       </div>
     </Container>
-  )
-}
-interface RenderResultsProps {
-  data: UserDetailsContains_userDetailsContains_edges[]
-  loading: boolean
-}
-const RenderResults = (props: RenderResultsProps) => {
-  const { data, loading } = props
-
-  if (loading) {
-    return (
-      <TableBody>
-        {range(5).map(_ => (
-          <TableRow>
-            <TableCell colSpan={5}>
-              <Skeleton />
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    )
-  }
-
-  if (!data || (data && data.length < 1))
-    return (
-      <TableBody>
-        <TableRow>
-          <TableCell>No results</TableCell>
-        </TableRow>
-      </TableBody>
-    )
-  return (
-    <TableBody>
-      {data.map(row => (
-        <TableRow key={row.node.upstream_id}>
-          <TableCell component="th" scope="row">
-            {row.node.email}
-          </TableCell>
-          <TableCell align="right">{row.node.upstream_id}</TableCell>
-          <TableCell align="right">{row.node.first_name}</TableCell>
-          <TableCell align="right">{row.node.last_name}</TableCell>
-          <TableCell align="right">{row.node.student_number}</TableCell>
-          <TableCell align="right">
-            <LangLink
-              as={`/users/${row.node.upstream_id}/completions`}
-              href="/users/[id]/completions"
-              passHref
-            >
-              <Button variant="contained">Completions</Button>
-            </LangLink>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
   )
 }
 
