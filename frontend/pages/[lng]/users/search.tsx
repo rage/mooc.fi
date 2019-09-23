@@ -6,9 +6,9 @@ import { useTheme } from "@material-ui/core/styles"
 import {
   Button,
   TextField,
-  Paper,
   Typography,
   IconButton,
+  useMediaQuery,
 } from "@material-ui/core"
 import FirstPageIcon from "@material-ui/icons/FirstPage"
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"
@@ -22,8 +22,9 @@ import redirect from "/lib/redirect"
 import { isSignedIn } from "/lib/authentication"
 import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
-// import WideGrid from "/components/Dashboard/Users/WideGrid"
+import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
+
 interface UserSearchProps {
   namespacesRequired: string[]
   router: SingletonRouter
@@ -48,11 +49,6 @@ const StyledButton = styled(Button)`
 const StyledTextField = styled(TextField)`
   margin-left: 1;
   margin-right: 1;
-`
-
-const StyledPaper = styled(Paper)`
-  width: 100%;
-  margin-top: 5px;
 `
 
 interface TablePaginationActionsProps {
@@ -100,7 +96,6 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
-    console.log("prev page", rowsPerPage, page, startCursor)
     loadData({
       variables: {
         search: searchText,
@@ -115,7 +110,6 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     // @ts-ignore
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
-    console.log("next page", rowsPerPage, page, endCursor)
     loadData({
       variables: {
         search: searchText,
@@ -189,6 +183,9 @@ const UserSearch = (props: UserSearchProps) => {
 
   const [loadData, { data, loading }] = useLazyQuery(GET_DATA)
 
+  const isMobile = useMediaQuery("(max-width:800px)")
+  const GridComponent = isMobile ? MobileGrid : WideGrid
+
   if (!props.admin) {
     return <AdminError />
   }
@@ -256,19 +253,17 @@ const UserSearch = (props: UserSearchProps) => {
           </StyledButton>
         </StyledForm>
 
-        <StyledPaper>
-          <MobileGrid
-            data={data}
-            loading={loading}
-            loadData={loadData}
-            handleChangeRowsPerPage={handleChangeRowsPerPage}
-            TablePaginationActions={TablePaginationActions}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            searchText={searchText}
-            setPage={setPage}
-          />
-        </StyledPaper>
+        <GridComponent
+          data={data}
+          loading={loading}
+          loadData={loadData}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          TablePaginationActions={TablePaginationActions}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          searchText={searchText}
+          setPage={setPage}
+        />
       </div>
     </Container>
   )
