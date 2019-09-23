@@ -112,6 +112,22 @@ const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
+/* const uniqueCourseVariants = (t: PrismaObjectDefinitionBlock<"Query">) => {
+  t.list.field("uniqueCourseVariants", {
+    type: "String",
+    args: {
+      course_id: idArg()
+    },
+    resolve: (_, args, ctx) => {
+      checkAccess(ctx)
+
+      const { course_id } = args
+
+      return []
+    }
+  })
+}
+ */
 const addUserCourseSettingsQueries = (
   t: PrismaObjectDefinitionBlock<"Query">,
 ) => {

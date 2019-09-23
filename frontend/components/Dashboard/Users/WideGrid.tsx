@@ -1,11 +1,11 @@
 import React from "react"
 import {
   Button,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableFooter,
-  TablePagination,
   TableRow,
   TableHead,
 } from "@material-ui/core"
@@ -17,6 +17,7 @@ import {
   UserDetailsContains_userDetailsContains_edges,
   UserDetailsContains,
 } from "/static/types/generated/UserDetailsContains"
+import Pagination from "/components/Dashboard/Users/Pagination"
 
 const TableWrapper = styled.div`
   overflow-x: "auto";
@@ -26,11 +27,13 @@ const StyledTableCell = styled(TableCell)`
   background-color: black;
   color: white;
 `
-interface HandleChangeRowsPerPageProps {
-  eventValue: string
-}
 
-interface TablePaginationActionsProps {
+const StyledPaper = styled(Paper)`
+  width: 100%;
+  margin-top: 5px;
+`
+
+/* interface TablePaginationActionsProps {
   count: number
   page: number
   rowsPerPage: number
@@ -42,13 +45,13 @@ interface TablePaginationActionsProps {
   setPage: Function
   loadData: Function
   searchText: string
-}
+} */
 
 interface GridProps {
   data: UserDetailsContains
   loadData: Function
   loading: boolean
-  handleChangeRowsPerPage: (props: HandleChangeRowsPerPageProps) => void
+  handleChangeRowsPerPage: (props: { eventValue: string }) => void
   TablePaginationActions: Function /* (
     props: TablePaginationActionsProps,
   ) =>  */
@@ -69,72 +72,47 @@ const WideGrid = ({
   searchText,
   setPage,
 }: GridProps) => (
-  <TableWrapper>
-    <Table>
-      <TableHead>
-        <TableRow>
-          <StyledTableCell>Email</StyledTableCell>
-          <StyledTableCell align="right">upstream_id</StyledTableCell>
-          <StyledTableCell align="right">First name</StyledTableCell>
-          <StyledTableCell align="right">Last name</StyledTableCell>
-          <StyledTableCell align="right">Student Number</StyledTableCell>
-          <StyledTableCell align="right">Completions</StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <RenderResults
-        data={
-          (data &&
-            data.userDetailsContains &&
-            data.userDetailsContains.edges) ||
-          []
-        }
-        loading={loading}
-      />
-      <TableFooter>
-        <TableRow>
-          <td align="left">
-            <TablePagination
-              rowsPerPageOptions={[10, 20, 50]}
-              colSpan={3}
-              count={
-                data && data.userDetailsContains
-                  ? data.userDetailsContains.count
-                  : 0
-              }
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: { "aria-label": "rows per page" },
-                native: true,
-              }}
-              onChangePage={() => null}
-              onChangeRowsPerPage={(
-                event: React.ChangeEvent<
-                  HTMLInputElement | HTMLTextAreaElement
-                >,
-              ) => {
-                const eventValue = event.target.value
-                let newProps: HandleChangeRowsPerPageProps = {
-                  eventValue,
-                }
-                return handleChangeRowsPerPage(newProps)
-              }}
-              ActionsComponent={props => {
-                const newProps: TablePaginationActionsProps = {
-                  ...props,
-                  setPage,
-                  searchText,
-                  loadData,
-                  data,
-                }
-                return TablePaginationActions(newProps)
-              }}
-            />
-          </td>
-        </TableRow>
-      </TableFooter>
-    </Table>
-  </TableWrapper>
+  <StyledPaper>
+    <TableWrapper>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Email</StyledTableCell>
+            {/*             <StyledTableCell align="right">upstream_id</StyledTableCell> */}
+            <StyledTableCell align="right">First name</StyledTableCell>
+            <StyledTableCell align="right">Last name</StyledTableCell>
+            <StyledTableCell align="right">Student Number</StyledTableCell>
+            <StyledTableCell align="right">Completions</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <RenderResults
+          data={
+            (data &&
+              data.userDetailsContains &&
+              data.userDetailsContains.edges) ||
+            []
+          }
+          loading={loading}
+        />
+        <TableFooter>
+          <TableRow>
+            <td align="left">
+              <Pagination
+                data={data}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                setPage={setPage}
+                searchText={searchText}
+                loadData={loadData}
+                handleChangeRowsPerPage={handleChangeRowsPerPage}
+                TablePaginationActions={TablePaginationActions}
+              />
+            </td>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableWrapper>
+  </StyledPaper>
 )
 
 interface RenderResultsProps {
@@ -173,7 +151,7 @@ const RenderResults = (props: RenderResultsProps) => {
           <TableCell component="th" scope="row">
             {row.node.email}
           </TableCell>
-          <TableCell align="right">{row.node.upstream_id}</TableCell>
+          {/*           <TableCell align="right">{row.node.upstream_id}</TableCell> */}
           <TableCell align="right">{row.node.first_name}</TableCell>
           <TableCell align="right">{row.node.last_name}</TableCell>
           <TableCell align="right">{row.node.student_number}</TableCell>

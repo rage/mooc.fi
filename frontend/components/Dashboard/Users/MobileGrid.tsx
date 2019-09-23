@@ -1,11 +1,27 @@
 import React from "react"
-import { Grid, Card, Button } from "@material-ui/core"
+import {
+  Grid,
+  Card,
+  Button,
+  CardContent,
+  Typography,
+  CardActions,
+  Paper,
+} from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
 import {
   UserDetailsContains_userDetailsContains_edges,
   UserDetailsContains,
 } from "/static/types/generated/UserDetailsContains"
+import Pagination from "/components/Dashboard/Users/Pagination"
+import styled from "styled-components"
+import range from "lodash/range"
+
+const UserCard = styled(Card)`
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+`
 
 interface HandleChangeRowsPerPageProps {
   eventValue: string
@@ -25,9 +41,15 @@ interface GridProps {
   setPage: React.Dispatch<React.SetStateAction<number>>
 }
 
-const MobileGrid = ({
+const MobileGrid: React.FC<GridProps> = ({
   data,
-  // loadData,
+  loadData,
+  handleChangeRowsPerPage,
+  TablePaginationActions,
+  page,
+  rowsPerPage,
+  searchText,
+  setPage,
   loading,
 }: // handleChangeRowsPerPage,
 // TablePaginationActions,
@@ -36,6 +58,40 @@ const MobileGrid = ({
 // searchText,
 // setPage,
 GridProps) => {
+  const PaginationComponent = () => (
+    <Paper style={{ width: "100%", marginTop: "5px" }}>
+      <Pagination
+        data={data}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        setPage={setPage}
+        searchText={searchText}
+        loadData={loadData}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
+        TablePaginationActions={TablePaginationActions}
+      />
+    </Paper>
+  )
+
+  return (
+    <>
+      {data &&
+      data.userDetailsContains &&
+      data.userDetailsContains.edges.length ? (
+        <PaginationComponent />
+      ) : (
+        <Typography>No results</Typography>
+      )}
+      <RenderCards data={data} loading={loading} />
+      <PaginationComponent />
+    </>
+  )
+}
+
+const RenderCards: React.FC<{
+  data: UserDetailsContains
+  loading: boolean
+}> = ({ data, loading }) => {
   if (loading) {
     return <DataCard />
   }
@@ -59,55 +115,84 @@ const DataCard = ({
 }) => {
   if (!row || (row && !row.node)) {
     return (
-      <Card>
-        <Skeleton />
-        <Skeleton />
-        <Skeleton />
-        <Skeleton />
-        <Skeleton />
-      </Card>
+      <>
+        {range(5).map(n => (
+          <UserCard key={`skeleton-${n}`}>
+            <CardContent>
+              <Typography variant="h5">
+                <Skeleton />
+              </Typography>
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+            </CardContent>
+            <CardActions style={{ height: "1rem" }}>
+              <Skeleton />
+            </CardActions>
+          </UserCard>
+        ))}
+      </>
     )
   }
+
   const { email, upstream_id, first_name, last_name, student_number } = row.node
 
+  const fields = [
+    {
+      text: "Email",
+      value: email,
+      title: true,
+    },
+    {
+      text: "First name",
+      value: first_name,
+    },
+    {
+      text: "Last name",
+      value: last_name,
+    },
+    {
+      text: "Student number",
+      value: student_number,
+    },
+  ]
+
   return (
-    <Card>
-      <Grid container>
-        <Grid item xs={6}>
-          Email
+    <UserCard key={`user-${upstream_id}`}>
+      <CardContent>
+        <Grid container>
+          {fields.map(field => {
+            if (field.title) {
+              return (
+                <Grid item xs={12}>
+                  <Typography variant="h5">{field.value}</Typography>
+                </Grid>
+              )
+            }
+
+            return (
+              <>
+                <Grid item xs={3}>
+                  <Typography variant="body2">{field.text}</Typography>
+                </Grid>
+                <Grid item xs={9}>
+                  <Typography variant="body2">{field.value}</Typography>
+                </Grid>
+              </>
+            )
+          })}
         </Grid>
-        <Grid item xs={6}>
-          {email}
-        </Grid>
-        <Grid item xs={6}>
-          First name
-        </Grid>
-        <Grid item xs={6}>
-          {first_name}
-        </Grid>
-        <Grid item xs={6}>
-          Last name
-        </Grid>
-        <Grid item xs={6}>
-          {last_name}
-        </Grid>
-        <Grid item xs={6}>
-          Student number
-        </Grid>
-        <Grid item xs={6}>
-          {student_number}
-        </Grid>
-        <Grid item xs={12}>
-          <LangLink
-            as={`/users/${upstream_id}/completions`}
-            href="/users/[id]/completions"
-            passHref
-          >
-            <Button variant="contained">Completions</Button>
-          </LangLink>
-        </Grid>
-      </Grid>
-    </Card>
+      </CardContent>
+      <CardActions>
+        <LangLink
+          as={`/users/${upstream_id}/completions`}
+          href="/users/[id]/completions"
+          passHref
+        >
+          <Button variant="contained">Completions</Button>
+        </LangLink>
+      </CardActions>
+    </UserCard>
   )
 }
 
