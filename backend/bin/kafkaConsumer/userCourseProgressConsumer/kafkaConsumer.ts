@@ -40,11 +40,12 @@ const consumer = new Kafka.KafkaConsumer(
   },
   { "auto.offset.reset": "earliest" },
 )
-
+logger.info("Trying to connect")
 consumer.connect()
 
 consumer
   .on("ready", () => {
+    logger.info("ready")
     consumer.subscribe(TOPIC_NAME)
     consumer.consume()
   })
