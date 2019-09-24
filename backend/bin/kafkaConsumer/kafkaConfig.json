@@ -7,7 +7,7 @@
         "topic_name": "user-points"
     },
     "user_course_progress_consumer": {
-        "topic_name": "progress"
+        "topic_name": "user-course-progress"
     },
     "commit_interval": 100
 }
