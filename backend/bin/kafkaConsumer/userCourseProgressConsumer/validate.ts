@@ -18,10 +18,7 @@ export const MessageYupSchema = yup.object().shape({
     .string()
     .length(36)
     .required(),
-  user_id: yup
-    .string()
-    .length(36)
-    .required(),
+  user_id: yup.number(),
   progress: yup
     .array()
     .of(PointsByGroupYupSchema)
