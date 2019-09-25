@@ -1,5 +1,5 @@
 import * as React from "react"
-import Header from "/components/Header"
+import Header from "../components/HeaderBar/Header"
 import Footer from "/components/Footer"
 import SkipLink from "/components/SkipLink"
 import styled from "styled-components"
