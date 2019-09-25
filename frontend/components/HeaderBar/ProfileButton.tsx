@@ -10,7 +10,7 @@ import LanguageContext from "/contexes/LanguageContext"
 
 const StyledButton = styled(Button)`
   margin: 1rem;
-  font-size: 18px;
+  font-size: 22px;
 `
 
 export const UserDetailQuery = gql`
