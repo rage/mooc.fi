@@ -35,13 +35,27 @@ describe("front page", () => {
  */
 
   describe("snapshots", () => {
+    before(() => {
+      Object.keys(fixtures).forEach(language =>
+        cy.mockGraphQl([
+          {
+            query: "study_modules",
+            result: fixtures[language].study_modules,
+            variables: { language },
+          },
+          {
+            query: "courses",
+            result: fixtures[language].courses,
+            variables: { language },
+          },
+        ]),
+      )
+    })
     ;[["/", "fi_FI"], ["/en", "en_US"]].forEach(([route, language]) => {
       viewports.forEach(vp => {
         describe(`viewport ${vp}`, () => {
           it(`route ${route} should match snapshot`, () => {
             cy.viewport(vp)
-            cy.mockGraphQl("study_modules", fixtures[language].study_modules)
-            cy.mockGraphQl("courses", fixtures[language].courses)
             cy.visit(route).matchImageSnapshot(`home-${language}-${vp}`)
           })
         })
