@@ -20,7 +20,7 @@ import {
 import Pagination from "/components/Dashboard/Users/Pagination"
 
 const TableWrapper = styled.div`
-  overflow-x: "auto";
+  overflow-x: auto;
 `
 
 const StyledTableCell = styled(TableCell)`

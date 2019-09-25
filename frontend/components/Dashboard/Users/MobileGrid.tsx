@@ -7,6 +7,7 @@ import {
   Typography,
   CardActions,
   Paper,
+  CardActionArea,
 } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
@@ -93,7 +94,7 @@ const RenderCards: React.FC<{
   loading: boolean
 }> = ({ data, loading }) => {
   if (loading) {
-    return <DataCard />
+    return <DataCard key="skeleton-card" />
   }
 
   return (
@@ -102,7 +103,10 @@ const RenderCards: React.FC<{
         ? data.userDetailsContains.edges
         : []
       ).map(row => (
-        <DataCard row={row} />
+        <DataCard
+          key={row.node.upstream_id || Math.random() * 9999999}
+          row={row}
+        />
       ))}
     </>
   )
@@ -158,31 +162,33 @@ const DataCard = ({
   ]
 
   return (
-    <UserCard key={`user-${upstream_id}`}>
-      <CardContent>
-        <Grid container>
+    <UserCard>
+      <CardActionArea>
+        <CardContent>
           {fields.map(field => {
             if (field.title) {
               return (
-                <Grid item xs={12}>
-                  <Typography variant="h5">{field.value}</Typography>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Typography variant="h5">{field.value}</Typography>
+                  </Grid>
                 </Grid>
               )
             }
 
             return (
-              <>
+              <Grid container>
                 <Grid item xs={3}>
                   <Typography variant="body2">{field.text}</Typography>
                 </Grid>
                 <Grid item xs={9}>
                   <Typography variant="body2">{field.value}</Typography>
                 </Grid>
-              </>
+              </Grid>
             )
           })}
-        </Grid>
-      </CardContent>
+        </CardContent>
+      </CardActionArea>
       <CardActions>
         <LangLink
           as={`/users/${upstream_id}/completions`}
