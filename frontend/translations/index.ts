@@ -66,7 +66,8 @@ const substitute = <T>(
         `WARNING: no variable present for translation string "${translation}" and key "${key}"`,
       )
     } else {
-      ret = ret.replace(`{{${key}}}`, `${variable}`)
+      const replaceRegExp = new RegExp(`{{${key}}}`, "g")
+      ret = ret.replace(replaceRegExp, `${variable}`)
     }
   })
 
