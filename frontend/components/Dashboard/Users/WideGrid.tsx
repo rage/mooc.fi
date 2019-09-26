@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback } from "react"
 import {
   Button,
   Paper,
@@ -71,49 +71,64 @@ const WideGrid = ({
   rowsPerPage,
   searchText,
   setPage,
-}: GridProps) => (
-  <StyledPaper>
-    <TableWrapper>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Email</StyledTableCell>
-            {/*             <StyledTableCell align="right">upstream_id</StyledTableCell> */}
-            <StyledTableCell align="right">First name</StyledTableCell>
-            <StyledTableCell align="right">Last name</StyledTableCell>
-            <StyledTableCell align="right">Student Number</StyledTableCell>
-            <StyledTableCell align="right">Completions</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <RenderResults
-          data={
-            (data &&
-              data.userDetailsContains &&
-              data.userDetailsContains.edges) ||
-            []
-          }
-          loading={loading}
-        />
-        <TableFooter>
-          <TableRow>
-            <td align="left">
-              <Pagination
-                data={data}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                setPage={setPage}
-                searchText={searchText}
-                loadData={loadData}
-                handleChangeRowsPerPage={handleChangeRowsPerPage}
-                TablePaginationActions={TablePaginationActions}
-              />
-            </td>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableWrapper>
-  </StyledPaper>
-)
+}: GridProps) => {
+  const PaginationComponent = useCallback(
+    () => (
+      <TableRow>
+        <td colSpan={5} align="center">
+          <Pagination
+            data={data}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            setPage={setPage}
+            searchText={searchText}
+            loadData={loadData}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+            TablePaginationActions={TablePaginationActions}
+          />
+        </td>
+      </TableRow>
+    ),
+    [data, rowsPerPage, page],
+  )
+
+  return (
+    <StyledPaper>
+      <TableWrapper>
+        <Table>
+          <TableHead>
+            {rowsPerPage >= 50 &&
+            data &&
+            data.userDetailsContains &&
+            data.userDetailsContains.edges.length ? (
+              <PaginationComponent />
+            ) : null}
+            <TableRow>
+              <StyledTableCell>Email</StyledTableCell>
+              {/*             <StyledTableCell align="right">upstream_id</StyledTableCell> */}
+              <StyledTableCell align="right">First name</StyledTableCell>
+              <StyledTableCell align="right">Last name</StyledTableCell>
+              <StyledTableCell align="right">Student Number</StyledTableCell>
+              <StyledTableCell align="right">Completions</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <RenderResults
+            data={
+              (data &&
+                data.userDetailsContains &&
+                data.userDetailsContains.edges) ||
+              []
+            }
+            loading={loading}
+          />
+          <TableFooter>
+            <PaginationComponent />
+          </TableFooter>
+        </Table>
+      </TableWrapper>
+    </StyledPaper>
+  )
+}
 
 interface RenderResultsProps {
   data: UserDetailsContains_userDetailsContains_edges[]
