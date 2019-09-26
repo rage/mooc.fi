@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback } from "react"
 import {
   Grid,
   Card,
@@ -14,6 +14,7 @@ import LangLink from "/components/LangLink"
 import {
   UserDetailsContains_userDetailsContains_edges,
   UserDetailsContains,
+  UserDetailsContains_userDetailsContains_edges_node,
 } from "/static/types/generated/UserDetailsContains"
 import Pagination from "/components/Dashboard/Users/Pagination"
 import styled from "styled-components"
@@ -33,9 +34,7 @@ interface GridProps {
   loadData: Function
   loading: boolean
   handleChangeRowsPerPage: (props: HandleChangeRowsPerPageProps) => void
-  TablePaginationActions: Function /* (
-    props: TablePaginationActionsProps,
-  ) =>  */
+  TablePaginationActions: Function
   page: number
   rowsPerPage: number
   searchText: string
@@ -52,33 +51,31 @@ const MobileGrid: React.FC<GridProps> = ({
   searchText,
   setPage,
   loading,
-}: // handleChangeRowsPerPage,
-// TablePaginationActions,
-// page,
-// rowsPerPage,
-// searchText,
-// setPage,
-GridProps) => {
-  const PaginationComponent = () => (
-    <Paper style={{ width: "100%", marginTop: "5px" }}>
-      <Pagination
-        data={data}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        setPage={setPage}
-        searchText={searchText}
-        loadData={loadData}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
-        TablePaginationActions={TablePaginationActions}
-      />
-    </Paper>
+}: GridProps) => {
+  const PaginationComponent = useCallback(
+    () => (
+      <Paper style={{ width: "100%", marginTop: "5px" }}>
+        <Pagination
+          data={data}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          setPage={setPage}
+          searchText={searchText}
+          loadData={loadData}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          TablePaginationActions={TablePaginationActions}
+        />
+      </Paper>
+    ),
+    [data, rowsPerPage, page],
   )
 
   return (
     <>
-      {data &&
-      data.userDetailsContains &&
-      data.userDetailsContains.edges.length ? (
+      {loading ||
+      (data &&
+        data.userDetailsContains &&
+        data.userDetailsContains.edges.length) ? (
         <PaginationComponent />
       ) : (
         <Typography>No results</Typography>
@@ -94,20 +91,25 @@ const RenderCards: React.FC<{
   loading: boolean
 }> = ({ data, loading }) => {
   if (loading) {
-    return <DataCard key="skeleton-card" />
+    return (
+      <>
+        {range(5).map(n => (
+          <DataCard key={`skeleton-card-${n}`} />
+        ))}
+      </>
+    )
   }
 
   return (
     <>
-      {(data && data.userDetailsContains
-        ? data.userDetailsContains.edges
-        : []
-      ).map(row => (
-        <DataCard
-          key={row.node.upstream_id || Math.random() * 9999999}
-          row={row}
-        />
-      ))}
+      {data && data.userDetailsContains
+        ? (data.userDetailsContains.edges || []).map(row => (
+            <DataCard
+              key={row.node.upstream_id || Math.random() * 9999999}
+              row={row}
+            />
+          ))
+        : null}
     </>
   )
 }
@@ -117,29 +119,9 @@ const DataCard = ({
 }: {
   row?: UserDetailsContains_userDetailsContains_edges
 }) => {
-  if (!row || (row && !row.node)) {
-    return (
-      <>
-        {range(5).map(n => (
-          <UserCard key={`skeleton-${n}`}>
-            <CardContent>
-              <Typography variant="h5">
-                <Skeleton />
-              </Typography>
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </CardContent>
-            <CardActions style={{ height: "1rem" }}>
-              <Skeleton />
-            </CardActions>
-          </UserCard>
-        ))}
-      </>
-    )
-  }
-
-  const { email, upstream_id, first_name, last_name, student_number } = row.node
+  const { email, upstream_id, first_name, last_name, student_number } = row
+    ? row.node
+    : ({} as UserDetailsContains_userDetailsContains_edges_node)
 
   const fields = [
     {
@@ -170,7 +152,11 @@ const DataCard = ({
               return (
                 <Grid container>
                   <Grid item xs={12}>
-                    <Typography variant="h5">{field.value}</Typography>
+                    {row ? (
+                      <Typography variant="h5">{field.value}</Typography>
+                    ) : (
+                      <Skeleton />
+                    )}
                   </Grid>
                 </Grid>
               )
@@ -178,25 +164,37 @@ const DataCard = ({
 
             return (
               <Grid container>
-                <Grid item xs={3}>
-                  <Typography variant="body2">{field.text}</Typography>
-                </Grid>
-                <Grid item xs={9}>
-                  <Typography variant="body2">{field.value}</Typography>
-                </Grid>
+                {row ? (
+                  <>
+                    <Grid item xs={3}>
+                      <Typography variant="body2">{field.text}</Typography>
+                    </Grid>
+                    <Grid item xs={9}>
+                      <Typography variant="body2">{field.value}</Typography>
+                    </Grid>
+                  </>
+                ) : (
+                  <Grid item xs={12}>
+                    <Skeleton height={10} />
+                  </Grid>
+                )}
               </Grid>
             )
           })}
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <LangLink
-          as={`/users/${upstream_id}/completions`}
-          href="/users/[id]/completions"
-          passHref
-        >
-          <Button variant="contained">Completions</Button>
-        </LangLink>
+        {row ? (
+          <LangLink
+            as={`/users/${upstream_id}/completions`}
+            href="/users/[id]/completions"
+            passHref
+          >
+            <Button variant="contained">Completions</Button>
+          </LangLink>
+        ) : (
+          <Skeleton />
+        )}
       </CardActions>
     </UserCard>
   )
