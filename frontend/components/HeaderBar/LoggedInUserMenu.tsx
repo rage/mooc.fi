@@ -34,7 +34,10 @@ const UserMenu = () => {
               Courses
             </StyledButton>
           </LangLink>
-          <LangLink href="/[lng]/modules" as={`/${language}/modules`}>
+          <LangLink
+            href="/[lng]/study-modules"
+            as={`/${language}/study-modules`}
+          >
             <StyledButton color="inherit" variant="text">
               Modules
             </StyledButton>
