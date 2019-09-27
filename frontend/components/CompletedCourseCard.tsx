@@ -81,8 +81,6 @@ function CompletedCourseCard(props: CourseCardProps) {
       completion.completion_language
   }
 
-  const RegisterButtonVisible = completion.course.slug === "elements-of-ai"
-
   return (
     <Grid item xs={12}>
       <Background>
@@ -115,7 +113,6 @@ function CompletedCourseCard(props: CourseCardProps) {
             style={{
               color: "red",
               marginRight: "0.5rem",
-              visibility: RegisterButtonVisible ? "visible" : "hidden",
             }}
           >
             {t("registerButtonText")}
