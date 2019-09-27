@@ -10,24 +10,22 @@ import Button from "@material-ui/core/Button"
 const StyledButton = styled(Button)`
   margin: 1rem;
   font-size: 22px;
-  &:hover {
-    cursor: pointer;
-    text-color: red;
+  @media (max-width: 510px) {
+    font-size: 20px;
+    margin: 0.75rem;
+  }
+  @media (max-width: 450px) {
+    font-size: 16px;
+    margin: 0.5rem;
   }
 `
 
-const MenuContainer = styled.div`
-  flex: 1;
-  @media (max-width: 950px) {
-    display: none;
-  }
-`
 const UserMenu = () => {
   const isAdmin = useContext(UserDetailContext)
   const { language } = useContext(LanguageContext)
 
   return (
-    <MenuContainer>
+    <>
       <ProfileButton />
       {isAdmin && (
         <>
@@ -48,7 +46,7 @@ const UserMenu = () => {
           </LangLink>
         </>
       )}
-    </MenuContainer>
+    </>
   )
 }
 
