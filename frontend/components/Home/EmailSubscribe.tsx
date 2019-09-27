@@ -86,7 +86,7 @@ function EmailSubscribe() {
               >
                 <FieldWrapper>
                   <StyledFormControl>
-                    <TextField label={t("emailField")} name="EMAIL" />
+                    <TextField label="email" name="EMAIL" aria-label="email" />
                   </StyledFormControl>
                 </FieldWrapper>
                 <StyledButton
