@@ -76,6 +76,7 @@ function CompletionsPage(props: CompletionsProps) {
   if (data.user && data.user.completions) {
     completions = data.user.completions
   }
+
   return (
     <Container>
       <div>
