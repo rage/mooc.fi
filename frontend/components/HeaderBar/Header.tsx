@@ -30,7 +30,15 @@ const StyledToolbar = styled(Toolbar)`
   display: flex;
   flex-direction: row;
 `
-
+const HiddenMenuContainer = styled.div`
+  flex: 1;
+  @media (max-width: 950px) {
+    display: none;
+  }
+`
+const MenuContainer = styled.div`
+  flex: 1;
+`
 function Header() {
   return (
     <LoginStateContext.Consumer>
@@ -41,7 +49,11 @@ function Header() {
             <AppBar color="inherit">
               <StyledToolbar>
                 <MoocLogo />
-                {loggedIn && <LoggedInUserMenu />}
+                <MenuContainer>
+                  <HiddenMenuContainer>
+                    {loggedIn && <LoggedInUserMenu />}
+                  </HiddenMenuContainer>
+                </MenuContainer>
                 <UserOptionsMenu
                   isSignedIn={loggedIn}
                   logInOrOut={logInOrOut}
