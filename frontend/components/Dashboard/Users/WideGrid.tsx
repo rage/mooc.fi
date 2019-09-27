@@ -159,28 +159,39 @@ const RenderResults = (props: RenderResultsProps) => {
         </TableRow>
       </TableBody>
     )
+
   return (
     <TableBody>
-      {data.map(row => (
-        <TableRow key={row.node.upstream_id}>
-          <TableCell component="th" scope="row">
-            {row.node.email}
-          </TableCell>
-          {/*           <TableCell align="right">{row.node.upstream_id}</TableCell> */}
-          <TableCell align="right">{row.node.first_name}</TableCell>
-          <TableCell align="right">{row.node.last_name}</TableCell>
-          <TableCell align="right">{row.node.student_number}</TableCell>
-          <TableCell align="right">
-            <LangLink
-              as={`/users/${row.node.upstream_id}/completions`}
-              href="/users/[id]/completions"
-              passHref
-            >
-              <Button variant="contained">Completions</Button>
-            </LangLink>
-          </TableCell>
-        </TableRow>
-      ))}
+      {data.map(row => {
+        const {
+          upstream_id,
+          email,
+          first_name,
+          last_name,
+          student_number,
+        } = row.node
+
+        return (
+          <TableRow key={upstream_id}>
+            <TableCell component="th" scope="row">
+              {email}
+            </TableCell>
+            {/*           <TableCell align="right">{row.node.upstream_id}</TableCell> */}
+            <TableCell align="right">{first_name}</TableCell>
+            <TableCell align="right">{last_name}</TableCell>
+            <TableCell align="right">{student_number}</TableCell>
+            <TableCell align="right">
+              <LangLink
+                as={`/users/${upstream_id}/completions`}
+                href="/users/[id]/completions"
+                passHref
+              >
+                <Button variant="contained">Completions</Button>
+              </LangLink>
+            </TableCell>
+          </TableRow>
+        )
+      })}
     </TableBody>
   )
 }
