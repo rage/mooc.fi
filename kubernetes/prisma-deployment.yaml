@@ -14,24 +14,24 @@ spec:
         app: prisma
     spec:
       containers:
-        image: prismagraphql/prisma:1.33
-        name: prisma
-        envFrom:
-          - secretRef:
-              name: backend-secret
-        env:
-          - name: PRISMA_CONFIG
-            valueFrom:
-              configMapKeyRef:
-                name: prisma-configmap
-                key: PRISMA_CONFIG
-          - name: REDIS_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: redis
-                    key: redis-password
-        ports:
-        - containerPort: 4466
-        resources: {}
+        - name: prisma
+          image: prismagraphql/prisma:1.33
+          envFrom:
+            - secretRef:
+                name: backend-secret
+          env:
+            - name: PRISMA_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: prisma-configmap
+                  key: PRISMA_CONFIG
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+          ports:
+            - containerPort: 4466
+          resources: {}
       restartPolicy: Always
 status: {}
