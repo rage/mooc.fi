@@ -140,8 +140,8 @@ const RenderResults = (props: RenderResultsProps) => {
   if (loading) {
     return (
       <TableBody>
-        {range(5).map(_ => (
-          <TableRow>
+        {range(5).map(n => (
+          <TableRow key={`skeleton-${n}`}>
             <TableCell colSpan={5}>
               <Skeleton />
             </TableCell>
@@ -155,7 +155,7 @@ const RenderResults = (props: RenderResultsProps) => {
     return (
       <TableBody>
         <TableRow>
-          <TableCell>No results</TableCell>
+          <TableCell colSpan={5}>No results</TableCell>
         </TableRow>
       </TableBody>
     )

@@ -8,6 +8,9 @@ import {
   CardActions,
   Paper,
   CardActionArea,
+  Table,
+  TableBody,
+  TableRow,
 } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
@@ -55,16 +58,22 @@ const MobileGrid: React.FC<GridProps> = ({
   const PaginationComponent = useCallback(
     () => (
       <Paper style={{ width: "100%", marginTop: "5px" }}>
-        <Pagination
-          data={data}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          setPage={setPage}
-          searchText={searchText}
-          loadData={loadData}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-          TablePaginationActions={TablePaginationActions}
-        />
+        <Table>
+          <TableBody>
+            <TableRow>
+              <Pagination
+                data={data}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                setPage={setPage}
+                searchText={searchText}
+                loadData={loadData}
+                handleChangeRowsPerPage={handleChangeRowsPerPage}
+                TablePaginationActions={TablePaginationActions}
+              />
+            </TableRow>
+          </TableBody>
+        </Table>
       </Paper>
     ),
     [data, rowsPerPage, page],
@@ -150,7 +159,7 @@ const DataCard = ({
           {fields.map(field => {
             if (field.title) {
               return (
-                <Grid container>
+                <Grid container key={`${field.text}-${upstream_id}`}>
                   <Grid item xs={12}>
                     {row ? (
                       <Typography variant="h5">{field.value}</Typography>
@@ -163,7 +172,7 @@ const DataCard = ({
             }
 
             return (
-              <Grid container>
+              <Grid container key={`${field.text}-${upstream_id}`}>
                 {row ? (
                   <>
                     <Grid item xs={3}>
