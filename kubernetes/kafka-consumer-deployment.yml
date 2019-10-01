@@ -1,28 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: moocfi-backend
+  name: kafka-consumer
   namespace: moocfi
 spec:
   selector:
     matchLabels:
-      app: moocfi-backend
-  replicas: 3
+      app: kafka-consumer
+  replicas: 1
   template:
     metadata:
       labels:
-        app: moocfi-backend
+        app: kafka-consumer
     spec:
       containers:
-        - name: moocfi-backend
+        - name: kafka-consumer
           image: ${BACKEND_IMAGE}
+          command: ["sh", "-c", "npm run kafka-consumer-user-course-progress"]
           imagePullPolicy: Always
           ports:
             - name: backend-http
               containerPort: 4000
           resources:
             limits:
-              memory: 1500Mi
+              memory: 500Mi
             requests:
               memory: 256Mi
           envFrom:
@@ -52,9 +53,4 @@ spec:
           envFrom:
           - secretRef:
               name: backend-secret
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis
-                  key: redis-password
+            
