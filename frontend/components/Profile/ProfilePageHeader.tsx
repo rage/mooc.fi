@@ -23,15 +23,17 @@ const HeaderTitle = styled(Typography)`
 interface ProfilePageHeaderProps {
   first_name: string
   last_name: string
+  email: string
+  student_number: string
 }
 const ProfilePageHeader = (props: ProfilePageHeaderProps) => {
-  const { first_name, last_name } = props
+  const { first_name, last_name, email, student_number } = props
   return (
     <HeaderBackground>
       <HeaderTitle component="h1" align="center">
         {first_name} {last_name}{" "}
       </HeaderTitle>
-      <PersonalInfoBox />
+      <PersonalInfoBox email={email} student_id={student_number} />
     </HeaderBackground>
   )
 }

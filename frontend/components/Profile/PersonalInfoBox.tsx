@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
+import AccountIcon from "@material-ui/icons/AccountCircle"
 
 const InfoBoxBackground = styled.div`
   background-color: white;
@@ -23,12 +24,18 @@ const Info = styled(Typography)`
     font-size: 16px;
   }
 `
+interface PersonalInfoProps {
+  email: string
+  student_id: string
+}
 
-const PersonalInfoBox = () => {
+const PersonalInfoBox = (props: PersonalInfoProps) => {
+  const { email, student_id } = props
   return (
     <InfoBoxBackground>
-      <Info>email@email.com</Info>
-      <Info>123456</Info>
+      <AccountIcon />
+      <Info>{email}</Info>
+      <Info>{student_id}</Info>
     </InfoBoxBackground>
   )
 }
