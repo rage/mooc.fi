@@ -18,7 +18,7 @@ const moduleColors: Array<{
     brightness: 5,
   },
   {
-    backgroundColor: "#00a68d",
+    backgroundColor: "#0D5F6D",
     hueRotateAngle: 0,
     brightness: 2,
   },

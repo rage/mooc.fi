@@ -31,10 +31,11 @@ function create(initialState: any, accessToken?: string) {
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
-    uri:
-      production && !cypress
-        ? "https://points.mooc.fi/api/"
-        : "http://localhost:4000",
+    uri: cypress
+      ? "http://localhost:4001"
+      : production
+      ? "https://points.mooc.fi/api/"
+      : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
   })

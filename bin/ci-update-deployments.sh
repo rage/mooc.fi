@@ -27,6 +27,8 @@ envsubst < "$CURRENT_DIR/../kubernetes/fetch-user-app-datum-cronjob.yml" > "$CUR
 envsubst < "$CURRENT_DIR/../kubernetes/send-ai-statistics-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/send-ai-statistics-cronjob.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/fetch-avoin-links-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/fetch-avoin-links-cronjob.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/import-organizations-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/import-organizations-cronjob.yml"
+envsubst < "$CURRENT_DIR/../kubernetes/kafka-consumer-deployment.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-deployment.yml"
+
 
 echo "Applying changes"
 kubectl replace -f "$CURRENT_DIR/../updated-kubernetes-configs"

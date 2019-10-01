@@ -32,9 +32,12 @@ export const signIn = async ({
   const res = await tmcClient.authenticate({ username: email, password })
 
   const details = await userDetails(res.accessToken)
+
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
+
   const back = nookies.get()["redirect-back"]
+
   if (redirect) {
     setTimeout(() => {
       if (back) {

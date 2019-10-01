@@ -1,7 +1,7 @@
 import { Prisma } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg } from "nexus/dist"
+import { idArg, intArg, stringArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const userCourseProgress = async (t: PrismaObjectDefinitionBlock<"Query">) => {
@@ -34,6 +34,7 @@ const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "UserCourseProgress",
     args: {
       user_id: idArg(),
+      course_slug: stringArg(),
       course_id: idArg(),
       first: intArg(),
       after: idArg(),
@@ -42,7 +43,15 @@ const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
-      const { first, last, before, after, user_id, course_id } = args
+      const {
+        first,
+        last,
+        before,
+        after,
+        user_id,
+        course_id,
+        course_slug,
+      } = args
       const prisma: Prisma = ctx.prisma
       return prisma.userCourseProgresses({
         first: first,
@@ -51,7 +60,7 @@ const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
         after: after,
         where: {
           user: { id: user_id },
-          course: { id: course_id },
+          course: { OR: { id: course_id, slug: course_slug } },
         },
       })
     },

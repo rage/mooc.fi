@@ -28,7 +28,7 @@ const BackgroundImage = styled.img`
 `
 
 const StyledLink = styled.a`
-  color: #00a68d;
+  color: #0d5f6d;
   font-size: 18px;
 `
 const TextBackground = styled.span`
