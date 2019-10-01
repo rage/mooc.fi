@@ -10,15 +10,14 @@ export interface PointsExportButtonProps {
 function PointsExportButton(props: PointsExportButtonProps) {
   const { slug } = props
 
-  const [infotext, setInfotext] = useState("Export")
+  const [infotext, setInfotext] = useState("")
 
   return (
     <ApolloConsumer>
       {client => (
         <div>
-          {infotext}
           <Button
-            disabled={!(infotext == "Export" || infotext == "ready")}
+            disabled={!(infotext == "" || infotext == "ready")}
             onClick={async () => {
               setInfotext("Dowloading data")
               const { data } = await client.query({
@@ -45,8 +44,9 @@ function PointsExportButton(props: PointsExportButtonProps) {
               setInfotext("ready")
             }}
           >
-            Click me!
+            Export
           </Button>
+          {infotext}
         </div>
       )}
     </ApolloConsumer>
