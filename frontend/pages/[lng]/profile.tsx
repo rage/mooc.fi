@@ -4,7 +4,6 @@ import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
-//import styled from "styled-components"
 import { isSignedIn } from "/lib/authentication"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import Spinner from "/components/Spinner"
@@ -18,6 +17,7 @@ export const UserOverViewQuery = gql`
       upstream_id
       first_name
       last_name
+      student_number
       email
       completions {
         id
@@ -51,6 +51,8 @@ function Profile() {
   }
   let first_name = "No first name"
   let last_name = "No last name"
+  let sid = "no sid"
+  let email = "no email"
   if (data && data.currentUser) {
     if (data.currentUser.first_name) {
       first_name = data.currentUser.first_name
@@ -58,12 +60,23 @@ function Profile() {
     if (data.currentUser.last_name) {
       last_name = data.currentUser.last_name
     }
+    if (data.currentUser.email) {
+      email = data.currentUser.email
+    }
+    if (data.currentUser.student_number) {
+      sid = data.currentUser.student_number
+    }
   }
 
   return (
     <>
       <DashboardBreadCrumbs />
-      <ProfilePageHeader first_name={first_name} last_name={last_name} />
+      <ProfilePageHeader
+        first_name={first_name}
+        last_name={last_name}
+        email={email}
+        student_number={sid}
+      />
     </>
   )
 }
