@@ -12,30 +12,53 @@ const InfoBoxIcon = (props: SvgIconProps) => {
 }
 
 const StyledIcon = styled(InfoBoxIcon)`
-  margin-right: 0.7rem;
-  margin-top: 0.7rem;
-  align-self: flex-end;
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  font-size: 48px;
+  @media (max-width: 380px) {
+    display: none;
+  }
+  @media (max-width: 425px) {
+    font-size: 38px;
+  }
+  @media (max-width: 900px) {
+    font-size: 42px;
+  }
 `
 
 const InfoBoxBackground = styled.div`
   background-color: white;
-  display: flex;
-  flex-direction: column;
+  padding: 0.7rem;
   color: black;
-  border-radius: 10px;
-  width: 45%;
+  border-radius: 25px;
+  width: 20%;
   position: absolute;
-  bottom: -150px;
-  margin-left: 27.5%;
+  bottom: -75px;
+  margin-left: 40%;
+  @media (max-width: 2000px) {
+    width: 30%;
+    margin-left 35%;
+    bottom: -60px;
+  }
+  @media (max-width: 1449px) {
+    width: 45%;
+    margin-left 27.5%;
+    bottom: -60px;
+  }
   @media (max-width: 768px) {
+    width: 60%;
+    margin-left 20%;
+    bottom: -60px;
+  }
+  @media (max-width: 500px) {
     width: 80%;
     margin-left 10%;
-    bottom: -120px;
+    bottom: -60px;
   }
   
 `
 const Info = styled(Typography)`
-  padding: 0.5em;
   margin-left: 1rem;
   font-size: 24px;
   @media (max-width: 425px) {
@@ -55,9 +78,10 @@ const PersonalInfoBox = (props: PersonalInfoProps) => {
   const { email, student_id } = props
   return (
     <InfoBoxBackground>
-      <StyledIcon color="secondary" fontSize="large" />
+      <StyledIcon color="secondary" />
 
-      <Info>{email}</Info>
+      <Info display="inline">{email}</Info>
+
       <Info>{student_id}</Info>
     </InfoBoxBackground>
   )
