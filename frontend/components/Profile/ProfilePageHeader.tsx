@@ -7,6 +7,7 @@ const HeaderBackground = styled.div`
   background-color: #4d92a1;
   color: white;
   position: relative;
+  margin-bottom: 6em;
 `
 
 const HeaderTitle = styled(Typography)`

@@ -3,12 +3,17 @@ import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
+import {
+  ProfileUserOverView as UserOverViewData,
+  ProfileUserOverView_currentUser_completions as CompletionsData,
+} from "/static/types/generated/ProfileUserOverView"
 import { isSignedIn } from "/lib/authentication"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"
 import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
+import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
+import Container from "/components/Container"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -53,6 +58,7 @@ function Profile() {
   let last_name = "No last name"
   let sid = "no sid"
   let email = "no email"
+  let completions: CompletionsData[] = []
   if (data && data.currentUser) {
     if (data.currentUser.first_name) {
       first_name = data.currentUser.first_name
@@ -66,8 +72,11 @@ function Profile() {
     if (data.currentUser.student_number) {
       sid = data.currentUser.student_number
     }
+    if (data.currentUser.completions) {
+      completions = data.currentUser.completions
+    }
   }
-
+  console.log(data)
   return (
     <>
       <DashboardBreadCrumbs />
@@ -77,6 +86,9 @@ function Profile() {
         email={email}
         student_number={sid}
       />
+      <Container>
+        <StudentDataDisplay completions={completions} />
+      </Container>
     </>
   )
 }

@@ -22,18 +22,6 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
-/* const languageFilter = (
-  index: number,
-  course_translations: CourseTranslationFormValues[] | null,
-) =>
-  languages.filter(l =>
-    (course_translations || [])
-      .filter((_, idx) => idx !== index)
-      .map((c: any) => c.language)
-      .includes(l.value),
-  )
- */
-
 const CourseTranslationEditForm = ({
   values,
   errors,
