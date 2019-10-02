@@ -12,6 +12,7 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
+import PointsExportButton from "/components/Dashboard/PointsExportButton"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -79,6 +80,7 @@ const Points = (props: CompletionsProps) => {
         >
           Points
         </Typography>
+        <PointsExportButton slug={slug} />
         <PaginatedPointsList courseID={data.course.id} />
       </Container>
     </CourseLanguageContext.Provider>

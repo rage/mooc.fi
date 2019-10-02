@@ -21,3 +21,4 @@ export {
 } from "./StudyModuleTranslationWithIdInput"
 export { default as Course } from "./Course"
 export { default as StudyModule } from "./StudyModule"
+export { default as UserCourseProgress } from "./UserCourseProgress"
