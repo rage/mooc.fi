@@ -7,6 +7,7 @@ import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_UserCourseProgresses,
 } from "../../static/types/generated/ExportUserCourseProgesses"
+import { userDetails } from "/lib/authentication"
 
 export interface PointsExportButtonProps {
   slug: string
@@ -74,8 +75,14 @@ async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
       datum.user.email != null
         ? datum.user.email.replace(/\s+/g, " ").trim()
         : ""
-    newDatum.student_number = datum.user.student_number
-    newDatum.confirmed_student_number = datum.user.real_student_number
+    newDatum.student_number =
+      datum.user.student_number != null
+        ? datum.user.student_number.replace(/\s+/g, " ").trim()
+        : ""
+    newDatum.confirmed_student_number =
+      datum.user.real_student_number != null
+        ? datum.user.real_student_number.replace(/\s+/g, " ").trim()
+        : ""
 
     newDatum.course_variant =
       datum.UserCourseSettings &&
