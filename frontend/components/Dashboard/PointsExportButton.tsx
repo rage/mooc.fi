@@ -62,18 +62,36 @@ async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
   const newData = data.map(datum => {
     const newDatum: any = {}
     newDatum.user_id = datum.user.upstream_id
-    newDatum.first_name = datum.user.first_name
-    newDatum.last_name = datum.user.last_name
-    newDatum.email = datum.user.email
+    newDatum.first_name =
+      datum.user.first_name != null
+        ? datum.user.first_name.replace(/\s+/g, " ").trim()
+        : ""
+    newDatum.last_name =
+      datum.user.last_name != null
+        ? datum.user.last_name.replace(/\s+/g, " ").trim()
+        : ""
+    newDatum.email =
+      datum.user.email != null
+        ? datum.user.email.replace(/\s+/g, " ").trim()
+        : ""
     newDatum.student_number = datum.user.student_number
     newDatum.confirmed_student_number = datum.user.real_student_number
 
     newDatum.course_variant =
-      datum.UserCourseSettings && datum.UserCourseSettings.course_variant
+      datum.UserCourseSettings &&
+      (datum.UserCourseSettings.course_variant != null
+        ? datum.UserCourseSettings.course_variant.replace(/\s+/g, " ").trim()
+        : "")
     newDatum.country =
-      datum.UserCourseSettings && datum.UserCourseSettings.country
+      datum.UserCourseSettings &&
+      (datum.UserCourseSettings.country != null
+        ? datum.UserCourseSettings.country.replace(/\s+/g, " ").trim()
+        : "")
     newDatum.language =
-      datum.UserCourseSettings && datum.UserCourseSettings.language
+      datum.UserCourseSettings &&
+      (datum.UserCourseSettings.language != null
+        ? datum.UserCourseSettings.language.replace(/\s+/g, " ").trim()
+        : "")
 
     datum.progress.forEach((progress: any) => {
       newDatum[progress.group] = progress.n_points
