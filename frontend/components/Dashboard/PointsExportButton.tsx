@@ -3,6 +3,10 @@ import XLSX from "xlsx"
 import gql from "graphql-tag"
 import { ApolloConsumer } from "@apollo/react-hooks"
 import { Button } from "@material-ui/core"
+import {
+  ExportUserCourseProgesses,
+  ExportUserCourseProgesses_UserCourseProgresses,
+} from "../../static/types/generated/ExportUserCourseProgesses"
 
 export interface PointsExportButtonProps {
   slug: string
@@ -20,7 +24,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
             disabled={!(infotext == "" || infotext == "ready")}
             onClick={async () => {
               setInfotext("Dowloading data")
-              const { data } = await client.query({
+              const { data } = await client.query<ExportUserCourseProgesses>({
                 query: GET_DATA,
                 variables: { course_slug: slug },
               })
@@ -53,7 +57,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
   )
 }
 
-async function flatten(data: any[]) {
+async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
   console.log("data in flatten", data)
   const newData = data.map(datum => {
     const newDatum: any = {}
@@ -64,9 +68,12 @@ async function flatten(data: any[]) {
     newDatum.student_number = datum.user.student_number
     newDatum.confirmed_student_number = datum.user.real_student_number
 
-    newDatum.course_variant = datum.UserCourseSettings.course_variant
-    newDatum.country = datum.UserCourseSettings.country
-    newDatum.language = datum.UserCourseSettings.language
+    newDatum.course_variant =
+      datum.UserCourseSettings && datum.UserCourseSettings.course_variant
+    newDatum.country =
+      datum.UserCourseSettings && datum.UserCourseSettings.country
+    newDatum.language =
+      datum.UserCourseSettings && datum.UserCourseSettings.language
 
     datum.progress.forEach((progress: any) => {
       newDatum[progress.group] = progress.n_points
@@ -80,7 +87,7 @@ async function flatten(data: any[]) {
 export default PointsExportButton
 
 const GET_DATA = gql`
-  query UserCourseProgesses($course_slug: String!) {
+  query ExportUserCourseProgesses($course_slug: String!) {
     UserCourseProgresses(course_slug: $course_slug) {
       id
       user {
