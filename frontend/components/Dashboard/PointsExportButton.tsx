@@ -7,7 +7,6 @@ import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_UserCourseProgresses,
 } from "../../static/types/generated/ExportUserCourseProgesses"
-import { userDetails } from "/lib/authentication"
 
 export interface PointsExportButtonProps {
   slug: string
