@@ -21,3 +21,6 @@ export { default as addCompletionMutations } from "./completion"
 export {
   default as addOpenUniversityRegistrationLinkMutations,
 } from "./openUniversityRegistrationLink"
+export {
+  default as addStudentOrganizationMutations,
+} from "./studentOrganization"
