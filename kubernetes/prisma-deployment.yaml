@@ -6,7 +6,7 @@ metadata:
   name: prisma
   namespace: moocfi
 spec:
-  replicas: 1
+  replicas: 2
   strategy: {}
   template:
     metadata:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: prisma
-          image: prismagraphql/prisma:1.33
+          image: prismagraphql/prisma:1.34
           envFrom:
             - secretRef:
                 name: backend-secret
