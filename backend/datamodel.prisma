@@ -21,6 +21,7 @@ type User @db(name: "user") {
   exercise_completions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToUser")
   "User's points in courses"
   user_course_progresses: [UserCourseProgress!]!  @relation( name: "UserCourseProgressToUser")
+  student_organizations: [StudentOrganization!]! @relation(name: "StudentToStudentOrganization")
 }
 
 type Course @db(name: "course") {
@@ -199,6 +200,7 @@ type Organization @db(name: "organization") {
   secret_key: String! @unique
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToOrganization")
   organization_translations: [OrganizationTranslation!]! @relation(name: "OrganizationToOrganizationTranslation")
+  students: [StudentOrganization!]! @relation(name: "OrganizationToStudentOrganization")
 }
 
 type OrganizationTranslation @db(name: "organization_translation") {
@@ -275,4 +277,12 @@ type UserAppDatumConfig {
   updated_at: DateTime @updatedAt
   name: String @unique
   timestamp: DateTime
+}
+
+type StudentOrganization @db(name: "student_organization") {
+  id: UUID! @id
+  student: User! @relation(link: INLINE, name: "StudentToStudentOrganization")
+  organization: Organization! @relation(link: INLINE, name: "OrganizationToStudentOrganization")
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
 }
