@@ -22,3 +22,4 @@ export {
   default as addOpenUniversityRegistrationLinkQueries,
 } from "./OpenUniversityRegistrationLink"
 export { default as addUserCourseSettingsQueries } from "./userCourseSettings"
+export { default as addUserOrganizationQueries } from "./userOrganization"

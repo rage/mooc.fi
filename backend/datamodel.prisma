@@ -21,7 +21,7 @@ type User @db(name: "user") {
   exercise_completions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToUser")
   "User's points in courses"
   user_course_progresses: [UserCourseProgress!]!  @relation( name: "UserCourseProgressToUser")
-  student_organizations: [StudentOrganization!]! @relation(name: "StudentToStudentOrganization")
+  organizations: [UserOrganization!]! @relation(name: "UserOrganizationToUser")
 }
 
 type Course @db(name: "course") {
@@ -48,7 +48,8 @@ type Course @db(name: "course") {
   study_module_order: Int
   open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
   exercises: [Exercise!]! @relation(name:"ExerciseToCourse")
-  
+  owner_organization: Organization
+  participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")     
 }
 
 type CourseAlias  @db(name: "course_alias"){
@@ -74,7 +75,6 @@ type OpenUniversityRegistrationLink  @db(name: "open_university_registration_lin
   start_date: DateTime
   stop_date: DateTime
 }
-
 
 enum CourseStatus @db(name:"course_status"){
   Active, Ended, Upcoming
@@ -200,7 +200,8 @@ type Organization @db(name: "organization") {
   secret_key: String! @unique
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToOrganization")
   organization_translations: [OrganizationTranslation!]! @relation(name: "OrganizationToOrganizationTranslation")
-  students: [StudentOrganization!]! @relation(name: "OrganizationToStudentOrganization")
+  users: [UserOrganization!]! @relation(name: "UserOrganizationToOrganization")
+  courses: [CourseOrganization!]! @relation(name: "CourseOrganizationToOrganization")
 }
 
 type OrganizationTranslation @db(name: "organization_translation") {
@@ -279,10 +280,26 @@ type UserAppDatumConfig {
   timestamp: DateTime
 }
 
-type StudentOrganization @db(name: "student_organization") {
+type UserOrganization @db(name: "user_organization") {
   id: UUID! @id
-  student: User! @relation(link: INLINE, name: "StudentToStudentOrganization")
-  organization: Organization! @relation(link: INLINE, name: "OrganizationToStudentOrganization")
+  user: User! @relation(link: INLINE, name: "UserOrganizationToUser")
+  organization: Organization! @relation(link: INLINE, name: "UserOrganizationToOrganization")
+  role: OrganizationRole
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
 }
+
+enum OrganizationRole @db(name: "organization_role") {
+  Teacher, Student, OrganizationAdmin
+}
+
+type CourseOrganization @db(name: "course_organization") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  course: Course! @relation(link: INLINE, name: "CourseOrganizationToCourse")
+  organization: Organization! @relation(link: INLINE, name: "CourseOrganizationToOrganization")
+  creator: Boolean
+}
+
+
