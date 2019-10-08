@@ -2,9 +2,9 @@ import React from "react"
 import Language from "@material-ui/icons/Language"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
-import Link from "next/link"
+import LangLink from "components/LangLink"
 
-const SwitchLink = styled.a<any>`
+const SwitchLink = styled.a`
   font-size: 14px;
   line-height: 1.3;
   font-weight: bold;
@@ -25,14 +25,14 @@ const LanguageSwitch = () => {
     <LanguageContext.Consumer>
       {({ language, url, hrefUrl }) => {
         return (
-          <Link as={url} href={hrefUrl} prefetch={false}>
+          <LangLink as={url} href={hrefUrl}>
             <SwitchLink href={url}>
               <Language style={{ marginRight: "0.4rem" }} />
               <p style={{ margin: "auto" }} data-testid="language-switch">
                 {language === "en" ? "Suomi" : "English"}
               </p>
             </SwitchLink>
-          </Link>
+          </LangLink>
         )
       }}
     </LanguageContext.Consumer>
