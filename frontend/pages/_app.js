@@ -53,7 +53,6 @@ class MyApp extends App {
       url,
       hrefUrl,
     } = this.props
-
     return (
       <Container>
         <Head>
@@ -107,7 +106,16 @@ MyApp.getInitialProps = async arg => {
   let url = "/"
   let hrefUrl = "/"
   if (typeof window !== undefined) {
-    lng = (ctx.asPath && ctx.asPath.substring(1, 3)) || "fi"
+    if (ctx.asPath && ctx.asPath.substring(1, 3)) {
+      if (
+        ctx.asPath.substring(1, 3) == "fi" ||
+        ctx.asPath.substring(1, 3) == "en" ||
+        ctx.asPath.substring(1, 3) == "se"
+      ) {
+        lng = ctx.asPath.substring(1, 3)
+      }
+    }
+
     url = ctx.asPath
     hrefUrl = ctx.pathname
   } else {
