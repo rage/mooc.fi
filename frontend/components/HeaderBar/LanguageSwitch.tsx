@@ -4,7 +4,7 @@ import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import Link from "next/link"
 
-const SwitchLink = styled.a<any>`
+const SwitchLink = styled.a`
   font-size: 14px;
   line-height: 1.3;
   font-weight: bold;
@@ -25,7 +25,7 @@ const LanguageSwitch = () => {
     <LanguageContext.Consumer>
       {({ language, url, hrefUrl }) => {
         return (
-          <Link as={url} href={hrefUrl} prefetch={false}>
+          <Link as={url} href={hrefUrl}>
             <SwitchLink href={url}>
               <Language style={{ marginRight: "0.4rem" }} />
               <p style={{ margin: "auto" }} data-testid="language-switch">

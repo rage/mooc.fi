@@ -5,6 +5,7 @@ import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { mime } from "/util/imageUtils"
+import Button from "@material-ui/core/Button"
 
 const NaviItemBase = styled(ButtonBase)`
   position: relative;
@@ -28,14 +29,16 @@ const BackgroundImage = styled.img`
 `
 
 const StyledLink = styled.a`
-  color: #0d5f6d;
-  font-size: 18px;
+  color: black;
+  text-decoration: none;
 `
 const TextBackground = styled.span`
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 `
 type NaviItem = {
   title: string
@@ -70,49 +73,49 @@ function NaviCard(props: NaviCardProps) {
   // const image = require(`../../static/images/${item.img}`)
   return (
     <Grid item {...gridLayout(count)}>
-      <NaviItemBase focusRipple>
-        <picture>
-          <source
-            srcSet={require(`../../static/images/${item.img}?webp`)}
-            type="image/webp"
-          />
-          <source
-            srcSet={require(`../../static/images/${item.img}`)}
-            type={mime(item.img)}
-          />
-          <BackgroundImage
-            src={require(`../../static/images/${item.img}`)}
-            alt=""
-          />
-        </picture>
-        <TextBackground style={{ width: "100%" }}>
-          <Typography
-            component="h3"
-            variant="h3"
-            gutterBottom={true}
-            align="left"
-            style={{ maxWidth: "70%" }}
-          >
-            {item.title}
-          </Typography>
-          <Typography
-            component="p"
-            variant="body1"
-            align="left"
-            paragraph
-            style={{ minWidth: "70%" }}
-          >
-            {item.text}
-          </Typography>
-          <Typography align="left">
-            <LangLink href={item.link} prefetch={false}>
-              <StyledLink aria-label={item.linkText}>
+      <LangLink href={item.link} prefetch={false}>
+        <StyledLink aria-label={item.linkText}>
+          <NaviItemBase focusRipple>
+            <picture>
+              <source
+                srcSet={require(`../../static/images/${item.img}?webp`)}
+                type="image/webp"
+              />
+              <source
+                srcSet={require(`../../static/images/${item.img}`)}
+                type={mime(item.img)}
+              />
+              <BackgroundImage
+                src={require(`../../static/images/${item.img}`)}
+                alt=""
+              />
+            </picture>
+            <TextBackground style={{ width: "100%" }}>
+              <Typography
+                component="h3"
+                variant="h3"
+                gutterBottom={true}
+                align="left"
+                style={{ maxWidth: "70%" }}
+              >
+                {item.title}
+              </Typography>
+              <Typography
+                component="p"
+                variant="body1"
+                align="left"
+                paragraph
+                style={{ minWidth: "70%", flex: 1 }}
+              >
+                {item.text}
+              </Typography>
+              <Button fullWidth aria-disabled="true">
                 {item.linkText}
-              </StyledLink>
-            </LangLink>
-          </Typography>
-        </TextBackground>
-      </NaviItemBase>
+              </Button>
+            </TextBackground>
+          </NaviItemBase>
+        </StyledLink>
+      </LangLink>
     </Grid>
   )
 }
