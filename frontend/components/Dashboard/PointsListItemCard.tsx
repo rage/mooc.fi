@@ -116,13 +116,6 @@ function PointsListItemCard(props: Props) {
 
   return (
     <Root item sm={12} lg={12}>
-      <Button
-        variant="text"
-        onClick={() => setShowDetails(!showDetails)}
-        fullWidth
-      >
-        {showDetails ? "show less" : "show detailed breakdown"}
-      </Button>
       <Name>{name}</Name>
       <UserInformation>{email}</UserInformation>
       <UserInformation>{SID}</UserInformation>
@@ -135,6 +128,13 @@ function PointsListItemCard(props: Props) {
           cutterValue={cutterValue}
         />
       )}
+      <Button
+        variant="text"
+        onClick={() => setShowDetails(!showDetails)}
+        fullWidth
+      >
+        {showDetails ? "show less" : "show detailed breakdown"}
+      </Button>
     </Root>
   )
 }
