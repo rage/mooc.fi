@@ -14,6 +14,7 @@ import { withRouter } from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -143,47 +144,50 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   }
 
   return (
-    <Container>
-      <Typography
-        variant="h2"
-        component="h1"
-        gutterBottom={true}
-        align="center"
-        className={classes.title}
-      >
-        {t("title")}
-      </Typography>
-      <Typography variant="h6" component="p" className={classes.courseInfo}>
-        {t("course", { course: completion.course.name })}
-      </Typography>
-      <Typography
-        variant="h6"
-        component="p"
-        className={classes.courseInfo}
-        gutterBottom={true}
-      >
-        {t("credits", { ects: completion.course.ects })}
-      </Typography>
-      <Paper className={classes.paper}>
-        <Typography variant="body1" paragraph>
-          {t("credits_details")}
+    <>
+      <DashboardBreadCrumbs />
+      <Container>
+        <Typography
+          variant="h2"
+          component="h1"
+          gutterBottom={true}
+          align="center"
+          className={classes.title}
+        >
+          {t("title")}
         </Typography>
-        <Typography variant="body1" paragraph>
-          {t("donow")}
+        <Typography variant="h6" component="p" className={classes.courseInfo}>
+          {t("course", { course: completion.course.name })}
         </Typography>
-      </Paper>
-      <ImportantNotice email={data.currentUser.email} />
-      <RegisterCompletionText
-        email={data.currentUser.email}
-        link={courseLinkWithLanguage}
-      />
-      <Paper className={classes.paperWithRow}>
-        <SvgIcon className={classes.icon} color="primary">
-          <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
-        </SvgIcon>
-        <Typography variant="body1">{t("NB")}</Typography>
-      </Paper>
-    </Container>
+        <Typography
+          variant="h6"
+          component="p"
+          className={classes.courseInfo}
+          gutterBottom={true}
+        >
+          {t("credits", { ects: completion.course.ects })}
+        </Typography>
+        <Paper className={classes.paper}>
+          <Typography variant="body1" paragraph>
+            {t("credits_details")}
+          </Typography>
+          <Typography variant="body1" paragraph>
+            {t("donow")}
+          </Typography>
+        </Paper>
+        <ImportantNotice email={data.currentUser.email} />
+        <RegisterCompletionText
+          email={data.currentUser.email}
+          link={courseLinkWithLanguage}
+        />
+        <Paper className={classes.paperWithRow}>
+          <SvgIcon className={classes.icon} color="primary">
+            <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
+          </SvgIcon>
+          <Typography variant="body1">{t("NB")}</Typography>
+        </Paper>
+      </Container>
+    </>
   )
 }
 

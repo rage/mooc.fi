@@ -6,6 +6,8 @@ import ProfileButton from "./ProfileButton"
 import LangLink from "../LangLink"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
+import { faAddressCard } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const StyledButton = styled(Button)`
   margin: 1rem;
@@ -31,6 +33,7 @@ const UserMenu = () => {
         <>
           <LangLink href="/[lng]/courses" as={`/${language}/courses`}>
             <StyledButton color="inherit" variant="text">
+              <FontAwesomeIcon icon={faAddressCard} />
               Courses
             </StyledButton>
           </LangLink>
