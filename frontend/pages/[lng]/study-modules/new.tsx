@@ -8,6 +8,7 @@ import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import styled from "styled-components"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 const Header = styled(Typography)`
   margin-top: 1em;
@@ -28,6 +29,7 @@ const NewStudyModule = (props: NewStudyModuleProps) => {
 
   return (
     <section>
+      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Create a new study module

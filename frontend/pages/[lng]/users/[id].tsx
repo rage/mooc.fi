@@ -11,6 +11,7 @@ import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import { CircularProgress } from "@material-ui/core"
 import { SingletonRouter, withRouter } from "next/router"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 interface UserPageProps {
   namespacesRequired: string[]
@@ -48,28 +49,33 @@ const UserPage = (props: UserPageProps) => {
   }
   data.UserCourseSettingses.edges.push(...more)
   return (
-    <Container>
-      <pre>{JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}</pre>
-      <ApolloConsumer>
-        {client => (
-          <Button
-            variant="contained"
-            onClick={async () => {
-              const { data } = await client.query({
-                query: GET_DATA,
-                variables: { upstream_id: Number(router.query.id) },
-              })
-              let newData = more
-              newData.push(...data.UserCourseSettingses.edges)
-              setMore(newData)
-            }}
-            disabled={false}
-          >
-            Load more
-          </Button>
-        )}
-      </ApolloConsumer>
-    </Container>
+    <>
+      <DashboardBreadCrumbs />
+      <Container>
+        <pre>
+          {JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}
+        </pre>
+        <ApolloConsumer>
+          {client => (
+            <Button
+              variant="contained"
+              onClick={async () => {
+                const { data } = await client.query({
+                  query: GET_DATA,
+                  variables: { upstream_id: Number(router.query.id) },
+                })
+                let newData = more
+                newData.push(...data.UserCourseSettingses.edges)
+                setMore(newData)
+              }}
+              disabled={false}
+            >
+              Load more
+            </Button>
+          )}
+        </ApolloConsumer>
+      </Container>
+    </>
   )
 }
 

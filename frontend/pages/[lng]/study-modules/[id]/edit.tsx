@@ -15,6 +15,7 @@ import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import LangLink from "/components/LangLink"
 import LanguageContext from "/contexes/LanguageContext"
 import Spinner from "/components/Spinner"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -87,6 +88,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   return (
     <section>
+      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Edit study module
