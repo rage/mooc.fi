@@ -1,5 +1,3 @@
-import * as fs from "fs"
-
 export { default as addUserQueries } from "./user"
 export { default as addCompletionQueries } from "./completion"
 export { default as addCourseQueries } from "./course"
