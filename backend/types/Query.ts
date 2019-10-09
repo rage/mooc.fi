@@ -4,7 +4,9 @@ import * as queries from "../resolvers/Query/index"
 const Query = prismaObjectType({
   name: "Query",
   definition(t) {
-    queries.addUserQueries(t)
+    // reduce the possibility of forgetting to update a bit :p
+    Object.values(queries).forEach(fn => fn(t))
+    /*     queries.addUserQueries(t)
     queries.addCompletionQueries(t)
     queries.addCourseQueries(t)
     queries.addCourseAliasQueries(t)
@@ -17,9 +19,11 @@ const Query = prismaObjectType({
     queries.addStudyModuleTranslationQueries(t)
     queries.addCourseTranslationQueries(t)
     queries.addExerciseQueries(t)
-    queries.addExerciseComlpetionQueries(t)
+    queries.addExerciseCompletionQueries(t)
     queries.addOpenUniversityRegistrationLinkQueries(t)
     queries.addUserCourseSettingsQueries(t)
+    queries.addUserOrganizationQueries(t)
+    queries.addCourseOrganizationQueries(t) */
   },
 })
 
