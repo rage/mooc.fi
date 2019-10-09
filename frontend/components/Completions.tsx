@@ -20,6 +20,9 @@ const completionsFragment = gql`
         id
         slug
         name
+        photo {
+          uncompressed
+        }
       }
       completions_registered {
         id

@@ -6,11 +6,17 @@
 // GraphQL fragment: UserCompletions
 // ====================================================
 
+export interface UserCompletions_completions_course_photo {
+  __typename: "Image"
+  uncompressed: string
+}
+
 export interface UserCompletions_completions_course {
   __typename: "Course"
   id: any
   slug: string
   name: string
+  photo: UserCompletions_completions_course_photo | null
 }
 
 export interface UserCompletions_completions_completions_registered_organization {
