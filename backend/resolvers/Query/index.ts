@@ -1,3 +1,5 @@
+import * as fs from "fs"
+
 export { default as addUserQueries } from "./user"
 export { default as addCompletionQueries } from "./completion"
 export { default as addCourseQueries } from "./course"
@@ -17,9 +19,10 @@ export {
 } from "./studyModuleTranslation"
 export { default as addCourseTranslationQueries } from "./courseTranslation"
 export { default as addExerciseQueries } from "./Exercise"
-export { default as addExerciseComlpetionQueries } from "./ExerciseCompletion"
+export { default as addExerciseCompletionQueries } from "./ExerciseCompletion"
 export {
   default as addOpenUniversityRegistrationLinkQueries,
 } from "./OpenUniversityRegistrationLink"
 export { default as addUserCourseSettingsQueries } from "./userCourseSettings"
 export { default as addUserOrganizationQueries } from "./userOrganization"
+export { default as addCourseOrganizationQueries } from "./courseOrganization"

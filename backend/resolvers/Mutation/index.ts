@@ -22,3 +22,4 @@ export {
   default as addOpenUniversityRegistrationLinkMutations,
 } from "./openUniversityRegistrationLink"
 export { default as addUserOrganizationMutations } from "./userOrganization"
+export { default as addCourseOrganizationMutations } from "./courseOrganization"
