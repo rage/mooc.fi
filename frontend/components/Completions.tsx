@@ -1,13 +1,13 @@
 import * as React from "react"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import { Container } from "next/app"
-import { Grid, Typography } from "@material-ui/core"
-import CompletedCourseCard from "./CompletedCourseCard"
+import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { gql } from "apollo-boost"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 import { useContext } from "react"
+import CompletionListItem from "/components/CompletionListItem"
 
 const completionsFragment = gql`
   fragment UserCompletions on User {
@@ -64,19 +64,14 @@ const Completions = (props: CompletionsProps) => {
         {t("completionsTitle")}
       </Title>
 
-      <Container>
-        <Typography component="p" variant="h5" style={{ marginBottom: "1rem" }}>
-          {t("completionNB")}
-        </Typography>
-        <Grid container spacing={2}>
-          {completions.length > 0 ? (
-            completions.map(c => (
-              <CompletedCourseCard key={`completion-${c.id}`} completion={c} />
-            ))
-          ) : (
-            <Typography>{t("nocompletionsText")}</Typography>
-          )}
-        </Grid>
+      <Container style={{ maxWidth: 900 }}>
+        {completions.length > 0 ? (
+          completions.map(c => (
+            <CompletionListItem key={`completion-${c.id}`} listItem={c} />
+          ))
+        ) : (
+          <Typography>{t("nocompletionsText")}</Typography>
+        )}
       </Container>
     </section>
   )
