@@ -6,7 +6,6 @@ interface CompletionsProps {
 }
 const ProfileCompletionsDisplay = (props: CompletionsProps) => {
   const { completions } = props
-  console.log(completions)
   return (
     <>
       {completions.map(c => (

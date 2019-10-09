@@ -6,11 +6,17 @@
 // GraphQL query operation: CurrentUserUserOverView
 // ====================================================
 
+export interface CurrentUserUserOverView_currentUser_completions_course_photo {
+  __typename: "Image"
+  uncompressed: string
+}
+
 export interface CurrentUserUserOverView_currentUser_completions_course {
   __typename: "Course"
   id: any
   slug: string
   name: string
+  photo: CurrentUserUserOverView_currentUser_completions_course_photo | null
 }
 
 export interface CurrentUserUserOverView_currentUser_completions_completions_registered_organization {
