@@ -23,7 +23,8 @@
     "kafka-consumer-exercises": "ts-node ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
     "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma",
     "seed": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seed.ts",
-    "seedPoints": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seedPoints.ts"
+    "seedPoints": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seedPoints.ts",
+    "createExports": "ts-node ./bin/createExports.ts"
   },
   "keywords": [],
   "author": "",
