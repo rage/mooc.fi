@@ -3,10 +3,15 @@ import XLSX from "xlsx"
 import gql from "graphql-tag"
 import { ApolloConsumer } from "@apollo/react-hooks"
 import { Button } from "@material-ui/core"
+import styled from "styled-components"
 import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_UserCourseProgresses,
 } from "../../static/types/generated/ExportUserCourseProgesses"
+
+const PointsExportButtonContainer = styled.div`
+  margin-bottom: 1rem;
+`
 
 export interface PointsExportButtonProps {
   slug: string
@@ -19,7 +24,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
   return (
     <ApolloConsumer>
       {client => (
-        <div>
+        <PointsExportButtonContainer>
           <Button
             disabled={!(infotext == "" || infotext == "ready")}
             onClick={async () => {
@@ -51,7 +56,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
             Export
           </Button>
           {infotext}
-        </div>
+        </PointsExportButtonContainer>
       )}
     </ApolloConsumer>
   )

@@ -43,6 +43,7 @@ export interface ProfileUserOverView_currentUser {
   upstream_id: number
   first_name: string | null
   last_name: string | null
+  student_number: string | null
   email: string
   completions: ProfileUserOverView_currentUser_completions[] | null
 }
