@@ -3,9 +3,17 @@ import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
-import styled from "styled-components"
-import Typography from "@material-ui/core/Typography"
+import {
+  ProfileUserOverView as UserOverViewData,
+  ProfileUserOverView_currentUser_completions as CompletionsData,
+} from "/static/types/generated/ProfileUserOverView"
+import { isSignedIn } from "/lib/authentication"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
+import Spinner from "/components/Spinner"
+import ErrorMessage from "/components/ErrorMessage"
+import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
+import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
+import Container from "/components/Container"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -14,6 +22,7 @@ export const UserOverViewQuery = gql`
       upstream_id
       first_name
       last_name
+      student_number
       email
       completions {
         id
@@ -36,50 +45,59 @@ export const UserOverViewQuery = gql`
     }
   }
 `
-const Title = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
-  margin-top: 7rem;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
-  @media (min-width: 320px) {
-    font-size: 46px;
-  }
-  @media (min-width: 600px) {
-    font-size: 56px;
-  }
-  @media (min-width: 960px) {
-    font-size: 72px;
-  }
-`
 
-function MyProfile() {
-  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
-
+function Profile() {
+  const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
   if (error) {
-    return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
-    )
+    return <ErrorMessage />
   }
-
-  if (loading || !data) {
-    return <div>Loading</div>
+  if (loading) {
+    return <Spinner />
   }
-
+  let first_name = "No first name"
+  let last_name = "No last name"
+  let sid = "no sid"
+  let email = "no email"
+  let completions: CompletionsData[] = []
+  if (data && data.currentUser) {
+    if (data.currentUser.first_name) {
+      first_name = data.currentUser.first_name
+    }
+    if (data.currentUser.last_name) {
+      last_name = data.currentUser.last_name
+    }
+    if (data.currentUser.email) {
+      email = data.currentUser.email
+    }
+    if (data.currentUser.student_number) {
+      sid = data.currentUser.student_number
+    }
+    if (data.currentUser.completions) {
+      completions = data.currentUser.completions
+    }
+  }
+  console.log(data)
   return (
-    <section>
-      <Title component="h1" variant="h2" align="center">
-        Profile
-      </Title>
-    </section>
+    <>
+      <DashboardBreadCrumbs />
+      <ProfilePageHeader
+        first_name={first_name}
+        last_name={last_name}
+        email={email}
+        student_number={sid}
+      />
+      <Container>
+        <StudentDataDisplay completions={completions} />
+      </Container>
+    </>
   )
 }
 
-MyProfile.getInitialProps = function(context: NextContext) {
-  redirect(context, "/profile/completions")
-
+Profile.getInitialProps = function(context: NextContext) {
+  if (!isSignedIn(context)) {
+    redirect(context, "/sign-in")
+  }
   return {}
 }
 
-export default MyProfile
+export default Profile

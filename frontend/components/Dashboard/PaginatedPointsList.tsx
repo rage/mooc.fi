@@ -8,6 +8,7 @@ import useDebounce from "/util/useDebounce"
 import { TextField, Grid, Slider } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
+import styled from "styled-components"
 import {
   UserCourseSettingses as StudentProgressData,
   UserCourseSettingses_UserCourseSettingses_edges,
@@ -39,6 +40,13 @@ export const StudentProgresses = gql`
     }
   }
   ${PointsListItemCard.fragments.user}
+`
+
+const LoadingPointCardSkeleton = styled(Skeleton)`
+  width: 100%;
+  height: 300px;
+  margin-bottom: 2rem;
+  border-radius: 0.25rem;
 `
 
 interface Props {
@@ -76,7 +84,13 @@ function PaginatedPointsList(props: Props) {
   }
 
   if (loading) {
-    return <Skeleton variant="rect" width={100} height={180} />
+    return (
+      <>
+        <LoadingPointCardSkeleton variant="rect" />
+        <LoadingPointCardSkeleton variant="rect" />
+        <LoadingPointCardSkeleton variant="rect" />
+      </>
+    )
   }
 
   if (!data) {
