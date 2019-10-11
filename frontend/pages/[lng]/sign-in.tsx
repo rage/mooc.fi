@@ -10,6 +10,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import getSignInTranslator from "/translations/common"
 import { useContext } from "react"
 import styled from "styled-components"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -26,17 +27,20 @@ const SignInPage = () => {
   const lng = useContext(LanguageContext)
   const t = getSignInTranslator(lng.language)
   return (
-    <Container style={{ width: "90%", maxWidth: 900 }}>
-      <StyledPaper>
-        <Header component="h1" variant="h4" gutterBottom={true}>
-          {t("login")}
-        </Header>
-        <Typography component="p" paragraph>
-          {t("loginDetails")}
-        </Typography>
-        <SignInForm />
-      </StyledPaper>
-    </Container>
+    <>
+      <DashboardBreadCrumbs />
+      <Container style={{ width: "90%", maxWidth: 900 }}>
+        <StyledPaper>
+          <Header component="h1" variant="h4" gutterBottom={true}>
+            {t("login")}
+          </Header>
+          <Typography component="p" paragraph>
+            {t("loginDetails")}
+          </Typography>
+          <SignInForm />
+        </StyledPaper>
+      </Container>
+    </>
   )
 }
 
