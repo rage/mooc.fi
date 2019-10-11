@@ -1,11 +1,26 @@
 import { prismaObjectType } from "nexus-prisma"
-import { Prisma } from "../generated/prisma-client"
 import { idArg, stringArg } from "nexus/dist"
+import { Course } from "/generated/prisma-client"
 
 const User = prismaObjectType({
   name: "User",
   definition(t) {
     t.prismaFields(["*"])
+
+    t.field("progress", {
+      type: "Progress",
+      nullable: false,
+      args: {
+        course_id: stringArg(),
+      },
+      resolve: async (parent, args, ctx) => {
+        const course: Course = await ctx.prisma.course({ id: args.course_id })
+        return {
+          course: course,
+          user: parent,
+        }
+      },
+    })
 
     t.field("user_course_progressess", {
       type: "UserCourseProgress",

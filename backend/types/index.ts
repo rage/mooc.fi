@@ -1,4 +1,4 @@
-// generated Thu Oct 10 2019 16:04:48 GMT+0300 (Eastern European Summer Time)
+// generated Fri Oct 11 2019 14:46:35 GMT+0300 (Eastern European Summer Time)
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
 export { default as Course } from "./Course"
@@ -11,6 +11,7 @@ export {
 } from "./OpenUniversityRegistrationLinkWithIdInput"
 export { default as Organization } from "./Organization"
 export { default as PointsByGroup } from "./PointsByGroup"
+export { default as Progress } from "./Progress"
 export { default as Query } from "./Query"
 export { default as StudyModule } from "./StudyModule"
 export {
