@@ -4,7 +4,7 @@ import amber from "@material-ui/core/colors/amber"
 const rawTheme = createMuiTheme({
   palette: {
     primary: {
-      main: "#3C8C7A",
+      main: "#378170",
     },
     secondary: {
       main: amber[500],
