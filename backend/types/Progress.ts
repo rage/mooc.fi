@@ -24,7 +24,7 @@ const Progress = objectType({
       resolve: async (parent, args, ctx) => {
         const courseId = parent.course.id
         const userId = parent.user.id
-        return ctx.prisma.userCourseProgresses({
+        return ctx.prisma.userCourseServiceProgresses({
           where: { user: { id: userId }, course: { id: courseId } },
         })
       },
