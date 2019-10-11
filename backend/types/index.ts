@@ -22,3 +22,4 @@ export {
 export { default as Course } from "./Course"
 export { default as StudyModule } from "./StudyModule"
 export { default as UserCourseProgress } from "./UserCourseProgress"
+export { default as Progress } from "./Progress"
