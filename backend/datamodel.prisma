@@ -21,7 +21,7 @@ type User @db(name: "user") {
   exercise_completions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToUser")
   "User's points in courses"
   user_course_progresses: [UserCourseProgress!]!  @relation( name: "UserCourseProgressToUser")
-  organizations: [UserOrganization!]! @relation(name: "UserOrganizationToUser")
+  organization_memberships: [UserOrganization!]! @relation(name: "UserOrganizationToUser")
 }
 
 type Course @db(name: "course") {
@@ -200,8 +200,8 @@ type Organization @db(name: "organization") {
   secret_key: String! @unique
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToOrganization")
   organization_translations: [OrganizationTranslation!]! @relation(name: "OrganizationToOrganizationTranslation")
-  users: [UserOrganization!]! @relation(name: "UserOrganizationToOrganization")
-  courses: [CourseOrganization!]! @relation(name: "CourseOrganizationToOrganization")
+  user_memberships: [UserOrganization!]! @relation(name: "UserOrganizationToOrganization")
+  course_participations: [CourseOrganization!]! @relation(name: "CourseOrganizationToOrganization")
 }
 
 type OrganizationTranslation @db(name: "organization_translation") {

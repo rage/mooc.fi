@@ -1,6 +1,6 @@
-import { Prisma, UserOrganization, UUID } from "../../generated/prisma-client"
+import { Prisma, UUID, User } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, stringArg, arg } from "nexus/dist"
+import { idArg, arg } from "nexus/dist"
 import checkAccess, { Role } from "../../accessControl"
 import { ForbiddenError } from "apollo-server-core"
 import { Context } from "/context"
@@ -8,14 +8,19 @@ import { Context } from "/context"
 const checkUser = async (ctx: Context, id: UUID) => {
   const { user, role } = ctx
 
-  const existingUser = await ctx.prisma.userOrganization({ id }).user()
-
-  if (!existingUser) {
-    throw new Error("no such organization")
+  let existingUser: User
+  try {
+    existingUser = await ctx.prisma.userOrganization({ id }).user()
+  } catch {
+    throw new Error("no such user/organization relation")
   }
 
-  if ((!user && role !== Role.ADMIN) || (user && user.id !== existingUser.id)) {
-    throw new ForbiddenError("can't delete that user organization")
+  if (!existingUser) {
+    throw new Error("relation has no user - wonder how that happened")
+  }
+
+  if (!user || (user && user.id !== existingUser.id && role !== Role.ADMIN)) {
+    throw new ForbiddenError("invalid credentials to do that")
   }
 }
 
@@ -31,6 +36,15 @@ const addUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       const { user_id, organization_id } = args
       const prisma: Prisma = ctx.prisma
+
+      const exists = prisma.$exists.userOrganization({
+        user: { id: user_id },
+        organization: { id: organization_id },
+      })
+
+      if (exists) {
+        throw new Error("this user/organization relation already exists")
+      }
 
       return prisma.createUserOrganization({
         user: { connect: { id: user_id } },

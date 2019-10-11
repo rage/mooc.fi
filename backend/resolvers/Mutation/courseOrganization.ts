@@ -20,10 +20,19 @@ const addCourseOrganization = async (
 
       const prisma: Prisma = ctx.prisma
 
+      const exists = prisma.$exists.courseOrganization({
+        course: { id: course_id },
+        organization: { id: organization_id },
+      })
+
+      if (exists) {
+        throw new Error("this course/organization relation already exists")
+      }
+
       return prisma.createCourseOrganization({
         course: { connect: { id: course_id } },
         organization: { connect: { id: organization_id } },
-        creator,
+        creator: creator ? creator : false,
       })
     },
   })
@@ -52,6 +61,7 @@ const addCourseOrganizationMutations = (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   addCourseOrganization(t)
+  deleteCourseOrganization(t)
 }
 
 export default addCourseOrganizationMutations
