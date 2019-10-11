@@ -15,9 +15,13 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-const StyledButton = styled(Button)`
+interface ButtonProps {
+  active: boolean
+}
+const StyledButton = styled(Button)<ButtonProps>`
   margin: 1rem;
   font-size: 22px;
+  border-radius: 0px;
   @media (max-width: 510px) {
     font-size: 20px;
     margin: 0.75rem;
@@ -26,11 +30,16 @@ const StyledButton = styled(Button)`
     font-size: 16px;
     margin: 0.5rem;
   }
+  color: ${props => (props.active ? "#00B290" : "black")};
+  border-bottom: ${props => (props.active ? "1px solid #00B290" : "")};
 `
-
-const UserMenu = () => {
+interface UserMenuprops {
+  active?: string
+}
+const UserMenu = (props: UserMenuprops) => {
   const isAdmin = useContext(UserDetailContext)
   const { language } = useContext(LanguageContext)
+  const { active } = props
 
   return (
     <>
@@ -41,6 +50,7 @@ const UserMenu = () => {
               startIcon={<FontAwesomeIcon icon={faChalkboardTeacher} />}
               color="inherit"
               variant="text"
+              active={active == "courses"}
             >
               Courses
             </StyledButton>
@@ -54,6 +64,7 @@ const UserMenu = () => {
               color="inherit"
               variant="text"
               startIcon={<FontAwesomeIcon icon={faList} />}
+              active={active == "study-modules"}
             >
               Modules
             </StyledButton>
@@ -63,6 +74,7 @@ const UserMenu = () => {
               color="inherit"
               variant="text"
               startIcon={<FontAwesomeIcon icon={faSearch} />}
+              active={active == "users"}
             >
               User search
             </StyledButton>
