@@ -86,7 +86,12 @@ function EmailSubscribe() {
               >
                 <FieldWrapper>
                   <StyledFormControl>
-                    <TextField label="email" name="EMAIL" aria-label="email" />
+                    <TextField
+                      id="email"
+                      label="email"
+                      name="EMAIL"
+                      inputProps={{ "aria-label": "email" }}
+                    />
                   </StyledFormControl>
                 </FieldWrapper>
                 <StyledButton
