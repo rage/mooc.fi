@@ -2,11 +2,17 @@ import * as React from "react"
 import { useContext } from "react"
 import UserDetailContext from "/contexes/UserDetailContext"
 import LanguageContext from "/contexes/LanguageContext"
-import ProfileButton from "./ProfileButton"
+
 import LangLink from "../LangLink"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
-import { faAddressCard } from "@fortawesome/free-solid-svg-icons"
+
+import {
+  faChalkboardTeacher,
+  faSearch,
+  faList,
+} from "@fortawesome/free-solid-svg-icons"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const StyledButton = styled(Button)`
@@ -28,25 +34,36 @@ const UserMenu = () => {
 
   return (
     <>
-      <ProfileButton />
       {isAdmin && (
         <>
           <LangLink href="/[lng]/courses" as={`/${language}/courses`}>
-            <StyledButton color="inherit" variant="text">
-              <FontAwesomeIcon icon={faAddressCard} />
+            <StyledButton
+              startIcon={<FontAwesomeIcon icon={faChalkboardTeacher} />}
+              color="inherit"
+              variant="text"
+            >
               Courses
             </StyledButton>
           </LangLink>
+
           <LangLink
             href="/[lng]/study-modules"
             as={`/${language}/study-modules`}
           >
-            <StyledButton color="inherit" variant="text">
+            <StyledButton
+              color="inherit"
+              variant="text"
+              startIcon={<FontAwesomeIcon icon={faList} />}
+            >
               Modules
             </StyledButton>
           </LangLink>
           <LangLink href="/[lng]/users/search" as={`/${language}/users/search`}>
-            <StyledButton color="inherit" variant="text">
+            <StyledButton
+              color="inherit"
+              variant="text"
+              startIcon={<FontAwesomeIcon icon={faSearch} />}
+            >
               User search
             </StyledButton>
           </LangLink>
