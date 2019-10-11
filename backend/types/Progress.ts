@@ -1,0 +1,35 @@
+import { objectType } from "nexus/dist"
+import Course from "./Course"
+import UserCourseProgress from "./UserCourseProgress"
+import User from "./User"
+
+const Progress = objectType({
+  name: "Progress",
+  definition(t) {
+    t.field("course", { type: Course })
+    t.field("user", { type: User })
+    t.field("user_course_progress", {
+      type: UserCourseProgress,
+      resolve: async (parent, args, ctx) => {
+        const courseId = parent.course.id
+        const userId = parent.user.id
+        const userCourseProgresses = await ctx.prisma.userCourseProgresses({
+          where: { course: courseId, user: userId },
+        })
+        return userCourseProgresses[0]
+      },
+    })
+    t.list.field("user_course_service_progresses", {
+      type: "UserCourseServiceProgress",
+      resolve: async (parent, args, ctx) => {
+        const courseId = parent.course.id
+        const userId = parent.user.id
+        return ctx.prisma.userCourseProgresses({
+          where: { user: userId, course: courseId },
+        })
+      },
+    })
+  },
+})
+
+export default Progress
