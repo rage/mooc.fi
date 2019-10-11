@@ -26,6 +26,8 @@ const Organization = prismaObjectType({
       "pinned",
       "completions_registered",
       "organization_translations",
+      "user_memberships",
+      "course_participations",
     ])
   },
 })
