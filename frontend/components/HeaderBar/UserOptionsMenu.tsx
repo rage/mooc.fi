@@ -8,9 +8,10 @@ import LanguageContext from "/contexes/LanguageContext"
 import getCommonTranslator from "/translations/common"
 import LangLink from "/components/LangLink"
 import nookies from "nookies"
+import ProfileButton from "./ProfileButton"
 
 const StyledButton = styled(Button)`
-  margin: 1rem;
+  margin: 0.5rem;
   font-size: 18px;
 `
 
@@ -27,6 +28,7 @@ const UserOptionsMenu = (props: Props) => {
   if (isSignedIn) {
     return (
       <>
+        <ProfileButton />
         <StyledButton
           color="inherit"
           variant="text"
