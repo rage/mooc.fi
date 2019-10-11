@@ -14,7 +14,7 @@ const Progress = objectType({
         const courseId = parent.course.id
         const userId = parent.user.id
         const userCourseProgresses = await ctx.prisma.userCourseProgresses({
-          where: { course: courseId, user: userId },
+          where: { course: { id: courseId }, user: { id: userId } },
         })
         return userCourseProgresses[0]
       },
@@ -25,7 +25,7 @@ const Progress = objectType({
         const courseId = parent.course.id
         const userId = parent.user.id
         return ctx.prisma.userCourseProgresses({
-          where: { user: userId, course: courseId },
+          where: { user: { id: userId }, course: { id: courseId } },
         })
       },
     })
