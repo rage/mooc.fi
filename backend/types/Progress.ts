@@ -10,6 +10,7 @@ const Progress = objectType({
     t.field("user", { type: User })
     t.field("user_course_progress", {
       type: UserCourseProgress,
+      nullable: true,
       resolve: async (parent, args, ctx) => {
         const courseId = parent.course.id
         const userId = parent.user.id
