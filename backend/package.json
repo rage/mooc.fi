@@ -13,6 +13,7 @@
     "fetch-ai-completions": "ts-node ./bin/fetchAiCompletions.ts",
     "fetch-organizations": "ts-node ./bin/importOrganizations.ts",
     "fetch-user-app-datum": "ts-node ./bin/fetchUserAppDatum.ts",
+    "fetch-user-field-values": "ts-node ./bin/fetchUserFieldValues.ts",
     "fetch-avoin-links": "ts-node ./bin/fetchAvoinLinks.ts",
     "send-ai-statistics": "ts-node ./bin/sendAiStatistics.ts",
     "import-organizations": "ts-node ./bin/importOrganizations.ts",
