@@ -117,7 +117,9 @@ const getUserFromTmcAndSaveToDB = async (
     console.log(
       `Failed to upsert user with upstream id ${
         details.id
-      }. Values we tried to upsert: ${JSON.stringify(details)}`,
+      }. Values we tried to upsert: ${JSON.stringify(
+        prismaDetails,
+      )}. Values found from the database: ${JSON.stringify(details)}`,
     )
     throw e
   }

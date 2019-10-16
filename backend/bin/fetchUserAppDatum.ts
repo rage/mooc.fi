@@ -208,11 +208,22 @@ const getUserFromTmcAndSaveToDB = async (
     last_name: details.user_field.last_name.trim(),
     username: details.username,
   }
-  return await prisma.upsertUser({
-    where: { upstream_id: details.id },
-    create: prismaDetails,
-    update: prismaDetails,
-  })
+  try {
+    return await prisma.upsertUser({
+      where: { upstream_id: details.id },
+      create: prismaDetails,
+      update: prismaDetails,
+    })
+  } catch (e) {
+    console.log(
+      `Failed to upsert user with upstream id ${
+        details.id
+      }. Values we tried to upsert: ${JSON.stringify(
+        prismaDetails,
+      )}. Values found from the database: ${JSON.stringify(details)}`,
+    )
+    throw e
+  }
 }
 
 const currentDate = () => {
