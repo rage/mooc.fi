@@ -161,6 +161,8 @@ type UserCourseProgress @db(name: "user_course_progress") {
   "Json containing all progress data for User in a course"
   progress: Json!
   user_course_service_progresses: [UserCourseServiceProgress!]! @relation(name:"UserCourseServiceProgressToUserCourseProgress")
+  max_points: Float
+  n_points: Float
 }
 
 
