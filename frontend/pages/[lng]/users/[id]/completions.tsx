@@ -14,6 +14,7 @@ import Container from "/components/Container"
 import Completions from "/components/Completions"
 import { SingletonRouter, withRouter } from "next/router"
 import AdminError from "/components/Dashboard/AdminError"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -78,11 +79,14 @@ function CompletionsPage(props: CompletionsProps) {
   }
 
   return (
-    <Container>
-      <div>
-        <Completions completions={completions} />
-      </div>
-    </Container>
+    <>
+      <DashboardBreadCrumbs />
+      <Container>
+        <div>
+          <Completions completions={completions} />
+        </div>
+      </Container>
+    </>
   )
 }
 

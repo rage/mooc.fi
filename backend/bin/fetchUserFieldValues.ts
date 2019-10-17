@@ -11,13 +11,13 @@ import {
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 
-const CONFIG_NAME = "userAppDatum"
+const CONFIG_NAME = "userFieldValues"
 
 const prisma: Prisma = new Prisma()
 let course: Course
 let old: UserCourseSettings
 
-const fetcUserAppDatum = async () => {
+const fetcUserFieldValues = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
@@ -31,7 +31,7 @@ const fetcUserAppDatum = async () => {
 
   console.log(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp)
+  const data_from_tmc = await tmc.getUserFieldValues(latestTimeStamp)
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")
@@ -50,7 +50,7 @@ const fetcUserAppDatum = async () => {
     let p = data[i]
     if (p.user_id == null) continue
     if (i % 1000 == 0) console.log(i)
-    if (!p || p == "undefined" || p == null) {
+    if (!p || p == null) {
       console.log("not p:", p, "i is", i, "while data.length is", data.length)
       continue
     }
@@ -69,130 +69,29 @@ const fetcUserAppDatum = async () => {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       }
     }
-    const isCourse: Boolean = await prisma.$exists.course({ slug: p.namespace })
-    if (!isCourse) {
-      await prisma.createCourse({
-        slug: p.namespace,
-        name: p.namespace,
-        hidden: true,
-      })
-    }
-    course = await prisma.course({ slug: p.namespace })
-    const isOld: Boolean = await prisma.$exists.userCourseSettings({
-      user: { upstream_id: p.user_id },
-      course: { id: course.id },
-    })
-    if (!isOld) {
-      old = await prisma.createUserCourseSettings({
-        user: { connect: { upstream_id: p.user_id } },
-        course: { connect: { id: course.id } },
-      })
-    } else {
-      const tmp: UserCourseSettings[] = await prisma.userCourseSettingses({
-        where: {
-          user: { upstream_id: p.user_id },
-          course: { id: course.id },
+
+    if (
+      p.field_name === "organizational_id" &&
+      p.value &&
+      p.value.trim() != ""
+    ) {
+      await prisma.updateUser({
+        where: { upstream_id: p.user_id },
+        data: {
+          student_number: p.value.trim(),
         },
       })
-      old = tmp[0]
     }
 
-    switch (p.field_name) {
-      case "language":
-        saveLanguage(p)
-        break
-      case "country":
-        saveCountry(p)
-        break
-      case "research":
-        saveResearch(p)
-        break
-      case "marketing":
-        saveMarketing(p)
-        break
-      case "course_variant": //course_variant and deadline are functionally the same (deadline is used in elements-of-ai)
-      case "deadline": // deadline does not tell when the deadline is but what is the course variant
-        saveCourseVariant(p)
-        break
-      default:
-        saveOther(p)
-    }
-    if (saveCounter % saveInterval == 0)
+    if (saveCounter % saveInterval == 0) {
       saveProgress(prisma, new Date(p.updated_at))
+    }
   }
 
   await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
 
   const stopTime = new Date().getTime()
   console.log("used", stopTime - startTime, "milliseconds")
-}
-
-const saveLanguage = async p => {
-  await prisma.updateUserCourseSettings({
-    where: {
-      id: old.id,
-    },
-    data: {
-      language: p.value,
-    },
-  })
-}
-const saveCountry = async p => {
-  await prisma.updateUserCourseSettings({
-    where: {
-      id: old.id,
-    },
-    data: {
-      country: p.value,
-    },
-  })
-}
-const saveResearch = async p => {
-  const value: boolean = p.value == "t" ? true : false
-  await prisma.updateUserCourseSettings({
-    where: {
-      id: old.id,
-    },
-    data: {
-      research: value,
-    },
-  })
-}
-const saveMarketing = async p => {
-  const value: boolean = p.value == "t" ? true : false
-  await prisma.updateUserCourseSettings({
-    where: {
-      id: old.id,
-    },
-    data: {
-      marketing: value,
-    },
-  })
-}
-const saveCourseVariant = async p => {
-  await prisma.updateUserCourseSettings({
-    where: {
-      id: old.id,
-    },
-    data: {
-      course_variant: p.value,
-    },
-  })
-}
-const saveOther = async p => {
-  const other = old.other || {}
-  if (p.value == "t") p.value = true
-  else if (p.value == "f") p.value = false
-  other[p.field_name] = p.value
-
-  await prisma.updateUserCourseSettings({
-    where: {
-      id: old.id,
-    },
-    data: {
-      other: other,
-    },
-  })
 }
 
 const getUserFromTmcAndSaveToDB = async (
@@ -253,4 +152,4 @@ async function saveProgress(prisma: Prisma, dateToDB: Date) {
   })
 }
 
-fetcUserAppDatum().catch(e => console.log(e))
+fetcUserFieldValues().catch(e => console.log(e))

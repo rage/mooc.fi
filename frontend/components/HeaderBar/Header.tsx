@@ -9,6 +9,7 @@ import MoocLogo from "./MoocLogo"
 import LoginStateContext from "/contexes/LoginStateContext"
 import UserOptionsMenu from "./UserOptionsMenu"
 import styled from "styled-components"
+import LanguageContext from "/contexes/LanguageContext"
 
 interface Props {
   window?: () => Window
@@ -39,7 +40,19 @@ const HiddenMenuContainer = styled.div`
 const MenuContainer = styled.div`
   flex: 1;
 `
+
+export function whichIsActive({ url }: { url: string }) {
+  const urlParts = url.split("/")
+  let active = ""
+  if (urlParts.length >= 3) {
+    active = urlParts[2]
+  }
+  return active
+}
 function Header() {
+  const currentHref = React.useContext(LanguageContext).url
+  const active = whichIsActive({ url: currentHref })
+  console.log(active)
   return (
     <LoginStateContext.Consumer>
       {({ loggedIn, logInOrOut }) => (
@@ -51,7 +64,7 @@ function Header() {
                 <MoocLogo />
                 <MenuContainer>
                   <HiddenMenuContainer>
-                    {loggedIn && <LoggedInUserMenu />}
+                    {loggedIn && <LoggedInUserMenu active={active} />}
                   </HiddenMenuContainer>
                 </MenuContainer>
                 <UserOptionsMenu

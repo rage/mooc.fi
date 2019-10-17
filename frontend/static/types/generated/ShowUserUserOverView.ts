@@ -6,11 +6,17 @@
 // GraphQL query operation: ShowUserUserOverView
 // ====================================================
 
+export interface ShowUserUserOverView_user_completions_course_photo {
+  __typename: "Image"
+  uncompressed: string
+}
+
 export interface ShowUserUserOverView_user_completions_course {
   __typename: "Course"
   id: any
   slug: string
   name: string
+  photo: ShowUserUserOverView_user_completions_course_photo | null
 }
 
 export interface ShowUserUserOverView_user_completions_completions_registered_organization {

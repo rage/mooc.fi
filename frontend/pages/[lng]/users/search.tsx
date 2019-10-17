@@ -24,6 +24,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 interface UserSearchProps {
   namespacesRequired: string[]
@@ -211,37 +212,20 @@ const UserSearch = (props: UserSearchProps) => {
   )
 
   return (
-    <Container>
-      <Typography
-        component="h1"
-        variant="h2"
-        gutterBottom={true}
-        align="center"
-      >
-        User Search
-      </Typography>
-      <div>
-        <StyledForm
-          onSubmit={async (event: any) => {
-            event.preventDefault()
-            loadData({
-              variables: { search: searchText, first: rowsPerPage },
-            })
-            setPage(0)
-          }}
+    <>
+      <DashboardBreadCrumbs />
+      <Container>
+        <Typography
+          component="h1"
+          variant="h2"
+          gutterBottom={true}
+          align="center"
         >
-          <StyledTextField
-            id="standard-search"
-            label="Search by string"
-            type="search"
-            margin="normal"
-            autoComplete="off"
-            onChange={onTextBoxChange}
-          />
-
-          <StyledButton
-            variant="contained"
-            onClick={async (event: any) => {
+          User Search
+        </Typography>
+        <div>
+          <StyledForm
+            onSubmit={async (event: any) => {
               event.preventDefault()
               loadData({
                 variables: { search: searchText, first: rowsPerPage },
@@ -249,23 +233,43 @@ const UserSearch = (props: UserSearchProps) => {
               setPage(0)
             }}
           >
-            Search
-          </StyledButton>
-        </StyledForm>
+            <StyledTextField
+              id="standard-search"
+              label="Search by string"
+              type="search"
+              margin="normal"
+              autoComplete="off"
+              onChange={onTextBoxChange}
+            />
 
-        <GridComponent
-          data={data}
-          loading={loading}
-          loadData={loadData}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-          TablePaginationActions={TablePaginationActions}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          searchText={searchText}
-          setPage={setPage}
-        />
-      </div>
-    </Container>
+            <StyledButton
+              variant="contained"
+              onClick={async (event: any) => {
+                event.preventDefault()
+                loadData({
+                  variables: { search: searchText, first: rowsPerPage },
+                })
+                setPage(0)
+              }}
+            >
+              Search
+            </StyledButton>
+          </StyledForm>
+
+          <GridComponent
+            data={data}
+            loading={loading}
+            loadData={loadData}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+            TablePaginationActions={TablePaginationActions}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            searchText={searchText}
+            setPage={setPage}
+          />
+        </div>
+      </Container>
+    </>
   )
 }
 

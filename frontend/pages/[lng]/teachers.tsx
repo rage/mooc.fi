@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import LanguageContext from "/contexes/LanguageContext"
 import getTeachersTranslator from "/translations/teachers"
+import DashboardBreadcrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;
@@ -49,6 +50,7 @@ const ForTeachers = () => {
   const t = getTeachersTranslator(lng.language)
   return (
     <section>
+      <DashboardBreadcrumbs />
       <ContentBlock>
         <Header variant="h3">{t("siteTitle")}</Header>
         <TextBlock>

@@ -11,6 +11,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"
 import Spinner from "/components/Spinner"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
 /* export const AllEditorCoursesQuery = gql`
@@ -65,6 +66,7 @@ const Courses = (admin: boolean) => {
 
   return (
     <section>
+      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           All Courses
