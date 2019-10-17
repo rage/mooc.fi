@@ -7,6 +7,7 @@ import { RegularContainer } from "/components/Container"
 import { NextPageContext } from "next"
 import { isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 const SignUpPage = () => {
   const [state, setState] = useState({
@@ -30,6 +31,7 @@ const SignUpPage = () => {
 
   return (
     <div>
+      <DashboardBreadCrumbs />
       <RegularContainer>{stepComponent}</RegularContainer>
     </div>
   )

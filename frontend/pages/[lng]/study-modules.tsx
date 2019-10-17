@@ -15,6 +15,7 @@ import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import ModuleGrid from "/components/ModuleGrid"
 import styled from "styled-components"
+import DashboardBreadcrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 /* export const AllEditorModulesQuery = gql`
@@ -54,21 +55,27 @@ const StudyModules = (admin: boolean) => {
 
   if (loading || !data) {
     return (
-      <Container style={{ display: "flex", height: "600px" }}>
-        <Grid item container justify="center" alignItems="center">
-          <CircularProgress color="primary" size={60} />
-        </Grid>
-      </Container>
+      <>
+        <DashboardBreadcrumbs />
+        <Container style={{ display: "flex", height: "600px" }}>
+          <Grid item container justify="center" alignItems="center">
+            <CircularProgress color="primary" size={60} />
+          </Grid>
+        </Container>
+      </>
     )
   }
 
   return (
-    <WideContainer>
-      <Header component="h1" variant="h2" gutterBottom={true} align="center">
-        All Study Modules
-      </Header>
-      <ModuleGrid modules={data.study_modules} />
-    </WideContainer>
+    <>
+      <DashboardBreadcrumbs />
+      <WideContainer>
+        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+          All Study Modules
+        </Header>
+        <ModuleGrid modules={data.study_modules} />
+      </WideContainer>
+    </>
   )
 }
 

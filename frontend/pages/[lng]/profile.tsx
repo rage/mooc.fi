@@ -33,6 +33,9 @@ export const UserOverViewQuery = gql`
           id
           slug
           name
+          photo {
+            uncompressed
+          }
         }
         completions_registered {
           id
@@ -86,7 +89,7 @@ function Profile() {
         email={email}
         student_number={sid}
       />
-      <Container>
+      <Container style={{ maxWidth: 900 }}>
         <StudentDataDisplay completions={completions} />
       </Container>
     </>

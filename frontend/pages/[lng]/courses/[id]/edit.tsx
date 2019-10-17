@@ -16,6 +16,7 @@ import CourseEdit from "/components/Dashboard/Editor/Course"
 import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -130,6 +131,7 @@ const EditCourse = (props: EditCourseProps) => {
 
   return (
     <section>
+      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Edit course
