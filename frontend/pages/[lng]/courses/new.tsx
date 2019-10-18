@@ -10,7 +10,7 @@ import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import styled from "styled-components"
 import CourseEdit from "/components/Dashboard/Editor/Course"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
+import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -41,23 +41,21 @@ const NewCourse = (props: NewCourseProps) => {
     return <AdminError />
   }
 
-  if (loading) {
-    // TODO: spinner
-    return null
-  }
-
   if (error) {
     return <div>{JSON.stringify(error)}</div>
   }
 
   return (
     <section>
-      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Create a new course
         </Header>
-        <CourseEdit modules={data.study_modules} />
+        {loading ? (
+          <FormSkeleton />
+        ) : (
+          <CourseEdit modules={data.study_modules} />
+        )}
       </WideContainer>
     </section>
   )
