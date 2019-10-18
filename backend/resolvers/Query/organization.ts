@@ -1,6 +1,6 @@
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg } from "nexus/dist"
+import { idArg, intArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const organization = (t: PrismaObjectDefinitionBlock<"Query">) => {
@@ -26,10 +26,11 @@ const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
       after: idArg(),
       last: intArg(),
       before: idArg(),
+      orderBy: arg({ type: "OrganizationOrderByInput" }),
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
-      const { first, last, after, before } = args
+      const { first, last, after, before, orderBy } = args
       const prisma: Prisma = ctx.prisma
 
       return prisma.organizations({
@@ -37,6 +38,7 @@ const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
         last: last,
         after: after,
         before: before,
+        orderBy,
       })
     },
   })

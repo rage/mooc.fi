@@ -16,45 +16,6 @@ const highlightsBanner = "/static/images/backgroundPattern.svg"
 import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
 
-/* export const AllModulesQuery = gql`
-  query AllModules($language: String) {
-    study_modules(orderBy: order_ASC, language: $language) {
-      id
-      slug
-      name
-      description
-      image
-      order
-    }
-  }
-` */
-
-/* export const AllCoursesQuery = gql`
-  query AllCourses($language: String) {
-    courses(orderBy: order_ASC, language: $language) {
-      id
-      slug
-      name
-      order
-      photo {
-        id
-        compressed
-        uncompressed
-      }
-      promote
-      status
-      start_point
-      study_module_start_point
-      hidden
-      description
-      link
-      study_modules {
-        id
-      }
-    }
-  }
-` */
-
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)

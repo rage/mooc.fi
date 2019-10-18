@@ -14,27 +14,6 @@ import Spinner from "/components/Spinner"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
-/* export const AllEditorCoursesQuery = gql`
-  query AllEditorCourses {
-    courses(orderBy: order_ASC) {
-      id
-      name
-      slug
-      order
-      status
-      hidden
-      photo {
-        id
-        compressed
-        uncompressed
-      }
-    }
-    currentUser {
-      id
-      administrator
-    }
-  }
-` */
 
 const Header = styled(Typography)`
   margin-top: 1em;
