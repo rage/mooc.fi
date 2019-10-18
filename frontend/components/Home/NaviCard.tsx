@@ -1,13 +1,13 @@
 import React from "react"
 import LangLink from "/components/LangLink"
 import Grid from "@material-ui/core/Grid"
-import ButtonBase from "@material-ui/core/ButtonBase"
+//import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { mime } from "/util/imageUtils"
 import Button from "@material-ui/core/Button"
 
-const NaviItemBase = styled(ButtonBase)`
+const NaviItemBase = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -17,6 +17,10 @@ const NaviItemBase = styled(ButtonBase)`
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden;
   align-items: flex-start;
+  &:hover {
+    box-shadow: 32px 27px 72px -52px rgba(0, 0, 0, 1);
+    cursor: pointer;
+  }
 `
 const BackgroundImage = styled.img`
   position: absolute;
@@ -75,7 +79,7 @@ function NaviCard(props: NaviCardProps) {
     <Grid item {...gridLayout(count)}>
       <LangLink href={item.link} prefetch={false}>
         <StyledLink aria-label={item.linkText}>
-          <NaviItemBase focusRipple>
+          <NaviItemBase>
             <picture>
               <source
                 srcSet={require(`../../static/images/${item.img}?webp`)}
