@@ -14,7 +14,7 @@ import {
   StudyModuleWhereUniqueInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, booleanArg, arg, idArg, intArg } from "nexus/dist"
+import { stringArg, booleanArg, arg, idArg, intArg, floatArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 
@@ -50,6 +50,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }),
       order: intArg(),
       study_module_order: intArg(),
+      points_needed: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -69,6 +70,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         open_university_registration_links,
         order,
         study_module_order,
+        points_needed,
       } = args
 
       const prisma: Prisma = ctx.prisma
@@ -100,6 +102,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           : null,
         order,
         study_module_order,
+        points_needed,
       })
 
       const kafkaProducer = await new KafkaProducer()
@@ -160,6 +163,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }),
       order: intArg(),
       study_module_order: intArg(),
+      points_needed: intArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -183,6 +187,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         open_university_registration_links,
         order,
         study_module_order,
+        points_needed,
       } = args
 
       let photo = args.photo
@@ -290,6 +295,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             : null,
           order,
           study_module_order,
+          points_needed,
         },
       })
     },
