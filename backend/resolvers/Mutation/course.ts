@@ -51,6 +51,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       order: intArg(),
       study_module_order: intArg(),
       points_needed: intArg(),
+      automatic_completions: booleanArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -71,6 +72,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         order,
         study_module_order,
         points_needed,
+        automatic_completions,
       } = args
 
       const prisma: Prisma = ctx.prisma
@@ -103,6 +105,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         order,
         study_module_order,
         points_needed,
+        automatic_completions,
       })
 
       const kafkaProducer = await new KafkaProducer()
@@ -164,6 +167,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       order: intArg(),
       study_module_order: intArg(),
       points_needed: intArg(),
+      automatic_completions: booleanArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -188,6 +192,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         order,
         study_module_order,
         points_needed,
+        automatic_completions,
       } = args
 
       let photo = args.photo
@@ -296,6 +301,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           order,
           study_module_order,
           points_needed,
+          automatic_completions,
         },
       })
     },
