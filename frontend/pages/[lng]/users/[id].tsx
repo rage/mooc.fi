@@ -11,7 +11,6 @@ import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import { CircularProgress } from "@material-ui/core"
 import { SingletonRouter, withRouter } from "next/router"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 interface UserPageProps {
   namespacesRequired: string[]
@@ -50,7 +49,6 @@ const UserPage = (props: UserPageProps) => {
   data.UserCourseSettingses.edges.push(...more)
   return (
     <>
-      <DashboardBreadCrumbs />
       <Container>
         <pre>
           {JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}

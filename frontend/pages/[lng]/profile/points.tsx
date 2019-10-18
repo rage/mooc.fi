@@ -11,7 +11,6 @@ import { Grid } from "@material-ui/core"
 import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as StudentPointsData } from "/static/types/generated/UserCourseSettingses"
 import Container from "/components/Container"
 import Typography from "@material-ui/core/Typography"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 export const UserPointsQuery = gql`
   query UserPoints {
@@ -41,7 +40,6 @@ function Points() {
 
   return (
     <section>
-      <DashboardBreadCrumbs />
       <Container>
         <Typography
           component="h1"

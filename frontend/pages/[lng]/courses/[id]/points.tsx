@@ -7,7 +7,6 @@ import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
 import { useQuery } from "@apollo/react-hooks"
@@ -60,7 +59,6 @@ const Points = (props: CompletionsProps) => {
 
   return (
     <CourseLanguageContext.Provider value={lng}>
-      <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={2} />
 
       <Container>

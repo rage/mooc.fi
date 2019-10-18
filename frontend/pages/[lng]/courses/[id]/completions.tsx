@@ -10,7 +10,6 @@ import LanguageContext from "/contexes/LanguageContext"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
 import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
@@ -69,7 +68,6 @@ const Completions = (props: CompletionsProps) => {
 
   return (
     <CourseLanguageContext.Provider value={lng}>
-      <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={1} />
 
       <WideContainer>
