@@ -25,7 +25,7 @@ const LanguageSwitch = () => {
     <LanguageContext.Consumer>
       {({ language, url, hrefUrl }) => {
         return (
-          <Link as={url} href={hrefUrl}>
+          <Link as={url} href={url === "/" ? "/" : hrefUrl}>
             <SwitchLink href={url}>
               <Language style={{ marginRight: "0.4rem" }} />
               <p style={{ margin: "auto" }} data-testid="language-switch">
