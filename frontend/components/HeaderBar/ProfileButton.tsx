@@ -24,8 +24,8 @@ const StyledButton = styled(Button)<ButtonProps>`
   @media (max-width: 450px) {
     font-size: 16px;
   }
-  color: ${props => (props.active ? "#00B290" : "black")};
-  border-bottom: ${props => (props.active ? "1px solid #00B290" : "")};
+  color: ${props => (props.active ? "#3C8C7A" : "black")};
+  border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
 `
 
 export const UserDetailQuery = gql`
