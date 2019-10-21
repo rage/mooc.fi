@@ -1,6 +1,7 @@
 import { prismaObjectType } from "nexus-prisma"
 import { idArg, stringArg } from "nexus/dist"
 import { Course } from "/generated/prisma-client"
+import { resolve } from "url"
 
 const User = prismaObjectType({
   name: "User",
@@ -19,6 +20,27 @@ const User = prismaObjectType({
           course: course,
           user: parent,
         }
+      },
+    })
+
+    t.field("progresses", {
+      type: "Progress",
+      list: true,
+      nullable: false,
+      resolve: async (parent, args, ctx) => {
+        const user_course_progressess = await ctx.prisma.userCourseProgresses({
+          where: { user: parent },
+        })
+        const progresses = user_course_progressess.map(async p => {
+          const course = await ctx.prisma
+            .userCourseProgress({ id: p.id })
+            .course()
+          return {
+            course: course,
+            user: parent,
+          }
+        })
+        return progresses
       },
     })
 
