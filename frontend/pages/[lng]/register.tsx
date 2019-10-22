@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useContext } from "react"
+import { NextPageContext as NextContext } from "next"
+import { isSignedIn, isAdmin } from "/lib/authentication"
+import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery, useMutation } from "@apollo/react-hooks"
 import {
+  Button,
   IconButton,
   Container,
   FormControl,
@@ -19,9 +23,23 @@ import {
 import CancelIcon from "@material-ui/icons/Cancel"
 import ErrorMessage from "/components/ErrorMessage"
 import { Organizations } from "/static/types/generated/Organizations"
-import { UserOrganizations } from "/static/types/generated/UserOrganizations"
+import {
+  UserOrganizations,
+  UserOrganizations_userOrganizations,
+} from "/static/types/generated/UserOrganizations"
+import { ProfileUserOverView } from "/static/types/generated/ProfileUserOverView"
 import useDebounce from "/util/useDebounce"
 import styled from "styled-components"
+import LanguageContext from "/contexes/LanguageContext"
+import getRegistrationTranslator from "/translations/register"
+
+export const UserOverViewQuery = gql`
+  query OrganizationUserOverView {
+    currentUser {
+      id
+    }
+  }
+`
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -47,6 +65,31 @@ export const UserOrganizationsQuery = gql`
     }
   }
 `
+
+export const AddUserOrganizationMutation = gql`
+  mutation addUserOrganization($userId: ID!, $organizationId: ID!) {
+    addUserOrganization(user_id: $userId, organization_id: $organizationId) {
+      id
+    }
+  }
+`
+
+export const UpdateUserOrganizationMutation = gql`
+  mutation updateUserOrganization($id: ID!, $role: OrganizationRole) {
+    updateUserOrganization(id: $id, role: $role) {
+      id
+    }
+  }
+`
+
+export const DeleteUserOrganizationMutation = gql`
+  mutation deleteUserOrganization($id: ID!) {
+    deleteUserOrganization(id: $id) {
+      id
+    }
+  }
+`
+
 const OutlinedInputLabel = styled(InputLabel)`
   background-color: #ffffff;
   padding: 0 4px 0 4px;
@@ -89,29 +132,55 @@ const OrganizationListItem = styled(ListItem)<any>`
 `
 
 const Register = () => {
+  const { language } = useContext(LanguageContext)
+  const t = getRegistrationTranslator(language)
+
   const [memberships, setMemberships] = useState<Array<string>>([])
+  const [originalMemberships, setOriginalMemberships] = useState<Array<string>>(
+    [],
+  )
   const [organizations, setOrganizations] = useState<Record<string, string>>({})
   const [filter, setFilter] = useState("")
-  const [searchFilter, setSearchFilter] = useDebounce(filter, 1000)
+  const [searchFilter, cancelFilterDebounce] = useDebounce(filter, 1000)
+  const [currentUserId, setCurrentUserId] = useState<string | undefined>(
+    undefined,
+  )
 
   const {
     data: organizationsData,
     error: organizationsError,
     loading: organizationsLoading,
   } = useQuery<Organizations>(OrganizationsQuery)
+  const { data: userData, error: userError, loading: userLoading } = useQuery<
+    ProfileUserOverView
+  >(UserOverViewQuery)
   const {
     data: userOrganizationsData,
     error: userOrganizationsError,
     loading: userOrganizationsLoading,
-  } = useQuery<UserOrganizations>(UserOrganizationsQuery)
+  } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
+    variables: { user_id: currentUserId },
+  })
+  const [addUserOrganization] = useMutation(AddUserOrganizationMutation)
+  // @ts-ignore
+  const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
+  const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
+    refetchQueries: [{ query: UserOrganizationsQuery }],
+  })
 
-  if (organizationsError || userOrganizationsError) {
+  if (organizationsError || userOrganizationsError || userError) {
     return <ErrorMessage />
   }
 
-  if (organizationsLoading || userOrganizationsLoading) {
+  if (organizationsLoading || userOrganizationsLoading || userLoading) {
     return <div>loading</div>
   }
+
+  useEffect(() => {
+    if (userData && userData.currentUser && userData.currentUser.id) {
+      setCurrentUserId(userData.currentUser.id)
+    }
+  }, [userData])
 
   // TODO: do something else
   useEffect(() => {
@@ -122,9 +191,13 @@ const Register = () => {
       return
     }
 
-    setMemberships(
-      userOrganizationsData.userOrganizations.map(uo => uo.organization.id),
+    const mIds = userOrganizationsData.userOrganizations.map(
+      uo => uo.organization.id,
     )
+
+    setMemberships(mIds)
+    setOriginalMemberships([...mIds])
+
     const sortedOrganizations = organizationsData
       ? organizationsData.organizations
           .filter(
@@ -145,12 +218,44 @@ const Register = () => {
       sortedOrganizations.reduce(
         (acc, curr) => ({
           ...acc,
-          [curr.id]: curr!.organization_translations![0].name,
+          [curr.id]: curr!.organization_translations![0]!.name,
         }),
         {},
       ),
     )
   }, [organizations, userOrganizationsData])
+
+  const submit = async () => {
+    const newMembershipIds = memberships.filter(
+      id => !originalMemberships.includes(id),
+    )
+    const removedMembershipIds = originalMemberships.filter(
+      id => !memberships.includes(id),
+    )
+
+    await Promise.all(
+      newMembershipIds.map(id =>
+        addUserOrganization({
+          variables: {
+            userId: currentUserId!,
+            organizationId: id,
+          },
+        }),
+      ),
+    )
+    await Promise.all(
+      removedMembershipIds.map(id => {
+        deleteUserOrganization({
+          variables: {
+            id: userOrganizationsData!.userOrganizations!.find(
+              (uo: UserOrganizations_userOrganizations) =>
+                uo.organization.id === id,
+            )!.id,
+          },
+        })
+      }),
+    )
+  }
 
   const toggleMembership = (id: string) => (
     // @ts-ignore
@@ -189,18 +294,24 @@ const Register = () => {
         ) : (
           <>
             <Grid item xs={12} md={6}>
-              <Typography variant="h3">Your memberships</Typography>
+              <Typography variant="h3">{t("yourMemberships")}</Typography>
               {memberships.length ? (
                 memberships.map(id => (
-                  <Typography variant="body1">{organizations[id]}</Typography>
+                  <Typography variant="body1" key={`membership-${id}`}>
+                    {!originalMemberships.includes(id) ? "* " : null}
+                    {organizations[id]}
+                  </Typography>
                 ))
               ) : (
-                <Typography variant="body1">No memberships</Typography>
+                <Typography variant="body1">{t("noMemberships")}</Typography>
               )}
+              <Button onClick={() => submit()}>Submit</Button>
             </Grid>
             <Grid item xs={12} md={6}>
               <OutlinedFormControl>
-                <OutlinedInputLabel shrink>Organizations</OutlinedInputLabel>
+                <OutlinedInputLabel shrink>
+                  {t("organizations")}
+                </OutlinedInputLabel>
                 <OutlinedFormGroup>
                   <TextField
                     name="search"
@@ -209,11 +320,16 @@ const Register = () => {
                     value={filter}
                     autoComplete="off"
                     onChange={e => setFilter(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && setSearchFilter()}
+                    onKeyDown={e => e.key === "Enter" && cancelFilterDebounce()}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton onClick={() => setFilter("")}>
+                          <IconButton
+                            onClick={() => {
+                              cancelFilterDebounce("")
+                              setFilter("")
+                            }}
+                          >
                             <CancelIcon />
                           </IconButton>
                         </InputAdornment>
@@ -247,6 +363,16 @@ const Register = () => {
       </Grid>
     </Container>
   )
+}
+
+Register.getInitialProps = function(context: NextContext) {
+  const admin = isAdmin(context)
+  if (!isSignedIn(context)) {
+    redirect(context, "/sign-in")
+  }
+  return {
+    admin,
+  }
 }
 
 export default Register

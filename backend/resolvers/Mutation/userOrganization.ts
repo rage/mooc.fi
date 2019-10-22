@@ -31,13 +31,13 @@ const addUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       user_id: idArg({ required: true }),
       organization_id: idArg({ required: true }),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowVisitors: true })
 
       const { user_id, organization_id } = args
       const prisma: Prisma = ctx.prisma
 
-      const exists = prisma.$exists.userOrganization({
+      const exists = await prisma.$exists.userOrganization({
         user: { id: user_id },
         organization: { id: organization_id },
       })
@@ -60,21 +60,29 @@ const updateUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     type: "UserOrganization",
     args: {
       id: idArg(),
+      /*       userId: idArg(),
+      organizationId: idArg(), */
       role: arg({ type: "OrganizationRole" }),
-      organization_ids: idArg({ list: true }),
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx, { allowVisitors: true })
 
       const { id, role } = args
 
+      /*       if (!id && !(userId && organizationId)) {
+        throw new Error("needs userid/organizationid when id is not set")
+      }
+      if (!userId && !organizationId && !id) {
+        throw new Error("needs id when userid/organizationid is not set")
+      }
+ */
       checkUser(ctx, id)
 
       const prisma: Prisma = ctx.prisma
 
       return prisma.updateUserOrganization({
         data: {
-          role,
+          role: role ? role : "Student",
         },
         where: {
           id,
@@ -88,7 +96,7 @@ const deleteUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteUserOrganization", {
     type: "UserOrganization",
     args: {
-      id: idArg(),
+      id: idArg({ required: false }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowVisitors: true })
