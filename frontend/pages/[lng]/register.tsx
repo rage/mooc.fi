@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import {
+  IconButton,
   Container,
   FormControl,
+  InputAdornment,
   InputLabel,
   FormGroup,
   FormControlLabel,
@@ -12,10 +14,13 @@ import {
   List,
   ListItem,
   Typography,
+  TextField,
 } from "@material-ui/core"
+import CancelIcon from "@material-ui/icons/Cancel"
 import ErrorMessage from "/components/ErrorMessage"
 import { Organizations } from "/static/types/generated/Organizations"
 import { UserOrganizations } from "/static/types/generated/UserOrganizations"
+import useDebounce from "/util/useDebounce"
 import styled from "styled-components"
 
 export const OrganizationsQuery = gql`
@@ -75,7 +80,7 @@ const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
 
 const OrganizationList = styled(List)`
   padding: 0px;
-  max-height: 800px;
+  max-height: 600px;
   overflow: auto;
 `
 
@@ -86,6 +91,8 @@ const OrganizationListItem = styled(ListItem)<any>`
 const Register = () => {
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<Record<string, string>>({})
+  const [filter, setFilter] = useState("")
+  const [searchFilter, setSearchFilter] = useDebounce(filter, 1000)
 
   const {
     data: organizationsData,
@@ -156,6 +163,23 @@ const Register = () => {
     }
   }
 
+  const filteredOrganizations = useCallback(() => {
+    if (searchFilter === "") {
+      return organizations
+    }
+
+    return Object.entries(organizations).reduce((acc, [key, value]) => {
+      if (!value.toLowerCase().includes(searchFilter.toLowerCase())) {
+        return acc
+      }
+
+      return {
+        ...acc,
+        [key]: value,
+      }
+    }, {})
+  }, [searchFilter, organizations])
+
   return (
     <Container maxWidth="md">
       <div style={{ marginTop: "2em" }}>&nbsp;</div>
@@ -178,8 +202,28 @@ const Register = () => {
               <OutlinedFormControl>
                 <OutlinedInputLabel shrink>Organizations</OutlinedInputLabel>
                 <OutlinedFormGroup>
+                  <TextField
+                    name="search"
+                    type="text"
+                    variant="outlined"
+                    value={filter}
+                    autoComplete="off"
+                    onChange={e => setFilter(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && setSearchFilter()}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => setFilter("")}>
+                            <CancelIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
                   <OrganizationList>
-                    {Object.keys(organizations).map(id => (
+                    {(Object.entries(filteredOrganizations()) as Array<
+                      [string, string]
+                    >).map(([id, name]) => (
                       <OrganizationListItem key={id}>
                         <FormControlLabel
                           control={
@@ -189,7 +233,7 @@ const Register = () => {
                               value={id}
                             />
                           }
-                          label={organizations[id]}
+                          label={name}
                           key={id}
                         />
                       </OrganizationListItem>
