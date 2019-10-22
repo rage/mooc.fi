@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export default <T>(value: T, delay: number): [T, () => void] => {
+export default <T>(value: T, delay: number): [T, (cancelValue?: T) => void] => {
   const [debouncedValue, setDebouncedValue] = useState(value)
 
   let handler: number
@@ -11,13 +11,14 @@ export default <T>(value: T, delay: number): [T, () => void] => {
     return () => clearTimeout(handler)
   }, [value])
 
-  const setImmediately = () => {
+  const cancelTimeout = (cancelValue?: T) => {
     if (handler) {
+      console.log("had a handler")
       clearTimeout(handler)
     }
 
-    setDebouncedValue(value)
+    setDebouncedValue(cancelValue !== undefined ? cancelValue : value)
   }
 
-  return [debouncedValue, setImmediately]
+  return [debouncedValue, cancelTimeout]
 }

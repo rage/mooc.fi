@@ -52,7 +52,7 @@ export function whichIsActive({ url }: { url: string }) {
 function Header() {
   const currentHref = React.useContext(LanguageContext).url
   const active = whichIsActive({ url: currentHref })
-  console.log(active)
+
   return (
     <LoginStateContext.Consumer>
       {({ loggedIn, logInOrOut }) => (
