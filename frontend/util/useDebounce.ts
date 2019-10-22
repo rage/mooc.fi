@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react"
 
-export default <T>(value: T, delay: number): T => {
+export default <T>(value: T, delay: number): [T, () => void] => {
   const [debouncedValue, setDebouncedValue] = useState(value)
 
+  let handler: number
+
   useEffect(() => {
-    const handler = setTimeout(() => setDebouncedValue(value), delay)
+    handler = setTimeout(() => setDebouncedValue(value), delay)
 
     return () => clearTimeout(handler)
   }, [value])
 
-  return debouncedValue
+  const setImmediately = () => {
+    if (handler) {
+      clearTimeout(handler)
+    }
+
+    setDebouncedValue(value)
+  }
+
+  return [debouncedValue, setImmediately]
 }
