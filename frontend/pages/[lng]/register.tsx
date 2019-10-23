@@ -27,19 +27,11 @@ import {
   UserOrganizations,
   UserOrganizations_userOrganizations,
 } from "/static/types/generated/UserOrganizations"
-import { ProfileUserOverView } from "/static/types/generated/ProfileUserOverView"
 import useDebounce from "/util/useDebounce"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
+import UserDetailContext from "/contexes/UserDetailContext"
 import getRegistrationTranslator from "/translations/register"
-
-export const UserOverViewQuery = gql`
-  query OrganizationUserOverView {
-    currentUser {
-      id
-    }
-  }
-`
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -56,8 +48,8 @@ export const OrganizationsQuery = gql`
 `
 
 export const UserOrganizationsQuery = gql`
-  query UserOrganizations($userId: ID) {
-    userOrganizations(user_id: $userId) {
+  query UserOrganizations($user_id: ID) {
+    userOrganizations(user_id: $user_id) {
       id
       organization {
         id
@@ -67,8 +59,8 @@ export const UserOrganizationsQuery = gql`
 `
 
 export const AddUserOrganizationMutation = gql`
-  mutation addUserOrganization($userId: ID!, $organizationId: ID!) {
-    addUserOrganization(user_id: $userId, organization_id: $organizationId) {
+  mutation addUserOrganization($user_id: ID!, $organization_id: ID!) {
+    addUserOrganization(user_id: $user_id, organization_id: $organization_id) {
       id
     }
   }
@@ -134,6 +126,7 @@ const OrganizationListItem = styled(ListItem)<any>`
 const Register = () => {
   const { language } = useContext(LanguageContext)
   const t = getRegistrationTranslator(language)
+  const { currentUser } = useContext(UserDetailContext)
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [originalMemberships, setOriginalMemberships] = useState<Array<string>>(
@@ -142,45 +135,38 @@ const Register = () => {
   const [organizations, setOrganizations] = useState<Record<string, string>>({})
   const [filter, setFilter] = useState("")
   const [searchFilter, cancelFilterDebounce] = useDebounce(filter, 1000)
-  const [currentUserId, setCurrentUserId] = useState<string | undefined>(
-    undefined,
-  )
 
   const {
     data: organizationsData,
     error: organizationsError,
     loading: organizationsLoading,
   } = useQuery<Organizations>(OrganizationsQuery)
-  const { data: userData, error: userError, loading: userLoading } = useQuery<
-    ProfileUserOverView
-  >(UserOverViewQuery)
   const {
     data: userOrganizationsData,
     error: userOrganizationsError,
     loading: userOrganizationsLoading,
   } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
-    variables: { user_id: currentUserId },
+    variables: { user_id: currentUser!.id },
   })
   const [addUserOrganization] = useMutation(AddUserOrganizationMutation)
   // @ts-ignore
   const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
   const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
-    refetchQueries: [{ query: UserOrganizationsQuery }],
+    refetchQueries: [
+      {
+        query: UserOrganizationsQuery,
+        variables: { user_id: currentUser!.id },
+      },
+    ],
   })
 
-  if (organizationsError || userOrganizationsError || userError) {
+  if (organizationsError || userOrganizationsError) {
     return <ErrorMessage />
   }
 
-  if (organizationsLoading || userOrganizationsLoading || userLoading) {
+  if (organizationsLoading || userOrganizationsLoading) {
     return <div>loading</div>
   }
-
-  useEffect(() => {
-    if (userData && userData.currentUser && userData.currentUser.id) {
-      setCurrentUserId(userData.currentUser.id)
-    }
-  }, [userData])
 
   // TODO: do something else
   useEffect(() => {
@@ -237,8 +223,8 @@ const Register = () => {
       newMembershipIds.map(id =>
         addUserOrganization({
           variables: {
-            userId: currentUserId!,
-            organizationId: id,
+            user_id: currentUser!.id,
+            organization_id: id,
           },
         }),
       ),

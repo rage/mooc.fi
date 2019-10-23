@@ -37,13 +37,13 @@ interface UserMenuprops {
   active?: string
 }
 const UserMenu = (props: UserMenuprops) => {
-  const isAdmin = useContext(UserDetailContext)
+  const { admin } = useContext(UserDetailContext)
   const { language } = useContext(LanguageContext)
   const { active } = props
 
   return (
     <>
-      {isAdmin && (
+      {admin && (
         <>
           <LangLink href="/[lng]/courses" as={`/${language}/courses`}>
             <StyledButton
