@@ -40,15 +40,25 @@ export const generateUserCourseProgress = async (
   )
   const userCourseSettings = userCourseSettingses[0] || null
   if (course.automatic_completions && total_n_points >= course.points_needed) {
-    await prisma.createCompletion({
-      course: { connect: { id: course.id } },
-      email: user.email,
-      user: { connect: { id: user.id } },
-      user_upstream_id: user.upstream_id,
-      student_number: user.student_number,
-      completion_language:
-        userCourseSettings != null ? userCourseSettings.language : "unknown",
+    const completions = await prisma.completions({
+      where: {
+        completion_language:
+          userCourseSettings != null ? userCourseSettings.language : "unknown",
+        user: user,
+        course: course,
+      },
     })
+    if (completions.length < 1) {
+      await prisma.createCompletion({
+        course: { connect: { id: course.id } },
+        email: user.email,
+        user: { connect: { id: user.id } },
+        user_upstream_id: user.upstream_id,
+        student_number: user.student_number,
+        completion_language:
+          userCourseSettings != null ? userCourseSettings.language : "unknown",
+      })
+    }
   }
   await prisma.updateUserCourseProgress({
     where: { id: userCourseProgress.id },
