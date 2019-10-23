@@ -18,31 +18,29 @@ interface BuildHrefProps {
   components: string[]
   lng: string
 }
-function buildHref(props: BuildHrefProps) {
-  const { components, lng } = props
-  let BreadCrumbLinks: JSX.Element[] = []
-  let i
 
-  for (i = 0; i < components.length; i++) {
-    if (i === 0) {
-      BreadCrumbLinks.push(
-        <Link href={`/${lng}/${components[i]}`} key={components[i]}>
-          {components[i]}
-        </Link>,
-      )
-    } else {
-      let componentsSoFar = components.slice(0, i + 1)
-      let href = componentsSoFar.join("/")
-      BreadCrumbLinks.push(
-        <Link href={`/${lng}/${href}`} key={components[i]}>
-          {components[i]}
-        </Link>,
+function buildHref(props: BuildHrefProps): JSX.Element[] {
+  const { components, lng } = props
+
+  return components.map((component, idx) => {
+    if (idx === 0) {
+      return (
+        <Link href={`/${lng}/${component}`} key={component}>
+          {component}
+        </Link>
       )
     }
-  }
 
-  return BreadCrumbLinks
+    const href = components.slice(0, idx + 1).join("/")
+
+    return (
+      <Link href={`/${lng}/${href}`} key={component}>
+        {component}
+      </Link>
+    )
+  })
 }
+
 interface Props {
   router: SingletonRouter
 }
@@ -62,16 +60,24 @@ const DashboardBreadCrumbs = (props: Props) => {
   if (urlWithQueryRemoved.startsWith("/en")) {
     homeLink = "/en/"
   }
-  const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
+  const urlRouteComponents = urlWithQueryRemoved
+    .split("/")
+    .slice(2)
+    .filter(u => u)
+  const breadCrumbs = buildHref({
+    components: urlRouteComponents,
+    lng: currentPageLanguage.language,
+  })
+
+  if (!breadCrumbs.length) {
+    return null
+  }
 
   return (
     <BreadCrumbsBase>
       <StyledBreadCrumbs separator=">" aria-label="Breadcrumb">
         <Link href={`${homeLink}`}>Home</Link>
-        {buildHref({
-          components: urlRouteComponents,
-          lng: currentPageLanguage.language,
-        })}
+        {breadCrumbs}
       </StyledBreadCrumbs>
     </BreadCrumbsBase>
   )

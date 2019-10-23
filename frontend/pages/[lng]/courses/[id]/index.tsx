@@ -1,6 +1,5 @@
 import React from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import AdminError from "/components/Dashboard/AdminError"
@@ -54,7 +53,6 @@ const Course = (props: CourseProps) => {
 
   return (
     <section>
-      <DashboardBreadCrumbs />
       <DashboardTabBar slug={slug} selectedValue={0} />
 
       <WideContainer>

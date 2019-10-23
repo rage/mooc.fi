@@ -14,8 +14,7 @@ import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import LangLink from "/components/LangLink"
 import LanguageContext from "/contexes/LanguageContext"
-import Spinner from "/components/Spinner"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
+import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -72,10 +71,6 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
     return <AdminError />
   }
 
-  if (loading) {
-    return <Spinner />
-  }
-
   if (error) {
     return <div>{JSON.stringify(error)}</div>
   }
@@ -88,12 +83,13 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   return (
     <section>
-      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Edit study module
         </Header>
-        {data && data.study_module ? (
+        {loading ? (
+          <FormSkeleton />
+        ) : data && data.study_module ? (
           <StudyModuleEdit module={data.study_module} />
         ) : (
           <ErrorContainer elevation={2}>
