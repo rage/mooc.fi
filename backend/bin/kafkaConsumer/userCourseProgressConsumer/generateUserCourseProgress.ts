@@ -39,7 +39,6 @@ export const generateUserCourseProgress = async (
     },
   )
   const userCourseSettings = userCourseSettingses[0] || null
-  console.log(total_n_points)
   if (course.automatic_completions && total_n_points >= course.points_needed) {
     await prisma.createCompletion({
       course: { connect: { id: course.id } },
