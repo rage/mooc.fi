@@ -47,6 +47,8 @@ type Course @db(name: "course") {
   study_module_order: Int
   open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
   exercises: [Exercise!]! @relation(name:"ExerciseToCourse")
+  automatic_completions: Boolean @default(value: false)
+  points_needed: Int
   
 }
 
@@ -159,6 +161,8 @@ type UserCourseProgress @db(name: "user_course_progress") {
   "Json containing all progress data for User in a course"
   progress: Json!
   user_course_service_progresses: [UserCourseServiceProgress!]! @relation(name:"UserCourseServiceProgressToUserCourseProgress")
+  max_points: Float
+  n_points: Float
 }
 
 
