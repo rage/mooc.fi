@@ -24,7 +24,6 @@ import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 interface UserSearchProps {
   namespacesRequired: string[]
@@ -213,7 +212,6 @@ const UserSearch = (props: UserSearchProps) => {
 
   return (
     <>
-      <DashboardBreadCrumbs />
       <Container>
         <Typography
           component="h1"

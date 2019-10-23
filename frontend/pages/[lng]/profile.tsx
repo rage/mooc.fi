@@ -8,7 +8,6 @@ import {
   ProfileUserOverView_currentUser_completions as CompletionsData,
 } from "/static/types/generated/ProfileUserOverView"
 import { isSignedIn } from "/lib/authentication"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"
 import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
@@ -82,7 +81,6 @@ function Profile() {
   console.log(data)
   return (
     <>
-      <DashboardBreadCrumbs />
       <ProfilePageHeader
         first_name={first_name}
         last_name={last_name}

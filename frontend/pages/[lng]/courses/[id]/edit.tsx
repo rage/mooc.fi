@@ -9,14 +9,14 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
-import Spinner from "/components/Spinner"
+// import Spinner from "/components/Spinner"
 import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
+import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -111,17 +111,17 @@ const EditCourse = (props: EditCourseProps) => {
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
-  if (courseLoading || studyModulesLoading) {
+  /*   if (courseLoading || studyModulesLoading) {
     return <Spinner />
-  }
+  } */
 
   if (courseError || studyModulesError) {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>
   }
 
-  if (!courseData) {
+  /*   if (!courseData) {
     return <div>Hmm, no course data</div>
-  }
+  } */
 
   const listLink = `${language ? "/" + language : ""}/courses`
 
@@ -131,14 +131,15 @@ const EditCourse = (props: EditCourseProps) => {
 
   return (
     <section>
-      <DashboardBreadCrumbs />
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           Edit course
         </Header>
-        {courseData.course ? (
+        {courseLoading || studyModulesLoading ? (
+          <FormSkeleton />
+        ) : courseData!.course ? (
           <CourseEdit
-            course={courseData.course}
+            course={courseData!.course}
             modules={studyModulesData ? studyModulesData.study_modules : []}
           />
         ) : (
@@ -178,5 +179,7 @@ EditCourse.getInitialProps = function(context: NextContext) {
     slug: context.query ? context.query.id : "",
   }
 }
+
+EditCourse.displayName = "EditCourse"
 
 export default withRouter(EditCourse)
