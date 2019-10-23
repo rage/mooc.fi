@@ -1,12 +1,13 @@
 import React from "react"
 import { Grid, Typography } from "@material-ui/core"
-import { UserCourseSettingses_UserCourseSettingses_edges_node_user_user_course_progresses as StudentPointsData } from "/static/types/generated/UserCourseSettingses"
-import { pointsDataByGroup, serviceData } from "/static/types/PointsByService"
+import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
+import { pointsByGroup } from "/static/types/PointsByService"
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
 import _ from "lodash"
 import { gql } from "apollo-boost"
+import PointsDataFormatter from "/components/User/Points/PointsDataFormatter"
 
 const UserFragment = gql`
   fragment UserPointsFragment on User {
@@ -15,23 +16,27 @@ const UserFragment = gql`
     last_name
     email
     student_number
-    user_course_progresses {
-      id
+    progresses {
       course {
-        id
         name
+        id
       }
-      progress
-      user_course_service_progresses {
-        course {
-          id
-          name
-        }
-        service {
-          id
-          name
-        }
+      user_course_progress {
         progress
+        user {
+          first_name
+          last_name
+          username
+          email
+          real_student_number
+        }
+      }
+      user_course_service_progresses {
+        progress
+        service {
+          name
+          id
+        }
       }
     }
   }
@@ -43,91 +48,35 @@ const Root = styled(Grid)`
   padding: 1rem;
 `
 
-interface FormatProps {
-  pointsAll: StudentPointsData
-}
-//@ts-ignore
-function FormatStudentProgressServiceData(props: FormatProps) {
-  const { pointsAll } = props
-  let formattedPointsData: pointsDataByGroup[]
+/*
 
-  //create a list of groups userCourseProgress has data for
-  const groups = pointsAll.progress.map((p: any) => p.group)
-
-  //for all groups found
-  formattedPointsData = groups.map((g: string) => {
-    //find points for that group from the progress object
-    const summaryPoints = pointsAll.progress.filter((p: any) => p.group === g)
-    //find all services userCourseProgress has data from
-    const serviceData = pointsAll.user_course_service_progresses || []
-    //if services found
-    let ServiceDataByWeek: serviceData[] = []
-    if (serviceData.length > 0) {
-      //create a list containing a service data object for each service
-      ServiceDataByWeek = serviceData.map(s => {
-        //find points data from that service for the group
-        const dataForOneServiceForGroup = s.progress.filter(
-          (p: any) => p.group === g,
-        )
-        //create a new service data object
-        const newSD = {
-          service: s.service.name,
-          points: {
-            group: g,
-            n_points: dataForOneServiceForGroup[0].n_points,
-            max_points: dataForOneServiceForGroup[0].max_points,
-            progress: dataForOneServiceForGroup[0].progress,
-          },
-        }
-        return newSD
-      })
-    }
-    //create a PointsByService data object from the points and the service data list
-    const newFormattedPointsDatum = {
-      group: g,
-      summary_max_points: summaryPoints[0].max_points,
-      summary_n_points: summaryPoints[0].n_points,
-      progress: summaryPoints[0].progress,
-      services: ServiceDataByWeek,
-    }
-    return newFormattedPointsDatum
-  })
-
-  return formattedPointsData
-}
-const Name = styled(Typography)`
-  font-weight: bold;
-`
 
 const UserInformation = styled(Typography)`
   color: gray;
 `
-interface Props {
-  studentPoints?: StudentPointsData | null
-  name?: string
-  SID?: string | null | undefined
-  email?: string
-  cutterValue: number
-}
 
-function PointsListItemCard(props: Props) {
-  const { studentPoints, name, SID, email, cutterValue } = props
+*/
+
+const CourseName = styled(Typography)`
+  font-weight: bold;
+`
+
+function PointsListItemCard({ pointsAll }: { pointsAll: ProgressData }) {
   const [showDetails, setShowDetails] = React.useState(false)
+  const formattedPointsData: pointsByGroup[] = PointsDataFormatter({
+    pointsData: pointsAll,
+  })
 
   return (
     <Root item sm={12} lg={12}>
-      <Name>{name}</Name>
-      <UserInformation>{email}</UserInformation>
-      <UserInformation>{SID}</UserInformation>
-      {studentPoints && (
-        <PointsItemTable
-          studentPoints={FormatStudentProgressServiceData({
-            pointsAll: studentPoints,
-          })}
-          showDetailedBreakdown={showDetails}
-          cutterValue={cutterValue}
-        />
-      )}
+      <CourseName component="h2" variant="body1">
+        {pointsAll.course.name}
+      </CourseName>
+      <PointsItemTable
+        studentPoints={formattedPointsData}
+        showDetailedBreakdown={showDetails}
+        cutterValue={50}
+      />
       <Button
         variant="text"
         onClick={() => setShowDetails(!showDetails)}
@@ -144,3 +93,18 @@ PointsListItemCard.fragments = {
 }
 
 export default PointsListItemCard
+
+/*
+      <Name>{name}</Name>
+      <UserInformation>{email}</UserInformation>
+      <UserInformation>{SID}</UserInformation>
+      {studentPoints && (
+        <PointsItemTable
+          studentPoints={FormatStudentProgressServiceData({
+            pointsAll: studentPoints,
+          })}
+          showDetailedBreakdown={showDetails}
+          cutterValue={cutterValue}
+        />
+      )}
+      */
