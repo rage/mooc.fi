@@ -18,8 +18,20 @@ import theme from "../src/theme"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
+import { gql } from "apollo-boost"
 
 fontAwesomeConfig.autoAddCss = false
+
+export const UserDetailQuery = gql`
+  query UserOverView {
+    currentUser {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+`
 
 class MyApp extends App {
   constructor(props) {
@@ -32,6 +44,7 @@ class MyApp extends App {
       logInOrOut: this.toggleLogin,
     }
   }
+
   componentDidMount() {
     initGA()
     logPageView()
@@ -52,7 +65,9 @@ class MyApp extends App {
       lng,
       url,
       hrefUrl,
+      currentUser,
     } = this.props
+
     return (
       <Container>
         <Head>
@@ -63,7 +78,7 @@ class MyApp extends App {
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
-                <UserDetailContext.Provider value={admin}>
+                <UserDetailContext.Provider value={{ admin, currentUser }}>
                   <LanguageContext.Provider
                     value={{ language: lng, url, hrefUrl }}
                   >

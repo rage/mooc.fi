@@ -22,5 +22,5 @@ export interface UserOrganizations {
 }
 
 export interface UserOrganizationsVariables {
-  userId?: string | null
+  user_id?: string | null
 }

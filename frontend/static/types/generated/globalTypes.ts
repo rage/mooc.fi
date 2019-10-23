@@ -12,6 +12,12 @@ export enum CourseStatus {
   Upcoming = "Upcoming",
 }
 
+export enum OrganizationRole {
+  OrganizationAdmin = "OrganizationAdmin",
+  Student = "Student",
+  Teacher = "Teacher",
+}
+
 export interface CourseTranslationCreateWithoutCourseInput {
   created_at?: any | null
   description: string

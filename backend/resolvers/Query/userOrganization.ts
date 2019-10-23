@@ -13,6 +13,10 @@ const userOrganizations = async (t: PrismaObjectDefinitionBlock<"Query">) => {
       const { user_id, organization_id } = args
       const prisma: Prisma = ctx.prisma
 
+      if (!user_id && !organization_id) {
+        throw new Error("must provide at least one of user/organization id")
+      }
+
       return prisma.userOrganizations({
         where: {
           user: {
