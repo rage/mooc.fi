@@ -3,7 +3,6 @@ import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
-// import { gql } from "apollo-boost"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
 import { useQuery } from "@apollo/react-hooks"
 import CourseGrid from "/components/CourseGrid"
@@ -14,38 +13,12 @@ import Spinner from "/components/Spinner"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
-/* export const AllEditorCoursesQuery = gql`
-  query AllEditorCourses {
-    courses(orderBy: order_ASC) {
-      id
-      name
-      slug
-      order
-      status
-      hidden
-      photo {
-        id
-        compressed
-        uncompressed
-      }
-    }
-    currentUser {
-      id
-      administrator
-    }
-  }
-` */
 
 const Header = styled(Typography)`
   margin-top: 1em;
 `
 
 const Courses = (admin: boolean) => {
-  // use mock data
-  /*   const data = { courses: courseData.allcourses.slice(0,3) }
-  const error = false
-  const loading = false */
-
   const { loading, error, data } = useQuery<AllEditorCourses>(
     AllEditorCoursesQuery,
   )
