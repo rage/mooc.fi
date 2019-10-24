@@ -6,7 +6,7 @@ metadata:
   name: prisma
   namespace: moocfi
 spec:
-  replicas: 2
+  replicas: 1
   strategy: {}
   template:
     metadata:
