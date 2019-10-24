@@ -14,7 +14,7 @@ import {
 } from "/graphql/queries/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
+import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"

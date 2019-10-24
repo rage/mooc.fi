@@ -17,6 +17,7 @@ export interface Organizations_organizations {
   __typename: "Organization"
   id: any
   slug: string
+  hidden: boolean | null
   organization_translations:
     | Organizations_organizations_organization_translations[]
     | null

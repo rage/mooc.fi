@@ -3,8 +3,8 @@ import { prismaObjectType } from "nexus-prisma"
 const Organization = prismaObjectType({
   name: "Organization",
   definition(t) {
-    t.prismaFields([
-      "id",
+    t.prismaFields({ filter: ["secret_key"] })
+    /*       ["id",
       "created_at",
       "updated_at",
       "slug",
@@ -28,7 +28,7 @@ const Organization = prismaObjectType({
       "organization_translations",
       "user_memberships",
       "course_participations",
-    ])
+    ]) */
   },
 })
 export default Organization

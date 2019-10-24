@@ -50,6 +50,8 @@ type Course @db(name: "course") {
   exercises: [Exercise!]! @relation(name:"ExerciseToCourse")
   owner_organization: Organization
   participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")     
+  automatic_completions: Boolean @default(value: false)
+  points_needed: Int
 }
 
 type CourseAlias  @db(name: "course_alias"){
@@ -160,6 +162,8 @@ type UserCourseProgress @db(name: "user_course_progress") {
   "Json containing all progress data for User in a course"
   progress: Json!
   user_course_service_progresses: [UserCourseServiceProgress!]! @relation(name:"UserCourseServiceProgressToUserCourseProgress")
+  max_points: Float
+  n_points: Float
 }
 
 

@@ -1,8 +1,8 @@
 import React, { useState } from "react"
-import XLSX from "xlsx"
 import gql from "graphql-tag"
 import { ApolloConsumer } from "@apollo/react-hooks"
 import { Button } from "@material-ui/core"
+import XLSX from "xlsx"
 import styled from "styled-components"
 import {
   ExportUserCourseProgesses,
@@ -28,7 +28,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
           <Button
             disabled={!(infotext == "" || infotext == "ready")}
             onClick={async () => {
-              setInfotext("Dowloading data")
+              setInfotext("Downloading data")
               const { data } = await client.query<ExportUserCourseProgesses>({
                 query: GET_DATA,
                 variables: { course_slug: slug },
