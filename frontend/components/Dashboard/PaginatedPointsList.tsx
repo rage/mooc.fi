@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "../ErrorBoundary"
 import { useLazyQuery } from "@apollo/react-hooks"
-import PointsList from "./PointsList"
+
+import PointsList from "./DashboardPointsList"
+
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
+
 import { TextField, Grid, Slider } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
+
 import { range } from "lodash"
 import styled from "styled-components"
 import {
@@ -14,10 +18,14 @@ import {
   UserCourseSettingses_UserCourseSettingses_edges,
   UserCourseSettingses_UserCourseSettingses_pageInfo,
 } from "/static/types/generated/UserCourseSettingses"
-import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 
 export const StudentProgresses = gql`
-  query UserCourseSettingses($course_id: ID, $cursor: ID, $search: String) {
+  query UserCourseSettingses(
+    $course_id: ID
+    $cursor: ID
+    $search: String
+    $course_string: String
+  ) {
     UserCourseSettingses(
       course_id: $course_id
       first: 15
@@ -32,14 +40,41 @@ export const StudentProgresses = gql`
         node {
           id
           user {
-            ...UserPointsFragment
+            id
+            first_name
+            last_name
+            email
+            student_number
+            real_student_number
+            progress(course_id: $course_string) {
+              course {
+                name
+                id
+              }
+              user_course_progress {
+                progress
+                user {
+                  first_name
+                  last_name
+                  username
+                  email
+                  real_student_number
+                }
+              }
+              user_course_service_progresses {
+                progress
+                service {
+                  name
+                  id
+                }
+              }
+            }
           }
         }
       }
       count(search: $search, course_id: $course_id)
     }
   }
-  ${PointsListItemCard.fragments.user}
 `
 
 const LoadingPointCardSkeleton = styled(Skeleton)`
@@ -56,7 +91,9 @@ interface Props {
 
 function PaginatedPointsList(props: Props) {
   const { courseID } = props
+  //@ts-ignore
   const [searchString, setSearchString] = useState("")
+  //@ts-ignore
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
 
@@ -74,6 +111,7 @@ function PaginatedPointsList(props: Props) {
           course_id: courseID,
           cursor: null,
           search,
+          course_string: courseID,
         },
       }),
     [search],
@@ -105,6 +143,7 @@ function PaginatedPointsList(props: Props) {
 
   // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
+  console.log(data)
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>
@@ -165,6 +204,7 @@ function PaginatedPointsList(props: Props) {
                   course_id: courseID,
                   cursor: UserCourseSettingses.pageInfo.endCursor,
                   search: search !== "" ? search : undefined,
+                  course_string: courseID,
                 },
 
                 updateQuery: (previousResult, { fetchMoreResult }) => {

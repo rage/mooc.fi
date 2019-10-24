@@ -90,10 +90,6 @@ const EditCourse = (props: EditCourseProps) => {
 
   let redirectTimeout: number | null = null
 
-  // use mock data
-  /*   const data = { course: Courses.allcourses.find(c => c.slug === slug) }
-  const loading = false */
-
   if (!admin) {
     return <AdminError />
   }

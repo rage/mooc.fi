@@ -15,12 +15,14 @@ interface BackgroundProps {
 const Background = styled(ButtonBase)<BackgroundProps>`
   background-color: white;
   position: relative;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
   display: flex;
   flex-direction: column;
   @media (max-width: 960px) {
     flex-direction: row;
+  }
+  &:hover {
+    box-shadow: 18px 7px 48px -12px rgba(0, 0, 0, 1);
   }
 `
 

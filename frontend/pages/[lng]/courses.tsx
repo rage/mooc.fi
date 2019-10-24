@@ -3,7 +3,6 @@ import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
-// import { gql } from "apollo-boost"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
 import { useQuery } from "@apollo/react-hooks"
 import CourseGrid from "/components/CourseGrid"
@@ -19,11 +18,6 @@ const Header = styled(Typography)`
 `
 
 const Courses = (admin: boolean) => {
-  // use mock data
-  /*   const data = { courses: courseData.allcourses.slice(0,3) }
-  const error = false
-  const loading = false */
-
   const { loading, error, data } = useQuery<AllEditorCourses>(
     AllEditorCoursesQuery,
   )
