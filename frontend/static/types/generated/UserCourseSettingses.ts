@@ -54,6 +54,12 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progr
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user {
   __typename: "User"
+  id: any
+  first_name: string | null
+  last_name: string | null
+  email: string
+  student_number: string | null
+  real_student_number: string | null
   progress: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress
 }
 

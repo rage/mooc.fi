@@ -4,6 +4,7 @@ import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import Footer from "/components/Footer"
 import SkipLink from "/components/SkipLink"
 import styled from "styled-components"
+import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 const FooterDownPusherWrapper = styled.div`
   display: flex;
@@ -22,6 +23,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {/*add top margin to main to push the content from under the header*/}
 
           <main id="main" style={{ marginTop: 75 }}>
+            <DashboardBreadCrumbs />
             {children}
           </main>
         </div>

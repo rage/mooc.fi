@@ -70,8 +70,11 @@ const CourseAndModuleList = () => {
     )
   }
 
-  if (!coursesData || !modulesData) {
-    return <div>Error: no data?</div>
+  if (!coursesData) {
+    return <div>Error: no courses data?</div>
+  }
+  if (!modulesData) {
+    return <div>Error: no modules data? </div>
   }
 
   return (

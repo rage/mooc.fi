@@ -14,7 +14,6 @@ import { withRouter } from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -145,7 +144,6 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
 
   return (
     <>
-      <DashboardBreadCrumbs />
       <Container>
         <Typography
           variant="h2"

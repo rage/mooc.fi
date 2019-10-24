@@ -48,34 +48,55 @@ const Root = styled(Grid)`
   padding: 1rem;
 `
 
-/*
-
-
 const UserInformation = styled(Typography)`
   color: gray;
 `
 
-*/
-
 const CourseName = styled(Typography)`
   font-weight: bold;
 `
+interface PersonalDetails {
+  firstName: string
+  lastName: string
+  email: string
+  sid: string
+}
 
-function PointsListItemCard({ pointsAll }: { pointsAll: ProgressData }) {
+interface Props {
+  pointsAll: ProgressData
+  cutterValue?: number
+  showPersonalDetails?: boolean
+  personalDetails?: PersonalDetails
+}
+function PointsListItemCard(props: Props) {
+  const { pointsAll, cutterValue, showPersonalDetails, personalDetails } = props
   const [showDetails, setShowDetails] = React.useState(false)
   const formattedPointsData: pointsByGroup[] = PointsDataFormatter({
     pointsData: pointsAll,
   })
-
+  let cuttervalue = 0
+  if (cutterValue) {
+    cuttervalue = cutterValue
+  }
+  console.log(personalDetails)
   return (
     <Root item sm={12} lg={12}>
-      <CourseName component="h2" variant="body1">
-        {pointsAll.course.name}
-      </CourseName>
+      {showPersonalDetails ? (
+        <>
+          <UserInformation>Name:</UserInformation>
+          <UserInformation>e-mail:</UserInformation>
+          <UserInformation>student number:</UserInformation>
+        </>
+      ) : (
+        <CourseName component="h2" variant="body1">
+          {pointsAll.course.name}
+        </CourseName>
+      )}
+
       <PointsItemTable
         studentPoints={formattedPointsData}
         showDetailedBreakdown={showDetails}
-        cutterValue={50}
+        cutterValue={cuttervalue}
       />
       <Button
         variant="text"
@@ -93,18 +114,3 @@ PointsListItemCard.fragments = {
 }
 
 export default PointsListItemCard
-
-/*
-      <Name>{name}</Name>
-      <UserInformation>{email}</UserInformation>
-      <UserInformation>{SID}</UserInformation>
-      {studentPoints && (
-        <PointsItemTable
-          studentPoints={FormatStudentProgressServiceData({
-            pointsAll: studentPoints,
-          })}
-          showDetailedBreakdown={showDetails}
-          cutterValue={cutterValue}
-        />
-      )}
-      */
