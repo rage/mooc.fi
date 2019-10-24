@@ -20,6 +20,18 @@ const PointsList = (props: Props) => {
               pointsAll={p.node.user.progress}
               cutterValue={cutterValue}
               showPersonalDetails={true}
+              personalDetails={{
+                firstName: p.node.user.first_name
+                  ? p.node.user.first_name
+                  : "n/a",
+                lastName: p.node.user.last_name ? p.node.user.last_name : "n/a",
+                email: p.node.user.email ? p.node.user.email : "n/a",
+                sid: p.node.user.real_student_number
+                  ? p.node.user.real_student_number
+                  : p.node.user.student_number
+                  ? p.node.user.student_number
+                  : "n/a",
+              }}
             />
           ) : (
             <></>
@@ -31,10 +43,3 @@ const PointsList = (props: Props) => {
 }
 
 export default PointsList
-
-/*personalDetails={{
-               firstName: p.node.user.first_name,
-               p.node.user.last_name,
-               p.node.user.email,
-               p.node.user.real_student_number 
-            }}*/
