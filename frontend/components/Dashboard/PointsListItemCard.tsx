@@ -81,11 +81,15 @@ function PointsListItemCard(props: Props) {
   console.log(personalDetails)
   return (
     <Root item sm={12} lg={12}>
-      {showPersonalDetails ? (
+      {showPersonalDetails && personalDetails ? (
         <>
-          <UserInformation>Name:</UserInformation>
-          <UserInformation>e-mail:</UserInformation>
-          <UserInformation>student number:</UserInformation>
+          <UserInformation>
+            Name: {personalDetails.firstName} {personalDetails.lastName}
+          </UserInformation>
+          <UserInformation>e-mail: {personalDetails.email}</UserInformation>
+          <UserInformation>
+            student number: {personalDetails.sid}
+          </UserInformation>
         </>
       ) : (
         <CourseName component="h2" variant="body1">
