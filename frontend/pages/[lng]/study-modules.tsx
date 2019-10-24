@@ -17,23 +17,6 @@ import ModuleGrid from "/components/ModuleGrid"
 import styled from "styled-components"
 
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
-/* export const AllEditorModulesQuery = gql`
-  query AllEditorModulesWithTranslations {
-    study_modules(orderBy: order_ASC) {
-      id
-      slug
-      name
-      image
-      order
-      study_module_translations {
-        id
-        language
-        name
-        description
-      }
-    }
-  }
-` */
 
 const Header = styled(Typography)`
   margin-top: 1em;
