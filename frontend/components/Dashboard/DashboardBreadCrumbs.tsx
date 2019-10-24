@@ -12,7 +12,6 @@ function buildHref(props: BuildHrefProps) {
   const { components, lng } = props
   let BreadCrumbLinks: JSX.Element[] = []
   let i
-
   for (i = 0; i < components.length; i++) {
     if (i === 0) {
       BreadCrumbLinks.push(
@@ -34,7 +33,6 @@ function buildHref(props: BuildHrefProps) {
       )
     }
   }
-
   return BreadCrumbLinks
 }
 const BreadCrumbs = styled.ul`

@@ -2,22 +2,20 @@ import React, { useState, useEffect } from "react"
 import { gql } from "apollo-boost"
 import ErrorBoundary from "../ErrorBoundary"
 import { useLazyQuery } from "@apollo/react-hooks"
-//@ts-ignore
+
 import PointsList from "./DashboardPointsList"
-//@ts-ignore
+
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
-//@ts-ignore
+
 import { TextField, Grid, Slider } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
-//@ts-ignore
+
 import { range } from "lodash"
 import styled from "styled-components"
 import {
   UserCourseSettingses as StudentProgressData,
-  //@ts-ignore
   UserCourseSettingses_UserCourseSettingses_edges,
-  //@ts-ignore
   UserCourseSettingses_UserCourseSettingses_pageInfo,
 } from "/static/types/generated/UserCourseSettingses"
 
@@ -42,6 +40,12 @@ export const StudentProgresses = gql`
         node {
           id
           user {
+            id
+            first_name
+            last_name
+            email
+            student_number
+            real_student_number
             progress(course_id: $course_string) {
               course {
                 name
