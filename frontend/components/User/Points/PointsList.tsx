@@ -10,7 +10,7 @@ import NoPointsErrorMessage from "./NoPointsErrorMessage"
 interface StudentHasPointsProps {
   pointsData: UserPointsData
 }
-function StudentHasPoints(props: StudentHasPointsProps) {
+export function StudentHasPoints(props: StudentHasPointsProps) {
   const { pointsData } = props
   if (pointsData.currentUser && pointsData.currentUser.progresses) {
     return true
@@ -18,9 +18,13 @@ function StudentHasPoints(props: StudentHasPointsProps) {
     return false
   }
 }
+interface Props {
+  showOnlyTen?: boolean
+}
 
-function PointsList() {
+function PointsList(props: Props) {
   const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)
+  const { showOnlyTen } = props
   if (error) {
     return <ErrorMessage />
   }
@@ -29,7 +33,9 @@ function PointsList() {
   }
   const studentHasPoints = StudentHasPoints({ pointsData: data })
   if (studentHasPoints) {
-    return <PointsListGrid data={data} />
+    return (
+      <PointsListGrid data={data} showOnlyTen={showOnlyTen ? true : false} />
+    )
   } else {
     return <NoPointsErrorMessage />
   }
