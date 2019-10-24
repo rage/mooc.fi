@@ -14,10 +14,10 @@ function PointsItemTable(props: TableProps) {
   return (
     <>
       {Object.keys(studentPoints).map(function(key) {
-        //@ts-ignore
         return (
           <PointsListItemTableChart
             title={key}
+            //@ts-ignore
             points={studentPoints[key]}
             cuttervalue={cutterValue}
             showDetailed={showDetailedBreakdown}
