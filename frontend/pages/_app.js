@@ -18,20 +18,8 @@ import theme from "../src/theme"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
-import { gql } from "apollo-boost"
 
 fontAwesomeConfig.autoAddCss = false
-
-export const UserDetailQuery = gql`
-  query UserOverView {
-    currentUser {
-      id
-      first_name
-      last_name
-      email
-    }
-  }
-`
 
 class MyApp extends App {
   constructor(props) {

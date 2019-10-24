@@ -30,8 +30,8 @@ const StyledButton = styled(Button)<ButtonProps>`
     font-size: 16px;
     margin: 0.5rem;
   }
-  color: ${props => (props.active ? "#00B290" : "black")};
-  border-bottom: ${props => (props.active ? "1px solid #00B290" : "")};
+  color: ${props => (props.active ? "#3C8C7A" : "black")};
+  border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
 `
 interface UserMenuprops {
   active?: string

@@ -6,8 +6,8 @@ import { gql } from "apollo-boost"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import {
   Button,
-  IconButton,
   Container,
+  IconButton,
   FormControl,
   InputAdornment,
   InputLabel,
@@ -32,12 +32,16 @@ import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import UserDetailContext from "/contexes/UserDetailContext"
 import getRegistrationTranslator from "/translations/register"
+import { WideContainer } from "/components/Container"
+import Skeleton from "@material-ui/lab/Skeleton"
+import { range } from "lodash"
 
 export const OrganizationsQuery = gql`
   query Organizations {
     organizations {
       id
       slug
+      hidden
       organization_translations {
         language
         name
@@ -123,6 +127,20 @@ const OrganizationListItem = styled(ListItem)<any>`
   padding: 0px;
 `
 
+const Header = styled(Typography)`
+  margin-top: 1em;
+`
+
+const FormContainer = styled(Container)`
+  spacing: 4;
+`
+
+/* const UserOrganizationList = styled(List)``
+
+const UserOrganizationListItem = styled(ListItem)<any>`
+  padding: 0px;
+` */
+
 const Register = () => {
   const { language } = useContext(LanguageContext)
   const t = getRegistrationTranslator(language)
@@ -160,14 +178,6 @@ const Register = () => {
     ],
   })
 
-  if (organizationsError || userOrganizationsError) {
-    return <ErrorMessage />
-  }
-
-  if (organizationsLoading || userOrganizationsLoading) {
-    return <div>loading</div>
-  }
-
   // TODO: do something else
   useEffect(() => {
     if (
@@ -183,6 +193,12 @@ const Register = () => {
 
     setMemberships(mIds)
     setOriginalMemberships([...mIds])
+  }, [userOrganizationsData])
+
+  useEffect(() => {
+    if (!organizationsData) {
+      return
+    }
 
     const sortedOrganizations = organizationsData
       ? organizationsData.organizations
@@ -209,7 +225,7 @@ const Register = () => {
         {},
       ),
     )
-  }, [organizations, userOrganizationsData])
+  }, [organizationsData])
 
   const submit = async () => {
     const newMembershipIds = memberships.filter(
@@ -271,17 +287,30 @@ const Register = () => {
     }, {})
   }, [searchFilter, organizations])
 
+  if (organizationsError || userOrganizationsError) {
+    return <ErrorMessage />
+  }
+
   return (
-    <Container maxWidth="md">
-      <div style={{ marginTop: "2em" }}>&nbsp;</div>
-      <Grid container direction="row">
-        {!Object.keys(organizations).length ? (
-          <div>loading</div>
-        ) : (
+    <WideContainer>
+      <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        placeholder title
+      </Header>
+      <FormContainer maxWidth="md">
+        <Grid container direction="row">
           <>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} style={{ marginBottom: "2em" }}>
               <Typography variant="h3">{t("yourMemberships")}</Typography>
-              {memberships.length ? (
+              {userOrganizationsLoading ||
+              !Object.keys(organizations).length ? (
+                <Typography
+                  variant="body1"
+                  key={`uo-skeleton`}
+                  component="span"
+                >
+                  <Skeleton />
+                </Typography>
+              ) : memberships.length ? (
                 memberships.map(id => (
                   <Typography variant="body1" key={`membership-${id}`}>
                     {!originalMemberships.includes(id) ? "* " : null}
@@ -291,7 +320,9 @@ const Register = () => {
               ) : (
                 <Typography variant="body1">{t("noMemberships")}</Typography>
               )}
-              <Button onClick={() => submit()}>Submit</Button>
+              <Button style={{ marginTop: "0.5em" }} onClick={() => submit()}>
+                Submit
+              </Button>
             </Grid>
             <Grid item xs={12} md={6}>
               <OutlinedFormControl>
@@ -322,32 +353,37 @@ const Register = () => {
                       ),
                     }}
                   />
-                  <OrganizationList>
-                    {(Object.entries(filteredOrganizations()) as Array<
-                      [string, string]
-                    >).map(([id, name]) => (
-                      <OrganizationListItem key={id}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={memberships.includes(id)}
-                              onChange={toggleMembership(id)}
-                              value={id}
-                            />
-                          }
-                          label={name}
-                          key={id}
-                        />
-                      </OrganizationListItem>
-                    ))}
-                  </OrganizationList>
+                  {organizationsLoading ||
+                  !Object.keys(organizations).length ? (
+                    range(8).map(id => <Skeleton key={`skeleton-${id}`} />)
+                  ) : (
+                    <OrganizationList>
+                      {(Object.entries(filteredOrganizations()) as Array<
+                        [string, string]
+                      >).map(([id, name]) => (
+                        <OrganizationListItem key={id}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={memberships.includes(id)}
+                                onChange={toggleMembership(id)}
+                                value={id}
+                              />
+                            }
+                            label={name}
+                            key={id}
+                          />
+                        </OrganizationListItem>
+                      ))}
+                    </OrganizationList>
+                  )}
                 </OutlinedFormGroup>
               </OutlinedFormControl>
             </Grid>
           </>
-        )}
-      </Grid>
-    </Container>
+        </Grid>
+      </FormContainer>
+    </WideContainer>
   )
 }
 

@@ -1,12 +1,10 @@
 import * as React from "react"
-import { gql } from "apollo-boost"
-import { UserOverView } from "/static/types/generated/UserOverView"
-import { useQuery } from "@apollo/react-hooks"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import Button from "@material-ui/core/Button"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
+import UserDetailContext from "/contexes/UserDetailContext"
 import { whichIsActive } from "/components/HeaderBar/Header"
 
 interface ButtonProps {
@@ -24,35 +22,18 @@ const StyledButton = styled(Button)<ButtonProps>`
   @media (max-width: 450px) {
     font-size: 16px;
   }
-  color: ${props => (props.active ? "#00B290" : "black")};
-  border-bottom: ${props => (props.active ? "1px solid #00B290" : "")};
+  color: ${props => (props.active ? "#3C8C7A" : "black")};
+  border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
 `
 
-export const UserDetailQuery = gql`
-  query UserOverView {
-    currentUser {
-      id
-      first_name
-      last_name
-      email
-    }
-  }
-`
 const ProfileButton = () => {
-  const { loading, error, data } = useQuery<UserOverView>(UserDetailQuery)
+  const { currentUser } = useContext(UserDetailContext)
   const { language, url } = useContext(LanguageContext)
   const active = whichIsActive({ url: url })
-  if (loading) {
-    return <p>Loading...</p>
-  }
-  if (error || !data) {
-    return <p>Error</p>
-  }
+
   let userDisplayName: string = "Oma profiili"
-  if (data.currentUser) {
-    userDisplayName = `${data.currentUser.first_name} ${
-      data.currentUser.last_name
-    }`
+  if (currentUser) {
+    userDisplayName = `${currentUser.first_name} ${currentUser.last_name}`
   }
   return (
     <LangLink href="/[lng]/profile" as={`/${language}/profile`}>

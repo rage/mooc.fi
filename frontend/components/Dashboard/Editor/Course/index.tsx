@@ -15,7 +15,7 @@ import {
   DeleteCourseMutation,
 } from "/graphql/mutations/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
+import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
 import { FetchResult, PureQueryOptions } from "apollo-boost"
 import { toCourseForm, fromCourseForm } from "./serialization"
