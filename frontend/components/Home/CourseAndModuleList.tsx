@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-// import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
@@ -71,8 +70,11 @@ const CourseAndModuleList = () => {
     )
   }
 
-  if (!coursesData || !modulesData) {
-    return <div>Error: no data?</div>
+  if (!coursesData) {
+    return <div>Error: no courses data?</div>
+  }
+  if (!modulesData) {
+    return <div>Error: no modules data? </div>
   }
 
   return (
