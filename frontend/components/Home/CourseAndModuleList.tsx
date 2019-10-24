@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-// import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
@@ -15,45 +14,6 @@ const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
-
-/* export const AllModulesQuery = gql`
-  query AllModules($language: String) {
-    study_modules(orderBy: order_ASC, language: $language) {
-      id
-      slug
-      name
-      description
-      image
-      order
-    }
-  }
-` */
-
-/* export const AllCoursesQuery = gql`
-  query AllCourses($language: String) {
-    courses(orderBy: order_ASC, language: $language) {
-      id
-      slug
-      name
-      order
-      photo {
-        id
-        compressed
-        uncompressed
-      }
-      promote
-      status
-      start_point
-      study_module_start_point
-      hidden
-      description
-      link
-      study_modules {
-        id
-      }
-    }
-  }
-` */
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
@@ -110,8 +70,11 @@ const CourseAndModuleList = () => {
     )
   }
 
-  if (!coursesData || !modulesData) {
-    return <div>Error: no data?</div>
+  if (!coursesData) {
+    return <div>Error: no courses data?</div>
+  }
+  if (!modulesData) {
+    return <div>Error: no modules data? </div>
   }
 
   return (
