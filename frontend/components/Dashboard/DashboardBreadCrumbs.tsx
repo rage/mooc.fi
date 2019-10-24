@@ -14,13 +14,29 @@ function buildHref(props: BuildHrefProps) {
   let i
   for (i = 0; i < components.length; i++) {
     if (i === 0) {
-      BreadCrumbLinks.push(
-        <BreadCrumb>
-          <BreadCrumbLink href={`/${lng}/${components[i]}`} key={components[i]}>
-            {components[i]}
-          </BreadCrumbLink>
-        </BreadCrumb>,
-      )
+      if (components[i] == "users") {
+        BreadCrumbLinks.push(
+          <BreadCrumb>
+            <BreadCrumbLink
+              href={`/${lng}/${components[i]}/search`}
+              key={components[i]}
+            >
+              {components[i]}
+            </BreadCrumbLink>
+          </BreadCrumb>,
+        )
+      } else {
+        BreadCrumbLinks.push(
+          <BreadCrumb>
+            <BreadCrumbLink
+              href={`/${lng}/${components[i]}`}
+              key={components[i]}
+            >
+              {components[i]}
+            </BreadCrumbLink>
+          </BreadCrumb>,
+        )
+      }
     } else {
       let componentsSoFar = components.slice(0, i + 1)
       let href = componentsSoFar.join("/")
@@ -40,6 +56,9 @@ const BreadCrumbs = styled.ul`
   overflow: hidden;
   margin-left: 0 !important;
   padding-left: 0 !important;
+  margin-bottom: 0 !important;
+
+  padding-top: 0.5em;
 `
 
 const BreadCrumb = styled.li`
@@ -47,47 +66,27 @@ const BreadCrumb = styled.li`
   &:first-child a {
     padding-left: 2em;
   }
-  &:nth-child(2) a {
-    background: hsla(34, 85%, 45%, 1);
-  }
-  &:nth-child(2) a:after {
-    border-left-color: hsla(34, 85%, 45%, 1);
-  }
-  &:nth-child(3) a {
-    background: hsla(34, 85%, 55%, 1);
-  }
-  &:nth-child(3) a:after {
-    border-left-color: hsla(34, 85%, 55%, 1);
-  }
-  &:nth-child(4) a {
-    background: hsla(34, 85%, 65%, 1);
-  }
-  &:nth-child(4) a:after {
-    border-left-color: hsla(34, 85%, 65%, 1);
-  }
-  &:nth-child(5) a {
-    background: hsla(34, 85%, 75%, 1);
-  }
-  &:nth-child(5) a:after {
-    border-left-color: hsla(34, 85%, 75%, 1);
-  }
+
   &:last-child a {
     background: transparent !important;
-    color: black;
+    color: #2f4858;
     pointer-events: none;
     cursor: default;
   }
   &:last-child a:after {
     border: 0;
   }
+  &:last-child a:before {
+    border: 0;
+  }
 `
 
 const BreadCrumbLink = styled.a`
-  color: white;
+  color: #2f4858;
   text-decoration: none;
   padding: 10px 0 10px 65px;
-  background: #3c8c7a;
-  background: hsla(34, 85%, 35%, 1);
+  background: #fff;
+  background: hsla(360, 100%, 100%, 1);
   position: relative;
   display: block;
   float: left;
@@ -98,7 +97,7 @@ const BreadCrumbLink = styled.a`
     height: 0;
     border-top: 50px solid transparent;
     border-bottom: 50px solid transparent;
-    border-left: 30px solid hsla(34, 85%, 35%, 1);
+    border-left: 30px solid hsla(360, 100%, 100%, 1);
     position: absolute;
     top: 50%;
     margin-top: -50px;
@@ -112,7 +111,7 @@ const BreadCrumbLink = styled.a`
     height: 0;
     border-top: 50px solid transparent;
     border-bottom: 50px solid transparent;
-    border-left: 30px solid white;
+    border-left: 30px solid #2f4858;
     position: absolute;
     top: 50%;
     margin-top: -50px;
