@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fetch-user-field-values
+  namespace: moocfi
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: fetch-user-field-values
+          image: eu.gcr.io/moocfi/moocfi-backend:build-24435275-82cd-4391-a378-b608044dca85-4fce88b28273c59d037b559eb33e0a2a1463b491
+          command: ["sh", "-c", "npm run fetch-user-field-values"]
+          envFrom:
+          - secretRef:
+              name: backend-secret
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
