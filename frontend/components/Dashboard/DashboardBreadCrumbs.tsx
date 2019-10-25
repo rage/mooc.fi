@@ -1,56 +1,47 @@
-import React, { useContext } from "react"
+import React, { useState } from "react"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
-import LanguageContext from "/contexes/LanguageContext"
+import gql from "graphql-tag"
+import { useApolloClient } from "@apollo/react-hooks"
+import { BreadcrumbCourse } from "/static/types/generated/BreadcrumbCourse"
+import { BreadcrumbModule } from "/static/types/generated/BreadcrumbModule"
+import Skeleton from "@material-ui/lab/Skeleton"
+import LangLink from "/components/LangLink"
 
-interface BuildHrefProps {
+/* interface BuildHrefProps {
   components: string[]
   lng: string
-}
+} */
 
-function buildHref(props: BuildHrefProps) {
-  const { components, lng } = props
-  let BreadCrumbLinks: JSX.Element[] = []
-  let i
-  for (i = 0; i < components.length; i++) {
-    if (i === 0) {
-      if (components[i] == "users") {
-        BreadCrumbLinks.push(
-          <BreadCrumb>
-            <BreadCrumbLink
-              href={`/${lng}/${components[i]}/search`}
-              key={components[i]}
-            >
-              {components[i]}
-            </BreadCrumbLink>
-          </BreadCrumb>,
-        )
-      } else {
-        BreadCrumbLinks.push(
-          <BreadCrumb>
-            <BreadCrumbLink
-              href={`/${lng}/${components[i]}`}
-              key={components[i]}
-            >
-              {components[i]}
-            </BreadCrumbLink>
-          </BreadCrumb>,
-        )
+const BreadcrumbCourseQuery = gql`
+  query BreadcrumbCourse($slug: String) {
+    course(slug: $slug) {
+      id
+      slug
+      name
+      course_translations {
+        language
+        name
       }
-    } else {
-      let componentsSoFar = components.slice(0, i + 1)
-      let href = componentsSoFar.join("/")
-      BreadCrumbLinks.push(
-        <BreadCrumb>
-          <BreadCrumbLink href={`/${lng}/${href}`} key={components[i]}>
-            {components[i]}
-          </BreadCrumbLink>
-        </BreadCrumb>,
-      )
     }
   }
-  return BreadCrumbLinks
-}
+`
+
+const BreadcrumbModuleQuery = gql`
+  query BreadcrumbModule($slug: String) {
+    study_module(slug: $slug) {
+      id
+      slug
+      name
+      study_module_translations {
+        id
+        language
+        name
+      }
+    }
+  }
+`
+
 const BreadCrumbs = styled.ul`
   list-style: none;
   overflow: hidden;
@@ -81,10 +72,10 @@ const BreadCrumb = styled.li`
   }
 `
 
-const BreadCrumbLink = styled.a`
+const BreadcrumbArrowStyle = `
   color: #2f4858;
   text-decoration: none;
-  padding: 10px 0 10px 65px;
+  padding: 10px 0 10px 45px;
   background: #fff;
   background: hsla(360, 100%, 100%, 1);
   position: relative;
@@ -120,13 +111,56 @@ const BreadCrumbLink = styled.a`
     z-index: 1;
   }
 `
+
+const BreadCrumbLink = styled.a`
+  ${BreadcrumbArrowStyle}
+`
+
+const BreadCrumbSkeleton = styled(Skeleton)`
+  ${BreadcrumbArrowStyle}
+  background: #e6e5e5;
+`
+
+const routes = {
+  "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[id]$3", // matches /(courses|study-modules)/[id]*, doesn't match new
+  "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
+  "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
+  "/register-completion/(.+)": "/register-completion/[slug]",
+}
+
+const BreadcrumbComponent: React.FC<{ target?: string }> = ({
+  target,
+  children,
+}) => {
+  const href = Object.entries(routes).reduce((acc, [toReplace, replace]) => {
+    const regex = new RegExp(toReplace, "gm")
+
+    return acc.replace(regex, replace)
+  }, target || "")
+
+  return (
+    <BreadCrumb>
+      {href ? (
+        <LangLink as={target || ""} href={href}>
+          <BreadCrumbLink>{children}</BreadCrumbLink>
+        </LangLink>
+      ) : (
+        <BreadCrumbSkeleton style={{ marginLeft: "3em", width: "100px" }} />
+      )}
+    </BreadCrumb>
+  )
+}
+
 interface Props {
   router: SingletonRouter
 }
+
 const DashboardBreadCrumbs = (props: Props) => {
+  const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
+  const client = useApolloClient()
   const { router } = props
 
-  const currentPageLanguage = useContext(LanguageContext)
+  // const currentPageLanguage = useContext(LanguageContext)
   //if router prop exists, take the current URL
   let currentUrl: string = ""
   if (router) {
@@ -143,15 +177,74 @@ const DashboardBreadCrumbs = (props: Props) => {
   }
 
   const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
+  // const { language: lng } = currentPageLanguage
+
+  const getAwaitedCrumbs = async (type: string, slug: string) => {
+    // TODO: invalidate queries on editor
+    if (type === "courses") {
+      const { data } = await client.query<BreadcrumbCourse>({
+        query: BreadcrumbCourseQuery,
+        variables: { slug },
+        fetchPolicy: "cache-first",
+      })
+      setAwaitedCrumb(data && data.course ? data.course.name : slug)
+    } else {
+      const { data } = await client.query<BreadcrumbModule>({
+        query: BreadcrumbModuleQuery,
+        variables: { slug },
+        fetchPolicy: "cache-first",
+      })
+      setAwaitedCrumb(data && data.study_module ? data.study_module.name : slug)
+    }
+  }
+
+  urlRouteComponents.forEach((c, i) => {
+    if (
+      i > 0 &&
+      ["courses", "study-modules"].includes(urlRouteComponents[i - 1]) &&
+      urlRouteComponents[i] !== "new"
+    ) {
+      getAwaitedCrumbs(urlRouteComponents[i - 1], c)
+    }
+  })
+
+  if (urlRouteComponents.length < 1) {
+    return null
+  }
 
   return (
     <BreadCrumbs>
-      <BreadCrumb>
-        <BreadCrumbLink href={`${homeLink}`}>Home</BreadCrumbLink>
-      </BreadCrumb>
-      {buildHref({
-        components: urlRouteComponents,
-        lng: currentPageLanguage.language,
+      <BreadcrumbComponent target={homeLink}>Home</BreadcrumbComponent>
+      {urlRouteComponents.map((component, idx) => {
+        let target: string | undefined = `/${component}`
+        let content: string | null = component
+
+        if (idx === 0) {
+          if (component == "users") {
+            target = `${component}/search`
+          }
+        } else {
+          let componentsSoFar = urlRouteComponents.slice(0, idx + 1)
+          let href = componentsSoFar.join("/")
+
+          target = `/${href}`
+
+          if (
+            ["courses", "study-modules"].includes(componentsSoFar[idx - 1]) &&
+            component !== "new"
+          ) {
+            if (!awaitedCrumb) {
+              target = undefined
+              content = null
+            } else {
+              content = awaitedCrumb
+            }
+          }
+        }
+
+        return (
+          <BreadcrumbComponent target={target}>{content}</BreadcrumbComponent>
+        )
       })}
     </BreadCrumbs>
   )
