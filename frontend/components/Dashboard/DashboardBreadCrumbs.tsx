@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import gql from "graphql-tag"
@@ -7,11 +7,7 @@ import { BreadcrumbCourse } from "/static/types/generated/BreadcrumbCourse"
 import { BreadcrumbModule } from "/static/types/generated/BreadcrumbModule"
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
-
-/* interface BuildHrefProps {
-  components: string[]
-  lng: string
-} */
+import { memoize } from "lodash"
 
 const BreadcrumbCourseQuery = gql`
   query BreadcrumbCourse($slug: String) {
@@ -128,34 +124,45 @@ const routes = {
   "/register-completion/(.+)": "/register-completion/[slug]",
 }
 
-const BreadcrumbComponent: React.FC<{ target?: string }> = ({
-  target,
-  children,
-}) => {
-  const href = Object.entries(routes).reduce((acc, [toReplace, replace]) => {
-    const regex = new RegExp(toReplace, "gm")
+const BreadcrumbComponent: React.FC<{ target?: string }> = React.memo(
+  ({ target, children }) => {
+    const href = Object.entries(routes).reduce((acc, [toReplace, replace]) => {
+      const regex = new RegExp(toReplace, "gm")
 
-    return acc.replace(regex, replace)
-  }, target || "")
+      return acc.replace(regex, replace)
+    }, target || "")
 
-  return (
-    <BreadCrumb>
-      {href ? (
-        <LangLink as={target || ""} href={href}>
-          <BreadCrumbLink>{children}</BreadCrumbLink>
-        </LangLink>
-      ) : (
-        <BreadCrumbSkeleton style={{ marginLeft: "3em", width: "100px" }} />
-      )}
-    </BreadCrumb>
-  )
-}
+    return (
+      <BreadCrumb>
+        {href ? (
+          <LangLink as={target || ""} href={href}>
+            <BreadCrumbLink>{children}</BreadCrumbLink>
+          </LangLink>
+        ) : (
+          <BreadCrumbSkeleton style={{ marginLeft: "3em", width: "100px" }} />
+        )}
+      </BreadCrumb>
+    )
+  },
+)
 
 interface Props {
   router: SingletonRouter
 }
 
-const DashboardBreadCrumbs = (props: Props) => {
+// TODO: memoize
+const isCourseOrModule = memoize(
+  (param: string | string[]): boolean => {
+    if (Array.isArray(param)) {
+      // no need to wait for anything if ending with courses/study-modules
+      return param.slice(0, -1).some(r => isCourseOrModule(r))
+    }
+
+    return ["courses", "study-modules"].includes(param)
+  },
+)
+
+const DashboardBreadCrumbs = React.memo((props: Props) => {
   const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
   const client = useApolloClient()
   const { router } = props
@@ -179,8 +186,14 @@ const DashboardBreadCrumbs = (props: Props) => {
   const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
   // const { language: lng } = currentPageLanguage
 
-  const getAwaitedCrumbs = async (type: string, slug: string) => {
-    // TODO: invalidate queries on editor
+  if (urlRouteComponents.length < 1) {
+    return null
+  }
+
+  const getAwaitedCrumbs = useCallback(async (type: string, slug: string) => {
+    // TODO: invalidate queries on editor (if needed?)
+    // TODO: could also do with the data being what's watched instead of awaitedcrumb
+    // and setstate having a boolean for waiting or smth
     if (type === "courses") {
       const { data } = await client.query<BreadcrumbCourse>({
         query: BreadcrumbCourseQuery,
@@ -196,25 +209,30 @@ const DashboardBreadCrumbs = (props: Props) => {
       })
       setAwaitedCrumb(data && data.study_module ? data.study_module.name : slug)
     }
-  }
+  }, [])
 
-  urlRouteComponents.forEach((c, i) => {
-    if (
-      i > 0 &&
-      ["courses", "study-modules"].includes(urlRouteComponents[i - 1]) &&
-      urlRouteComponents[i] !== "new"
-    ) {
-      getAwaitedCrumbs(urlRouteComponents[i - 1], c)
+  if (isCourseOrModule(urlRouteComponents)) {
+    urlRouteComponents.forEach((c, i) => {
+      if (
+        i > 0 &&
+        isCourseOrModule(urlRouteComponents[i - 1]) &&
+        urlRouteComponents[i] !== "new"
+      ) {
+        getAwaitedCrumbs(urlRouteComponents[i - 1], c)
+      }
+    })
+  } else {
+    // this might cause a needless rerender, but :x
+    if (awaitedCrumb) {
+      setAwaitedCrumb(null)
     }
-  })
-
-  if (urlRouteComponents.length < 1) {
-    return null
   }
 
   return (
     <BreadCrumbs>
-      <BreadcrumbComponent target={homeLink}>Home</BreadcrumbComponent>
+      <BreadcrumbComponent target={homeLink} key="breadcrumb-home">
+        Home
+      </BreadcrumbComponent>
       {urlRouteComponents.map((component, idx) => {
         let target: string | undefined = `/${component}`
         let content: string | null = component
@@ -230,7 +248,7 @@ const DashboardBreadCrumbs = (props: Props) => {
           target = `/${href}`
 
           if (
-            ["courses", "study-modules"].includes(componentsSoFar[idx - 1]) &&
+            isCourseOrModule(componentsSoFar[idx - 1]) &&
             component !== "new"
           ) {
             if (!awaitedCrumb) {
@@ -243,11 +261,13 @@ const DashboardBreadCrumbs = (props: Props) => {
         }
 
         return (
-          <BreadcrumbComponent target={target}>{content}</BreadcrumbComponent>
+          <BreadcrumbComponent target={target} key={`breadcrumb-${component}`}>
+            {content}
+          </BreadcrumbComponent>
         )
       })}
     </BreadCrumbs>
   )
-}
+})
 
 export default withRouter(DashboardBreadCrumbs)
