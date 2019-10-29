@@ -64,7 +64,9 @@ function Header() {
                 <MoocLogo />
                 <MenuContainer>
                   <HiddenMenuContainer>
-                    {loggedIn && <LoggedInUserMenu active={active} />}
+                    {loggedIn && (
+                      <LoggedInUserMenu active={active || undefined} />
+                    )}
                   </HiddenMenuContainer>
                 </MenuContainer>
                 <UserOptionsMenu
