@@ -5,6 +5,7 @@ import Footer from "/components/Footer"
 import SkipLink from "/components/SkipLink"
 import styled from "styled-components"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
+import LanguageContext from "/contexes/LanguageContext"
 
 const FooterDownPusherWrapper = styled.div`
   display: flex;
@@ -14,6 +15,11 @@ const FooterDownPusherWrapper = styled.div`
 `
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const lng = React.useContext(LanguageContext)
+  let isHomePage = false
+  if (lng.hrefUrl == "/") {
+    isHomePage = true
+  }
   return (
     <div>
       <SkipLink />
@@ -23,7 +29,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {/*add top margin to main to push the content from under the header*/}
 
           <main id="main" style={{ marginTop: 75 }}>
-            <DashboardBreadCrumbs />
+            {!isHomePage && <DashboardBreadCrumbs />}
+
             {children}
           </main>
         </div>
