@@ -11,11 +11,11 @@ function CourseGrid(props: CourseGridProps) {
   const { courses } = props
   return (
     <section>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} style={{ marginBottom: "2em" }}>
+        <CourseCard key={"newcourse"} />
         {(courses || []).map(course => (
           <CourseCard key={course.id} course={course} />
         ))}
-        <CourseCard key={"newcourse"} />
       </Grid>
     </section>
   )
