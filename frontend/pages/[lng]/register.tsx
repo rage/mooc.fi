@@ -146,8 +146,8 @@ const Register = () => {
   const [organizations, setOrganizations] = useState<
     Record<string, Organizations_organizations>
   >({})
-  const [filter, setFilter] = useState("")
-  const [searchFilter, cancelFilterDebounce] = useDebounce(filter, 1000)
+  const [searchBox, setSearchBox] = useState("")
+  const [searchFilter, cancelFilterDebounce] = useDebounce(searchBox, 1000)
   const [filteredOrganizations, setFilteredOrganizations] = useState<
     Record<string, Organizations_organizations>
   >({})
@@ -295,9 +295,9 @@ const Register = () => {
           name="search"
           type="text"
           variant="outlined"
-          value={filter}
+          value={searchBox}
           autoComplete="off"
-          onChange={e => setFilter(e.target.value)}
+          onChange={e => setSearchBox(e.target.value)}
           onKeyDown={e => e.key === "Enter" && cancelFilterDebounce()}
           placeholder={t("search")}
           InputProps={{
@@ -306,7 +306,7 @@ const Register = () => {
                 <IconButton
                   onClick={() => {
                     cancelFilterDebounce("")
-                    setFilter("")
+                    setSearchBox("")
                   }}
                 >
                   <CancelIcon />
