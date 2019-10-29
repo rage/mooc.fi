@@ -13,7 +13,6 @@ export default <T>(value: T, delay: number): [T, (cancelValue?: T) => void] => {
 
   const cancelTimeout = (cancelValue?: T) => {
     if (handler) {
-      console.log("had a handler")
       clearTimeout(handler)
     }
 

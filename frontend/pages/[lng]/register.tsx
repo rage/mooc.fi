@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
@@ -6,23 +6,21 @@ import { gql } from "apollo-boost"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import {
   Button,
+  Card,
   Container,
   IconButton,
-  FormControl,
   InputAdornment,
-  InputLabel,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Grid,
-  List,
-  ListItem,
   Typography,
   TextField,
+  CardContent,
 } from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
 import ErrorMessage from "/components/ErrorMessage"
-import { Organizations } from "/static/types/generated/Organizations"
+import {
+  Organizations,
+  Organizations_organizations,
+} from "/static/types/generated/Organizations"
 import {
   UserOrganizations,
   UserOrganizations_userOrganizations,
@@ -86,47 +84,6 @@ export const DeleteUserOrganizationMutation = gql`
   }
 `
 
-const OutlinedInputLabel = styled(InputLabel)`
-  background-color: #ffffff;
-  padding: 0 4px 0 4px;
-`
-
-const OutlinedFormControl = styled(FormControl)`
-  margin-bottom: 1rem;
-`
-
-const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
-  border-radius: 4px;
-  border: 1px solid
-    ${props => (props.error ? "#F44336" : "rgba(0, 0, 0, 0.23)")};
-  padding: 18.5px 14px;
-  transition: padding-left 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
-    border-color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
-    border-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-
-  &:hover {
-    border: 1px solid rgba(0, 0, 0, 0.87);
-  }
-
-  &:focus {
-    bordercolor: "#3f51b5";
-  }
-
-  @media (hover: none) {
-    border: 1px solid rgba(0, 0, 0, 0.23);
-  }
-`
-
-const OrganizationList = styled(List)`
-  padding: 0px;
-  max-height: 600px;
-  overflow: auto;
-`
-
-const OrganizationListItem = styled(ListItem)<any>`
-  padding: 0px;
-`
-
 const Header = styled(Typography)`
   margin-top: 1em;
 `
@@ -135,11 +92,50 @@ const FormContainer = styled(Container)`
   spacing: 4;
 `
 
-/* const UserOrganizationList = styled(List)``
+interface OrganizationCardProps {
+  id: string
+  name: string
+  isMember: boolean
+  onToggle: (props: any) => Promise<void>
+}
 
-const UserOrganizationListItem = styled(ListItem)<any>`
-  padding: 0px;
-` */
+const OrganizationCard = ({
+  id,
+  name,
+  isMember,
+  onToggle,
+}: OrganizationCardProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getRegistrationTranslator(language)
+
+  return (
+    <Card key={id} style={{ marginBottom: "0.5rem" }}>
+      <CardContent>
+        <Grid container direction="row">
+          <Grid item xs={9}>
+            <Typography variant="h3">{name}</Typography>
+          </Grid>
+          <Grid item xs={3} style={{ textAlign: "right" }}>
+            <Button
+              color={isMember ? "secondary" : "primary"}
+              onClick={onToggle}
+            >
+              {isMember ? t("leave") : t("join")}
+            </Button>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  )
+}
+
+const SkeletonCard = () => (
+  <Card style={{ marginBottom: "0.5rem" }}>
+    <CardContent>
+      <Skeleton />
+    </CardContent>
+  </Card>
+)
 
 const Register = () => {
   const { language } = useContext(LanguageContext)
@@ -147,12 +143,14 @@ const Register = () => {
   const { currentUser } = useContext(UserDetailContext)
 
   const [memberships, setMemberships] = useState<Array<string>>([])
-  const [originalMemberships, setOriginalMemberships] = useState<Array<string>>(
-    [],
-  )
-  const [organizations, setOrganizations] = useState<Record<string, string>>({})
+  const [organizations, setOrganizations] = useState<
+    Record<string, Organizations_organizations>
+  >({})
   const [filter, setFilter] = useState("")
   const [searchFilter, cancelFilterDebounce] = useDebounce(filter, 1000)
+  const [filteredOrganizations, setFilteredOrganizations] = useState<
+    Record<string, Organizations_organizations>
+  >({})
 
   const {
     data: organizationsData,
@@ -162,6 +160,7 @@ const Register = () => {
   const {
     data: userOrganizationsData,
     error: userOrganizationsError,
+    // @ts-ignore
     loading: userOrganizationsLoading,
   } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
     variables: { user_id: currentUser!.id },
@@ -192,7 +191,6 @@ const Register = () => {
     )
 
     setMemberships(mIds)
-    setOriginalMemberships([...mIds])
   }, [userOrganizationsData])
 
   useEffect(() => {
@@ -216,76 +214,71 @@ const Register = () => {
           )
       : []
 
-    setOrganizations(
-      sortedOrganizations.reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr.id]: curr!.organization_translations![0]!.name,
-        }),
-        {},
-      ),
+    const orgs = sortedOrganizations.reduce(
+      (acc, curr) => ({
+        ...acc,
+        [curr.id]: curr,
+      }),
+      {},
     )
+
+    setOrganizations(orgs)
+    setFilteredOrganizations(orgs)
   }, [organizationsData])
 
-  const submit = async () => {
-    const newMembershipIds = memberships.filter(
-      id => !originalMemberships.includes(id),
-    )
-    const removedMembershipIds = originalMemberships.filter(
-      id => !memberships.includes(id),
-    )
+  useEffect(() => {
+    if (!organizations || !Object.keys(organizations).length) {
+      return
+    }
 
-    await Promise.all(
-      newMembershipIds.map(id =>
-        addUserOrganization({
-          variables: {
-            user_id: currentUser!.id,
-            organization_id: id,
-          },
-        }),
-      ),
-    )
-    await Promise.all(
-      removedMembershipIds.map(id => {
-        deleteUserOrganization({
-          variables: {
-            id: userOrganizationsData!.userOrganizations!.find(
-              (uo: UserOrganizations_userOrganizations) =>
-                uo.organization.id === id,
-            )!.id,
-          },
-        })
-      }),
-    )
-  }
+    if (!searchFilter || searchFilter === "") {
+      setFilteredOrganizations(organizations)
 
-  const toggleMembership = (id: string) => (
+      return
+    }
+
+    setFilteredOrganizations(
+      Object.entries(organizations).reduce((acc, [key, value]) => {
+        if (
+          !value!
+            .organization_translations![0].name.toLowerCase()
+            .includes(searchFilter.toLowerCase())
+        ) {
+          return acc
+        }
+
+        return {
+          ...acc,
+          [key]: value,
+        }
+      }, {}),
+    )
+  }, [searchFilter, organizations])
+
+  const toggleMembership = (id: string) => async (
     // @ts-ignore
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: any,
   ) => {
     if (memberships.includes(id)) {
       setMemberships(memberships.filter(i => i !== id))
+      deleteUserOrganization({
+        variables: {
+          id: userOrganizationsData!.userOrganizations!.find(
+            (uo: UserOrganizations_userOrganizations) =>
+              uo.organization.id === id,
+          )!.id,
+        },
+      })
     } else {
       setMemberships(memberships.concat(id))
+      addUserOrganization({
+        variables: {
+          user_id: currentUser!.id,
+          organization_id: id,
+        },
+      })
     }
   }
-
-  const filteredOrganizations = useCallback(() => {
-    if (searchFilter === "") {
-      return organizations
-    }
-
-    return Object.entries(organizations).reduce((acc, [key, value]) => {
-      if (!value.toLowerCase().includes(searchFilter.toLowerCase())) {
-        return acc
-      }
-
-      return {
-        ...acc,
-        [key]: value,
-      }
-    }, {})
-  }, [searchFilter, organizations])
 
   if (organizationsError || userOrganizationsError) {
     return <ErrorMessage />
@@ -294,94 +287,52 @@ const Register = () => {
   return (
     <WideContainer>
       <Header component="h1" variant="h2" gutterBottom={true} align="center">
-        placeholder title
+        {t("title")}
       </Header>
       <FormContainer maxWidth="md">
-        <Grid container direction="row">
-          <>
-            <Grid item xs={12} md={6} style={{ marginBottom: "2em" }}>
-              <Typography variant="h3">{t("yourMemberships")}</Typography>
-              {userOrganizationsLoading ||
-              !Object.keys(organizations).length ? (
-                <Typography
-                  variant="body1"
-                  key={`uo-skeleton`}
-                  component="span"
+        <TextField
+          style={{ marginBottom: "0.5rem" }}
+          name="search"
+          type="text"
+          variant="outlined"
+          value={filter}
+          autoComplete="off"
+          onChange={e => setFilter(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && cancelFilterDebounce()}
+          placeholder={t("search")}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => {
+                    cancelFilterDebounce("")
+                    setFilter("")
+                  }}
                 >
-                  <Skeleton />
-                </Typography>
-              ) : memberships.length ? (
-                memberships.map(id => (
-                  <Typography variant="body1" key={`membership-${id}`}>
-                    {!originalMemberships.includes(id) ? "* " : null}
-                    {organizations[id]}
-                  </Typography>
-                ))
-              ) : (
-                <Typography variant="body1">{t("noMemberships")}</Typography>
-              )}
-              <Button style={{ marginTop: "0.5em" }} onClick={() => submit()}>
-                Submit
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <OutlinedFormControl>
-                <OutlinedInputLabel shrink>
-                  {t("organizations")}
-                </OutlinedInputLabel>
-                <OutlinedFormGroup>
-                  <TextField
-                    name="search"
-                    type="text"
-                    variant="outlined"
-                    value={filter}
-                    autoComplete="off"
-                    onChange={e => setFilter(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && cancelFilterDebounce()}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => {
-                              cancelFilterDebounce("")
-                              setFilter("")
-                            }}
-                          >
-                            <CancelIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  {organizationsLoading ||
-                  !Object.keys(organizations).length ? (
-                    range(8).map(id => <Skeleton key={`skeleton-${id}`} />)
-                  ) : (
-                    <OrganizationList>
-                      {(Object.entries(filteredOrganizations()) as Array<
-                        [string, string]
-                      >).map(([id, name]) => (
-                        <OrganizationListItem key={id}>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={memberships.includes(id)}
-                                onChange={toggleMembership(id)}
-                                value={id}
-                              />
-                            }
-                            label={name}
-                            key={id}
-                          />
-                        </OrganizationListItem>
-                      ))}
-                    </OrganizationList>
-                  )}
-                </OutlinedFormGroup>
-              </OutlinedFormControl>
-            </Grid>
-          </>
-        </Grid>
+                  <CancelIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <>
+          {organizationsLoading || !Object.keys(organizations).length ? (
+            range(5).map(i => <SkeletonCard key={`skeleton-${i}`} />)
+          ) : Object.keys(filteredOrganizations).length ? (
+            (Object.entries(filteredOrganizations) as Array<
+              [string, Organizations_organizations]
+            >).map(([id, organization]) => (
+              <OrganizationCard
+                id={id}
+                name={organization!.organization_translations![0].name}
+                isMember={memberships.includes(id)}
+                onToggle={toggleMembership(id)}
+              />
+            ))
+          ) : (
+            <div>{t("noResults", { search: searchFilter })}</div>
+          )}
+        </>
       </FormContainer>
     </WideContainer>
   )
