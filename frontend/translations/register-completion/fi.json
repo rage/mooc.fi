@@ -14,5 +14,7 @@
     "link": "Rekisteröitymislomakkeeseen",
     "linkAria": "Linkki rekisteröitymislomakkeeseen. Avautuu uudessa välilehdessä. Siirtyy avoimen yliopiston palveluun.",
     "course_completion_not_found_title": "Suoritusta ei löytynyt",
-    "course_completion_not_found": "Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?"
+    "course_completion_not_found": "Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?",
+    "see_completion_link":"Kun opintosuorituksesi on rekisteröity, pääset tarkastelemaan opintosuorituksesi tietoja Koski-palvelusta:",
+    "see_completion_NB":"HUOM! Opintosuoritus siirtyy Koski-palveluun viiveellä sen kirjautumisesta Helsingin yliopiston opintorekisteriin." 
 }
