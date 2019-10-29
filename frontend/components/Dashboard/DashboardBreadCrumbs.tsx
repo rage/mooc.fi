@@ -50,6 +50,7 @@ const BreadCrumbs = styled.ul`
 
 const BreadCrumb = styled.li`
   float: left;
+  cursor: pointer;
   &:first-child a {
     padding-left: 2em;
   }
@@ -57,8 +58,6 @@ const BreadCrumb = styled.li`
   &:last-child a {
     background: transparent !important;
     color: #2f4858;
-    pointer-events: none;
-    cursor: default;
   }
   &:last-child a:after {
     border: 0;
@@ -186,10 +185,6 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
   // const { language: lng } = currentPageLanguage
 
-  if (urlRouteComponents.length < 1) {
-    return null
-  }
-
   const getAwaitedCrumbs = useCallback(async (type: string, slug: string) => {
     // TODO: invalidate queries on editor (if needed?)
     // TODO: could also do with the data being what's watched instead of awaitedcrumb
@@ -226,6 +221,10 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
     if (awaitedCrumb) {
       setAwaitedCrumb(null)
     }
+  }
+
+  if (urlRouteComponents.length < 1) {
+    return null
   }
 
   return (
