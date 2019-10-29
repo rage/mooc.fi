@@ -15,13 +15,16 @@ export const generateUserCourseProgress = async (
     .user_course_service_progresses()
   const progresses = userCourseServiceProgresses.map(entry => {
     return entry.progress
-  })[0]
+  })
   let combined = []
   let total_max_points: number = 0
   let total_n_points: number = 0
   progresses.map(entry => {
-    entry.max_points ? (total_max_points += entry.max_points) : null
-    entry.n_points ? (total_n_points += entry.n_points) : null
+    entry.forEach(p => {
+      p.max_points ? (total_max_points += p.max_points) : null
+      p.n_points ? (total_n_points += p.n_points) : null
+    })
+
     combined.push(...entry)
   })
   const course: Course = await prisma
