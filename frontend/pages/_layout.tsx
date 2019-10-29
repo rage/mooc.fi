@@ -20,7 +20,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   if (lng.hrefUrl == "/") {
     isHomePage = true
   }
-  console.log("lng", lng.hrefUrl)
   return (
     <div>
       <SkipLink />
