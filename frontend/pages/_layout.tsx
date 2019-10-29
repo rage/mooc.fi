@@ -26,9 +26,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <FooterDownPusherWrapper>
         <div>
           <Header />
-          {/*add top margin to main to push the content from under the header*/}
 
-          <main id="main" style={{ marginTop: 75 }}>
+          <main id="main">
             {!isHomePage && <DashboardBreadCrumbs />}
 
             {children}
