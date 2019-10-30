@@ -41,6 +41,9 @@ function PointsListItemTableChart(props: Props) {
   if (points.length > 0) {
     services = points.slice(1)
   }
+  console.log("showDetailed", showDetailed)
+  console.log("points", points)
+  console.log("services", services)
   return (
     <>
       <ChartContainer>
