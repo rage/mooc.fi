@@ -7,6 +7,13 @@ import LangLink from "/components/LangLink"
 const MoocLogoText = styled(Typography)`
   font-family: "Open Sans Condensed Light", sans-serif;
   font-size: 1.75rem;
+  @media (max-width: 425px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 375px) {
+    display: none;
+  }
+
   margin-top: 1rem;
 `
 
@@ -17,6 +24,10 @@ const MoocLogoAvatar = styled(Avatar)`
   margin-right: 0.5rem;
   height: 3em;
   width: 3em;
+  @media (max-width: 425px) {
+    height: 2.5em;
+    width: 2.5em;
+  }
 `
 const MoocLogoLink = styled.a`
   color: black;

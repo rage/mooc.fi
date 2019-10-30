@@ -59,12 +59,14 @@ function Header() {
         <React.Fragment>
           <CssBaseline />
           <HideOnScroll>
-            <AppBar color="inherit">
+            <AppBar color="inherit" style={{ position: "sticky" }}>
               <StyledToolbar>
                 <MoocLogo />
                 <MenuContainer>
                   <HiddenMenuContainer>
-                    {loggedIn && <LoggedInUserMenu active={active} />}
+                    {loggedIn && (
+                      <LoggedInUserMenu active={active ? active : undefined} />
+                    )}
                   </HiddenMenuContainer>
                 </MenuContainer>
                 <UserOptionsMenu

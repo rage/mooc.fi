@@ -16,11 +16,17 @@ const StyledButton = styled(Button)<ButtonProps>`
   margin-bottom: 0.5rem;
   font-size: 18px;
   border-radius: 0px;
+  line-height: 90%;
   @media (max-width: 950px) {
     font-size: 22px;
   }
   @media (max-width: 450px) {
     font-size: 16px;
+  }
+  @media (max-width: 321px) {
+    margin-left: 0.25rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
   }
   color: ${props => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
@@ -32,7 +38,7 @@ const ProfileButton = () => {
   const active = whichIsActive({ url: url })
 
   let userDisplayName: string = "Oma profiili"
-  if (currentUser) {
+  if (currentUser && currentUser.first_name) {
     userDisplayName = `${currentUser.first_name} ${currentUser.last_name}`
   }
   return (
