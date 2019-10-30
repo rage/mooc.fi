@@ -93,23 +93,22 @@ const FormContainer = styled(Container)`
 `
 
 interface OrganizationCardProps {
-  id: string
   name: string
   isMember: boolean
-  onToggle: (props: any) => Promise<void>
+  onToggle: () => Promise<void>
 }
 
 const OrganizationCard = ({
-  id,
   name,
   isMember,
   onToggle,
 }: OrganizationCardProps) => {
   const { language } = useContext(LanguageContext)
   const t = getRegistrationTranslator(language)
+  const [disabled, setDisabled] = useState(false)
 
   return (
-    <Card key={id} style={{ marginBottom: "0.5rem" }}>
+    <Card style={{ marginBottom: "0.5rem" }}>
       <CardContent>
         <Grid container direction="row">
           <Grid item xs={9}>
@@ -118,7 +117,12 @@ const OrganizationCard = ({
           <Grid item xs={3} style={{ textAlign: "right" }}>
             <Button
               color={isMember ? "secondary" : "primary"}
-              onClick={onToggle}
+              onClick={async () => {
+                setDisabled(true)
+                await onToggle()
+                setDisabled(false)
+              }}
+              disabled={disabled}
             >
               {isMember ? t("leave") : t("join")}
             </Button>
@@ -165,7 +169,14 @@ const Register = () => {
   } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
     variables: { user_id: currentUser!.id },
   })
-  const [addUserOrganization] = useMutation(AddUserOrganizationMutation)
+  const [addUserOrganization] = useMutation(AddUserOrganizationMutation, {
+    refetchQueries: [
+      {
+        query: UserOrganizationsQuery,
+        variables: { user_id: currentUser!.id },
+      },
+    ],
+  })
   // @ts-ignore
   const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
   const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
@@ -255,28 +266,32 @@ const Register = () => {
     )
   }, [searchFilter, organizations])
 
-  const toggleMembership = (id: string) => async (
-    // @ts-ignore
-    event: any,
-  ) => {
+  const toggleMembership = (id: string) => async () => {
     if (memberships.includes(id)) {
-      setMemberships(memberships.filter(i => i !== id))
-      deleteUserOrganization({
-        variables: {
-          id: userOrganizationsData!.userOrganizations!.find(
-            (uo: UserOrganizations_userOrganizations) =>
-              uo.organization.id === id,
-          )!.id,
-        },
-      })
+      const existing =
+        userOrganizationsData && userOrganizationsData.userOrganizations
+          ? userOrganizationsData.userOrganizations.find(
+              (uo: UserOrganizations_userOrganizations) =>
+                uo.organization.id === id,
+            )
+          : null
+
+      if (existing) {
+        await deleteUserOrganization({
+          variables: {
+            id: existing.id,
+          },
+        })
+        setMemberships(memberships.filter(i => i !== id))
+      }
     } else {
-      setMemberships(memberships.concat(id))
-      addUserOrganization({
+      await addUserOrganization({
         variables: {
           user_id: currentUser!.id,
           organization_id: id,
         },
       })
+      setMemberships(memberships.concat(id))
     }
   }
 
@@ -323,7 +338,7 @@ const Register = () => {
               [string, Organizations_organizations]
             >).map(([id, organization]) => (
               <OrganizationCard
-                id={id}
+                key={`card-${id}`}
                 name={organization!.organization_translations![0].name}
                 isMember={memberships.includes(id)}
                 onToggle={toggleMembership(id)}
