@@ -57,9 +57,9 @@ export const UserOverViewQuery = gql`
       upstream_id
       first_name
       last_name
-      email
       completions {
         id
+        email
         completion_language
         completion_link
         student_number
@@ -180,9 +180,9 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
             {t("donow")}
           </Typography>
         </Paper>
-        <ImportantNotice email={data.currentUser.email} />
+        <ImportantNotice email={completion.email} />
         <RegisterCompletionText
-          email={data.currentUser.email}
+          email={completion.email}
           link={courseLinkWithLanguage}
         />
         <Paper className={classes.paperWithColumn}>

@@ -18,11 +18,17 @@ const StyledButton = styled(Button)<ButtonProps>`
   margin-bottom: 0.5rem;
   font-size: 18px;
   border-radius: 0px;
+  line-height: 90%;
   @media (max-width: 950px) {
     font-size: 22px;
   }
   @media (max-width: 450px) {
     font-size: 16px;
+  }
+  @media (max-width: 321px) {
+    margin-left: 0.25rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
   }
   color: ${props => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
@@ -49,7 +55,7 @@ const ProfileButton = () => {
     return <p>Error</p>
   }
   let userDisplayName: string = "Oma profiili"
-  if (data.currentUser) {
+  if (data.currentUser && data.currentUser.first_name) {
     userDisplayName = `${data.currentUser.first_name} ${
       data.currentUser.last_name
     }`
