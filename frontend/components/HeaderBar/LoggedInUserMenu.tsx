@@ -2,7 +2,7 @@ import * as React from "react"
 import { useContext } from "react"
 import UserDetailContext from "/contexes/UserDetailContext"
 import LanguageContext from "/contexes/LanguageContext"
-
+import Typography from "@material-ui/core/Typography"
 import LangLink from "../LangLink"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
@@ -33,6 +33,10 @@ const StyledButton = styled(Button)<ButtonProps>`
   color: ${props => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
 `
+const ButtonLabel = styled(Typography)`
+  font-family: Open Sans Condensed !important;
+  font-size: 18px;
+`
 interface UserMenuprops {
   active?: string
 }
@@ -47,12 +51,15 @@ const UserMenu = (props: UserMenuprops) => {
         <>
           <LangLink href="/[lng]/courses" as={`/${language}/courses`}>
             <StyledButton
-              startIcon={<FontAwesomeIcon icon={faChalkboardTeacher} />}
               color="inherit"
               variant="text"
               active={active == "courses"}
+              style={{ marginLeft: "1em" }}
             >
-              Courses
+              <div>
+                <FontAwesomeIcon icon={faChalkboardTeacher} />
+                <ButtonLabel>Courses</ButtonLabel>
+              </div>
             </StyledButton>
           </LangLink>
 
@@ -63,20 +70,24 @@ const UserMenu = (props: UserMenuprops) => {
             <StyledButton
               color="inherit"
               variant="text"
-              startIcon={<FontAwesomeIcon icon={faList} />}
               active={active == "study-modules"}
             >
-              Modules
+              <div>
+                <FontAwesomeIcon icon={faList} />
+                <ButtonLabel>Modules</ButtonLabel>
+              </div>
             </StyledButton>
           </LangLink>
           <LangLink href="/[lng]/users/search" as={`/${language}/users/search`}>
             <StyledButton
               color="inherit"
               variant="text"
-              startIcon={<FontAwesomeIcon icon={faSearch} />}
               active={active == "users"}
             >
-              User search
+              <div>
+                <FontAwesomeIcon icon={faSearch} />
+                <ButtonLabel>User search</ButtonLabel>
+              </div>
             </StyledButton>
           </LangLink>
         </>

@@ -29,6 +29,7 @@ export interface RegisterCompletionUserOverView_currentUser_completions_completi
 export interface RegisterCompletionUserOverView_currentUser_completions {
   __typename: "Completion"
   id: any
+  email: string
   completion_language: string | null
   completion_link: string | null
   student_number: string | null
@@ -45,7 +46,6 @@ export interface RegisterCompletionUserOverView_currentUser {
   upstream_id: number
   first_name: string | null
   last_name: string | null
-  email: string
   completions: RegisterCompletionUserOverView_currentUser_completions[] | null
 }
 
