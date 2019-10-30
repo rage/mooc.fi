@@ -14,7 +14,8 @@ export const handleMessage = async (
 ) => {
   //Going to mutex
   const release = await mutex.acquire()
-  logger.info(kafkaMessage)
+  //logger.info(kafkaMessage)
+  logger.info("Handling message")
   let message: Message
   try {
     message = JSON.parse(kafkaMessage.value.toString("utf8"))
