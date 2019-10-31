@@ -50,11 +50,13 @@ function create(initialState: any, accessToken?: string) {
     if (networkError) console.log(`[Network error]: ${networkError}`)
   })
 
-  return new ApolloClient({
+  const cache: InMemoryCache = new InMemoryCache()
+
+  return new ApolloClient<NormalizedCacheObject>({
     link: process.browser
       ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
       : authLink.concat(uploadLink),
-    cache: new InMemoryCache().restore(initialState || {}),
+    cache: cache.restore(initialState || {}),
     ssrMode: !process.browser, // isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {
