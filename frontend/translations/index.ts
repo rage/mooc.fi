@@ -1,3 +1,5 @@
+import { isNullOrUndefined } from "util"
+
 const defaultLanguage = "en"
 
 type Translation = {
@@ -61,7 +63,7 @@ const substitute = <T>(
     const key = g.slice(2, g.length - 2)
     const variable = (variables || {})[key]
 
-    if (!variable) {
+    if (isNullOrUndefined(variable)) {
       console.warn(
         `WARNING: no variable present for translation string "${translation}" and key "${key}"`,
       )

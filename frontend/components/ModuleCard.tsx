@@ -6,7 +6,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle"
 import styled from "styled-components"
 import { mime } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
-import { AllModulesWithTranslations_study_modules } from "/static/types/AllModulesWithTranslations"
+import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
 
 const Base = styled.div`
   position: relative;
@@ -104,7 +104,7 @@ const NaviCardBodyText = styled(Typography)`
 function ModuleCard({
   module,
 }: {
-  module?: AllModulesWithTranslations_study_modules
+  module?: AllEditorModulesWithTranslations_study_modules
 }) {
   const imageUrl = module
     ? module.image

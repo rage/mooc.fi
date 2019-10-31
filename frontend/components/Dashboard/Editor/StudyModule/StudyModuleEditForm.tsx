@@ -101,8 +101,8 @@ const renderForm = ({
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
-  const image = useDebounce(values.image, 500)
-  const slug = useDebounce(values.new_slug, 500)
+  const [image] = useDebounce(values.image, 500)
+  const [slug] = useDebounce(values.new_slug, 500)
 
   const [imageFilename, setImageFilename] = useState(pixel)
 

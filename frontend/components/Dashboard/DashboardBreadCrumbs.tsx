@@ -16,7 +16,7 @@ function buildHref(props: BuildHrefProps) {
     if (i === 0) {
       if (components[i] == "users") {
         BreadCrumbLinks.push(
-          <BreadCrumb>
+          <BreadCrumb key={i}>
             <BreadCrumbLink
               href={`/${lng}/${components[i]}/search`}
               key={components[i]}
@@ -27,7 +27,7 @@ function buildHref(props: BuildHrefProps) {
         )
       } else {
         BreadCrumbLinks.push(
-          <BreadCrumb>
+          <BreadCrumb key={i}>
             <BreadCrumbLink
               href={`/${lng}/${components[i]}`}
               key={components[i]}
@@ -41,7 +41,7 @@ function buildHref(props: BuildHrefProps) {
       let componentsSoFar = components.slice(0, i + 1)
       let href = componentsSoFar.join("/")
       BreadCrumbLinks.push(
-        <BreadCrumb>
+        <BreadCrumb key={i}>
           <BreadCrumbLink href={`/${lng}/${href}`} key={components[i]}>
             {components[i]}
           </BreadCrumbLink>
