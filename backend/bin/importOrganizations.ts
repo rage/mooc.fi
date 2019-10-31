@@ -9,7 +9,7 @@ const tmc = new TmcClient()
 
 const fetchOrganizations = async () => {
   const orgInfos: OrganizationInfo[] = await tmc.getOrganizations()
-  orgInfos.forEach(p => upsertOrganization(p))
+  await Promise.all(orgInfos.map(p => upsertOrganization(p)))
 }
 
 const upsertOrganization = async (org: OrganizationInfo) => {

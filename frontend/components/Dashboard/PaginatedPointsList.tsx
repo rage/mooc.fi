@@ -95,7 +95,7 @@ function PaginatedPointsList(props: Props) {
   const [searchString, setSearchString] = useState("")
   //@ts-ignore
   const [cutterValue, setCutterValue] = useState(0)
-  const search = useDebounce(searchString, 1000)
+  const [search, setSearch] = useDebounce(searchString, 1000)
 
   // use lazy query to prevent running query on each render
   const [getData, { data, loading, error, fetchMore }] = useLazyQuery<
@@ -157,6 +157,7 @@ function PaginatedPointsList(props: Props) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setSearchString(e.target.value)
             }
+            onKeyDown={e => e.key === "Enter" && setSearch()}
           />
         </Grid>
         <Grid item xs={4}>

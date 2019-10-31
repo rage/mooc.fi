@@ -1,6 +1,6 @@
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg } from "nexus/dist"
+import { idArg, intArg, arg, booleanArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const organization = (t: PrismaObjectDefinitionBlock<"Query">) => {
@@ -8,12 +8,19 @@ const organization = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "Organization",
     args: {
       id: idArg(),
+      hidden: booleanArg(),
     },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { id } = args
+    resolve: async (_, args, ctx) => {
+      const { id, hidden } = args
       const prisma: Prisma = ctx.prisma
-      return prisma.organization({ id: id })
+
+      if (!hidden) {
+        return prisma.organization({ id })
+      }
+
+      checkAccess(ctx)
+      const res = await prisma.organizations({ where: { id, hidden } })
+      return res.length ? res[0] : null
     },
   })
 }
@@ -26,10 +33,15 @@ const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
       after: idArg(),
       last: intArg(),
       before: idArg(),
+      orderBy: arg({ type: "OrganizationOrderByInput" }),
+      hidden: booleanArg(),
     },
     resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { first, last, after, before } = args
+      const { first, last, after, before, orderBy, hidden } = args
+
+      if (hidden) {
+        checkAccess(ctx)
+      }
       const prisma: Prisma = ctx.prisma
 
       return prisma.organizations({
@@ -37,6 +49,10 @@ const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
         last: last,
         after: after,
         before: before,
+        orderBy,
+        where: {
+          hidden,
+        },
       })
     },
   })

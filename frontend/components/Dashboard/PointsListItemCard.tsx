@@ -5,7 +5,6 @@ import { pointsByGroup } from "/static/types/PointsByService"
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
-import _ from "lodash"
 import { gql } from "apollo-boost"
 import PointsDataFormatter from "/components/User/Points/PointsDataFormatter"
 
