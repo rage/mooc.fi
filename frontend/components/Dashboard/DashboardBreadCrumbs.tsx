@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import gql from "graphql-tag"
@@ -16,6 +16,7 @@ const BreadcrumbCourseQuery = gql`
       slug
       name
       course_translations {
+        id
         language
         name
       }
@@ -206,22 +207,24 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
     }
   }, [])
 
-  if (isCourseOrModule(urlRouteComponents)) {
-    urlRouteComponents.forEach((c, i) => {
-      if (
-        i > 0 &&
-        isCourseOrModule(urlRouteComponents[i - 1]) &&
-        urlRouteComponents[i] !== "new"
-      ) {
-        getAwaitedCrumbs(urlRouteComponents[i - 1], c)
+  useEffect(() => {
+    if (isCourseOrModule(urlRouteComponents)) {
+      urlRouteComponents.forEach((c, i) => {
+        if (
+          i > 0 &&
+          isCourseOrModule(urlRouteComponents[i - 1]) &&
+          urlRouteComponents[i] !== "new"
+        ) {
+          getAwaitedCrumbs(urlRouteComponents[i - 1], c)
+        }
+      })
+    } else {
+      // this might cause a needless rerender, but :x
+      if (awaitedCrumb) {
+        setAwaitedCrumb(null)
       }
-    })
-  } else {
-    // this might cause a needless rerender, but :x
-    if (awaitedCrumb) {
-      setAwaitedCrumb(null)
     }
-  }
+  }, [router.asPath])
 
   if (urlRouteComponents.length < 1) {
     return null
