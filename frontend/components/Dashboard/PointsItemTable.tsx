@@ -1,23 +1,21 @@
 import React from "react"
-import { pointsByGroup } from "/static/types/PointsByService"
+import { formattedGroupPointsDictionary } from "/util/formatPointsData"
 import PointsListItemTableChart from "/components/Dashboard/PointsListItemTableChart"
 
 interface TableProps {
-  studentPoints: pointsByGroup[]
+  studentPoints: formattedGroupPointsDictionary
   showDetailedBreakdown: boolean
   cutterValue: number
 }
 
 function PointsItemTable(props: TableProps) {
   const { studentPoints, showDetailedBreakdown, cutterValue } = props
-
   return (
     <>
       {Object.keys(studentPoints).map(function(key) {
         return (
           <PointsListItemTableChart
             title={key}
-            //@ts-ignore
             points={studentPoints[key]}
             cuttervalue={cutterValue}
             showDetailed={showDetailedBreakdown}
