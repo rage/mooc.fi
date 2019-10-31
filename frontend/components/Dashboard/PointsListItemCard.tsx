@@ -1,13 +1,13 @@
 import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
-import { pointsByGroup } from "/static/types/PointsByService"
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
-import _ from "lodash"
 import { gql } from "apollo-boost"
-import PointsDataFormatter from "/components/User/Points/PointsDataFormatter"
+import formatPointsData, {
+  formattedGroupPointsDictionary,
+} from "/util/formatPointsData"
 
 const UserFragment = gql`
   fragment UserPointsFragment on User {
@@ -55,6 +55,21 @@ const UserInformation = styled(Typography)`
 const CourseName = styled(Typography)`
   font-weight: bold;
 `
+interface PersonalDetailsDisplayProps {
+  personalDetails: PersonalDetails
+}
+const PersonalDetailsDisplay = (props: PersonalDetailsDisplayProps) => {
+  const { personalDetails } = props
+  return (
+    <>
+      <UserInformation>
+        Name: {personalDetails.firstName} {personalDetails.lastName}
+      </UserInformation>
+      <UserInformation>e-mail: {personalDetails.email}</UserInformation>
+      <UserInformation>student number: {personalDetails.sid}</UserInformation>
+    </>
+  )
+}
 interface PersonalDetails {
   firstName: string
   lastName: string
@@ -68,47 +83,48 @@ interface Props {
   showPersonalDetails?: boolean
   personalDetails?: PersonalDetails
 }
+
 function PointsListItemCard(props: Props) {
   const { pointsAll, cutterValue, showPersonalDetails, personalDetails } = props
   const [showDetails, setShowDetails] = React.useState(false)
-  const formattedPointsData: pointsByGroup[] = PointsDataFormatter({
-    pointsData: pointsAll,
-  })
+
+  const formattedPointsData: formattedGroupPointsDictionary | null = formatPointsData(
+    {
+      pointsData: pointsAll,
+    },
+  )
   let cuttervalue = 0
   if (cutterValue) {
     cuttervalue = cutterValue
   }
-  console.log(personalDetails)
+
   return (
     <Root item sm={12} lg={12}>
       {showPersonalDetails && personalDetails ? (
-        <>
-          <UserInformation>
-            Name: {personalDetails.firstName} {personalDetails.lastName}
-          </UserInformation>
-          <UserInformation>e-mail: {personalDetails.email}</UserInformation>
-          <UserInformation>
-            student number: {personalDetails.sid}
-          </UserInformation>
-        </>
+        <PersonalDetailsDisplay personalDetails={personalDetails} />
       ) : (
         <CourseName component="h2" variant="body1">
           {pointsAll.course.name}
         </CourseName>
       )}
-
-      <PointsItemTable
-        studentPoints={formattedPointsData}
-        showDetailedBreakdown={showDetails}
-        cutterValue={cuttervalue}
-      />
-      <Button
-        variant="text"
-        onClick={() => setShowDetails(!showDetails)}
-        fullWidth
-      >
-        {showDetails ? "show less" : "show detailed breakdown"}
-      </Button>
+      {formattedPointsData ? (
+        <>
+          <PointsItemTable
+            studentPoints={formattedPointsData}
+            showDetailedBreakdown={showDetails}
+            cutterValue={cuttervalue}
+          />
+          <Button
+            variant="text"
+            onClick={() => setShowDetails(!showDetails)}
+            fullWidth
+          >
+            {showDetails ? "show less" : "show detailed breakdown"}
+          </Button>
+        </>
+      ) : (
+        <p>No points data available</p>
+      )}
     </Root>
   )
 }
