@@ -137,7 +137,6 @@ MyApp.getInitialProps = async arg => {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
-    // @ts-ignore
     lng,
     url: createPath(url),
     hrefUrl,
