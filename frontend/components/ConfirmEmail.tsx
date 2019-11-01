@@ -16,7 +16,8 @@ const FormContainer = styled.div`
 export interface ConfirmEmailProps {
   onComplete: Function
 }
-//@ts-ignore
+
+// @ts-ignore
 const ConfirmEmail = (props: ConfirmEmailProps) => {
   const { language } = useContext(LanguageContext)
   const t = getSignUpTranslator(language)

@@ -72,8 +72,7 @@ const StudyModuleEdit = ({
         // TODO/FIXME: return value?
         await moduleMutation({
           variables: mutationVariables,
-          // @ts-ignore
-          refetchQueries: (result: FetchResult) => refetchQueries,
+          refetchQueries: () => refetchQueries,
         })
 
         setStatus({ message: null })
