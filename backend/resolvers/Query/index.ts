@@ -26,4 +26,3 @@ export {
 export { default as addUserCourseSettingsQueries } from "./userCourseSettings"
 export { default as addUserOrganizationQueries } from "./userOrganization"
 export { default as addEmailTemplateQueries } from "./EmailTemplate"
-export { default as addCompletionEmailQueries } from "./CompletionEmail"
