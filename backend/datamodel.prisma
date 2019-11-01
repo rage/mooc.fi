@@ -311,6 +311,7 @@ type EmailTemplate @db(name: "email_template") {
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
+  name: String
   body: String
   completion_emails: [CompletionEmail!]! @relation(name: "CompletionEmailToEmailTemplate")
 }
