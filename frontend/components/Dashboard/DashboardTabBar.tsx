@@ -36,8 +36,7 @@ function LinkTab(props: LinkTabProps) {
     <Tab
       style={{ marginTop: "1rem" }}
       component="a"
-      // @ts-ignore
-      onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {}}
+      onClick={() => {}}
       {...props}
     />
   )

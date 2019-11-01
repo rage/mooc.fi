@@ -91,9 +91,7 @@ interface Props {
 
 function PaginatedPointsList(props: Props) {
   const { courseID } = props
-  //@ts-ignore
   const [searchString, setSearchString] = useState("")
-  //@ts-ignore
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
 
