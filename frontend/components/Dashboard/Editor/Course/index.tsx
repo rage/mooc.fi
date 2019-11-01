@@ -17,7 +17,7 @@ import {
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
-import { FetchResult, PureQueryOptions } from "apollo-boost"
+import { PureQueryOptions } from "apollo-boost"
 import { toCourseForm, fromCourseForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
@@ -78,8 +78,7 @@ const CourseEdit = ({
         // TODO/FIXME: return value?
         await courseMutation({
           variables: mutationVariables,
-          // @ts-ignore
-          refetchQueries: (result: FetchResult) => refetchQueries,
+          refetchQueries: () => refetchQueries,
         })
 
         setStatus({ message: null })
