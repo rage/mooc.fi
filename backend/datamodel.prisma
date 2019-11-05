@@ -313,4 +313,5 @@ type EmailTemplate @db(name: "email_template") {
   updated_at: DateTime @updatedAt
   name: String
   body: String
+  title: String
 }
