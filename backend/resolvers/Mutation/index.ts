@@ -24,3 +24,4 @@ export {
   default as addUserCourseServiceProgressMutations,
 } from "./userCourseServiceProgress"
 export { default as addUserOrganizationMutations } from "./userOrganization"
+export { default as addEmailTemplateMutations } from "./EmailTemplate"
