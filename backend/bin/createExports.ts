@@ -27,7 +27,7 @@ const createExports = (dir: string, pattern: string) => {
         pattern[0] !== "%" ? capitalize(basename) : basename,
       )
 
-      return `export { default as ${exportName} } from "./${basename}"`
+      return `export { default as ${exportName} } from "./${basename}"`
     })
 }
 ;(() => {
@@ -35,7 +35,7 @@ const createExports = (dir: string, pattern: string) => {
     const exports = createExports(dir, pattern)
 
     const exportFile = `${dir}/${OUTPUT_FILE}`
-    const exportFileContents = `// generated ${new Date()}\n${exports.join(
+    const exportFileContents = `// generated ${new Date()}\n\n${exports.join(
       "\n",
     )}`
 

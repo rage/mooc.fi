@@ -12,6 +12,10 @@ import {
   Image,
   StudyModuleUpdateManyWithoutCoursesInput,
   StudyModuleWhereUniqueInput,
+  CourseVariantCreateWithoutCourseInput,
+  CourseUpdateInput,
+  CourseTranslation,
+  CourseVariantUpdateManyWithoutCourseInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, booleanArg, arg, idArg, intArg, floatArg } from "nexus/dist"
@@ -19,6 +23,13 @@ import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 
 import { uploadImage, deleteImage } from "./image"
+
+// for debug
+const shallowCompare = (obj1: object, obj2: object) =>
+  Object.keys(obj1).length === Object.keys(obj2).length &&
+  Object.keys(obj1).every(
+    key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
+  )
 
 const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
@@ -48,6 +59,11 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         list: true,
         required: false,
       }),
+      course_variants: arg({
+        type: "CourseVariantCreateWithoutCourseInput",
+        list: true,
+        required: false,
+      }),
       order: intArg(),
       study_module_order: intArg(),
       points_needed: intArg(),
@@ -73,6 +89,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_module_order,
         points_needed,
         automatic_completions,
+        course_variants,
       } = args
 
       const prisma: Prisma = ctx.prisma
@@ -102,6 +119,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         open_university_registration_links: !!open_university_registration_links
           ? { create: open_university_registration_links }
           : null,
+        course_variants: !!course_variants ? { create: course_variants } : null,
         order,
         study_module_order,
         points_needed,
@@ -133,6 +151,34 @@ const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
   }
 
   return filtered
+}
+
+interface ICreateMutation<T> {
+  prisma: Prisma
+  slug: string
+  data: T[]
+  field: string
+}
+
+const createMutation = async <T extends { id?: string }>({
+  prisma,
+  slug,
+  data,
+  field,
+}: ICreateMutation<T>) => {
+  const existing: T[] = await prisma.course({ slug })[field]()
+
+  const newOnes = (data || []).filter(t => !t.id)
+  const updated = (data || [])
+    .filter(t => !!t.id)
+    .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+  const removed = filterNotIncluded(existing, data)
+
+  return {
+    create: newOnes.length ? newOnes : undefined,
+    updateMany: updated.length ? updated : undefined,
+    deleteMany: removed.length ? removed : undefined,
+  }
 }
 
 const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
@@ -168,6 +214,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       study_module_order: intArg(),
       points_needed: intArg(),
       automatic_completions: booleanArg(),
+      course_variants: arg({
+        type: "CourseVariantWithIdInput",
+        list: true,
+      }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -193,6 +243,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_module_order,
         points_needed,
         automatic_completions,
+        course_variants,
       } = args
 
       let photo = args.photo
@@ -208,58 +259,34 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
 
       // FIXME: I know there's probably a better way to do this
-      const existingTranslations = await prisma
-        .course({ slug })
-        .course_translations()
-      const newTranslations: CourseTranslationCreateWithoutCourseInput[] = (
-        course_translations || []
-      ).filter(t => !t.id)
-      const updatedTranslations: CourseTranslationUpdateManyWithWhereNestedInput[] = (
-        course_translations || []
-      )
-        .filter(t => !!t.id)
-        .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-      const removedTranslationIds: CourseTranslationScalarWhereInput[] = filterNotIncluded(
-        existingTranslations,
-        course_translations,
+      const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = await createMutation(
+        {
+          prisma,
+          slug,
+          data: course_translations,
+          field: "course_translations",
+        },
       )
 
-      const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = {
-        create: newTranslations.length ? newTranslations : undefined,
-        updateMany: updatedTranslations.length
-          ? updatedTranslations
-          : undefined,
-        deleteMany: removedTranslationIds.length
-          ? removedTranslationIds
-          : undefined,
-      }
-
-      const existingRegistrationLinks = await prisma
-        .course({ slug })
-        .open_university_registration_links()
-      const newRegistrationLinks: OpenUniversityRegistrationLinkCreateWithoutCourseInput[] = (
-        open_university_registration_links || []
-      ).filter(t => !t.id)
-      const updatedRegistrationLinks: OpenUniversityRegistrationLinkUpdateManyWithWhereNestedInput[] = (
-        open_university_registration_links || []
-      )
-        .filter(t => !!t.id)
-        .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-      const removedRegistrationLinkIds = filterNotIncluded(
-        existingRegistrationLinks,
-        open_university_registration_links,
+      const registrationLinkMutation: OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput = await createMutation(
+        {
+          prisma,
+          slug,
+          data: open_university_registration_links,
+          field: "open_university_registration_links",
+        },
       )
 
-      const registrationLinkMutation: OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput = {
-        create: newRegistrationLinks.length ? newRegistrationLinks : undefined,
-        updateMany: updatedRegistrationLinks.length
-          ? updatedRegistrationLinks
-          : undefined,
-        deleteMany: removedRegistrationLinkIds.length
-          ? removedRegistrationLinkIds
-          : undefined,
-      }
+      const courseVariantMutation: CourseVariantUpdateManyWithoutCourseInput = await createMutation(
+        {
+          prisma,
+          slug,
+          data: course_variants,
+          field: "course_variants",
+        },
+      )
 
+      // this had different logic so it's not done with the same helper
       const existingStudyModules = await prisma.course({ slug }).study_modules()
       //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
       const removedModuleIds: StudyModuleWhereUniqueInput[] = (
@@ -297,6 +324,9 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             registrationLinkMutation,
           ).length
             ? registrationLinkMutation
+            : null,
+          course_variants: Object.keys(courseVariantMutation).length
+            ? courseVariantMutation
             : null,
           order,
           study_module_order,
