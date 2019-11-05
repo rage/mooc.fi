@@ -312,6 +312,7 @@ type EmailTemplate @db(name: "email_template") {
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
   name: String
-  body: String
+  txt_body: String
+  html_body: String
   title: String
 }
