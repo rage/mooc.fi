@@ -37,6 +37,19 @@ export interface CourseTranslationWithIdInput {
   name: string
 }
 
+export interface CourseVariantCreateWithoutCourseInput {
+  description?: string | null
+  id?: any | null
+  slug: string
+}
+
+export interface CourseVariantWithIdInput {
+  course?: string | null
+  description?: string | null
+  id?: string | null
+  slug: string
+}
+
 export interface OpenUniversityRegistrationLinkCreateWithoutCourseInput {
   course_code: string
   created_at?: any | null

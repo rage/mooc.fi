@@ -15,6 +15,7 @@ export const AddCourseMutation = gql`
     $course_translations: [CourseTranslationCreateWithoutCourseInput!]
     $open_university_registration_links: [OpenUniversityRegistrationLinkCreateWithoutCourseInput!]
     $study_modules: [StudyModuleWhereUniqueInput!]
+    $course_variants: [CourseVariantCreateWithoutCourseInput!]
     $order: Int
     $study_module_order: Int
   ) {
@@ -32,6 +33,7 @@ export const AddCourseMutation = gql`
       course_translations: $course_translations
       open_university_registration_links: $open_university_registration_links
       study_modules: $study_modules
+      course_variants: $course_variants
       order: $order
       study_module_order: $study_module_order
     ) {
@@ -66,6 +68,11 @@ export const AddCourseMutation = gql`
       }
       study_modules {
         id
+      }
+      course_variants {
+        id
+        slug
+        description
       }
     }
   }
@@ -89,6 +96,7 @@ export const UpdateCourseMutation = gql`
     $course_translations: [CourseTranslationWithIdInput!]
     $open_university_registration_links: [OpenUniversityRegistrationLinkWithIdInput!]
     $study_modules: [StudyModuleWhereUniqueInput!]
+    $course_variants: [CourseVariantWithIdInput!]
     $order: Int
     $study_module_order: Int
   ) {
@@ -109,6 +117,7 @@ export const UpdateCourseMutation = gql`
       course_translations: $course_translations
       open_university_registration_links: $open_university_registration_links
       study_modules: $study_modules
+      course_variants: $course_variants
       order: $order
       study_module_order: $study_module_order
     ) {
@@ -143,6 +152,11 @@ export const UpdateCourseMutation = gql`
       }
       study_modules {
         id
+      }
+      course_variants {
+        id
+        slug
+        description
       }
     }
   }

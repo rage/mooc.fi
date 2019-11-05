@@ -1,7 +1,11 @@
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../../static/types/globalTypes"
-import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import {
+  CourseFormValues,
+  CourseTranslationFormValues,
+  CourseVariantFormValues,
+} from "./types"
 import { DocumentNode } from "apollo-boost"
 
 export const initialTranslation: CourseTranslationFormValues = {
@@ -11,6 +15,12 @@ export const initialTranslation: CourseTranslationFormValues = {
   description: "",
   link: "",
   open_university_course_code: undefined,
+}
+
+export const initialVariant: CourseVariantFormValues = {
+  id: undefined,
+  slug: "",
+  description: "",
 }
 
 export const initialValues: CourseFormValues = {
@@ -32,6 +42,7 @@ export const initialValues: CourseFormValues = {
   open_university_registration_links: [],
   order: undefined,
   study_module_order: undefined,
+  course_variants: [],
 }
 
 export const statuses = [
@@ -131,6 +142,48 @@ const courseEditSchema = ({
           ),
         description: Yup.string(),
         link: Yup.string(),
+      }),
+    ),
+    course_variants: Yup.array().of(
+      Yup.object().shape({
+        slug: Yup.string()
+          .required("required")
+          .trim()
+          .matches(/^[^\/\\\s]*$/, "can't include spaces or slashes")
+          .test("unique", "cannot have two variants with same slug", function(
+            this: Yup.TestContext,
+            value?: any,
+          ): boolean {
+            const {
+              context,
+              path,
+            }: { context?: any; path?: string } = this.options
+            if (!context) {
+              return true
+            }
+
+            const {
+              values: { course_variants },
+            } = context
+
+            if (!value || value === "") {
+              return true
+            }
+
+            const currentIndexMatch =
+              (path || "").match(/^.*\[(\d+)\].*$/) || []
+            const currentIndex =
+              currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+            const otherSlugs = course_variants
+              .filter(
+                (c: CourseVariantFormValues, index: number) =>
+                  c.slug !== "" && index !== currentIndex,
+              )
+              .map((c: CourseVariantFormValues) => c.slug)
+
+            return otherSlugs.indexOf(value) === -1
+          }),
+        description: Yup.string(),
       }),
     ),
     order: Yup.number()
