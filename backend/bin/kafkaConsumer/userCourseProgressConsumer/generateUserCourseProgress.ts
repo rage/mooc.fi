@@ -4,7 +4,9 @@ import {
   Course,
   User,
   UserCourseSettings,
+  EmailTemplate,
 } from "../../../generated/prisma-client"
+const nodemailer = require("nodemailer")
 
 export const generateUserCourseProgress = async (
   userCourseProgress: UserCourseProgress,
@@ -61,6 +63,8 @@ export const generateUserCourseProgress = async (
         completion_language:
           userCourseSettings != null ? userCourseSettings.language : "unknown",
       })
+      const template = await prisma.course({ id: course.id }).completion_email()
+      sendMail(user, template)
     }
   }
   await prisma.updateUserCourseProgress({
@@ -71,4 +75,29 @@ export const generateUserCourseProgress = async (
       n_points: total_n_points,
     },
   })
+}
+
+async function sendMail(user: User, template: EmailTemplate) {
+  //const { htmlTemplate, textTemplate } = getTemplates(student, title);
+  let testAccount = await nodemailer.createTestAccount()
+  let transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: testAccount.user, // generated ethereal user
+      pass: testAccount.pass, // generated ethereal password
+    },
+  })
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"mooc.fi" <noreply@mooc.fi>', // sender address
+    to: user.email, // list of receivers
+    subject: template.title, // Subject line
+    text: template.txt_body, // plain text body
+    html: template.html_body, // html body
+  })
+  console.log("Message sent: %s", info.messageId)
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info))
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
