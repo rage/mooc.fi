@@ -67,8 +67,8 @@
     "nexus-prisma-generate": "^0.3.7",
     "npm-check": "^5.9.0",
     "tmc-client-js": "0.0.9",
-    "ts-node": "^8.1.0",
-    "ts-node-dev": "^1.0.0-pre.32",
-    "typescript": "^3.4.5"
+    "ts-node": "^8.4.1",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.2"
   }
 }

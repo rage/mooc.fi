@@ -23,9 +23,7 @@ async function getElementsOfAiInfo() {
   const promises = elementsOfAiTags.map(async tag => {
     let usernames = await getPassedUsernamesByTag(tag)
     console.log(
-      `Got passed students from quiznator! ${
-        usernames.length
-      } students have passed ${tag} so far.`,
+      `Got passed students from quiznator! ${usernames.length} students have passed ${tag} so far.`,
     )
     usernames = await removeDataThatIsInDBAlready(usernames, "elements-of-ai")
     let basicInfo = await tmcService.getBasicInfoByUsernames(usernames)

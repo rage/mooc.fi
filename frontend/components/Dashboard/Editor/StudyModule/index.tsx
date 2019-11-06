@@ -45,8 +45,7 @@ const StudyModuleEdit = ({
   const validationSchema = studyModuleEditSchema({
     client,
     checkSlug,
-    initialSlug:
-      module && module.slug && module.slug !== "" ? module.slug : null,
+    initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
   })
 
   const onSubmit = useCallback(

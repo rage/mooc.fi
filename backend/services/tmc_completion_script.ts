@@ -8,13 +8,7 @@ function fetchAccessToken() {
   return new Promise((resolve, _reject) => {
     console.log("Fetching tmc access token...")
     exec(
-      `curl -fsS -XPOST $TMC_HOST/oauth/token --data-urlencode "client_id=${
-        process.env.TMC_CLIENT_ID
-      }" --data-urlencode "client_secret=${
-        process.env.TMC_CLIENT_SECRET
-      }" --data-urlencode "username=${
-        process.env.TMC_USERNAME
-      }" --data-urlencode "password=$TMC_PASSWORD" --data-urlencode "grant_type=password" | jq -r '.access_token'`,
+      `curl -fsS -XPOST $TMC_HOST/oauth/token --data-urlencode "client_id=${process.env.TMC_CLIENT_ID}" --data-urlencode "client_secret=${process.env.TMC_CLIENT_SECRET}" --data-urlencode "username=${process.env.TMC_USERNAME}" --data-urlencode "password=$TMC_PASSWORD" --data-urlencode "grant_type=password" | jq -r '.access_token'`,
       { maxBuffer: 1024 * 1000 },
       (err, accessToken) => {
         if (err) {
@@ -39,9 +33,7 @@ export async function getAccessToken() {
 
 async function getBasicInfoByUsernames(usernames) {
   const res = await axios.post(
-    `${
-      process.env.TMC_HOST
-    }/api/v8/users/basic_info_by_usernames?extra_fields=elements-of-ai&user_fields=1`,
+    `${process.env.TMC_HOST}/api/v8/users/basic_info_by_usernames?extra_fields=elements-of-ai&user_fields=1`,
     {
       usernames: usernames,
     },

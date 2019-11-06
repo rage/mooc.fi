@@ -23,7 +23,7 @@ const LangLink = (props: LangLinkProps): any => {
       const _children = React.Children.map(children, (child, idx) => {
         if (idx === 0) {
           // @ts-ignore
-          if (child.type && child.type.target === "a") {
+          if (child?.type?.target === "a") {
             return React.cloneElement(child, { href: parsedAs })
           }
           console.warn(

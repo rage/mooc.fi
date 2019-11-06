@@ -16,10 +16,8 @@ const FooterDownPusherWrapper = styled.div`
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const lng = React.useContext(LanguageContext)
-  let isHomePage = false
-  if (lng.hrefUrl == "/") {
-    isHomePage = true
-  }
+  const isHomePage = lng.hrefUrl === "/"
+
   return (
     <div>
       <SkipLink />

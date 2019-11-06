@@ -4,7 +4,7 @@ import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints
 import { useQuery } from "@apollo/react-hooks"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
-import { StudentHasPoints } from "/components/User/Points/PointsList"
+import { studentHasPoints } from "/components/User/Points/PointsList"
 import PointsListGrid from "/components/User/Points/PointsListGrid"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
@@ -23,9 +23,9 @@ const ProfilePointsDisplay = () => {
     return <Spinner />
   }
 
-  const studentHasPoints = StudentHasPoints({ pointsData: data })
+  const hasPoints = studentHasPoints({ pointsData: data })
   console.log(data)
-  if (studentHasPoints) {
+  if (hasPoints) {
     return (
       <>
         <PointsListGrid data={data} showOnlyTen={true} />

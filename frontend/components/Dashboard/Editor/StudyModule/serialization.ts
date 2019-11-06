@@ -18,10 +18,8 @@ export const toStudyModuleForm = ({
         ...module,
         image: module.image || "",
         new_slug: module.slug,
-        order:
-          module.order !== undefined && module.order !== null
-            ? module.order
-            : undefined,
+        order: module.order ?? undefined,
+        study_module_translations: module?.study_module_translations ?? [],
       }
     : initialValues
 
@@ -30,23 +28,21 @@ export const fromStudyModuleForm = ({
 }: {
   values: StudyModuleFormValues
 }) => {
-  const study_module_translations = (values.study_module_translations || [])
-    .length
-    ? ((values.study_module_translations || []).map(
-        (c: StudyModuleTranslationFormValues) => ({
-          ...omit(c, "__typename"),
-          id: !c.id || c.id === "" ? null : c.id,
-        }),
-      ) as (
-        | Omit<
-            addStudyModule_addStudyModule_study_module_translations,
-            "__typename"
-          >
-        | Omit<
-            updateStudyModule_updateStudyModule_study_module_translations,
-            "__typename"
-          >)[])
-    : null
+  const study_module_translations = values?.study_module_translations?.map(
+    (c: StudyModuleTranslationFormValues) => ({
+      ...omit(c, "__typename"),
+      id: !c.id || c.id === "" ? null : c.id,
+    }),
+  ) as (
+    | Omit<
+        addStudyModule_addStudyModule_study_module_translations,
+        "__typename"
+      >
+    | Omit<
+        updateStudyModule_updateStudyModule_study_module_translations,
+        "__typename"
+      >
+  )[]
 
   return {
     ...values,
