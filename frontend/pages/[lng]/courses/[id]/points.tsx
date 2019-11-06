@@ -5,14 +5,16 @@ import { NextPageContext as NextContext } from "next"
 import AdminError from "/components/Dashboard/AdminError"
 import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
-import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import PointsExportButton from "/components/Dashboard/PointsExportButton"
-import { HOneNoBackground } from "/components/Text/headers"
+import {
+  HOneNoBackground,
+  SubtitleNoBackground,
+} from "/components/Text/headers"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -66,14 +68,9 @@ const Points = (props: CompletionsProps) => {
         <HOneNoBackground component="h1" variant="h1" align="center">
           {data.course.name}
         </HOneNoBackground>
-        <Typography
-          component="p"
-          variant="subtitle1"
-          align="center"
-          style={{ marginBottom: "2rem" }}
-        >
+        <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           Points
-        </Typography>
+        </SubtitleNoBackground>
         <PointsExportButton slug={slug} />
         <PaginatedPointsList courseID={data.course.id} />
       </Container>

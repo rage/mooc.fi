@@ -8,12 +8,14 @@ import { WideContainer } from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import LanguageContext from "/contexes/LanguageContext"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
-import Typography from "@material-ui/core/Typography"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
-import { HOneNoBackground } from "/components/Text/headers"
+import {
+  HOneNoBackground,
+  SubtitleNoBackground,
+} from "/components/Text/headers"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -75,14 +77,9 @@ const Completions = (props: CompletionsProps) => {
         <HOneNoBackground component="h1" variant="h1" align="center">
           {data.course.name}
         </HOneNoBackground>
-        <Typography
-          component="p"
-          variant="subtitle1"
-          align="center"
-          style={{ marginBottom: "2rem" }}
-        >
+        <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           Completions
-        </Typography>
+        </SubtitleNoBackground>
         <LanguageSelector
           handleLanguageChange={handleLanguageChange}
           languageValue={lng}
