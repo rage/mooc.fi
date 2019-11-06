@@ -9,7 +9,6 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
-// import Spinner from "/components/Spinner"
 import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
@@ -17,6 +16,7 @@ import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
+import { HOneNoBackground } from "/components/Text/headers"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -69,10 +69,6 @@ export const StudyModuleQuery = gql`
   }
 `
 
-const Header = styled(Typography)`
-  margin-top: 1em;
-`
-
 const ErrorContainer = styled(Paper)`
   padding: 1em;
 `
@@ -107,17 +103,9 @@ const EditCourse = (props: EditCourseProps) => {
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
-  /*   if (courseLoading || studyModulesLoading) {
-    return <Spinner />
-  } */
-
   if (courseError || studyModulesError) {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>
   }
-
-  /*   if (!courseData) {
-    return <div>Hmm, no course data</div>
-  } */
 
   const listLink = `${language ? "/" + language : ""}/courses`
 
@@ -128,9 +116,9 @@ const EditCourse = (props: EditCourseProps) => {
   return (
     <section>
       <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        <HOneNoBackground component="h1" variant="h1" align="center">
           Edit course
-        </Header>
+        </HOneNoBackground>
         {courseLoading || studyModulesLoading ? (
           <FormSkeleton />
         ) : courseData!.course ? (

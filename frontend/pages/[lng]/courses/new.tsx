@@ -1,5 +1,4 @@
 import React from "react"
-import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
@@ -8,9 +7,9 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import styled from "styled-components"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
+import { HOneNoBackground } from "/components/Text/headers"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -20,10 +19,6 @@ export const StudyModuleQuery = gql`
       slug
     }
   }
-`
-
-const Header = styled(Typography)`
-  margin-top: 1em;
 `
 
 interface NewCourseProps {
@@ -48,9 +43,9 @@ const NewCourse = (props: NewCourseProps) => {
   return (
     <section>
       <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        <HOneNoBackground component="h1" variant="h1" align="center">
           Create a new course
-        </Header>
+        </HOneNoBackground>
         {loading ? (
           <FormSkeleton />
         ) : (
