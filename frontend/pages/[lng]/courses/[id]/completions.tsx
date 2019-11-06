@@ -30,16 +30,15 @@ interface CompletionsProps {
 const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)
-  let slug: string = ""
-  let lng: string = ""
-  if (router && router.query) {
-    if (typeof router.query.language === "string") {
-      lng = router.query.language
-    }
-    if (typeof router.query.id === "string") {
-      slug = router.query.id
-    }
-  }
+
+  const slug =
+    router?.query?.id && typeof router.query.id === "string"
+      ? router.query.id
+      : ""
+  const lng =
+    router?.query?.language && typeof router.query.language === "string"
+      ? router.query.language
+      : ""
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     router.push(
@@ -49,13 +48,13 @@ const Completions = (props: CompletionsProps) => {
     )
   }
 
-  if (!admin) {
-    return <AdminError />
-  }
-
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },
   })
+
+  if (!admin) {
+    return <AdminError />
+  }
 
   //TODO add circular progress
   if (loading) {

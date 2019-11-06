@@ -64,9 +64,39 @@ function PointsExportButton(props: PointsExportButtonProps) {
 
 async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
   console.log("data in flatten", data)
+
   const newData = data.map(datum => {
-    const newDatum: any = {}
-    newDatum.user_id = datum.user.upstream_id
+    const {
+      upstream_id,
+      first_name,
+      last_name,
+      email,
+      student_number,
+      real_student_number,
+    } = datum?.user
+    const { course_variant, country, language } =
+      datum?.UserCourseSettings ?? {}
+
+    const newDatum: any = {
+      user_id: upstream_id,
+      first_name: first_name?.replace(/\s+/g, " ").trim() ?? "",
+      last_name: last_name?.replace(/\s+/g, " ").trim() ?? "",
+      email: email?.replace(/\s+/g, " ").trim() ?? "",
+      student_number: student_number?.replace(/\s+/g, " ").trim() ?? "",
+      confirmed_student_number:
+        real_student_number?.replace(/\s+/g, " ").trim() ?? "",
+      course_variant: course_variant?.replace(/\s+/g, " ").trim() ?? "",
+      country: country?.replace(/\s+/g, " ").trim() ?? "",
+      language: language?.replace(/\s+/g, " ").trim() ?? "",
+      ...(datum?.progress?.reduce(
+        (obj: any, progress: any) => ({
+          ...obj,
+          [progress.group]: progress.n_points,
+        }),
+        {},
+      ) ?? {}),
+    }
+    /*     newDatum.user_id = datum.user.upstream_id
     newDatum.first_name =
       datum.user.first_name != null
         ? datum.user.first_name.replace(/\s+/g, " ").trim()
@@ -102,12 +132,12 @@ async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
       datum.UserCourseSettings &&
       (datum.UserCourseSettings.language != null
         ? datum.UserCourseSettings.language.replace(/\s+/g, " ").trim()
-        : "")
+        : "") */
 
-    datum.progress.forEach((progress: any) => {
+    /*     datum.progress.forEach((progress: any) => {
       newDatum[progress.group] = progress.n_points
     })
-
+ */
     return newDatum
   })
   return newData

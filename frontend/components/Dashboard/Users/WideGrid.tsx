@@ -97,10 +97,7 @@ const WideGrid = ({
       <TableWrapper>
         <Table>
           <TableHead>
-            {rowsPerPage >= 50 &&
-            data &&
-            data.userDetailsContains &&
-            data.userDetailsContains.edges.length ? (
+            {rowsPerPage >= 50 && data?.userDetailsContains?.edges?.length ? (
               <PaginationComponent />
             ) : null}
             <TableRow>
@@ -113,12 +110,7 @@ const WideGrid = ({
             </TableRow>
           </TableHead>
           <RenderResults
-            data={
-              (data &&
-                data.userDetailsContains &&
-                data.userDetailsContains.edges) ||
-              []
-            }
+            data={data?.userDetailsContains?.edges ?? []}
             loading={loading}
           />
           <TableFooter>

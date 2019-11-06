@@ -1,10 +1,8 @@
-export const MapLangToLanguage = new Map(
-  Object.entries({
-    en_US: "English",
-    fi_FI: "Suomi",
-    sv_SE: "Swedish",
-  }),
-)
+export const mapLangToLanguage: Record<string, string> = {
+  en_US: "English",
+  fi_FI: "Suomi",
+  sv_SE: "Swedish",
+}
 
 export function formatDateTime(date: string) {
   const dateToFormat = new Date(date)

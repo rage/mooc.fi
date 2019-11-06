@@ -48,8 +48,7 @@ const CourseEdit = ({
   const validationSchema = courseEditSchema({
     client,
     checkSlug,
-    initialSlug:
-      course && course.slug && course.slug !== "" ? course.slug : null,
+    initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
   })
 
   const onSubmit = useCallback(
