@@ -1,8 +1,10 @@
-import React, { useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
-import getInstallationTranslator from "/translations/installation"
+import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
+import getUserOS from "/util/getUserOS"
+import OSSelector from "/components/Installation/OSSelector"
+import MDX_Linux from "/static/md_pages/netbeans_installation_fi.mdx"
+import MDX_Windows from "/static/md_pages/netbeans_installation_windows_fi.mdx"
 
 const Background = styled.section`
   background-color: #006877;
@@ -24,31 +26,41 @@ const TitleBackground = styled.div`
   margin-bottom: 1em;
 `
 
-const ContentBox = styled.div`
+export const ContentBox = styled.div`
   background-color: white;
   max-width: 80%;
   border: 3px solid gray;
   border-radius: 15px;
   margin-left: auto;
   margin-right: auto;
+  padding: 3em;
+  margin-bottom: 3em;
 `
 
 const NetBeans = () => {
-  const siteLanguageDetails = useContext(LanguageContext)
-  const t = getInstallationTranslator(siteLanguageDetails.language)
+  let userOS = getUserOS()
+  userOS = "Windows"
+
   return (
     <Background>
       <TitleBackground>
         <Title component="h1" variant="h1" align="center">
-          {t("title")}
+          title
         </Title>
         <Subtitle variant="subtitle1" align="center">
-          {t("subtitle")}
+          subtitle
         </Subtitle>
       </TitleBackground>
-      <ContentBox>lalalalalalalalalal</ContentBox>
+      <ContentBox>
+        <OSSelector OS={userOS} />
+        {userOS === "Linux" ? <MDX_Linux /> : <MDX_Windows />}
+      </ContentBox>
     </Background>
   )
+}
+
+NetBeans.getInitialProps = () => {
+  return {}
 }
 
 export default NetBeans

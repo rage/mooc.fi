@@ -3,14 +3,16 @@ import { isSignedIn } from "/lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import Container from "/components/Container"
-import Title from "/components/User/Title"
 import PointsList from "/components/User/Points/PointsList"
+import { HOneNoBackground } from "/components/Text/headers"
 
 function Points() {
   return (
     <section>
       <Container>
-        <Title titleText="Points" />
+        <HOneNoBackground variant="h1" component="h1" align="center">
+          Points
+        </HOneNoBackground>
         <PointsList />
       </Container>
     </section>

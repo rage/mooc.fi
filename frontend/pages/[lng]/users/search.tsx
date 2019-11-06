@@ -3,13 +3,7 @@ import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
-import {
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  useMediaQuery,
-} from "@material-ui/core"
+import { Button, TextField, IconButton, useMediaQuery } from "@material-ui/core"
 import FirstPageIcon from "@material-ui/icons/FirstPage"
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
@@ -24,6 +18,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
+import { HOneNoBackground } from "/components/Text/headers"
 
 interface UserSearchProps {
   namespacesRequired: string[]
@@ -213,14 +208,9 @@ const UserSearch = (props: UserSearchProps) => {
   return (
     <>
       <Container>
-        <Typography
-          component="h1"
-          variant="h2"
-          gutterBottom={true}
-          align="center"
-        >
+        <HOneNoBackground component="h1" variant="h1" align="center">
           User Search
-        </Typography>
+        </HOneNoBackground>
         <div>
           <StyledForm
             onSubmit={async (event: any) => {

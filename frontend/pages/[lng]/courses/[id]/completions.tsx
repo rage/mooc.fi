@@ -13,6 +13,7 @@ import { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
+import { HOneNoBackground } from "/components/Text/headers"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -71,14 +72,9 @@ const Completions = (props: CompletionsProps) => {
       <DashboardTabBar slug={slug} selectedValue={1} />
 
       <WideContainer>
-        <Typography
-          component="h1"
-          variant="h1"
-          align="center"
-          style={{ marginTop: "2rem", marginBottom: "0.5rem" }}
-        >
+        <HOneNoBackground component="h1" variant="h1" align="center">
           {data.course.name}
-        </Typography>
+        </HOneNoBackground>
         <Typography
           component="p"
           variant="subtitle1"

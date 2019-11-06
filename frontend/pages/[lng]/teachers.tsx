@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import LanguageContext from "/contexes/LanguageContext"
 import getTeachersTranslator from "/translations/teachers"
+import { HOneNoBackground } from "/components/Text/headers"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;
@@ -49,8 +50,10 @@ const ForTeachers = () => {
   const t = getTeachersTranslator(lng.language)
   return (
     <section>
+      <HOneNoBackground variant="h1" component="h1" align="center">
+        {t("siteTitle")}
+      </HOneNoBackground>
       <ContentBlock>
-        <Header variant="h3">{t("siteTitle")}</Header>
         <TextBlock>
           <span dangerouslySetInnerHTML={{ __html: t("siteIntro") }} />
         </TextBlock>

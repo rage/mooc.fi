@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { HOneNoBackground } from "/components/Text/headers"
 
 const ExplanationRoot = styled.div`
   max-width: 80%;
@@ -22,22 +23,6 @@ const ExplanationRoot = styled.div`
   }
 `
 
-const Title = styled(Typography)`
-  padding-top: 0.7em;
-  padding-bottom: 0.7em;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-
-  @media (min-width: 600px) {
-    padding-top: 1em;
-    padding-bottom: 1em;
-  }
-
-  @media (min-width: 960px) {
-    padding-left: 1em;
-    padding-right: 1em;
-  }
-`
 const Subtitle = styled(Typography)`
   padding-right: 1.5rem;
   padding-left: 1.5rem;
@@ -73,9 +58,9 @@ function Explanation() {
 
   return (
     <ExplanationRoot>
-      <Title component="h1" variant="h1">
+      <HOneNoBackground component="h1" variant="h1">
         {t("tagLine")}
-      </Title>
+      </HOneNoBackground>
 
       <Subtitle component="p" variant="subtitle1">
         {t("intro")}
