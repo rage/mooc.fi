@@ -7,6 +7,7 @@ module.exports = {
       "./components/**/*.ts",
       "./pages/**/*.ts",
       "./graphql/**/*.ts",
+      "./lib/**/*.tsx",
     ],
     excludes: ["node_modules"],
     service: {

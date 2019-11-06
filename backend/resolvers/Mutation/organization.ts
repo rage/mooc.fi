@@ -16,8 +16,10 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       checkAccess(ctx)
       const { name, slug } = args
       const prisma: Prisma = ctx.prisma
-      let secret
-      let result
+
+      let secret: string
+      let result: Organization[]
+
       do {
         secret = await generateSecret()
         result = await prisma.organizations({ where: { secret_key: secret } })

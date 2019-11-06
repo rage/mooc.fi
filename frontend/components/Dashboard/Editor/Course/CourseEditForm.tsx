@@ -30,7 +30,7 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "/util/imageUtils"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
+import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
