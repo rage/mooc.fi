@@ -31,6 +31,14 @@ const nextConfiguration = {
         priority: 10,
         test: /[\\\/](node_modules[\\\/](lodash[\\\/]|(formik|lodash-es|yup|react-ga)[\\\/]))/,
       }
+      config.optimization.splitChunks.cacheGroups.xlsx = {
+        chunks: "all",
+        enforce: true,
+        minChunks: 1,
+        name: "xlsx",
+        priority: 10,
+        test: /[\\\/](node_modules[\\\/]xlsx[\\\/])/,
+      }
     } catch (e) {
       // fall through
     }

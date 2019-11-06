@@ -32,6 +32,7 @@ class MyApp extends App {
       logInOrOut: this.toggleLogin,
     }
   }
+
   componentDidMount() {
     initGA()
     logPageView()
@@ -52,7 +53,9 @@ class MyApp extends App {
       lng,
       url,
       hrefUrl,
+      currentUser,
     } = this.props
+
     return (
       <Container>
         <Head>
@@ -63,7 +66,7 @@ class MyApp extends App {
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
-                <UserDetailContext.Provider value={admin}>
+                <UserDetailContext.Provider value={{ admin, currentUser }}>
                   <LanguageContext.Provider
                     value={{ language: lng, url, hrefUrl }}
                   >
@@ -134,7 +137,6 @@ MyApp.getInitialProps = async arg => {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
-    // @ts-ignore
     lng,
     url: createPath(url),
     hrefUrl,
