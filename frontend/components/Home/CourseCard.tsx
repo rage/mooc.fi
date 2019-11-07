@@ -2,11 +2,12 @@ import React from "react"
 import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
 import ButtonBase from "@material-ui/core/ButtonBase"
-import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { CardTitle } from "/components/Text/headers"
+import { CardText } from "/components/Text/paragraphs"
 
 interface BackgroundProps {
   component: string
@@ -93,12 +94,12 @@ const CourseCard = ({ course }: CourseCardProps) => (
         <TextArea>
           {course ? (
             <>
-              <Typography component="h3" variant="h3" gutterBottom={true}>
+              <CardTitle component="h3" variant="h3">
                 {course.name}
-              </Typography>
-              <Typography component="p" variant="body1" paragraph align="left">
+              </CardTitle>
+              <CardText component="p" variant="body1" paragraph align="left">
                 {course.description}
-              </Typography>
+              </CardText>
             </>
           ) : (
             <>

@@ -1,8 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import Typography from "@material-ui/core/Typography"
 import LinearProgress from "@material-ui/core/LinearProgress"
 import { formattedGroupPoints } from "/util/formatPointsData"
+import { CardSubtitle } from "components/Text/headers"
 
 const ChartContainer = styled.div`
   display: flex;
@@ -12,14 +12,11 @@ const ChartContainer = styled.div`
   margin-bottom: 1rem;
 `
 
-const ChartTitle = styled(Typography)`
-  margin-right: 5px;
-  width: 9%;
-`
-
 const ColoredProgressBar = styled(({ ...props }) => (
   <LinearProgress {...props} />
 ))`
+  margin-top: 0.7rem;
+  margin-left: 0.5rem;
   background-color: #f5f5f5;
   & .MuiLinearProgress-barColorPrimary {
     background-color: #3066c0;
@@ -47,10 +44,16 @@ function PointsListItemTableChart(props: Props) {
   return (
     <>
       <ChartContainer>
-        <ChartTitle style={{ marginRight: "1rem" }}>{title}</ChartTitle>
-        <ChartTitle align="right">
+        <CardSubtitle
+          component="h3"
+          variant="body1"
+          style={{ marginRight: "1rem" }}
+        >
+          {title}
+        </CardSubtitle>
+        <CardSubtitle align="right">
           {points.courseProgress.n_points} / {points.courseProgress.max_points}
-        </ChartTitle>
+        </CardSubtitle>
         <ColoredProgressBar
           variant="determinate"
           value={value}
@@ -66,15 +69,19 @@ function PointsListItemTableChart(props: Props) {
                 style={{ width: "72%", marginLeft: "18%" }}
                 key={Math.floor(Math.random() * 100000)}
               >
-                <Typography style={{ marginRight: 5, width: "25%" }}>
+                <CardSubtitle
+                  component="h4"
+                  variant="body1"
+                  style={{ marginRight: 5, width: "25%" }}
+                >
                   {s["service"]}
-                </Typography>
-                <Typography
+                </CardSubtitle>
+                <CardSubtitle
                   style={{ marginRight: 5, width: "25%" }}
                   align="right"
                 >
                   {s["n_points"]} / {s["max_points"]}
-                </Typography>
+                </CardSubtitle>
                 <ColoredProgressBar
                   variant="determinate"
                   value={(s["n_points"] / s["max_points"]) * 100}

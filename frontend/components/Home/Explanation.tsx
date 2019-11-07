@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 
 const ExplanationRoot = styled.div`
   max-width: 80%;
@@ -58,9 +58,9 @@ function Explanation() {
 
   return (
     <ExplanationRoot>
-      <HOneNoBackground component="h1" variant="h1">
+      <H1NoBackground component="h1" variant="h1">
         {t("tagLine")}
-      </HOneNoBackground>
+      </H1NoBackground>
 
       <Subtitle component="p" variant="subtitle1">
         {t("intro")}

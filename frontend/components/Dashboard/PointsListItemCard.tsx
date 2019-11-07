@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, Typography } from "@material-ui/core"
+import { Grid } from "@material-ui/core"
 import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
@@ -8,6 +8,7 @@ import { gql } from "apollo-boost"
 import formatPointsData, {
   formattedGroupPointsDictionary,
 } from "/util/formatPointsData"
+import { CardTitle, CardSubtitle } from "/components/Text/headers"
 
 const UserFragment = gql`
   fragment UserPointsFragment on User {
@@ -48,13 +49,6 @@ const Root = styled(Grid)`
   padding: 1rem;
 `
 
-const UserInformation = styled(Typography)`
-  color: gray;
-`
-
-const CourseName = styled(Typography)`
-  font-weight: bold;
-`
 interface PersonalDetailsDisplayProps {
   personalDetails: PersonalDetails
 }
@@ -62,11 +56,11 @@ const PersonalDetailsDisplay = (props: PersonalDetailsDisplayProps) => {
   const { personalDetails } = props
   return (
     <>
-      <UserInformation>
+      <CardSubtitle>
         Name: {personalDetails.firstName} {personalDetails.lastName}
-      </UserInformation>
-      <UserInformation>e-mail: {personalDetails.email}</UserInformation>
-      <UserInformation>student number: {personalDetails.sid}</UserInformation>
+      </CardSubtitle>
+      <CardSubtitle>e-mail: {personalDetails.email}</CardSubtitle>
+      <CardSubtitle>student number: {personalDetails.sid}</CardSubtitle>
     </>
   )
 }
@@ -103,9 +97,9 @@ function PointsListItemCard(props: Props) {
       {showPersonalDetails && personalDetails ? (
         <PersonalDetailsDisplay personalDetails={personalDetails} />
       ) : (
-        <CourseName component="h2" variant="body1">
+        <CardTitle component="h2" variant="h3">
           {pointsAll.course.name}
-        </CourseName>
+        </CardTitle>
       )}
       {formattedPointsData ? (
         <>

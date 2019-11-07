@@ -10,7 +10,7 @@ import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import ModuleGrid from "/components/ModuleGrid"
 
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 
 const StudyModules = (admin: boolean) => {
@@ -41,9 +41,9 @@ const StudyModules = (admin: boolean) => {
   return (
     <>
       <WideContainer>
-        <HOneNoBackground component="h1" variant="h1" align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           All Study Modules
-        </HOneNoBackground>
+        </H1NoBackground>
         <ModuleGrid modules={data.study_modules} />
       </WideContainer>
     </>

@@ -9,7 +9,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"
 import Spinner from "/components/Spinner"
-import { HOneBackground } from "/components/Text/headers"
+import { H1Background } from "/components/Text/headers"
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
 
 const Background = styled.section`
@@ -38,9 +38,9 @@ const Courses = (admin: boolean) => {
   return (
     <Background>
       <WideContainer>
-        <HOneBackground component="h1" variant="h1" align="center">
+        <H1Background component="h1" variant="h1" align="center">
           All Courses
-        </HOneBackground>
+        </H1Background>
         <CourseGrid courses={data.courses} />
       </WideContainer>
     </Background>

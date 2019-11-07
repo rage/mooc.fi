@@ -5,7 +5,6 @@ import {
   CardContent,
   CardActionArea,
   CardMedia as MUICardMedia,
-  Typography,
   Button,
 } from "@material-ui/core"
 
@@ -16,6 +15,7 @@ import CourseImage from "./CourseImage"
 import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
+import { CardTitle } from "/components/Text/headers"
 
 const CardBase = styled(Card)<{ ishidden?: number | null }>`
   padding: 0.8em;
@@ -68,9 +68,9 @@ const CourseCard = React.memo(
           )}
         </CardMedia>
         <CardContent style={{ flex: 1 }}>
-          <Typography variant="h5" component="h2" gutterBottom={true}>
+          <CardTitle variant="h3" component="h2" align="left">
             {course ? course.name : "New Course"}
-          </Typography>
+          </CardTitle>
         </CardContent>
         <CardActionArea component="div">
           {course ? (
