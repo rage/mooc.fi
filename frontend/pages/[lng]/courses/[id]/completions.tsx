@@ -27,6 +27,7 @@ interface CompletionsProps {
   admin: boolean
   router: SingletonRouter
 }
+
 const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)

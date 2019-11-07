@@ -9,7 +9,7 @@ const addCourseTranslation = async (
   t.field("addCourseTranslation", {
     type: "CourseTranslation",
     args: {
-      language: stringArg(),
+      language: stringArg({ required: true }),
       name: stringArg(),
       description: stringArg(),
       link: stringArg(),
@@ -19,11 +19,12 @@ const addCourseTranslation = async (
       checkAccess(ctx, { allowOrganizations: false })
       const { language, name, description, link, course } = args
       const prisma: Prisma = ctx.prisma
+
       const newCourseTranslation: CourseTranslation = await prisma.createCourseTranslation(
         {
           language: language,
-          name: name,
-          description: description,
+          name: name ?? "",
+          description: description ?? "",
           link: link,
           course: { connect: { id: course } },
         },
@@ -40,7 +41,7 @@ const updateCourseTranslation = (
     type: "CourseTranslation",
     args: {
       id: idArg({ required: true }),
-      language: stringArg(),
+      language: stringArg({ required: true }),
       name: stringArg(),
       description: stringArg(),
       link: stringArg(),
@@ -50,6 +51,7 @@ const updateCourseTranslation = (
       checkAccess(ctx)
       const { id, language, name, description, link, course } = args
       const prisma: Prisma = ctx.prisma
+
       return prisma.updateCourseTranslation({
         where: { id: id },
         data: {

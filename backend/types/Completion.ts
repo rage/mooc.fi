@@ -21,7 +21,7 @@ const Completion = prismaObjectType({
     /*     t.field("course", {
       type: "Course",
       args: {
-        language: stringArg({ required: false }),
+        language: stringArg({ required: false }),
       },
       resolve: async (parent, args, ctx) => {
         const { language } = args

@@ -9,7 +9,7 @@ const addStudyModuleTranslation = async (
   t.field("addStudyModuleTranslation", {
     type: "StudyModuleTranslation",
     args: {
-      language: stringArg(),
+      language: stringArg({ required: true }),
       name: stringArg(),
       description: stringArg(),
       study_module: idArg(),
@@ -18,11 +18,12 @@ const addStudyModuleTranslation = async (
       checkAccess(ctx, { allowOrganizations: false })
       const { language, name, description, study_module } = args
       const prisma: Prisma = ctx.prisma
+
       const newStudyModuleTranslation: StudyModuleTranslation = await prisma.createStudyModuleTranslation(
         {
           language: language,
-          name: name,
-          description: description,
+          name: name ?? "",
+          description: description ?? "",
           study_module: { connect: { id: study_module } },
         },
       )

@@ -3,13 +3,13 @@ import { Prisma, Exercise, prisma } from "../../../generated/prisma-client"
 import { DateTime } from "luxon"
 import winston = require("winston")
 
+const convertTimestamp = (stamp: string): DateTime => DateTime.fromISO(stamp)
+
 export const saveToDatabase = async (
   message: Message,
   prisma: Prisma,
   logger: winston.Logger,
 ): Promise<Boolean> => {
-  const timestamp: DateTime = DateTime.fromISO(message.timestamp)
-
   const courseExists = await prisma.$exists.course({ id: message.course_id })
   if (!courseExists) {
     logger.error("given course does not exist")
@@ -19,7 +19,7 @@ export const saveToDatabase = async (
     handleExercise(
       exercise,
       message.course_id,
-      message.timestamp,
+      message.timestamp, // FIXME: wrong type
       message.service_id,
       logger,
     )
@@ -60,8 +60,12 @@ const handleExercise = async (
         custom_id: exercise.id,
       },
     })
+
+    // FIXME: what if there's no exercises?
+
     const oldExercise = oldExercises[0]
-    if (oldExercise.timestamp > timestamp) {
+    if ((oldExercise.timestamp ?? "") > timestamp) {
+      // FIXME: wrong type
       logger.error(
         "Timestamp is older than on existing exercise on " +
           exercise +

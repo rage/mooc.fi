@@ -10,7 +10,7 @@ import {
 
 const sharp = require("sharp")
 
-const getImageBuffer = image => {
+const getImageBuffer = (image: string) => {
   const base64EncodedImageString = image.replace(/^data:image\/\w+;base64,/, "")
 
   return new Buffer(base64EncodedImageString, "base64")
@@ -47,7 +47,7 @@ export const uploadImage = async ({
   } = await file
 
   const image: Buffer = await readFS(createReadStream())
-  const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)[1]
+  const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)?.[1]
 
   const uncompressedImage: Buffer = await sharp(image)
     .jpeg()
@@ -117,7 +117,9 @@ export const deleteImage = async ({
   }
 
   // TODO: (?) do something with return statuses
-  const compressed = await deleteStorageImage(image.compressed)
+  const compressed = image.compressed
+    ? await deleteStorageImage(image.compressed)
+    : false
   const uncompressed = await deleteStorageImage(image.uncompressed)
   const original = await deleteStorageImage(image.original)
 
@@ -140,7 +142,7 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       const prisma: Prisma = ctx.prisma
 
-      return uploadImage({ prisma, file, base64 })
+      return uploadImage({ prisma, file, base64: base64 ?? false })
     },
   })
 }
