@@ -53,7 +53,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       study_module_order: intArg(),
       points_needed: intArg(),
       automatic_completions: booleanArg(),
-      completion_email: idArg(),
+      completion_email: idArg({ required: false }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
@@ -108,7 +108,9 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_module_order,
         points_needed,
         automatic_completions,
-        completion_email: { connect: { id: completion_email } },
+        completion_email: !!completion_email
+          ? { connect: { id: completion_email } }
+          : null,
       })
 
       const kafkaProducer = await new KafkaProducer()
