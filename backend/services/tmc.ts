@@ -14,8 +14,9 @@ export interface UserFieldValue {
 }
 
 export default class TmcClient {
-  accessToken: String
-  constructor(accessToken: String = null) {
+  accessToken: String | null
+
+  constructor(accessToken: String | null = null) {
     this.accessToken = accessToken
   }
 

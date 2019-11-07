@@ -13,9 +13,11 @@ const fetchOrganizations = async () => {
 }
 
 const upsertOrganization = async (org: OrganizationInfo) => {
-  const user: User =
+  const user: User | null =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
-  const details = {
+
+  // FIXME: type
+  const details: any = {
     slug: org.slug,
     verified_at: org.verified_at,
     verified: org.verified || false,
@@ -34,6 +36,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     website: org.website,
     pinned: org.pinned || false,
   }
+
   const organizationExists = await prisma.$exists.organization({
     slug: org.slug,
   })
@@ -77,7 +80,8 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   }
 }
 
-const detailsWithSecret = async details => {
+// FIXME: type
+const detailsWithSecret = async (details: any) => {
   details.secret_key = await generateSecret()
   return details
 }

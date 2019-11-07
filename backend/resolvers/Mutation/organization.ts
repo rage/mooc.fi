@@ -10,7 +10,7 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     type: "Organization",
     args: {
       name: stringArg(),
-      slug: stringArg(),
+      slug: stringArg({ required: true }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -25,12 +25,14 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         result = await prisma.organizations({ where: { secret_key: secret } })
       } while (result.length)
 
+      // FIXME: empty name?
+
       const org: Organization = await prisma.createOrganization({
         slug: slug,
         secret_key: secret,
       })
       const orgTranslation = await prisma.createOrganizationTranslation({
-        name: name,
+        name: name ?? "",
         language: "fi_FI", //placeholder
         organization: { connect: { id: org.id } },
       })

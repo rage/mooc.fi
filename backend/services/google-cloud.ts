@@ -5,6 +5,11 @@ import * as mimeTypes from "mimetypes"
 const isProduction = process.env.NODE_ENV === "production"
 const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
 
+if (!bucketName) {
+  console.error("no bucket name defined in GOOGLE_CLOUD_STORAGE_BUCKET")
+  process.exit(1)
+}
+
 const storage = isProduction
   ? new Storage({
       projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT,
@@ -60,7 +65,7 @@ export const uploadImage = async ({
         // public: true,
         validation: "md5",
       },
-      error => {
+      (error: any) => {
         if (error) {
           reject(error)
         }
@@ -85,5 +90,5 @@ export const deleteImage = async (filename: string): Promise<boolean> => {
   return file
     .delete()
     .then(() => true)
-    .catch(err => (console.error("image delete error", err), false))
+    .catch((err: any) => (console.error("image delete error", err), false))
 }

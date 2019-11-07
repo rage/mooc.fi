@@ -32,7 +32,7 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       const newStudyModule: StudyModule = await prisma.createStudyModule({
         slug,
-        name,
+        name: name ?? "",
         image,
         order,
         study_module_translations: !!study_module_translations

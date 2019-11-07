@@ -26,12 +26,14 @@ const fetcUserAppDatum = async () => {
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
     name: CONFIG_NAME,
   }))
-    ? (await prisma.userAppDatumConfig({ name: CONFIG_NAME })).timestamp
+    ? ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
     : null
 
   console.log(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp)
+  // TODO: what if timestamp is null
+
+  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp ?? "")
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")
@@ -77,7 +79,11 @@ const fetcUserAppDatum = async () => {
         hidden: true,
       })
     }
+
     course = await prisma.course({ slug: p.namespace })
+
+    // FIXME: what if course is null?
+
     const isOld: Boolean = await prisma.$exists.userCourseSettings({
       user: { upstream_id: p.user_id },
       course: { id: course.id },
@@ -197,7 +203,7 @@ const saveOther = async p => {
 
 const getUserFromTmcAndSaveToDB = async (
   user_id: Number,
-  tmc,
+  tmc: TmcClient,
 ): Promise<User> => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
@@ -235,7 +241,7 @@ const currentDate = () => {
   var dateTime = date + " " + time
   return encodeURIComponent(dateTime)
 }
-const delay = ms => new Promise(res => setTimeout(res, ms))
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 async function saveProgress(prisma: Prisma, dateToDB: Date) {
   console.log("saving")

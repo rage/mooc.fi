@@ -63,7 +63,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         hidden,
         study_module_start_point,
         new_photo,
-        base64,
+        base64 = false,
         promote,
         status,
         study_modules,
@@ -80,14 +80,18 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       let photo = null
 
       if (new_photo) {
-        const newImage = await uploadImage({ prisma, file: new_photo, base64 })
+        const newImage = await uploadImage({
+          prisma,
+          file: new_photo,
+          base64: base64 ?? false,
+        })
 
         photo = newImage.id
       }
 
       const course: Course = await prisma.createCourse({
-        name,
-        slug,
+        name: name ?? "",
+        slug: slug ?? "",
         ects,
         promote,
         start_point,
@@ -116,6 +120,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
       await kafkaProducer.queueProducerMessage(producerMessage)
       await kafkaProducer.disconnect()
+
       return course
     },
   })
@@ -180,14 +185,14 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         new_slug,
         ects,
         new_photo,
-        base64,
+        base64 = false,
         start_point,
         promote,
         hidden,
         study_module_start_point,
         status,
         study_modules,
-        course_translations,
+        course_translations = [],
         open_university_registration_links,
         order,
         study_module_order,
@@ -198,7 +203,11 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       let photo = args.photo
 
       if (new_photo) {
-        const newImage = await uploadImage({ prisma, file: new_photo, base64 })
+        const newImage = await uploadImage({
+          prisma,
+          file: new_photo,
+          base64: base64 ?? false,
+        })
 
         if (photo && photo !== newImage.id) {
           // TODO: do something with return value
@@ -221,7 +230,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
       const removedTranslationIds: CourseTranslationScalarWhereInput[] = filterNotIncluded(
         existingTranslations,
-        course_translations,
+        course_translations ?? [],
       )
 
       const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = {
@@ -247,7 +256,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
       const removedRegistrationLinkIds = filterNotIncluded(
         existingRegistrationLinks,
-        open_university_registration_links,
+        open_university_registration_links ?? [],
       )
 
       const registrationLinkMutation: OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput = {
@@ -265,7 +274,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const removedModuleIds: StudyModuleWhereUniqueInput[] = (
         existingStudyModules || []
       )
-        .filter(module => !getIds(study_modules).includes(module.id))
+        .filter(module => !getIds(study_modules ?? []).includes(module.id))
         .map(module => ({ id: module.id }))
       const studyModuleMutation: StudyModuleUpdateManyWithoutCoursesInput = {
         connect: study_modules,

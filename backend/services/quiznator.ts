@@ -1,6 +1,6 @@
 const axios = require("axios")
 
-async function getPassedUsernamesByTag(tag) {
+async function getPassedUsernamesByTag(tag: string) {
   const res = await axios.get(
     `${process.env.QUIZNATOR_HOST}/api/v1/course-state/completed?courseIds=${tag}`,
     {

@@ -13,8 +13,8 @@ const addOpenUniversityRegistrationLink = async (
   t.field("addOpenUniversityRegistrationLink", {
     type: "OpenUniversityRegistrationLink",
     args: {
-      course_code: stringArg(),
-      course: idArg(),
+      course_code: stringArg({ required: true }),
+      course: idArg({ required: true }),
       language: stringArg(),
       link: stringArg(),
     },
@@ -22,11 +22,13 @@ const addOpenUniversityRegistrationLink = async (
       checkAccess(ctx, { allowOrganizations: false })
       const { course_code, course, language, link } = args
       const prisma: Prisma = ctx.prisma
+
+      // FIXME: empty course_code and/or language?
       const openUniversityRegistrationLink: OpenUniversityRegistrationLink = await prisma.createOpenUniversityRegistrationLink(
         {
           course: { connect: { id: course } },
-          course_code: course_code,
-          language: language,
+          course_code: course_code ?? "",
+          language: language ?? "",
           link: link,
         },
       )
