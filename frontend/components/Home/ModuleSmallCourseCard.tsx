@@ -7,23 +7,8 @@ import getHomeTranslator from "/translations/home"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import Skeleton from "@material-ui/lab/Skeleton"
 import ReactGA from "react-ga"
-
-const CourseTitle = styled(Typography)`
-  margin-bottom: 0.5rem;
-  // font-size: 22px;
-  @media (min-width: 425px) {
-    // font-size: 32px;
-  }
-  color: black;
-`
-const CourseText = styled(Typography)`
-  margin-bottom: 1rem;
-  // font-size: 16px;
-  @media (min-width: 425px) {
-    // font-size: 18px;
-  }
-  color: black;
-`
+import { CardTitle } from "components/Text/headers"
+import { CardText } from "/components/Text/paragraphs"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -141,12 +126,12 @@ function ModuleSmallCourseCard({
               </Header>
             )}
             <ContentArea>
-              <CourseTitle component="h3" align="center" variant="h3">
+              <CardTitle component="h3" align="center" variant="h3">
                 {course.name}
-              </CourseTitle>
-              <CourseText component="p" paragraph variant="body1" align="left">
+              </CardTitle>
+              <CardText component="p" paragraph variant="body1" align="left">
                 {course.description}
-              </CourseText>
+              </CardText>
               {course.status === CourseStatus.Upcoming ? (
                 <div
                   style={{

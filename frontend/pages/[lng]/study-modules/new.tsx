@@ -6,7 +6,7 @@ import { WideContainer } from "/components/Container"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 
 interface NewStudyModuleProps {
   router: SingletonRouter
@@ -24,9 +24,9 @@ const NewStudyModule = (props: NewStudyModuleProps) => {
   return (
     <section>
       <WideContainer>
-        <HOneNoBackground component="h1" variant="h1" align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Create a new study module
-        </HOneNoBackground>
+        </H1NoBackground>
         <StudyModuleEdit />
       </WideContainer>
     </section>

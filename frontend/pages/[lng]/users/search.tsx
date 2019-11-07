@@ -18,7 +18,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 
 interface UserSearchProps {
   namespacesRequired: string[]
@@ -208,9 +208,9 @@ const UserSearch = (props: UserSearchProps) => {
   return (
     <>
       <Container>
-        <HOneNoBackground component="h1" variant="h1" align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           User Search
-        </HOneNoBackground>
+        </H1NoBackground>
         <div>
           <StyledForm
             onSubmit={async (event: any) => {

@@ -2,17 +2,7 @@ import React from "react"
 import { mime } from "/util/imageUtils"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
-import styled from "styled-components"
-
-const BackgroundImage = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
-`
+import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
 
 const ModuleImage = ({
   module,

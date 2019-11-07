@@ -9,7 +9,7 @@ import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -43,9 +43,9 @@ const NewCourse = (props: NewCourseProps) => {
   return (
     <section>
       <WideContainer>
-        <HOneNoBackground component="h1" variant="h1" align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Create a new course
-        </HOneNoBackground>
+        </H1NoBackground>
         {loading ? (
           <FormSkeleton />
         ) : (

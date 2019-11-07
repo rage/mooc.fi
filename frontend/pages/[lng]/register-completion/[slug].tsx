@@ -14,7 +14,7 @@ import { withRouter } from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -121,9 +121,9 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   if (!completion) {
     return (
       <Container>
-        <HOneNoBackground variant="h1" component="h1" align="center">
+        <H1NoBackground variant="h1" component="h1" align="center">
           {t("course_completion_not_found_title")}
-        </HOneNoBackground>
+        </H1NoBackground>
         <Typography>{t("course_completion_not_found")}</Typography>
       </Container>
     )
@@ -140,9 +140,9 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   if (!courseLinkWithLanguage) {
     return (
       <div>
-        <HOneNoBackground component="h1" variant="h1" align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Open University registration is not open at the moment.
-        </HOneNoBackground>
+        </H1NoBackground>
       </div>
     )
   }
@@ -150,9 +150,9 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   return (
     <>
       <Container>
-        <HOneNoBackground variant="h1" component="h1" align="center">
+        <H1NoBackground variant="h1" component="h1" align="center">
           {t("title")}
-        </HOneNoBackground>
+        </H1NoBackground>
         <Typography variant="h6" component="p" className={classes.courseInfo}>
           {t("course", { course: completion.course.name })}
         </Typography>

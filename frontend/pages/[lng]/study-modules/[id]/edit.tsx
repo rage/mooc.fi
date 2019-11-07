@@ -15,7 +15,7 @@ import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import LangLink from "/components/LangLink"
 import LanguageContext from "/contexes/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -81,9 +81,9 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   return (
     <section>
       <WideContainer>
-        <HOneNoBackground component="h1" variant="h1" align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Edit study module
-        </HOneNoBackground>
+        </H1NoBackground>
         {loading ? (
           <FormSkeleton />
         ) : data && data.study_module ? (

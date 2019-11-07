@@ -16,7 +16,7 @@ import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
-import { HOneNoBackground } from "/components/Text/headers"
+import { H1NoBackground } from "/components/Text/headers"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -116,9 +116,9 @@ const EditCourse = (props: EditCourseProps) => {
   return (
     <section>
       <WideContainer>
-        <HOneNoBackground component="h1" variant="h1" align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Edit course
-        </HOneNoBackground>
+        </H1NoBackground>
         {courseLoading || studyModulesLoading ? (
           <FormSkeleton />
         ) : courseData!.course ? (
