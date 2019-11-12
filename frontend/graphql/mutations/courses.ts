@@ -79,7 +79,7 @@ export const UpdateCourseMutation = gql`
 `
 
 export const DeleteCourseMutation = gql`
-  mutation deleteCourse($id: ID) {
+  mutation deleteCourse($id: ID!) {
     deleteCourse(id: $id) {
       id
       slug

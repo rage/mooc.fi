@@ -51,7 +51,7 @@ export default class TmcClient {
     return res.data
   }
 
-  async getUserAppDatum(after: string): Promise<any[]> {
+  async getUserAppDatum(after: string | null): Promise<any[]> {
     let res
     if (after != null) {
       after = await encodeURI(after)

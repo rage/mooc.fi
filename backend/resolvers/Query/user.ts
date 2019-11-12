@@ -4,6 +4,7 @@ import checkAccess from "../../accessControl"
 import { Prisma, User } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { buildSearch } from "../../util/db-functions"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const users = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("users", {
@@ -93,7 +94,7 @@ const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: { search: stringArg() }, // was: email
     resolve: (_, args, ctx) => {
       const { search } = args
-      return ctx.user
+      return ctx.user as NexusGenRootTypes["User"]
     },
   })
 }

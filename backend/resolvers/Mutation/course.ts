@@ -20,6 +20,7 @@ import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "./image"
 import { omit } from "lodash"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
@@ -75,7 +76,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       await kafkaProducer.queueProducerMessage(producerMessage)
       await kafkaProducer.disconnect()
 
-      return newCourse
+      return newCourse as NexusGenRootTypes["Course"]
     },
   })
 }
@@ -199,7 +200,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         disconnect: removedModuleIds,
       }
 
-      return prisma.updateCourse({
+      const updatedCourse = await prisma.updateCourse({
         where: {
           id,
           slug,
@@ -222,6 +223,8 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             : null,
         } as CourseUpdateInput,
       })
+
+      return updatedCourse as NexusGenRootTypes["Course"]
     },
   })
 }
@@ -244,10 +247,16 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         await deleteImage({ prisma, id: photo.id })
       }
 
-      return prisma.deleteCourse({
+      if (!id && !slug) {
+        throw "must have id or slug"
+      }
+
+      const deletedCourse = await prisma.deleteCourse({
         id,
         slug,
       })
+
+      return deletedCourse as NexusGenRootTypes["Course"]
     },
   })
 }

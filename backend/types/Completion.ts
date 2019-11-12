@@ -2,6 +2,7 @@ import { prismaObjectType } from "nexus-prisma"
 import { Course } from "../generated/prisma-client"
 import { ForbiddenError } from "apollo-server-core"
 import { stringArg } from "nexus/dist"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const Completion = prismaObjectType({
   name: "Completion",
@@ -72,7 +73,7 @@ const Completion = prismaObjectType({
             },
           })
           if (avoinLinks.length < 1) return null
-          return avoinLinks[0].link
+          return avoinLinks[0].link as NexusGenRootTypes["String"]
         },
       })
   },

@@ -11,6 +11,7 @@ import {
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, arg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addStudyModule", {
@@ -35,7 +36,7 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           : null,
       } as StudyModuleCreateInput)
 
-      return newStudyModule
+      return newStudyModule as NexusGenRootTypes["StudyModule"]
     },
   })
 }
@@ -91,7 +92,7 @@ const updateStudyModule = async (
           : undefined,
       }
 
-      return prisma.updateStudyModule({
+      const updatedModule = await prisma.updateStudyModule({
         where: {
           id,
           slug,
@@ -105,6 +106,8 @@ const updateStudyModule = async (
             : null,
         } as StudyModuleUpdateInput,
       })
+
+      return updatedModule as NexusGenRootTypes["StudyModule"]
     },
   })
 }
@@ -122,10 +125,16 @@ const deleteStudyModule = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const prisma: Prisma = ctx.prisma
       const { id, slug } = args
 
-      return prisma.deleteStudyModule({
+      if (!id && !slug) {
+        throw "must have at least id or slug"
+      }
+
+      const deletedModule = await prisma.deleteStudyModule({
         id,
         slug,
       })
+
+      return deletedModule as NexusGenRootTypes["StudyModule"]
     },
   })
 }

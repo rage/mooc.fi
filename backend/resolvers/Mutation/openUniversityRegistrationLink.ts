@@ -38,7 +38,7 @@ const addOpenUniversityRegistrationLink = async (
 }
 
 const updateOpenUniversityRegistrationLink = (
-  t: PrismaObjectDefinitionBlock<"Mutaton">,
+  t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("updateOpenUniversityRegistrationLink", {
     type: "OpenUniversityRegistrationLink",

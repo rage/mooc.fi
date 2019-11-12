@@ -5,13 +5,20 @@ import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
 
-const fetchUser = async (resolve, root, args, context, info) => {
+const fetchUser = async (
+  // FIXME: types! context here doesn't seem to be the same context?
+  resolve: any,
+  root: any,
+  args: any,
+  context: any,
+  info: any,
+) => {
   const prisma: Prisma = context.prisma
   if (context.userDetails || context.organization) {
     const result = await resolve(root, args, context, info)
     return result
   }
-  let rawToken: string = null
+  let rawToken: string | null = null
   if (context.request) {
     rawToken = context.request.get("Authorization")
   } else if (context.connection) {
@@ -31,8 +38,13 @@ const fetchUser = async (resolve, root, args, context, info) => {
 
 export default fetchUser
 
-const getOrganization = async (prisma: Prisma, rawToken, context) => {
-  const secret: string = rawToken.split(" ")[1]
+const getOrganization = async (
+  prisma: Prisma,
+  rawToken: string | null,
+  context: any,
+) => {
+  const secret: string = rawToken?.split(" ")[1] ?? ""
+
   const org = await prisma.organizations({ where: { secret_key: secret } })
   if (org.length < 1) {
     throw new AuthenticationError("Please log in.")

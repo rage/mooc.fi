@@ -419,6 +419,8 @@ const seed = async () => {
         status: course.status as CourseStatus,
         course_translations: course.course_translations
           ? ({
+              // FIXME: don't know why this bugs
+              // @ts-ignore
               create: (course.course_translations || []).map(
                 (t: CourseTranslationCreateWithoutCourseInput) => ({
                   ...t,
