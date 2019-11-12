@@ -40,7 +40,7 @@ const fetch = async () => {
     })
 
     const url =
-      latestLink!.link == null
+      !latestLink || (latestLink && !latestLink!.link)
         ? null
         : "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=" +
           latestLink!.link
@@ -50,8 +50,8 @@ const fetch = async () => {
     if (
       !(
         url == null &&
-        DateTime.fromISO(p.start_date) < now &&
-        DateTime.fromISO(p.stop_date) > now
+        DateTime.fromISO(p.start_date ?? "") < now &&
+        DateTime.fromISO(p.stop_date ?? "") > now
       )
     ) {
       console.log("Updating link to", url)
