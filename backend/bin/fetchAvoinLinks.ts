@@ -47,7 +47,13 @@ const fetch = async () => {
 
     // FIXME: types
 
-    if (!(url == null && p.start_date < now && p.stop_date > now)) {
+    if (
+      !(
+        url == null &&
+        DateTime.fromISO(p.start_date) < now &&
+        DateTime.fromISO(p.stop_date) > now
+      )
+    ) {
       console.log("Updating link to", url)
       await prisma.updateOpenUniversityRegistrationLink({
         where: {
@@ -55,8 +61,8 @@ const fetch = async () => {
         },
         data: {
           link: url,
-          start_date: latestLink!.startTime,
-          stop_date: latestLink!.stopDate,
+          start_date: latestLink!.startTime.toJSDate(),
+          stop_date: latestLink!.stopDate.toJSDate(),
         },
       })
     }

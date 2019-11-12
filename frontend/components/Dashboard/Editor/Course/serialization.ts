@@ -7,7 +7,7 @@ import {
   CourseDetails_course,
   CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
-import { CourseStatus } from "/static/types/generated/globalTypes"
+import { CourseStatus, CourseArg } from "/static/types/generated/globalTypes"
 import {
   addCourse_addCourse_open_university_registration_links,
   addCourse_addCourse_study_modules,
@@ -73,7 +73,7 @@ export const fromCourseForm = ({
 }: {
   values: CourseFormValues
   initialValues: CourseFormValues
-}) => {
+}): CourseArg => {
   const newCourse = !values.id
 
   const course_translations = values?.course_translations?.map(
@@ -131,8 +131,7 @@ export const fromCourseForm = ({
     .map(id => ({ id }))
 
   return {
-    ...values,
-    id: undefined,
+    ...omit(values, ["id", "__typename"]),
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     new_slug: values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,

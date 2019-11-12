@@ -53,7 +53,7 @@ consumer
   )
 consumer.on("event.error", error => {
   logger.error(error)
-  throw error
+  process.exit(-1)
 })
 
 consumer.on("event.log", function(log) {

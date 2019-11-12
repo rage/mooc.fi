@@ -3,8 +3,6 @@ import { Prisma, Exercise, prisma } from "../../../generated/prisma-client"
 import { DateTime } from "luxon"
 import winston = require("winston")
 
-const convertTimestamp = (stamp: string): DateTime => DateTime.fromISO(stamp)
-
 export const saveToDatabase = async (
   message: Message,
   prisma: Prisma,
@@ -19,7 +17,7 @@ export const saveToDatabase = async (
     handleExercise(
       exercise,
       message.course_id,
-      message.timestamp, // FIXME: wrong type
+      DateTime.fromISO(message.timestamp),
       message.service_id,
       logger,
     )
@@ -64,8 +62,7 @@ const handleExercise = async (
     // FIXME: what if there's no exercises?
 
     const oldExercise = oldExercises[0]
-    if ((oldExercise.timestamp ?? "") > timestamp) {
-      // FIXME: wrong type
+    if (DateTime.fromISO(oldExercise.timestamp ?? "") > timestamp) {
       logger.error(
         "Timestamp is older than on existing exercise on " +
           exercise +
@@ -81,7 +78,7 @@ const handleExercise = async (
         part: Number(exercise.part),
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
-        timestamp: timestamp,
+        timestamp: timestamp.toJSDate(),
         deleted: false,
       },
     })
@@ -94,7 +91,7 @@ const handleExercise = async (
       max_points: Number(exercise.max_points),
       course: { connect: { id: course_id } },
       service: { connect: { id: service_id } },
-      timestamp: timestamp,
+      timestamp: timestamp.toJSDate(),
     })
   }
 }

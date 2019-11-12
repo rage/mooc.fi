@@ -8,6 +8,7 @@ import {
 } from "../../../generated/prisma-client"
 import TmcClient from "../../../services/tmc"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
+import { Logger } from "winston"
 
 const isUserInDB = async (prisma: Prisma, user_id: number) => {
   return await prisma.$exists.user({ upstream_id: user_id })

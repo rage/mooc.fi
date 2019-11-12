@@ -7,6 +7,7 @@ import { addStudyModule_addStudyModule_study_module_translations } from "/static
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import { updateStudyModule_updateStudyModule_study_module_translations } from "/static/types/generated/updateStudyModule"
 import { omit } from "lodash"
+import { StudyModuleArg } from "/static/types/generated/globalTypes"
 
 export const toStudyModuleForm = ({
   module,
@@ -27,7 +28,7 @@ export const fromStudyModuleForm = ({
   values,
 }: {
   values: StudyModuleFormValues
-}) => {
+}): StudyModuleArg => {
   const study_module_translations = values?.study_module_translations?.map(
     (c: StudyModuleTranslationFormValues) => ({
       ...omit(c, "__typename"),
@@ -45,8 +46,7 @@ export const fromStudyModuleForm = ({
   )[]
 
   return {
-    ...values,
-    id: undefined,
+    ...omit(values, ["__typename", "id", "courses"]),
     slug: values.id ? values.slug : values.new_slug.trim(),
     new_slug: values.new_slug.trim(),
     study_module_translations,
