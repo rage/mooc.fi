@@ -8,73 +8,38 @@ import {
   OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput,
   OpenUniversityRegistrationLinkCreateWithoutCourseInput,
   OpenUniversityRegistrationLinkUpdateManyWithWhereNestedInput,
-  OpenUniversityRegistrationLinkScalarWhereInput,
   Image,
   StudyModuleUpdateManyWithoutCoursesInput,
   StudyModuleWhereUniqueInput,
+  CourseCreateInput,
+  CourseUpdateInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, booleanArg, arg, idArg, intArg, floatArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
-
 import { uploadImage, deleteImage } from "./image"
+import { omit } from "lodash"
 
 const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
     type: "Course",
     args: {
-      name: stringArg(),
-      slug: stringArg(),
-      ects: stringArg(),
-      new_photo: arg({ type: "Upload", required: false }),
-      base64: booleanArg(),
-      start_point: booleanArg(),
-      promote: booleanArg(),
-      hidden: booleanArg(),
-      study_module_start_point: booleanArg(),
-      status: arg({ type: "CourseStatus" }),
-      study_modules: arg({
-        type: "StudyModuleWhereUniqueInput",
-        list: true,
+      course: arg({
+        type: "CourseArg",
+        required: true,
       }),
-      course_translations: arg({
-        type: "CourseTranslationCreateWithoutCourseInput",
-        list: true,
-        required: false,
-      }),
-      open_university_registration_links: arg({
-        type: "OpenUniversityRegistrationLinkCreateWithoutCourseInput",
-        list: true,
-        required: false,
-      }),
-      order: intArg(),
-      study_module_order: intArg(),
-      points_needed: intArg(),
-      automatic_completions: booleanArg(),
     },
-    resolve: async (_, args, ctx) => {
+    resolve: async (_, { course }, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
+
       const {
-        name,
-        slug,
-        ects,
-        start_point,
-        hidden,
-        study_module_start_point,
         new_photo,
-        base64 = false,
-        promote,
-        status,
-        study_modules,
+        base64,
         course_translations,
         open_university_registration_links,
-        order,
-        study_module_order,
-        points_needed,
-        automatic_completions,
-      } = args
-
+        study_modules,
+      } = course
       const prisma: Prisma = ctx.prisma
 
       let photo = null
@@ -89,39 +54,29 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         photo = newImage.id
       }
 
-      const course: Course = await prisma.createCourse({
-        name: name ?? "",
-        slug: slug ?? "",
-        ects,
-        promote,
-        start_point,
-        hidden,
-        study_module_start_point,
+      const newCourse: Course = await prisma.createCourse({
+        ...omit(course, ["id", "base64", "new_slug", "new_photo"]),
         photo: !!photo ? { connect: { id: photo } } : null,
         course_translations: !!course_translations
           ? { create: course_translations }
           : null,
-        status,
+        /*         status, */
         study_modules: !!study_modules ? { connect: study_modules } : null,
         open_university_registration_links: !!open_university_registration_links
           ? { create: open_university_registration_links }
           : null,
-        order,
-        study_module_order,
-        points_needed,
-        automatic_completions,
-      })
+      } as CourseCreateInput)
 
       const kafkaProducer = await new KafkaProducer()
       const producerMessage: ProducerMessage = {
-        message: JSON.stringify(course),
+        message: JSON.stringify(newCourse),
         partition: null,
         topic: "new-course",
       }
       await kafkaProducer.queueProducerMessage(producerMessage)
       await kafkaProducer.disconnect()
 
-      return course
+      return newCourse
     },
   })
 }
@@ -144,63 +99,27 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("updateCourse", {
     type: "Course",
     args: {
-      id: idArg({ required: false }),
-      name: stringArg(),
-      slug: stringArg(),
-      new_slug: stringArg(),
-      ects: stringArg(),
-      photo: idArg(),
-      new_photo: arg({ type: "Upload", required: false }),
-      base64: booleanArg(),
-      start_point: booleanArg(),
-      promote: booleanArg(),
-      hidden: booleanArg(),
-      study_module_start_point: booleanArg(),
-      status: arg({ type: "CourseStatus" }),
-      study_modules: arg({
-        type: "StudyModuleWhereUniqueInput",
-        list: true,
+      course: arg({
+        type: "CourseArg",
+        required: true,
       }),
-      course_translations: arg({
-        type: "CourseTranslationWithIdInput",
-        list: true,
-      }),
-      open_university_registration_links: arg({
-        type: "OpenUniversityRegistrationLinkWithIdInput",
-        list: true,
-      }),
-      order: intArg(),
-      study_module_order: intArg(),
-      points_needed: intArg(),
-      automatic_completions: booleanArg(),
     },
-    resolve: async (_, args, ctx) => {
+    resolve: async (_, { course }, ctx) => {
       checkAccess(ctx)
 
       const prisma: Prisma = ctx.prisma
       const {
         id,
-        name,
+        new_photo,
         slug,
         new_slug,
-        ects,
-        new_photo,
-        base64 = false,
-        start_point,
-        promote,
-        hidden,
-        study_module_start_point,
-        status,
-        study_modules,
-        course_translations = [],
+        base64,
+        course_translations,
         open_university_registration_links,
-        order,
-        study_module_order,
-        points_needed,
-        automatic_completions,
-      } = args
+        study_modules,
+      } = course
 
-      let photo = args.photo
+      let photo = course.photo
 
       if (new_photo) {
         const newImage = await uploadImage({
@@ -287,15 +206,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           slug,
         },
         data: {
-          name,
+          ...omit(course, ["base64", "new_Slug", "new_photo"]),
           slug: new_slug ? new_slug : slug,
-          ects,
+          // FIXME: disconnect removed photos?
           photo: !!photo ? { connect: { id: photo } } : null,
-          start_point,
-          promote,
-          hidden,
-          status,
-          study_module_start_point,
           course_translations: Object.keys(translationMutation).length
             ? translationMutation
             : null,
@@ -307,11 +221,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           ).length
             ? registrationLinkMutation
             : null,
-          order,
-          study_module_order,
-          points_needed,
-          automatic_completions,
-        },
+        } as CourseUpdateInput,
       })
     },
   })

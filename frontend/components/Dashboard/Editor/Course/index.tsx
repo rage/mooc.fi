@@ -76,7 +76,7 @@ const CourseEdit = ({
 
         // TODO/FIXME: return value?
         await courseMutation({
-          variables: mutationVariables,
+          variables: { course: mutationVariables },
           refetchQueries: () => refetchQueries,
         })
 

@@ -20,9 +20,11 @@ const StudyModule = prismaObjectType({
         const { language, orderBy } = args
         const { prisma } = ctx
 
+        // FIXME: is this Prisma special or not?
+        // @ts-ignore
         const courses = await prisma.courses({
           // @ts-ignore
-          orderBy,
+          orderBy: orderBy ?? undefined,
           where: { study_modules_some: { id: parent.id } },
         })
 

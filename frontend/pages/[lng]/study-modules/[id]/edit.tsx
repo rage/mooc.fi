@@ -77,7 +77,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
 
-  if (!data?.study_module) {
+  if (!loading && !data?.study_module && typeof window !== "undefined") {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
