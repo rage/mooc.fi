@@ -87,7 +87,7 @@ const StudyModuleEdit = ({
 
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
-      await deleteStudyModule({ variables: { slug: values.slug } })
+      await deleteStudyModule({ variables: { id: values.id } })
       Router.push(`/${language}/study-modules`)
     }
   }, [])

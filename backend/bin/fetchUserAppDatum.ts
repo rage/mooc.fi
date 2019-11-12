@@ -7,6 +7,7 @@ import {
   Course,
   UserCourseSettings,
   User,
+  Maybe,
 } from "../generated/prisma-client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
@@ -14,7 +15,7 @@ import { DateTime } from "luxon"
 const CONFIG_NAME = "userAppDatum"
 
 const prisma: Prisma = new Prisma()
-let course: Course
+let course: Maybe<Course>
 let old: UserCourseSettings
 
 const fetcUserAppDatum = async () => {
@@ -86,18 +87,18 @@ const fetcUserAppDatum = async () => {
 
     const isOld: Boolean = await prisma.$exists.userCourseSettings({
       user: { upstream_id: p.user_id },
-      course: { id: course.id },
+      course: { id: course?.id },
     })
     if (!isOld) {
       old = await prisma.createUserCourseSettings({
         user: { connect: { upstream_id: p.user_id } },
-        course: { connect: { id: course.id } },
+        course: { connect: { id: course?.id } },
       })
     } else {
       const tmp: UserCourseSettings[] = await prisma.userCourseSettingses({
         where: {
           user: { upstream_id: p.user_id },
-          course: { id: course.id },
+          course: { id: course?.id },
         },
       })
       old = tmp[0]
@@ -133,7 +134,7 @@ const fetcUserAppDatum = async () => {
   console.log("used", stopTime - startTime, "milliseconds")
 }
 
-const saveLanguage = async p => {
+const saveLanguage = async (p: any) => {
   await prisma.updateUserCourseSettings({
     where: {
       id: old.id,
@@ -143,7 +144,7 @@ const saveLanguage = async p => {
     },
   })
 }
-const saveCountry = async p => {
+const saveCountry = async (p: any) => {
   await prisma.updateUserCourseSettings({
     where: {
       id: old.id,
@@ -153,7 +154,7 @@ const saveCountry = async p => {
     },
   })
 }
-const saveResearch = async p => {
+const saveResearch = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
   await prisma.updateUserCourseSettings({
     where: {
@@ -164,7 +165,7 @@ const saveResearch = async p => {
     },
   })
 }
-const saveMarketing = async p => {
+const saveMarketing = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
   await prisma.updateUserCourseSettings({
     where: {
@@ -175,7 +176,7 @@ const saveMarketing = async p => {
     },
   })
 }
-const saveCourseVariant = async p => {
+const saveCourseVariant = async (p: any) => {
   await prisma.updateUserCourseSettings({
     where: {
       id: old.id,
@@ -185,7 +186,7 @@ const saveCourseVariant = async p => {
     },
   })
 }
-const saveOther = async p => {
+const saveOther = async (p: any) => {
   const other = old.other || {}
   if (p.value == "t") p.value = true
   else if (p.value == "f") p.value = false

@@ -4,6 +4,7 @@ import { promisify } from "util"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addOrganization", {
@@ -36,7 +37,10 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         language: "fi_FI", //placeholder
         organization: { connect: { id: org.id } },
       })
-      return prisma.organization({ id: org.id })
+
+      const newOrg = await prisma.organization({ id: org.id })
+
+      return newOrg as NexusGenRootTypes["Organization"]
     },
   })
 }

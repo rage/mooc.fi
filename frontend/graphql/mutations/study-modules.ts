@@ -37,8 +37,8 @@ export const UpdateStudyModuleMutation = gql`
 `
 
 export const DeleteStudyModuleMutation = gql`
-  mutation deleteStudyModule($slug: String!) {
-    deleteStudyModule(slug: $slug) {
+  mutation deleteStudyModule($id: ID!) {
+    deleteStudyModule(id: $id) {
       id
       slug
     }
