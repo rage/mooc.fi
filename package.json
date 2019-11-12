@@ -1,5 +1,5 @@
 {
-  "name": "points.mooc.fi",
+  "name": "mooc.fi",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -19,15 +19,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rage/points.mooc.fi.git"
+    "url": "git+https://github.com/rage/mooc.fi.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rage/points.mooc.fi/issues"
+    "url": "https://github.com/rage/mooc.fi/issues"
   },
-  "homepage": "https://github.com/rage/points.mooc.fi#readme",
+  "homepage": "https://github.com/rage/mooc.fi#readme",
   "husky": {
     "hooks": {
       "pre-commit": "./bin/check-code-style.sh"

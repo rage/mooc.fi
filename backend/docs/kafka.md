@@ -11,7 +11,7 @@ https://kafka.apache.org/intro
 
 Kafka is a excellent tool for building data pipelines because it minimizes data loss and is fault-tolerant. When a producers submits data to Kafka, Kafka stores the data and keeps it as long as it is set to keep it. Now if a consumer is offline when the data is submitted, the data will not be lost and can be consumed when the consumer comes online. **Kafka does not know nor care if the data is consumed by some consumer.** Consumers have to store this information themselves (but this data can be submitted to server or just store locally). This can be done with `committing offsets`.
 
-points.mooc.fi uses Kafka for real-time data pipeline between different `services` and points.mooc.fi. Services `produce` data for Kafka server for a specific `topic`. Points `consumes` those topics and processed data when it occurs or as fast as points can. Points also produces data to different topics, which services are consuming.
+mooc.fi uses Kafka for real-time data pipeline between different `services` and mooc.fi. Services `produce` data for Kafka server for a specific `topic`. Points `consumes` those topics and processed data when it occurs or as fast as points can. Points also produces data to different topics, which services are consuming.
 
 ## Topics, partitions and consumer groups
 A topic in Kafka is like a channel in your television. Producer produces data to a specific topic and does not know or care how many consumers are consuming. Consumers choose which topics to watch and get all data from those topics. (But unlike in kafka, in television there is no server between producer and consumer so unconsumed data will be lost.)
@@ -43,7 +43,7 @@ Some libraries allow to use autocommit feature. Autocommit with commit every mes
 ---
 ## In Points.mooc.fi
 
-At the moment we have four topics in points.mooc.fi kafka:
+At the moment we have four topics in mooc.fi kafka:
 
 * user-course-progress
 * user-points
