@@ -60,7 +60,6 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations: !!course_translations
           ? { create: course_translations }
           : null,
-        /*         status, */
         study_modules: !!study_modules ? { connect: study_modules } : null,
         open_university_registration_links: !!open_university_registration_links
           ? { create: open_university_registration_links }
