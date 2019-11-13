@@ -7,11 +7,10 @@ import { UserInfo } from "/domain/UserInfo"
 import { Context } from "/context"
 
 const fetchUser = async (
-  // FIXME: types! context here doesn't seem to be the same context?
-  resolve: any,
+  resolve: Function,
   root: any,
-  args: any,
-  context: any,
+  args: Record<string, any>,
+  context: Context,
   info: any,
 ) => {
   const prisma: Prisma = context.prisma
@@ -42,7 +41,7 @@ export default fetchUser
 const getOrganization = async (
   prisma: Prisma,
   rawToken: string | null,
-  context: any,
+  context: Context,
 ) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""
 
