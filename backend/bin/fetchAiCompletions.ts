@@ -82,13 +82,14 @@ async function saveCompletionsAndUsersToDatabase(
     }
 
     const course: Course | null = await prisma.course({ slug: course_slug })
-    const doesCompletionExists: Completion[] = await prisma.completions({
-      where: { user: user, course: course },
-    })
 
     if (!course) {
       process.exit(1)
     }
+
+    const doesCompletionExists: Completion[] = await prisma.completions({
+      where: { user: user, course: course },
+    })
 
     if (!doesCompletionExists.length) {
       await prisma.createCompletion({
