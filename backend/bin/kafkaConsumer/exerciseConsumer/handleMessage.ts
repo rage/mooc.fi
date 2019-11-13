@@ -4,14 +4,14 @@ import { Prisma } from "../../../generated/prisma-client"
 import { MessageYupSchema } from "./validate"
 import { Mutex } from "await-semaphore"
 import { Logger } from "winston"
-import { KafkaConsumer } from "node-rdkafka"
+import { KafkaConsumer, ConsumerStreamMessage } from "node-rdkafka"
 
 const config = require("../kafkaConfig.json")
 
 let commitCounter = 0
 const commitInterval = config.commit_interval
 export const handleMessage = async (
-  kafkaMessage: any, // TODO: find type
+  kafkaMessage: ConsumerStreamMessage,
   mutex: Mutex,
   logger: Logger,
   consumer: KafkaConsumer,

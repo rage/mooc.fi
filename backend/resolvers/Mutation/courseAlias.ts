@@ -16,6 +16,10 @@ const addCourseAlias = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const prisma: Prisma = ctx.prisma
 
       // FIXME: what to do on empty course_code?
+      if (!course_code) {
+        throw "has to have a course code"
+      }
+
       const newCourseAlias: CourseAlias = await prisma.createCourseAlias({
         course_code: course_code ?? "",
         course: { connect: { id: course } },

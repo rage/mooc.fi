@@ -421,13 +421,15 @@ const seed = async () => {
           ? ({
               // FIXME: don't know why this bugs
               // @ts-ignore
-              create: (course.course_translations || []).map(
-                (t: CourseTranslationCreateWithoutCourseInput) => ({
-                  ...t,
-                  id: undefined,
-                  link: t.link || "",
-                }),
-              ),
+              create:
+                // @ts-ignore
+                course?.course_translations?.map(
+                  (t: CourseTranslationCreateWithoutCourseInput) => ({
+                    ...t,
+                    id: undefined,
+                    link: t.link || "",
+                  }),
+                ) ?? undefined,
             } as CourseTranslationCreateManyWithoutCourseInput)
           : null,
         study_modules: null,

@@ -3,7 +3,7 @@ import { saveToDatabase } from "./saveToDB"
 import { Prisma } from "../../../generated/prisma-client"
 import { MessageYupSchema } from "./validate"
 import { Logger } from "winston"
-import { KafkaConsumer } from "node-rdkafka"
+import { KafkaConsumer, ConsumerStreamMessage } from "node-rdkafka"
 import { Mutex } from "await-semaphore"
 
 const config = require("../kafkaConfig")
@@ -13,7 +13,7 @@ let commitCounter = 0
 const commitInterval = config.commit_interval
 
 export const handleMessage = async (
-  kafkaMessage: any,
+  kafkaMessage: ConsumerStreamMessage,
   mutex: Mutex,
   logger: Logger,
   consumer: KafkaConsumer,

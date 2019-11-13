@@ -59,8 +59,6 @@ const handleExercise = async (
       },
     })
 
-    // FIXME: what if there's no exercises?
-
     const oldExercise = oldExercises[0]
     if (DateTime.fromISO(oldExercise.timestamp ?? "") > timestamp) {
       logger.error(
