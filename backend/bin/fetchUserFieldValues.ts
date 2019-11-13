@@ -31,9 +31,7 @@ const fetcUserFieldValues = async () => {
 
   console.log(latestTimeStamp)
 
-  // FIXME: what if timestamp is null?
-
-  const data_from_tmc = await tmc.getUserFieldValues(latestTimeStamp ?? "")
+  const data_from_tmc = await tmc.getUserFieldValues(latestTimeStamp ?? null)
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")

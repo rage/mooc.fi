@@ -2,8 +2,6 @@ import { prismaObjectType } from "nexus-prisma"
 import { stringArg, arg } from "nexus/dist"
 import { Course } from "/generated/prisma-client"
 
-// FIXME: suppress complex union type error - fix when typescript updates or smth
-// @ts-ignore
 const StudyModule = prismaObjectType({
   name: "StudyModule",
   definition(t) {

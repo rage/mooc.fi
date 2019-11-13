@@ -64,8 +64,6 @@ async function saveCompletionsAndUsersToDatabase(
     if (!old.id) console.log(old)
     let user: User | null = await prisma.user({ upstream_id: old.id })
 
-    // FIXME: what if user is null?
-
     if (!user) {
       const prismaDetails = {
         upstream_id: old.id,
@@ -88,7 +86,9 @@ async function saveCompletionsAndUsersToDatabase(
       where: { user: user, course: course },
     })
 
-    // FIXME: what if course is null?
+    if (!course) {
+      process.exit(1)
+    }
 
     if (!doesCompletionExists.length) {
       await prisma.createCompletion({

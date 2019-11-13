@@ -4,6 +4,7 @@ import { Prisma } from "../generated/prisma-client"
 import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
+import { Context } from "/context"
 
 const fetchUser = async (
   // FIXME: types! context here doesn't seem to be the same context?

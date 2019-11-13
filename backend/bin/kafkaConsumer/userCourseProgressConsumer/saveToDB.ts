@@ -46,7 +46,9 @@ export const saveToDatabase = async (
     user = await getUserFromTMC(prisma, message.user_id)
   }
 
-  // FIXME: what happens if user is null?
+  if (!user) {
+    process.exit(1)
+  }
 
   const userCourseProgresses: UserCourseProgress[] = await prisma.userCourseProgresses(
     {

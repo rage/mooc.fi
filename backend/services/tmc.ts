@@ -69,7 +69,7 @@ export default class TmcClient {
     return res.data
   }
 
-  async getUserFieldValues(after: string): Promise<UserFieldValue[]> {
+  async getUserFieldValues(after: string | null): Promise<UserFieldValue[]> {
     let res
     if (after != null) {
       after = await encodeURI(after)

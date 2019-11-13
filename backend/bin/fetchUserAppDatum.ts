@@ -32,9 +32,7 @@ const fetcUserAppDatum = async () => {
 
   console.log(latestTimeStamp)
 
-  // TODO: what if timestamp is null
-
-  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp ?? "")
+  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp ?? null)
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")
@@ -83,7 +81,9 @@ const fetcUserAppDatum = async () => {
 
     course = await prisma.course({ slug: p.namespace })
 
-    // FIXME: what if course is null?
+    if (!course) {
+      process.exit(1)
+    }
 
     const isOld: Boolean = await prisma.$exists.userCourseSettings({
       user: { upstream_id: p.user_id },
