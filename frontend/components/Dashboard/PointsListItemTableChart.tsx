@@ -39,10 +39,9 @@ function PointsListItemTableChart(props: Props) {
   const { title, points, cuttervalue, showDetailed } = props
   const value =
     (points.courseProgress.n_points / points.courseProgress.max_points) * 100
-  let services = null
-  if (points.service_progresses && points.service_progresses.length > 0) {
-    services = points.service_progresses
-  }
+  const services = points?.service_progresses?.length
+    ? points.service_progresses
+    : null
 
   return (
     <>

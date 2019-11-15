@@ -12,7 +12,7 @@ const userCourseProgress = async (t: PrismaObjectDefinitionBlock<"Query">) => {
       course_id: idArg({ required: true }),
     },
     resolve: async (_, args, ctx) => {
-      if (!ctx.user.administrator) {
+      if (!ctx.user?.administrator) {
         throw new ForbiddenError("Access Denied")
       }
       const { user_id, course_id } = args
@@ -54,10 +54,10 @@ const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       } = args
       const prisma: Prisma = ctx.prisma
       return prisma.userCourseProgresses({
-        first: first,
-        last: last,
-        before: before,
-        after: after,
+        first: first ?? undefined,
+        last: last ?? undefined,
+        before: before ?? undefined,
+        after: after ?? undefined,
         where: {
           user: { id: user_id },
           course: { OR: { id: course_id, slug: course_slug } },

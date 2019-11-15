@@ -53,6 +53,7 @@ function SkipLink() {
   const classes = useStyles()
   const lng = useContext(LanguageContext)
   const t = getCommonTranslator(lng.language)
+
   return (
     <a href="#main" className={classes.link}>
       <Typography variant="body1">{t("skiplink")}</Typography>

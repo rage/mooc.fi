@@ -1,26 +1,24 @@
-// generated Fri Oct 11 2019 14:46:35 GMT+0300 (Eastern European Summer Time)
+// generated Tue Nov 12 2019 14:37:48 GMT+0200 (Eastern European Standard Time)
+
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
 export { default as Course } from "./Course"
-export {
-  default as CourseTranslationWithIdInput,
-} from "./CourseTranslationWithIdInput"
+export { default as CourseArg } from "./CourseArg"
+export { default as CourseTranslationCreateUpdateInput } from "./CourseTranslationCreateUpdateInput"
+export { default as CourseTranslationWithIdInput } from "./CourseTranslationWithIdInput"
 export { default as Mutation } from "./Mutation"
-export {
-  default as OpenUniversityRegistrationLinkWithIdInput,
-} from "./OpenUniversityRegistrationLinkWithIdInput"
+export { default as OpenUniversityRegistrationLinkCreateUpdateInput } from "./OpenUniversityRegistrationLinkCreateUpdateInput"
+export { default as OpenUniversityRegistrationLinkWithIdInput } from "./OpenUniversityRegistrationLinkWithIdInput"
 export { default as Organization } from "./Organization"
 export { default as PointsByGroup } from "./PointsByGroup"
 export { default as Progress } from "./Progress"
 export { default as Query } from "./Query"
 export { default as StudyModule } from "./StudyModule"
-export {
-  default as StudyModuleTranslationWithIdInput,
-} from "./StudyModuleTranslationWithIdInput"
+export { default as StudyModuleArg } from "./StudyModuleArg"
+export { default as StudyModuleTranslationCreateUpdateInput } from "./StudyModuleTranslationCreateUpdateInput"
+export { default as StudyModuleTranslationWithIdInput } from "./StudyModuleTranslationWithIdInput"
 export { default as Upload } from "./Upload"
 export { default as User } from "./User"
 export { default as UserConnection } from "./UserConnection"
 export { default as UserCourseProgress } from "./UserCourseProgress"
-export {
-  default as UserCourseSettingsConnection,
-} from "./UserCourseSettingsConnection"
+export { default as UserCourseSettingsConnection } from "./UserCourseSettingsConnection"

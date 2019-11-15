@@ -4,6 +4,7 @@ import checkAccess from "../../accessControl"
 import { Prisma, User } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { buildSearch } from "../../util/db-functions"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const users = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("users", {
@@ -36,7 +37,7 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
               "username_contains",
               "email_contains",
             ],
-            search,
+            search ?? "",
           ),
           id: id,
           upstream_id: upstream_id,
@@ -61,7 +62,7 @@ const UserDetailsContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
       const { search, first, after, last, before } = args
-      if ((!first && !last) || (first > 50 || last > 50)) {
+      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
       const prisma: Prisma = ctx.prisma
@@ -74,13 +75,13 @@ const UserDetailsContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
               "username_contains",
               "email_contains",
             ],
-            search,
+            search ?? "",
           ),
         },
-        first: first,
-        last: last,
-        after: after,
-        before: before,
+        first: first ?? undefined,
+        last: last ?? undefined,
+        after: after ?? undefined,
+        before: before ?? undefined,
       })
     },
   })
@@ -93,7 +94,7 @@ const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: { search: stringArg() }, // was: email
     resolve: (_, args, ctx) => {
       const { search } = args
-      return ctx.user
+      return ctx.user as NexusGenRootTypes["User"]
     },
   })
 }

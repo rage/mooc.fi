@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import {
   formatDateTime,
-  MapLangToLanguage,
+  mapLangToLanguage,
 } from "/components/DataFormatFunctions"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
@@ -18,6 +18,7 @@ const StyledButton = styled(Button)`
   margin: auto;
   color: black;
 `
+
 const RegisterCompletionButton = ({ course }: { course: string }) => {
   return (
     <StyledButton color="secondary" href={`/register-completion/${course}`}>
@@ -51,11 +52,11 @@ interface ListItemProps {
 }
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
-  const isRegistered =
-    listItem.completions_registered &&
-    listItem.completions_registered.length > 0
+  const isRegistered = (listItem?.completions_registered ?? []).length > 0
+
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
+
   return (
     <ListItemContainer>
       <CourseAvatar photo={listItem.course.photo} />
@@ -66,11 +67,9 @@ const CompletionListItem = (props: ListItemProps) => {
         <ListItemText>{`${t("completedDate")}${formatDateTime(
           listItem.created_at,
         )}`}</ListItemText>
-        <ListItemText>{`${t("completionLanguage")} ${
-          listItem.completion_language
-            ? MapLangToLanguage.get(listItem.completion_language)
-            : listItem.completion_language
-        }`}</ListItemText>
+        <ListItemText>{`${t("completionLanguage")} ${mapLangToLanguage[
+          listItem?.completion_language ?? ""
+        ] || listItem.completion_language}`}</ListItemText>
       </div>
       {isRegistered && listItem.completions_registered ? (
         listItem.completions_registered.map(r => {
@@ -79,9 +78,7 @@ const CompletionListItem = (props: ListItemProps) => {
               {t("registeredDate")}
               {formatDateTime(r.created_at)}
             </ListItemText>
-            <ListItemText>
-              {r.organization ? r.organization.slug : ""}
-            </ListItemText>
+            <ListItemText>{r.organization?.slug ?? ""}</ListItemText>
             <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
           </div>
         })
