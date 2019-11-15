@@ -12,7 +12,8 @@ WORKDIR /app
 
 RUN npm ci \
   && mv prisma.production.yml prisma.yml \
-  && npm run generate
+  && npm run generate \
+  && npm run generate-nexus
 
 ENV NODE_ENV=production
 
