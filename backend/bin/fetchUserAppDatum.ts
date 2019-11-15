@@ -18,7 +18,7 @@ const prisma: Prisma = new Prisma()
 let course: Maybe<Course>
 let old: UserCourseSettings
 
-const fetcUserAppDatum = async () => {
+const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
@@ -263,4 +263,4 @@ async function saveProgress(prisma: Prisma, dateToDB: Date) {
   })
 }
 
-fetcUserAppDatum().catch(e => console.log(e))
+fetchUserAppDatum().catch(e => console.log(e))
