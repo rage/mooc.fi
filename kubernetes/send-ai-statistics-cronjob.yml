@@ -4,7 +4,7 @@ metadata:
   name: send-ai-statistics
   namespace: moocfi
 spec:
-  schedule: "0 7 * * *"
+  schedule: "1 7 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
