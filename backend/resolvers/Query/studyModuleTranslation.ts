@@ -6,7 +6,7 @@ const studyModuleTranslations = async (
 ) => {
   t.list.field("StudyModuleTranslations", {
     type: "StudyModuleTranslation",
-    resolve: (_, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
       return ctx.prisma.studyModuleTranslations()
     },
