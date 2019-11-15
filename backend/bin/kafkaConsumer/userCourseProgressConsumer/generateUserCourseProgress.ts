@@ -1,3 +1,6 @@
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 import {
   UserCourseProgress,
   Prisma,
@@ -7,7 +10,9 @@ import {
   EmailTemplate,
 } from "../../../generated/prisma-client"
 const nodemailer = require("nodemailer")
-
+const email_host = process.env.EMAIL_HOST
+const email_user = process.env.EMAIL_USER
+const email_pass = process.env.EMAIL_PASS
 export const generateUserCourseProgress = async (
   userCourseProgress: UserCourseProgress,
   prisma: Prisma,
@@ -79,14 +84,13 @@ export const generateUserCourseProgress = async (
 
 async function sendMail(user: User, template: EmailTemplate) {
   //const { htmlTemplate, textTemplate } = getTemplates(student, title);
-  let testAccount = await nodemailer.createTestAccount()
   let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
+    host: email_host,
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      user: email_user, // generated ethereal user
+      pass: email_pass, // generated ethereal password
     },
   })
   // send mail with defined transport object
