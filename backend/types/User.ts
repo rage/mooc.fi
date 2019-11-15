@@ -1,7 +1,5 @@
 import { prismaObjectType } from "nexus-prisma"
 import { idArg, stringArg } from "nexus/dist"
-import { Course } from "/generated/prisma-client"
-import { resolve } from "url"
 import { NexusGenRootTypes } from "/generated/nexus"
 
 const User = prismaObjectType({
@@ -28,7 +26,7 @@ const User = prismaObjectType({
       type: "Progress",
       list: true,
       nullable: false,
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, _, ctx) => {
         const user_course_progressess = await ctx.prisma.userCourseProgresses({
           where: { user: parent },
         })

@@ -11,7 +11,7 @@ const Progress = objectType({
     t.field("user_course_progress", {
       type: UserCourseProgress,
       nullable: true,
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, _, ctx) => {
         const courseId = parent.course.id
         const userId = parent.user.id
         const userCourseProgresses = await ctx.prisma.userCourseProgresses({
@@ -22,7 +22,7 @@ const Progress = objectType({
     })
     t.list.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, _, ctx) => {
         const courseId = parent.course.id
         const userId = parent.user.id
         return ctx.prisma.userCourseServiceProgresses({

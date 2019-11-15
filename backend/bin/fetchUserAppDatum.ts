@@ -18,7 +18,7 @@ const prisma: Prisma = new Prisma()
 let course: Maybe<Course>
 let old: UserCourseSettings
 
-const fetcUserAppDatum = async () => {
+const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
@@ -233,6 +233,8 @@ const getUserFromTmcAndSaveToDB = async (
   }
 }
 
+// FIXME: not used anywhere
+// @ts-ignore
 const currentDate = () => {
   var today = new Date()
   var date =
@@ -242,6 +244,7 @@ const currentDate = () => {
   var dateTime = date + " " + time
   return encodeURIComponent(dateTime)
 }
+
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 async function saveProgress(prisma: Prisma, dateToDB: Date) {
@@ -260,4 +263,4 @@ async function saveProgress(prisma: Prisma, dateToDB: Date) {
   })
 }
 
-fetcUserAppDatum().catch(e => console.log(e))
+fetchUserAppDatum().catch(e => console.log(e))

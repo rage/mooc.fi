@@ -390,7 +390,7 @@ const seed = async () => {
   await prisma.deleteManyStudyModules()
   await prisma.deleteManyCourses()
 
-  const modules = await Promise.all(
+  await Promise.all(
     Modules.map(async module => {
       const _module: StudyModuleCreateInput = {
         ...module,

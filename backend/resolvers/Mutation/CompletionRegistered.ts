@@ -3,7 +3,6 @@ import {
   Course,
   User,
   CompletionRegistered,
-  CompletionRegisteredCreateInput,
 } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { arg } from "nexus/dist"

@@ -11,5 +11,7 @@ export default class SlackPoster {
     const res = await axios.post(url, data).catch(err => {
       if (err) console.log(err)
     })
+
+    return res
   }
 }
