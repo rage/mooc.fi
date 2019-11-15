@@ -14,7 +14,7 @@ const UserCourseProgress = prismaObjectType({
     t.field("UserCourseSettings", {
       type: "UserCourseSettings",
       nullable: true,
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, _, ctx) => {
         const prisma: Prisma = ctx.prisma
         const course: Course = await prisma
           .userCourseProgress({ id: parent.id })

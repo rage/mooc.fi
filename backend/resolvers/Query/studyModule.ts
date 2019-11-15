@@ -1,8 +1,4 @@
-import {
-  Prisma,
-  StudyModuleOrderByInput,
-  StudyModule,
-} from "../../generated/prisma-client"
+import { Prisma, StudyModule } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -59,7 +55,7 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
       orderBy: arg({ type: "StudyModuleOrderByInput" }),
       language: stringArg(),
     },
-    resolve: async (_, args, ctx, info) => {
+    resolve: async (_, args, ctx) => {
       const { orderBy, language } = args
       const { prisma } = ctx
 

@@ -1,6 +1,5 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { Course, Prisma, Maybe } from "../../generated/prisma-client"
-import fetchCompletions from "../../middlewares/fetchCompletions"
 import { stringArg, intArg, idArg } from "nexus/dist"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import checkAccess from "../../accessControl"
