@@ -31,7 +31,7 @@ const openUniversityRegistrationLinks = (
 ) => {
   t.list.field("openUniversityRegistrationLinks", {
     type: "OpenUniversityRegistrationLink",
-    resolve: (_, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.openUniversityRegistrationLinks()
     },

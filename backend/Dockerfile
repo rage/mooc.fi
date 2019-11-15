@@ -1,7 +1,7 @@
 FROM node:11-alpine
 
 RUN apk --no-cache update \
-  && apk --no-cache add g++ make bash zlib-dev libpng-dev postgresql-client redis python2 curl jq \
+  && apk --no-cache add g++ make bash zlib-dev libpng-dev postgresql-client redis python2 curl jq git \
   &&  rm -fr /var/cache/apk/*
 
 COPY --chown=node . /app
