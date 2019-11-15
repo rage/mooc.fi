@@ -5,7 +5,7 @@ import * as mime from "mime-types"
 const isProduction = process.env.NODE_ENV === "production"
 const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
 
-if (!bucketName) {
+if (!bucketName && isProduction) {
   console.error("no bucket name defined in GOOGLE_CLOUD_STORAGE_BUCKET")
   process.exit(1)
 }
@@ -31,7 +31,7 @@ const storage = isProduction
     }
 // FIXME: doesn't actually upload in dev even with base64 set to false unless isproduction is true
 
-const bucket = storage.bucket(bucketName)
+const bucket = storage.bucket(bucketName ?? "") // this shouldn't ever happen in production
 
 export const uploadImage = async ({
   imageBuffer,
