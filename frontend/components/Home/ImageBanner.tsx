@@ -11,6 +11,7 @@ const BannerRoot = styled.section`
   min-height: 200px;
   max-height: 350px;
 `
+
 const BackgroundImage = styled.img`
   position: absolute;
   top: 0;
@@ -20,6 +21,7 @@ const BackgroundImage = styled.img`
   object-fit: cover;
   z-index: -2;
 `
+
 const Title = styled(Typography)`
   font-family: "Open Sans Condensed", sans-serif !important;
   @media (min-width: 320px) {

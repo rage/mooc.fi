@@ -2,12 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import {
-  CourseStatus,
-  CourseTranslationWithIdInput,
-  OpenUniversityRegistrationLinkWithIdInput,
-  StudyModuleWhereUniqueInput,
-} from "./globalTypes"
+import { CourseArg } from "./globalTypes"
 
 // ====================================================
 // GraphQL mutation operation: updateCourse
@@ -68,24 +63,5 @@ export interface updateCourse {
 }
 
 export interface updateCourseVariables {
-  id?: string | null
-  name?: string | null
-  slug?: string | null
-  ects?: string | null
-  photo?: string | null
-  new_photo?: any | null
-  base64?: boolean | null
-  promote?: boolean | null
-  start_point?: boolean | null
-  hidden?: boolean | null
-  study_module_start_point?: boolean | null
-  status?: CourseStatus | null
-  new_slug?: string | null
-  course_translations?: CourseTranslationWithIdInput[] | null
-  open_university_registration_links?:
-    | OpenUniversityRegistrationLinkWithIdInput[]
-    | null
-  study_modules?: StudyModuleWhereUniqueInput[] | null
-  order?: number | null
-  study_module_order?: number | null
+  course: CourseArg
 }

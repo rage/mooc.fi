@@ -81,10 +81,7 @@ const MobileGrid: React.FC<GridProps> = ({
 
   return (
     <>
-      {loading ||
-      (data &&
-        data.userDetailsContains &&
-        data.userDetailsContains.edges.length) ? (
+      {loading || data?.userDetailsContains?.edges?.length ? (
         <PaginationComponent />
       ) : (
         <Typography>No results</Typography>
@@ -111,14 +108,12 @@ const RenderCards: React.FC<{
 
   return (
     <>
-      {data && data.userDetailsContains
-        ? (data.userDetailsContains.edges || []).map(row => (
-            <DataCard
-              key={row.node.upstream_id || Math.random() * 9999999}
-              row={row}
-            />
-          ))
-        : null}
+      {data?.userDetailsContains?.edges?.map(row => (
+        <DataCard
+          key={row.node.upstream_id || Math.random() * 9999999}
+          row={row}
+        />
+      ))}
     </>
   )
 }

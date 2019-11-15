@@ -108,16 +108,13 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   }
 
   const courseSlug = slug || router.query.slug
-  let completion = undefined
+
+  const completion =
+    data?.currentUser?.completions?.find(c => c.course.slug == courseSlug) ??
+    undefined
 
   if (!data.currentUser) {
     return <div>You are not logged in. Please log in to the site</div>
-  }
-
-  if (data.currentUser.completions) {
-    completion = data.currentUser.completions.find(
-      c => c.course.slug === courseSlug,
-    )
   }
 
   if (!completion) {
@@ -138,12 +135,8 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   }
 
   //map completions language to a link
-  let courseLinkWithLanguage = null
-
   //if completion has a language field defined
-  if (completion.completion_link) {
-    courseLinkWithLanguage = completion.completion_link
-  }
+  const courseLinkWithLanguage = completion?.completion_link
 
   if (!courseLinkWithLanguage) {
     return <div>Open University registration is not open at the moment.</div>

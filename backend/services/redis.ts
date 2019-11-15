@@ -20,7 +20,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-redisClient.on("error", err => logger.error("Redis error: " + err))
+redisClient.on("error", (err: any) => logger.error("Redis error: " + err))
 
 const getAsync = promisify(redisClient.get).bind(redisClient)
 

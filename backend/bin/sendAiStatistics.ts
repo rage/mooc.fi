@@ -9,7 +9,12 @@ import {
 } from "../generated/prisma-client"
 
 const slackPoster: SlackPoster = new SlackPoster()
-const url: string = process.env.AI_SLACK_URL
+const url: string | undefined = process.env.AI_SLACK_URL
+
+if (!url) {
+  throw "no AI_SLACK_URL env variable"
+}
+
 let data = { text: "" }
 const prisma: Prisma = new Prisma()
 

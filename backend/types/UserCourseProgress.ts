@@ -30,7 +30,8 @@ const UserCourseProgress = prismaObjectType({
             },
           },
         )
-        return userCourseSettings[0]
+        // FIXME: what if there's not any?
+        return userCourseSettings?.[0] ?? null
       },
     })
   },
