@@ -90,10 +90,6 @@ const EditCourse = (props: EditCourseProps) => {
 
   let redirectTimeout: number | null = null
 
-  if (!admin) {
-    return <AdminError />
-  }
-
   const {
     data: courseData,
     loading: courseLoading,
@@ -107,21 +103,17 @@ const EditCourse = (props: EditCourseProps) => {
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
-  /*   if (courseLoading || studyModulesLoading) {
-    return <Spinner />
-  } */
+  if (!admin) {
+    return <AdminError />
+  }
 
   if (courseError || studyModulesError) {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>
   }
 
-  /*   if (!courseData) {
-    return <div>Hmm, no course data</div>
-  } */
-
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (courseData && !courseData.course) {
+  if (!courseLoading && !courseData?.course && typeof window !== "undefined") {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
@@ -136,7 +128,7 @@ const EditCourse = (props: EditCourseProps) => {
         ) : courseData!.course ? (
           <CourseEdit
             course={courseData!.course}
-            modules={studyModulesData ? studyModulesData.study_modules : []}
+            modules={studyModulesData?.study_modules ?? []}
           />
         ) : (
           <ErrorContainer elevation={2}>

@@ -6,7 +6,8 @@
     },
     "lib": ["es2016", "esnext.asynciterable"],
     "outDir": "./dist",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": true
   },
   "exclude": ["node_modules", "dist", "test", "src/test"]
 }

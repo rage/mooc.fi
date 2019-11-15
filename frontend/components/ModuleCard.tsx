@@ -138,7 +138,7 @@ function ModuleCard({
         <ImageCover />
         <ContentArea>
           <NaviCardTitle align="left">
-            {module ? module.name : "New module"}
+            {module?.name || "New module"}
           </NaviCardTitle>
           <NaviCardBodyText paragraph>
             {module ? (

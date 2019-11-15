@@ -9,10 +9,11 @@ interface GridProps {
 }
 function PointsListGrid(props: GridProps) {
   const { data, showOnlyTen } = props
-  let progressesToShow = data.currentUser!.progresses
-  if (showOnlyTen) {
-    progressesToShow = progressesToShow.slice(0, 10)
-  }
+
+  const progressesToShow = showOnlyTen
+    ? (data.currentUser?.progresses ?? []).slice(0, 10)
+    : data.currentUser?.progresses ?? []
+
   return (
     <Grid container spacing={3}>
       {progressesToShow.map(progress => (

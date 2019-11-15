@@ -2,8 +2,6 @@ import { prismaObjectType } from "nexus-prisma"
 import { stringArg, arg } from "nexus/dist"
 import { Course } from "/generated/prisma-client"
 
-// FIXME: suppress complex union type error - fix when typescript updates or smth
-// @ts-ignore
 const StudyModule = prismaObjectType({
   name: "StudyModule",
   definition(t) {
@@ -20,9 +18,11 @@ const StudyModule = prismaObjectType({
         const { language, orderBy } = args
         const { prisma } = ctx
 
+        // FIXME: is this Prisma special or not?
+        // @ts-ignore
         const courses = await prisma.courses({
           // @ts-ignore
-          orderBy,
+          orderBy: orderBy ?? undefined,
           where: { study_modules_some: { id: parent.id } },
         })
 

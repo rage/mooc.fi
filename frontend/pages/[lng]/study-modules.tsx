@@ -67,7 +67,7 @@ StudyModules.getInitialProps = function(context: NextContext) {
   return {
     admin,
     // @ts-ignore
-    language: context && context.req ? context.req.language : "",
+    language: context?.req?.language || "",
   }
 }
 

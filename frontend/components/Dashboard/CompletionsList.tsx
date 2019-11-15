@@ -106,11 +106,8 @@ export const PreviousPageCompletionsQuery = gql`
 const CompletionsList = () => {
   const router = useRouter()
   const completionLanguage = React.useContext(CourseLanguageContext)
-  let course: string | string[] = ""
 
-  if (router && router.query) {
-    course = router.query.id
-  }
+  const course: string | string[] = router?.query?.id ?? ""
 
   interface queryDetailsInterface {
     start: string | null
@@ -141,9 +138,12 @@ const CompletionsList = () => {
     course: string | string[]
     completionLanguage?: string
   }
-  let variables: Variables = { cursor, course }
-  if (completionLanguage) {
-    variables = { cursor, course, completionLanguage }
+
+  const variables: Variables = {
+    cursor,
+    course,
+    completionLanguage:
+      completionLanguage !== "" ? completionLanguage : undefined,
   }
 
   const { data, loading, error } = useQuery<

@@ -54,17 +54,17 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
         user_upstream_id,
         search,
       } = args
-      if ((!first && !last) || (first > 50 || last > 50)) {
+      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
 
       // user: { OR: { id: user_id, upstream_id: user_upstream_id } },
 
       return ctx.prisma.userCourseSettingsesConnection({
-        first: first,
-        last: last,
-        before: before,
-        after: after,
+        first: first ?? undefined,
+        last: last ?? undefined,
+        before: before ?? undefined,
+        after: after ?? undefined,
         where: {
           user: {
             OR: {
@@ -77,7 +77,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
                   "username_contains",
                   "email_contains",
                 ],
-                search,
+                search ?? "",
               ),
             },
           },
