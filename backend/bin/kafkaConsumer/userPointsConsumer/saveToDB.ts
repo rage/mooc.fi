@@ -48,7 +48,7 @@ export const saveToDatabase = async (
       timestamp: message.timestamp,
     })
   } else {
-    const oldTimestamp = DateTime.fromISO(exerciseCompleted.timestamp)
+    const oldTimestamp = DateTime.fromISO(exerciseCompleted.timestamp ?? "")
     if (timestamp < oldTimestamp) {
       logger.error("Timestamp older than in DB, aborting")
       return false

@@ -3,11 +3,10 @@ import nookies from "nookies"
 import Router from "next/router"
 
 export default (context: NextContext, target: string, savePage = true) => {
-  let language =
-    context && context.query && context.query.lng ? context.query.lng : "fi"
+  let language = context?.query?.lng ?? "fi"
 
   // @ts-ignore
-  if (savePage && context && context.req && context.req.originalUrl) {
+  if (savePage && context?.req?.originalUrl) {
     // @ts-ignore
     nookies.set(context, "redirect-back", context.req.originalUrl, {
       maxAge: 20 * 60,
@@ -21,7 +20,7 @@ export default (context: NextContext, target: string, savePage = true) => {
   }
   // @ts-ignore
   const targetWithLanguage = `/${language}${sep}${target}`
-  if (context.res && context.res.writeHead && context.res.end) {
+  if (context?.res?.writeHead && context?.res?.end) {
     // server
     // 303: "See other"
     context.res.writeHead(307, { Location: targetWithLanguage })

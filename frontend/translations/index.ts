@@ -9,8 +9,9 @@ export type Translation =
 const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
 ) => (key: keyof T, variables?: Record<string, any>) => {
-  const translation: T[keyof T] =
-    (dicts[lng] || ({} as T))[key] || (dicts[defaultLanguage] || ({} as T))[key]
+  const translation: T[keyof T] | undefined =
+    dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
+  //  (dicts[lng] || ({} as T))[key] || (dicts[defaultLanguage] || ({} as T))[key]
 
   if (!translation) {
     console.warn(`WARNING: no translation for ${lng}:${key}`)

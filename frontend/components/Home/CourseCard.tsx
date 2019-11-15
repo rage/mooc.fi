@@ -71,7 +71,7 @@ interface CourseCardProps {
 const CourseCard = ({ course }: CourseCardProps) => (
   <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
     <CardLinkWithGA
-      eventLabel={`coursesite: ${course ? course.name : ""}`}
+      eventLabel={`coursesite: ${course?.name ?? ""}`}
       to={course ? course.link || "" : ""}
       target="_blank"
     >

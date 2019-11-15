@@ -4,23 +4,6 @@ const Mutation = prismaObjectType({
   name: "Mutation",
   definition(t) {
     Object.values(mutations).forEach(fn => fn(t))
-    /*     mutations.addCourseMutations(t)
-    mutations.addCourseAliasMutations(t)
-    mutations.addCourseTranslationMutations(t)
-    mutations.addCompletionRegisteredMutations(t)
-    mutations.addServiceMutations(t)
-    mutations.addStudyModuleMutations(t)
-    mutations.addStudyModuleTranslationMutations(t)
-    mutations.addUserCourseProgressMutations(t)
-    mutations.addUserCourseServiceProgressMutations(t)
-    mutations.addOrganizationMutations(t)
-    mutations.addExerciseMutations(t)
-    mutations.addExerciseCompletionMutations(t)
-    mutations.addImageMutations(t)
-    mutations.addCompletionMutations(t)
-    mutations.addOpenUniversityRegistrationLinkMutations(t)
-    mutations.addCourseOrganizationMutations(t)
-    mutations.addUserOrganizationMutations(t) */
   },
 })
 

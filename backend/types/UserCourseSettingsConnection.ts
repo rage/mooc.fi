@@ -29,7 +29,7 @@ const UserCourseSettingsConnection = prismaObjectType({
                     "username_contains",
                     "email_contains",
                   ],
-                  search,
+                  search ?? "",
                 ),
               },
               course: { id: course_id },

@@ -211,12 +211,7 @@ const Register = () => {
 
     const sortedOrganizations = organizationsData
       ? organizationsData.organizations
-          .filter(
-            o =>
-              !!o &&
-              o.organization_translations &&
-              o.organization_translations.length,
-          )
+          .filter(o => o?.organization_translations?.length)
           .sort((a, b) =>
             a!.organization_translations![0].name.localeCompare(
               b!.organization_translations![0].name,
@@ -268,13 +263,9 @@ const Register = () => {
 
   const toggleMembership = (id: string) => async () => {
     if (memberships.includes(id)) {
-      const existing =
-        userOrganizationsData && userOrganizationsData.userOrganizations
-          ? userOrganizationsData.userOrganizations.find(
-              (uo: UserOrganizations_userOrganizations) =>
-                uo.organization.id === id,
-            )
-          : null
+      const existing = userOrganizationsData?.userOrganizations?.find(
+        (uo: UserOrganizations_userOrganizations) => uo.organization.id === id,
+      )
 
       if (existing) {
         await deleteUserOrganization({

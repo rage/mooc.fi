@@ -26,12 +26,12 @@ const fetcUserFieldValues = async () => {
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
     name: CONFIG_NAME,
   }))
-    ? (await prisma.userAppDatumConfig({ name: CONFIG_NAME })).timestamp
+    ? ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
     : null
 
   console.log(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserFieldValues(latestTimeStamp)
+  const data_from_tmc = await tmc.getUserFieldValues(latestTimeStamp ?? null)
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")
@@ -96,7 +96,7 @@ const fetcUserFieldValues = async () => {
 
 const getUserFromTmcAndSaveToDB = async (
   user_id: Number,
-  tmc,
+  tmc: TmcClient,
 ): Promise<User> => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
@@ -134,7 +134,7 @@ const currentDate = () => {
   var dateTime = date + " " + time
   return encodeURIComponent(dateTime)
 }
-const delay = ms => new Promise(res => setTimeout(res, ms))
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 async function saveProgress(prisma: Prisma, dateToDB: Date) {
   console.log("saving")

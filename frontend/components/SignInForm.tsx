@@ -35,20 +35,10 @@ function SignIn() {
 
   useEffect(() => {
     const inputFieldSetter = () => {
-      if (
-        password == "" &&
-        passwordFieldRef &&
-        passwordFieldRef.current &&
-        passwordFieldRef.current.value
-      ) {
+      if (password == "" && passwordFieldRef?.current?.value) {
         setPassword(passwordFieldRef.current.value)
       }
-      if (
-        email == "" &&
-        emailFieldRef &&
-        emailFieldRef.current &&
-        emailFieldRef.current.value
-      ) {
+      if (email == "" && emailFieldRef?.current?.value) {
         setEmail(emailFieldRef.current.value)
       }
     }
@@ -63,6 +53,7 @@ function SignIn() {
 
   const lng = useContext(LanguageContext)
   const t = getCommonTranslator(lng.language)
+
   return (
     <LoginStateContext.Consumer>
       {({ logInOrOut }) => (

@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { StudyModuleTranslationWithIdInput } from "./globalTypes"
+import { StudyModuleArg } from "./globalTypes"
 
 // ====================================================
 // GraphQL mutation operation: updateStudyModule
@@ -33,11 +33,5 @@ export interface updateStudyModule {
 }
 
 export interface updateStudyModuleVariables {
-  id?: string | null
-  slug: string
-  new_slug?: string | null
-  name: string
-  image?: string | null
-  order?: number | null
-  study_module_translations?: StudyModuleTranslationWithIdInput[] | null
+  study_module: StudyModuleArg
 }

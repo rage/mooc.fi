@@ -56,7 +56,7 @@ interface EditStudyModuleProps {
 const EditStudyModule = (props: EditStudyModuleProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)
-  const id = router.query.id
+  const { id } = router.query
 
   let redirectTimeout: number | null = null
 
@@ -77,7 +77,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
 
-  if (data && !data.study_module) {
+  if (!loading && !data?.study_module && typeof window !== "undefined") {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
@@ -89,7 +89,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
         </Header>
         {loading ? (
           <FormSkeleton />
-        ) : data && data.study_module ? (
+        ) : data?.study_module ? (
           <StudyModuleEdit module={data.study_module} />
         ) : (
           <ErrorContainer elevation={2}>

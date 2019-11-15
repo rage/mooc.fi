@@ -66,10 +66,10 @@ const userCourseServiceProgresses = (
           course: { id: course_id },
           service: { id: service_id },
         },
-        first: first,
-        last: last,
-        before: before,
-        after: after,
+        first: first ?? undefined,
+        last: last ?? undefined,
+        before: before ?? undefined,
+        after: after ?? undefined,
       })
     },
   })
