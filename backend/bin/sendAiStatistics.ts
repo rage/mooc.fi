@@ -15,41 +15,92 @@ if (!url) {
   throw "no AI_SLACK_URL env variable"
 }
 
-let data = { text: "Hello! This is a test!" }
+let data = { text: "" }
 const prisma: Prisma = new Prisma()
 
-const post = async () => {
-  const totalSwedish: UserCourseSettings[] = await prisma.userCourseSettingses({
+interface langProps {
+  language: string
+  completion_language: string
+  country: string
+  langName: string
+}
+
+const langArr: langProps[] = [
+  {
+    language: "se",
+    completion_language: "sv_SE",
+    country: "Sweden",
+    langName: "Swedish",
+  },
+  {
+    language: "fi",
+    completion_language: "fi_FI",
+    country: "Finland",
+    langName: "Finnish",
+  },
+]
+
+const getDataByLanguage = async (langProps: langProps) => {
+  const totalByLang: UserCourseSettings[] = await prisma.userCourseSettingses({
     where: {
-      language: "se",
+      language: langProps.language,
+      course: { slug: "elements-of-ai" },
     },
   })
-  const swedishCompletions: Completion[] = await prisma.completions({
+  const completionsByLang: Completion[] = await prisma.completions({
     where: {
       course: { slug: "elements-of-ai" },
-      completion_language: "sv_SE",
+      completion_language: langProps.completion_language,
     },
   })
-  const englishInSwedish = await prisma.userCourseSettingses({
+  const englishInLang = await prisma.userCourseSettingses({
     where: {
-      country: "Sweden",
+      country: langProps.country,
       language: "en",
     },
   })
   const now = new Date()
-  data.text = `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
     1}.${now.getFullYear()}:
  
-  1) ${totalSwedish.length} registered students in the Swedish version
-  2) of these ${swedishCompletions.length} have completed the course.
+  1) ${totalByLang.length} registered students in the ${
+    langProps.langName
+  } version
+  2) of these ${completionsByLang.length} have completed the course.
   3) ${
-    englishInSwedish.length
-  } people registered for the English course residing in Sweden.
+    englishInLang.length
+  } people registered for the English course residing in ${langProps.country}.
   
-  In total: ${totalSwedish.length} + ${
-    englishInSwedish.length
-  } = ${totalSwedish.length + englishInSwedish.length}\`\`\``
+  In total: ${totalByLang.length} + ${
+    englishInLang.length
+  } = ${totalByLang.length + englishInLang.length}\`\`\` `
+}
 
+const getGlobalStats = async () => {
+  const totalUsers = await prisma.userCourseSettingses({
+    where: {
+      course: { slug: "elements-of-ai" },
+    },
+  })
+  const totalCompletions = await prisma.completions({
+    where: {
+      course: { slug: "elements-of-ai" },
+    },
+  })
+
+  const now = new Date()
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
+    1}.${now.getFullYear()}:
+ 
+  1) ${totalUsers.length} registered students in all versions
+  2) of these ${totalCompletions.length} have completed the course.\`\`\` `
+}
+
+const post = async () => {
+  data.text = data.text.concat(await getGlobalStats())
+  for (let i = 0; i < langArr.length; i++) {
+    data.text = data.text.concat(await getDataByLanguage(langArr[i]))
+  }
   slackPoster.post(url, data)
 }
 
