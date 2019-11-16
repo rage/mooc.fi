@@ -1,4 +1,5 @@
 import { ForbiddenError } from "apollo-server-core"
+import { Context } from "./context"
 
 export enum Role {
   USER,
@@ -7,7 +8,7 @@ export enum Role {
   VISITOR,
 }
 const checkAccess = (
-  ctx,
+  ctx: Context,
   {
     allowOrganizations = false,
     disallowAdmin = false,

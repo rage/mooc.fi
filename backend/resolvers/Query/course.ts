@@ -6,6 +6,7 @@ import {
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, booleanArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("course", {
@@ -37,10 +38,19 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
         }
 
         const { name, description, link = "" } = course_translations[0]
-        return { ...course, name, description, link }
+        return {
+          ...course,
+          name,
+          description,
+          link,
+        } as NexusGenRootTypes["Course"]
       }
 
-      return { ...course, description: "", link: "" }
+      return {
+        ...course,
+        description: "",
+        link: "",
+      } as NexusGenRootTypes["Course"]
     },
   })
 }

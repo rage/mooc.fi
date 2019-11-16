@@ -48,8 +48,7 @@ const CourseEdit = ({
   const validationSchema = courseEditSchema({
     client,
     checkSlug,
-    initialSlug:
-      course && course.slug && course.slug !== "" ? course.slug : null,
+    initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
   })
 
   const onSubmit = useCallback(
@@ -77,7 +76,7 @@ const CourseEdit = ({
 
         // TODO/FIXME: return value?
         await courseMutation({
-          variables: mutationVariables,
+          variables: { course: mutationVariables },
           refetchQueries: () => refetchQueries,
         })
 

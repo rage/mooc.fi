@@ -1,6 +1,5 @@
 import React from "react"
 import Grid from "@material-ui/core/Grid"
-import ButtonBase from "@material-ui/core/ButtonBase"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"
@@ -9,18 +8,8 @@ import ModuleImage from "/components/Home/ModuleImage"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
+import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
 
-const Base = styled(ButtonBase)`
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  height: 200px;
-  @media (min-width: 720px) {
-    height: 300px;
-  }
-`
 const SkeletonTitle = styled(Skeleton)`
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
@@ -36,7 +25,7 @@ const SkeletonBodyText = styled(Skeleton)`
 const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
   <Grid item xs={12} md={6} lg={6}>
     <LangLink href={`#${module ? module.slug : ""}`}>
-      <Base focusRipple>
+      <ClicableButtonBase focusRipple>
         {module ? (
           <>
             <ModuleImage module={module} />
@@ -57,7 +46,7 @@ const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
             </FullCoverTextBackground>
           </>
         )}
-      </Base>
+      </ClicableButtonBase>
     </LangLink>
   </Grid>
 )

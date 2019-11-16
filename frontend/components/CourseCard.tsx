@@ -48,7 +48,7 @@ const StyledLink = styled.a`
 const CourseCard = React.memo(
   ({ course }: { course?: AllEditorCourses_courses }) => (
     <Grid item xs={12} sm={6} lg={3}>
-      <CardBase ishidden={course && course.hidden ? 1 : undefined}>
+      <CardBase ishidden={course?.hidden ? 1 : undefined}>
         <CardMedia>
           {course ? (
             <CourseImage photo={course.photo} alt={course.name} />

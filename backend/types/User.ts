@@ -2,6 +2,7 @@ import { prismaObjectType } from "nexus-prisma"
 import { idArg, stringArg } from "nexus/dist"
 import { Course } from "/generated/prisma-client"
 import { resolve } from "url"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const User = prismaObjectType({
   name: "User",
@@ -15,11 +16,11 @@ const User = prismaObjectType({
         course_id: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
-        const course: Course = await ctx.prisma.course({ id: args.course_id })
+        const course = await ctx.prisma.course({ id: args.course_id })
         return {
           course: course,
           user: parent,
-        }
+        } as NexusGenRootTypes["Progress"]
       },
     })
 
@@ -38,7 +39,7 @@ const User = prismaObjectType({
           return {
             course: course,
             user: parent,
-          }
+          } as NexusGenRootTypes["Progress"]
         })
         return progresses
       },

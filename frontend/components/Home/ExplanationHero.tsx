@@ -20,6 +20,7 @@ const BackgroundImage = styled.img`
   object-fit: cover;
   z-index: -2;
 `
+
 function ExplanationHero() {
   return (
     <ExplanationRoot>

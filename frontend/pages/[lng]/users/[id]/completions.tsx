@@ -42,7 +42,8 @@ function CompletionsPage(props: CompletionsProps) {
     UserOverViewQuery,
     { variables: { upstream_id: Number(router.query.id) } },
   )
-  let completions: ShowUserUserOverView_user_completions[] = []
+
+  const completions = data?.user?.completions ?? []
 
   if (error) {
     return (
@@ -54,10 +55,6 @@ function CompletionsPage(props: CompletionsProps) {
 
   if (loading || !data) {
     return <div>Loading</div>
-  }
-
-  if (data.user && data.user.completions) {
-    completions = data.user.completions
   }
 
   return (

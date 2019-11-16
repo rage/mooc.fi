@@ -33,16 +33,14 @@ const Points = (props: CompletionsProps) => {
     return <AdminError />
   }
 
-  let slug: string = ""
-  let lng: string = ""
-  if (router && router.query) {
-    if (typeof router.query.lng === "string") {
-      lng = router.query.lng
-    }
-    if (typeof router.query.id === "string") {
-      slug = router.query.id
-    }
-  }
+  const slug =
+    router?.query?.id && typeof router.query.id === "string"
+      ? router.query.id
+      : ""
+  const lng =
+    router?.query?.language && typeof router.query.language === "string"
+      ? router.query.language
+      : ""
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },
