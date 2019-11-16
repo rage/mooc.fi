@@ -29,10 +29,10 @@ const addCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       return prisma.createCompletion({
         course: { connect: { id: course } },
         user: { connect: { id: user } },
-        email: email,
-        student_number: student_number,
-        completion_language: completion_language,
-        user_upstream_id: user_upstream_id,
+        email: email ?? "",
+        student_number,
+        completion_language,
+        user_upstream_id,
       })
     },
   })

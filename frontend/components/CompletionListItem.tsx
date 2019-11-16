@@ -4,7 +4,7 @@ import { ProfileUserOverView_currentUser_completions as CompletionsData } from "
 import Button from "@material-ui/core/Button"
 import {
   formatDateTime,
-  MapLangToLanguage,
+  mapLangToLanguage,
 } from "/components/DataFormatFunctions"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
@@ -17,6 +17,7 @@ const StyledButton = styled(Button)`
   margin: auto;
   color: black;
 `
+
 const RegisterCompletionButton = ({ course }: { course: string }) => {
   return (
     <StyledButton color="secondary" href={`/register-completion/${course}`}>
@@ -47,11 +48,11 @@ interface ListItemProps {
 }
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
-  const isRegistered =
-    listItem.completions_registered &&
-    listItem.completions_registered.length > 0
+  const isRegistered = (listItem?.completions_registered ?? []).length > 0
+
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
+
   return (
     <ListItemContainer>
       <CourseAvatar photo={listItem.course.photo} />

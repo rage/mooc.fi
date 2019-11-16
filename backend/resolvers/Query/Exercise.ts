@@ -2,6 +2,7 @@ import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const exercise = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("exercise", {
@@ -9,13 +10,16 @@ const exercise = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       id: idArg(),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx)
       const { id } = args
       const prisma: Prisma = ctx.prisma
-      return prisma.exercise({
+
+      const exercise = await prisma.exercise({
         id: id,
       })
+
+      return exercise as NexusGenRootTypes["Exercise"]
     },
   })
 }

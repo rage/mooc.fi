@@ -26,7 +26,7 @@ const UserConnection = prismaObjectType({
                   "username_contains",
                   "email_contains",
                 ],
-                search,
+                search ?? "",
               ),
             },
           })

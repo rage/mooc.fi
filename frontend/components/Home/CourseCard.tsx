@@ -1,29 +1,19 @@
 import React from "react"
 import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
-import ButtonBase from "@material-ui/core/ButtonBase"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
+import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
 
-interface BackgroundProps {
-  component: string
-}
-
-const Background = styled(ButtonBase)<BackgroundProps>`
-  background-color: white;
-  position: relative;
-  box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
+const Background = styled(ClicableButtonBase)`
   display: flex;
   flex-direction: column;
   @media (max-width: 960px) {
     flex-direction: row;
-  }
-  &:hover {
-    box-shadow: 18px 7px 48px -12px rgba(0, 0, 0, 1);
   }
 `
 
@@ -72,12 +62,11 @@ interface CourseCardProps {
 const CourseCard = ({ course }: CourseCardProps) => (
   <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
     <CardLinkWithGA
-      eventLabel={`coursesite: ${course ? course.name : ""}`}
+      eventLabel={`coursesite: ${course?.name ?? ""}`}
       to={course ? course.link || "" : ""}
       target="_blank"
     >
       <Background
-        component="div"
         focusRipple
         disabled={!course || (!course.link || course.link === "")}
       >

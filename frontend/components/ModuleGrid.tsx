@@ -12,7 +12,7 @@ function ModuleGrid(props: ModuleGridProps) {
   return (
     <section>
       <Grid container spacing={3}>
-        {(modules || []).map(module => (
+        {modules?.map(module => (
           <ModuleCard key={module.slug} module={module} />
         ))}
         <ModuleCard key={"newmodule"} />

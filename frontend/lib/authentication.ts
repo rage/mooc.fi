@@ -60,11 +60,7 @@ export const signOut = async (apollo: ApolloClient<any>) => {
 }
 
 const getCookie = (key: string) => {
-  if (
-    typeof document === "undefined" ||
-    !document ||
-    (document && !document.cookie)
-  ) {
+  if (typeof document === "undefined" || !document || !document?.cookie) {
     return
   }
 

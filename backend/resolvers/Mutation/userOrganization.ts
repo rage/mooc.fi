@@ -59,7 +59,7 @@ const updateUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("updateUserOrganization", {
     type: "UserOrganization",
     args: {
-      id: idArg(),
+      id: idArg({ required: true }),
       /*       userId: idArg(),
       organizationId: idArg(), */
       role: arg({ type: "OrganizationRole" }),
@@ -96,7 +96,7 @@ const deleteUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteUserOrganization", {
     type: "UserOrganization",
     args: {
-      id: idArg({ required: false }),
+      id: idArg({ required: true }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowVisitors: true })

@@ -189,9 +189,7 @@ function PaginatedPointsList(props: Props) {
             {UserCourseSettingses.count || 0} results
           </div>
           <PointsList
-            pointsForUser={
-              data.UserCourseSettingses ? data.UserCourseSettingses.edges : []
-            }
+            pointsForUser={data?.UserCourseSettingses?.edges ?? []}
             cutterValue={cutterValue}
           />
           <Button
@@ -207,9 +205,8 @@ function PaginatedPointsList(props: Props) {
 
                 updateQuery: (previousResult, { fetchMoreResult }) => {
                   const previousData = previousResult.UserCourseSettingses.edges
-                  const newData = fetchMoreResult
-                    ? fetchMoreResult.UserCourseSettingses.edges
-                    : ([] as UserCourseSettingses_UserCourseSettingses_edges[])
+                  const newData: UserCourseSettingses_UserCourseSettingses_edges[] =
+                    fetchMoreResult?.UserCourseSettingses?.edges ?? []
                   const newPageInfo = fetchMoreResult
                     ? fetchMoreResult.UserCourseSettingses.pageInfo
                     : ({} as UserCourseSettingses_UserCourseSettingses_pageInfo)

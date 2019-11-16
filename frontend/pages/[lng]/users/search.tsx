@@ -64,18 +64,9 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   const theme = useTheme()
   const { data, page, rowsPerPage, setPage, searchText, loadData } = props
 
-  const startCursor =
-    data &&
-    data.userDetailsContains &&
-    data.userDetailsContains.pageInfo &&
-    data.userDetailsContains.pageInfo.startCursor
-  const endCursor =
-    data &&
-    data.userDetailsContains &&
-    data.userDetailsContains.pageInfo &&
-    data.userDetailsContains.pageInfo.endCursor
-  const count =
-    (data && data.userDetailsContains && data.userDetailsContains.count) || 0
+  const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
+  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
+  const count = data?.userDetailsContains?.count ?? 0
 
   const handleFirstPageButtonClick = useCallback(async (
     // @ts-ignore

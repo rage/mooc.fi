@@ -3,11 +3,13 @@ import {
   Course,
   User,
   CompletionRegistered,
+  CompletionRegisteredCreateInput,
 } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import { chunk } from "lodash"
+import { Context } from "../../context"
 
 const registerCompletion = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,
@@ -19,8 +21,11 @@ const registerCompletion = async (
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: true, disallowAdmin: true })
+
       const prisma: Prisma = ctx.prisma
+
       let queue = chunk(args.completions, 500)
+
       for (let i = 0; i < queue.length; i++) {
         const promises = buildPromises(queue[i], ctx, prisma)
         await Promise.all(promises)
@@ -30,7 +35,13 @@ const registerCompletion = async (
   })
 }
 
-const buildPromises = (array, ctx, prisma): [Promise<CompletionRegistered>] => {
+// FIXME: had [Promise<...>] as type?
+
+const buildPromises = (
+  array: any[],
+  ctx: Context,
+  prisma: Prisma,
+): Promise<CompletionRegistered>[] => {
   return array.map(async entry => {
     console.log("entry", entry)
     const course: Course = await prisma
@@ -40,9 +51,10 @@ const buildPromises = (array, ctx, prisma): [Promise<CompletionRegistered>] => {
       .completion({ id: entry.completion_id })
       .user()
     console.log(course, user)
+
     return prisma.createCompletionRegistered({
       completion: { connect: { id: entry.completion_id } },
-      organization: { connect: { id: ctx.organization.id } },
+      organization: { connect: { id: ctx.organization?.id } },
       course: { connect: { id: course.id } },
       real_student_number: entry.student_number,
       user: { connect: { id: user.id } },
