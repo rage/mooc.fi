@@ -8,12 +8,28 @@ import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 
 const Background = styled(ClicableButtonBase)`
   display: flex;
   flex-direction: column;
   @media (max-width: 960px) {
     flex-direction: row;
+  }
+`
+
+const ResponsiveCourseImageBase = styled(CourseImageBase)`
+  @media (max-width: 430px) {
+    height: 235px;
+    width: 30%;
+  }
+  @media (min-width: 430px) and (max-width: 600px) {
+    width: 45%;
+    height: 215px;
+  }
+  @media (min-width: 600px) and (max-width: 960px) {
+    width: 40%;
+    height: 240px;
   }
 `
 
@@ -36,22 +52,6 @@ const TextArea = styled.div`
   }
 `
 
-const ImageArea = styled.div`
-  height: 230px;
-  width: 100%;
-  @media (max-width: 430px) {
-    height: 235px;
-    width: 30%;
-  }
-  @media (min-width: 430px) and (max-width: 600px) {
-    width: 45%;
-    height: 215px;
-  }
-  @media (min-width: 600px) and (max-width: 960px) {
-    width: 40%;
-    height: 240px;
-  }
-`
 const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
@@ -70,7 +70,7 @@ const CourseCard = ({ course }: CourseCardProps) => (
         focusRipple
         disabled={!course || (!course.link || course.link === "")}
       >
-        <ImageArea>
+        <ResponsiveCourseImageBase>
           {course ? (
             <CourseImage
               photo={course.photo}
@@ -79,7 +79,7 @@ const CourseCard = ({ course }: CourseCardProps) => (
           ) : (
             <Skeleton variant="rect" height="100%" />
           )}
-        </ImageArea>
+        </ResponsiveCourseImageBase>
         <TextArea>
           {course ? (
             <>
