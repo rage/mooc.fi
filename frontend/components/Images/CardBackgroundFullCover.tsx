@@ -18,3 +18,7 @@ export const FullCoverTextBackground = styled.span`
   display: flex;
   flex-direction: column;
 `
+export const CourseImageBase = styled.div`
+  height: 230px;
+  width: 100%;
+`
