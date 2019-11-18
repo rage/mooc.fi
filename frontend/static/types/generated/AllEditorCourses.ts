@@ -15,6 +15,13 @@ export interface AllEditorCourses_courses_photo {
   uncompressed: string
 }
 
+export interface AllEditorCourses_courses_course_variants {
+  __typename: "CourseVariant"
+  id: any
+  slug: string
+  description: string | null
+}
+
 export interface AllEditorCourses_courses {
   __typename: "Course"
   id: any
@@ -24,6 +31,7 @@ export interface AllEditorCourses_courses {
   status: CourseStatus | null
   hidden: boolean | null
   photo: AllEditorCourses_courses_photo | null
+  course_variants: AllEditorCourses_courses_course_variants[] | null
 }
 
 export interface AllEditorCourses_currentUser {

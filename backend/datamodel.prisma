@@ -52,9 +52,19 @@ type Course @db(name: "course") {
   participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")     
   automatic_completions: Boolean @default(value: false)
   points_needed: Int
+  course_variants: [CourseVariant!]! @relation(name: "CourseToCourseVariant", onDelete: CASCADE)
 }
 
-type CourseAlias  @db(name: "course_alias"){
+type CourseVariant @db(name: "course_variant") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  slug: String!
+  description: String
+  course: Course! @relation(link: INLINE, name: "CourseToCourseVariant")
+}
+
+type CourseAlias @db(name: "course_alias"){
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt

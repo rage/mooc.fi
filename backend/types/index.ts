@@ -1,4 +1,4 @@
-// generated Tue Nov 12 2019 14:37:48 GMT+0200 (Eastern European Standard Time)
+// generated Mon Nov 18 2019 13:19:25 GMT+0200 (Eastern European Standard Time)
 
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
@@ -6,6 +6,8 @@ export { default as Course } from "./Course"
 export { default as CourseArg } from "./CourseArg"
 export { default as CourseTranslationCreateUpdateInput } from "./CourseTranslationCreateUpdateInput"
 export { default as CourseTranslationWithIdInput } from "./CourseTranslationWithIdInput"
+export { default as CourseVariantCreateUpdateInput } from "./CourseVariantCreateUpdateInput"
+export { default as CourseVariantWithIdInput } from "./CourseVariantWithIdInput"
 export { default as Mutation } from "./Mutation"
 export { default as OpenUniversityRegistrationLinkCreateUpdateInput } from "./OpenUniversityRegistrationLinkCreateUpdateInput"
 export { default as OpenUniversityRegistrationLinkWithIdInput } from "./OpenUniversityRegistrationLinkWithIdInput"

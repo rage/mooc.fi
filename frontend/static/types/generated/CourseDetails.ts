@@ -39,6 +39,13 @@ export interface CourseDetails_course_study_modules {
   id: any
 }
 
+export interface CourseDetails_course_course_variants {
+  __typename: "CourseVariant"
+  id: any
+  slug: string
+  description: string | null
+}
+
 export interface CourseDetails_course {
   __typename: "Course"
   id: any
@@ -58,6 +65,7 @@ export interface CourseDetails_course {
     | CourseDetails_course_open_university_registration_links[]
     | null
   study_modules: CourseDetails_course_study_modules[] | null
+  course_variants: CourseDetails_course_course_variants[] | null
 }
 
 export interface CourseDetails {
