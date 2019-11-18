@@ -22,6 +22,7 @@ export interface CourseArg {
   automatic_completions?: boolean | null
   base64?: boolean | null
   course_translations?: CourseTranslationCreateUpdateInput[] | null
+  course_variants?: CourseVariantCreateUpdateInput[] | null
   ects?: string | null
   hidden?: boolean | null
   id?: string | null
@@ -50,6 +51,13 @@ export interface CourseTranslationCreateUpdateInput {
   language: string
   link?: string | null
   name: string
+}
+
+export interface CourseVariantCreateUpdateInput {
+  course?: string | null
+  description?: string | null
+  id?: string | null
+  slug: string
 }
 
 export interface OpenUniversityRegistrationLinkCreateUpdateInput {

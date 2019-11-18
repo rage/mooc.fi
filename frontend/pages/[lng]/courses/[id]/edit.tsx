@@ -55,6 +55,11 @@ export const CourseQuery = gql`
       study_modules {
         id
       }
+      course_variants {
+        id
+        slug
+        description
+      }
     }
   }
 `
