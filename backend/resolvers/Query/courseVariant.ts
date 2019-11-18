@@ -1,7 +1,5 @@
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg, intArg } from "nexus/dist"
-import checkAccess from "../../accessControl"
-import { Prisma, CourseVariant } from "../../generated/prisma-client"
+import { idArg } from "nexus/dist"
 
 const courseVariant = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("courseVariant", {
@@ -9,6 +7,7 @@ const courseVariant = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       id: idArg(),
     },
+    nullable: true,
     resolve: (_, args, ctx) => {
       const { id } = args
 

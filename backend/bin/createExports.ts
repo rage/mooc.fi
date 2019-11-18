@@ -8,7 +8,7 @@ const data = {
   types: "%name%",
 }
 
-const IGNORED_FILES = ["index.ts"]
+const IGNORED_FILES = ["index.ts", "mimetypes.d.ts"]
 const OUTPUT_FILE = "index.ts"
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)

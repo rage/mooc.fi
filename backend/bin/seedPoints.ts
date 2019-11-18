@@ -17,6 +17,8 @@ function generateUniqueUpstreamId({ ExistingIds }: { ExistingIds: number[] }) {
       return UniqueIntId
     }
   }
+
+  return UniqueIntId
 }
 
 function generateRandomString() {
@@ -72,6 +74,8 @@ const addServices = async () => {
   }
 }
 
+// FIXME: (?) not used anywhere
+// @ts-ignore
 const addUserCourseServiceProgressess = async ({
   courseId,
 }: {
@@ -266,8 +270,8 @@ const seedPointsData = async () => {
   const course = await prisma.course({ slug: "elements-of-ai" })
   await addUsers()
   await addServices()
-  await addUserCourseProgressess({ courseId: course.id })
-  await addUserCourseSettingses({ courseId: course.id })
+  course && (await addUserCourseProgressess({ courseId: course.id }))
+  course && (await addUserCourseSettingses({ courseId: course.id }))
 }
 
 seedPointsData()

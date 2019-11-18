@@ -1,4 +1,3 @@
-require("dotenv-safe").config()
 import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
 
@@ -13,7 +12,7 @@ const logger = winston.createLogger({
 })
 
 let producer: Kafka.Producer
-let queue: ProducerMessage[]
+let queue: ProducerMessage[] = []
 let disconnect: Boolean
 
 export default class KafkaProducer {
@@ -43,7 +42,8 @@ export default class KafkaProducer {
     while (true) {
       if (disconnect && queue.length < 1) break
       if (queue.length > 0) {
-        const message: ProducerMessage = queue.pop()
+        const message: ProducerMessage = queue.pop() as ProducerMessage
+
         try {
           producer.produce(
             message.topic,

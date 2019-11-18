@@ -1,11 +1,8 @@
-import {
-  Prisma,
-  StudyModuleOrderByInput,
-  StudyModule,
-} from "../../generated/prisma-client"
+import { Prisma, StudyModule } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("study_module", {
@@ -15,6 +12,7 @@ const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
       slug: stringArg(),
       language: stringArg(),
     },
+    nullable: true,
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: false })
       const { id, slug, language } = args
@@ -35,10 +33,17 @@ const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
         }
 
         const { name, description = "" } = module_translations[0]
-        return { ...study_module, name, description }
+        return {
+          ...study_module,
+          name,
+          description,
+        } as NexusGenRootTypes["StudyModule"]
       }
 
-      return { ...study_module, description: "" }
+      return {
+        ...study_module,
+        description: "",
+      } as NexusGenRootTypes["StudyModule"]
     },
   })
 }
@@ -50,7 +55,7 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
       orderBy: arg({ type: "StudyModuleOrderByInput" }),
       language: stringArg(),
     },
-    resolve: async (_, args, ctx, info) => {
+    resolve: async (_, args, ctx) => {
       const { orderBy, language } = args
       const { prisma } = ctx
 

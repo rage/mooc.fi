@@ -28,9 +28,7 @@ const Pagination: React.FC<PaginationProps> = ({
   <TablePagination
     rowsPerPageOptions={[10, 20, 50]}
     colSpan={3}
-    count={
-      data && data.userDetailsContains ? data.userDetailsContains.count : 0
-    }
+    count={data?.userDetailsContains?.count ?? 0}
     rowsPerPage={rowsPerPage}
     page={page}
     SelectProps={{

@@ -3,7 +3,6 @@ import { Grid, Typography } from "@material-ui/core"
 import DoneIcon from "@material-ui/icons/Done"
 import CloseIcon from "@material-ui/icons/Close"
 import { AllCompletions_completionsPaginated_edges_node as completer } from "/static/types/generated/AllCompletions"
-import { AllCompletions_completionsPaginated_edges_node_completions_registered as completionsRegistered } from "/static/types/generated/AllCompletions"
 
 function formatDateTime(date: string) {
   const dateToFormat = new Date(date)
@@ -12,14 +11,11 @@ function formatDateTime(date: string) {
 }
 
 function CompletionDetailGrid({ completer }: { completer: completer }) {
-  let completionsregistered: completionsRegistered[] = []
+  const completionsRegistered = completer?.completions_registered ?? []
 
-  if (completer.completions_registered) {
-    completionsregistered = completer.completions_registered
-  }
   return (
     <Grid container spacing={1} direction="row" alignItems="flex-start">
-      {completionsregistered.length > 0 ? (
+      {completionsRegistered.length > 0 ? (
         <div>
           <Grid item>
             <DoneIcon />

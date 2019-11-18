@@ -21,7 +21,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-const logCommit = (err, topicPartitions) => {
+const logCommit = (err: any, topicPartitions: any) => {
   if (err) {
     logger.error("Error in commit:" + err)
   } else {

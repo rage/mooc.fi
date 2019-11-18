@@ -10,6 +10,7 @@ import { whichIsActive } from "/components/HeaderBar/Header"
 interface ButtonProps {
   active: boolean
 }
+
 const StyledButton = styled(Button)<ButtonProps>`
   margin-left: 0.5rem;
   margin-top: 0.5rem;
@@ -37,10 +38,10 @@ const ProfileButton = () => {
   const { language, url } = useContext(LanguageContext)
   const active = whichIsActive({ url: url })
 
-  let userDisplayName: string = "Oma profiili"
-  if (currentUser && currentUser.first_name) {
-    userDisplayName = `${currentUser.first_name} ${currentUser.last_name}`
-  }
+  const userDisplayName = currentUser?.first_name
+    ? `${currentUser.first_name} ${currentUser.last_name}`
+    : "Oma profiili"
+
   return (
     <LangLink href="/[lng]/profile" as={`/${language}/profile`}>
       <StyledButton color="inherit" variant="text" active={active == "profile"}>

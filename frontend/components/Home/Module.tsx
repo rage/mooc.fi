@@ -58,9 +58,7 @@ const BackgroundImage = styled.img<BackgroundProps>`
   object-fit: cover;
 
   ${props =>
-    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${
-      props.brightness
-    });`}
+    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${props.brightness});`}
 `
 
 const Title = styled(Typography)`

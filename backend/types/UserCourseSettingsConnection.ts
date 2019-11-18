@@ -14,7 +14,7 @@ const UserCourseSettingsConnection = prismaObjectType({
         course_id: idArg(),
         search: stringArg(),
       },
-      resolve: async (parent, args, ctx) => {
+      resolve: async (_, args, ctx) => {
         const { search, course_id } = args
 
         const prisma: Prisma = ctx.prisma
@@ -29,7 +29,7 @@ const UserCourseSettingsConnection = prismaObjectType({
                     "username_contains",
                     "email_contains",
                   ],
-                  search,
+                  search ?? "",
                 ),
               },
               course: { id: course_id },

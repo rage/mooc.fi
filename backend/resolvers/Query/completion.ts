@@ -1,6 +1,5 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { Course, Prisma } from "../../generated/prisma-client"
-import fetchCompletions from "../../middlewares/fetchCompletions"
+import { Course, Prisma, Maybe } from "../../generated/prisma-client"
 import { stringArg, intArg, idArg } from "nexus/dist"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import checkAccess from "../../accessControl"
@@ -21,10 +20,13 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
 
       const { first, after, last, before, completion_language } = args
       let { course } = args
-      if ((!first && !last) || (first > 50 || last > 50)) {
+      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
         ctx.disableRelations = true
       }
-      const courseWithSlug: Course = await ctx.prisma.course({ slug: course })
+      const courseWithSlug: Maybe<Course> = await ctx.prisma.course({
+        slug: course,
+      })
+
       if (!courseWithSlug) {
         const courseFromAvoinCourse: Course = await ctx.prisma
           .courseAlias({ course_code: course })
@@ -35,17 +37,17 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
         course = courseFromAvoinCourse.slug
       }
       const prisma: Prisma = ctx.prisma
-      const courseObject: Course = await prisma.course({ slug: course })
+      const courseObject: Maybe<Course> = await prisma.course({ slug: course })
 
       return prisma.completions({
         where: {
-          course: { id: courseObject.id },
+          course: { id: courseObject?.id },
           completion_language: completion_language,
         },
-        first: first,
-        after: after,
-        last: last,
-        before: before,
+        first: first ?? undefined,
+        after: after ?? undefined,
+        last: last ?? undefined,
+        before: before ?? undefined,
       })
     },
   })
@@ -66,10 +68,13 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
       checkAccess(ctx, { allowOrganizations: true })
       const { first, after, last, before, completion_language } = args
       let { course } = args
-      if ((!first && !last) || (first > 50 || last > 50)) {
+      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
-      const courseWithSlug: Course = await ctx.prisma.course({ slug: course })
+      const courseWithSlug: Maybe<Course> = await ctx.prisma.course({
+        slug: course,
+      })
+
       if (!courseWithSlug) {
         const courseFromAvoinCourse: Course = await ctx.prisma
           .courseAlias({ course_code: course })
@@ -80,17 +85,17 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
         course = courseFromAvoinCourse.slug
       }
 
-      const courseObject: Course = await prisma.course({ slug: course })
+      const courseObject: Maybe<Course> = await prisma.course({ slug: course })
 
       const completions = prisma.completionsConnection({
         where: {
-          course: { id: courseObject.id },
+          course: { id: courseObject?.id },
           completion_language: completion_language,
         },
-        first: first,
-        after: after,
-        last: last,
-        before: before,
+        first: first ?? undefined,
+        after: after ?? undefined,
+        last: last ?? undefined,
+        before: before ?? undefined,
       })
 
       return completions
