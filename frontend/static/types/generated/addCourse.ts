@@ -2,13 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import {
-  CourseStatus,
-  CourseTranslationCreateWithoutCourseInput,
-  OpenUniversityRegistrationLinkCreateWithoutCourseInput,
-  StudyModuleWhereUniqueInput,
-  CourseVariantCreateWithoutCourseInput,
-} from "./globalTypes"
+import { CourseArg } from "./globalTypes"
 
 // ====================================================
 // GraphQL mutation operation: addCourse
@@ -77,22 +71,5 @@ export interface addCourse {
 }
 
 export interface addCourseVariables {
-  name?: string | null
-  slug?: string | null
-  ects?: string | null
-  new_photo?: any | null
-  base64?: boolean | null
-  promote?: boolean | null
-  start_point?: boolean | null
-  hidden?: boolean | null
-  study_module_start_point?: boolean | null
-  status?: CourseStatus | null
-  course_translations?: CourseTranslationCreateWithoutCourseInput[] | null
-  open_university_registration_links?:
-    | OpenUniversityRegistrationLinkCreateWithoutCourseInput[]
-    | null
-  study_modules?: StudyModuleWhereUniqueInput[] | null
-  course_variants?: CourseVariantCreateWithoutCourseInput[] | null
-  order?: number | null
-  study_module_order?: number | null
+  course: CourseArg
 }

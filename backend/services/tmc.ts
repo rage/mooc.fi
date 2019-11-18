@@ -14,8 +14,9 @@ export interface UserFieldValue {
 }
 
 export default class TmcClient {
-  accessToken: String
-  constructor(accessToken: String = null) {
+  accessToken: String | null
+
+  constructor(accessToken: String | null = null) {
     this.accessToken = accessToken
   }
 
@@ -50,7 +51,7 @@ export default class TmcClient {
     return res.data
   }
 
-  async getUserAppDatum(after: string): Promise<any[]> {
+  async getUserAppDatum(after: string | null): Promise<any[]> {
     let res
     if (after != null) {
       after = await encodeURI(after)
@@ -68,7 +69,7 @@ export default class TmcClient {
     return res.data
   }
 
-  async getUserFieldValues(after: string): Promise<UserFieldValue[]> {
+  async getUserFieldValues(after: string | null): Promise<UserFieldValue[]> {
     let res
     if (after != null) {
       after = await encodeURI(after)

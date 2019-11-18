@@ -1,6 +1,6 @@
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { Prisma, CourseVariant } from "../../generated/prisma-client"
-import { stringArg, arg, idArg, intArg } from "nexus/dist"
+import { Prisma } from "../../generated/prisma-client"
+import { stringArg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const addCourseVariant = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {

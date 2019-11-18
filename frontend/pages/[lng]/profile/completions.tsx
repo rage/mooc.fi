@@ -4,10 +4,7 @@ import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import {
-  CurrentUserUserOverView as UserOverViewData,
-  CurrentUserUserOverView_currentUser_completions,
-} from "/static/types/generated/CurrentUserUserOverView"
+import { CurrentUserUserOverView as UserOverViewData } from "/static/types/generated/CurrentUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
 
@@ -27,8 +24,6 @@ export const UserOverViewQuery = gql`
 
 function CompletionsPage() {
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
-  let completions: CurrentUserUserOverView_currentUser_completions[] = []
-
   if (error) {
     return (
       <div>
@@ -41,9 +36,8 @@ function CompletionsPage() {
     return <div>Loading</div>
   }
 
-  if (data.currentUser && data.currentUser.completions) {
-    completions = data.currentUser.completions
-  }
+  const completions = data?.currentUser?.completions ?? []
+
   return (
     <>
       <Container>

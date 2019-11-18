@@ -27,12 +27,10 @@ interface CourseProps {
 const Course = (props: CourseProps) => {
   const { admin, router } = props
 
-  let slug: string = ""
-  if (router && router.query) {
-    if (typeof router.query.id === "string") {
-      slug = router.query.id
-    }
-  }
+  const slug =
+    router?.query?.id && typeof router.query.id === "string"
+      ? router.query.id
+      : ""
 
   if (!admin) {
     return <AdminError />

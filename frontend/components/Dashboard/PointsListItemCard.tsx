@@ -85,7 +85,12 @@ interface Props {
 }
 
 function PointsListItemCard(props: Props) {
-  const { pointsAll, cutterValue, showPersonalDetails, personalDetails } = props
+  const {
+    pointsAll,
+    cutterValue = 0,
+    showPersonalDetails,
+    personalDetails,
+  } = props
   const [showDetails, setShowDetails] = React.useState(false)
 
   const formattedPointsData: formattedGroupPointsDictionary | null = formatPointsData(
@@ -93,10 +98,6 @@ function PointsListItemCard(props: Props) {
       pointsData: pointsAll,
     },
   )
-  let cuttervalue = 0
-  if (cutterValue) {
-    cuttervalue = cutterValue
-  }
 
   return (
     <Root item sm={12} lg={12}>
@@ -112,7 +113,7 @@ function PointsListItemCard(props: Props) {
           <PointsItemTable
             studentPoints={formattedPointsData}
             showDetailedBreakdown={showDetails}
-            cutterValue={cuttervalue}
+            cutterValue={cutterValue}
           />
           <Button
             variant="text"

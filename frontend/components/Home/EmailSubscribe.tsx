@@ -98,7 +98,7 @@ function EmailSubscribe() {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    if (formRef && formRef.current) {
+                    if (formRef?.current) {
                       formRef.current.submit()
                       handleSubmit()
                     }

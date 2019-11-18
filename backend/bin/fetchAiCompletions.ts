@@ -1,7 +1,9 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
+
 import { prisma, User, Course, Completion } from "../generated/prisma-client"
+
 const getPassedUsernamesByTag = require("../services/quiznator")
   .getPassedUsernamesByTag
 const tmcService = require("../services/tmc_completion_script")
@@ -23,9 +25,7 @@ async function getElementsOfAiInfo() {
   const promises = elementsOfAiTags.map(async tag => {
     let usernames = await getPassedUsernamesByTag(tag)
     console.log(
-      `Got passed students from quiznator! ${
-        usernames.length
-      } students have passed ${tag} so far.`,
+      `Got passed students from quiznator! ${usernames.length} students have passed ${tag} so far.`,
     )
     usernames = await removeDataThatIsInDBAlready(usernames, "elements-of-ai")
     let basicInfo = await tmcService.getBasicInfoByUsernames(usernames)
@@ -35,7 +35,10 @@ async function getElementsOfAiInfo() {
   await Promise.all(promises)
 }
 
-async function removeDataThatIsInDBAlready(data: string[], course_slug) {
+async function removeDataThatIsInDBAlready(
+  data: string[],
+  course_slug: string,
+) {
   const users: User[] = await prisma.users({
     where: {
       AND: {
@@ -52,14 +55,15 @@ async function removeDataThatIsInDBAlready(data: string[], course_slug) {
 
 async function saveCompletionsAndUsersToDatabase(
   data: any[],
-  course_slug,
-  course_name,
+  course_slug: string,
+  course_name: string,
 ) {
   console.log("starting with", course_name)
   for (let i = 0; i < data.length; i++) {
     let old = data[i]
     if (!old.id) console.log(old)
-    let user: User = await prisma.user({ upstream_id: old.id })
+    let user: User | null = await prisma.user({ upstream_id: old.id })
+
     if (!user) {
       const prismaDetails = {
         upstream_id: old.id,
@@ -76,14 +80,21 @@ async function saveCompletionsAndUsersToDatabase(
         update: prismaDetails,
       })
     }
-    const course: Course = await prisma.course({ slug: course_slug })
+
+    const course: Course | null = await prisma.course({ slug: course_slug })
+
+    if (!course) {
+      process.exit(1)
+    }
+
     const doesCompletionExists: Completion[] = await prisma.completions({
       where: { user: user, course: course },
     })
+
     if (!doesCompletionExists.length) {
       await prisma.createCompletion({
         user: { connect: { upstream_id: user.upstream_id } },
-        course: { connect: { id: course.id } },
+        course: { connect: { id: course?.id } },
         completion_language: determineCompletionLanguage(course_name),
         user_upstream_id: user.upstream_id,
         email: user.email,
@@ -93,7 +104,7 @@ async function saveCompletionsAndUsersToDatabase(
   }
 }
 
-function determineCompletionLanguage(tag): string {
+function determineCompletionLanguage(tag: string): string {
   switch (tag) {
     case "elements-of-ai":
       return "en_US"

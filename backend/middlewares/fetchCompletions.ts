@@ -1,9 +1,9 @@
-require("dotenv-safe").config()
-import { Prisma, Course, Completion } from "../generated/prisma-client"
+import { Prisma, Course, Completion, Maybe } from "../generated/prisma-client"
+import { Context } from "/context"
 
 export default async function fetchCompletions(
-  args,
-  ctx,
+  args: any,
+  ctx: Context,
 ): Promise<Completion[]> {
   const { course } = args
   const startTime = new Date().getTime()
@@ -14,15 +14,23 @@ export default async function fetchCompletions(
   return data
 }
 
+interface CompletionOptionTypes {
+  course: string
+  first?: number
+  after?: string
+  last?: number
+  before?: string
+}
+
 async function getCompletionDataFromDB(
-  { course, first, after, last, before },
-  ctx,
+  { course, first, after, last, before }: CompletionOptionTypes,
+  ctx: Context,
 ): Promise<Completion[]> {
   const prisma: Prisma = ctx.prisma
-  const courseObject: Course = await prisma.course({ slug: course })
+  const courseObject: Maybe<Course> = await prisma.course({ slug: course })
 
   return prisma.completions({
-    where: { course: { id: courseObject.id } },
+    where: { course: { id: courseObject?.id } },
     first: first,
     after: after,
     last: last,

@@ -57,6 +57,8 @@ type Course @db(name: "course") {
 
 type CourseVariant @db(name: "course_variant") {
   id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
   slug: String!
   description: String
   course: Course! @relation(link: INLINE, name: "CourseToCourseVariant")
