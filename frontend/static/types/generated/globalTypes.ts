@@ -54,7 +54,7 @@ export interface CourseTranslationCreateUpdateInput {
 }
 
 export interface CourseVariantCreateUpdateInput {
-  course_id?: string | null
+  course?: string | null
   description?: string | null
   id?: string | null
   slug: string
