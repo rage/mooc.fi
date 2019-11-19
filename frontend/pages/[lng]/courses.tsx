@@ -14,7 +14,17 @@ import Spinner from "/components/Spinner"
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
 
 const Header = styled(Typography)`
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 1em;
+  margin-bottom: 0.7em;
+  background-color: #fff8ec;
+  padding: 0.5em;
+  width: 45%;
+  font-family: Open Sans Condensed !important;
+`
+const Background = styled.section`
+  background-color: #61baad;
 `
 
 const Courses = (admin: boolean) => {
@@ -37,14 +47,14 @@ const Courses = (admin: boolean) => {
   }
 
   return (
-    <section>
+    <Background>
       <WideContainer>
         <Header component="h1" variant="h2" gutterBottom={true} align="center">
           All Courses
         </Header>
         <CourseGrid courses={data.courses} />
       </WideContainer>
-    </section>
+    </Background>
   )
 }
 

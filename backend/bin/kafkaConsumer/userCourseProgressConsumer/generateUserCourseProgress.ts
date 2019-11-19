@@ -13,15 +13,20 @@ export const generateUserCourseProgress = async (
   const userCourseServiceProgresses = await prisma
     .userCourseProgress({ id: userCourseProgress.id })
     .user_course_service_progresses()
-  const progresses = userCourseServiceProgresses.map(entry => {
+  const progresses: any[] = userCourseServiceProgresses.map((entry: any) => {
     return entry.progress
-  })[0]
-  let combined = []
+  })
+
+  let combined: any[] = []
   let total_max_points: number = 0
   let total_n_points: number = 0
+
   progresses.map(entry => {
-    entry.max_points ? (total_max_points += entry.max_points) : null
-    entry.n_points ? (total_n_points += entry.n_points) : null
+    entry.forEach((p: any) => {
+      p.max_points ? (total_max_points += p.max_points) : null
+      p.n_points ? (total_n_points += p.n_points) : null
+    })
+
     combined.push(...entry)
   })
   const course: Course = await prisma
@@ -39,7 +44,11 @@ export const generateUserCourseProgress = async (
     },
   )
   const userCourseSettings = userCourseSettingses[0] || null
-  if (course.automatic_completions && total_n_points >= course.points_needed) {
+
+  if (
+    course.automatic_completions &&
+    total_n_points >= (course.points_needed ?? 0)
+  ) {
     const completions = await prisma.completions({
       where: {
         completion_language:

@@ -30,7 +30,7 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "/util/imageUtils"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { StudyModules_study_modules } from "/static/types/StudyModules"
+import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -245,24 +245,22 @@ Pick<
           <OutlinedInputLabel shrink>Study modules</OutlinedInputLabel>
           <OutlinedFormGroup>
             <ModuleList>
-              {(studyModules || []).map(
-                (module: StudyModules_study_modules) => (
-                  <ModuleListItem key={module.id}>
-                    <FormControlLabel
-                      control={
-                        <Field
-                          label={module.name}
-                          type="checkbox"
-                          name={`study_modules[${module.id}]`}
-                          value={(values.study_modules || {})[module.id]}
-                          component={Checkbox}
-                        />
-                      }
-                      label={module.name}
-                    />
-                  </ModuleListItem>
-                ),
-              )}
+              {studyModules?.map((module: StudyModules_study_modules) => (
+                <ModuleListItem key={module.id}>
+                  <FormControlLabel
+                    control={
+                      <Field
+                        label={module.name}
+                        type="checkbox"
+                        name={`study_modules[${module.id}]`}
+                        value={(values.study_modules || {})[module.id]}
+                        component={Checkbox}
+                      />
+                    }
+                    label={module.name}
+                  />
+                </ModuleListItem>
+              ))}
             </ModuleList>
           </OutlinedFormGroup>
         </OutlinedFormControl>

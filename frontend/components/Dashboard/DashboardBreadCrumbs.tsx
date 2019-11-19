@@ -42,11 +42,8 @@ const BreadcrumbModuleQuery = gql`
 const BreadCrumbs = styled.ul`
   list-style: none;
   overflow: hidden;
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-  margin-bottom: 0 !important;
-
-  padding-top: 0.5em;
+  margin: 0px !important;
+  padding-left: 0px;
 `
 
 const BreadCrumb = styled.li`
@@ -150,17 +147,14 @@ interface Props {
   router: SingletonRouter
 }
 
-// TODO: memoize
-const isCourseOrModule = memoize(
-  (param: string | string[]): boolean => {
-    if (Array.isArray(param)) {
-      // no need to wait for anything if ending with courses/study-modules
-      return param.slice(0, -1).some(r => isCourseOrModule(r))
-    }
+const isCourseOrModule = memoize((param: string | string[]): boolean => {
+  if (Array.isArray(param)) {
+    // no need to wait for anything if ending with courses/study-modules
+    return param.slice(0, -1).some(r => isCourseOrModule(r))
+  }
 
-    return ["courses", "study-modules"].includes(param)
-  },
-)
+  return ["courses", "study-modules"].includes(param)
+})
 
 const DashboardBreadCrumbs = React.memo((props: Props) => {
   const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
@@ -196,14 +190,14 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
         variables: { slug },
         fetchPolicy: "cache-first",
       })
-      setAwaitedCrumb(data && data.course ? data.course.name : slug)
+      setAwaitedCrumb(data?.course?.name ?? slug)
     } else {
       const { data } = await client.query<BreadcrumbModule>({
         query: BreadcrumbModuleQuery,
         variables: { slug },
         fetchPolicy: "cache-first",
       })
-      setAwaitedCrumb(data && data.study_module ? data.study_module.name : slug)
+      setAwaitedCrumb(data?.study_module?.name ?? slug)
     }
   }, [])
 

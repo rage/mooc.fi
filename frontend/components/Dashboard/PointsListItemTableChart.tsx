@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import LinearProgress from "@material-ui/core/LinearProgress"
+import { formattedGroupPoints } from "/util/formatPointsData"
 
 const ChartContainer = styled.div`
   display: flex;
@@ -30,23 +31,24 @@ const ColoredProgressBar = styled(({ ...props }) => (
 
 interface Props {
   title: string
-  points: any[]
+  points: formattedGroupPoints
   cuttervalue: Number
   showDetailed: Boolean
 }
 function PointsListItemTableChart(props: Props) {
   const { title, points, cuttervalue, showDetailed } = props
-  const value = (points[0]["n_points"] / points[0]["max_points"]) * 100
-  let services = null
-  if (points.length > 0) {
-    services = points.slice(1)
-  }
+  const value =
+    (points.courseProgress.n_points / points.courseProgress.max_points) * 100
+  const services = points?.service_progresses?.length
+    ? points.service_progresses
+    : null
+
   return (
     <>
       <ChartContainer>
         <ChartTitle style={{ marginRight: "1rem" }}>{title}</ChartTitle>
         <ChartTitle align="right">
-          {points[0]["n_points"]} / {points[0]["max_points"]}
+          {points.courseProgress.n_points} / {points.courseProgress.max_points}
         </ChartTitle>
         <ColoredProgressBar
           variant="determinate"

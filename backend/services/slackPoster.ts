@@ -1,8 +1,9 @@
 import axios from "axios"
 
 export default class SlackPoster {
-  accessToken: String
-  constructor(accessToken: String = null) {
+  accessToken: String | null
+
+  constructor(accessToken: String | null = null) {
     this.accessToken = accessToken
   }
 
@@ -10,5 +11,7 @@ export default class SlackPoster {
     const res = await axios.post(url, data).catch(err => {
       if (err) console.log(err)
     })
+
+    return res
   }
 }

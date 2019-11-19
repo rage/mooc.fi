@@ -51,7 +51,10 @@ describe("front page", () => {
         ]),
       )
     })
-    ;[["/", "fi_FI"], ["/en", "en_US"]].forEach(([route, language]) => {
+    ;[
+      ["/", "fi_FI"],
+      ["/en", "en_US"],
+    ].forEach(([route, language]) => {
       viewports.forEach(vp => {
         describe(`viewport ${vp}`, () => {
           it(`route ${route} should match snapshot`, () => {

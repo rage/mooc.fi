@@ -61,7 +61,10 @@ const studyModuleEditSchema = ({
         name: Yup.string().required("required"),
         language: Yup.string()
           .required("required")
-          .oneOf(languages.map(l => l.value), "must have a valid language code")
+          .oneOf(
+            languages.map(l => l.value),
+            "must have a valid language code",
+          )
           .test(
             "unique",
             "cannot have more than one translation per language",

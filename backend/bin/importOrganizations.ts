@@ -9,13 +9,15 @@ const tmc = new TmcClient()
 
 const fetchOrganizations = async () => {
   const orgInfos: OrganizationInfo[] = await tmc.getOrganizations()
-  orgInfos.forEach(p => upsertOrganization(p))
+  await Promise.all(orgInfos.map(p => upsertOrganization(p)))
 }
 
 const upsertOrganization = async (org: OrganizationInfo) => {
-  const user: User =
+  const user: User | null =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
-  const details = {
+
+  // FIXME: type
+  const details: any = {
     slug: org.slug,
     verified_at: org.verified_at,
     verified: org.verified || false,
@@ -34,6 +36,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     website: org.website,
     pinned: org.pinned || false,
   }
+
   const organizationExists = await prisma.$exists.organization({
     slug: org.slug,
   })
@@ -66,18 +69,17 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     ? organizationTranslations[0].id
     : null
   if (organizationTranslationId != null) {
-    const organizationTranslation = await prisma.updateOrganizationTranslation({
+    await prisma.updateOrganizationTranslation({
       where: { id: organizationTranslationId },
       data: translationDetails,
     })
   } else {
-    const organizationTranslation = await prisma.createOrganizationTranslation(
-      translationDetails,
-    )
+    await prisma.createOrganizationTranslation(translationDetails)
   }
 }
 
-const detailsWithSecret = async details => {
+// FIXME: type
+const detailsWithSecret = async (details: any) => {
   details.secret_key = await generateSecret()
   return details
 }

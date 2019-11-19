@@ -2,6 +2,7 @@ import {
   ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
+  defaultDataIdFromObject,
 } from "apollo-boost"
 import { onError } from "apollo-link-error"
 import { ApolloLink } from "apollo-link"
@@ -34,7 +35,7 @@ function create(initialState: any, accessToken?: string) {
     uri: cypress
       ? "http://localhost:4001"
       : production
-      ? "https://points.mooc.fi/api/"
+      ? "https://www.mooc.fi/api/"
       : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
@@ -50,7 +51,27 @@ function create(initialState: any, accessToken?: string) {
     if (networkError) console.log(`[Network error]: ${networkError}`)
   })
 
-  const cache: InMemoryCache = new InMemoryCache()
+  // these cache settings are mainly for the breadcrumbs
+  const cache: InMemoryCache = new InMemoryCache({
+    cacheRedirects: {
+      Query: {
+        course: (_, args, { getCacheKey }) =>
+          getCacheKey({ __typename: "Course", slug: args.slug }),
+        study_module: (_, args, { getCacheKey }) =>
+          getCacheKey({ __typename: "StudyModule", slug: args.slug }),
+      },
+    },
+    dataIdFromObject: (object: any) => {
+      switch (object.__typename) {
+        case "Course":
+          return `Course:${object.slug}`
+        case "StudyModule":
+          return `StudyModule:${object.slug}`
+        default:
+          return defaultDataIdFromObject(object)
+      }
+    },
+  })
 
   return new ApolloClient<NormalizedCacheObject>({
     link: process.browser

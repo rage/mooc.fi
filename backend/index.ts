@@ -4,7 +4,7 @@ import { prisma } from "./generated/prisma-client"
 import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"
 import { makePrismaSchema } from "nexus-prisma"
-import { GraphQLServer } from "graphql-yoga"
+import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
 import * as winston from "winston"
 import * as types from "./types"
@@ -51,18 +51,18 @@ const server = new GraphQLServer({
   middlewares: [fetchUser],
 })
 
-const serverStartOptions = {
-  formatParams(o) {
+const serverStartOptions: Options = {
+  formatParams(o: any) {
     logger.info(
       `Query: ${o.operationName}, variables: ${JSON.stringify(o.variables)}`,
     )
     return o
   },
-  formatError: error => {
+  formatError: (error: any) => {
     logger.warn(error)
     return error
   },
-  formatResponse: (response, query) => {
+  formatResponse: (response: any /*, query: any*/) => {
     return response
   },
   bodyParserOptions: {

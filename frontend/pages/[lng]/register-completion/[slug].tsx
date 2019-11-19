@@ -33,6 +33,13 @@ const useStyles = makeStyles(() =>
       flexDirection: "row",
       alignItems: "center",
     },
+    paperWithColumn: {
+      padding: "1em",
+      margin: "1em",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
     title: {
       marginBottom: "1em",
     },
@@ -50,9 +57,9 @@ export const UserOverViewQuery = gql`
       upstream_id
       first_name
       last_name
-      email
       completions {
         id
+        email
         completion_language
         completion_link
         student_number
@@ -101,16 +108,13 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   }
 
   const courseSlug = slug || router.query.slug
-  let completion = undefined
+
+  const completion =
+    data?.currentUser?.completions?.find(c => c.course.slug == courseSlug) ??
+    undefined
 
   if (!data.currentUser) {
     return <div>You are not logged in. Please log in to the site</div>
-  }
-
-  if (data.currentUser.completions) {
-    completion = data.currentUser.completions.find(
-      c => c.course.slug === courseSlug,
-    )
   }
 
   if (!completion) {
@@ -131,12 +135,8 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   }
 
   //map completions language to a link
-  let courseLinkWithLanguage = null
-
   //if completion has a language field defined
-  if (completion.completion_link) {
-    courseLinkWithLanguage = completion.completion_link
-  }
+  const courseLinkWithLanguage = completion?.completion_link
 
   if (!courseLinkWithLanguage) {
     return <div>Open University registration is not open at the moment.</div>
@@ -173,11 +173,25 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
             {t("donow")}
           </Typography>
         </Paper>
-        <ImportantNotice email={data.currentUser.email} />
+        <ImportantNotice email={completion.email} />
         <RegisterCompletionText
-          email={data.currentUser.email}
+          email={completion.email}
           link={courseLinkWithLanguage}
         />
+        <Paper className={classes.paperWithColumn}>
+          <Typography variant="body1">
+            {t("see_completion_link")}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://opintopolku.fi/oma-opintopolku/"
+            >
+              {" "}
+              opintopolku.fi/oma-opintopolku/
+            </a>
+          </Typography>
+          <Typography variant="body1">{t("see_completion_NB")}</Typography>
+        </Paper>
         <Paper className={classes.paperWithRow}>
           <SvgIcon className={classes.icon} color="primary">
             <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />

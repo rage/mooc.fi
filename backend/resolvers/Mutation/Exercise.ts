@@ -31,7 +31,7 @@ const addExercise = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       return prisma.createExercise({
         course: { connect: { id: course } },
         service: { connect: { id: service } },
-        custom_id: custom_id,
+        custom_id: custom_id ?? "",
         name: name,
         max_points: max_points,
         part: part,

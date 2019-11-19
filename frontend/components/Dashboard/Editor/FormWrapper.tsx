@@ -61,8 +61,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           content="Are you sure you want to leave without saving?"
           acceptText="Yes"
           rejectText="No"
-          // @ts-ignore
-          onAccept={(e: React.MouseEvent) => {
+          onAccept={() => {
             setCancelConfirmationVisible(false)
             onCancel()
           }}
@@ -74,8 +73,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           content="Are you sure you want to delete?"
           acceptText="Yes"
           rejectText="No"
-          // @ts-ignore
-          onAccept={(e: React.MouseEvent) => {
+          onAccept={() => {
             setDeleteConfirmationVisible(false)
             onDelete(values)
           }}

@@ -4,9 +4,20 @@ import Head from "next/head"
 import { getDataFromTree /*, getMarkupFromTree */ } from "@apollo/react-ssr"
 // import { renderToString } from "react-dom/server"
 import { NextPageContext as NextContext } from "next"
-import { ApolloClient, NormalizedCacheObject } from "apollo-boost"
+import { ApolloClient, NormalizedCacheObject, gql } from "apollo-boost"
 import { AppContext } from "next/app"
 import { getAccessToken } from "/lib/authentication"
+
+export const UserDetailQuery = gql`
+  query UserOverView {
+    currentUser {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+`
 
 interface Props {
   ctx: NextContext
@@ -35,6 +46,11 @@ const withApolloClient = (App: any) => {
 
       const apollo = initApollo(undefined, accessToken)
 
+      const { data } = await apollo.query({ query: UserDetailQuery })
+
+      // @ts-ignore
+      appProps.currentUser = data.currentUser
+
       if (!process.browser) {
         try {
           // getDataFromTree is using getMarkupFromTree anyway?
@@ -47,17 +63,6 @@ const withApolloClient = (App: any) => {
                 apollo={apollo}
               />,
             ),
-            /*            getMarkupFromTree({
-              renderFunction: renderToString,
-              tree: (
-                <App
-                  {...appProps}
-                  Component={Component}
-                  router={router}
-                  apollo={apollo}
-                />
-              ),
-            }), */
           ])
           // Run all GraphQL queries
         } catch (error) {

@@ -25,7 +25,7 @@ const LangLink: React.FC<LinkProps> = (props): any => {
         (child, idx) => {
           if (idx === 0) {
             // @ts-ignore
-            if (child && child.type && child.type.target === "a") {
+            if (child?.type?.target === "a") {
               // @ts-ignore
               return React.cloneElement(child, { href: parsedAs })
             }

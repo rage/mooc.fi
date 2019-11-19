@@ -13,7 +13,7 @@ const UserConnection = prismaObjectType({
       args: {
         search: stringArg(),
       },
-      resolve: async (parent, args, ctx) => {
+      resolve: async (_, args, ctx) => {
         const { search } = args
         const prisma: Prisma = ctx.prisma
         return await prisma
@@ -26,7 +26,7 @@ const UserConnection = prismaObjectType({
                   "username_contains",
                   "email_contains",
                 ],
-                search,
+                search ?? "",
               ),
             },
           })

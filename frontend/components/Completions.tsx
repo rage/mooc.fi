@@ -65,13 +65,9 @@ const Completions = (props: CompletionsProps) => {
       </Title>
 
       <Container style={{ maxWidth: 900 }}>
-        {completions.length > 0 ? (
-          completions.map(c => (
-            <CompletionListItem key={`completion-${c.id}`} listItem={c} />
-          ))
-        ) : (
-          <Typography>{t("nocompletionsText")}</Typography>
-        )}
+        {completions?.map(c => (
+          <CompletionListItem key={`completion-${c.id}`} listItem={c} />
+        )) ?? <Typography>{t("nocompletionsText")}</Typography>}
       </Container>
     </section>
   )

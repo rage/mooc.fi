@@ -43,10 +43,8 @@ const MenuContainer = styled.div`
 
 export function whichIsActive({ url }: { url: string }) {
   const urlParts = url.split("/")
-  let active = ""
-  if (urlParts.length >= 3) {
-    active = urlParts[2]
-  }
+  const active = urlParts.length >= 3 ? urlParts[2] : ""
+
   return active
 }
 function Header() {
@@ -59,13 +57,13 @@ function Header() {
         <React.Fragment>
           <CssBaseline />
           <HideOnScroll>
-            <AppBar color="inherit">
+            <AppBar color="inherit" style={{ position: "sticky" }}>
               <StyledToolbar>
                 <MoocLogo />
                 <MenuContainer>
                   <HiddenMenuContainer>
                     {loggedIn && (
-                      <LoggedInUserMenu active={active || undefined} />
+                      <LoggedInUserMenu active={active ? active : undefined} />
                     )}
                   </HiddenMenuContainer>
                 </MenuContainer>

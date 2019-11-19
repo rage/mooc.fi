@@ -7,6 +7,7 @@ import {
   Course,
   UserCourseSettings,
   User,
+  Maybe,
 } from "../generated/prisma-client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
@@ -14,10 +15,10 @@ import { DateTime } from "luxon"
 const CONFIG_NAME = "userAppDatum"
 
 const prisma: Prisma = new Prisma()
-let course: Course
+let course: Maybe<Course>
 let old: UserCourseSettings
 
-const fetcUserAppDatum = async () => {
+const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
@@ -26,12 +27,12 @@ const fetcUserAppDatum = async () => {
   const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
     name: CONFIG_NAME,
   }))
-    ? (await prisma.userAppDatumConfig({ name: CONFIG_NAME })).timestamp
+    ? ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
     : null
 
   console.log(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp)
+  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp ?? null)
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")
@@ -77,21 +78,27 @@ const fetcUserAppDatum = async () => {
         hidden: true,
       })
     }
+
     course = await prisma.course({ slug: p.namespace })
+
+    if (!course) {
+      process.exit(1)
+    }
+
     const isOld: Boolean = await prisma.$exists.userCourseSettings({
       user: { upstream_id: p.user_id },
-      course: { id: course.id },
+      course: { id: course?.id },
     })
     if (!isOld) {
       old = await prisma.createUserCourseSettings({
         user: { connect: { upstream_id: p.user_id } },
-        course: { connect: { id: course.id } },
+        course: { connect: { id: course?.id } },
       })
     } else {
       const tmp: UserCourseSettings[] = await prisma.userCourseSettingses({
         where: {
           user: { upstream_id: p.user_id },
-          course: { id: course.id },
+          course: { id: course?.id },
         },
       })
       old = tmp[0]
@@ -127,7 +134,7 @@ const fetcUserAppDatum = async () => {
   console.log("used", stopTime - startTime, "milliseconds")
 }
 
-const saveLanguage = async p => {
+const saveLanguage = async (p: any) => {
   await prisma.updateUserCourseSettings({
     where: {
       id: old.id,
@@ -137,7 +144,7 @@ const saveLanguage = async p => {
     },
   })
 }
-const saveCountry = async p => {
+const saveCountry = async (p: any) => {
   await prisma.updateUserCourseSettings({
     where: {
       id: old.id,
@@ -147,7 +154,7 @@ const saveCountry = async p => {
     },
   })
 }
-const saveResearch = async p => {
+const saveResearch = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
   await prisma.updateUserCourseSettings({
     where: {
@@ -158,7 +165,7 @@ const saveResearch = async p => {
     },
   })
 }
-const saveMarketing = async p => {
+const saveMarketing = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
   await prisma.updateUserCourseSettings({
     where: {
@@ -169,7 +176,7 @@ const saveMarketing = async p => {
     },
   })
 }
-const saveCourseVariant = async p => {
+const saveCourseVariant = async (p: any) => {
   await prisma.updateUserCourseSettings({
     where: {
       id: old.id,
@@ -179,7 +186,7 @@ const saveCourseVariant = async p => {
     },
   })
 }
-const saveOther = async p => {
+const saveOther = async (p: any) => {
   const other = old.other || {}
   if (p.value == "t") p.value = true
   else if (p.value == "f") p.value = false
@@ -197,7 +204,7 @@ const saveOther = async p => {
 
 const getUserFromTmcAndSaveToDB = async (
   user_id: Number,
-  tmc,
+  tmc: TmcClient,
 ): Promise<User> => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
@@ -226,6 +233,8 @@ const getUserFromTmcAndSaveToDB = async (
   }
 }
 
+// FIXME: not used anywhere
+// @ts-ignore
 const currentDate = () => {
   var today = new Date()
   var date =
@@ -235,7 +244,8 @@ const currentDate = () => {
   var dateTime = date + " " + time
   return encodeURIComponent(dateTime)
 }
-const delay = ms => new Promise(res => setTimeout(res, ms))
+
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 async function saveProgress(prisma: Prisma, dateToDB: Date) {
   console.log("saving")
@@ -253,4 +263,4 @@ async function saveProgress(prisma: Prisma, dateToDB: Date) {
   })
 }
 
-fetcUserAppDatum().catch(e => console.log(e))
+fetchUserAppDatum().catch(e => console.log(e))

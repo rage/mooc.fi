@@ -1,8 +1,9 @@
 import { ForbiddenError, UserInputError } from "apollo-server-core"
-import { Course } from "../../generated/prisma-client"
+import { Course, Maybe } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { intArg, stringArg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { Context } from "/context"
 
 const registeredCompletions = async (
   t: PrismaObjectDefinitionBlock<"Query">,
@@ -19,30 +20,56 @@ const registeredCompletions = async (
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: true })
       const { course, first, after, last, before } = args
-      if ((!first && !last) || (first > 50 || last > 50)) {
+      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
         throw new ForbiddenError("Cannot query more than 50 items")
       }
       if (course) {
-        return await withCourse(course, first, after, last, before, ctx)
+        return await withCourse(
+          course,
+          first ?? undefined,
+          after ?? undefined,
+          last ?? undefined,
+          before ?? undefined,
+          ctx,
+        )
       } else {
-        return await all(first, after, last, before, ctx)
+        return await all(
+          first ?? undefined,
+          after ?? undefined,
+          last ?? undefined,
+          before ?? undefined,
+          ctx,
+        )
       }
     },
   })
 }
 
-const withCourse = async (course, first, after, last, before, ctx) => {
-  const courseWithSlug: Course = await ctx.prisma.course({ slug: course })
+const withCourse = async (
+  course: string,
+  first: number | undefined,
+  after: string | undefined,
+  last: number | undefined,
+  before: string | undefined,
+  ctx: Context,
+) => {
+  const courseWithSlug: Maybe<Course> = await ctx.prisma.course({
+    slug: course,
+  })
+
   if (!courseWithSlug) {
     const courseFromAvoinCourse: Course = await ctx.prisma
-      .CourseAlias({ course_code: course })
+      .courseAlias({ course_code: course })
       .course()
     if (!courseFromAvoinCourse) {
       throw new UserInputError("Invalid course identifier")
     }
     course = courseFromAvoinCourse.slug
   }
-  const courseReference: Course = await ctx.prisma.course({ slug: course })
+
+  const courseReference: Maybe<Course> = await ctx.prisma.course({
+    slug: course,
+  })
   return await ctx.prisma.completionRegistereds({
     where: {
       course: courseReference,
@@ -54,7 +81,13 @@ const withCourse = async (course, first, after, last, before, ctx) => {
   })
 }
 
-const all = async (first, after, last, before, ctx) => {
+const all = async (
+  first: number | undefined,
+  after: string | undefined,
+  last: number | undefined,
+  before: string | undefined,
+  ctx: Context,
+) => {
   return await ctx.prisma.completionRegistereds({
     first: first,
     after: after,
