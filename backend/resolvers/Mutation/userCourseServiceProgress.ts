@@ -17,12 +17,14 @@ const addUserCourseServiceProgress = async (
       checkAccess(ctx)
       const { service_id, progress, user_course_progress_id } = args
       const prisma: Prisma = ctx.prisma
+
       const course: Course = await prisma
         .userCourseProgress({ id: user_course_progress_id })
         .course()
       const user: User = await prisma
         .userCourseProgress({ id: user_course_progress_id })
         .user()
+
       return prisma.createUserCourseServiceProgress({
         course: { connect: { id: course.id } },
         progress: progress,

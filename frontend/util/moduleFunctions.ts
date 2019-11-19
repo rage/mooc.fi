@@ -3,17 +3,16 @@ import { AllCourses_courses } from "/static/types/generated/AllCourses"
 
 export const getPromotedCourses = (
   modules: AllModules_study_modules_with_courses[],
-) => {
-  return (modules || []).reduce(
-    (acc, mod) => {
-      ;(mod.courses || []).forEach(course => {
+): AllCourses_courses[] => {
+  return (
+    modules?.reduce((acc, mod) => {
+      mod?.courses?.forEach(course => {
         if (course.promote) {
           acc = acc.concat(course)
         }
       })
       return acc
-    },
-    [] as AllCourses_courses[],
+    }, [] as AllCourses_courses[]) ?? []
   )
 }
 

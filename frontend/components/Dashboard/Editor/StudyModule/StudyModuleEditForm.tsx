@@ -101,8 +101,8 @@ const renderForm = ({
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
-  const image = useDebounce(values.image, 500)
-  const slug = useDebounce(values.new_slug, 500)
+  const [image] = useDebounce(values.image, 500)
+  const [slug] = useDebounce(values.new_slug, 500)
 
   const [imageFilename, setImageFilename] = useState(pixel)
 
@@ -208,99 +208,95 @@ const renderForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values && (values.study_module_translations || []).length ? (
-                (values.study_module_translations || []).map(
-                  (_: any, index: number) => (
-                    <LanguageEntry item key={`translation-${index}`}>
-                      <EntryContainer elevation={2}>
-                        <Field
-                          name={`study_module_translations[${index}].language`}
-                          type="select"
-                          label="Language"
-                          errors={[
-                            getIn(
-                              errors,
-                              `study_module_translations[${index}].language`,
-                            ),
-                          ]}
-                          fullWidth
-                          variant="outlined"
-                          select
-                          autoComplete="off"
-                          component={StyledTextField}
+              {values?.study_module_translations?.map(
+                (_: any, index: number) => (
+                  <LanguageEntry item key={`translation-${index}`}>
+                    <EntryContainer elevation={2}>
+                      <Field
+                        name={`study_module_translations[${index}].language`}
+                        type="select"
+                        label="Language"
+                        errors={[
+                          getIn(
+                            errors,
+                            `study_module_translations[${index}].language`,
+                          ),
+                        ]}
+                        fullWidth
+                        variant="outlined"
+                        select
+                        autoComplete="off"
+                        component={StyledTextField}
+                      >
+                        {languages.map(option => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Field>
+                      <Field
+                        name={`study_module_translations[${index}].name`}
+                        type="text"
+                        label="Name"
+                        error={getIn(
+                          errors,
+                          `study_module_translations[${index}].name`,
+                        )}
+                        fullWidth
+                        autoComplete="off"
+                        variant="outlined"
+                        component={StyledTextField}
+                      />
+                      <Field
+                        name={`study_module_translations[${index}].description`}
+                        type="textarea"
+                        label="Description"
+                        error={getIn(
+                          errors,
+                          `study_module_translations[${index}].description`,
+                        )}
+                        fullWidth
+                        multiline
+                        rows={5}
+                        autoComplete="off"
+                        variant="outlined"
+                        component={StyledTextField}
+                      />
+                      <br />
+                      <Grid container justify="flex-end">
+                        <Button
+                          variant="contained"
+                          disabled={isSubmitting}
+                          color="secondary"
+                          onClick={() => {
+                            setRemoveDialogVisible(true)
+                            setRemovableIndex(index)
+                          }}
                         >
-                          {languages.map(option => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </Field>
-                        <Field
-                          name={`study_module_translations[${index}].name`}
-                          type="text"
-                          label="Name"
-                          error={getIn(
-                            errors,
-                            `study_module_translations[${index}].name`,
-                          )}
-                          fullWidth
-                          autoComplete="off"
-                          variant="outlined"
-                          component={StyledTextField}
-                        />
-                        <Field
-                          name={`study_module_translations[${index}].description`}
-                          type="textarea"
-                          label="Description"
-                          error={getIn(
-                            errors,
-                            `study_module_translations[${index}].description`,
-                          )}
-                          fullWidth
-                          multiline
-                          rows={5}
-                          autoComplete="off"
-                          variant="outlined"
-                          component={StyledTextField}
-                        />
-                        <br />
-                        <Grid container justify="flex-end">
-                          <Button
-                            variant="contained"
-                            disabled={isSubmitting}
-                            color="secondary"
-                            onClick={() => {
-                              setRemoveDialogVisible(true)
-                              setRemovableIndex(index)
-                            }}
-                          >
-                            Remove translation
-                          </Button>
-                        </Grid>
-                      </EntryContainer>
-                    </LanguageEntry>
-                  ),
-                )
-              ) : (
+                          Remove translation
+                        </Button>
+                      </Grid>
+                    </EntryContainer>
+                  </LanguageEntry>
+                ),
+              ) ?? (
                 <EntryContainer elevation={2}>
                   <Typography variant="body1">
                     Please add at least one translation!
                   </Typography>
                 </EntryContainer>
               )}
-              {values &&
-                (values.study_module_translations || []).length <
-                  languages.length && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    disabled={isSubmitting}
-                    onClick={() => helpers.push({ ...initialTranslation })}
-                  >
-                    Add translation
-                  </Button>
-                )}
+              {values?.study_module_translations?.length < languages.length && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={isSubmitting}
+                  onClick={() => helpers.push({ ...initialTranslation })}
+                >
+                  Add translation
+                </Button>
+              )}
             </>
           )}
         />

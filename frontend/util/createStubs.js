@@ -59,4 +59,7 @@ const createStubs = () => {
   )
 }
 
+console.log("This script is now deprecated, exiting...")
+process.exit(1)
+
 createStubs()

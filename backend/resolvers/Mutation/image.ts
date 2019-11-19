@@ -2,7 +2,6 @@ import { Prisma, Image } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { arg, booleanArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
-import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
@@ -10,7 +9,9 @@ import {
 
 const sharp = require("sharp")
 
-const getImageBuffer = image => {
+// FIXME: not used anywhere
+// @ts-ignore
+const getImageBuffer = (image: string) => {
   const base64EncodedImageString = image.replace(/^data:image\/\w+;base64,/, "")
 
   return new Buffer(base64EncodedImageString, "base64")
@@ -47,7 +48,7 @@ export const uploadImage = async ({
   } = await file
 
   const image: Buffer = await readFS(createReadStream())
-  const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)[1]
+  const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)?.[1]
 
   const uncompressedImage: Buffer = await sharp(image)
     .jpeg()
@@ -117,10 +118,17 @@ export const deleteImage = async ({
   }
 
   // TODO: (?) do something with return statuses
-  const compressed = await deleteStorageImage(image.compressed)
+  const compressed = image.compressed
+    ? await deleteStorageImage(image.compressed)
+    : false
   const uncompressed = await deleteStorageImage(image.uncompressed)
   const original = await deleteStorageImage(image.original)
 
+  if (!compressed || !uncompressed || !original) {
+    console.warn(
+      `There was some problem with image deletion. Statuses: compressed ${compressed} uncompressed ${uncompressed} original ${original}`,
+    )
+  }
   await prisma.deleteImage({ id })
 
   return true
@@ -140,7 +148,7 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       const prisma: Prisma = ctx.prisma
 
-      return uploadImage({ prisma, file, base64 })
+      return uploadImage({ prisma, file, base64: base64 ?? false })
     },
   })
 }

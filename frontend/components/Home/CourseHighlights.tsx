@@ -34,9 +34,7 @@ const BackgroundImage = styled.img<BackgroundProps>`
   object-fit: cover;
 
   ${props =>
-    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${
-      props.brightness
-    });`}
+    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${props.brightness});`}
 `
 
 interface TitleProps {
@@ -115,15 +113,15 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
       </div>
       <Container>
         <Grid container spacing={3}>
-          {!(courses || []).length ? (
+          {courses?.length ? (
+            courses?.map(course => (
+              <CourseCard key={`course-${course.id}`} course={course} />
+            ))
+          ) : (
             <>
               <CourseCard key="skeletoncard1" />
               <CourseCard key="skeletoncard2" />
             </>
-          ) : (
-            (courses || []).map(course => (
-              <CourseCard key={`course-${course.id}`} course={course} />
-            ))
           )}
         </Grid>
       </Container>

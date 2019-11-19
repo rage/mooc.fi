@@ -1,10 +1,10 @@
 import React from "react"
 import { Grid } from "@material-ui/core"
 import ModuleCard from "./ModuleCard"
-import { AllModulesWithTranslations_study_modules } from "/static/types/AllModulesWithTranslations"
+import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
 
 interface ModuleGridProps {
-  modules: AllModulesWithTranslations_study_modules[]
+  modules: AllEditorModulesWithTranslations_study_modules[]
 }
 
 function ModuleGrid(props: ModuleGridProps) {
@@ -12,7 +12,7 @@ function ModuleGrid(props: ModuleGridProps) {
   return (
     <section>
       <Grid container spacing={3}>
-        {(modules || []).map(module => (
+        {modules?.map(module => (
           <ModuleCard key={module.slug} module={module} />
         ))}
         <ModuleCard key={"newmodule"} />

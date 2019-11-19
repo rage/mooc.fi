@@ -8,8 +8,6 @@ export const saveToDatabase = async (
   prisma: Prisma,
   logger: winston.Logger,
 ): Promise<Boolean> => {
-  const timestamp: DateTime = DateTime.fromISO(message.timestamp)
-
   const courseExists = await prisma.$exists.course({ id: message.course_id })
   if (!courseExists) {
     logger.error("given course does not exist")
@@ -19,7 +17,7 @@ export const saveToDatabase = async (
     handleExercise(
       exercise,
       message.course_id,
-      message.timestamp,
+      DateTime.fromISO(message.timestamp),
       message.service_id,
       logger,
     )
@@ -60,8 +58,9 @@ const handleExercise = async (
         custom_id: exercise.id,
       },
     })
+
     const oldExercise = oldExercises[0]
-    if (oldExercise.timestamp > timestamp) {
+    if (DateTime.fromISO(oldExercise.timestamp ?? "") > timestamp) {
       logger.error(
         "Timestamp is older than on existing exercise on " +
           exercise +
@@ -77,7 +76,7 @@ const handleExercise = async (
         part: Number(exercise.part),
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
-        timestamp: timestamp,
+        timestamp: timestamp.toJSDate(),
         deleted: false,
       },
     })
@@ -90,7 +89,7 @@ const handleExercise = async (
       max_points: Number(exercise.max_points),
       course: { connect: { id: course_id } },
       service: { connect: { id: service_id } },
-      timestamp: timestamp,
+      timestamp: timestamp.toJSDate(),
     })
   }
 }

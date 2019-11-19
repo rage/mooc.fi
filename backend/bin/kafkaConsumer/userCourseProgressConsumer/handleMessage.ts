@@ -2,19 +2,27 @@ import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
 import { Prisma } from "../../../generated/prisma-client"
 import { MessageYupSchema } from "./validate"
+import { Logger } from "winston"
+import { KafkaConsumer, ConsumerStreamMessage } from "node-rdkafka"
+import { Mutex } from "await-semaphore"
+
 const config = require("../kafkaConfig")
+
 let commitCounter = 0
+
 const commitInterval = config.commit_interval
+
 export const handleMessage = async (
-  kafkaMessage,
-  mutex,
-  logger,
-  consumer,
+  kafkaMessage: ConsumerStreamMessage,
+  mutex: Mutex,
+  logger: Logger,
+  consumer: KafkaConsumer,
   prisma: Prisma,
 ) => {
   //Going to mutex
   const release = await mutex.acquire()
-  logger.info(kafkaMessage)
+  //logger.info(kafkaMessage)
+  logger.info("Handling message")
   let message: Message
   try {
     message = JSON.parse(kafkaMessage.value.toString("utf8"))
@@ -46,7 +54,7 @@ export const handleMessage = async (
   release()
 }
 
-const commit = async (message, consumer) => {
+const commit = async (message: any, consumer: KafkaConsumer) => {
   if (commitCounter >= commitInterval) {
     await consumer.commitMessage(message)
     commitCounter = 0

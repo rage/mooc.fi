@@ -19,26 +19,41 @@ const fetch = async () => {
       throw error
     })
     console.log("Open university info: ", JSON.stringify(res, undefined, 2))
+
     const now: DateTime = DateTime.fromJSDate(new Date())
-    let latestLink: Link = { link: null, stopDate: null, startTime: null }
+
+    let latestLink: Link | null = null // FIXME: init with actual link with earliest dates possible
+
     res.forEach(k => {
       const linkStartDate: DateTime = DateTime.fromISO(k.alkupvm)
       const linkStopDate: DateTime = DateTime.fromISO(k.loppupvm)
+
       if (linkStartDate < now) {
-        if (linkStopDate > now && linkStopDate > latestLink.stopDate) {
-          latestLink.link = k.oodi_id
-          latestLink.stopDate = linkStopDate
-          latestLink.startTime = linkStartDate
+        if (linkStopDate > now && linkStopDate > (latestLink?.stopDate ?? "")) {
+          latestLink = {
+            link: k.oodi_id,
+            stopDate: linkStopDate,
+            startTime: linkStartDate,
+          }
         }
       }
     })
+
     const url =
-      latestLink.link == null
+      !latestLink || (latestLink && !latestLink!.link)
         ? null
         : "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=" +
-          latestLink.link
+          latestLink!.link
 
-    if (!(url == null && p.start_date < now && p.stop_date > now)) {
+    // FIXME: types
+
+    if (
+      !(
+        url == null &&
+        DateTime.fromISO(p.start_date ?? "") < now &&
+        DateTime.fromISO(p.stop_date ?? "") > now
+      )
+    ) {
       console.log("Updating link to", url)
       await prisma.updateOpenUniversityRegistrationLink({
         where: {
@@ -46,8 +61,8 @@ const fetch = async () => {
         },
         data: {
           link: url,
-          start_date: latestLink.startTime,
-          stop_date: latestLink.stopDate,
+          start_date: latestLink!.startTime.toJSDate(),
+          stop_date: latestLink!.stopDate.toJSDate(),
         },
       })
     }

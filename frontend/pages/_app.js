@@ -1,5 +1,5 @@
 import React from "react"
-import App, { Container } from "next/app"
+import App from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
 import Head from "next/head"
@@ -32,13 +32,14 @@ class MyApp extends App {
       logInOrOut: this.toggleLogin,
     }
   }
+
   componentDidMount() {
     initGA()
     logPageView()
     Router.router.events.on("routeChangeComplete", logPageView)
 
     const jssStyles = document.querySelector("#jss-server-side")
-    if (jssStyles && jssStyles.parentNode) {
+    if (jssStyles?.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)
     }
   }
@@ -52,9 +53,11 @@ class MyApp extends App {
       lng,
       url,
       hrefUrl,
+      currentUser,
     } = this.props
+
     return (
-      <Container>
+      <>
         <Head>
           <title>MOOC.fi</title>
         </Head>
@@ -63,7 +66,7 @@ class MyApp extends App {
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
-                <UserDetailContext.Provider value={admin}>
+                <UserDetailContext.Provider value={{ admin, currentUser }}>
                   <LanguageContext.Provider
                     value={{ language: lng, url, hrefUrl }}
                   >
@@ -76,7 +79,7 @@ class MyApp extends App {
             </ApolloProvider>
           </MuiThemeProvider>
         </StylesProvider>
-      </Container>
+      </>
     )
   }
 }
@@ -106,14 +109,8 @@ MyApp.getInitialProps = async arg => {
   let url = "/"
   let hrefUrl = "/"
   if (typeof window !== undefined) {
-    if (ctx.asPath && ctx.asPath.substring(1, 3)) {
-      if (
-        ctx.asPath.substring(1, 3) == "fi" ||
-        ctx.asPath.substring(1, 3) == "en" ||
-        ctx.asPath.substring(1, 3) == "se"
-      ) {
-        lng = ctx.asPath.substring(1, 3)
-      }
+    if (["fi", "en", "se"].includes(ctx?.asPath?.substring(1, 3) ?? "")) {
+      lng = ctx.asPath.substring(1, 3)
     }
 
     url = ctx.asPath
@@ -134,7 +131,6 @@ MyApp.getInitialProps = async arg => {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
-    // @ts-ignore
     lng,
     url: createPath(url),
     hrefUrl,

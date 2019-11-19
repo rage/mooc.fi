@@ -3,10 +3,7 @@ import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import {
-  ProfileUserOverView as UserOverViewData,
-  ProfileUserOverView_currentUser_completions as CompletionsData,
-} from "/static/types/generated/ProfileUserOverView"
+import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import { isSignedIn } from "/lib/authentication"
 import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"
@@ -56,7 +53,14 @@ function Profile() {
   if (loading) {
     return <Spinner />
   }
-  let first_name = "No first name"
+
+  const first_name = data?.currentUser?.first_name || "No first name"
+  const last_name = data?.currentUser?.last_name || "No last name"
+  const email = data?.currentUser?.email || "no email"
+  const sid = data?.currentUser?.student_number || "no sid"
+  const completions = data?.currentUser?.completions ?? []
+
+  /*   let first_name = "No first name"
   let last_name = "No last name"
   let sid = "no sid"
   let email = "no email"
@@ -77,7 +81,8 @@ function Profile() {
     if (data.currentUser.completions) {
       completions = data.currentUser.completions
     }
-  }
+  } */
+
   console.log(data)
   return (
     <>

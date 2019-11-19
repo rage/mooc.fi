@@ -14,7 +14,7 @@ import {
 } from "/graphql/queries/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { FormikActions } from "formik"
-import { StudyModuleDetails_study_module } from "/static/types/StudyModuleDetails"
+import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
@@ -45,8 +45,7 @@ const StudyModuleEdit = ({
   const validationSchema = studyModuleEditSchema({
     client,
     checkSlug,
-    initialSlug:
-      module && module.slug && module.slug !== "" ? module.slug : null,
+    initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
   })
 
   const onSubmit = useCallback(
@@ -71,9 +70,8 @@ const StudyModuleEdit = ({
         setStatus({ message: "Saving..." })
         // TODO/FIXME: return value?
         await moduleMutation({
-          variables: mutationVariables,
-          // @ts-ignore
-          refetchQueries: (result: FetchResult) => refetchQueries,
+          variables: { study_module: mutationVariables },
+          refetchQueries: () => refetchQueries,
         })
 
         setStatus({ message: null })
@@ -89,7 +87,7 @@ const StudyModuleEdit = ({
 
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
-      await deleteStudyModule({ variables: { slug: values.slug } })
+      await deleteStudyModule({ variables: { id: values.id } })
       Router.push(`/${language}/study-modules`)
     }
   }, [])
