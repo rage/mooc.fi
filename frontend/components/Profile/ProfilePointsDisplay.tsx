@@ -9,7 +9,7 @@ import PointsListGrid from "/components/User/Points/PointsListGrid"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 import LangLink from "../LangLink"
-import Button from "@material-ui/core/Button"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 
 const ProfilePointsDisplay = () => {
   const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)
@@ -33,9 +33,9 @@ const ProfilePointsDisplay = () => {
           href="/[lng]/profile/points"
           as={`/${lng.language}/profile/points`}
         >
-          <Button variant="text" fullWidth>
+          <FormSubmitButton variant="text" fullWidth>
             <a href={`/${lng.language}/profile/points`}>{t("seePoints")}</a>
-          </Button>
+          </FormSubmitButton>
         </LangLink>
       </>
     )

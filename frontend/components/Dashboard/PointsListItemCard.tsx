@@ -3,12 +3,12 @@ import { Grid } from "@material-ui/core"
 import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
-import Button from "@material-ui/core/Button"
 import { gql } from "apollo-boost"
 import formatPointsData, {
   formattedGroupPointsDictionary,
 } from "/util/formatPointsData"
 import { CardTitle, CardSubtitle } from "/components/Text/headers"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 
 const UserFragment = gql`
   fragment UserPointsFragment on User {
@@ -109,13 +109,13 @@ function PointsListItemCard(props: Props) {
             showDetailedBreakdown={showDetails}
             cutterValue={cutterValue}
           />
-          <Button
+          <FormSubmitButton
             variant="text"
             onClick={() => setShowDetails(!showDetails)}
             fullWidth
           >
             {showDetails ? "show less" : "show detailed breakdown"}
-          </Button>
+          </FormSubmitButton>
         </>
       ) : (
         <p>No points data available</p>

@@ -3,7 +3,7 @@ import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
-import { Button, TextField, IconButton, useMediaQuery } from "@material-ui/core"
+import { TextField, IconButton, useMediaQuery } from "@material-ui/core"
 import FirstPageIcon from "@material-ui/icons/FirstPage"
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
@@ -19,7 +19,7 @@ import { useLazyQuery } from "@apollo/react-hooks"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import { H1NoBackground } from "/components/Text/headers"
-
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 interface UserSearchProps {
   namespacesRequired: string[]
   router: SingletonRouter
@@ -29,7 +29,6 @@ interface UserSearchProps {
 const StyledForm = styled.form`
   display: flex;
   width: 100%;
-  flex-wrap: "wrap";
 `
 
 const StyledFooter = styled.footer`
@@ -37,13 +36,8 @@ const StyledFooter = styled.footer`
   margin-left: 2.5;
 `
 
-const StyledButton = styled(Button)`
-  margin-top: 14px;
-  margin-bottom: 7px;
-`
-const StyledTextField = styled(TextField)`
-  margin-left: 1;
-  margin-right: 1;
+const StyledButton = styled(ButtonWithPaddingAndMargin)`
+  color: white;
 `
 
 interface TablePaginationActionsProps {
@@ -212,7 +206,7 @@ const UserSearch = (props: UserSearchProps) => {
               setPage(0)
             }}
           >
-            <StyledTextField
+            <TextField
               id="standard-search"
               label="Search by string"
               type="search"

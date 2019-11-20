@@ -17,7 +17,6 @@ import {
   InputAdornment,
   Tooltip,
   Paper,
-  Button,
 } from "@material-ui/core"
 import * as Yup from "yup"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
@@ -32,6 +31,8 @@ import {
   OutlinedInputLabel,
   OutlinedFormGroup,
 } from "/components/Dashboard/Editor/common"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;
@@ -231,7 +232,7 @@ const renderForm = ({
                       />
                       <br />
                       <Grid container justify="flex-end">
-                        <Button
+                        <StyledButton
                           variant="contained"
                           disabled={isSubmitting}
                           color="secondary"
@@ -241,7 +242,7 @@ const renderForm = ({
                           }}
                         >
                           Remove translation
-                        </Button>
+                        </StyledButton>
                       </Grid>
                     </EntryContainer>
                   </LanguageEntry>
@@ -254,7 +255,7 @@ const renderForm = ({
                 </EntryContainer>
               )}
               {values?.study_module_translations?.length < languages.length && (
-                <Button
+                <FormSubmitButton
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -262,7 +263,7 @@ const renderForm = ({
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
                   Add translation
-                </Button>
+                </FormSubmitButton>
               )}
             </>
           )}
