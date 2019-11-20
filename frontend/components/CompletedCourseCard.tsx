@@ -1,20 +1,15 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
-import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
+import { ClicableDiv } from "/components/Surfaces/ClicableCard"
 
-const Background = styled(Paper)`
-  background-color: white;
-
-  position: relative;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+const Background = styled(ClicableDiv)`
   display: flex;
   flex-direction: column;
   @media (min-width: 600px) {
