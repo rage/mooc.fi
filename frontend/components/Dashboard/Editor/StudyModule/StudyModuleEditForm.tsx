@@ -16,7 +16,6 @@ import {
   Typography,
   InputAdornment,
   Tooltip,
-  Paper,
 } from "@material-ui/core"
 import * as Yup from "yup"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
@@ -33,6 +32,8 @@ import {
 } from "/components/Dashboard/Editor/common"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;
@@ -40,17 +41,6 @@ const ModuleImage = styled.img<{ error?: boolean }>`
   height: 100%;
   max-height: 250px;
   display: ${props => (props.error ? "none" : "")};
-`
-
-const LanguageEntry = styled(Grid)`
-  spacing: 10px;
-  line-height: 2;
-  padding: 0 0 20px 0;
-`
-
-const EntryContainer = styled(Paper)`
-  border-left: 2px solid #a0a0ff;
-  padding: 20px;
 `
 
 // prevent borked image on page load

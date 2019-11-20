@@ -15,12 +15,8 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 
 const isProduction = process.env.NODE_ENV === "production"
 
-const FormContainer = styled(Container)`
-  spacing: 4;
-`
-
 const FormBackground = styled(Paper)`
-  padding: 1em;
+  padding: 2em;
 `
 
 const Status = styled.p<any>`
@@ -54,7 +50,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
   )
 
   return (
-    <FormContainer maxWidth="md">
+    <Container maxWidth="md">
       <FormBackground elevation={1}>
         <ConfirmationDialog
           title="You have unsaved changes"
@@ -132,7 +128,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           </Status>
         ) : null}
       </FormBackground>
-    </FormContainer>
+    </Container>
   )
 }
 
