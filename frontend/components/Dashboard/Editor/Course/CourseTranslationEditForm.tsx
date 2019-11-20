@@ -1,11 +1,13 @@
 import React, { useState } from "react"
-import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
+import { Grid, MenuItem, Typography, Paper } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 
 const LanguageEntry = styled(Grid)`
   spacing: 10px;
@@ -120,7 +122,7 @@ const CourseTranslationEditForm = ({
                     />
                     <br />
                     <Grid container justify="flex-end">
-                      <Button
+                      <StyledButton
                         variant="contained"
                         disabled={isSubmitting}
                         color="secondary"
@@ -130,7 +132,7 @@ const CourseTranslationEditForm = ({
                         }}
                       >
                         Remove translation
-                      </Button>
+                      </StyledButton>
                     </Grid>
                   </EntryContainer>
                 </LanguageEntry>
@@ -142,7 +144,7 @@ const CourseTranslationEditForm = ({
                 </EntryContainer>
               )}
               {values?.length < languages.length && (
-                <Button
+                <FormSubmitButton
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -150,7 +152,7 @@ const CourseTranslationEditForm = ({
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
                   Add translation
-                </Button>
+                </FormSubmitButton>
               )}
             </>
           )}

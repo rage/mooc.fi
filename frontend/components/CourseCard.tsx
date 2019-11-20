@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, CardContent, CardActionArea, Button } from "@material-ui/core"
+import { Grid, CardContent, CardActionArea } from "@material-ui/core"
 
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
@@ -11,6 +11,7 @@ import LangLink from "/components/LangLink"
 import { CardTitle } from "/components/Text/headers"
 import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
 const CardBase = styled(ClicableButtonBase)<{ ishidden?: number | null }>`
   background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
@@ -18,14 +19,6 @@ const CardBase = styled(ClicableButtonBase)<{ ishidden?: number | null }>`
   width: 100%;
   display: flex;
   flex-direction: column;
-`
-
-const StyledButton = styled(Button)`
-  margin: 0.5rem;
-  color: #4e4637;
-  font-size: 18px;
-  text-decoration: none;
-  padding: 0.5em;
 `
 
 const StyledLink = styled.a`
@@ -84,12 +77,12 @@ const CourseCard = React.memo(
             </React.Fragment>
           ) : (
             <LangLink href={`/courses/new`}>
-              <a>
-                <Button variant="contained" color="secondary" fullWidth>
+              <StyledLink>
+                <StyledButton variant="contained" color="secondary" fullWidth>
                   <AddIcon />
                   Create
-                </Button>
-              </a>
+                </StyledButton>
+              </StyledLink>
             </LangLink>
           )}
         </CardActionArea>

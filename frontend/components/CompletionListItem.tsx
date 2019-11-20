@@ -63,11 +63,12 @@ const CompletionListItem = (props: ListItemProps) => {
         <CardSubtitle>{`${t("completedDate")}${formatDateTime(
           listItem.created_at,
         )}`}</CardSubtitle>
-        <CardSubtitle>{`${t("completionLanguage")} ${
-          listItem.completion_language
-            ? MapLangToLanguage.get(listItem.completion_language)
-            : listItem.completion_language
-        }`}</CardSubtitle>
+        <CardSubtitle>
+          {`${t("completionLanguage")} ${mapLangToLanguage[
+            listItem?.completion_language ?? ""
+          ] || listItem.completion_language}`}
+          }`}
+        </CardSubtitle>
       </div>
       {isRegistered && listItem.completions_registered ? (
         listItem.completions_registered.map(r => {

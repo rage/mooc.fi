@@ -3,7 +3,7 @@ import CompletionListItem from "/components/CompletionListItem"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 import LangLink from "/components/LangLink"
-import Button from "@material-ui/core/Button"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 interface CompletionsProps {
   completions: any[]
 }
@@ -21,11 +21,11 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
         href="/[lng]/profile/completions"
         as={`/${lng.language}/profile/completions`}
       >
-        <Button variant="text" fullWidth>
+        <FormSubmitButton variant="text" fullWidth>
           <a href={`/${lng.language}/profile/completions`}>
             {t("seeCompletions")}
           </a>
-        </Button>
+        </FormSubmitButton>
       </LangLink>
     </>
   )

@@ -3,7 +3,6 @@ import {
   Container,
   Paper,
   Grid,
-  Button,
   CircularProgress,
   Checkbox as MUICheckbox,
   Tooltip,
@@ -12,6 +11,7 @@ import { FormikProps } from "formik"
 import { FormValues } from "./types"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import styled from "styled-components"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -93,18 +93,18 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
               </Tooltip>
             ) : null}
             {deleteVisible && values.id ? (
-              <Button
+              <StyledButton
                 variant="contained"
                 color="secondary"
                 disabled={isSubmitting}
                 onClick={() => setDeleteConfirmationVisible(true)}
               >
                 Delete
-              </Button>
+              </StyledButton>
             ) : null}
           </Grid>
           <Grid container item justify="flex-end" xs={9}>
-            <Button
+            <StyledButton
               color="secondary"
               style={{ marginRight: "6px" }}
               disabled={isSubmitting}
@@ -113,8 +113,8 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
               }
             >
               Cancel
-            </Button>
-            <Button
+            </StyledButton>
+            <StyledButton
               color="primary"
               disabled={
                 !dirty || Object.keys(errors).length > 0 || isSubmitting
@@ -122,7 +122,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
               onClick={submitForm}
             >
               {isSubmitting ? <CircularProgress size={20} /> : "Save"}
-            </Button>
+            </StyledButton>
           </Grid>
         </Grid>
         {status && status.message ? (
