@@ -27,7 +27,7 @@ const exerciseCompletion = (t: PrismaObjectDefinitionBlock<"Query">) => {
 const exercisesCompletions = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("exerciseCompletions", {
     type: "ExerciseCompletion",
-    resolve: (_, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.exerciseCompletions()
     },

@@ -3,9 +3,8 @@ import {
   OpenUniversityRegistrationLink,
 } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
+import { stringArg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
-import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 
 const addOpenUniversityRegistrationLink = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,

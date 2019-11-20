@@ -30,7 +30,12 @@ const CourseArg = inputObjectType({
       type: "OpenUniversityRegistrationLinkCreateUpdateInput",
       required: false,
     })
-    t.int("order")
+    t.field("course_variants", {
+      list: true,
+      type: "CourseVariantCreateUpdateInput",
+      required: false,
+    }),
+      t.int("order")
     t.int("study_module_order")
     t.int("points_needed")
     t.boolean("automatic_completions")

@@ -2,7 +2,6 @@ import { Prisma, Image } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { arg, booleanArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
-import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
@@ -10,6 +9,8 @@ import {
 
 const sharp = require("sharp")
 
+// FIXME: not used anywhere
+// @ts-ignore
 const getImageBuffer = (image: string) => {
   const base64EncodedImageString = image.replace(/^data:image\/\w+;base64,/, "")
 
@@ -123,6 +124,11 @@ export const deleteImage = async ({
   const uncompressed = await deleteStorageImage(image.uncompressed)
   const original = await deleteStorageImage(image.original)
 
+  if (!compressed || !uncompressed || !original) {
+    console.warn(
+      `There was some problem with image deletion. Statuses: compressed ${compressed} uncompressed ${uncompressed} original ${original}`,
+    )
+  }
   await prisma.deleteImage({ id })
 
   return true

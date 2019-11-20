@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
-import { TextField } from "formik-material-ui"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
+import { StyledTextField } from "/components/Dashboard/Editor/common"
 
 const LanguageEntry = styled(Grid)`
   spacing: 10px;
@@ -16,10 +16,6 @@ const LanguageEntry = styled(Grid)`
 const EntryContainer = styled(Paper)`
   border-left: 2px solid #a0a0ff;
   padding: 20px;
-`
-
-const StyledTextField = styled(TextField)`
-  margin-bottom: 1rem;
 `
 
 const CourseTranslationEditForm = ({

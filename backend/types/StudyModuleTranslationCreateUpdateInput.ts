@@ -1,4 +1,4 @@
-import { inputObjectType, idArg } from "nexus/dist"
+import { inputObjectType } from "nexus/dist"
 
 const StudyModuleTranslationCreateUpdateInput = inputObjectType({
   name: "StudyModuleTranslationCreateUpdateInput",

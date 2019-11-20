@@ -1,4 +1,3 @@
-require("dotenv-safe").config()
 import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
 

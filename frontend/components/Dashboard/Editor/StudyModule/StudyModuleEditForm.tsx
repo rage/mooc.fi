@@ -11,9 +11,6 @@ import {
   getIn,
 } from "formik"
 import {
-  InputLabel,
-  FormGroup,
-  FormControl,
   Grid,
   MenuItem,
   Typography,
@@ -26,45 +23,15 @@ import * as Yup from "yup"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
-import { TextField } from "formik-material-ui"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import useDebounce from "/util/useDebounce"
 import HelpIcon from "@material-ui/icons/Help"
-
-const StyledTextField = styled(TextField)`
-  margin-bottom: 1rem;
-`
-
-const OutlinedInputLabel = styled(InputLabel)`
-  background-color: #ffffff;
-  padding: 0 4px 0 4px;
-`
-
-const OutlinedFormControl = styled(FormControl)`
-  margin-bottom: 1rem;
-`
-
-const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
-  border-radius: 4px;
-  border: 1px solid;
-  border-color: ${props => (props.error ? "#F44336" : "rgba(0, 0, 0, 0.23)")};
-  padding: 18.5px 14px;
-  transition: padding-left 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
-    border-color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
-    border-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-
-  &:hover {
-    border: 1px solid rgba(0, 0, 0, 0.87);
-  }
-
-  &:focus {
-    bordercolor: "#3f51b5";
-  }
-
-  @media (hover: none) {
-    border: 1px solid rgba(0, 0, 0, 0.23);
-  }
-`
+import {
+  StyledTextField,
+  OutlinedFormControl,
+  OutlinedInputLabel,
+  OutlinedFormGroup,
+} from "/components/Dashboard/Editor/common"
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;

@@ -1,7 +1,6 @@
 import { prismaObjectType } from "nexus-prisma"
 import { Course } from "../generated/prisma-client"
 import { ForbiddenError } from "apollo-server-core"
-import { stringArg } from "nexus/dist"
 import { NexusGenRootTypes } from "/generated/nexus"
 
 const Completion = prismaObjectType({
@@ -50,7 +49,7 @@ const Completion = prismaObjectType({
  */
     t.field("user", {
       type: "User",
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
           throw new ForbiddenError(
             "Cannot query relations when asking for more than 50 objects",
@@ -62,7 +61,7 @@ const Completion = prismaObjectType({
       t.field("completion_link", {
         type: "String",
         nullable: true,
-        resolve: async (parent, args, ctx) => {
+        resolve: async (parent, _, ctx) => {
           const course: Course = await ctx.prisma
             .completion({ id: parent.id })
             .course()

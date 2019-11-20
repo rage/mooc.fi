@@ -9,7 +9,7 @@ import { NexusGenRootTypes } from "/generated/nexus"
 const users = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("users", {
     type: "User",
-    resolve: (_, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.users()
     },
@@ -93,6 +93,8 @@ const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
     nullable: true,
     args: { search: stringArg() }, // was: email
     resolve: (_, args, ctx) => {
+      // FIXME: why don't we search anything? where's this come from?
+      // @ts-ignore
       const { search } = args
       return ctx.user as NexusGenRootTypes["User"]
     },

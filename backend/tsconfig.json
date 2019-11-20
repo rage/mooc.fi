@@ -6,8 +6,15 @@
     },
     "lib": ["es2016", "esnext.asynciterable"],
     "outDir": "./dist",
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "skipLibCheck": true,
-    "strict": true
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ],
   },
   "exclude": ["node_modules", "dist", "test", "src/test"]
 }

@@ -4,7 +4,7 @@ import checkAccess from "../../accessControl"
 const courseAliass = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("CourseAliases", {
     type: "CourseAlias",
-    resolve: (_, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.courseAliases()
     },

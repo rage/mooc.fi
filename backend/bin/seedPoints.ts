@@ -74,6 +74,8 @@ const addServices = async () => {
   }
 }
 
+// FIXME: (?) not used anywhere
+// @ts-ignore
 const addUserCourseServiceProgressess = async ({
   courseId,
 }: {
