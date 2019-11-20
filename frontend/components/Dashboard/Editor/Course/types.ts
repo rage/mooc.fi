@@ -19,6 +19,7 @@ export interface CourseFormValues extends FormValues {
   course_translations: CourseTranslationFormValues[]
   open_university_registration_links?: OpenUniversityRegistrationValues[] | null
   study_modules?: { [key: string]: boolean } | null
+  course_variants: CourseVariantFormValues[]
   thumbnail?: string | null
   new_photo?: File
   new_slug: string
@@ -43,4 +44,11 @@ export interface OpenUniversityRegistrationValues extends FormValues {
   language: string
   course: string | undefined
   link?: string | undefined
+}
+
+export interface CourseVariantFormValues extends FormValues {
+  id?: string
+  slug: string
+  description?: string
+  course?: string
 }

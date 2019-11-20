@@ -62,7 +62,7 @@ const serverStartOptions: Options = {
     logger.warn(error)
     return error
   },
-  formatResponse: (response: any, query: any) => {
+  formatResponse: (response: any /*, query: any*/) => {
     return response
   },
   bodyParserOptions: {

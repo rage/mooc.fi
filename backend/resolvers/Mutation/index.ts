@@ -1,4 +1,4 @@
-// generated Tue Nov 12 2019 14:37:48 GMT+0200 (Eastern European Standard Time)
+// generated Mon Nov 18 2019 13:19:25 GMT+0200 (Eastern European Standard Time)
 
 export { default as addCompletionRegisteredMutations } from "./CompletionRegistered"
 export { default as addExerciseMutations } from "./Exercise"
@@ -8,6 +8,7 @@ export { default as addCourseMutations } from "./course"
 export { default as addCourseAliasMutations } from "./courseAlias"
 export { default as addCourseOrganizationMutations } from "./courseOrganization"
 export { default as addCourseTranslationMutations } from "./courseTranslation"
+export { default as addCourseVariantMutations } from "./courseVariant"
 export { default as addImageMutations } from "./image"
 export { default as addOpenUniversityRegistrationLinkMutations } from "./openUniversityRegistrationLink"
 export { default as addOrganizationMutations } from "./organization"

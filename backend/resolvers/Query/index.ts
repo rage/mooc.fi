@@ -1,4 +1,4 @@
-// generated Tue Nov 12 2019 14:37:48 GMT+0200 (Eastern European Standard Time)
+// generated Mon Nov 18 2019 13:19:25 GMT+0200 (Eastern European Standard Time)
 
 export { default as addExerciseQueries } from "./Exercise"
 export { default as addExerciseCompletionQueries } from "./ExerciseCompletion"
@@ -8,6 +8,7 @@ export { default as addCourseQueries } from "./course"
 export { default as addCourseAliasQueries } from "./courseAlias"
 export { default as addCourseOrganizationQueries } from "./courseOrganization"
 export { default as addCourseTranslationQueries } from "./courseTranslation"
+export { default as addCourseVariantQueries } from "./courseVariant"
 export { default as addOrganizationQueries } from "./organization"
 export { default as addRegisteredCompletionQueries } from "./registeredCompletion"
 export { default as addServiceQueries } from "./service"

@@ -25,7 +25,7 @@ const service = (t: PrismaObjectDefinitionBlock<"Query">) => {
 const services = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("services", {
     type: "Service",
-    resolve: (_, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx)
       const prisma: Prisma = ctx.prisma
       return prisma.services()

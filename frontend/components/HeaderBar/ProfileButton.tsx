@@ -10,6 +10,7 @@ import { whichIsActive } from "/components/HeaderBar/Header"
 interface ButtonProps {
   active: boolean
 }
+
 const StyledButton = styled(Button)<ButtonProps>`
   margin-left: 0.5rem;
   margin-top: 0.5rem;

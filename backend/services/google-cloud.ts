@@ -1,11 +1,11 @@
 import { Storage } from "@google-cloud/storage"
 import * as shortid from "shortid"
-import * as mimeTypes from "mimetypes"
+import * as mime from "mime-types"
 
 const isProduction = process.env.NODE_ENV === "production"
 const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
 
-if (!bucketName) {
+if (!bucketName && isProduction) {
   console.error("no bucket name defined in GOOGLE_CLOUD_STORAGE_BUCKET")
   process.exit(1)
 }
@@ -19,7 +19,9 @@ const storage = isProduction
       bucket: () => ({
         file: () => ({
           save: (
+            // @ts-ignore
             buffer: any,
+            // @ts-ignore
             options: any,
             cb: (error?: string) => void,
           ): any => cb(),
@@ -29,7 +31,7 @@ const storage = isProduction
     }
 // FIXME: doesn't actually upload in dev even with base64 set to false unless isproduction is true
 
-const bucket = storage.bucket(bucketName)
+const bucket = storage.bucket(bucketName ?? "") // this shouldn't ever happen in production
 
 export const uploadImage = async ({
   imageBuffer,
@@ -46,7 +48,7 @@ export const uploadImage = async ({
 }): Promise<string> => {
   const filename = `${directory ? directory + "/" : ""}${shortid.generate()}${
     name && name !== "" ? "-" + name : ""
-  }.${mimeTypes.detectExtension(mimeType)}`
+  }.${mime.lookup(mimeType)}`
 
   if (base64) {
     const base64 = `data:${mimeType};base64,` + imageBuffer.toString("base64")

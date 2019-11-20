@@ -81,7 +81,7 @@ app.post("/api/v0/event", async (req, res) => {
   }
   res.json({ msg: "Thanks!" }).send()
 })
-app.get("/healthz", (req, res) => {
+app.get("/healthz", (_, res) => {
   if (!producerReady) {
     return res
       .status(500)
@@ -100,7 +100,9 @@ app.get("/healthz", (req, res) => {
 
 app.listen(port, () => console.log(`Kafka bridge listening on port ${port}!`))
 
-const logCommit = (err, topicPartitions) => {
+// FIXME: (?) not used anywhere
+// @ts-ignore
+const logCommit = (err: any, topicPartitions: any) => {
   if (err) {
     logger.error("Error in commit:" + err)
   } else {

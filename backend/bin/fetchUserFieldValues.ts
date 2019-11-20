@@ -2,20 +2,13 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import TmcClient from "../services/tmc"
-import {
-  Prisma,
-  Course,
-  UserCourseSettings,
-  User,
-} from "../generated/prisma-client"
+import { Prisma, User } from "../generated/prisma-client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 
 const CONFIG_NAME = "userFieldValues"
 
 const prisma: Prisma = new Prisma()
-let course: Course
-let old: UserCourseSettings
 
 const fetcUserFieldValues = async () => {
   const startTime = new Date().getTime()
@@ -125,6 +118,8 @@ const getUserFromTmcAndSaveToDB = async (
   }
 }
 
+// FIXME: not used anywhere
+// @ts-ignore
 const currentDate = () => {
   var today = new Date()
   var date =

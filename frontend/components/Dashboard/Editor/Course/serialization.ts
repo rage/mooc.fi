@@ -12,11 +12,13 @@ import {
   addCourse_addCourse_open_university_registration_links,
   addCourse_addCourse_study_modules,
   addCourse_addCourse_course_translations,
+  addCourse_addCourse_course_variants,
 } from "/static/types/generated/addCourse"
 import {
   updateCourse_updateCourse_open_university_registration_links,
   updateCourse_updateCourse_study_modules,
   updateCourse_updateCourse_course_translations,
+  updateCourse_updateCourse_course_variants,
 } from "/static/types/generated/updateCourse"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
@@ -60,6 +62,11 @@ export const toCourseForm = ({
           }),
           {},
         ),
+        course_variants:
+          course?.course_variants?.map(c => ({
+            ...c,
+            description: c.description || undefined,
+          })) ?? [],
         new_slug: course.slug,
         thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
         ects: course.ects ?? undefined,
@@ -76,16 +83,23 @@ export const fromCourseForm = ({
 }): CourseArg => {
   const newCourse = !values.id
 
-  const course_translations = values?.course_translations?.map(
+  const course_translations = (values?.course_translations?.map(
     (c: CourseTranslationFormValues) => ({
       ...omit(c, "open_university_course_code"),
       link: c.link || "",
       //open_university_course_code: undefined,
       id: !c.id || c.id === "" ? null : c.id,
     }),
-  ) as (
+  ) ?? []) as (
     | Omit<addCourse_addCourse_course_translations, "__typename">
     | Omit<updateCourse_updateCourse_course_translations, "__typename">
+  )[]
+
+  const course_variants = (values?.course_variants ?? []).map(v =>
+    omit(v, ["__typename"]),
+  ) as (
+    | Omit<addCourse_addCourse_course_variants, "__typename">
+    | Omit<updateCourse_updateCourse_course_variants, "__typename">
   )[]
 
   const open_university_registration_links = values?.course_translations
@@ -131,7 +145,7 @@ export const fromCourseForm = ({
     .map(id => ({ id }))
 
   return {
-    ...omit(values, ["id", "__typename"]),
+    ...omit(values, ["id", "thumbnail", "__typename"]),
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     new_slug: values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,
@@ -146,5 +160,6 @@ export const fromCourseForm = ({
     course_translations,
     open_university_registration_links,
     study_modules,
+    course_variants,
   }
 }

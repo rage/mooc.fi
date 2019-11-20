@@ -1,4 +1,3 @@
-require("dotenv-safe").config()
 import { Prisma, Course, Completion, Maybe } from "../generated/prisma-client"
 import { Context } from "/context"
 
