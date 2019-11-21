@@ -1,23 +1,11 @@
 import React, { useContext } from "react"
-import Typography from "@material-ui/core/Typography"
 import Grid from "@material-ui/core/Grid"
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
-import styled from "styled-components"
-
-const Title = styled(Typography)`
-  margin: 2rem auto 1rem auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  display: table;
-  background-color: rgba(34, 141, 189);
-  color: #ffffff;
-`
+import { H2Background } from "/components/Text/headers"
 
 const ModuleNavi = ({
   modules,
@@ -31,9 +19,15 @@ const ModuleNavi = ({
 
   return (
     <section style={{ marginBottom: "5em" }}>
-      <Title component="h2" variant="h2" align="center">
+      <H2Background
+        component="h2"
+        variant="h2"
+        align="center"
+        fontcolor="#ffffff"
+        titlebackground="rgba(34, 141, 189)"
+      >
         {t("modulesTitle")}
-      </Title>
+      </H2Background>
       <Container>
         <Grid container spacing={5}>
           {loading ? (

@@ -33,20 +33,6 @@ const StyledPaper = styled(Paper)`
   margin-top: 5px;
 `
 
-/* interface TablePaginationActionsProps {
-  count: number
-  page: number
-  rowsPerPage: number
-  onChangePage: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    newPage: number,
-  ) => void
-  data: UserDetailsContains
-  setPage: Function
-  loadData: Function
-  searchText: string
-} */
-
 interface GridProps {
   data: UserDetailsContains
   loadData: Function
@@ -168,7 +154,6 @@ const RenderResults = (props: RenderResultsProps) => {
             <TableCell component="th" scope="row">
               {email}
             </TableCell>
-            {/*           <TableCell align="right">{row.node.upstream_id}</TableCell> */}
             <TableCell align="right">{first_name}</TableCell>
             <TableCell align="right">{last_name}</TableCell>
             <TableCell align="right">{student_number}</TableCell>

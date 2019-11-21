@@ -1,13 +1,5 @@
 import React from "react"
-import {
-  Grid,
-  Card,
-  CardContent,
-  CardActionArea,
-  CardMedia as MUICardMedia,
-  Typography,
-  Button,
-} from "@material-ui/core"
+import { Grid, CardContent, CardActionArea } from "@material-ui/core"
 
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
@@ -16,40 +8,27 @@ import CourseImage from "./CourseImage"
 import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
+import { CardTitle } from "/components/Text/headers"
+import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
-const CardBase = styled(Card)<{ ishidden?: number | null }>`
-  padding: 0.8em;
+const CardBase = styled(ClicableButtonBase)<{ ishidden?: number | null }>`
   background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
-  box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
-  &:hover {
-    box-shadow: 18px 7px 48px -12px rgba(0, 0, 0, 1);
-  }
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `
 
-const StyledButton = styled(Button)`
-  margin: 0.5rem;
-  color: #4e4637;
-  font-size: 18px;
-  text-decoration: none;
-  padding: 0.5em;
-`
-
-const CardMedia = styled(MUICardMedia)`
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-`
 const StyledLink = styled.a`
   text-decoration: none;
 `
 const CourseCard = React.memo(
   ({ course }: { course?: AllEditorCourses_courses }) => (
-    <Grid item xs={12} sm={6} lg={3}>
+    <Grid item xs={12} sm={4} lg={3}>
       <CardBase ishidden={course?.hidden ? 1 : undefined}>
-        <CardMedia>
+        <CourseImageBase>
           {course ? (
             <CourseImage photo={course.photo} alt={course.name} />
           ) : (
@@ -66,11 +45,11 @@ const CourseCard = React.memo(
               </a>
             </LangLink>
           )}
-        </CardMedia>
+        </CourseImageBase>
         <CardContent style={{ flex: 1 }}>
-          <Typography variant="h5" component="h2" gutterBottom={true}>
-            {course?.name || "New Course"}
-          </Typography>
+          <CardTitle variant="h3" component="h2" align="left">
+            {course ? course.name : "New Course"}
+          </CardTitle>
         </CardContent>
         <CardActionArea component="div">
           {course ? (
@@ -98,12 +77,12 @@ const CourseCard = React.memo(
             </React.Fragment>
           ) : (
             <LangLink href={`/courses/new`}>
-              <a>
-                <Button variant="contained" color="secondary" fullWidth>
+              <StyledLink>
+                <StyledButton variant="contained" color="secondary" fullWidth>
                   <AddIcon />
                   Create
-                </Button>
-              </a>
+                </StyledButton>
+              </StyledLink>
             </LangLink>
           )}
         </CardActionArea>

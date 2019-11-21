@@ -47,7 +47,11 @@ const ModuleList = styled(List)`
 const ModuleListItem = styled(ListItem)<any>`
   padding: 0px;
 `
-
+const FormSubtitle = styled(Typography)`
+  padding: 20px 0px 20px 0px;
+  margin-bottom: 1rem;
+  font-size: 2em;
+`
 const renderForm = (studyModules?: StudyModules_study_modules[]) => ({
   errors,
   values,
@@ -64,8 +68,9 @@ Pick<
   | "setStatus"
 >) => (
   <Form>
+    <FormSubtitle variant="h6">Course Details</FormSubtitle>
     <Grid container direction="row" spacing={2}>
-      <Grid item xs={12} sm={12} md={6}>
+      <Grid item xs={12} sm={12} md={12}>
         <Field
           name="name"
           type="text"
@@ -77,7 +82,19 @@ Pick<
           component={StyledTextField}
         />
       </Grid>
-      <Grid item xs={4} sm={4} md={2}>
+      <Grid item xs={12} sm={12} md={12}>
+        <Field
+          name="new_slug"
+          type="text"
+          label="Slug"
+          error={errors.new_slug}
+          fullWidth
+          variant="outlined"
+          autoComplete="off"
+          component={StyledTextField}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={6}>
         <Field
           name="ects"
           type="text"
@@ -88,6 +105,26 @@ Pick<
           variant="outlined"
           component={StyledTextField}
         />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <FormControl>
+          <Field
+            name="status"
+            type="text"
+            label="Status"
+            select
+            component={StyledTextField}
+            errors={errors.status}
+            variant="outlined"
+            fullWidth
+          >
+            {statuses.map(option => (
+              <MenuItem key={`status-${option.value}`} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Field>
+        </FormControl>
       </Grid>
       <Grid item xs={4} sm={4} md={2}>
         <Field
@@ -114,40 +151,7 @@ Pick<
         />
       </Grid>
     </Grid>
-    <Grid container direction="row" justify="space-between" spacing={2}>
-      <Grid item xs={12} sm={6}>
-        <Field
-          name="new_slug"
-          type="text"
-          label="Slug"
-          error={errors.new_slug}
-          fullWidth
-          variant="outlined"
-          autoComplete="off"
-          component={StyledTextField}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <FormControl>
-          <Field
-            name="status"
-            type="text"
-            label="Status"
-            select
-            component={StyledTextField}
-            errors={errors.status}
-            variant="outlined"
-            fullWidth
-          >
-            {statuses.map(option => (
-              <MenuItem key={`status-${option.value}`} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Field>
-        </FormControl>
-      </Grid>
-    </Grid>
+    <Grid container direction="row" justify="space-between" spacing={2}></Grid>
     <Grid container direction="row" justify="space-between" spacing={2}>
       <Grid
         container
@@ -275,9 +279,7 @@ Pick<
         )}
       />
     </FormControl>
-    <Typography variant="h6" style={{ padding: "20px 0px 20px 0px" }}>
-      Course translations
-    </Typography>
+    <FormSubtitle variant="h6">Course translations</FormSubtitle>
     <CourseTranslationEditForm
       values={values.course_translations}
       errors={errors.course_translations}

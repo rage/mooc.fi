@@ -2,8 +2,6 @@ import React from "react"
 import Explanation from "./Explanation"
 import styled from "styled-components"
 
-// const image = require("../../static/images/homeBackground.jpg?resize&sizes[]=400&sizes[]=600&sizes[]=1000&sizes[]=2000")
-
 const ExplanationRoot = styled.section`
   display: flex;
   position: relative;

@@ -9,7 +9,6 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
-// import Spinner from "/components/Spinner"
 import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
@@ -17,6 +16,7 @@ import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
+import { H1NoBackground } from "/components/Text/headers"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -74,10 +74,6 @@ export const StudyModuleQuery = gql`
   }
 `
 
-const Header = styled(Typography)`
-  margin-top: 1em;
-`
-
 const ErrorContainer = styled(Paper)`
   padding: 1em;
 `
@@ -93,6 +89,9 @@ const EditCourse = (props: EditCourseProps) => {
   const { admin, router, slug } = props
   const { language } = useContext(LanguageContext)
 
+  if (!admin) {
+    return <AdminError />
+  }
   let redirectTimeout: number | null = null
 
   const {
@@ -108,10 +107,6 @@ const EditCourse = (props: EditCourseProps) => {
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
-  if (!admin) {
-    return <AdminError />
-  }
-
   if (courseError || studyModulesError) {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>
   }
@@ -125,9 +120,9 @@ const EditCourse = (props: EditCourseProps) => {
   return (
     <section>
       <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Edit course
-        </Header>
+        </H1NoBackground>
         {courseLoading || studyModulesLoading ? (
           <FormSkeleton />
         ) : courseData!.course ? (
