@@ -6,10 +6,10 @@ import AdminError from "/components/Dashboard/AdminError"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "/components/Container"
-import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -22,15 +22,11 @@ export const CourseDetailsFromSlugQuery = gql`
 
 interface CourseProps {
   admin: boolean
-  router: SingletonRouter
 }
 const Course = (props: CourseProps) => {
-  const { admin, router } = props
+  const { admin } = props
 
-  const slug =
-    router?.query?.id && typeof router.query.id === "string"
-      ? router.query.id
-      : ""
+  const slug = useQueryParameter("id") ? useQueryParameter("id") : ""
 
   if (!admin) {
     return <AdminError />
@@ -77,4 +73,4 @@ Course.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(Course)
+export default Course
