@@ -1,11 +1,12 @@
 import React from "react"
-import { TextField, Button, Typography, Paper } from "@material-ui/core"
+import { TextField, Typography, Paper } from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
 import getSignUpTranslator from "/translations/sign-up"
 import LangLink from "/components/LangLink"
 import styled from "styled-components"
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -31,10 +32,6 @@ const InfoBox = styled.div`
 
 const StyledTypography = styled(Typography)`
   margin-bottom: 2rem;
-`
-const SubmitButton = styled(Button)`
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
 `
 
 interface state {

@@ -1,28 +1,35 @@
 import React from "react"
 import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
-import ButtonBase from "@material-ui/core/ButtonBase"
-import Typography from "@material-ui/core/Typography"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
+import { CardTitle } from "/components/Text/headers"
+import { CardText } from "/components/Text/paragraphs"
+import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 
-interface BackgroundProps {
-  component: string
-}
-
-const Background = styled(ButtonBase)<BackgroundProps>`
-  background-color: white;
-  position: relative;
-  box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
+const Background = styled(ClicableButtonBase)`
   display: flex;
   flex-direction: column;
   @media (max-width: 960px) {
     flex-direction: row;
   }
-  &:hover {
-    box-shadow: 18px 7px 48px -12px rgba(0, 0, 0, 1);
+`
+
+const ResponsiveCourseImageBase = styled(CourseImageBase)`
+  @media (max-width: 430px) {
+    height: 235px;
+    width: 30%;
+  }
+  @media (min-width: 430px) and (max-width: 600px) {
+    width: 45%;
+    height: 215px;
+  }
+  @media (min-width: 600px) and (max-width: 960px) {
+    width: 40%;
+    height: 240px;
   }
 `
 
@@ -45,22 +52,6 @@ const TextArea = styled.div`
   }
 `
 
-const ImageArea = styled.div`
-  height: 230px;
-  width: 100%;
-  @media (max-width: 430px) {
-    height: 235px;
-    width: 30%;
-  }
-  @media (min-width: 430px) and (max-width: 600px) {
-    width: 45%;
-    height: 215px;
-  }
-  @media (min-width: 600px) and (max-width: 960px) {
-    width: 40%;
-    height: 240px;
-  }
-`
 const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
@@ -76,11 +67,10 @@ const CourseCard = ({ course }: CourseCardProps) => (
       target="_blank"
     >
       <Background
-        component="div"
         focusRipple
         disabled={!course || (!course.link || course.link === "")}
       >
-        <ImageArea>
+        <ResponsiveCourseImageBase>
           {course ? (
             <CourseImage
               photo={course.photo}
@@ -89,16 +79,16 @@ const CourseCard = ({ course }: CourseCardProps) => (
           ) : (
             <Skeleton variant="rect" height="100%" />
           )}
-        </ImageArea>
+        </ResponsiveCourseImageBase>
         <TextArea>
           {course ? (
             <>
-              <Typography component="h3" variant="h3" gutterBottom={true}>
+              <CardTitle component="h3" variant="h3">
                 {course.name}
-              </Typography>
-              <Typography component="p" variant="body1" paragraph align="left">
+              </CardTitle>
+              <CardText component="p" variant="body1" paragraph align="left">
                 {course.description}
-              </Typography>
+              </CardText>
             </>
           ) : (
             <>

@@ -50,6 +50,11 @@ export const AllEditorCoursesQuery = gql`
         language
         name
       }
+      course_variants {
+        id
+        slug
+        description
+      }
     }
     currentUser {
       id

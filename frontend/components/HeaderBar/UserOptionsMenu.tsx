@@ -1,28 +1,13 @@
 import * as React from "react"
 import { signOut } from "/lib/authentication"
 import { useApolloClient } from "@apollo/react-hooks"
-import styled from "styled-components"
-import Button from "@material-ui/core/Button"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import getCommonTranslator from "/translations/common"
 import LangLink from "/components/LangLink"
 import nookies from "nookies"
 import ProfileButton from "./ProfileButton"
-
-const StyledButton = styled(Button)`
-  margin: 0.5rem;
-  font-size: 18px;
-
-  @media (max-width: 450px) {
-    font-size: 16px;
-  }
-  @media (max-width: 321px) {
-    margin-left: 0.25rem;
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
-  }
-`
+import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 
 interface Props {
   isSignedIn: boolean
@@ -38,26 +23,26 @@ const UserOptionsMenu = (props: Props) => {
     return (
       <>
         <ProfileButton />
-        <StyledButton
+        <HeaderMenuButton
           color="inherit"
           variant="text"
           onClick={() => signOut(client).then(logInOrOut)}
         >
           {t("logout")}
-        </StyledButton>
+        </HeaderMenuButton>
       </>
     )
   }
   return (
     <>
       <LangLink href="/[lng]/sign-in" as={`/${language}/sign-in`} passHref>
-        <StyledButton
+        <HeaderMenuButton
           color="inherit"
           variant="text"
           onClick={() => nookies.destroy({}, "redirect-back")}
         >
           {t("loginShort")}
-        </StyledButton>
+        </HeaderMenuButton>
       </LangLink>
       <LangLink
         href="/[lng]/sign-up"
@@ -65,9 +50,9 @@ const UserOptionsMenu = (props: Props) => {
         prefetch={false}
         passHref
       >
-        <StyledButton color="inherit" variant="text">
+        <HeaderMenuButton color="inherit" variant="text">
           {t("signUp")}
-        </StyledButton>
+        </HeaderMenuButton>
       </LangLink>
     </>
   )

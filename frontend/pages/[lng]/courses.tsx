@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Typography } from "@material-ui/core"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
@@ -10,19 +9,9 @@ import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"
 import Spinner from "/components/Spinner"
-
+import { H1Background } from "/components/Text/headers"
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
 
-const Header = styled(Typography)`
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1em;
-  margin-bottom: 0.7em;
-  background-color: #fff8ec;
-  padding: 0.5em;
-  width: 45%;
-  font-family: Open Sans Condensed !important;
-`
 const Background = styled.section`
   background-color: #61baad;
 `
@@ -49,9 +38,9 @@ const Courses = (admin: boolean) => {
   return (
     <Background>
       <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        <H1Background component="h1" variant="h1" align="center">
           All Courses
-        </Header>
+        </H1Background>
         <CourseGrid courses={data.courses} />
       </WideContainer>
     </Background>

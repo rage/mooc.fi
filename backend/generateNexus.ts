@@ -1,3 +1,5 @@
+require("sharp") // even if this doesn't use sharp, we crash without it
+
 import { prisma } from "./generated/prisma-client"
 import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"

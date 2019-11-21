@@ -9,7 +9,7 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
-import Typography from "@material-ui/core/Typography"
+import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -54,22 +54,12 @@ const Course = (props: CourseProps) => {
       <DashboardTabBar slug={slug} selectedValue={0} />
 
       <WideContainer>
-        <Typography
-          component="h1"
-          variant="h1"
-          align="center"
-          style={{ marginTop: "2rem", marginBottom: "0.5rem" }}
-        >
+        <H1NoBackground component="h1" variant="h1" align="center">
           {data.course.name}
-        </Typography>
-        <Typography
-          component="p"
-          variant="subtitle1"
-          align="center"
-          style={{ marginBottom: "2rem" }}
-        >
+        </H1NoBackground>
+        <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           Home
-        </Typography>
+        </SubtitleNoBackground>
         <CourseDashboard />
       </WideContainer>
     </section>

@@ -17,5 +17,5 @@ export interface deleteStudyModule {
 }
 
 export interface deleteStudyModuleVariables {
-  slug: string
+  id: string
 }
