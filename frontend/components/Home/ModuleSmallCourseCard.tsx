@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Grid, Typography, ButtonBase, Badge } from "@material-ui/core"
+import { Grid, Typography, Badge } from "@material-ui/core"
 import styled from "styled-components"
 import { CourseStatus } from "/static/types/globalTypes"
 import LanguageContext from "/contexes/LanguageContext"
@@ -7,23 +7,9 @@ import getHomeTranslator from "/translations/home"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import Skeleton from "@material-ui/lab/Skeleton"
 import ReactGA from "react-ga"
-
-const CourseTitle = styled(Typography)`
-  margin-bottom: 0.5rem;
-  // font-size: 22px;
-  @media (min-width: 425px) {
-    // font-size: 32px;
-  }
-  color: black;
-`
-const CourseText = styled(Typography)`
-  margin-bottom: 1rem;
-  // font-size: 16px;
-  @media (min-width: 425px) {
-    // font-size: 18px;
-  }
-  color: black;
-`
+import { CardTitle } from "components/Text/headers"
+import { CardText } from "/components/Text/paragraphs"
+import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -38,11 +24,7 @@ interface BackgroundProps {
   component: string
 }
 
-const Background = styled(ButtonBase)<BackgroundProps>`
-  background-color: white;
-  position: relative;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+const Background = styled(ClicableButtonBase)<BackgroundProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -75,14 +57,10 @@ const Background = styled(ButtonBase)<BackgroundProps>`
   `
       : undefined}
   @media (max-width: 960px) {
-    width: 100%;
     min-height: 150px;
-    justify-content: flex-start;
   }
   @media (min-width: 600px) and (max-width: 960px) {
-    width: 100%;
     min-height: 250px;
-    justify-content: flex-start;
   }
 `
 
@@ -141,12 +119,12 @@ function ModuleSmallCourseCard({
               </Header>
             )}
             <ContentArea>
-              <CourseTitle component="h3" align="center" variant="h3">
+              <CardTitle component="h3" align="center" variant="h3">
                 {course.name}
-              </CourseTitle>
-              <CourseText component="p" paragraph variant="body1" align="left">
+              </CardTitle>
+              <CardText component="p" paragraph variant="body1" align="left">
                 {course.description}
-              </CourseText>
+              </CardText>
               {course.status === CourseStatus.Upcoming ? (
                 <div
                   style={{

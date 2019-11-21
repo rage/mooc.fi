@@ -35,6 +35,11 @@ export const AddCourseMutation = gql`
       study_modules {
         id
       }
+      course_variants {
+        id
+        slug
+        description
+      }
     }
   }
 `
@@ -73,6 +78,11 @@ export const UpdateCourseMutation = gql`
       }
       study_modules {
         id
+      }
+      course_variants {
+        id
+        slug
+        description
       }
     }
   }

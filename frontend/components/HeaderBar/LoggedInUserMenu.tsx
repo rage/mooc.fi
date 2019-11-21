@@ -16,8 +16,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 interface ButtonProps {
-  active: boolean
+  active: any
 }
+
 const StyledButton = styled(Button)<ButtonProps>`
   margin: 1rem;
   font-size: 22px;
@@ -53,7 +54,7 @@ const UserMenu = (props: UserMenuprops) => {
             <StyledButton
               color="inherit"
               variant="text"
-              active={active == "courses"}
+              active={active == "courses" ? 1 : null}
               style={{ marginLeft: "1em" }}
             >
               <div>
@@ -70,7 +71,7 @@ const UserMenu = (props: UserMenuprops) => {
             <StyledButton
               color="inherit"
               variant="text"
-              active={active == "study-modules"}
+              active={active == "study-modules" ? 1 : null}
             >
               <div>
                 <FontAwesomeIcon icon={faList} />
@@ -82,7 +83,7 @@ const UserMenu = (props: UserMenuprops) => {
             <StyledButton
               color="inherit"
               variant="text"
-              active={active == "users"}
+              active={active == "users" ? 1 : null}
             >
               <div>
                 <FontAwesomeIcon icon={faSearch} />

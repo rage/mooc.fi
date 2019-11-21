@@ -7,9 +7,6 @@
       "@pages/*": ["pages/*"],
       "@lib/*": ["./lib/*"],
       "@components/*": ["./components/*"]
-      // "*": [
-      //   "types/*"
-      // ],
     },
     "typeRoots": [
       "node_modules/@types",
@@ -22,7 +19,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
-    //when NextJs9 up and running, set these two to true and fix the small errors
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "preserveConstEnums": true,
