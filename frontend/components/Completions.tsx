@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
-import { Container } from "next/app"
+import { RegularContainer as Container } from "/components/Container"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { gql } from "apollo-boost"
