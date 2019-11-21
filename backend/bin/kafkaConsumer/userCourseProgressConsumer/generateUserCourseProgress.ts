@@ -10,9 +10,11 @@ import {
   EmailTemplate,
 } from "../../../generated/prisma-client"
 const nodemailer = require("nodemailer")
-const email_host = process.env.EMAIL_HOST
-const email_user = process.env.EMAIL_USER
-const email_pass = process.env.EMAIL_PASS
+const email_host = process.env.SMTP_HOST
+const email_user = process.env.SMTP_USER
+const email_pass = process.env.SMTP_PASS
+const email_port = process.env.SMTP_PORT
+const email_from = process.env.SMTP_FROM
 export const generateUserCourseProgress = async (
   userCourseProgress: UserCourseProgress,
   prisma: Prisma,
@@ -92,7 +94,7 @@ async function sendMail(user: User, template: EmailTemplate) {
   //const { htmlTemplate, textTemplate } = getTemplates(student, title);
   let transporter = nodemailer.createTransport({
     host: email_host,
-    port: 587,
+    port: email_port,
     secure: false, // true for 465, false for other ports
     auth: {
       user: email_user, // generated ethereal user
@@ -101,7 +103,7 @@ async function sendMail(user: User, template: EmailTemplate) {
   })
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"mooc.fi" <noreply@mooc.fi>', // sender address
+    from: email_from, // sender address
     to: user.email, // list of receivers
     subject: template.title, // Subject line
     text: template.txt_body, // plain text body
