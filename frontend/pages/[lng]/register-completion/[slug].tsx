@@ -10,11 +10,11 @@ import RegisterCompletionText from "/components/RegisterCompletionText"
 import ImportantNotice from "/components/ImportantNotice"
 import Container from "/components/Container"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
-import { withRouter } from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
 import { H1NoBackground } from "/components/Text/headers"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -81,12 +81,11 @@ export const UserOverViewQuery = gql`
 `
 
 interface RegisterCompletionPageProps {
-  router: any
   slug?: string | string[]
 }
 
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
-  const { router, slug } = props
+  const { slug } = props
   const classes = useStyles()
   const { language } = useContext(LanguageContext)
 
@@ -105,7 +104,7 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
     return <div>Loading</div>
   }
 
-  const courseSlug = slug || router.query.slug
+  const courseSlug = slug || useQueryParameter("slug")
 
   const completion =
     data?.currentUser?.completions?.find(c => c.course.slug == courseSlug) ??
@@ -202,4 +201,4 @@ RegisterCompletion.getInitialProps = function(context: NextContext) {
   return {}
 }
 
-export default withRouter(RegisterCompletion)
+export default RegisterCompletion

@@ -7,8 +7,8 @@ import { useQuery } from "@apollo/react-hooks"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
-import { SingletonRouter, withRouter } from "next/router"
 import AdminError from "/components/Dashboard/AdminError"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -25,19 +25,18 @@ export const UserOverViewQuery = gql`
 `
 
 interface CompletionsProps {
-  router: SingletonRouter
   admin: boolean
 }
 
 function CompletionsPage(props: CompletionsProps) {
-  const { router } = props
+  const id = useQueryParameter("id")
 
   if (!props.admin) {
     return <AdminError />
   }
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
-    { variables: { upstream_id: Number(router.query.id) } },
+    { variables: { upstream_id: Number(id) } },
   )
 
   const completions = data?.user?.completions ?? []
@@ -75,4 +74,4 @@ CompletionsPage.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(CompletionsPage)
+export default CompletionsPage

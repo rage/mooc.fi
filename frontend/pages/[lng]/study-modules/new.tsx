@@ -1,6 +1,5 @@
 import React from "react"
 import { NextPageContext as NextContext } from "next"
-import { SingletonRouter, withRouter } from "next/router"
 import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import { isAdmin, isSignedIn } from "/lib/authentication"
@@ -9,9 +8,7 @@ import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import { H1NoBackground } from "/components/Text/headers"
 
 interface NewStudyModuleProps {
-  router: SingletonRouter
   admin: boolean
-  nameSpacesRequired: string[]
 }
 
 const NewStudyModule = (props: NewStudyModuleProps) => {
@@ -43,4 +40,4 @@ NewStudyModule.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(NewStudyModule)
+export default NewStudyModule

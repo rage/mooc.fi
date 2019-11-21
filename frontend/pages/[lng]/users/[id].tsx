@@ -10,31 +10,31 @@ import { UserCourseSettingsesForUserPage } from "/static/types/generated/UserCou
 import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import { CircularProgress } from "@material-ui/core"
-import { SingletonRouter, withRouter } from "next/router"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 interface UserPageProps {
-  namespacesRequired: string[]
-  router: SingletonRouter
   admin: boolean
 }
 
 const UserPage = (props: UserPageProps) => {
-  const { admin, router } = props
+  const { admin } = props
   if (!admin) {
     return <AdminError />
   }
-
+  const id = useQueryParameter("id")
   const [more, setMore]: any[] = React.useState([])
 
   const { loading, error, data } = useQuery<UserCourseSettingsesForUserPage>(
     GET_DATA,
-    { variables: { upstream_id: Number(router.query.id) } },
+    { variables: { upstream_id: Number(id) } },
   )
 
   if (error) {
-    ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-    </div>
+    return (
+      <div>
+        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      </div>
+    )
   }
 
   if (loading || !data) {
@@ -60,7 +60,7 @@ const UserPage = (props: UserPageProps) => {
               onClick={async () => {
                 const { data } = await client.query({
                   query: GET_DATA,
-                  variables: { upstream_id: Number(router.query.id) },
+                  variables: { upstream_id: Number(id) },
                 })
                 let newData = more
                 newData.push(...data.UserCourseSettingses.edges)
@@ -86,7 +86,7 @@ UserPage.getInitialProps = function(context: NextPageContext) {
     admin,
   }
 }
-export default withRouter(UserPage)
+export default UserPage
 
 const GET_DATA = gql`
   query UserCourseSettingsesForUserPage($upstream_id: Int) {
