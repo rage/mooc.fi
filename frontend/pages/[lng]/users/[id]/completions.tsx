@@ -4,10 +4,7 @@ import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import {
-  ShowUserUserOverView as UserOverViewData,
-  ShowUserUserOverView_user_completions,
-} from "/static/types/generated/ShowUserUserOverView"
+import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
 import { SingletonRouter, withRouter } from "next/router"
