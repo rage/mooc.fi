@@ -18,17 +18,33 @@ export enum OrganizationRole {
   Teacher = "Teacher",
 }
 
-export interface CourseTranslationCreateWithoutCourseInput {
-  created_at?: any | null
-  description: string
-  id?: any | null
-  language: string
-  link?: string | null
-  name: string
-  updated_at?: any | null
+export interface CourseArg {
+  automatic_completions?: boolean | null
+  base64?: boolean | null
+  course_translations?: CourseTranslationCreateUpdateInput[] | null
+  course_variants?: CourseVariantCreateUpdateInput[] | null
+  ects?: string | null
+  hidden?: boolean | null
+  id?: string | null
+  name?: string | null
+  new_photo?: any | null
+  new_slug?: string | null
+  open_university_registration_links?:
+    | OpenUniversityRegistrationLinkCreateUpdateInput[]
+    | null
+  order?: number | null
+  photo?: string | null
+  points_needed?: number | null
+  promote?: boolean | null
+  slug?: string | null
+  start_point?: boolean | null
+  status?: CourseStatus | null
+  study_module_order?: number | null
+  study_module_start_point?: boolean | null
+  study_modules?: StudyModuleWhereUniqueInput[] | null
 }
 
-export interface CourseTranslationWithIdInput {
+export interface CourseTranslationCreateUpdateInput {
   course?: string | null
   description: string
   id?: string | null
@@ -37,35 +53,33 @@ export interface CourseTranslationWithIdInput {
   name: string
 }
 
-export interface OpenUniversityRegistrationLinkCreateWithoutCourseInput {
+export interface CourseVariantCreateUpdateInput {
+  course?: string | null
+  description?: string | null
+  id?: string | null
+  slug: string
+}
+
+export interface OpenUniversityRegistrationLinkCreateUpdateInput {
   course_code: string
-  created_at?: any | null
-  id?: any | null
+  id?: string | null
   language: string
   link?: string | null
   start_date?: any | null
   stop_date?: any | null
-  updated_at?: any | null
 }
 
-export interface OpenUniversityRegistrationLinkWithIdInput {
-  course?: string | null
-  course_code: string
+export interface StudyModuleArg {
   id?: string | null
-  language: string
-  link?: string | null
+  image?: string | null
+  name?: string | null
+  new_slug?: string | null
+  order?: number | null
+  slug?: string | null
+  study_module_translations?: StudyModuleTranslationCreateUpdateInput[] | null
 }
 
-export interface StudyModuleTranslationCreateWithoutStudy_moduleInput {
-  created_at?: any | null
-  description: string
-  id?: any | null
-  language: string
-  name: string
-  updated_at?: any | null
-}
-
-export interface StudyModuleTranslationWithIdInput {
+export interface StudyModuleTranslationCreateUpdateInput {
   description: string
   id?: string | null
   language: string

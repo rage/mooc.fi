@@ -1,26 +1,14 @@
 import React, { useState } from "react"
-import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
+import { Grid, MenuItem, Typography } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
-import { TextField } from "formik-material-ui"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
-import styled from "styled-components"
-
-const LanguageEntry = styled(Grid)`
-  spacing: 10px;
-  line-height: 2;
-  padding: 0 0 20px 0;
-`
-
-const EntryContainer = styled(Paper)`
-  border-left: 2px solid #a0a0ff;
-  padding: 20px;
-`
-
-const StyledTextField = styled(TextField)`
-  margin-bottom: 1rem;
-`
+import { StyledTextField } from "/components/Dashboard/Editor/common"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 
 const CourseTranslationEditForm = ({
   values,
@@ -57,98 +45,96 @@ const CourseTranslationEditForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values && values.length ? (
-                values.map((_: any, index: number) => (
-                  <LanguageEntry item key={`translation-${index}`}>
-                    <EntryContainer elevation={2}>
-                      <Field
-                        name={`course_translations[${index}].language`}
-                        type="select"
-                        label="Language"
-                        errors={[getIn(errors, `[${index}].language`)]}
-                        fullWidth
-                        variant="outlined"
-                        select
-                        autoComplete="off"
-                        component={StyledTextField}
+              {values?.map((_: any, index: number) => (
+                <LanguageEntry item key={`translation-${index}`}>
+                  <EntryContainer elevation={2}>
+                    <Field
+                      name={`course_translations[${index}].language`}
+                      type="select"
+                      label="Language"
+                      errors={[getIn(errors, `[${index}].language`)]}
+                      fullWidth
+                      variant="outlined"
+                      select
+                      autoComplete="off"
+                      component={StyledTextField}
+                    >
+                      {languages.map(option => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Field>
+                    <Field
+                      name={`course_translations[${index}].name`}
+                      type="text"
+                      label="Name"
+                      error={getIn(errors, `[${index}].name`)}
+                      fullWidth
+                      autoComplete="off"
+                      variant="outlined"
+                      component={StyledTextField}
+                    />
+                    <Field
+                      name={`course_translations[${index}].description`}
+                      type="textarea"
+                      label="Description"
+                      error={getIn(errors, `[${index}].description`)}
+                      fullWidth
+                      multiline
+                      rows={5}
+                      autoComplete="off"
+                      variant="outlined"
+                      component={StyledTextField}
+                    />
+                    <Field
+                      name={`course_translations[${index}].link`}
+                      type="text"
+                      label="Link"
+                      error={getIn(errors, `[${index}].link`)}
+                      fullWidth
+                      autoComplete="off"
+                      variant="outlined"
+                      component={StyledTextField}
+                    />
+                    <Field
+                      name={`course_translations[${index}].open_university_course_code`}
+                      type="text"
+                      label="Open university course code"
+                      error={getIn(
+                        errors,
+                        `[${index}].open_university_course_code`,
+                      )}
+                      fullWidth
+                      autoComplete="off"
+                      variant="outlined"
+                      component={StyledTextField}
+                    />
+                    <br />
+                    <Grid container justify="flex-end">
+                      <StyledButton
+                        variant="contained"
+                        disabled={isSubmitting}
+                        color="secondary"
+                        onClick={() => {
+                          setRemoveDialogVisible(true)
+                          setRemovableIndex(index)
+                        }}
                       >
-                        {languages.map(option => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Field>
-                      <Field
-                        name={`course_translations[${index}].name`}
-                        type="text"
-                        label="Name"
-                        error={getIn(errors, `[${index}].name`)}
-                        fullWidth
-                        autoComplete="off"
-                        variant="outlined"
-                        component={StyledTextField}
-                      />
-                      <Field
-                        name={`course_translations[${index}].description`}
-                        type="textarea"
-                        label="Description"
-                        error={getIn(errors, `[${index}].description`)}
-                        fullWidth
-                        multiline
-                        rows={5}
-                        autoComplete="off"
-                        variant="outlined"
-                        component={StyledTextField}
-                      />
-                      <Field
-                        name={`course_translations[${index}].link`}
-                        type="text"
-                        label="Link"
-                        error={getIn(errors, `[${index}].link`)}
-                        fullWidth
-                        autoComplete="off"
-                        variant="outlined"
-                        component={StyledTextField}
-                      />
-                      <Field
-                        name={`course_translations[${index}].open_university_course_code`}
-                        type="text"
-                        label="Open university course code"
-                        error={getIn(
-                          errors,
-                          `[${index}].open_university_course_code`,
-                        )}
-                        fullWidth
-                        autoComplete="off"
-                        variant="outlined"
-                        component={StyledTextField}
-                      />
-                      <br />
-                      <Grid container justify="flex-end">
-                        <Button
-                          variant="contained"
-                          disabled={isSubmitting}
-                          color="secondary"
-                          onClick={() => {
-                            setRemoveDialogVisible(true)
-                            setRemovableIndex(index)
-                          }}
-                        >
-                          Remove translation
-                        </Button>
-                      </Grid>
-                    </EntryContainer>
-                  </LanguageEntry>
-                ))
-              ) : (
+                        Remove translation
+                      </StyledButton>
+                    </Grid>
+                  </EntryContainer>
+                </LanguageEntry>
+              )) ?? (
                 <EntryContainer elevation={2}>
                   <Typography variant="body1">
                     Please add at least one translation!
                   </Typography>
                 </EntryContainer>
               )}
-              {values && values.length < languages.length && (
-                <Button
+              {values?.length < languages.length && (
+                <FormSubmitButton
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -156,7 +142,7 @@ const CourseTranslationEditForm = ({
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
                   Add translation
-                </Button>
+                </FormSubmitButton>
               )}
             </>
           )}

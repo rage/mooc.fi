@@ -13,7 +13,6 @@ const mimetypes: { [key: string]: string } = {
 }
 
 export const mime = (filename?: string): string => {
-  // @ts-ignore
   const { length: l, [l - 1]: type } = (filename || "").split(".")
 
   return mimetypes[type] || mimetypes.jpg

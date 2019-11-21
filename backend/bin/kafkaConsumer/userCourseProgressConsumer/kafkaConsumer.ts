@@ -22,7 +22,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-const logCommit = (err, topicPartitions) => {
+const logCommit = (err: any, topicPartitions: any) => {
   if (err) {
     logger.error("Error in commit:" + err)
   } else {
@@ -53,8 +53,8 @@ consumer
     handleMessage(message, mutex, logger, consumer, prisma),
   )
 consumer.on("event.error", error => {
-  logger.error(error)
-  throw error
+  logger.error("Error while consuming", { originalError: error })
+  process.exit(-1)
 })
 
 consumer.on("event.log", function(log) {

@@ -39,7 +39,7 @@ class MyApp extends App {
     Router.router.events.on("routeChangeComplete", logPageView)
 
     const jssStyles = document.querySelector("#jss-server-side")
-    if (jssStyles && jssStyles.parentNode) {
+    if (jssStyles?.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)
     }
   }
@@ -109,14 +109,8 @@ MyApp.getInitialProps = async arg => {
   let url = "/"
   let hrefUrl = "/"
   if (typeof window !== undefined) {
-    if (ctx.asPath && ctx.asPath.substring(1, 3)) {
-      if (
-        ctx.asPath.substring(1, 3) == "fi" ||
-        ctx.asPath.substring(1, 3) == "en" ||
-        ctx.asPath.substring(1, 3) == "se"
-      ) {
-        lng = ctx.asPath.substring(1, 3)
-      }
+    if (["fi", "en", "se"].includes(ctx?.asPath?.substring(1, 3) ?? "")) {
+      lng = ctx.asPath.substring(1, 3)
     }
 
     url = ctx.asPath
@@ -137,7 +131,6 @@ MyApp.getInitialProps = async arg => {
     ...originalProps,
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
-    // @ts-ignore
     lng,
     url: createPath(url),
     hrefUrl,

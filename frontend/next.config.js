@@ -6,6 +6,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 })
 const withCSS = require("@zeit/next-css")
+const withMDX = require("@next/mdx")({
+  extension: /\.mdx?$/,
+})
 
 const nextConfiguration = {
   publicRuntimeConfig: {
@@ -14,7 +17,7 @@ const nextConfiguration = {
         ? process.env.LOCALE_SUBPATHS
         : "none",
   },
-  // pageExtensions: ["js", "tsx", "ts"],
+
   webpack(config) {
     try {
       config.optimization.splitChunks.cacheGroups.commons.enforce = true
@@ -69,6 +72,7 @@ module.exports = withPlugins(
     ],
     withBundleAnalyzer,
     withCSS,
+    withMDX,
   ],
   nextConfiguration,
 )

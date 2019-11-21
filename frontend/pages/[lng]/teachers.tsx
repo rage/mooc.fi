@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import LanguageContext from "/contexes/LanguageContext"
 import getTeachersTranslator from "/translations/teachers"
+import { H1NoBackground } from "/components/Text/headers"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;
@@ -30,11 +31,6 @@ const TextBlock = styled(Typography)`
   max-width: 800px;
 `
 
-const Header = styled(Typography)`
-  text-align: center;
-  margin-bottom: 4rem !important;
-`
-
 const StyledIcon = styled(FontAwesomeIcon)`
   color: rgba(0, 0, 0, 0.54);
   margin-bottom: 1rem;
@@ -49,15 +45,19 @@ const ForTeachers = () => {
   const t = getTeachersTranslator(lng.language)
   return (
     <section>
+      <H1NoBackground variant="h1" component="h1" align="center">
+        {t("siteTitle")}
+      </H1NoBackground>
       <ContentBlock>
-        <Header variant="h3">{t("siteTitle")}</Header>
         <TextBlock>
           <span dangerouslySetInnerHTML={{ __html: t("siteIntro") }} />
         </TextBlock>
       </ContentBlock>
       <ContentBlock>
         <StyledIcon icon={faGraduationCap} size="3x" />
-        <Header variant="h4">{t("teachingTitle")}</Header>
+        <H1NoBackground variant="h4" component="h2" align="center">
+          {t("teachingTitle")}
+        </H1NoBackground>
         <TextBlock>
           <span dangerouslySetInnerHTML={{ __html: t("teachingText") }} />
         </TextBlock>
@@ -66,20 +66,26 @@ const ForTeachers = () => {
       </ContentBlock>
       <ContentBlock>
         <StyledIcon icon={faBookOpen} size="3x" />
-        <Header variant="h4">{t("organizeTitle")}</Header>
+        <H1NoBackground variant="h4" component="h2" align="center">
+          {t("organizeTitle")}
+        </H1NoBackground>
         <TextBlock>{t("organizeText")}</TextBlock>
         <TextBlock>{t("organizeText2")}</TextBlock>
         <TextBlock>{t("organizeText3")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
         <StyledIcon icon={faLaptop} size="3x" />
-        <Header variant="h4">{t("tmcTitle")}</Header>
+        <H1NoBackground variant="h4" component="h2" align="center">
+          {t("tmcTitle")}
+        </H1NoBackground>
         <TextBlock>{t("tmcText")}</TextBlock>
         <TextBlock>{t("tmcText2")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
         <StyledIcon icon={faPlusSquare} size="3x" />
-        <Header variant="h4">{t("howtoTitle")}</Header>
+        <H1NoBackground variant="h4" component="h2" align="center">
+          {t("howtoTitle")}
+        </H1NoBackground>
         <TextBlock>
           <span dangerouslySetInnerHTML={{ __html: t("howtoText") }} />
         </TextBlock>
@@ -97,14 +103,18 @@ const ForTeachers = () => {
         <section>
           <ContentBlock>
             <StyledIcon icon={faUserFriends} size="3x" />
-            <Header variant="h4">{t("teachingTipsTitle")}</Header>
+            <H1NoBackground variant="h4" component="h2" align="center">
+              {t("teachingTipsTitle")}
+            </H1NoBackground>
             <TextBlock>{t("teachingTips")}</TextBlock>
             <TextBlock>{t("teachingTips2")}</TextBlock>
             <TextBlock>{t("teachingTips3")}</TextBlock>
           </ContentBlock>
           <ContentBlock>
             <StyledIcon icon={faBook} size="3x" />
-            <Header variant="h4">{t("2016Title")}</Header>
+            <H1NoBackground variant="h4" component="h2" align="center">
+              {t("2016Title")}
+            </H1NoBackground>
             <TextBlock>
               <span dangerouslySetInnerHTML={{ __html: t("2016Text") }} />
             </TextBlock>
@@ -115,7 +125,9 @@ const ForTeachers = () => {
       )}
       <ContentBlock>
         <StyledIcon icon={faComments} size="3x" />
-        <Header variant="h4">{t("contactTitle")}</Header>
+        <H1NoBackground variant="h4" component="h2" align="center">
+          {t("contactTitle")}
+        </H1NoBackground>
         <TextBlock>
           <span dangerouslySetInnerHTML={{ __html: t("contactText") }} />
         </TextBlock>

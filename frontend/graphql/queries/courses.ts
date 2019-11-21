@@ -40,6 +40,11 @@ export const AllEditorCoursesQuery = gql`
         compressed
         uncompressed
       }
+      course_variants {
+        id
+        slug
+        description
+      }
     }
     currentUser {
       id

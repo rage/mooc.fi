@@ -2,17 +2,19 @@ import { isNullOrUndefined } from "util"
 
 const defaultLanguage = "en"
 
-type Translation = {
-  [key: string]: string | { [key2: string]: string }[]
-}
+export type Translation =
+  | Record<string, string>
+  | Record<string, Array<Record<string, string>>>
 
-const getTranslator = <T extends Translation>(dicts: { [lang: string]: T }) => (
+const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
-) => (key: keyof T, variables?: { [key: string]: any }) => {
-  const translation: T[keyof T] =
-    (dicts[lng] || {})[key] || (dicts[defaultLanguage] || {})[key]
+) => (key: keyof T, variables?: Record<string, any>) => {
+  const translation: T[keyof T] | undefined =
+    dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
+  //  (dicts[lng] || ({} as T))[key] || (dicts[defaultLanguage] || ({} as T))[key]
 
   if (!translation) {
+    console.warn(`WARNING: no translation for ${lng}:${key}`)
     return key
   }
 
@@ -23,15 +25,13 @@ const getTranslator = <T extends Translation>(dicts: { [lang: string]: T }) => (
 
 const substitute = <T>(
   translation: T[keyof T],
-  variables?: { [key: string]: any },
+  variables?: Record<string, any>,
 ): any => {
   if (typeof translation === "object") {
     return Object.keys(translation).reduce(
-      (obj, key: string) => ({
+      (obj, key) => ({
         ...obj,
-        // FIXME: type
-        // @ts-ignore
-        [key]: substitute(translation[key], variables),
+        [key]: substitute<T>((translation as any)[key], variables),
       }),
       {},
     )

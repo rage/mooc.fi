@@ -3,9 +3,9 @@ import Grid from "@material-ui/core/Grid"
 import CourseCard from "./CourseCard"
 import Container from "/components/Container"
 import styled from "styled-components"
-import Typography from "@material-ui/core/Typography"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
-
+import { H2Background, SubtitleBackground } from "/components/Text/headers"
+import { BackgroundImage } from "/components/Images/GraphicBackground"
 interface RootProps {
   backgroundColor: string
 }
@@ -21,47 +21,6 @@ const Root = styled.div<RootProps>`
   ${props => `background-color: ${props.backgroundColor};`}
 `
 
-interface BackgroundProps {
-  hueRotateAngle: number
-  brightness: number
-}
-const BackgroundImage = styled.img<BackgroundProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-
-  ${props =>
-    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${
-      props.brightness
-    });`}
-`
-
-interface TitleProps {
-  fontcolor: string
-  titlebackground: string
-}
-
-const Title = styled(Typography)<TitleProps>`
-  margin: 5rem auto 1rem auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  display: table;
-
-  ${props =>
-    ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
-`
-const Subtitle = styled(Typography)`
-  margin: 0rem auto 3rem auto;
-  padding: 1rem;
-  display: table;
-  background-color: white;
-`
-
 interface CourseHighlightsProps {
   courses?: AllCourses_courses[]
   title: string
@@ -72,7 +31,6 @@ interface CourseHighlightsProps {
   brightness: number
   fontColor: string
   titleBackground: string
-  // loading: boolean
 }
 
 const CourseHighlights = (props: CourseHighlightsProps) => {
@@ -86,7 +44,6 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
     brightness,
     fontColor,
     titleBackground,
-    // loading,
   } = props
 
   return (
@@ -99,31 +56,31 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
       />
 
       <div style={{ zIndex: 20 }}>
-        <Title
+        <H2Background
           component="h2"
           variant="h2"
           fontcolor={fontColor}
           titlebackground={titleBackground}
         >
           {title}
-        </Title>
+        </H2Background>
         {subtitle && (
-          <Subtitle component="div" variant="subtitle1">
+          <SubtitleBackground component="div" variant="subtitle1">
             {subtitle}
-          </Subtitle>
+          </SubtitleBackground>
         )}
       </div>
       <Container>
         <Grid container spacing={3}>
-          {!(courses || []).length ? (
+          {courses?.length ? (
+            courses?.map(course => (
+              <CourseCard key={`course-${course.id}`} course={course} />
+            ))
+          ) : (
             <>
               <CourseCard key="skeletoncard1" />
               <CourseCard key="skeletoncard2" />
             </>
-          ) : (
-            (courses || []).map(course => (
-              <CourseCard key={`course-${course.id}`} course={course} />
-            ))
           )}
         </Grid>
       </Container>

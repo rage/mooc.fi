@@ -4,13 +4,14 @@ import { promisify } from "util"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addOrganization", {
     type: "Organization",
     args: {
       name: stringArg(),
-      slug: stringArg(),
+      slug: stringArg({ required: true }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
@@ -25,16 +26,23 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         result = await prisma.organizations({ where: { secret_key: secret } })
       } while (result.length)
 
+      // FIXME: empty name?
+
       const org: Organization = await prisma.createOrganization({
         slug: slug,
         secret_key: secret,
       })
+      // FIXME: return value not used
+      // @ts-ignore
       const orgTranslation = await prisma.createOrganizationTranslation({
-        name: name,
+        name: name ?? "",
         language: "fi_FI", //placeholder
         organization: { connect: { id: org.id } },
       })
-      return prisma.organization({ id: org.id })
+
+      const newOrg = await prisma.organization({ id: org.id })
+
+      return newOrg as NexusGenRootTypes["Organization"]
     },
   })
 }
