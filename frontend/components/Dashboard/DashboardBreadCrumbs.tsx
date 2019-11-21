@@ -3,11 +3,12 @@ import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import gql from "graphql-tag"
 import { useApolloClient } from "@apollo/react-hooks"
-import { BreadcrumbCourse } from "/static/types/generated/BreadcrumbCourse"
-import { BreadcrumbModule } from "/static/types/generated/BreadcrumbModule"
+/* import { BreadcrumbCourse } from "/static/types/generated/BreadcrumbCourse"
+import { BreadcrumbModule } from "/static/types/generated/BreadcrumbModule" */
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
 import { memoize } from "lodash"
+import { DocumentNode } from "graphql"
 
 const BreadcrumbCourseQuery = gql`
   query BreadcrumbCourse($slug: String) {
@@ -136,7 +137,11 @@ const BreadcrumbComponent: React.FC<{ target?: string }> = React.memo(
             <BreadCrumbLink>{children}</BreadCrumbLink>
           </LangLink>
         ) : (
-          <BreadCrumbSkeleton style={{ marginLeft: "3em", width: "100px" }} />
+          <BreadCrumbSkeleton
+            width={100}
+            height={5}
+            style={{ marginLeft: "3em", marginBottom: "0px" }}
+          />
         )}
       </BreadCrumb>
     )
@@ -184,20 +189,26 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
     // TODO: invalidate queries on editor (if needed?)
     // TODO: could also do with the data being what's watched instead of awaitedcrumb
     // and setstate having a boolean for waiting or smth
-    if (type === "courses") {
-      const { data } = await client.query<BreadcrumbCourse>({
-        query: BreadcrumbCourseQuery,
+    const params: Record<string, [DocumentNode, string]> = {
+      courses: [BreadcrumbCourseQuery, "course"],
+      "study-modules": [BreadcrumbModuleQuery, "study_module"],
+    }
+
+    const [query, path] = params[type]
+
+    try {
+      const data = await client.readQuery({
+        query,
+        variables: { slug },
+      })
+      setAwaitedCrumb(data?.[path]?.name ?? slug)
+    } catch {
+      const { data } = await client.query({
+        query,
         variables: { slug },
         fetchPolicy: "cache-first",
       })
-      setAwaitedCrumb(data?.course?.name ?? slug)
-    } else {
-      const { data } = await client.query<BreadcrumbModule>({
-        query: BreadcrumbModuleQuery,
-        variables: { slug },
-        fetchPolicy: "cache-first",
-      })
-      setAwaitedCrumb(data?.study_module?.name ?? slug)
+      setAwaitedCrumb(data?.[path]?.name ?? slug)
     }
   }, [])
 

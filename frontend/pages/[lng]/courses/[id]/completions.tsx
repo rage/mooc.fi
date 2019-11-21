@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
@@ -9,7 +9,7 @@ import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import LanguageContext from "/contexes/LanguageContext"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
 import Typography from "@material-ui/core/Typography"
-import { withRouter, SingletonRouter } from "next/router"
+import Router, { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
@@ -28,25 +28,35 @@ interface CompletionsProps {
   router: SingletonRouter
 }
 
+const languageMap: Record<string, string> = {
+  fi: "fi_FI",
+  en: "en_US",
+  se: "se_SE",
+}
+
 const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)
+  const [lng, changeLng] = useState(
+    (router?.query?.language as string) ??
+      languageMap[language as string] ??
+      "",
+  )
 
   const slug =
     router?.query?.id && typeof router.query.id === "string"
       ? router.query.id
       : ""
-  const lng =
-    router?.query?.language && typeof router.query.language === "string"
-      ? router.query.language
-      : ""
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    router.push(
-      `/${language}/courses/${slug}/completions?language=${
-        (event.target as HTMLInputElement).value
-      }`,
-    )
+    // prevents reloading page, URL changes
+    // FIXME: breaks back navigation a bit - replace with meddling with window.history?
+
+    const href = `/${language}/courses/${slug}/completions?language=${
+      (event.target as HTMLInputElement).value
+    }`
+    changeLng((event.target as HTMLInputElement).value as string)
+    router.push(Router.pathname, href, { shallow: true })
   }
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
