@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, Typography, Button } from "@material-ui/core"
+import { Grid, Button } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { mime } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
 import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
+import { CardTitle } from "/components/Text/headers"
 
 const Base = styled.div`
   position: relative;
@@ -60,47 +61,6 @@ const ContentArea = styled.span`
   padding-top: 1em;
 `
 
-const NaviCardTitle = styled(Typography)`
-  margin-bottom: 1rem;
-  margin-left: 1rem;
-  max-width: 60%;
-  line-height: 1.2em;
-  @media (min-width: 320px) {
-    font-size: 26px;
-  }
-  @media (min-width: 420px) {
-    font-size: 32px;
-  }
-  @media (min-width: 720px) {
-    font-size: 46px;
-  }
-  @media (min-width: 720px) {
-    font-size: 48px;
-  }
-`
-const NaviCardBodyText = styled(Typography)`
-  max-width: 60%;
-  text-align: left;
-  margin: 0;
-  margin-left: 1rem;
-  flex: 1;
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  @media (min-width: 320px) {
-    font-size: 18px;
-  }
-  @media (min-width: 420px) {
-    font-size: 20px;
-  }
-  @media (min-width: 720px) {
-    font-size: 24px;
-  }
-  @media (min-width: 1000px) {
-    font-size: 24px;
-  }
-`
-
 function ModuleCard({
   module,
 }: {
@@ -111,9 +71,6 @@ function ModuleCard({
       ? `../../static/images/${module.image}`
       : `../../static/images/${module.slug}.jpg`
     : "" // TODO: placeholder
-
-  //  require(`/static/images/courseimages/${course.slug}.png`)
-  // removed doggos as a placeholder for the time being
 
   return (
     <Grid item xs={12} sm={6} lg={6}>
@@ -137,30 +94,29 @@ function ModuleCard({
         )}
         <ImageCover />
         <ContentArea>
-          <NaviCardTitle align="left">
-            {module?.name || "New module"}
-          </NaviCardTitle>
-          <NaviCardBodyText paragraph>
-            {module ? (
-              <LangLink href={`/study-modules/${module.slug}/edit`}>
-                <a>
-                  <Button variant="contained" color="secondary" fullWidth>
-                    <EditIcon />
-                    Edit
-                  </Button>
-                </a>
-              </LangLink>
-            ) : (
-              <LangLink href={`/study-modules/new`}>
-                <a>
-                  <Button variant="contained" color="secondary" fullWidth>
-                    <AddIcon />
-                    Create
-                  </Button>
-                </a>
-              </LangLink>
-            )}
-          </NaviCardBodyText>
+          <CardTitle component="h2" variant="h3" align="left">
+            {module ? module.name : "New module"}
+          </CardTitle>
+
+          {module ? (
+            <LangLink href={`/study-modules/${module.slug}/edit`}>
+              <a>
+                <Button variant="contained" color="secondary" fullWidth>
+                  <EditIcon />
+                  Edit
+                </Button>
+              </a>
+            </LangLink>
+          ) : (
+            <LangLink href={`/study-modules/new`}>
+              <a>
+                <Button variant="contained" color="secondary" fullWidth>
+                  <AddIcon />
+                  Create
+                </Button>
+              </a>
+            </LangLink>
+          )}
         </ContentArea>
       </Base>
     </Grid>

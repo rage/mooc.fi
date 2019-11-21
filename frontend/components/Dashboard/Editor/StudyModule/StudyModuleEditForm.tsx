@@ -16,8 +16,6 @@ import {
   Typography,
   InputAdornment,
   Tooltip,
-  Paper,
-  Button,
 } from "@material-ui/core"
 import * as Yup from "yup"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
@@ -32,6 +30,10 @@ import {
   OutlinedInputLabel,
   OutlinedFormGroup,
 } from "/components/Dashboard/Editor/common"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;
@@ -39,17 +41,6 @@ const ModuleImage = styled.img<{ error?: boolean }>`
   height: 100%;
   max-height: 250px;
   display: ${props => (props.error ? "none" : "")};
-`
-
-const LanguageEntry = styled(Grid)`
-  spacing: 10px;
-  line-height: 2;
-  padding: 0 0 20px 0;
-`
-
-const EntryContainer = styled(Paper)`
-  border-left: 2px solid #a0a0ff;
-  padding: 20px;
 `
 
 // prevent borked image on page load
@@ -231,7 +222,7 @@ const renderForm = ({
                       />
                       <br />
                       <Grid container justify="flex-end">
-                        <Button
+                        <StyledButton
                           variant="contained"
                           disabled={isSubmitting}
                           color="secondary"
@@ -241,7 +232,7 @@ const renderForm = ({
                           }}
                         >
                           Remove translation
-                        </Button>
+                        </StyledButton>
                       </Grid>
                     </EntryContainer>
                   </LanguageEntry>
@@ -254,7 +245,7 @@ const renderForm = ({
                 </EntryContainer>
               )}
               {values?.study_module_translations?.length < languages.length && (
-                <Button
+                <FormSubmitButton
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -262,7 +253,7 @@ const renderForm = ({
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
                   Add translation
-                </Button>
+                </FormSubmitButton>
               )}
             </>
           )}

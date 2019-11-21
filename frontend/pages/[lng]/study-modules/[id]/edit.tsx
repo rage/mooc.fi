@@ -15,6 +15,7 @@ import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import LangLink from "/components/LangLink"
 import LanguageContext from "/contexes/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
+import { H1NoBackground } from "/components/Text/headers"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -37,10 +38,6 @@ export const StudyModuleQuery = gql`
       }
     }
   }
-`
-
-const Header = styled(Typography)`
-  margin-top: 1em;
 `
 
 const ErrorContainer = styled(Paper)`
@@ -84,9 +81,9 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   return (
     <section>
       <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Edit study module
-        </Header>
+        </H1NoBackground>
         {loading ? (
           <FormSkeleton />
         ) : data?.study_module ? (

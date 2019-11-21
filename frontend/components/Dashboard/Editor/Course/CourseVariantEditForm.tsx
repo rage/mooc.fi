@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { CourseVariantFormValues } from "/components/Dashboard/Editor/Course/types"
 import { Field, FieldArray, FormikErrors, getIn } from "formik"
-import { Button, Grid } from "@material-ui/core"
+import { Grid } from "@material-ui/core"
 import { initialVariant } from "./form-validation"
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
@@ -12,7 +12,12 @@ import {
   OutlinedFormGroup,
   StyledTextField,
 } from "/components/Dashboard/Editor/common"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import styled from "styled-components"
 
+const ButtonWithWhiteText = styled(StyledButton)`
+  color: white;
+`
 const CourseVariantEditForm = ({
   values,
   errors,
@@ -82,7 +87,7 @@ const CourseVariantEditForm = ({
                               justify="flex-end"
                               alignItems="center"
                             >
-                              <Button
+                              <StyledButton
                                 variant="contained"
                                 disabled={isSubmitting}
                                 color="secondary"
@@ -97,7 +102,7 @@ const CourseVariantEditForm = ({
                                 endIcon={<RemoveIcon>remove</RemoveIcon>}
                               >
                                 Remove
-                              </Button>
+                              </StyledButton>
                             </Grid>
                           </Grid>
                         </Grid>
@@ -107,7 +112,7 @@ const CourseVariantEditForm = ({
                     (values!.length &&
                       values![values!.length - 1].slug !== "")) && (
                     <Grid container justify="flex-end">
-                      <Button
+                      <ButtonWithWhiteText
                         variant="contained"
                         color="primary"
                         disabled={isSubmitting}
@@ -115,7 +120,7 @@ const CourseVariantEditForm = ({
                         endIcon={<AddIcon>add</AddIcon>}
                       >
                         Add
-                      </Button>
+                      </ButtonWithWhiteText>
                     </Grid>
                   )}
                 </>

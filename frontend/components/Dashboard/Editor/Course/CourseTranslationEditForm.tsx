@@ -1,22 +1,14 @@
 import React, { useState } from "react"
-import { Button, Grid, MenuItem, Typography, Paper } from "@material-ui/core"
+import { Grid, MenuItem, Typography } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { languages, initialTranslation } from "./form-validation"
-import styled from "styled-components"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
-
-const LanguageEntry = styled(Grid)`
-  spacing: 10px;
-  line-height: 2;
-  padding: 0 0 20px 0;
-`
-
-const EntryContainer = styled(Paper)`
-  border-left: 2px solid #a0a0ff;
-  padding: 20px;
-`
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 
 const CourseTranslationEditForm = ({
   values,
@@ -120,7 +112,7 @@ const CourseTranslationEditForm = ({
                     />
                     <br />
                     <Grid container justify="flex-end">
-                      <Button
+                      <StyledButton
                         variant="contained"
                         disabled={isSubmitting}
                         color="secondary"
@@ -130,7 +122,7 @@ const CourseTranslationEditForm = ({
                         }}
                       >
                         Remove translation
-                      </Button>
+                      </StyledButton>
                     </Grid>
                   </EntryContainer>
                 </LanguageEntry>
@@ -142,7 +134,7 @@ const CourseTranslationEditForm = ({
                 </EntryContainer>
               )}
               {values?.length < languages.length && (
-                <Button
+                <FormSubmitButton
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -150,7 +142,7 @@ const CourseTranslationEditForm = ({
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
                   Add translation
-                </Button>
+                </FormSubmitButton>
               )}
             </>
           )}

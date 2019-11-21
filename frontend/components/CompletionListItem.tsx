@@ -1,8 +1,6 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
 import { ProfileUserOverView_currentUser_completions as CompletionsData } from "/static/types/generated/ProfileUserOverView"
-//import {ProfileUserOverView_currentUser_completions_completions_registered as Registered } from "/static/types/generated/ProfileUserOverView"
-import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import {
   formatDateTime,
@@ -12,6 +10,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 import DoneIcon from "@material-ui/icons/Done"
 import Avatar from "@material-ui/core/Avatar"
+import { CardTitle, CardSubtitle } from "components/Text/headers"
 
 const StyledButton = styled(Button)`
   height: 50%;
@@ -44,9 +43,6 @@ const ListItemContainer = styled.div`
   background-color: white;
   margin-bottom: 1rem;
 `
-const ListItemText = styled(Typography)`
-  padding: 0.5rem;
-`
 interface ListItemProps {
   listItem: CompletionsData
 }
@@ -60,25 +56,30 @@ const CompletionListItem = (props: ListItemProps) => {
   return (
     <ListItemContainer>
       <CourseAvatar photo={listItem.course.photo} />
-      <ListItemText component="p" variant="h3" style={{ margin: "auto" }}>
+      <CardTitle component="h2" variant="h3">
         {listItem.course.name}
-      </ListItemText>
+      </CardTitle>
       <div style={{ margin: "auto" }}>
-        <ListItemText>{`${t("completedDate")}${formatDateTime(
+        <CardSubtitle>{`${t("completedDate")}${formatDateTime(
           listItem.created_at,
-        )}`}</ListItemText>
-        <ListItemText>{`${t("completionLanguage")} ${mapLangToLanguage[
-          listItem?.completion_language ?? ""
-        ] || listItem.completion_language}`}</ListItemText>
+        )}`}</CardSubtitle>
+        <CardSubtitle>
+          {`${t("completionLanguage")} ${mapLangToLanguage[
+            listItem?.completion_language ?? ""
+          ] || listItem.completion_language}`}
+          }`}
+        </CardSubtitle>
       </div>
       {isRegistered && listItem.completions_registered ? (
         listItem.completions_registered.map(r => {
           ;<div style={{ margin: "auto" }}>
-            <ListItemText>
+            <CardSubtitle>
               {t("registeredDate")}
               {formatDateTime(r.created_at)}
-            </ListItemText>
-            <ListItemText>{r.organization?.slug ?? ""}</ListItemText>
+            </CardSubtitle>
+            <CardSubtitle>
+              {r.organization ? r.organization.slug : ""}
+            </CardSubtitle>
             <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
           </div>
         })

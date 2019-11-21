@@ -14,6 +14,7 @@ import { withRouter } from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
+import { H1NoBackground } from "/components/Text/headers"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -39,9 +40,6 @@ const useStyles = makeStyles(() =>
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-    },
-    title: {
-      marginBottom: "1em",
     },
     courseInfo: {
       marginTop: 0,
@@ -120,15 +118,9 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   if (!completion) {
     return (
       <Container>
-        <Typography
-          variant="h2"
-          component="h1"
-          gutterBottom={true}
-          align="center"
-          className={classes.title}
-        >
+        <H1NoBackground variant="h1" component="h1" align="center">
           {t("course_completion_not_found_title")}
-        </Typography>
+        </H1NoBackground>
         <Typography>{t("course_completion_not_found")}</Typography>
       </Container>
     )
@@ -139,21 +131,21 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const courseLinkWithLanguage = completion?.completion_link
 
   if (!courseLinkWithLanguage) {
-    return <div>Open University registration is not open at the moment.</div>
+    return (
+      <div>
+        <H1NoBackground component="h1" variant="h1" align="center">
+          Open University registration is not open at the moment.
+        </H1NoBackground>
+      </div>
+    )
   }
 
   return (
     <>
       <Container>
-        <Typography
-          variant="h2"
-          component="h1"
-          gutterBottom={true}
-          align="center"
-          className={classes.title}
-        >
+        <H1NoBackground variant="h1" component="h1" align="center">
           {t("title")}
-        </Typography>
+        </H1NoBackground>
         <Typography variant="h6" component="p" className={classes.courseInfo}>
           {t("course", { course: completion.course.name })}
         </Typography>
