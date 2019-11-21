@@ -1,20 +1,8 @@
 import { gql } from "apollo-boost"
 
 export const AddStudyModuleMutation = gql`
-  mutation addStudyModule(
-    $slug: String!
-    $name: String!
-    $image: String
-    $order: Int
-    $study_module_translations: [StudyModuleTranslationCreateWithoutStudy_moduleInput!]
-  ) {
-    addStudyModule(
-      slug: $slug
-      name: $name
-      image: $image
-      order: $order
-      study_module_translations: $study_module_translations
-    ) {
+  mutation addStudyModule($study_module: StudyModuleArg!) {
+    addStudyModule(study_module: $study_module) {
       id
       slug
       name
@@ -31,24 +19,8 @@ export const AddStudyModuleMutation = gql`
 `
 
 export const UpdateStudyModuleMutation = gql`
-  mutation updateStudyModule(
-    $id: ID
-    $slug: String!
-    $new_slug: String
-    $name: String!
-    $image: String
-    $order: Int
-    $study_module_translations: [StudyModuleTranslationWithIdInput!]
-  ) {
-    updateStudyModule(
-      id: $id
-      slug: $slug
-      new_slug: $new_slug
-      name: $name
-      image: $image
-      order: $order
-      study_module_translations: $study_module_translations
-    ) {
+  mutation updateStudyModule($study_module: StudyModuleArg!) {
+    updateStudyModule(study_module: $study_module) {
       id
       slug
       name
@@ -65,8 +37,8 @@ export const UpdateStudyModuleMutation = gql`
 `
 
 export const DeleteStudyModuleMutation = gql`
-  mutation deleteStudyModule($slug: String!) {
-    deleteStudyModule(slug: $slug) {
+  mutation deleteStudyModule($id: ID!) {
+    deleteStudyModule(id: $id) {
       id
       slug
     }

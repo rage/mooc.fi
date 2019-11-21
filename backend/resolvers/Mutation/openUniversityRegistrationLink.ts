@@ -3,9 +3,8 @@ import {
   OpenUniversityRegistrationLink,
 } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, booleanArg, arg, idArg } from "nexus/dist"
+import { stringArg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
-import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 
 const addOpenUniversityRegistrationLink = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,
@@ -13,8 +12,8 @@ const addOpenUniversityRegistrationLink = async (
   t.field("addOpenUniversityRegistrationLink", {
     type: "OpenUniversityRegistrationLink",
     args: {
-      course_code: stringArg(),
-      course: idArg(),
+      course_code: stringArg({ required: true }),
+      course: idArg({ required: true }),
       language: stringArg(),
       link: stringArg(),
     },
@@ -22,11 +21,13 @@ const addOpenUniversityRegistrationLink = async (
       checkAccess(ctx, { allowOrganizations: false })
       const { course_code, course, language, link } = args
       const prisma: Prisma = ctx.prisma
+
+      // FIXME: empty course_code and/or language?
       const openUniversityRegistrationLink: OpenUniversityRegistrationLink = await prisma.createOpenUniversityRegistrationLink(
         {
           course: { connect: { id: course } },
-          course_code: course_code,
-          language: language,
+          course_code: course_code ?? "",
+          language: language ?? "",
           link: link,
         },
       )
@@ -36,7 +37,7 @@ const addOpenUniversityRegistrationLink = async (
 }
 
 const updateOpenUniversityRegistrationLink = (
-  t: PrismaObjectDefinitionBlock<"Mutaton">,
+  t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("updateOpenUniversityRegistrationLink", {
     type: "OpenUniversityRegistrationLink",

@@ -91,9 +91,7 @@ interface Props {
 
 function PaginatedPointsList(props: Props) {
   const { courseID } = props
-  //@ts-ignore
   const [searchString, setSearchString] = useState("")
-  //@ts-ignore
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
 
@@ -191,9 +189,7 @@ function PaginatedPointsList(props: Props) {
             {UserCourseSettingses.count || 0} results
           </div>
           <PointsList
-            pointsForUser={
-              data.UserCourseSettingses ? data.UserCourseSettingses.edges : []
-            }
+            pointsForUser={data?.UserCourseSettingses?.edges ?? []}
             cutterValue={cutterValue}
           />
           <Button
@@ -209,9 +205,8 @@ function PaginatedPointsList(props: Props) {
 
                 updateQuery: (previousResult, { fetchMoreResult }) => {
                   const previousData = previousResult.UserCourseSettingses.edges
-                  const newData = fetchMoreResult
-                    ? fetchMoreResult.UserCourseSettingses.edges
-                    : ([] as UserCourseSettingses_UserCourseSettingses_edges[])
+                  const newData: UserCourseSettingses_UserCourseSettingses_edges[] =
+                    fetchMoreResult?.UserCourseSettingses?.edges ?? []
                   const newPageInfo = fetchMoreResult
                     ? fetchMoreResult.UserCourseSettingses.pageInfo
                     : ({} as UserCourseSettingses_UserCourseSettingses_pageInfo)

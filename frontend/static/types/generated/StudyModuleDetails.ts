@@ -35,7 +35,7 @@ export interface StudyModuleDetails_study_module {
 }
 
 export interface StudyModuleDetails {
-  study_module: StudyModuleDetails_study_module
+  study_module: StudyModuleDetails_study_module | null
 }
 
 export interface StudyModuleDetailsVariables {

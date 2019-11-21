@@ -3,13 +3,7 @@ import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
-import {
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  useMediaQuery,
-} from "@material-ui/core"
+import { TextField, IconButton, useMediaQuery } from "@material-ui/core"
 import FirstPageIcon from "@material-ui/icons/FirstPage"
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
@@ -24,7 +18,8 @@ import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
-
+import { H1NoBackground } from "/components/Text/headers"
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 interface UserSearchProps {
   namespacesRequired: string[]
   router: SingletonRouter
@@ -34,7 +29,6 @@ interface UserSearchProps {
 const StyledForm = styled.form`
   display: flex;
   width: 100%;
-  flex-wrap: "wrap";
 `
 
 const StyledFooter = styled.footer`
@@ -42,13 +36,8 @@ const StyledFooter = styled.footer`
   margin-left: 2.5;
 `
 
-const StyledButton = styled(Button)`
-  margin-top: 14px;
-  margin-bottom: 7px;
-`
-const StyledTextField = styled(TextField)`
-  margin-left: 1;
-  margin-right: 1;
+const StyledButton = styled(ButtonWithPaddingAndMargin)`
+  color: white;
 `
 
 interface TablePaginationActionsProps {
@@ -69,18 +58,9 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   const theme = useTheme()
   const { data, page, rowsPerPage, setPage, searchText, loadData } = props
 
-  const startCursor =
-    data &&
-    data.userDetailsContains &&
-    data.userDetailsContains.pageInfo &&
-    data.userDetailsContains.pageInfo.startCursor
-  const endCursor =
-    data &&
-    data.userDetailsContains &&
-    data.userDetailsContains.pageInfo &&
-    data.userDetailsContains.pageInfo.endCursor
-  const count =
-    (data && data.userDetailsContains && data.userDetailsContains.count) || 0
+  const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
+  const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
+  const count = data?.userDetailsContains?.count ?? 0
 
   const handleFirstPageButtonClick = useCallback(async (
     // @ts-ignore
@@ -213,14 +193,9 @@ const UserSearch = (props: UserSearchProps) => {
   return (
     <>
       <Container>
-        <Typography
-          component="h1"
-          variant="h2"
-          gutterBottom={true}
-          align="center"
-        >
+        <H1NoBackground component="h1" variant="h1" align="center">
           User Search
-        </Typography>
+        </H1NoBackground>
         <div>
           <StyledForm
             onSubmit={async (event: any) => {
@@ -231,7 +206,7 @@ const UserSearch = (props: UserSearchProps) => {
               setPage(0)
             }}
           >
-            <StyledTextField
+            <TextField
               id="standard-search"
               label="Search by string"
               type="search"

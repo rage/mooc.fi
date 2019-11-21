@@ -3,7 +3,6 @@ import {
   FormControl,
   InputLabel,
   Input,
-  Button,
   FormHelperText,
   Link,
 } from "@material-ui/core"
@@ -14,13 +13,10 @@ import LoginStateContext from "/contexes/LoginStateContext"
 import getCommonTranslator from "/translations/common"
 import { useContext } from "react"
 import styled from "styled-components"
+import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 
 const StyledForm = styled.form`
   padding: 1em;
-`
-const SubmitButton = styled(Button)`
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
 `
 
 function SignIn() {
@@ -35,20 +31,10 @@ function SignIn() {
 
   useEffect(() => {
     const inputFieldSetter = () => {
-      if (
-        password == "" &&
-        passwordFieldRef &&
-        passwordFieldRef.current &&
-        passwordFieldRef.current.value
-      ) {
+      if (password == "" && passwordFieldRef?.current?.value) {
         setPassword(passwordFieldRef.current.value)
       }
-      if (
-        email == "" &&
-        emailFieldRef &&
-        emailFieldRef.current &&
-        emailFieldRef.current.value
-      ) {
+      if (email == "" && emailFieldRef?.current?.value) {
         setEmail(emailFieldRef.current.value)
       }
     }
@@ -63,6 +49,7 @@ function SignIn() {
 
   const lng = useContext(LanguageContext)
   const t = getCommonTranslator(lng.language)
+
   return (
     <LoginStateContext.Consumer>
       {({ logInOrOut }) => (

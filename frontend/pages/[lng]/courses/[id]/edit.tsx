@@ -9,7 +9,6 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
-// import Spinner from "/components/Spinner"
 import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
@@ -17,6 +16,7 @@ import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
+import { H1NoBackground } from "/components/Text/headers"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -55,6 +55,11 @@ export const CourseQuery = gql`
       study_modules {
         id
       }
+      course_variants {
+        id
+        slug
+        description
+      }
     }
   }
 `
@@ -67,10 +72,6 @@ export const StudyModuleQuery = gql`
       slug
     }
   }
-`
-
-const Header = styled(Typography)`
-  margin-top: 1em;
 `
 
 const ErrorContainer = styled(Paper)`
@@ -88,11 +89,10 @@ const EditCourse = (props: EditCourseProps) => {
   const { admin, router, slug } = props
   const { language } = useContext(LanguageContext)
 
-  let redirectTimeout: number | null = null
-
   if (!admin) {
     return <AdminError />
   }
+  let redirectTimeout: number | null = null
 
   const {
     data: courseData,
@@ -107,36 +107,28 @@ const EditCourse = (props: EditCourseProps) => {
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
-  /*   if (courseLoading || studyModulesLoading) {
-    return <Spinner />
-  } */
-
   if (courseError || studyModulesError) {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>
   }
 
-  /*   if (!courseData) {
-    return <div>Hmm, no course data</div>
-  } */
-
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (courseData && !courseData.course) {
+  if (!courseLoading && !courseData?.course && typeof window !== "undefined") {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
   return (
     <section>
       <WideContainer>
-        <Header component="h1" variant="h2" gutterBottom={true} align="center">
+        <H1NoBackground component="h1" variant="h1" align="center">
           Edit course
-        </Header>
+        </H1NoBackground>
         {courseLoading || studyModulesLoading ? (
           <FormSkeleton />
         ) : courseData!.course ? (
           <CourseEdit
             course={courseData!.course}
-            modules={studyModulesData ? studyModulesData.study_modules : []}
+            modules={studyModulesData?.study_modules ?? []}
           />
         ) : (
           <ErrorContainer elevation={2}>

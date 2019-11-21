@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
-import { Container } from "next/app"
+import { RegularContainer as Container } from "/components/Container"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { gql } from "apollo-boost"
@@ -65,13 +65,9 @@ const Completions = (props: CompletionsProps) => {
       </Title>
 
       <Container style={{ maxWidth: 900 }}>
-        {completions.length > 0 ? (
-          completions.map(c => (
-            <CompletionListItem key={`completion-${c.id}`} listItem={c} />
-          ))
-        ) : (
-          <Typography>{t("nocompletionsText")}</Typography>
-        )}
+        {completions?.map(c => (
+          <CompletionListItem key={`completion-${c.id}`} listItem={c} />
+        )) ?? <Typography>{t("nocompletionsText")}</Typography>}
       </Container>
     </section>
   )

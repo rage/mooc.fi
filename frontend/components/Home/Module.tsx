@@ -1,6 +1,5 @@
 import React, { useMemo, useContext } from "react"
 import { Grid, Chip } from "@material-ui/core"
-import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
 import Container from "/components/Container"
@@ -11,23 +10,8 @@ import { orderBy } from "lodash"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
-
-const IntroText = styled(Typography)`
-  font-size: 22px;
-  width: 100%;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.8);
-  @media (min-width: 425px) {
-    font-size: 26px;
-    width: 70%;
-  }
-  @media (min-width: 1000px) {
-    font-size: 32px;
-    width: 60%;
-  }
-`
+import { H2Background, SubtitleBackground } from "/components/Text/headers"
+import { BackgroundImage } from "/components/Images/GraphicBackground"
 
 interface RootProps {
   backgroundColor: string
@@ -42,39 +26,6 @@ const Root = styled.div<RootProps>`
   padding-bottom: 4em;
   position: relative;
   ${props => `background-color: ${props.backgroundColor};`}
-`
-
-interface BackgroundProps {
-  hueRotateAngle: number
-  brightness: number
-}
-
-const BackgroundImage = styled.img<BackgroundProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-
-  ${props =>
-    `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${
-      props.brightness
-    });`}
-`
-
-const Title = styled(Typography)`
-  font-size: 38px;
-  margin: 1rem auto 1rem auto;
-  padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.8);
-  width: 60%;
-  @media (min-width: 425px) {
-    font-size: 52px;
-  }
-  @media (min-width: 1000px) {
-    font-size: 72px;
-  }
 `
 
 const TitleChip = styled(Chip)`
@@ -113,24 +64,6 @@ function Module(props: ModuleProps) {
       )
     : []
 
-  /*   const startCourses = module
-    ? (module.courses || []).filter(
-        c =>
-          !c.hidden &&
-          c.status !== CourseStatus.Ended &&
-          c.study_module_start_point,
-      )
-    : []
-
-  const otherCourses = module
-    ? (module.courses || []).filter(
-        c =>
-          !c.hidden &&
-          c.status !== CourseStatus.Ended &&
-          !c.study_module_start_point,
-      )
-    : [] */
-
   const imageUrl = "/static/images/backgroundPattern.svg"
 
   return (
@@ -143,9 +76,15 @@ function Module(props: ModuleProps) {
           <TitleChip label={t("studyModule")} />
         </Block>
         <Block>
-          <Title component="h2" variant="h2" align="center">
+          <H2Background
+            component="h2"
+            variant="h2"
+            align="center"
+            fontcolor="black"
+            titlebackground="#ffffff"
+          >
             {module ? module.name : <Skeleton variant="text" />}
-          </Title>
+          </H2Background>
         </Block>
         <picture>
           <source srcSet={`${imageUrl}?webp`} type="image/webp" />
@@ -157,13 +96,12 @@ function Module(props: ModuleProps) {
             brightness={brightness}
           />
         </picture>
-        {/*       <ModuleBanner module={module} /> */}
         <Container>
           <Block style={{ width: "100%", marginBottom: "5rem" }}>
             {module ? (
-              <IntroText variant="subtitle1" style={{ width: "100%" }}>
+              <SubtitleBackground variant="subtitle1">
                 {module.description}
-              </IntroText>
+              </SubtitleBackground>
             ) : (
               <Skeleton />
             )}
@@ -186,21 +124,6 @@ function Module(props: ModuleProps) {
               )}
             </Grid>
           </Block>
-          {/* FIXME: study module home link - enable when that's done */
-          /*
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "3em",
-          }}
-        >
-          <LangLink href={`/study-modules/${module.slug}`}>
-            <ModuleHomeLink underline="always" style={{ cursor: "pointer" }}>
-              {t("modulesLinkToHome")}
-            </ModuleHomeLink>
-          </LangLink>
-        </div>
-        */}
         </Container>
       </Root>
     </section>

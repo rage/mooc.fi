@@ -390,7 +390,7 @@ const seed = async () => {
   await prisma.deleteManyStudyModules()
   await prisma.deleteManyCourses()
 
-  const modules = await Promise.all(
+  await Promise.all(
     Modules.map(async module => {
       const _module: StudyModuleCreateInput = {
         ...module,
@@ -419,13 +419,17 @@ const seed = async () => {
         status: course.status as CourseStatus,
         course_translations: course.course_translations
           ? ({
-              create: (course.course_translations || []).map(
-                (t: CourseTranslationCreateWithoutCourseInput) => ({
-                  ...t,
-                  id: undefined,
-                  link: t.link || "",
-                }),
-              ),
+              // FIXME: don't know why this bugs
+              // @ts-ignore
+              create:
+                // @ts-ignore
+                course?.course_translations?.map(
+                  (t: CourseTranslationCreateWithoutCourseInput) => ({
+                    ...t,
+                    id: undefined,
+                    link: t.link || "",
+                  }),
+                ) ?? undefined,
             } as CourseTranslationCreateManyWithoutCourseInput)
           : null,
         study_modules: null,

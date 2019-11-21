@@ -1,17 +1,17 @@
 {
-  "name": "points.mooc.fi",
+  "name": "mooc.fi",
   "version": "1.0.0",
   "description": "",
   "private": true,
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.24",
     "@types/mime-types": "^2.1.0",
-    "@types/node": "^12.0.2"
+    "@types/node": "^12.0.2",
+    "os-name": "^3.1.0"
   },
   "devDependencies": {
     "husky": "^2.3.0",
-    "prettier": "^1.17.1"
+    "prettier": "github:prettier/prettier"
   },
   "scripts": {
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
@@ -19,15 +19,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rage/points.mooc.fi.git"
+    "url": "git+https://github.com/rage/mooc.fi.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rage/points.mooc.fi/issues"
+    "url": "https://github.com/rage/mooc.fi/issues"
   },
-  "homepage": "https://github.com/rage/points.mooc.fi#readme",
+  "homepage": "https://github.com/rage/mooc.fi#readme",
   "husky": {
     "hooks": {
       "pre-commit": "./bin/check-code-style.sh"

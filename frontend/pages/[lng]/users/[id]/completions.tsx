@@ -4,12 +4,7 @@ import { NextPageContext as NextContext } from "next"
 import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
-import {
-  ShowUserUserOverView as UserOverViewData,
-  ShowUserUserOverView_user_completions,
-} from "/static/types/generated/ShowUserUserOverView"
-/* import styled from "styled-components"
-import Typography from "@material-ui/core/Typography" */
+import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
 import { SingletonRouter, withRouter } from "next/router"
@@ -28,21 +23,6 @@ export const UserOverViewQuery = gql`
   }
   ${Completions.fragments.completions}
 `
-/* const Title = styled(Typography)`
-  font-family: "Open Sans Condensed", sans-serif !important;
-  margin-top: 7rem;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
-  @media (min-width: 320px) {
-    font-size: 46px;
-  }
-  @media (min-width: 600px) {
-    font-size: 56px;
-  }
-  @media (min-width: 960px) {
-    font-size: 72px;
-  }
-` */
 
 interface CompletionsProps {
   router: SingletonRouter
@@ -59,7 +39,8 @@ function CompletionsPage(props: CompletionsProps) {
     UserOverViewQuery,
     { variables: { upstream_id: Number(router.query.id) } },
   )
-  let completions: ShowUserUserOverView_user_completions[] = []
+
+  const completions = data?.user?.completions ?? []
 
   if (error) {
     return (
@@ -71,10 +52,6 @@ function CompletionsPage(props: CompletionsProps) {
 
   if (loading || !data) {
     return <div>Loading</div>
-  }
-
-  if (data.user && data.user.completions) {
-    completions = data.user.completions
   }
 
   return (
