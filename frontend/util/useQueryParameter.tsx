@@ -2,6 +2,11 @@ import { useRouter } from "next/router"
 
 export function useQueryParameter(parameter: string) {
   const router = useRouter()
+
+  if (!router) {
+    return ""
+  }
+
   const checkingParameter = router?.query?.[parameter]
   if (checkingParameter === null || checkingParameter === undefined) {
     throw new Error(
