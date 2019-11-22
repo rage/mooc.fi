@@ -1,11 +1,12 @@
 import { useRouter } from "next/router"
 
 export function useQueryParameter(parameter: string) {
-  if (typeof window === "undefined") {
+  const router = useRouter()
+
+  if (!router) {
     return ""
   }
 
-  const router = useRouter()
   const checkingParameter = router?.query?.[parameter]
   if (checkingParameter === null || checkingParameter === undefined) {
     throw new Error(
