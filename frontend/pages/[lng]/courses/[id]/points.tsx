@@ -5,13 +5,13 @@ import { NextPageContext as NextContext } from "next"
 import AdminError from "/components/Dashboard/AdminError"
 import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
-import { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import PointsExportButton from "/components/Dashboard/PointsExportButton"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -24,23 +24,16 @@ export const CourseDetailsFromSlugQuery = gql`
 
 interface CompletionsProps {
   admin: boolean
-  router: SingletonRouter
 }
 
 const Points = (props: CompletionsProps) => {
-  const { admin, router } = props
+  const { admin } = props
   if (!admin) {
     return <AdminError />
   }
 
-  const slug =
-    router?.query?.id && typeof router.query.id === "string"
-      ? router.query.id
-      : ""
-  const lng =
-    router?.query?.language && typeof router.query.language === "string"
-      ? router.query.language
-      : ""
+  const slug = useQueryParameter("id")
+  const lng = useQueryParameter("lng")
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },
@@ -84,4 +77,4 @@ Points.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(Points)
+export default Points
