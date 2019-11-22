@@ -4,7 +4,7 @@ import { Prisma } from "../../../generated/prisma-client"
 import { MessageYupSchema } from "./validate"
 import { Logger } from "winston"
 import { KafkaConsumer, ConsumerStreamMessage } from "node-rdkafka"
-import { Mutex } from "await-semaphore"
+import { Mutex } from "../../lib/await-semaphore"
 
 const config = require("../kafkaConfig")
 
