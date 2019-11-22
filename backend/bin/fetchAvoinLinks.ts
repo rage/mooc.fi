@@ -41,7 +41,7 @@ const fetch = async () => {
 
     if (!bestLink) {
       console.log("Did not find any open links")
-      return
+      continue
     }
 
     console.log(`Best link found was: ${JSON.stringify(bestLink)}`)
