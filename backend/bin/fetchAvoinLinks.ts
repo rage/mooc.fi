@@ -40,10 +40,10 @@ const fetch = async () => {
     })
 
     const url =
-      !latestLink || (latestLink && !latestLink!.link)
+      !latestLink || (latestLink && !latestLink?.link)
         ? null
         : "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=" +
-          latestLink!.link
+          latestLink?.link
 
     // FIXME: types
 
@@ -61,8 +61,8 @@ const fetch = async () => {
         },
         data: {
           link: url,
-          start_date: latestLink!.startTime.toJSDate(),
-          stop_date: latestLink!.stopDate.toJSDate(),
+          start_date: latestLink?.startTime?.toJSDate?.(),
+          stop_date: latestLink?.stopDate?.toJSDate?.(),
         },
       })
     }
