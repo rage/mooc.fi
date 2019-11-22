@@ -32,8 +32,8 @@ const Points = (props: CompletionsProps) => {
     return <AdminError />
   }
 
-  const slug = useQueryParameter("slug") ? useQueryParameter("slug") : ""
-  const lng = useQueryParameter("lng") ? useQueryParameter("lng") : ""
+  const slug = useQueryParameter("id")
+  const lng = useQueryParameter("lng")
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },

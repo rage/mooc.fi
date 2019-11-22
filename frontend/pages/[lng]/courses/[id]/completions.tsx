@@ -33,9 +33,9 @@ const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)
 
-  const slug = useQueryParameter("slug") ? useQueryParameter("slug") : ""
+  const slug = useQueryParameter("id")
 
-  const lng = useQueryParameter("lng") ? useQueryParameter("lng") : ""
+  const lng = useQueryParameter("lng")
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     router.push(

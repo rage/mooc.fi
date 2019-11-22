@@ -26,7 +26,7 @@ interface CourseProps {
 const Course = (props: CourseProps) => {
   const { admin } = props
 
-  const slug = useQueryParameter("id") ? useQueryParameter("id") : ""
+  const slug = useQueryParameter("id")
 
   if (!admin) {
     return <AdminError />
