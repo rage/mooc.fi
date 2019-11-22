@@ -8,7 +8,7 @@ import { WideContainer } from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import LanguageContext from "/contexes/LanguageContext"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
-import Router, { withRouter, SingletonRouter } from "next/router"
+import { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
@@ -50,13 +50,12 @@ const Completions = (props: CompletionsProps) => {
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes
-    // FIXME: breaks back navigation a bit - replace with meddling with window.history?
 
     const href = `/${language}/courses/${slug}/completions?language=${
       (event.target as HTMLInputElement).value
     }`
     changeLng((event.target as HTMLInputElement).value as string)
-    router.push(Router.pathname, href, { shallow: true })
+    router.replace(router.pathname, href, { shallow: true })
   }
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
