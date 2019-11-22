@@ -13,6 +13,7 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -32,14 +33,9 @@ const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)
 
-  const slug =
-    router?.query?.id && typeof router.query.id === "string"
-      ? router.query.id
-      : ""
-  const lng =
-    router?.query?.language && typeof router.query.language === "string"
-      ? router.query.language
-      : ""
+  const slug = useQueryParameter("id")
+
+  const lng = useQueryParameter("lng")
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     router.push(
