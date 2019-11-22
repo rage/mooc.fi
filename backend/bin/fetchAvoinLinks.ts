@@ -13,7 +13,7 @@ const prisma: Prisma = new Prisma()
 const fetch = async () => {
   const avoinObjects: OpenUniversityRegistrationLink[] = await prisma.openUniversityRegistrationLinks()
 
-  avoinObjects.forEach(async p => {
+  for (const p of avoinObjects) {
     console.log("Processing link", p.course_code, p.language)
     const res = await getInfoWithCourseCode(p.course_code).catch(error => {
       console.log(error)
@@ -44,7 +44,7 @@ const fetch = async () => {
       return
     }
 
-    console.log(`Best link found was: ${bestLink}`)
+    console.log(`Best link found was: ${JSON.stringify(bestLink)}`)
 
     const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
 
@@ -59,7 +59,7 @@ const fetch = async () => {
         stop_date: bestLink?.stopDate?.toJSDate?.(),
       },
     })
-  })
+  }
 }
 
 const getInfoWithCourseCode = async (
