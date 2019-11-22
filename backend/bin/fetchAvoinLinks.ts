@@ -4,6 +4,7 @@ import {
 } from "../generated/prisma-client"
 import axios from "axios"
 import { DateTime } from "luxon"
+import { maxBy } from "lodash"
 
 require("dotenv-safe").config()
 
@@ -22,59 +23,60 @@ const fetch = async () => {
 
     const now: DateTime = DateTime.fromJSDate(new Date())
 
-    let latestLink: Link | null = null // FIXME: init with actual link with earliest dates possible
-
-    res.forEach(k => {
-      const linkStartDate: DateTime = DateTime.fromISO(k.alkupvm)
-      const linkStopDate: DateTime = DateTime.fromISO(k.loppupvm)
-
-      if (linkStartDate < now) {
-        if (linkStopDate > now && linkStopDate > (latestLink?.stopDate ?? "")) {
-          latestLink = {
-            link: k.oodi_id,
-            stopDate: linkStopDate,
-            startTime: linkStartDate,
-          }
-        }
-      }
+    const alternatives = res.map(data => {
+      const linkStartDate: DateTime = DateTime.fromISO(data.alkupvm)
+      const linkStopDate: DateTime = DateTime.fromISO(data.loppupvm)
+      return {
+        link: data.oodi_id,
+        stopDate: linkStopDate,
+        startTime: linkStartDate,
+      } as Link
     })
 
-    const url =
-      !latestLink || (latestLink && !latestLink?.link)
-        ? null
-        : "https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=" +
-          latestLink?.link
+    let openLinks = alternatives.filter(
+      o => o.startTime < now && o.stopDate > now,
+    )
 
-    // FIXME: types
+    const bestLink = maxBy(openLinks, o => o.stopDate)
 
-    if (
-      !(
-        url == null &&
-        DateTime.fromISO(p.start_date ?? "") < now &&
-        DateTime.fromISO(p.stop_date ?? "") > now
-      )
-    ) {
-      console.log("Updating link to", url)
-      await prisma.updateOpenUniversityRegistrationLink({
-        where: {
-          id: p.id,
-        },
-        data: {
-          link: url,
-          start_date: latestLink?.startTime?.toJSDate?.(),
-          stop_date: latestLink?.stopDate?.toJSDate?.(),
-        },
-      })
+    if (!bestLink) {
+      console.log("Did not find any open links")
+      return
     }
+
+    console.log(`Best link found was: ${bestLink}`)
+
+    const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
+
+    console.log("Updating link to", url)
+    await prisma.updateOpenUniversityRegistrationLink({
+      where: {
+        id: p.id,
+      },
+      data: {
+        link: url,
+        start_date: bestLink?.startTime?.toJSDate?.(),
+        stop_date: bestLink?.stopDate?.toJSDate?.(),
+      },
+    })
   })
 }
 
-const getInfoWithCourseCode = async (course_code: string): Promise<any[]> => {
+const getInfoWithCourseCode = async (
+  course_code: string,
+): Promise<AvoinLinkData[]> => {
   const url = process.env.AVOIN_COURSE_URL + course_code
   const res = await axios.get(url, {
     headers: { Authorized: "Basic " + process.env.AVOIN_TOKEN },
   })
   return await res.data
+}
+
+interface AvoinLinkData {
+  oodi_id: string
+  url: string
+  alkupvm: string
+  loppupvm: string
 }
 
 interface Link {
