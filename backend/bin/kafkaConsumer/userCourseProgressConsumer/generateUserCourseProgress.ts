@@ -9,7 +9,7 @@ import {
   UserCourseSettings,
   EmailTemplate,
 } from "../../../generated/prisma-client"
-const nodemailer = require("nodemailer")
+import * as nodemailer from "nodemailer"
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
 const email_pass = process.env.SMTP_PASS
