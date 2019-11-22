@@ -6,6 +6,7 @@ import checkAccess from "../../accessControl"
 const EmailTemplate = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("email_template", {
     type: "EmailTemplate",
+    nullable: true,
     args: {
       id: idArg(),
     },
@@ -20,10 +21,10 @@ const EmailTemplate = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const EmaiLTemplates = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const EmailTemplates = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("email_templates", {
     type: "EmailTemplate",
-    resolve: (_, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.emailTemplates()
     },
@@ -31,7 +32,7 @@ const EmaiLTemplates = (t: PrismaObjectDefinitionBlock<"Query">) => {
 }
 
 const addEmailTemplateQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
-  EmaiLTemplates(t)
+  EmailTemplates(t)
   EmailTemplate(t)
 }
 

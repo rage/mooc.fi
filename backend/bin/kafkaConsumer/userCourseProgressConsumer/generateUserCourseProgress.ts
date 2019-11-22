@@ -77,7 +77,9 @@ export const generateUserCourseProgress = async (
           userCourseSettings != null ? userCourseSettings.language : "unknown",
       })
       const template = await prisma.course({ id: course.id }).completion_email()
-      if (template) sendMail(user, template)
+      if (template) {
+        sendMail(user, template)
+      }
     }
   }
   await prisma.updateUserCourseProgress({

@@ -15,7 +15,6 @@ const addEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
       const { name, html_body, txt_body, title } = args
-      console.log(args)
       const prisma: Prisma = ctx.prisma
       return prisma.createEmailTemplate({
         name,
