@@ -13,6 +13,7 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -28,18 +29,12 @@ interface CompletionsProps {
   router: SingletonRouter
 }
 
-const languageMap: Record<string, string> = {
-  fi: "fi_FI",
-  en: "en_US",
-  se: "se_SE",
-}
-
 const Completions = (props: CompletionsProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)
   const [lng, changeLng] = useState(
     (router?.query?.language as string) ??
-      languageMap[language as string] ??
+      mapNextLanguageToLocaleCode(language as string) ??
       "",
   )
 
