@@ -11,5 +11,5 @@ export function useQueryParameter(parameter: string) {
   if (typeof checkingParameter === "string") {
     return checkingParameter
   }
-  return checkingParameter.slice(-1)[0]
+  return checkingParameter[checkingParameter.length - 1]
 }
