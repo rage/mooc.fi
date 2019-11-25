@@ -16,5 +16,6 @@
     "course_completion_not_found_title": "Prestation hittas ej",
     "course_completion_not_found": "Prestation hittas ej. Är du inloggad med rätt inloggningsuppgifter?",
     "see_completion_link":"När din studieprestation registrerats har du möjligheten att granska information gällande prestationen i Koski-tjänsten: ",
-    "see_completion_NB":"OBS! Studieprestationen överförs till Koski-tjänsten med fördröjning efter att den skrivits in i Helsingfors universitets studieregister." 
+    "see_completion_NB":"OBS! Studieprestationen överförs till Koski-tjänsten med fördröjning efter att den skrivits in i Helsingfors universitets studieregister.",
+    "open_university_registration_not_open": "Registreringen till Öppna universitetet är för tillfället inte öppen för kursen"
 }
