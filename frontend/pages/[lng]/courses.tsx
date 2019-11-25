@@ -16,7 +16,11 @@ const Background = styled.section`
   background-color: #61baad;
 `
 
-const Courses = (admin: boolean) => {
+interface CourseProps {
+  admin: boolean
+}
+
+const Courses = ({ admin }: CourseProps) => {
   const { loading, error, data } = useQuery<AllEditorCourses>(
     AllEditorCoursesQuery,
   )

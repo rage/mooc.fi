@@ -1,8 +1,8 @@
 import React from "react"
 import initApollo from "./init-apollo"
 import Head from "next/head"
-import { getDataFromTree /*, getMarkupFromTree */ } from "@apollo/react-ssr"
-// import { renderToString } from "react-dom/server"
+import { getMarkupFromTree } from "@apollo/react-ssr"
+import { renderToString } from "react-dom/server"
 import { NextPageContext as NextContext } from "next"
 import { ApolloClient, NormalizedCacheObject, gql } from "apollo-boost"
 import { AppContext } from "next/app"
@@ -33,7 +33,12 @@ const withApolloClient = (App: any) => {
     apolloClient: ApolloClient<NormalizedCacheObject>
 
     static async getInitialProps(appComponentContext: AppContext) {
-      const { Component, router } = appComponentContext
+      const {
+        Component,
+        router,
+        AppTree,
+        ctx: { res },
+      } = appComponentContext
 
       let appProps = {}
       if (App.getInitialProps) {
@@ -48,22 +53,28 @@ const withApolloClient = (App: any) => {
 
       const { data } = await apollo.query({ query: UserDetailQuery })
 
+      if (res?.finished) {
+        return {}
+      }
+
       // @ts-ignore
       appProps.currentUser = data.currentUser
 
       if (!process.browser) {
         try {
           // getDataFromTree is using getMarkupFromTree anyway?
-          await Promise.all([
-            getDataFromTree(
-              <App
+          await getMarkupFromTree({
+            renderFunction: renderToString,
+            tree: (
+              <AppTree
+                pageProps={{}}
                 {...appProps}
                 Component={Component}
                 router={router}
                 apollo={apollo}
-              />,
+              />
             ),
-          ])
+          })
           // Run all GraphQL queries
         } catch (error) {
           // Prevent Apollo Client GraphQL errors from crashing SSR.
@@ -74,9 +85,7 @@ const withApolloClient = (App: any) => {
 
         // getDataFromTree does not call componentWillUnmount
         // head side effect therefore need to be cleared manually
-        if (!process.browser) {
-          Head.rewind()
-        }
+        Head.rewind()
       }
 
       // Extract query data from the Apollo store
