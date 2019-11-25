@@ -15,6 +15,12 @@ const fetch = async () => {
 
   for (const p of avoinObjects) {
     console.log("Processing link", p.course_code, p.language)
+    if (!p.course_code) {
+      console.log(
+        "Since this link has no course code, I won't try to fetch new links.",
+      )
+      continue
+    }
     const res = await getInfoWithCourseCode(p.course_code).catch(error => {
       console.log(error)
       throw error
