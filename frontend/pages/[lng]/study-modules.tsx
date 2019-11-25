@@ -13,7 +13,11 @@ import ModuleGrid from "/components/ModuleGrid"
 import { H1NoBackground } from "/components/Text/headers"
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 
-const StudyModules = (admin: boolean) => {
+interface StudyModuleProps {
+  admin: boolean
+}
+
+const StudyModules = ({ admin }: StudyModuleProps) => {
   const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
     AllEditorModulesQuery,
   )

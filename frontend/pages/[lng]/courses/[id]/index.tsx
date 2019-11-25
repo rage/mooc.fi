@@ -28,20 +28,20 @@ const Course = (props: CourseProps) => {
 
   const slug = useQueryParameter("id")
 
-  if (!admin) {
-    return <AdminError />
-  }
-
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },
   })
+
+  if (!admin) {
+    return <AdminError />
+  }
 
   //TODO add circular progress
   if (loading) {
     return null
   }
   //TODO fix error message
-  if (error || !data) {
+  if (error || !data?.course) {
     return <p>Error has occurred</p>
   }
 

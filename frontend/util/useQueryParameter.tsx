@@ -4,6 +4,7 @@ export function useQueryParameter(parameter: string) {
   const router = useRouter()
 
   if (!router) {
+    console.log("no router")
     return ""
   }
 

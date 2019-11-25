@@ -44,7 +44,7 @@ const Points = (props: CompletionsProps) => {
     return null
   }
   //TODO fix error message
-  if (error || !data) {
+  if (error || !data?.course) {
     return <p>Error has occurred</p>
   }
 
