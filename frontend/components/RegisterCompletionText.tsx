@@ -43,6 +43,8 @@ function LinkButton(props: any) {
         href={props.link}
         {...props}
         role="link"
+        target="_blank"
+        rel="noopener noreferrer"
       >
         {t("link")}
       </Button>
