@@ -1,5 +1,5 @@
 import React from "react"
-import { Grid, Button } from "@material-ui/core"
+import { Grid, Typography } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
@@ -7,19 +7,18 @@ import styled from "styled-components"
 import { mime } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
 import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
-import { CardTitle } from "/components/Text/headers"
+import { ClicableDiv } from "/components/Surfaces/ClicableCard"
+import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
-const Base = styled.div`
-  position: relative;
+const Base = styled(ClicableDiv)`
   width: 100%;
   overflow: hidden;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   height: 200px;
   @media (min-width: 720px) {
     height: 300px;
   }
 `
+
 const ImageBackground = styled.span`
   position: absolute;
   left: 0;
@@ -61,6 +60,26 @@ const ContentArea = styled.span`
   padding-top: 1em;
 `
 
+const NaviCardTitle = styled(Typography)`
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  max-width: 60%;
+  line-height: 1.2em;
+  @media (min-width: 320px) {
+    font-size: 26px;
+  }
+  @media (min-width: 420px) {
+    font-size: 32px;
+  }
+  @media (min-width: 720px) {
+    font-size: 46px;
+  }
+  @media (min-width: 720px) {
+    font-size: 48px;
+  }
+  flex: 1;
+`
+
 function ModuleCard({
   module,
 }: {
@@ -94,26 +113,34 @@ function ModuleCard({
         )}
         <ImageCover />
         <ContentArea>
-          <CardTitle component="h2" variant="h3" align="left">
+          <NaviCardTitle align="left">
             {module ? module.name : "New module"}
-          </CardTitle>
+          </NaviCardTitle>
 
           {module ? (
             <LangLink href={`/study-modules/${module.slug}/edit`}>
               <a>
-                <Button variant="contained" color="secondary" fullWidth>
+                <ButtonWithPaddingAndMargin
+                  variant="contained"
+                  color="secondary"
+                  style={{ width: "68%" }}
+                >
                   <EditIcon />
                   Edit
-                </Button>
+                </ButtonWithPaddingAndMargin>
               </a>
             </LangLink>
           ) : (
             <LangLink href={`/study-modules/new`}>
               <a>
-                <Button variant="contained" color="secondary" fullWidth>
+                <ButtonWithPaddingAndMargin
+                  variant="contained"
+                  color="secondary"
+                  style={{ width: "68%" }}
+                >
                   <AddIcon />
                   Create
-                </Button>
+                </ButtonWithPaddingAndMargin>
               </a>
             </LangLink>
           )}
