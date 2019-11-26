@@ -65,13 +65,27 @@ const Completion = prismaObjectType({
           const course: Course = await ctx.prisma
             .completion({ id: parent.id })
             .course()
-          const avoinLinks = await ctx.prisma.openUniversityRegistrationLinks({
-            where: {
+
+          let filter
+          if (
+            !parent.completion_language ||
+            parent.completion_language === "unknown"
+          ) {
+            filter = {
+              course: course,
+            }
+          } else {
+            filter = {
               course: course,
               language: parent.completion_language,
-            },
+            }
+          }
+          const avoinLinks = await ctx.prisma.openUniversityRegistrationLinks({
+            where: filter,
           })
-          if (avoinLinks.length < 1) return null
+          if (avoinLinks.length < 1) {
+            return null
+          }
           return avoinLinks[0].link as NexusGenRootTypes["String"]
         },
       })

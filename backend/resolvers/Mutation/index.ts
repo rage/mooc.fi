@@ -18,3 +18,4 @@ export { default as addStudyModuleTranslationMutations } from "./studyModuleTran
 export { default as addUserCourseProgressMutations } from "./userCourseProgress"
 export { default as addUserCourseServiceProgressMutations } from "./userCourseServiceProgress"
 export { default as addUserOrganizationMutations } from "./userOrganization"
+export { default as addEmailTemplateMutations } from "./EmailTemplate"

@@ -89,17 +89,25 @@ const originalGetInitialProps = MyApp.getInitialProps
 
 function createPath(originalUrl) {
   let url = ""
-  if (originalUrl === "/") {
+  /*   if (originalUrl === "/") {
     url = "/en/"
-  } else if (originalUrl.match(/^\/en\/?$/)) {
+  } else  */
+  if (originalUrl.match(/^\/en\/?$/)) {
     url = "/"
+  } else if (originalUrl.startsWith("/en")) {
+    url = originalUrl.replace("/en/", "/fi/")
+  } else if (originalUrl.startsWith("/se")) {
+    url = originalUrl.replace("/se/", "/fi/")
+  } else if (originalUrl.startsWith("/fi")) {
+    url = originalUrl.replace("/fi/", "/en/")
   } else {
-    originalUrl.startsWith("/en")
-      ? (url = originalUrl.replace("/en/", "/fi/"))
+    url = "/en" + originalUrl
+  }
+  /*       ? (url = originalUrl.replace("/en/", "/fi/"))
       : (url = originalUrl.replace("/fi/", "/en/"))
     originalUrl.startsWith("/se") && (url = originalUrl.replace("/se/", "/fi/"))
   }
-
+ */
   return url
 }
 
@@ -108,7 +116,7 @@ MyApp.getInitialProps = async arg => {
   let lng = "fi"
   let url = "/"
   let hrefUrl = "/"
-  if (typeof window !== undefined) {
+  if (typeof window !== "undefined") {
     if (["fi", "en", "se"].includes(ctx?.asPath?.substring(1, 3) ?? "")) {
       lng = ctx.asPath.substring(1, 3)
     }
@@ -118,13 +126,17 @@ MyApp.getInitialProps = async arg => {
   } else {
     lng = ctx.query.lng || "fi"
     url = ctx.req.originalUrl
-    hrefUrl = ctx.req.path
+    hrefUrl = ctx.pathname //.req.path
   }
 
   let originalProps = {}
 
   if (originalGetInitialProps) {
     originalProps = (await originalGetInitialProps(arg)) || {}
+  }
+
+  if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {
+    hrefUrl = `/[lng]${hrefUrl}`
   }
 
   return {

@@ -52,6 +52,7 @@ type Course @db(name: "course") {
   participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")     
   automatic_completions: Boolean @default(value: false)
   points_needed: Int
+  completion_email: EmailTemplate @relation(name: "CourseCompletionEmail")
   course_variants: [CourseVariant!]! @relation(name: "CourseToCourseVariant", onDelete: CASCADE)
 }
 
@@ -316,4 +317,12 @@ type CourseOrganization @db(name: "course_organization") {
   creator: Boolean
 }
 
-
+type EmailTemplate @db(name: "email_template") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  name: String
+  txt_body: String
+  html_body: String
+  title: String
+}

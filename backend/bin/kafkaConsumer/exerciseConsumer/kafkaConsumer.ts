@@ -1,6 +1,6 @@
 require("dotenv-safe").config()
 import { prisma } from "../../../generated/prisma-client"
-import { Mutex } from "await-semaphore"
+import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
