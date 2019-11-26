@@ -16,6 +16,7 @@ import LangLink from "/components/LangLink"
 import LanguageContext from "/contexes/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -47,13 +48,12 @@ const ErrorContainer = styled(Paper)`
 interface EditStudyModuleProps {
   router: SingletonRouter
   admin: boolean
-  nameSpacesRequired: string[]
 }
 
 const EditStudyModule = (props: EditStudyModuleProps) => {
   const { admin, router } = props
   const { language } = useContext(LanguageContext)
-  const { id } = router.query
+  const id = useQueryParameter("id")
 
   let redirectTimeout: number | null = null
 

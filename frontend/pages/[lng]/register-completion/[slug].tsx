@@ -10,11 +10,11 @@ import RegisterCompletionText from "/components/RegisterCompletionText"
 import ImportantNotice from "/components/ImportantNotice"
 import Container from "/components/Container"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
-import { withRouter } from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
 import { H1NoBackground } from "/components/Text/headers"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -81,12 +81,11 @@ export const UserOverViewQuery = gql`
 `
 
 interface RegisterCompletionPageProps {
-  router: any
   slug?: string | string[]
 }
 
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
-  const { router, slug } = props
+  const { slug } = props
   const classes = useStyles()
   const { language } = useContext(LanguageContext)
 
@@ -105,7 +104,7 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
     return <div>Loading</div>
   }
 
-  const courseSlug = slug || router.query.slug
+  const courseSlug = slug || useQueryParameter("slug")
 
   const completion =
     data?.currentUser?.completions?.find(c => c.course.slug == courseSlug) ??
@@ -134,8 +133,14 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
     return (
       <div>
         <H1NoBackground component="h1" variant="h1" align="center">
-          Open University registration is not open at the moment.
+          {t("title")}
         </H1NoBackground>
+        <Paper className={classes.paper}>
+          <Typography variant="body1" paragraph>
+            {t("open_university_registration_not_open")}{" "}
+            {completion.course.name} {completion.completion_language}.
+          </Typography>
+        </Paper>
       </div>
     )
   }
@@ -202,4 +207,4 @@ RegisterCompletion.getInitialProps = function(context: NextContext) {
   return {}
 }
 
-export default withRouter(RegisterCompletion)
+export default RegisterCompletion

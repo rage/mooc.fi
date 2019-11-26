@@ -1,11 +1,20 @@
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 import {
   UserCourseProgress,
   Prisma,
   Course,
   User,
   UserCourseSettings,
+  EmailTemplate,
 } from "../../../generated/prisma-client"
-
+import * as nodemailer from "nodemailer"
+const email_host = process.env.SMTP_HOST
+const email_user = process.env.SMTP_USER
+const email_pass = process.env.SMTP_PASS
+const email_port = process.env.SMTP_PORT
+const email_from = process.env.SMTP_FROM
 export const generateUserCourseProgress = async (
   userCourseProgress: UserCourseProgress,
   prisma: Prisma,
@@ -67,6 +76,10 @@ export const generateUserCourseProgress = async (
         completion_language:
           userCourseSettings != null ? userCourseSettings.language : "unknown",
       })
+      const template = await prisma.course({ id: course.id }).completion_email()
+      if (template) {
+        sendMail(user, template)
+      }
     }
   }
   await prisma.updateUserCourseProgress({
@@ -77,4 +90,28 @@ export const generateUserCourseProgress = async (
       n_points: total_n_points,
     },
   })
+}
+
+async function sendMail(user: User, template: EmailTemplate) {
+  //const { htmlTemplate, textTemplate } = getTemplates(student, title);
+  let transporter = nodemailer.createTransport({
+    host: email_host,
+    port: email_port,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: email_user, // generated ethereal user
+      pass: email_pass, // generated ethereal password
+    },
+  })
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: email_from, // sender address
+    to: user.email, // list of receivers
+    subject: template.title, // Subject line
+    text: template.txt_body, // plain text body
+    html: template.html_body, // html body
+  })
+  console.log("Message sent: %s", info.messageId)
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info))
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }

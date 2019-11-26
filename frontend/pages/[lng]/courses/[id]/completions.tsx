@@ -14,6 +14,7 @@ import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -38,10 +39,7 @@ const Completions = (props: CompletionsProps) => {
       "",
   )
 
-  const slug =
-    router?.query?.id && typeof router.query.id === "string"
-      ? router.query.id
-      : ""
+  const slug = useQueryParameter("id")
 
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes

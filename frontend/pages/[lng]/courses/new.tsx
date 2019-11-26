@@ -4,7 +4,6 @@ import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
-import { withRouter, SingletonRouter } from "next/router"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import CourseEdit from "/components/Dashboard/Editor/Course"
@@ -22,7 +21,6 @@ export const StudyModuleQuery = gql`
 `
 
 interface NewCourseProps {
-  router: SingletonRouter
   admin: boolean
   nameSpacesRequired: string[]
 }
@@ -66,4 +64,4 @@ NewCourse.getInitialProps = function(context: NextContext) {
   }
 }
 
-export default withRouter(NewCourse)
+export default NewCourse
