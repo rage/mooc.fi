@@ -6,7 +6,18 @@ import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import { H2Background } from "/components/Text/headers"
+import styled from "styled-components"
 
+const NaviArea = styled.section`
+  margin-bottom: 5em;
+  margin-top: 5em;
+`
+
+const NaviTitle = styled(H2Background)`
+  margin-top: 1.3em;
+  margin-bottom: 1em;
+  border-bottom: 5px solid #00281c;
+`
 const ModuleNavi = ({
   modules,
   loading,
@@ -18,16 +29,16 @@ const ModuleNavi = ({
   const t = getHomeTranslator(lng.language)
 
   return (
-    <section style={{ marginBottom: "5em" }}>
-      <H2Background
+    <NaviArea>
+      <NaviTitle
         component="h2"
         variant="h2"
         align="center"
-        fontcolor="#ffffff"
-        titlebackground="rgba(34, 141, 189)"
+        fontcolor="#00281C"
+        titlebackground="#ffffff"
       >
         {t("modulesTitle")}
-      </H2Background>
+      </NaviTitle>
       <Container>
         <Grid container spacing={5}>
           {loading ? (
@@ -42,7 +53,7 @@ const ModuleNavi = ({
           )}
         </Grid>
       </Container>
-    </section>
+    </NaviArea>
   )
 }
 
