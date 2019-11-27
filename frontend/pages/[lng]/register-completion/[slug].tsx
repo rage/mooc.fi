@@ -133,8 +133,14 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
     return (
       <div>
         <H1NoBackground component="h1" variant="h1" align="center">
-          Open University registration is not open at the moment.
+          {t("title")}
         </H1NoBackground>
+        <Paper className={classes.paper}>
+          <Typography variant="body1" paragraph>
+            {t("open_university_registration_not_open")}{" "}
+            {completion.course.name} {completion.completion_language}.
+          </Typography>
+        </Paper>
       </div>
     )
   }
