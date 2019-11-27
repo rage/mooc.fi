@@ -16,7 +16,7 @@ spec:
     - points.mooc.fi
     - mooc.fi
     - www.mooc.fi
-    secretName: quizzes-moocfi-cert-secret
+    secretName: moocfi-cert-secret
   rules:
     - host: points.mooc.fi
       http:
