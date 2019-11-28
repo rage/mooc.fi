@@ -17,7 +17,7 @@ import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
-
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
     course(slug: $slug) {
@@ -67,9 +67,9 @@ const Completions = (props: CompletionsProps) => {
   if (loading || !data) {
     return <Spinner />
   }
-  //TODO fix error message
+
   if (error) {
-    return <p>Error has occurred</p>
+    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
   }
 
   if (!data.course) {
