@@ -8,6 +8,7 @@ import { ProfileUserOverView_currentUser_completions } from "/static/types/gener
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 import { ClicableDiv } from "/components/Surfaces/ClicableCard"
+import { mapLangToLanguage } from "/components/DataFormatFunctions"
 
 const Background = styled(ClicableDiv)`
   display: flex;
@@ -39,12 +40,6 @@ interface CourseCardProps {
   completion: ProfileUserOverView_currentUser_completions
 }
 
-const MapLangToLanguage: Record<string, string> = {
-  en_US: "English",
-  fi_FI: "Suomi",
-  sv_SE: "Swedish",
-}
-
 function formatDateTime(date: string) {
   const dateToFormat = new Date(date)
   const formattedDate = dateToFormat.toUTCString()
@@ -61,7 +56,7 @@ function CompletedCourseCard(props: CourseCardProps) {
   const t = getProfileTranslator(lng.language)
 
   const humanReadableLanguage =
-    MapLangToLanguage[completion?.completion_language ?? ""] ||
+    mapLangToLanguage[completion?.completion_language ?? ""] ||
     completion?.completion_language ||
     "no language available"
 

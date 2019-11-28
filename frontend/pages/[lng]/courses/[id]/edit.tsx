@@ -89,9 +89,6 @@ const EditCourse = (props: EditCourseProps) => {
   const { admin, router, slug } = props
   const { language } = useContext(LanguageContext)
 
-  if (!admin) {
-    return <AdminError />
-  }
   let redirectTimeout: number | null = null
 
   const {
@@ -107,13 +104,22 @@ const EditCourse = (props: EditCourseProps) => {
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
+  if (!admin) {
+    return <AdminError />
+  }
+
   if (courseError || studyModulesError) {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>
   }
 
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (!courseLoading && !courseData?.course && typeof window !== "undefined") {
+  if (
+    !courseLoading &&
+    courseData &&
+    !courseData?.course &&
+    typeof window !== "undefined"
+  ) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 
