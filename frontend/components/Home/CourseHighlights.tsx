@@ -11,11 +11,10 @@ interface RootProps {
 }
 
 const Root = styled.div<RootProps>`
-  margin-top: 1em;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-bottom: 5em;
+
   padding-bottom: 4em;
   position: relative;
   ${props => `background-color: ${props.backgroundColor};`}
@@ -65,7 +64,11 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
           {title}
         </H2Background>
         {subtitle && (
-          <SubtitleBackground component="div" variant="subtitle1">
+          <SubtitleBackground
+            component="div"
+            variant="subtitle1"
+            fontcolor={fontColor}
+          >
             {subtitle}
           </SubtitleBackground>
         )}
