@@ -9,5 +9,6 @@
     "password": "Lösenord",
     "username": "E-post eller användarnamn",
     "skiplink": "till huvudinnehållet",
-    "signUp":"Create a new account"
+    "signUp":"Create a new account",
+    "errorTitle": "Det har skett ett fel"
 }
