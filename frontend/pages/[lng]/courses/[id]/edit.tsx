@@ -114,7 +114,12 @@ const EditCourse = (props: EditCourseProps) => {
 
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (!courseLoading && !courseData?.course && typeof window !== "undefined") {
+  if (
+    !courseLoading &&
+    courseData &&
+    !courseData?.course &&
+    typeof window !== "undefined"
+  ) {
     redirectTimeout = setTimeout(() => router.push(listLink), 5000)
   }
 

@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
@@ -13,7 +13,10 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
+import Spinner from "/components/Spinner"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -31,36 +34,51 @@ interface CompletionsProps {
 
 const Completions = ({ admin, router }: CompletionsProps) => {
   const { language } = useContext(LanguageContext)
+  const [lng, changeLng] = useState(
+    (router?.query?.language as string) ??
+      mapNextLanguageToLocaleCode(language as string) ??
+      "",
+  )
 
   const slug = useQueryParameter("id")
 
-  const lng = useQueryParameter("lng")
-
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    router.push(
-      `/${language}/courses/${slug}/completions?language=${
-        (event.target as HTMLInputElement).value
-      }`,
-    )
+    // prevents reloading page, URL changes
+
+    const href = `/${language}/courses/${slug}/completions?language=${
+      (event.target as HTMLInputElement).value
+    }`
+    changeLng((event.target as HTMLInputElement).value as string)
+    router.replace(router.pathname, href, { shallow: true })
   }
 
-  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
-    variables: { slug: slug },
-  })
+  const { data, loading, error } = useQuery<CourseDetailsData>(
+    CourseDetailsFromSlugQuery,
+    {
+      variables: { slug: slug },
+    },
+  )
 
   if (!admin) {
     return <AdminError />
   }
 
   //TODO add circular progress
-  if (loading) {
-    return null
+  if (loading || !data) {
+    return <Spinner />
   }
   //TODO fix error message
-  if (error || !data?.course) {
+  if (error) {
     return <p>Error has occurred</p>
   }
 
+  if (!data.course) {
+    return (
+      <>
+        <p>Course not found. Go back?</p>
+      </>
+    )
+  }
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardTabBar slug={slug} selectedValue={1} />
