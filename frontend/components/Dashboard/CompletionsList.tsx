@@ -10,6 +10,7 @@ import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import { useQuery } from "@apollo/react-hooks"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions(
@@ -157,9 +158,11 @@ const CompletionsList = () => {
     return <CircularProgress color="secondary" />
   }
   if (error) {
-    ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-    </div>
+    return (
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(error, undefined, 2)}
+      />
+    )
   }
 
   if (!data) {
