@@ -9,6 +9,8 @@ import { useQuery } from "@apollo/react-hooks"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
+import { StudyModules as StudyModuleData } from "/static/types/generated/StudyModules"
+import Spinner from "/components/Spinner"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -28,7 +30,7 @@ interface NewCourseProps {
 const NewCourse = (props: NewCourseProps) => {
   const { admin } = props
 
-  const { data, loading, error } = useQuery(StudyModuleQuery)
+  const { data, loading, error } = useQuery<StudyModuleData>(StudyModuleQuery)
 
   if (!admin) {
     return <AdminError />
@@ -36,6 +38,10 @@ const NewCourse = (props: NewCourseProps) => {
 
   if (error) {
     return <div>{JSON.stringify(error)}</div>
+  }
+
+  if (loading || !data) {
+    return <Spinner />
   }
 
   return (

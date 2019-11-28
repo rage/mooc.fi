@@ -20,6 +20,13 @@ export interface AllCourses_courses_study_modules {
   id: any
 }
 
+export interface AllCourses_courses_course_translations {
+  __typename: "CourseTranslation"
+  id: any
+  language: string
+  name: string
+}
+
 export interface AllCourses_courses {
   __typename: "Course"
   id: any
@@ -35,6 +42,7 @@ export interface AllCourses_courses {
   description: string
   link: string
   study_modules: AllCourses_courses_study_modules[] | null
+  course_translations: AllCourses_courses_course_translations[] | null
 }
 
 export interface AllCourses {

@@ -10,6 +10,8 @@ import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
+import Spinner from "/components/Spinner"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -32,19 +34,29 @@ const Course = (props: CourseProps) => {
     return <AdminError />
   }
 
-  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
-    variables: { slug: slug },
-  })
+  const { data, loading, error } = useQuery<CourseDetailsData>(
+    CourseDetailsFromSlugQuery,
+    {
+      variables: { slug: slug },
+    },
+  )
 
   //TODO add circular progress
-  if (loading) {
-    return null
+  if (loading || !data) {
+    return <Spinner />
   }
   //TODO fix error message
-  if (error || !data) {
+  if (error) {
     return <p>Error has occurred</p>
   }
 
+  if (!data.course) {
+    return (
+      <>
+        <p>Course not found. Go back?</p>
+      </>
+    )
+  }
   return (
     <section>
       <DashboardTabBar slug={slug} selectedValue={0} />
