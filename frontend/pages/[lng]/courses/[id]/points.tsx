@@ -12,6 +12,8 @@ import { gql } from "apollo-boost"
 import PointsExportButton from "/components/Dashboard/PointsExportButton"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
+import Spinner from "/components/Spinner"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -30,23 +32,32 @@ const Points = ({ admin }: CompletionsProps) => {
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
-  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
-    variables: { slug: slug },
-  })
+  const { data, loading, error } = useQuery<CourseDetailsData>(
+    CourseDetailsFromSlugQuery,
+    {
+      variables: { slug: slug },
+    },
+  )
 
   if (!admin) {
     return <AdminError />
   }
 
-  //TODO add circular progress
-  if (loading) {
-    return null
+  if (loading || !data) {
+    return <Spinner />
   }
-  //TODO fix error message
-  if (error || !data?.course) {
+
+  if (error) {
     return <p>Error has occurred</p>
   }
 
+  if (!data.course) {
+    return (
+      <>
+        <p>Could not find the course. Go back?</p>
+      </>
+    )
+  }
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardTabBar slug={slug} selectedValue={2} />

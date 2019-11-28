@@ -7,6 +7,7 @@ import { NextPageContext as NextContext } from "next"
 import { ApolloClient, NormalizedCacheObject, gql } from "apollo-boost"
 import { AppContext } from "next/app"
 import { getAccessToken } from "/lib/authentication"
+import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -26,6 +27,8 @@ interface Props {
   apollo: ApolloClient<NormalizedCacheObject>
 }
 
+let currentUserCache: Record<string, UserOverView_currentUser> = {}
+
 const withApolloClient = (App: any) => {
   return class Apollo extends React.Component {
     static displayName = "withApollo(App)"
@@ -40,7 +43,7 @@ const withApolloClient = (App: any) => {
         ctx: { res },
       } = appComponentContext
 
-      let appProps = {}
+      let appProps: any = {}
       if (App.getInitialProps) {
         appProps = await App.getInitialProps(appComponentContext)
       }
@@ -51,14 +54,18 @@ const withApolloClient = (App: any) => {
 
       const apollo = initApollo(undefined, accessToken)
 
-      const { data } = await apollo.query({ query: UserDetailQuery })
+      // prevent repeating useroverview queries
+      if (accessToken && !currentUserCache[accessToken]) {
+        const { data } = await apollo.query({ query: UserDetailQuery })
+        currentUserCache[accessToken] = data.currentUser
+      }
 
       if (res?.finished) {
         return {}
       }
 
-      // @ts-ignore
-      appProps.currentUser = data.currentUser
+      // should reset to undefined when logged out
+      appProps.currentUser = currentUserCache[accessToken ?? ""]
 
       if (!process.browser) {
         try {

@@ -22,7 +22,7 @@ function NaviCardList() {
 
   return (
     <Container>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} style={{ marginBottom: "3em" }}>
         {items.map(item => (
           <NaviCard
             key={`navi-${item.title}`}

@@ -3,11 +3,11 @@ import Link, { LinkProps } from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { parse, format } from "url"
 
-interface LangLinkProps extends LinkProps {
+/* interface LangLinkProps extends LinkProps {
   children: JSX.Element | JSX.Element[]
-}
+} */
 
-const LangLink = (props: LangLinkProps): any => {
+const LangLink: React.FC<LinkProps> = (props): any => {
   const { as: _as, href: _href, children } = props
   const { language } = useContext(LanguageContext)
   const isFi = language === "fi"
@@ -19,19 +19,23 @@ const LangLink = (props: LangLinkProps): any => {
   const isOutsideLink = parsedAs.startsWith("http")
 
   if (isOutsideLink) {
-    if (children) {
-      const _children = React.Children.map(children, (child, idx) => {
-        if (idx === 0) {
-          // @ts-ignore
-          if (child?.type?.target === "a") {
-            return React.cloneElement(child, { href: parsedAs })
+    if (children && Array.isArray(children)) {
+      const _children: React.ReactNode = React.Children.map(
+        children,
+        (child, idx) => {
+          if (idx === 0) {
+            // @ts-ignore
+            if (child?.type?.target === "a") {
+              // @ts-ignore
+              return React.cloneElement(child, { href: parsedAs })
+            }
+            console.warn(
+              "You're trying to link outside the site with a LangLink but you're not providing an <a> tag - just use a regular link or pass a link as the first child!",
+            )
           }
-          console.warn(
-            "You're trying to link outside the site with a LangLink but you're not providing an <a> tag - just use a regular link or pass a link as the first child!",
-          )
-        }
-        return child
-      })
+          return child
+        },
+      )
 
       return _children
     }

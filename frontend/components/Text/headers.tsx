@@ -47,17 +47,25 @@ export const H2Background = styled(Typography)<TitleProps>`
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 1rem;
   display: table;
+  font-family: Roboto;
+  font-weight: 550;
 
   ${props =>
     ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
 `
-export const SubtitleBackground = styled(Typography)`
+interface SubTitleProps {
+  fontcolor?: string
+}
+export const SubtitleBackground = styled(Typography)<SubTitleProps>`
   margin: 0rem auto 3rem auto;
   padding: 1rem;
   display: table;
   background-color: white;
+  font-family: Roboto;
+  font-weight: 450;
+  ${props => `color: ${props.fontcolor ? props.fontcolor : `black`};`}
 `
 
 export const CardTitle = styled(Typography)`

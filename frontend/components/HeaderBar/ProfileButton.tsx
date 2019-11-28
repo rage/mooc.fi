@@ -8,7 +8,7 @@ import { whichIsActive } from "/components/HeaderBar/Header"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 
 interface ButtonProps {
-  active: boolean
+  active: any
 }
 
 const StyledButton = styled(HeaderMenuButton)<ButtonProps>`
@@ -32,7 +32,11 @@ const ProfileButton = () => {
 
   return (
     <LangLink href="/[lng]/profile" as={`/${language}/profile`}>
-      <StyledButton color="inherit" variant="text" active={active == "profile"}>
+      <StyledButton
+        color="inherit"
+        variant="text"
+        active={active == "profile" ? 1 : null}
+      >
         {userDisplayName}
       </StyledButton>
     </LangLink>
