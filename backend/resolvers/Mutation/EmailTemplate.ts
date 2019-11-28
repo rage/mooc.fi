@@ -1,5 +1,5 @@
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg } from "nexus/dist"
+import { stringArg, idArg } from "nexus/dist"
 import { Prisma } from "../../generated/prisma-client"
 import checkAccess from "../../accessControl"
 
@@ -26,10 +26,53 @@ const addEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
+const updateEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+  t.field("updateEmailTemplate", {
+    type: "EmailTemplate",
+    args: {
+      id: idArg(),
+      name: stringArg(),
+      html_body: stringArg(),
+      txt_body: stringArg(),
+      title: stringArg(),
+    },
+    resolve: (_, args, ctx) => {
+      const { id, name, html_body, txt_body, title } = args
+      const prisma: Prisma = ctx.prisma
+      return prisma.updateEmailTemplate({
+        where: {
+          id: id,
+        },
+        data: {
+          name,
+          html_body,
+          txt_body,
+          title,
+        },
+      })
+    },
+  })
+}
+
+const deleteEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+  t.field("updateEmailTemplate", {
+    type: "EmailTemplate",
+    args: {
+      id: idArg(),
+    },
+    resolve: (_, args, ctx) => {
+      const { id } = args
+      return ctx.deleteEmailTemplate({ id: id })
+    },
+  })
+}
+
 const addEmailTemplateMutations = (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   addEmailTemplate(t)
+  updateEmailTemplate(t)
+  deleteEmailTemplate(t)
 }
 
 export default addEmailTemplateMutations
