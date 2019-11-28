@@ -11,9 +11,7 @@ interface NewStudyModuleProps {
   admin: boolean
 }
 
-const NewStudyModule = (props: NewStudyModuleProps) => {
-  const { admin } = props
-
+const NewStudyModule = ({ admin }: NewStudyModuleProps) => {
   if (!admin) {
     return <AdminError />
   }

@@ -23,9 +23,7 @@ export const CourseDetailsFromSlugQuery = gql`
 interface CourseProps {
   admin: boolean
 }
-const Course = (props: CourseProps) => {
-  const { admin } = props
-
+const Course = ({ admin }: CourseProps) => {
   const slug = useQueryParameter("id")
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
