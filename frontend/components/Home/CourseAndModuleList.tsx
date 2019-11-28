@@ -86,10 +86,10 @@ const CourseAndModuleList = () => {
           title={t("highlightTitle")}
           headerImage={highlightsBanner}
           subtitle={t("highlightSubtitle")}
-          backgroundColor="#009CA6"
+          backgroundColor="#4D78A3"
           hueRotateAngle={177}
           brightness={5.5}
-          fontColor="black"
+          fontColor="#4D78A3"
           titleBackground="#ffffff"
         />
         <CourseHighlights
@@ -109,7 +109,7 @@ const CourseAndModuleList = () => {
           backgroundColor="#007DC8"
           hueRotateAngle={0}
           brightness={5.5}
-          fontColor="black"
+          fontColor="#007DC8"
           titleBackground="#ffffff"
         />
       </section>
