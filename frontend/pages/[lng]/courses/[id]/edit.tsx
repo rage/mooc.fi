@@ -89,9 +89,6 @@ const EditCourse = (props: EditCourseProps) => {
   const { admin, router, slug } = props
   const { language } = useContext(LanguageContext)
 
-  if (!admin) {
-    return <AdminError />
-  }
   let redirectTimeout: number | null = null
 
   const {
@@ -106,6 +103,10 @@ const EditCourse = (props: EditCourseProps) => {
     loading: studyModulesLoading,
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
+
+  if (!admin) {
+    return <AdminError />
+  }
 
   if (courseError || studyModulesError) {
     return <div>{JSON.stringify(courseError || studyModulesError)}</div>

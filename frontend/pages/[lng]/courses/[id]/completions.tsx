@@ -29,8 +29,7 @@ interface CompletionsProps {
   router: SingletonRouter
 }
 
-const Completions = (props: CompletionsProps) => {
-  const { admin, router } = props
+const Completions = ({ admin, router }: CompletionsProps) => {
   const { language } = useContext(LanguageContext)
 
   const slug = useQueryParameter("id")

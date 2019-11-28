@@ -26,18 +26,17 @@ interface CompletionsProps {
   admin: boolean
 }
 
-const Points = (props: CompletionsProps) => {
-  const { admin } = props
-  if (!admin) {
-    return <AdminError />
-  }
-
+const Points = ({ admin }: CompletionsProps) => {
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
   const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
     variables: { slug: slug },
   })
+
+  if (!admin) {
+    return <AdminError />
+  }
 
   //TODO add circular progress
   if (loading) {
