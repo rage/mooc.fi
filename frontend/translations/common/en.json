@@ -9,5 +9,7 @@
     "error": "Login failed. Wrong password or email address/username",
     "password": "Password",
     "username": "Email or username",
-    "skiplink": "To main content"
+    "skiplink": "To main content",
+    "errorTitle": "An error has occured"
+
 }

@@ -64,7 +64,6 @@ const Completions = (props: CompletionsProps) => {
     return <AdminError />
   }
 
-  //TODO add circular progress
   if (loading || !data) {
     return <Spinner />
   }

@@ -17,6 +17,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -69,7 +70,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   }
 
   if (error) {
-    return <div>{JSON.stringify(error)}</div>
+    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
   }
 
   const listLink = `${language ? "/" + language : ""}/study-modules`

@@ -15,6 +15,8 @@ import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
 import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -94,14 +96,14 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
 
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
   if (loading || !data) {
-    return <div>Loading</div>
+    return <Spinner />
   }
 
   const courseSlug = slug || useQueryParameter("slug")

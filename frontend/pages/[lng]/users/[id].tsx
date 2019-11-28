@@ -11,6 +11,7 @@ import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import { CircularProgress } from "@material-ui/core"
 import { useQueryParameter } from "/util/useQueryParameter"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 interface UserPageProps {
   admin: boolean
@@ -31,9 +32,9 @@ const UserPage = (props: UserPageProps) => {
 
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
