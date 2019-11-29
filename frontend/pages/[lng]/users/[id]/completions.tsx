@@ -33,13 +33,14 @@ interface CompletionsProps {
 function CompletionsPage(props: CompletionsProps) {
   const id = useQueryParameter("id")
 
-  if (!props.admin) {
-    return <AdminError />
-  }
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
     { variables: { upstream_id: Number(id) } },
   )
+
+  if (!props.admin) {
+    return <AdminError />
+  }
 
   const completions = data?.user?.completions ?? []
 
