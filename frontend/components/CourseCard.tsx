@@ -12,8 +12,12 @@ import { CardTitle } from "/components/Text/headers"
 import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import Skeleton from "@material-ui/lab/Skeleton"
 
-const CardBase = styled(ClicableButtonBase)<{ ishidden?: number | null }>`
+const CardBase = styled(ClicableButtonBase)<{
+  ishidden?: number | null
+  component: any
+}>`
   background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
@@ -24,71 +28,89 @@ const CardBase = styled(ClicableButtonBase)<{ ishidden?: number | null }>`
 const StyledLink = styled.a`
   text-decoration: none;
 `
-const CourseCard = React.memo(
-  ({ course }: { course?: AllEditorCourses_courses }) => (
-    <Grid item xs={12} sm={4} lg={3}>
-      <CardBase ishidden={course?.hidden ? 1 : undefined}>
-        <CourseImageBase>
-          {course ? (
-            <CourseImage photo={course.photo} alt={course.name} />
-          ) : (
-            <LangLink href={`/courses/new`}>
-              <a>
-                <Grid
-                  container
-                  justify="center"
-                  alignItems="center"
-                  style={{ height: "100%" }}
-                >
-                  <AddCircleIcon fontSize="large" />
-                </Grid>
-              </a>
-            </LangLink>
-          )}
-        </CourseImageBase>
-        <CardContent style={{ flex: 1 }}>
-          <CardTitle variant="h3" component="h2" align="left">
-            {course ? course.name : "New Course"}
-          </CardTitle>
-        </CardContent>
-        <CardActionArea component="div">
-          {course ? (
-            <React.Fragment>
-              <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
-                <StyledLink
-                  aria-label={`To the homepage of course ${course.name}`}
-                >
-                  <StyledButton variant="text" startIcon={<DashboardIcon />}>
-                    Dashboard
-                  </StyledButton>
-                </StyledLink>
-              </LangLink>
-              <LangLink
-                href="/courses/[id]/edit"
-                as={`/courses/${course.slug}/edit`}
-                prefetch={false}
+
+interface CourseCardProps {
+  course?: AllEditorCourses_courses
+  loading?: boolean
+}
+
+const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
+  <Grid item xs={12} sm={4} lg={3}>
+    <CardBase component="div" ishidden={course?.hidden ? 1 : undefined}>
+      <CourseImageBase>
+        {loading ? (
+          <Skeleton variant="rect" height="100%" />
+        ) : course ? (
+          <CourseImage photo={course.photo} alt={course.name} />
+        ) : (
+          <LangLink href={`/courses/new`}>
+            <a>
+              <Grid
+                container
+                justify="center"
+                alignItems="center"
+                style={{ height: "100%" }}
               >
-                <StyledLink>
-                  <StyledButton variant="text" startIcon={<EditIcon />}>
-                    Edit
-                  </StyledButton>
-                </StyledLink>
-              </LangLink>
-            </React.Fragment>
+                <AddCircleIcon fontSize="large" />
+              </Grid>
+            </a>
+          </LangLink>
+        )}
+      </CourseImageBase>
+      <CardContent style={{ flex: 1 }}>
+        {loading ? <Skeleton width="100%" /> : null}
+        <CardTitle variant="h3" component="h2" align="left">
+          {loading ? (
+            <Skeleton variant="text" width="100%" />
+          ) : course ? (
+            course.name
           ) : (
-            <LangLink href={`/courses/new`}>
-              <StyledLink>
-                <StyledButton variant="contained" color="secondary" fullWidth>
-                  <AddIcon />
-                  Create
+            "New Course"
+          )}
+        </CardTitle>
+      </CardContent>
+      <CardActionArea component="div">
+        {loading ? (
+          <>
+            <Skeleton variant="rect" width="100%" />
+            <Skeleton variant="rect" width="100%" />
+          </>
+        ) : course ? (
+          <React.Fragment>
+            <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
+              <StyledLink
+                aria-label={`To the homepage of course ${course.name}`}
+              >
+                <StyledButton variant="text" startIcon={<DashboardIcon />}>
+                  Dashboard
                 </StyledButton>
               </StyledLink>
             </LangLink>
-          )}
-        </CardActionArea>
-      </CardBase>
-    </Grid>
-  ),
-)
+            <LangLink
+              href="/courses/[id]/edit"
+              as={`/courses/${course.slug}/edit`}
+              prefetch={false}
+            >
+              <StyledLink>
+                <StyledButton variant="text" startIcon={<EditIcon />}>
+                  Edit
+                </StyledButton>
+              </StyledLink>
+            </LangLink>
+          </React.Fragment>
+        ) : (
+          <LangLink href={`/courses/new`}>
+            <StyledLink>
+              <StyledButton variant="contained" color="secondary" fullWidth>
+                <AddIcon />
+                Create
+              </StyledButton>
+            </StyledLink>
+          </LangLink>
+        )}
+      </CardActionArea>
+    </CardBase>
+  </Grid>
+))
 
 export default CourseCard
