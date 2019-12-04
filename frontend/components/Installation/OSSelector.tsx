@@ -1,27 +1,33 @@
 import React from "react"
 import OSSelectorButton from "./OSSelectorButton"
 import styled from "styled-components"
+import {
+  faWindows as Windows,
+  faLinux as Linux,
+  faApple as MAC,
+} from "@fortawesome/free-brands-svg-icons"
 
+import userOsContext from "/contexes/UserOSContext"
 const Container = styled.div`
   margin-left: auto;
   margin-right: auto;
   display: flex;
   flex-direction: row;
-  max-width: 50%;
-  border-radius: 10px;
-  border: 1.5px solid #ffc107;
+  justify-content: center;
 `
-interface Props {
-  OS: string
-}
-const OSSelector = (props: Props) => {
-  const { OS } = props
-  console.log(OS)
+
+const OSSelector = () => {
+  const { OS } = React.useContext(userOsContext)
+  console.log("OS at selector", OS)
   return (
     <Container>
-      <OSSelectorButton OSName="Linux" />
-      <OSSelectorButton OSName="Windows" />
-      <OSSelectorButton OSName="MAC" />
+      <OSSelectorButton OSName="Linux" Icon={Linux} active={OS === "Linux"} />
+      <OSSelectorButton
+        OSName="Windows"
+        Icon={Windows}
+        active={OS === "Windows"}
+      />
+      <OSSelectorButton OSName="MAC" Icon={MAC} active={OS === "MAC"} />
     </Container>
   )
 }

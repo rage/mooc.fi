@@ -3,20 +3,21 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import getUserOS from "/util/getUserOS"
 import OSSelector from "/components/Installation/OSSelector"
+//@ts-ignore
 import MDX_Linux from "/static/md_pages/netbeans_installation_fi.mdx"
 import MDX_Windows from "/static/md_pages/netbeans_installation_windows_fi.mdx"
+import UserOSContext from "/contexes/UserOSContext"
+import { userOsType } from "/util/getUserOS"
+import NoOsMessage from "/components/Installation/NoOsMessage"
 
 const Background = styled.section`
   background-color: #006877;
+  padding: 1rem;
 `
 
 const Title = styled(Typography)`
-  margin-top: 1em;
   margin-bottom: 0.4em;
-`
-
-const Subtitle = styled(Typography)`
-  padding: 0.3em;
+  padding: 1rem;
 `
 const TitleBackground = styled.div`
   background-color: white;
@@ -38,24 +39,25 @@ export const ContentBox = styled.div`
 `
 
 const NetBeans = () => {
-  let userOS = getUserOS()
-  userOS = "Windows"
+  const [userOS, setUserOs] = React.useState<userOsType>(getUserOS())
+  const changeOS = (OS: userOsType) => {
+    setUserOs(OS)
+  }
 
   return (
-    <Background>
-      <TitleBackground>
-        <Title component="h1" variant="h1" align="center">
-          title
-        </Title>
-        <Subtitle variant="subtitle1" align="center">
-          subtitle
-        </Subtitle>
-      </TitleBackground>
-      <ContentBox>
-        <OSSelector OS={userOS} />
-        {userOS === "Linux" ? <MDX_Linux /> : <MDX_Windows />}
-      </ContentBox>
-    </Background>
+    <UserOSContext.Provider value={{ OS: userOS, changeOS: changeOS }}>
+      <Background>
+        <TitleBackground>
+          <Title component="h1" variant="h1" align="center">
+            title
+          </Title>
+        </TitleBackground>
+        <ContentBox>
+          <OSSelector />
+          {userOS === "OS" ? <NoOsMessage /> : <MDX_Windows />}
+        </ContentBox>
+      </Background>
+    </UserOSContext.Provider>
   )
 }
 
