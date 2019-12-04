@@ -30,21 +30,28 @@ Seuraa allaolevia ohjeita ja asenna koneellesi
 ### 1.Javan Asentaminen <a name="javan asentaminen"></a>
 
 Lataa Java 8:n kehitysympäristö (Java SE Development Kit 8u221 TAI VANHEMPI) osoitteesta [https://www.oracle.com/java/technologies/jdk8-downloads.html].
+Lataa tiedosto **jdk-8u221-macosx-x64.dmg**. Kun olet ladannut tiedoston, lataa se koneellesi. (VARMISTA että versionumero ei ole 
+uudempi kuin 8u221 - ainakin uusin eli 8u231 ei tällä hetkellä toimi hyvin NetBeansin kanssa).
+
+Huomaathan, että joudut luomaan itsellesi Oracle-tunnuksen, joka vaatii muun muassa yrityksen nimen. 
+Voit tunnuksia luodessa laittaa kaikkiin kenttiin, joihin et keksi vastausta, vaikkapa "Lolled Corporation Ltd".
+
+Jos sinulla on muita versioita Javasta asennettuna ne, saattavat estää ohjelmointiympäristä toimimasta oikein.
+Tässä tilanteessa suosittelemme poistamaan muut Javan versiot. Erityisesti Javan versiot 9, 10 ja 11 ovat ongelmallisia.
 
 
 
 
+###  2.Netbeans with TMC:n Asentaminen <a name="netbeant-with-tmc:n-asentaminen"></a>
 
-###  Netbeans with TMC:n Asentaminen <a name="netbeant-with-tmc:n-asentaminen"></a>
+1. Lataa tiedosto [  http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-macosx.tgz]( http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-macosx.tgz). 
+2. Kun tiedoston lataaminen on valmis, asenna sovellus koneellesi.
 
-1. Lataa tiedosto [ http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-linux.sh]( http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-linux.sh). 
-2. Kun tiedoston lataaminen on valmis, tuplaklikkaa tiedostoa. 
+Jos ladattu asennusohjelma ei meinaa aueta, koita avata se painamalla sitä hiiren oikealla näppäimellä ja valitsemalla Avaa/Open.
 
-***Jos tämä ei toimi***, mene terminaalissa kansioon, johon olet ladannut tiedoston, ja aja komento: 
+### 2.1 Verkkoyhteyden korjaaminen macOS:lla <a name="verkkoyhteyden-tarkistaminen-mac"></a>
 
-> `chmod +x tmc-netbeans_org_mooc_tmcbeans-linux.sh && ./tmc-netbeans_org_mooc_tmcbeans-linux.sh`
-
-3. Tämän jälkeen seuraa ruudulle tulevia ohjeita.
+Seuraa seuraavaa ohjetta, jotta Netbeans pystyy saamaan kunnolla yhteyden internettiin: [ohje](https://materiaalit.github.io/tmc-asennus/macos-verkkoongelma/).
 
 *** 
 </ContentBox>
@@ -134,7 +141,7 @@ Muokkaa lähdekoodia siten, että editorissa on seuraava teksti:
             System.out.println("Ada Lovelace :D")
         }
     }
-´´´
+```
 
 ### Lähdekoodin ajaminen <a name="lähdekoodin-ajaminen"></a>
 
