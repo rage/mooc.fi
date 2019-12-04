@@ -56,7 +56,8 @@ export const signOut = async (apollo: ApolloClient<any>) => {
     document.cookie =
       "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   })
-  Router.push(Router.asPath)
+  console.log("router", Router)
+  // Router.push(Router.asPath)
 }
 
 const getCookie = (key: string) => {

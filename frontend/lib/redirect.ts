@@ -27,6 +27,7 @@ export default (context: NextContext, target: string, savePage = true) => {
     context.res.end()
   } else {
     // In the browser, we just pretend like this never even happened ;)
+    // FIXME: (?) add other fields to push
     Router.push(targetWithLanguage)
   }
 }
