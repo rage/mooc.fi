@@ -9,10 +9,15 @@ import MDX_MAC from "/static/md_pages/netbeans_installation_mac_fi.mdx"
 import UserOSContext from "/contexes/UserOSContext"
 import { userOsType } from "/util/getUserOS"
 import NoOsMessage from "/components/Installation/NoOsMessage"
+import LanguageContext from "/contexes/LanguageContext"
+import getInstallationTranslator from "/translations/installation"
 
 const Background = styled.section`
   background-color: #006877;
-  padding: 1rem;
+  padding-top: 2em;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 2em;
 `
 
 const Title = styled(Typography)`
@@ -29,17 +34,33 @@ const TitleBackground = styled.div`
 
 export const ContentBox = styled.div`
   background-color: white;
-  max-width: 80%;
+  max-width: 39em;
   border: 3px solid gray;
   border-radius: 15px;
   margin-left: auto;
   margin-right: auto;
-  padding: 3em;
-  margin-bottom: 3em;
+  padding: 2em;
+  font-size: 18px;
+  line-height: 37px;
+  h2 {
+    font-size: 37px;
+    line-height: 64px;
+  }
+  h3 {
+    font-size: 29px;
+    line-height: 53px;
+  }
+  h4 {
+    font-size: 23px;
+    line-height: 44px;
+  }
 `
 
 const NetBeans = () => {
   const [userOS, setUserOs] = React.useState<userOsType>(getUserOS())
+  const { language } = React.useContext(LanguageContext)
+  const t = getInstallationTranslator(language)
+
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)
   }
@@ -55,7 +76,12 @@ const NetBeans = () => {
       <Background>
         <TitleBackground>
           <Title component="h1" variant="h1" align="center">
-            title
+            {t("title")}
+          </Title>
+        </TitleBackground>
+        <TitleBackground style={{ width: "45%" }}>
+          <Title component="p" variant="subtitle1" align="center">
+            {t("subtitle")}
           </Title>
         </TitleBackground>
         <OSSelector />
