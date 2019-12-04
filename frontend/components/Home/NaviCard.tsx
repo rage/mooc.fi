@@ -10,9 +10,9 @@ import {
   BackgroundImage,
   FullCoverTextBackground,
 } from "/components/Images/CardBackgroundFullCover"
-import { ClicableDiv } from "components/Surfaces/ClicableCard"
+import { ClickableDiv } from "components/Surfaces/ClickableCard"
 
-const NaviItemBase = styled(ClicableDiv)`
+const NaviItemBase = styled(ClickableDiv)`
   width: 100%;
   height: 100%;
   display: flex;

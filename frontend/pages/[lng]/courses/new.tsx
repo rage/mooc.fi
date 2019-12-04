@@ -11,6 +11,7 @@ import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import { StudyModules as StudyModuleData } from "/static/types/generated/StudyModules"
 import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -37,7 +38,7 @@ const NewCourse = (props: NewCourseProps) => {
   }
 
   if (error) {
-    return <div>{JSON.stringify(error)}</div>
+    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
   }
 
   if (loading || !data) {

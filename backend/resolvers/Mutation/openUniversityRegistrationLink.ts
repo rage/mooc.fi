@@ -56,6 +56,7 @@ const updateOpenUniversityRegistrationLink = (
         where: {
           id: id,
         },
+        // TODO/FIXME: this deletes the old values?
         data: {
           course: { connect: { id: course } },
           course_code: course_code,

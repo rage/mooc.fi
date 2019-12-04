@@ -7,10 +7,10 @@ import styled from "styled-components"
 import { mime } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
 import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
-import { ClicableDiv } from "/components/Surfaces/ClicableCard"
+import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
-const Base = styled(ClicableDiv)`
+const Base = styled(ClickableDiv)`
   width: 100%;
   overflow: hidden;
   height: 200px;
@@ -121,7 +121,7 @@ function ModuleCard({
             <LangLink href={`/study-modules/${module.slug}/edit`}>
               <a>
                 <ButtonWithPaddingAndMargin
-                  variant="contained"
+                  variant="text"
                   color="secondary"
                   style={{ width: "68%" }}
                 >
@@ -134,7 +134,7 @@ function ModuleCard({
             <LangLink href={`/study-modules/new`}>
               <a>
                 <ButtonWithPaddingAndMargin
-                  variant="contained"
+                  variant="text"
                   color="secondary"
                   style={{ width: "68%" }}
                 >

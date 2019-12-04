@@ -12,7 +12,7 @@ import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
-import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-top: 0.5rem;
@@ -26,7 +26,7 @@ const SkeletonBodyText = styled(Skeleton)`
   margin-top: 0.2rem;
 `
 
-const Base = styled(ClicableButtonBase)`
+const Base = styled(ClickableButtonBase)`
   height: 200px;
   width: 100%;
   background-color: transparent;

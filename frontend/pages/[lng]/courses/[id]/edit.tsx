@@ -17,6 +17,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -109,7 +110,11 @@ const EditCourse = (props: EditCourseProps) => {
   }
 
   if (courseError || studyModulesError) {
-    return <div>{JSON.stringify(courseError || studyModulesError)}</div>
+    return (
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(courseError || studyModulesError)}
+      />
+    )
   }
 
   const listLink = `${language ? "/" + language : ""}/courses`
@@ -120,7 +125,10 @@ const EditCourse = (props: EditCourseProps) => {
     !courseData?.course &&
     typeof window !== "undefined"
   ) {
-    redirectTimeout = setTimeout(() => router.push(listLink), 5000)
+    redirectTimeout = setTimeout(
+      () => router.push("/[lng]/courses", listLink, { shallow: true }),
+      5000,
+    )
   }
 
   return (

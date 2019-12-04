@@ -7,6 +7,8 @@ import { useQuery } from "@apollo/react-hooks"
 import { CurrentUserUserOverView as UserOverViewData } from "/static/types/generated/CurrentUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const UserOverViewQuery = gql`
   query CurrentUserUserOverView {
@@ -26,14 +28,14 @@ function CompletionsPage() {
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
   if (loading || !data) {
-    return <div>Loading</div>
+    return <Spinner />
   }
 
   const completions = data?.currentUser?.completions ?? []

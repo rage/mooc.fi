@@ -14,6 +14,7 @@ import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
+import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -47,9 +48,9 @@ const Points = (props: CompletionsProps) => {
   if (loading || !data) {
     return <Spinner />
   }
-  //TODO fix error message
+
   if (error) {
-    return <p>Error has occurred</p>
+    return <ModifiableErrorMesage ErrorMessage={JSON.stringify(error)} />
   }
 
   //TODO: error message thing if course not found

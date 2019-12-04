@@ -10,11 +10,11 @@ interface CourseGridProps {
 }
 
 function CourseGrid(props: CourseGridProps) {
-  const { courses /*, loading*/ } = props
+  const { courses, loading } = props
   return (
     <section>
       <Grid container spacing={3} style={{ marginBottom: "2em" }}>
-        {true ? (
+        {loading ? (
           range(6).map(i => <CourseCard key={`skeleton-${i}`} loading={true} />)
         ) : (
           <>
