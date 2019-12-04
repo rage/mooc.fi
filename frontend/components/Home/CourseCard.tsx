@@ -7,10 +7,10 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 
-const Background = styled(ClicableButtonBase)`
+const Background = styled(ClickableButtonBase)`
   display: flex;
   flex-direction: column;
   @media (max-width: 960px) {

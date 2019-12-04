@@ -9,7 +9,7 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import ReactGA from "react-ga"
 import { CardTitle } from "components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -24,7 +24,7 @@ interface BackgroundProps {
   component: string
 }
 
-const Background = styled(ClicableButtonBase)<BackgroundProps>`
+const Background = styled(ClickableButtonBase)<BackgroundProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

@@ -125,7 +125,10 @@ const EditCourse = (props: EditCourseProps) => {
     !courseData?.course &&
     typeof window !== "undefined"
   ) {
-    redirectTimeout = setTimeout(() => router.push(listLink), 5000)
+    redirectTimeout = setTimeout(
+      () => router.push("/[lng]/courses", listLink, { shallow: true }),
+      5000,
+    )
   }
 
   return (

@@ -9,11 +9,14 @@ import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCours
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import { CardTitle } from "/components/Text/headers"
-import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
-const CardBase = styled(ClicableButtonBase)<{ ishidden?: number | null }>`
+const CardBase = styled(ClickableButtonBase)<{
+  ishidden?: number | null
+  component: any
+}>`
   background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
@@ -27,7 +30,7 @@ const StyledLink = styled.a`
 const CourseCard = React.memo(
   ({ course }: { course?: AllEditorCourses_courses }) => (
     <Grid item xs={12} sm={4} lg={3}>
-      <CardBase ishidden={course?.hidden ? 1 : undefined}>
+      <CardBase component="div" ishidden={course?.hidden ? 1 : undefined}>
         <CourseImageBase>
           {course ? (
             <CourseImage photo={course.photo} alt={course.name} />
@@ -78,7 +81,7 @@ const CourseCard = React.memo(
           ) : (
             <LangLink href={`/courses/new`}>
               <StyledLink>
-                <StyledButton variant="contained" color="secondary" fullWidth>
+                <StyledButton variant="text" color="secondary" fullWidth>
                   <AddIcon />
                   Create
                 </StyledButton>
