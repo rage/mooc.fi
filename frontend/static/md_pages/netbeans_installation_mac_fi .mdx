@@ -2,7 +2,7 @@ import {ContentBox} from "/pages/[lng]/installation/netbeans"
 
 <ContentBox>
 
-## Asentaminen Linuxiin
+## Asentaminen macOS:iin
 ---
 
 ### Sisältö 
@@ -19,7 +19,6 @@ import {ContentBox} from "/pages/[lng]/installation/netbeans"
 11. [Pistetilanteen tarkistaminen](#pistetilanteen-tarkistaminen)
 
 ---
-
 </ContentBox>
 
 <ContentBox>
@@ -28,36 +27,13 @@ Seuraa allaolevia ohjeita ja asenna koneellesi
  - tuki Java-ohjelmien kehittämiselle
  - NetBeans with TMC-ympäristö
 
-### Javan Asentaminen <a name="javan asentaminen"></a>
+### 1.Javan Asentaminen <a name="javan asentaminen"></a>
 
-#### 1. Asenna OpenJDK-paketti. 
+Lataa Java 8:n kehitysympäristö (Java SE Development Kit 8u221 TAI VANHEMPI) osoitteesta [https://www.oracle.com/java/technologies/jdk8-downloads.html].
 
-Ubuntussa sen voi tehdä komentoriviltä seuraavalla komennolla:
 
-> `sudo apt-get install openjdk-8-jdk`
 
-**HUOM: **Jos sinulla on muita versioita Javasta asennettuna ne saattavat estää ohjelmointiympäristä toimimasta oikein. Erityisesti Javan versiot 9, 10 ja 11 ovat ongelmallisia.
-Poista nyt muut Javan versiot.
 
-#### 2. Vaihda Javan aktiivinen versio 
-
-Käytä komentoa:
-
-> `sudo update-alternatives --config java`
-
-Kirjoita komentoriville sen vaihtoehdon numero, jossa lukee Java 8 (esim kirjoittajan koneella "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java"), ja paina 
-enter.
-
-#### 3. Asenna OpenJFX 
-
-Jos sinulla on Ubuntu joka on vanhempi kuin 18.04, saat tämän tehtyä komennolla:
-
-> `sudo apt-get install openjfx`
-
-Jos sinulla on Ubuntu 18.04 tai uudempi, asenna openjfx tästä paketista: [openjfx8.deb](https://materiaalit.github.io/tmc-asennus/openjfx8.deb). Paketin saa asennettua joko tuplaklikkaamalla sitä tai 
-terminaalista komennolla:
-
-> `sudo dpkg -i openjfx8.deb`
 
 ###  Netbeans with TMC:n Asentaminen <a name="netbeant-with-tmc:n-asentaminen"></a>
 
@@ -71,7 +47,6 @@ terminaalista komennolla:
 3. Tämän jälkeen seuraa ruudulle tulevia ohjeita.
 
 *** 
-
 </ContentBox>
 
 <ContentBox>
@@ -154,14 +129,12 @@ Editorinäkymä on TMC:n keskellä näkyvä tekstieditori, missä voit tehdä mu
 Muokkaa lähdekoodia siten, että editorissa on seuraava teksti:
 
 ```java
-
     public class AdaLovelace {
         public static void main(String[]args){
             System.out.println("Ada Lovelace :D")
         }
     }
-    
-```
+´´´
 
 ### Lähdekoodin ajaminen <a name="lähdekoodin-ajaminen"></a>
 

@@ -9,11 +9,12 @@ import {
 
 import userOsContext from "/contexes/UserOSContext"
 const Container = styled.div`
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  background-color: white;
+  width: 33%;
+  margin: auto;
 `
 
 const OSSelector = () => {

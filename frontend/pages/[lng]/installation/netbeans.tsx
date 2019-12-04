@@ -3,9 +3,9 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import getUserOS from "/util/getUserOS"
 import OSSelector from "/components/Installation/OSSelector"
-//@ts-ignore
 import MDX_Linux from "/static/md_pages/netbeans_installation_fi.mdx"
 import MDX_Windows from "/static/md_pages/netbeans_installation_windows_fi.mdx"
+import MDX_MAC from "/static/md_pages/netbeans_installation_mac_fi.mdx"
 import UserOSContext from "/contexes/UserOSContext"
 import { userOsType } from "/util/getUserOS"
 import NoOsMessage from "/components/Installation/NoOsMessage"
@@ -43,6 +43,12 @@ const NetBeans = () => {
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)
   }
+  const mapOsToInstructions: Record<userOsType, JSX.Element> = {
+    Linux: <MDX_Linux />,
+    Windows: <MDX_Windows />,
+    MAC: <MDX_MAC />,
+    OS: <NoOsMessage />,
+  }
 
   return (
     <UserOSContext.Provider value={{ OS: userOS, changeOS: changeOS }}>
@@ -52,10 +58,8 @@ const NetBeans = () => {
             title
           </Title>
         </TitleBackground>
-        <ContentBox>
-          <OSSelector />
-          {userOS === "OS" ? <NoOsMessage /> : <MDX_Windows />}
-        </ContentBox>
+        <OSSelector />
+        {mapOsToInstructions[userOS]}
       </Background>
     </UserOSContext.Provider>
   )
