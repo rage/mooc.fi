@@ -229,7 +229,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
         setAwaitedCrumb(null)
       }
     }
-  }, [router.asPath])
+  }, [router?.asPath])
 
   if (urlRouteComponents.length < 1) {
     return null
@@ -246,7 +246,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
 
         if (idx === 0) {
           if (component == "users") {
-            target = `${component}/search`
+            target = `/${component}/search`
           }
         } else {
           let componentsSoFar = urlRouteComponents.slice(0, idx + 1)

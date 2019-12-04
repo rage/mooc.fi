@@ -9,6 +9,7 @@ export function formatDateTime(date: string) {
   const day = dateToFormat.getDate()
   const month = dateToFormat.getMonth()
   const year = dateToFormat.getFullYear()
-  const formattedDate = `${day}\\${month}\\${year}`
+  // TODO: fix the date format
+  const formattedDate = `${day}/${month}/${year}`
   return formattedDate
 }

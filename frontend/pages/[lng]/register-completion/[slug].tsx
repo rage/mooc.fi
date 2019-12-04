@@ -9,44 +9,43 @@ import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import ImportantNotice from "/components/ImportantNotice"
 import Container from "/components/Container"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"
 import { useContext } from "react"
 import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import styled from "styled-components"
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    paper: {
-      padding: "1em",
-      margin: "1em",
-    },
-    icon: {
-      width: 30,
-      height: 30,
-      margin: "0.5em",
-    },
-    paperWithRow: {
-      padding: "1em",
-      margin: "1em",
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    paperWithColumn: {
-      padding: "1em",
-      margin: "1em",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    courseInfo: {
-      marginTop: 0,
-      marginLeft: "1em",
-    },
-  }),
-)
+const StyledPaper = styled(Paper)`
+  padding: 1em;
+  margin: 1em;
+`
+const StyledPaperRow = styled(Paper)`
+  padding: 1em;
+  margin: 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+const StyledPaperColumn = styled(Paper)`
+  padding: 1em;
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+const StyledIcon = styled(SvgIcon)`
+  width: 30px;
+  height: 30px;
+  margin: 0.5em;
+`
+const StyledText = styled(Typography)`
+  margin-top: 0px;
+  margin-left: 1em;
+`
 
 export const UserOverViewQuery = gql`
   query RegisterCompletionUserOverView {
@@ -86,7 +85,6 @@ interface RegisterCompletionPageProps {
 
 const RegisterCompletion = (props: RegisterCompletionPageProps) => {
   const { slug } = props
-  const classes = useStyles()
   const { language } = useContext(LanguageContext)
 
   const t = getRegisterCompletionTranslator(language)
@@ -94,14 +92,14 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
 
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
   if (loading || !data) {
-    return <div>Loading</div>
+    return <Spinner />
   }
 
   const courseSlug = slug || useQueryParameter("slug")
@@ -135,12 +133,12 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("title")}
         </H1NoBackground>
-        <Paper className={classes.paper}>
+        <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("open_university_registration_not_open")}{" "}
             {completion.course.name} {completion.completion_language}.
           </Typography>
-        </Paper>
+        </StyledPaper>
       </div>
     )
   }
@@ -151,31 +149,26 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
         <H1NoBackground variant="h1" component="h1" align="center">
           {t("title")}
         </H1NoBackground>
-        <Typography variant="h6" component="p" className={classes.courseInfo}>
+        <StyledText>
           {t("course", { course: completion.course.name })}
-        </Typography>
-        <Typography
-          variant="h6"
-          component="p"
-          className={classes.courseInfo}
-          gutterBottom={true}
-        >
+        </StyledText>
+        <StyledText variant="h6" component="p" gutterBottom={true}>
           {t("credits", { ects: completion.course.ects })}
-        </Typography>
-        <Paper className={classes.paper}>
+        </StyledText>
+        <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("credits_details")}
           </Typography>
           <Typography variant="body1" paragraph>
             {t("donow")}
           </Typography>
-        </Paper>
+        </StyledPaper>
         <ImportantNotice email={completion.email} />
         <RegisterCompletionText
           email={completion.email}
           link={courseLinkWithLanguage}
         />
-        <Paper className={classes.paperWithColumn}>
+        <StyledPaperColumn>
           <Typography variant="body1">
             {t("see_completion_link")}
             <a
@@ -188,13 +181,13 @@ const RegisterCompletion = (props: RegisterCompletionPageProps) => {
             </a>
           </Typography>
           <Typography variant="body1">{t("see_completion_NB")}</Typography>
-        </Paper>
-        <Paper className={classes.paperWithRow}>
-          <SvgIcon className={classes.icon} color="primary">
+        </StyledPaperColumn>
+        <StyledPaperRow>
+          <StyledIcon color="primary">
             <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
-          </SvgIcon>
+          </StyledIcon>
           <Typography variant="body1">{t("NB")}</Typography>
-        </Paper>
+        </StyledPaperRow>
       </Container>
     </>
   )

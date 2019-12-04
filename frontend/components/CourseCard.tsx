@@ -9,14 +9,14 @@ import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCours
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import { CardTitle } from "/components/Text/headers"
-import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import Skeleton from "@material-ui/lab/Skeleton"
 
-const CardBase = styled(ClicableButtonBase)<{
+const CardBase = styled(ClickableButtonBase)<{
   ishidden?: number | null
-  component: any
+  component?: any
 }>`
   background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
@@ -28,7 +28,6 @@ const CardBase = styled(ClicableButtonBase)<{
 const StyledLink = styled.a`
   text-decoration: none;
 `
-
 interface CourseCardProps {
   course?: AllEditorCourses_courses
   loading?: boolean
@@ -57,11 +56,10 @@ const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
           </LangLink>
         )}
       </CourseImageBase>
-      <CardContent style={{ flex: 1 }}>
-        {loading ? <Skeleton width="100%" /> : null}
-        <CardTitle variant="h3" component="h2" align="left">
+      <CardContent style={{ flex: 1, width: "100%" }}>
+        <CardTitle variant="h3" component="h2" align="center">
           {loading ? (
-            <Skeleton variant="text" width="100%" />
+            <Skeleton variant="text" />
           ) : course ? (
             course.name
           ) : (
@@ -69,10 +67,9 @@ const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
           )}
         </CardTitle>
       </CardContent>
-      <CardActionArea component="div">
+      <CardActionArea component="div" style={{ display: "flex" }}>
         {loading ? (
           <>
-            <Skeleton variant="rect" width="100%" />
             <Skeleton variant="rect" width="100%" />
           </>
         ) : course ? (
@@ -101,7 +98,7 @@ const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
         ) : (
           <LangLink href={`/courses/new`}>
             <StyledLink>
-              <StyledButton variant="contained" color="secondary" fullWidth>
+              <StyledButton variant="text" color="secondary">
                 <AddIcon />
                 Create
               </StyledButton>

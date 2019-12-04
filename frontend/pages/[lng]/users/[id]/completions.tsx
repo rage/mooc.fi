@@ -9,6 +9,8 @@ import Container from "/components/Container"
 import Completions from "/components/Completions"
 import AdminError from "/components/Dashboard/AdminError"
 import { useQueryParameter } from "/util/useQueryParameter"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -31,26 +33,27 @@ interface CompletionsProps {
 function CompletionsPage(props: CompletionsProps) {
   const id = useQueryParameter("id")
 
-  if (!props.admin) {
-    return <AdminError />
-  }
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
     { variables: { upstream_id: Number(id) } },
   )
 
+  if (!props.admin) {
+    return <AdminError />
+  }
+
   const completions = data?.user?.completions ?? []
 
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
   if (loading || !data) {
-    return <div>Loading</div>
+    return <Spinner />
   }
 
   return (

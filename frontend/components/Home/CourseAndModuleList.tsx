@@ -9,6 +9,7 @@ import ModuleList from "./ModuleList"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
@@ -64,10 +65,13 @@ const CourseAndModuleList = () => {
 
   if (coursesError || modulesError) {
     return (
-      <div>
-        Error:{" "}
-        <pre>{JSON.stringify(coursesError || modulesError, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(
+          coursesError || modulesError,
+          undefined,
+          2,
+        )}
+      />
     )
   }
 
