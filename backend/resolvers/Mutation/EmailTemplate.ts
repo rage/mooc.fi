@@ -55,14 +55,14 @@ const updateEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 }
 
 const deleteEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateEmailTemplate", {
+  t.field("deleteEmailTemplate", {
     type: "EmailTemplate",
     args: {
       id: idArg(),
     },
     resolve: (_, args, ctx) => {
       const { id } = args
-      return ctx.deleteEmailTemplate({ id: id })
+      return ctx.prisma.deleteEmailTemplate({ id: id })
     },
   })
 }
