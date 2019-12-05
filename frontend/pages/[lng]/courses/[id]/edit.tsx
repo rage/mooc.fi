@@ -112,7 +112,7 @@ const EditCourse = (props: EditCourseProps) => {
   if (courseError || studyModulesError) {
     return (
       <ModifiableErrorMessage
-        ErrorMessage={JSON.stringify(courseError || studyModulesError)}
+        errorMessage={JSON.stringify(courseError || studyModulesError)}
       />
     )
   }

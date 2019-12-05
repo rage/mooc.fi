@@ -2,7 +2,6 @@ import * as React from "react"
 import { NextPageContext as NextContext } from "next"
 import { useQuery } from "@apollo/react-hooks"
 import AdminError from "/components/Dashboard/AdminError"
-import { Container, Grid, CircularProgress } from "@material-ui/core"
 import { WideContainer } from "/components/Container"
 import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
 import { isAdmin, isSignedIn } from "/lib/authentication"
@@ -18,22 +17,11 @@ const StudyModules = (admin: boolean) => {
   )
 
   if (error) {
-    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   if (!admin) {
     return <AdminError />
-  }
-  if (loading || !data) {
-    return (
-      <>
-        <Container style={{ display: "flex", height: "600px" }}>
-          <Grid item container justify="center" alignItems="center">
-            <CircularProgress color="primary" size={60} />
-          </Grid>
-        </Container>
-      </>
-    )
   }
 
   return (
@@ -42,7 +30,7 @@ const StudyModules = (admin: boolean) => {
         <H1NoBackground component="h1" variant="h1" align="center">
           All Study Modules
         </H1NoBackground>
-        <ModuleGrid modules={data.study_modules} />
+        <ModuleGrid modules={data?.study_modules} loading={loading} />
       </WideContainer>
     </>
   )

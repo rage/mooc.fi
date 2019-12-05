@@ -8,10 +8,15 @@ export default (context: NextContext, target: string, savePage = true) => {
   // @ts-ignore
   if (savePage && context?.req?.originalUrl) {
     // @ts-ignore
-    nookies.set(context, "redirect-back", context.req.originalUrl, {
-      maxAge: 20 * 60,
-      path: "/",
-    })
+    nookies.set(
+      context,
+      "redirect-back",
+      JSON.stringify({ as: context.asPath, href: context.pathname }),
+      {
+        maxAge: 20 * 60,
+        path: "/",
+      },
+    )
   }
 
   let sep = ""
@@ -28,6 +33,12 @@ export default (context: NextContext, target: string, savePage = true) => {
   } else {
     // In the browser, we just pretend like this never even happened ;)
     // FIXME: (?) add other fields to push
-    Router.push(targetWithLanguage)
+    if (target !== "/") {
+      Router.push(`/[lng]${sep}${target}`, targetWithLanguage, {
+        shallow: true,
+      })
+    } else {
+      Router.push("/", "/", { shallow: true })
+    }
   }
 }

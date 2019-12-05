@@ -25,7 +25,7 @@ const Courses = (admin: boolean) => {
   if (error) {
     return (
       <ModifiableErrorMessage
-        ErrorMessage={JSON.stringify(error, undefined, 2)}
+        errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
   }
@@ -33,10 +33,6 @@ const Courses = (admin: boolean) => {
   if (!admin) {
     return <AdminError />
   }
-
-  /*   if (loading || !data) {
-    return <Spinner />
-  } */
 
   return (
     <Background>
