@@ -47,7 +47,7 @@ const Course = (props: CourseProps) => {
   }
 
   if (error) {
-    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   if (!data.course) {

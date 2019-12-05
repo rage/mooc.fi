@@ -50,7 +50,7 @@ const Points = (props: CompletionsProps) => {
   }
 
   if (error) {
-    return <ModifiableErrorMesage ErrorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMesage errorMessage={JSON.stringify(error)} />
   }
 
   //TODO: error message thing if course not found

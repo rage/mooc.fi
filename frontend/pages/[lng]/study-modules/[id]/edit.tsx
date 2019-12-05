@@ -70,7 +70,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   }
 
   if (error) {
-    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   const listLink = `${language ? "/" + language : ""}/study-modules`

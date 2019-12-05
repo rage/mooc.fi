@@ -160,7 +160,7 @@ const CompletionsList = () => {
   if (error) {
     return (
       <ModifiableErrorMessage
-        ErrorMessage={JSON.stringify(error, undefined, 2)}
+        errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
   }

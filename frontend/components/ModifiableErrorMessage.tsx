@@ -21,12 +21,13 @@ const ErrorMessageText = styled(Typography)`
   font-size: 1.2rem;
 `
 interface Props {
-  ErrorMessage: string
+  errorMessage: string
 }
 function ModifiableErrorMessage(props: Props) {
   const lng = useContext(LanguageContext)
   const t = getCommonTranslator(lng.language)
-  const { ErrorMessage } = props
+  const { errorMessage } = props
+
   return (
     <StyledCard>
       <StyledCardContent>
@@ -35,7 +36,7 @@ function ModifiableErrorMessage(props: Props) {
           {t("errorTitle")}
         </Typography>
         <ErrorMessageText variant="body1" component="p" align="center">
-          {ErrorMessage}
+          {errorMessage}
         </ErrorMessageText>
         <StyledRefreshButton
           variant="text"
