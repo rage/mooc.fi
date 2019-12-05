@@ -1,4 +1,4 @@
-import {ContentBox} from "/pages/[lng]/installation/netbeans"
+import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
 
 <ContentBox>
 
@@ -27,6 +27,8 @@ import {ContentBox} from "/pages/[lng]/installation/netbeans"
 Seuraa allaolevia ohjeita ja asenna koneellesi
  - tuki Java-ohjelmien kehittämiselle
  - NetBeans with TMC-ympäristö
+
+<SectionBox> 
 
 ### Javan Asentaminen <a name="javan asentaminen"></a>
 
@@ -59,6 +61,10 @@ terminaalista komennolla:
 
 > `sudo dpkg -i openjfx8.deb`
 
+</SectionBox>
+
+<SectionBox> 
+
 ###  Netbeans with TMC:n Asentaminen <a name="netbeant-with-tmc:n-asentaminen"></a>
 
 1. Lataa tiedosto [ http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-linux.sh]( http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-linux.sh). 
@@ -72,9 +78,14 @@ terminaalista komennolla:
 
 *** 
 
+</SectionBox>
+
 </ContentBox>
 
 <ContentBox>
+
+<SectionBox> 
+
 
 ## Ohjelmoinnin aloittaminen <a name="ohjelmoinnin-aloittaminen"></a>
 Kun olet asentanut Javan ja TMC:n koneellesi, seuraavina askeleina on **TMC-tunnuksen** luominen sekä ohjelmoinnin aloittaminen. TMC-tunnus luodaan, 
@@ -120,10 +131,18 @@ width="60%" height="60%"/>
 Sinulle avautuu TMC:n settings ikkuna. 
 Oletuksien pitäisi olla riittävät kurssin tekemiseen.
 
+</SectionBox> 
+
+<SectionBox> 
+
 ### Ensimmäisen tehtävän tekeminen <a name="ensimmäisen-tehtävän-tekeminen"></a>
 
 Käydään läpi esimerkki, miten saat tehtyä kurssin "Ohjelmoinnin MOOC 2019" ensimmäisen tehtävän. 
 Vaikka olisit jollakin muulla kurssilla, lue ohjeet silti loppuun koska ne sisältävät tärkeää tietoa ohjelmointiympäristön toiminnasta. 
+
+</SectionBox> 
+
+<SectionBox> 
 
 #### Tehtävien lataaminen
 
@@ -138,6 +157,10 @@ Valitse listauksesta __Projects-välilehti__, niin tehtäviin liittyy myös oike
 <img src="/static/images/installation/tmcbeans-project-sidebar.png" 
 alt="TMC NetBeans projektivälilehti"
 width="60%" height="60%"/>
+
+</SectionBox> 
+
+<SectionBox>
 
 #### Ohjelmointitehtävän tekeminen
 
@@ -157,11 +180,14 @@ Muokkaa lähdekoodia siten, että editorissa on seuraava teksti:
 
     public class AdaLovelace {
         public static void main(String[]args){
-            System.out.println("Ada Lovelace :D")
+            System.out.println("Ada Lovelace :D");
         }
     }
     
 ```
+</SectionBox> 
+
+<SectionBox>
 
 ### Lähdekoodin ajaminen <a name="lähdekoodin-ajaminen"></a>
 
@@ -178,6 +204,10 @@ Jos muokkasit AdaLovelace.java-tiedostoa edellä kuvatun näköiseksi, ohjelman 
 > `Ava Lovelace :D`
 
 Voit muokata lähdekoodia ja ajaa ohjelman uudestaan. 
+
+</SectionBox> 
+
+<SectionBox> 
 
 ### Lähdekoodin testaaminen <a name="lähdekoodin-testaaminen"></a>
 
@@ -207,6 +237,10 @@ Ohjelman tulostus on muotoa "Ada Lovelace" kun muokkaat lähdekoodin seuraavanla
 
 Aja nyt tehtävään liittyvät testit uudestaan. Tällä kertaa testit menevät läpi ja TMC kysyy lähetetäänkö tehtävä palvelimelle.
 
+</SectionBox> 
+
+<SectionBox> 
+
 ### Tehtävän lähettäminen palvelimelle <a name="tehtävän-lähettäminen-palvelimelle"></a>
 
 Tehtävän lähettäminen palvelimelle tarkoittaa tehtävän palauttamista arvostelua varten. 
@@ -223,8 +257,14 @@ width="60%" height="60%"/>
 
 Kun tehtävä on lähetetty palvelimelle ja siihen liittyvät testit menevät läpi, saat tehtävästä pisteet sekä mahdollisen lyhyen kyselyn. Vastaathan aina kyselyihin, sillä vastaukset auttavat kurssien kehityksessä.
 
+</SectionBox> 
+
+<SectionBox> 
+
 ### Pistetilanteen tarkistaminen <a name="pistetilanteen-tarkistaminen"></a>
 
 Voit tarkastaa oman pistetilanteesi kirjautumalla osoitteessa [tmc.mooc.fi](https://tmc.mooc.fi) olevaan verkkopalveluun. Verkkopalveluun kirjaudutaan TMC-tunnuksilla.
+
+</SectionBox> 
 
 </ContentBox>

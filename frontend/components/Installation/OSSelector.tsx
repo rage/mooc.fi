@@ -11,15 +11,26 @@ import userOsContext from "/contexes/UserOSContext"
 const Container = styled.div`
   display: flex;
   flex-direction: row;
+  @media (max-width: 770px) {
+    width: 60%;
+    left: 20%;
+  }
+  @media (max-width: 440px) {
+    width: 80%;
+    left: 10%;
+  }
   justify-content: center;
   background-color: white;
+  border: 2px solid black;
   width: 33%;
   margin: auto;
+  position: absolute;
+  top: -3.5rem;
+  left: 33%;
 `
 
 const OSSelector = () => {
   const { OS } = React.useContext(userOsContext)
-  console.log("OS at selector", OS)
   return (
     <Container>
       <OSSelectorButton OSName="Linux" Icon={Linux} active={OS === "Linux"} />

@@ -13,11 +13,11 @@ import LanguageContext from "/contexes/LanguageContext"
 import getInstallationTranslator from "/translations/installation"
 
 const Background = styled.section`
-  background-color: #006877;
   padding-top: 2em;
   padding-left: 1em;
   padding-right: 1em;
   padding-bottom: 2em;
+  background-color: #ffc107;
 `
 
 const Title = styled(Typography)`
@@ -32,27 +32,45 @@ const TitleBackground = styled.div`
   margin-bottom: 1em;
 `
 
+const Content = styled.div`
+  position: relative;
+`
+export const SectionBox = styled.div`
+  margin-bottom: 6rem;
+`
 export const ContentBox = styled.div`
   background-color: white;
   max-width: 39em;
-  border: 3px solid gray;
+  border: 3px solid black;
   border-radius: 15px;
   margin-left: auto;
   margin-right: auto;
   padding: 2em;
+  margin-top: 1em;
   font-size: 18px;
   line-height: 37px;
   h2 {
     font-size: 37px;
     line-height: 64px;
+    font-family: Open Sans Condensed, sans serif !important;
+    padding: 0.5rem;
+    margin-top: 1rem;
   }
   h3 {
     font-size: 29px;
     line-height: 53px;
+    font-family: Open Sans Condensed, sans serif !important;
+    text-decoration: underline;
+    text-decoration-color: #00d2ff;
   }
   h4 {
     font-size: 23px;
     line-height: 44px;
+    font-family: Open Sans Condensed, sans serif !important;
+  }
+  code {
+    background-color: #ff26b8;
+    padding: 0.5rem;
   }
 `
 
@@ -79,13 +97,15 @@ const NetBeans = () => {
             {t("title")}
           </Title>
         </TitleBackground>
-        <TitleBackground style={{ width: "45%" }}>
+        <TitleBackground style={{ width: "45%", marginBottom: "8em" }}>
           <Title component="p" variant="subtitle1" align="center">
             {t("subtitle")}
           </Title>
         </TitleBackground>
-        <OSSelector />
-        {mapOsToInstructions[userOS]}
+        <Content>
+          <OSSelector />
+          {mapOsToInstructions[userOS]}
+        </Content>
       </Background>
     </UserOSContext.Provider>
   )

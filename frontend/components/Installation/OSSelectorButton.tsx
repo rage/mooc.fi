@@ -11,8 +11,8 @@ interface ButtonProps {
 
 const StyledButtonBase = styled(ButtonBase)<ButtonProps>`
   margin: 1em;
+  ${props => props.selected && `border-bottom: 4px solid #00D2FF;`}
   padding: 1 em;
-  ${props => (props.selected ? `color: orange` : `color: black`)}
 `
 const StyledIcon = styled(FontAwesomeIcon)`
   margin: 0.5rem;
