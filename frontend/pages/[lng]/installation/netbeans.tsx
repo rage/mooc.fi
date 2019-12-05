@@ -72,6 +72,12 @@ export const ContentBox = styled.div`
     background-color: #ff26b8;
     padding: 0.5rem;
   }
+  img {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background-color: #c3fcf2;
+    padding: 1.5rem;
+  }
 `
 
 const NetBeans = () => {
