@@ -6,18 +6,23 @@ import {
   faLinux as Linux,
   faApple as MAC,
 } from "@fortawesome/free-brands-svg-icons"
+import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
 
 import userOsContext from "/contexes/UserOSContext"
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  @media (max-width: 770px) {
+  @media (max-width: 1095px) {
     width: 60%;
     left: 20%;
   }
-  @media (max-width: 440px) {
+  @media (max-width: 675px) {
     width: 80%;
     left: 10%;
+  }
+  @media (max-width: 500px) {
+    width: 100%;
+    left: 0;
   }
   justify-content: center;
   background-color: white;
@@ -40,6 +45,7 @@ const OSSelector = () => {
         active={OS === "Windows"}
       />
       <OSSelectorButton OSName="MAC" Icon={MAC} active={OS === "MAC"} />
+      <OSSelectorButton OSName="Any" Icon={AnyOS} active={OS === "Any"} />
     </Container>
   )
 }

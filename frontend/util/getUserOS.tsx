@@ -1,4 +1,4 @@
-export type userOsType = "OS" | "Linux" | "Windows" | "MAC"
+export type userOsType = "OS" | "Linux" | "Windows" | "MAC" | "Any"
 
 function getUserOS(): userOsType {
   var OSName: userOsType = "OS"
