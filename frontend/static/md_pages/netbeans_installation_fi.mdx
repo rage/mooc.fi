@@ -5,9 +5,9 @@ import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
 ## Asentaminen Linuxiin
 ---
 
-### Sisältö 
+### Sisältö
 1. [Javan asentaminen](#javan-asentaminen)
-2. [NetBeans with TMC:n asentaminen](#netbeans-with-tmc:n-asentaminen)
+2. [TMCBeansin asentaminen](#tmcbeansin-asentaminen)
 3. [MOOC.fi -tunnuksen luominen](#mooc.fi-tunnuksen-luominen)
 4. [Kirjautuminen ohjelmointiympäristöön](#kirjautuminen-ohjelmointiympäristöön)
 5. [Organisaation valinta](#organisaation-valinta)
@@ -26,57 +26,47 @@ import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
 
 Seuraa allaolevia ohjeita ja asenna koneellesi
  - tuki Java-ohjelmien kehittämiselle
- - NetBeans with TMC-ympäristö
+ - TMCBeans-ympäristö
 
-<SectionBox> 
+<SectionBox>
 
 ### Javan Asentaminen <a name="javan asentaminen"></a>
 
-#### 1. Asenna OpenJDK-paketti. 
+#### 1. Asenna OpenJDK-paketti.
 
 Ubuntussa sen voi tehdä komentoriviltä seuraavalla komennolla:
 
-> `sudo apt-get install openjdk-8-jdk`
+> `sudo apt-get install openjdk-11-jdk`
 
-**HUOM: **Jos sinulla on muita versioita Javasta asennettuna ne saattavat estää ohjelmointiympäristä toimimasta oikein. Erityisesti Javan versiot 9, 10 ja 11 ovat ongelmallisia.
-Poista nyt muut Javan versiot.
-
-#### 2. Vaihda Javan aktiivinen versio 
+#### 2. Vaihda Javan aktiivinen versio
 
 Käytä komentoa:
 
 > `sudo update-alternatives --config java`
 
-Kirjoita komentoriville sen vaihtoehdon numero, jossa lukee Java 8 (esim kirjoittajan koneella "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java"), ja paina 
-enter.
+Kirjoita komentoriville sen vaihtoehdon numero, jossa lukee Java 11 (esim kirjoittajan koneella "/usr/lib/jvm/java-11-openjdk-amd64/bin/java"), ja paina enter.
 
-#### 3. Asenna OpenJFX 
+Jos Java 11 on listalla useampaan otteeseen, sekä statuksella "auto mode" että "manual mode", valitse mieluummin "manual mode".
 
-Jos sinulla on Ubuntu joka on vanhempi kuin 18.04, saat tämän tehtyä komennolla:
+#### 3. Asenna OpenJFX
+
+Voit asentaa OpenJFX:n seuraavalla komennolla:
 
 > `sudo apt-get install openjfx`
 
-Jos sinulla on Ubuntu 18.04 tai uudempi, asenna openjfx tästä paketista: [openjfx8.deb](https://materiaalit.github.io/tmc-asennus/openjfx8.deb). Paketin saa asennettua joko tuplaklikkaamalla sitä tai 
-terminaalista komennolla:
-
-> `sudo dpkg -i openjfx8.deb`
-
 </SectionBox>
 
-<SectionBox> 
+<SectionBox>
 
-###  Netbeans with TMC:n Asentaminen <a name="netbeant-with-tmc:n-asentaminen"></a>
+###  TMCBeansin asentaminen <a name="tmcbeansin-asentaminen"></a>
 
-1. Lataa tiedosto [ http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-linux.sh]( http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-linux.sh). 
-2. Kun tiedoston lataaminen on valmis, tuplaklikkaa tiedostoa. 
+Aja terminaalissa komento
 
-***Jos tämä ei toimi***, mene terminaalissa kansioon, johon olet ladannut tiedoston, ja aja komento: 
+> `sudo snap install tmcbeans`
 
-> `chmod +x tmc-netbeans_org_mooc_tmcbeans-linux.sh && ./tmc-netbeans_org_mooc_tmcbeans-linux.sh`
+Voit nyt käynnistää TMCBeansin joko terminaalista komennolla `tmcbeans` tai avaamalla sen Activities:stä.
 
-3. Tämän jälkeen seuraa ruudulle tulevia ohjeita.
-
-*** 
+***
 
 </SectionBox>
 
@@ -84,11 +74,11 @@ terminaalista komennolla:
 
 <ContentBox>
 
-<SectionBox> 
+<SectionBox>
 
 
 ## Ohjelmoinnin aloittaminen <a name="ohjelmoinnin-aloittaminen"></a>
-Kun olet asentanut Javan ja TMC:n koneellesi, seuraavina askeleina on **TMC-tunnuksen** luominen sekä ohjelmoinnin aloittaminen. TMC-tunnus luodaan, 
+Kun olet asentanut Javan ja TMC:n koneellesi, seuraavina askeleina on **Mooc.fi-tunnuksen** luominen sekä ohjelmoinnin aloittaminen. Mooc.fi-tunnus luodaan,
 jotta voimme pitää kirjaa tekemistäsi tehtävistä.
 
 ### MOOC.fi -tunnuksen luominen <a name="mooc.fi-tunnuksen-luominen"></a>
@@ -96,81 +86,81 @@ Luo itsellesi MOOC.fi tunnus kurssimateriaalissa.
 
 ### Kirjautuminen ohjelmointiympäristöön <a name="kirjautuminen-ohjelmointiympäristöön"></a>
 
-Käynnistä asentamasi TMC-ohjelmointiympäristö. 
+Käynnistä asentamasi TMCBeans-ohjelmointiympäristö.
 
-Kun ohjelmointiympäristö käynnistyy, se kysyy sinulta sähköpostiosoitetta ja salasanaasi. 
+Kun ohjelmointiympäristö käynnistyy, se kysyy sinulta sähköpostiosoitetta ja salasanaasi.
 Käytä edellisessä kohdassa luomaasi MOOC.fi -tunnusta.
 
-<img src="/static/images/installation/tmcbeans-login.png" 
+<img src="/static/images/installation/linux-tmcbeans-login.png"
 alt="Ohjelmointiympäristöön kirjautuminen"
-width="90%" height="90%"/>
+width="100%" height="100%"/>
 
 
 
 ### Organisaation valinta <a name="organisaation-valinta"></a>
-Ohjelmointiympäristö kysyy organisaatiota, missä teet tehtäviä. 
+Ohjelmointiympäristö kysyy organisaatiota, missä teet tehtäviä.
 
-Valitse organisaatioksi kurssimateriaalissasi sanottu organisaatio. 
+Valitse organisaatioksi kurssimateriaalissasi sanottu organisaatio.
 
 
 Esimerkiksi kurssilla "Ohjelmoinnin MOOC 2019" organisaationa on "MOOC"-organisaatio.
 
-<img src="/static/images/installation/tmcbeans-select-organization.png" 
+<img src="/static/images/installation/linux-tmcbeans-select-organization.png"
 alt="Organisaation valinta TMC NetBeansissa"
-width="90%" height="90%"/>
+width="100%" height="100%"/>
 
 
 ### Kurssin valinta <a name="kurssin-valinta"></a>
 
 Valitse tämän jälkeen haluamasi kurssi. Listatut kurssit riippuvat organisaatiosta.
 
-<img src="/static/images/installation/tmcbeans-select-course.png" 
+<img src="/static/images/installation/linux-tmcbeans-select-course.png"
 alt="Kurssin valinta TMC NetBeansissa"
-width="90%" height="90%"/>
+width="100%" height="100%"/>
 
-Sinulle avautuu TMC:n settings ikkuna. 
+Sinulle avautuu TMC:n settings ikkuna.
 Oletuksien pitäisi olla riittävät kurssin tekemiseen.
 
-</SectionBox> 
+</SectionBox>
 
-<SectionBox> 
+<SectionBox>
 
 ### Ensimmäisen tehtävän tekeminen <a name="ensimmäisen-tehtävän-tekeminen"></a>
 
-Käydään läpi esimerkki, miten saat tehtyä kurssin "Ohjelmoinnin MOOC 2019" ensimmäisen tehtävän. 
-Vaikka olisit jollakin muulla kurssilla, lue ohjeet silti loppuun koska ne sisältävät tärkeää tietoa ohjelmointiympäristön toiminnasta. 
+Käydään läpi esimerkki, miten saat tehtyä kurssin "Ohjelmoinnin MOOC 2019" ensimmäisen tehtävän.
+Vaikka olisit jollakin muulla kurssilla, lue ohjeet silti loppuun koska ne sisältävät tärkeää tietoa ohjelmointiympäristön toiminnasta.
 
-</SectionBox> 
+</SectionBox>
 
-<SectionBox> 
+<SectionBox>
 
 #### Tehtävien lataaminen
 
-Kun olet kirjautunut ohjelmointiympäristöön sekä valinnut organisaation ja kurssin, TMC ehdottaa ladattavia tehtäviä mikäli tehtäviä on ladattavissa. 
+Kun olet kirjautunut ohjelmointiympäristöön sekä valinnut organisaation ja kurssin, TMC ehdottaa ladattavia tehtäviä mikäli tehtäviä on ladattavissa.
 Lataa haluamasi tehtävät -- tehtävät liittyvät valitsemasi kurssin kurssimateriaaliin.
 
 
-Nyt tehtävät ovat ladattuna ohjelmointiympäristössä. 
+Nyt tehtävät ovat ladattuna ohjelmointiympäristössä.
 Tehtävät näkyvät vasemmalla olevassa listauksessa.
 Valitse listauksesta __Projects-välilehti__, niin tehtäviin liittyy myös oikein saamisesta kertova pieni palloindikaattori.
 
-<img src="/static/images/installation/tmcbeans-project-sidebar.png" 
+<img src="/static/images/installation/tmcbeans-project-sidebar.png"
 alt="TMC NetBeans projektivälilehti"
-width="90%" height="90%"/>
+width="100%" height="100%"/>
 
-</SectionBox> 
+</SectionBox>
 
 <SectionBox>
 
 #### Ohjelmointitehtävän tekeminen
 
-Avaa tehtävä Osa01_01.AdaLovelace. 
+Avaa tehtävä Osa01_01.AdaLovelace.
 
-Tuplaklikkaa tehtävää ja etsi tehtävän sisältä lähdekooditiedosto AdaLovelace.java. 
+Tuplaklikkaa tehtävää ja etsi tehtävän sisältä lähdekooditiedosto AdaLovelace.java.
 Lähdekooditiedostot löytyvät toistaiseksi aina tehtäväpohjan kansiosta __"Source Packages"__.
 
 
-Saat tehtävän auki editorinäkymään tuplaklikkaamalla tiedostoa AdaLovelace.java. 
+Saat tehtävän auki editorinäkymään tuplaklikkaamalla tiedostoa AdaLovelace.java.
 Editorinäkymä on TMC:n keskellä näkyvä tekstieditori, missä voit tehdä muutoksia ohjelman lähdekoodiin.
 
 
@@ -183,19 +173,19 @@ Muokkaa lähdekoodia siten, että editorissa on seuraava teksti:
             System.out.println("Ada Lovelace :D");
         }
     }
-    
+
 ```
-</SectionBox> 
+</SectionBox>
 
 <SectionBox>
 
 ### Lähdekoodin ajaminen <a name="lähdekoodin-ajaminen"></a>
 
-Voit suorittaa tehtävään liittyvän lähdekoodin klikkaamalla TMC:n __play__-nappia. 
+Voit suorittaa tehtävään liittyvän lähdekoodin klikkaamalla TMC:n __play__-nappia.
 
-<img src="/static/images/installation/tmcbeans-toolbar-run.png" 
+<img src="/static/images/installation/linux-tmcbeans-toolbar-run.png"
 alt="Ohjelman ajaminen TMC NetBeansissa"
-width="90%" height="90%"/>
+width="100%" height="100%"/>
 
 
 
@@ -203,25 +193,25 @@ Jos muokkasit AdaLovelace.java-tiedostoa edellä kuvatun näköiseksi, ohjelman 
 
 > `Ava Lovelace :D`
 
-Voit muokata lähdekoodia ja ajaa ohjelman uudestaan. 
+Voit muokata lähdekoodia ja ajaa ohjelman uudestaan.
 
-</SectionBox> 
+</SectionBox>
 
-<SectionBox> 
+<SectionBox>
 
 ### Lähdekoodin testaaminen <a name="lähdekoodin-testaaminen"></a>
 
-Tehtävissä tulee usein mukana automaattisia testejä, jotka antavat palautetta tehtävän onnistumisesta. 
+Tehtävissä tulee usein mukana automaattisia testejä, jotka antavat palautetta tehtävän onnistumisesta.
 
 Testit ajetaan klikkaamalla TMC:ssä __testinappia__, joka näyttää seuraavalta.
 
-<img src="/static/images/installation/tmcbeans-toolbar-test.png" 
+<img src="/static/images/installation/linux-tmcbeans-toolbar-test.png"
 alt="Ohjelman testaaminen TMC NetBeansissa"
-width="90%" height="90%"/>
+width="100%" height="100%"/>
 
 
-Kun suoritat yllä luodun AdaLovelace-tehtävän testit, testien pitäisi antaa virheilmoitus. 
-Virheilmoitusta tarkastelemalla saamme selville, että tulostus ei ollut toivottu. 
+Kun suoritat yllä luodun AdaLovelace-tehtävän testit, testien pitäisi antaa virheilmoitus.
+Virheilmoitusta tarkastelemalla saamme selville, että tulostus ei ollut toivottu.
 Tulostuksen olisi pitänyt olla muotoa "Ada Lovelace".
 
 Ohjelman tulostus on muotoa "Ada Lovelace" kun muokkaat lähdekoodin seuraavanlaiseksi.
@@ -237,34 +227,34 @@ Ohjelman tulostus on muotoa "Ada Lovelace" kun muokkaat lähdekoodin seuraavanla
 
 Aja nyt tehtävään liittyvät testit uudestaan. Tällä kertaa testit menevät läpi ja TMC kysyy lähetetäänkö tehtävä palvelimelle.
 
-</SectionBox> 
+</SectionBox>
 
-<SectionBox> 
+<SectionBox>
 
 ### Tehtävän lähettäminen palvelimelle <a name="tehtävän-lähettäminen-palvelimelle"></a>
 
-Tehtävän lähettäminen palvelimelle tarkoittaa tehtävän palauttamista arvostelua varten. 
+Tehtävän lähettäminen palvelimelle tarkoittaa tehtävän palauttamista arvostelua varten.
 Tehtävät tarkastetaan lähes poikkeuksetta automaattisesti, joten saat tehtävistä pisteet (tai mahdollisen virheviestin) nopeasti.
 
-Tehtävän voi palauttaa joko testien ajamisen jälkeen kun testit menevät läpi, tai erikseen TMC:ssä olevaa nappia painamalla. 
+Tehtävän voi palauttaa joko testien ajamisen jälkeen kun testit menevät läpi, tai erikseen TMC:ssä olevaa nappia painamalla.
 Tehtävän palauttamiseen liittyvä nappi näyttä seuraavalta.
 
-<img src="/static/images/installation/tmcbeans-toolbar-submit.png" 
+<img src="/static/images/installation/linux-tmcbeans-toolbar-submit.png"
 alt="Tehtävän lähettäminen palvelimelle TMC NetBeansissa"
-width="90%" height="90%"/>
+width="100%" height="100%"/>
 
 
 
 Kun tehtävä on lähetetty palvelimelle ja siihen liittyvät testit menevät läpi, saat tehtävästä pisteet sekä mahdollisen lyhyen kyselyn. Vastaathan aina kyselyihin, sillä vastaukset auttavat kurssien kehityksessä.
 
-</SectionBox> 
+</SectionBox>
 
-<SectionBox> 
+<SectionBox>
 
 ### Pistetilanteen tarkistaminen <a name="pistetilanteen-tarkistaminen"></a>
 
-Voit tarkastaa oman pistetilanteesi kirjautumalla osoitteessa [tmc.mooc.fi](https://tmc.mooc.fi) olevaan verkkopalveluun. Verkkopalveluun kirjaudutaan TMC-tunnuksilla.
+Voit tarkastaa oman pistetilanteesi kirjautumalla osoitteessa [tmc.mooc.fi](https://tmc.mooc.fi) olevaan verkkopalveluun. Verkkopalveluun kirjaudutaan Mooc.fi-tunnuksilla.
 
-</SectionBox> 
+</SectionBox>
 
 </ContentBox>
