@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import getUserOS from "/util/getUserOS"
@@ -6,11 +6,13 @@ import OSSelector from "/components/Installation/OSSelector"
 import MDX_Linux from "/static/md_pages/netbeans_installation_fi.mdx"
 import MDX_Windows from "/static/md_pages/netbeans_installation_windows_fi.mdx"
 import MDX_MAC from "/static/md_pages/netbeans_installation_mac_fi.mdx"
+import MDX_Any from "/static/md_pages/netbeans_installation_any_fi.mdx"
 import UserOSContext from "/contexes/UserOSContext"
 import { userOsType } from "/util/getUserOS"
 import NoOsMessage from "/components/Installation/NoOsMessage"
 import LanguageContext from "/contexes/LanguageContext"
 import getInstallationTranslator from "/translations/installation"
+import Spinner from "/components/Spinner"
 
 const Background = styled.section`
   padding-top: 2em;
@@ -82,17 +84,24 @@ export const ContentBox = styled.div`
 
 const NetBeans = () => {
   const [userOS, setUserOs] = React.useState<userOsType>(getUserOS())
+  const [render, setRender] = React.useState(false)
   const { language } = React.useContext(LanguageContext)
   const t = getInstallationTranslator(language)
 
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)
   }
+
+  useEffect(() => {
+    setRender(true)
+  }, [])
+
   const mapOsToInstructions: Record<userOsType, JSX.Element> = {
     Linux: <MDX_Linux />,
     Windows: <MDX_Windows />,
     MAC: <MDX_MAC />,
     OS: <NoOsMessage />,
+    Any: <MDX_Any />,
   }
 
   return (
@@ -109,8 +118,14 @@ const NetBeans = () => {
           </Title>
         </TitleBackground>
         <Content>
-          <OSSelector />
-          {mapOsToInstructions[userOS]}
+          {render ? (
+            <>
+              <OSSelector />
+              {mapOsToInstructions[userOS]}
+            </>
+          ) : (
+            <Spinner />
+          )}
         </Content>
       </Background>
     </UserOSContext.Provider>
