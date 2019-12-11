@@ -44,8 +44,8 @@ const OSSelector = () => {
         Icon={Windows}
         active={OS === "Windows"}
       />
-      <OSSelectorButton OSName="MAC" Icon={MAC} active={OS === "MAC"} />
-      <OSSelectorButton OSName="Any" Icon={AnyOS} active={OS === "Any"} />
+      <OSSelectorButton OSName="macOS" Icon={MAC} active={OS === "macOS"} />
+      <OSSelectorButton OSName="ZIP" Icon={AnyOS} active={OS === "ZIP"} />
     </Container>
   )
 }
