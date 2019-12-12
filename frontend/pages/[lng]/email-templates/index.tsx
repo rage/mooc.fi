@@ -17,6 +17,7 @@ import {
   DialogContentText,
   DialogActions,
   TextField,
+  Snackbar,
 } from "@material-ui/core"
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
@@ -26,6 +27,7 @@ import { NextPageContext as NextContext } from "next"
 import Router from "next/router"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
+import SnackbarContentWrapper from "/components/SnackbarContentWrapper"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -80,25 +82,26 @@ const EmailTemplates = (admin: Boolean) => {
 }
 
 const CustomDialog = () => {
-  const [open, setOpen] = React.useState(false)
+  const [openDialog, setOpenDialog] = React.useState(false)
+  const [openErrorSnackbar, setOpenErrorSnackbar] = React.useState(false)
   const [nameInput, setNameInput] = React.useState("")
   const { language } = useContext(LanguageContext)
-  const handleClickOpen = () => {
-    setOpen(true)
+  const handleDialogClickOpen = () => {
+    setOpenDialog(true)
   }
 
-  const handleClose = () => {
-    setOpen(false)
+  const handleDialogClose = () => {
+    setOpenDialog(false)
   }
 
   return (
     <div>
-      <Button color="primary" onClick={handleClickOpen}>
+      <Button color="primary" onClick={handleDialogClickOpen}>
         Create new
       </Button>
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={openDialog}
+        onClose={handleDialogClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Create</DialogTitle>
@@ -119,24 +122,29 @@ const CustomDialog = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleDialogClose} color="primary">
             Cancel
           </Button>
           <ApolloConsumer>
             {client => (
               <Button
                 onClick={async () => {
-                  const { data } = await client.mutate<AddEmailTemplate>({
-                    mutation: AddEmailTemplateMutation,
-                    variables: { name: nameInput },
-                  })
-                  console.log(data)
-                  const url =
-                    "/" +
-                    language +
-                    "/email-templates/" +
-                    data?.addEmailTemplate.id
-                  Router.push(url)
+                  try {
+                    const { data } = await client.mutate<AddEmailTemplate>({
+                      mutation: AddEmailTemplateMutation,
+                      variables: { name: nameInput },
+                    })
+                    console.log(data)
+
+                    const url =
+                      "/" +
+                      language +
+                      "/email-templates/" +
+                      data?.addEmailTemplate.id
+                    Router.push(url)
+                  } catch {
+                    setOpenErrorSnackbar(true)
+                  }
                 }}
                 color="primary"
               >
@@ -146,10 +154,56 @@ const CustomDialog = () => {
           </ApolloConsumer>
         </DialogActions>
       </Dialog>
+      <CustomSnackBar
+        openErrorSnackbar={openErrorSnackbar}
+        setOpenErrorSnackbar={setOpenErrorSnackbar}
+      />
     </div>
   )
 }
 
+interface CustomSnackBarProps {
+  openErrorSnackbar: boolean
+  setOpenErrorSnackbar: Function
+}
+
+const CustomSnackBar = (props: CustomSnackBarProps) => {
+  const { openErrorSnackbar, setOpenErrorSnackbar } = props
+  const handleClick = () => {
+    setOpenErrorSnackbar(true)
+  }
+
+  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === "clickaway") {
+      return
+    }
+    console.log(event)
+    setOpenErrorSnackbar(false)
+  }
+
+  return (
+    <div>
+      <Button variant="outlined" onClick={handleClick}>
+        Open success snackbar
+      </Button>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={openErrorSnackbar}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <SnackbarContentWrapper
+          onClose={handleClose}
+          variant="error"
+          message="Errror: Could not create new email template!"
+        />
+      </Snackbar>
+    </div>
+  )
+}
 export default EmailTemplates
 
 EmailTemplates.getInitialProps = function(context: NextContext) {
