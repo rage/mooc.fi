@@ -84,7 +84,6 @@ interface RegisterCompletionPageProps {
 }
 
 const RegisterCompletion = ({ slug }: RegisterCompletionPageProps) => {
-  const classes = useStyles()
   const { language } = useContext(LanguageContext)
 
   const t = getRegisterCompletionTranslator(language)
