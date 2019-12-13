@@ -12,7 +12,7 @@ import fetch from "isomorphic-unfetch"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
-const production = true // process.env.NODE_ENV === "production"
+const production = process.env.NODE_ENV === "production"
 const cypress = process.env.CYPRESS === "true"
 
 // @ts-ignore

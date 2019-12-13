@@ -47,7 +47,7 @@ const CourseAndModuleList = () => {
           ) ?? []
 
         return { ...module, courses: moduleCourses }
-      }) as AllModules_study_modules_with_courses[],
+      }),
     [study_modules, courses],
   )
 
