@@ -71,7 +71,7 @@ export const ContentBox = styled.div`
     font-family: Open Sans Condensed, sans serif !important;
   }
   code {
-    background-color: #ff26b8;
+    background-color: #e6f4f1;
     padding: 0.5rem;
   }
   img {
