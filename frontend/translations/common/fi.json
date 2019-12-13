@@ -9,5 +9,6 @@
     "error": "Kirjautuminen epäonnistui. Virheellinen salasana tai sähköpostiosoite/käyttäjänimi",
     "password": "Salasana",
     "username": "Sähköpostiosoite tai käyttäjänimi",
-    "skiplink": "pääsisältöön"
+    "skiplink": "pääsisältöön",
+    "errorTitle": "On tapahtunut virhe"
 }

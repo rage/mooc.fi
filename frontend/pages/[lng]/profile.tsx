@@ -61,29 +61,6 @@ function Profile() {
   const sid = data?.currentUser?.student_number || "no sid"
   const completions = data?.currentUser?.completions ?? []
 
-  /*   let first_name = "No first name"
-  let last_name = "No last name"
-  let sid = "no sid"
-  let email = "no email"
-  let completions: CompletionsData[] = []
-  if (data && data.currentUser) {
-    if (data.currentUser.first_name) {
-      first_name = data.currentUser.first_name
-    }
-    if (data.currentUser.last_name) {
-      last_name = data.currentUser.last_name
-    }
-    if (data.currentUser.email) {
-      email = data.currentUser.email
-    }
-    if (data.currentUser.student_number) {
-      sid = data.currentUser.student_number
-    }
-    if (data.currentUser.completions) {
-      completions = data.currentUser.completions
-    }
-  } */
-
   console.log(data)
   return (
     <>

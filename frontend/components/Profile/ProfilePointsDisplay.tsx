@@ -24,7 +24,6 @@ const ProfilePointsDisplay = () => {
   }
 
   const hasPoints = studentHasPoints({ pointsData: data })
-  console.log(data)
   if (hasPoints) {
     return (
       <>
