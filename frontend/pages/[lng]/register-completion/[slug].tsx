@@ -83,8 +83,7 @@ interface RegisterCompletionPageProps {
   slug?: string | string[]
 }
 
-const RegisterCompletion = (props: RegisterCompletionPageProps) => {
-  const { slug } = props
+const RegisterCompletion = ({ slug }: RegisterCompletionPageProps) => {
   const { language } = useContext(LanguageContext)
 
   const t = getRegisterCompletionTranslator(language)

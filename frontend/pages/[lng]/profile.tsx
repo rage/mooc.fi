@@ -47,6 +47,7 @@ export const UserOverViewQuery = gql`
 
 function Profile() {
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+
   if (error) {
     return <ErrorMessage />
   }

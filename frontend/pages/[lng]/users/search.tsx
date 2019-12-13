@@ -163,7 +163,8 @@ const UserSearch = (props: UserSearchProps) => {
 
   const [loadData, { data, loading }] = useLazyQuery(GET_DATA, { ssr: false })
 
-  const isMobile = useMediaQuery("(max-width:800px)")
+  const isMobile = useMediaQuery("(max-width:800px)", { noSsr: true })
+
   const GridComponent = isMobile ? MobileGrid : WideGrid
 
   if (!props.admin) {
@@ -228,7 +229,6 @@ const UserSearch = (props: UserSearchProps) => {
               Search
             </StyledButton>
           </StyledForm>
-
           <GridComponent
             data={data}
             loading={loading}
@@ -288,6 +288,7 @@ UserSearch.getInitialProps = function(context: NextContext) {
   if (!isSignedIn(context)) {
     redirect(context, "/sign-in")
   }
+
   return {
     admin,
   }

@@ -32,8 +32,7 @@ interface CompletionsProps {
   router: SingletonRouter
 }
 
-const Completions = (props: CompletionsProps) => {
-  const { admin, router } = props
+const Completions = ({ admin, router }: CompletionsProps) => {
   const { language } = useContext(LanguageContext)
   const [lng, changeLng] = useState(
     (router?.query?.language as string) ??
