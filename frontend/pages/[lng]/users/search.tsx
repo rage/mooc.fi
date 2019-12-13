@@ -161,7 +161,7 @@ const UserSearch = (props: UserSearchProps) => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
 
-  const [loadData, { data, loading }] = useLazyQuery(GET_DATA)
+  const [loadData, { data, loading }] = useLazyQuery(GET_DATA, { ssr: false })
 
   const isMobile = useMediaQuery("(max-width:800px)")
   const GridComponent = isMobile ? MobileGrid : WideGrid
