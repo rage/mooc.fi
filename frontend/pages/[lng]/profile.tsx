@@ -60,7 +60,6 @@ function Profile() {
   const sid = data?.currentUser?.student_number || "no sid"
   const completions = data?.currentUser?.completions ?? []
 
-  console.log(data)
   return (
     <>
       <ProfilePageHeader

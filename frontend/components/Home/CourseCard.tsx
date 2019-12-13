@@ -10,7 +10,7 @@ import { CardText } from "/components/Text/paragraphs"
 import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 
-const Background = styled(ClicableButtonBase)`
+const Background = styled(ClicableButtonBase)<{ component: any }>`
   display: flex;
   flex-direction: column;
   @media (max-width: 960px) {
@@ -69,6 +69,7 @@ const CourseCard = ({ course }: CourseCardProps) => (
       <Background
         focusRipple
         disabled={!course || (!course.link || course.link === "")}
+        component="div"
       >
         <ResponsiveCourseImageBase>
           {course ? (
