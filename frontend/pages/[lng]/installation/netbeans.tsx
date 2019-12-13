@@ -99,9 +99,9 @@ const NetBeans = () => {
   const mapOsToInstructions: Record<userOsType, JSX.Element> = {
     Linux: <MDX_Linux />,
     Windows: <MDX_Windows />,
-    MAC: <MDX_MAC />,
+    macOS: <MDX_MAC />,
     OS: <NoOsMessage />,
-    Any: <MDX_Any />,
+    ZIP: <MDX_Any />,
   }
 
   return (
