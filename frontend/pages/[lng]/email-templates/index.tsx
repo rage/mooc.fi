@@ -17,7 +17,6 @@ import {
   DialogContentText,
   DialogActions,
   TextField,
-  Snackbar,
 } from "@material-ui/core"
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
@@ -27,7 +26,7 @@ import { NextPageContext as NextContext } from "next"
 import Router from "next/router"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
-import SnackbarContentWrapper from "/components/SnackbarContentWrapper"
+import CustomSnackbar from "/components/CustomSnackbar"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -83,8 +82,8 @@ const EmailTemplates = (admin: Boolean) => {
 
 const CustomDialog = () => {
   const [openDialog, setOpenDialog] = React.useState(false)
-  const [openErrorSnackbar, setOpenErrorSnackbar] = React.useState(false)
   const [nameInput, setNameInput] = React.useState("")
+  const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = React.useState(false)
   const { language } = useContext(LanguageContext)
   const handleDialogClickOpen = () => {
     setOpenDialog(true)
@@ -143,7 +142,7 @@ const CustomDialog = () => {
                       data?.addEmailTemplate.id
                     Router.push(url)
                   } catch {
-                    setOpenErrorSnackbar(true)
+                    setIsErrorSnackbarOpen(true)
                   }
                 }}
                 color="primary"
@@ -154,56 +153,16 @@ const CustomDialog = () => {
           </ApolloConsumer>
         </DialogActions>
       </Dialog>
-      <CustomSnackBar
-        openErrorSnackbar={openErrorSnackbar}
-        setOpenErrorSnackbar={setOpenErrorSnackbar}
+      <CustomSnackbar
+        open={isErrorSnackbarOpen}
+        setOpen={setIsErrorSnackbarOpen}
+        variant="error"
+        message="Error in creating a new EmailTemplate"
       />
     </div>
   )
 }
 
-interface CustomSnackBarProps {
-  openErrorSnackbar: boolean
-  setOpenErrorSnackbar: Function
-}
-
-const CustomSnackBar = (props: CustomSnackBarProps) => {
-  const { openErrorSnackbar, setOpenErrorSnackbar } = props
-  const handleClick = () => {
-    setOpenErrorSnackbar(true)
-  }
-
-  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
-    if (reason === "clickaway") {
-      return
-    }
-    console.log(event)
-    setOpenErrorSnackbar(false)
-  }
-
-  return (
-    <div>
-      <Button variant="outlined" onClick={handleClick}>
-        Open success snackbar
-      </Button>
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        open={openErrorSnackbar}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <SnackbarContentWrapper
-          onClose={handleClose}
-          variant="error"
-          message="Errror: Could not create new email template!"
-        />
-      </Snackbar>
-    </div>
-  )
-}
 export default EmailTemplates
 
 EmailTemplates.getInitialProps = function(context: NextContext) {
