@@ -10,7 +10,7 @@ export const BackgroundImage = styled.img`
   z-index: -2;
 `
 
-export const FullCoverTextBackground = styled.span`
+export const FullCoverTextBackground = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.8);
