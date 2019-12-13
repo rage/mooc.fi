@@ -17,11 +17,7 @@ interface UserPageProps {
   admin: boolean
 }
 
-const UserPage = (props: UserPageProps) => {
-  const { admin } = props
-  if (!admin) {
-    return <AdminError />
-  }
+const UserPage = ({ admin }: UserPageProps) => {
   const id = useQueryParameter("id")
   const [more, setMore]: any[] = React.useState([])
 
@@ -29,6 +25,10 @@ const UserPage = (props: UserPageProps) => {
     GET_DATA,
     { variables: { upstream_id: Number(id) } },
   )
+
+  if (!admin) {
+    return <AdminError />
+  }
 
   if (error) {
     return (

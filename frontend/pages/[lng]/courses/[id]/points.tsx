@@ -29,12 +29,7 @@ interface CompletionsProps {
   admin: boolean
 }
 
-const Points = (props: CompletionsProps) => {
-  const { admin } = props
-  if (!admin) {
-    return <AdminError />
-  }
-
+const Points = ({ admin }: CompletionsProps) => {
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
@@ -45,6 +40,10 @@ const Points = (props: CompletionsProps) => {
     },
   )
 
+  if (!admin) {
+    return <AdminError />
+  }
+
   if (loading || !data) {
     return <Spinner />
   }
@@ -53,7 +52,6 @@ const Points = (props: CompletionsProps) => {
     return <ModifiableErrorMesage ErrorMessage={JSON.stringify(error)} />
   }
 
-  //TODO: error message thing if course not found
   if (!data.course) {
     return (
       <>
