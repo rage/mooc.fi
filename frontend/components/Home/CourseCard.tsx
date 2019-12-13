@@ -84,7 +84,7 @@ const CourseCard = ({ course }: CourseCardProps) => (
         <TextArea>
           {course ? (
             <>
-              <CardTitle component="h3" variant="h3" gutterBottom={true}>
+              <CardTitle component="h3" variant="h3">
                 {course.name}
               </CardTitle>
               <CardText component="p" variant="body1" paragraph align="left">
