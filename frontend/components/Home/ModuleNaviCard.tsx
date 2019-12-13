@@ -26,23 +26,21 @@ const SkeletonBodyText = styled(Skeleton)`
   margin-top: 0.2rem;
 `
 
-const Base = styled(ClicableButtonBase)`
-  height: 200px;
+const Base = styled(ClicableButtonBase)<{ component: any }>`
+  display: block;
   width: 100%;
+  height: 100%;
   background-color: transparent;
 `
 
 const TextBackground = styled(FullCoverTextBackground)`
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 70%;
 `
 
 const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
   <Grid item xs={12} md={6} lg={6}>
     <LangLink href={`#${module ? module.slug : ""}`}>
-      <Base>
+      <Base component="div">
         {module ? (
           <>
             <ModuleImage module={module} />

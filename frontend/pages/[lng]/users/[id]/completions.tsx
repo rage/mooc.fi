@@ -35,7 +35,7 @@ function CompletionsPage(props: CompletionsProps) {
 
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
-    { variables: { upstream_id: Number(id) } },
+    { variables: { upstream_id: Number(id) }, ssr: false },
   )
 
   if (!props.admin) {
