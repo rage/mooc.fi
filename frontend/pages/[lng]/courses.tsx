@@ -11,6 +11,7 @@ import styled from "styled-components"
 import Spinner from "/components/Spinner"
 import { H1Background } from "/components/Text/headers"
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -26,9 +27,11 @@ const Courses = ({ admin }: CourseProps) => {
   )
 
   if (error) {
-    ;<div>
-      Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-    </div>
+    return (
+      <ModifiableErrorMessage
+        ErrorMessage={JSON.stringify(error, undefined, 2)}
+      />
+    )
   }
 
   if (!admin) {

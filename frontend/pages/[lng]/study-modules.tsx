@@ -1,6 +1,5 @@
 import * as React from "react"
 import { NextPageContext as NextContext } from "next"
-// import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import AdminError from "/components/Dashboard/AdminError"
 import { Container, Grid, CircularProgress } from "@material-ui/core"
@@ -9,7 +8,7 @@ import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEdi
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import ModuleGrid from "/components/ModuleGrid"
-
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 
@@ -23,13 +22,12 @@ const StudyModules = ({ admin }: StudyModuleProps) => {
   )
 
   if (error) {
-    return <div>Error: {JSON.stringify(error)}</div>
+    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
   }
 
   if (!admin) {
     return <AdminError />
   }
-
   if (loading || !data) {
     return (
       <>

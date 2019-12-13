@@ -246,7 +246,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
 
         if (idx === 0) {
           if (component == "users") {
-            target = `${component}/search`
+            target = `/${component}/search`
           }
         } else {
           let componentsSoFar = urlRouteComponents.slice(0, idx + 1)
