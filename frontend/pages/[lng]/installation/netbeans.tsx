@@ -48,6 +48,7 @@ export const ContentBox = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding: 2em;
+  padding-top: 5em;
   margin-top: 1em;
   font-size: 18px;
   line-height: 37px;
