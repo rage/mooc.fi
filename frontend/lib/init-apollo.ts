@@ -56,17 +56,21 @@ function create(initialState: any, accessToken?: string) {
     cacheRedirects: {
       Query: {
         course: (_, args, { getCacheKey }) =>
-          getCacheKey({ __typename: "Course", slug: args.slug }),
+          getCacheKey({ __typename: "Course", slug: args.slug, id: args.id }),
         study_module: (_, args, { getCacheKey }) =>
-          getCacheKey({ __typename: "StudyModule", slug: args.slug }),
+          getCacheKey({
+            __typename: "StudyModule",
+            slug: args.slug,
+            id: args.id,
+          }),
       },
     },
     dataIdFromObject: (object: any) => {
       switch (object.__typename) {
         case "Course":
-          return `Course:${object.slug}`
+          return `Course:${object.slug}:${object.id}`
         case "StudyModule":
-          return `StudyModule:${object.slug}`
+          return `StudyModule:${object.slug}:${object.id}`
         default:
           return defaultDataIdFromObject(object)
       }
