@@ -25,7 +25,7 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
   }
   @media (min-width: 430px) and (max-width: 600px) {
     width: 45%;
-    height: 215px;
+    height: 235px;
   }
   @media (min-width: 600px) and (max-width: 960px) {
     width: 40%;
