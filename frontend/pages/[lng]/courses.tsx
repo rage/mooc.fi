@@ -8,7 +8,7 @@ import CourseGrid from "/components/CourseGrid"
 import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"
-import Spinner from "/components/Spinner"
+// import Spinner from "/components/Spinner"
 import { H1Background } from "/components/Text/headers"
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
@@ -29,7 +29,7 @@ const Courses = ({ admin }: CourseProps) => {
   if (error) {
     return (
       <ModifiableErrorMessage
-        ErrorMessage={JSON.stringify(error, undefined, 2)}
+        errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
   }
@@ -38,17 +38,13 @@ const Courses = ({ admin }: CourseProps) => {
     return <AdminError />
   }
 
-  if (loading || !data) {
-    return <Spinner />
-  }
-
   return (
     <Background>
       <WideContainer>
         <H1Background component="h1" variant="h1" align="center">
           All Courses
         </H1Background>
-        <CourseGrid courses={data.courses} />
+        <CourseGrid courses={data?.courses} loading={loading} />
       </WideContainer>
     </Background>
   )

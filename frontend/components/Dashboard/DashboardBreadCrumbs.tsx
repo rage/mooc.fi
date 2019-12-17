@@ -229,7 +229,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
         setAwaitedCrumb(null)
       }
     }
-  }, [router.asPath])
+  }, [router?.asPath])
 
   if (urlRouteComponents.length < 1) {
     return null

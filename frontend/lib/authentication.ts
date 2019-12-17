@@ -36,12 +36,12 @@ export const signIn = async ({
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
 
-  const back = nookies.get()["redirect-back"]
+  const { as, href } = JSON.parse(nookies.get()["redirect-back"] ?? {})
 
   if (redirect) {
     setTimeout(() => {
-      if (back) {
-        Router.push(back)
+      if (as && href) {
+        Router.push(href, as, { shallow: true })
       } else {
         window.history.back()
       }
@@ -56,7 +56,8 @@ export const signOut = async (apollo: ApolloClient<any>) => {
     document.cookie =
       "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   })
-  Router.push(Router.asPath)
+  const { pathname = "/", asPath = "/" } = Router?.router ?? {}
+  Router.push(pathname, asPath)
 }
 
 const getCookie = (key: string) => {

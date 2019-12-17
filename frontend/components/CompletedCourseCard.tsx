@@ -7,10 +7,10 @@ import DoneIcon from "@material-ui/icons/Done"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
-import { ClicableDiv } from "/components/Surfaces/ClicableCard"
+import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 
-const Background = styled(ClicableDiv)`
+const Background = styled(ClickableDiv)`
   display: flex;
   flex-direction: column;
   @media (min-width: 600px) {

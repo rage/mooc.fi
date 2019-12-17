@@ -7,10 +7,11 @@ import styled from "styled-components"
 import { mime } from "/util/imageUtils"
 import LangLink from "/components/LangLink"
 import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
-import { ClicableDiv } from "/components/Surfaces/ClicableCard"
+import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import Skeleton from "@material-ui/lab/Skeleton"
 
-const Base = styled(ClicableDiv)`
+const Base = styled(ClickableDiv)`
   width: 100%;
   overflow: hidden;
   height: 200px;
@@ -79,12 +80,12 @@ const NaviCardTitle = styled(Typography)`
   }
   flex: 1;
 `
-
-function ModuleCard({
-  module,
-}: {
+interface ModuleCardProps {
   module?: AllEditorModulesWithTranslations_study_modules
-}) {
+  loading?: boolean
+}
+
+function ModuleCard({ module, loading }: ModuleCardProps) {
   const imageUrl = module
     ? module.image
       ? `../../static/images/${module.image}`
@@ -94,7 +95,11 @@ function ModuleCard({
   return (
     <Grid item xs={12} sm={6} lg={6}>
       <Base>
-        {module ? (
+        {loading ? (
+          <ImageBackground>
+            <Skeleton variant="rect" height="100%" />
+          </ImageBackground>
+        ) : module ? (
           <picture>
             <source srcSet={`${imageUrl}?webp`} type="image/webp" />
             <source srcSet={imageUrl} type={mime(imageUrl)} />
@@ -113,15 +118,29 @@ function ModuleCard({
         )}
         <ImageCover />
         <ContentArea>
-          <NaviCardTitle align="left">
-            {module ? module.name : "New module"}
-          </NaviCardTitle>
+          {loading ? (
+            <NaviCardTitle align="left" component="div">
+              <Skeleton variant="text" />
+            </NaviCardTitle>
+          ) : (
+            <NaviCardTitle align="left">
+              {module ? module.name : "New module"}
+            </NaviCardTitle>
+          )}
 
-          {module ? (
+          {loading ? (
+            <ButtonWithPaddingAndMargin
+              variant="text"
+              color="secondary"
+              style={{ width: "68%" }}
+            >
+              <Skeleton variant="text" width="100%" />
+            </ButtonWithPaddingAndMargin>
+          ) : module ? (
             <LangLink href={`/study-modules/${module.slug}/edit`}>
               <a>
                 <ButtonWithPaddingAndMargin
-                  variant="contained"
+                  variant="text"
                   color="secondary"
                   style={{ width: "68%" }}
                 >
@@ -134,7 +153,7 @@ function ModuleCard({
             <LangLink href={`/study-modules/new`}>
               <a>
                 <ButtonWithPaddingAndMargin
-                  variant="contained"
+                  variant="text"
                   color="secondary"
                   style={{ width: "68%" }}
                 >

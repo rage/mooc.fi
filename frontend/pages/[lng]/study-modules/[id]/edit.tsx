@@ -70,13 +70,16 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   }
 
   if (error) {
-    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
 
   if (!loading && !data?.study_module && typeof window !== "undefined") {
-    redirectTimeout = setTimeout(() => router.push(listLink), 5000)
+    redirectTimeout = setTimeout(
+      () => router.push("/[lng]/study-modules", listLink, { shallow: true }),
+      5000,
+    )
   }
 
   return (

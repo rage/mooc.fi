@@ -49,7 +49,7 @@ const Points = ({ admin }: CompletionsProps) => {
   }
 
   if (error) {
-    return <ModifiableErrorMesage ErrorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMesage errorMessage={JSON.stringify(error)} />
   }
 
   if (!data.course) {
