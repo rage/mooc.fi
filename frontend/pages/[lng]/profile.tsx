@@ -47,6 +47,7 @@ export const UserOverViewQuery = gql`
 
 function Profile() {
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+
   if (error) {
     return <ErrorMessage />
   }
@@ -60,7 +61,6 @@ function Profile() {
   const sid = data?.currentUser?.student_number || "no sid"
   const completions = data?.currentUser?.completions ?? []
 
-  console.log(data)
   return (
     <>
       <ProfilePageHeader

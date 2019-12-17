@@ -26,14 +26,8 @@ export const CourseDetailsFromSlugQuery = gql`
 interface CourseProps {
   admin: boolean
 }
-const Course = (props: CourseProps) => {
-  const { admin } = props
-
+const Course = ({ admin }: CourseProps) => {
   const slug = useQueryParameter("id")
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
@@ -42,6 +36,11 @@ const Course = (props: CourseProps) => {
     },
   )
 
+  if (!admin) {
+    return <AdminError />
+  }
+
+  //TODO add circular progress
   if (loading || !data) {
     return <Spinner />
   }
