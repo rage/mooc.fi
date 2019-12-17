@@ -29,7 +29,7 @@ const SkeletonBodyText = styled(Skeleton)`
 const Base = styled(ClicableButtonBase)<{ component: any }>`
   display: block;
   width: 100%;
-  height: 100%;
+  height: 215px;
   background-color: transparent;
 `
 
