@@ -17,6 +17,15 @@ const NaviTitle = styled(H2Background)`
   margin-top: 1.3em;
   margin-bottom: 1em;
   border-bottom: 5px solid #00281c;
+  @media (max-width: 440px) {
+    font-size: 39px;
+  }
+  @media (max-width: 400px) {
+    font-size: 32px;
+  }
+  @media (max-width: 340px) {
+    font-size: 28px;
+  }
 `
 const ModuleNavi = ({
   modules,
