@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import ButtonBase from "@material-ui/core/ButtonBase"
 
-export const ClicableButtonBase = styled(ButtonBase)`
+export const ClickableButtonBase = styled(ButtonBase)`
   background-color: white;
   position: relative;
   box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
@@ -13,7 +13,7 @@ export const ClicableButtonBase = styled(ButtonBase)`
   }
 `
 
-export const ClicableDiv = styled.div`
+export const ClickableDiv = styled.div`
   position: relative;
   box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
 

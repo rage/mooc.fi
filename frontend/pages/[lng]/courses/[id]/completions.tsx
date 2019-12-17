@@ -68,7 +68,7 @@ const Completions = ({ admin, router }: CompletionsProps) => {
   }
 
   if (error) {
-    return <ModifiableErrorMessage ErrorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   if (!data.course) {

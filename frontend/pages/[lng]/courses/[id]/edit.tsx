@@ -112,7 +112,7 @@ const EditCourse = (props: EditCourseProps) => {
   if (courseError || studyModulesError) {
     return (
       <ModifiableErrorMessage
-        ErrorMessage={JSON.stringify(courseError || studyModulesError)}
+        errorMessage={JSON.stringify(courseError || studyModulesError)}
       />
     )
   }
@@ -125,7 +125,10 @@ const EditCourse = (props: EditCourseProps) => {
     !courseData?.course &&
     typeof window !== "undefined"
   ) {
-    redirectTimeout = setTimeout(() => router.push(listLink), 5000)
+    redirectTimeout = setTimeout(
+      () => router.push("/[lng]/courses", listLink, { shallow: true }),
+      5000,
+    )
   }
 
   return (
