@@ -10,6 +10,7 @@ import MDX_Windows_en from "/static/md_pages/netbeans_installation_Windows_en.md
 import MDX_MAC from "/static/md_pages/netbeans_installation_macOS_fi.mdx"
 import MDX_MAC_en from "/static/md_pages/netbeans_installation_macOS_en.mdx"
 import MDX_Any from "/static/md_pages/netbeans_installation_ZIP_fi.mdx"
+import MDX_Any_en from "/static/md_pages/netbeans_installation_ZIP_en.mdx"
 import UserOSContext from "/contexes/UserOSContext"
 import { userOsType } from "/util/getUserOS"
 import NoOsMessage from "/components/Installation/NoOsMessage"
@@ -108,7 +109,7 @@ const NetBeans = () => {
     Windows: { en: <MDX_Windows_en />, fi: <MDX_Windows /> },
     macOS: { en: <MDX_MAC_en />, fi: <MDX_MAC /> },
     OS: { en: <NoOsMessage />, fi: <NoOsMessage /> },
-    ZIP: { en: <MDX_Any />, fi: <MDX_Any /> },
+    ZIP: { en: <MDX_Any_en />, fi: <MDX_Any /> },
   }
 
   return (
