@@ -8,7 +8,7 @@ import PointsList from "./DashboardPointsList"
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
 
-import { TextField, Grid, Slider, Select, MenuItem } from "@material-ui/core"
+import { TextField, Grid, Slider, MenuItem } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 
 import { range } from "lodash"
@@ -187,21 +187,25 @@ function PaginatedPointsList(props: Props) {
           />
         </Grid>
         <Grid item xs={6}>
-          <Select
+          <TextField
             id="organization"
-            multiple
+            label="Organizations"
+            select
+            variant="outlined"
             value={organizationIds}
             onChange={(event: React.ChangeEvent<any>) =>
               setOrganizationIds(event.target.value)
             }
-            input={<TextField variant="outlined" />}
+            SelectProps={{
+              multiple: true,
+            }}
           >
             {organizationValues.map(o => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
               </MenuItem>
             ))}
-          </Select>
+          </TextField>
         </Grid>
         <Grid item xs={10}>
           <Slider
