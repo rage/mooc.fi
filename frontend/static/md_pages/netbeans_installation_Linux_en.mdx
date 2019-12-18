@@ -1,0 +1,54 @@
+import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
+
+<ContentBox>
+
+## Installation for Linux
+---
+</ContentBox>
+
+<ContentBox>
+
+<SectionBox>
+
+### 1. Installing Java 
+
+We recommend installing the OpenJDK package for linux. 
+Execute the following command in terminal:
+
+> `sudo apt-get install openjdk-8-jdk`
+
+If you have other versions of Java installed, they may precend the IDE from working properly. 
+We recommend removing all other Java versions. 
+Especially Java versions 9, 10 and 11 have proven problematic. 
+
+Change the active version of Java with the command: 
+
+> `sudo update-alternatives --config java`
+
+Select the option number with Java 8, for example on my computer this is "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java", and press enter. 
+
+Next install OpenJFX, which we use to create graphical user interfaces. 
+Use the command: 
+
+> `sudo apt-get install openjfx`
+
+</SectionBox>
+
+<SectionBox>
+
+###  2. Installing NetBeans with TMC
+
+Download the file [https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_amd64.snap](https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_amd64.snap).
+
+After the download is complete, double click the file. 
+
+If this does not work, navigate to the folder where you have downloaded the file to, and run the command: 
+
+> `chmod +x tmc-netbeans_org_mooc_tmcbeans-linux.sh && ./tmx-netbeans_org_mooc_tmcbeans-linux.sh`
+
+Then follow the instructions on your screen.
+
+</SectionBox>
+
+</ContentBox>
+
