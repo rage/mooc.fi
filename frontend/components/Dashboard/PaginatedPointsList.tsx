@@ -8,7 +8,7 @@ import PointsList from "./DashboardPointsList"
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
 
-import { TextField, Grid, Slider } from "@material-ui/core"
+import { TextField, Grid, Slider, Select, MenuItem } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 
 import { range } from "lodash"
@@ -18,6 +18,7 @@ import {
   UserCourseSettingses_UserCourseSettingses_edges,
   UserCourseSettingses_UserCourseSettingses_pageInfo,
 } from "/static/types/generated/UserCourseSettingses"
+import { UserOverView_currentUser_organization_memberships_organization } from "/static/types/generated/UserOverView"
 
 export const StudentProgresses = gql`
   query UserCourseSettingses(
@@ -25,9 +26,11 @@ export const StudentProgresses = gql`
     $cursor: ID
     $search: String
     $course_string: String
+    $organization_ids: [ID!]
   ) {
     UserCourseSettingses(
       course_id: $course_id
+      organization_ids: $organization_ids
       first: 15
       after: $cursor
       search: $search
@@ -69,10 +72,27 @@ export const StudentProgresses = gql`
                 }
               }
             }
+            organization_memberships {
+              id
+              organization {
+                id
+                slug
+                organization_translations {
+                  id
+                  language
+                  name
+                }
+              }
+              role
+            }
           }
         }
       }
-      count(search: $search, course_id: $course_id)
+      count(
+        search: $search
+        course_id: $course_id
+        organization_ids: $organization_ids
+      )
     }
   }
 `
@@ -85,15 +105,24 @@ const LoadingPointCardSkeleton = styled(Skeleton)`
 `
 
 interface Props {
-  courseID: string
+  courseId: string
+  organizations: UserOverView_currentUser_organization_memberships_organization[]
   cursor?: string
 }
 
 function PaginatedPointsList(props: Props) {
-  const { courseID } = props
+  const { courseId, organizations } = props
+
+  const organizationValues = organizations?.map(o => ({
+    value: o.id,
+    label: o.organization_translations?.[0]?.name ?? o.slug,
+  }))
+
   const [searchString, setSearchString] = useState("")
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
+  // @ts-ignore
+  const [organizationIds, setOrganizationIds] = useState<string[]>([])
 
   // use lazy query to prevent running query on each render
   const [getData, { data, loading, error, fetchMore }] = useLazyQuery<
@@ -102,18 +131,17 @@ function PaginatedPointsList(props: Props) {
     fetchPolicy: "cache-first",
   })
 
-  useEffect(
-    () =>
-      getData({
-        variables: {
-          course_id: courseID,
-          cursor: null,
-          search,
-          course_string: courseID,
-        },
-      }),
-    [search],
-  )
+  useEffect(() => {
+    getData({
+      variables: {
+        course_id: courseId,
+        cursor: null,
+        search,
+        course_string: courseId,
+        organization_ids: organizationIds || [],
+      },
+    })
+  }, [search, organizationIds])
 
   if (error) {
     return <p>ERROR: {JSON.stringify(error)}</p>
@@ -141,7 +169,7 @@ function PaginatedPointsList(props: Props) {
 
   // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
-  console.log(data)
+
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>
@@ -158,7 +186,24 @@ function PaginatedPointsList(props: Props) {
             onKeyDown={e => e.key === "Enter" && setSearch()}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
+          <Select
+            id="organization"
+            multiple
+            value={organizationIds}
+            onChange={(event: React.ChangeEvent<any>) =>
+              setOrganizationIds(event.target.value)
+            }
+            input={<TextField variant="outlined" />}
+          >
+            {organizationValues.map(o => (
+              <MenuItem key={o.value} value={o.value}>
+                {o.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={10}>
           <Slider
             value={cutterValue}
             onChangeCommitted={(_, value) => setCutterValue(value as number)}
@@ -197,10 +242,11 @@ function PaginatedPointsList(props: Props) {
               fetchMore({
                 query: StudentProgresses,
                 variables: {
-                  course_id: courseID,
+                  course_id: courseId,
                   cursor: UserCourseSettingses.pageInfo.endCursor,
                   search: search !== "" ? search : undefined,
-                  course_string: courseID,
+                  course_string: courseId,
+                  organization_ids: organizationIds || [],
                 },
 
                 updateQuery: (previousResult, { fetchMoreResult }) => {

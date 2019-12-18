@@ -7,7 +7,7 @@ import { NextPageContext as NextContext } from "next"
 import { ApolloClient, NormalizedCacheObject, gql } from "apollo-boost"
 import { AppContext } from "next/app"
 import { getAccessToken } from "/lib/authentication"
-import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+// import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -16,6 +16,19 @@ export const UserDetailQuery = gql`
       first_name
       last_name
       email
+      organization_memberships {
+        id
+        organization {
+          id
+          slug
+          organization_translations {
+            id
+            language
+            name
+          }
+        }
+        role
+      }
     }
   }
 `
@@ -27,7 +40,7 @@ interface Props {
   apollo: ApolloClient<NormalizedCacheObject>
 }
 
-let currentUserCache: Record<string, UserOverView_currentUser> = {}
+// let currentUserCache: Record<string, UserOverView_currentUser> = {}
 
 const withApolloClient = (App: any) => {
   return class Apollo extends React.Component {
@@ -55,17 +68,24 @@ const withApolloClient = (App: any) => {
       const apollo = initApollo(undefined, accessToken)
 
       // prevent repeating useroverview queries
-      if (accessToken && !currentUserCache[accessToken]) {
+      // FIXME: way to invalidate this?
+      const { data } = await apollo.query({
+        query: UserDetailQuery,
+        fetchPolicy: "cache-first",
+      })
+      console.log("userdata", data)
+      /*       if (accessToken && !currentUserCache[accessToken]) {
         const { data } = await apollo.query({ query: UserDetailQuery })
+        console.log("userdata", data)
         currentUserCache[accessToken] = data.currentUser
-      }
+      } */
 
       if (res?.finished) {
         return {}
       }
 
       // should reset to undefined when logged out
-      appProps.currentUser = currentUserCache[accessToken ?? ""]
+      appProps.currentUser = data?.currentUser //currentUserCache[accessToken ?? ""]
 
       if (!process.browser) {
         try {

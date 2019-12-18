@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
@@ -15,6 +15,8 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
+import UserDetailContext from "/contexes/UserDetailContext"
+import { UserOverView_currentUser_organization_memberships } from "/static/types/generated/UserOverView"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -32,6 +34,8 @@ interface CompletionsProps {
 const Points = ({ admin }: CompletionsProps) => {
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
+
+  const { currentUser } = useContext(UserDetailContext)
 
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
@@ -59,6 +63,14 @@ const Points = ({ admin }: CompletionsProps) => {
       </>
     )
   }
+
+  const userOrganizations = (
+    currentUser?.organization_memberships?.filter(
+      (o: UserOverView_currentUser_organization_memberships) =>
+        ["Teacher", "OrganizationAdmin"].includes((o.role ?? "") as string),
+    ) ?? []
+  ).map(o => o.organization)
+
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardTabBar slug={slug} selectedValue={2} />
@@ -71,7 +83,10 @@ const Points = ({ admin }: CompletionsProps) => {
           Points
         </SubtitleNoBackground>
         <PointsExportButton slug={slug} />
-        <PaginatedPointsList courseID={data.course.id} />
+        <PaginatedPointsList
+          courseId={data.course.id}
+          organizations={userOrganizations}
+        />
       </Container>
     </CourseLanguageContext.Provider>
   )
@@ -85,6 +100,8 @@ Points.getInitialProps = function(context: NextContext) {
   }
   return {
     admin,
+    // @ts-ignore
+    currentUser: context.currentUser,
   }
 }
 

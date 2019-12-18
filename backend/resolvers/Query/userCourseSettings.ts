@@ -35,6 +35,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       user_id: idArg(),
       user_upstream_id: intArg(),
       course_id: idArg(),
+      organization_ids: idArg({ list: true }),
       first: intArg(),
       after: idArg(),
       last: intArg(),
@@ -52,6 +53,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
         user_id,
         course_id,
         user_upstream_id,
+        organization_ids,
         search,
       } = args
       if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
@@ -70,6 +72,9 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
             OR: {
               id: user_id,
               upstream_id: user_upstream_id,
+              organization_memberships_some: organization_ids?.length
+                ? { organization: { id_in: organization_ids } }
+                : undefined,
               OR: buildSearch(
                 [
                   "first_name_contains",
@@ -94,15 +99,23 @@ const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       user_id: idArg(),
       course_id: idArg(),
+      organization_ids: idArg({ list: true }),
     },
     resolve: (_, args, ctx) => {
       checkAccess(ctx)
-      const { user_id, course_id } = args
+      const { user_id, course_id, organization_ids } = args
       const prisma: Prisma = ctx.prisma
       return prisma
         .userCourseSettingsesConnection({
           where: {
-            user: { id: user_id },
+            user: {
+              OR: {
+                id: user_id,
+                organization_memberships_some: organization_ids?.length
+                  ? { organization: { id_in: organization_ids } }
+                  : undefined,
+              },
+            },
             course: { id: course_id },
           },
         })

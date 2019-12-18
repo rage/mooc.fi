@@ -13,15 +13,19 @@ const UserCourseSettingsConnection = prismaObjectType({
       args: {
         course_id: idArg(),
         search: stringArg(),
+        organization_ids: idArg({ list: true }),
       },
       resolve: async (_, args, ctx) => {
-        const { search, course_id } = args
+        const { search, course_id, organization_ids } = args
 
         const prisma: Prisma = ctx.prisma
         return await prisma
           .userCourseSettingsesConnection({
             where: {
               user: {
+                organization_memberships_some: organization_ids?.length
+                  ? { organization: { id_in: organization_ids } }
+                  : undefined,
                 OR: buildSearch(
                   [
                     "first_name_contains",

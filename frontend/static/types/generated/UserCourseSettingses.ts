@@ -2,6 +2,8 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
+import { OrganizationRole } from "./globalTypes"
+
 // ====================================================
 // GraphQL query operation: UserCourseSettingses
 // ====================================================
@@ -52,6 +54,29 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progr
   user_course_service_progresses: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_service_progresses[]
 }
 
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_organization_memberships_organization_organization_translations {
+  __typename: "OrganizationTranslation"
+  id: any
+  language: string
+  name: string
+}
+
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_organization_memberships_organization {
+  __typename: "Organization"
+  id: any
+  slug: string
+  organization_translations:
+    | UserCourseSettingses_UserCourseSettingses_edges_node_user_organization_memberships_organization_organization_translations[]
+    | null
+}
+
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_organization_memberships {
+  __typename: "UserOrganization"
+  id: any
+  organization: UserCourseSettingses_UserCourseSettingses_edges_node_user_organization_memberships_organization
+  role: OrganizationRole | null
+}
+
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user {
   __typename: "User"
   id: any
@@ -61,6 +86,9 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user {
   student_number: string | null
   real_student_number: string | null
   progress: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress
+  organization_memberships:
+    | UserCourseSettingses_UserCourseSettingses_edges_node_user_organization_memberships[]
+    | null
 }
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node {
@@ -90,4 +118,5 @@ export interface UserCourseSettingsesVariables {
   cursor?: string | null
   search?: string | null
   course_string?: string | null
+  organization_ids?: string[] | null
 }
