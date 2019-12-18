@@ -1,0 +1,69 @@
+import {ContentBox} from "/pages/[lng]/installation/netbeans"
+
+<ContentBox>
+
+## Installation for Windows
+---
+
+</ContentBox>
+
+<ContentBox>
+
+**NB! The latest Java 8 development environment (8u231) might cause _Malformed argument has embedded quote_ exception when building or 
+running projects**
+
+To prevent this issue, install an older version of the development environment (8u221 or older).
+
+If you want to use the latest development environment, append 
+
+> `-J-Djdk.lang.Process.allowAmbiguousCommands=true`
+ 
+to the **default_options** in **tmcbeans/etc/tmcbeans.conf** (you can find it from the folder where you have installed NetBeans with TMC).
+
+</ContentBox>
+
+<ContentBox>
+
+
+### 1. Installing Java
+
+Download the Java 8 development environment (Java SE Development Kit 8u221) from 
+[https://www.oracle.com/java/technologies/jdk8-downloads.html](https://www.oracle.com/java/technologies/jdk8-downloads.html).
+
+It is likely you are using a 64-bit version of Windows, so download 
+**jdk-8u221-windows-x64.exe**. (_Versions older than 8u221 should work fine too_)
+
+Once the download is complete, install the program to your computer. 
+
+Below is a video on how to install Java on Windows 10. 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wR1vECnJAag" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+---
+
+You will have to create yourself an Oracle-account. 
+The registration asks for all kinds of things, and for every field you do not know what to enter (for example the name of your company),
+you can just enter "Lolled corporation Ltd" or something similiar. 
+
+---
+
+**If you have other versions of Java installed, they may prevent the development environment from working properly.**
+Remove all other Java versions. 
+Especially versions 9, 10 and 11 have proven problematic. 
+
+</ContentBox>
+
+<ContentBox>
+
+###  Installing NetBeans with TMC
+
+Download the file from [http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-windows.exe](http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-windows.exe).
+
+Once the download is complete, install the program to your computer. 
+
+Below is a video on how to install NetBeans with TMC on Windows 10. 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Mwe2vuONhZc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+</ContentBox>
+
