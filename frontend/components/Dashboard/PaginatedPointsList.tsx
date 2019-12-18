@@ -97,6 +97,7 @@ export const StudentProgresses = gql`
   }
 `
 
+// @ts-ignore
 const LoadingPointCardSkeleton = styled(Skeleton)`
   width: 100%;
   height: 300px;
@@ -147,7 +148,7 @@ function PaginatedPointsList(props: Props) {
     return <p>ERROR: {JSON.stringify(error)}</p>
   }
 
-  if (loading) {
+  /*   if (loading) {
     return (
       <>
         <LoadingPointCardSkeleton variant="rect" />
@@ -155,17 +156,17 @@ function PaginatedPointsList(props: Props) {
         <LoadingPointCardSkeleton variant="rect" />
       </>
     )
-  }
+  } */
 
-  if (!data) {
+  /*   if (!data) {
     return null
-  }
+  } */
 
-  const { UserCourseSettingses } = data
+  /*  const { UserCourseSettingses } = data
 
   if (!UserCourseSettingses) {
     return null
-  }
+  } */
 
   // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
@@ -231,11 +232,21 @@ function PaginatedPointsList(props: Props) {
         </Grid>
       </Grid>
       {loading ? (
-        <Skeleton variant="rect" width={120} height={180} />
+        <>
+          {range(5).map((i: number) => (
+            <Skeleton
+              key={`skeleton-${i}`}
+              variant="rect"
+              width="100%"
+              height={180}
+              style={{ marginTop: "0.5rem" }}
+            />
+          ))}
+        </>
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {UserCourseSettingses.count || 0} results
+            {data?.UserCourseSettingses.count || 0} results
           </div>
           <PointsList
             pointsForUser={data?.UserCourseSettingses?.edges ?? []}
@@ -247,7 +258,7 @@ function PaginatedPointsList(props: Props) {
                 query: StudentProgresses,
                 variables: {
                   course_id: courseId,
-                  cursor: UserCourseSettingses.pageInfo.endCursor,
+                  cursor: data?.UserCourseSettingses.pageInfo.endCursor,
                   search: search !== "" ? search : undefined,
                   course_string: courseId,
                   organization_ids: organizationIds || [],
@@ -274,7 +285,7 @@ function PaginatedPointsList(props: Props) {
                 },
               })
             }
-            disabled={!UserCourseSettingses.pageInfo.hasNextPage}
+            disabled={!data?.UserCourseSettingses.pageInfo.hasNextPage}
             fullWidth
             style={{ marginTop: "1rem", fontSize: 22 }}
           >
