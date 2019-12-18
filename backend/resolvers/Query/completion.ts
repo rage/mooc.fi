@@ -58,16 +58,27 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
     args: {
       course: stringArg(),
       completion_language: stringArg(),
+      organization_ids: idArg({ list: true }),
       first: intArg(),
       after: idArg(),
       last: intArg(),
       before: idArg(),
     },
     resolve: async (_, args, ctx) => {
-      const prisma: Prisma = ctx.prisma
       checkAccess(ctx, { allowOrganizations: true })
-      const { first, after, last, before, completion_language } = args
+
+      const {
+        first,
+        after,
+        last,
+        before,
+        completion_language,
+        organization_ids,
+      } = args
       let { course } = args
+
+      const prisma: Prisma = ctx.prisma
+
       if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
@@ -89,6 +100,13 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
 
       const completions = prisma.completionsConnection({
         where: {
+          user: organization_ids?.length
+            ? {
+                organization_memberships_some: {
+                  organization: { id_in: organization_ids },
+                },
+              }
+            : undefined,
           course: { id: courseObject?.id },
           completion_language: completion_language,
         },

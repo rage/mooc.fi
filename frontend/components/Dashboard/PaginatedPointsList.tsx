@@ -122,7 +122,6 @@ function PaginatedPointsList(props: Props) {
   const [searchString, setSearchString] = useState("")
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
-  // @ts-ignore
   const [organizationIds, setOrganizationIds] = useState<string[]>([])
 
   // use lazy query to prevent running query on each render

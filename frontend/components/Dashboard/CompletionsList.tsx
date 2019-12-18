@@ -5,24 +5,27 @@ import {
   AllCompletions_completionsPaginated_edges,
 } from "/static/types/generated/AllCompletions"
 import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
-import { CircularProgress } from "@material-ui/core"
+import { CircularProgress, TextField, MenuItem } from "@material-ui/core"
 import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import { useQuery } from "@apollo/react-hooks"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { UserOverView_currentUser_organization_memberships_organization } from "/static/types/generated/UserOverView"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions(
     $course: String
     $cursor: ID
     $completionLanguage: String
+    $organization_ids: [ID!]
   ) {
     completionsPaginated(
       course: $course
       completion_language: $completionLanguage
       first: 15
       after: $cursor
+      organization_ids: $organization_ids
     ) {
       pageInfo {
         hasNextPage
@@ -63,12 +66,14 @@ export const PreviousPageCompletionsQuery = gql`
     $course: String
     $cursor: ID
     $completionLanguage: String
+    $organization_ids: [ID!]
   ) {
     completionsPaginated(
       course: $course
       completion_language: $completionLanguage
       last: 15
       before: $cursor
+      organization_ids: $organization_ids
     ) {
       pageInfo {
         hasNextPage
@@ -104,11 +109,23 @@ export const PreviousPageCompletionsQuery = gql`
     }
   }
 `
-const CompletionsList = () => {
+
+interface CompletionsProps {
+  organizations: UserOverView_currentUser_organization_memberships_organization[]
+}
+
+const CompletionsList = ({ organizations }: CompletionsProps) => {
   const router = useRouter()
   const completionLanguage = React.useContext(CourseLanguageContext)
 
   const course: string | string[] = router?.query?.id ?? ""
+
+  const organizationValues = organizations?.map(o => ({
+    value: o.id,
+    label: o.organization_translations?.[0]?.name ?? o.slug,
+  }))
+
+  const [organizationIds, setOrganizationIds] = useState<string[]>([])
 
   interface queryDetailsInterface {
     start: string | null
@@ -138,6 +155,7 @@ const CompletionsList = () => {
     cursor: string | null
     course: string | string[]
     completionLanguage?: string
+    organization_ids?: string[]
   }
 
   const variables: Variables = {
@@ -145,6 +163,7 @@ const CompletionsList = () => {
     course,
     completionLanguage:
       completionLanguage !== "" ? completionLanguage : undefined,
+    organization_ids: organizationIds,
   }
 
   const { data, loading, error } = useQuery<
@@ -176,26 +195,48 @@ const CompletionsList = () => {
   const endCursor = data.completionsPaginated.pageInfo.endCursor
 
   return (
-    <CompletionsListWithData
-      completions={completions}
-      onLoadMore={() =>
-        setQueryDetails({
-          start: endCursor,
-          end: startCursor,
-          back: false,
-          page: queryDetails.page + 1,
-        })
-      }
-      onGoBack={() =>
-        setQueryDetails({
-          start: endCursor,
-          end: startCursor,
-          back: true,
-          page: queryDetails.page - 1,
-        })
-      }
-      pageNumber={queryDetails.page}
-    />
+    <>
+      <TextField
+        id="organization"
+        label="Organizations"
+        select
+        variant="outlined"
+        value={organizationIds}
+        onChange={(event: React.ChangeEvent<any>) =>
+          setOrganizationIds(event.target.value)
+        }
+        SelectProps={{
+          multiple: true,
+        }}
+      >
+        {organizationValues.map(o => (
+          <MenuItem key={o.value} value={o.value}>
+            {o.label}
+          </MenuItem>
+        ))}
+      </TextField>
+
+      <CompletionsListWithData
+        completions={completions}
+        onLoadMore={() =>
+          setQueryDetails({
+            start: endCursor,
+            end: startCursor,
+            back: false,
+            page: queryDetails.page + 1,
+          })
+        }
+        onGoBack={() =>
+          setQueryDetails({
+            start: endCursor,
+            end: startCursor,
+            back: true,
+            page: queryDetails.page - 1,
+          })
+        }
+        pageNumber={queryDetails.page}
+      />
+    </>
   )
 }
 

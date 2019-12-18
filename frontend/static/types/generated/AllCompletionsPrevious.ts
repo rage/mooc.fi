@@ -72,4 +72,5 @@ export interface AllCompletionsPreviousVariables {
   course?: string | null
   cursor?: string | null
   completionLanguage?: string | null
+  organization_ids?: string[] | null
 }

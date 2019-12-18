@@ -18,6 +18,8 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import UserDetailContext from "/contexes/UserDetailContext"
+import { UserOverView_currentUser_organization_memberships } from "/static/types/generated/UserOverView"
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
     course(slug: $slug) {
@@ -34,6 +36,8 @@ interface CompletionsProps {
 
 const Completions = ({ admin, router }: CompletionsProps) => {
   const { language } = useContext(LanguageContext)
+  const { currentUser } = useContext(UserDetailContext)
+
   const [lng, changeLng] = useState(
     (router?.query?.language as string) ??
       mapNextLanguageToLocaleCode(language as string) ??
@@ -78,6 +82,15 @@ const Completions = ({ admin, router }: CompletionsProps) => {
       </>
     )
   }
+
+  // FIXME: DRY
+  const userOrganizations = (
+    currentUser?.organization_memberships?.filter(
+      (o: UserOverView_currentUser_organization_memberships) =>
+        ["Teacher", "OrganizationAdmin"].includes((o.role ?? "") as string),
+    ) ?? []
+  ).map(o => o.organization)
+
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardTabBar slug={slug} selectedValue={1} />
@@ -93,7 +106,7 @@ const Completions = ({ admin, router }: CompletionsProps) => {
           handleLanguageChange={handleLanguageChange}
           languageValue={lng}
         />
-        <CompletionsList />
+        <CompletionsList organizations={userOrganizations} />
       </WideContainer>
     </CourseLanguageContext.Provider>
   )
