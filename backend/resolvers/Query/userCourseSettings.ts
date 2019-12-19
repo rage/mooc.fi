@@ -93,6 +93,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
+// this isn't used?
 const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("userCourseSettingsCount", {
     type: "Int",

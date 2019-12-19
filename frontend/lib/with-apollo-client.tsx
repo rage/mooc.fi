@@ -73,7 +73,6 @@ const withApolloClient = (App: any) => {
         query: UserDetailQuery,
         fetchPolicy: "cache-first",
       })
-      console.log("userdata", data)
       /*       if (accessToken && !currentUserCache[accessToken]) {
         const { data } = await apollo.query({ query: UserDetailQuery })
         console.log("userdata", data)

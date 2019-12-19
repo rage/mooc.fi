@@ -10,7 +10,6 @@ import CourseEdit from "/components/Dashboard/Editor/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import { StudyModules as StudyModuleData } from "/static/types/generated/StudyModules"
-import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const StudyModuleQuery = gql`
@@ -41,10 +40,6 @@ const NewCourse = (props: NewCourseProps) => {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
-  if (loading || !data) {
-    return <Spinner />
-  }
-
   return (
     <section>
       <WideContainer>
@@ -54,7 +49,7 @@ const NewCourse = (props: NewCourseProps) => {
         {loading ? (
           <FormSkeleton />
         ) : (
-          <CourseEdit modules={data.study_modules} />
+          <CourseEdit modules={data?.study_modules} />
         )}
       </WideContainer>
     </section>

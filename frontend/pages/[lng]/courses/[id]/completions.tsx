@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
+import React, { useContext, useState, useEffect } from "react"
+/* import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
-import AdminError from "/components/Dashboard/AdminError"
+import AdminError from "/components/Dashboard/AdminError" */
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import { WideContainer } from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
@@ -10,7 +10,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import { useQuery } from "@apollo/react-hooks"
+import { useLazyQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
@@ -20,6 +20,8 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import UserDetailContext from "/contexes/UserDetailContext"
 import { UserOverView_currentUser_organization_memberships } from "/static/types/generated/UserOverView"
+import withAdmin from "/lib/with-admin"
+
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
     course(slug: $slug) {
@@ -34,6 +36,7 @@ interface CompletionsProps {
   router: SingletonRouter
 }
 
+// @ts-ignore
 const Completions = ({ admin, router }: CompletionsProps) => {
   const { language } = useContext(LanguageContext)
   const { currentUser } = useContext(UserDetailContext)
@@ -56,16 +59,22 @@ const Completions = ({ admin, router }: CompletionsProps) => {
     router.replace(router.pathname, href, { shallow: true })
   }
 
-  const { data, loading, error } = useQuery<CourseDetailsData>(
+  const [getData, { data, loading, error }] = useLazyQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
       variables: { slug: slug },
     },
   )
 
-  if (!admin) {
+  useEffect(() => {
+    /*     if (!admin) return */
+
+    getData()
+  }, [slug])
+
+  /*   if (!admin) {
     return <AdminError />
-  }
+  } */
 
   if (loading || !data) {
     return <Spinner />
@@ -112,7 +121,7 @@ const Completions = ({ admin, router }: CompletionsProps) => {
   )
 }
 
-Completions.getInitialProps = function(context: NextContext) {
+/* Completions.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
 
   if (!isSignedIn(context)) {
@@ -121,6 +130,6 @@ Completions.getInitialProps = function(context: NextContext) {
   return {
     admin,
   }
-}
+} */
 
-export default withRouter(Completions)
+export default withAdmin(withRouter(Completions))

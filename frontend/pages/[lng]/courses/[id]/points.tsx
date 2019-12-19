@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import { NextPageContext as NextContext } from "next"
@@ -7,7 +7,7 @@ import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
-import { useQuery } from "@apollo/react-hooks"
+import { useLazyQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import PointsExportButton from "/components/Dashboard/PointsExportButton"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
@@ -37,12 +37,18 @@ const Points = ({ admin }: CompletionsProps) => {
 
   const { currentUser } = useContext(UserDetailContext)
 
-  const { data, loading, error } = useQuery<CourseDetailsData>(
+  const [getData, { data, loading, error }] = useLazyQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
       variables: { slug: slug },
     },
   )
+
+  useEffect(() => {
+    if (!admin) return
+
+    getData()
+  }, [slug])
 
   if (!admin) {
     return <AdminError />

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
@@ -6,7 +6,7 @@ import AdminError from "/components/Dashboard/AdminError"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "/components/Container"
-import { useQuery } from "@apollo/react-hooks"
+import { useLazyQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -29,12 +29,18 @@ interface CourseProps {
 const Course = ({ admin }: CourseProps) => {
   const slug = useQueryParameter("id")
 
-  const { data, loading, error } = useQuery<CourseDetailsData>(
+  const [getData, { data, loading, error }] = useLazyQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
       variables: { slug: slug },
     },
   )
+
+  useEffect(() => {
+    if (!admin) return
+
+    getData()
+  }, [slug])
 
   if (!admin) {
     return <AdminError />
