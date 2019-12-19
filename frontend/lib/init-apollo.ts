@@ -97,6 +97,8 @@ function create(initialState: any, accessToken?: string) {
   })
 }
 
+let prevToken: string | undefined
+
 export default function initApollo(initialState: any, accessToken?: string) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
@@ -105,9 +107,11 @@ export default function initApollo(initialState: any, accessToken?: string) {
   }
 
   // Reuse client on the client-side
-  if (!apolloClient) {
+  if (!apolloClient || prevToken !== accessToken) {
     apolloClient = create(initialState, accessToken)
   }
+
+  prevToken = accessToken
 
   return apolloClient
 }
