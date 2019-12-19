@@ -93,7 +93,9 @@ function SignIn() {
             onClick={async e => {
               e.preventDefault()
               try {
-                await signIn({ email, password }).then(logInOrOut)
+                await signIn({ email, password, shallow: false }).then(
+                  logInOrOut,
+                )
                 if (errorTimeout) {
                   clearTimeout(errorTimeout)
                 }
