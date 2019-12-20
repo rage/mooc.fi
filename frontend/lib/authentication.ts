@@ -36,15 +36,12 @@ export const signIn = async ({
 
   document.cookie = `admin=${details.administrator};path=/`
 
-  const redirectBackCookie = nookies.get()["redirect-back"]
-  const { as, href } = redirectBackCookie
-    ? JSON.parse(redirectBackCookie)
-    : { as: undefined, href: undefined }
+  const { as, href } = JSON.parse(nookies.get()["redirect-back"] ?? "")
 
   if (redirect) {
     setTimeout(() => {
       if (as && href) {
-        Router.push(href, as, { shallow: true })
+        Router.push(href, as /* , { shallow: true } */)
       } else {
         window.history.back()
       }
