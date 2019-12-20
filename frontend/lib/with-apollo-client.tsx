@@ -107,8 +107,7 @@ const withApolloClient = (App: any) => {
 
     constructor(props: Props) {
       super(props)
-      this.apolloClient =
-        initApollo(props.apolloState, props.accessToken)
+      this.apolloClient = initApollo(props.apolloState, props.accessToken)
     }
 
     render() {
