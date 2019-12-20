@@ -30,13 +30,16 @@ export const signIn = async ({
   redirect?: boolean
 }) => {
   const res = await tmcClient.authenticate({ username: email, password })
-
   const details = await userDetails(res.accessToken)
 
   document.cookie = `access_token=${res.accessToken};path=/`
+
   document.cookie = `admin=${details.administrator};path=/`
 
-  const { as, href } = JSON.parse(nookies.get()["redirect-back"] ?? {})
+  const redirectBackCookie = nookies.get()["redirect-back"]
+  const { as, href } = redirectBackCookie
+    ? JSON.parse(redirectBackCookie)
+    : { as: undefined, href: undefined }
 
   if (redirect) {
     setTimeout(() => {
