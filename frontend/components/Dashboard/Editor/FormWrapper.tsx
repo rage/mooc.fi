@@ -13,6 +13,7 @@ import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import styled from "styled-components"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
+// TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
 
 const FormBackground = styled(Paper)`
