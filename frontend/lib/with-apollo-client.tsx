@@ -97,9 +97,6 @@ const withApolloClient = (App: any) => {
 
       // Extract query data from the Apollo store
       const apolloState = apollo.cache.extract()
-      ;(apollo as any).toJSON = () => {
-        return null
-      }
 
       return {
         ...appProps,
