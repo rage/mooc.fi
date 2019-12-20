@@ -7,7 +7,6 @@ export default (context: NextContext, target: string, savePage = true) => {
 
   // @ts-ignore
   if (savePage && context?.req?.originalUrl) {
-    // @ts-ignore
     nookies.set(
       context,
       "redirect-back",

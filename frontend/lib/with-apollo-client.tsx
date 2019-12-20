@@ -97,9 +97,13 @@ const withApolloClient = (App: any) => {
 
       // Extract query data from the Apollo store
       const apolloState = apollo.cache.extract()
+      ;(apollo as any).toJSON = () => {
+        return null
+      }
 
       return {
         ...appProps,
+        apollo,
         apolloState,
         accessToken,
       }
@@ -107,7 +111,8 @@ const withApolloClient = (App: any) => {
 
     constructor(props: Props) {
       super(props)
-      this.apolloClient = initApollo(props.apolloState, props.accessToken)
+      this.apolloClient =
+        props.apollo || initApollo(props.apolloState, props.accessToken)
     }
 
     render() {
