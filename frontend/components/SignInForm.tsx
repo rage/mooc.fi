@@ -94,10 +94,13 @@ function SignIn() {
               e.preventDefault()
               try {
                 await signIn({ email, password }).then(logInOrOut)
+                console.log("I did it")
                 if (errorTimeout) {
                   clearTimeout(errorTimeout)
                 }
               } catch (e) {
+                console.log("I failed")
+                console.log(e)
                 setError(true)
                 errorTimeout = setTimeout(() => {
                   setError(false)
