@@ -1,5 +1,4 @@
 import React from "react"
-import Grid from "@material-ui/core/Grid"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"
@@ -29,7 +28,7 @@ const SkeletonBodyText = styled(Skeleton)`
 const Base = styled(ClickableButtonBase)<{ component: any }>`
   display: block;
   width: 100%;
-  height: 215px;
+  height: 100%;
   background-color: transparent;
 `
 
@@ -37,8 +36,18 @@ const TextBackground = styled(FullCoverTextBackground)`
   width: 70%;
 `
 
+const GridItem = styled.div`
+  width: 100%;
+  /* Basic styles for browsers without css grid support */
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  @supports (display: grid) {
+    margin-bottom: 0;
+  }
+`
+
 const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
-  <Grid item xs={12} md={6} lg={6}>
+  <GridItem>
     <LangLink href={`#${module ? module.slug : ""}`}>
       <Base component="div">
         {module ? (
@@ -63,7 +72,7 @@ const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
         )}
       </Base>
     </LangLink>
-  </Grid>
+  </GridItem>
 )
 
 export default ModuleNaviCard
