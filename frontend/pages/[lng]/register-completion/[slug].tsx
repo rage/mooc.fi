@@ -17,6 +17,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import styled from "styled-components"
+import UserDetailContext from "/contexes/UserDetailContext"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -85,9 +86,16 @@ interface RegisterCompletionPageProps {
 
 const RegisterCompletion = ({ slug }: RegisterCompletionPageProps) => {
   const { language } = useContext(LanguageContext)
+  const { currentUser } = useContext(UserDetailContext)
+
+  const courseSlug = slug || useQueryParameter("slug")
 
   const t = getRegisterCompletionTranslator(language)
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+
+  if (loading || !data) {
+    return <Spinner />
+  }
 
   if (error) {
     return (
@@ -97,17 +105,11 @@ const RegisterCompletion = ({ slug }: RegisterCompletionPageProps) => {
     )
   }
 
-  if (loading || !data) {
-    return <Spinner />
-  }
-
-  const courseSlug = slug || useQueryParameter("slug")
-
   const completion =
     data?.currentUser?.completions?.find(c => c.course.slug == courseSlug) ??
     undefined
 
-  if (!data.currentUser) {
+  if (!currentUser) {
     return <div>You are not logged in. Please log in to the site</div>
   }
 
