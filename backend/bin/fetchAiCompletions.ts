@@ -12,6 +12,8 @@ const elementsOfAiTags = [
   "elements-of-ai",
   "elements-of-ai-fi",
   "elements-of-ai-se",
+  "elements-of-ai-ee",
+  "elements-of-ai-de",
 ]
 
 export default async function fetchCompletions() {
@@ -112,6 +114,10 @@ function determineCompletionLanguage(tag: string): string {
       return "fi_FI"
     case "elements-of-ai-se":
       return "sv_SE"
+    case "elements-of-ai-ee":
+      return "et_EE"
+    case "elements-of-ai-de":
+      return "de_DE"
     default:
       return "undefined"
   }

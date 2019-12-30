@@ -40,7 +40,7 @@ export const signIn = async ({
   document.cookie = `access_token=${res.accessToken};path=/`
   document.cookie = `admin=${details.administrator};path=/`
 
-  const { as, href } = JSON.parse(nookies.get()["redirect-back"] ?? {})
+  const { as, href } = JSON.parse(nookies.get()["redirect-back"] ?? "")
 
   if (redirect) {
     setTimeout(() => {
