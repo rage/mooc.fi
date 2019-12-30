@@ -58,7 +58,7 @@ function Profile() {
   const first_name = data?.currentUser?.first_name || "No first name"
   const last_name = data?.currentUser?.last_name || "No last name"
   const email = data?.currentUser?.email || "no email"
-  const sid = data?.currentUser?.student_number || "no sid"
+  const studentNumber = data?.currentUser?.student_number || "no student number"
   const completions = data?.currentUser?.completions ?? []
 
   return (
@@ -67,7 +67,7 @@ function Profile() {
         first_name={first_name}
         last_name={last_name}
         email={email}
-        student_number={sid}
+        student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
         <StudentDataDisplay completions={completions} />

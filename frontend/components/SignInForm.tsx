@@ -112,10 +112,12 @@ function SignIn() {
           >
             {t("login")}
           </SubmitButton>
-          <Link href="https://tmc.mooc.fi/password_reset_keys/new">
-            <a href="https://tmc.mooc.fi/password_reset_keys/new">
-              {t("forgottenpw")}
-            </a>
+          <Link
+            href="https://tmc.mooc.fi/password_reset_keys/new"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("forgottenpw")}
           </Link>
         </StyledForm>
       )}
