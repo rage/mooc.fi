@@ -20,15 +20,19 @@ export const isAdmin = (ctx: NextContext) => {
   return admin === "true"
 }
 
+interface SignInProps {
+  email: string
+  password: string
+  redirect?: boolean
+  shallow?: boolean
+}
+
 export const signIn = async ({
   email,
   password,
   redirect = true,
-}: {
-  email: string
-  password: string
-  redirect?: boolean
-}) => {
+  shallow = true,
+}: SignInProps) => {
   const res = await tmcClient.authenticate({ username: email, password })
 
   const details = await userDetails(res.accessToken)
@@ -41,7 +45,7 @@ export const signIn = async ({
   if (redirect) {
     setTimeout(() => {
       if (as && href) {
-        Router.push(href, as /* , { shallow: true } */)
+        Router.push(href, as, { shallow })
       } else {
         window.history.back()
       }
