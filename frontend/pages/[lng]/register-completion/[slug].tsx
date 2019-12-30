@@ -91,10 +91,7 @@ const RegisterCompletion = ({ slug }: RegisterCompletionPageProps) => {
   const courseSlug = slug || useQueryParameter("slug")
 
   const t = getRegisterCompletionTranslator(language)
-  const { loading, error, data } = useQuery<UserOverViewData>(
-    UserOverViewQuery,
-    { fetchPolicy: "no-cache" },
-  )
+  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (loading || !data) {
     return <Spinner />
