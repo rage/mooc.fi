@@ -163,6 +163,5 @@ export const fromCourseForm = ({
     course_variants,
   }
 
-  console.log("returns", c)
   return c
 }
