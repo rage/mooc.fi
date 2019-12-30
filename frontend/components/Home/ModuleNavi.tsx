@@ -1,5 +1,4 @@
 import React, { useContext } from "react"
-import Grid from "@material-ui/core/Grid"
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
 import LanguageContext from "/contexes/LanguageContext"
@@ -27,6 +26,28 @@ const NaviTitle = styled(H2Background)`
     font-size: 28px;
   }
 `
+// Browsers without css grid support will see the cards below each other
+const Grid = styled.div`
+  @supports (display: grid) {
+    display: grid;
+    grid-gap: 50px;
+    align-content: space-around;
+
+    /* On small screens allow the cards to be really narrow */
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+
+    /*
+     Automatically place the cards on the grid so that they resize based on content,
+     are all the same height, and don't get narrower than 500px.
+    */
+    @media only screen and (min-width: 500px) {
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      grid-auto-rows: 1fr;
+    }
+  }
+`
+
 const ModuleNavi = ({
   modules,
   loading,
@@ -49,7 +70,7 @@ const ModuleNavi = ({
         {t("modulesTitle")}
       </NaviTitle>
       <Container>
-        <Grid container spacing={5}>
+        <Grid>
           {loading ? (
             <>
               <ModuleNaviCard key="skeletonnavicard1" />
