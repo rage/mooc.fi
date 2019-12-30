@@ -59,6 +59,7 @@ export const signOut = async (apollo: ApolloClient<any>) => {
   await apollo.resetStore().then(() => {
     document.cookie =
       "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+    nookies.destroy({}, "access_token") // mooc-access-token
   })
   const { pathname = "/", asPath = "/" } = Router?.router ?? {}
   Router.push(pathname, asPath)

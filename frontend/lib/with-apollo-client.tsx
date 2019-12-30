@@ -27,6 +27,7 @@ interface Props {
   apollo: ApolloClient<NormalizedCacheObject>
 }
 
+// @ts-ignore
 let currentUserCache: Record<string, UserOverView_currentUser> = {}
 
 const withApolloClient = (App: any) => {
@@ -54,18 +55,23 @@ const withApolloClient = (App: any) => {
 
       const apollo = initApollo(undefined, accessToken)
 
+      const { data } = await apollo.query({
+        query: UserDetailQuery,
+        fetchPolicy: "cache-first",
+      })
+
       // prevent repeating useroverview queries
-      if (accessToken && !currentUserCache[accessToken]) {
+      /*       if (accessToken && !currentUserCache[accessToken]) {
         const { data } = await apollo.query({ query: UserDetailQuery })
         currentUserCache[accessToken] = data.currentUser
-      }
+      } */
+
+      // should reset to undefined when logged out
+      appProps.currentUser = data.currentUser // currentUserCache[accessToken ?? ""]
 
       if (res?.finished) {
         return {}
       }
-
-      // should reset to undefined when logged out
-      appProps.currentUser = currentUserCache[accessToken ?? ""]
 
       if (!process.browser) {
         try {
