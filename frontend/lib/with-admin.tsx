@@ -20,8 +20,6 @@ export default function withAdmin(Component: any) {
     }
 
     render() {
-      console.log(this.props)
-
       if (!this.props.admin) {
         return <AdminError />
       }

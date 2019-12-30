@@ -1,10 +1,10 @@
 import React, { useEffect } from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import { isSignedIn, isAdmin } from "/lib/authentication"
+/* import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
+import AdminError from "/components/Dashboard/AdminError" */
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
-import { NextPageContext as NextContext } from "next"
+// import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "/components/Container"
 import { useLazyQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
@@ -13,6 +13,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -26,6 +27,8 @@ export const CourseDetailsFromSlugQuery = gql`
 interface CourseProps {
   admin: boolean
 }
+
+// @ts-ignore
 const Course = ({ admin }: CourseProps) => {
   const slug = useQueryParameter("id")
 
@@ -37,16 +40,15 @@ const Course = ({ admin }: CourseProps) => {
   )
 
   useEffect(() => {
-    if (!admin) return
+    /*     if (!admin) return */
 
     getData()
   }, [slug])
 
-  if (!admin) {
+  /*   if (!admin) {
     return <AdminError />
-  }
+  } */
 
-  //TODO add circular progress
   if (loading || !data) {
     return <Spinner />
   }
@@ -79,7 +81,7 @@ const Course = ({ admin }: CourseProps) => {
   )
 }
 
-Course.getInitialProps = function(context: NextContext) {
+/* Course.getInitialProps = function(context: NextContext) {
   const admin = isAdmin(context)
 
   if (!isSignedIn(context)) {
@@ -88,6 +90,6 @@ Course.getInitialProps = function(context: NextContext) {
   return {
     admin,
   }
-}
+} */
 
-export default Course
+export default withAdmin(Course)

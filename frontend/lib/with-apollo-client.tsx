@@ -8,6 +8,7 @@ import { ApolloClient, NormalizedCacheObject, gql } from "apollo-boost"
 import { AppContext } from "next/app"
 import { getAccessToken } from "/lib/authentication"
 // import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+import nookies from "nookies"
 
 export const UserDetailQuery = gql`
   query UserOverView {
@@ -65,6 +66,10 @@ const withApolloClient = (App: any) => {
       // and extract the resulting data
       const accessToken = getAccessToken(appComponentContext.ctx)
 
+      nookies.set(App, "mooc-access-token", accessToken ?? "", {
+        maxAge: 20 * 60,
+        path: "/",
+      })
       const apollo = initApollo(undefined, accessToken)
 
       // prevent repeating useroverview queries
@@ -79,12 +84,12 @@ const withApolloClient = (App: any) => {
         currentUserCache[accessToken] = data.currentUser
       } */
 
+      // should reset to undefined when logged out
+      appProps.currentUser = data?.currentUser //currentUserCache[accessToken ?? ""]
+
       if (res?.finished) {
         return {}
       }
-
-      // should reset to undefined when logged out
-      appProps.currentUser = data?.currentUser //currentUserCache[accessToken ?? ""]
 
       if (!process.browser) {
         try {

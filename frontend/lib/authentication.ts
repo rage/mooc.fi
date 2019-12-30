@@ -31,6 +31,7 @@ export const signIn = async ({
   email,
   password,
   redirect = true,
+  // @ts-ignore
   shallow = true,
 }: SignInProps) => {
   const res = await tmcClient.authenticate({ username: email, password })
@@ -45,7 +46,7 @@ export const signIn = async ({
   if (redirect) {
     setTimeout(() => {
       if (as && href) {
-        Router.push(href, as, { shallow })
+        Router.push(href, as /*, { shallow }*/)
       } else {
         window.history.back()
       }
@@ -59,6 +60,7 @@ export const signOut = async (apollo: ApolloClient<any>) => {
   await apollo.resetStore().then(() => {
     document.cookie =
       "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+    nookies.destroy({}, "mooc-access-token")
   })
   const { pathname = "/", asPath = "/" } = Router?.router ?? {}
   Router.push(pathname, asPath)
@@ -71,7 +73,7 @@ const getCookie = (key: string) => {
 
   const vals = document.cookie
     .split("; ")
-    .reduce<{ [key: string]: string }>((acc, curr) => {
+    .reduce<Record<string, string>>((acc, curr) => {
       try {
         // @ts-ignore
         const [key, value] = curr.split("=")

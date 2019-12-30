@@ -9,6 +9,7 @@ import { ApolloLink } from "apollo-link"
 import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "apollo-link-context"
 import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -22,13 +23,18 @@ const cypress = process.env.CYPRESS === "true"
     window.Cypress &&
     window.Cypress.env("CYPRESS") === "true") */
 
+// @ts-ignore
 function create(initialState: any, accessToken?: string) {
-  const authLink = setContext((_, { headers }) => ({
-    headers: {
-      ...headers,
-      authorization: accessToken ? `Bearer ${accessToken}` : "",
-    },
-  }))
+  const authLink = setContext((_, { headers }) => {
+    const cookieAccessToken = nookies.get()["mooc-access-token"]
+
+    return {
+      headers: {
+        ...headers,
+        authorization: cookieAccessToken ? `Bearer ${cookieAccessToken}` : "",
+      },
+    }
+  })
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
