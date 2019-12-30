@@ -99,7 +99,7 @@ function SignIn() {
                 if (errorTimeout) {
                   clearTimeout(errorTimeout)
                 }
-              } catch (e) {
+              } catch (error) {
                 setError(true)
                 errorTimeout = setTimeout(() => {
                   setError(false)
