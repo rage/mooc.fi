@@ -16,7 +16,6 @@ import { H1NoBackground } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useQueryParameter } from "/util/useQueryParameter"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -164,4 +163,4 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
 EditCourse.displayName = "EditCourse"
 
-export default withRouter(withAdmin(withSignedIn(EditCourse)) as any)
+export default withRouter(withAdmin(EditCourse) as any)

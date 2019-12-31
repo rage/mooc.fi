@@ -12,7 +12,6 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import Spinner from "/components/Spinner"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -69,4 +68,4 @@ const Points = () => {
 
 Points.displayName = "Points"
 
-export default withAdmin(withSignedIn(Points))
+export default withAdmin(Points)

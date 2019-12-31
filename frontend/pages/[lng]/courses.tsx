@@ -7,7 +7,6 @@ import styled from "styled-components"
 import { H1Background } from "/components/Text/headers"
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import withSignedIn from "/lib/with-signed-in"
 import withAdmin from "/lib/with-admin"
 
 const Background = styled.section`
@@ -41,4 +40,4 @@ const Courses = () => {
 
 Courses.displayName = "Courses"
 
-export default withAdmin(withSignedIn(Courses))
+export default withAdmin(Courses)

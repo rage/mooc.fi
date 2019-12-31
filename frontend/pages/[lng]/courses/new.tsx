@@ -9,7 +9,6 @@ import { StudyModules as StudyModuleData } from "/static/types/generated/StudyMo
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -50,4 +49,4 @@ const NewCourse = () => {
 
 NewCourse.displayName = "NewCourse"
 
-export default withAdmin(withSignedIn(NewCourse))
+export default withAdmin(NewCourse)

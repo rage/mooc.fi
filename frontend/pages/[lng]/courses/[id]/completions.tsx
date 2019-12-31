@@ -15,7 +15,6 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -91,4 +90,4 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
 
 Completions.displayName = "Completions"
 
-export default withRouter(withAdmin(withSignedIn(Completions)) as any)
+export default withRouter(withAdmin(Completions) as any)

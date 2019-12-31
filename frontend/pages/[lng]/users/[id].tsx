@@ -9,7 +9,6 @@ import { CircularProgress } from "@material-ui/core"
 import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
@@ -70,7 +69,7 @@ const UserPage = () => {
 
 UserPage.displayName = "UserPage"
 
-export default withAdmin(withSignedIn(UserPage))
+export default withAdmin(UserPage)
 
 const GET_DATA = gql`
   query UserCourseSettingsesForUserPage($upstream_id: Int) {

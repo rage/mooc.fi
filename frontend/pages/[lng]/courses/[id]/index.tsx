@@ -10,7 +10,6 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -66,4 +65,4 @@ const Course = () => {
 
 Course.displayName = "Course"
 
-export default withAdmin(withSignedIn(Course))
+export default withAdmin(Course)
