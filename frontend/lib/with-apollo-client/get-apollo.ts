@@ -27,7 +27,10 @@ const cypress = process.env.CYPRESS === "true"
 function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
-    const accessToken = nookies.get()["access_token"] || originalAccessToken
+    let accessToken: string | undefined = nookies.get()["access_token"]
+    if (!accessToken && !process.browser) {
+      accessToken = originalAccessToken
+    }
 
     return {
       headers: {

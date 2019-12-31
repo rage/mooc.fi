@@ -3,6 +3,9 @@ import { NextPageContext as NextContext } from "next"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import AdminError from "/components/Dashboard/AdminError"
 import redirect from "/lib/redirect"
+import LoginStateContext from "/contexes/LoginStateContext"
+
+let prevContext: NextContext | null = null
 
 export default function withAdmin(Component: any) {
   return class WithAdmin extends React.Component<{
@@ -10,15 +13,18 @@ export default function withAdmin(Component: any) {
     signedIn: boolean
   }> {
     static displayName = `withAdmin(${Component.displayName ?? "Component"})`
+    static contextType = LoginStateContext
 
     static async getInitialProps(context: NextContext) {
       const admin = isAdmin(context)
       const signedIn = isSignedIn(context)
 
+      prevContext = context
+
       if (!signedIn) {
         redirect(context, "/sign-in")
 
-        return {}
+        return { signedIn: false }
       }
 
       return {
@@ -29,12 +35,23 @@ export default function withAdmin(Component: any) {
     }
 
     render() {
-      if (!this.props.admin) {
-        return <AdminError />
-      }
-
+      // Needs to be before context check so that we don't redirect twice
       if (!this.props.signedIn) {
         return <div>Redirecting...</div>
+      }
+
+      // Logging out is communicated with a context change
+      if (!this.context.loggedIn) {
+        if (prevContext) {
+          redirect(prevContext, "/sign-in")
+        }
+        // We don't return here because when logging out it is better to keep the old content for a moment
+        // than flashing a message while the redirect happens
+        // return <div>You've logged out.</div>
+      }
+
+      if (!this.props.admin) {
+        return <AdminError />
       }
 
       return <Component {...this.props}>{this.props.children}</Component>
