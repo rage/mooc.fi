@@ -15,7 +15,6 @@ import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import { H1NoBackground } from "/components/Text/headers"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 const StyledForm = styled.form`
   display: flex;
@@ -272,4 +271,4 @@ const GET_DATA = gql`
 
 UserSearch.displayName = "UserSearch"
 
-export default withAdmin(withSignedIn(UserSearch))
+export default withAdmin(UserSearch)

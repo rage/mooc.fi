@@ -3,7 +3,6 @@ import { WideContainer } from "/components/Container"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import { H1NoBackground } from "/components/Text/headers"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 const NewStudyModule = () => {
   return (
@@ -20,4 +19,4 @@ const NewStudyModule = () => {
 
 NewStudyModule.displayName = "NewStudyModule"
 
-export default withAdmin(withSignedIn(NewStudyModule))
+export default withAdmin(NewStudyModule)

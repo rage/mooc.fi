@@ -8,7 +8,6 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -59,4 +58,4 @@ function CompletionsPage() {
 
 CompletionsPage.displayName = "CompletionsPage"
 
-export default withAdmin(withSignedIn(CompletionsPage))
+export default withAdmin(CompletionsPage)

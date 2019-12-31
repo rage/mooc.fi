@@ -7,7 +7,6 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 import withAdmin from "/lib/with-admin"
-import withSignedIn from "/lib/with-signed-in"
 
 const StudyModules = () => {
   const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
@@ -30,4 +29,6 @@ const StudyModules = () => {
   )
 }
 
-export default withAdmin(withSignedIn(StudyModules))
+StudyModules.displayName = "StudyModules"
+
+export default withAdmin(StudyModules)
