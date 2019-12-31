@@ -1,8 +1,5 @@
 import * as React from "react"
 import { gql } from "apollo-boost"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn } from "/lib/authentication"
-import redirect from "/lib/redirect"
 import { useQuery } from "@apollo/react-hooks"
 import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
@@ -18,6 +15,7 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import styled from "styled-components"
 import UserDetailContext from "/contexes/UserDetailContext"
+import withSignedIn from "/lib/with-signed-in"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -80,15 +78,11 @@ export const UserOverViewQuery = gql`
   }
 `
 
-interface RegisterCompletionPageProps {
-  slug?: string | string[]
-}
-
-const RegisterCompletion = ({ slug }: RegisterCompletionPageProps) => {
+const RegisterCompletion = () => {
   const { language } = useContext(LanguageContext)
   const { currentUser } = useContext(UserDetailContext)
 
-  const courseSlug = slug || useQueryParameter("slug")
+  const courseSlug = useQueryParameter("slug")
 
   const t = getRegisterCompletionTranslator(language)
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
@@ -194,11 +188,6 @@ const RegisterCompletion = ({ slug }: RegisterCompletionPageProps) => {
   )
 }
 
-RegisterCompletion.getInitialProps = function(context: NextContext) {
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in", true)
-  }
-  return {}
-}
+RegisterCompletion.displayName = "RegisterCompletion"
 
-export default RegisterCompletion
+export default withSignedIn(RegisterCompletion)
