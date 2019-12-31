@@ -1,8 +1,4 @@
 import React from "react"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
@@ -12,6 +8,8 @@ import { H1NoBackground } from "/components/Text/headers"
 import { StudyModules as StudyModuleData } from "/static/types/generated/StudyModules"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
+import withSignedIn from "/lib/with-signed-in"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -23,19 +21,8 @@ export const StudyModuleQuery = gql`
   }
 `
 
-interface NewCourseProps {
-  admin: boolean
-  nameSpacesRequired: string[]
-}
-
-const NewCourse = (props: NewCourseProps) => {
-  const { admin } = props
-
+const NewCourse = () => {
   const { data, loading, error } = useQuery<StudyModuleData>(StudyModuleQuery)
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
@@ -61,14 +48,6 @@ const NewCourse = (props: NewCourseProps) => {
   )
 }
 
-NewCourse.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+NewCourse.displayName = "NewCourse"
 
-export default NewCourse
+export default withAdmin(withSignedIn(NewCourse))

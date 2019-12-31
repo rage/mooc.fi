@@ -1,10 +1,6 @@
 import React, { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
@@ -18,6 +14,9 @@ import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorSt
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { useQueryParameter } from "/util/useQueryParameter"
+import withAdmin from "/lib/with-admin"
+import withSignedIn from "/lib/with-signed-in"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -81,14 +80,11 @@ const ErrorContainer = styled(Paper)`
 
 interface EditCourseProps {
   router: SingletonRouter
-  admin: boolean
-  nameSpacesRequired: string[]
-  slug: string
 }
 
-const EditCourse = (props: EditCourseProps) => {
-  const { admin, router, slug } = props
+const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
+  const slug = useQueryParameter("id") ?? ""
 
   let redirectTimeout: number | null = null
 
@@ -104,10 +100,6 @@ const EditCourse = (props: EditCourseProps) => {
     loading: studyModulesLoading,
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   if (courseError || studyModulesError) {
     return (
@@ -170,18 +162,6 @@ const EditCourse = (props: EditCourseProps) => {
   )
 }
 
-EditCourse.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-
-  return {
-    admin,
-    slug: context.query ? context.query.id : "",
-  }
-}
-
 EditCourse.displayName = "EditCourse"
 
-export default withRouter(EditCourse)
+export default withRouter(withAdmin(withSignedIn(EditCourse)) as any)

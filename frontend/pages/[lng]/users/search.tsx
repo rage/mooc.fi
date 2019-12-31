@@ -1,5 +1,4 @@
 import React, { useCallback } from "react"
-import { SingletonRouter } from "next/router"
 import gql from "graphql-tag"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
@@ -10,21 +9,13 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
 import LastPageIcon from "@material-ui/icons/LastPage"
 import Container from "/components/Container"
 import styled from "styled-components"
-import { NextPageContext as NextContext } from "next"
-import { isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import { isSignedIn } from "/lib/authentication"
-import AdminError from "/components/Dashboard/AdminError"
 import { useLazyQuery } from "@apollo/react-hooks"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import { H1NoBackground } from "/components/Text/headers"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
-interface UserSearchProps {
-  namespacesRequired: string[]
-  router: SingletonRouter
-  admin: boolean
-}
+import withAdmin from "/lib/with-admin"
+import withSignedIn from "/lib/with-signed-in"
 
 const StyledForm = styled.form`
   display: flex;
@@ -156,7 +147,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   )
 }
 
-const UserSearch = (props: UserSearchProps) => {
+const UserSearch = () => {
   const [searchText, setSearchText] = React.useState("")
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -166,10 +157,6 @@ const UserSearch = (props: UserSearchProps) => {
   const isMobile = useMediaQuery("(max-width:800px)", { noSsr: true })
 
   const GridComponent = isMobile ? MobileGrid : WideGrid
-
-  if (!props.admin) {
-    return <AdminError />
-  }
 
   const onTextBoxChange = (event: any) => {
     setSearchText(event.target.value as string)
@@ -283,15 +270,6 @@ const GET_DATA = gql`
   }
 `
 
-UserSearch.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
+UserSearch.displayName = "UserSearch"
 
-  return {
-    admin,
-  }
-}
-
-export default UserSearch
+export default withAdmin(withSignedIn(UserSearch))

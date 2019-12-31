@@ -1,16 +1,14 @@
 import React from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import { NextPageContext as NextContext } from "next"
-import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
-import AdminError from "/components/Dashboard/AdminError"
 import { useQueryParameter } from "/util/useQueryParameter"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
+import withSignedIn from "/lib/with-signed-in"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -26,21 +24,13 @@ export const UserOverViewQuery = gql`
   ${Completions.fragments.completions}
 `
 
-interface CompletionsProps {
-  admin: boolean
-}
-
-function CompletionsPage({ admin }: CompletionsProps) {
+function CompletionsPage() {
   const id = useQueryParameter("id")
 
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
     { variables: { upstream_id: Number(id) }, ssr: false },
   )
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   const completions = data?.user?.completions ?? []
 
@@ -67,14 +57,6 @@ function CompletionsPage({ admin }: CompletionsProps) {
   )
 }
 
-CompletionsPage.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+CompletionsPage.displayName = "CompletionsPage"
 
-export default CompletionsPage
+export default withAdmin(withSignedIn(CompletionsPage))

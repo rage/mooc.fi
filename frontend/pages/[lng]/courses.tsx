@@ -1,27 +1,20 @@
 import * as React from "react"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
 import { useQuery } from "@apollo/react-hooks"
 import CourseGrid from "/components/CourseGrid"
-import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"
-// import Spinner from "/components/Spinner"
 import { H1Background } from "/components/Text/headers"
 import { AllEditorCoursesQuery } from "/graphql/queries/courses"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withSignedIn from "/lib/with-signed-in"
+import withAdmin from "/lib/with-admin"
 
 const Background = styled.section`
   background-color: #61baad;
 `
 
-interface CourseProps {
-  admin: boolean
-}
-
-const Courses = ({ admin }: CourseProps) => {
+const Courses = () => {
   const { loading, error, data } = useQuery<AllEditorCourses>(
     AllEditorCoursesQuery,
   )
@@ -32,10 +25,6 @@ const Courses = ({ admin }: CourseProps) => {
         errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
-  }
-
-  if (!admin) {
-    return <AdminError />
   }
 
   return (
@@ -50,14 +39,6 @@ const Courses = ({ admin }: CourseProps) => {
   )
 }
 
-Courses.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+Courses.displayName = "Courses"
 
-export default Courses
+export default withAdmin(withSignedIn(Courses))
