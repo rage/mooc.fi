@@ -1,8 +1,4 @@
 import React, { useContext, useState } from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import { NextPageContext as NextContext } from "next"
-import AdminError from "/components/Dashboard/AdminError"
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import { WideContainer } from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
@@ -18,6 +14,8 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
+
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
     course(slug: $slug) {
@@ -27,12 +25,7 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-interface CompletionsProps {
-  admin: boolean
-  router: SingletonRouter
-}
-
-const Completions = ({ admin, router }: CompletionsProps) => {
+const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
   const [lng, changeLng] = useState(
     (router?.query?.language as string) ??
@@ -58,10 +51,6 @@ const Completions = ({ admin, router }: CompletionsProps) => {
       variables: { slug: slug },
     },
   )
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   if (loading || !data) {
     return <Spinner />
@@ -99,15 +88,6 @@ const Completions = ({ admin, router }: CompletionsProps) => {
   )
 }
 
-Completions.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
+Completions.displayName = "Completions"
 
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-
-export default withRouter(Completions)
+export default withRouter(withAdmin(Completions) as any)
