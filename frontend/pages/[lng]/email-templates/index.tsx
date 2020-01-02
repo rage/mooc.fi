@@ -134,7 +134,6 @@ const CustomDialog = () => {
                       variables: { name: nameInput },
                     })
                     console.log(data)
-
                     const url =
                       "/" +
                       language +

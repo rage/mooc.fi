@@ -2,12 +2,13 @@ import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType
 import { stringArg, idArg } from "nexus/dist"
 import { Prisma } from "../../generated/prisma-client"
 import checkAccess from "../../accessControl"
+import { UserInputError } from "apollo-server-core"
 
 const addEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   t.field("addEmailTemplate", {
     type: "EmailTemplate",
     args: {
-      name: stringArg(),
+      name: stringArg({ required: true }),
       html_body: stringArg(),
       txt_body: stringArg(),
       title: stringArg(),
@@ -16,6 +17,7 @@ const addEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       checkAccess(ctx)
       const { name, html_body, txt_body, title } = args
       const prisma: Prisma = ctx.prisma
+      if (name == "") throw new UserInputError("Name is empty!")
       return prisma.createEmailTemplate({
         name,
         html_body,
