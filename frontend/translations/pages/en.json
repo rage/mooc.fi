@@ -1,0 +1,12 @@
+{
+  "title": {
+    "/": "",
+    "/[lng]/profile": "Profile",
+    "/[lng]/courses": "Courses",
+    "/[lng]/courses/[id]/edit": "Edit", 
+    "/register": "Register"
+  },
+  "breadcrumb": {
+    
+  }
+}
