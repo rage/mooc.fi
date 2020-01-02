@@ -8,6 +8,8 @@ import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import LanguageContext from "/contexes/LanguageContext"
+import LangLink from "/components/LangLink"
+import { Url } from "url"
 
 const TabContainer = styled.div`
   flex-grow: 1;
@@ -27,18 +29,25 @@ function a11yProps(index: any) {
 
 interface LinkTabProps {
   label?: string
-  href?: string
+  href: string
+  as: string
   icon: any
 }
 
 function LinkTab(props: LinkTabProps) {
   return (
-    <Tab
-      style={{ marginTop: "1rem" }}
-      component="a"
-      onClick={() => {}}
-      {...props}
-    />
+    <LangLink
+      href={(props.href as unknown) as Url}
+      as={props.as}
+      shallow={true}
+    >
+      <Tab
+        style={{ marginTop: "1rem" }}
+        component="a"
+        onClick={() => {}}
+        {...props}
+      />
+    </LangLink>
   )
 }
 
@@ -69,25 +78,29 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
           <LinkTab
             label="Course Home"
             icon={<DashboardIcon />}
-            href={`/${language}/courses/${slug}`}
+            as={`/${language}/courses/${slug}`}
+            href={"/[lng]/courses/[id]"}
             {...a11yProps(0)}
           />
           <LinkTab
             label="Completions"
             icon={<ViewListIcon />}
-            href={`/${language}/courses/${slug}/completions`}
+            as={`/${language}/courses/${slug}/completions`}
+            href={"/[lng]/courses/[id]/completions"}
             {...a11yProps(1)}
           />
           <LinkTab
             label="Points"
             icon={<ScatterplotIcon />}
-            href={`/${language}/courses/${slug}/points`}
+            as={`/${language}/courses/${slug}/points`}
+            href={"/[lng]/courses/[id]/points"}
             {...a11yProps(2)}
           />
           <LinkTab
             label="Edit"
             icon={<EditIcon />}
-            href={`/${language}/courses/${slug}/edit`}
+            as={`/${language}/courses/${slug}/edit`}
+            href={" /[lng]/courses/[id]/edit"}
             {...a11yProps(3)}
           />
         </StyledTabs>
