@@ -161,6 +161,4 @@ const EditCourse = ({ router }: EditCourseProps) => {
   )
 }
 
-EditCourse.displayName = "EditCourse"
-
 export default withRouter(withAdmin(EditCourse) as any)

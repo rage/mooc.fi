@@ -1,14 +1,14 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback, useEffect, useContext } from "react"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import gql from "graphql-tag"
 import { useApolloClient } from "@apollo/react-hooks"
-/* import { BreadcrumbCourse } from "/static/types/generated/BreadcrumbCourse"
-import { BreadcrumbModule } from "/static/types/generated/BreadcrumbModule" */
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
 import { memoize } from "lodash"
 import { DocumentNode } from "graphql"
+import getPageTranslator from "/translations/pages"
+import LanguageContext from "/contexes/LanguageContext"
 
 const BreadcrumbCourseQuery = gql`
   query BreadcrumbCourse($slug: String) {
@@ -122,13 +122,16 @@ const routes = {
   "/register-completion/(.+)": "/register-completion/[slug]",
 }
 
+const getRoute = (target?: string) =>
+  Object.entries(routes).reduce((acc, [toReplace, replace]) => {
+    const regex = new RegExp(toReplace, "gm")
+
+    return acc.replace(regex, replace)
+  }, target || "")
+
 const BreadcrumbComponent: React.FC<{ target?: string }> = React.memo(
   ({ target, children }) => {
-    const href = Object.entries(routes).reduce((acc, [toReplace, replace]) => {
-      const regex = new RegExp(toReplace, "gm")
-
-      return acc.replace(regex, replace)
-    }, target || "")
+    const href = getRoute(target)
 
     return (
       <BreadCrumb>
@@ -165,8 +168,8 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
   const client = useApolloClient()
   const { router } = props
+  const { language } = useContext(LanguageContext)
 
-  // const currentPageLanguage = useContext(LanguageContext)
   //if router prop exists, take the current URL
   let currentUrl: string = ""
   if (router) {
@@ -181,6 +184,8 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   if (urlWithQueryRemoved.startsWith("/en")) {
     homeLink = "/en/"
   }
+
+  const t = getPageTranslator(language)
 
   const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
   // const { language: lng } = currentPageLanguage
@@ -238,20 +243,24 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   return (
     <BreadCrumbs>
       <BreadcrumbComponent target={homeLink} key="breadcrumb-home">
-        Home
+        {t("title")?.["/"]}
       </BreadcrumbComponent>
       {urlRouteComponents.map((component, idx) => {
         let target: string | undefined = `/${component}`
-        let content: string | null = component
+        let componentsSoFar = urlRouteComponents.slice(0, idx + 1)
+        let href = componentsSoFar.join("/")
+
+        const route = `/[lng]${getRoute(`/${href}`)}`
+        const breadcrumbTranslation = t("breadcrumb")?.[route]
+        const titleTranslation = t("title")?.[route]
+
+        let content = breadcrumbTranslation || titleTranslation || component
 
         if (idx === 0) {
           if (component == "users") {
             target = `/${component}/search`
           }
         } else {
-          let componentsSoFar = urlRouteComponents.slice(0, idx + 1)
-          let href = componentsSoFar.join("/")
-
           target = `/${href}`
 
           if (
