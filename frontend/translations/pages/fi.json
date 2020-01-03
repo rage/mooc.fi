@@ -10,7 +10,6 @@
     "/[lng]/profile": "Oma profiili",
     "/[lng]/profile/completions": "Omat suoritukset",
     "/[lng]/profile/points": "Omat pisteet",
-    "/[lng]/register-completion/[slug]": "Rekisteröi suoritus",
     "/[lng]/study-modules": "Opintokokonaisuudet",
     "/[lng]/study-modules/[id]/edit": "Muokkaa opintokokonaisuutta",
     "/[lng]/study-modules/new": "Uusi opintokokonaisuus",
@@ -22,12 +21,15 @@
     "/[lng]/sign-up": "Rekisteröidy",
     "/[lng]/teachers": "Opettajille",
     "/[lng]/register": "Rekisteröidy organisaatioon",
-    "/": "Etusivu",
-    "/register-completion/[slug]": "Rekisteröi suoritus"
+    "/[lng]/register-completion/[slug]": "Rekisteröi suoritus",
+    "/register-completion/[slug]": "Rekisteröi suoritus",
+    "/": "Etusivu"
   },
   "breadcrumb": {
-    "/[lng]/courses": "Kurssit",
     "/[lng]/courses/[id]/edit": "Muokkaa", 
-    "/[lng]/courses/[id]/new": "Uusi"
+    "/[lng]/courses/new": "Uusi",
+    "/[lng]/study-modules/[id]/edit": "Muokkaa", 
+    "/[lng]/study-modules/new": "Uusi",
+    "/[lng]/users/search": "Hae"
   }
 }

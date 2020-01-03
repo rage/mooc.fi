@@ -10,6 +10,24 @@
     "password": "Password",
     "username": "Email or username",
     "skiplink": "To main content",
-    "errorTitle": "An error has occured"
-
+    "errorTitle": "An error has occured",
+    "loadMore": "Load more",
+    "confirmationUnsavedChanges": "You have unsaved changes",
+    "confirmationLeaveWithoutSaving": "Are you sure you want to leave without saving?",
+    "confirmationAboutToDelete": "About to delete",
+    "confirmationDelete": "Are you sure you want to delete?",
+    "confirmationYes": "Yes",
+    "confirmationNo": "No",
+    "showDelete": "Check this to show delete button",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submittingError": "Error submitting: ",
+    "imageDropMessage": "Drop image or click to select",
+    "imageNotAnImage": "That was not an image!",
+    "imageNotAcceptableFormat": "Not an acceptable format",
+    "imageDropHere": "Drop image file here",
+    "courses": "Courses",
+    "modules": "Modules",
+    "userSearch": "User search"
 }

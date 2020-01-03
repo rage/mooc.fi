@@ -1,0 +1,10 @@
+{
+  "moduleNotFound": "Opintokokonaisuutta ei löydy!",
+  "moduleWithIdNotFound": "Opintokokonaisuutta tunnuksella <b>{{slug}}</b> ei löydy!",
+  "redirectMessagePre": "Sinut ohjataan takaisin opintokokonaisuuksien listaan 5 sekunnin kuluessa - paina ",
+  "redirectLinkText": "tästä",
+  "redirectMessagePost": " siirtyäksesi heti.",
+  "editStudyModule": "Muokkaa opintokokonaisuutta",
+  "newStudyModule": "Uusi opintokokonaisuus",
+  "allStudyModules": "Kaikki opintokokonaisuudet"
+}

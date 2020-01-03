@@ -133,6 +133,4 @@ const NetBeans = () => {
   )
 }
 
-NetBeans.displayName = "NetBeans"
-
 export default NetBeans
