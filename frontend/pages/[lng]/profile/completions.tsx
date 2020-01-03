@@ -50,6 +50,4 @@ function CompletionsPage() {
   )
 }
 
-CompletionsPage.displayName = "CompletionsPage"
-
 export default withSignedIn(CompletionsPage)

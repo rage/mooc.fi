@@ -16,6 +16,7 @@ import { H1NoBackground } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useQueryParameter } from "/util/useQueryParameter"
 import withAdmin from "/lib/with-admin"
+import getCoursesTranslator from "/translations/courses"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -83,6 +84,7 @@ interface EditCourseProps {
 
 const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslator(language)
   const slug = useQueryParameter("id") ?? ""
 
   let redirectTimeout: number | null = null
@@ -92,7 +94,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
     loading: courseLoading,
     error: courseError,
   } = useQuery<CourseDetails>(CourseQuery, {
-    variables: { slug: slug },
+    variables: { slug },
   })
   const {
     data: studyModulesData,
@@ -126,7 +128,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
     <section>
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
-          Edit course
+          {t("editCourse")}
         </H1NoBackground>
         {courseLoading || studyModulesLoading ? (
           <FormSkeleton />
@@ -137,22 +139,24 @@ const EditCourse = ({ router }: EditCourseProps) => {
           />
         ) : (
           <ErrorContainer elevation={2}>
-            <Typography variant="body1">
-              Course with id <b>{slug}</b> not found!
-            </Typography>
+            <Typography
+              variant="body1"
+              dangerouslySetInnerHTML={{
+                __html: t("courseWithIdNotFound", { slug }),
+              }}
+            />
             <Typography variant="body2">
-              You will be redirected back to the course list in 5 seconds -
-              press{" "}
+              {t("redirectMessagePre")}
               <Link as={listLink} href="[lng]/courses">
                 <a
                   onClick={() =>
                     redirectTimeout && clearTimeout(redirectTimeout)
                   }
                 >
-                  here
+                  {t("redirectLinkText")}
                 </a>
-              </Link>{" "}
-              to go there now.
+              </Link>
+              {t("redirectMessagePost")}
             </Typography>
           </ErrorContainer>
         )}

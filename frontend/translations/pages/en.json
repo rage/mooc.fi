@@ -1,12 +1,35 @@
 {
   "title": {
-    "/": "",
-    "/[lng]/profile": "Profile",
     "/[lng]/courses": "Courses",
-    "/[lng]/courses/[id]/edit": "Edit", 
-    "/register": "Register"
+    "/[lng]/courses/[id]": "Course dashboard", 
+    "/[lng]/courses/[id]/edit": "Edit course", 
+    "/[lng]/courses/[id]/completions": "Completions", 
+    "/[lng]/courses/[id]/points": "Points", 
+    "/[lng]/courses/new": "Uusi New course",
+    "/[lng]/installation/netbeans": "NetBeans installation",
+    "/[lng]/profile": "My profile",
+    "/[lng]/profile/completions": "My completions",
+    "/[lng]/profile/points": "My points",
+    "/[lng]/study-modules": "Study modules",
+    "/[lng]/study-modules/[id]/edit": "Edit study module",
+    "/[lng]/study-modules/new": "New study module",
+    "/[lng]/users/[id]/completions": "Completions",
+    "/[lng]/users/[id]": "User",
+    "/[lng]/users/search": "Search users",
+    "/[lng]/users": "Users",
+    "/[lng]/sign-in": "Sign in",
+    "/[lng]/sign-up": "Sign up",
+    "/[lng]/teachers": "For teachers",
+    "/[lng]/register": "Register organization",
+    "/[lng]/register-completion/[slug]": "Register completion",
+    "/register-completion/[slug]": "Register completion",
+    "/": "Home"
   },
   "breadcrumb": {
-    
+    "/[lng]/courses/[id]/edit": "Edit", 
+    "/[lng]/courses/new": "New",
+    "/[lng]/study-modules/[id]/edit": "Edit", 
+    "/[lng]/study-modules/new": "New",
+    "/[lng]/users/search": "Search"
   }
 }
