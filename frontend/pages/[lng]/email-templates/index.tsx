@@ -63,12 +63,15 @@ const EmailTemplates = (admin: Boolean) => {
         {data.email_templates.map(p => {
           return (
             <div>
-              <a href={"email-templates/".concat(p.id)}>
+              <a
+                href={"email-templates/".concat(p.id)}
+                style={{ textDecoration: "none" }}
+              >
                 <Paper>
                   <Typography variant="h5" component="h3">
-                    {p.name}
+                    Name: {p.name}
                   </Typography>
-                  <Typography component="p">{p.txt_body}</Typography>
+                  <Typography component="p"> Content: {p.txt_body}</Typography>
                 </Paper>
               </a>
               <br></br>

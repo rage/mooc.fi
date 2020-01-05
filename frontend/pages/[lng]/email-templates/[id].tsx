@@ -16,6 +16,7 @@ import {
 } from "/graphql/mutations/email-templates"
 import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
 import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
+import CustomSnackbar from "/components/CustomSnackbar"
 
 interface EmailTemplateProps {
   admin: boolean
@@ -34,6 +35,17 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
   if (!admin) {
     return <AdminError />
   }
+
+  interface SnackbarData {
+    variant: "error" | "success" | "warning" | "error"
+    message: string
+  }
+  const [snackbarData, setSnackbarData]: [SnackbarData, any] = useState({
+    variant: "error",
+    message: "Error: Could not save",
+  })
+
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
 
   const { data, loading, error } = useQuery<EmailTemplate>(EmailTemplateQuery, {
     variables: { id: id },
@@ -109,7 +121,7 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
             <br></br>
             <TextField
               id="outlined-multiline-static"
-              label="html_body"
+              label="html_body (disabled)"
               multiline
               rows="4"
               disabled={true}
@@ -129,17 +141,31 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
                   color="primary"
                   onClick={async () => {
                     if (emailTemplate == null) return
-                    const { data } = await client.mutate<UpdateEmailTemplate>({
-                      mutation: UpdateEmailTemplateMutation,
-                      variables: {
-                        id: emailTemplate.id,
-                        name: name,
-                        title: title,
-                        txt_body: txtBody,
-                        html_body: htmlBody,
-                      },
-                    })
-                    console.log(data)
+                    try {
+                      const { data } = await client.mutate<UpdateEmailTemplate>(
+                        {
+                          mutation: UpdateEmailTemplateMutation,
+                          variables: {
+                            id: emailTemplate.id,
+                            name: name,
+                            title: title,
+                            txt_body: txtBody,
+                            html_body: htmlBody,
+                          },
+                        },
+                      )
+                      console.log(data)
+                      setSnackbarData({
+                        variant: "success",
+                        message: "Saved succesfully",
+                      })
+                    } catch {
+                      setSnackbarData({
+                        variant: "error",
+                        message: "Error: Could not save",
+                      })
+                    }
+                    setIsSnackbarOpen(true)
                   }}
                 >
                   Update
@@ -181,6 +207,12 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
             </SubtitleNoBackground>
           </form>
         </Paper>
+        <CustomSnackbar
+          open={isSnackbarOpen}
+          setOpen={setIsSnackbarOpen}
+          variant={snackbarData.variant}
+          message={snackbarData.message}
+        />
       </WideContainer>
     </section>
   )
