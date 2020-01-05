@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { isSignedIn, isAdmin } from "/lib/authentication"
 import redirect from "/lib/redirect"
 import AdminError from "/components/Dashboard/AdminError"
@@ -17,6 +17,8 @@ import {
 import { UpdateEmailTemplate } from "/static/types/generated/UpdateEmailTemplate"
 import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 import CustomSnackbar from "/components/CustomSnackbar"
+import LanguageContext from "/contexes/LanguageContext"
+import Router from "next/router"
 
 interface EmailTemplateProps {
   admin: boolean
@@ -50,6 +52,8 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
   const { data, loading, error } = useQuery<EmailTemplate>(EmailTemplateQuery, {
     variables: { id: id },
   })
+
+  const { language } = useContext(LanguageContext)
 
   //TODO add circular progress
   if (loading) {
@@ -179,11 +183,28 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
                   color="primary"
                   onClick={async () => {
                     if (emailTemplate == null) return
-                    const { data } = await client.mutate<DeleteEmailTemplate>({
-                      mutation: DeleteEmailTemplateMutation,
-                      variables: { id: emailTemplate.id },
-                    })
-                    console.log(data)
+                    try {
+                      const { data } = await client.mutate<DeleteEmailTemplate>(
+                        {
+                          mutation: DeleteEmailTemplateMutation,
+                          variables: { id: emailTemplate.id },
+                        },
+                      )
+                      console.log(data)
+                      setSnackbarData({
+                        variant: "success",
+                        message: "Deleted successfully",
+                      })
+
+                      const url = "/" + language + "/email-templates/"
+                      setTimeout(() => Router.push(url), 5000)
+                    } catch {
+                      setSnackbarData({
+                        variant: "error",
+                        message: "Error: Could not delete",
+                      })
+                    }
+                    setIsSnackbarOpen(true)
                   }}
                 >
                   Delete
