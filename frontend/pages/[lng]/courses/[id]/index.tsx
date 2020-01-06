@@ -10,12 +10,16 @@ import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
     course(slug: $slug) {
       id
       name
+      completion_email {
+        name
+      }
     }
   }
 `
@@ -51,11 +55,16 @@ const Course = (props: CourseProps) => {
 
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
-          {data.course.name}
+          {data.course?.name}
         </H1NoBackground>
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           Home
         </SubtitleNoBackground>
+        {data.course.completion_email?.name}
+        <CreateEmailTemplateDialog
+          buttonText="Create completion email"
+          course={data.course?.id}
+        />
         <CourseDashboard />
       </WideContainer>
     </section>
