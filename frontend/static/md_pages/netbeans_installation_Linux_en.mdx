@@ -1,56 +1,81 @@
 import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
+import StartingProgrammingQuide from "/static/md_pages/ohjelmoinnin_aloittaminen_en.mdx"
 
 <ContentBox>
 
-## NetBeans installation for Linux
+## Installing to Linux
 ---
-Follow the instructions below to install Java and the NetBeans TMC-environment.
+
+### Contents
+1. [Installing Java](#javan-asentaminen)
+2. [Installing TMCBeans](#tmcbeansin-asentaminen)
+3. [MOOC.fi -tunnuksen luominen](#mooc.fi-tunnuksen-luominen)
+4. [Kirjautuminen ohjelmointiympäristöön](#kirjautuminen-ohjelmointiympäristöön)
+5. [Organisaation valinta](#organisaation-valinta)
+6. [Kurssin valinta](#kurssin-valinta)
+7. [Ensimmäisen tehtävän tekeminen](#ensimmäisen-tehtävän-tekeminen)
+8. [Lähdekoodin ajaminen](#lähdekoodin-ajaminen)
+9. [Lähdekoodin testaaminen](#lähdekoodin-testaaminen)
+10. [Tehtävän lähettäminen palvelimelle](#tehtyäävän-lähettäminen-palvelimelle)
+11. [Pistetilanteen tarkistaminen](#pistetilanteen-tarkistaminen)
+
+---
 
 </ContentBox>
 
 <ContentBox>
 
+Follow the instructions below to install
+ - support for developing Java-applications
+ - TMCBeans environment
+
+
 <SectionBox>
 
-### 1. Installing Java 
+Note that if you are using a computer provided by the Computer Science department of the University of Helsinki, the required software has been already installed for you. 
+You can move straight to creating a MOOC.fi account. 
 
-We recommend installing the OpenJDK package for linux. 
-Execute the following command in terminal:
+### Installing Java <a name="javan asentaminen"></a>
 
-> `sudo apt-get install openjdk-8-jdk`
+#### 1. Install OpenJDK-package.
 
-If you have other versions of Java installed, they may precend the IDE from working properly. 
-We recommend removing all other Java versions. 
-Especially Java versions 9, 10 and 11 have proven problematic. 
+You can install OpenJDK with the following terminal command (works for Ubuntu):
 
-Change the active version of Java with the command: 
+> `sudo apt-get install openjdk-11-jdk`
+
+#### 2. Switch the active version of Java
+
+Use the command:
 
 > `sudo update-alternatives --config java`
 
-Select the option number with Java 8, for example on my computer this is "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java", and press enter. 
+Type the number of the option, which says Java 11 (for example on this computer "/usr/lib/jvm/java-11-openjdk-amd64/bin/java"), and press enter. 
 
-Next install OpenJFX, which we use to create graphical user interfaces. 
-Use the command: 
-
-> `sudo apt-get install openjfx`
+If there are multiple options with Java 11, both with status "auto mode" and "manual mode", select "manual mode".
 
 </SectionBox>
 
 <SectionBox>
 
-###  2. Installing NetBeans with TMC
+###  Installing TMCBeans <a name="tmcbeansin-asentaminen"></a>
 
-Download the file [https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_amd64.snap](https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_amd64.snap).
+Download file [https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_amd64.snap](https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_amd64.snap).
 
-After the download is complete, double click the file. 
+In terminal, navigate to the directory you downloaded the file to, and run command: 
 
-If this does not work, navigate to the folder where you have downloaded the file to, and run the command: 
+> `sudo snap install --classic --dangerous tmcbeans_1.3.0_amd64.snap`
 
-> `chmod +x tmc-netbeans_org_mooc_tmcbeans-linux.sh && ./tmx-netbeans_org_mooc_tmcbeans-linux.sh`
+Type your password to the terminal when prompted and press enter. 
 
-Then follow the instructions on your screen.
+When you receive the message 'tmcbeans 1.3.0 installed', you can start TMCBeans either from the terminal with command `tmcbeans` or by starting it from Activities.          
+
+**If snap install does not work on your computer**, follow these instructions to install snap: [Installing snapd](https://snapcraft.io/docs/installing-snapd). If your operating system does not support snap, download the zip version by following the instructions on the ZIP tab. 
+
+
+***
 
 </SectionBox>
 
 </ContentBox>
 
+<StartingProgrammingQuide />

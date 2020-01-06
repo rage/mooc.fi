@@ -1,74 +1,57 @@
 import {ContentBox} from "/pages/[lng]/installation/netbeans"
+import StartingProgrammingQuide from "/static/md_pages/ohjelmoinnin_aloittaminen_en.mdx"
 
 <ContentBox>
 
-## Installing NetBeans for Windows
----
-Follow the instructions below to install Java and the NetBeans TMC-environment. 
-
-</ContentBox>
-
-<ContentBox>
-
-**NB! The latest Java 8 development environment (8u231) might cause _Malformed argument has embedded quote_ exception when building or 
-running projects**
-
-To prevent this issue, install an older version of the development environment (8u221 or older).
-
-If you want to use the latest development environment, append 
-
-> `-J-Djdk.lang.Process.allowAmbiguousCommands=true`
- 
-to the **default_options** in **tmcbeans/etc/tmcbeans.conf** (you can find it from the folder where you have installed NetBeans with TMC).
-
-</ContentBox>
-
-<ContentBox>
-
-
-### 1. Installing Java
-
-
-
-Download the Java 8 development environment (Java SE Development Kit 8u161) from 
-[https://www.oracle.com/java/technologies/jdk8-downloads.html](https://www.oracle.com/java/technologies/jdk8-downloads.html).
-
-It is likely you are using a 64-bit version of Windows, so download 
-**jdk-8u161-windows-x64.exe**. 
-_(If the available number is bigger than 161, you may download it as well)._
-
-Once you've downloaded the file, install it on your computer. 
-
-
-Below is a video on how to install Java on Windows 10. 
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/wR1vECnJAag" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+## Asentaminen Windowsiin
 ---
 
-You will have to create yourself an Oracle-account. 
-The registration asks for all kinds of things, and for every field you do not know what to enter (for example the name of your company),
-you can just enter "Lolled corporation Ltd" or something similiar. 
+### Sisältö
+1. [Javan asentaminen](#javan-asentaminen)
+2. [TMCBeansin asentaminen](#tmcbeansin-asentaminen)
+3. [MOOC.fi -tunnuksen luominen](#mooc.fi-tunnuksen-luominen)
+4. [Kirjautuminen ohjelmointiympäristöön](#kirjautuminen-ohjelmointiympäristöön)
+5. [Organisaation valinta](#organisaation-valinta)
+6. [Kurssin valinta](#kurssin-valinta)
+7. [Ensimmäisen tehtävän tekeminen](#ensimmäisen-tehtävän-tekeminen)
+8. [Lähdekoodin ajaminen](#lähdekoodin-ajaminen)
+9. [Lähdekoodin testaaminen](#lähdekoodin-testaaminen)
+10. [Tehtävän lähettäminen palvelimelle](#tehtyäävän-lähettäminen-palvelimelle)
+11. [Pistetilanteen tarkistaminen](#pistetilanteen-tarkistaminen)
 
 ---
-
-**If you have other versions of Java installed, they may prevent the development environment from working properly.**
-Remove all other Java versions. 
-Especially versions 9, 10 and 11 have proven problematic. 
-
 </ContentBox>
 
 <ContentBox>
 
-###  Installing NetBeans with TMC
+Seuraa allaolevia ohjeita ja asenna koneellesi
+ - tuki Java-ohjelmien kehittämiselle
+ - TMCBeans-ympäristö
 
-Download the file from [http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-windows.exe](http://update.testmycode.net/installers/tmc-netbeans_org_mooc/tmc-netbeans_org_mooc_tmcbeans-windows.exe).
+### Javan Asentaminen <a name="javan-asentaminen"></a>
 
-Once the download is complete, install the program to your computer. 
+Lataa Java 11:n avoin kehitysympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
 
-Below is a video on how to install NetBeans with TMC on Windows 10. 
+Valitse sivulta OpenJDK 11 (LTS) ja HotSpot. Sitten voit painaa Latest release -nappia ladataksesi Javan.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Mwe2vuONhZc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+**HUOM!** Kun asennat Javaa lataamastasi asennustiedostosta, aseta Custom Setup -vaiheessa sekä "Set JAVA_HOME variable" että "JavaSoft (Oracle) registry keys" -kohtiin "Entire feature will be installed on local hard drive". (katso allaolevat kuvat)
 
+<img src="/static/images/installation/adoptopenjdk-set-java-home.png"
+alt="AdoptOpenJDK:n asennusohjelman Custom Setup -vaihe, jossa asetetaan Set JAVA_HOME variable -kohtaan vaihtoehto Entire feature will be installed on local hard drive"
+width="100%" height="100%" />
+
+<img src="/static/images/installation/adoptopenjdk-set-registry-keys.png"
+alt="AdoptOpenJDK:n asennusohjelman Custom Setup -vaihe, jossa asetetaan JavaSoft (Oracle) registry keys -kohtaan vaihtoehto Entire feature will be installed on local hard drive"
+width="100%" height="100%" />
+
+
+###  TMCBeansin Asentaminen <a name="tmcbeansin-asentaminen"></a>
+
+1. Lataa tiedosto [https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_installer.exe](https://download.mooc.fi/tmcbeans/installers/tmcbeans_1.3.0_installer.exe).
+2. Kun tiedoston lataaminen on valmis, tuplaklikkaa tiedostoa avataksesi asennusohjelman.
+3. Tämän jälkeen seuraa ruudulle tulevia ohjeita.
+
+***
 </ContentBox>
 
+<StartingProgrammingQuide />
