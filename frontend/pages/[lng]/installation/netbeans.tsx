@@ -142,8 +142,6 @@ const NetBeans = () => {
   )
 }
 
-NetBeans.getInitialProps = () => {
-  return {}
-}
+NetBeans.displayName = "NetBeans"
 
 export default NetBeans

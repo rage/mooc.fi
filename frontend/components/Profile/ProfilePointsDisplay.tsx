@@ -16,11 +16,12 @@ const ProfilePointsDisplay = () => {
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
 
-  if (error || !data) {
-    return <ErrorMessage />
-  }
   if (loading) {
     return <Spinner />
+  }
+
+  if (error || !data) {
+    return <ErrorMessage />
   }
 
   const hasPoints = studentHasPoints({ pointsData: data })

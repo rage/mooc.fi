@@ -22,6 +22,7 @@ const Root = styled.div<RootProps>`
 
 interface CourseHighlightsProps {
   courses?: AllCourses_courses[]
+  loading: boolean
   title: string
   headerImage: any
   subtitle?: string
@@ -35,6 +36,7 @@ interface CourseHighlightsProps {
 const CourseHighlights = (props: CourseHighlightsProps) => {
   const {
     courses,
+    loading,
     title,
     headerImage,
     subtitle,
@@ -75,15 +77,15 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
       </div>
       <Container>
         <Grid container spacing={3}>
-          {courses?.length ? (
-            courses?.map(course => (
-              <CourseCard key={`course-${course.id}`} course={course} />
-            ))
-          ) : (
+          {loading ? (
             <>
               <CourseCard key="skeletoncard1" />
               <CourseCard key="skeletoncard2" />
             </>
+          ) : (
+            courses?.map(course => (
+              <CourseCard key={`course-${course.id}`} course={course} />
+            ))
           )}
         </Grid>
       </Container>

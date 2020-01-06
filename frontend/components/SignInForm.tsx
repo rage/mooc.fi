@@ -7,7 +7,7 @@ import {
   Link,
 } from "@material-ui/core"
 
-import { signIn } from "../lib/authentication"
+import { signIn, isSignedIn } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
 import LoginStateContext from "/contexes/LoginStateContext"
 import getCommonTranslator from "/translations/common"
@@ -93,15 +93,23 @@ function SignIn() {
             onClick={async e => {
               e.preventDefault()
               try {
-                await signIn({ email, password }).then(logInOrOut)
-                console.log("I did it")
+                await signIn({ email, password, shallow: false })
+                try {
+                  await logInOrOut()
+                } catch (e) {
+                  console.error("Login in or out failed")
+                }
+
                 if (errorTimeout) {
                   clearTimeout(errorTimeout)
                 }
-              } catch (e) {
-                console.log("I failed")
-                console.log(e)
+              } catch (error) {
+                console.error("Login failed due to this error: ", error)
                 setError(true)
+                // @ts-ignore
+                if (isSignedIn(undefined)) {
+                  console.error("Logging in was successful but it crashed")
+                }
                 errorTimeout = setTimeout(() => {
                   setError(false)
                   if (errorTimeout) {
@@ -113,10 +121,12 @@ function SignIn() {
           >
             {t("login")}
           </SubmitButton>
-          <Link href="https://tmc.mooc.fi/password_reset_keys/new">
-            <a href="https://tmc.mooc.fi/password_reset_keys/new">
-              {t("forgottenpw")}
-            </a>
+          <Link
+            href="https://tmc.mooc.fi/password_reset_keys/new"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("forgottenpw")}
           </Link>
         </StyledForm>
       )}

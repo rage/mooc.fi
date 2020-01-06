@@ -1,10 +1,8 @@
 import React from "react"
-import { isSignedIn } from "/lib/authentication"
-import { NextPageContext as NextContext } from "next"
-import redirect from "/lib/redirect"
 import Container from "/components/Container"
 import PointsList from "/components/User/Points/PointsList"
 import { H1NoBackground } from "/components/Text/headers"
+import withSignedIn from "/lib/with-signed-in"
 
 function Points() {
   return (
@@ -19,11 +17,6 @@ function Points() {
   )
 }
 
-Points.getInitialProps = function(context: NextContext) {
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {}
-}
+Points.displayName = "Points"
 
-export default Points
+export default withSignedIn(Points)
