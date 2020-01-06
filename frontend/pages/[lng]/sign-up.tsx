@@ -4,9 +4,7 @@ import CreateAccountForm from "/components/CreateAccountForm"
 import ConfirmEmail from "/components/ConfirmEmail"
 
 import { RegularContainer } from "/components/Container"
-import { NextPageContext } from "next"
-import { isSignedIn } from "/lib/authentication"
-import redirect from "/lib/redirect"
+import withSignedOut from "/lib/with-signed-out"
 
 const SignUpPage = () => {
   const [state, setState] = useState({
@@ -21,12 +19,13 @@ const SignUpPage = () => {
       window.scrollTo(0, 0)
     }
   }
-  let stepComponent
-  if (state.step === 1) {
-    stepComponent = <CreateAccountForm onComplete={onStepComplete} />
-  } else {
-    stepComponent = <ConfirmEmail onComplete={onStepComplete} />
-  }
+
+  const stepComponent =
+    state.step === 1 ? (
+      <CreateAccountForm onComplete={onStepComplete} />
+    ) : (
+      <ConfirmEmail onComplete={onStepComplete} />
+    )
 
   return (
     <div>
@@ -35,11 +34,6 @@ const SignUpPage = () => {
   )
 }
 
-SignUpPage.getInitialProps = function(context: NextPageContext) {
-  if (isSignedIn(context)) {
-    redirect(context, "/")
-  }
-  return {}
-}
+SignUpPage.displayName = "SignUpPage"
 
-export default SignUpPage
+export default withSignedOut()(SignUpPage)

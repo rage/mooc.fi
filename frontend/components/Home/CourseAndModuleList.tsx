@@ -22,7 +22,6 @@ const CourseAndModuleList = () => {
   const language = mapNextLanguageToLocaleCode(lngCtx.language)
 
   const {
-    // @ts-ignore
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
@@ -75,18 +74,19 @@ const CourseAndModuleList = () => {
     )
   }
 
-  if (!coursesData) {
+  /*   if (!coursesData && !coursesLoading) {
     return <div>Error: no courses data?</div>
   }
-  if (!modulesData) {
+  if (!modulesData && !modulesLoading) {
     return <div>Error: no modules data? </div>
-  }
+  } */
 
   return (
     <section>
       <section id="courses">
         <CourseHighlights
           courses={promotedCourses}
+          loading={coursesLoading}
           title={t("highlightTitle")}
           headerImage={highlightsBanner}
           subtitle={t("highlightSubtitle")}
@@ -98,6 +98,7 @@ const CourseAndModuleList = () => {
         />
         <CourseHighlights
           courses={activeCourses}
+          loading={coursesLoading}
           title={t("allCoursesTitle")}
           headerImage={highlightsBanner}
           backgroundColor="#ffffff"
@@ -108,6 +109,7 @@ const CourseAndModuleList = () => {
         />
         <CourseHighlights
           courses={upcomingCourses}
+          loading={coursesLoading}
           title={t("upcomingCoursesTitle")}
           headerImage={highlightsBanner}
           backgroundColor="#007DC8"
@@ -123,6 +125,7 @@ const CourseAndModuleList = () => {
           <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
           <CourseHighlights
             courses={endedCourses}
+            loading={coursesLoading}
             title={t("endedCoursesTitle")}
             headerImage={highlightsBanner}
             backgroundColor="#ffffff"

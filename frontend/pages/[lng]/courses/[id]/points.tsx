@@ -1,8 +1,4 @@
 import React from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import { NextPageContext as NextContext } from "next"
-import AdminError from "/components/Dashboard/AdminError"
 import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -15,6 +11,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -25,11 +22,7 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-interface CompletionsProps {
-  admin: boolean
-}
-
-const Points = ({ admin }: CompletionsProps) => {
+const Points = () => {
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
@@ -39,10 +32,6 @@ const Points = ({ admin }: CompletionsProps) => {
       variables: { slug: slug },
     },
   )
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   if (loading || !data) {
     return <Spinner />
@@ -71,21 +60,12 @@ const Points = ({ admin }: CompletionsProps) => {
           Points
         </SubtitleNoBackground>
         <PointsExportButton slug={slug} />
-        <PaginatedPointsList courseID={data.course.id} />
+        <PaginatedPointsList courseId={data.course.id} />
       </Container>
     </CourseLanguageContext.Provider>
   )
 }
 
-Points.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
+Points.displayName = "Points"
 
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-
-export default Points
+export default withAdmin(Points)

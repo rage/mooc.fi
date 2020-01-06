@@ -85,12 +85,12 @@ const LoadingPointCardSkeleton = styled(Skeleton)`
 `
 
 interface Props {
-  courseID: string
+  courseId: string
   cursor?: string
 }
 
 function PaginatedPointsList(props: Props) {
-  const { courseID } = props
+  const { courseId } = props
   const [searchString, setSearchString] = useState("")
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
@@ -106,10 +106,10 @@ function PaginatedPointsList(props: Props) {
     () =>
       getData({
         variables: {
-          course_id: courseID,
+          course_id: courseId,
           cursor: null,
           search,
-          course_string: courseID,
+          course_string: courseId,
         },
       }),
     [search],
@@ -197,10 +197,10 @@ function PaginatedPointsList(props: Props) {
               fetchMore({
                 query: StudentProgresses,
                 variables: {
-                  course_id: courseID,
+                  course_id: courseId,
                   cursor: UserCourseSettingses.pageInfo.endCursor,
                   search: search !== "" ? search : undefined,
-                  course_string: courseID,
+                  course_string: courseId,
                 },
 
                 updateQuery: (previousResult, { fetchMoreResult }) => {

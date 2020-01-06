@@ -1,10 +1,6 @@
 import React from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
-import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "/components/Container"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
@@ -13,6 +9,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -23,10 +20,7 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-interface CourseProps {
-  admin: boolean
-}
-const Course = ({ admin }: CourseProps) => {
+const Course = () => {
   const slug = useQueryParameter("id")
 
   const { data, loading, error } = useQuery<CourseDetailsData>(
@@ -35,10 +29,6 @@ const Course = ({ admin }: CourseProps) => {
       variables: { slug: slug },
     },
   )
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   //TODO add circular progress
   if (loading || !data) {
@@ -73,15 +63,6 @@ const Course = ({ admin }: CourseProps) => {
   )
 }
 
-Course.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
+Course.displayName = "Course"
 
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-
-export default Course
+export default withAdmin(Course)

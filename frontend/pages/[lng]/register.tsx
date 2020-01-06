@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useContext } from "react"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import {
@@ -33,6 +30,7 @@ import getRegistrationTranslator from "/translations/register"
 import { WideContainer } from "/components/Container"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
+import withSignedIn from "/lib/with-signed-in"
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -344,14 +342,6 @@ const Register = () => {
   )
 }
 
-Register.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+Register.displayName = "Register"
 
-export default Register
+export default withSignedIn(Register)
