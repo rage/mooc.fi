@@ -3,8 +3,6 @@ import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import gql from "graphql-tag"
 import { useApolloClient } from "@apollo/react-hooks"
-/* import { BreadcrumbCourse } from "/static/types/generated/BreadcrumbCourse"
-import { BreadcrumbModule } from "/static/types/generated/BreadcrumbModule" */
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
 import { memoize } from "lodash"
@@ -120,6 +118,7 @@ const routes = {
   "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
   "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
   "/register-completion/(.+)": "/register-completion/[slug]",
+  "/en/": "/[lng]/",
 }
 
 const BreadcrumbComponent: React.FC<{ target?: string }> = React.memo(
@@ -129,7 +128,6 @@ const BreadcrumbComponent: React.FC<{ target?: string }> = React.memo(
 
       return acc.replace(regex, replace)
     }, target || "")
-
     return (
       <BreadCrumb>
         {href ? (
@@ -166,7 +164,6 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   const client = useApolloClient()
   const { router } = props
 
-  // const currentPageLanguage = useContext(LanguageContext)
   //if router prop exists, take the current URL
   let currentUrl: string = ""
   if (router) {
@@ -183,7 +180,6 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   }
 
   const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
-  // const { language: lng } = currentPageLanguage
 
   const getAwaitedCrumbs = useCallback(async (type: string, slug: string) => {
     // TODO: invalidate queries on editor (if needed?)
