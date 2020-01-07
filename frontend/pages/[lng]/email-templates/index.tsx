@@ -15,6 +15,7 @@ import { NextPageContext as NextContext } from "next"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
+import LangLink from "/components/LangLink"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -52,9 +53,11 @@ const EmailTemplates = (admin: Boolean) => {
         {data.email_templates.map(p => {
           return (
             <div>
-              <a
-                href={"/" + language + "/email-templates/".concat(p.id)}
-                style={{ textDecoration: "none" }}
+              <LangLink
+                href="/[lng]/email-templates/[id]"
+                as={`/${language}/email-templates/${p.id}`}
+                prefetch={false}
+                passHref
               >
                 <Paper>
                   <Typography variant="h5" component="h3">
@@ -62,7 +65,7 @@ const EmailTemplates = (admin: Boolean) => {
                   </Typography>
                   <Typography component="p"> Content: {p.txt_body}</Typography>
                 </Paper>
-              </a>
+              </LangLink>
               <br></br>
             </div>
           )
