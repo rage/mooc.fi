@@ -60,11 +60,14 @@ const Course = (props: CourseProps) => {
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           Home
         </SubtitleNoBackground>
-        {data.course.completion_email?.name}
-        <CreateEmailTemplateDialog
-          buttonText="Create completion email"
-          course={data.course?.id}
-        />
+        {data.course?.completion_email != null ? (
+          "Completion Email: ".concat(data.course.completion_email?.name)
+        ) : (
+          <CreateEmailTemplateDialog
+            buttonText="Create completion email"
+            course={slug}
+          />
+        )}
         <CourseDashboard />
       </WideContainer>
     </section>
