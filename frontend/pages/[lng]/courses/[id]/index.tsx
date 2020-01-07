@@ -11,6 +11,7 @@ import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
+import { Card } from "@material-ui/core"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -61,7 +62,9 @@ const Course = (props: CourseProps) => {
           Home
         </SubtitleNoBackground>
         {data.course?.completion_email != null ? (
-          "Completion Email: ".concat(data.course.completion_email?.name)
+          <Card style={{ width: "300px", minHeight: "50px" }}>
+            Completion Email: {data.course.completion_email?.name}
+          </Card>
         ) : (
           <CreateEmailTemplateDialog
             buttonText="Create completion email"
