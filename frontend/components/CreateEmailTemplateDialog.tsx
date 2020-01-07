@@ -79,8 +79,10 @@ const CreateEmailTemplateDialog = (props: CreateEmailTemplateDialogParams) => {
                       await client.mutate<updateCourse>({
                         mutation: UpdateCourseMutation,
                         variables: {
-                          course: props.course,
-                          completion_email: data?.addEmailTemplate.id,
+                          course: {
+                            slug: props.course,
+                            completion_email: data?.addEmailTemplate.id,
+                          },
                         },
                       })
                     }
