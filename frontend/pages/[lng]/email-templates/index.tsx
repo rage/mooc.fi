@@ -13,6 +13,8 @@ import redirect from "/lib/redirect"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import { NextPageContext as NextContext } from "next"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
+import { useContext } from "react"
+import LanguageContext from "/contexes/LanguageContext"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -36,6 +38,7 @@ const EmailTemplates = (admin: Boolean) => {
   if (loading || !data) {
     return <Spinner />
   }
+  const { language } = useContext(LanguageContext)
 
   return (
     <Background>
@@ -50,7 +53,7 @@ const EmailTemplates = (admin: Boolean) => {
           return (
             <div>
               <a
-                href={"email-templates/".concat(p.id)}
+                href={"/" + language + "/email-templates/".concat(p.id)}
                 style={{ textDecoration: "none" }}
               >
                 <Paper>
