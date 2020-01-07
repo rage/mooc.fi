@@ -8,10 +8,8 @@ import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import LanguageContext from "/contexes/LanguageContext"
-import LangLink from "/components/LangLink"
-import { Url } from "url"
 
-const TabContainer = styled.div`
+const TabBarContainer = styled.div`
   flex-grow: 1;
   background-color: inherit;
 `
@@ -27,6 +25,16 @@ function a11yProps(index: any) {
   }
 }
 
+const TabContainer = styled.div`
+  width: 100%;
+  max-width: 700px;
+  margin 0 auto;
+`
+
+const A = styled.a`
+  color: unset;
+`
+
 interface LinkTabProps {
   label?: string
   href: string
@@ -36,18 +44,10 @@ interface LinkTabProps {
 
 function LinkTab(props: LinkTabProps) {
   return (
-    <LangLink
-      href={(props.href as unknown) as Url}
-      as={props.as}
-      shallow={false}
-    >
-      <Tab
-        style={{ marginTop: "1rem" }}
-        component="a"
-        onClick={() => {}}
-        {...props}
-      />
-    </LangLink>
+    // TODO: using LangLink here does not work with the points tab in production.
+    <A href={props.as}>
+      <Tab style={{ marginTop: "1rem" }} component="div" {...props} />
+    </A>
   )
 }
 
@@ -67,44 +67,46 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
   }
 
   return (
-    <TabContainer>
+    <TabBarContainer>
       <AppBar position="static" style={{ boxShadow: "0 0 0 0" }}>
-        <StyledTabs
-          variant="fullWidth"
-          value={value}
-          onChange={handleChange}
-          aria-label="course dashboard navi"
-        >
-          <LinkTab
-            label="Course Home"
-            icon={<DashboardIcon />}
-            as={`/${language}/courses/${slug}`}
-            href={"/[lng]/courses/[id]"}
-            {...a11yProps(0)}
-          />
-          <LinkTab
-            label="Completions"
-            icon={<ViewListIcon />}
-            as={`/${language}/courses/${slug}/completions`}
-            href={"/[lng]/courses/[id]/completions"}
-            {...a11yProps(1)}
-          />
-          <LinkTab
-            label="Points"
-            icon={<ScatterplotIcon />}
-            as={`/${language}/courses/${slug}/points`}
-            href={"/[lng]/courses/[id]/points"}
-            {...a11yProps(2)}
-          />
-          <LinkTab
-            label="Edit"
-            icon={<EditIcon />}
-            as={`/${language}/courses/${slug}/edit`}
-            href={" /[lng]/courses/[id]/edit"}
-            {...a11yProps(3)}
-          />
-        </StyledTabs>
+        <TabContainer>
+          <StyledTabs
+            variant="fullWidth"
+            value={value}
+            onChange={handleChange}
+            aria-label="course dashboard navi"
+          >
+            <LinkTab
+              label="Course Home"
+              icon={<DashboardIcon />}
+              as={`/${language}/courses/${slug}`}
+              href={"/[lng]/courses/[id]"}
+              {...a11yProps(0)}
+            />
+            <LinkTab
+              label="Completions"
+              icon={<ViewListIcon />}
+              as={`/${language}/courses/${slug}/completions`}
+              href={"/[lng]/courses/[id]/completions"}
+              {...a11yProps(1)}
+            />
+            <LinkTab
+              label="Points"
+              icon={<ScatterplotIcon />}
+              as={`/${language}/courses/${slug}/points`}
+              href={"/[lng]/courses/[id]/points"}
+              {...a11yProps(2)}
+            />
+            <LinkTab
+              label="Edit"
+              icon={<EditIcon />}
+              as={`/${language}/courses/${slug}/edit`}
+              href={" /[lng]/courses/[id]/edit"}
+              {...a11yProps(3)}
+            />
+          </StyledTabs>
+        </TabContainer>
       </AppBar>
-    </TabContainer>
+    </TabBarContainer>
   )
 }
