@@ -39,7 +39,7 @@ function LinkTab(props: LinkTabProps) {
     <LangLink
       href={(props.href as unknown) as Url}
       as={props.as}
-      shallow={true}
+      shallow={false}
     >
       <Tab
         style={{ marginTop: "1rem" }}
