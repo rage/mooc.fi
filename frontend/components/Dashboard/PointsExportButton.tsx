@@ -109,21 +109,22 @@ async function dowloadInChunks(
   setMessage: any,
 ): Promise<ExportUserCourseProgesses_UserCourseProgresses[]> {
   const res = []
-  let nDownLoaded = 0
   let after: string | undefined = undefined
-  do {
+  while (1 === 1) {
     // @ts-ignore
     const { data } = await client.query<ExportUserCourseProgesses>({
       query: GET_DATA,
       variables: { course_slug: courseSlug, after: after, first: 100 },
     })
     let downloaded: any = data.UserCourseProgresses
+    if (downloaded.length === 0) {
+      break
+    }
     after = downloaded[downloaded.length - 1]?.id
     console.log("After:", after)
-    nDownLoaded = res.push(...downloaded)
+    const nDownLoaded = res.push(...downloaded)
     setMessage(`Downloaded progress for ${nDownLoaded} users...`)
-  } while (nDownLoaded > 0)
-
+  }
   return (res as unknown) as ExportUserCourseProgesses_UserCourseProgresses[]
 }
 
