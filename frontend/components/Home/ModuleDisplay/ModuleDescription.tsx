@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { H2Background, SubtitleNoBackground } from "/components/Text/headers"
 
-const ContentContainer = styled.div`
+export const ContentContainer = styled.div`
   position: relative;
   margin: 1rem;
 `

@@ -1,13 +1,8 @@
 import React from "react"
-import styled from "styled-components"
 import { Grid } from "@material-ui/core"
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
-
-const ContentContainer = styled.div`
-  position: relative;
-  margin: 1rem;
-`
+import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 
 interface ModuleCoursesProps {
   courses: CourseData[]
