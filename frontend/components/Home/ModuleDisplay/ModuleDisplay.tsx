@@ -1,30 +1,13 @@
 import React, { useMemo } from "react"
 import { Grid } from "@material-ui/core"
 import styled from "styled-components"
-import ModuleSmallCourseCard from "./ModuleSmallCourseCard"
+import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import Skeleton from "@material-ui/lab/Skeleton"
-import { mime } from "/util/imageUtils"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import { orderBy } from "lodash"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { H2Background, SubtitleNoBackground } from "/components/Text/headers"
-import { BackgroundImage } from "/components/Images/GraphicBackground"
-
-interface RootProps {
-  backgroundColor: string
-}
-
-const Root = styled.div<RootProps>`
-  margin-top: 1em;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  margin-bottom: 5em;
-  padding-bottom: 4em;
-  position: relative;
-  ${props =>
-    `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 60%);`}
-`
+import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 
 const ContentContainer = styled.div`
   position: relative;
@@ -60,24 +43,16 @@ function Module(props: ModuleProps) {
       )
     : []
 
-  const imageUrl = "/static/images/backgroundPattern.svg"
-
   return (
     <section
       id={module ? module.slug : "module-skeleton"}
       style={{ marginBottom: "3em" }}
     >
-      <Root backgroundColor={backgroundColor}>
-        <picture style={{ zIndex: -1 }}>
-          <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-          <source srcSet={imageUrl} type={mime(imageUrl)} />
-          <BackgroundImage
-            src={imageUrl}
-            aria-hidden
-            hueRotateAngle={hueRotateAngle}
-            brightness={brightness}
-          />
-        </picture>
+      <ModuleDisplayBackground
+        backgroundColor={backgroundColor}
+        hueRotateAngle={hueRotateAngle}
+        brightness={brightness}
+      >
         <ContentContainer style={{ width: "40%" }}>
           <ModuleHeader
             component="h2"
@@ -114,7 +89,7 @@ function Module(props: ModuleProps) {
             )}
           </Grid>
         </ContentContainer>
-      </Root>
+      </ModuleDisplayBackground>
     </section>
   )
 }
