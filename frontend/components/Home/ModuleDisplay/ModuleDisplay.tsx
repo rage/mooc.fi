@@ -1,19 +1,11 @@
 import React, { useMemo } from "react"
-import { Grid } from "@material-ui/core"
-import styled from "styled-components"
-import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
-//@ts-ignore
-import Skeleton from "@material-ui/lab/Skeleton"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import { orderBy } from "lodash"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 import ModuleDescription from "/components/Home/ModuleDisplay/ModuleDescription"
-
-const ContentContainer = styled.div`
-  position: relative;
-  margin: 1rem;
-`
+import ModuleCoursesDisplay from "/components/Home/ModuleDisplay/ModuleCoursesDisplay"
+import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
 
 interface ModuleProps {
   module?: AllModules_study_modules_with_courses
@@ -46,30 +38,17 @@ function Module(props: ModuleProps) {
         hueRotateAngle={hueRotateAngle}
         brightness={brightness}
       >
-        {module && (
-          <ModuleDescription
-            name={module.name}
-            description={module.description}
-          />
+        {module ? (
+          <>
+            <ModuleDescription
+              name={module.name}
+              description={module.description}
+            />
+            <ModuleCoursesDisplay courses={orderedCourses} />
+          </>
+        ) : (
+          <ModuleDisplaySkeleton />
         )}
-        <ContentContainer style={{ width: "60%" }}>
-          <Grid container spacing={3}>
-            {module ? (
-              orderedCourses.map(course => (
-                <ModuleSmallCourseCard
-                  key={`module-course-${course.id}`}
-                  course={course}
-                  showHeader={true}
-                />
-              ))
-            ) : (
-              <>
-                <ModuleSmallCourseCard key="module-course-skeleton1" />
-                <ModuleSmallCourseCard key="module-course-skeleton2" />
-              </>
-            )}
-          </Grid>
-        </ContentContainer>
       </ModuleDisplayBackground>
     </section>
   )
@@ -94,4 +73,25 @@ export default Module
           ) : (
             <Skeleton />
           )}
-        </ContentContainer>*/
+        </ContentContainer>
+
+        <ContentContainer style={{ width: "60%" }}>
+          <Grid container spacing={3}>
+            {module ? (
+              orderedCourses.map(course => (
+                <ModuleSmallCourseCard
+                  key={`module-course-${course.id}`}
+                  course={course}
+                  showHeader={true}
+                />
+              ))
+            ) : (
+              <>
+                <ModuleSmallCourseCard key="module-course-skeleton1" />
+                <ModuleSmallCourseCard key="module-course-skeleton2" />
+              </>
+            )}
+          </Grid>
+        </ContentContainer>
+        
+        */
