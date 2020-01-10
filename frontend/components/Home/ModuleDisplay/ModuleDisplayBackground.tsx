@@ -16,7 +16,11 @@ const Background = styled.div<RootProps>`
   padding-bottom: 4em;
   position: relative;
   ${props =>
-    `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 60%);`}
+    `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+  @media(max-width: 1000px) {
+    ${props =>
+      `background-image: linear-gradient(to top, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+  }
 `
 interface DisplayBackgroundProps {
   backgroundColor: string

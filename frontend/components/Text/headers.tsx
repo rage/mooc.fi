@@ -55,6 +55,17 @@ export const H2Background = styled(Typography)<TitleProps>`
   ${props =>
     ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
 `
+
+export const H2NoBackground = styled(Typography)`
+  margin: 5rem auto 1rem auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  display: table;
+  font-family: Roboto;
+  font-weight: 550;
+`
 interface SubTitleProps {
   fontcolor?: string
 }

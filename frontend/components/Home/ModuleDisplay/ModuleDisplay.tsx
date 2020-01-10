@@ -3,9 +3,8 @@ import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes
 import { orderBy } from "lodash"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
-import ModuleDescription from "/components/Home/ModuleDisplay/ModuleDescription"
-import ModuleCoursesDisplay from "/components/Home/ModuleDisplay/ModuleCoursesDisplay"
 import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
+import ModuleDisplayContent from "/components/Home/ModuleDisplay/ModuleDisplayContent"
 
 interface ModuleProps {
   module?: AllModules_study_modules_with_courses
@@ -16,7 +15,7 @@ interface ModuleProps {
 
 function Module(props: ModuleProps) {
   const { module, hueRotateAngle, brightness, backgroundColor } = props
-
+  //@ts-ignore
   const orderedCourses = module
     ? useMemo(
         () =>
@@ -39,13 +38,11 @@ function Module(props: ModuleProps) {
         brightness={brightness}
       >
         {module ? (
-          <>
-            <ModuleDescription
-              name={module.name}
-              description={module.description}
-            />
-            <ModuleCoursesDisplay courses={orderedCourses} />
-          </>
+          <ModuleDisplayContent
+            name={module.name}
+            description={module.description}
+            orderedCourses={orderedCourses}
+          />
         ) : (
           <ModuleDisplaySkeleton />
         )}
@@ -56,42 +53,9 @@ function Module(props: ModuleProps) {
 
 export default Module
 
-/* <ContentContainer style={{ width: "40%" }}>
-          <ModuleHeader
-            component="h2"
-            variant="h2"
-            align="left"
-            fontcolor="white"
-            titlebackground={backgroundColor}
-          >
-            {module ? module.name : <Skeleton variant="text" />}
-          </ModuleHeader>
-          {module ? (
-            <ModuleDescription variant="subtitle1">
-              {module.description}
-            </ModuleDescription>
-          ) : (
-            <Skeleton />
-          )}
-        </ContentContainer>
-
-        <ContentContainer style={{ width: "60%" }}>
-          <Grid container spacing={3}>
-            {module ? (
-              orderedCourses.map(course => (
-                <ModuleSmallCourseCard
-                  key={`module-course-${course.id}`}
-                  course={course}
-                  showHeader={true}
-                />
-              ))
-            ) : (
-              <>
-                <ModuleSmallCourseCard key="module-course-skeleton1" />
-                <ModuleSmallCourseCard key="module-course-skeleton2" />
-              </>
-            )}
-          </Grid>
-        </ContentContainer>
-        
-        */
+/*
+<CenteredContent>
+          <ModuleDescription name={module.name} description={module.description} />
+          <ModuleCoursesDisplay courses={orderedCourses} />
+        </CenteredContent>
+*/
