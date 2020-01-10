@@ -9,13 +9,14 @@ const CenteredContent = styled.div`
   margin: auto;
   @supports (display: grid) {
     display: grid;
-    grid-gap: 10px;
+    grid-gap: 15px;
     align-content: space-around;
     grid-template-columns: 1fr;
     grid-auto-rows: 1fr;
     @media only screen and (min-width: 1000px) {
       grid-template-columns: 45% 55%;
       grid-auto-rows: 1fr;
+      width: 100%;
     }
   }
 `

@@ -57,14 +57,14 @@ export const H2Background = styled(Typography)<TitleProps>`
 `
 
 export const H2NoBackground = styled(Typography)`
-  margin: 5rem auto 1rem auto;
+  margin: 3rem auto 0.7rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 1rem;
   display: table;
   font-family: Roboto;
   font-weight: 550;
+  font-size: 37px;
+  line-height: 58px;
 `
 interface SubTitleProps {
   fontcolor?: string

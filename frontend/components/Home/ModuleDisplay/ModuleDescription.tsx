@@ -6,13 +6,14 @@ export const ContentContainer = styled.div`
   margin: 1rem;
 `
 const ModuleHeader = styled(H2NoBackground)`
-  margin-bottom: 4rem;
   color: white;
   margin-left: 0px;
 `
 
 const ModuleDescriptionText = styled(SubtitleNoBackground)`
   color: white;
+  font-size: 23px;
+  line-height: 37px;
 `
 
 interface DescriptionProps {
