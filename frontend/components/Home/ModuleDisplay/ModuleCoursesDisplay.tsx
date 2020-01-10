@@ -11,7 +11,7 @@ interface ModuleCoursesProps {
 const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {
   const { courses } = props
   return (
-    <ContentContainer style={{ width: "60%" }}>
+    <ContentContainer>
       <Grid container spacing={3}>
         {courses.map(course => (
           <ModuleSmallCourseCard
