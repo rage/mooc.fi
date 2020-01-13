@@ -16,22 +16,23 @@ spec:
       containers:
         - name: kafka-bridge
           image: ${BACKEND_IMAGE}
+          command: ["sh", "-c", "npm run kafka-bridge"]
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /kafka-bridge/api/v0/healthz
-              port: 4000
+              port: 3003
             initialDelaySeconds: 60
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /kafka-bridge/api/v0/healthz
-              port: 4000
+              port: 3003
             initialDelaySeconds: 5
             periodSeconds: 5
           ports:
             - name: kafka-bridge
-              containerPort: 4000
+              containerPort: 3003
           resources:
             limits:
               memory: 1000Mi
