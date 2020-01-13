@@ -23,12 +23,12 @@ spec:
               port: 4000
             initialDelaySeconds: 60
             periodSeconds: 10
-            readinessProbe:
-              httpGet:
-                path: /healthz
-                port: 4000
-              initialDelaySeconds: 5
-              periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 5
           ports:
             - name: kafka-bridge
               containerPort: 4000
