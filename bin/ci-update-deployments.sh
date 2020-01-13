@@ -20,6 +20,7 @@ export BACKEND_IMAGE="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
 
 echo "Building new Kubernetes configs"
 mkdir -p "$CURRENT_DIR/../updated-kubernetes-configs"
+envsubst < "$CURRENT_DIR/../kubernetes/ingress.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/ingress.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/backend-deployment.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/backend-deployment.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/fetch-ai-completions-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/fetch-ai-completions-cronjob.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/frontend-deployment.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/frontend-deployment.yml"
