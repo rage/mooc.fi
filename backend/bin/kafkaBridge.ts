@@ -50,7 +50,8 @@ let app = express()
 app.use(compression())
 app.use(bodyParser.json())
 app.use(morgan("combined"))
-const port = process.env.KAFKA_BRIDGE_PORT || 3003
+const port = parseInt(process.env.KAFKA_BRIDGE_PORT || "3003")
+const host = process.env.KAFKA_BRIDGE_HOST || "0.0.0.0"
 
 app.post("/api/v0/event", async (req, res) => {
   if (
@@ -104,7 +105,9 @@ app.get("/healthz", (_, res) => {
   res.json({ status: "ok" })
 })
 
-app.listen(port, () => console.log(`Kafka bridge listening on port ${port}!`))
+app.listen(port, host, () =>
+  console.log(`Kafka bridge listening on ${host}:${port}!`),
+)
 
 // FIXME: (?) not used anywhere
 // @ts-ignore
