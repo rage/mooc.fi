@@ -34,7 +34,7 @@ export const handleMessage = async (
   try {
     await MessageYupSchema.validate(message)
   } catch (error) {
-    logger.error("JSON VALIDATE FAILED: " + error)
+    logger.error("JSON VALIDATE FAILED: " + error, { message })
     await commit(kafkaMessage, consumer)
     release()
     return
