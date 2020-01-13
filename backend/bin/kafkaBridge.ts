@@ -78,7 +78,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   console.log("Producing to topic", topic, "payload", JSON.stringify(payload))
 
   try {
-    producer.produce(topic, null, Buffer.from(payload))
+    producer.produce(JSON.stringify(topic), null, Buffer.from(payload))
     await flushProducer(1000)
   } catch (e) {
     console.error("Producing to kafka failed", e)
