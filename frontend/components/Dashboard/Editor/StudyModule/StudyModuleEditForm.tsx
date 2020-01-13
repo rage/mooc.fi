@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react"
+import React, { useCallback, useState, useEffect, useContext } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Field,
@@ -34,6 +34,8 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+import getModulesTranslator from "/translations/study-modules"
+import LanguageContext from "/contexes/LanguageContext"
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;
@@ -55,6 +57,9 @@ const renderForm = ({
   FormikProps<StudyModuleFormValues>,
   "errors" | "values" | "isSubmitting" | "setFieldValue"
 >) => {
+  const { language } = useContext(LanguageContext)
+  const t = getModulesTranslator(language)
+
   const [imageError, setImageError] = useState("")
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
@@ -79,7 +84,7 @@ const renderForm = ({
           <Field
             name="name"
             type="text"
-            label="Name"
+            label={t("moduleName")}
             error={errors.name}
             fullWidth
             autoComplete="off"
@@ -91,7 +96,7 @@ const renderForm = ({
           <Field
             name="order"
             type="number"
-            label="Order"
+            label={t("moduleOrder")}
             error={errors.order}
             fullWidth
             autoComplete="off"
@@ -103,7 +108,7 @@ const renderForm = ({
       <Field
         name="new_slug"
         type="text"
-        label="Slug"
+        label={t("moduleSlug")}
         error={errors.new_slug}
         fullWidth
         variant="outlined"
@@ -113,7 +118,7 @@ const renderForm = ({
       <Field
         name="image"
         type="text"
-        label="Image filename"
+        label={t("moduleImageName")}
         fullWidth
         variant="outlined"
         autoComplete="off"
@@ -121,7 +126,7 @@ const renderForm = ({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <Tooltip title="By default, the module image filename is the slug followed by .jpg. Enter a filename with an extension here to override it.">
+              <Tooltip title={t("moduleImageTooltip")}>
                 <HelpIcon />
               </Tooltip>
             </InputAdornment>
@@ -129,12 +134,14 @@ const renderForm = ({
         }}
       />
       <OutlinedFormControl variant="outlined" error={!!imageError}>
-        <OutlinedInputLabel shrink>Image preview</OutlinedInputLabel>
+        <OutlinedInputLabel shrink>
+          {t("moduleImagePreview")}
+        </OutlinedInputLabel>
         <OutlinedFormGroup>
           <ModuleImage
             src={imageFilename}
             error={!!imageError}
-            onError={() => setImageError("no image found")}
+            onError={() => setImageError(t("moduleImageError"))}
             onLoad={() => setImageError("")}
           />
           {!!imageError ? (
@@ -151,10 +158,10 @@ const renderForm = ({
           render={helpers => (
             <>
               <ConfirmationDialog
-                title="Are you sure?"
-                content="Do you want to remove this translation?"
-                acceptText="Yes"
-                rejectText="No"
+                title={t("moduleConfirmationTitle")}
+                content={t("moduleConfirmationContent")}
+                acceptText={t("moduleConfirmationYes")}
+                rejectText={t("moduleConfirmationNo")}
                 onAccept={() => {
                   setRemoveDialogVisible(false)
                   removableIndex >= 0 && helpers.remove(removableIndex)
@@ -173,7 +180,7 @@ const renderForm = ({
                       <Field
                         name={`study_module_translations[${index}].language`}
                         type="select"
-                        label="Language"
+                        label={t("moduleLanguage")}
                         errors={[
                           getIn(
                             errors,
@@ -186,7 +193,7 @@ const renderForm = ({
                         autoComplete="off"
                         component={StyledTextField}
                       >
-                        {languages.map(option => (
+                        {languages(t).map(option => (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}
                           </MenuItem>
@@ -195,7 +202,7 @@ const renderForm = ({
                       <Field
                         name={`study_module_translations[${index}].name`}
                         type="text"
-                        label="Name"
+                        label={t("moduleName")}
                         error={getIn(
                           errors,
                           `study_module_translations[${index}].name`,
@@ -208,7 +215,7 @@ const renderForm = ({
                       <Field
                         name={`study_module_translations[${index}].description`}
                         type="textarea"
-                        label="Description"
+                        label={t("moduleDescription")}
                         error={getIn(
                           errors,
                           `study_module_translations[${index}].description`,
@@ -231,7 +238,7 @@ const renderForm = ({
                             setRemovableIndex(index)
                           }}
                         >
-                          Remove translation
+                          {t("moduleRemoveTranslation")}
                         </StyledButton>
                       </Grid>
                     </EntryContainer>
@@ -240,11 +247,12 @@ const renderForm = ({
               ) ?? (
                 <EntryContainer elevation={2}>
                   <Typography variant="body1">
-                    Please add at least one translation!
+                    {t("moduleAtLeastOneTranslation")}
                   </Typography>
                 </EntryContainer>
               )}
-              {values?.study_module_translations?.length < languages.length && (
+              {values?.study_module_translations?.length <
+                languages(t).length && (
                 <FormSubmitButton
                   variant="contained"
                   color="primary"
@@ -252,7 +260,7 @@ const renderForm = ({
                   disabled={isSubmitting}
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
-                  Add translation
+                  {t("moduleAddTranslation")}
                 </FormSubmitButton>
               )}
             </>

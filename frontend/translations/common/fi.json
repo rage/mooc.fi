@@ -29,5 +29,8 @@
     "imageDropHere": "Pudota kuva tähän",
     "courses": "Kurssit",
     "modules": "Opintokokonaisuudet",
-    "userSearch": "Käyttäjähaku"
+    "userSearch": "Käyttäjähaku",
+    "adminError": "Näyttäisi siltä, että yrität katsella ylläpitäjille tarkoitettua sivua. Kirjaudu sisään ylläpitäjän tunnuksilla.",
+    "adminSorry": "Hups..."
 }
+

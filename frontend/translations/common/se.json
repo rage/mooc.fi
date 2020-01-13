@@ -29,5 +29,7 @@
     "imageDropHere": "Drop image file here",
     "courses": "Courses",
     "modules": "Modules",
-    "userSearch": "User search"
+    "userSearch": "User search",
+    "adminError": "Looks like you are trying to view an Admin only page. If you think you should have access to this page, log in again using your admin details.",
+    "adminSorry": "Sorry..."
 }

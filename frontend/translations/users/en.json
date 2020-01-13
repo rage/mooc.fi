@@ -1,4 +1,15 @@
 {
   "userSearch": "User search",
-  "search": "Search"
+  "search": "Search",
+  "noResults": "No results",
+  "userEmail": "Email",
+  "userFirstName": "First name",
+  "userLastName": "Last name",
+  "userStudentNumber": "Student number",
+  "completions": "Completions",
+  "rowsPerPage": "Rows per page:",
+  "displayedRows": "({ from, to, count }) => `${from}-${to === -1 ? count : to} of ${count}`",
+  "nextPage": "Next page",
+  "previousPage": "Previous page",
+  "searchByString": "Search by string"
 }

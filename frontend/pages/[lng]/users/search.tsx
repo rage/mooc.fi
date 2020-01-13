@@ -200,7 +200,7 @@ const UserSearch = () => {
           >
             <TextField
               id="standard-search"
-              label="Search by string"
+              label={t("searchByString")}
               type="search"
               margin="normal"
               autoComplete="off"
