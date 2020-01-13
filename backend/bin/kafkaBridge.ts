@@ -5,12 +5,13 @@ import * as winston from "winston"
 import * as express from "express"
 import * as compression from "compression"
 import * as bodyParser from "body-parser"
+import * as morgan from "morgan"
 import { promisify } from "util"
 
 const SECRET = process.env.KAFKA_BRIDGE_SECRET
 
 if (!SECRET) {
-  console.error("No seceret defined in KAFKA_BRIDGE_SECRET, exiting.")
+  console.error("No secret defined in KAFKA_BRIDGE_SECRET, exiting.")
   process.exit(-1)
 }
 
@@ -48,6 +49,7 @@ producer.connect(undefined, (err, data) => {
 let app = express()
 app.use(compression())
 app.use(bodyParser.json())
+app.use(morgan("combined"))
 const port = process.env.KAFKA_BRIDGE_PORT || 3003
 
 app.post("/api/v0/event", async (req, res) => {
@@ -63,6 +65,10 @@ app.post("/api/v0/event", async (req, res) => {
 
   const { topic, payload } = req.body
   if (!topic || !payload) {
+    console.log(
+      "Received an event without a topic or without a payload",
+      req.body,
+    )
     return res
       .status(400)
       .json({ error: "Topic or payload missing" })
