@@ -19,13 +19,13 @@ spec:
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /kafka-bridge/api/v0/healthz
               port: 4000
             initialDelaySeconds: 60
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /kafka-bridge/api/v0/healthz
               port: 4000
             initialDelaySeconds: 5
             periodSeconds: 5

@@ -53,7 +53,7 @@ app.use(morgan("combined"))
 const port = parseInt(process.env.KAFKA_BRIDGE_PORT || "3003")
 const host = process.env.KAFKA_BRIDGE_HOST || "0.0.0.0"
 
-app.post("/api/v0/event", async (req, res) => {
+app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   if (
     !req.headers.authorization ||
     req.headers.authorization.split(" ")[1] !== SECRET
@@ -88,7 +88,7 @@ app.post("/api/v0/event", async (req, res) => {
   }
   res.json({ msg: "Thanks!" }).send()
 })
-app.get("/healthz", (_, res) => {
+app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
   if (!producerReady) {
     return res
       .status(500)
