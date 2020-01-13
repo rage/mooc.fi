@@ -30,10 +30,9 @@ const producer = new Kafka.Producer({
   "metadata.broker.list": process.env.KAFKA_HOST,
 })
 
-const flushProducer = promisify(producer.flush.bind(this))
+let flushProducer = promisify(producer.flush.bind(producer))
 
 let producerReady = false
-
 producer.on("ready", () => {
   producerReady = true
 })
