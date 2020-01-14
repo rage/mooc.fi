@@ -59,8 +59,12 @@ export const UserOrganizationsQuery = gql`
 `
 
 export const AddUserOrganizationMutation = gql`
-  mutation addUserOrganization($user_id: ID!, $organization_id: ID!) {
-    addUserOrganization(user_id: $user_id, organization_id: $organization_id) {
+  mutation addUserOrganization(
+    $user_id: ID!, 
+    $organization_id: ID!,
+    $role: OrganizationRole
+  ) {
+    addUserOrganization(user_id: $user_id, organization_id: $organization_id), role: $role) {
       id
     }
   }
@@ -320,7 +324,7 @@ const Register = () => {
           }}
         />
         <>
-          {organizationsLoading || !Object.keys(organizations).length ? (
+          {organizationsLoading ? (
             range(5).map(i => <SkeletonCard key={`skeleton-${i}`} />)
           ) : Object.keys(filteredOrganizations).length ? (
             (Object.entries(filteredOrganizations) as Array<
@@ -334,7 +338,7 @@ const Register = () => {
               />
             ))
           ) : (
-            <div>{t("noResults", { search: searchFilter })}</div>
+            <div>{t("noResults", { search: `"${searchFilter}"` })}</div>
           )}
         </>
       </FormContainer>

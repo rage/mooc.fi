@@ -30,26 +30,28 @@ const addUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     args: {
       user_id: idArg({ required: true }),
       organization_id: idArg({ required: true }),
+      role: arg({ type: "OrganizationRole" }),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowVisitors: true })
 
-      const { user_id, organization_id } = args
+      const { user_id, organization_id, role } = args
       const prisma: Prisma = ctx.prisma
 
       const exists = await prisma.$exists.userOrganization({
         user: { id: user_id },
         organization: { id: organization_id },
+        role,
       })
 
       if (exists) {
-        throw new Error("this user/organization relation already exists")
+        throw new Error("this user/organization/role relation already exists")
       }
 
       return prisma.createUserOrganization({
         user: { connect: { id: user_id } },
         organization: { connect: { id: organization_id } },
-        role: "Student",
+        role: role ?? "Student",
       })
     },
   })
@@ -82,7 +84,7 @@ const updateUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       return prisma.updateUserOrganization({
         data: {
-          role: role ? role : "Student",
+          role: role ?? "Student",
         },
         where: {
           id,

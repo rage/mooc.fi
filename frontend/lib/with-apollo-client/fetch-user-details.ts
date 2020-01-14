@@ -8,6 +8,19 @@ export const UserDetailQuery = gql`
       first_name
       last_name
       email
+      organization_memberships {
+        id
+        role
+        organization {
+          id
+          slug
+          organization_translations {
+            id
+            language
+            name
+          }
+        }
+      }
     }
   }
 `

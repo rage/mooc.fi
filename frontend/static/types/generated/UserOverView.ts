@@ -27,8 +27,8 @@ export interface UserOverView_currentUser_organization_memberships_organization 
 export interface UserOverView_currentUser_organization_memberships {
   __typename: "UserOrganization"
   id: any
-  organization: UserOverView_currentUser_organization_memberships_organization
   role: OrganizationRole | null
+  organization: UserOverView_currentUser_organization_memberships_organization
 }
 
 export interface UserOverView_currentUser {
