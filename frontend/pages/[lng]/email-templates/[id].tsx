@@ -89,7 +89,7 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
               id="name"
               label="Name"
               variant="outlined"
-              value={name}
+              value={name ?? ""}
               onChange={e => {
                 e.preventDefault()
                 setName(e.target.value)
@@ -101,7 +101,7 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
               id="title"
               label="Title"
               variant="outlined"
-              value={title}
+              value={title ?? ""}
               onChange={e => {
                 e.preventDefault()
                 setTitle(e.target.value)
@@ -115,7 +115,7 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
               multiline
               rows="4"
               rowsMax="40"
-              value={txtBody}
+              value={txtBody ?? ""}
               variant="outlined"
               onChange={e => {
                 e.preventDefault()
@@ -131,7 +131,7 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
               rows="4"
               rowsMax="40"
               disabled={true}
-              value={htmlBody}
+              value={htmlBody ?? ""}
               variant="outlined"
               onChange={e => {
                 e.preventDefault()
