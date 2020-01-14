@@ -36,6 +36,7 @@ const Course = (props: CourseProps) => {
   const { admin } = props
 
   const slug = useQueryParameter("id")
+  const { language } = useContext(LanguageContext)
 
   if (!admin) {
     return <AdminError />
@@ -53,7 +54,6 @@ const Course = (props: CourseProps) => {
   if (error || !data) {
     return <p>Error has occurred</p>
   }
-  const { language } = useContext(LanguageContext)
 
   return (
     <section>

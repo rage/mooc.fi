@@ -25,6 +25,7 @@ const EmailTemplates = (admin: Boolean) => {
   const { loading, error, data } = useQuery<AllEmailTemplates>(
     AllEmailTemplatesQuery,
   )
+  const { language } = useContext(LanguageContext)
 
   if (error) {
     ;<div>
@@ -39,7 +40,6 @@ const EmailTemplates = (admin: Boolean) => {
   if (loading || !data) {
     return <Spinner />
   }
-  const { language } = useContext(LanguageContext)
 
   return (
     <Background>
@@ -50,26 +50,31 @@ const EmailTemplates = (admin: Boolean) => {
         <CreateEmailTemplateDialog buttonText="Create New" />
         <br></br>
         <br></br>
-        {data.email_templates.map(p => {
-          return (
-            <div>
-              <LangLink
-                href="/[lng]/email-templates/[id]"
-                as={`/${language}/email-templates/${p.id}`}
-                prefetch={false}
-                passHref
-              >
-                <Paper>
-                  <Typography variant="h5" component="h3">
-                    Name: {p.name}
-                  </Typography>
-                  <Typography component="p"> Content: {p.txt_body}</Typography>
-                </Paper>
-              </LangLink>
-              <br></br>
-            </div>
-          )
-        })}
+        <ul>
+          {data.email_templates.map(p => {
+            return (
+              <li style={{ listStyleType: "none" }} key={p.id}>
+                <LangLink
+                  href="/[lng]/email-templates/[id]"
+                  as={`/${language}/email-templates/${p.id}`}
+                  prefetch={false}
+                  passHref
+                >
+                  <Paper>
+                    <Typography variant="h5" component="h3">
+                      Name: {p.name}
+                    </Typography>
+                    <Typography component="p">
+                      {" "}
+                      Content: {p.txt_body}
+                    </Typography>
+                  </Paper>
+                </LangLink>
+                <br></br>
+              </li>
+            )
+          })}
+        </ul>
       </WideContainer>
     </Background>
   )
