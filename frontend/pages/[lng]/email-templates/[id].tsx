@@ -86,7 +86,7 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
               id: {data.email_template?.id}
             </SubtitleNoBackground>
             <TextField
-              id="outlined-basic"
+              id="name"
               label="Name"
               variant="outlined"
               value={name}
@@ -98,7 +98,7 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
             <br></br>
             <br></br>
             <TextField
-              id="outlined-basic"
+              id="title"
               label="Title"
               variant="outlined"
               value={title}
@@ -110,10 +110,11 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
             <br></br>
             <br></br>
             <TextField
-              id="outlined-multiline-static"
+              id="txt-body"
               label="txt_body"
               multiline
               rows="4"
+              rowsMax="40"
               value={txtBody}
               variant="outlined"
               onChange={e => {
@@ -124,10 +125,11 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
             <br></br>
             <br></br>
             <TextField
-              id="outlined-multiline-static"
+              id="html-body"
               label="html_body (disabled)"
               multiline
               rows="4"
+              rowsMax="40"
               disabled={true}
               value={htmlBody}
               variant="outlined"
