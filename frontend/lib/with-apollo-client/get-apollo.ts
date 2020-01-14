@@ -24,14 +24,18 @@ const cypress = process.env.CYPRESS === "true"
     window.Cypress.env("CYPRESS") === "true") */
 
 // @ts-ignore
-function create(initialState: any, accessToken?: string) {
+function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
-    const cookieAccessToken = nookies.get()["mooc-access-token"]
+    // Always get the current access token from cookies in case it has changed
+    let accessToken: string | undefined = nookies.get()["access_token"]
+    if (!accessToken && !process.browser) {
+      accessToken = originalAccessToken
+    }
 
     return {
       headers: {
         ...headers,
-        authorization: cookieAccessToken ? `Bearer ${cookieAccessToken}` : "",
+        authorization: accessToken ? `Bearer ${accessToken}` : "",
       },
     }
   })
@@ -103,9 +107,9 @@ function create(initialState: any, accessToken?: string) {
   })
 }
 
-let prevToken: string | undefined
+let previousAccessToken: string | undefined = undefined
 
-export default function initApollo(initialState: any, accessToken?: string) {
+export default function getApollo(initialState: any, accessToken?: string) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!process.browser) {
@@ -113,11 +117,18 @@ export default function initApollo(initialState: any, accessToken?: string) {
   }
 
   // Reuse client on the client-side
-  if (!apolloClient || prevToken !== accessToken) {
+  // Also force new client if access token has changed because we don't want to risk accidentally
+  // serving cached data from the previous user.
+  if (!apolloClient || accessToken !== previousAccessToken) {
     apolloClient = create(initialState, accessToken)
   }
 
-  prevToken = accessToken
+  previousAccessToken = accessToken
 
+  return apolloClient
+}
+
+export function initNewApollo(accessToken?: string) {
+  apolloClient = create(undefined, accessToken)
   return apolloClient
 }

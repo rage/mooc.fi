@@ -11,7 +11,7 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
   const { completions } = props
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
-  console.log(t)
+
   return (
     <>
       {completions.slice(0, 10).map(c => (

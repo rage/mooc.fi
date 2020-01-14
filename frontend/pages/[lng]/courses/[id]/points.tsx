@@ -1,20 +1,17 @@
-import React, { useContext, useEffect } from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import { NextPageContext as NextContext } from "next"
-import AdminError from "/components/Dashboard/AdminError"
+import React, { useContext } from "react"
 import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
-import { useLazyQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import PointsExportButton from "/components/Dashboard/PointsExportButton"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
-import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 import UserDetailContext from "/contexes/UserDetailContext"
 import { UserOverView_currentUser_organization_memberships } from "/static/types/generated/UserOverView"
 
@@ -27,39 +24,25 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-interface CompletionsProps {
-  admin: boolean
-}
-
-const Points = ({ admin }: CompletionsProps) => {
+const Points = () => {
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
   const { currentUser } = useContext(UserDetailContext)
 
-  const [getData, { data, loading, error }] = useLazyQuery<CourseDetailsData>(
+  const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
       variables: { slug: slug },
     },
   )
 
-  useEffect(() => {
-    if (!admin) return
-
-    getData()
-  }, [slug])
-
-  if (!admin) {
-    return <AdminError />
-  }
-
   if (loading || !data) {
     return <Spinner />
   }
 
   if (error) {
-    return <ModifiableErrorMesage errorMessage={JSON.stringify(error)} />
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   if (!data.course) {
@@ -98,17 +81,4 @@ const Points = ({ admin }: CompletionsProps) => {
   )
 }
 
-Points.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-    // @ts-ignore
-    currentUser: context.currentUser,
-  }
-}
-
-export default Points
+export default withAdmin(Points)

@@ -6,7 +6,7 @@ export default (context: NextContext, target: string, savePage = true) => {
   let language = context?.query?.lng ?? "fi"
 
   // @ts-ignore
-  if (savePage && context?.req?.originalUrl) {
+  if (savePage && context?.pathname /* context?.req?.originalUrl */) {
     nookies.set(
       context,
       "redirect-back",
@@ -31,7 +31,6 @@ export default (context: NextContext, target: string, savePage = true) => {
     context.res.end()
   } else {
     // In the browser, we just pretend like this never even happened ;)
-    // FIXME: (?) add other fields to push
     if (target !== "/") {
       Router.push(`/[lng]${sep}${target}`, targetWithLanguage, {
         shallow: true,
