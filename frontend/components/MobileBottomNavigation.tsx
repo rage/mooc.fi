@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
@@ -16,21 +16,17 @@ const StyledBottomNavigation = styled(AppBar)`
 `
 
 const MobileBottomNavigation = () => {
-  const currentHref = React.useContext(LanguageContext).url
-  const active = whichIsActive({ url: currentHref })
-  return (
-    <LoginStateContext.Consumer>
-      {({ loggedIn }) =>
-        loggedIn && (
-          <StyledBottomNavigation color="inherit">
-            <Toolbar>
-              <LoggedInUserMenu active={active} />
-            </Toolbar>
-          </StyledBottomNavigation>
-        )
-      }
-    </LoginStateContext.Consumer>
-  )
+  const { url } = useContext(LanguageContext)
+  const { loggedIn } = useContext(LoginStateContext)
+  const active = whichIsActive({ url })
+
+  return loggedIn ? (
+    <StyledBottomNavigation color="inherit">
+      <Toolbar>
+        <LoggedInUserMenu active={active} />
+      </Toolbar>
+    </StyledBottomNavigation>
+  ) : null
 }
 
 export default MobileBottomNavigation

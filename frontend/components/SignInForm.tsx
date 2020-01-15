@@ -20,6 +20,10 @@ const StyledForm = styled.form`
 `
 
 function SignIn() {
+  const { language } = useContext(LanguageContext)
+  const { logInOrOut } = useContext(LoginStateContext)
+  const t = getCommonTranslator(language)
+
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
   const [error, setError] = useState(false)
@@ -47,90 +51,83 @@ function SignIn() {
     return () => timeouts.forEach(t => clearTimeout(t))
   }, [])
 
-  const lng = useContext(LanguageContext)
-  const t = getCommonTranslator(lng.language)
-
   return (
-    <LoginStateContext.Consumer>
-      {({ logInOrOut }) => (
-        <StyledForm>
-          <FormControl required fullWidth error={error}>
-            <InputLabel htmlFor="email">{t("username")}</InputLabel>
-            <Input
-              id="email"
-              name="email"
-              inputRef={emailFieldRef}
-              autoComplete="nope"
-              onChange={o => {
-                setEmail(o.target.value)
-                setError(false)
-              }}
-            />
-          </FormControl>
-          <FormControl margin="normal" required fullWidth error={error}>
-            <InputLabel htmlFor="password">{t("password")}</InputLabel>
-            <Input
-              name="password"
-              type="password"
-              id="password"
-              inputRef={passwordFieldRef}
-              autoComplete="nope"
-              onChange={o => {
-                setPassword(o.target.value)
-                setError(false)
-              }}
-            />
-            <FormHelperText error={error}>{error && t("error")}</FormHelperText>
-          </FormControl>
+    <StyledForm>
+      <FormControl required fullWidth error={error}>
+        <InputLabel htmlFor="email">{t("username")}</InputLabel>
+        <Input
+          id="email"
+          name="email"
+          inputRef={emailFieldRef}
+          autoComplete="nope"
+          onChange={o => {
+            setEmail(o.target.value)
+            setError(false)
+          }}
+        />
+      </FormControl>
+      <FormControl margin="normal" required fullWidth error={error}>
+        <InputLabel htmlFor="password">{t("password")}</InputLabel>
+        <Input
+          name="password"
+          type="password"
+          id="password"
+          inputRef={passwordFieldRef}
+          autoComplete="nope"
+          onChange={o => {
+            setPassword(o.target.value)
+            setError(false)
+          }}
+        />
+        <FormHelperText error={error}>{error && t("error")}</FormHelperText>
+      </FormControl>
 
-          <SubmitButton
-            type="submit"
-            data-testid="login-button"
-            variant="contained"
-            color="secondary"
-            fullWidth
-            disabled={email.trim() === "" || password.trim() === ""}
-            onClick={async e => {
-              e.preventDefault()
-              try {
-                await signIn({ email, password, shallow: false })
-                try {
-                  await logInOrOut()
-                } catch (e) {
-                  console.error("Login in or out failed")
-                }
+      <SubmitButton
+        type="submit"
+        data-testid="login-button"
+        variant="contained"
+        color="secondary"
+        fullWidth
+        disabled={email.trim() === "" || password.trim() === ""}
+        onClick={async e => {
+          e.preventDefault()
+          try {
+            await signIn({ email, password, shallow: false })
+            try {
+              await logInOrOut()
+            } catch (e) {
+              console.error("Login in or out failed")
+            }
 
-                if (errorTimeout) {
-                  clearTimeout(errorTimeout)
-                }
-              } catch (error) {
-                console.error("Login failed due to this error: ", error)
-                setError(true)
-                // @ts-ignore
-                if (isSignedIn(undefined)) {
-                  console.error("Logging in was successful but it crashed")
-                }
-                errorTimeout = setTimeout(() => {
-                  setError(false)
-                  if (errorTimeout) {
-                    clearTimeout(errorTimeout)
-                  }
-                }, 5000)
+            if (errorTimeout) {
+              clearTimeout(errorTimeout)
+            }
+          } catch (error) {
+            console.error("Login failed due to this error: ", error)
+            setError(true)
+            // @ts-ignore
+            if (isSignedIn(undefined)) {
+              console.error("Logging in was successful but it crashed")
+            }
+            errorTimeout = setTimeout(() => {
+              setError(false)
+              if (errorTimeout) {
+                clearTimeout(errorTimeout)
               }
-            }}
-          >
-            {t("login")}
-          </SubmitButton>
-          <Link
-            href="https://tmc.mooc.fi/password_reset_keys/new"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("forgottenpw")}
-          </Link>
-        </StyledForm>
-      )}
-    </LoginStateContext.Consumer>
+            }, 5000)
+          }
+        }}
+      >
+        {t("login")}
+      </SubmitButton>
+      <Link
+        href="https://tmc.mooc.fi/password_reset_keys/new"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t("forgottenpw")}
+      </Link>
+    </StyledForm>
   )
 }
 
