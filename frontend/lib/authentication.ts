@@ -34,10 +34,10 @@ export const signIn = async ({
   shallow = true,
 }: SignInProps) => {
   const res = await tmcClient.authenticate({ username: email, password })
-
   const details = await userDetails(res.accessToken)
 
   document.cookie = `access_token=${res.accessToken};path=/`
+
   document.cookie = `admin=${details.administrator};path=/`
 
   const rawRedirectLocation = nookies.get()["redirect-back"]

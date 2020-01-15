@@ -68,7 +68,7 @@ const CourseCard = ({ course }: CourseCardProps) => (
     >
       <Background
         focusRipple
-        disabled={!course || (!course.link || course.link === "")}
+        disabled={!course || !course.link || course.link === ""}
         component="div"
       >
         <ResponsiveCourseImageBase>
