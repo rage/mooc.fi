@@ -22,6 +22,8 @@ const checkUser = async (ctx: Context, id: UUID) => {
   if (!user || (user && user.id !== existingUser.id && role !== Role.ADMIN)) {
     throw new ForbiddenError("invalid credentials to do that")
   }
+
+  return existingUser
 }
 
 const addUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
@@ -62,25 +64,30 @@ const updateUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
     type: "UserOrganization",
     args: {
       id: idArg({ required: true }),
-      /*       userId: idArg(),
-      organizationId: idArg(), */
       role: arg({ type: "OrganizationRole" }),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowVisitors: true })
 
       const { id, role } = args
 
-      /*       if (!id && !(userId && organizationId)) {
-        throw new Error("needs userid/organizationid when id is not set")
-      }
-      if (!userId && !organizationId && !id) {
-        throw new Error("needs id when userid/organizationid is not set")
-      }
- */
-      checkUser(ctx, id)
-
       const prisma: Prisma = ctx.prisma
+
+      const existingUser = await checkUser(ctx, id)
+      const existingOrganization = await prisma
+        .userOrganization({ id })
+        .organization()
+
+      const exists = await prisma.$exists.userOrganization({
+        id_not: id,
+        user: { id: existingUser!.id },
+        organization: { id: existingOrganization!.id },
+        role: role ?? "Student",
+      })
+
+      if (exists) {
+        throw new Error("relation with this role already exists")
+      }
 
       return prisma.updateUserOrganization({
         data: {
@@ -104,7 +111,7 @@ const deleteUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       checkAccess(ctx, { allowVisitors: true })
 
       const { id } = args
-      checkUser(ctx, id)
+      await checkUser(ctx, id)
 
       const prisma: Prisma = ctx.prisma
 
