@@ -36,6 +36,10 @@ spec:
           backend:
             serviceName: moocfi-backend
             servicePort: 80
+        - path: /kafka-bridge/api/v0
+          backend:
+            serviceName: kafka-bridge
+            servicePort: 80
         - path: /
           backend:
             serviceName: moocfi-frontend

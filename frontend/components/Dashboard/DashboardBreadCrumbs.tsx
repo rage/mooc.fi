@@ -120,6 +120,7 @@ const routes = {
   "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
   "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
   "/register-completion/(.+)": "/register-completion/[slug]",
+  "/en/": "/[lng]/",
 }
 
 const getRoute = (target?: string) =>
@@ -188,7 +189,6 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   const t = getPageTranslator(language)
 
   const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
-  // const { language: lng } = currentPageLanguage
 
   const getAwaitedCrumbs = useCallback(async (type: string, slug: string) => {
     // TODO: invalidate queries on editor (if needed?)
@@ -243,7 +243,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   return (
     <BreadCrumbs>
       <BreadcrumbComponent target={homeLink} key="breadcrumb-home">
-        {t("title")?.["/"]}
+        {t("title")?.["/"] ?? "Home"}
       </BreadcrumbComponent>
       {urlRouteComponents.map((component, idx) => {
         let target: string | undefined = `/${component}`
@@ -251,10 +251,9 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
         let href = componentsSoFar.join("/")
 
         const route = `/[lng]${getRoute(`/${href}`)}`
-        const breadcrumbTranslation = t("breadcrumb")?.[route]
-        const titleTranslation = t("title")?.[route]
 
-        let content = breadcrumbTranslation || titleTranslation || component
+        let content =
+          t("breadcrumb")?.[route] || t("title")?.[route] || component
 
         if (idx === 0) {
           if (component == "users") {
