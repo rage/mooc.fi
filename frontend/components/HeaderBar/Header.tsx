@@ -10,6 +10,7 @@ import LoginStateContext from "/contexes/LoginStateContext"
 import UserOptionsMenu from "./UserOptionsMenu"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
+import { useContext } from "react"
 
 interface Props {
   window?: () => Window
@@ -47,38 +48,33 @@ export function whichIsActive({ url }: { url: string }) {
 
   return active
 }
+
 function Header() {
-  const currentHref = React.useContext(LanguageContext).url
-  const active = whichIsActive({ url: currentHref })
+  const { url } = useContext(LanguageContext)
+  const { loggedIn, logInOrOut } = useContext(LoginStateContext)
+  const active = whichIsActive({ url })
 
   return (
-    <LoginStateContext.Consumer>
-      {({ loggedIn, logInOrOut }) => (
-        <React.Fragment>
-          <CssBaseline />
-          <HideOnScroll>
-            <AppBar color="inherit" style={{ position: "sticky" }}>
-              <StyledToolbar>
-                <MoocLogo />
-                <MenuContainer>
-                  <HiddenMenuContainer>
-                    {loggedIn && (
-                      <LoggedInUserMenu active={active ? active : undefined} />
-                    )}
-                  </HiddenMenuContainer>
-                </MenuContainer>
-                <UserOptionsMenu
-                  isSignedIn={loggedIn}
-                  logInOrOut={logInOrOut}
-                />
+    <>
+      <CssBaseline />
+      <HideOnScroll>
+        <AppBar color="inherit" style={{ position: "sticky" }}>
+          <StyledToolbar>
+            <MoocLogo />
+            <MenuContainer>
+              <HiddenMenuContainer>
+                {loggedIn && (
+                  <LoggedInUserMenu active={active ? active : undefined} />
+                )}
+              </HiddenMenuContainer>
+            </MenuContainer>
+            <UserOptionsMenu isSignedIn={loggedIn} logInOrOut={logInOrOut} />
 
-                <LanguageSwitch />
-              </StyledToolbar>
-            </AppBar>
-          </HideOnScroll>
-        </React.Fragment>
-      )}
-    </LoginStateContext.Consumer>
+            <LanguageSwitch />
+          </StyledToolbar>
+        </AppBar>
+      </HideOnScroll>
+    </>
   )
 }
 
