@@ -47,15 +47,28 @@ export const generateUserCourseProgress = async (
   const user: User = await prisma
     .userCourseProgress({ id: userCourseProgress.id })
     .user()
-  const userCourseSettingses: UserCourseSettings[] = await prisma.userCourseSettingses(
-    {
+  let userCourseSettings =
+    (await prisma.userCourseSettingses({
       where: {
         user: user,
         course: course,
       },
-    },
-  )
-  const userCourseSettings = userCourseSettingses[0] || null
+    }))[0] || null
+
+  if (!userCourseSettings) {
+    const inheritCourse = await prisma
+      .course({ id: course.id })
+      .inherit_settings_from()
+    if (inheritCourse) {
+      userCourseSettings =
+        (await prisma.userCourseSettingses({
+          where: {
+            user: user,
+            course: inheritCourse,
+          },
+        }))[0] || null
+    }
+  }
 
   if (
     course.automatic_completions &&
@@ -81,7 +94,7 @@ export const generateUserCourseProgress = async (
       })
       const template = await prisma.course({ id: course.id }).completion_email()
       if (template) {
-        sendMail(user, template)
+        await sendMail(user, template)
       }
     }
   }
