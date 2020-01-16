@@ -60,11 +60,15 @@ export const UserOrganizationsQuery = gql`
 
 export const AddUserOrganizationMutation = gql`
   mutation addUserOrganization(
-    $user_id: ID!, 
-    $organization_id: ID!,
+    $user_id: ID!
+    $organization_id: ID!
     $role: OrganizationRole
   ) {
-    addUserOrganization(user_id: $user_id, organization_id: $organization_id), role: $role) {
+    addUserOrganization(
+      user_id: $user_id
+      organization_id: $organization_id
+      role: $role
+    ) {
       id
     }
   }
