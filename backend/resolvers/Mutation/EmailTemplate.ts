@@ -38,7 +38,7 @@ const updateEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       txt_body: stringArg(),
       title: stringArg(),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       const { id, name, html_body, txt_body, title } = args
       const prisma: Prisma = ctx.prisma
       return prisma.updateEmailTemplate({
