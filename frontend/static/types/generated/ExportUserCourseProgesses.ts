@@ -38,4 +38,6 @@ export interface ExportUserCourseProgesses {
 
 export interface ExportUserCourseProgessesVariables {
   course_slug: string
+  after?: string | null
+  first?: number | null
 }

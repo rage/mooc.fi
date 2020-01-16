@@ -21,6 +21,7 @@ export enum OrganizationRole {
 export interface CourseArg {
   automatic_completions?: boolean | null
   base64?: boolean | null
+  completion_email?: string | null
   course_translations?: CourseTranslationCreateUpdateInput[] | null
   course_variants?: CourseVariantCreateUpdateInput[] | null
   ects?: string | null
