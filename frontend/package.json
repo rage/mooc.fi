@@ -81,7 +81,7 @@
     "react-ga": "^2.7.0",
     "responsive-loader": "^1.2.0",
     "sharp": "^0.22.1",
-    "styled-components": "^4.4.0",
+    "styled-components": "^5.0.0",
     "styled-jsx": "^3.2.2",
     "tmc-client-js": "0.0.9",
     "typeface-open-sans-condensed": "0.0.72",

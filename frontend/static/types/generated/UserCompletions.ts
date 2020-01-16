@@ -8,6 +8,7 @@
 
 export interface UserCompletions_completions_course_photo {
   __typename: "Image"
+  id: any
   uncompressed: string
 }
 

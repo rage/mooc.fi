@@ -11,6 +11,7 @@ import {
   faChalkboardTeacher,
   faSearch,
   faList,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -88,6 +89,21 @@ const UserMenu = (props: UserMenuprops) => {
               <div>
                 <FontAwesomeIcon icon={faSearch} />
                 <ButtonLabel>User search</ButtonLabel>
+              </div>
+            </StyledButton>
+          </LangLink>
+          <LangLink
+            href="/[lng]/email-templates"
+            as={`/${language}/email-templates`}
+          >
+            <StyledButton
+              color="inherit"
+              variant="text"
+              active={active == "email-templates"}
+            >
+              <div>
+                <FontAwesomeIcon icon={faEnvelope} />
+                <ButtonLabel>Email Templates</ButtonLabel>
               </div>
             </StyledButton>
           </LangLink>

@@ -160,6 +160,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         open_university_registration_links,
         course_variants,
         study_modules,
+        completion_email,
       } = course
 
       if (!slug) {
@@ -247,6 +248,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           course_variants: Object.keys(courseVariantMutation).length
             ? courseVariantMutation
             : null,
+          completion_email: { connect: { id: completion_email } },
         } as CourseUpdateInput,
       })
 
