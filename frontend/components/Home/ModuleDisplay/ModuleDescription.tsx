@@ -4,10 +4,15 @@ import { H2NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 
 export const ContentContainer = styled.div`
   margin: 1rem;
+  padding-left: 1rem;
 `
 const ModuleHeader = styled(H2NoBackground)`
   color: white;
   margin-left: 0px;
+  font-size: 72px;
+  @media (max-width: 360px) {
+    font-size: 56px;
+  }
 `
 
 const ModuleDescriptionText = styled(SubtitleNoBackground)`

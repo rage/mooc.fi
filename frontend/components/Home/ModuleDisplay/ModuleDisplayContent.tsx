@@ -12,11 +12,11 @@ const CenteredContent = styled.div`
     grid-gap: 15px;
     align-content: space-around;
     grid-template-columns: 1fr;
-    grid-auto-rows: 1fr;
-    @media only screen and (min-width: 1000px) {
+
+    @media only screen and (min-width: 1200px) {
       grid-template-columns: 45% 55%;
       grid-auto-rows: 1fr;
-      width: 100%;
+      width: 90%;
     }
   }
 `
