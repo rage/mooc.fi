@@ -1,7 +1,4 @@
 import * as React from "react"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn } from "/lib/authentication"
-import redirect from "/lib/redirect"
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import SignInForm from "/components/SignInForm"
@@ -10,6 +7,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import getSignInTranslator from "/translations/common"
 import { useContext } from "react"
 import styled from "styled-components"
+import withSignedOut from "/lib/with-signed-out"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -25,6 +23,7 @@ const Header = styled(Typography)`
 const SignInPage = () => {
   const lng = useContext(LanguageContext)
   const t = getSignInTranslator(lng.language)
+
   return (
     <>
       <Container style={{ width: "90%", maxWidth: 900 }}>
@@ -42,13 +41,8 @@ const SignInPage = () => {
   )
 }
 
+SignInPage.displayName = "SignInPage"
+
 //If user is already logged in, redirect them straight to
 //register-completion page
-SignInPage.getInitialProps = function(context: NextContext) {
-  if (isSignedIn(context)) {
-    redirect(context, "/")
-  }
-  return {}
-}
-
-export default SignInPage
+export default withSignedOut()(SignInPage)

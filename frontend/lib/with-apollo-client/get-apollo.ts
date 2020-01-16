@@ -2,12 +2,14 @@ import {
   ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
+  defaultDataIdFromObject,
 } from "apollo-boost"
 import { onError } from "apollo-link-error"
 import { ApolloLink } from "apollo-link"
 import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "apollo-link-context"
 import fetch from "isomorphic-unfetch"
+import nookies from "nookies"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -21,13 +23,22 @@ const cypress = process.env.CYPRESS === "true"
     window.Cypress &&
     window.Cypress.env("CYPRESS") === "true") */
 
-function create(initialState: any, accessToken?: string) {
-  const authLink = setContext((_, { headers }) => ({
-    headers: {
-      ...headers,
-      authorization: accessToken ? `Bearer ${accessToken}` : "",
-    },
-  }))
+// @ts-ignore
+function create(initialState: any, originalAccessToken?: string) {
+  const authLink = setContext((_, { headers }) => {
+    // Always get the current access token from cookies in case it has changed
+    let accessToken: string | undefined = nookies.get()["access_token"]
+    if (!accessToken && !process.browser) {
+      accessToken = originalAccessToken
+    }
+
+    return {
+      headers: {
+        ...headers,
+        authorization: accessToken ? `Bearer ${accessToken}` : "",
+      },
+    }
+  })
 
   // replaces standard HttpLink
   const uploadLink = createUploadLink({
@@ -50,11 +61,37 @@ function create(initialState: any, accessToken?: string) {
     if (networkError) console.log(`[Network error]: ${networkError}`)
   })
 
-  return new ApolloClient({
+  // these cache settings are mainly for the breadcrumbs
+  const cache: InMemoryCache = new InMemoryCache({
+    cacheRedirects: {
+      Query: {
+        course: (_, args, { getCacheKey }) =>
+          getCacheKey({ __typename: "Course", slug: args.slug, id: args.id }),
+        study_module: (_, args, { getCacheKey }) =>
+          getCacheKey({
+            __typename: "StudyModule",
+            slug: args.slug,
+            id: args.id,
+          }),
+      },
+    },
+    dataIdFromObject: (object: any) => {
+      switch (object.__typename) {
+        case "Course":
+          return `Course:${object.slug}:${object.id}`
+        case "StudyModule":
+          return `StudyModule:${object.slug}:${object.id}`
+        default:
+          return defaultDataIdFromObject(object)
+      }
+    },
+  })
+
+  return new ApolloClient<NormalizedCacheObject>({
     link: process.browser
       ? ApolloLink.from([errorLink, authLink.concat(uploadLink)])
       : authLink.concat(uploadLink),
-    cache: new InMemoryCache().restore(initialState || {}),
+    cache: cache.restore(initialState || {}),
     ssrMode: !process.browser, // isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {
@@ -70,7 +107,9 @@ function create(initialState: any, accessToken?: string) {
   })
 }
 
-export default function initApollo(initialState: any, accessToken?: string) {
+let previousAccessToken: string | undefined = undefined
+
+export default function getApollo(initialState: any, accessToken?: string) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!process.browser) {
@@ -78,9 +117,18 @@ export default function initApollo(initialState: any, accessToken?: string) {
   }
 
   // Reuse client on the client-side
-  if (!apolloClient) {
+  // Also force new client if access token has changed because we don't want to risk accidentally
+  // serving cached data from the previous user.
+  if (!apolloClient || accessToken !== previousAccessToken) {
     apolloClient = create(initialState, accessToken)
   }
 
+  previousAccessToken = accessToken
+
+  return apolloClient
+}
+
+export function initNewApollo(accessToken?: string) {
+  apolloClient = create(undefined, accessToken)
   return apolloClient
 }

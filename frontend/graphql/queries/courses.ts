@@ -22,6 +22,11 @@ export const AllCoursesQuery = gql`
       study_modules {
         id
       }
+      course_translations {
+        id
+        language
+        name
+      }
     }
   }
 `
@@ -39,6 +44,11 @@ export const AllEditorCoursesQuery = gql`
         id
         compressed
         uncompressed
+      }
+      course_translations {
+        id
+        language
+        name
       }
       course_variants {
         id

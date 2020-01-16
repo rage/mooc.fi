@@ -26,7 +26,7 @@ const UserOptionsMenu = (props: Props) => {
         <HeaderMenuButton
           color="inherit"
           variant="text"
-          onClick={() => signOut(client).then(logInOrOut)}
+          onClick={() => signOut(client, logInOrOut)}
         >
           {t("logout")}
         </HeaderMenuButton>

@@ -6,12 +6,16 @@ export default (context: NextContext, target: string, savePage = true) => {
   let language = context?.query?.lng ?? "fi"
 
   // @ts-ignore
-  if (savePage && context?.req?.originalUrl) {
-    // @ts-ignore
-    nookies.set(context, "redirect-back", context.req.originalUrl, {
-      maxAge: 20 * 60,
-      path: "/",
-    })
+  if (savePage && context?.pathname /* context?.req?.originalUrl */) {
+    nookies.set(
+      context,
+      "redirect-back",
+      JSON.stringify({ as: context.asPath, href: context.pathname }),
+      {
+        maxAge: 20 * 60,
+        path: "/",
+      },
+    )
   }
 
   let sep = ""
@@ -27,6 +31,12 @@ export default (context: NextContext, target: string, savePage = true) => {
     context.res.end()
   } else {
     // In the browser, we just pretend like this never even happened ;)
-    Router.push(targetWithLanguage)
+    if (target !== "/") {
+      Router.push(`/[lng]${sep}${target}`, targetWithLanguage, {
+        shallow: true,
+      })
+    } else {
+      Router.push("/", "/", { shallow: true })
+    }
   }
 }

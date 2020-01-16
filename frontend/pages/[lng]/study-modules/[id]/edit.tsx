@@ -2,13 +2,9 @@ import React, { useContext } from "react"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { SingletonRouter, withRouter } from "next/router"
-import AdminError from "/components/Dashboard/AdminError"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { WideContainer } from "/components/Container"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
 import styled from "styled-components"
 import { StudyModuleDetails } from "/static/types/generated/StudyModuleDetails"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
@@ -17,6 +13,8 @@ import LanguageContext from "/contexes/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -47,11 +45,10 @@ const ErrorContainer = styled(Paper)`
 
 interface EditStudyModuleProps {
   router: SingletonRouter
-  admin: boolean
 }
 
 const EditStudyModule = (props: EditStudyModuleProps) => {
-  const { admin, router } = props
+  const { router } = props
   const { language } = useContext(LanguageContext)
   const id = useQueryParameter("id")
 
@@ -64,18 +61,17 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
     },
   )
 
-  if (!admin) {
-    return <AdminError />
-  }
-
   if (error) {
-    return <div>{JSON.stringify(error)}</div>
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
 
   if (!loading && !data?.study_module && typeof window !== "undefined") {
-    redirectTimeout = setTimeout(() => router.push(listLink), 5000)
+    redirectTimeout = setTimeout(
+      () => router.push("/[lng]/study-modules", listLink, { shallow: true }),
+      5000,
+    )
   }
 
   return (
@@ -115,14 +111,6 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   )
 }
 
-EditStudyModule.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+EditStudyModule.displayName = "EditStudyModule"
 
-export default withRouter(EditStudyModule)
+export default withRouter(withAdmin(EditStudyModule) as any)

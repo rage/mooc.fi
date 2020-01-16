@@ -9,6 +9,7 @@ import ModuleList from "./ModuleList"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 const highlightsBanner = "/static/images/backgroundPattern.svg"
 
@@ -21,7 +22,6 @@ const CourseAndModuleList = () => {
   const language = mapNextLanguageToLocaleCode(lngCtx.language)
 
   const {
-    // @ts-ignore
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
@@ -64,36 +64,41 @@ const CourseAndModuleList = () => {
 
   if (coursesError || modulesError) {
     return (
-      <div>
-        Error:{" "}
-        <pre>{JSON.stringify(coursesError || modulesError, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(
+          coursesError || modulesError,
+          undefined,
+          2,
+        )}
+      />
     )
   }
 
-  if (!coursesData) {
+  /*   if (!coursesData && !coursesLoading) {
     return <div>Error: no courses data?</div>
   }
-  if (!modulesData) {
+  if (!modulesData && !modulesLoading) {
     return <div>Error: no modules data? </div>
-  }
+  } */
 
   return (
     <section>
       <section id="courses">
         <CourseHighlights
           courses={promotedCourses}
+          loading={coursesLoading}
           title={t("highlightTitle")}
           headerImage={highlightsBanner}
           subtitle={t("highlightSubtitle")}
-          backgroundColor="#009CA6"
+          backgroundColor="#4D78A3"
           hueRotateAngle={177}
           brightness={5.5}
-          fontColor="black"
+          fontColor="#4D78A3"
           titleBackground="#ffffff"
         />
         <CourseHighlights
           courses={activeCourses}
+          loading={coursesLoading}
           title={t("allCoursesTitle")}
           headerImage={highlightsBanner}
           backgroundColor="#ffffff"
@@ -104,12 +109,13 @@ const CourseAndModuleList = () => {
         />
         <CourseHighlights
           courses={upcomingCourses}
+          loading={coursesLoading}
           title={t("upcomingCoursesTitle")}
           headerImage={highlightsBanner}
           backgroundColor="#007DC8"
           hueRotateAngle={0}
           brightness={5.5}
-          fontColor="black"
+          fontColor="#007DC8"
           titleBackground="#ffffff"
         />
       </section>
@@ -119,6 +125,7 @@ const CourseAndModuleList = () => {
           <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
           <CourseHighlights
             courses={endedCourses}
+            loading={coursesLoading}
             title={t("endedCoursesTitle")}
             headerImage={highlightsBanner}
             backgroundColor="#ffffff"

@@ -1,10 +1,6 @@
 import React, { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
-import { NextPageContext as NextContext } from "next"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
@@ -17,6 +13,9 @@ import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import { useQueryParameter } from "/util/useQueryParameter"
+import withAdmin from "/lib/with-admin"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -80,18 +79,12 @@ const ErrorContainer = styled(Paper)`
 
 interface EditCourseProps {
   router: SingletonRouter
-  admin: boolean
-  nameSpacesRequired: string[]
-  slug: string
 }
 
-const EditCourse = (props: EditCourseProps) => {
-  const { admin, router, slug } = props
+const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
+  const slug = useQueryParameter("id") ?? ""
 
-  if (!admin) {
-    return <AdminError />
-  }
   let redirectTimeout: number | null = null
 
   const {
@@ -108,13 +101,25 @@ const EditCourse = (props: EditCourseProps) => {
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
 
   if (courseError || studyModulesError) {
-    return <div>{JSON.stringify(courseError || studyModulesError)}</div>
+    return (
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(courseError || studyModulesError)}
+      />
+    )
   }
 
   const listLink = `${language ? "/" + language : ""}/courses`
 
-  if (!courseLoading && !courseData?.course && typeof window !== "undefined") {
-    redirectTimeout = setTimeout(() => router.push(listLink), 5000)
+  if (
+    !courseLoading &&
+    courseData &&
+    !courseData?.course &&
+    typeof window !== "undefined"
+  ) {
+    redirectTimeout = setTimeout(
+      () => router.push("/[lng]/courses", listLink, { shallow: true }),
+      5000,
+    )
   }
 
   return (
@@ -156,18 +161,6 @@ const EditCourse = (props: EditCourseProps) => {
   )
 }
 
-EditCourse.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-
-  return {
-    admin,
-    slug: context.query ? context.query.id : "",
-  }
-}
-
 EditCourse.displayName = "EditCourse"
 
-export default withRouter(EditCourse)
+export default withRouter(withAdmin(EditCourse) as any)

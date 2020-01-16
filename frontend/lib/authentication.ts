@@ -20,43 +20,65 @@ export const isAdmin = (ctx: NextContext) => {
   return admin === "true"
 }
 
+interface SignInProps {
+  email: string
+  password: string
+  redirect?: boolean
+  shallow?: boolean
+}
+
 export const signIn = async ({
   email,
   password,
   redirect = true,
-}: {
-  email: string
-  password: string
-  redirect?: boolean
-}) => {
+  shallow = true,
+}: SignInProps) => {
   const res = await tmcClient.authenticate({ username: email, password })
-
   const details = await userDetails(res.accessToken)
 
   document.cookie = `access_token=${res.accessToken};path=/`
+
   document.cookie = `admin=${details.administrator};path=/`
 
-  const back = nookies.get()["redirect-back"]
+  const rawRedirectLocation = nookies.get()["redirect-back"]
 
-  if (redirect) {
-    setTimeout(() => {
-      if (back) {
-        Router.push(back)
-      } else {
-        window.history.back()
-      }
-    }, 200)
+  if (!rawRedirectLocation || rawRedirectLocation === "") {
+    window.history.back()
+    return
+  }
+
+  try {
+    const { as, href } = JSON.parse(rawRedirectLocation)
+
+    if (redirect) {
+      setTimeout(() => {
+        if (as && href) {
+          Router.push(href, as, { shallow })
+        } else {
+          window.history.back()
+        }
+      }, 200)
+    }
+  } catch (e) {
+    // Mostly to catch invalid JSON in the cookie
+    console.error("Redirecting back failed because of", e)
+    Router.push("/", undefined, { shallow })
   }
 
   return res
 }
 
-export const signOut = async (apollo: ApolloClient<any>) => {
-  await apollo.resetStore().then(() => {
-    document.cookie =
-      "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
-  })
-  Router.push(Router.asPath)
+export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
+  document.cookie =
+    "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+  document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+  // Give browser a moment to react to the change
+  setTimeout(() => {
+    cb()
+    setTimeout(() => {
+      apollo.resetStore()
+    }, 100)
+  }, 100)
 }
 
 const getCookie = (key: string) => {

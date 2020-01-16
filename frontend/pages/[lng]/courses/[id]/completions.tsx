@@ -1,8 +1,4 @@
-import React, { useContext } from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import { NextPageContext as NextContext } from "next"
-import AdminError from "/components/Dashboard/AdminError"
+import React, { useContext, useState } from "react"
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import { WideContainer } from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
@@ -13,7 +9,12 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -24,44 +25,48 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-interface CompletionsProps {
-  admin: boolean
-  router: SingletonRouter
-}
-
-const Completions = (props: CompletionsProps) => {
-  const { admin, router } = props
+const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
+  const [lng, changeLng] = useState(
+    (router?.query?.language as string) ??
+      mapNextLanguageToLocaleCode(language as string) ??
+      "",
+  )
 
   const slug = useQueryParameter("id")
 
-  const lng = useQueryParameter("lng")
-
   const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
-    router.push(
-      `/${language}/courses/${slug}/completions?language=${
-        (event.target as HTMLInputElement).value
-      }`,
+    // prevents reloading page, URL changes
+
+    const href = `/${language}/courses/${slug}/completions?language=${
+      (event.target as HTMLInputElement).value
+    }`
+    changeLng((event.target as HTMLInputElement).value as string)
+    router.replace(router.pathname, href, { shallow: true })
+  }
+
+  const { data, loading, error } = useQuery<CourseDetailsData>(
+    CourseDetailsFromSlugQuery,
+    {
+      variables: { slug: slug },
+    },
+  )
+
+  if (loading || !data) {
+    return <Spinner />
+  }
+
+  if (error) {
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
+  }
+
+  if (!data.course) {
+    return (
+      <>
+        <p>Course not found. Go back?</p>
+      </>
     )
   }
-
-  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
-    variables: { slug: slug },
-  })
-
-  if (!admin) {
-    return <AdminError />
-  }
-
-  //TODO add circular progress
-  if (loading) {
-    return null
-  }
-  //TODO fix error message
-  if (error || !data) {
-    return <p>Error has occurred</p>
-  }
-
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardTabBar slug={slug} selectedValue={1} />
@@ -83,15 +88,6 @@ const Completions = (props: CompletionsProps) => {
   )
 }
 
-Completions.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
+Completions.displayName = "Completions"
 
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-
-export default withRouter(Completions)
+export default withRouter(withAdmin(Completions) as any)

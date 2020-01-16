@@ -1,5 +1,5 @@
 import React from "react"
-import App, { Container } from "next/app"
+import App from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
 import Head from "next/head"
@@ -57,7 +57,7 @@ class MyApp extends App {
     } = this.props
 
     return (
-      <Container>
+      <>
         <Head>
           <title>MOOC.fi</title>
         </Head>
@@ -79,7 +79,7 @@ class MyApp extends App {
             </ApolloProvider>
           </MuiThemeProvider>
         </StylesProvider>
-      </Container>
+      </>
     )
   }
 }

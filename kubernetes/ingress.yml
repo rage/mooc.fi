@@ -16,7 +16,7 @@ spec:
     - points.mooc.fi
     - mooc.fi
     - www.mooc.fi
-    secretName: quizzes-moocfi-cert-secret
+    secretName: moocfi-cert-secret
   rules:
     - host: points.mooc.fi
       http:
@@ -35,6 +35,10 @@ spec:
         - path: /api
           backend:
             serviceName: moocfi-backend
+            servicePort: 80
+        - path: /kafka-bridge/api/v0
+          backend:
+            serviceName: kafka-bridge
             servicePort: 80
         - path: /
           backend:

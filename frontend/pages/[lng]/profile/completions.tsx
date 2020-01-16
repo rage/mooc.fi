@@ -1,12 +1,12 @@
 import React from "react"
-import { isSignedIn } from "/lib/authentication"
-import { NextPageContext as NextContext } from "next"
-import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { CurrentUserUserOverView as UserOverViewData } from "/static/types/generated/CurrentUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withSignedIn from "/lib/with-signed-in"
 
 export const UserOverViewQuery = gql`
   query CurrentUserUserOverView {
@@ -24,16 +24,17 @@ export const UserOverViewQuery = gql`
 
 function CompletionsPage() {
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
   if (loading || !data) {
-    return <div>Loading</div>
+    return <Spinner />
   }
 
   const completions = data?.currentUser?.completions ?? []
@@ -49,11 +50,6 @@ function CompletionsPage() {
   )
 }
 
-CompletionsPage.getInitialProps = function(context: NextContext) {
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {}
-}
+CompletionsPage.displayName = "CompletionsPage"
 
-export default CompletionsPage
+export default withSignedIn(CompletionsPage)

@@ -1,8 +1,4 @@
 import React from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import { NextPageContext as NextContext } from "next"
-import AdminError from "/components/Dashboard/AdminError"
 import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -12,6 +8,10 @@ import { gql } from "apollo-boost"
 import PointsExportButton from "/components/Dashboard/PointsExportButton"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -22,32 +22,32 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-interface CompletionsProps {
-  admin: boolean
-}
-
-const Points = (props: CompletionsProps) => {
-  const { admin } = props
-  if (!admin) {
-    return <AdminError />
-  }
-
+const Points = () => {
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
-  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
-    variables: { slug: slug },
-  })
+  const { data, loading, error } = useQuery<CourseDetailsData>(
+    CourseDetailsFromSlugQuery,
+    {
+      variables: { slug: slug },
+    },
+  )
 
-  //TODO add circular progress
-  if (loading) {
-    return null
-  }
-  //TODO fix error message
-  if (error || !data) {
-    return <p>Error has occurred</p>
+  if (loading || !data) {
+    return <Spinner />
   }
 
+  if (error) {
+    return <ModifiableErrorMesage errorMessage={JSON.stringify(error)} />
+  }
+
+  if (!data.course) {
+    return (
+      <>
+        <p>Could not find the course. Go back?</p>
+      </>
+    )
+  }
   return (
     <CourseLanguageContext.Provider value={lng}>
       <DashboardTabBar slug={slug} selectedValue={2} />
@@ -60,21 +60,12 @@ const Points = (props: CompletionsProps) => {
           Points
         </SubtitleNoBackground>
         <PointsExportButton slug={slug} />
-        <PaginatedPointsList courseID={data.course.id} />
+        <PaginatedPointsList courseId={data.course.id} />
       </Container>
     </CourseLanguageContext.Provider>
   )
 }
 
-Points.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
+Points.displayName = "Points"
 
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-
-export default Points
+export default withAdmin(Points)
