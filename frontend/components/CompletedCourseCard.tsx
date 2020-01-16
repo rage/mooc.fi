@@ -7,9 +7,10 @@ import DoneIcon from "@material-ui/icons/Done"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
-import { ClicableDiv } from "/components/Surfaces/ClicableCard"
+import { ClickableDiv } from "/components/Surfaces/ClickableCard"
+import { mapLangToLanguage } from "/components/DataFormatFunctions"
 
-const Background = styled(ClicableDiv)`
+const Background = styled(ClickableDiv)`
   display: flex;
   flex-direction: column;
   @media (min-width: 600px) {
@@ -39,12 +40,6 @@ interface CourseCardProps {
   completion: ProfileUserOverView_currentUser_completions
 }
 
-const MapLangToLanguage: Record<string, string> = {
-  en_US: "English",
-  fi_FI: "Suomi",
-  sv_SE: "Swedish",
-}
-
 function formatDateTime(date: string) {
   const dateToFormat = new Date(date)
   const formattedDate = dateToFormat.toUTCString()
@@ -61,7 +56,7 @@ function CompletedCourseCard(props: CourseCardProps) {
   const t = getProfileTranslator(lng.language)
 
   const humanReadableLanguage =
-    MapLangToLanguage[completion?.completion_language ?? ""] ||
+    mapLangToLanguage[completion?.completion_language ?? ""] ||
     completion?.completion_language ||
     "no language available"
 

@@ -15,6 +15,7 @@ function PointsItemTable(props: TableProps) {
       {Object.keys(studentPoints).map(function(key) {
         return (
           <PointsListItemTableChart
+            key={key}
             title={key}
             points={studentPoints[key]}
             cuttervalue={cutterValue}

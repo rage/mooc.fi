@@ -1,10 +1,6 @@
 import React from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
-import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "/components/Container"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
@@ -15,6 +11,10 @@ import { Card } from "@material-ui/core"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import LangLink from "/components/LangLink"
+import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -29,32 +29,33 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
-interface CourseProps {
-  admin: boolean
-}
-const Course = (props: CourseProps) => {
-  const { admin } = props
-
+const Course = () => {
   const slug = useQueryParameter("id")
   const { language } = useContext(LanguageContext)
 
-  if (!admin) {
-    return <AdminError />
-  }
-
-  const { data, loading, error } = useQuery(CourseDetailsFromSlugQuery, {
-    variables: { slug: slug },
-  })
+  const { data, loading, error } = useQuery<CourseDetailsData>(
+    CourseDetailsFromSlugQuery,
+    {
+      variables: { slug: slug },
+    },
+  )
 
   //TODO add circular progress
-  if (loading) {
-    return null
-  }
-  //TODO fix error message
-  if (error || !data) {
-    return <p>Error has occurred</p>
+  if (loading || !data) {
+    return <Spinner />
   }
 
+  if (error) {
+    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
+  }
+
+  if (!data.course) {
+    return (
+      <>
+        <p>Course not found. Go back?</p>
+      </>
+    )
+  }
   return (
     <section>
       <DashboardTabBar slug={slug} selectedValue={0} />
@@ -89,15 +90,6 @@ const Course = (props: CourseProps) => {
   )
 }
 
-Course.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
+Course.displayName = "Course"
 
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-
-export default Course
+export default withAdmin(Course)

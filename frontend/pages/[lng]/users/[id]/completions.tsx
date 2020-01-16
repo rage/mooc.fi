@@ -1,14 +1,13 @@
 import React from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import { NextPageContext as NextContext } from "next"
-import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"
-import AdminError from "/components/Dashboard/AdminError"
 import { useQueryParameter } from "/util/useQueryParameter"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
 export const UserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -24,33 +23,26 @@ export const UserOverViewQuery = gql`
   ${Completions.fragments.completions}
 `
 
-interface CompletionsProps {
-  admin: boolean
-}
-
-function CompletionsPage(props: CompletionsProps) {
+function CompletionsPage() {
   const id = useQueryParameter("id")
 
-  if (!props.admin) {
-    return <AdminError />
-  }
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
-    { variables: { upstream_id: Number(id) } },
+    { variables: { upstream_id: Number(id) }, ssr: false },
   )
 
   const completions = data?.user?.completions ?? []
 
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
   if (loading || !data) {
-    return <div>Loading</div>
+    return <Spinner />
   }
 
   return (
@@ -64,14 +56,6 @@ function CompletionsPage(props: CompletionsProps) {
   )
 }
 
-CompletionsPage.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+CompletionsPage.displayName = "CompletionsPage"
 
-export default CompletionsPage
+export default withAdmin(CompletionsPage)

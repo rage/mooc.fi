@@ -1,9 +1,5 @@
 import * as React from "react"
 import Container from "/components/Container"
-import { NextPageContext } from "next"
-import { isAdmin, isSignedIn } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
 import gql from "graphql-tag"
 import { useQuery, ApolloConsumer } from "@apollo/react-hooks"
 import { UserCourseSettingsesForUserPage } from "/static/types/generated/UserCourseSettingsesForUserPage"
@@ -11,16 +7,10 @@ import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import { CircularProgress } from "@material-ui/core"
 import { useQueryParameter } from "/util/useQueryParameter"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
 
-interface UserPageProps {
-  admin: boolean
-}
-
-const UserPage = (props: UserPageProps) => {
-  const { admin } = props
-  if (!admin) {
-    return <AdminError />
-  }
+const UserPage = () => {
   const id = useQueryParameter("id")
   const [more, setMore]: any[] = React.useState([])
 
@@ -31,9 +21,9 @@ const UserPage = (props: UserPageProps) => {
 
   if (error) {
     return (
-      <div>
-        Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
-      </div>
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(error, undefined, 2)}
+      />
     )
   }
 
@@ -77,16 +67,9 @@ const UserPage = (props: UserPageProps) => {
   )
 }
 
-UserPage.getInitialProps = function(context: NextPageContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-export default UserPage
+UserPage.displayName = "UserPage"
+
+export default withAdmin(UserPage)
 
 const GET_DATA = gql`
   query UserCourseSettingsesForUserPage($upstream_id: Int) {

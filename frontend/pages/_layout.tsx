@@ -16,7 +16,7 @@ const FooterDownPusherWrapper = styled.div`
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const lng = React.useContext(LanguageContext)
-  const isHomePage = lng.hrefUrl === "/"
+  const isHomePage = !!lng.hrefUrl?.match(/^\/(\[lng\])?\/?$/)
 
   return (
     <div>

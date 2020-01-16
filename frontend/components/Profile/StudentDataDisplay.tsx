@@ -31,8 +31,8 @@ interface StudentDataDisplayProps {
 const StudentDataDisplay = (props: StudentDataDisplayProps) => {
   const { completions } = props
   const [tabOpen, setTabOpen] = useState(0)
-  //@ts-ignore
-  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+
+  const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setTabOpen(newValue)
   }
   return (

@@ -11,18 +11,29 @@ import getProfileTranslator from "/translations/profile"
 import DoneIcon from "@material-ui/icons/Done"
 import Avatar from "@material-ui/core/Avatar"
 import { CardTitle, CardSubtitle } from "components/Text/headers"
+import { addDomain } from "/util/imageUtils"
+import Link from "next/link"
 
 const StyledButton = styled(Button)`
   height: 50%;
-  margin: auto;
+
   color: black;
+`
+
+const StyledA = styled.a`
+  margin: auto;
 `
 
 const RegisterCompletionButton = ({ course }: { course: string }) => {
   return (
-    <StyledButton color="secondary" href={`/register-completion/${course}`}>
-      Register Completion
-    </StyledButton>
+    <Link
+      href="/register-completion/[slug]"
+      as={`/register-completion/${course}`}
+    >
+      <StyledA>
+        <StyledButton color="secondary">Register Completion</StyledButton>
+      </StyledA>
+    </Link>
   )
 }
 
@@ -31,7 +42,7 @@ const CourseAvatar = ({ photo }: { photo: any }) => {
     return (
       <Avatar
         style={{ margin: "auto", width: 60, height: 60 }}
-        src={photo.uncompressed}
+        src={addDomain(photo.uncompressed)}
       />
     )
   }
@@ -67,7 +78,6 @@ const CompletionListItem = (props: ListItemProps) => {
           {`${t("completionLanguage")} ${mapLangToLanguage[
             listItem?.completion_language ?? ""
           ] || listItem.completion_language}`}
-          }`}
         </CardSubtitle>
       </div>
       {isRegistered && listItem.completions_registered ? (

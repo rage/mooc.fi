@@ -75,7 +75,9 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        Router.push(`/${language}/study-modules`)
+        Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
+          shallow: true,
+        })
       } catch (err) {
         setStatus({ message: err.message, error: true })
         console.error(err)
@@ -88,12 +90,17 @@ const StudyModuleEdit = ({
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
       await deleteStudyModule({ variables: { id: values.id } })
-      Router.push(`/${language}/study-modules`)
+      Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
+        shallow: true,
+      })
     }
   }, [])
 
   const onCancel = useCallback(
-    () => Router.push(`/${language}/study-modules`),
+    () =>
+      Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
+        shallow: true,
+      }),
     [],
   )
 

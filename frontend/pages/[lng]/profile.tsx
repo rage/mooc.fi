@@ -1,15 +1,13 @@
 import React from "react"
-import { NextPageContext as NextContext } from "next"
-import redirect from "/lib/redirect"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
-import { isSignedIn } from "/lib/authentication"
 import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"
 import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Container from "/components/Container"
+import withSignedIn from "/lib/with-signed-in"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -47,6 +45,7 @@ export const UserOverViewQuery = gql`
 
 function Profile() {
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+
   if (error) {
     return <ErrorMessage />
   }
@@ -57,40 +56,16 @@ function Profile() {
   const first_name = data?.currentUser?.first_name || "No first name"
   const last_name = data?.currentUser?.last_name || "No last name"
   const email = data?.currentUser?.email || "no email"
-  const sid = data?.currentUser?.student_number || "no sid"
+  const studentNumber = data?.currentUser?.student_number || "no student number"
   const completions = data?.currentUser?.completions ?? []
 
-  /*   let first_name = "No first name"
-  let last_name = "No last name"
-  let sid = "no sid"
-  let email = "no email"
-  let completions: CompletionsData[] = []
-  if (data && data.currentUser) {
-    if (data.currentUser.first_name) {
-      first_name = data.currentUser.first_name
-    }
-    if (data.currentUser.last_name) {
-      last_name = data.currentUser.last_name
-    }
-    if (data.currentUser.email) {
-      email = data.currentUser.email
-    }
-    if (data.currentUser.student_number) {
-      sid = data.currentUser.student_number
-    }
-    if (data.currentUser.completions) {
-      completions = data.currentUser.completions
-    }
-  } */
-
-  console.log(data)
   return (
     <>
       <ProfilePageHeader
         first_name={first_name}
         last_name={last_name}
         email={email}
-        student_number={sid}
+        student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
         <StudentDataDisplay completions={completions} />
@@ -99,11 +74,6 @@ function Profile() {
   )
 }
 
-Profile.getInitialProps = function(context: NextContext) {
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {}
-}
+Profile.displayName = "Profile"
 
-export default Profile
+export default withSignedIn(Profile)

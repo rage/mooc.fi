@@ -1,14 +1,17 @@
 import React from "react"
-import Grid from "@material-ui/core/Grid"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
+
 import ModuleImage from "/components/Home/ModuleImage"
+
 import { CardTitle } from "/components/Text/headers"
+
 import { CardText } from "/components/Text/paragraphs"
+
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
-import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-top: 0.5rem;
@@ -22,33 +25,54 @@ const SkeletonBodyText = styled(Skeleton)`
   margin-top: 0.2rem;
 `
 
+const Base = styled(ClickableButtonBase)<{ component: any }>`
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+`
+
+const TextBackground = styled(FullCoverTextBackground)`
+  width: 70%;
+`
+
+const GridItem = styled.div`
+  width: 100%;
+  /* Basic styles for browsers without css grid support */
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  @supports (display: grid) {
+    margin-bottom: 0;
+  }
+`
+
 const ModuleNaviCard = ({ module }: { module?: AllModules_study_modules }) => (
-  <Grid item xs={12} md={6} lg={6}>
+  <GridItem>
     <LangLink href={`#${module ? module.slug : ""}`}>
-      <ClicableButtonBase focusRipple>
+      <Base component="div">
         {module ? (
           <>
             <ModuleImage module={module} />
-            <FullCoverTextBackground style={{ width: "70%" }}>
+            <TextBackground>
               <CardTitle variant="h3" component="h3" align="left">
                 {module.name}
               </CardTitle>
               <CardText component="p" variant="body1" align="left">
                 {module.description}
               </CardText>
-            </FullCoverTextBackground>
+            </TextBackground>
           </>
         ) : (
           <>
-            <FullCoverTextBackground style={{ width: "70%" }}>
+            <TextBackground style={{ width: "70%" }}>
               <SkeletonTitle width="100%" />
               <SkeletonBodyText variant="text" />
-            </FullCoverTextBackground>
+            </TextBackground>
           </>
         )}
-      </ClicableButtonBase>
+      </Base>
     </LangLink>
-  </Grid>
+  </GridItem>
 )
 
 export default ModuleNaviCard

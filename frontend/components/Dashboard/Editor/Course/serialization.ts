@@ -141,10 +141,10 @@ export const fromCourseForm = ({
     | Omit<addCourse_addCourse_study_modules, "__typename">
     | Omit<updateCourse_updateCourse_study_modules, "__typename">
   )[] = Object.keys(values.study_modules || {})
-    .filter(key => values?.study_modules?.[key])
+    .filter(key => values?.study_modules?.[key]) // FIXME: (?) why is it like this
     .map(id => ({ id }))
 
-  return {
+  const c: CourseArg = {
     ...omit(values, ["id", "thumbnail", "__typename"]),
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     new_slug: values.new_slug.trim(),
@@ -162,4 +162,6 @@ export const fromCourseForm = ({
     study_modules,
     course_variants,
   }
+
+  return c
 }

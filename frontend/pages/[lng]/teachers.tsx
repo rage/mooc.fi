@@ -43,6 +43,7 @@ const StyledButton = styled(Button)`
 const ForTeachers = () => {
   const lng = useContext(LanguageContext)
   const t = getTeachersTranslator(lng.language)
+
   return (
     <section>
       <H1NoBackground variant="h1" component="h1" align="center">
@@ -135,5 +136,7 @@ const ForTeachers = () => {
     </section>
   )
 }
+
+ForTeachers.displayName = "ForTeachers"
 
 export default ForTeachers

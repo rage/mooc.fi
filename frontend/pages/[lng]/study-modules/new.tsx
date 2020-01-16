@@ -1,23 +1,10 @@
 import React from "react"
-import { NextPageContext as NextContext } from "next"
-import AdminError from "/components/Dashboard/AdminError"
 import { WideContainer } from "/components/Container"
-import { isAdmin, isSignedIn } from "/lib/authentication"
-import redirect from "/lib/redirect"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import { H1NoBackground } from "/components/Text/headers"
+import withAdmin from "/lib/with-admin"
 
-interface NewStudyModuleProps {
-  admin: boolean
-}
-
-const NewStudyModule = (props: NewStudyModuleProps) => {
-  const { admin } = props
-
-  if (!admin) {
-    return <AdminError />
-  }
-
+const NewStudyModule = () => {
   return (
     <section>
       <WideContainer>
@@ -30,14 +17,6 @@ const NewStudyModule = (props: NewStudyModuleProps) => {
   )
 }
 
-NewStudyModule.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+NewStudyModule.displayName = "NewStudyModule"
 
-export default NewStudyModule
+export default withAdmin(NewStudyModule)

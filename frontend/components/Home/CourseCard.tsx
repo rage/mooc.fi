@@ -7,10 +7,10 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
-import { ClicableButtonBase } from "/components/Surfaces/ClicableCard"
+import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 
-const Background = styled(ClicableButtonBase)`
+const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;
   flex-direction: column;
   @media (max-width: 960px) {
@@ -25,7 +25,7 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
   }
   @media (min-width: 430px) and (max-width: 600px) {
     width: 45%;
-    height: 215px;
+    height: 235px;
   }
   @media (min-width: 600px) and (max-width: 960px) {
     width: 40%;
@@ -68,7 +68,8 @@ const CourseCard = ({ course }: CourseCardProps) => (
     >
       <Background
         focusRipple
-        disabled={!course || (!course.link || course.link === "")}
+        disabled={!course || !course.link || course.link === ""}
+        component="div"
       >
         <ResponsiveCourseImageBase>
           {course ? (
