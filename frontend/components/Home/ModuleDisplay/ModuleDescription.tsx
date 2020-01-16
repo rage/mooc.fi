@@ -10,15 +10,19 @@ const ModuleHeader = styled(H2NoBackground)`
   color: white;
   margin-left: 0px;
   font-size: 72px;
+  line-height: 100px;
+  font-family: Open sans condensed, sans serif;
+  font-weight: 300;
   @media (max-width: 360px) {
-    font-size: 56px;
+    font-size: 57px;
+    line-height: 100px;
   }
 `
 
 const ModuleDescriptionText = styled(SubtitleNoBackground)`
   color: white;
-  font-size: 23px;
-  line-height: 37px;
+  font-size: 28px;
+  line-height: 47px;
 `
 
 interface DescriptionProps {

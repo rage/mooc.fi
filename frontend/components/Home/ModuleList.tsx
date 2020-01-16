@@ -13,17 +13,17 @@ const moduleColors: Array<{
     brightness: 2,
   },
   {
-    backgroundColor: "#7748A4",
-    hueRotateAngle: 60,
-    brightness: 5,
-  },
-  {
-    backgroundColor: "#0D5F6D",
+    backgroundColor: "#5F6F99",
     hueRotateAngle: 0,
     brightness: 2,
   },
   {
-    backgroundColor: "#bbeffb",
+    backgroundColor: "#344A53",
+    hueRotateAngle: 32,
+    brightness: 0.5,
+  },
+  {
+    backgroundColor: "#644C66",
     hueRotateAngle: 32,
     brightness: 0.5,
   },
