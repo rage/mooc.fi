@@ -42,24 +42,22 @@ const Pagination: React.FC<PaginationProps> = ({
         native: true,
       }}
       labelRowsPerPage={t("rowsPerPage")}
-      labelDisplayedRows={eval(t("displayedRows"))}
+      labelDisplayedRows={({ from, to, count }) =>
+        `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
+      }
       onChangePage={() => null}
       onChangeRowsPerPage={(
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-      ) => {
-        const eventValue = event.target.value
-
-        return handleChangeRowsPerPage({ eventValue })
-      }}
-      ActionsComponent={props => {
-        return TablePaginationActions({
+      ) => handleChangeRowsPerPage({ eventValue: event.target.value })}
+      ActionsComponent={props =>
+        TablePaginationActions({
           ...props,
           setPage,
           searchText,
           loadData,
           data,
         })
-      }}
+      }
     />
   )
 }
