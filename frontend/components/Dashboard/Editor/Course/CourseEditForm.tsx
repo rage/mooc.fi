@@ -17,7 +17,6 @@ import {
   FormikActions,
   FormikProps,
   yupToFormErrors,
-  // getIn,
 } from "formik"
 import { Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
