@@ -8,7 +8,7 @@
   "userStudentNumber": "Opiskelijanumero",
   "completions": "Suoritukset",
   "rowsPerPage": "Rivejä sivulla:",
-  "displayedRows": "({ from, to, count }) => `${from}-${to === -1 ? count : to}/${count}`",
+  "displayedRowsOf": "/",
   "nextPage": "Seuraava sivu",
   "previousPage": "Edellinen sivu",
   "searchByString": "Etsi merkkijonolla"
