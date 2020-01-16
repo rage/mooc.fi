@@ -5,12 +5,13 @@ import * as winston from "winston"
 import * as express from "express"
 import * as compression from "compression"
 import * as bodyParser from "body-parser"
+import * as morgan from "morgan"
 import { promisify } from "util"
 
 const SECRET = process.env.KAFKA_BRIDGE_SECRET
 
 if (!SECRET) {
-  console.error("No seceret defined in KAFKA_BRIDGE_SECRET, exiting.")
+  console.error("No secret defined in KAFKA_BRIDGE_SECRET, exiting.")
   process.exit(-1)
 }
 
@@ -29,10 +30,9 @@ const producer = new Kafka.Producer({
   "metadata.broker.list": process.env.KAFKA_HOST,
 })
 
-const flushProducer = promisify(producer.flush.bind(this))
+let flushProducer = promisify(producer.flush.bind(producer))
 
 let producerReady = false
-
 producer.on("ready", () => {
   producerReady = true
 })
@@ -48,9 +48,11 @@ producer.connect(undefined, (err, data) => {
 let app = express()
 app.use(compression())
 app.use(bodyParser.json())
-const port = process.env.KAFKA_BRIDGE_PORT || 3003
+app.use(morgan("combined"))
+const port = parseInt(process.env.KAFKA_BRIDGE_SERVER_PORT || "3003")
+const host = process.env.KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 
-app.post("/api/v0/event", async (req, res) => {
+app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   if (
     !req.headers.authorization ||
     req.headers.authorization.split(" ")[1] !== SECRET
@@ -63,17 +65,22 @@ app.post("/api/v0/event", async (req, res) => {
 
   const { topic, payload } = req.body
   if (!topic || !payload) {
+    console.log(
+      "Received an event without a topic or without a payload",
+      req.body,
+    )
     return res
       .status(400)
       .json({ error: "Topic or payload missing" })
       .send()
   }
-  console.log(topic, payload)
+  console.log("Producing to topic", topic, "payload", JSON.stringify(payload))
 
   try {
-    producer.produce(topic, null, Buffer.from(payload))
+    producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
     await flushProducer(1000)
   } catch (e) {
+    console.error("Producing to kafka failed", e)
     return res
       .status(500)
       .json({ error: e.toString() })
@@ -81,7 +88,7 @@ app.post("/api/v0/event", async (req, res) => {
   }
   res.json({ msg: "Thanks!" }).send()
 })
-app.get("/healthz", (_, res) => {
+app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
   if (!producerReady) {
     return res
       .status(500)
@@ -98,7 +105,9 @@ app.get("/healthz", (_, res) => {
   res.json({ status: "ok" })
 })
 
-app.listen(port, () => console.log(`Kafka bridge listening on port ${port}!`))
+app.listen(port, host, () =>
+  console.log(`Kafka bridge listening on ${host}:${port}!`),
+)
 
 // FIXME: (?) not used anywhere
 // @ts-ignore

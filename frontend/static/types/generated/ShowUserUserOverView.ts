@@ -8,6 +8,7 @@
 
 export interface ShowUserUserOverView_user_completions_course_photo {
   __typename: "Image"
+  id: any
   uncompressed: string
 }
 
