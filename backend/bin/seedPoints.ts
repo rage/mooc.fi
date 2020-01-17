@@ -268,6 +268,7 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
 
 const seedPointsData = async () => {
   const course = await prisma.course({ slug: "elements-of-ai" })
+  console.log("course", course)
   await addUsers()
   await addServices()
   course && (await addUserCourseProgressess({ courseId: course.id }))
