@@ -1,10 +1,11 @@
 import React from "react"
-import { Grid } from "@material-ui/core"
-import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 import { H2Background } from "/components/Text/headers"
 import styled from "styled-components"
+import ModuleCoursesListing, {
+  ThreeOrLessCoursesListing,
+} from "/components/Home/ModuleDisplay/ModuleCourseCardList"
 
 const CoursesListContainer = styled(ContentContainer)`
   margin-top: 2rem;
@@ -23,6 +24,8 @@ interface ModuleCoursesProps {
 
 const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {
   const { courses } = props
+  const dontLimitShownCourses = courses.length <= 3
+
   return (
     <CoursesListContainer>
       <CoursesListTitle
@@ -33,15 +36,11 @@ const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {
       >
         Opintokokonaisuuteen kuuluvat kurssit
       </CoursesListTitle>
-      <Grid container spacing={3}>
-        {courses.map(course => (
-          <ModuleSmallCourseCard
-            key={`module-course-${course.id}`}
-            course={course}
-            showHeader={true}
-          />
-        ))}
-      </Grid>
+      {dontLimitShownCourses ? (
+        <ThreeOrLessCoursesListing courses={courses} />
+      ) : (
+        <ModuleCoursesListing courses={courses} />
+      )}
     </CoursesListContainer>
   )
 }
