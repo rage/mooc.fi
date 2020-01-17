@@ -8,8 +8,8 @@ const moduleColors: Array<{
   brightness: number
 }> = [
   {
-    backgroundColor: "#265A6C",
-    hueRotateAngle: 0,
+    backgroundColor: "#4B577E",
+    hueRotateAngle: 194,
     brightness: 2,
   },
   {
