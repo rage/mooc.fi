@@ -30,6 +30,7 @@
     "courses": "Kurssit",
     "modules": "Opintokokonaisuudet",
     "userSearch": "Käyttäjähaku",
+    "emailTemplates": "Email-mallit",
     "adminError": "Näyttäisi siltä, että yrität katsella ylläpitäjille tarkoitettua sivua. Kirjaudu sisään ylläpitäjän tunnuksilla.",
     "adminSorry": "Hups..."
 }

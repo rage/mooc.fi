@@ -84,6 +84,13 @@ export const UpdateCourseMutation = gql`
         slug
         description
       }
+      completion_email {
+        id
+        name
+        title
+        txt_body
+        html_body
+      }
     }
   }
 `

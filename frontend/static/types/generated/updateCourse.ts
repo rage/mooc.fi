@@ -49,6 +49,15 @@ export interface updateCourse_updateCourse_course_variants {
   description: string | null
 }
 
+export interface updateCourse_updateCourse_completion_email {
+  __typename: "EmailTemplate"
+  id: any
+  name: string | null
+  title: string | null
+  txt_body: string | null
+  html_body: string | null
+}
+
 export interface updateCourse_updateCourse {
   __typename: "Course"
   id: any
@@ -64,6 +73,7 @@ export interface updateCourse_updateCourse {
     | null
   study_modules: updateCourse_updateCourse_study_modules[] | null
   course_variants: updateCourse_updateCourse_course_variants[] | null
+  completion_email: updateCourse_updateCourse_completion_email | null
 }
 
 export interface updateCourse {

@@ -22,6 +22,8 @@
     "/[lng]/teachers": "For teachers",
     "/[lng]/register": "Register organization",
     "/[lng]/register-completion/[slug]": "Register completion",
+    "/[lng]/email-templates": "Email templates",
+    "/[lng]/email-templates/[id]": "Edit email template",
     "/register-completion/[slug]": "Register completion",
     "/": "Home"
   },
@@ -30,6 +32,7 @@
     "/[lng]/courses/new": "New",
     "/[lng]/study-modules/[id]/edit": "Edit", 
     "/[lng]/study-modules/new": "New",
-    "/[lng]/users/search": "Search"
+    "/[lng]/users/search": "Search",
+    "/[lng]/email-templates/[id]": "Edit"
   }
 }

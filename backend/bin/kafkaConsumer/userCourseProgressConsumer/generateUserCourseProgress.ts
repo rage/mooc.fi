@@ -8,8 +8,11 @@ import {
   User,
   UserCourseSettings,
   EmailTemplate,
+  prisma,
 } from "../../../generated/prisma-client"
 import * as nodemailer from "nodemailer"
+import { render } from "micromustache"
+import SMTPTransport = require("nodemailer/lib/smtp-transport")
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
 const email_pass = process.env.SMTP_PASS
@@ -44,15 +47,28 @@ export const generateUserCourseProgress = async (
   const user: User = await prisma
     .userCourseProgress({ id: userCourseProgress.id })
     .user()
-  const userCourseSettingses: UserCourseSettings[] = await prisma.userCourseSettingses(
-    {
+  let userCourseSettings =
+    (await prisma.userCourseSettingses({
       where: {
         user: user,
         course: course,
       },
-    },
-  )
-  const userCourseSettings = userCourseSettingses[0] || null
+    }))[0] || null
+
+  if (!userCourseSettings) {
+    const inheritCourse = await prisma
+      .course({ id: course.id })
+      .inherit_settings_from()
+    if (inheritCourse) {
+      userCourseSettings =
+        (await prisma.userCourseSettingses({
+          where: {
+            user: user,
+            course: inheritCourse,
+          },
+        }))[0] || null
+    }
+  }
 
   if (
     course.automatic_completions &&
@@ -78,7 +94,7 @@ export const generateUserCourseProgress = async (
       })
       const template = await prisma.course({ id: course.id }).completion_email()
       if (template) {
-        sendMail(user, template)
+        await sendMail(user, template)
       }
     }
   }
@@ -94,24 +110,36 @@ export const generateUserCourseProgress = async (
 
 async function sendMail(user: User, template: EmailTemplate) {
   //const { htmlTemplate, textTemplate } = getTemplates(student, title);
-  let transporter = nodemailer.createTransport({
+  const options: SMTPTransport.Options = {
     host: email_host,
-    port: email_port,
+    port: parseInt(email_port || ""),
     secure: false, // true for 465, false for other ports
     auth: {
       user: email_user, // generated ethereal user
       pass: email_pass, // generated ethereal password
     },
-  })
+  }
+  let transporter = nodemailer.createTransport(options)
   // send mail with defined transport object
   let info = await transporter.sendMail({
     from: email_from, // sender address
     to: user.email, // list of receivers
     subject: template.title, // Subject line
-    text: template.txt_body, // plain text body
+    text: await SimpleTemplateArgsReplace(template.txt_body ?? "", template), // plain text body
     html: template.html_body, // html body
   })
   console.log("Message sent: %s", info.messageId)
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info))
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+}
+
+/* Will Replace this later. Just a simple and fast way to publish quickly.*/
+const SimpleTemplateArgsReplace = async (
+  template: string,
+  email_template: EmailTemplate | null,
+) => {
+  const completion_link_slug = (await prisma.courses({
+    where: { completion_email: email_template },
+  }))[0].slug
+  const completion_link = `https://mooc.fi/register-completion/${completion_link_slug}`
+  return render(template, { completion_link: completion_link })
 }

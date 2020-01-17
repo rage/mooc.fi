@@ -17,6 +17,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useQueryParameter } from "/util/useQueryParameter"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslator from "/translations/courses"
+import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -126,6 +127,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
   return (
     <section>
+      <DashboardTabBar slug={slug} selectedValue={3} />
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("editCourse")}
