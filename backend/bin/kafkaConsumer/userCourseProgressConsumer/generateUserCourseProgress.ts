@@ -47,6 +47,7 @@ export const generateUserCourseProgress = async ({
     (entry: any) => entry.progress,
   )
 
+  /*
   const { total_max_points, total_n_points, combined } = progresses.reduce(
     (acc, curr) => ({
       total_max_points: acc.total_max_points + (curr?.max_points ?? 0),
@@ -58,25 +59,20 @@ export const generateUserCourseProgress = async ({
       total_n_points: number
       combined: any[]
     },
-  )
-  /*   let combined: any[] = []
+  */
+
+  let combined: any[] = []
   let total_max_points: number = 0
   let total_n_points: number = 0
 
-  progresses.map(entry => {
+  progresses.forEach(entry => {
     entry.forEach((p: any) => {
       p.max_points ? (total_max_points += p.max_points) : null
       p.n_points ? (total_n_points += p.n_points) : null
     })
 
     combined.push(...entry)
-  }) */
-  /*const course: Course = await prisma
-    .userCourseProgress({ id: userCourseProgress.id })
-    .course()
-    const user: User = await prisma
-    .userCourseProgress({ id: userCourseProgress.id })
-    .user() */
+  })
 
   let userCourseSettings: UserCourseSettings =
     (await prisma.userCourseSettingses({
