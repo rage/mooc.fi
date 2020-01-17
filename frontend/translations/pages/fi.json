@@ -22,6 +22,8 @@
     "/[lng]/teachers": "Opettajille",
     "/[lng]/register": "Rekisteröidy organisaatioon",
     "/[lng]/register-completion/[slug]": "Rekisteröi suoritus",
+    "/[lng]/email-templates": "Email-mallit",
+    "/[lng]/email-templates/[id]": "Muokkaa email-mallia",
     "/register-completion/[slug]": "Rekisteröi suoritus",
     "/": "Etusivu"
   },
@@ -30,6 +32,7 @@
     "/[lng]/courses/new": "Uusi",
     "/[lng]/study-modules/[id]/edit": "Muokkaa", 
     "/[lng]/study-modules/new": "Uusi",
-    "/[lng]/users/search": "Hae"
+    "/[lng]/users/search": "Hae",
+    "/[lng]/email-templates/[id]": "Muokkaa"
   }
 }
