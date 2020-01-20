@@ -1,4 +1,8 @@
-import { Prisma, Course } from "../../generated/prisma-client"
+import {
+  Prisma,
+  Course,
+  CourseOrderByInput,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -61,33 +65,36 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     resolve: async (_, args, ctx) => {
       const { orderBy, language } = args
       const { prisma } = ctx
-      // FIXME: this maps as CourseOrderByInput, but still doesn't quite get it
-      // @ts-ignore
-      const courses = await prisma.courses({ orderBy })
+
+      const courses = await prisma.courses({
+        orderBy: orderBy as CourseOrderByInput,
+      })
 
       const filtered = language
-        ? (await Promise.all(
-            courses.map(async (course: Course) => {
-              const course_translations = await prisma.courseTranslations({
-                where: { course, language },
-              })
+        ? (
+            await Promise.all(
+              courses.map(async (course: Course) => {
+                const course_translations = await prisma.courseTranslations({
+                  where: { course, language },
+                })
 
-              if (!course_translations.length) {
-                return Promise.resolve(null)
-              }
+                if (!course_translations.length) {
+                  return Promise.resolve(null)
+                }
 
-              const { name, description, link = "" } = course_translations[0]
+                const { name, description, link = "" } = course_translations[0]
 
-              return { ...course, name, description, link }
-            }),
-          )).filter(v => !!v)
+                return { ...course, name, description, link }
+              }),
+            )
+          ).filter(v => !!v)
         : courses.map((course: Course) => ({
             ...course,
             description: "",
             link: "",
           }))
 
-      return filtered
+      return filtered as Array<NexusGenRootTypes["Course"]>
     },
   })
 }
