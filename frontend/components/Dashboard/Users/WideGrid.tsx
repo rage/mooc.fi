@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useContext } from "react"
 import {
   Button,
   Paper,
@@ -18,6 +18,8 @@ import {
   UserDetailsContains,
 } from "/static/types/generated/UserDetailsContains"
 import Pagination from "/components/Dashboard/Users/Pagination"
+import getUsersTranslator from "/translations/users"
+import LanguageContext from "/contexes/LanguageContext"
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -58,6 +60,9 @@ const WideGrid = ({
   searchText,
   setPage,
 }: GridProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getUsersTranslator(language)
+
   const PaginationComponent = useCallback(
     () => (
       <TableRow>
@@ -87,12 +92,20 @@ const WideGrid = ({
               <PaginationComponent />
             ) : null}
             <TableRow>
-              <StyledTableCell>Email</StyledTableCell>
+              <StyledTableCell>{t("userEmail")}</StyledTableCell>
               {/*             <StyledTableCell align="right">upstream_id</StyledTableCell> */}
-              <StyledTableCell align="right">First name</StyledTableCell>
-              <StyledTableCell align="right">Last name</StyledTableCell>
-              <StyledTableCell align="right">Student Number</StyledTableCell>
-              <StyledTableCell align="right">Completions</StyledTableCell>
+              <StyledTableCell align="right">
+                {t("userFirstName")}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {t("userLastName")}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {t("userStudentNumber")}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {t("completions")}
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <RenderResults
@@ -112,7 +125,10 @@ interface RenderResultsProps {
   data: UserDetailsContains_userDetailsContains_edges[]
   loading: boolean
 }
+
 const RenderResults = (props: RenderResultsProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getUsersTranslator(language)
   const { data, loading } = props
 
   if (loading) {
@@ -133,7 +149,7 @@ const RenderResults = (props: RenderResultsProps) => {
     return (
       <TableBody>
         <TableRow>
-          <TableCell colSpan={5}>No results</TableCell>
+          <TableCell colSpan={5}>{t("noResults")}</TableCell>
         </TableRow>
       </TableBody>
     )

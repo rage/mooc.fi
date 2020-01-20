@@ -4,6 +4,9 @@ import {
   StudyModuleTranslationFormValues,
 } from "./types"
 import { ApolloClient, DocumentNode } from "apollo-boost"
+import { useContext } from "react"
+import LanguageContext from "/contexes/LanguageContext"
+import getModulesTranslator from "/translations/study-modules"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   id: undefined,
@@ -21,18 +24,18 @@ export const initialValues: StudyModuleFormValues = {
   study_module_translations: [initialTranslation],
 }
 
-export const languages = [
+export const languages = (t: Function) => [
   {
     value: "fi_FI",
-    label: "Finnish",
+    label: t("moduleFinnish"),
   },
   {
     value: "en_US",
-    label: "English",
+    label: t("moduleEnglish"),
   },
   {
     value: "sv_SE",
-    label: "Swedish",
+    label: t("moduleSwedish"),
   },
 ]
 
@@ -44,68 +47,71 @@ const studyModuleEditSchema = ({
   client: ApolloClient<object>
   checkSlug: DocumentNode
   initialSlug: string | null
-}) =>
-  Yup.object().shape({
+}) => {
+  const { language } = useContext(LanguageContext)
+  const t = getModulesTranslator(language)
+
+  return Yup.object().shape({
     new_slug: Yup.string()
-      .required("required")
+      .required(t("validationRequired"))
       .trim()
-      .matches(/^[^\/\\\s]*$/, "can't include spaces or slashes")
+      .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
       .test(
         "unique",
-        `slug is already in use`,
+        t("validationSlugInUse"),
         validateSlug({ client, checkSlug, initialSlug }),
       ),
-    name: Yup.string().required("required"),
+    name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
       Yup.object().shape({
-        name: Yup.string().required("required"),
+        name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
-          .required("required")
+          .required(t("validationRequired"))
           .oneOf(
-            languages.map(l => l.value),
-            "must have a valid language code",
+            languages(t).map(l => l.value),
+            t("validationValidLanguageCode"),
           )
-          .test(
-            "unique",
-            "cannot have more than one translation per language",
-            function(this: Yup.TestContext, value?: any): boolean {
-              const {
-                context,
-                path,
-              }: { context?: any; path?: string | undefined } = this.options
-              if (!context) {
-                return true
-              }
+          .test("unique", t("validationOneTranslation"), function(
+            this: Yup.TestContext,
+            value?: any,
+          ): boolean {
+            const {
+              context,
+              path,
+            }: { context?: any; path?: string | undefined } = this.options
+            if (!context) {
+              return true
+            }
 
-              const {
-                values: { study_module_translations },
-              } = context
+            const {
+              values: { study_module_translations },
+            } = context
 
-              if (!value || value === "") {
-                return true // previous should have caught the empty
-              }
+            if (!value || value === "") {
+              return true // previous should have caught the empty
+            }
 
-              const currentIndexMatch =
-                (path || "").match(/^.*\[(\d+)\].*$/) || []
-              const currentIndex =
-                currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-              const otherTranslationLanguages = study_module_translations
-                .filter(
-                  (c: StudyModuleTranslationFormValues, index: number) =>
-                    c.language !== "" && index !== currentIndex,
-                )
-                .map((c: StudyModuleTranslationFormValues) => c.language)
+            const currentIndexMatch =
+              (path || "").match(/^.*\[(\d+)\].*$/) || []
+            const currentIndex =
+              currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+            const otherTranslationLanguages = study_module_translations
+              .filter(
+                (c: StudyModuleTranslationFormValues, index: number) =>
+                  c.language !== "" && index !== currentIndex,
+              )
+              .map((c: StudyModuleTranslationFormValues) => c.language)
 
-              return otherTranslationLanguages.indexOf(value) === -1
-            },
-          ),
-        description: Yup.string().required("required"),
+            return otherTranslationLanguages.indexOf(value) === -1
+          }),
+        description: Yup.string().required(t("validationRequired")),
       }),
     ),
     order: Yup.number()
       .transform(value => (isNaN(value) ? undefined : Number(value)))
-      .integer("must be integer"),
+      .integer(t("validationInteger")),
   })
+}
 
 const validateSlug = ({
   checkSlug,
