@@ -342,6 +342,4 @@ const Register = () => {
   )
 }
 
-Register.displayName = "Register"
-
 export default withSignedIn(Register)

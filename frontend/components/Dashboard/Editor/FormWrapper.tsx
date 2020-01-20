@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import {
   Container,
   Paper,
@@ -12,6 +12,8 @@ import { FormValues } from "./types"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import styled from "styled-components"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import getCommonTranslator from "/translations/common"
+import LanguageContext from "/contexes/LanguageContext"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
@@ -42,7 +44,8 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
     onDelete,
     renderForm,
   } = props
-
+  const { language } = useContext(LanguageContext)
+  const t = getCommonTranslator(language)
   const [deleteVisible, setDeleteVisible] = useState(false)
   const [cancelConfirmationVisible, setCancelConfirmationVisible] = useState(
     false,
@@ -55,10 +58,10 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
     <Container maxWidth="md">
       <FormBackground elevation={1}>
         <ConfirmationDialog
-          title="You have unsaved changes"
-          content="Are you sure you want to leave without saving?"
-          acceptText="Yes"
-          rejectText="No"
+          title={t("confirmationUnsavedChanges")}
+          content={t("confirmationLeaveWithoutSaving")}
+          acceptText={t("confirmationYes")}
+          rejectText={t("confirmationNo")}
           onAccept={() => {
             setCancelConfirmationVisible(false)
             onCancel()
@@ -67,10 +70,10 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           show={cancelConfirmationVisible}
         />
         <ConfirmationDialog
-          title="About to delete"
-          content="Are you sure you want to delete?"
-          acceptText="Yes"
-          rejectText="No"
+          title={t("confirmationAboutToDelete")}
+          content={t("confirmationDelete")}
+          acceptText={t("confirmationYes")}
+          rejectText={t("confirmationNo")}
           onAccept={() => {
             setDeleteConfirmationVisible(false)
             onDelete(values)
@@ -83,7 +86,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
         <Grid container direction="row">
           <Grid item xs={3}>
             {!isProduction && values.id ? (
-              <Tooltip title="Check this to show delete button">
+              <Tooltip title={t("showDelete")}>
                 <MUICheckbox
                   checked={deleteVisible}
                   onChange={() => setDeleteVisible(!deleteVisible)}
@@ -97,7 +100,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
                 disabled={isSubmitting}
                 onClick={() => setDeleteConfirmationVisible(true)}
               >
-                Delete
+                {t("delete")}
               </StyledButton>
             ) : null}
           </Grid>
@@ -110,7 +113,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
                 dirty ? setCancelConfirmationVisible(true) : onCancel()
               }
             >
-              Cancel
+              {t("cancel")}
             </StyledButton>
             <StyledButton
               color="primary"
@@ -119,13 +122,13 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
               }
               onClick={submitForm}
             >
-              {isSubmitting ? <CircularProgress size={20} /> : "Save"}
+              {isSubmitting ? <CircularProgress size={20} /> : t("save")}
             </StyledButton>
           </Grid>
         </Grid>
         {status && status.message ? (
           <Status error={status.error}>
-            {status.error ? "Error submitting: " : null}
+            {status.error ? t("submittingError") : null}
             <b>{status.message}</b>
           </Status>
         ) : null}

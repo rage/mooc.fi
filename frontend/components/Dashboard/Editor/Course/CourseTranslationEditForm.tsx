@@ -1,14 +1,16 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { Grid, MenuItem, Typography } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { CourseTranslationFormValues } from "./types"
 import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
-import { languages, initialTranslation } from "./form-validation"
+import { languages as languagesT, initialTranslation } from "./form-validation"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+import getCoursesTranslator from "/translations/courses"
+import LanguageContext from "/contexes/LanguageContext"
 
 const CourseTranslationEditForm = ({
   values,
@@ -19,6 +21,10 @@ const CourseTranslationEditForm = ({
   errors: (FormikErrors<CourseTranslationFormValues> | undefined)[] | undefined
   isSubmitting: boolean
 }) => {
+  const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslator(language)
+  const languages = languagesT(t)
+
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
@@ -30,10 +36,10 @@ const CourseTranslationEditForm = ({
           render={helpers => (
             <>
               <ConfirmationDialog
-                title="Are you sure?"
-                content="Do you want to remove this translation?"
-                acceptText="Yes"
-                rejectText="No"
+                title={t("confirmationAreYouSure")}
+                content={t("confirmationRemoveTranslation")}
+                acceptText={t("confirmationYes")}
+                rejectText={t("confirmationNo")}
                 onAccept={() => {
                   setRemoveDialogVisible(false)
                   removableIndex >= 0 && helpers.remove(removableIndex)
@@ -51,7 +57,7 @@ const CourseTranslationEditForm = ({
                     <Field
                       name={`course_translations[${index}].language`}
                       type="select"
-                      label="Language"
+                      label={t("courseLanguage")}
                       errors={[getIn(errors, `[${index}].language`)]}
                       fullWidth
                       variant="outlined"
@@ -59,16 +65,18 @@ const CourseTranslationEditForm = ({
                       autoComplete="off"
                       component={StyledTextField}
                     >
-                      {languages.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
+                      {languages.map(
+                        (option: { value: string; label: string }) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ),
+                      )}
                     </Field>
                     <Field
                       name={`course_translations[${index}].name`}
                       type="text"
-                      label="Name"
+                      label={t("courseName")}
                       error={getIn(errors, `[${index}].name`)}
                       fullWidth
                       autoComplete="off"
@@ -78,7 +86,7 @@ const CourseTranslationEditForm = ({
                     <Field
                       name={`course_translations[${index}].description`}
                       type="textarea"
-                      label="Description"
+                      label={t("courseDescription")}
                       error={getIn(errors, `[${index}].description`)}
                       fullWidth
                       multiline
@@ -90,7 +98,7 @@ const CourseTranslationEditForm = ({
                     <Field
                       name={`course_translations[${index}].link`}
                       type="text"
-                      label="Link"
+                      label={t("courseLink")}
                       error={getIn(errors, `[${index}].link`)}
                       fullWidth
                       autoComplete="off"
@@ -100,7 +108,7 @@ const CourseTranslationEditForm = ({
                     <Field
                       name={`course_translations[${index}].open_university_course_code`}
                       type="text"
-                      label="Open university course code"
+                      label={t("courseOpenCode")}
                       error={getIn(
                         errors,
                         `[${index}].open_university_course_code`,
@@ -121,7 +129,7 @@ const CourseTranslationEditForm = ({
                           setRemovableIndex(index)
                         }}
                       >
-                        Remove translation
+                        {t("courseRemoveTranslation")}
                       </StyledButton>
                     </Grid>
                   </EntryContainer>
@@ -129,7 +137,7 @@ const CourseTranslationEditForm = ({
               )) ?? (
                 <EntryContainer elevation={2}>
                   <Typography variant="body1">
-                    Please add at least one translation!
+                    {t("courseAtLeastOneTranslation")}
                   </Typography>
                 </EntryContainer>
               )}
@@ -141,7 +149,7 @@ const CourseTranslationEditForm = ({
                   disabled={isSubmitting}
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
-                  Add translation
+                  {t("courseAddTranslation")}
                 </FormSubmitButton>
               )}
             </>

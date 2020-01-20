@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useContext } from "react"
 import { TablePagination } from "@material-ui/core"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
+import getUsersTranslator from "/translations/users"
+import LanguageContext from "/contexes/LanguageContext"
 
 interface PaginationProps {
   data: UserDetailsContains
@@ -24,35 +26,40 @@ const Pagination: React.FC<PaginationProps> = ({
   loadData,
   TablePaginationActions,
   handleChangeRowsPerPage,
-}) => (
-  <TablePagination
-    rowsPerPageOptions={[10, 20, 50]}
-    colSpan={3}
-    count={data?.userDetailsContains?.count ?? 0}
-    rowsPerPage={rowsPerPage}
-    page={page}
-    SelectProps={{
-      inputProps: { "aria-label": "rows per page" },
-      native: true,
-    }}
-    onChangePage={() => null}
-    onChangeRowsPerPage={(
-      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-      const eventValue = event.target.value
+}: PaginationProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getUsersTranslator(language)
 
-      return handleChangeRowsPerPage({ eventValue })
-    }}
-    ActionsComponent={props => {
-      return TablePaginationActions({
-        ...props,
-        setPage,
-        searchText,
-        loadData,
-        data,
-      })
-    }}
-  />
-)
+  return (
+    <TablePagination
+      rowsPerPageOptions={[10, 20, 50]}
+      colSpan={3}
+      count={data?.userDetailsContains?.count ?? 0}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      SelectProps={{
+        inputProps: { "aria-label": t("rowsPerPage") },
+        native: true,
+      }}
+      labelRowsPerPage={t("rowsPerPage")}
+      labelDisplayedRows={({ from, to, count }) =>
+        `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
+      }
+      onChangePage={() => null}
+      onChangeRowsPerPage={(
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      ) => handleChangeRowsPerPage({ eventValue: event.target.value })}
+      ActionsComponent={props =>
+        TablePaginationActions({
+          ...props,
+          setPage,
+          searchText,
+          loadData,
+          data,
+        })
+      }
+    />
+  )
+}
 
 export default Pagination
