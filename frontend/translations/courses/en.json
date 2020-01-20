@@ -18,7 +18,7 @@
   "courseOrder": "Order",
   "courseModuleOrder": "In-module order",
   "courseProperties": "Properties",
-  "coursePromote": "Promote",
+  "coursePromote": "Promote, no prerequisite courses",
   "courseStartPoint": "Start point",
   "courseModuleStartPoint": "Study module start point",
   "courseHidden": "Hidden",
