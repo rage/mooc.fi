@@ -39,7 +39,7 @@ const CourseArg = inputObjectType({
     t.int("study_module_order")
     t.int("points_needed")
     t.boolean("automatic_completions")
-    t.id("completion_email")
+    t.id("completion_email", { required: false })
   },
 })
 
