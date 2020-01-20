@@ -1,4 +1,8 @@
-import { Prisma, StudyModule } from "../../generated/prisma-client"
+import {
+  Prisma,
+  StudyModule,
+  StudyModuleOrderByInput,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -59,28 +63,33 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
       const { orderBy, language } = args
       const { prisma } = ctx
 
-      // @ts-ignore
-      const modules = await prisma.studyModules({ orderBy })
+      const modules = await prisma.studyModules({
+        orderBy: orderBy as StudyModuleOrderByInput,
+      })
 
       const filtered = language
-        ? (await Promise.all(
-            modules.map(async (module: StudyModule) => {
-              const module_translations = await prisma.studyModuleTranslations({
-                where: { study_module: module, language },
-              })
+        ? (
+            await Promise.all(
+              modules.map(async (module: StudyModule) => {
+                const module_translations = await prisma.studyModuleTranslations(
+                  {
+                    where: { study_module: module, language },
+                  },
+                )
 
-              if (!module_translations.length) {
-                return Promise.resolve(null)
-              }
+                if (!module_translations.length) {
+                  return Promise.resolve(null)
+                }
 
-              const { name, description = "" } = module_translations[0]
+                const { name, description = "" } = module_translations[0]
 
-              return { ...module, name, description }
-            }),
-          )).filter(v => !!v)
+                return { ...module, name, description }
+              }),
+            )
+          ).filter(v => !!v)
         : modules.map((module: StudyModule) => ({ ...module, description: "" }))
 
-      return filtered
+      return filtered as Array<NexusGenRootTypes["StudyModule"]>
     },
   })
 }

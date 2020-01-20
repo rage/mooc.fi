@@ -13,7 +13,8 @@ const doIt = async () => {
   let x = data.filter(
     p =>
       p.namespace === "elements-of-ai" &&
-      (p.field_name == "language" && p.value == "se"),
+      p.field_name == "language" &&
+      p.value == "se",
   )
   x = uniqBy(x, p => p.user_id)
   console.log(x.length)
@@ -30,13 +31,15 @@ const doIt = async () => {
   let y = data.filter(
     p =>
       p.namespace === "elements-of-ai" &&
-      (p.field_name == "language" && p.value == "en"),
+      p.field_name == "language" &&
+      p.value == "en",
   )
   let z = data
     .filter(
       p =>
         p.namespace === "elements-of-ai" &&
-        (p.field_name == "country" && p.value == "Sweden"),
+        p.field_name == "country" &&
+        p.value == "Sweden",
     )
     .map(p => p.user_id)
   counter = 0

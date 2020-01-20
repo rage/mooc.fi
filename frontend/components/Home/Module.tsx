@@ -68,7 +68,7 @@ function Module(props: ModuleProps) {
 
   return (
     <section
-      id={module ? module.slug : "module-skeleton"}
+      id={module?.slug ?? "module-skeleton"}
       style={{ marginBottom: "3em" }}
     >
       <Root backgroundColor={backgroundColor}>

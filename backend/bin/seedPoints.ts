@@ -75,8 +75,7 @@ const addServices = async () => {
 }
 
 // FIXME: (?) not used anywhere
-// @ts-ignore
-const addUserCourseServiceProgressess = async ({
+/* const addUserCourseServiceProgressess = async ({
   courseId,
 }: {
   courseId: string
@@ -184,7 +183,7 @@ const addUserCourseServiceProgressess = async ({
       await prisma.createUserCourseServiceProgress(ucsp)
     }),
   )
-}
+} */
 
 const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })

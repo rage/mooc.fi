@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma-client"
+import { Prisma, OrganizationOrderByInput } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg, intArg, arg, booleanArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -46,14 +46,12 @@ const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
       }
       const prisma: Prisma = ctx.prisma
 
-      // FIXME: orderBy type bug (?)
-      // @ts-ignore
       const orgs = await prisma.organizations({
         first: first ?? undefined,
         last: last ?? undefined,
         after: after ?? undefined,
         before: before ?? undefined,
-        orderBy: orderBy ?? undefined,
+        orderBy: (orderBy as OrganizationOrderByInput) ?? undefined,
         where: {
           hidden,
         },
