@@ -151,12 +151,13 @@ export const fromCourseForm = ({
     ects: values.ects?.trim() ?? undefined,
     base64: !isProduction,
     photo: getIn(values, "photo.id"),
-    // despite order being a number in the typings, it comes back as an empty string without TS yelling at you
-    // @ts-ignore
-    order: values.order === "" ? null : values.order,
-    // @ts-ignore
-    // prettier-ignore
-    study_module_order: values.study_module_order === "" ? null : values.study_module_order,
+    // despite orders being numbers in the field typings,
+    // these come back as an empty string without TS yelling at you
+    order: (values.order as unknown) === "" ? null : values.order,
+    study_module_order:
+      (values.study_module_order as unknown) === ""
+        ? null
+        : values.study_module_order,
     course_translations,
     open_university_registration_links,
     study_modules,

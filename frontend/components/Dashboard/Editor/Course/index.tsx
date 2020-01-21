@@ -51,6 +51,7 @@ const CourseEdit = ({
     client,
     checkSlug,
     initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
+    t,
   })
 
   const onSubmit = useCallback(

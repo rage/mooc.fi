@@ -1,6 +1,7 @@
 import { prismaObjectType } from "nexus-prisma"
 import { stringArg, arg } from "nexus/dist"
-import { Course } from "/generated/prisma-client"
+import { Course, CourseOrderByInput } from "/generated/prisma-client"
+import { NexusGenRootTypes } from "/generated/nexus"
 
 const StudyModule = prismaObjectType({
   name: "StudyModule",
@@ -18,15 +19,12 @@ const StudyModule = prismaObjectType({
         const { language, orderBy } = args
         const { prisma } = ctx
 
-        // FIXME: is this Prisma special or not?
-        // @ts-ignore
         const courses = await prisma.courses({
-          // @ts-ignore
-          orderBy: orderBy ?? undefined,
+          orderBy: (orderBy as CourseOrderByInput) ?? undefined,
           where: { study_modules_some: { id: parent.id } },
         })
 
-        return language
+        const values = language
           ? (await Promise.all(
               courses.map(async (course: Course) => {
                 const course_translations = await prisma.courseTranslations({
@@ -47,6 +45,8 @@ const StudyModule = prismaObjectType({
               description: "",
               link: "",
             }))
+
+        return values as Array<NexusGenRootTypes["Course"]>
       },
     })
   },

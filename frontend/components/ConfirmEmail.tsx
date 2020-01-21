@@ -17,7 +17,7 @@ export interface ConfirmEmailProps {
   onComplete: Function
 }
 
-// @ts-ignore
+// @ts-ignore: onComplete function not used at the moment
 const ConfirmEmail = (props: ConfirmEmailProps) => {
   const { language } = useContext(LanguageContext)
   const t = getSignUpTranslator(language)

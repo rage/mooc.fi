@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "../../../../static/types/globalTypes"
@@ -8,8 +7,6 @@ import {
   CourseVariantFormValues,
 } from "./types"
 import { DocumentNode } from "apollo-boost"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -84,15 +81,14 @@ const courseEditSchema = ({
   client,
   checkSlug,
   initialSlug,
+  t,
 }: {
   client: ApolloClient<object>
   checkSlug: DocumentNode
   initialSlug: string | null
-}) => {
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
-
-  return Yup.object().shape({
+  t: (key: any) => string
+}) =>
+  Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
       .required(t("validationRequired"))
@@ -205,7 +201,6 @@ const courseEditSchema = ({
       t("validationNumberRange"),
     ),
   })
-}
 
 const validateSlug = ({
   checkSlug,

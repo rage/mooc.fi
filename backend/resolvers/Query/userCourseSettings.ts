@@ -62,7 +62,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
         search,
       } = args
       let { course_id } = args
-      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
+      if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
 
