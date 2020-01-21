@@ -5,7 +5,6 @@ import Router from "next/router"
 export default (context: NextContext, target: string, savePage = true) => {
   let language = context?.query?.lng ?? "fi"
 
-  // @ts-ignore
   if (savePage && context?.pathname /* context?.req?.originalUrl */) {
     nookies.set(
       context,
@@ -22,8 +21,9 @@ export default (context: NextContext, target: string, savePage = true) => {
   if (!target.startsWith("/")) {
     sep = "/"
   }
-  // @ts-ignore
+
   const targetWithLanguage = `/${language}${sep}${target}`
+
   if (context?.res?.writeHead && context?.res?.end) {
     // server
     // 303: "See other"

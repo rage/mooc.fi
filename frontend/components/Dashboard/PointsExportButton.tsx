@@ -111,7 +111,6 @@ async function dowloadInChunks(
   const res = []
   let after: string | undefined = undefined
   while (1 === 1) {
-    // @ts-ignore
     const { data } = await client.query<ExportUserCourseProgesses>({
       query: GET_DATA,
       variables: { course_slug: courseSlug, after: after, first: 100 },

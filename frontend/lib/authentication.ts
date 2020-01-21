@@ -90,7 +90,6 @@ const getCookie = (key: string) => {
     .split("; ")
     .reduce<{ [key: string]: string }>((acc, curr) => {
       try {
-        // @ts-ignore
         const [key, value] = curr.split("=")
 
         return {
