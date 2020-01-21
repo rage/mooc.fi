@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.2
 jobs:
   code_style:
     docker:
@@ -11,6 +11,9 @@ jobs:
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
+      - run:
+          name: "ESLint"
+          command: "bin/eslint.sh"
 
   build_frontend:
     docker:

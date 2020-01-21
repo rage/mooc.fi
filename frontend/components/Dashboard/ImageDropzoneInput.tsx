@@ -5,9 +5,10 @@ import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
-// @ts-ignore
-// prettier-ignore
-const isChrome = process.browser ? !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime) : false
+const isChrome = process.browser
+  ? !!(window as any).chrome &&
+    (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
+  : false
 
 const DropzoneContainer = styled.div<any>`
   display: flex;

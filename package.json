@@ -21,7 +21,8 @@
   },
   "scripts": {
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
-    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\""
+    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
+    "eslint": "eslint '*/**/*.{js,ts,tsx}'"
   },
   "repository": {
     "type": "git",

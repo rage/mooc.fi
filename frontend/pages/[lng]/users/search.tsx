@@ -52,57 +52,57 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
   const count = data?.userDetailsContains?.count ?? 0
 
-  const handleFirstPageButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: { search: searchText, first: rowsPerPage },
-    })
-    setPage(0)
-  }, [])
+  const handleFirstPageButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: { search: searchText, first: rowsPerPage },
+      })
+      setPage(0)
+    },
+    [],
+  )
 
-  const handleBackButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: {
-        search: searchText,
-        last: rowsPerPage,
-        before: startCursor, // cursor.before,
-      },
-    })
-    setPage(page - 1)
-  }, [])
+  const handleBackButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: {
+          search: searchText,
+          last: rowsPerPage,
+          before: startCursor, // cursor.before,
+        },
+      })
+      setPage(page - 1)
+    },
+    [],
+  )
 
-  const handleNextButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: {
-        search: searchText,
-        first: rowsPerPage,
-        after: endCursor, // cursor.after,
-      },
-    })
-    // setCount(data.userDetailsContains.count)
-    setPage(page + 1)
-  }, [])
+  const handleNextButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: {
+          search: searchText,
+          first: rowsPerPage,
+          after: endCursor, // cursor.after,
+        },
+      })
+      // setCount(data.userDetailsContains.count)
+      setPage(page + 1)
+    },
+    [],
+  )
 
-  const handleLastPageButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: {
-        search: searchText,
-        last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
-      },
-    })
-    setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
-  }, [])
+  const handleLastPageButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: {
+          search: searchText,
+          last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
+        },
+      })
+      setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+    },
+    [],
+  )
 
   return (
     <StyledFooter>
