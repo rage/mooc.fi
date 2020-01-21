@@ -16,7 +16,7 @@
     "eslint-plugin-eslint-custom-rules": "file:eslint-custom-rules",
     "eslint-plugin-react": "^7.18.0",
     "husky": "^2.3.0",
-    "prettier": "github:prettier/prettier",
+    "prettier": "github:prettier/prettier#e48a9df343527d3bfbe67a1c7a49a3cc712963db",
     "typescript": "^3.7.5"
   },
   "scripts": {
