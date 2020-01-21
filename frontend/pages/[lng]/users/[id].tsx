@@ -1,7 +1,7 @@
 import * as React from "react"
 import Container from "/components/Container"
 import gql from "graphql-tag"
-import { useQuery, ApolloConsumer } from "@apollo/react-hooks"
+import { useQuery, useApolloClient } from "@apollo/react-hooks"
 import { UserCourseSettingsesForUserPage } from "/static/types/generated/UserCourseSettingsesForUserPage"
 import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
@@ -9,9 +9,16 @@ import { CircularProgress } from "@material-ui/core"
 import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
+import getCommonTranslator from "/translations/common"
+import { useContext } from "react"
+import LanguageContext from "/contexes/LanguageContext"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
+  const client = useApolloClient()
+  const { language } = useContext(LanguageContext)
+  const t = getCommonTranslator(language)
+
   const [more, setMore]: any[] = React.useState([])
 
   const { loading, error, data } = useQuery<UserCourseSettingsesForUserPage>(
@@ -43,31 +50,25 @@ const UserPage = () => {
         <pre>
           {JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}
         </pre>
-        <ApolloConsumer>
-          {client => (
-            <Button
-              variant="contained"
-              onClick={async () => {
-                const { data } = await client.query({
-                  query: GET_DATA,
-                  variables: { upstream_id: Number(id) },
-                })
-                let newData = more
-                newData.push(...data.UserCourseSettingses.edges)
-                setMore(newData)
-              }}
-              disabled={false}
-            >
-              Load more
-            </Button>
-          )}
-        </ApolloConsumer>
+        <Button
+          variant="contained"
+          onClick={async () => {
+            const { data } = await client.query({
+              query: GET_DATA,
+              variables: { upstream_id: Number(id) },
+            })
+            let newData = more
+            newData.push(...data.UserCourseSettingses.edges)
+            setMore(newData)
+          }}
+          disabled={false}
+        >
+          {t("loadMore")}
+        </Button>
       </Container>
     </>
   )
 }
-
-UserPage.displayName = "UserPage"
 
 export default withAdmin(UserPage)
 

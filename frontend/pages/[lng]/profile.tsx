@@ -74,6 +74,4 @@ function Profile() {
   )
 }
 
-Profile.displayName = "Profile"
-
 export default withSignedIn(Profile)

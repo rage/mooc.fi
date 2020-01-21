@@ -249,7 +249,9 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           course_variants: Object.keys(courseVariantMutation).length
             ? courseVariantMutation
             : null,
-          completion_email: { connect: { id: completion_email } },
+          completion_email: completion_email
+            ? { connect: { id: completion_email } }
+            : null,
         } as CourseUpdateInput,
       })
 

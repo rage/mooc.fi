@@ -21,6 +21,7 @@ import { PureQueryOptions } from "apollo-boost"
 import { toCourseForm, fromCourseForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
+import getCoursesTranslator from "/translations/courses"
 
 const CourseEdit = ({
   course,
@@ -30,6 +31,7 @@ const CourseEdit = ({
   modules?: StudyModules_study_modules[]
 }) => {
   const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslator(language)
 
   const [addCourse] = useMutation(AddCourseMutation)
   const [updateCourse] = useMutation(UpdateCourseMutation)
@@ -72,7 +74,7 @@ const CourseEdit = ({
       const courseMutation = newCourse ? addCourse : updateCourse
 
       try {
-        setStatus({ message: "Saving..." })
+        setStatus({ message: t("statusSaving") })
 
         // TODO/FIXME: return value?
         await courseMutation({

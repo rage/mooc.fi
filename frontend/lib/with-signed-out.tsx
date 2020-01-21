@@ -8,7 +8,7 @@ export default function withSignedOut(redirect = "/") {
   return (Component: any) => {
     return class WithSignedOut extends React.Component<{ signedIn: boolean }> {
       static displayName = `withSignedOut(${
-        Component.displayName ?? "Component"
+        Component.name || Component.displayName || "AnonymousComponent"
       })`
 
       static async getInitialProps(context: NextContext) {

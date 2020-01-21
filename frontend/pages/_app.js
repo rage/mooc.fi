@@ -18,6 +18,7 @@ import theme from "../src/theme"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
+import getPageTranslator from "/translations/pages"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -56,10 +57,15 @@ class MyApp extends App {
       currentUser,
     } = this.props
 
+    const t = getPageTranslator(lng)
+    const titleString = t("title")?.[hrefUrl]
+
+    const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
+
     return (
       <>
         <Head>
-          <title>MOOC.fi</title>
+          <title>{title}</title>
         </Head>
         <StylesProvider injectFirst>
           <MuiThemeProvider theme={theme}>
@@ -116,6 +122,7 @@ MyApp.getInitialProps = async arg => {
   let lng = "fi"
   let url = "/"
   let hrefUrl = "/"
+
   if (typeof window !== "undefined") {
     if (["fi", "en", "se"].includes(ctx?.asPath?.substring(1, 3) ?? "")) {
       lng = ctx.asPath.substring(1, 3)
