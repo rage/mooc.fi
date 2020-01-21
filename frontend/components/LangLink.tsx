@@ -24,10 +24,8 @@ const LangLink: React.FC<LinkProps> = (props): any => {
         children,
         (child, idx) => {
           if (idx === 0) {
-            // @ts-ignore
-            if (child?.type?.target === "a") {
-              // @ts-ignore
-              return React.cloneElement(child, { href: parsedAs })
+            if ((child as any)?.type?.target === "a") {
+              return React.cloneElement(child as any, { href: parsedAs })
             }
             console.warn(
               "You're trying to link outside the site with a LangLink but you're not providing an <a> tag - just use a regular link or pass a link as the first child!",

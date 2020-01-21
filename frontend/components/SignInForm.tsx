@@ -105,8 +105,7 @@ function SignIn() {
           } catch (error) {
             console.error("Login failed due to this error: ", error)
             setError(true)
-            // @ts-ignore
-            if (isSignedIn(undefined)) {
+            if (isSignedIn(undefined as any)) {
               console.error("Logging in was successful but it crashed")
             }
             errorTimeout = setTimeout(() => {

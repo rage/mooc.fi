@@ -10,12 +10,20 @@
     "os-name": "^3.1.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-eslint-custom-rules": "file:eslint-custom-rules",
+    "eslint-plugin-react": "^7.18.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "husky": "^2.3.0",
-    "prettier": "github:prettier/prettier"
+    "prettier": "github:prettier/prettier#e48a9df343527d3bfbe67a1c7a49a3cc712963db",
+    "typescript": "^3.7.5"
   },
   "scripts": {
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
-    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\""
+    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
+    "eslint": "eslint '*/**/*.{js,ts,tsx}'"
   },
   "repository": {
     "type": "git",
@@ -30,7 +38,7 @@
   "homepage": "https://github.com/rage/mooc.fi#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "./bin/check-code-style.sh"
+      "pre-commit": "./bin/check-code-style.sh && ./bin/eslint.sh"
     }
   }
 }

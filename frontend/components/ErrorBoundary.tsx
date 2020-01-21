@@ -23,8 +23,7 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false }
   }
 
-  // @ts-ignore
-  static getDerivedStateFromError(error: ErrorBoundaryError) {
+  static getDerivedStateFromError(_: ErrorBoundaryError) {
     return { hasError: true }
   }
 

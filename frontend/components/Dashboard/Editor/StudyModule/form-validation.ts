@@ -4,9 +4,6 @@ import {
   StudyModuleTranslationFormValues,
 } from "./types"
 import { ApolloClient, DocumentNode } from "apollo-boost"
-import { useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
-import getModulesTranslator from "/translations/study-modules"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   id: undefined,
@@ -43,15 +40,14 @@ const studyModuleEditSchema = ({
   client,
   checkSlug,
   initialSlug,
+  t,
 }: {
   client: ApolloClient<object>
   checkSlug: DocumentNode
   initialSlug: string | null
-}) => {
-  const { language } = useContext(LanguageContext)
-  const t = getModulesTranslator(language)
-
-  return Yup.object().shape({
+  t: (key: any) => string
+}) =>
+  Yup.object().shape({
     new_slug: Yup.string()
       .required(t("validationRequired"))
       .trim()
@@ -111,7 +107,6 @@ const studyModuleEditSchema = ({
       .transform(value => (isNaN(value) ? undefined : Number(value)))
       .integer(t("validationInteger")),
   })
-}
 
 const validateSlug = ({
   checkSlug,
