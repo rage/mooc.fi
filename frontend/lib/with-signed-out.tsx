@@ -7,9 +7,9 @@ import redirectTo from "/lib/redirect"
 export default function withSignedOut(redirect = "/") {
   return (Component: any) => {
     return class WithSignedOut extends React.Component<{ signedIn: boolean }> {
-      static displayName = `withSignedOut(${
-        Component.name || Component.displayName || "AnonymousComponent"
-      })`
+      static displayName = `withSignedOut(${Component.name ||
+        Component.displayName ||
+        "AnonymousComponent"})`
 
       static async getInitialProps(context: NextContext) {
         const signedIn = isSignedIn(context)

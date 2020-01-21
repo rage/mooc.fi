@@ -75,14 +75,12 @@ export const generateUserCourseProgress = async ({
   })
 
   let userCourseSettings: UserCourseSettings =
-    (
-      await prisma.userCourseSettingses({
-        where: {
-          user: user,
-          course: course,
-        },
-      })
-    )[0] || null
+    (await prisma.userCourseSettingses({
+      where: {
+        user: user,
+        course: course,
+      },
+    }))[0] || null
 
   if (!userCourseSettings) {
     const inheritCourse = await prisma
@@ -90,14 +88,12 @@ export const generateUserCourseProgress = async ({
       .inherit_settings_from()
     if (inheritCourse) {
       userCourseSettings =
-        (
-          await prisma.userCourseSettingses({
-            where: {
-              user: user,
-              course: inheritCourse,
-            },
-          })
-        )[0] || null
+        (await prisma.userCourseSettingses({
+          where: {
+            user: user,
+            course: inheritCourse,
+          },
+        }))[0] || null
     }
   }
 
@@ -169,11 +165,9 @@ const SimpleTemplateArgsReplace = async (
   template: string,
   email_template: EmailTemplate | null,
 ) => {
-  const completion_link_slug = (
-    await prisma.courses({
-      where: { completion_email: email_template },
-    })
-  )[0].slug
+  const completion_link_slug = (await prisma.courses({
+    where: { completion_email: email_template },
+  }))[0].slug
   const completion_link = `https://mooc.fi/register-completion/${completion_link_slug}`
   return render(template, { completion_link: completion_link })
 }
