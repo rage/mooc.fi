@@ -49,7 +49,8 @@ const ModuleImage = styled.img<{ error?: boolean }>`
 const pixel =
   "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
 
-const renderForm = ({
+// capitalized to please the hook linter
+const RenderForm = ({
   errors,
   values,
   isSubmitting,
@@ -305,7 +306,7 @@ const StudyModuleEditForm = ({
       render={formikProps => (
         <FormWrapper<StudyModuleFormValues>
           {...formikProps}
-          renderForm={renderForm}
+          renderForm={RenderForm}
           onCancel={onCancel}
           onDelete={onDelete}
         />

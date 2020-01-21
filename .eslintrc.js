@@ -1,6 +1,6 @@
 module.exports = {
   parser: "@typescript-eslint/parser", // Specifies the ESLint parser
-  plugins: ["@typescript-eslint", "eslint-custom-rules"],
+  plugins: ["@typescript-eslint", "eslint-custom-rules", "react-hooks"],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: "module", // Allows for the use of imports
@@ -10,7 +10,8 @@ module.exports = {
   },
   ignorePatterns: ["node_modules/", "generated/", "dist/"],
   rules: {
-    "eslint-custom-rules/ban-ts-ignore-without-comment": "warn",
+    "eslint-custom-rules/ban-ts-ignore-without-comment": "error",
+    "react-hooks/rules-of-hooks": "error",
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },

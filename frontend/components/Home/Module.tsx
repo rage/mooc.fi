@@ -53,16 +53,15 @@ function Module(props: ModuleProps) {
   const { language } = useContext(LanguageContext)
   const t = getHomeTranslator(language)
 
-  const orderedCourses = module
-    ? useMemo(
-        () =>
-          orderBy(module.courses || [], [
-            course => course.study_module_start_point !== true,
-            course => course.status === CourseStatus.Upcoming,
-          ]),
-        [module.courses],
-      )
-    : []
+  const orderedCourses =
+    useMemo(
+      () =>
+        orderBy(module?.courses || [], [
+          course => course.study_module_start_point !== true,
+          course => course.status === CourseStatus.Upcoming,
+        ]),
+      [module?.courses],
+    ) ?? []
 
   const imageUrl = "/static/images/backgroundPattern.svg"
 
