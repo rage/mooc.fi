@@ -1,7 +1,12 @@
-import * as React from "react"
+import React, { useContext } from "react"
 import { Typography } from "@material-ui/core"
+import getCommonTranslator from "/translations/common"
+import LanguageContext from "/contexes/LanguageContext"
 
 function AdminError() {
+  const { language } = useContext(LanguageContext)
+  const t = getCommonTranslator(language)
+
   return (
     <section>
       <Typography
@@ -10,11 +15,10 @@ function AdminError() {
         gutterBottom={true}
         align="center"
       >
-        Sorry...
+        {t("adminSorry")}
       </Typography>
       <Typography variant="body1" gutterBottom={true} align="center">
-        Looks like you are trying to view an Admin only page. If you think you
-        should have access to this page, log in again using your admin details.
+        {t("adminError")}
       </Typography>
     </section>
   )

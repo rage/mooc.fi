@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -12,6 +12,8 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import Spinner from "/components/Spinner"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
+import getCoursesTranslator from "/translations/courses"
+import LanguageContext from "/contexes/LanguageContext"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -23,6 +25,9 @@ export const CourseDetailsFromSlugQuery = gql`
 `
 
 const Points = () => {
+  const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslator(language)
+
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
@@ -44,7 +49,7 @@ const Points = () => {
   if (!data.course) {
     return (
       <>
-        <p>Could not find the course. Go back?</p>
+        <p>{t("courseNotFound")}</p>
       </>
     )
   }
@@ -57,7 +62,7 @@ const Points = () => {
           {data.course.name}
         </H1NoBackground>
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
-          Points
+          {t("points")}
         </SubtitleNoBackground>
         <PointsExportButton slug={slug} />
         <PaginatedPointsList courseId={data.course.id} />
@@ -65,7 +70,5 @@ const Points = () => {
     </CourseLanguageContext.Provider>
   )
 }
-
-Points.displayName = "Points"
 
 export default withAdmin(Points)

@@ -34,6 +34,4 @@ const SignUpPage = () => {
   )
 }
 
-SignUpPage.displayName = "SignUpPage"
-
 export default withSignedOut()(SignUpPage)

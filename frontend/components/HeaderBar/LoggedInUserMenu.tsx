@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography"
 import LangLink from "../LangLink"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
+import getCommonTranslator from "/translations/common"
 
 import {
   faChalkboardTeacher,
@@ -45,6 +46,8 @@ interface UserMenuprops {
 const UserMenu = (props: UserMenuprops) => {
   const { admin } = useContext(UserDetailContext)
   const { language } = useContext(LanguageContext)
+  const t = getCommonTranslator(language)
+
   const { active } = props
 
   return (
@@ -60,7 +63,7 @@ const UserMenu = (props: UserMenuprops) => {
             >
               <div>
                 <FontAwesomeIcon icon={faChalkboardTeacher} />
-                <ButtonLabel>Courses</ButtonLabel>
+                <ButtonLabel>{t("courses")}</ButtonLabel>
               </div>
             </StyledButton>
           </LangLink>
@@ -76,7 +79,7 @@ const UserMenu = (props: UserMenuprops) => {
             >
               <div>
                 <FontAwesomeIcon icon={faList} />
-                <ButtonLabel>Modules</ButtonLabel>
+                <ButtonLabel>{t("modules")}</ButtonLabel>
               </div>
             </StyledButton>
           </LangLink>
@@ -88,7 +91,7 @@ const UserMenu = (props: UserMenuprops) => {
             >
               <div>
                 <FontAwesomeIcon icon={faSearch} />
-                <ButtonLabel>User search</ButtonLabel>
+                <ButtonLabel>{t("userSearch")}</ButtonLabel>
               </div>
             </StyledButton>
           </LangLink>
@@ -103,7 +106,7 @@ const UserMenu = (props: UserMenuprops) => {
             >
               <div>
                 <FontAwesomeIcon icon={faEnvelope} />
-                <ButtonLabel>Email Templates</ButtonLabel>
+                <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
               </div>
             </StyledButton>
           </LangLink>

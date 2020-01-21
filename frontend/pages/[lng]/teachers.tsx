@@ -137,6 +137,4 @@ const ForTeachers = () => {
   )
 }
 
-ForTeachers.displayName = "ForTeachers"
-
 export default ForTeachers

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useContext } from "react"
 import {
   Grid,
   Card,
@@ -22,6 +22,8 @@ import {
 import Pagination from "/components/Dashboard/Users/Pagination"
 import styled from "styled-components"
 import range from "lodash/range"
+import getUsersTranslator from "/translations/users"
+import LanguageContext from "/contexes/LanguageContext"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;
@@ -55,6 +57,9 @@ const MobileGrid: React.FC<GridProps> = ({
   setPage,
   loading,
 }: GridProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getUsersTranslator(language)
+
   const PaginationComponent = useCallback(
     () => (
       <Paper style={{ width: "100%", marginTop: "5px" }}>
@@ -84,7 +89,7 @@ const MobileGrid: React.FC<GridProps> = ({
       {loading || data?.userDetailsContains?.edges?.length ? (
         <PaginationComponent />
       ) : (
-        <Typography>No results</Typography>
+        <Typography>{t("noResults")}</Typography>
       )}
       <RenderCards data={data} loading={loading} />
       <PaginationComponent />
@@ -123,26 +128,29 @@ const DataCard = ({
 }: {
   row?: UserDetailsContains_userDetailsContains_edges
 }) => {
+  const { language } = useContext(LanguageContext)
+  const t = getUsersTranslator(language)
+
   const { email, upstream_id, first_name, last_name, student_number } = row
     ? row.node
     : ({} as UserDetailsContains_userDetailsContains_edges_node)
 
   const fields = [
     {
-      text: "Email",
+      text: t("userEmail"),
       value: email,
       title: true,
     },
     {
-      text: "First name",
+      text: t("userFirstName"),
       value: first_name,
     },
     {
-      text: "Last name",
+      text: t("userLastName"),
       value: last_name,
     },
     {
-      text: "Student number",
+      text: t("userStudentNumber"),
       value: student_number,
     },
   ]
@@ -194,7 +202,7 @@ const DataCard = ({
             href="/users/[id]/completions"
             passHref
           >
-            <Button variant="contained">Completions</Button>
+            <Button variant="contained">{t("completions")}</Button>
           </LangLink>
         ) : (
           <Skeleton />

@@ -5,13 +5,13 @@ const defaultLanguage = "en"
 export type Translation =
   | Record<string, string>
   | Record<string, Array<Record<string, string>>>
+  | Record<string, Record<string, string>>
 
 const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
 ) => (key: keyof T, variables?: Record<string, any>) => {
   const translation: T[keyof T] | undefined =
     dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
-  //  (dicts[lng] || ({} as T))[key] || (dicts[defaultLanguage] || ({} as T))[key]
 
   if (!translation) {
     console.warn(`WARNING: no translation for ${lng}:${key}`)

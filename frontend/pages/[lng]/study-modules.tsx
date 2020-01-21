@@ -7,8 +7,13 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 import withAdmin from "/lib/with-admin"
+import getStudyModulesTranslator from "/translations/study-modules"
+import LanguageContext from "/contexes/LanguageContext"
 
 const StudyModules = () => {
+  const { language } = React.useContext(LanguageContext)
+  const t = getStudyModulesTranslator(language)
+
   const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
     AllEditorModulesQuery,
   )
@@ -21,14 +26,12 @@ const StudyModules = () => {
     <>
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
-          All Study Modules
+          {t("allStudyModules")}
         </H1NoBackground>
         <ModuleGrid modules={data?.study_modules} loading={loading} />
       </WideContainer>
     </>
   )
 }
-
-StudyModules.displayName = "StudyModules"
 
 export default withAdmin(StudyModules)

@@ -17,9 +17,11 @@ const StyledPaper = styled(Paper)`
   margin-top: 2em;
   margin-bottom: 2em;
 `
+
 const Header = styled(Typography)`
   margin: 1em;
 `
+
 const SignInPage = () => {
   const lng = useContext(LanguageContext)
   const t = getSignInTranslator(lng.language)
@@ -40,8 +42,6 @@ const SignInPage = () => {
     </>
   )
 }
-
-SignInPage.displayName = "SignInPage"
 
 //If user is already logged in, redirect them straight to
 //register-completion page

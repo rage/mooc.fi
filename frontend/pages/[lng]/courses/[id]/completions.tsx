@@ -15,6 +15,7 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
+import getCoursesTranslations from "/translations/courses"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -27,6 +28,8 @@ export const CourseDetailsFromSlugQuery = gql`
 
 const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslations(language)
+
   const [lng, changeLng] = useState(
     (router?.query?.language as string) ??
       mapNextLanguageToLocaleCode(language as string) ??
@@ -48,7 +51,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
-      variables: { slug: slug },
+      variables: { slug },
     },
   )
 
@@ -63,7 +66,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
   if (!data.course) {
     return (
       <>
-        <p>Course not found. Go back?</p>
+        <p>{t("courseNotFound")}</p>
       </>
     )
   }
@@ -76,7 +79,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
           {data.course.name}
         </H1NoBackground>
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
-          Completions
+          {t("completions")}
         </SubtitleNoBackground>
         <LanguageSelector
           handleLanguageChange={handleLanguageChange}
