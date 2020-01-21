@@ -72,9 +72,8 @@ const getDataByLanguage = async (langProps: langProps) => {
     },
   })
   const now = new Date()
-  return `\`\`\`Stats ${now.getDate()}.${
-    now.getMonth() + 1
-  }.${now.getFullYear()}:
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
+    1}.${now.getFullYear()}:
  
   1) ${totalByLang.length} registered students in the ${
     langProps.langName
@@ -84,9 +83,9 @@ const getDataByLanguage = async (langProps: langProps) => {
     englishInLang.length
   } people registered for the English course residing in ${langProps.country}.
   
-  In total: ${totalByLang.length} + ${englishInLang.length} = ${
-    totalByLang.length + englishInLang.length
-  }\`\`\` `
+  In total: ${totalByLang.length} + ${
+    englishInLang.length
+  } = ${totalByLang.length + englishInLang.length}\`\`\` `
 }
 
 const getGlobalStats = async () => {
@@ -102,9 +101,8 @@ const getGlobalStats = async () => {
   })
 
   const now = new Date()
-  return `\`\`\`Stats ${now.getDate()}.${
-    now.getMonth() + 1
-  }.${now.getFullYear()}:
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
+    1}.${now.getFullYear()}:
  
   1) ${totalUsers.length} registered students in all versions
   2) of these ${totalCompletions.length} have completed the course.\`\`\` `
