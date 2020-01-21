@@ -20,6 +20,7 @@ import { PureQueryOptions } from "apollo-boost"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
+import getModulesTranslator from "/translations/study-modules"
 
 const StudyModuleEdit = ({
   module,
@@ -27,6 +28,7 @@ const StudyModuleEdit = ({
   module?: StudyModuleDetails_study_module
 }) => {
   const { language } = useContext(LanguageContext)
+  const t = getModulesTranslator(language)
 
   const [addStudyModule] = useMutation(AddStudyModuleMutation)
   const [updateStudyModule] = useMutation(UpdateStudyModuleMutation)
@@ -46,6 +48,7 @@ const StudyModuleEdit = ({
     client,
     checkSlug,
     initialSlug: module?.slug && module.slug !== "" ? module.slug : null,
+    t,
   })
 
   const onSubmit = useCallback(
