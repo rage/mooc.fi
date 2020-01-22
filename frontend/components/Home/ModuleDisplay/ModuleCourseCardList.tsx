@@ -1,8 +1,10 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { Grid, Button } from "@material-ui/core"
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import styled from "styled-components"
+import LanguageContext from "/contexes/LanguageContext"
+import getHomeTranslator from "/translations/home"
 
 interface CourseListProps {
   courses: CourseData[]
@@ -34,6 +36,8 @@ const ShowMoreButton = styled(Button)`
 const ModuleCoursesListing = (props: CourseListProps) => {
   const { courses } = props
   const [showAll, setShowAll] = useState(false)
+  const lngCtx = useContext(LanguageContext)
+  const t = getHomeTranslator(lngCtx.language)
 
   return (
     <>
@@ -47,7 +51,7 @@ const ModuleCoursesListing = (props: CourseListProps) => {
         variant="contained"
         onClick={() => setShowAll(!showAll)}
       >
-        {showAll ? "Näytä rajatut" : "Näytä kaikki"}
+        {showAll ? t("showLimited") : t("showAll")}
       </ShowMoreButton>
     </>
   )

@@ -15,7 +15,6 @@ interface ModuleProps {
 
 function Module(props: ModuleProps) {
   const { module, hueRotateAngle, brightness, backgroundColor } = props
-  //@ts-ignore
   const orderedCourses = module
     ? useMemo(
         () =>
@@ -52,10 +51,3 @@ function Module(props: ModuleProps) {
 }
 
 export default Module
-
-/*
-<CenteredContent>
-          <ModuleDescription name={module.name} description={module.description} />
-          <ModuleCoursesDisplay courses={orderedCourses} />
-        </CenteredContent>
-*/
