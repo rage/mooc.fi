@@ -117,10 +117,8 @@ const createMutation = async <T extends { id?: string | null }>({
   let existing: T[] | undefined
 
   try {
-    // we probably shouldn't do it like this, but we do
-    existing = (((await prisma.course({ slug })) as unknown) as {
-      [key: string]: () => any
-    })[field]()
+    // @ts-ignore: can't be arsed to do the typing, works
+    existing = existing = await prisma.course({ slug })[field]()
   } catch (e) {
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }

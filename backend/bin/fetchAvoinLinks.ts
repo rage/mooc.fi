@@ -61,8 +61,8 @@ const fetch = async () => {
       },
       data: {
         link: url,
-        start_date: bestLink?.startTime?.toJSDate?.(),
-        stop_date: bestLink?.stopDate?.toJSDate?.(),
+        start_date: bestLink.startTime.toJSDate(),
+        stop_date: bestLink.stopDate.toJSDate(),
       },
     })
   }

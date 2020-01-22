@@ -87,18 +87,18 @@ const fetchUserAppDatum = async () => {
 
     const isOld: Boolean = await prisma.$exists.userCourseSettings({
       user: { upstream_id: p.user_id },
-      course: { id: course?.id },
+      course: { id: course.id },
     })
     if (!isOld) {
       old = await prisma.createUserCourseSettings({
         user: { connect: { upstream_id: p.user_id } },
-        course: { connect: { id: course?.id } },
+        course: { connect: { id: course.id } },
       })
     } else {
       const tmp: UserCourseSettings[] = await prisma.userCourseSettingses({
         where: {
           user: { upstream_id: p.user_id },
-          course: { id: course?.id },
+          course: { id: course.id },
         },
       })
       old = tmp[0]
@@ -187,7 +187,7 @@ const saveCourseVariant = async (p: any) => {
   })
 }
 const saveOther = async (p: any) => {
-  const other = old.other || {}
+  const other = old.other ?? {}
   if (p.value == "t") p.value = true
   else if (p.value == "f") p.value = false
   other[p.field_name] = p.value
