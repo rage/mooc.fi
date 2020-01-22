@@ -74,13 +74,6 @@ const CourseAndModuleList = () => {
     )
   }
 
-  /*   if (!coursesData && !coursesLoading) {
-    return <div>Error: no courses data?</div>
-  }
-  if (!modulesData && !modulesLoading) {
-    return <div>Error: no modules data? </div>
-  } */
-
   return (
     <section>
       <section id="courses">

@@ -1,5 +1,5 @@
 import React from "react"
-import Module from "./Module"
+import Module from "./ModuleDisplay/ModuleDisplay"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 
 const moduleColors: Array<{
@@ -8,22 +8,22 @@ const moduleColors: Array<{
   brightness: number
 }> = [
   {
-    backgroundColor: "#265A6C",
+    backgroundColor: "#4B577E",
+    hueRotateAngle: 194,
+    brightness: 2,
+  },
+  {
+    backgroundColor: "#5F6F99",
     hueRotateAngle: 0,
     brightness: 2,
   },
   {
-    backgroundColor: "#7748A4",
-    hueRotateAngle: 60,
-    brightness: 5,
+    backgroundColor: "#344A53",
+    hueRotateAngle: 32,
+    brightness: 0.5,
   },
   {
-    backgroundColor: "#0D5F6D",
-    hueRotateAngle: 0,
-    brightness: 2,
-  },
-  {
-    backgroundColor: "#bbeffb",
+    backgroundColor: "#644C66",
     hueRotateAngle: 32,
     brightness: 0.5,
   },

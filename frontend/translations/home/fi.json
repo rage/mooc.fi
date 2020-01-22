@@ -18,5 +18,8 @@
     "langSwitch": "English version",
     "upcomingShort": "Tulossa",
     "moduleCourseStartPoint": "Aloita tästä",
-    "studyModule": "Opintokokonaisuus"
+    "studyModule": "Opintokokonaisuus",
+    "showLimited": "Näytä vain rajatut",
+    "showAll": "Näytä kaikki",
+    "moduleCourseTitle": "Opintokokonaisuuteen kuuluvat kurssit"
 }
