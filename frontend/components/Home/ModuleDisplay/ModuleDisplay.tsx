@@ -15,16 +15,14 @@ interface ModuleProps {
 
 function Module(props: ModuleProps) {
   const { module, hueRotateAngle, brightness, backgroundColor } = props
-  const orderedCourses = module
-    ? useMemo(
-        () =>
-          orderBy(module.courses || [], [
-            course => course.study_module_start_point !== true,
-            course => course.status === CourseStatus.Upcoming,
-          ]),
-        [module.courses],
-      )
-    : []
+  const orderedCourses = useMemo(
+    () =>
+      orderBy(module?.courses || [], [
+        course => course.study_module_start_point !== true,
+        course => course.status === CourseStatus.Upcoming,
+      ]),
+    [module?.courses],
+  )
 
   return (
     <section
