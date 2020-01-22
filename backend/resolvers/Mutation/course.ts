@@ -118,7 +118,7 @@ const createMutation = async <T extends { id?: string | null }>({
 
   try {
     // @ts-ignore: can't be arsed to do the typing, works
-    existing = existing = await prisma.course({ slug })[field]()
+    existing = await prisma.course({ slug })[field]()
   } catch (e) {
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }
