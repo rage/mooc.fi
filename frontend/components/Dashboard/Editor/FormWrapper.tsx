@@ -126,7 +126,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
             </StyledButton>
           </Grid>
         </Grid>
-        {status && status.message ? (
+        {status?.message ? (
           <Status error={status.error}>
             {status.error ? t("submittingError") : null}
             <b>{status.message}</b>
