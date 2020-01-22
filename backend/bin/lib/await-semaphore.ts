@@ -31,7 +31,7 @@ export class Semaphore {
         })
       }
       this.tasks.push(task)
-      if (process && process.nextTick) {
+      if (process?.nextTick) {
         process.nextTick(this.sched.bind(this))
       } else {
         setImmediate(this.sched.bind(this))

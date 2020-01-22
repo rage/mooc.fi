@@ -130,10 +130,6 @@ const CompletionsList = () => {
 
   const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
 
-  if (!course) {
-    return <div>no course!</div>
-  }
-
   interface Variables {
     cursor: string | null
     course: string | string[]
@@ -153,6 +149,10 @@ const CompletionsList = () => {
     variables,
     fetchPolicy: "network-only",
   })
+
+  if (!course) {
+    return <div>no course!</div>
+  }
 
   if (loading) {
     return <CircularProgress color="secondary" />

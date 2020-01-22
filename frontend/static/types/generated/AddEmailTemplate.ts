@@ -7,21 +7,21 @@
 // ====================================================
 
 export interface AddEmailTemplate_addEmailTemplate {
-  __typename: "EmailTemplate"
-  id: any
-  name: string | null
-  html_body: string | null
-  txt_body: string | null
-  title: string | null
+  __typename: "EmailTemplate";
+  id: any;
+  name: string | null;
+  html_body: string | null;
+  txt_body: string | null;
+  title: string | null;
 }
 
 export interface AddEmailTemplate {
-  addEmailTemplate: AddEmailTemplate_addEmailTemplate
+  addEmailTemplate: AddEmailTemplate_addEmailTemplate;
 }
 
 export interface AddEmailTemplateVariables {
-  name: string
-  html_body?: string | null
-  txt_body?: string | null
-  title?: string | null
+  name: string;
+  html_body?: string | null;
+  txt_body?: string | null;
+  title?: string | null;
 }

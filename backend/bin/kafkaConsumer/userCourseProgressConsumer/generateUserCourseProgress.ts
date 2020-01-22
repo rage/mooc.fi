@@ -13,27 +13,59 @@ import {
 import * as nodemailer from "nodemailer"
 import { render } from "micromustache"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
+
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
 const email_pass = process.env.SMTP_PASS
 const email_port = process.env.SMTP_PORT
 const email_from = process.env.SMTP_FROM
-export const generateUserCourseProgress = async (
-  userCourseProgress: UserCourseProgress,
-  prisma: Prisma,
-) => {
-  const userCourseServiceProgresses = await prisma
+
+interface Props {
+  user: User
+  course: Course
+  userCourseProgress: UserCourseProgress
+  prisma: Prisma
+}
+
+export const generateUserCourseProgress = async ({
+  user,
+  course,
+  userCourseProgress,
+  prisma,
+}: Props) => {
+  /*   const userCourseServiceProgresses = await prisma
     .userCourseProgress({ id: userCourseProgress.id })
-    .user_course_service_progresses()
-  const progresses: any[] = userCourseServiceProgresses.map((entry: any) => {
-    return entry.progress
+    .user_course_service_progresses() */
+
+  const userCourseServiceProgresses = await prisma.userCourseServiceProgresses({
+    where: {
+      user: { id: user?.id },
+      course: { id: course?.id },
+    },
   })
+  const progresses: any[] = userCourseServiceProgresses.map(
+    (entry: any) => entry.progress,
+  )
+
+  /*
+  const { total_max_points, total_n_points, combined } = progresses.reduce(
+    (acc, curr) => ({
+      total_max_points: acc.total_max_points + (curr?.max_points ?? 0),
+      total_n_points: acc.total_n_points + (curr?.n_points ?? 0),
+      combined: [...acc.combined, ...curr],
+    }),
+    { total_max_points: 0, total_n_points: 0, combined: [] } as {
+      total_max_points: number
+      total_n_points: number
+      combined: any[]
+    },
+  */
 
   let combined: any[] = []
   let total_max_points: number = 0
   let total_n_points: number = 0
 
-  progresses.map(entry => {
+  progresses.forEach(entry => {
     entry.forEach((p: any) => {
       p.max_points ? (total_max_points += p.max_points) : null
       p.n_points ? (total_n_points += p.n_points) : null
@@ -41,13 +73,8 @@ export const generateUserCourseProgress = async (
 
     combined.push(...entry)
   })
-  const course: Course = await prisma
-    .userCourseProgress({ id: userCourseProgress.id })
-    .course()
-  const user: User = await prisma
-    .userCourseProgress({ id: userCourseProgress.id })
-    .user()
-  let userCourseSettings =
+
+  let userCourseSettings: UserCourseSettings =
     (await prisma.userCourseSettingses({
       where: {
         user: user,
@@ -98,6 +125,7 @@ export const generateUserCourseProgress = async (
       }
     }
   }
+
   await prisma.updateUserCourseProgress({
     where: { id: userCourseProgress.id },
     data: {

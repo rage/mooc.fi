@@ -7,22 +7,22 @@
 // ====================================================
 
 export interface CourseDetailsFromSlugQuery_course_completion_email {
-  __typename: "EmailTemplate"
-  name: string | null
-  id: any
+  __typename: "EmailTemplate";
+  name: string | null;
+  id: any;
 }
 
 export interface CourseDetailsFromSlugQuery_course {
-  __typename: "Course"
-  id: any
-  name: string
-  completion_email: CourseDetailsFromSlugQuery_course_completion_email | null
+  __typename: "Course";
+  id: any;
+  name: string;
+  completion_email: CourseDetailsFromSlugQuery_course_completion_email | null;
 }
 
 export interface CourseDetailsFromSlugQuery {
-  course: CourseDetailsFromSlugQuery_course | null
+  course: CourseDetailsFromSlugQuery_course | null;
 }
 
 export interface CourseDetailsFromSlugQueryVariables {
-  slug?: string | null
+  slug?: string | null;
 }

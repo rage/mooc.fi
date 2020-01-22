@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useContext } from "react"
 import gql from "graphql-tag"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import { useTheme } from "@material-ui/core/styles"
@@ -15,6 +15,8 @@ import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import { H1NoBackground } from "/components/Text/headers"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import withAdmin from "/lib/with-admin"
+import getUsersTranslator from "/translations/users"
+import LanguageContext from "/contexes/LanguageContext"
 
 const StyledForm = styled.form`
   display: flex;
@@ -52,57 +54,57 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
   const count = data?.userDetailsContains?.count ?? 0
 
-  const handleFirstPageButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: { search: searchText, first: rowsPerPage },
-    })
-    setPage(0)
-  }, [])
+  const handleFirstPageButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: { search: searchText, first: rowsPerPage },
+      })
+      setPage(0)
+    },
+    [],
+  )
 
-  const handleBackButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: {
-        search: searchText,
-        last: rowsPerPage,
-        before: startCursor, // cursor.before,
-      },
-    })
-    setPage(page - 1)
-  }, [])
+  const handleBackButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: {
+          search: searchText,
+          last: rowsPerPage,
+          before: startCursor, // cursor.before,
+        },
+      })
+      setPage(page - 1)
+    },
+    [],
+  )
 
-  const handleNextButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: {
-        search: searchText,
-        first: rowsPerPage,
-        after: endCursor, // cursor.after,
-      },
-    })
-    // setCount(data.userDetailsContains.count)
-    setPage(page + 1)
-  }, [])
+  const handleNextButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: {
+          search: searchText,
+          first: rowsPerPage,
+          after: endCursor, // cursor.after,
+        },
+      })
+      // setCount(data.userDetailsContains.count)
+      setPage(page + 1)
+    },
+    [],
+  )
 
-  const handleLastPageButtonClick = useCallback(async (
-    // @ts-ignore
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    loadData({
-      variables: {
-        search: searchText,
-        last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
-      },
-    })
-    setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
-  }, [])
+  const handleLastPageButtonClick = useCallback(
+    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      loadData({
+        variables: {
+          search: searchText,
+          last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
+        },
+      })
+      setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
+    },
+    [],
+  )
 
   return (
     <StyledFooter>
@@ -147,6 +149,9 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 const UserSearch = () => {
+  const { language } = useContext(LanguageContext)
+  const t = getUsersTranslator(language)
+
   const [searchText, setSearchText] = React.useState("")
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -181,7 +186,7 @@ const UserSearch = () => {
     <>
       <Container>
         <H1NoBackground component="h1" variant="h1" align="center">
-          User Search
+          {t("userSearch")}
         </H1NoBackground>
         <div>
           <StyledForm
@@ -195,7 +200,7 @@ const UserSearch = () => {
           >
             <TextField
               id="standard-search"
-              label="Search by string"
+              label={t("searchByString")}
               type="search"
               margin="normal"
               autoComplete="off"
@@ -212,7 +217,7 @@ const UserSearch = () => {
                 setPage(0)
               }}
             >
-              Search
+              {t("search")}
             </StyledButton>
           </StyledForm>
           <GridComponent
@@ -268,7 +273,5 @@ const GET_DATA = gql`
     }
   }
 `
-
-UserSearch.displayName = "UserSearch"
 
 export default withAdmin(UserSearch)

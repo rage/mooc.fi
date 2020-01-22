@@ -11,6 +11,9 @@ jobs:
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
+      - run:
+          name: "ESLint"
+          command: "bin/eslint.sh"
 
   build_frontend:
     docker:

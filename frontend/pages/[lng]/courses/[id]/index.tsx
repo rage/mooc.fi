@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import { WideContainer } from "/components/Container"
@@ -8,13 +8,13 @@ import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import { Card } from "@material-ui/core"
-import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import LangLink from "/components/LangLink"
 import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
+import getCoursesTranslator from "/translations/courses"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -30,13 +30,14 @@ export const CourseDetailsFromSlugQuery = gql`
 `
 
 const Course = () => {
-  const slug = useQueryParameter("id")
   const { language } = useContext(LanguageContext)
+  const slug = useQueryParameter("id")
+  const t = getCoursesTranslator(language)
 
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
     {
-      variables: { slug: slug },
+      variables: { slug },
     },
   )
 
@@ -52,7 +53,7 @@ const Course = () => {
   if (!data.course) {
     return (
       <>
-        <p>Course not found. Go back?</p>
+        <p>{t("courseNotFound")}</p>
       </>
     )
   }
@@ -65,7 +66,7 @@ const Course = () => {
           {data.course?.name}
         </H1NoBackground>
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
-          Home
+          {t("courseHome")}
         </SubtitleNoBackground>
         {data.course?.completion_email != null ? (
           <LangLink
@@ -89,7 +90,5 @@ const Course = () => {
     </section>
   )
 }
-
-Course.displayName = "Course"
 
 export default withAdmin(Course)
