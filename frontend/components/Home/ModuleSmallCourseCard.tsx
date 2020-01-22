@@ -26,8 +26,10 @@ interface BackgroundProps {
 
 const Background = styled(ClickableButtonBase)<BackgroundProps>`
   display: flex;
+  border-radius: 5px;
   flex-direction: column;
   justify-content: flex-start;
+  background-color: #fcfcfa;
   height: 100%;
   width: 100%;
   ${({ upcoming }) =>
@@ -77,12 +79,14 @@ interface HeaderProps {
 
 const Header = styled.div<HeaderProps>`
   padding-top: 0.5rem;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   padding-bottom: 0.5rem;
   justify-content: center;
   top: 0;
   left: 0;
   color: #ffffff;
-  background-color: ${({ startPoint }) => (startPoint ? "#31a3e8" : "#158278")};
+  background-color: ${({ startPoint }) => (startPoint ? "#005A84" : "#158278")};
   width: 100%;
   display: flex;
 `
@@ -100,7 +104,7 @@ function ModuleSmallCourseCard({
   const t = getHomeTranslator(lng.language)
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={4}>
+    <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
       <Background focusRipple component="div">
         {course ? (
           <ReactGA.OutboundLink
