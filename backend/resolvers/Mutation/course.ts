@@ -117,8 +117,7 @@ const createMutation = async <T extends { id?: string | null }>({
   let existing: T[] | undefined
 
   try {
-    // we probably shouldn't do it like this, but we do
-    // @ts-ignore
+    // @ts-ignore: can't be arsed to do the typing, works
     existing = await prisma.course({ slug })[field]()
   } catch (e) {
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
@@ -248,7 +247,9 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           course_variants: Object.keys(courseVariantMutation).length
             ? courseVariantMutation
             : null,
-          completion_email: { connect: { id: completion_email } },
+          completion_email: completion_email
+            ? { connect: { id: completion_email } }
+            : null,
         } as CourseUpdateInput,
       })
 

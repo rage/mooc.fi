@@ -19,10 +19,8 @@ const storage = isProduction
       bucket: () => ({
         file: () => ({
           save: (
-            // @ts-ignore
-            buffer: any,
-            // @ts-ignore
-            options: any,
+            _: any, // buffer
+            __: any, // options
             cb: (error?: string) => void,
           ): any => cb(),
           delete: (): any => Promise.resolve(true),

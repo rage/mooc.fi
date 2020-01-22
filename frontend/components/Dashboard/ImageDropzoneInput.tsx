@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { FieldProps } from "formik"
 import { useDropzone } from "react-dropzone"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
+import getCommonTranslator from "/translations/common"
+import LanguageContext from "/contexes/LanguageContext"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
-// @ts-ignore
-// prettier-ignore
-const isChrome = process.browser ? !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime) : false
+const isChrome = process.browser
+  ? !!(window as any).chrome &&
+    (!!(window as any).chrome.webstore || !!(window as any).chrome.runtime)
+  : false
 
 const DropzoneContainer = styled.div<any>`
   display: flex;
@@ -41,18 +44,18 @@ interface DropzoneProps extends FieldProps {
   children: any
 }
 
-const defaultMessage = {
-  message: "Drop image or click to select",
-}
-
 const ImageDropzoneInput = ({
   field,
   form,
   onImageLoad,
   children,
 }: DropzoneProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getCommonTranslator(language)
   const { setFieldValue } = form
-  const [status, setStatus] = useState<MessageProps>(defaultMessage)
+  const [status, setStatus] = useState<MessageProps>({
+    message: t("imageDropMessage"),
+  })
 
   const onDrop = (accepted: File[], rejected: File[]) => {
     const reader = new FileReader()
@@ -65,8 +68,8 @@ const ImageDropzoneInput = ({
     }
 
     if (rejected.length) {
-      setStatus({ message: "That was not an image!", error: true })
-      setTimeout(() => setStatus(defaultMessage), 2000)
+      setStatus({ message: t("imageNotAnImage"), error: true })
+      setTimeout(() => setStatus({ message: t("imageDropMessage") }), 2000)
     }
   }
 
@@ -86,11 +89,11 @@ const ImageDropzoneInput = ({
 
   useEffect(() => {
     if (isDragActive && isDragReject && draggedFiles.length && !isChrome) {
-      setStatus({ message: "Not an acceptable format!", error: true })
+      setStatus({ message: t("imageNotAcceptableFormat"), error: true })
     } else if (isDragActive) {
-      setStatus({ message: "Drop image file here" })
+      setStatus({ message: t("imageDropHere") })
     } else {
-      setStatus(defaultMessage)
+      setStatus({ message: t("imageDropMessage") })
     }
   }, [isDragActive, isDragReject, draggedFiles])
 

@@ -33,8 +33,7 @@ const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         secret_key: secret,
       })
       // FIXME: return value not used
-      // @ts-ignore
-      const orgTranslation = await prisma.createOrganizationTranslation({
+      await prisma.createOrganizationTranslation({
         name: name ?? "",
         language: "fi_FI", //placeholder
         organization: { connect: { id: org.id } },

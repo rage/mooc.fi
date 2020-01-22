@@ -1,8 +1,4 @@
 import React, { useState, useContext } from "react"
-import { isSignedIn, isAdmin } from "/lib/authentication"
-import redirect from "/lib/redirect"
-import AdminError from "/components/Dashboard/AdminError"
-import { NextPageContext as NextContext } from "next"
 import { WideContainer } from "/components/Container"
 import { useQuery, ApolloConsumer } from "@apollo/react-hooks"
 import { SubtitleNoBackground } from "/components/Text/headers"
@@ -19,12 +15,9 @@ import { DeleteEmailTemplate } from "static/types/generated/DeleteEmailTemplate"
 import CustomSnackbar from "/components/CustomSnackbar"
 import LanguageContext from "/contexes/LanguageContext"
 import Router from "next/router"
+import withAdmin from "/lib/with-admin"
 
-interface EmailTemplateProps {
-  admin: boolean
-}
-const EmailTemplateView = (props: EmailTemplateProps) => {
-  const { admin } = props
+const EmailTemplateView = () => {
   const [emailTemplate, setEmailTemplate] = useState()
   const [name, setName] = useState()
   const [txtBody, setTxtBody] = useState()
@@ -33,10 +26,6 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
   const [didInit, setDidInit] = useState(false)
 
   const id = useQueryParameter("id")
-
-  if (!admin) {
-    return <AdminError />
-  }
 
   interface SnackbarData {
     variant: "error" | "success" | "warning" | "error"
@@ -241,15 +230,4 @@ const EmailTemplateView = (props: EmailTemplateProps) => {
   )
 }
 
-EmailTemplateView.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
-
-export default EmailTemplateView
+export default withAdmin(EmailTemplateView)

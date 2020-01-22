@@ -7,15 +7,15 @@
 // ====================================================
 
 export interface addUserOrganization_addUserOrganization {
-  __typename: "UserOrganization"
-  id: any
+  __typename: "UserOrganization";
+  id: any;
 }
 
 export interface addUserOrganization {
-  addUserOrganization: addUserOrganization_addUserOrganization
+  addUserOrganization: addUserOrganization_addUserOrganization;
 }
 
 export interface addUserOrganizationVariables {
-  user_id: string
-  organization_id: string
+  user_id: string;
+  organization_id: string;
 }

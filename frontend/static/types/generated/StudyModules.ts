@@ -7,12 +7,12 @@
 // ====================================================
 
 export interface StudyModules_study_modules {
-  __typename: "StudyModule"
-  id: any
-  name: string
-  slug: string
+  __typename: "StudyModule";
+  id: any;
+  name: string;
+  slug: string;
 }
 
 export interface StudyModules {
-  study_modules: StudyModules_study_modules[]
+  study_modules: StudyModules_study_modules[];
 }

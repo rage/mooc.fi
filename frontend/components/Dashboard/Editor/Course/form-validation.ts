@@ -45,33 +45,33 @@ export const initialValues: CourseFormValues = {
   course_variants: [],
 }
 
-export const statuses = [
+export const statuses = (t: Function) => [
   {
     value: CourseStatus.Upcoming,
-    label: "Upcoming",
+    label: t("courseUpcoming"),
   },
   {
     value: CourseStatus.Active,
-    label: "Active",
+    label: t("courseActive"),
   },
   {
     value: CourseStatus.Ended,
-    label: "Ended",
+    label: t("courseEnded"),
   },
 ]
 
-export const languages = [
+export const languages = (t: Function) => [
   {
     value: "fi_FI",
-    label: "Finnish",
+    label: t("courseFinnish"),
   },
   {
     value: "en_US",
-    label: "English",
+    label: t("courseEnglish"),
   },
   {
     value: "sv_SE",
-    label: "Swedish",
+    label: t("courseSwedish"),
   },
 ]
 
@@ -81,68 +81,69 @@ const courseEditSchema = ({
   client,
   checkSlug,
   initialSlug,
+  t,
 }: {
   client: ApolloClient<object>
   checkSlug: DocumentNode
   initialSlug: string | null
+  t: (key: any) => string
 }) =>
   Yup.object().shape({
-    name: Yup.string().required("required"),
+    name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
-      .required("required")
+      .required(t("validationRequired"))
       .trim()
-      .matches(/^[^\/\\\s]*$/, "can't include spaces or slashes")
+      .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
       .test(
         "unique",
-        `slug is already in use`,
+        t("validationSlugInUse"),
         validateSlug({ client, checkSlug, initialSlug }),
       ),
     status: Yup.mixed()
-      .oneOf(statuses.map(s => s.value))
-      .required("required"),
+      .oneOf(statuses(t).map(s => s.value))
+      .required(t("validationRequired")),
     course_translations: Yup.array().of(
       Yup.object().shape({
-        name: Yup.string().required("required"),
+        name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
-          .required("required")
+          .required(t("validationRequired"))
           .oneOf(
-            languages.map(l => l.value),
-            "must have a valid language code",
+            languages(t).map(l => l.value),
+            t("validationValidLanguageCode"),
           )
-          .test(
-            "unique",
-            "cannot have more than one translation per language",
-            function(this: Yup.TestContext, value?: any): boolean {
-              const {
-                context,
-                path,
-              }: { context?: any; path?: string | undefined } = this.options
-              if (!context) {
-                return true
-              }
+          .test("unique", t("validationOneTranslation"), function(
+            this: Yup.TestContext,
+            value?: any,
+          ): boolean {
+            const {
+              context,
+              path,
+            }: { context?: any; path?: string | undefined } = this.options
+            if (!context) {
+              return true
+            }
 
-              const {
-                values: { course_translations },
-              } = context
+            const {
+              values: { course_translations },
+            } = context
 
-              if (!value || value === "") {
-                return true // previous should have caught the empty
-              }
+            if (!value || value === "") {
+              return true // previous should have caught the empty
+            }
 
-              const currentIndexMatch =
-                (path || "").match(/^.*\[(\d+)\].*$/) || []
-              const currentIndex =
-                currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-              const otherTranslationLanguages = course_translations
-                .filter(
-                  (c: CourseTranslationFormValues, index: number) =>
-                    c.language !== "" && index !== currentIndex,
-                )
-                .map((c: CourseTranslationFormValues) => c.language)
+            const currentIndexMatch =
+              (path || "").match(/^.*\[(\d+)\].*$/) || []
+            const currentIndex =
+              currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+            const otherTranslationLanguages = course_translations
+              .filter(
+                (c: CourseTranslationFormValues, index: number) =>
+                  c.language !== "" && index !== currentIndex,
+              )
+              .map((c: CourseTranslationFormValues) => c.language)
 
-              return otherTranslationLanguages.indexOf(value) === -1
-            },
-          ),
+            return otherTranslationLanguages.indexOf(value) === -1
+          }),
         description: Yup.string(),
         link: Yup.string(),
       }),
@@ -150,10 +151,10 @@ const courseEditSchema = ({
     course_variants: Yup.array().of(
       Yup.object().shape({
         slug: Yup.string()
-          .required("required")
+          .required(t("validationRequired"))
           .trim()
-          .matches(/^[^\/\\\s]*$/, "can't include spaces or slashes")
-          .test("unique", "cannot have two variants with same slug", function(
+          .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
+          .test("unique", t("validationTwoVariants"), function(
             this: Yup.TestContext,
             value?: any,
           ): boolean {
@@ -191,13 +192,13 @@ const courseEditSchema = ({
     ),
     order: Yup.number()
       .transform(value => (isNaN(value) ? undefined : Number(value)))
-      .integer("must be integer"),
+      .integer(t("validationInteger")),
     study_module_order: Yup.number()
       .transform(value => (isNaN(value) ? undefined : Number(value)))
-      .integer("must be integer"),
+      .integer(t("validationInteger")),
     ects: Yup.string().matches(
       /(^\d+(\-\d+)?$|^$)/,
-      "must be a number or a range",
+      t("validationNumberRange"),
     ),
   })
 

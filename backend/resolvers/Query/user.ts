@@ -62,7 +62,7 @@ const UserDetailsContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
       const { search, first, after, last, before } = args
-      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
+      if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
       const prisma: Prisma = ctx.prisma
@@ -92,10 +92,9 @@ const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
     type: "User",
     nullable: true,
     args: { search: stringArg() }, // was: email
-    resolve: (_, args, ctx) => {
+    resolve: (_, __ /*args */, ctx) => {
       // FIXME: why don't we search anything? where's this come from?
-      // @ts-ignore
-      const { search } = args
+      // const { search } = args
       return ctx.user as NexusGenRootTypes["User"]
     },
   })

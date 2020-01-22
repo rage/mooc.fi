@@ -16,14 +16,12 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 const production = process.env.NODE_ENV === "production" || 1 === 1
 const cypress = process.env.CYPRESS === "true"
 
-// @ts-ignore
 /* const cypress =
   process.env.CYPRESS === "true" ||
   (typeof window !== "undefined" &&
     window.Cypress &&
     window.Cypress.env("CYPRESS") === "true") */
 
-// @ts-ignore
 function create(initialState: any, originalAccessToken?: string) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed

@@ -15,6 +15,7 @@ import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
+import getStudyModulesTranslator from "/translations/study-modules"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -50,6 +51,8 @@ interface EditStudyModuleProps {
 const EditStudyModule = (props: EditStudyModuleProps) => {
   const { router } = props
   const { language } = useContext(LanguageContext)
+  const t = getStudyModulesTranslator(language)
+
   const id = useQueryParameter("id")
 
   let redirectTimeout: number | null = null
@@ -78,7 +81,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
     <section>
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
-          Edit study module
+          {t("editStudyModule")}
         </H1NoBackground>
         {loading ? (
           <FormSkeleton />
@@ -86,12 +89,14 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
           <StudyModuleEdit module={data.study_module} />
         ) : (
           <ErrorContainer elevation={2}>
-            <Typography variant="body1">
-              Study module with slug <b>{id}</b> not found!
-            </Typography>
+            <Typography
+              variant="body1"
+              dangerouslySetInnerHTML={{
+                __html: t("moduleWithIdNotFound", { slug: id }),
+              }}
+            />
             <Typography variant="body2">
-              You will be redirected back to the module list in 5 seconds -
-              press{" "}
+              {t("redirectMessagePre")}
               <LangLink href={listLink}>
                 <a
                   onClick={() =>
@@ -99,10 +104,10 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
                   }
                   href=""
                 >
-                  here
+                  {t("redirectLinkText")}
                 </a>
-              </LangLink>{" "}
-              to go there now.
+              </LangLink>
+              {t("redirectMessagePost")}
             </Typography>
           </ErrorContainer>
         )}

@@ -162,8 +162,7 @@ const Register = () => {
   const {
     data: userOrganizationsData,
     error: userOrganizationsError,
-    // @ts-ignore
-    loading: userOrganizationsLoading,
+    // loading: userOrganizationsLoading,
   } = useQuery<UserOrganizations>(UserOrganizationsQuery, {
     variables: { user_id: currentUser!.id },
   })
@@ -175,8 +174,8 @@ const Register = () => {
       },
     ],
   })
-  // @ts-ignore
-  const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
+
+  // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
   const [deleteUserOrganization] = useMutation(DeleteUserOrganizationMutation, {
     refetchQueries: [
       {
@@ -341,7 +340,5 @@ const Register = () => {
     </WideContainer>
   )
 }
-
-Register.displayName = "Register"
 
 export default withSignedIn(Register)

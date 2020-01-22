@@ -7,14 +7,14 @@
 // ====================================================
 
 export interface deleteUserOrganization_deleteUserOrganization {
-  __typename: "UserOrganization"
-  id: any
+  __typename: "UserOrganization";
+  id: any;
 }
 
 export interface deleteUserOrganization {
-  deleteUserOrganization: deleteUserOrganization_deleteUserOrganization
+  deleteUserOrganization: deleteUserOrganization_deleteUserOrganization;
 }
 
 export interface deleteUserOrganizationVariables {
-  id: string
+  id: string;
 }

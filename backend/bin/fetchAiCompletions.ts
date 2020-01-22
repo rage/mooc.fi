@@ -96,7 +96,7 @@ async function saveCompletionsAndUsersToDatabase(
     if (!doesCompletionExists.length) {
       await prisma.createCompletion({
         user: { connect: { upstream_id: user.upstream_id } },
-        course: { connect: { id: course?.id } },
+        course: { connect: { id: course.id } },
         completion_language: determineCompletionLanguage(course_name),
         user_upstream_id: user.upstream_id,
         email: user.email,

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { CourseVariantFormValues } from "/components/Dashboard/Editor/Course/types"
 import { Field, FieldArray, FormikErrors, getIn } from "formik"
 import { Grid } from "@material-ui/core"
@@ -14,19 +14,24 @@ import {
 } from "/components/Dashboard/Editor/common"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import styled from "styled-components"
+import getCoursesTranslator from "/translations/courses"
+import LanguageContext from "/contexes/LanguageContext"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
 `
+
 const CourseVariantEditForm = ({
   values,
   errors,
   isSubmitting,
 }: {
   values: CourseVariantFormValues[]
-  errors: (FormikErrors<CourseVariantFormValues> | undefined)[] | undefined
+  errors?: (FormikErrors<CourseVariantFormValues> | undefined)[]
   isSubmitting: boolean
 }) => {
+  const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslator(language)
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
 
@@ -34,17 +39,17 @@ const CourseVariantEditForm = ({
     <section>
       <Grid item xs={12}>
         <OutlinedFormControl>
-          <OutlinedInputLabel shrink>Course variants</OutlinedInputLabel>
+          <OutlinedInputLabel shrink>{t("courseVariants")}</OutlinedInputLabel>
           <OutlinedFormGroup>
             <FieldArray
               name="course_variants"
               render={helpers => (
                 <>
                   <ConfirmationDialog
-                    title="Are you sure?"
-                    content="Do you want to remove this course variant?"
-                    acceptText="Yes"
-                    rejectText="No"
+                    title={t("confirmationAreYouSure")}
+                    content={t("confirmationRemoveVariant")}
+                    acceptText={t("confirmationYes")}
+                    rejectText={t("confirmationNo")}
                     onAccept={() => {
                       setRemoveDialogVisible(false)
                       removableIndex >= 0 && helpers.remove(removableIndex)
@@ -62,7 +67,7 @@ const CourseVariantEditForm = ({
                           <Grid item xs={4}>
                             <Field
                               name={`course_variants[${index}].slug`}
-                              label="slug"
+                              label={t("courseSlug")}
                               type="text"
                               component={StyledTextField}
                               value={variant.slug}
@@ -73,7 +78,7 @@ const CourseVariantEditForm = ({
                           <Grid item xs={6}>
                             <Field
                               name={`course_variants[${index}].description`}
-                              label="description"
+                              label={t("courseDescription")}
                               type="text"
                               component={StyledTextField}
                               value={variant.description}
@@ -99,15 +104,17 @@ const CourseVariantEditForm = ({
                                     setRemovableIndex(index)
                                   }
                                 }}
-                                endIcon={<RemoveIcon>remove</RemoveIcon>}
+                                endIcon={
+                                  <RemoveIcon>{t("courseRemove")}</RemoveIcon>
+                                }
                               >
-                                Remove
+                                {t("courseRemove")}
                               </StyledButton>
                             </Grid>
                           </Grid>
                         </Grid>
                       ))
-                    : "no variants"}
+                    : t("courseNoVariants")}
                   {(values!.length == 0 ||
                     (values!.length &&
                       values![values!.length - 1].slug !== "")) && (
@@ -117,9 +124,9 @@ const CourseVariantEditForm = ({
                         color="primary"
                         disabled={isSubmitting}
                         onClick={() => helpers.push({ ...initialVariant })}
-                        endIcon={<AddIcon>add</AddIcon>}
+                        endIcon={<AddIcon>{t("courseAdd")}</AddIcon>}
                       >
-                        Add
+                        {t("courseAdd")}
                       </ButtonWithWhiteText>
                     </Grid>
                   )}

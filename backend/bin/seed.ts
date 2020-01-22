@@ -8,6 +8,7 @@ import {
   StudyModuleTranslationCreateWithoutStudy_moduleInput,
   StudyModuleTranslationCreateManyWithoutStudy_moduleInput,
   StudyModuleWhereUniqueInput,
+  CourseTranslation,
 } from "../generated/prisma-client"
 
 const Modules = [
@@ -419,11 +420,8 @@ const seed = async () => {
         status: course.status as CourseStatus,
         course_translations: course.course_translations
           ? ({
-              // FIXME: don't know why this bugs
-              // @ts-ignore
               create:
-                // @ts-ignore
-                course?.course_translations?.map(
+                (course?.course_translations as CourseTranslation[])?.map(
                   (t: CourseTranslationCreateWithoutCourseInput) => ({
                     ...t,
                     id: undefined,

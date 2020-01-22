@@ -10,12 +10,11 @@ import {
 const sharp = require("sharp")
 
 // FIXME: not used anywhere
-// @ts-ignore
-const getImageBuffer = (image: string) => {
+/* const getImageBuffer = (image: string) => {
   const base64EncodedImageString = image.replace(/^data:image\/\w+;base64,/, "")
 
   return new Buffer(base64EncodedImageString, "base64")
-}
+} */
 
 const readFS = (stream: NodeJS.ReadStream): Promise<Buffer> => {
   let chunkList: any[] | Uint8Array[] = []
