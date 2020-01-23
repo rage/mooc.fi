@@ -24,7 +24,8 @@
     "/[lng]/register-completion/[slug]": "Rekisteröi suoritus",
     "/[lng]/email-templates": "Email-mallit",
     "/[lng]/email-templates/[id]": "Muokkaa email-mallia",
-    "/register-completion/[slug]": "Rekisteröi suoritus",
+    "/[lng]/register-completion": "Rekisteröi suoritus",
+    "/register-completion": "Rekisteröi suoritus",
     "/": "Etusivu"
   },
   "breadcrumb": {
