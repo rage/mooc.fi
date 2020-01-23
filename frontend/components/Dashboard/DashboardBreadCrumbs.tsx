@@ -115,7 +115,7 @@ const BreadCrumbSkeleton = styled(Skeleton)`
   background: #e6e5e5;
 `
 
-const routes = {
+const asToHref = {
   "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[id]$3", // matches /(courses|study-modules)/[id]*, doesn't match new
   "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
   "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
@@ -123,8 +123,14 @@ const routes = {
   "/(en|fi|se)/": "/[lng]/",
 }
 
+// add non-existing root routes here
+const routeTranslations: Record<string, string> = {
+  users: "/users/search",
+  "register-completion": "/",
+}
+
 const getRoute = (target?: string) =>
-  Object.entries(routes).reduce((acc, [toReplace, replace]) => {
+  Object.entries(asToHref).reduce((acc, [toReplace, replace]) => {
     const regex = new RegExp(toReplace, "gm")
 
     return acc.replace(regex, replace)
@@ -260,9 +266,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
           t("breadcrumb")?.[route] || t("title")?.[route] || component
 
         if (idx === 0) {
-          if (component == "users") {
-            target = `/${component}/search`
-          }
+          target = routeTranslations[component] || target
         } else {
           target = `/${href}`
 
