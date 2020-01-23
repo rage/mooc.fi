@@ -60,7 +60,6 @@ interface ListItemProps {
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
   const isRegistered = (listItem?.completions_registered ?? []).length > 0
-
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
 
