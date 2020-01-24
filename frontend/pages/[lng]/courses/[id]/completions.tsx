@@ -9,7 +9,6 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
@@ -30,11 +29,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslations(language)
 
-  const [lng, changeLng] = useState(
-    (router?.query?.language as string) ??
-      mapNextLanguageToLocaleCode(language as string) ??
-      "",
-  )
+  const [lng, changeLng] = useState("")
 
   const slug = useQueryParameter("id")
 
