@@ -13,7 +13,7 @@ import nookies from "nookies"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
-const production = process.env.NODE_ENV === "production" || 1 === 1
+const production = process.env.NODE_ENV === "production"
 const cypress = process.env.CYPRESS === "true"
 
 /* const cypress =
