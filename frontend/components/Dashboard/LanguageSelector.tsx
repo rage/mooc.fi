@@ -8,8 +8,13 @@ const StyledCard = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: row;
+  border-bottom: 1.5px solid #4d78a3;
 `
-
+const StyledText = styled(Typography)`
+  font-size: 16px;
+  line-height: 30px;
+  margin: auto;
+`
 interface LanguageSelectorProps {
   handleLanguageChange: any
   languageValue: string
@@ -18,7 +23,9 @@ function LanguageSelector(props: LanguageSelectorProps) {
   const { handleLanguageChange, languageValue } = props
   return (
     <StyledCard>
-      <Typography component="h2">Select Course Language</Typography>
+      <StyledText component="h2">
+        Filter results by completion language
+      </StyledText>
       <LanguageSelectorForm
         handleLanguageChange={handleLanguageChange}
         languageValue={languageValue}
