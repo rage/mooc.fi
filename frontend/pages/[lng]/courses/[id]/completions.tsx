@@ -15,6 +15,12 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslations from "/translations/courses"
+import styled from "styled-components"
+
+const ContentArea = styled.div`
+  max-width: 39em;
+  margin: auto;
+`
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -76,11 +82,13 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           {t("completions")}
         </SubtitleNoBackground>
-        <LanguageSelector
-          handleLanguageChange={handleLanguageChange}
-          languageValue={lng}
-        />
-        <CompletionsList />
+        <ContentArea>
+          <LanguageSelector
+            handleLanguageChange={handleLanguageChange}
+            languageValue={lng}
+          />
+          <CompletionsList />
+        </ContentArea>
       </WideContainer>
     </CourseLanguageContext.Provider>
   )
