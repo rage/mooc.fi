@@ -13,6 +13,7 @@
   "courseDetails": "Course details",
   "courseName": "Name",
   "courseSlug": "Slug",
+  "courseSlugHelper": "Make sure the slug is the same as the slug on the course settings",
   "courseECTS": "ECTS",
   "courseStatus": "Status",
   "courseOrder": "Order",
