@@ -28,6 +28,7 @@ export const initialValues: CourseFormValues = {
   name: "",
   slug: "",
   new_slug: "",
+  ects: "",
   thumbnail: undefined,
   photo: undefined,
   new_photo: undefined,

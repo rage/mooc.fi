@@ -12,7 +12,7 @@ import Link from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
-import { H1NoBackground } from "/components/Text/headers"
+import { H1Background } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useQueryParameter } from "/util/useQueryParameter"
 import withAdmin from "/lib/with-admin"
@@ -126,12 +126,12 @@ const EditCourse = ({ router }: EditCourseProps) => {
   }
 
   return (
-    <section>
+    <section style={{ backgroundColor: "#EBFDF8" }}>
       <DashboardTabBar slug={slug} selectedValue={3} />
       <WideContainer>
-        <H1NoBackground component="h1" variant="h1" align="center">
+        <H1Background component="h1" variant="h1" align="center">
           {t("editCourse")}
-        </H1NoBackground>
+        </H1Background>
         {courseLoading || studyModulesLoading ? (
           <FormSkeleton />
         ) : courseData!.course ? (
