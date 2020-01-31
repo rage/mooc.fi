@@ -58,8 +58,12 @@ const FormSubtitle = styled(Typography)`
   margin-bottom: 1rem;
   font-size: 2em;
 `
-const StyledLabel = styled(InputLabel)`
+interface Labelprops {
+  required?: boolean
+}
+const StyledLabel = styled(InputLabel)<Labelprops>`
   margin-bottom: 0.3rem;
+  ${props => `color: ${props.required ? `#DF7A46` : `#245B6D`}`}
 `
 
 const StyledHelperText = styled(FormHelperText)`
@@ -93,7 +97,6 @@ Pick<
 >) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
-
   const statuses = statusesT(t)
 
   return (
@@ -102,8 +105,11 @@ Pick<
         {t("courseDetails")}
       </FormSubtitle>
       <FormFieldGroup>
-        <StyledLabel>{t("courseName")}</StyledLabel>
+        <StyledLabel htmlFor="input-course-name" required={true}>
+          {t("courseName")}
+        </StyledLabel>
         <Field
+          id="input-course-name"
           style={{ width: "80%" }}
           name="name"
           type="text"
@@ -111,12 +117,18 @@ Pick<
           autoComplete="off"
           variant="outlined"
           component={StyledTextField}
+          required={true}
         />
-        <StyledLabel style={{ marginBottom: "0.0rem" }}>
+        <StyledLabel
+          style={{ marginBottom: "0.0rem" }}
+          htmlFor="input-course-slug"
+          required={true}
+        >
           {t("courseSlug")}
         </StyledLabel>
         <StyledHelperText>{t("courseSlugHelper")}</StyledHelperText>
         <Field
+          id="input-course-slug"
           style={{ width: "80%" }}
           name="new_slug"
           type="text"
@@ -124,6 +136,7 @@ Pick<
           variant="outlined"
           autoComplete="off"
           component={StyledTextField}
+          required={true}
         />
         <StyledLabel>{t("courseECTS")}</StyledLabel>
         <Field
@@ -139,7 +152,9 @@ Pick<
 
       <FormFieldGroup>
         <FormControl component="fieldset">
-          <FormLabel component="legend">{t("courseStatus")}</FormLabel>
+          <FormLabel component="legend" style={{ color: "#DF7A46" }}>
+            {t("courseStatus")}*
+          </FormLabel>
           <RadioGroup aria-label="course status" name="courseStatus">
             {statuses.map((option: { value: string; label: string }) => (
               <FormControlLabel
