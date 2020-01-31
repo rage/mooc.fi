@@ -14,9 +14,10 @@ import LanguageContext from "/contexes/LanguageContext"
 import { languages as languagesT } from "./form-validation"
 import styled from "styled-components"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import { mapLangToLanguage } from "/components/DataFormatFunctions"
 
 const StyledPanel = styled(MuiExpansionPanel)`
-  background-color: #00a986;
+  background-color: #7f3fb2;
   color: white !important;
 `
 
@@ -49,7 +50,7 @@ const CourseTranslationListItem = (props: Props) => {
         aria-label="Expand"
         aria-controls="translation-edit-form"
       >
-        <Typography>{translationLanguage}</Typography>
+        <Typography>{mapLangToLanguage[translationLanguage]}</Typography>
       </MuiExpansionPanelSummary>
       <MuiExpansionPanelDetails>
         <EntryContainer elevation={2}>
