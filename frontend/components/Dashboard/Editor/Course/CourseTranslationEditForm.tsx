@@ -10,7 +10,13 @@ import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
+import styled from "styled-components"
 
+const AddTranslationNotice = styled(EntryContainer)`
+  margin-bottom: 1rem;
+  background-color: #df7a46;
+  color: white;
+`
 const CourseTranslationEditForm = ({
   values,
   errors,
@@ -50,31 +56,32 @@ const CourseTranslationEditForm = ({
                 }}
                 show={removeDialogVisible}
               />
-              {values ? (
-                values.map((_: any, index: number) => (
-                  <LanguageEntry item key={`translation-${index}`}>
-                    <CourseTranslationListItem
-                      index={index}
-                      errors={errors}
-                      isSubmitting={isSubmitting}
-                      setRemoveDialogVisible={setRemoveDialogVisible}
-                      setRemovableIndex={setRemovableIndex}
-                      translationLanguage={_.language}
-                    />
-                  </LanguageEntry>
-                ))
+              {values.length != 0 ? (
+                values?.map(
+                  (value: CourseTranslationFormValues, index: number) => (
+                    <LanguageEntry item key={`translation-${index}`}>
+                      <CourseTranslationListItem
+                        index={index}
+                        errors={errors}
+                        isSubmitting={isSubmitting}
+                        setRemoveDialogVisible={setRemoveDialogVisible}
+                        setRemovableIndex={setRemovableIndex}
+                        translationLanguage={value.language}
+                      />
+                    </LanguageEntry>
+                  ),
+                )
               ) : (
-                <EntryContainer elevation={2}>
+                <AddTranslationNotice elevation={2}>
                   <Typography variant="body1">
                     {t("courseAtLeastOneTranslation")}
                   </Typography>
-                </EntryContainer>
+                </AddTranslationNotice>
               )}
               {values?.length < languages.length && (
                 <FormSubmitButton
                   variant="contained"
                   color="primary"
-                  fullWidth
                   disabled={isSubmitting}
                   onClick={() => helpers.push({ ...initialTranslation })}
                 >
