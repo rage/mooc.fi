@@ -14,7 +14,7 @@ export const initialTranslation: CourseTranslationFormValues = {
   name: "",
   description: "",
   link: "",
-  open_university_course_code: undefined,
+  open_university_course_code: "",
 }
 
 export const initialVariant: CourseVariantFormValues = {

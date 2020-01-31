@@ -38,7 +38,9 @@ const CourseTranslationListItem = (props: Props) => {
     setRemovableIndex,
     translationLanguage,
   } = props
-  const [expanded, setExpanded] = useState<boolean>(false)
+  const [expanded, setExpanded] = useState<boolean>(
+    translationLanguage ? false : true,
+  )
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const languages = languagesT(t)
