@@ -1,4 +1,4 @@
-// generated Thu Nov 28 2019 16:26:22 GMT+0200 (Eastern European Standard Time)
+// generated Fri Jan 31 2020 15:14:02 GMT+0200 (Eastern European Standard Time)
 
 export { default as addCompletionRegisteredMutations } from "./CompletionRegistered"
 export { default as addEmailTemplateMutations } from "./EmailTemplate"
@@ -19,3 +19,4 @@ export { default as addStudyModuleTranslationMutations } from "./studyModuleTran
 export { default as addUserCourseProgressMutations } from "./userCourseProgress"
 export { default as addUserCourseServiceProgressMutations } from "./userCourseServiceProgress"
 export { default as addUserOrganizationMutations } from "./userOrganization"
+export { default as addVerifiedUserMutations } from "./verifiedUser"
