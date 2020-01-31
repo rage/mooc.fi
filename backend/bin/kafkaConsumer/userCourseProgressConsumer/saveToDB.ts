@@ -112,7 +112,7 @@ export const saveToDatabase = async (
     })
   }
 
-  await generateUserCourseProgress({ user, course, userCourseProgress, prisma })
+  await generateUserCourseProgress({ user, course, userCourseProgress })
 
   logger.info("Saved to DB succesfully")
   return true
