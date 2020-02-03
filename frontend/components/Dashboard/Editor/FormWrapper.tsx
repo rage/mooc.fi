@@ -56,7 +56,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
 
   return (
     <Container maxWidth="md">
-      <FormBackground elevation={1}>
+      <FormBackground elevation={1} style={{ backgroundColor: "#C0D7D5" }}>
         <ConfirmationDialog
           title={t("confirmationUnsavedChanges")}
           content={t("confirmationLeaveWithoutSaving")}
@@ -101,7 +101,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
               color="secondary"
               style={{ width: "100%" }}
               disabled={isSubmitting}
-              variant="outlined"
+              variant="contained"
               onClick={() =>
                 dirty ? setCancelConfirmationVisible(true) : onCancel()
               }

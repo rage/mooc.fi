@@ -15,11 +15,28 @@ import { languages as languagesT } from "./form-validation"
 import styled from "styled-components"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
+import { StyledLabel } from "./CourseEditForm"
 
 const StyledPanel = styled(MuiExpansionPanel)`
   background-color: #7f3fb2;
   color: white !important;
 `
+const StyledField = styled(Field)`
+  .input-label {
+    background-color: white;
+    font-size: 23px;
+    padding-right: 7px;
+    transform: translate(14px, -9px) scale(0.75);
+  }
+  .input-required {
+    color: #df7a46;
+  }
+`
+const inputLabelProps = {
+  fontSize: 16,
+  shrink: true,
+  classes: { root: "input-label", required: "input-required" },
+}
 
 interface Props {
   index: number
@@ -55,11 +72,17 @@ const CourseTranslationListItem = (props: Props) => {
         <Typography>{mapLangToLanguage[translationLanguage]}</Typography>
       </MuiExpansionPanelSummary>
       <MuiExpansionPanelDetails>
-        <EntryContainer elevation={2}>
+        <EntryContainer elevation={2} style={{ width: "90%", margin: "auto" }}>
+          <StyledLabel
+            htmlFor={`course_translations[${index}].language`}
+            required={true}
+          >
+            {t("courseLanguage")}
+          </StyledLabel>
           <Field
+            id={`course_translations[${index}].language`}
             name={`course_translations[${index}].language`}
             type="select"
-            label={t("courseLanguage")}
             errors={getIn(errors, `[${index}].language`)}
             fullWidth
             variant="outlined"
@@ -73,20 +96,25 @@ const CourseTranslationListItem = (props: Props) => {
               </MenuItem>
             ))}
           </Field>
-          <Field
+          <StyledField
+            id={`course_translations[${index}].name`}
             name={`course_translations[${index}].name`}
-            type="text"
             label={t("courseName")}
+            InputLabelProps={inputLabelProps}
+            type="text"
             error={getIn(errors, `[${index}].name`)}
             fullWidth
+            required
             autoComplete="off"
             variant="outlined"
             component={StyledTextField}
           />
-          <Field
+          <StyledField
+            id={`course_translations[${index}].description`}
             name={`course_translations[${index}].description`}
             type="textarea"
             label={t("courseDescription")}
+            InputLabelProps={inputLabelProps}
             error={getIn(errors, `[${index}].description`)}
             fullWidth
             multiline
@@ -95,20 +123,34 @@ const CourseTranslationListItem = (props: Props) => {
             variant="outlined"
             component={StyledTextField}
           />
-          <Field
+          <StyledLabel
+            htmlFor={`course_translations[${index}].link`}
+            required={false}
+          >
+            {t("courseLink")}
+          </StyledLabel>
+          <StyledField
+            id={`course_translations[${index}].link`}
             name={`course_translations[${index}].link`}
             type="text"
             label={t("courseLink")}
+            InputLabelprops={inputLabelProps}
             error={getIn(errors, `[${index}].link`)}
             fullWidth
             autoComplete="off"
             variant="outlined"
             component={StyledTextField}
           />
+          <StyledLabel
+            htmlFor={`course_translations[${index}].open_university_course_code`}
+            required={false}
+          >
+            {t("courseOpenCode")}
+          </StyledLabel>
           <Field
+            id={`course_translations[${index}].open_university_course_code`}
             name={`course_translations[${index}].open_university_course_code`}
             type="text"
-            label={t("courseOpenCode")}
             error={getIn(errors, `[${index}].open_university_course_code`)}
             fullWidth
             autoComplete="off"
