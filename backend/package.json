@@ -67,7 +67,7 @@
     "prisma": "^1.34.10",
     "prisma-client-lib": "^1.34.10",
     "redis": "^2.8.0",
-    "sharp": "^0.22.1",
+    "sharp": "^0.24.0",
     "shortid": "^2.2.15",
     "uuid": "^3.4.0",
     "winston": "^3.2.1",
