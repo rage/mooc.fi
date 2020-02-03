@@ -61,7 +61,7 @@ const FormSubtitle = styled(Typography)`
 interface Labelprops {
   required?: boolean
 }
-const StyledLabel = styled(InputLabel)<Labelprops>`
+export const StyledLabel = styled(InputLabel)<Labelprops>`
   margin-bottom: 0.3rem;
   ${props => `color: ${props.required ? `#DF7A46` : `#245B6D`}`}
 `
@@ -100,7 +100,7 @@ Pick<
   const statuses = statusesT(t)
 
   return (
-    <Form>
+    <Form style={{ backgroundColor: "white", padding: "1rem" }}>
       <FormSubtitle variant="h6" component="h3" align="center">
         {t("courseDetails")}
       </FormSubtitle>
@@ -311,7 +311,12 @@ Pick<
         errors={errors.course_translations}
         isSubmitting={isSubmitting}
       />
-      <FormSubtitle variant="h6" component="h3" align="center">
+      <FormSubtitle
+        variant="h6"
+        component="h3"
+        align="center"
+        style={{ marginTop: "3rem" }}
+      >
         Course variants
       </FormSubtitle>
       <CourseVariantEditForm
