@@ -90,7 +90,7 @@ const SimpleTemplateArgsReplace = async (
   const completion_link_slug = (await prisma.courses({
     where: { completion_email: email_template },
   }))[0].slug
-  const completion_link = `https://mooc.fi/register-completion/${completion_link_slug}`
+  const completion_link = `https://www.mooc.fi/register-completion/${completion_link_slug}`
   return render(template, { completion_link: completion_link })
 }
 
