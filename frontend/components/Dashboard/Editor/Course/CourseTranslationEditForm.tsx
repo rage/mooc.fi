@@ -32,7 +32,7 @@ const CourseTranslationEditForm = ({
 
   const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
   const [removableIndex, setRemovableIndex] = useState(-1)
-
+  console.log(values)
   return (
     <section>
       <Grid container direction="column">

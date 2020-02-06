@@ -16,6 +16,11 @@ const CourseArg = inputObjectType({
     t.boolean("hidden")
     t.boolean("study_module_start_point")
     t.field("status", { type: "CourseStatus" })
+    t.string("teacher_in_charge_name")
+    t.string("teacher_in_charge_email")
+    t.string("support_email")
+    t.string("start_date")
+    t.string("end_date")
     t.field("study_modules", {
       list: true,
       type: "StudyModuleWhereUniqueInput",
