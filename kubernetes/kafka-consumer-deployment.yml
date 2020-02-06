@@ -16,7 +16,7 @@ spec:
       containers:
         - name: kafka-consumer
           image: ${BACKEND_IMAGE}
-          command: ["sh", "-c", "npm run kafka-consumer-user-course-progress"]
+          command: ["sh", "-c", "npm run start-kafka-consumers"]
           imagePullPolicy: Always
           ports:
             - name: backend-http
