@@ -63,7 +63,6 @@ const ImageDropzoneInput = ({
     reader.onload = () => onImageLoad(reader.result)
 
     if (accepted.length) {
-      console.log("accepted", accepted[0])
       setFieldValue(field.name, accepted[0])
       reader.readAsDataURL(accepted[0])
     }

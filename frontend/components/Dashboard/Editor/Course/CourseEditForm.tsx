@@ -9,11 +9,6 @@ import {
   List,
   ListItem,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } from "@material-ui/core"
 import {
   Formik,
@@ -45,6 +40,7 @@ import {
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
 
 const ModuleList = styled(List)`
   padding: 0px;
@@ -325,86 +321,13 @@ Pick<
         <Button color="primary" onClick={() => setDialogOpen(true)}>
           {t("importPhotoButton")}
         </Button>
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-          <DialogTitle>{t("importPhotoDialogTitle")}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {t("importPhotoDialogContent")}
-            </DialogContentText>
-            <Field
-              name="import_photo"
-              type="select"
-              variant="outlined"
-              select
-              autoComplete="off"
-              component={StyledTextField}
-            >
-              {coursesWithPhotos?.map((course: CourseEditorCourses_courses) => (
-                <MenuItem key={course.slug} value={course.id ?? ""}>
-                  {course.name}
-                </MenuItem>
-              ))}
-            </Field>
-            {values.import_photo ? (
-              <img
-                src={addDomain(
-                  (courses?.filter(
-                    course => course.id === values.import_photo,
-                  ) ?? [])[0]?.photo?.compressed,
-                )}
-                height="200"
-              />
-            ) : null}
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                const importFromCourse = (courses?.filter(
-                  course => course.id === values.import_photo,
-                ) ?? [])[0]
-                const { photo } = importFromCourse
-
-                const base64 = photo?.original?.startsWith("data") ?? false
-
-                setFieldValue("thumbnail", photo?.compressed)
-
-                const filename =
-                  (base64 ? photo?.original : addDomain(photo?.original)) ?? ""
-                if (base64) {
-                  fetch(filename, {
-                    mode: "no-cors",
-                    cache: "no-cache",
-                    headers: { Origin: "https://www.mooc.fi" },
-                  })
-                    .then(res => res.blob())
-                    .then(blob => {
-                      const file = new File([blob], photo?.name ?? "", {
-                        type: photo?.original_mimetype ?? "image/png",
-                      })
-                      setFieldValue("new_photo", file)
-                    })
-                } else {
-                  const req = new XMLHttpRequest()
-                  req.open("GET", filename, true)
-                  req.responseType = "blob"
-                  req.onload = () => {
-                    const file = new File([req.response], photo?.name ?? "", {
-                      type: photo?.original_mimetype ?? "image/png",
-                    })
-                    setFieldValue("new_photo", file)
-                  }
-                  req.send()
-                }
-                setDialogOpen(false)
-              }}
-            >
-              {t("importPhotoDialogSelect")}
-            </Button>
-            <Button onClick={() => setDialogOpen(false)}>
-              {t("importPhotoDialogCancel")}
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <ImportPhotoDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          courses={coursesWithPhotos}
+          values={values}
+          setFieldValue={setFieldValue}
+        />
       </FormControl>
       <FormSubtitle variant="h6">{t("courseTranslations")}</FormSubtitle>
       <CourseTranslationEditForm
