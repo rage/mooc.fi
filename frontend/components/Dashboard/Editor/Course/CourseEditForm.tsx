@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react"
+import React, { useCallback, useContext, useState } from "react"
 import {
   InputLabel,
   FormControl,
@@ -8,6 +8,12 @@ import {
   Typography,
   List,
   ListItem,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@material-ui/core"
 import {
   Formik,
@@ -38,6 +44,7 @@ import {
 } from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 
 const ModuleList = styled(List)`
   padding: 0px;
@@ -53,7 +60,13 @@ const FormSubtitle = styled(Typography)`
   margin-bottom: 1rem;
   font-size: 2em;
 `
-const renderForm = (studyModules?: StudyModules_study_modules[]) => ({
+
+interface RenderFormProps {
+  courses?: CourseEditorCourses_courses[]
+  studyModules?: StudyModules_study_modules[]
+}
+
+const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
   errors,
   values,
   isSubmitting,
@@ -71,6 +84,24 @@ Pick<
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const coursesWithPhotos =
+    courses
+      ?.filter(
+        (course: CourseEditorCourses_courses) =>
+          course.slug !== values.slug && !!course?.photo?.compressed,
+      )
+      .map(course => {
+        const translation = (course.course_translations?.filter(
+          t => t.language === language,
+        ) ?? [])[0]
+
+        return {
+          ...course,
+          name: translation?.name ?? course.name,
+        }
+      }) ?? []
 
   return (
     <Form>
@@ -291,6 +322,89 @@ Pick<
             </ImageDropzoneInput>
           )}
         />
+        <Button color="primary" onClick={() => setDialogOpen(true)}>
+          {t("importPhotoButton")}
+        </Button>
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+          <DialogTitle>{t("importPhotoDialogTitle")}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {t("importPhotoDialogContent")}
+            </DialogContentText>
+            <Field
+              name="import_photo"
+              type="select"
+              variant="outlined"
+              select
+              autoComplete="off"
+              component={StyledTextField}
+            >
+              {coursesWithPhotos?.map((course: CourseEditorCourses_courses) => (
+                <MenuItem key={course.slug} value={course.id ?? ""}>
+                  {course.name}
+                </MenuItem>
+              ))}
+            </Field>
+            {values.import_photo ? (
+              <img
+                src={addDomain(
+                  (courses?.filter(
+                    course => course.id === values.import_photo,
+                  ) ?? [])[0]?.photo?.compressed,
+                )}
+                height="200"
+              />
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                const importFromCourse = (courses?.filter(
+                  course => course.id === values.import_photo,
+                ) ?? [])[0]
+                const { photo } = importFromCourse
+
+                const base64 = photo?.original?.startsWith("data") ?? false
+
+                setFieldValue("thumbnail", photo?.compressed)
+
+                const filename =
+                  (base64 ? photo?.original : addDomain(photo?.original)) ?? ""
+                if (base64) {
+                  fetch(filename, {
+                    mode: "no-cors",
+                    cache: "no-cache",
+                    headers: { Origin: "https://www.mooc.fi" },
+                  })
+                    .then(res => res.blob())
+                    .then(blob => {
+                      const file = new File([blob], photo?.name ?? "", {
+                        type: photo?.original_mimetype ?? "image/png",
+                      })
+                      setFieldValue("new_photo", file)
+                    })
+                } else {
+                  const req = new XMLHttpRequest()
+                  req.open("GET", filename, true)
+                  req.responseType = "blob"
+                  req.onload = () => {
+                    const file = new File([req.response], photo?.name ?? "", {
+                      type: photo?.original_mimetype ?? "image/png",
+                    })
+                    setFieldValue("new_photo", file)
+                  }
+                  req.send()
+                }
+                setDialogOpen(false)
+              }}
+            >
+              {t("importPhotoDialogSelect")}
+            </Button>
+            <Button onClick={() => setDialogOpen(false)}>
+              {t("importPhotoDialogCancel")}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </FormControl>
       <FormSubtitle variant="h6">{t("courseTranslations")}</FormSubtitle>
       <CourseTranslationEditForm
@@ -306,6 +420,7 @@ const CourseEditForm = React.memo(
   ({
     course,
     studyModules,
+    courses,
     validationSchema,
     onSubmit,
     onCancel,
@@ -313,6 +428,7 @@ const CourseEditForm = React.memo(
   }: {
     course: CourseFormValues
     studyModules?: StudyModules_study_modules[]
+    courses?: CourseEditorCourses_courses[]
     validationSchema: Yup.ObjectSchema
     onSubmit: (
       values: CourseFormValues,
@@ -339,7 +455,7 @@ const CourseEditForm = React.memo(
         render={formikProps => (
           <FormWrapper<CourseFormValues>
             {...formikProps}
-            renderForm={renderForm(studyModules)}
+            renderForm={renderForm({ courses, studyModules })}
             onCancel={onCancel}
             onDelete={onDelete}
           />
