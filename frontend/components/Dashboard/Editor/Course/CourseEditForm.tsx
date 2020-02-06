@@ -30,7 +30,6 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "/util/imageUtils"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 import {
   StyledTextField,
   OutlinedFormControl,
@@ -41,6 +40,7 @@ import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
 const ModuleList = styled(List)`
   padding: 0px;
@@ -59,7 +59,7 @@ const FormSubtitle = styled(Typography)`
 
 interface RenderFormProps {
   courses?: CourseEditorCourses_courses[]
-  studyModules?: StudyModules_study_modules[]
+  studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
 const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
@@ -260,22 +260,24 @@ Pick<
             <OutlinedInputLabel shrink>{t("courseModules")}</OutlinedInputLabel>
             <OutlinedFormGroup>
               <ModuleList>
-                {studyModules?.map((module: StudyModules_study_modules) => (
-                  <ModuleListItem key={module.id}>
-                    <FormControlLabel
-                      control={
-                        <Field
-                          label={module.name}
-                          type="checkbox"
-                          name={`study_modules[${module.id}]`}
-                          value={(values.study_modules || {})[module.id]}
-                          component={Checkbox}
-                        />
-                      }
-                      label={module.name}
-                    />
-                  </ModuleListItem>
-                ))}
+                {studyModules?.map(
+                  (module: CourseEditorStudyModules_study_modules) => (
+                    <ModuleListItem key={module.id}>
+                      <FormControlLabel
+                        control={
+                          <Field
+                            label={module.name}
+                            type="checkbox"
+                            name={`study_modules[${module.id}]`}
+                            value={(values.study_modules || {})[module.id]}
+                            component={Checkbox}
+                          />
+                        }
+                        label={module.name}
+                      />
+                    </ModuleListItem>
+                  ),
+                )}
               </ModuleList>
             </OutlinedFormGroup>
           </OutlinedFormControl>
@@ -350,7 +352,7 @@ const CourseEditForm = React.memo(
     onDelete,
   }: {
     course: CourseFormValues
-    studyModules?: StudyModules_study_modules[]
+    studyModules?: CourseEditorStudyModules_study_modules[]
     courses?: CourseEditorCourses_courses[]
     validationSchema: Yup.ObjectSchema
     onSubmit: (
