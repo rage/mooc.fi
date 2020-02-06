@@ -19,6 +19,10 @@ import withAdmin from "/lib/with-admin"
 import getCoursesTranslator from "/translations/courses"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
+import {
+  CourseEditorStudyModuleQuery,
+  CourseEditorCoursesQuery,
+} from "/graphql/queries/courses"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -66,40 +70,6 @@ export const CourseQuery = gql`
   }
 `
 
-export const StudyModuleQuery = gql`
-  query CourseEditorStudyModules {
-    study_modules {
-      id
-      name
-      slug
-    }
-  }
-`
-export const CoursesQuery = gql`
-  query CourseEditorCourses {
-    courses {
-      id
-      slug
-      name
-      course_translations {
-        id
-        name
-        language
-      }
-      photo {
-        id
-        name
-        original
-        original_mimetype
-        compressed
-        compressed_mimetype
-        uncompressed
-        uncompressed_mimetype
-      }
-    }
-  }
-`
-
 const ErrorContainer = styled(Paper)`
   padding: 1em;
 `
@@ -126,12 +96,12 @@ const EditCourse = ({ router }: EditCourseProps) => {
     data: studyModulesData,
     loading: studyModulesLoading,
     error: studyModulesError,
-  } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
+  } = useQuery<CourseEditorStudyModules>(CourseEditorStudyModuleQuery)
   const {
     data: coursesData,
     loading: coursesLoading,
     error: coursesError,
-  } = useQuery<CourseEditorCourses>(CoursesQuery)
+  } = useQuery<CourseEditorCourses>(CourseEditorCoursesQuery)
 
   if (courseError || studyModulesError || coursesError) {
     return (
