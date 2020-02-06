@@ -56,5 +56,10 @@
   "validationTwoVariants": "vain yksi variantti per tunnus",
   "validationInteger": "vaaditaan kokonaisluku",
   "validationNumberRange": "vaaditaan numero tai arvoalue",
-  "statusSaving": "Tallennetaan..."
+  "statusSaving": "Tallennetaan...",
+  "importPhotoButton": "Tuo kuva toisesta kurssista...",
+  "importPhotoDialogTitle": "Tuo kuva",
+  "importPhotoDialogContent": "Valitse kurssi",
+  "importPhotoDialogSelect": "Valitse",
+  "importPhotoDialogCancel": "Peru"
 }

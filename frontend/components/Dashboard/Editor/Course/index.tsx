@@ -22,13 +22,16 @@ import { toCourseForm, fromCourseForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getCoursesTranslator from "/translations/courses"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 
 const CourseEdit = ({
   course,
   modules,
+  courses,
 }: {
   course?: CourseDetails_course
   modules?: StudyModules_study_modules[]
+  courses?: CourseEditorCourses_courses[]
 }) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
@@ -109,6 +112,7 @@ const CourseEdit = ({
     <CourseEditForm
       course={initialValues}
       studyModules={modules}
+      courses={courses}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
       onCancel={onCancel}

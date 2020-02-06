@@ -26,6 +26,7 @@ export interface CourseFormValues extends FormValues {
   base64?: boolean
   order?: number
   study_module_order?: number
+  import_photo?: string
 }
 
 export interface CourseTranslationFormValues extends FormValues {

@@ -18,6 +18,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslator from "/translations/courses"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
+import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -74,6 +75,30 @@ export const StudyModuleQuery = gql`
     }
   }
 `
+export const CoursesQuery = gql`
+  query CourseEditorCourses {
+    courses {
+      id
+      slug
+      name
+      course_translations {
+        id
+        name
+        language
+      }
+      photo {
+        id
+        name
+        original
+        original_mimetype
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
+    }
+  }
+`
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
@@ -102,11 +127,18 @@ const EditCourse = ({ router }: EditCourseProps) => {
     loading: studyModulesLoading,
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(StudyModuleQuery)
+  const {
+    data: coursesData,
+    loading: coursesLoading,
+    error: coursesError,
+  } = useQuery<CourseEditorCourses>(CoursesQuery)
 
-  if (courseError || studyModulesError) {
+  if (courseError || studyModulesError || coursesError) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(courseError || studyModulesError)}
+        errorMessage={JSON.stringify(
+          courseError || studyModulesError || coursesError,
+        )}
       />
     )
   }
@@ -132,12 +164,13 @@ const EditCourse = ({ router }: EditCourseProps) => {
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("editCourse")}
         </H1NoBackground>
-        {courseLoading || studyModulesLoading ? (
+        {courseLoading || studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
         ) : courseData!.course ? (
           <CourseEdit
             course={courseData!.course}
             modules={studyModulesData?.study_modules ?? []}
+            courses={coursesData?.courses ?? []}
           />
         ) : (
           <ErrorContainer elevation={2}>
