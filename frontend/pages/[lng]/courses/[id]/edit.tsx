@@ -28,6 +28,11 @@ export const CourseQuery = gql`
       ects
       order
       study_module_order
+      teacher_in_charge_name
+      teacher_in_charge_email
+      support_email
+      start_date
+      end_date
       photo {
         id
         compressed

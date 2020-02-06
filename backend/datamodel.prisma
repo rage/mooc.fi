@@ -28,6 +28,11 @@ type Course @db(name: "course") {
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
+  teacher_in_charge_name: String!
+  teacher_in_charge_email: String!
+  support_email: String
+  start_date: String!
+  end_date: String
   name: String!
   "identify course in other api Equerys"
   slug: String! @unique

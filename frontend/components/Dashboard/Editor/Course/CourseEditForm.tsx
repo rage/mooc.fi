@@ -1,5 +1,4 @@
 import React, { useCallback, useContext } from "react"
-
 import {
   InputLabel,
   FormControl,
@@ -9,8 +8,8 @@ import {
   List,
   ListItem,
   FormLabel,
-  RadioGroup,
   Radio,
+  RadioGroup,
   FormGroup,
 } from "@material-ui/core"
 import {
@@ -21,13 +20,15 @@ import {
   FormikActions,
   FormikProps,
   yupToFormErrors,
+  FieldArray,
 } from "formik"
 
 import { Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
-
+import ButtonGroup from "@material-ui/core/ButtonGroup"
+import Button from "@material-ui/core/Button"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
-
+import { initialTranslation } from "./form-validation"
 import CourseVariantEditForm from "./CourseVariantEditForm"
 
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
@@ -36,7 +37,6 @@ import ImagePreview from "/components/Dashboard/ImagePreview"
 import { statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
-
 import { addDomain } from "/util/imageUtils"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
@@ -77,6 +77,50 @@ const FormFieldGroup = styled.div`
   border-bottom: 1px solid #ffa17a;
   padding: 0.5rem;
 `
+
+const ButtonGroupContainer = styled(ButtonGroup)`
+  width: 90%;
+  margin: auto;
+  display: flex;
+  margin-bottom: 1rem;
+  margin-top: 1 rem;
+`
+
+const StyledLanguageButton = styled(Button)`
+  width: 33%;
+  background-color: #00ada7;
+  margin: 0.5rem;
+  padding: 1rem;
+  color: white;
+  font-size: 18px;
+  border: 1px solid #8cc0bd;
+  &:hover {
+    background-color: #8cc0bd;
+    border: 1px solid #8cc0bd;
+  }
+  &:focus {
+    background-color: #7fd1ae;
+    border: 1px solid #8cc0bd;
+    color: black;
+  }
+`
+
+const StyledField = styled(Field)`
+  .input-label {
+    background-color: white;
+    font-size: 23px;
+    padding-right: 7px;
+    transform: translate(14px, -9px) scale(0.75);
+  }
+  .input-required {
+    color: #df7a46;
+  }
+`
+const inputLabelProps = {
+  fontSize: 16,
+  shrink: true,
+  classes: { root: "input-label", required: "input-required" },
+}
 const renderForm = (studyModules?: StudyModules_study_modules[]) => ({
   errors,
 
@@ -98,51 +142,88 @@ Pick<
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
-
+  console.log(values)
   return (
     <Form style={{ backgroundColor: "white", padding: "1rem" }}>
+      <FormSubtitle variant="h6" component="h3" align="center">
+        Missä kieliversiossa haluat kurssin näkyvän?
+      </FormSubtitle>
+      <FieldArray
+        name="course_translations"
+        render={helpers => (
+          <ButtonGroupContainer
+            color="secondary"
+            aria-label="course language select button group"
+            id={`course_translations`}
+          >
+            <StyledLanguageButton
+              onClick={() =>
+                helpers.push({ language: "fi_FI", ...initialTranslation })
+              }
+            >
+              Suomi
+            </StyledLanguageButton>
+            <StyledLanguageButton>Englanti</StyledLanguageButton>
+            <StyledLanguageButton>Molemmat</StyledLanguageButton>
+          </ButtonGroupContainer>
+        )}
+      />
+      <CourseTranslationEditForm
+        values={values.course_translations}
+        errors={errors.course_translations}
+        isSubmitting={isSubmitting}
+      />
       <FormSubtitle variant="h6" component="h3" align="center">
         {t("courseDetails")}
       </FormSubtitle>
       <FormFieldGroup>
-        <StyledLabel htmlFor="input-course-name" required={true}>
-          {t("courseName")}
-        </StyledLabel>
-        <Field
+        <StyledField
           id="input-course-name"
           style={{ width: "80%" }}
           name="name"
           type="text"
+          label={t("courseName")}
           error={errors.name}
+          autoComplete="off"
+          variant="outlined"
+          InputLabelProps={inputLabelProps}
+          component={StyledTextField}
+          required={true}
+        />
+        <StyledField
+          id="input-teacher-in-charge-name"
+          style={{ width: "80%" }}
+          name="teacher_in_charge_name"
+          type="text"
+          error={errors.name}
+          label={"Vastuuhenkilö"}
+          InputLabelProps={inputLabelProps}
           autoComplete="off"
           variant="outlined"
           component={StyledTextField}
           required={true}
         />
-        <StyledLabel
-          style={{ marginBottom: "0.0rem" }}
-          htmlFor="input-course-slug"
-          required={true}
-        >
-          {t("courseSlug")}
-        </StyledLabel>
-        <StyledHelperText>{t("courseSlugHelper")}</StyledHelperText>
-        <Field
+
+        <StyledField
           id="input-course-slug"
           style={{ width: "80%" }}
           name="new_slug"
           type="text"
+          label={t("courseSlug")}
+          InputLabelProps={inputLabelProps}
           error={errors.new_slug}
           variant="outlined"
           autoComplete="off"
           component={StyledTextField}
           required={true}
         />
-        <StyledLabel>{t("courseECTS")}</StyledLabel>
-        <Field
+        <StyledHelperText>{t("courseSlugHelper")}</StyledHelperText>
+        <StyledField
           style={{ width: "25%" }}
           name="ects"
           type="text"
+          label={t("courseECTS")}
+          InputLabelProps={inputLabelProps}
           errors={errors.ects}
           autoComplete="off"
           variant="outlined"
@@ -281,19 +362,20 @@ Pick<
           />
         </FormControl>
       </FormFieldGroup>
-      <StyledLabel>{t("courseOrder")}</StyledLabel>
-      <Field
+      <StyledField
         name="order"
         type="number"
+        label={t("courseOrder")}
         error={errors.order}
         fullWidth
         autoComplete="off"
         variant="outlined"
         component={StyledTextField}
         style={{ width: "20%" }}
+        InputLabelProps={inputLabelProps}
       />
-      <StyledLabel>{t("courseModuleOrder")}</StyledLabel>
-      <Field
+      <StyledField
+        label={t("courseModuleOrder")}
         name="study_module_order"
         type="number"
         error={errors.study_module_order}
@@ -302,6 +384,7 @@ Pick<
         variant="outlined"
         component={StyledTextField}
         style={{ width: "20%" }}
+        InputLabelProps={inputLabelProps}
       />
       <FormSubtitle variant="h6" component="h3" align="center">
         {t("courseTranslations")}
