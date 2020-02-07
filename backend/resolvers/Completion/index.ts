@@ -1,3 +1,3 @@
-// generated Mon Nov 18 2019 13:19:25 GMT+0200 (Eastern European Standard Time)
+// generated Fri Jan 31 2020 15:14:02 GMT+0200 (Eastern European Standard Time)
 
 export { default as Completion } from "./Completion"

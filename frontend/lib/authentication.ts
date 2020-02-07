@@ -31,7 +31,6 @@ export const signIn = async ({
   email,
   password,
   redirect = true,
-  // @ts-ignore
   shallow = true,
 }: SignInProps) => {
   const res = await tmcClient.authenticate({ username: email, password })
@@ -91,7 +90,6 @@ const getCookie = (key: string) => {
     .split("; ")
     .reduce<Record<string, string>>((acc, curr) => {
       try {
-        // @ts-ignore
         const [key, value] = curr.split("=")
 
         return {

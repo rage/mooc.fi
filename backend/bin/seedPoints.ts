@@ -75,8 +75,7 @@ const addServices = async () => {
 }
 
 // FIXME: (?) not used anywhere
-// @ts-ignore
-const addUserCourseServiceProgressess = async ({
+/* const addUserCourseServiceProgressess = async ({
   courseId,
 }: {
   courseId: string
@@ -184,7 +183,7 @@ const addUserCourseServiceProgressess = async ({
       await prisma.createUserCourseServiceProgress(ucsp)
     }),
   )
-}
+} */
 
 const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })
@@ -268,6 +267,7 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
 
 const seedPointsData = async () => {
   const course = await prisma.course({ slug: "elements-of-ai" })
+  console.log("course", course)
   await addUsers()
   await addServices()
   course && (await addUserCourseProgressess({ courseId: course.id }))

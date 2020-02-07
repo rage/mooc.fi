@@ -46,7 +46,9 @@ export const saveToDatabase = async (
     user = await getUserFromTMC(prisma, message.user_id)
   }
 
-  if (!user) {
+  const course = await prisma.course({ id: message.course_id })
+
+  if (!user || !course) {
     process.exit(1)
   }
 
@@ -78,7 +80,9 @@ export const saveToDatabase = async (
       },
     },
   )
+
   const userCourseServiceProgress = userCourseServiceProgresses[0]
+
   if (userCourseServiceProgress) {
     const oldTimestamp = DateTime.fromISO(
       userCourseServiceProgress.timestamp ?? "",
@@ -107,7 +111,9 @@ export const saveToDatabase = async (
       timestamp: timestamp.toJSDate(),
     })
   }
-  await generateUserCourseProgress(userCourseProgress, prisma)
+
+  await generateUserCourseProgress({ user, course, userCourseProgress })
+
   logger.info("Saved to DB succesfully")
   return true
 }

@@ -20,7 +20,7 @@ const registeredCompletions = async (
     resolve: async (_, args, ctx) => {
       checkAccess(ctx, { allowOrganizations: true })
       const { course, first, after, last, before } = args
-      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
+      if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
         throw new ForbiddenError("Cannot query more than 50 items")
       }
       if (course) {

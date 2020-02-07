@@ -49,11 +49,12 @@ type Course @db(name: "course") {
   open_university_registration_links: [OpenUniversityRegistrationLink!]! @relation(name: "OpenUniversityRegistrationLinkToCourse")
   exercises: [Exercise!]! @relation(name:"ExerciseToCourse")
   owner_organization: Organization
-  participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")     
+  participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")
   automatic_completions: Boolean @default(value: false)
   points_needed: Int
   completion_email: EmailTemplate @relation(name: "CourseCompletionEmail")
   course_variants: [CourseVariant!]! @relation(name: "CourseToCourseVariant", onDelete: CASCADE)
+  inherit_settings_from: Course @relation(link: INLINE, name: "CourseToCourseInheritSettings")
 }
 
 type CourseVariant @db(name: "course_variant") {
@@ -116,7 +117,7 @@ type Completion @db(name: "completion") {
   course: Course! @relation(link: INLINE, name: "CompletionToCourse")
   completion_language: String
   "Where this completion has been registered, can have multiple locations."
-  completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion") 
+  completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion")
 }
 
 type CompletionRegistered @db(name: "completion_registered") {
@@ -325,4 +326,14 @@ type EmailTemplate @db(name: "email_template") {
   txt_body: String
   html_body: String
   title: String
+}
+
+type VerifiedUser @db(name: "verified_user") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  organization: Organization! @relation(link: INLINE, name: "VerifiedUserToOrganization")
+  user: User! @relation(link: INLINE, name: "VerifiedUserToUser")
+  display_name: String
+  personal_unique_code: String!
 }

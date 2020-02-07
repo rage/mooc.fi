@@ -147,9 +147,11 @@ const RegisterCompletion = () => {
         <StyledText>
           {t("course", { course: completion.course.name })}
         </StyledText>
-        <StyledText variant="h6" component="p" gutterBottom={true}>
-          {t("credits", { ects: completion.course.ects })}
-        </StyledText>
+        {completion.course.ects && (
+          <StyledText variant="h6" component="p" gutterBottom={true}>
+            {t("credits", { ects: completion.course.ects })}
+          </StyledText>
+        )}
         <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("credits_details")}

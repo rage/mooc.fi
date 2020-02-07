@@ -1,7 +1,7 @@
 require("dotenv-safe").config()
 
 import * as Kafka from "node-rdkafka"
-import * as winston from "winston"
+// import * as winston from "winston"
 import * as express from "express"
 import * as compression from "compression"
 import * as bodyParser from "body-parser"
@@ -15,7 +15,7 @@ if (!SECRET) {
   process.exit(-1)
 }
 
-const logger = winston.createLogger({
+/* const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
     winston.format.timestamp(),
@@ -24,7 +24,7 @@ const logger = winston.createLogger({
   defaultMeta: { service: "kafka-consumer-user-points" },
   transports: [new winston.transports.Console()],
 })
-
+ */
 const producer = new Kafka.Producer({
   "client.id": "kafka-bridge",
   "metadata.broker.list": process.env.KAFKA_HOST,
@@ -110,11 +110,10 @@ app.listen(port, host, () =>
 )
 
 // FIXME: (?) not used anywhere
-// @ts-ignore
-const logCommit = (err: any, topicPartitions: any) => {
+/* const logCommit = (err: any, topicPartitions: any) => {
   if (err) {
     logger.error("Error in commit:" + err)
   } else {
     logger.info("Committed. topicPartitions:" + topicPartitions)
   }
-}
+} */

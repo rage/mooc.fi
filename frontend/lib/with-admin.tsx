@@ -12,7 +12,9 @@ export default function withAdmin(Component: any) {
     admin: boolean
     signedIn: boolean
   }> {
-    static displayName = `withAdmin(${Component.displayName ?? "Component"})`
+    static displayName = `withAdmin(${Component.displayName ||
+      Component.name ||
+      "AnonymousComponent"})`
     static contextType = LoginStateContext
 
     static async getInitialProps(context: NextContext) {

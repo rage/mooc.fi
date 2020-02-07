@@ -12,7 +12,6 @@ import { TextField, Grid, Slider, MenuItem } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 
 import { range } from "lodash"
-import styled from "styled-components"
 import {
   UserCourseSettingses as StudentProgressData,
   UserCourseSettingses_UserCourseSettingses_edges,
@@ -97,14 +96,6 @@ export const StudentProgresses = gql`
   }
 `
 
-// @ts-ignore
-const LoadingPointCardSkeleton = styled(Skeleton)`
-  width: 100%;
-  height: 300px;
-  margin-bottom: 2rem;
-  border-radius: 0.25rem;
-`
-
 interface Props {
   courseId: string
   organizations: UserOverView_currentUser_organization_memberships_organization[]
@@ -146,26 +137,6 @@ function PaginatedPointsList(props: Props) {
   if (error) {
     return <p>ERROR: {JSON.stringify(error)}</p>
   }
-
-  /*   if (loading) {
-    return (
-      <>
-        <LoadingPointCardSkeleton variant="rect" />
-        <LoadingPointCardSkeleton variant="rect" />
-        <LoadingPointCardSkeleton variant="rect" />
-      </>
-    )
-  } */
-
-  /*   if (!data) {
-    return null
-  } */
-
-  /*  const { UserCourseSettingses } = data
-
-  if (!UserCourseSettingses) {
-    return null
-  } */
 
   // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))

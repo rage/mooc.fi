@@ -61,8 +61,7 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
   const { language } = useContext(LanguageContext)
   const [value, setValue] = React.useState(selectedValue)
 
-  // @ts-ignore
-  function handleChange(event: React.ChangeEvent<{}>, newValue: number) {
+  function handleChange(_: React.ChangeEvent<{}>, newValue: number) {
     setValue(newValue)
   }
 

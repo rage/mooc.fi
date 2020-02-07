@@ -15,7 +15,7 @@ function LanguageSelectorForm(props: LanguageSelectorProps) {
   const { handleLanguageChange, languageValue } = props
 
   return (
-    <FormControl component="fieldset">
+    <FormControl component="fieldset" style={{ margin: "auto auto auto 1rem" }}>
       <RadioGroup
         aria-label="course language"
         name="courselanguage"
@@ -26,6 +26,7 @@ function LanguageSelectorForm(props: LanguageSelectorProps) {
         <FormControlLabel value="fi_FI" control={<Radio />} label="FI" />
         <FormControlLabel value="en_US" control={<Radio />} label="EN" />
         <FormControlLabel value="se_SE" control={<Radio />} label="SE" />
+        <FormControlLabel value="" control={<Radio />} label="ALL" />
       </RadioGroup>
     </FormControl>
   )

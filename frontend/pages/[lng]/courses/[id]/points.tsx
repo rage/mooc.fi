@@ -14,6 +14,8 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import UserDetailContext from "/contexes/UserDetailContext"
 import { UserOverView_currentUser_organization_memberships } from "/static/types/generated/UserOverView"
+import getCoursesTranslator from "/translations/courses"
+import LanguageContext from "/contexes/LanguageContext"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -25,6 +27,9 @@ export const CourseDetailsFromSlugQuery = gql`
 `
 
 const Points = () => {
+  const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslator(language)
+
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")
 
@@ -48,7 +53,7 @@ const Points = () => {
   if (!data.course) {
     return (
       <>
-        <p>Could not find the course. Go back?</p>
+        <p>{t("courseNotFound")}</p>
       </>
     )
   }
@@ -69,7 +74,7 @@ const Points = () => {
           {data.course.name}
         </H1NoBackground>
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
-          Points
+          {t("points")}
         </SubtitleNoBackground>
         <PointsExportButton slug={slug} />
         <PaginatedPointsList

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { WideContainer } from "/components/Container"
 import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
@@ -8,6 +8,8 @@ import { H1NoBackground } from "/components/Text/headers"
 import { StudyModules as StudyModuleData } from "/static/types/generated/StudyModules"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
+import getCoursesTranslator from "/translations/courses"
+import LanguageContext from "/contexes/LanguageContext"
 
 export const StudyModuleQuery = gql`
   query StudyModules {
@@ -20,6 +22,9 @@ export const StudyModuleQuery = gql`
 `
 
 const NewCourse = () => {
+  const { language } = useContext(LanguageContext)
+  const t = getCoursesTranslator(language)
+
   const { data, loading, error } = useQuery<StudyModuleData>(StudyModuleQuery)
 
   if (error) {
@@ -30,7 +35,7 @@ const NewCourse = () => {
     <section>
       <WideContainer>
         <H1NoBackground component="h1" variant="h1" align="center">
-          Create a new course
+          {t("createCourse")}
         </H1NoBackground>
         {loading ? (
           <FormSkeleton />
@@ -41,7 +46,5 @@ const NewCourse = () => {
     </section>
   )
 }
-
-NewCourse.displayName = "NewCourse"
 
 export default withAdmin(NewCourse)

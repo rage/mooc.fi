@@ -6,10 +6,17 @@
 // GraphQL query operation: CourseDetailsFromSlugQuery
 // ====================================================
 
+export interface CourseDetailsFromSlugQuery_course_completion_email {
+  __typename: "EmailTemplate"
+  name: string | null
+  id: any
+}
+
 export interface CourseDetailsFromSlugQuery_course {
   __typename: "Course"
   id: any
   name: string
+  completion_email: CourseDetailsFromSlugQuery_course_completion_email | null
 }
 
 export interface CourseDetailsFromSlugQuery {

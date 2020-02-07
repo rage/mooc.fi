@@ -1,4 +1,8 @@
-import { Prisma, Course } from "../../generated/prisma-client"
+import {
+  Prisma,
+  Course,
+  CourseOrderByInput,
+} from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
@@ -61,9 +65,10 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
     resolve: async (_, args, ctx) => {
       const { orderBy, language } = args
       const { prisma } = ctx
-      // FIXME: this maps as CourseOrderByInput, but still doesn't quite get it
-      // @ts-ignore
-      const courses = await prisma.courses({ orderBy })
+
+      const courses = await prisma.courses({
+        orderBy: orderBy as CourseOrderByInput,
+      })
 
       const filtered = language
         ? (await Promise.all(
@@ -87,7 +92,7 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
             link: "",
           }))
 
-      return filtered
+      return filtered as Array<NexusGenRootTypes["Course"]>
     },
   })
 }

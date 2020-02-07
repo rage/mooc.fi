@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma-client"
+import { Prisma, Course } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { idArg, intArg, stringArg } from "nexus/dist"
@@ -14,15 +14,23 @@ const userCourseSettings = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
-      const { user_id, course_id } = args
-      const prisma: Prisma = ctx.prisma
-      const result = await prisma.userCourseSettingses({
+      const { user_id } = args
+      let { course_id } = args
+      const inheritSettingsCourse: Course = await ctx.prisma
+        .course({ id: course_id })
+        .inherit_settings_from()
+      if (inheritSettingsCourse) {
+        course_id = inheritSettingsCourse.id
+      }
+      const result = await ctx.prisma.userCourseSettingses({
         where: {
           user: { id: user_id },
           course: { id: course_id },
         },
       })
-      if (!result.length) throw new UserInputError("Not found")
+      if (!result.length) {
+        throw new UserInputError("Not found")
+      }
       return result[0]
     },
   })
@@ -42,7 +50,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
       before: idArg(),
       search: stringArg(),
     },
-    resolve: (_, args, ctx) => {
+    resolve: async (_, args, ctx) => {
       checkAccess(ctx)
 
       const {
@@ -51,13 +59,20 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
         before,
         after,
         user_id,
-        course_id,
         user_upstream_id,
         organization_ids,
         search,
       } = args
-      if ((!first && !last) || ((first ?? 0) > 50 || (last ?? 0) > 50)) {
+      let { course_id } = args
+      if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
         throw new ForbiddenError("Cannot query more than 50 objects")
+      }
+
+      const inheritSettingsCourse: Course = await ctx.prisma
+        .course({ id: course_id })
+        .inherit_settings_from()
+      if (inheritSettingsCourse) {
+        course_id = inheritSettingsCourse.id
       }
 
       // user: { OR: { id: user_id, upstream_id: user_upstream_id } },

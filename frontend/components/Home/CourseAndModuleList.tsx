@@ -74,13 +74,6 @@ const CourseAndModuleList = () => {
     )
   }
 
-  /*   if (!coursesData && !coursesLoading) {
-    return <div>Error: no courses data?</div>
-  }
-  if (!modulesData && !modulesLoading) {
-    return <div>Error: no modules data? </div>
-  } */
-
   return (
     <section>
       <section id="courses">
@@ -123,19 +116,19 @@ const CourseAndModuleList = () => {
         <section id="modules">
           <ModuleNavi modules={study_modules} loading={modulesLoading} />
           <ModuleList modules={modulesWithCourses} loading={modulesLoading} />
-          <CourseHighlights
-            courses={endedCourses}
-            loading={coursesLoading}
-            title={t("endedCoursesTitle")}
-            headerImage={highlightsBanner}
-            backgroundColor="#ffffff"
-            hueRotateAngle={58}
-            brightness={1}
-            fontColor="white"
-            titleBackground="#3066C0"
-          />
         </section>
       ) : null}
+      <CourseHighlights
+        courses={endedCourses}
+        loading={coursesLoading}
+        title={t("endedCoursesTitle")}
+        headerImage={highlightsBanner}
+        backgroundColor="#ffffff"
+        hueRotateAngle={58}
+        brightness={1}
+        fontColor="white"
+        titleBackground="#3066C0"
+      />
     </section>
   )
 }
