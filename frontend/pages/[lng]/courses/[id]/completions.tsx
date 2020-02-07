@@ -9,13 +9,18 @@ import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { useQuery } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
-import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlug"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslations from "/translations/courses"
+import styled from "styled-components"
+
+const ContentArea = styled.div`
+  max-width: 39em;
+  margin: auto;
+`
 
 export const CourseDetailsFromSlugQuery = gql`
   query CompletionCourseDetails($slug: String) {
@@ -30,11 +35,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslations(language)
 
-  const [lng, changeLng] = useState(
-    (router?.query?.language as string) ??
-      mapNextLanguageToLocaleCode(language as string) ??
-      "",
-  )
+  const [lng, changeLng] = useState("")
 
   const slug = useQueryParameter("id")
 
@@ -81,11 +82,13 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           {t("completions")}
         </SubtitleNoBackground>
-        <LanguageSelector
-          handleLanguageChange={handleLanguageChange}
-          languageValue={lng}
-        />
-        <CompletionsList />
+        <ContentArea>
+          <LanguageSelector
+            handleLanguageChange={handleLanguageChange}
+            languageValue={lng}
+          />
+          <CompletionsList />
+        </ContentArea>
       </WideContainer>
     </CourseLanguageContext.Provider>
   )
