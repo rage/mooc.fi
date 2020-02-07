@@ -30,6 +30,10 @@ const StyledIcon = styled(Icon)`
   margin-top: 1rem;
 `
 
+const ListItemArea = styled.div`
+  margin: 1rem auto 1rem auto;
+`
+
 function CompletionCard({
   completer,
 }: {
@@ -43,11 +47,11 @@ function CompletionCard({
     ? `HY SID: ${completer.user.student_number}`
     : "No student number"
   const completionDate = completionsRegistered.length
-    ? formatDateTime(completer.created_at)
-    : ""
+    ? `Completion registered: ${formatDateTime(completer.created_at)}`
+    : "Completion has not been registered"
 
   return (
-    <>
+    <ListItemArea>
       <ListItem alignItems="flex-start">
         <ListItemIcon>
           {completionsRegistered.length > 0 ? (
@@ -67,14 +71,18 @@ function CompletionCard({
               <Typography component="span" style={{ display: "block" }}>
                 {completer.email} {studentId}
               </Typography>
-              {completionLanguage}
-              {completionDate}
+              <Typography component="span" style={{ display: "block" }}>
+                Completion language: {completionLanguage}
+              </Typography>
+              <Typography component="span" style={{ display: "block" }}>
+                {completionDate}
+              </Typography>
             </React.Fragment>
           }
         />
       </ListItem>
       <Divider component="li" />
-    </>
+    </ListItemArea>
   )
 }
 

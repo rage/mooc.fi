@@ -327,3 +327,13 @@ type EmailTemplate @db(name: "email_template") {
   html_body: String
   title: String
 }
+
+type VerifiedUser @db(name: "verified_user") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  organization: Organization! @relation(link: INLINE, name: "VerifiedUserToOrganization")
+  user: User! @relation(link: INLINE, name: "VerifiedUserToUser")
+  display_name: String
+  personal_unique_code: String!
+}
