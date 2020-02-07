@@ -60,6 +60,7 @@
   "importPhotoButton": "Import photo from another course...",
   "importPhotoDialogTitle": "Import photo",
   "importPhotoDialogContent": "Select course",
-  "importPhotoDialogSelect": "Select",
+  "importPhotoLabel": "Select...",
+  "importPhotoDialogSelect": "OK",
   "importPhotoDialogCancel": "Cancel"
 }

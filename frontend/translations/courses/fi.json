@@ -60,6 +60,7 @@
   "importPhotoButton": "Tuo kuva toisesta kurssista...",
   "importPhotoDialogTitle": "Tuo kuva",
   "importPhotoDialogContent": "Valitse kurssi",
-  "importPhotoDialogSelect": "Valitse",
+  "importPhotoLabel": "Valitse...",
+  "importPhotoDialogSelect": "OK",
   "importPhotoDialogCancel": "Peru"
 }

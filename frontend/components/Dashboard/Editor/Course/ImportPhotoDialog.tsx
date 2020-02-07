@@ -124,6 +124,7 @@ const ImportPhotoDialog = ({
         <Field
           name="import_photo"
           type="select"
+          label={t("importPhotoLabel")}
           variant="outlined"
           select
           autoComplete="off"
