@@ -97,7 +97,8 @@ Pick<
           ...course,
           name: translation?.name ?? course.name,
         }
-      }) ?? []
+      })
+      .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? []
 
   return (
     <Form>
@@ -320,7 +321,11 @@ Pick<
             </ImageDropzoneInput>
           )}
         />
-        <Button color="primary" onClick={() => setDialogOpen(true)}>
+        <Button
+          color="primary"
+          style={{ marginTop: "0.5rem" }}
+          onClick={() => setDialogOpen(true)}
+        >
           {t("importPhotoButton")}
         </Button>
         <ImportPhotoDialog

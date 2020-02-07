@@ -18,6 +18,24 @@ import { Field } from "formik"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { addDomain } from "/util/imageUtils"
 import getCoursesTranslator from "/translations/courses"
+import styled from "styled-components"
+
+const ImageContainer = styled.div`
+  display: flex;
+  width: 100%;
+  min-width: 350px;
+  min-height: 250px;
+  align-items: center;
+  justify-content: center;
+  border-width: 2px;
+  border-radius: 4px;
+`
+
+const ImagePlaceholder = styled.div`
+  width: 350px;
+  height: 250px;
+  background-color: #eeeeee;
+`
 
 interface ImportPhotoDialogProps {
   open: boolean
@@ -117,12 +135,16 @@ const ImportPhotoDialog = ({
             </MenuItem>
           ))}
         </Field>
-        {values.import_photo ? (
-          <img
-            src={addDomain(selectedCourse()?.photo?.compressed)}
-            height="200"
-          />
-        ) : null}
+        <ImageContainer>
+          {values.import_photo ? (
+            <img
+              src={addDomain(selectedCourse()?.photo?.compressed)}
+              height="200"
+            />
+          ) : (
+            <ImagePlaceholder />
+          )}
+        </ImageContainer>
       </DialogContent>
       <DialogActions>
         <Button color="primary" onClick={handleSelection}>
