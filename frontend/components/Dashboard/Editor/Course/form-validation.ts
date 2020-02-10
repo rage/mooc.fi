@@ -207,7 +207,6 @@ const courseEditSchema = ({
       t("validationNumberRange"),
     ),
     start_date: Yup.date().required(t("courseStartDateRequired")),
-    end_date: Yup.date(),
     teacher_in_charge_name: Yup.string().required(
       t("courseTeacherNameRequired"),
     ),

@@ -3,9 +3,8 @@ import { TextField } from "formik-material-ui"
 import styled from "styled-components"
 
 export const StyledTextField = styled(TextField)`
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   background-color: white;
-  font
 `
 
 export const OutlinedInputLabel = styled(InputLabel)`
