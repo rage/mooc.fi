@@ -1,17 +1,25 @@
 import React, { useContext } from "react"
-import MenuItem from "@material-ui/core/MenuItem"
-import Grid from "@material-ui/core/Grid"
-
 import { Field, getIn } from "formik"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
-import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
-import { languages as languagesT } from "./form-validation"
 import styled from "styled-components"
-import { StyledLabel } from "./CourseEditForm"
+import Typography from "@material-ui/core/Typography"
+import { mapLangToLanguage } from "/components/DataFormatFunctions"
 
+const LanguageVersionContainer = styled.div`
+  padding-top: 1rem;
+
+  padding-bottom: 1.5rem;
+  width: 90%;
+  margin: auto;
+`
+const LanguageVersionTitle = styled(Typography)`
+  margin-bottom: 1.5rem;
+  font-size: 33px;
+  line-height: 52px;
+  color: #005b5b;
+`
 const StyledField = styled(Field)`
   .input-label {
     background-color: white;
@@ -32,50 +40,21 @@ const inputLabelProps = {
 interface Props {
   index: number
   errors: any
-  isSubmitting: boolean
-  setRemoveDialogVisible: any
-  setRemovableIndex: any
   translationLanguage: string
 }
 const CourseTranslationListItem = (props: Props) => {
-  const {
-    index,
-    errors,
-    isSubmitting,
-    setRemoveDialogVisible,
-    setRemovableIndex,
-    translationLanguage,
-  } = props
+  const { index, errors, translationLanguage } = props
 
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
-  const languages = languagesT(t)
-  console.log(translationLanguage)
+
   return (
-    <EntryContainer elevation={2} style={{ width: "90%", margin: "auto" }}>
-      <StyledLabel
-        htmlFor={`course_translations[${index}].language`}
-        required={true}
-      >
-        {t("courseLanguage")}
-      </StyledLabel>
-      <Field
-        id={`course_translations[${index}].language`}
-        name={`course_translations[${index}].language`}
-        type="select"
-        errors={getIn(errors, `[${index}].language`)}
-        fullWidth
-        variant="outlined"
-        select
-        autoComplete="off"
-        component={StyledTextField}
-      >
-        {languages.map((option: { value: string; label: string }) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Field>
+    <LanguageVersionContainer>
+      <LanguageVersionTitle component="h2" variant="h3" align="left">
+        {`${t("courseLanguageVersion")}: ${
+          mapLangToLanguage[translationLanguage]
+        }`}
+      </LanguageVersionTitle>
       <StyledField
         id={`course_translations[${index}].name`}
         name={`course_translations[${index}].name`}
@@ -103,31 +82,21 @@ const CourseTranslationListItem = (props: Props) => {
         variant="outlined"
         component={StyledTextField}
       />
-      <StyledLabel
-        htmlFor={`course_translations[${index}].link`}
-        required={false}
-      >
-        {t("courseLink")}
-      </StyledLabel>
       <StyledField
         id={`course_translations[${index}].link`}
         name={`course_translations[${index}].link`}
         type="text"
         label={t("courseLink")}
-        InputLabelprops={inputLabelProps}
+        InputLabelProps={inputLabelProps}
         error={getIn(errors, `[${index}].link`)}
         fullWidth
         autoComplete="off"
         variant="outlined"
         component={StyledTextField}
       />
-      <StyledLabel
-        htmlFor={`course_translations[${index}].open_university_course_code`}
-        required={false}
-      >
-        {t("courseOpenCode")}
-      </StyledLabel>
-      <Field
+      <StyledField
+        label={t("courseOpenCode")}
+        InputLabelProps={inputLabelProps}
         id={`course_translations[${index}].open_university_course_code`}
         name={`course_translations[${index}].open_university_course_code`}
         type="text"
@@ -136,22 +105,9 @@ const CourseTranslationListItem = (props: Props) => {
         autoComplete="off"
         variant="outlined"
         component={StyledTextField}
+        style={{ width: "30%" }}
       />
-      <br />
-      <Grid container justify="flex-end">
-        <StyledButton
-          variant="contained"
-          disabled={isSubmitting}
-          color="secondary"
-          onClick={() => {
-            setRemoveDialogVisible(true)
-            setRemovableIndex(index)
-          }}
-        >
-          {t("courseRemoveTranslation")}
-        </StyledButton>
-      </Grid>
-    </EntryContainer>
+    </LanguageVersionContainer>
   )
 }
 

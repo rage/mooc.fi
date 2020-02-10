@@ -36,7 +36,7 @@
   "courseLink": "Link",
   "courseOpenCode": "Open university course code",
   "courseRemoveTranslation": "Remove translation",
-  "courseAtLeastOneTranslation": "Please add at least one translation!",
+  "courseAtLeastOneTranslation": "Please select the language version!",
   "courseAddTranslation": "Add translation",
   "courseVariants": "Course variants",
   "confirmationRemoveVariant": "Do you want to remove this course variant?",
@@ -49,6 +49,7 @@
   "courseFinnish": "Finnish",
   "courseEnglish": "English",
   "courseSwedish": "Swedish",
+  "courseBoth":"Both",
   "validationRequired": "required",
   "validationNoSpacesSlashes": "can't include spaces or slashes",
   "validationSlugInUse": "slug is already in use",
@@ -57,5 +58,13 @@
   "validationTwoVariants": "cannot have two variants with same slug",
   "validationInteger": "must be integer",
   "validationNumberRange": "must be a number or a range",
-  "statusSaving": "Saving..."
+  "statusSaving": "Saving...",
+  "courseLanguageSelectTitle": "Which language version do you want the course to be visible in?",
+  "courseLanguageVersion": "Language version",
+  "courseStartDateRequired": "You must provide start date",
+  "courseTeacherNameRequired": "You must provide the name of the teacher in charge of the course",
+  "courseTeacherEmailRequired":"You must provide the e-mail of the teacher in charge of the course",
+  "courseEmailInvalid": "Make sure the given e-mail address is correct",
+  "courseDateHelper": "Date must be form dd/mm/yyyy",
+  "courseDatePlaceholder": "dd/mm/yyyy"
 }

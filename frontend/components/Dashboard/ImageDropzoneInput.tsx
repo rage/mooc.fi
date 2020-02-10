@@ -32,6 +32,10 @@ const DropzoneContainer = styled.div<any>`
   border-color: ${({ isDragActive, isDragAccept }) =>
     isDragActive ? (isDragAccept ? "#00A000" : "#FF0000") : "rgba(0,0,0,0.23)"};
   transition: border 0.24s ease-in-out;
+  &:hover {
+    cursor: pointer;
+    border-color: #00a000;
+  }
 `
 
 interface MessageProps {

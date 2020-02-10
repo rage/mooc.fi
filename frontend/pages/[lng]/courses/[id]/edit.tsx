@@ -131,7 +131,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
   }
 
   return (
-    <section style={{ backgroundColor: "#EBFDF8" }}>
+    <section style={{ backgroundColor: "#E9FEF8" }}>
       <DashboardTabBar slug={slug} selectedValue={3} />
       <WideContainer>
         <H1Background component="h1" variant="h1" align="center">
