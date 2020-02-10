@@ -53,10 +53,10 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
   const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(
     false,
   )
-
+  console.log("Errors", errors)
   return (
     <Container maxWidth="md">
-      <FormBackground elevation={1} style={{ backgroundColor: "#C0D7D5" }}>
+      <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
         <ConfirmationDialog
           title={t("confirmationUnsavedChanges")}
           content={t("confirmationLeaveWithoutSaving")}

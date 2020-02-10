@@ -44,7 +44,7 @@ export const initialValues: CourseFormValues = {
   study_module_start_point: false,
   status: CourseStatus.Upcoming,
   study_modules: {},
-  course_translations: [initialTranslation],
+  course_translations: [],
   open_university_registration_links: [],
   order: undefined,
   study_module_order: undefined,
@@ -206,6 +206,15 @@ const courseEditSchema = ({
       /(^\d+(\-\d+)?$|^$)/,
       t("validationNumberRange"),
     ),
+    start_date: Yup.date().required(t("courseStartDateRequired")),
+    end_date: Yup.date(),
+    teacher_in_charge_name: Yup.string().required(
+      t("courseTeacherNameRequired"),
+    ),
+    teacher_in_charge_email: Yup.string()
+      .email(t("courseEmailInvalid"))
+      .required(t("courseTeacherEmailRequired")),
+    support_email: Yup.string().email(t("courseEmailInvalid")),
   })
 
 const validateSlug = ({
