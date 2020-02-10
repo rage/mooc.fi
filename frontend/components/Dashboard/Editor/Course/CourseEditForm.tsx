@@ -117,6 +117,11 @@ Pick<
       : values?.course_translations[0].language,
   )
 
+  const [selectedState, setSelectedState] = useState<string>(values?.status)
+  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedState((event.target as HTMLInputElement).value)
+  }
+
   return (
     <Form style={{ backgroundColor: "white", padding: "2rem" }}>
       <CourseLanguageSelector
@@ -255,7 +260,12 @@ Pick<
             <FormLabel component="legend" style={{ color: "#DF7A46" }}>
               {t("courseStatus")}*
             </FormLabel>
-            <RadioGroup aria-label="course status" name="courseStatus">
+            <RadioGroup
+              aria-label="course status"
+              name="courseStatus"
+              value={selectedState}
+              onChange={handleStatusChange}
+            >
               {statuses.map((option: { value: string; label: string }) => (
                 <FormControlLabel
                   key={`status-${option.value}`}
@@ -348,31 +358,32 @@ Pick<
             </FormGroup>
           </FormControl>
         </FormFieldGroup>
-
-        <StyledField
-          name="order"
-          type="number"
-          label={t("courseOrder")}
-          error={errors.order}
-          fullWidth
-          autoComplete="off"
-          variant="outlined"
-          component={StyledTextField}
-          style={{ width: "20%" }}
-          InputLabelProps={inputLabelProps}
-        />
-        <StyledField
-          label={t("courseModuleOrder")}
-          name="study_module_order"
-          type="number"
-          error={errors.study_module_order}
-          fullWidth
-          autoComplete="off"
-          variant="outlined"
-          component={StyledTextField}
-          style={{ width: "20%" }}
-          InputLabelProps={inputLabelProps}
-        />
+        <FormFieldGroup>
+          <StyledField
+            name="order"
+            type="number"
+            label={t("courseOrder")}
+            error={errors.order}
+            fullWidth
+            autoComplete="off"
+            variant="outlined"
+            component={StyledTextField}
+            style={{ width: "20%" }}
+            InputLabelProps={inputLabelProps}
+          />
+          <StyledField
+            label={t("courseModuleOrder")}
+            name="study_module_order"
+            type="number"
+            error={errors.study_module_order}
+            fullWidth
+            autoComplete="off"
+            variant="outlined"
+            component={StyledTextField}
+            style={{ width: "20%" }}
+            InputLabelProps={inputLabelProps}
+          />
+        </FormFieldGroup>
         <FormSubtitle
           variant="h6"
           component="h3"
