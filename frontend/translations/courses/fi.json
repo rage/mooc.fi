@@ -66,5 +66,11 @@
   "courseTeacherEmailRequired":"Anna kurssin vastuuhenkilön sähköpostiosoite",
   "courseEmailInvalid": "Varmista että annettu sähköpostiosoite on oikein",
   "courseDateHelper": "Päivämäärän tulee olla muotoa pp/kk/vvvv",
-  "courseDatePlaceholder": "pp/kk/vvvv"
+  "courseDatePlaceholder": "pp/kk/vvvv",
+  "courseStartDate": "Kurssin alkamispäivämäärä",
+  "courseEndDate": "Kurssin loppumispäivämäärä",
+  "courseTeacherInChargeName": "Vastuuhenkilön nimi",
+  "courseTeacherInChargeEmail":"Vastuuhenkilön sähköpostiosoite",
+  "courseSupportEmail":"Kurssin tukisähköpostiosoite",
+  "courseVariantsTitle": "Kurssivariantit"
 }

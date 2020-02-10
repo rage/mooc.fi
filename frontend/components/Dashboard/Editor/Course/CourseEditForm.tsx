@@ -183,6 +183,7 @@ Pick<
             component={StyledTextField}
           />
         </FormFieldGroup>
+
         <FormFieldGroup>
           <StyledField
             id="start-date"
@@ -190,7 +191,7 @@ Pick<
             name="start_date"
             type="text"
             error={errors.start_date}
-            label={"Alkamispäivä"}
+            label={t("courseStartDate")}
             InputLabelProps={inputLabelProps}
             autoComplete="off"
             variant="outlined"
@@ -205,7 +206,7 @@ Pick<
             name="end_date"
             type="text"
             error={errors.end_date}
-            label={"Loppumispäivä"}
+            label={t("courseEndDate")}
             InputLabelProps={inputLabelProps}
             autoComplete="off"
             variant="outlined"
@@ -214,6 +215,7 @@ Pick<
             helperText={t("courseDateHelper")}
           />
         </FormFieldGroup>
+
         <FormFieldGroup>
           <StyledField
             id="input-teacher-in-charge-name"
@@ -221,7 +223,7 @@ Pick<
             name="teacher_in_charge_name"
             type="text"
             error={errors.teacher_in_charge_name}
-            label={"Vastuuhenkilö"}
+            label={t("courseTeacherInChargeName")}
             InputLabelProps={inputLabelProps}
             autoComplete="off"
             variant="outlined"
@@ -230,11 +232,11 @@ Pick<
           />
           <StyledField
             id="input-teacher-in-charge-email"
-            style={{ width: "50%" }}
+            style={{ width: "60%" }}
             name="teacher_in_charge_email"
             type="text"
             error={errors.teacher_in_charge_email}
-            label={"Vastuuhenkilön sähköposti"}
+            label={t("courseTeacherInChargeEmail")}
             InputLabelProps={inputLabelProps}
             autoComplete="off"
             variant="outlined"
@@ -243,11 +245,11 @@ Pick<
           />
           <StyledField
             id="support-email"
-            style={{ width: "50%" }}
+            style={{ width: "60%" }}
             name="support_email"
             type="text"
             error={errors.support_email}
-            label={"Tukisähköposti"}
+            label={t("courseSupportEmail")}
             InputLabelProps={inputLabelProps}
             autoComplete="off"
             variant="outlined"
@@ -390,7 +392,7 @@ Pick<
           align="center"
           style={{ marginTop: "3rem" }}
         >
-          Course variants
+          {t("courseVariantsTitle")}
         </FormSubtitle>
         <CourseVariantEditForm
           values={values.course_variants}

@@ -105,7 +105,7 @@ const CourseTranslationListItem = (props: Props) => {
         autoComplete="off"
         variant="outlined"
         component={StyledTextField}
-        style={{ width: "30%" }}
+        style={{ width: "50%" }}
       />
     </LanguageVersionContainer>
   )
