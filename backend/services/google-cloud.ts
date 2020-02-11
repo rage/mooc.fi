@@ -46,7 +46,7 @@ export const uploadImage = async ({
 }): Promise<string> => {
   const filename = `${directory ? directory + "/" : ""}${shortid.generate()}${
     name && name !== "" ? "-" + name : ""
-  }.${mime.lookup(mimeType)}`
+  }.${mime.extension(mimeType)}`
 
   if (base64) {
     const base64 = `data:${mimeType};base64,` + imageBuffer.toString("base64")

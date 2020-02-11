@@ -56,5 +56,11 @@
   "validationTwoVariants": "cannot have two variants with same slug",
   "validationInteger": "must be integer",
   "validationNumberRange": "must be a number or a range",
-  "statusSaving": "Saving..."
+  "statusSaving": "Saving...",
+  "importPhotoButton": "Import photo from another course...",
+  "importPhotoDialogTitle": "Import photo",
+  "importPhotoDialogContent": "Select course",
+  "importPhotoLabel": "Select...",
+  "importPhotoDialogSelect": "OK",
+  "importPhotoDialogCancel": "Cancel"
 }

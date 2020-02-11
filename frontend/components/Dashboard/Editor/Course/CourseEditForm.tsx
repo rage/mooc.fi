@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react"
+import React, { useCallback, useContext, useState } from "react"
 import {
   InputLabel,
   FormControl,
@@ -8,6 +8,7 @@ import {
   Typography,
   List,
   ListItem,
+  Button,
 } from "@material-ui/core"
 import {
   Formik,
@@ -29,7 +30,6 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import { addDomain } from "/util/imageUtils"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 import {
   StyledTextField,
   OutlinedFormControl,
@@ -38,6 +38,9 @@ import {
 } from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
 const ModuleList = styled(List)`
   padding: 0px;
@@ -53,7 +56,13 @@ const FormSubtitle = styled(Typography)`
   margin-bottom: 1rem;
   font-size: 2em;
 `
-const renderForm = (studyModules?: StudyModules_study_modules[]) => ({
+
+interface RenderFormProps {
+  courses?: CourseEditorCourses_courses[]
+  studyModules?: CourseEditorStudyModules_study_modules[]
+}
+
+const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
   errors,
   values,
   isSubmitting,
@@ -71,6 +80,25 @@ Pick<
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const coursesWithPhotos =
+    courses
+      ?.filter(
+        (course: CourseEditorCourses_courses) =>
+          course.slug !== values.slug && !!course?.photo?.compressed,
+      )
+      .map(course => {
+        const translation = (course.course_translations?.filter(
+          t => t.language === language,
+        ) ?? [])[0]
+
+        return {
+          ...course,
+          name: translation?.name ?? course.name,
+        }
+      })
+      .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? []
 
   return (
     <Form>
@@ -233,22 +261,24 @@ Pick<
             <OutlinedInputLabel shrink>{t("courseModules")}</OutlinedInputLabel>
             <OutlinedFormGroup>
               <ModuleList>
-                {studyModules?.map((module: StudyModules_study_modules) => (
-                  <ModuleListItem key={module.id}>
-                    <FormControlLabel
-                      control={
-                        <Field
-                          label={module.name}
-                          type="checkbox"
-                          name={`study_modules[${module.id}]`}
-                          value={(values.study_modules || {})[module.id]}
-                          component={Checkbox}
-                        />
-                      }
-                      label={module.name}
-                    />
-                  </ModuleListItem>
-                ))}
+                {studyModules?.map(
+                  (module: CourseEditorStudyModules_study_modules) => (
+                    <ModuleListItem key={module.id}>
+                      <FormControlLabel
+                        control={
+                          <Field
+                            label={module.name}
+                            type="checkbox"
+                            name={`study_modules[${module.id}]`}
+                            value={(values.study_modules || {})[module.id]}
+                            component={Checkbox}
+                          />
+                        }
+                        label={module.name}
+                      />
+                    </ModuleListItem>
+                  ),
+                )}
               </ModuleList>
             </OutlinedFormGroup>
           </OutlinedFormControl>
@@ -291,6 +321,20 @@ Pick<
             </ImageDropzoneInput>
           )}
         />
+        <Button
+          color="primary"
+          style={{ marginTop: "0.5rem" }}
+          onClick={() => setDialogOpen(true)}
+        >
+          {t("importPhotoButton")}
+        </Button>
+        <ImportPhotoDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          courses={coursesWithPhotos}
+          values={values}
+          setFieldValue={setFieldValue}
+        />
       </FormControl>
       <FormSubtitle variant="h6">{t("courseTranslations")}</FormSubtitle>
       <CourseTranslationEditForm
@@ -306,13 +350,15 @@ const CourseEditForm = React.memo(
   ({
     course,
     studyModules,
+    courses,
     validationSchema,
     onSubmit,
     onCancel,
     onDelete,
   }: {
     course: CourseFormValues
-    studyModules?: StudyModules_study_modules[]
+    studyModules?: CourseEditorStudyModules_study_modules[]
+    courses?: CourseEditorCourses_courses[]
     validationSchema: Yup.ObjectSchema
     onSubmit: (
       values: CourseFormValues,
@@ -339,7 +385,7 @@ const CourseEditForm = React.memo(
         render={formikProps => (
           <FormWrapper<CourseFormValues>
             {...formikProps}
-            renderForm={renderForm(studyModules)}
+            renderForm={renderForm({ courses, studyModules })}
             onCancel={onCancel}
             onDelete={onDelete}
           />
