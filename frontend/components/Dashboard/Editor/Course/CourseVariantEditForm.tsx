@@ -1,11 +1,10 @@
-import React, { useState, useContext } from "react"
+import React, { useContext } from "react"
 import { CourseVariantFormValues } from "/components/Dashboard/Editor/Course/types"
 import { Field, FieldArray, FormikErrors, getIn } from "formik"
 import { Grid } from "@material-ui/core"
 import { initialVariant } from "./form-validation"
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
-import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import {
   OutlinedFormControl,
   OutlinedInputLabel,
@@ -16,6 +15,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import styled from "styled-components"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
+import { useConfirm } from "material-ui-confirm"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
@@ -32,8 +32,7 @@ const CourseVariantEditForm = ({
 }) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
-  const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
-  const [removableIndex, setRemovableIndex] = useState(-1)
+  const confirm = useConfirm()
 
   return (
     <section>
@@ -45,22 +44,6 @@ const CourseVariantEditForm = ({
               name="course_variants"
               render={helpers => (
                 <>
-                  <ConfirmationDialog
-                    title={t("confirmationAreYouSure")}
-                    content={t("confirmationRemoveVariant")}
-                    acceptText={t("confirmationYes")}
-                    rejectText={t("confirmationNo")}
-                    onAccept={() => {
-                      setRemoveDialogVisible(false)
-                      removableIndex >= 0 && helpers.remove(removableIndex)
-                      setRemovableIndex(-1)
-                    }}
-                    onReject={() => {
-                      setRemoveDialogVisible(false)
-                      setRemovableIndex(-1)
-                    }}
-                    show={removeDialogVisible}
-                  />
                   {values!.length
                     ? values!.map((variant, index: number) => (
                         <Grid container spacing={2} key={`variant-${index}`}>
@@ -100,8 +83,14 @@ const CourseVariantEditForm = ({
                                   if (!variant.id && variant.slug === "") {
                                     helpers.remove(index)
                                   } else {
-                                    setRemoveDialogVisible(true)
-                                    setRemovableIndex(index)
+                                    confirm({
+                                      title: t("confirmationAreYouSure"),
+                                      description: t(
+                                        "confirmationRemoveVariant",
+                                      ),
+                                      confirmationText: t("confirmationYes"),
+                                      cancellationText: t("confirmationNo"),
+                                    }).then(() => helpers.remove(index))
                                   }
                                 }}
                                 endIcon={
