@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react"
+import React, { useContext } from "react"
 import { Grid, MenuItem, Typography } from "@material-ui/core"
 import { Field, FieldArray, getIn, FormikErrors } from "formik"
 import { CourseTranslationFormValues } from "./types"
-import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { languages as languagesT, initialTranslation } from "./form-validation"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -11,6 +10,7 @@ import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
+import { useConfirm } from "material-ui-confirm"
 
 const CourseTranslationEditForm = ({
   values,
@@ -24,9 +24,7 @@ const CourseTranslationEditForm = ({
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const languages = languagesT(t)
-
-  const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
-  const [removableIndex, setRemovableIndex] = useState(-1)
+  const confirm = useConfirm()
 
   return (
     <section>
@@ -35,22 +33,6 @@ const CourseTranslationEditForm = ({
           name="course_translations"
           render={helpers => (
             <>
-              <ConfirmationDialog
-                title={t("confirmationAreYouSure")}
-                content={t("confirmationRemoveTranslation")}
-                acceptText={t("confirmationYes")}
-                rejectText={t("confirmationNo")}
-                onAccept={() => {
-                  setRemoveDialogVisible(false)
-                  removableIndex >= 0 && helpers.remove(removableIndex)
-                  setRemovableIndex(-1)
-                }}
-                onReject={() => {
-                  setRemoveDialogVisible(false)
-                  setRemovableIndex(-1)
-                }}
-                show={removeDialogVisible}
-              />
               {values?.map((_: any, index: number) => (
                 <LanguageEntry item key={`translation-${index}`}>
                   <EntryContainer elevation={2}>
@@ -124,10 +106,14 @@ const CourseTranslationEditForm = ({
                         variant="contained"
                         disabled={isSubmitting}
                         color="secondary"
-                        onClick={() => {
-                          setRemoveDialogVisible(true)
-                          setRemovableIndex(index)
-                        }}
+                        onClick={() =>
+                          confirm({
+                            title: t("confirmationAreYouSure"),
+                            description: t("confirmationRemoveTranslation"),
+                            confirmationText: t("confirmationYes"),
+                            cancellationText: t("confirmationNo"),
+                          }).then(() => helpers.remove(index))
+                        }
                       >
                         {t("courseRemoveTranslation")}
                       </StyledButton>
