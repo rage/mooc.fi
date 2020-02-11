@@ -1,34 +1,41 @@
 import React, { useContext } from "react"
 import { WideContainer } from "/components/Container"
-import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
-import { StudyModules as StudyModuleData } from "/static/types/generated/StudyModules"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
-
-export const StudyModuleQuery = gql`
-  query StudyModules {
-    study_modules {
-      id
-      name
-      slug
-    }
-  }
-`
+import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
+import {
+  CourseEditorStudyModuleQuery,
+  CourseEditorCoursesQuery,
+} from "/graphql/queries/courses"
+import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
 
 const NewCourse = () => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
 
-  const { data, loading, error } = useQuery<StudyModuleData>(StudyModuleQuery)
+  const {
+    data: studyModulesData,
+    loading: studyModulesLoading,
+    error: studyModulesError,
+  } = useQuery<CourseEditorStudyModules>(CourseEditorStudyModuleQuery)
+  const {
+    data: coursesData,
+    loading: coursesLoading,
+    error: coursesError,
+  } = useQuery<CourseEditorCourses>(CourseEditorCoursesQuery)
 
-  if (error) {
-    return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
+  if (studyModulesError || coursesError) {
+    return (
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(studyModulesError || coursesError)}
+      />
+    )
   }
 
   return (
@@ -37,10 +44,13 @@ const NewCourse = () => {
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("createCourse")}
         </H1NoBackground>
-        {loading ? (
+        {studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
         ) : (
-          <CourseEdit modules={data?.study_modules} />
+          <CourseEdit
+            modules={studyModulesData?.study_modules}
+            courses={coursesData?.courses}
+          />
         )}
       </WideContainer>
     </section>

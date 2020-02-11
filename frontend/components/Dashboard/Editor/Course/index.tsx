@@ -8,6 +8,7 @@ import {
   AllCoursesQuery,
   AllEditorCoursesQuery,
   CheckSlugQuery,
+  CourseEditorCoursesQuery,
 } from "/graphql/queries/courses"
 import {
   AddCourseMutation,
@@ -15,20 +16,23 @@ import {
   DeleteCourseMutation,
 } from "/graphql/mutations/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
 import { toCourseForm, fromCourseForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import getCoursesTranslator from "/translations/courses"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
 const CourseEdit = ({
   course,
   modules,
+  courses,
 }: {
   course?: CourseDetails_course
-  modules?: StudyModules_study_modules[]
+  modules?: CourseEditorStudyModules_study_modules[]
+  courses?: CourseEditorCourses_courses[]
 }) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
@@ -39,6 +43,7 @@ const CourseEdit = ({
     refetchQueries: [
       { query: AllCoursesQuery },
       { query: AllEditorCoursesQuery },
+      { query: CourseEditorCoursesQuery },
     ],
   })
   const checkSlug = CheckSlugQuery
@@ -67,6 +72,7 @@ const CourseEdit = ({
       const refetchQueries = [
         { query: AllCoursesQuery },
         { query: AllEditorCoursesQuery },
+        { query: CourseEditorCoursesQuery },
         !newCourse
           ? { query: CourseQuery, variables: { slug: values.new_slug } }
           : undefined,
@@ -109,6 +115,7 @@ const CourseEdit = ({
     <CourseEditForm
       course={initialValues}
       studyModules={modules}
+      courses={courses}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
       onCancel={onCancel}

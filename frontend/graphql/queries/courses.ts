@@ -68,3 +68,37 @@ export const CheckSlugQuery = gql`
     course_exists(slug: $slug)
   }
 `
+
+export const CourseEditorStudyModuleQuery = gql`
+  query CourseEditorStudyModules {
+    study_modules {
+      id
+      name
+      slug
+    }
+  }
+`
+export const CourseEditorCoursesQuery = gql`
+  query CourseEditorCourses {
+    courses {
+      id
+      slug
+      name
+      course_translations {
+        id
+        name
+        language
+      }
+      photo {
+        id
+        name
+        original
+        original_mimetype
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
+    }
+  }
+`
