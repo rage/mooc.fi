@@ -52,7 +52,7 @@
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^14.6.0",
-    "graphql-upload": "^10.0.0",
+    "graphql-upload": "8.1.0",
     "graphql-yoga": "^1.18.3",
     "lodash": "^4.17.15",
     "luxon": "^1.22.0",
