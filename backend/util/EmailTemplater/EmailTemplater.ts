@@ -26,4 +26,6 @@ export class EmailTemplater {
     })
     return render(template, this.keyWordToTemplate)
   }
+
+  private prepare() {}
 }
