@@ -58,11 +58,16 @@ const FormSubtitle = styled(Typography)`
 `
 
 interface RenderFormProps {
+  initialValues?: CourseFormValues
   courses?: CourseEditorCourses_courses[]
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
+const renderForm = ({
+  initialValues,
+  courses,
+  studyModules,
+}: RenderFormProps) => ({
   errors,
   values,
   isSubmitting,
@@ -81,6 +86,12 @@ Pick<
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
   const [dialogOpen, setDialogOpen] = useState(false)
+
+  const resetPhoto = useCallback(() => {
+    // setFieldValue("photo", null)
+    setFieldValue("new_photo", initialValues?.photo ? "<DELETE>" : null)
+    setFieldValue("thumbnail", "")
+  }, [])
 
   const coursesWithPhotos =
     courses
@@ -313,9 +324,7 @@ Pick<
                 ): void => {
                   e.stopPropagation()
                   e.nativeEvent.stopImmediatePropagation()
-                  setFieldValue("photo", undefined)
-                  setFieldValue("new_photo", undefined)
-                  setFieldValue("thumbnail", undefined)
+                  resetPhoto()
                 }}
               />
             </ImageDropzoneInput>
@@ -385,7 +394,11 @@ const CourseEditForm = React.memo(
         render={formikProps => (
           <FormWrapper<CourseFormValues>
             {...formikProps}
-            renderForm={renderForm({ courses, studyModules })}
+            renderForm={renderForm({
+              initialValues: course,
+              courses,
+              studyModules,
+            })}
             onCancel={onCancel}
             onDelete={onDelete}
           />

@@ -168,18 +168,22 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       let photo = course.photo
 
-      if (new_photo) {
+      if (new_photo && new_photo !== "<DELETE>") {
         const newImage = await uploadImage({
           prisma,
           file: new_photo,
           base64: base64 ?? false,
         })
-
         if (photo && photo !== newImage.id) {
           // TODO: do something with return value
           await deleteImage({ prisma, id: photo })
         }
         photo = newImage.id
+      }
+
+      if (photo && new_photo === "<DELETE>") {
+        await deleteImage({ prisma, id: photo })
+        photo = null
       }
 
       // FIXME: I know there's probably a better way to do this

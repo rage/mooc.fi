@@ -21,7 +21,7 @@ export interface CourseFormValues extends FormValues {
   study_modules?: { [key: string]: boolean } | null
   course_variants: CourseVariantFormValues[]
   thumbnail?: string | null
-  new_photo?: File
+  new_photo?: File | null
   new_slug: string
   base64?: boolean
   order?: number
