@@ -43,6 +43,7 @@ export const initialValues: CourseFormValues = {
   order: undefined,
   study_module_order: undefined,
   course_variants: [],
+  delete_photo: false,
 }
 
 export const statuses = (t: Function) => [

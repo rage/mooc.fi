@@ -61,7 +61,13 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
 
       const newCourse: Course = await prisma.createCourse({
-        ...omit(course, ["id", "base64", "new_slug", "new_photo"]),
+        ...omit(course, [
+          "id",
+          "base64",
+          "new_slug",
+          "new_photo",
+          "delete_photo",
+        ]),
         photo: !!photo ? { connect: { id: photo } } : null,
         course_translations: !!course_translations
           ? { create: course_translations }
@@ -160,6 +166,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_variants,
         study_modules,
         completion_email,
+        delete_photo,
       } = course
 
       if (!slug) {
@@ -168,7 +175,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
       let photo = course.photo
 
-      if (new_photo && new_photo !== "<DELETE>") {
+      if (new_photo) {
         const newImage = await uploadImage({
           prisma,
           file: new_photo,
@@ -181,7 +188,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         photo = newImage.id
       }
 
-      if (photo && new_photo === "<DELETE>") {
+      if (photo && delete_photo) {
         await deleteImage({ prisma, id: photo })
         photo = null
       }
@@ -233,7 +240,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           slug,
         },
         data: {
-          ...omit(course, ["base64", "new_slug", "new_photo"]),
+          ...omit(course, ["base64", "new_slug", "new_photo", "delete_photo"]),
           slug: new_slug ? new_slug : slug,
           // FIXME: disconnect removed photos?
           photo: !!photo ? { connect: { id: photo } } : null,
