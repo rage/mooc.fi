@@ -4,10 +4,11 @@ import * as Templates from "./templates"
 import { EmailTemplate, User } from "/generated/prisma-client"
 import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
 import Template from "./types/Template"
+import ITemplateConstructor from "./types/ITemplateConstructor"
 
 export class EmailTemplater {
   keyWordToTemplate: KeyWordToTemplateType = {
-    completion_link: typeof Templates.CompletionLink,
+    completion_link: Templates.CompletionLink,
   }
   emailTemplate: EmailTemplate
   user: User
@@ -15,6 +16,7 @@ export class EmailTemplater {
   constructor(emailTemplate: EmailTemplate, user: User) {
     this.emailTemplate = emailTemplate
     this.user = user
+    this.prepare()
   }
 
   async resolve(): Promise<string> {
@@ -27,5 +29,14 @@ export class EmailTemplater {
     return render(template, this.keyWordToTemplate)
   }
 
-  private prepare() {}
+  private prepare() {
+    Object.getOwnPropertyNames(this.keyWordToTemplate).forEach(p => {
+      this.keyWordToTemplate[p] = <Template>(
+        new (<ITemplateConstructor>this.keyWordToTemplate[p])({
+          emailTemplate: this.emailTemplate,
+          user: this.user,
+        })
+      )
+    })
+  }
 }
