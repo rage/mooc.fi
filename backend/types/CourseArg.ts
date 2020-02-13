@@ -10,6 +10,7 @@ const CourseArg = inputObjectType({
     t.string("ects")
     t.id("photo", { required: false })
     t.field("new_photo", { type: "Upload", required: false })
+    t.boolean("delete_photo", { required: false })
     t.boolean("base64")
     t.boolean("start_point")
     t.boolean("promote")

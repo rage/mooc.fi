@@ -61,7 +61,13 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
 
       const newCourse: Course = await prisma.createCourse({
-        ...omit(course, ["id", "base64", "new_slug", "new_photo"]),
+        ...omit(course, [
+          "id",
+          "base64",
+          "new_slug",
+          "new_photo",
+          "delete_photo",
+        ]),
         photo: !!photo ? { connect: { id: photo } } : null,
         course_translations: !!course_translations
           ? { create: course_translations }
@@ -160,6 +166,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_variants,
         study_modules,
         completion_email,
+        delete_photo,
       } = course
 
       if (!slug) {
@@ -174,12 +181,16 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           file: new_photo,
           base64: base64 ?? false,
         })
-
         if (photo && photo !== newImage.id) {
           // TODO: do something with return value
           await deleteImage({ prisma, id: photo })
         }
         photo = newImage.id
+      }
+
+      if (photo && delete_photo) {
+        await deleteImage({ prisma, id: photo })
+        photo = null
       }
 
       // FIXME: I know there's probably a better way to do this
@@ -229,7 +240,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           slug,
         },
         data: {
-          ...omit(course, ["base64", "new_slug", "new_photo"]),
+          ...omit(course, ["base64", "new_slug", "new_photo", "delete_photo"]),
           slug: new_slug ? new_slug : slug,
           // FIXME: disconnect removed photos?
           photo: !!photo ? { connect: { id: photo } } : null,
