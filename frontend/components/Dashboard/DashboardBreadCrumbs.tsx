@@ -253,7 +253,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   return (
     <BreadCrumbs>
       <BreadcrumbComponent target={homeLink} key="breadcrumb-home">
-        {t("title")?.["/"] ?? "Home"}
+        {t("title", { title: "..." })?.["/"] ?? "Home"}
       </BreadcrumbComponent>
       {urlRouteComponents.map((component, idx) => {
         let target: string | undefined = `/${component}`
@@ -263,7 +263,9 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
         const route = `/[lng]${getRoute(`/${href}`)}`
 
         let content =
-          t("breadcrumb")?.[route] || t("title")?.[route] || component
+          t("breadcrumb")?.[route] ||
+          t("title", { title: "..." })?.[route] ||
+          component
 
         if (idx === 0) {
           target = routeTranslations[component] || target
@@ -279,6 +281,10 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
               content = null
             } else {
               content = awaitedCrumb
+              document.title =
+                t("title", { title: content ?? "..." })?.[
+                  getRoute(urlWithQueryRemoved)
+                ] || document.title
             }
           }
         }

@@ -148,10 +148,12 @@ const ImportPhotoDialog = ({
         </ImageContainer>
       </DialogContent>
       <DialogActions>
+        <Button onClick={onClose} color="secondary">
+          {t("importPhotoDialogCancel")}
+        </Button>
         <Button color="primary" onClick={handleSelection}>
           {t("importPhotoDialogSelect")}
         </Button>
-        <Button onClick={onClose}>{t("importPhotoDialogCancel")}</Button>
       </DialogActions>
     </Dialog>
   )
