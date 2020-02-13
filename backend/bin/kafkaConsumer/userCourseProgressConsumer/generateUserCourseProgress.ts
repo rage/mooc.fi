@@ -13,6 +13,7 @@ import {
 import * as nodemailer from "nodemailer"
 import { render } from "micromustache"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
+import { EmailTemplater } from "/util/EmailTemplater/EmailTemplater"
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
@@ -75,23 +76,16 @@ async function sendMail(user: User, template: EmailTemplate) {
     from: email_from, // sender address
     to: user.email, // list of receivers
     subject: template.title, // Subject line
-    text: await SimpleTemplateArgsReplace(template.txt_body ?? "", template), // plain text body
+    text: await ApplyTemplate(template, user), // plain text body
     html: template.html_body, // html body
   })
   console.log("Message sent: %s", info.messageId)
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
 
-/* Will Replace this later. Just a simple and fast way to publish quickly.*/
-const SimpleTemplateArgsReplace = async (
-  template: string,
-  email_template: EmailTemplate | null,
-) => {
-  const completion_link_slug = (await prisma.courses({
-    where: { completion_email: email_template },
-  }))[0].slug
-  const completion_link = `https://www.mooc.fi/register-completion/${completion_link_slug}`
-  return render(template, { completion_link: completion_link })
+const ApplyTemplate = async (email_template: EmailTemplate, user: User) => {
+  const templater = new EmailTemplater(email_template, user)
+  return await templater.resolve()
 }
 
 const GetCombinedUserCourseProgress = async (
