@@ -11,7 +11,6 @@ import {
   UserCourseServiceProgress,
 } from "../../../generated/prisma-client"
 import * as nodemailer from "nodemailer"
-import { render } from "micromustache"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "/util/EmailTemplater/EmailTemplater"
 
