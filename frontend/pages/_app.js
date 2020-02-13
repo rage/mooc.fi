@@ -59,7 +59,7 @@ class MyApp extends App {
     } = this.props
 
     const t = getPageTranslator(lng)
-    const titleString = t("title")?.[hrefUrl]
+    const titleString = t("title", { title: "..." })?.[hrefUrl]
 
     const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
