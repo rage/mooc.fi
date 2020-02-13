@@ -89,8 +89,12 @@ Pick<
 
   const resetPhoto = useCallback(() => {
     // setFieldValue("photo", null)
-    setFieldValue("new_photo", initialValues?.photo ? "<DELETE>" : null)
+    setFieldValue("new_photo", null)
     setFieldValue("thumbnail", "")
+
+    if (initialValues?.photo) {
+      setFieldValue("delete_photo", true)
+    }
   }, [])
 
   const coursesWithPhotos =

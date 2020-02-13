@@ -27,6 +27,7 @@ export interface CourseFormValues extends FormValues {
   order?: number
   study_module_order?: number
   import_photo?: string
+  delete_photo?: boolean
 }
 
 export interface CourseTranslationFormValues extends FormValues {
