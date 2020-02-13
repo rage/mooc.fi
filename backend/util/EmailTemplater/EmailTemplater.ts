@@ -21,8 +21,8 @@ export class EmailTemplater {
 
   async resolve(): Promise<string> {
     const template = this.emailTemplate.txt_body ?? ""
-    Object.getOwnPropertyNames(this.keyWordToTemplate).forEach(p => {
-      this.keyWordToTemplate[p] = (<Template>(
+    Object.getOwnPropertyNames(this.keyWordToTemplate).forEach(async p => {
+      this.keyWordToTemplate[p] = await (<Template>(
         this.keyWordToTemplate[p]
       )).resolve()
     })

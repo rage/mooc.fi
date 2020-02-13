@@ -10,5 +10,5 @@ export default abstract class Template implements ITemplate {
     this.emailTemplate = params.emailTemplate
     this.user = params.user
   }
-  abstract resolve(): string
+  abstract resolve(): Promise<string>
 }
