@@ -1,5 +1,5 @@
 import Template from "../types/Template"
-import { prisma } from "/generated/prisma-client"
+import { prisma } from "../../../generated/prisma-client"
 
 export class CompletionLink extends Template {
   async resolve() {

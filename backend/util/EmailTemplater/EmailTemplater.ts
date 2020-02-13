@@ -21,11 +21,7 @@ export class EmailTemplater {
 
   async resolve(): Promise<string> {
     const template = this.emailTemplate.txt_body ?? ""
-    Object.getOwnPropertyNames(this.keyWordToTemplate).forEach(async p => {
-      this.keyWordToTemplate[p] = await (<Template>(
-        this.keyWordToTemplate[p]
-      )).resolve()
-    })
+    await this.resolveAllTemplates()
     return render(template, this.keyWordToTemplate)
   }
 
@@ -38,5 +34,22 @@ export class EmailTemplater {
         })
       )
     })
+  }
+
+  private async resolveAllTemplates(): Promise<void> {
+    await this.asyncForEach(
+      Object.getOwnPropertyNames(this.keyWordToTemplate),
+      async (p: string) => {
+        this.keyWordToTemplate[p] = <string>(
+          await (<Template>this.keyWordToTemplate[p]).resolve()
+        )
+      },
+    )
+  }
+
+  async asyncForEach(array: any[], callback: Function) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array)
+    }
   }
 }
