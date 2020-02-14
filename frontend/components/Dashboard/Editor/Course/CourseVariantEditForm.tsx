@@ -5,7 +5,6 @@ import { Grid, FormControl, FormGroup, Typography } from "@material-ui/core"
 import { initialVariant } from "./form-validation"
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
-import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -14,7 +13,6 @@ import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { StyledLabel } from "./CourseEditForm"
 import { useConfirm } from "material-ui-confirm"
-
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
@@ -42,7 +40,6 @@ const CourseVariantEditForm = ({
               name="course_variants"
               render={helpers => (
                 <>
-                  
                   {values!.length ? (
                     values!.map((variant, index: number) => (
                       <Grid container spacing={2} key={`variant-${index}`}>
@@ -97,21 +94,16 @@ const CourseVariantEditForm = ({
                                   helpers.remove(index)
                                 } else {
                                   confirm({
-                                      title: t("confirmationAreYouSure"),
-                                      description: t(
-                                        "confirmationRemoveVariant",
-                                      ),
-                                      confirmationText: t("confirmationYes"),
-                                      cancellationText: t("confirmationNo"),
-                                    }).then(() => helpers.remove(index))
-                                  }
-
-                                }}
-                                endIcon={
-                                  <RemoveIcon>{t("courseRemove")}</RemoveIcon>
-
+                                    title: t("confirmationAreYouSure"),
+                                    description: t("confirmationRemoveVariant"),
+                                    confirmationText: t("confirmationYes"),
+                                    cancellationText: t("confirmationNo"),
+                                  }).then(() => helpers.remove(index))
                                 }
-                              
+                              }}
+                              endIcon={
+                                <RemoveIcon>{t("courseRemove")}</RemoveIcon>
+                              }
                             >
                               {t("courseRemove")}
                             </StyledButton>

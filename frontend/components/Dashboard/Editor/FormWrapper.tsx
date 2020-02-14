@@ -53,9 +53,6 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
   return (
     <Container maxWidth="md">
       <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
-        
-        
-
         {renderForm(props)}
         <br />
         <Grid container direction="row" spacing={2}>
@@ -86,7 +83,6 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
                       cancellationText: t("confirmationNo"),
                     }).then(onCancel)
                   : onCancel()
-              }
               }
             >
               {t("cancel")}
@@ -119,7 +115,6 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
               </StyledButton>
             ) : null}
           </Grid>
-
         </Grid>
         {status?.message ? (
           <Status error={status.error}>

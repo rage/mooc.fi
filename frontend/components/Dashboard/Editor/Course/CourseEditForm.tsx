@@ -6,14 +6,10 @@ import {
   Typography,
   List,
   ListItem,
-
   FormLabel,
   Radio,
   RadioGroup,
   FormGroup,
-
-  Button,
-
 } from "@material-ui/core"
 import {
   Formik,
@@ -34,15 +30,14 @@ import { statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { StudyModules_study_modules } from "/static/types/generated/StudyModules"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import DatePickerField from "./DatePickers"
 import LuxonUtils from "@date-io/luxon"
 import { MuiPickersUtilsProvider } from "@material-ui/pickers"
-import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
-
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
 interface CoverProps {
   covered: boolean
@@ -99,19 +94,13 @@ const inputLabelProps = {
   classes: { root: "input-label", required: "input-required" },
 }
 
-
 interface RenderFormProps {
   initialValues?: CourseFormValues
   courses?: CourseEditorCourses_courses[]
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-const renderForm = ({
-  initialValues,
-  courses,
-  studyModules,
-}: RenderFormProps) => ({
-
+const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
   errors,
 
   values,
@@ -144,36 +133,6 @@ Pick<
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedState((event.target as HTMLInputElement).value)
   }
-  const [dialogOpen, setDialogOpen] = useState(false)
-
-  const resetPhoto = useCallback(() => {
-    // setFieldValue("photo", null)
-    setFieldValue("new_photo", null)
-    setFieldValue("thumbnail", "")
-
-    if (initialValues?.photo) {
-      setFieldValue("delete_photo", true)
-    }
-  }, [])
-
-  const coursesWithPhotos =
-    courses
-      ?.filter(
-        (course: CourseEditorCourses_courses) =>
-          course.slug !== values.slug && !!course?.photo?.compressed,
-      )
-      .map(course => {
-        const translation = (course.course_translations?.filter(
-          t => t.language === language,
-        ) ?? [])[0]
-
-        return {
-          ...course,
-          name: translation?.name ?? course.name,
-        }
-      })
-      .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? []
-
 
   return (
     <MuiPickersUtilsProvider utils={LuxonUtils}>
@@ -192,6 +151,7 @@ Pick<
             values={values}
             errors={errors}
             setFieldValue={setFieldValue}
+            courses={courses}
           />
 
           <FormSubtitle variant="h6" component="h3" align="center">
@@ -329,23 +289,24 @@ Pick<
               <FormLabel>{t("courseModules")}</FormLabel>
               <FormGroup>
                 <ModuleList>
-                  {studyModules?.map((module: StudyModules_study_modules) => (
-                    <ModuleListItem key={module.id}>
-                      <FormControlLabel
-                        control={
-                          <Field
-                            label={module.name}
-                            type="checkbox"
-                            name={`study_modules[${module.id}]`}
-                            value={(values.study_modules || {})[module.id]}
-                            component={Checkbox}
-                          />
-                        }
-                        label={module.name}
-                      />
-                    </ModuleListItem>
-
-                  ))}
+                  {studyModules?.map(
+                    (module: CourseEditorStudyModules_study_modules) => (
+                      <ModuleListItem key={module.id}>
+                        <FormControlLabel
+                          control={
+                            <Field
+                              label={module.name}
+                              type="checkbox"
+                              name={`study_modules[${module.id}]`}
+                              value={(values.study_modules || {})[module.id]}
+                              component={Checkbox}
+                            />
+                          }
+                          label={module.name}
+                        />
+                      </ModuleListItem>
+                    ),
+                  )}
                 </ModuleList>
               </FormGroup>
             </FormControl>
@@ -447,8 +408,6 @@ Pick<
         </SelectLanguageFirtsCover>
       </Form>
     </MuiPickersUtilsProvider>
-
-     
   )
 }
 
