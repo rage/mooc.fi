@@ -170,7 +170,6 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         status,
 
         delete_photo,
-
       } = course
       let { end_date } = course
       if (!slug) {
@@ -201,12 +200,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         end_date = new Date().toLocaleDateString()
       }
 
-
       if (photo && delete_photo) {
         await deleteImage({ prisma, id: photo })
         photo = null
       }
-
 
       // FIXME: I know there's probably a better way to do this
       const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = await createMutation(

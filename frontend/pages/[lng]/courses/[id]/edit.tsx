@@ -102,6 +102,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
     loading: studyModulesLoading,
     error: studyModulesError,
   } = useQuery<CourseEditorStudyModules>(CourseEditorStudyModuleQuery)
+
   const {
     data: coursesData,
     loading: coursesLoading,
@@ -138,9 +139,8 @@ const EditCourse = ({ router }: EditCourseProps) => {
       <WideContainer>
         <H1Background component="h1" variant="h1" align="center">
           {t("editCourse")}
-
         </H1Background>
-        {courseLoading || studyModulesLoading ? (
+        {courseLoading || studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
         ) : courseData!.course ? (
           <CourseEdit

@@ -12,9 +12,6 @@ import LanguageContext from "/contexes/LanguageContext"
 import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
 import styled from "styled-components"
 
-import { useConfirm } from "material-ui-confirm"
-
-
 const AddTranslationNotice = styled(EntryContainer)`
   margin-bottom: 1rem;
   border: 1px solid #88732d;
@@ -31,8 +28,6 @@ const CourseTranslationEditForm = ({
 }) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
-  const confirm = useConfirm()
-
 
   return (
     <section>
@@ -41,7 +36,6 @@ const CourseTranslationEditForm = ({
           name="course_translations"
           render={() => (
             <>
-
               {values.length != 0 ? (
                 values?.map(
                   (value: CourseTranslationFormValues, index: number) => (
@@ -56,8 +50,6 @@ const CourseTranslationEditForm = ({
                 )
               ) : (
                 <AddTranslationNotice elevation={1}>
-                  <Typography variant="h3" component="p" align="center">
-
                   <Typography variant="body1">
                     {t("courseAtLeastOneTranslation")}
                   </Typography>
