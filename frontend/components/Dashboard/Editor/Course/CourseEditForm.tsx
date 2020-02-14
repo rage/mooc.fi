@@ -124,7 +124,7 @@ Pick<
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedState((event.target as HTMLInputElement).value)
   }
-  console.log(values)
+
   return (
     <MuiPickersUtilsProvider utils={LuxonUtils}>
       <Form style={{ backgroundColor: "white", padding: "2rem" }}>
