@@ -160,10 +160,6 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_variants,
         study_modules,
         completion_email,
-        start_date,
-        teacher_in_charge_name,
-        teacher_in_charge_email,
-        support_email,
         status,
       } = course
       let { end_date } = course
