@@ -115,16 +115,22 @@ const BreadCrumbSkeleton = styled(Skeleton)`
   background: #e6e5e5;
 `
 
-const routes = {
+const asToHref = {
   "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[id]$3", // matches /(courses|study-modules)/[id]*, doesn't match new
   "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
   "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
   "/register-completion/(.+)": "/register-completion/[slug]",
-  "/en/": "/[lng]/",
+  "/(en|fi|se)/": "/[lng]/",
+}
+
+// add non-existing root routes here
+const routeTranslations: Record<string, string> = {
+  users: "/users/search",
+  "register-completion": "/",
 }
 
 const getRoute = (target?: string) =>
-  Object.entries(routes).reduce((acc, [toReplace, replace]) => {
+  Object.entries(asToHref).reduce((acc, [toReplace, replace]) => {
     const regex = new RegExp(toReplace, "gm")
 
     return acc.replace(regex, replace)
@@ -156,13 +162,13 @@ interface Props {
   router: SingletonRouter
 }
 
-const isCourseOrModule = memoize((param: string | string[]): boolean => {
+const shouldFetchName = memoize((param: string | string[]): boolean => {
   if (Array.isArray(param)) {
     // no need to wait for anything if ending with courses/study-modules
-    return param.slice(0, -1).some(r => isCourseOrModule(r))
+    return param.slice(0, -1).some(r => shouldFetchName(r))
   }
 
-  return ["courses", "study-modules"].includes(param)
+  return ["courses", "study-modules", "register-completion"].includes(param)
 })
 
 const DashboardBreadCrumbs = React.memo((props: Props) => {
@@ -188,7 +194,10 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
 
   const t = getPageTranslator(language)
 
-  const urlRouteComponents = urlWithQueryRemoved.split("/").slice(2)
+  let urlRouteComponents = urlWithQueryRemoved.split("/")
+  urlRouteComponents = urlRouteComponents.slice(
+    urlRouteComponents[1] === "register-completion" ? 1 : 2,
+  )
 
   const getAwaitedCrumbs = useCallback(async (type: string, slug: string) => {
     // TODO: invalidate queries on editor (if needed?)
@@ -197,6 +206,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
     const params: Record<string, [DocumentNode, string]> = {
       courses: [BreadcrumbCourseQuery, "course"],
       "study-modules": [BreadcrumbModuleQuery, "study_module"],
+      "register-completion": [BreadcrumbCourseQuery, "course"],
     }
 
     const [query, path] = params[type]
@@ -218,11 +228,11 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   }, [])
 
   useEffect(() => {
-    if (isCourseOrModule(urlRouteComponents)) {
+    if (shouldFetchName(urlRouteComponents)) {
       urlRouteComponents.forEach((c, i) => {
         if (
           i > 0 &&
-          isCourseOrModule(urlRouteComponents[i - 1]) &&
+          shouldFetchName(urlRouteComponents[i - 1]) &&
           urlRouteComponents[i] !== "new"
         ) {
           getAwaitedCrumbs(urlRouteComponents[i - 1], c)
@@ -243,7 +253,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
   return (
     <BreadCrumbs>
       <BreadcrumbComponent target={homeLink} key="breadcrumb-home">
-        {t("title")?.["/"] ?? "Home"}
+        {t("title", { title: "..." })?.["/"] ?? "Home"}
       </BreadcrumbComponent>
       {urlRouteComponents.map((component, idx) => {
         let target: string | undefined = `/${component}`
@@ -253,17 +263,17 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
         const route = `/[lng]${getRoute(`/${href}`)}`
 
         let content =
-          t("breadcrumb")?.[route] || t("title")?.[route] || component
+          t("breadcrumb")?.[route] ||
+          t("title", { title: "..." })?.[route] ||
+          component
 
         if (idx === 0) {
-          if (component == "users") {
-            target = `/${component}/search`
-          }
+          target = routeTranslations[component] || target
         } else {
           target = `/${href}`
 
           if (
-            isCourseOrModule(componentsSoFar[idx - 1]) &&
+            shouldFetchName(componentsSoFar[idx - 1]) &&
             component !== "new"
           ) {
             if (!awaitedCrumb) {
@@ -271,6 +281,10 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
               content = null
             } else {
               content = awaitedCrumb
+              document.title =
+                t("title", { title: content ?? "..." })?.[
+                  getRoute(urlWithQueryRemoved)
+                ] || document.title
             }
           }
         }

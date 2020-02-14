@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useContext } from "react"
+import React, { useCallback, useEffect, useContext, useState } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Field,
@@ -21,7 +21,6 @@ import * as Yup from "yup"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import { languages, initialTranslation } from "./form-validation"
 import styled from "styled-components"
-import ConfirmationDialog from "/components/Dashboard/ConfirmationDialog"
 import useDebounce from "/util/useDebounce"
 import HelpIcon from "@material-ui/icons/Help"
 import {
@@ -36,6 +35,7 @@ import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import getModulesTranslator from "/translations/study-modules"
 import LanguageContext from "/contexes/LanguageContext"
+import { useConfirm } from "material-ui-confirm"
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;
@@ -60,10 +60,9 @@ const RenderForm = ({
 >) => {
   const { language } = useContext(LanguageContext)
   const t = getModulesTranslator(language)
+  const confirm = useConfirm()
 
   const [imageError, setImageError] = useState("")
-  const [removeDialogVisible, setRemoveDialogVisible] = useState(false)
-  const [removableIndex, setRemovableIndex] = useState(-1)
 
   const [image] = useDebounce(values.image, 500)
   const [slug] = useDebounce(values.new_slug, 500)
@@ -158,22 +157,6 @@ const RenderForm = ({
           name="study_module_translations"
           render={helpers => (
             <>
-              <ConfirmationDialog
-                title={t("moduleConfirmationTitle")}
-                content={t("moduleConfirmationContent")}
-                acceptText={t("moduleConfirmationYes")}
-                rejectText={t("moduleConfirmationNo")}
-                onAccept={() => {
-                  setRemoveDialogVisible(false)
-                  removableIndex >= 0 && helpers.remove(removableIndex)
-                  setRemovableIndex(-1)
-                }}
-                onReject={() => {
-                  setRemoveDialogVisible(false)
-                  setRemovableIndex(-1)
-                }}
-                show={removeDialogVisible}
-              />
               {values?.study_module_translations?.map(
                 (_: any, index: number) => (
                   <LanguageEntry item key={`translation-${index}`}>
@@ -234,10 +217,14 @@ const RenderForm = ({
                           variant="contained"
                           disabled={isSubmitting}
                           color="secondary"
-                          onClick={() => {
-                            setRemoveDialogVisible(true)
-                            setRemovableIndex(index)
-                          }}
+                          onClick={() =>
+                            confirm({
+                              title: t("moduleConfirmationTitle"),
+                              description: t("moduleConfirmationContent"),
+                              confirmationText: t("moduleConfirmationYes"),
+                              cancellationText: t("moduleConfirmationNo"),
+                            }).then(() => helpers.remove(index))
+                          }
                         >
                           {t("moduleRemoveTranslation")}
                         </StyledButton>

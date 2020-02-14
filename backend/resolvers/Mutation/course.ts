@@ -61,7 +61,13 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
 
       const newCourse: Course = await prisma.createCourse({
-        ...omit(course, ["id", "base64", "new_slug", "new_photo"]),
+        ...omit(course, [
+          "id",
+          "base64",
+          "new_slug",
+          "new_photo",
+          "delete_photo",
+        ]),
         photo: !!photo ? { connect: { id: photo } } : null,
         course_translations: !!course_translations
           ? { create: course_translations }
@@ -160,7 +166,11 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_variants,
         study_modules,
         completion_email,
+
         status,
+
+        delete_photo,
+
       } = course
       let { end_date } = course
       if (!slug) {
@@ -175,13 +185,13 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           file: new_photo,
           base64: base64 ?? false,
         })
-
         if (photo && photo !== newImage.id) {
           // TODO: do something with return value
           await deleteImage({ prisma, id: photo })
         }
         photo = newImage.id
       }
+
       const existingCourse = await prisma.course({ slug })
       if (
         existingCourse?.status != status &&
@@ -190,6 +200,14 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       ) {
         end_date = new Date().toLocaleDateString()
       }
+
+
+      if (photo && delete_photo) {
+        await deleteImage({ prisma, id: photo })
+        photo = null
+      }
+
+
       // FIXME: I know there's probably a better way to do this
       const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = await createMutation(
         {
@@ -237,7 +255,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           slug,
         },
         data: {
-          ...omit(course, ["base64", "new_slug", "new_photo"]),
+          ...omit(course, ["base64", "new_slug", "new_photo", "delete_photo"]),
           slug: new_slug ? new_slug : slug,
           end_date,
           // FIXME: disconnect removed photos?

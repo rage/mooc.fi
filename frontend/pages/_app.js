@@ -19,6 +19,7 @@ import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
 import getPageTranslator from "/translations/pages"
+import { ConfirmProvider } from "material-ui-confirm"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -58,7 +59,7 @@ class MyApp extends App {
     } = this.props
 
     const t = getPageTranslator(lng)
-    const titleString = t("title")?.[hrefUrl]
+    const titleString = t("title", { title: "..." })?.[hrefUrl]
 
     const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
@@ -76,9 +77,11 @@ class MyApp extends App {
                   <LanguageContext.Provider
                     value={{ language: lng, url, hrefUrl }}
                   >
-                    <Layout>
-                      <Component {...pageProps} />
-                    </Layout>
+                    <ConfirmProvider>
+                      <Layout>
+                        <Component {...pageProps} />
+                      </Layout>
+                    </ConfirmProvider>
                   </LanguageContext.Provider>
                 </UserDetailContext.Provider>
               </LoginStateContext.Provider>

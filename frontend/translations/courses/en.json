@@ -72,5 +72,11 @@
   "courseTeacherInChargeName": "Teacher in charge - name",
   "courseTeacherInChargeEmail":"Teacher in charge - email",
   "courseSupportEmail":"Course support email",
-  "courseVariantsTitle": "Course variants"
+  "courseVariantsTitle": "Course variants",
+  "importPhotoButton": "Import photo from another course...",
+  "importPhotoDialogTitle": "Import photo",
+  "importPhotoDialogContent": "Select course",
+  "importPhotoLabel": "Select...",
+  "importPhotoDialogSelect": "OK",
+  "importPhotoDialogCancel": "Cancel"
 }

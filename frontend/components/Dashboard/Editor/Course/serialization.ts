@@ -75,6 +75,7 @@ export const toCourseForm = ({
         new_slug: course.slug,
         thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
         ects: course.ects ?? undefined,
+        import_photo: "",
       }
     : initialValues
 }
@@ -150,7 +151,7 @@ export const fromCourseForm = ({
     .map(id => ({ id }))
 
   const c: CourseArg = {
-    ...omit(values, ["id", "thumbnail", "__typename"]),
+    ...omit(values, ["id", "thumbnail", "import_photo", "__typename"]),
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     new_slug: values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,
