@@ -66,7 +66,7 @@
   "courseTeacherEmailRequired":"You must provide the e-mail of the teacher in charge of the course",
   "courseEmailInvalid": "Make sure the given e-mail address is correct",
   "courseDateHelper": "Date must be form dd/mm/yyyy",
-  "courseDatePlaceholder": "dd/mm/yyyy",
+  "courseDatePlaceholder": "yyyy-mm-dd",
   "courseStartDate": "Course start date",
   "courseEndDate": "Course end date",
   "courseTeacherInChargeName": "Teacher in charge - name",
