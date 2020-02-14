@@ -14,7 +14,7 @@ export const initialTranslation: CourseTranslationFormValues = {
   name: "",
   description: "",
   link: "",
-  open_university_course_code: undefined,
+  open_university_course_code: "",
 }
 
 export const initialVariant: CourseVariantFormValues = {
@@ -28,9 +28,15 @@ export const initialValues: CourseFormValues = {
   name: "",
   slug: "",
   new_slug: "",
-  thumbnail: "",
-  photo: "",
-  new_photo: null,
+  ects: "",
+  teacher_in_charge_name: "",
+  teacher_in_charge_email: "",
+  support_email: "",
+  start_date: "",
+  end_date: "",
+  thumbnail: undefined,
+  photo: undefined,
+  new_photo: undefined,
   base64: false,
   start_point: false,
   promote: false,
@@ -38,7 +44,7 @@ export const initialValues: CourseFormValues = {
   study_module_start_point: false,
   status: CourseStatus.Upcoming,
   study_modules: {},
-  course_translations: [initialTranslation],
+  course_translations: [],
   open_university_registration_links: [],
   order: undefined,
   study_module_order: undefined,
@@ -201,6 +207,14 @@ const courseEditSchema = ({
       /(^\d+(\-\d+)?$|^$)/,
       t("validationNumberRange"),
     ),
+    start_date: Yup.date().required(t("courseStartDateRequired")),
+    teacher_in_charge_name: Yup.string().required(
+      t("courseTeacherNameRequired"),
+    ),
+    teacher_in_charge_email: Yup.string()
+      .email(t("courseEmailInvalid"))
+      .required(t("courseTeacherEmailRequired")),
+    support_email: Yup.string().email(t("courseEmailInvalid")),
   })
 
 const validateSlug = ({

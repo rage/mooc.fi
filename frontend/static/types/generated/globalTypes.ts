@@ -26,6 +26,7 @@ export interface CourseArg {
   course_variants?: CourseVariantCreateUpdateInput[] | null
   delete_photo?: boolean | null
   ects?: string | null
+  end_date?: string | null
   hidden?: boolean | null
   id?: string | null
   name?: string | null
@@ -39,11 +40,15 @@ export interface CourseArg {
   points_needed?: number | null
   promote?: boolean | null
   slug?: string | null
+  start_date?: string | null
   start_point?: boolean | null
   status?: CourseStatus | null
   study_module_order?: number | null
   study_module_start_point?: boolean | null
   study_modules?: StudyModuleWhereUniqueInput[] | null
+  support_email?: string | null
+  teacher_in_charge_email?: string | null
+  teacher_in_charge_name?: string | null
 }
 
 export interface CourseTranslationCreateUpdateInput {

@@ -9,6 +9,11 @@ export interface CourseFormValues extends FormValues {
   id?: string | null
   name: string
   slug: string
+  teacher_in_charge_name: string
+  teacher_in_charge_email: string
+  support_email?: string
+  start_date: string
+  end_date?: string
   ects?: string
   photo?: string | CourseDetails_course_photo | null
   start_point: boolean
