@@ -12,6 +12,7 @@ module.exports = {
   ignorePatterns: ["node_modules/", "generated/", "dist/"],
   rules: {
     "eslint-custom-rules/ban-ts-ignore-without-comment": "error",
+    "eslint-custom-rules/no-material-ui-grid-component": "warn",
     "react-hooks/rules-of-hooks": "error",
     "@typescript-eslint/prefer-nullish-coalescing": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",
