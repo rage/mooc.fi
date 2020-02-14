@@ -166,9 +166,12 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_variants,
         study_modules,
         completion_email,
+
+        status,
+
         delete_photo,
       } = course
-
+      let { end_date } = course
       if (!slug) {
         throw new Error("slug required for update course")
       }
@@ -186,6 +189,15 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           await deleteImage({ prisma, id: photo })
         }
         photo = newImage.id
+      }
+
+      const existingCourse = await prisma.course({ slug })
+      if (
+        existingCourse?.status != status &&
+        status === "Ended" &&
+        end_date === ""
+      ) {
+        end_date = new Date().toLocaleDateString()
       }
 
       if (photo && delete_photo) {
@@ -242,6 +254,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         data: {
           ...omit(course, ["base64", "new_slug", "new_photo", "delete_photo"]),
           slug: new_slug ? new_slug : slug,
+          end_date,
           // FIXME: disconnect removed photos?
           photo: !!photo ? { connect: { id: photo } } : null,
           course_translations: Object.keys(translationMutation).length

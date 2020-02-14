@@ -54,6 +54,11 @@ export interface CourseDetails_course {
   ects: string | null
   order: number | null
   study_module_order: number | null
+  teacher_in_charge_name: string
+  teacher_in_charge_email: string
+  support_email: string | null
+  start_date: string
+  end_date: string | null
   photo: CourseDetails_course_photo | null
   promote: boolean | null
   start_point: boolean | null

@@ -52,11 +52,43 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
 
   return (
     <Container maxWidth="md">
-      <FormBackground elevation={1}>
+      <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
         {renderForm(props)}
         <br />
-        <Grid container direction="row">
-          <Grid item xs={3}>
+        <Grid container direction="row" spacing={2}>
+          <Grid item xs={4}>
+            <StyledButton
+              color="primary"
+              disabled={
+                !dirty || Object.keys(errors).length > 0 || isSubmitting
+              }
+              onClick={submitForm}
+              style={{ width: "100%" }}
+            >
+              {isSubmitting ? <CircularProgress size={20} /> : t("save")}
+            </StyledButton>
+          </Grid>
+          <Grid item xs={4}>
+            <StyledButton
+              color="secondary"
+              style={{ width: "100%" }}
+              disabled={isSubmitting}
+              variant="contained"
+              onClick={() =>
+                dirty
+                  ? confirm({
+                      title: t("confirmationUnsavedChanges"),
+                      description: t("confirmationLeaveWithoutSaving"),
+                      confirmationText: t("confirmationYes"),
+                      cancellationText: t("confirmationNo"),
+                    }).then(onCancel)
+                  : onCancel()
+              }
+            >
+              {t("cancel")}
+            </StyledButton>
+          </Grid>
+          <Grid item xs={2}>
             {!isProduction && values.id ? (
               <Tooltip title={t("showDelete")}>
                 <MUICheckbox
@@ -82,34 +114,6 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
                 {t("delete")}
               </StyledButton>
             ) : null}
-          </Grid>
-          <Grid container item justify="flex-end" xs={9}>
-            <StyledButton
-              color="secondary"
-              style={{ marginRight: "6px" }}
-              disabled={isSubmitting}
-              onClick={() =>
-                dirty
-                  ? confirm({
-                      title: t("confirmationUnsavedChanges"),
-                      description: t("confirmationLeaveWithoutSaving"),
-                      confirmationText: t("confirmationYes"),
-                      cancellationText: t("confirmationNo"),
-                    }).then(onCancel)
-                  : onCancel()
-              }
-            >
-              {t("cancel")}
-            </StyledButton>
-            <StyledButton
-              color="primary"
-              disabled={
-                !dirty || Object.keys(errors).length > 0 || isSubmitting
-              }
-              onClick={submitForm}
-            >
-              {isSubmitting ? <CircularProgress size={20} /> : t("save")}
-            </StyledButton>
           </Grid>
         </Grid>
         {status?.message ? (
