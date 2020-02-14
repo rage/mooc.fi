@@ -24,6 +24,7 @@ docker-compose up
 ```bash
 cd backend
 npm ci
+npm run prisma-deploy
 npm run dev
 ```
 
