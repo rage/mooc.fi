@@ -24,6 +24,7 @@ export interface CourseArg {
   completion_email?: string | null
   course_translations?: CourseTranslationCreateUpdateInput[] | null
   course_variants?: CourseVariantCreateUpdateInput[] | null
+  delete_photo?: boolean | null
   ects?: string | null
   end_date?: string | null
   hidden?: boolean | null

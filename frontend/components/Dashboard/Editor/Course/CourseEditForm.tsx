@@ -6,10 +6,14 @@ import {
   Typography,
   List,
   ListItem,
+
   FormLabel,
   Radio,
   RadioGroup,
   FormGroup,
+
+  Button,
+
 } from "@material-ui/core"
 import {
   Formik,
@@ -37,6 +41,8 @@ import LanguageContext from "/contexes/LanguageContext"
 import DatePickerField from "./DatePickers"
 import LuxonUtils from "@date-io/luxon"
 import { MuiPickersUtilsProvider } from "@material-ui/pickers"
+import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
+
 
 interface CoverProps {
   covered: boolean
@@ -58,6 +64,7 @@ export const FormSubtitle = styled(Typography)`
   margin-bottom: 1rem;
   font-size: 2em;
 `
+
 interface Labelprops {
   required?: boolean
 }
@@ -91,7 +98,20 @@ const inputLabelProps = {
   shrink: true,
   classes: { root: "input-label", required: "input-required" },
 }
-const renderForm = (studyModules?: StudyModules_study_modules[]) => ({
+
+
+interface RenderFormProps {
+  initialValues?: CourseFormValues
+  courses?: CourseEditorCourses_courses[]
+  studyModules?: CourseEditorStudyModules_study_modules[]
+}
+
+const renderForm = ({
+  initialValues,
+  courses,
+  studyModules,
+}: RenderFormProps) => ({
+
   errors,
 
   values,
@@ -124,6 +144,36 @@ Pick<
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedState((event.target as HTMLInputElement).value)
   }
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const resetPhoto = useCallback(() => {
+    // setFieldValue("photo", null)
+    setFieldValue("new_photo", null)
+    setFieldValue("thumbnail", "")
+
+    if (initialValues?.photo) {
+      setFieldValue("delete_photo", true)
+    }
+  }, [])
+
+  const coursesWithPhotos =
+    courses
+      ?.filter(
+        (course: CourseEditorCourses_courses) =>
+          course.slug !== values.slug && !!course?.photo?.compressed,
+      )
+      .map(course => {
+        const translation = (course.course_translations?.filter(
+          t => t.language === language,
+        ) ?? [])[0]
+
+        return {
+          ...course,
+          name: translation?.name ?? course.name,
+        }
+      })
+      .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? []
+
 
   return (
     <MuiPickersUtilsProvider utils={LuxonUtils}>
@@ -294,6 +344,7 @@ Pick<
                         label={module.name}
                       />
                     </ModuleListItem>
+
                   ))}
                 </ModuleList>
               </FormGroup>
@@ -396,6 +447,8 @@ Pick<
         </SelectLanguageFirtsCover>
       </Form>
     </MuiPickersUtilsProvider>
+
+     
   )
 }
 
@@ -403,13 +456,15 @@ const CourseEditForm = React.memo(
   ({
     course,
     studyModules,
+    courses,
     validationSchema,
     onSubmit,
     onCancel,
     onDelete,
   }: {
     course: CourseFormValues
-    studyModules?: StudyModules_study_modules[]
+    studyModules?: CourseEditorStudyModules_study_modules[]
+    courses?: CourseEditorCourses_courses[]
     validationSchema: Yup.ObjectSchema
     onSubmit: (
       values: CourseFormValues,
@@ -436,7 +491,11 @@ const CourseEditForm = React.memo(
         render={formikProps => (
           <FormWrapper<CourseFormValues>
             {...formikProps}
-            renderForm={renderForm(studyModules)}
+            renderForm={renderForm({
+              initialValues: course,
+              courses,
+              studyModules,
+            })}
             onCancel={onCancel}
             onDelete={onDelete}
           />

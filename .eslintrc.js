@@ -12,6 +12,34 @@ module.exports = {
   ignorePatterns: ["node_modules/", "generated/", "dist/"],
   rules: {
     "eslint-custom-rules/ban-ts-ignore-without-comment": "error",
+    "no-restricted-imports": [
+      "warn",
+      {
+        paths: [
+          {
+            name: "@material-ui/core",
+            importNames: ["Grid"],
+            message: "Don't use Grid from @material-ui",
+          },
+          {
+            name: "@material-ui/core/Grid",
+            importNames: ["default"],
+            message: "Don't use Grid from @material-ui",
+          },
+        ],
+      },
+    ],
+    "no-restricted-modules": [
+      "warn",
+      {
+        paths: [
+          {
+            name: "@material-ui/core/Grid",
+            message: "Don't use Grid from @material-ui",
+          },
+        ],
+      },
+    ],
     "react-hooks/rules-of-hooks": "error",
     "@typescript-eslint/prefer-nullish-coalescing": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",

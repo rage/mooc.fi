@@ -1,4 +1,4 @@
-// generated Thu Nov 28 2019 16:26:22 GMT+0200 (Eastern European Standard Time)
+// generated Fri Jan 31 2020 15:14:02 GMT+0200 (Eastern European Standard Time)
 
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
@@ -24,3 +24,4 @@ export { default as User } from "./User"
 export { default as UserConnection } from "./UserConnection"
 export { default as UserCourseProgress } from "./UserCourseProgress"
 export { default as UserCourseSettingsConnection } from "./UserCourseSettingsConnection"
+export { default as VerifiedUserArg } from "./VerifiedUserArg"
