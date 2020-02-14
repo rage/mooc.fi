@@ -29,6 +29,17 @@ module.exports = {
         ],
       },
     ],
+    "no-restricted-modules": [
+      "warn",
+      {
+        paths: [
+          {
+            name: "@material-ui/core/Grid",
+            message: "Don't use Grid from @material-ui",
+          },
+        ],
+      },
+    ],
     "react-hooks/rules-of-hooks": "error",
     "@typescript-eslint/prefer-nullish-coalescing": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",
