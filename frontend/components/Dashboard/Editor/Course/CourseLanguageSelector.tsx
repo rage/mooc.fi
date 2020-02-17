@@ -92,20 +92,20 @@ const CourseLanguageSelector = (props: LanguageSelectorProps) => {
             </StyledLanguageButton>
             <StyledLanguageButton
               selected={selectedLanguage === "both"}
-              onClick={async () => {
+              onClick={() => {
                 if (selectedLanguage === "") {
-                  await helpers.push({
+                  helpers.push({
                     ...initialTranslation,
                     language: "en_US",
                   })
-                  await helpers.push({
+                  helpers.push({
                     ...initialTranslation,
                     language: "fi_FI",
                   })
                 } else if (selectedLanguage === "fi") {
                   helpers.push({ ...initialTranslation, language: "en_US" })
                 } else {
-                  await helpers.push({
+                  helpers.push({
                     ...initialTranslation,
                     language: "fi_FI",
                   })

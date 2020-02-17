@@ -1,6 +1,9 @@
 import React, { useContext } from "react"
-import { Field, getIn } from "formik"
-import { StyledTextField } from "/components/Dashboard/Editor/common"
+import { getIn } from "formik"
+import {
+  StyledTextField,
+  StyledFieldWithAnchor,
+} from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import styled from "styled-components"
@@ -14,23 +17,14 @@ const LanguageVersionContainer = styled.div`
   width: 90%;
   margin: auto;
 `
+
 const LanguageVersionTitle = styled(Typography)`
   margin-bottom: 1.5rem;
   font-size: 33px;
   line-height: 52px;
   color: #005b5b;
 `
-const StyledField = styled(Field)`
-  .input-label {
-    background-color: white;
-    font-size: 23px;
-    padding-right: 7px;
-    transform: translate(14px, -9px) scale(0.75);
-  }
-  .input-required {
-    color: #df7a46;
-  }
-`
+
 const inputLabelProps = {
   fontSize: 16,
   shrink: true,
@@ -55,7 +49,7 @@ const CourseTranslationListItem = (props: Props) => {
           mapLangToLanguage[translationLanguage]
         }`}
       </LanguageVersionTitle>
-      <StyledField
+      <StyledFieldWithAnchor
         id={`course_translations[${index}].name`}
         name={`course_translations[${index}].name`}
         label={t("courseName")}
@@ -68,7 +62,7 @@ const CourseTranslationListItem = (props: Props) => {
         variant="outlined"
         component={StyledTextField}
       />
-      <StyledField
+      <StyledFieldWithAnchor
         id={`course_translations[${index}].description`}
         name={`course_translations[${index}].description`}
         type="textarea"
@@ -82,7 +76,7 @@ const CourseTranslationListItem = (props: Props) => {
         variant="outlined"
         component={StyledTextField}
       />
-      <StyledField
+      <StyledFieldWithAnchor
         id={`course_translations[${index}].link`}
         name={`course_translations[${index}].link`}
         type="text"
@@ -94,7 +88,7 @@ const CourseTranslationListItem = (props: Props) => {
         variant="outlined"
         component={StyledTextField}
       />
-      <StyledField
+      <StyledFieldWithAnchor
         label={t("courseOpenCode")}
         InputLabelProps={inputLabelProps}
         id={`course_translations[${index}].open_university_course_code`}

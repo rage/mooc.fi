@@ -185,16 +185,16 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
 
   //split the url path into parts
   //remove the first item, as we know it to be homepage
-  const urlWithQueryRemoved = currentUrl.split("?")[0]
+  const urlWithQueryAndAnchorRemoved = currentUrl.split("?")[0].split("#")[0]
 
   let homeLink: string = "/"
-  if (urlWithQueryRemoved.startsWith("/en")) {
+  if (urlWithQueryAndAnchorRemoved.startsWith("/en")) {
     homeLink = "/en/"
   }
 
   const t = getPageTranslator(language)
 
-  let urlRouteComponents = urlWithQueryRemoved.split("/")
+  let urlRouteComponents = urlWithQueryAndAnchorRemoved.split("/")
   urlRouteComponents = urlRouteComponents.slice(
     urlRouteComponents[1] === "register-completion" ? 1 : 2,
   )
@@ -283,7 +283,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
               content = awaitedCrumb
               document.title =
                 t("title", { title: content ?? "..." })?.[
-                  getRoute(urlWithQueryRemoved)
+                  getRoute(urlWithQueryAndAnchorRemoved)
                 ] || document.title
             }
           }
