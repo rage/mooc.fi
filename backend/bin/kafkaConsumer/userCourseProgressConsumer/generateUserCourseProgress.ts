@@ -12,7 +12,7 @@ import {
 } from "../../../generated/prisma-client"
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
-import { EmailTemplater } from "/util/EmailTemplater/EmailTemplater"
+import { EmailTemplater } from "../../../util/EmailTemplater/EmailTemplater"
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
