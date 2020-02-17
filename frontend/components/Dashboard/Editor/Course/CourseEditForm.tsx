@@ -30,7 +30,10 @@ import { statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
-import { StyledTextField } from "/components/Dashboard/Editor/common"
+import {
+  StyledTextField,
+  StyledFieldWithAnchor,
+} from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import DatePickerField from "./DatePickers"
@@ -77,17 +80,6 @@ export const FormFieldGroup = styled.div`
   border-bottom: 4px dotted #98b0a9;
 `
 
-const StyledField = styled(Field)`
-  .input-label {
-    background-color: white;
-    font-size: 23px;
-    padding-right: 7px;
-    transform: translate(14px, -9px) scale(0.75);
-  }
-  .input-required {
-    color: #df7a46;
-  }
-`
 const inputLabelProps = {
   fontSize: 16,
   shrink: true,
@@ -153,7 +145,7 @@ Pick<
             {t("courseDetails")}
           </FormSubtitle>
           <FormFieldGroup>
-            <StyledField
+            <StyledFieldWithAnchor
               id="input-course-name"
               style={{ width: "80%" }}
               name="name"
@@ -166,7 +158,7 @@ Pick<
               component={StyledTextField}
               required={true}
             />
-            <StyledField
+            <StyledFieldWithAnchor
               id="input-course-slug"
               style={{ width: "40%" }}
               name="new_slug"
@@ -180,7 +172,7 @@ Pick<
               required={true}
               helperText={t("courseSlugHelper")}
             />
-            <StyledField
+            <StyledFieldWithAnchor
               style={{ width: "25%" }}
               name="ects"
               type="text"
@@ -194,7 +186,7 @@ Pick<
           </FormFieldGroup>
 
           <FormFieldGroup>
-            <StyledField
+            <StyledFieldWithAnchor
               id="start-date"
               name="start_date"
               label={t("courseStartDate")}
@@ -204,7 +196,7 @@ Pick<
               InputLabelProps={inputLabelProps}
               emptyLabel={t("courseDatePlaceholder")}
             />
-            <StyledField
+            <StyledFieldWithAnchor
               id="end-date"
               name="end_date"
               error={errors.end_date}
@@ -216,7 +208,7 @@ Pick<
           </FormFieldGroup>
 
           <FormFieldGroup>
-            <StyledField
+            <StyledFieldWithAnchor
               id="input-teacher-in-charge-name"
               style={{ width: "80%" }}
               name="teacher_in_charge_name"
@@ -229,7 +221,7 @@ Pick<
               component={StyledTextField}
               required={true}
             />
-            <StyledField
+            <StyledFieldWithAnchor
               id="input-teacher-in-charge-email"
               style={{ width: "60%" }}
               name="teacher_in_charge_email"
@@ -242,7 +234,7 @@ Pick<
               component={StyledTextField}
               required={true}
             />
-            <StyledField
+            <StyledFieldWithAnchor
               id="support-email"
               style={{ width: "60%" }}
               name="support_email"
@@ -261,6 +253,7 @@ Pick<
               <FormLabel component="legend" style={{ color: "#DF7A46" }}>
                 {t("courseStatus")}*
               </FormLabel>
+              <a id="status" />
               <RadioGroup
                 aria-label="course status"
                 name="status"
@@ -289,6 +282,7 @@ Pick<
               <FormLabel>{t("courseModules")}</FormLabel>
               <FormGroup>
                 <ModuleList>
+                  <a id="study_modules" />
                   {studyModules?.map(
                     (module: CourseEditorStudyModules_study_modules) => (
                       <ModuleListItem key={module.id}>
@@ -367,7 +361,7 @@ Pick<
             </FormControl>
           </FormFieldGroup>
           <FormFieldGroup>
-            <StyledField
+            <StyledFieldWithAnchor
               name="order"
               type="number"
               label={t("courseOrder")}
@@ -379,7 +373,7 @@ Pick<
               style={{ width: "20%" }}
               InputLabelProps={inputLabelProps}
             />
-            <StyledField
+            <StyledFieldWithAnchor
               label={t("courseModuleOrder")}
               name="study_module_order"
               type="number"

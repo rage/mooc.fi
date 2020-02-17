@@ -14,6 +14,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import getCommonTranslator from "/translations/common"
 import LanguageContext from "/contexes/LanguageContext"
 import { useConfirm } from "material-ui-confirm"
+// import Router from "next/router"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
@@ -60,9 +61,28 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
             <StyledButton
               color="primary"
               disabled={
-                !dirty || Object.keys(errors).length > 0 || isSubmitting
+                !dirty || isSubmitting
+                //!dirty || Object.keys(errors).length > 0 || isSubmitting
               }
-              onClick={submitForm}
+              onClick={() => {
+                if (Object.keys(errors).length) {
+                  const [key, value] = Object.entries(errors)[0]
+
+                  let anchorLink = key
+                  if (Array.isArray(value)) {
+                    const firstIndex = parseInt(Object.keys(value)[0])
+                    anchorLink = `${key}[${firstIndex}].${
+                      Object.keys(value[firstIndex])[0]
+                    }`
+                  }
+                  window.location.replace(
+                    window.location.href.split("#")[0] + `#${anchorLink}`,
+                  )
+                  // Router.replace(`#${Object.keys(errors)[0]}`)
+                } else {
+                  submitForm()
+                }
+              }}
               style={{ width: "100%" }}
             >
               {isSubmitting ? <CircularProgress size={20} /> : t("save")}
