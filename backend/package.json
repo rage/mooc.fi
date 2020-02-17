@@ -18,7 +18,7 @@
     "send-ai-statistics": "ts-node ./bin/sendAiStatistics.ts",
     "import-organizations": "ts-node ./bin/importOrganizations.ts",
     "parse-file": "ts-node ./bin/parseFile.ts",
-    "start-kafka-consumers": "concurrently --kill-others npm:kafka-consumer-*",
+    "start-kafka-consumers": "concurrently --kill-others --restart-tries 2 npm:kafka-consumer-*",
     "kafka-consumer-user-course-progress": "ts-node --transpile-only ./bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.ts",
     "kafka-consumer-user-points": "ts-node  --transpile-only ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",
     "kafka-consumer-exercises": "ts-node  --transpile-only ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
