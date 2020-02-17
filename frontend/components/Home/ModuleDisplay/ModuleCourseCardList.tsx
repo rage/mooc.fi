@@ -34,6 +34,7 @@ const ShowMoreButton = styled(Button)`
   margin-left: 10%;
   margin-top: 2rem;
 `
+
 const ModuleCoursesListing = (props: CourseListProps) => {
   const { courses } = props
   const [showAll, setShowAll] = useState(false)
