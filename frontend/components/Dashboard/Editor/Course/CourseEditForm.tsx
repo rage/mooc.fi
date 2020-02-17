@@ -42,7 +42,7 @@ import { CourseEditorStudyModules_study_modules } from "/static/types/generated/
 interface CoverProps {
   covered: boolean
 }
-const SelectLanguageFirtsCover = styled.div<CoverProps>`
+const SelectLanguageFirstCover = styled.div<CoverProps>`
   ${props => `opacity: ${props.covered ? `0.2` : `1`}`}
 `
 const ModuleList = styled(List)`
@@ -129,11 +129,6 @@ Pick<
       : values?.course_translations[0].language,
   )
 
-  const [selectedState, setSelectedState] = useState<string>(values?.status)
-  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedState((event.target as HTMLInputElement).value)
-  }
-
   return (
     <MuiPickersUtilsProvider utils={LuxonUtils}>
       <Form style={{ backgroundColor: "white", padding: "2rem" }}>
@@ -146,7 +141,7 @@ Pick<
           errors={errors.course_translations}
           isSubmitting={isSubmitting}
         />
-        <SelectLanguageFirtsCover covered={selectedLanguage === ""}>
+        <SelectLanguageFirstCover covered={selectedLanguage === ""}>
           <CourseImageInput
             values={values}
             errors={errors}
@@ -268,9 +263,14 @@ Pick<
               </FormLabel>
               <RadioGroup
                 aria-label="course status"
-                name="courseStatus"
-                value={selectedState}
-                onChange={handleStatusChange}
+                name="status"
+                value={values.status}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  setFieldValue(
+                    "status",
+                    (event.target as HTMLInputElement).value,
+                  )
+                }
               >
                 {statuses.map((option: { value: string; label: string }) => (
                   <FormControlLabel
@@ -405,7 +405,7 @@ Pick<
             errors={errors.course_variants}
             isSubmitting={isSubmitting}
           />
-        </SelectLanguageFirtsCover>
+        </SelectLanguageFirstCover>
       </Form>
     </MuiPickersUtilsProvider>
   )

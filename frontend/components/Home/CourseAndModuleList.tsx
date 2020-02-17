@@ -15,6 +15,7 @@ const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
+import { CourseStatus } from "/static/types/globalTypes"
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
@@ -39,10 +40,11 @@ const CourseAndModuleList = () => {
     (): AllModules_study_modules_with_courses[] =>
       (study_modules || []).map(module => {
         const moduleCourses =
-          courses?.filter(course =>
-            course?.study_modules?.some(
-              courseModule => courseModule.id === module.id,
-            ),
+          courses?.filter(
+            course =>
+              course?.study_modules?.some(
+                courseModule => courseModule.id === module.id,
+              ) && course?.status !== CourseStatus.Ended,
           ) ?? []
 
         return { ...module, courses: moduleCourses }
@@ -57,6 +59,7 @@ const CourseAndModuleList = () => {
       ),
     [courses],
   )
+
   const promotedCourses = useMemo(
     () => activeCourses?.filter(c => c.promote) ?? [],
     [activeCourses],
