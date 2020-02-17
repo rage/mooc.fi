@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Grid, Typography, Badge } from "@material-ui/core"
+import { Grid, Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { CourseStatus } from "/static/types/globalTypes"
 import LanguageContext from "/contexes/LanguageContext"
@@ -75,6 +75,7 @@ const ContentArea = styled.div`
 
 interface HeaderProps {
   startPoint?: boolean | null
+  upcoming?: boolean | null
 }
 
 const Header = styled.div<HeaderProps>`
@@ -86,7 +87,8 @@ const Header = styled.div<HeaderProps>`
   top: 0;
   left: 0;
   color: #ffffff;
-  background-color: ${({ startPoint }) => (startPoint ? "#005A84" : "#158278")};
+  background-color: ${({ startPoint, upcoming }) =>
+    upcoming ? "#378170" : startPoint ? "#005A84" : "#158278"};
   width: 100%;
   display: flex;
 `
@@ -115,13 +117,20 @@ function ModuleSmallCourseCard({
             onClick={e => (course.link === "" ? e.preventDefault() : null)}
             aria-label={`To the course homepage of ${course.name}`}
           >
-            {showHeader && course!.study_module_start_point && (
-              <Header startPoint={course!.study_module_start_point}>
-                <Typography variant="body1">
-                  {t("moduleCourseStartPoint")}
-                </Typography>
-              </Header>
-            )}
+            {showHeader &&
+              (course!.study_module_start_point ||
+                course!.status === CourseStatus.Upcoming) && (
+                <Header
+                  startPoint={course!.study_module_start_point}
+                  upcoming={course!.status === "Upcoming"}
+                >
+                  <Typography variant="body1">
+                    {course!.status === "Upcoming"
+                      ? t("upcomingShort")
+                      : t("moduleCourseStartPoint")}
+                  </Typography>
+                </Header>
+              )}
             <ContentArea>
               <CardTitle component="h3" align="center" variant="h3">
                 {course.name}
@@ -129,19 +138,6 @@ function ModuleSmallCourseCard({
               <CardText component="p" paragraph variant="body1" align="left">
                 {course.description}
               </CardText>
-              {course.status === CourseStatus.Upcoming ? (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "20px",
-                    right: "40px",
-                  }}
-                >
-                  <Badge badgeContent={t("upcomingShort")} color="primary">
-                    {" "}
-                  </Badge>
-                </div>
-              ) : null}
             </ContentArea>
           </ReactGA.OutboundLink>
         ) : (

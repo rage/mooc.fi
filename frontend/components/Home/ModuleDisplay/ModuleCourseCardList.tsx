@@ -5,6 +5,7 @@ import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
+import { CourseStatus } from "/static/types/globalTypes"
 
 interface CourseListProps {
   courses: CourseData[]
@@ -33,6 +34,7 @@ const ShowMoreButton = styled(Button)`
   margin-left: 10%;
   margin-top: 2rem;
 `
+
 const ModuleCoursesListing = (props: CourseListProps) => {
   const { courses } = props
   const [showAll, setShowAll] = useState(false)
@@ -44,7 +46,11 @@ const ModuleCoursesListing = (props: CourseListProps) => {
       {showAll ? (
         <ThreeOrLessCoursesListing courses={courses} />
       ) : (
-        <ThreeOrLessCoursesListing courses={courses.slice(0, 3)} />
+        <ThreeOrLessCoursesListing
+          courses={courses
+            .slice(0, 3)
+            .filter(c => c.status === CourseStatus.Active)}
+        />
       )}
       <ShowMoreButton
         fullWidth={true}
