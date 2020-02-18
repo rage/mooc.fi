@@ -94,11 +94,8 @@ interface RenderFormProps {
 
 const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
   errors,
-
   values,
-
   isSubmitting,
-
   setFieldValue,
 }: // setStatus
 Pick<
