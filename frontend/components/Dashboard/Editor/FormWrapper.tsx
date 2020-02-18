@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useCallback } from "react"
 import {
   Container,
   Paper,
@@ -7,7 +7,7 @@ import {
   Checkbox as MUICheckbox,
   Tooltip,
 } from "@material-ui/core"
-import { FormikProps } from "formik"
+import { FormikProps, FormikErrors, FormikTouched } from "formik"
 import { FormValues } from "./types"
 import styled from "styled-components"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -44,12 +44,43 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
     onCancel,
     onDelete,
     renderForm,
+    setTouched,
   } = props
   const { language } = useContext(LanguageContext)
   const t = getCommonTranslator(language)
   const confirm = useConfirm()
 
   const [deleteVisible, setDeleteVisible] = useState(false)
+
+  const errorsToTouched = useCallback(
+    (
+      i: FormikErrors<T>,
+      o: FormikTouched<T> = {} as FormikTouched<T>,
+    ): FormikTouched<T> => {
+      ;(Object.keys(i) as Array<keyof FormikErrors<T>>).forEach(k => {
+        if (typeof i[k] !== "string") {
+          const nested = i?.[k] as FormikErrors<T>
+          o = {
+            ...o,
+            [k]: (Object.keys(nested) as Array<keyof FormikErrors<T>>).map(k2 =>
+              errorsToTouched(
+                nested?.[k2 as keyof T] as FormikErrors<T>,
+                o?.[k] as FormikTouched<T>,
+              ),
+            ),
+          } as FormikTouched<T>
+        } else {
+          o = {
+            ...o,
+            [k]: true,
+          }
+        }
+      })
+
+      return o
+    },
+    [],
+  )
 
   return (
     <Container maxWidth="md">
@@ -75,9 +106,13 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
                       Object.keys(value[firstIndex])[0]
                     }`
                   }
-                  window.location.replace(
-                    window.location.href.split("#")[0] + `#${anchorLink}`,
-                  )
+
+                  setTouched(errorsToTouched(errors) as FormikTouched<T>)
+                  const element = document.getElementById(anchorLink)
+                  element?.scrollIntoView()
+                  // window.location.replace(
+                  //  window.location.href.split("#")[0] + `#${anchorLink}`,
+                  //)
                   // Router.replace(`#${Object.keys(errors)[0]}`)
                 } else {
                   submitForm()
