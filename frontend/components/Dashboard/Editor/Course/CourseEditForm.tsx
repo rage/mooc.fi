@@ -250,27 +250,28 @@ Pick<
               <FormLabel component="legend" style={{ color: "#DF7A46" }}>
                 {t("courseStatus")}*
               </FormLabel>
-              <a id="status" />
-              <RadioGroup
-                aria-label="course status"
-                name="status"
-                value={values.status}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setFieldValue(
-                    "status",
-                    (event.target as HTMLInputElement).value,
-                  )
-                }
-              >
-                {statuses.map((option: { value: string; label: string }) => (
-                  <FormControlLabel
-                    key={`status-${option.value}`}
-                    value={option.value}
-                    control={<Radio />}
-                    label={option.label}
-                  />
-                ))}
-              </RadioGroup>
+              <a id="status">
+                <RadioGroup
+                  aria-label="course status"
+                  name="status"
+                  value={values.status}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    setFieldValue(
+                      "status",
+                      (event.target as HTMLInputElement).value,
+                    )
+                  }
+                >
+                  {statuses.map((option: { value: string; label: string }) => (
+                    <FormControlLabel
+                      key={`status-${option.value}`}
+                      value={option.value}
+                      control={<Radio />}
+                      label={option.label}
+                    />
+                  ))}
+                </RadioGroup>
+              </a>
             </FormControl>
           </FormFieldGroup>
 
@@ -279,25 +280,26 @@ Pick<
               <FormLabel>{t("courseModules")}</FormLabel>
               <FormGroup>
                 <ModuleList>
-                  <a id="study_modules" />
-                  {studyModules?.map(
-                    (module: CourseEditorStudyModules_study_modules) => (
-                      <ModuleListItem key={module.id}>
-                        <FormControlLabel
-                          control={
-                            <Field
-                              label={module.name}
-                              type="checkbox"
-                              name={`study_modules[${module.id}]`}
-                              value={(values.study_modules || {})[module.id]}
-                              component={Checkbox}
-                            />
-                          }
-                          label={module.name}
-                        />
-                      </ModuleListItem>
-                    ),
-                  )}
+                  <a id="study_modules">
+                    {studyModules?.map(
+                      (module: CourseEditorStudyModules_study_modules) => (
+                        <ModuleListItem key={module.id}>
+                          <FormControlLabel
+                            control={
+                              <Field
+                                label={module.name}
+                                type="checkbox"
+                                name={`study_modules[${module.id}]`}
+                                value={(values.study_modules || {})[module.id]}
+                                component={Checkbox}
+                              />
+                            }
+                            label={module.name}
+                          />
+                        </ModuleListItem>
+                      ),
+                    )}
+                  </a>
                 </ModuleList>
               </FormGroup>
             </FormControl>
