@@ -25,15 +25,13 @@ import getCoursesTranslator from "/translations/courses"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
-const CourseEdit = ({
-  course,
-  modules,
-  courses,
-}: {
+interface CourseEditProps {
   course?: CourseDetails_course
   modules?: CourseEditorStudyModules_study_modules[]
   courses?: CourseEditorCourses_courses[]
-}) => {
+}
+
+const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
 

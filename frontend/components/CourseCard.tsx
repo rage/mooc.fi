@@ -44,7 +44,6 @@ const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
           <LangLink href={`/courses/new`}>
             {
               // LangLink will insert href
-              // eslint-disable-next-line jsx-a11y/anchor-is-valid
             }
             <a>
               <Grid

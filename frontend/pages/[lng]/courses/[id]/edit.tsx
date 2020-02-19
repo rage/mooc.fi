@@ -166,7 +166,6 @@ const EditCourse = ({ router }: EditCourseProps) => {
               <Link as={listLink} href="[lng]/courses">
                 {
                   // LangLink will insert href
-                  // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 }
                 <a
                   onClick={resetTimeout}

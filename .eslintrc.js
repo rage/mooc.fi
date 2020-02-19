@@ -49,6 +49,7 @@ module.exports = {
     "react-hooks/rules-of-hooks": "error",
     "@typescript-eslint/prefer-nullish-coalescing": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",
+    "jsx-a11y/anchor-is-valid": "warn",
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
