@@ -109,7 +109,7 @@ const getGlobalStats = async () => {
 }
 
 const post = async () => {
-  data.text = data.text.concat(await getGlobalStats())
+  //data.text = data.text.concat(await getGlobalStats())
   for (let i = 0; i < langArr.length; i++) {
     data.text = data.text.concat(await getDataByLanguage(langArr[i]))
   }
