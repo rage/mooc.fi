@@ -1,6 +1,11 @@
 module.exports = {
   parser: "@typescript-eslint/parser", // Specifies the ESLint parser
-  plugins: ["@typescript-eslint", "eslint-custom-rules", "react-hooks"],
+  plugins: [
+    "@typescript-eslint",
+    "eslint-custom-rules",
+    "react-hooks",
+    "jsx-a11y",
+  ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: "module", // Allows for the use of imports
@@ -9,6 +14,7 @@ module.exports = {
     },
     project: "./tsconfig.json",
   },
+  extends: ["plugin:jsx-a11y/recommended"],
   ignorePatterns: ["node_modules/", "generated/", "dist/"],
   rules: {
     "eslint-custom-rules/ban-ts-ignore-without-comment": "error",

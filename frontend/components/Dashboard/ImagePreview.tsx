@@ -51,7 +51,7 @@ const ImagePreview = ({
 
   return (
     <div {...rest}>
-      <img src={file} height={height} />
+      <img alt={file || ""} src={file} height={height} />
       {onClose && (
         <Tooltip title="Remove picture">
           <CloseButton onClick={(e: React.MouseEvent) => onClose(e)}>

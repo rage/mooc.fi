@@ -78,5 +78,6 @@
   "importPhotoDialogContent": "Select course",
   "importPhotoLabel": "Select...",
   "importPhotoDialogSelect": "OK",
-  "importPhotoDialogCancel": "Cancel"
+  "importPhotoDialogCancel": "Cancel",
+  "importPhotoDialogPreview": "Image from course {{name}}"
 }

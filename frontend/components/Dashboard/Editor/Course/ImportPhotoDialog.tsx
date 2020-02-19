@@ -139,6 +139,10 @@ const ImportPhotoDialog = ({
         <ImageContainer>
           {values.import_photo ? (
             <img
+              alt={t("importPhotoDialogPreview", {
+                name:
+                  (selectedCourse() as CourseEditorCourses_courses)?.name ?? "",
+              })}
               src={addDomain(selectedCourse()?.photo?.compressed)}
               height="200"
             />

@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useCallback } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { WideContainer } from "/components/Container"
@@ -109,6 +109,11 @@ const EditCourse = ({ router }: EditCourseProps) => {
     error: coursesError,
   } = useQuery<CourseEditorCourses>(CourseEditorCoursesQuery)
 
+  const resetTimeout = useCallback(() => {
+    console.log("I am resetting")
+    redirectTimeout && clearTimeout(redirectTimeout)
+  }, [])
+
   if (courseError || studyModulesError || coursesError) {
     return (
       <ModifiableErrorMessage
@@ -159,10 +164,15 @@ const EditCourse = ({ router }: EditCourseProps) => {
             <Typography variant="body2">
               {t("redirectMessagePre")}
               <Link as={listLink} href="[lng]/courses">
+                {
+                  // LangLink will insert href
+                  // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                }
                 <a
-                  onClick={() =>
-                    redirectTimeout && clearTimeout(redirectTimeout)
-                  }
+                  onClick={resetTimeout}
+                  onKeyUp={resetTimeout}
+                  role="link"
+                  tabIndex={0}
                 >
                   {t("redirectLinkText")}
                 </a>

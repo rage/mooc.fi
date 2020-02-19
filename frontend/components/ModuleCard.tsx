@@ -138,6 +138,10 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </ButtonWithPaddingAndMargin>
           ) : module ? (
             <LangLink href={`/study-modules/${module.slug}/edit`}>
+              {
+                // LangLink will insert href
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+              }
               <a>
                 <ButtonWithPaddingAndMargin
                   variant="text"
@@ -151,6 +155,10 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </LangLink>
           ) : (
             <LangLink href={`/study-modules/new`}>
+              {
+                // LangLink will insert href
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+              }
               <a>
                 <ButtonWithPaddingAndMargin
                   variant="text"

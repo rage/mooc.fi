@@ -78,5 +78,6 @@
   "importPhotoDialogContent": "Valitse kurssi",
   "importPhotoLabel": "Valitse...",
   "importPhotoDialogSelect": "OK",
-  "importPhotoDialogCancel": "Peru"
+  "importPhotoDialogCancel": "Peru",
+  "importPhotoDialogPreview": "Kuva kurssilta {{name}}"
 }
