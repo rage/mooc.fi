@@ -33,6 +33,7 @@ import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import {
   StyledTextField,
   StyledFieldWithAnchor,
+  EnumeratingAnchor,
 } from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
@@ -250,7 +251,7 @@ Pick<
               <FormLabel component="legend" style={{ color: "#DF7A46" }}>
                 {t("courseStatus")}*
               </FormLabel>
-              <a id="status" />
+              <EnumeratingAnchor id="status" />
               <RadioGroup
                 aria-label="course status"
                 name="status"
@@ -279,7 +280,7 @@ Pick<
               <FormLabel>{t("courseModules")}</FormLabel>
               <FormGroup>
                 <ModuleList>
-                  <a id="study_modules" />
+                  <EnumeratingAnchor id="study_modules" />
                   {studyModules?.map(
                     (module: CourseEditorStudyModules_study_modules) => (
                       <ModuleListItem key={module.id}>

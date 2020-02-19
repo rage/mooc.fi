@@ -2,6 +2,8 @@ import { FormControl, FormGroup, InputLabel } from "@material-ui/core"
 import { Field } from "formik"
 import { TextField } from "formik-material-ui"
 import styled from "styled-components"
+import { useContext } from "react"
+import AnchorContext from "/contexes/AnchorContext"
 
 export const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
@@ -54,18 +56,27 @@ export const StyledField = styled(Field)`
 export const AdjustingAnchorLink = styled.a<{ id: string }>`
   display: block;
   position: relative;
-  top: -90px;
+  top: -120px;
   visibliity: hidden;
 `
+
+export const EnumeratingAnchor: React.FC<any> = ({ id }: { id: string }) => {
+  const { addAnchor } = useContext(AnchorContext)
+  addAnchor(id)
+
+  return <AdjustingAnchorLink id={id} />
+}
 
 export const StyledFieldWithAnchor: React.FC<any> = ({
   name,
   ...props
 }: {
   name: string
-}) => (
-  <>
-    <AdjustingAnchorLink id={name} />
-    <StyledField name={name} {...props} />
-  </>
-)
+}) => {
+  return (
+    <>
+      <EnumeratingAnchor id={name} />
+      <StyledField name={name} {...props} />
+    </>
+  )
+}
