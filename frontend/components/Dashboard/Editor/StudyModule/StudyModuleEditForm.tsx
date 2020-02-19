@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useContext, useState } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
-  Field,
   Formik,
   Form,
   FormikActions,
@@ -28,6 +27,7 @@ import {
   OutlinedFormControl,
   OutlinedInputLabel,
   OutlinedFormGroup,
+  StyledFieldWithAnchor,
 } from "/components/Dashboard/Editor/common"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -81,7 +81,7 @@ const RenderForm = ({
     <Form>
       <Grid container direction="row" spacing={2}>
         <Grid item xs={10}>
-          <Field
+          <StyledFieldWithAnchor
             name="name"
             type="text"
             label={t("moduleName")}
@@ -93,7 +93,7 @@ const RenderForm = ({
           />
         </Grid>
         <Grid item xs={2}>
-          <Field
+          <StyledFieldWithAnchor
             name="order"
             type="number"
             label={t("moduleOrder")}
@@ -105,7 +105,7 @@ const RenderForm = ({
           />
         </Grid>
       </Grid>
-      <Field
+      <StyledFieldWithAnchor
         name="new_slug"
         type="text"
         label={t("moduleSlug")}
@@ -115,7 +115,7 @@ const RenderForm = ({
         autoComplete="off"
         component={StyledTextField}
       />
-      <Field
+      <StyledFieldWithAnchor
         name="image"
         type="text"
         label={t("moduleImageName")}
@@ -161,7 +161,7 @@ const RenderForm = ({
                 (_: any, index: number) => (
                   <LanguageEntry item key={`translation-${index}`}>
                     <EntryContainer elevation={2}>
-                      <Field
+                      <StyledFieldWithAnchor
                         name={`study_module_translations[${index}].language`}
                         type="select"
                         label={t("moduleLanguage")}
@@ -182,8 +182,8 @@ const RenderForm = ({
                             {option.label}
                           </MenuItem>
                         ))}
-                      </Field>
-                      <Field
+                      </StyledFieldWithAnchor>
+                      <StyledFieldWithAnchor
                         name={`study_module_translations[${index}].name`}
                         type="text"
                         label={t("moduleName")}
@@ -196,7 +196,7 @@ const RenderForm = ({
                         variant="outlined"
                         component={StyledTextField}
                       />
-                      <Field
+                      <StyledFieldWithAnchor
                         name={`study_module_translations[${index}].description`}
                         type="textarea"
                         label={t("moduleDescription")}

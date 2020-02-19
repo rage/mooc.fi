@@ -1,4 +1,5 @@
 import { FormControl, FormGroup, InputLabel } from "@material-ui/core"
+import { Field } from "formik"
 import { TextField } from "formik-material-ui"
 import styled from "styled-components"
 
@@ -37,3 +38,34 @@ export const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
     border: 1px solid rgba(0, 0, 0, 0.23);
   }
 `
+
+export const StyledField = styled(Field)`
+  .input-label {
+    background-color: white;
+    font-size: 23px;
+    padding-right: 7px;
+    transform: translate(14px, -9px) scale(0.75);
+  }
+  .input-required {
+    color: #df7a46;
+  }
+`
+
+export const AdjustingAnchorLink = styled.a<{ id: string }>`
+  display: block;
+  position: relative;
+  top: -90px;
+  visibliity: hidden;
+`
+
+export const StyledFieldWithAnchor: React.FC<any> = ({
+  name,
+  ...props
+}: {
+  name: string
+}) => (
+  <>
+    <AdjustingAnchorLink id={name} />
+    <StyledField name={name} {...props} />
+  </>
+)
