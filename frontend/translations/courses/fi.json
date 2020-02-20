@@ -78,5 +78,7 @@
   "importPhotoDialogContent": "Valitse kurssi",
   "importPhotoLabel": "Valitse...",
   "importPhotoDialogSelect": "OK",
-  "importPhotoDialogCancel": "Peru"
+  "importPhotoDialogCancel": "Peru",
+  "moduleDetailsTitle":"Opintokokonaisuuden tiedot",
+  "moduleTranslationsTitle":"Opintokokonaisuuden kieliversiot"
 }
