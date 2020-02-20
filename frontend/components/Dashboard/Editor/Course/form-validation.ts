@@ -207,7 +207,9 @@ const courseEditSchema = ({
       /(^\d+(\-\d+)?$|^$)/,
       t("validationNumberRange"),
     ),
-    start_date: Yup.date().required(t("courseStartDateRequired")),
+    start_date: Yup.date()
+      .typeError(t("courseStartDateRequired"))
+      .required(t("courseStartDateRequired")),
     teacher_in_charge_name: Yup.string().required(
       t("courseTeacherNameRequired"),
     ),
