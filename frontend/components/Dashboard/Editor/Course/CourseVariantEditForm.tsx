@@ -15,6 +15,7 @@ import styled from "styled-components"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { useConfirm } from "material-ui-confirm"
+import { inputLabelProps } from "/components/Dashboard/Editor/Course/CourseEditForm"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
@@ -55,6 +56,8 @@ const CourseVariantEditForm = ({
                             label={t("courseSlug")}
                             errors={[getIn(errors, `[${index}].slug`)]}
                             variant="outlined"
+                            InputLabelProps={inputLabelProps}
+                            required
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -67,6 +70,7 @@ const CourseVariantEditForm = ({
                             label={t("courseDescription")}
                             errors={[getIn(errors, `[${index}].description`)]}
                             variant="outlined"
+                            InputLabelProps={inputLabelProps}
                           />
                         </Grid>
                         <Grid item xs={2}>
