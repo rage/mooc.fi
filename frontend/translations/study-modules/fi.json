@@ -31,6 +31,9 @@
   "moduleDescription": "Kuvaus",
   "moduleRemoveTranslation": "Poista käännös",
   "moduleAtLeastOneTranslation": "Lisää ainakin yksi käännös!",
-  "moduleAddTranslation": "Lisää käännös"
+  "moduleAddTranslation": "Lisää käännös",
+  "moduleDetailsTitle":"Opintokokonaisuuden tiedot",
+  "moduleTranslationsTitle":"Opintokokonaisuuden kieliversiot",
+  "modulePhotoTitle": "Kuva"
 
 }

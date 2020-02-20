@@ -31,5 +31,8 @@
   "moduleDescription": "Description",
   "moduleRemoveTranslation": "Remove translation",
   "moduleAtLeastOneTranslation": "Please add at least one translation!",
-  "moduleAddTranslation": "Add translation"
+  "moduleAddTranslation": "Add translation",
+  "moduleDetailsTitle":"Study module details",
+  "moduleTranslationsTitle":"Language versions",
+  "modulePhotoTitle": "Photo"
 }
