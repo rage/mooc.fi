@@ -81,7 +81,7 @@ export const FormFieldGroup = styled.div`
   border-bottom: 4px dotted #98b0a9;
 `
 
-const inputLabelProps = {
+export const inputLabelProps = {
   fontSize: 16,
   shrink: true,
   classes: { root: "input-label", required: "input-required" },
