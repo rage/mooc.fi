@@ -88,25 +88,25 @@ const getDataByLanguage = async (langProps: langProps) => {
   } = ${totalByLang.length + englishInLang.length}\`\`\` `
 }
 
-const getGlobalStats = async () => {
-  const totalUsers = await prisma.userCourseSettingses({
-    where: {
-      course: { slug: "elements-of-ai" },
-    },
-  })
-  const totalCompletions = await prisma.completions({
-    where: {
-      course: { slug: "elements-of-ai" },
-    },
-  })
+// const getGlobalStats = async () => {
+//   const totalUsers = await prisma.userCourseSettingses({
+//     where: {
+//       course: { slug: "elements-of-ai" },
+//     },
+//   })
+//   const totalCompletions = await prisma.completions({
+//     where: {
+//       course: { slug: "elements-of-ai" },
+//     },
+//   })
 
-  const now = new Date()
-  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
-    1}.${now.getFullYear()}:
- 
-  1) ${totalUsers.length} registered students in all versions
-  2) of these ${totalCompletions.length} have completed the course.\`\`\` `
-}
+//   const now = new Date()
+//   return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
+//     1}.${now.getFullYear()}:
+
+//   1) ${totalUsers.length} registered students in all versions
+//   2) of these ${totalCompletions.length} have completed the course.\`\`\` `
+// }
 
 const post = async () => {
   //data.text = data.text.concat(await getGlobalStats())
