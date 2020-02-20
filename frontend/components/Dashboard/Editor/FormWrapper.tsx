@@ -13,8 +13,10 @@ import styled from "styled-components"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import getCommonTranslator from "/translations/common"
 import LanguageContext from "/contexes/LanguageContext"
+import AnchorContext from "/contexes/AnchorContext"
 import { useConfirm } from "material-ui-confirm"
-// import Router from "next/router"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
+import flattenKeys from "/util/flattenKeys"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
@@ -33,7 +35,7 @@ interface FormWrapperProps<T> extends FormikProps<T> {
   renderForm: (props: any) => React.ReactNode
 }
 
-function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
+const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
   const {
     submitForm,
     errors,
@@ -48,6 +50,7 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
   } = props
   const { language } = useContext(LanguageContext)
   const t = getCommonTranslator(language)
+  const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
 
   const [deleteVisible, setDeleteVisible] = useState(false)
@@ -82,6 +85,29 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
     [],
   )
 
+  const onSubmit = useCallback(() => {
+    if (Object.keys(errors).length) {
+      setTouched(errorsToTouched(errors) as FormikTouched<T>)
+
+      const [key, value] = Object.entries(flattenKeys(errors)).sort(
+        (a, b) => anchors[a[0]] - anchors[b[0]],
+      )[0]
+
+      let anchorLink = key
+      if (Array.isArray(value)) {
+        const firstIndex = parseInt(Object.keys(value)[0])
+        anchorLink = `${key}[${firstIndex}].${
+          Object.keys(value[firstIndex])[0]
+        }`
+      }
+
+      const element = document.getElementById(anchorLink)
+      element?.scrollIntoView()
+    } else {
+      submitForm()
+    }
+  }, [errors])
+
   return (
     <Container maxWidth="md">
       <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
@@ -91,33 +117,8 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
           <Grid item xs={4}>
             <StyledButton
               color="primary"
-              disabled={
-                !dirty || isSubmitting
-                //!dirty || Object.keys(errors).length > 0 || isSubmitting
-              }
-              onClick={() => {
-                if (Object.keys(errors).length) {
-                  const [key, value] = Object.entries(errors)[0]
-
-                  let anchorLink = key
-                  if (Array.isArray(value)) {
-                    const firstIndex = parseInt(Object.keys(value)[0])
-                    anchorLink = `${key}[${firstIndex}].${
-                      Object.keys(value[firstIndex])[0]
-                    }`
-                  }
-
-                  setTouched(errorsToTouched(errors) as FormikTouched<T>)
-                  const element = document.getElementById(anchorLink)
-                  element?.scrollIntoView()
-                  // window.location.replace(
-                  //  window.location.href.split("#")[0] + `#${anchorLink}`,
-                  //)
-                  // Router.replace(`#${Object.keys(errors)[0]}`)
-                } else {
-                  submitForm()
-                }
-              }}
+              disabled={!dirty || isSubmitting}
+              onClick={onSubmit}
               style={{ width: "100%" }}
             >
               {isSubmitting ? <CircularProgress size={20} /> : t("save")}
@@ -182,4 +183,9 @@ function FormWrapper<T extends FormValues>(props: FormWrapperProps<T>) {
   )
 }
 
-export default FormWrapper
+// need to pass type through
+const WrappedFormWrapper: <T>(
+  props: FormWrapperProps<T>,
+) => JSX.Element = withEnumeratingAnchors(FormWrapper)
+
+export default WrappedFormWrapper
