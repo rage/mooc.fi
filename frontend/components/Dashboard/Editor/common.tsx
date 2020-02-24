@@ -80,3 +80,9 @@ export const StyledFieldWithAnchor: React.FC<any> = ({
     </>
   )
 }
+
+export const inputLabelProps = {
+  fontSize: 16,
+  shrink: true,
+  classes: { root: "input-label", required: "input-required" },
+}

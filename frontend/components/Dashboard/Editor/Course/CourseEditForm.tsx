@@ -24,6 +24,7 @@ import { Checkbox } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import CourseVariantEditForm from "./CourseVariantEditForm"
+import CourseAliasEditForm from "./CourseAliasEditForm"
 import CourseLanguageSelector from "./CourseLanguageSelector"
 import CourseImageInput from "./CourseImageInput"
 import { statuses as statusesT } from "./form-validation"
@@ -31,9 +32,11 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import {
+  StyledField,
   StyledTextField,
   StyledFieldWithAnchor,
   EnumeratingAnchor,
+  inputLabelProps,
 } from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
@@ -80,12 +83,6 @@ export const FormFieldGroup = styled.div`
   margin: 1rem auto 3rem auto;
   border-bottom: 4px dotted #98b0a9;
 `
-
-export const inputLabelProps = {
-  fontSize: 16,
-  shrink: true,
-  classes: { root: "input-label", required: "input-required" },
-}
 
 interface RenderFormProps {
   initialValues?: CourseFormValues
@@ -169,6 +166,17 @@ Pick<
               component={StyledTextField}
               required={true}
               helperText={t("courseSlugHelper")}
+            />
+            <StyledField
+              id="course-id"
+              style={{ width: "50%" }}
+              name="id"
+              type="text"
+              disabled
+              label={t("courseID")}
+              variant="outlined"
+              InputLabelProps={inputLabelProps}
+              component={StyledTextField}
             />
             <StyledFieldWithAnchor
               style={{ width: "25%" }}
@@ -395,6 +403,19 @@ Pick<
           <CourseVariantEditForm
             values={values.course_variants}
             errors={errors.course_variants}
+            isSubmitting={isSubmitting}
+          />
+          <FormSubtitle
+            variant="h6"
+            component="h3"
+            align="center"
+            style={{ marginTop: "3rem" }}
+          >
+            {t("courseAliasesTitle")}
+          </FormSubtitle>
+          <CourseAliasEditForm
+            values={values.course_aliases}
+            errors={errors.course_aliases}
             isSubmitting={isSubmitting}
           />
         </SelectLanguageFirstCover>

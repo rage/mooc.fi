@@ -40,6 +40,10 @@ export const AddCourseMutation = gql`
         slug
         description
       }
+      course_aliases {
+        id
+        course_code
+      }
     }
   }
 `
@@ -83,6 +87,10 @@ export const UpdateCourseMutation = gql`
         id
         slug
         description
+      }
+      course_aliases {
+        id
+        course_code
       }
       completion_email {
         id

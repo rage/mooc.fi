@@ -55,6 +55,10 @@ export const AllEditorCoursesQuery = gql`
         slug
         description
       }
+      course_aliases {
+        id
+        course_code
+      }
     }
     currentUser {
       id

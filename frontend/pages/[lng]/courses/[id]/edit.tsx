@@ -71,6 +71,10 @@ export const CourseQuery = gql`
         slug
         description
       }
+      course_aliases {
+        id
+        course_code
+      }
     }
   }
 `
