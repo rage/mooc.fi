@@ -18,10 +18,17 @@ export enum OrganizationRole {
   Teacher = "Teacher",
 }
 
+export interface CourseAliasCreateUpdateInput {
+  course?: string | null
+  course_code: string
+  id?: string | null
+}
+
 export interface CourseArg {
   automatic_completions?: boolean | null
   base64?: boolean | null
   completion_email?: string | null
+  course_aliases?: CourseAliasCreateUpdateInput[] | null
   course_translations?: CourseTranslationCreateUpdateInput[] | null
   course_variants?: CourseVariantCreateUpdateInput[] | null
   delete_photo?: boolean | null
