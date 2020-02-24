@@ -5,8 +5,10 @@ import {
   CourseFormValues,
   CourseTranslationFormValues,
   CourseVariantFormValues,
+  CourseAliasFormValues,
 } from "./types"
 import { DocumentNode } from "apollo-boost"
+import { FormValues } from "/components/Dashboard/Editor/types"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -21,6 +23,11 @@ export const initialVariant: CourseVariantFormValues = {
   id: undefined,
   slug: "",
   description: "",
+}
+
+export const initialAlias: CourseAliasFormValues = {
+  id: undefined,
+  course_code: "",
 }
 
 export const initialValues: CourseFormValues = {
@@ -49,6 +56,7 @@ export const initialValues: CourseFormValues = {
   order: undefined,
   study_module_order: undefined,
   course_variants: [],
+  course_aliases: [],
   delete_photo: false,
 }
 
@@ -84,6 +92,37 @@ export const languages = (t: Function) => [
 
 export const study_modules: { value: any; label: any }[] = []
 
+const testUnique = <T extends FormValues>(valueField: string, field: string) =>
+  function(this: Yup.TestContext, value?: any): boolean {
+    const {
+      context,
+      path,
+    }: { context?: any; path?: string | undefined } = this.options
+    if (!context) {
+      return true
+    }
+
+    const fieldValues = context.values[valueField]
+
+    if (!value || value === "") {
+      return true // previous should have caught the empty
+    }
+
+    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+    const currentIndex =
+      currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+    const otherValues = fieldValues
+      .filter(
+        (c: T, index: number) =>
+          // @ts-ignore: we don't know the fields before use
+          c[field] !== "" && index !== currentIndex,
+      )
+      // @ts-ignore: ditto
+      .map((c: T) => c[field])
+
+    return otherValues.indexOf(value) === -1
+  }
+
 const courseEditSchema = ({
   client,
   checkSlug,
@@ -118,39 +157,14 @@ const courseEditSchema = ({
             languages(t).map(l => l.value),
             t("validationValidLanguageCode"),
           )
-          .test("unique", t("validationOneTranslation"), function(
-            this: Yup.TestContext,
-            value?: any,
-          ): boolean {
-            const {
-              context,
-              path,
-            }: { context?: any; path?: string | undefined } = this.options
-            if (!context) {
-              return true
-            }
-
-            const {
-              values: { course_translations },
-            } = context
-
-            if (!value || value === "") {
-              return true // previous should have caught the empty
-            }
-
-            const currentIndexMatch =
-              (path || "").match(/^.*\[(\d+)\].*$/) || []
-            const currentIndex =
-              currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-            const otherTranslationLanguages = course_translations
-              .filter(
-                (c: CourseTranslationFormValues, index: number) =>
-                  c.language !== "" && index !== currentIndex,
-              )
-              .map((c: CourseTranslationFormValues) => c.language)
-
-            return otherTranslationLanguages.indexOf(value) === -1
-          }),
+          .test(
+            "unique",
+            t("validationOneTranslation"),
+            testUnique<CourseTranslationFormValues>(
+              "course_translations",
+              "language",
+            ),
+          ),
         description: Yup.string(),
         link: Yup.string(),
       }),
@@ -161,40 +175,25 @@ const courseEditSchema = ({
           .required(t("validationRequired"))
           .trim()
           .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
-          .test("unique", t("validationTwoVariants"), function(
-            this: Yup.TestContext,
-            value?: any,
-          ): boolean {
-            const {
-              context,
-              path,
-            }: { context?: any; path?: string } = this.options
-            if (!context) {
-              return true
-            }
-
-            const {
-              values: { course_variants },
-            } = context
-
-            if (!value || value === "") {
-              return true
-            }
-
-            const currentIndexMatch =
-              (path || "").match(/^.*\[(\d+)\].*$/) || []
-            const currentIndex =
-              currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-            const otherSlugs = course_variants
-              .filter(
-                (c: CourseVariantFormValues, index: number) =>
-                  c.slug !== "" && index !== currentIndex,
-              )
-              .map((c: CourseVariantFormValues) => c.slug)
-
-            return otherSlugs.indexOf(value) === -1
-          }),
+          .test(
+            "unique",
+            t("validationTwoVariants"),
+            testUnique<CourseVariantFormValues>("course_variants", "slug"),
+          ),
         description: Yup.string(),
+      }),
+    ),
+    course_aliases: Yup.array().of(
+      Yup.object().shape({
+        course_code: Yup.string()
+          .required(t("validationRequired"))
+          .trim()
+          .matches(/^[^\/\\\s]*$/, t("validationNoSpacesSlashes"))
+          .test(
+            "unique",
+            t("validationTwoAliases"),
+            testUnique<CourseAliasFormValues>("course_aliases", "course_code"),
+          ),
       }),
     ),
     order: Yup.number()

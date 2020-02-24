@@ -29,6 +29,12 @@ export interface AllEditorCourses_courses_course_variants {
   description: string | null
 }
 
+export interface AllEditorCourses_courses_course_aliases {
+  __typename: "CourseAlias"
+  id: any
+  course_code: string
+}
+
 export interface AllEditorCourses_courses {
   __typename: "Course"
   id: any
@@ -40,6 +46,7 @@ export interface AllEditorCourses_courses {
   photo: AllEditorCourses_courses_photo | null
   course_translations: AllEditorCourses_courses_course_translations[] | null
   course_variants: AllEditorCourses_courses_course_variants[] | null
+  course_aliases: AllEditorCourses_courses_course_aliases[] | null
 }
 
 export interface AllEditorCourses_currentUser {

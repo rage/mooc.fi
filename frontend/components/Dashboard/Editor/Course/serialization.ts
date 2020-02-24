@@ -13,12 +13,14 @@ import {
   addCourse_addCourse_study_modules,
   addCourse_addCourse_course_translations,
   addCourse_addCourse_course_variants,
+  addCourse_addCourse_course_aliases,
 } from "/static/types/generated/addCourse"
 import {
   updateCourse_updateCourse_open_university_registration_links,
   updateCourse_updateCourse_study_modules,
   updateCourse_updateCourse_course_translations,
   updateCourse_updateCourse_course_variants,
+  updateCourse_updateCourse_course_aliases,
 } from "/static/types/generated/updateCourse"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 
@@ -72,6 +74,7 @@ export const toCourseForm = ({
             ...c,
             description: c.description || undefined,
           })) ?? [],
+        course_aliases: course?.course_aliases ?? [],
         new_slug: course.slug,
         thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
         ects: course.ects ?? undefined,
@@ -106,6 +109,13 @@ export const fromCourseForm = ({
   ) as (
     | Omit<addCourse_addCourse_course_variants, "__typename">
     | Omit<updateCourse_updateCourse_course_variants, "__typename">
+  )[]
+
+  const course_aliases = (values?.course_aliases ?? []).map(a =>
+    omit(a, ["__typename"]),
+  ) as (
+    | Omit<addCourse_addCourse_course_aliases, "__typename">
+    | Omit<updateCourse_updateCourse_course_aliases, "__typename">
   )[]
 
   const open_university_registration_links = values?.course_translations
@@ -168,6 +178,7 @@ export const fromCourseForm = ({
     open_university_registration_links,
     study_modules,
     course_variants,
+    course_aliases,
   }
 
   return c

@@ -8,6 +8,7 @@ import RemoveIcon from "@material-ui/icons/Remove"
 import {
   StyledTextField,
   StyledFieldWithAnchor,
+  inputLabelProps,
 } from "/components/Dashboard/Editor/common"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -15,7 +16,6 @@ import styled from "styled-components"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { useConfirm } from "material-ui-confirm"
-import { inputLabelProps } from "/components/Dashboard/Editor/Course/CourseEditForm"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
