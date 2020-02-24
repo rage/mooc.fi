@@ -49,6 +49,12 @@ export interface addCourse_addCourse_course_variants {
   description: string | null
 }
 
+export interface addCourse_addCourse_course_aliases {
+  __typename: "CourseAlias"
+  id: any
+  course_code: string
+}
+
 export interface addCourse_addCourse {
   __typename: "Course"
   id: any
@@ -64,6 +70,7 @@ export interface addCourse_addCourse {
     | null
   study_modules: addCourse_addCourse_study_modules[] | null
   course_variants: addCourse_addCourse_course_variants[] | null
+  course_aliases: addCourse_addCourse_course_aliases[] | null
 }
 
 export interface addCourse {

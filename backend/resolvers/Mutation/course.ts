@@ -9,6 +9,7 @@ import {
   CourseCreateInput,
   CourseUpdateInput,
   CourseVariantUpdateManyWithoutCourseInput,
+  CourseAliasUpdateManyWithoutCourseInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, arg, idArg } from "nexus/dist"
@@ -43,6 +44,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations,
         open_university_registration_links,
         course_variants,
+        course_aliases,
         study_modules,
       } = course
 
@@ -77,6 +79,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           ? { create: open_university_registration_links }
           : null,
         course_variants: !!course_variants ? { create: course_variants } : null,
+        course_aliases: !!course_aliases ? { create: course_aliases } : null,
       } as CourseCreateInput)
 
       const kafkaProducer = await new KafkaProducer()
@@ -164,6 +167,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_translations,
         open_university_registration_links,
         course_variants,
+        course_aliases,
         study_modules,
         completion_email,
 
@@ -233,6 +237,15 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         },
       )
 
+      const courseAliasMutation: CourseAliasUpdateManyWithoutCourseInput = await createMutation(
+        {
+          prisma,
+          slug,
+          data: course_aliases ?? [],
+          field: "course_aliases",
+        },
+      )
+
       // this had different logic so it's not done with the same helper
       const existingStudyModules = await prisma.course({ slug }).study_modules()
       //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
@@ -270,6 +283,9 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             : null,
           course_variants: Object.keys(courseVariantMutation).length
             ? courseVariantMutation
+            : null,
+          course_aliases: Object.keys(courseAliasMutation).length
+            ? courseAliasMutation
             : null,
           completion_email: completion_email
             ? { connect: { id: completion_email } }

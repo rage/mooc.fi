@@ -1,8 +1,9 @@
-// generated Fri Jan 31 2020 15:14:02 GMT+0200 (Eastern European Standard Time)
+// generated Mon Feb 24 2020 15:41:08 GMT+0200 (Eastern European Standard Time)
 
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
 export { default as Course } from "./Course"
+export { default as CourseAliasCreateUpdateInput } from "./CourseAliasCreateUpdateInput"
 export { default as CourseArg } from "./CourseArg"
 export { default as CourseTranslationCreateUpdateInput } from "./CourseTranslationCreateUpdateInput"
 export { default as CourseTranslationWithIdInput } from "./CourseTranslationWithIdInput"
