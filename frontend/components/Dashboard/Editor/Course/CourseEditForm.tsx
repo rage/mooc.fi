@@ -179,6 +179,7 @@ Pick<
               disabled
               label={t("courseID")}
               variant="outlined"
+              InputLabelProps={inputLabelProps}
               component={StyledTextField}
             />
             <StyledFieldWithAnchor
