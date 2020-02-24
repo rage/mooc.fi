@@ -76,6 +76,9 @@ const fetchUserAppDatum = async () => {
         slug: p.namespace,
         name: p.namespace,
         hidden: true,
+        teacher_in_charge_name: "",
+        teacher_in_charge_email: "",
+        start_date: "",
       })
     }
 
