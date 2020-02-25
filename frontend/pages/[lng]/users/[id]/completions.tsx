@@ -28,7 +28,7 @@ function CompletionsPage() {
 
   const { loading, error, data } = useQuery<UserOverViewData>(
     UserOverViewQuery,
-    { variables: { upstream_id: Number(id) }, ssr: false },
+    { variables: { upstream_id: Number(id) } },
   )
 
   const completions = data?.user?.completions ?? []
