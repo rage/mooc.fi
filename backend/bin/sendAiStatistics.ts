@@ -125,14 +125,17 @@ const getGlobalStats = async (): Promise<string> => {
   const course = await Knex.select("id")
     .from("course")
     .where({ slug: "elements-of-ai" })
-  const res = await Knex.select("*")
-    .count()
+  const totalUsers = (await Knex.count()
     .from("UserCourseSettings")
-    .where({ course: course[0].id })
-  console.log(course)
-  console.log("----")
-  //console.log(res)
-  return "Global stats"
+    .where({ course: course[0].id }))[0].count
+  const totalCompletions = (await Knex.count()
+    .from("completion")
+    .where({ course: course[0].id }))[0].count
+  const now = new Date()
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
+    1}.${now.getFullYear()}:
+    1) ${totalUsers} registered students in all versions
+    2) of these ${totalCompletions} have completed the course.\`\`\` `
 }
 
 const post = async () => {
@@ -140,7 +143,8 @@ const post = async () => {
   for (let i = 0; i < langArr.length; i++) {
     data.text = data.text.concat(await getDataByLanguage(langArr[i]))
   }
-  slackPoster.post(url, data)
+  await slackPoster.post(url, data)
+  Knex.destroy()
 }
 
 post()
