@@ -4,12 +4,12 @@ import SnackbarContentWrapper from "./SnackbarContentWrapper"
 interface CustomSnackbarProps {
   open: boolean
   setOpen: Function
-  variant: "error" | "success" | "warning" | "error"
+  type: "error" | "success" | "warning" | "error"
   message: string
 }
 
 const CustomSnackbar = (props: CustomSnackbarProps) => {
-  const { open, setOpen, variant, message } = props
+  const { open, setOpen, type, message } = props
 
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
     event?.preventDefault()
@@ -32,7 +32,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
       >
         <SnackbarContentWrapper
           onClose={handleClose}
-          variant={variant}
+          type={type}
           message={message}
         />
       </Snackbar>

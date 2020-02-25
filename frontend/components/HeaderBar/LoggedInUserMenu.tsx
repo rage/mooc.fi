@@ -36,7 +36,7 @@ const StyledButton = styled(Button)<ButtonProps>`
   color: ${props => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
 `
-const ButtonLabel = styled(Typography)`
+const ButtonLabel = styled(Typography)<any>`
   font-family: Open Sans Condensed !important;
   font-size: 18px;
 `

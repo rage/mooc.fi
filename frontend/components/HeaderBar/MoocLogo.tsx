@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography"
 import Avatar from "@material-ui/core/Avatar"
 import LangLink from "/components/LangLink"
 
-const MoocLogoText = styled(Typography)`
+const MoocLogoText = styled(Typography)<any>`
   font-family: "Open Sans Condensed Light", sans-serif;
   font-size: 1.75rem;
   @media (max-width: 425px) {

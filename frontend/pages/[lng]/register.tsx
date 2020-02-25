@@ -82,7 +82,7 @@ export const DeleteUserOrganizationMutation = gql`
   }
 `
 
-const Header = styled(Typography)`
+const Header = styled(Typography)<any>`
   margin-top: 1em;
 `
 

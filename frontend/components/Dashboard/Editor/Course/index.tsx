@@ -3,7 +3,7 @@ import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "@apollo/react-hooks"
 import { CourseFormValues } from "./types"
 import courseEditSchema from "./form-validation"
-import { FormikActions } from "formik"
+import { FormikHelpers } from "formik"
 import {
   AllCoursesQuery,
   AllEditorCoursesQuery,
@@ -62,7 +62,7 @@ const CourseEdit = ({
   const onSubmit = useCallback(
     async (
       values: CourseFormValues,
-      { setSubmitting, setStatus }: FormikActions<CourseFormValues>,
+      { setSubmitting, setStatus }: FormikHelpers<CourseFormValues>,
     ): Promise<void> => {
       const newCourse = !values.id
 

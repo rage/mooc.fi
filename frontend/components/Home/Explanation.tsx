@@ -23,7 +23,7 @@ const ExplanationRoot = styled.div`
   }
 `
 
-const Subtitle = styled(Typography)`
+const Subtitle = styled(Typography)<any>`
   padding-right: 1.5rem;
   padding-left: 1.5rem;
   padding-bottom: 1em;

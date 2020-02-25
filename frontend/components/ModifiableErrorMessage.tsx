@@ -16,7 +16,7 @@ const StyledIcon = styled(Report)`
   width: 35%;
 `
 
-const ErrorMessageText = styled(Typography)`
+const ErrorMessageText = styled(Typography)<any>`
   margin-bottom: 1rem;
   font-size: 1.2rem;
 `

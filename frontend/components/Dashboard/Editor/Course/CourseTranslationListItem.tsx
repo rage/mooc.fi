@@ -18,7 +18,7 @@ const LanguageVersionContainer = styled.div`
   margin: auto;
 `
 
-const LanguageVersionTitle = styled(Typography)`
+const LanguageVersionTitle = styled(Typography)<any>`
   margin-bottom: 1.5rem;
   font-size: 33px;
   line-height: 52px;
