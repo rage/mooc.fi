@@ -102,7 +102,7 @@ const UserMenu = (props: UserMenuprops) => {
             <StyledButton
               color="inherit"
               variant="text"
-              active={active == "email-templates"}
+              active={active == "email-templates" ? 1 : null}
             >
               <div>
                 <FontAwesomeIcon icon={faEnvelope} />

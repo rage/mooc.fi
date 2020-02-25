@@ -18,7 +18,7 @@ const StyledBottomNavigation = styled(AppBar)`
 const MobileBottomNavigation = () => {
   const { url } = useContext(LanguageContext)
   const { loggedIn } = useContext(LoginStateContext)
-  const active = whichIsActive({ url })
+  const active = whichIsActive({ url }) ?? undefined
 
   return loggedIn ? (
     <StyledBottomNavigation color="inherit">
