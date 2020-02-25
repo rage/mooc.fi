@@ -18,7 +18,7 @@ const StyledPaper = styled(Paper)`
   margin-bottom: 2em;
 `
 
-const Header = styled(Typography)`
+const Header = styled(Typography)<any>`
   margin: 1em;
 `
 

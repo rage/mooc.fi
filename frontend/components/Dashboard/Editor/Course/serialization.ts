@@ -23,6 +23,7 @@ import {
   updateCourse_updateCourse_course_aliases,
 } from "/static/types/generated/updateCourse"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import { DateTime } from "luxon"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -42,8 +43,10 @@ export const toCourseForm = ({
         teacher_in_charge_name: course.teacher_in_charge_name ?? "",
         teacher_in_charge_email: course.teacher_in_charge_email ?? "",
         support_email: course.support_email ?? "",
-        start_date: course.start_date ?? "",
-        end_date: course.end_date ?? "",
+        start_date: course.start_date
+          ? DateTime.fromISO(course.start_date)
+          : "",
+        end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
         start_point: course.start_point ?? false,
         promote: course.promote ?? false,
         hidden: course.hidden ?? false,
@@ -179,6 +182,14 @@ export const fromCourseForm = ({
     study_modules,
     course_variants,
     course_aliases,
+    start_date:
+      values.start_date instanceof DateTime
+        ? values.start_date.toISO()
+        : values.start_date,
+    end_date:
+      values.end_date instanceof DateTime
+        ? values.end_date.toISO()
+        : values.end_date,
   }
 
   return c

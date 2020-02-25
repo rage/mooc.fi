@@ -41,7 +41,7 @@ const StyledIcon = styled(SvgIcon)`
   height: 30px;
   margin: 0.5em;
 `
-const StyledText = styled(Typography)`
+const StyledText = styled(Typography)<any>`
   margin-top: 0px;
   margin-left: 1em;
 `

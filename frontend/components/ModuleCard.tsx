@@ -61,7 +61,7 @@ const ContentArea = styled.span`
   padding-top: 1em;
 `
 
-const NaviCardTitle = styled(Typography)`
+const NaviCardTitle = styled(Typography)<any>`
   margin-bottom: 1rem;
   margin-left: 1rem;
   max-width: 60%;

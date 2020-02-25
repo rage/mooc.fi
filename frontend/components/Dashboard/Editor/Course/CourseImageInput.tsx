@@ -66,11 +66,13 @@ const CourseImageInput = (props: ImageInputProps) => {
           label={t("courseNewPhoto")}
           errors={errors.new_photo}
           fullWidth
-          render={({ field, form }: FieldProps<CourseFormValues>) => (
+        >
+          {({ field, form, ...others }: FieldProps<CourseFormValues>) => (
             <ImageDropzoneInput
               field={field}
               form={form}
               onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
+              {...others}
             >
               <ImagePreview
                 file={addDomain(values.thumbnail)}
@@ -84,7 +86,7 @@ const CourseImageInput = (props: ImageInputProps) => {
               />
             </ImageDropzoneInput>
           )}
-        />
+        </Field>
         <Button
           color="primary"
           style={{ marginTop: "0.5rem" }}

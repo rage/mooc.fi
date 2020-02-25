@@ -58,7 +58,7 @@ const InfoBoxBackground = styled.div`
   }
   
 `
-const Info = styled(Typography)`
+const Info = styled(Typography)<any>`
   margin-left: 1rem;
   font-size: 24px;
   @media (max-width: 425px) {

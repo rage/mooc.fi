@@ -26,7 +26,11 @@ const CourseAliasEditForm = ({
   isSubmitting,
 }: {
   values: CourseAliasFormValues[]
-  errors?: (FormikErrors<CourseAliasFormValues> | undefined)[]
+  errors?:
+    | string
+    | string[]
+    | FormikErrors<CourseAliasFormValues>
+    | FormikErrors<CourseAliasFormValues>[]
   isSubmitting: boolean
 }) => {
   const { language } = useContext(LanguageContext)
@@ -37,9 +41,8 @@ const CourseAliasEditForm = ({
     <section>
       <FormControl>
         <FormGroup>
-          <FieldArray
-            name="course_aliases"
-            render={helpers => (
+          <FieldArray name="course_aliases">
+            {helpers => (
               <>
                 {values!.length ? (
                   values!.map((alias, index: number) => (
@@ -110,7 +113,7 @@ const CourseAliasEditForm = ({
                 )}
               </>
             )}
-          />
+          </FieldArray>
         </FormGroup>
       </FormControl>
     </section>
