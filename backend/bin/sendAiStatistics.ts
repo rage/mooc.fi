@@ -18,7 +18,10 @@ var Knex = knex({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
   },
-  searchPath: ["default$default"],
+  searchPath:
+    process.env.NODE_ENV === "production"
+      ? ["moocfi$production"]
+      : ["default$default"],
 })
 
 const slackPoster: SlackPoster = new SlackPoster()
