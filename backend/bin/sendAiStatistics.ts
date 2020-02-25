@@ -7,6 +7,19 @@ import {
   UserCourseSettings,
   Completion,
 } from "../generated/prisma-client"
+import * as knex from "knex"
+
+var Knex = knex({
+  client: "pg",
+  connection: {
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  },
+  searchPath: ["default$default"],
+})
 
 const slackPoster: SlackPoster = new SlackPoster()
 const url: string | undefined = process.env.AI_SLACK_URL
@@ -108,8 +121,22 @@ const getDataByLanguage = async (langProps: langProps) => {
 //   2) of these ${totalCompletions.length} have completed the course.\`\`\` `
 // }
 
+const getGlobalStats = async (): Promise<string> => {
+  const course = await Knex.select("id")
+    .from("course")
+    .where({ slug: "elements-of-ai" })
+  const res = await Knex.select("*")
+    .count()
+    .from("UserCourseSettings")
+    .where({ course: course[0].id })
+  console.log(course)
+  console.log("----")
+  //console.log(res)
+  return "Global stats"
+}
+
 const post = async () => {
-  //data.text = data.text.concat(await getGlobalStats())
+  data.text = data.text.concat(await getGlobalStats())
   for (let i = 0; i < langArr.length; i++) {
     data.text = data.text.concat(await getDataByLanguage(langArr[i]))
   }
