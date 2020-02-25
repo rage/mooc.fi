@@ -30,6 +30,8 @@ const logCommit = (err: any, topicPartitions: any) => {
   }
 }
 
+console.log(process.env.KAFKA_HOST)
+
 const consumer = new Kafka.KafkaConsumer(
   {
     "group.id": "kafka",
