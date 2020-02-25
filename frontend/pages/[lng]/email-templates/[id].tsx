@@ -28,11 +28,11 @@ const EmailTemplateView = () => {
   const id = useQueryParameter("id")
 
   interface SnackbarData {
-    variant: "error" | "success" | "warning" | "error"
+    type: "error" | "success" | "warning" | "error"
     message: string
   }
   const [snackbarData, setSnackbarData]: [SnackbarData, any] = useState({
-    variant: "error",
+    type: "error",
     message: "Error: Could not save",
   })
 
@@ -151,12 +151,12 @@ const EmailTemplateView = () => {
                       )
                       console.log(data)
                       setSnackbarData({
-                        variant: "success",
+                        type: "success",
                         message: "Saved succesfully",
                       })
                     } catch {
                       setSnackbarData({
-                        variant: "error",
+                        type: "error",
                         message: "Error: Could not save",
                       })
                     }
@@ -183,7 +183,7 @@ const EmailTemplateView = () => {
                       )
                       console.log(data)
                       setSnackbarData({
-                        variant: "success",
+                        type: "success",
                         message: "Deleted successfully",
                       })
 
@@ -191,7 +191,7 @@ const EmailTemplateView = () => {
                       setTimeout(() => Router.push(url), 5000)
                     } catch {
                       setSnackbarData({
-                        variant: "error",
+                        type: "error",
                         message: "Error: Could not delete",
                       })
                     }
@@ -222,7 +222,7 @@ const EmailTemplateView = () => {
         <CustomSnackbar
           open={isSnackbarOpen}
           setOpen={setIsSnackbarOpen}
-          variant={snackbarData.variant}
+          type={snackbarData.type}
           message={snackbarData.message}
         />
       </WideContainer>
