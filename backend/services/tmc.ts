@@ -87,3 +87,17 @@ export default class TmcClient {
     return res.data
   }
 }
+
+export const getCurrentUserDetails = async (
+  accessToken: string,
+): Promise<UserInfo> => {
+  const res = await axios.get(
+    `${BASE_URL}/api/v8/users/current?show_user_fields=true`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  )
+
+  const userInfo = res.data
+  return userInfo
+}

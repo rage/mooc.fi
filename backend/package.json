@@ -43,6 +43,7 @@
     "@types/redis": "^2.8.14",
     "@types/shortid": "0.0.29",
     "@types/uuid": "^3.4.7",
+    "@types/websocket": "^1.0.0",
     "@types/yup": "^0.26.29",
     "apollo-server-core": "^2.9.16",
     "axios": "^0.19.2",
@@ -70,6 +71,7 @@
     "sharp": "^0.24.0",
     "shortid": "^2.2.15",
     "uuid": "^3.4.0",
+    "websocket": "^1.0.31",
     "winston": "^3.2.1",
     "yup": "^0.28.1"
   },
