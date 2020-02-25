@@ -22,7 +22,7 @@ const Row = styled.div`
 const Form = styled.form`
   width: 100%;
 `
-const Header = styled(Typography)`
+const Header = styled(Typography)<any>`
   margin: 1em;
 `
 
@@ -30,7 +30,7 @@ const InfoBox = styled.div`
   margin-bottom: 2rem;
 `
 
-const StyledTypography = styled(Typography)`
+const StyledTypography = styled(Typography)<any>`
   margin-bottom: 2rem;
 `
 

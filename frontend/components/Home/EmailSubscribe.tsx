@@ -29,7 +29,7 @@ const StyledCard = styled(Card)`
   margin: 0 1rem;
 `
 
-const Header = styled(Typography)`
+const Header = styled(Typography)<any>`
   text-align: center;
   margin-bottom: 4rem !important;
 `

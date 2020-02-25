@@ -23,7 +23,11 @@ const CourseTranslationEditForm = ({
   errors,
 }: {
   values: CourseTranslationFormValues[]
-  errors: (FormikErrors<CourseTranslationFormValues> | undefined)[] | undefined
+  errors?:
+    | string
+    | string[]
+    | FormikErrors<CourseTranslationFormValues>
+    | FormikErrors<CourseTranslationFormValues>[]
   isSubmitting: boolean
 }) => {
   const { language } = useContext(LanguageContext)
@@ -32,9 +36,8 @@ const CourseTranslationEditForm = ({
   return (
     <section>
       <Grid container direction="column">
-        <FieldArray
-          name="course_translations"
-          render={() => (
+        <FieldArray name="course_translations">
+          {() => (
             <>
               {values.length != 0 ? (
                 values?.map(
@@ -57,7 +60,7 @@ const CourseTranslationEditForm = ({
               )}
             </>
           )}
-        />
+        </FieldArray>
       </Grid>
     </section>
   )

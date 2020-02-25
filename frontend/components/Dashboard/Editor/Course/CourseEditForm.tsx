@@ -15,7 +15,7 @@ import {
   Formik,
   Field,
   Form,
-  FormikActions,
+  FormikHelpers,
   FormikProps,
   yupToFormErrors,
 } from "formik"
@@ -61,7 +61,8 @@ const ModuleList = styled(List)`
 const ModuleListItem = styled(ListItem)<any>`
   padding: 0px;
 `
-export const FormSubtitle = styled(Typography)`
+
+export const FormSubtitle = styled(Typography)<any>`
   padding: 20px 0px 20px 0px;
   margin-bottom: 1rem;
   font-size: 2em;
@@ -197,7 +198,7 @@ Pick<
               name="start_date"
               label={t("courseStartDate")}
               error={errors.start_date}
-              component={DatePickerField}
+              component={(props: any) => <DatePickerField {...props} />}
               required
               InputLabelProps={inputLabelProps}
               emptyLabel={t("courseDatePlaceholder")}
@@ -440,27 +441,25 @@ const CourseEditForm = React.memo(
     validationSchema: Yup.ObjectSchema
     onSubmit: (
       values: CourseFormValues,
-      formikActions: FormikActions<CourseFormValues>,
+      FormikHelpers: FormikHelpers<CourseFormValues>,
     ) => void
     onCancel: () => void
     onDelete: (values: CourseFormValues) => void
   }) => {
-    const validate = useCallback(
-      async (values: CourseFormValues) =>
-        validationSchema
-          .validate(values, { abortEarly: false, context: { values } })
-          .catch(err => {
-            throw yupToFormErrors(err)
-          }),
-      [],
-    )
+    const validate = useCallback(async (values: CourseFormValues) => {
+      try {
+        await validationSchema.validate(values, {
+          abortEarly: false,
+          context: { values },
+        })
+      } catch (e) {
+        return yupToFormErrors(e)
+      }
+    }, [])
 
     return (
-      <Formik
-        initialValues={course}
-        validate={validate}
-        onSubmit={onSubmit}
-        render={formikProps => (
+      <Formik initialValues={course} validate={validate} onSubmit={onSubmit}>
+        {formikProps => (
           <FormWrapper<CourseFormValues>
             {...formikProps}
             renderForm={renderForm({
@@ -472,7 +471,7 @@ const CourseEditForm = React.memo(
             onDelete={onDelete}
           />
         )}
-      />
+      </Formik>
     )
   },
 )
