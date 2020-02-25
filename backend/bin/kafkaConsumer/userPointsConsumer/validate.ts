@@ -7,10 +7,7 @@ export const MessageYupSchema = yup.object().shape({
   exercise_id: yup.string().required(),
   n_points: yup.number().required(),
   completed: yup.boolean().required(),
-  user_id: yup
-    .string()
-    .length(36)
-    .required(),
+  user_id: yup.number(),
   course_id: yup
     .string()
     .length(36)
