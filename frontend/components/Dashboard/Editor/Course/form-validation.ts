@@ -9,6 +9,7 @@ import {
 } from "./types"
 import { DocumentNode } from "apollo-boost"
 import { FormValues } from "/components/Dashboard/Editor/types"
+import { DateTime } from "luxon"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -208,7 +209,16 @@ const courseEditSchema = ({
     ),
     start_date: Yup.date()
       .typeError(t("courseStartDateRequired"))
-      .required(t("courseStartDateRequired")),
+      .required(t("courseStartDateRequired"))
+      .test("start_before_end", t("courseStartDateLaterThanEndDate"), function(
+        this: Yup.TestContext,
+        value?: DateTime,
+      ) {
+        const start = value
+        const end = this.parent.end_date
+
+        return start && end ? start <= end : true
+      }),
     teacher_in_charge_name: Yup.string().required(
       t("courseTeacherNameRequired"),
     ),

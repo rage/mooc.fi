@@ -3,7 +3,7 @@ import { StudyModuleFormValues } from "./types"
 import {
   Formik,
   Form,
-  FormikActions,
+  FormikHelpers,
   FormikProps,
   yupToFormErrors,
   FieldArray,
@@ -179,9 +179,8 @@ const RenderForm = ({
           {t("moduleTranslationsTitle")}
         </FormSubtitle>
         <Grid container direction="column">
-          <FieldArray
-            name="study_module_translations"
-            render={helpers => (
+          <FieldArray name="study_module_translations">
+            {helpers => (
               <>
                 {values?.study_module_translations?.map(
                   (_: any, index: number) => (
@@ -279,7 +278,7 @@ const RenderForm = ({
                 )}
               </>
             )}
-          />
+          </FieldArray>
         </Grid>
       </Form>
     </FormContainer>
@@ -297,7 +296,7 @@ const StudyModuleEditForm = ({
   validationSchema: Yup.ObjectSchema
   onSubmit: (
     values: StudyModuleFormValues,
-    formikActions: FormikActions<StudyModuleFormValues>,
+    FormikHelpers: FormikHelpers<StudyModuleFormValues>,
   ) => void
   onCancel: () => void
   onDelete: (values: StudyModuleFormValues) => void
@@ -313,11 +312,8 @@ const StudyModuleEditForm = ({
   )
 
   return (
-    <Formik
-      initialValues={module}
-      validate={validate}
-      onSubmit={onSubmit}
-      render={formikProps => (
+    <Formik initialValues={module} validate={validate} onSubmit={onSubmit}>
+      {formikProps => (
         <FormWrapper<StudyModuleFormValues>
           {...formikProps}
           renderForm={RenderForm}
@@ -325,7 +321,7 @@ const StudyModuleEditForm = ({
           onDelete={onDelete}
         />
       )}
-    />
+    </Formik>
   )
 }
 

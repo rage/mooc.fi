@@ -4,6 +4,7 @@ import {
   CourseDetails_course_photo,
   // CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
+import { DateTime } from "luxon"
 
 export interface CourseFormValues extends FormValues {
   id?: string | null
@@ -12,8 +13,8 @@ export interface CourseFormValues extends FormValues {
   teacher_in_charge_name: string
   teacher_in_charge_email: string
   support_email?: string
-  start_date: string
-  end_date?: string
+  start_date: string | DateTime
+  end_date?: string | DateTime
   ects?: string
   photo?: string | CourseDetails_course_photo | null
   start_point: boolean

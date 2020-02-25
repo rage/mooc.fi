@@ -68,6 +68,7 @@
   "courseLanguageSelectTitle": "Which language version do you want the course to be visible in?",
   "courseLanguageVersion": "Language version",
   "courseStartDateRequired": "You must provide start date",
+  "courseStartDateLaterThanEndDate": "Start date must be same or earlier than end date",
   "courseTeacherNameRequired": "You must provide the name of the teacher in charge of the course",
   "courseTeacherEmailRequired":"You must provide the e-mail of the teacher in charge of the course",
   "courseEmailInvalid": "Make sure the given e-mail address is correct",
