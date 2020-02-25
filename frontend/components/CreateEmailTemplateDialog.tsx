@@ -107,7 +107,7 @@ const CreateEmailTemplateDialog = (props: CreateEmailTemplateDialogParams) => {
       <CustomSnackbar
         open={isErrorSnackbarOpen}
         setOpen={setIsErrorSnackbarOpen}
-        variant="error"
+        type="error"
         message="Error in creating a new EmailTemplate"
       />
     </div>
