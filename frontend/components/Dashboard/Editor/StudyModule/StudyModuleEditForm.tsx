@@ -23,6 +23,7 @@ import styled from "styled-components"
 import useDebounce from "/util/useDebounce"
 import HelpIcon from "@material-ui/icons/Help"
 import {
+  StyledField,
   StyledTextField,
   OutlinedFormControl,
   OutlinedInputLabel,
@@ -123,6 +124,16 @@ const RenderForm = ({
           fullWidth
           variant="outlined"
           autoComplete="off"
+          component={StyledTextField}
+        />
+        <StyledField
+          id="module-id"
+          style={{ width: "50%" }}
+          name="id"
+          type="text"
+          disabled
+          label={t("moduleID")}
+          variant="outlined"
           component={StyledTextField}
         />
         <StyledFieldWithAnchor

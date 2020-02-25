@@ -19,6 +19,7 @@
   "moduleName": "Nimi",
   "moduleOrder": "Järjestys",
   "moduleSlug": "Tunnus",
+  "moduleID": "Tietokanta-ID",
   "moduleImageName": "Kuvan tiedostonimi",
   "moduleImageTooltip": "Oletuksena kuvan tiedostonimi on [tunnus].jpg. Syötä tähän tiedostonimi tiedostoliitteen kanssa ohittaaksesi oletus.",
   "moduleImagePreview": "Kuvan esikatselu",
