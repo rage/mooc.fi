@@ -41,6 +41,11 @@ const CourseArg = inputObjectType({
       type: "CourseVariantCreateUpdateInput",
       required: false,
     }),
+      t.field("course_aliases", {
+        list: true,
+        type: "CourseAliasCreateUpdateInput",
+        required: false,
+      }),
       t.int("order")
     t.int("study_module_order")
     t.int("points_needed")
