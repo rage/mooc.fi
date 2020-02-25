@@ -91,12 +91,14 @@ const CourseVariantEditForm = ({
                                 if (!variant.id && variant.slug === "") {
                                   helpers.remove(index)
                                 } else {
-                                  confirm({
+                                  return confirm({
                                     title: t("confirmationAreYouSure"),
                                     description: t("confirmationRemoveVariant"),
                                     confirmationText: t("confirmationYes"),
                                     cancellationText: t("confirmationNo"),
-                                  }).then(() => helpers.remove(index))
+                                  })
+                                    .then(() => helpers.remove(index))
+                                    .catch(() => {})
                                 }
                               }}
                               endIcon={

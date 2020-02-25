@@ -74,7 +74,9 @@ const CourseAliasEditForm = ({
                               description: t("confirmationRemoveAlias"),
                               confirmationText: t("confirmationYes"),
                               cancellationText: t("confirmationNo"),
-                            }).then(() => helpers.remove(index))
+                            })
+                              .then(() => helpers.remove(index))
+                              .catch(() => {})
                           }
                         }}
                         endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}

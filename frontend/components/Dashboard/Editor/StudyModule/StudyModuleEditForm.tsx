@@ -248,7 +248,9 @@ const RenderForm = ({
                                 description: t("moduleConfirmationContent"),
                                 confirmationText: t("moduleConfirmationYes"),
                                 cancellationText: t("moduleConfirmationNo"),
-                              }).then(() => helpers.remove(index))
+                              })
+                                .then(() => helpers.remove(index))
+                                .catch(() => {})
                             }
                           >
                             {t("moduleRemoveTranslation")}
