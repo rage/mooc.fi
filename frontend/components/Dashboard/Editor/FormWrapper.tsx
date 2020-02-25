@@ -137,7 +137,9 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
                       description: t("confirmationLeaveWithoutSaving"),
                       confirmationText: t("confirmationYes"),
                       cancellationText: t("confirmationNo"),
-                    }).then(onCancel)
+                    })
+                      .then(onCancel)
+                      .catch(() => {})
                   : onCancel()
               }
             >
