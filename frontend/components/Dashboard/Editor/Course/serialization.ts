@@ -39,7 +39,7 @@ export const toCourseForm = ({
 
   return course
     ? {
-        ...omit(course, ["open_university_registration_links", "__typename"]),
+        ...omit(course, ["__typename"]),
         teacher_in_charge_name: course.teacher_in_charge_name ?? "",
         teacher_in_charge_email: course.teacher_in_charge_email ?? "",
         support_email: course.support_email ?? "",
@@ -144,7 +144,7 @@ export const fromCourseForm = ({
       }
 
       return {
-        ...prevLink,
+        ...omit(prevLink, ["__typename"]),
         course_code: c.open_university_course_code.trim(),
       }
     })
