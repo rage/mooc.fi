@@ -34,7 +34,7 @@ const StyledToolbar = styled(Toolbar)`
 `
 const HiddenMenuContainer = styled.div`
   flex: 1;
-  @media (max-width: 950px) {
+  @media (max-width: 1050px) {
     display: none;
   }
 `
