@@ -2,6 +2,7 @@ import { CourseStatus } from "/static/types/globalTypes"
 import { FormValues } from "../types"
 import {
   CourseDetails_course_photo,
+  CourseDetails_course_open_university_registration_links,
   // CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
 import { DateTime } from "luxon"
@@ -23,7 +24,9 @@ export interface CourseFormValues extends FormValues {
   study_module_start_point: boolean
   status: CourseStatus
   course_translations: CourseTranslationFormValues[]
-  open_university_registration_links?: OpenUniversityRegistrationValues[] | null
+  open_university_registration_links?:
+    | CourseDetails_course_open_university_registration_links[]
+    | null
   study_modules?: { [key: string]: boolean } | null
   course_variants: CourseVariantFormValues[]
   course_aliases: CourseAliasFormValues[]
