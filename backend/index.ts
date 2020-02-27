@@ -70,9 +70,6 @@ const serverStartOptions: Options = {
   },
 }
 
-serverStartOptions["playground"] = "/"
-serverStartOptions["endpoint"] = "/api"
-
 if (process.env.NODE_ENV === "production") {
   console.log("Running in production mode")
   serverStartOptions["playground"] = "/api"
