@@ -26,7 +26,7 @@ const Background = styled.section`
   background-color: #ffc107;
 `
 
-const Title = styled(Typography)`
+const Title = styled(Typography)<any>`
   margin-bottom: 0.4em;
   padding: 1rem;
 `

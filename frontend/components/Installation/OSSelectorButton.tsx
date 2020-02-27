@@ -24,7 +24,7 @@ const StyledIcon = styled(FontAwesomeIcon)`
   margin-bottom: 0.25rem;
 `
 
-const StyledTypography = styled(Typography)`
+const StyledTypography = styled(Typography)<any>`
   margin-bottom: 0.3rem;
 `
 interface Props {

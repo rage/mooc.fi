@@ -26,7 +26,7 @@ type MessageType =
   | "PEER_REVIEW_REVEIVED"
   | "QUIZ_CONFIRMED"
 
-export const messageClient = (
+export const pushMessageToClient = (
   userId: number,
   courseId: string,
   type: MessageType,

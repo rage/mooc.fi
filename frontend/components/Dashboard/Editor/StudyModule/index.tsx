@@ -13,7 +13,7 @@ import {
   CheckModuleSlugQuery,
 } from "/graphql/queries/study-modules"
 import studyModuleEditSchema from "./form-validation"
-import { FormikActions } from "formik"
+import { FormikHelpers } from "formik"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
 import { PureQueryOptions } from "apollo-boost"
@@ -54,7 +54,7 @@ const StudyModuleEdit = ({
   const onSubmit = useCallback(
     async (
       values: StudyModuleFormValues,
-      { setSubmitting, setStatus }: FormikActions<StudyModuleFormValues>,
+      { setSubmitting, setStatus }: FormikHelpers<StudyModuleFormValues>,
     ): Promise<void> => {
       const newStudyModule = !values.id
 

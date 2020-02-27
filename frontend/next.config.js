@@ -19,7 +19,7 @@ const nextConfiguration = {
   },
 
   webpack(config) {
-    try {
+    /*     try {
       config.optimization.splitChunks.cacheGroups.commons.enforce = true
       config.optimization.splitChunks.cacheGroups.commons.priority = 9
       config.optimization.splitChunks.cacheGroups.react.priority = 12
@@ -41,7 +41,7 @@ const nextConfiguration = {
       }
     } catch (e) {
       // fall through
-    }
+    } */
 
     return config
   },
