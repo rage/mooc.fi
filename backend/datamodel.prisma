@@ -256,10 +256,10 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   id: UUID! @id
   created_at: DateTime @createdAt
   updated_at: DateTime @updatedAt
-  n_points: Int
+  n_points: Float
   exercise: Exercise! @relation(link: INLINE, name: "ExerciseCompletionsToExercise")
   user: User! @relation(link: INLINE, name: "ExerciseCompletionsToUser")
-  timestamp: DateTime
+  timestamp: DateTime!
   completed: Boolean @default(value: false)
   required_actions: [ExerciseCompletionRequiredActions]! @relation(name: "ExerciseCompletionToRequiredActions")
 }
