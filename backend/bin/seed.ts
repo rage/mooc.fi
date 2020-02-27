@@ -256,7 +256,7 @@ const Courses = [
     study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
-    id: "hdtry565656465",
+    id: "290e6506-00e3-433d-b938-1a258b6b04f2",
     name: "Tietokoneen toiminnan perusteet",
     slug: "tito",
     course_translations: [
@@ -417,6 +417,9 @@ const seed = async () => {
         ...course,
         id: undefined,
         photo: undefined,
+        teacher_in_charge_name: "",
+        teacher_in_charge_email: "",
+        start_date: "",
         status: course.status as CourseStatus,
         course_translations: course.course_translations
           ? ({
