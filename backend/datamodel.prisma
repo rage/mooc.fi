@@ -266,7 +266,7 @@ type ExerciseCompletion @db(name: "exercise_completion") {
 
 type ExerciseCompletionRequiredActions @db(name: "exercise_completion_required_actions") {
    id: UUID! @id
-   value: String 
+   value: String! 
    ExerciseCompletion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
 }
 
