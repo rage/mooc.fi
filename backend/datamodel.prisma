@@ -261,7 +261,13 @@ type ExerciseCompletion @db(name: "exercise_completion") {
   user: User! @relation(link: INLINE, name: "ExerciseCompletionsToUser")
   timestamp: DateTime
   completed: Boolean @default(value: false)
-  required_actions: String
+  required_actions: [ExerciseCompletionRequiredActions]! @relation(name: "ExerciseCompletionToRequiredActions")
+}
+
+type ExerciseCompletionRequiredActions @db(name: "exercise_completion_required_actions") {
+   id: UUID! @id
+   value: String 
+   ExerciseCompletion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
 }
 
 type Image @db(name: "image") {
