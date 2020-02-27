@@ -1,3 +1,4 @@
+const path = require("path")
 module.exports = {
   client: {
     tagName: "gql",
@@ -13,7 +14,7 @@ module.exports = {
     excludes: ["node_modules"],
     service: {
       name: "backend",
-      localSchemaFile: `schema.graphql`,
+      localSchemaFile: path.resolve(__dirname, "schema.graphql"),
     },
   },
 }

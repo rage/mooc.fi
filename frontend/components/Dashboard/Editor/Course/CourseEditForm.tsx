@@ -20,7 +20,7 @@ import {
   yupToFormErrors,
 } from "formik"
 
-import { Checkbox } from "formik-material-ui"
+import { CheckboxWithLabel } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import CourseVariantEditForm from "./CourseVariantEditForm"
@@ -293,17 +293,14 @@ Pick<
                   {studyModules?.map(
                     (module: CourseEditorStudyModules_study_modules) => (
                       <ModuleListItem key={module.id}>
-                        <FormControlLabel
-                          control={
-                            <Field
-                              label={module.name}
-                              type="checkbox"
-                              name={`study_modules[${module.id}]`}
-                              value={(values.study_modules || {})[module.id]}
-                              component={Checkbox}
-                            />
-                          }
+                        <Field
+                          id={`study_modules[${module.id}]`}
                           label={module.name}
+                          type="checkbox"
+                          name={`study_modules[${module.id}]`}
+                          checked={values?.study_modules?.[module.id]}
+                          component={CheckboxWithLabel}
+                          Label={{ label: module.name }}
                         />
                       </ModuleListItem>
                     ),
@@ -316,53 +313,41 @@ Pick<
             <FormControl>
               <FormLabel>{t("courseProperties")}</FormLabel>
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("coursePromote")}
-                      type="checkbox"
-                      name="promote"
-                      value={values.promote}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="promote"
                   label={t("coursePromote")}
+                  type="checkbox"
+                  name="promote"
+                  checked={values.promote}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("coursePromote") }}
                 />
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("courseStartPoint")}
-                      type="checkbox"
-                      name="start_point"
-                      value={values.start_point}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="start_point"
                   label={t("courseStartPoint")}
+                  type="checkbox"
+                  name="start_point"
+                  checked={values.start_point}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("courseStartPoint") }}
                 />
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("courseModuleStartPoint")}
-                      type="checkbox"
-                      name="study_module_start_point"
-                      value={values.study_module_start_point}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="study_module_start_point"
                   label={t("courseModuleStartPoint")}
+                  type="checkbox"
+                  name="study_module_start_point"
+                  checked={values.study_module_start_point}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("courseModuleStartPoint") }}
                 />
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("courseHidden")}
-                      type="checkbox"
-                      name="hidden"
-                      value={values.hidden}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="hidden"
                   label={t("courseHidden")}
+                  type="checkbox"
+                  name="hidden"
+                  checked={values.hidden}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("courseHidden") }}
                 />
               </FormGroup>
             </FormControl>
