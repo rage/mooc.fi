@@ -5,7 +5,6 @@ import axios from "axios"
 let _accessToken: string | null = null
 
 async function fetchAccessToken(): Promise<string> {
-  //return new Promise((resolve, _reject) => {
   console.log("Fetching tmc access token...")
   try {
     const response = await axios.post(
@@ -28,20 +27,6 @@ async function fetchAccessToken(): Promise<string> {
     console.log(error)
     return ""
   }
-  /*
-    `curl -fsS -XPOST $TMC_HOST/oauth/token --data-urlencode "client_id=${process.env.TMC_CLIENT_ID}" --data-urlencode "client_secret=${process.env.TMC_CLIENT_SECRET}" --data-urlencode "username=${process.env.TMC_USERNAME}" --data-urlencode "password=$TMC_PASSWORD" --data-urlencode "grant_type=password" | jq -r '.access_token'`,
-    { maxBuffer: 1024 * 1000 },
-    (err: any, accessToken: string) => {
-      if (err) {
-        console.error("Error while getting tmc access token")
-        console.log(err)
-        process.exit(1)
-      }
-      console.log("Got tmc access token.")
-      resolve(accessToken.trim())
-    },
-  )
-})*/
 }
 
 export async function getAccessToken() {
