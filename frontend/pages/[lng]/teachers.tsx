@@ -27,7 +27,7 @@ const ContentBlock = styled.div`
   }
 `
 
-const TextBlock = styled(Typography)`
+const TextBlock = styled(Typography)<any>`
   max-width: 800px;
 `
 

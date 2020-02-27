@@ -36,9 +36,15 @@ const StyledButton = styled(Button)<ButtonProps>`
   color: ${props => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
 `
-const ButtonLabel = styled(Typography)`
+const ButtonLabel = styled(Typography)<any>`
   font-family: Open Sans Condensed !important;
   font-size: 18px;
+  @media (max-width: 600px) {
+    font-size: 14px;
+  }
+  @media (max-width: 450px) {
+    font-sise: 12px;
+  }
 `
 interface UserMenuprops {
   active?: string
@@ -102,7 +108,7 @@ const UserMenu = (props: UserMenuprops) => {
             <StyledButton
               color="inherit"
               variant="text"
-              active={active == "email-templates"}
+              active={active == "email-templates" ? 1 : null}
             >
               <div>
                 <FontAwesomeIcon icon={faEnvelope} />

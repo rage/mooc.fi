@@ -20,11 +20,11 @@ const Background = styled(ClickableDiv)`
   width: 100%;
 `
 
-const CourseTitle = styled(Typography)`
+const CourseTitle = styled(Typography)<any>`
   margin: 0.5rem;
   padding-left: 1rem;
 `
-const CardText = styled(Typography)`
+const CardText = styled(Typography)<any>`
   margin: 0.5rem;
   padding-top: 0.2rem;
 `

@@ -39,6 +39,15 @@
       },
       "icons"
     ],
+    [
+      "babel-plugin-import",
+      {
+        "libraryName": "@material-ui/utils",
+        "libraryDirectory": "", // "esm", // or '' if your bundler does not support ES modules
+        "camel2DashComponentName": false
+      },
+      "utils"
+    ],
     "@babel/plugin-proposal-optional-chaining",
     "@babel/plugin-proposal-nullish-coalescing-operator",
     "lodash",

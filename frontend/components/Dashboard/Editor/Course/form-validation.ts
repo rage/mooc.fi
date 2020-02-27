@@ -9,6 +9,8 @@ import {
 } from "./types"
 import { DocumentNode } from "apollo-boost"
 import { FormValues } from "/components/Dashboard/Editor/types"
+import { DateTime } from "luxon"
+import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -16,7 +18,10 @@ export const initialTranslation: CourseTranslationFormValues = {
   name: "",
   description: "",
   link: "",
-  open_university_course_code: "",
+  open_university_course_link: {
+    course_code: "",
+    link: "",
+  } as CourseDetails_course_open_university_registration_links,
 }
 
 export const initialVariant: CourseVariantFormValues = {
@@ -167,6 +172,10 @@ const courseEditSchema = ({
           ),
         description: Yup.string(),
         link: Yup.string(),
+        open_university_course_link: Yup.object().shape({
+          course_code: Yup.string(),
+          link: Yup.string(),
+        }),
       }),
     ),
     course_variants: Yup.array().of(
@@ -208,7 +217,16 @@ const courseEditSchema = ({
     ),
     start_date: Yup.date()
       .typeError(t("courseStartDateRequired"))
-      .required(t("courseStartDateRequired")),
+      .required(t("courseStartDateRequired"))
+      .test("start_before_end", t("courseStartDateLaterThanEndDate"), function(
+        this: Yup.TestContext,
+        value?: DateTime,
+      ) {
+        const start = value
+        const end = this.parent.end_date
+
+        return start && end ? start <= end : true
+      }),
     teacher_in_charge_name: Yup.string().required(
       t("courseTeacherNameRequired"),
     ),

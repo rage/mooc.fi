@@ -39,7 +39,7 @@ const completionsFragment = gql`
 export interface CompletionsProps {
   completions: ProfileUserOverView_currentUser_completions[]
 }
-const Title = styled(Typography)`
+const Title = styled(Typography)<any>`
   font-family: "Open Sans Condensed", sans-serif !important;
   margin-top: 7rem;
   margin-left: 2rem;

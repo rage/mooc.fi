@@ -53,9 +53,8 @@ const CourseLanguageSelector = (props: LanguageSelectorProps) => {
       <FormSubtitle variant="h6" component="h3" align="center">
         {t("courseLanguageSelectTitle")}
       </FormSubtitle>
-      <FieldArray
-        name="course_translations"
-        render={helpers => (
+      <FieldArray name="course_translations">
+        {helpers => (
           <ButtonGroupContainer
             color="secondary"
             aria-label="course language select button group"
@@ -118,7 +117,7 @@ const CourseLanguageSelector = (props: LanguageSelectorProps) => {
             </StyledLanguageButton>
           </ButtonGroupContainer>
         )}
-      />
+      </FieldArray>
     </>
   )
 }

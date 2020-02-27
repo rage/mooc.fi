@@ -3,9 +3,32 @@ import {
   Prisma,
   ExerciseCompletion,
   Exercise,
+  User,
 } from "../../../generated/prisma-client"
+import TmcClient from "../../../services/tmc"
 import { DateTime } from "luxon"
 import winston = require("winston")
+
+const isUserInDB = async (prisma: Prisma, user_id: number) => {
+  return await prisma.$exists.user({ upstream_id: user_id })
+}
+
+const getUserFromTMC = async (
+  prisma: Prisma,
+  user_id: number,
+): Promise<User> => {
+  const tmc: TmcClient = new TmcClient()
+  const userDetails = await tmc.getUserDetailsById(user_id)
+
+  return prisma.createUser({
+    upstream_id: userDetails.id,
+    first_name: userDetails.user_field.first_name,
+    last_name: userDetails.user_field.last_name,
+    email: userDetails.email,
+    username: userDetails.username,
+    administrator: userDetails.administrator,
+  })
+}
 
 export const saveToDatabase = async (
   message: Message,
@@ -13,6 +36,10 @@ export const saveToDatabase = async (
   logger: winston.Logger,
 ): Promise<Boolean> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+
+  if (!(await isUserInDB(prisma, message.user_id))) {
+    await getUserFromTMC(prisma, message.user_id)
+  }
 
   const isExercise = await prisma.$exists.exercise({
     custom_id: message.exercise_id,
@@ -42,9 +69,15 @@ export const saveToDatabase = async (
     await prisma.createExerciseCompletion({
       exercise: { connect: { id: exercice.id } },
       user: { connect: { upstream_id: Number(message.user_id) } },
-      n_points: Number(message.n_points),
-      required_actions:
-        message.required_actions == null ? null : message.required_actions,
+      n_points: message.n_points,
+      completed: message.completed,
+      required_actions: {
+        create: message.required_actions.map(ra => {
+          return {
+            value: ra,
+          }
+        }),
+      },
       timestamp: message.timestamp,
     })
   } else {
@@ -57,8 +90,14 @@ export const saveToDatabase = async (
       where: { id: exerciseCompleted.id },
       data: {
         n_points: Number(message.n_points),
-        required_actions:
-          message.required_actions == null ? null : message.required_actions,
+        completed: message.completed,
+        required_actions: {
+          create: message.required_actions.map(ra => {
+            return {
+              value: ra,
+            }
+          }),
+        },
         timestamp: message.timestamp,
       },
     })

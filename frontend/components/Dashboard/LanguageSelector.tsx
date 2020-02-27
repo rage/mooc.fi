@@ -10,7 +10,7 @@ const StyledCard = styled.div`
   flex-direction: row;
   border-bottom: 1.5px solid #4d78a3;
 `
-const StyledText = styled(Typography)`
+const StyledText = styled(Typography)<any>`
   font-size: 16px;
   line-height: 30px;
   margin: auto;

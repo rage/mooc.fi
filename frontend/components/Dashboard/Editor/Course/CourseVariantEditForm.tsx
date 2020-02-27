@@ -27,7 +27,11 @@ const CourseVariantEditForm = ({
   isSubmitting,
 }: {
   values: CourseVariantFormValues[]
-  errors?: (FormikErrors<CourseVariantFormValues> | undefined)[]
+  errors?:
+    | string
+    | string[]
+    | FormikErrors<CourseVariantFormValues>
+    | FormikErrors<CourseVariantFormValues>[]
   isSubmitting: boolean
 }) => {
   const { language } = useContext(LanguageContext)
@@ -39,9 +43,8 @@ const CourseVariantEditForm = ({
       <Grid item xs={12}>
         <FormControl>
           <FormGroup>
-            <FieldArray
-              name="course_variants"
-              render={helpers => (
+            <FieldArray name="course_variants">
+              {helpers => (
                 <>
                   {values!.length ? (
                     values!.map((variant, index: number) => (
@@ -88,12 +91,14 @@ const CourseVariantEditForm = ({
                                 if (!variant.id && variant.slug === "") {
                                   helpers.remove(index)
                                 } else {
-                                  confirm({
+                                  return confirm({
                                     title: t("confirmationAreYouSure"),
                                     description: t("confirmationRemoveVariant"),
                                     confirmationText: t("confirmationYes"),
                                     cancellationText: t("confirmationNo"),
-                                  }).then(() => helpers.remove(index))
+                                  })
+                                    .then(() => helpers.remove(index))
+                                    .catch(() => {})
                                 }
                               }}
                               endIcon={
@@ -134,7 +139,7 @@ const CourseVariantEditForm = ({
                   )}
                 </>
               )}
-            />
+            </FieldArray>
           </FormGroup>
         </FormControl>
       </Grid>

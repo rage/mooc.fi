@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 
-export const H1NoBackground = styled(Typography)`
+export const H1NoBackground = styled(Typography)<any>`
   padding-top: 0.7em;
   padding-bottom: 0.7em;
   padding-left: 1.5rem;
@@ -17,14 +17,14 @@ export const H1NoBackground = styled(Typography)`
     padding-right: 1em;
   }
 `
-export const SubtitleNoBackground = styled(Typography)`
+export const SubtitleNoBackground = styled(Typography)<any>`
   padding-bottom: 1em;
   padding-left: 1rem;
   padding-right: 1rem;
   font-size: 2em;
 `
 
-export const H1Background = styled(Typography)`
+export const H1Background = styled(Typography)<any>`
   margin-left: auto;
   margin-right: auto;
   padding-top: 0.7em;
@@ -40,6 +40,7 @@ export const H1Background = styled(Typography)`
 interface TitleProps {
   fontcolor: string
   titlebackground: string
+  component: string
 }
 
 export const H2Background = styled(Typography)<TitleProps>`
@@ -56,7 +57,7 @@ export const H2Background = styled(Typography)<TitleProps>`
     ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
 `
 
-export const H2NoBackground = styled(Typography)`
+export const H2NoBackground = styled(Typography)<any>`
   margin: 3rem auto 0.7rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -68,6 +69,7 @@ export const H2NoBackground = styled(Typography)`
 `
 interface SubTitleProps {
   fontcolor?: string
+  component: string
 }
 export const SubtitleBackground = styled(Typography)<SubTitleProps>`
   margin: 0rem auto 3rem auto;
@@ -79,14 +81,14 @@ export const SubtitleBackground = styled(Typography)<SubTitleProps>`
   ${props => `color: ${props.fontcolor ? props.fontcolor : `black`};`}
 `
 
-export const CardTitle = styled(Typography)`
+export const CardTitle = styled(Typography)<any>`
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
   margin-left: 0.1rem;
   margin-right: 0.1rem;
   color: black;
 `
-export const CardSubtitle = styled(Typography)`
+export const CardSubtitle = styled(Typography)<any>`
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
   margin-left: 0.1rem;

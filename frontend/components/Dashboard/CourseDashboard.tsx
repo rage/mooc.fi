@@ -2,7 +2,7 @@ import React from "react"
 import { Card, Typography } from "@material-ui/core"
 import styled from "styled-components"
 
-const Title = styled(Typography)`
+const Title = styled(Typography)<any>`
   text-transform: uppercase;
   margin-top: 0.7em;
   margin-bottom: 0.7em;
