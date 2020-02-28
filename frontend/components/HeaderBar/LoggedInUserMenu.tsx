@@ -39,6 +39,12 @@ const StyledButton = styled(Button)<ButtonProps>`
 const ButtonLabel = styled(Typography)<any>`
   font-family: Open Sans Condensed !important;
   font-size: 18px;
+  @media (max-width: 600px) {
+    font-size: 14px;
+  }
+  @media (max-width: 450px) {
+    font-sise: 12px;
+  }
 `
 interface UserMenuprops {
   active?: string

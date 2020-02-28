@@ -36,6 +36,7 @@
   "courseDescription": "Description",
   "courseLink": "Link",
   "courseOpenCode": "Open university course code",
+  "courseOpenLink": "Open university course link",
   "courseRemoveTranslation": "Remove translation",
   "courseAtLeastOneTranslation": "Please select the language version!",
   "courseAddTranslation": "Add translation",

@@ -8,7 +8,7 @@ import { whichIsActive } from "/components/HeaderBar/Header"
 import LanguageContext from "/contexes/LanguageContext"
 
 const StyledBottomNavigation = styled(AppBar)`
-  @media (min-width: 950px) {
+  @media (min-width: 1050px) {
     display: none;
   }
   top: auto;

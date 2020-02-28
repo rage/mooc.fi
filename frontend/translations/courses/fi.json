@@ -36,6 +36,7 @@
   "courseDescription": "Kuvaus",
   "courseLink": "Linkki",
   "courseOpenCode": "Avoimen yliopiston kurssikoodi",
+  "courseOpenLink": "Avoimen yliopiston kurssilinkki",
   "courseRemoveTranslation": "Poista käännös",
   "courseAtLeastOneTranslation": "Valitse kurssin kieliversio!",
   "courseAddTranslation": "Lisää käännös",
