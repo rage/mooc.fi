@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { getIn } from "formik"
+import { getIn, useFormikContext } from "formik"
 import {
   StyledTextField,
   StyledFieldWithAnchor,
@@ -9,6 +9,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 
 const LanguageVersionContainer = styled.div`
   padding-top: 1rem;
@@ -33,11 +34,14 @@ const inputLabelProps = {
 
 interface Props {
   index: number
-  errors: any
   translationLanguage: string
 }
 const CourseTranslationListItem = (props: Props) => {
-  const { index, errors, translationLanguage } = props
+  const {
+    errors: { course_translations: errors },
+  } = useFormikContext<CourseFormValues>()
+
+  const { index, translationLanguage } = props
 
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)

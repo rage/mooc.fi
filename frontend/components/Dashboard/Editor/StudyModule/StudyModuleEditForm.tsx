@@ -4,10 +4,10 @@ import {
   Formik,
   Form,
   FormikHelpers,
-  FormikProps,
   yupToFormErrors,
   FieldArray,
   getIn,
+  useFormikContext,
 } from "formik"
 import {
   Grid,
@@ -37,7 +37,7 @@ import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import getModulesTranslator from "/translations/study-modules"
 import LanguageContext from "/contexes/LanguageContext"
 import { useConfirm } from "material-ui-confirm"
-import { FormSubtitle } from "/components/Dashboard/Editor/Course/CourseEditForm"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 
 const FormContainer = styled.div`
   background-color: white;
@@ -57,14 +57,11 @@ const pixel =
   "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
 
 // capitalized to please the hook linter
-const RenderForm = ({
-  errors,
-  values,
-  isSubmitting,
-}: Pick<
-  FormikProps<StudyModuleFormValues>,
-  "errors" | "values" | "isSubmitting" | "setFieldValue"
->) => {
+const RenderForm = () => {
+  const { errors, values, isSubmitting } = useFormikContext<
+    StudyModuleFormValues
+  >()
+
   const { language } = useContext(LanguageContext)
   const t = getModulesTranslator(language)
   const confirm = useConfirm()
@@ -303,26 +300,24 @@ const StudyModuleEditForm = ({
   onCancel: () => void
   onDelete: (values: StudyModuleFormValues) => void
 }) => {
-  const validate = useCallback(
-    async (values: StudyModuleFormValues) =>
-      validationSchema
-        .validate(values, { abortEarly: false, context: { values } })
-        .catch(err => {
-          throw yupToFormErrors(err)
-        }),
-    [],
-  )
+  const validate = useCallback(async (values: StudyModuleFormValues) => {
+    try {
+      await validationSchema.validate(values, {
+        abortEarly: false,
+        context: { values },
+      })
+    } catch (err) {
+      return yupToFormErrors(err)
+    }
+  }, [])
 
   return (
     <Formik initialValues={module} validate={validate} onSubmit={onSubmit}>
-      {formikProps => (
-        <FormWrapper<StudyModuleFormValues>
-          {...formikProps}
-          renderForm={RenderForm}
-          onCancel={onCancel}
-          onDelete={onDelete}
-        />
-      )}
+      <FormWrapper<StudyModuleFormValues>
+        renderForm={RenderForm}
+        onCancel={onCancel}
+        onDelete={onDelete}
+      />
     </Formik>
   )
 }
