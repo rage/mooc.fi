@@ -1,7 +1,7 @@
 import React, { useContext, useState, useCallback } from "react"
 import { FormFieldGroup } from "./CourseEditForm"
 import { FormControl, Button } from "@material-ui/core"
-import { Field, FieldProps, useFormikContext } from "formik"
+import { Field, useFormikContext, FieldInputProps } from "formik"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseFormValues } from "./types"
@@ -17,7 +17,7 @@ interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
 }
 const CourseImageInput = (props: ImageInputProps) => {
-  const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
+  const { values, setFieldValue } = useFormikContext<CourseFormValues>()
   const { courses } = props
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
@@ -62,15 +62,10 @@ const CourseImageInput = (props: ImageInputProps) => {
           name="new_photo"
           type="file"
           label={t("courseNewPhoto")}
-          errors={errors.new_photo}
-          fullWidth
-        >
-          {({ field, form, ...others }: FieldProps<CourseFormValues>) => (
+          as={(props: FieldInputProps<CourseFormValues>) => (
             <ImageDropzoneInput
-              field={field}
-              form={form}
+              {...props}
               onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
-              {...others}
             >
               <ImagePreview
                 file={addDomain(values.thumbnail)}
@@ -84,7 +79,9 @@ const CourseImageInput = (props: ImageInputProps) => {
               />
             </ImageDropzoneInput>
           )}
-        </Field>
+          //errors={errors.new_photo}
+          fullWidth
+        />
         <Button
           color="primary"
           style={{ marginTop: "0.5rem" }}
