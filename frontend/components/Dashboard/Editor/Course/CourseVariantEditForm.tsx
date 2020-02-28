@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
-import { CourseVariantFormValues } from "/components/Dashboard/Editor/Course/types"
-import { FieldArray, FormikErrors, getIn } from "formik"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { FieldArray, getIn, useFormikContext } from "formik"
 import { Grid, FormControl, FormGroup, Typography } from "@material-ui/core"
 import { initialVariant } from "./form-validation"
 import AddIcon from "@material-ui/icons/Add"
@@ -21,19 +21,13 @@ const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
 `
 
-const CourseVariantEditForm = ({
-  values,
-  errors,
-  isSubmitting,
-}: {
-  values: CourseVariantFormValues[]
-  errors?:
-    | string
-    | string[]
-    | FormikErrors<CourseVariantFormValues>
-    | FormikErrors<CourseVariantFormValues>[]
-  isSubmitting: boolean
-}) => {
+const CourseVariantEditForm = () => {
+  const {
+    values: { course_variants: values },
+    errors: { course_variants: errors },
+    isSubmitting,
+  } = useFormikContext<CourseFormValues>()
+
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const confirm = useConfirm()

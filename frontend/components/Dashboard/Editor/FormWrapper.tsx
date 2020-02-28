@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from "react"
+import React, { useEffect, useState, useContext, useCallback } from "react"
 import {
   Container,
   Paper,
@@ -7,7 +7,7 @@ import {
   Checkbox as MUICheckbox,
   Tooltip,
 } from "@material-ui/core"
-import { FormikProps, FormikErrors, FormikTouched } from "formik"
+import { FormikErrors, FormikTouched, useFormikContext } from "formik"
 import { FormValues } from "./types"
 import styled from "styled-components"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -29,7 +29,7 @@ const Status = styled.p<any>`
   color: ${(props: any) => (props.error ? "#FF0000" : "default")};
 `
 
-interface FormWrapperProps<T> extends FormikProps<T> {
+interface FormWrapperProps<T> {
   onCancel: () => void
   onDelete: (values: T) => void
   renderForm: (props: any) => React.ReactNode
@@ -43,45 +43,23 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     isSubmitting,
     values,
     status,
-    onCancel,
-    onDelete,
-    renderForm,
     setTouched,
-  } = props
+  } = useFormikContext<T>()
+  const { onCancel, onDelete, renderForm } = props
   const { language } = useContext(LanguageContext)
   const t = getCommonTranslator(language)
   const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
 
   const [deleteVisible, setDeleteVisible] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
   const errorsToTouched = useCallback(
-    (
-      i: FormikErrors<T>,
-      o: FormikTouched<T> = {} as FormikTouched<T>,
-    ): FormikTouched<T> => {
-      ;(Object.keys(i) as Array<keyof FormikErrors<T>>).forEach(k => {
-        if (typeof i[k] !== "string") {
-          const nested = i?.[k] as FormikErrors<T>
-          o = {
-            ...o,
-            [k]: (Object.keys(nested) as Array<keyof FormikErrors<T>>).map(k2 =>
-              errorsToTouched(
-                nested?.[k2 as keyof T] as FormikErrors<T>,
-                o?.[k] as FormikTouched<T>,
-              ),
-            ),
-          } as FormikTouched<T>
-        } else {
-          o = {
-            ...o,
-            [k]: true,
-          }
-        }
-      })
-
-      return o
-    },
+    (i: FormikErrors<T>): FormikTouched<T> =>
+      Object.assign(
+        {},
+        ...Object.keys(flattenKeys(i)).map(k => ({ [k]: true })),
+      ),
     [],
   )
 
@@ -104,9 +82,16 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
       const element = document.getElementById(anchorLink)
       element?.scrollIntoView()
     } else {
+      setSubmitted(true)
       submitForm()
     }
   }, [errors])
+
+  useEffect(() => {
+    if (status?.message && status?.error) {
+      setSubmitted(false)
+    }
+  }, [status])
 
   return (
     <Container maxWidth="md">
@@ -117,7 +102,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
           <Grid item xs={4}>
             <StyledButton
               color="primary"
-              disabled={!dirty || isSubmitting}
+              disabled={!dirty || isSubmitting || submitted}
               onClick={onSubmit}
               style={{ width: "100%" }}
             >
@@ -128,7 +113,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
             <StyledButton
               color="secondary"
               style={{ width: "100%" }}
-              disabled={isSubmitting}
+              disabled={isSubmitting || submitted}
               variant="contained"
               onClick={() =>
                 dirty
@@ -159,7 +144,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
               <StyledButton
                 variant="contained"
                 color="secondary"
-                disabled={isSubmitting}
+                disabled={isSubmitting || submitted}
                 onClick={() =>
                   confirm({
                     title: t("confirmationAboutToDelete"),
