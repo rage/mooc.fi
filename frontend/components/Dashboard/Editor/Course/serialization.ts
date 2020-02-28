@@ -1,7 +1,7 @@
 import { initialValues } from "./form-validation"
 import { getIn } from "formik"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
-import { get, omit } from "lodash"
+import { omit } from "lodash"
 import {
   CourseDetails_course_photo,
   CourseDetails_course,
@@ -39,7 +39,7 @@ export const toCourseForm = ({
 
   return course
     ? {
-        ...omit(course, ["open_university_registration_links", "__typename"]),
+        ...omit(course, ["__typename"]),
         teacher_in_charge_name: course.teacher_in_charge_name ?? "",
         teacher_in_charge_email: course.teacher_in_charge_email ?? "",
         support_email: course.support_email ?? "",
@@ -57,12 +57,9 @@ export const toCourseForm = ({
         course_translations: (course.course_translations || []).map(c => ({
           ...omit(c, "__typename"),
           link: c.link || "",
-          open_university_course_code: get(
-            course?.open_university_registration_links?.find(
-              (l: CourseDetails_course_open_university_registration_links) =>
-                l.language === c.language,
-            ),
-            "course_code",
+          open_university_course_link: course?.open_university_registration_links?.find(
+            (l: CourseDetails_course_open_university_registration_links) =>
+              l.language === c.language,
           ),
         })),
         study_modules: modules?.reduce(
@@ -97,9 +94,8 @@ export const fromCourseForm = ({
 
   const course_translations = (values?.course_translations?.map(
     (c: CourseTranslationFormValues) => ({
-      ...omit(c, "open_university_course_code"),
+      ...omit(c, "open_university_course_link"),
       link: c.link || "",
-      //open_university_course_code: undefined,
       id: !c.id || c.id === "" ? null : c.id,
     }),
   ) ?? []) as (
@@ -124,8 +120,9 @@ export const fromCourseForm = ({
   const open_university_registration_links = values?.course_translations
     ?.map((c: CourseTranslationFormValues) => {
       if (
-        !c.open_university_course_code ||
-        c.open_university_course_code === ""
+        !c.open_university_course_link ||
+        (c.open_university_course_link?.course_code === "" &&
+          c.open_university_course_link?.link === "")
       ) {
         return
       }
@@ -138,14 +135,15 @@ export const fromCourseForm = ({
         return {
           language: c.language ?? "",
           id: undefined,
-          link: null,
-          course_code: c.open_university_course_code.trim(),
+          link: c.open_university_course_link.link?.trim(),
+          course_code: c.open_university_course_link.course_code?.trim(),
         }
       }
 
       return {
-        ...prevLink,
-        course_code: c.open_university_course_code.trim(),
+        ...omit(prevLink, ["__typename"]),
+        link: c.open_university_course_link.link?.trim(),
+        course_code: c.open_university_course_link.course_code.trim(),
       }
     })
     .filter(v => !!v) as (

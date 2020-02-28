@@ -91,15 +91,31 @@ const CourseTranslationListItem = (props: Props) => {
       <StyledFieldWithAnchor
         label={t("courseOpenCode")}
         InputLabelProps={inputLabelProps}
-        id={`course_translations[${index}].open_university_course_code`}
-        name={`course_translations[${index}].open_university_course_code`}
+        id={`course_translations[${index}].open_university_course_link.course_code`}
+        name={`course_translations[${index}].open_university_course_link.course_code`}
         type="text"
-        error={getIn(errors, `[${index}].open_university_course_code`)}
+        error={getIn(
+          errors,
+          `[${index}].open_university_course_link.course_code`,
+        )}
         fullWidth
         autoComplete="off"
         variant="outlined"
         component={StyledTextField}
-        style={{ width: "50%" }}
+        style={{ width: "70%" }}
+      />
+      <StyledFieldWithAnchor
+        label={t("courseOpenLink")}
+        InputLabelProps={inputLabelProps}
+        id={`course_translations[${index}].open_university_course_link.link`}
+        name={`course_translations[${index}].open_university_course_link.link`}
+        type="text"
+        error={getIn(errors, `[${index}].open_university_course_link.link`)}
+        fullWidth
+        autoComplete="off"
+        variant="outlined"
+        component={StyledTextField}
+        style={{ width: "70%" }}
       />
     </LanguageVersionContainer>
   )
