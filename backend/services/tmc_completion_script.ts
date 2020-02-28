@@ -1,4 +1,3 @@
-const exec = require("child_process").exec
 import axios from "axios"
 //const axios = require("axios");
 
