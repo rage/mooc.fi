@@ -50,8 +50,7 @@ export const saveToDatabase = async (
   }
   const exercises: Exercise[] = await prisma.exercises({
     where: {
-      course: { id: message.course_id },
-      service: { id: message.service_id },
+      custom_id: message.exercise_id,
     },
   })
   const exercice = exercises[0]
@@ -62,6 +61,7 @@ export const saveToDatabase = async (
         exercise: { custom_id: message.exercise_id },
         user: { upstream_id: Number(message.user_id) },
       },
+      orderBy: "timestamp_DESC",
     },
   )
   const exerciseCompleted = exerciseCompleteds[0]
@@ -82,7 +82,7 @@ export const saveToDatabase = async (
     })
   } else {
     const oldTimestamp = DateTime.fromISO(exerciseCompleted.timestamp ?? "")
-    if (timestamp < oldTimestamp) {
+    if (timestamp <= oldTimestamp) {
       logger.error("Timestamp older than in DB, aborting")
       return false
     }
