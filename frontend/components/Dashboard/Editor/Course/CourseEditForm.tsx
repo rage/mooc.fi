@@ -170,8 +170,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
               id="start-date"
               name="start_date"
               label={t("courseStartDate")}
-              error={errors.start_date}
-              component={DatePickerField}
+              as={DatePickerField}
               required
               InputLabelProps={inputLabelProps}
               emptyLabel={t("courseDatePlaceholder")}
@@ -179,10 +178,9 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
             <StyledFieldWithAnchor
               id="end-date"
               name="end_date"
-              error={errors.end_date}
               label={t("courseEndDate")}
+              as={DatePickerField}
               InputLabelProps={inputLabelProps}
-              component={DatePickerField}
               emptyLabel={t("courseDatePlaceholder")}
             />
           </FormFieldGroup>
