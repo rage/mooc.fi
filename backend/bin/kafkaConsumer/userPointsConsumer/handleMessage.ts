@@ -25,7 +25,6 @@ export const handleMessage = async (
   let message: Message
   try {
     message = JSON.parse(kafkaMessage.value.toString("utf8"))
-    console.log(message)
   } catch (e) {
     logger.error("invalid message", e)
     await commit(kafkaMessage, consumer)
