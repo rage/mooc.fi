@@ -23,9 +23,9 @@ spec:
               containerPort: 4000
           resources:
             limits:
-              memory: 10000Mi
-            requests:
               memory: 1000Mi
+            requests:
+              memory: 500Mi
           envFrom:
           - secretRef:
               name: backend-secret
