@@ -1,4 +1,9 @@
-import { FormControl, FormGroup, InputLabel } from "@material-ui/core"
+import {
+  FormControl,
+  FormGroup,
+  InputLabel,
+  Typography,
+} from "@material-ui/core"
 import { Field } from "formik"
 import { TextField } from "formik-material-ui"
 import styled from "styled-components"
@@ -51,6 +56,12 @@ export const StyledField = styled(Field)`
   .input-required {
     color: #df7a46;
   }
+`
+
+export const FormSubtitle = styled(Typography)<any>`
+  padding: 20px 0px 20px 0px;
+  margin-bottom: 1rem;
+  font-size: 2em;
 `
 
 export const AdjustingAnchorLink = styled.a<{ id: string }>`

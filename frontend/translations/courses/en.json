@@ -65,6 +65,7 @@
   "validationTwoAliases": "cannot have two aliases with same course code",
   "validationInteger": "must be integer",
   "validationNumberRange": "must be a number or a range",
+  "validationValidUrl": "must be a valid URL",
   "statusSaving": "Saving...",
   "courseLanguageSelectTitle": "Which language version do you want the course to be visible in?",
   "courseLanguageVersion": "Language version",

@@ -65,6 +65,7 @@
   "validationTwoAliases": "vain yksi alias per kurssikoodi",
   "validationInteger": "vaaditaan kokonaisluku",
   "validationNumberRange": "vaaditaan numero tai arvoalue",
+  "validationValidUrl": "tulee olla validi URL",
   "statusSaving": "Tallennetaan...",
   "courseLanguageSelectTitle": "Missä kieliversiossa haluat kurssin näkyvän?",
   "courseLanguageVersion": "Kieliversio",

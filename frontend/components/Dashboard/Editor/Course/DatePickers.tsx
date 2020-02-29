@@ -1,8 +1,7 @@
 import React from "react"
 import { DatePicker } from "@material-ui/pickers"
-import { FieldProps, ErrorMessage } from "formik"
+import { ErrorMessage, useField } from "formik"
 import styled from "styled-components"
-import { DateTime } from "luxon"
 
 const StyledErrorMessage = styled.p`
   color: #f44336;
@@ -14,21 +13,21 @@ const StyledErrorMessage = styled.p`
   line-height: 1.66;
 `
 
-const DatePickerField = ({ field, form, ...others }: FieldProps) => {
+const DatePickerField = ({ ...props }: any) => {
+  const [field, { error }, { setValue, setTouched }] = useField(props)
+
   return (
     <>
       <DatePicker
-        value={field.value === "" ? null : field.value}
-        onChange={(value: DateTime | null) =>
-          form.setFieldValue(field.name, value)
-        }
+        {...field}
+        {...props}
         format="yyyy-MM-dd"
         style={{
-          marginBottom: form.errors[field.name] ? "0rem" : "1.5rem",
+          marginBottom: error ? "0rem" : "1.5rem",
           width: "70%",
         }}
-        onClose={() => form.setFieldTouched(field.name)}
-        {...others}
+        onChange={setValue}
+        onClose={setTouched}
       />
       <ErrorMessage component={StyledErrorMessage} name={field.name} />
     </>

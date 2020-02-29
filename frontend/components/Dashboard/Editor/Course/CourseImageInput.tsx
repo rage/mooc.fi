@@ -1,28 +1,26 @@
 import React, { useContext, useState, useCallback } from "react"
 import { FormFieldGroup } from "./CourseEditForm"
 import { FormControl, Button } from "@material-ui/core"
-import { Field, FieldProps } from "formik"
+import { Field, useFormikContext, FieldInputProps } from "formik"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseFormValues } from "./types"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
 import { addDomain } from "/util/imageUtils"
-import { FormSubtitle } from "./CourseEditForm"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
 import { initialValues } from "./form-validation"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 
 interface ImageInputProps {
-  errors: any
-  values: any
-  setFieldValue: any
   courses: CourseEditorCourses_courses[] | undefined
 }
 const CourseImageInput = (props: ImageInputProps) => {
+  const { values, setFieldValue } = useFormikContext<CourseFormValues>()
+  const { courses } = props
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
-  const { errors, values, setFieldValue, courses } = props
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const coursesWithPhotos =
@@ -64,15 +62,10 @@ const CourseImageInput = (props: ImageInputProps) => {
           name="new_photo"
           type="file"
           label={t("courseNewPhoto")}
-          errors={errors.new_photo}
-          fullWidth
-        >
-          {({ field, form, ...others }: FieldProps<CourseFormValues>) => (
+          as={(props: FieldInputProps<CourseFormValues>) => (
             <ImageDropzoneInput
-              field={field}
-              form={form}
+              {...props}
               onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
-              {...others}
             >
               <ImagePreview
                 file={addDomain(values.thumbnail)}
@@ -86,7 +79,9 @@ const CourseImageInput = (props: ImageInputProps) => {
               />
             </ImageDropzoneInput>
           )}
-        </Field>
+          //errors={errors.new_photo}
+          fullWidth
+        />
         <Button
           color="primary"
           style={{ marginTop: "0.5rem" }}
@@ -98,8 +93,6 @@ const CourseImageInput = (props: ImageInputProps) => {
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           courses={coursesWithPhotos}
-          values={values}
-          setFieldValue={setFieldValue}
         />
       </FormControl>
     </FormFieldGroup>
