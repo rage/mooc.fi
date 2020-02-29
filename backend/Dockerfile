@@ -1,8 +1,8 @@
-FROM node:12-alpine
+FROM node:12
 
-RUN apk --no-cache update \
-  && apk --no-cache add g++ make bash zlib-dev libpng-dev postgresql-client redis python2 curl jq git \
-  &&  rm -fr /var/cache/apk/*
+RUN apt-get update \
+  && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --chown=node . /app
 
