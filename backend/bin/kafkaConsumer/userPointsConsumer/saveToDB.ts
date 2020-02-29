@@ -35,7 +35,10 @@ export const saveToDatabase = async (
   prisma: Prisma,
   logger: winston.Logger,
 ): Promise<Boolean> => {
+  console.log("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+
+  console.log(`Checking if user ${message.user_id} exists.`)
 
   if (!(await isUserInDB(prisma, message.user_id))) {
     logger.info("Importing user from TMC")
