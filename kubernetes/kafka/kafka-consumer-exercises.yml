@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-consumer
+  name: kafka-consumer-exercises
   namespace: moocfi
 spec:
   selector:
     matchLabels:
-      app: kafka-consumer
+      app: kafka-consumer-exercises
   replicas: 1
   template:
     metadata:
       labels:
-        app: kafka-consumer
+        app: kafka-consumer-exercises
     spec:
       containers:
-        - name: kafka-consumer
+        - name: kafka-consumer-exercises
           image: ${BACKEND_IMAGE}
-          command: ["sh", "-c", "npm run start-kafka-consumers"]
+          command: ["sh", "-c", "npm run kafka-consumer-exercises"]
           imagePullPolicy: Always
           ports:
             - name: backend-http
@@ -53,4 +53,3 @@ spec:
           envFrom:
           - secretRef:
               name: backend-secret
-            
