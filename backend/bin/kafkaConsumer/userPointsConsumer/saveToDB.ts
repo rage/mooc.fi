@@ -58,8 +58,7 @@ export const saveToDatabase = async (
   console.log(`Checking if user ${message.user_id} exists.`)
 
   const userExists = await isUserInDB(message.user_id)
-  console.log(userExists)
-  if (!userExists) {
+  if (!userExists[0]) {
     logger.info("Importing user from TMC")
     await getUserFromTMC(prisma, message.user_id)
   }
