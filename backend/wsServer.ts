@@ -1,11 +1,11 @@
-import * as http from "http"
+import { createServer } from "http"
 import * as WebSocketServer from "websocket"
 import redisClient, * as redis from "./services/redis"
 import { getCurrentUserDetails } from "./services/tmc"
 import { UserInfo } from "./domain/UserInfo"
 
 const webSocketsServerPort = 9000
-const server = http.createServer()
+const server = createServer()
 
 export const wsListen = () => server.listen(webSocketsServerPort)
 
@@ -30,7 +30,7 @@ export const pushMessageToClient = (
   userId: number,
   courseId: string,
   type: MessageType,
-  message?: string,
+  payload?: string,
 ) => {
   if (clients[userId] && clients[userId][courseId]) {
     const connection = clients[userId][courseId]
@@ -38,20 +38,20 @@ export const pushMessageToClient = (
       connection.sendUTF(
         JSON.stringify({
           type,
-          message,
+          message: payload,
         }),
       )
     } else {
       delete clients[userId][courseId]
       redis.publisher.publish(
         "websocket",
-        JSON.stringify({ userId, courseId, type, message }),
+        JSON.stringify({ userId, courseId, type, message: payload }),
       )
     }
   } else {
     redis.publisher.publish(
       "websocket",
-      JSON.stringify({ userId, courseId, type, message }),
+      JSON.stringify({ userId, courseId, type, message: payload }),
     )
   }
 }
