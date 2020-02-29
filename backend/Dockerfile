@@ -1,4 +1,4 @@
-FROM node:11-alpine
+FROM node:12-alpine
 
 RUN apk --no-cache update \
   && apk --no-cache add g++ make bash zlib-dev libpng-dev postgresql-client redis python2 curl jq git \
