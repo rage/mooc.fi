@@ -43,15 +43,15 @@ const consumer = new Kafka.KafkaConsumer(
 
 consumer.connect()
 
-consumer
-  .on("ready", () => {
-    consumer.subscribe(TOPIC_NAME)
-    consumer.consume(1)
-  })
-  .on("data", async message => {
+consumer.on("ready", () => {
+  consumer.subscribe(TOPIC_NAME)
+  const consumerImpl = async (message: any) => {
     await handleMessage(message, mutex, logger, consumer, prisma)
-    consumer.consume(1)
-  })
+    consumer.consume(1, consumerImpl)
+  }
+  consumer.consume(1, consumerImpl)
+})
+
 consumer.on("event.error", error => {
   logger.error(error)
   process.exit(-1)
