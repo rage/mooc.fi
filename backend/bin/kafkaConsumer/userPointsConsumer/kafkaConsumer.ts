@@ -48,8 +48,10 @@ consumer
     consumer.subscribe(TOPIC_NAME)
     consumer.consume()
   })
-  .on("data", message =>
-    handleMessage(message, mutex, logger, consumer, prisma),
+  .on(
+    "data",
+    async message =>
+      await handleMessage(message, mutex, logger, consumer, prisma),
   )
 consumer.on("event.error", error => {
   logger.error(error)
