@@ -28,9 +28,9 @@ envsubst < "$CURRENT_DIR/../kubernetes/fetch-user-app-datum-cronjob.yml" > "$CUR
 envsubst < "$CURRENT_DIR/../kubernetes/send-ai-statistics-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/send-ai-statistics-cronjob.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/fetch-avoin-links-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/fetch-avoin-links-cronjob.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/import-organizations-cronjob.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/import-organizations-cronjob.yml"
-envsubst < "$CURRENT_DIR/../kubernetes/kafka-consumer-user-course-progress.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-user-course-progress.yml"
-envsubst < "$CURRENT_DIR/../kubernetes/kafka-consumer-exercises.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-exercises.yml"
-envsubst < "$CURRENT_DIR/../kubernetes/kafka-consumer-user-points.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-user-points.yml"
+envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-consumer-user-course-progress.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-user-course-progress.yml"
+envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-consumer-exercises.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-exercises.yml"
+envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-consumer-user-points.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-user-points.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-bridge-deployment.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-bridge-deployment.yml"
 
 echo "Applying changes"
