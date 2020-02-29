@@ -55,6 +55,7 @@ consumer.on("ready", () => {
       setImmediate(() => {
         consumer.consume(1, consumerImpl)
       })
+    } else {
       setTimeout(() => {
         consumer.consume(1, consumerImpl)
       }, 10)
