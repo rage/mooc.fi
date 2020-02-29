@@ -247,7 +247,7 @@ type Exercise @db(name: "exercise") {
   max_points: Int
   course: Course! @relation(name:"ExerciseToCourse" )
   service: Service @relation(link: INLINE, name: "ExerciseToService")
-  ExerciseCompletions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToExercise")
+  exercise_completions: [ExerciseCompletion!]! @relation(name: "ExerciseCompletionsToExercise")
   timestamp: DateTime
   deleted: Boolean @default(value: false)
 }
@@ -267,7 +267,7 @@ type ExerciseCompletion @db(name: "exercise_completion") {
 type ExerciseCompletionRequiredActions @db(name: "exercise_completion_required_actions") {
    id: UUID! @id
    value: String! 
-   ExerciseCompletion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
+   exercise_completion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
 }
 
 type Image @db(name: "image") {
