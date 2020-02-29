@@ -42,6 +42,7 @@ export const saveToDatabase = async (
     await getUserFromTMC(prisma, message.user_id)
   }
 
+  logger.info("Checking if the exercise exists")
   const isExercise = await prisma.$exists.exercise({
     custom_id: message.exercise_id,
   })
@@ -49,6 +50,7 @@ export const saveToDatabase = async (
     logger.error("Given exercise does not exist")
     return false
   }
+  logger.info("Getting the exercise")
   const exercises: Exercise[] = await prisma.exercises({
     first: 1,
     where: {
@@ -56,6 +58,7 @@ export const saveToDatabase = async (
     },
   })
   const exercice = exercises[0]
+  logger.info("Getting the completion")
   const exerciseCompleteds: ExerciseCompletion[] = await prisma.exerciseCompletions(
     {
       first: 1,
