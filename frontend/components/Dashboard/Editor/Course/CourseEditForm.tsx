@@ -3,7 +3,6 @@ import {
   InputLabel,
   FormControl,
   FormControlLabel,
-  Typography,
   List,
   ListItem,
   FormLabel,
@@ -16,8 +15,8 @@ import {
   Field,
   Form,
   FormikHelpers,
-  FormikProps,
   yupToFormErrors,
+  useFormikContext,
 } from "formik"
 
 import { CheckboxWithLabel } from "formik-material-ui"
@@ -45,6 +44,7 @@ import LuxonUtils from "@date-io/luxon"
 import { MuiPickersUtilsProvider } from "@material-ui/pickers"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 
 interface CoverProps {
   covered: boolean
@@ -60,12 +60,6 @@ const ModuleList = styled(List)`
 
 const ModuleListItem = styled(ListItem)<any>`
   padding: 0px;
-`
-
-export const FormSubtitle = styled(Typography)<any>`
-  padding: 20px 0px 20px 0px;
-  margin-bottom: 1rem;
-  font-size: 2em;
 `
 
 interface Labelprops {
@@ -91,21 +85,9 @@ interface RenderFormProps {
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
-  errors,
-  values,
-  isSubmitting,
-  setFieldValue,
-}: // setStatus
-Pick<
-  FormikProps<CourseFormValues>,
-  | "errors"
-  | "values"
-  | "isSubmitting"
-  | "setFieldValue"
-  | "initialValues"
-  | "setStatus"
->) => {
+const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
+  const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
+
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
@@ -124,18 +106,9 @@ Pick<
           selectedLanguage={selectedLanguage}
           setSelectedLanguage={setSelectedLanguage}
         />
-        <CourseTranslationEditForm
-          values={values.course_translations}
-          errors={errors.course_translations}
-          isSubmitting={isSubmitting}
-        />
+        <CourseTranslationEditForm />
         <SelectLanguageFirstCover covered={selectedLanguage === ""}>
-          <CourseImageInput
-            values={values}
-            errors={errors}
-            setFieldValue={setFieldValue}
-            courses={courses}
-          />
+          <CourseImageInput courses={courses} />
 
           <FormSubtitle variant="h6" component="h3" align="center">
             {t("courseDetails")}
@@ -197,8 +170,7 @@ Pick<
               id="start-date"
               name="start_date"
               label={t("courseStartDate")}
-              error={errors.start_date}
-              component={(props: any) => <DatePickerField {...props} />}
+              as={DatePickerField}
               required
               InputLabelProps={inputLabelProps}
               emptyLabel={t("courseDatePlaceholder")}
@@ -206,10 +178,9 @@ Pick<
             <StyledFieldWithAnchor
               id="end-date"
               name="end_date"
-              error={errors.end_date}
               label={t("courseEndDate")}
+              as={DatePickerField}
               InputLabelProps={inputLabelProps}
-              component={DatePickerField}
               emptyLabel={t("courseDatePlaceholder")}
             />
           </FormFieldGroup>
@@ -386,11 +357,7 @@ Pick<
           >
             {t("courseVariantsTitle")}
           </FormSubtitle>
-          <CourseVariantEditForm
-            values={values.course_variants}
-            errors={errors.course_variants}
-            isSubmitting={isSubmitting}
-          />
+          <CourseVariantEditForm />
           <FormSubtitle
             variant="h6"
             component="h3"
@@ -399,11 +366,7 @@ Pick<
           >
             {t("courseAliasesTitle")}
           </FormSubtitle>
-          <CourseAliasEditForm
-            values={values.course_aliases}
-            errors={errors.course_aliases}
-            isSubmitting={isSubmitting}
-          />
+          <CourseAliasEditForm />
         </SelectLanguageFirstCover>
       </Form>
     </MuiPickersUtilsProvider>
@@ -444,18 +407,15 @@ const CourseEditForm = React.memo(
 
     return (
       <Formik initialValues={course} validate={validate} onSubmit={onSubmit}>
-        {formikProps => (
-          <FormWrapper<CourseFormValues>
-            {...formikProps}
-            renderForm={renderForm({
-              initialValues: course,
-              courses,
-              studyModules,
-            })}
-            onCancel={onCancel}
-            onDelete={onDelete}
-          />
-        )}
+        <FormWrapper<CourseFormValues>
+          renderForm={renderForm({
+            initialValues: course,
+            courses,
+            studyModules,
+          })}
+          onCancel={onCancel}
+          onDelete={onDelete}
+        />
       </Formik>
     )
   },

@@ -14,7 +14,7 @@ import {
   DialogActions,
   Button,
 } from "@material-ui/core"
-import { Field } from "formik"
+import { Field, useFormikContext } from "formik"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { addDomain } from "/util/imageUtils"
 import getCoursesTranslator from "/translations/courses"
@@ -41,17 +41,15 @@ interface ImportPhotoDialogProps {
   open: boolean
   onClose: () => void
   courses: CourseEditorCourses_courses[]
-  values: CourseFormValues
-  setFieldValue: (field: string, value: any) => void
 }
 
 const ImportPhotoDialog = ({
   open,
   onClose,
   courses,
-  values,
-  setFieldValue,
 }: ImportPhotoDialogProps) => {
+  const { values, setFieldValue } = useFormikContext<CourseFormValues>()
+
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
 
