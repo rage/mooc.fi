@@ -45,7 +45,11 @@ consumer.connect()
 
 consumer.on("ready", () => {
   consumer.subscribe(TOPIC_NAME)
-  const consumerImpl = async (message: any) => {
+  const consumerImpl = async (error: any, message: any) => {
+    if (error) {
+      logger.error("Error while consuming", error)
+      process.exit(-1)
+    }
     await handleMessage(message, mutex, logger, consumer, prisma)
     consumer.consume(1, consumerImpl)
   }
