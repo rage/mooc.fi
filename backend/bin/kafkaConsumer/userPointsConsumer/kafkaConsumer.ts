@@ -46,13 +46,12 @@ consumer.connect()
 consumer
   .on("ready", () => {
     consumer.subscribe(TOPIC_NAME)
-    consumer.consume()
+    consumer.consume(1)
   })
-  .on(
-    "data",
-    async message =>
-      await handleMessage(message, mutex, logger, consumer, prisma),
-  )
+  .on("data", async message => {
+    await handleMessage(message, mutex, logger, consumer, prisma)
+    consumer.consume(1)
+  })
 consumer.on("event.error", error => {
   logger.error(error)
   process.exit(-1)
