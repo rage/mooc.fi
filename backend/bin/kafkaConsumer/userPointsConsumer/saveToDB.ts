@@ -38,6 +38,7 @@ export const saveToDatabase = async (
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
   if (!(await isUserInDB(prisma, message.user_id))) {
+    logger.info("Importing user from TMC")
     await getUserFromTMC(prisma, message.user_id)
   }
 
@@ -49,6 +50,7 @@ export const saveToDatabase = async (
     return false
   }
   const exercises: Exercise[] = await prisma.exercises({
+    first: 1,
     where: {
       custom_id: message.exercise_id,
     },
@@ -66,6 +68,7 @@ export const saveToDatabase = async (
   )
   const exerciseCompleted = exerciseCompleteds[0]
   if (!exerciseCompleted) {
+    logger.info("No previous completion, creating a new one")
     await prisma.createExerciseCompletion({
       exercise: { connect: { id: exercice.id } },
       user: { connect: { upstream_id: Number(message.user_id) } },
@@ -81,6 +84,7 @@ export const saveToDatabase = async (
       timestamp: message.timestamp,
     })
   } else {
+    logger.info("Updating previous completion")
     const oldTimestamp = DateTime.fromISO(exerciseCompleted.timestamp ?? "")
     if (timestamp <= oldTimestamp) {
       logger.error("Timestamp older than in DB, aborting")
