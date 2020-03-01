@@ -3,7 +3,6 @@ import {
   InputLabel,
   FormControl,
   FormControlLabel,
-  Typography,
   List,
   ListItem,
   FormLabel,
@@ -16,11 +15,11 @@ import {
   Field,
   Form,
   FormikHelpers,
-  FormikProps,
   yupToFormErrors,
+  useFormikContext,
 } from "formik"
 
-import { Checkbox } from "formik-material-ui"
+import { CheckboxWithLabel } from "formik-material-ui"
 import * as Yup from "yup"
 import CourseTranslationEditForm from "./CourseTranslationEditForm"
 import CourseVariantEditForm from "./CourseVariantEditForm"
@@ -45,6 +44,7 @@ import LuxonUtils from "@date-io/luxon"
 import { MuiPickersUtilsProvider } from "@material-ui/pickers"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import { FormSubtitle } from "/components/Dashboard/Editor/common"
 
 interface CoverProps {
   covered: boolean
@@ -60,12 +60,6 @@ const ModuleList = styled(List)`
 
 const ModuleListItem = styled(ListItem)<any>`
   padding: 0px;
-`
-
-export const FormSubtitle = styled(Typography)<any>`
-  padding: 20px 0px 20px 0px;
-  margin-bottom: 1rem;
-  font-size: 2em;
 `
 
 interface Labelprops {
@@ -91,21 +85,9 @@ interface RenderFormProps {
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
-  errors,
-  values,
-  isSubmitting,
-  setFieldValue,
-}: // setStatus
-Pick<
-  FormikProps<CourseFormValues>,
-  | "errors"
-  | "values"
-  | "isSubmitting"
-  | "setFieldValue"
-  | "initialValues"
-  | "setStatus"
->) => {
+const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
+  const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
+
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
@@ -124,18 +106,9 @@ Pick<
           selectedLanguage={selectedLanguage}
           setSelectedLanguage={setSelectedLanguage}
         />
-        <CourseTranslationEditForm
-          values={values.course_translations}
-          errors={errors.course_translations}
-          isSubmitting={isSubmitting}
-        />
+        <CourseTranslationEditForm />
         <SelectLanguageFirstCover covered={selectedLanguage === ""}>
-          <CourseImageInput
-            values={values}
-            errors={errors}
-            setFieldValue={setFieldValue}
-            courses={courses}
-          />
+          <CourseImageInput courses={courses} />
 
           <FormSubtitle variant="h6" component="h3" align="center">
             {t("courseDetails")}
@@ -197,8 +170,7 @@ Pick<
               id="start-date"
               name="start_date"
               label={t("courseStartDate")}
-              error={errors.start_date}
-              component={(props: any) => <DatePickerField {...props} />}
+              as={DatePickerField}
               required
               InputLabelProps={inputLabelProps}
               emptyLabel={t("courseDatePlaceholder")}
@@ -206,10 +178,9 @@ Pick<
             <StyledFieldWithAnchor
               id="end-date"
               name="end_date"
-              error={errors.end_date}
               label={t("courseEndDate")}
+              as={DatePickerField}
               InputLabelProps={inputLabelProps}
-              component={DatePickerField}
               emptyLabel={t("courseDatePlaceholder")}
             />
           </FormFieldGroup>
@@ -293,17 +264,14 @@ Pick<
                   {studyModules?.map(
                     (module: CourseEditorStudyModules_study_modules) => (
                       <ModuleListItem key={module.id}>
-                        <FormControlLabel
-                          control={
-                            <Field
-                              label={module.name}
-                              type="checkbox"
-                              name={`study_modules[${module.id}]`}
-                              value={(values.study_modules || {})[module.id]}
-                              component={Checkbox}
-                            />
-                          }
+                        <Field
+                          id={`study_modules[${module.id}]`}
                           label={module.name}
+                          type="checkbox"
+                          name={`study_modules[${module.id}]`}
+                          checked={values?.study_modules?.[module.id]}
+                          component={CheckboxWithLabel}
+                          Label={{ label: module.name }}
                         />
                       </ModuleListItem>
                     ),
@@ -316,53 +284,41 @@ Pick<
             <FormControl>
               <FormLabel>{t("courseProperties")}</FormLabel>
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("coursePromote")}
-                      type="checkbox"
-                      name="promote"
-                      value={values.promote}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="promote"
                   label={t("coursePromote")}
+                  type="checkbox"
+                  name="promote"
+                  checked={values.promote}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("coursePromote") }}
                 />
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("courseStartPoint")}
-                      type="checkbox"
-                      name="start_point"
-                      value={values.start_point}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="start_point"
                   label={t("courseStartPoint")}
+                  type="checkbox"
+                  name="start_point"
+                  checked={values.start_point}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("courseStartPoint") }}
                 />
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("courseModuleStartPoint")}
-                      type="checkbox"
-                      name="study_module_start_point"
-                      value={values.study_module_start_point}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="study_module_start_point"
                   label={t("courseModuleStartPoint")}
+                  type="checkbox"
+                  name="study_module_start_point"
+                  checked={values.study_module_start_point}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("courseModuleStartPoint") }}
                 />
-                <FormControlLabel
-                  control={
-                    <Field
-                      label={t("courseHidden")}
-                      type="checkbox"
-                      name="hidden"
-                      value={values.hidden}
-                      component={Checkbox}
-                    />
-                  }
+                <Field
+                  id="hidden"
                   label={t("courseHidden")}
+                  type="checkbox"
+                  name="hidden"
+                  checked={values.hidden}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("courseHidden") }}
                 />
               </FormGroup>
             </FormControl>
@@ -401,11 +357,7 @@ Pick<
           >
             {t("courseVariantsTitle")}
           </FormSubtitle>
-          <CourseVariantEditForm
-            values={values.course_variants}
-            errors={errors.course_variants}
-            isSubmitting={isSubmitting}
-          />
+          <CourseVariantEditForm />
           <FormSubtitle
             variant="h6"
             component="h3"
@@ -414,11 +366,7 @@ Pick<
           >
             {t("courseAliasesTitle")}
           </FormSubtitle>
-          <CourseAliasEditForm
-            values={values.course_aliases}
-            errors={errors.course_aliases}
-            isSubmitting={isSubmitting}
-          />
+          <CourseAliasEditForm />
         </SelectLanguageFirstCover>
       </Form>
     </MuiPickersUtilsProvider>
@@ -459,18 +407,15 @@ const CourseEditForm = React.memo(
 
     return (
       <Formik initialValues={course} validate={validate} onSubmit={onSubmit}>
-        {formikProps => (
-          <FormWrapper<CourseFormValues>
-            {...formikProps}
-            renderForm={renderForm({
-              initialValues: course,
-              courses,
-              studyModules,
-            })}
-            onCancel={onCancel}
-            onDelete={onDelete}
-          />
-        )}
+        <FormWrapper<CourseFormValues>
+          renderForm={renderForm({
+            initialValues: course,
+            courses,
+            studyModules,
+          })}
+          onCancel={onCancel}
+          onDelete={onDelete}
+        />
       </Formik>
     )
   },

@@ -41,24 +41,23 @@ const ModuleCoursesListing = (props: CourseListProps) => {
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)
 
+  const activeCourses = courses.filter(c => c.status == CourseStatus.Active)
   return (
     <>
-      {showAll ? (
+      {showAll || activeCourses.length === 0 ? (
         <ThreeOrLessCoursesListing courses={courses} />
       ) : (
-        <ThreeOrLessCoursesListing
-          courses={courses
-            .slice(0, 3)
-            .filter(c => c.status === CourseStatus.Active)}
-        />
+        <ThreeOrLessCoursesListing courses={activeCourses.slice(0, 3)} />
       )}
-      <ShowMoreButton
-        fullWidth={true}
-        variant="contained"
-        onClick={() => setShowAll(!showAll)}
-      >
-        {showAll ? t("showLimited") : t("showAll")}
-      </ShowMoreButton>
+      {activeCourses.length ? (
+        <ShowMoreButton
+          fullWidth={true}
+          variant="contained"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? t("showLimited") : t("showAll")}
+        </ShowMoreButton>
+      ) : null}
     </>
   )
 }

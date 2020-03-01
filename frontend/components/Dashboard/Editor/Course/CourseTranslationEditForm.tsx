@@ -1,8 +1,8 @@
 import React, { useContext } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
-import { FieldArray, FormikErrors } from "formik"
-import { CourseTranslationFormValues } from "./types"
+import { FieldArray, useFormikContext } from "formik"
+import { CourseTranslationFormValues, CourseFormValues } from "./types"
 
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
@@ -18,18 +18,10 @@ const AddTranslationNotice = styled(EntryContainer)`
   background-color: #88732d;
   color: white;
 `
-const CourseTranslationEditForm = ({
-  values,
-  errors,
-}: {
-  values: CourseTranslationFormValues[]
-  errors?:
-    | string
-    | string[]
-    | FormikErrors<CourseTranslationFormValues>
-    | FormikErrors<CourseTranslationFormValues>[]
-  isSubmitting: boolean
-}) => {
+const CourseTranslationEditForm = () => {
+  const {
+    values: { course_translations: values },
+  } = useFormikContext<CourseFormValues>()
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
 
@@ -39,13 +31,12 @@ const CourseTranslationEditForm = ({
         <FieldArray name="course_translations">
           {() => (
             <>
-              {values.length != 0 ? (
+              {values.length ? (
                 values?.map(
                   (value: CourseTranslationFormValues, index: number) => (
                     <LanguageEntry item key={`translation-${index}`}>
                       <CourseTranslationListItem
                         index={index}
-                        errors={errors}
                         translationLanguage={value.language}
                       />
                     </LanguageEntry>

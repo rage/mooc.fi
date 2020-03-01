@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
-import { CourseAliasFormValues } from "/components/Dashboard/Editor/Course/types"
-import { FormikErrors, FieldArray, getIn } from "formik"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { FieldArray, getIn, useFormikContext } from "formik"
 import LanguageContext from "/contexes/LanguageContext"
 import { useConfirm } from "material-ui-confirm"
 import getCoursesTranslator from "/translations/courses"
@@ -20,19 +20,12 @@ const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
 `
 
-const CourseAliasEditForm = ({
-  values,
-  errors,
-  isSubmitting,
-}: {
-  values: CourseAliasFormValues[]
-  errors?:
-    | string
-    | string[]
-    | FormikErrors<CourseAliasFormValues>
-    | FormikErrors<CourseAliasFormValues>[]
-  isSubmitting: boolean
-}) => {
+const CourseAliasEditForm = () => {
+  const {
+    errors: { course_aliases: errors },
+    values: { course_aliases: values },
+    isSubmitting,
+  } = useFormikContext<CourseFormValues>()
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const confirm = useConfirm()

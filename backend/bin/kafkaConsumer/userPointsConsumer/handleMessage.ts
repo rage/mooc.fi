@@ -21,9 +21,10 @@ export const handleMessage = async (
 ) => {
   //Going to mutex
   const release = await mutex.acquire()
-  logger.info(kafkaMessage)
+  logger.info("Processing message")
   let message: Message
   try {
+    logger.info("Parsing message")
     message = JSON.parse(kafkaMessage.value.toString("utf8"))
   } catch (e) {
     logger.error("invalid message", e)
@@ -32,6 +33,7 @@ export const handleMessage = async (
     return
   }
   try {
+    logger.info("Validating message")
     await MessageYupSchema.validate(message)
   } catch (error) {
     logger.error("JSON VALIDATE FAILED: " + error, { message })
@@ -40,6 +42,7 @@ export const handleMessage = async (
     return
   }
   try {
+    logger.info("Saving")
     if (!(await saveToDatabase(message, prisma, logger))) {
       logger.error("Could not save event to database")
     }
