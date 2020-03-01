@@ -9,8 +9,25 @@ import TmcClient from "../../../services/tmc"
 import { DateTime } from "luxon"
 import winston = require("winston")
 
-const isUserInDB = async (prisma: Prisma, user_id: number) => {
-  return await prisma.$exists.user({ upstream_id: user_id })
+import * as knex from "knex"
+
+const Knex = knex({
+  client: "pg",
+  connection: {
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  },
+  searchPath:
+    process.env.NODE_ENV === "production"
+      ? ["moocfi$production"]
+      : ["default$default"],
+})
+
+const isUserInDB = async (user_id: number) => {
+  return await Knex("user").where("upstream_id", "=", user_id)
 }
 
 const getUserFromTMC = async (
@@ -35,12 +52,18 @@ export const saveToDatabase = async (
   prisma: Prisma,
   logger: winston.Logger,
 ): Promise<Boolean> => {
+  console.log("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  if (!(await isUserInDB(prisma, message.user_id))) {
+  console.log(`Checking if user ${message.user_id} exists.`)
+
+  const userExists = await isUserInDB(message.user_id)
+  if (!userExists[0]) {
+    logger.info("Importing user from TMC")
     await getUserFromTMC(prisma, message.user_id)
   }
 
+  logger.info("Checking if the exercise exists")
   const isExercise = await prisma.$exists.exercise({
     custom_id: message.exercise_id,
   })
@@ -48,12 +71,15 @@ export const saveToDatabase = async (
     logger.error("Given exercise does not exist")
     return false
   }
+  logger.info("Getting the exercise")
   const exercises: Exercise[] = await prisma.exercises({
+    first: 1,
     where: {
       custom_id: message.exercise_id,
     },
   })
   const exercice = exercises[0]
+  logger.info("Getting the completion")
   const exerciseCompleteds: ExerciseCompletion[] = await prisma.exerciseCompletions(
     {
       first: 1,
@@ -66,6 +92,7 @@ export const saveToDatabase = async (
   )
   const exerciseCompleted = exerciseCompleteds[0]
   if (!exerciseCompleted) {
+    logger.info("No previous completion, creating a new one")
     await prisma.createExerciseCompletion({
       exercise: { connect: { id: exercice.id } },
       user: { connect: { upstream_id: Number(message.user_id) } },
@@ -81,6 +108,7 @@ export const saveToDatabase = async (
       timestamp: message.timestamp,
     })
   } else {
+    logger.info("Updating previous completion")
     const oldTimestamp = DateTime.fromISO(exerciseCompleted.timestamp ?? "")
     if (timestamp <= oldTimestamp) {
       logger.error("Timestamp older than in DB, aborting")
