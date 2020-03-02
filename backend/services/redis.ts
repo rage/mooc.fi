@@ -22,7 +22,7 @@ const logger = winston.createLogger({
 
 redisClient.on("error", (err: any) => logger.error("Redis error: " + err))
 
-const getAsync = promisify(redisClient.get).bind(redisClient)
+export const getAsync = promisify(redisClient.get).bind(redisClient)
 
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
@@ -50,5 +50,15 @@ export async function redisify<T>(
     })
     .catch(() => (fn instanceof Promise ? fn : fn(...params)))
 }
+
+export const publisher = redis.createClient({
+  url: REDIS_URL,
+  password: process.env.REDIS_PASSWORD,
+})
+
+export const subscriber = redis.createClient({
+  url: REDIS_URL,
+  password: process.env.REDIS_PASSWORD,
+})
 
 export default redisClient

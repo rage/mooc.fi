@@ -9,6 +9,8 @@ import fetchUser from "./middlewares/FetchUser"
 import * as winston from "winston"
 import * as types from "./types"
 
+import { wsListen } from "./wsServer"
+
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -74,8 +76,12 @@ if (process.env.NODE_ENV === "production") {
   console.log("Running in production mode")
   serverStartOptions["playground"] = "/api"
   serverStartOptions["endpoint"] = "/api"
+} else {
+  serverStartOptions["endpoint"] = "/api"
 }
 
 server.start(serverStartOptions, () =>
   console.log("Server is running on http://localhost:4000"),
 )
+
+wsListen()
