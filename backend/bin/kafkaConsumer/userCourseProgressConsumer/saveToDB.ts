@@ -9,7 +9,7 @@ import {
 import TmcClient from "../../../services/tmc"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
-import { pushMessageToClient } from "../../../wsServer"
+import { pushMessageToClient, MessageType } from "../../../wsServer"
 
 const isUserInDB = async (prisma: Prisma, user_id: number) => {
   return await prisma.$exists.user({ upstream_id: user_id })
@@ -115,7 +115,11 @@ export const saveToDatabase = async (
 
   await generateUserCourseProgress({ user, course, userCourseProgress })
 
-  pushMessageToClient(message.user_id, message.course_id, "PROGRESS_UPDATED")
+  pushMessageToClient(
+    message.user_id,
+    message.course_id,
+    MessageType.PROGRESS_UPDATED,
+  )
   logger.info("Saved to DB succesfully")
   return true
 }
