@@ -44,6 +44,8 @@ interface GridProps {
   rowsPerPage: number
   searchText: string
   setPage: React.Dispatch<React.SetStateAction<number>>
+  updateRoute: (_: string, __: number, ___: number) => void
+  setSearchVariables: React.Dispatch<React.SetStateAction<any>>
 }
 
 const MobileGrid: React.FC<GridProps> = ({
@@ -56,6 +58,8 @@ const MobileGrid: React.FC<GridProps> = ({
   searchText,
   setPage,
   loading,
+  updateRoute,
+  setSearchVariables,
 }: GridProps) => {
   const { language } = useContext(LanguageContext)
   const t = getUsersTranslator(language)
@@ -66,22 +70,28 @@ const MobileGrid: React.FC<GridProps> = ({
         <Table>
           <TableBody>
             <TableRow>
-              <Pagination
-                data={data}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                setPage={setPage}
-                searchText={searchText}
-                loadData={loadData}
-                handleChangeRowsPerPage={handleChangeRowsPerPage}
-                TablePaginationActions={TablePaginationActions}
-              />
+              {loading ? (
+                <Skeleton style={{ margin: "0 0.5rem 0 0.5rem" }} height={52} />
+              ) : (
+                <Pagination
+                  data={data}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  setPage={setPage}
+                  searchText={searchText}
+                  loadData={loadData}
+                  handleChangeRowsPerPage={handleChangeRowsPerPage}
+                  TablePaginationActions={TablePaginationActions}
+                  updateRoute={updateRoute}
+                  setSearchVariables={setSearchVariables}
+                />
+              )}
             </TableRow>
           </TableBody>
         </Table>
       </Paper>
     ),
-    [data, rowsPerPage, page],
+    [data, rowsPerPage, page, loading],
   )
 
   return (

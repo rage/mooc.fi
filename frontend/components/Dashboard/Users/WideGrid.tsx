@@ -47,6 +47,8 @@ interface GridProps {
   rowsPerPage: number
   searchText: string
   setPage: React.Dispatch<React.SetStateAction<number>>
+  updateRoute: (_: string, __: number, ___: number) => void
+  setSearchVariables: React.Dispatch<React.SetStateAction<any>>
 }
 
 const WideGrid = ({
@@ -59,6 +61,8 @@ const WideGrid = ({
   rowsPerPage,
   searchText,
   setPage,
+  updateRoute,
+  setSearchVariables,
 }: GridProps) => {
   const { language } = useContext(LanguageContext)
   const t = getUsersTranslator(language)
@@ -67,20 +71,26 @@ const WideGrid = ({
     () => (
       <TableRow>
         <td colSpan={5} align="center">
-          <Pagination
-            data={data}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            setPage={setPage}
-            searchText={searchText}
-            loadData={loadData}
-            handleChangeRowsPerPage={handleChangeRowsPerPage}
-            TablePaginationActions={TablePaginationActions}
-          />
+          {loading ? (
+            <Skeleton />
+          ) : (
+            <Pagination
+              data={data}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              setPage={setPage}
+              searchText={searchText}
+              loadData={loadData}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+              TablePaginationActions={TablePaginationActions}
+              updateRoute={updateRoute}
+              setSearchVariables={setSearchVariables}
+            />
+          )}
         </td>
       </TableRow>
     ),
-    [data, rowsPerPage, page],
+    [data, rowsPerPage, page, loading],
   )
 
   return (
