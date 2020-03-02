@@ -15,6 +15,8 @@ interface PaginationProps {
   rowsPerPage: number
   searchText: string
   setPage: React.Dispatch<React.SetStateAction<number>>
+  updateRoute: (_: string, __: number, ___: number) => void
+  setSearchVariables: React.Dispatch<React.SetStateAction<Record<string, any>>>
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -26,6 +28,8 @@ const Pagination: React.FC<PaginationProps> = ({
   loadData,
   TablePaginationActions,
   handleChangeRowsPerPage,
+  updateRoute,
+  setSearchVariables,
 }: PaginationProps) => {
   const { language } = useContext(LanguageContext)
   const t = getUsersTranslator(language)
@@ -56,6 +60,8 @@ const Pagination: React.FC<PaginationProps> = ({
           searchText,
           loadData,
           data,
+          updateRoute,
+          setSearchVariables,
         })
       }
     />
