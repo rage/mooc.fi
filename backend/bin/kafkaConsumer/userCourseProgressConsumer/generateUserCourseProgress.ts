@@ -13,11 +13,7 @@ import {
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "../../../util/EmailTemplater/EmailTemplater"
-import {
-  pushMessageToClient,
-  MessageTypes,
-  MessageType,
-} from "../../../wsServer"
+import { pushMessageToClient, MessageType } from "../../../wsServer"
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
