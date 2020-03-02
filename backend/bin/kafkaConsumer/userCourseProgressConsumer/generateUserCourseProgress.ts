@@ -13,6 +13,11 @@ import {
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "../../../util/EmailTemplater/EmailTemplater"
+import {
+  pushMessageToClient,
+  MessageTypes,
+  MessageType,
+} from "../../../wsServer"
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
@@ -175,6 +180,11 @@ const CheckCompletion = async (
         completion_language:
           userCourseSettings != null ? userCourseSettings.language : "unknown",
       })
+      pushMessageToClient(
+        user.upstream_id,
+        course.id,
+        MessageType.COURSE_CONFIRMED,
+      )
       const template = await prisma.course({ id: course.id }).completion_email()
       if (template) {
         await sendMail(user, template)
