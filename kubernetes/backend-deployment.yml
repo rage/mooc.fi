@@ -20,7 +20,7 @@ spec:
           ports:
             - name: backend-http
               containerPort: 4000
-            - name: backend-websocket
+            - name: ws
               containerPort: 9000
           resources:
             limits:
