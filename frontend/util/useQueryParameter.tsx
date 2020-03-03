@@ -7,7 +7,22 @@ export function useQueryParameter(parameter: string, check: boolean = true) {
     return ""
   }
 
-  const checkingParameter = router?.query?.[parameter]
+  // combine params in the url with the dynamic params
+  const params: Record<string, any> = (
+    (router?.asPath?.split("?")[1] || "").split("&") || []
+  ).reduce(
+    (acc, curr) => {
+      const [key, val] = curr.split("=")
+
+      return {
+        ...acc,
+        [key]: val,
+      }
+    },
+    { ...router?.query },
+  )
+
+  const checkingParameter = params?.[parameter]
 
   if (checkingParameter === null || checkingParameter === undefined) {
     if (check) {

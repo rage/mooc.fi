@@ -16,7 +16,6 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
 import {
   UserDetailsContains_userDetailsContains_edges,
-  UserDetailsContains,
   UserDetailsContains_userDetailsContains_edges_node,
 } from "/static/types/generated/UserDetailsContains"
 import Pagination from "/components/Dashboard/Users/Pagination"
@@ -24,44 +23,16 @@ import styled from "styled-components"
 import range from "lodash/range"
 import getUsersTranslator from "/translations/users"
 import LanguageContext from "/contexes/LanguageContext"
+import UserSearchContext from "/contexes/UserSearchContext"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 `
 
-interface HandleChangeRowsPerPageProps {
-  eventValue: string
-}
-
-interface GridProps {
-  data: UserDetailsContains
-  loadData: Function
-  loading: boolean
-  handleChangeRowsPerPage: (props: HandleChangeRowsPerPageProps) => void
-  TablePaginationActions: Function
-  page: number
-  rowsPerPage: number
-  searchText: string
-  setPage: React.Dispatch<React.SetStateAction<number>>
-  updateRoute: (_: string, __: number, ___: number) => void
-  setSearchVariables: React.Dispatch<React.SetStateAction<any>>
-}
-
-const MobileGrid: React.FC<GridProps> = ({
-  data,
-  loadData,
-  handleChangeRowsPerPage,
-  TablePaginationActions,
-  page,
-  rowsPerPage,
-  searchText,
-  setPage,
-  loading,
-  updateRoute,
-  setSearchVariables,
-}: GridProps) => {
+const MobileGrid: React.FC<any> = () => {
   const { language } = useContext(LanguageContext)
+  const { data, page, rowsPerPage, loading } = useContext(UserSearchContext)
   const t = getUsersTranslator(language)
 
   const PaginationComponent = useCallback(
@@ -73,18 +44,7 @@ const MobileGrid: React.FC<GridProps> = ({
               {loading ? (
                 <Skeleton style={{ margin: "0 0.5rem 0 0.5rem" }} height={52} />
               ) : (
-                <Pagination
-                  data={data}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  setPage={setPage}
-                  searchText={searchText}
-                  loadData={loadData}
-                  handleChangeRowsPerPage={handleChangeRowsPerPage}
-                  TablePaginationActions={TablePaginationActions}
-                  updateRoute={updateRoute}
-                  setSearchVariables={setSearchVariables}
-                />
+                <Pagination />
               )}
             </TableRow>
           </TableBody>
@@ -101,16 +61,15 @@ const MobileGrid: React.FC<GridProps> = ({
       ) : (
         <Typography>{t("noResults")}</Typography>
       )}
-      <RenderCards data={data} loading={loading} />
+      <RenderCards />
       <PaginationComponent />
     </>
   )
 }
 
-const RenderCards: React.FC<{
-  data: UserDetailsContains
-  loading: boolean
-}> = ({ data, loading }) => {
+const RenderCards: React.FC<any> = () => {
+  const { data, loading } = useContext(UserSearchContext)
+
   if (loading) {
     return (
       <>
