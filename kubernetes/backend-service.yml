@@ -10,5 +10,7 @@ spec:
   ports:
   - port: 80
     targetPort: backend-http
+  - port: 9000
+    targetPort: backend-websocket
   selector:
     app: moocfi-backend

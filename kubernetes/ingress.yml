@@ -44,3 +44,7 @@ spec:
           backend:
             serviceName: moocfi-frontend
             servicePort: 80
+        - path: /ws
+          backend:
+            serviceName: moocfi-backend
+            servicePort: 9000
