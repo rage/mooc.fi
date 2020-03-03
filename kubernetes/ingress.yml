@@ -10,6 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.org/websocket-services: "ws"
 spec:
   tls:
   - hosts:
@@ -46,5 +47,5 @@ spec:
             servicePort: 80
         - path: /ws
           backend:
-            serviceName: moocfi-backend
+            serviceName: ws
             servicePort: 9000
