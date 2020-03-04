@@ -57,6 +57,7 @@ type Course @db(name: "course") {
   participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")
   automatic_completions: Boolean @default(value: false)
   points_needed: Int
+  exercise_completions_needed: Int
   completion_email: EmailTemplate @relation(name: "CourseCompletionEmail")
   course_variants: [CourseVariant!]! @relation(name: "CourseToCourseVariant", onDelete: CASCADE)
   inherit_settings_from: Course @relation(link: INLINE, name: "CourseToCourseInheritSettings")
