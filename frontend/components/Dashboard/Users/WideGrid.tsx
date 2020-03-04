@@ -41,7 +41,13 @@ const WideGrid = () => {
     () => (
       <TableRow>
         <td colSpan={5} align="center">
-          {loading ? <Skeleton /> : <Pagination />}
+          {loading ? (
+            <TableCell>
+              <Skeleton />
+            </TableCell>
+          ) : (
+            <Pagination />
+          )}
         </td>
       </TableRow>
     ),

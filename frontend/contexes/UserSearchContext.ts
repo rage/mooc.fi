@@ -1,28 +1,35 @@
 import { createContext } from "react"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 
+export interface SearchVariables {
+  search: string
+  first?: number
+  last?: number
+  skip?: number
+  after?: string | null
+  before?: string | null
+}
+
 interface UserSearchContext {
   data: UserDetailsContains
-  loadData: Function
   loading: boolean
-  handleChangeRowsPerPage: ({ eventValue }: { eventValue: string }) => void
   page: number
   rowsPerPage: number
-  searchText: string
+  searchVariables: SearchVariables
   setPage: React.Dispatch<React.SetStateAction<number>>
-  // updateRoute: (_: string, __: number, ___: number) => void
   setSearchVariables: React.Dispatch<React.SetStateAction<any>>
+  setRowsPerPage: React.Dispatch<React.SetStateAction<any>>
 }
 
 export default createContext<UserSearchContext>({
   data: {} as UserDetailsContains,
-  loadData: () => {},
   loading: false,
-  handleChangeRowsPerPage: (_: any) => {},
   page: 0,
   rowsPerPage: 10,
-  searchText: "",
+  searchVariables: {
+    search: "",
+  },
   setPage: () => {},
-  // updateRoute: (_: string, __: number, ___: number) => {},
   setSearchVariables: () => {},
+  setRowsPerPage: () => {},
 })
