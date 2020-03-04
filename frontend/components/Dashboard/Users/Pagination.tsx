@@ -23,7 +23,7 @@ const TablePaginationActions: React.FC<any> = () => {
     page,
     rowsPerPage,
     setPage,
-    searchText,
+    searchVariables,
     setSearchVariables,
   } = useContext(UserSearchContext)
 
@@ -34,7 +34,7 @@ const TablePaginationActions: React.FC<any> = () => {
   const handleFirstPageButtonClick = useCallback(
     async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
-        search: searchText,
+        search: searchVariables.search,
         first: rowsPerPage,
       })
       setPage(0)
@@ -45,7 +45,7 @@ const TablePaginationActions: React.FC<any> = () => {
   const handleBackButtonClick = useCallback(
     async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
-        search: searchText,
+        search: searchVariables.search,
         last: rowsPerPage,
         before: startCursor,
       })
@@ -57,7 +57,7 @@ const TablePaginationActions: React.FC<any> = () => {
   const handleNextButtonClick = useCallback(
     async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
-        search: searchText,
+        search: searchVariables.search,
         first: rowsPerPage,
         after: endCursor,
       })
@@ -69,7 +69,7 @@ const TablePaginationActions: React.FC<any> = () => {
   const handleLastPageButtonClick = useCallback(
     async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
-        search: searchText,
+        search: searchVariables.search,
         last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
       })
       setPage(Math.max(0, Math.ceil(count / rowsPerPage) - 1))
@@ -122,8 +122,28 @@ const TablePaginationActions: React.FC<any> = () => {
 const Pagination: React.FC<any> = () => {
   const { language } = useContext(LanguageContext)
   const t = getUsersTranslator(language)
-  const { data, rowsPerPage, page, handleChangeRowsPerPage } = useContext(
-    UserSearchContext,
+  const {
+    data,
+    rowsPerPage,
+    page,
+    setPage,
+    setRowsPerPage,
+    searchVariables,
+    setSearchVariables,
+  } = useContext(UserSearchContext)
+
+  const handleChangeRowsPerPage = useCallback(
+    async ({ eventValue }: { eventValue: string }) => {
+      const newRowsPerPage = parseInt(eventValue, 10)
+
+      setSearchVariables({
+        search: searchVariables.search,
+        first: newRowsPerPage,
+      })
+      setPage(0)
+      setRowsPerPage(newRowsPerPage)
+    },
+    [searchVariables],
   )
 
   return (
@@ -139,7 +159,9 @@ const Pagination: React.FC<any> = () => {
       }}
       labelRowsPerPage={t("rowsPerPage")}
       labelDisplayedRows={({ from, to, count }) =>
-        `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
+        count > 0
+          ? `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
+          : ""
       }
       onChangePage={() => null}
       onChangeRowsPerPage={(

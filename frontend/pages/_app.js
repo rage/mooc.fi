@@ -58,7 +58,8 @@ class MyApp extends App {
       currentUser,
     } = this.props
 
-    const t = getPageTranslator(lng)
+    // give router to translator to get query parameters
+    const t = getPageTranslator(lng, Router.router)
     const titleString = t("title", { title: "..." })?.[hrefUrl]
 
     const title = `${titleString ? titleString + " - " : ""}MOOC.fi`

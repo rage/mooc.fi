@@ -11,6 +11,7 @@ import {
   Table,
   TableBody,
   TableRow,
+  TableCell,
 } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
@@ -42,7 +43,9 @@ const MobileGrid: React.FC<any> = () => {
           <TableBody>
             <TableRow>
               {loading ? (
-                <Skeleton style={{ margin: "0 0.5rem 0 0.5rem" }} height={52} />
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
               ) : (
                 <Pagination />
               )}
