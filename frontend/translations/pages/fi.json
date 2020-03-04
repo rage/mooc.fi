@@ -16,6 +16,7 @@
     "/[lng]/users/[id]": "Käyttäjä - {{title}}",
     "/[lng]/users/[id]/completions": "Suoritukset - {{title}}",
     "/[lng]/users/search": "Hae käyttäjiä",
+    "/[lng]/users/search/[text]": "Hae käyttäjiä - [[text]]",
     "/[lng]/users": "Käyttäjät",
     "/[lng]/sign-in": "Kirjaudu",
     "/[lng]/sign-up": "Rekisteröidy",

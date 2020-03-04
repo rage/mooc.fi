@@ -16,6 +16,7 @@
     "/[lng]/users/[id]": "User - {{title}}",
     "/[lng]/users/[id]/completions": "Completions - {{title}}",
     "/[lng]/users/search": "Search users",
+    "/[lng]/users/search/[text]": "Search users - [[text]]",
     "/[lng]/users": "Users",
     "/[lng]/sign-in": "Sign in",
     "/[lng]/sign-up": "Sign up",

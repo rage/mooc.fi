@@ -119,6 +119,7 @@ const asToHref = {
   "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[id]$3", // matches /(courses|study-modules)/[id]*, doesn't match new
   "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
   "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
+  "/users/search/(.+)": "/users/search/[text]",
   "/register-completion/(.+)": "/register-completion/[slug]",
   "/(en|fi|se)/": "/[lng]/",
 }
@@ -192,7 +193,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
     homeLink = "/en/"
   }
 
-  const t = getPageTranslator(language)
+  const t = getPageTranslator(language, router)
 
   let urlRouteComponents = urlWithQueryAndAnchorRemoved.split("/")
   urlRouteComponents = urlRouteComponents.slice(

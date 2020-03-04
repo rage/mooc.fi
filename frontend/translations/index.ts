@@ -1,4 +1,5 @@
 import { isNullOrUndefined } from "util"
+import { NextRouter } from "next/router"
 
 const defaultLanguage = "en"
 
@@ -9,6 +10,7 @@ export type Translation =
 
 const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
+  router?: NextRouter,
 ) => (key: keyof T, variables?: Record<string, any>) => {
   const translation: T[keyof T] | undefined =
     dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
@@ -19,19 +21,30 @@ const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   }
 
   return Array.isArray(translation)
-    ? translation.map(t => substitute<T>(t, variables))
-    : substitute<T>(translation, variables)
+    ? translation.map(t => substitute<T>({ translation: t, variables, router }))
+    : substitute<T>({ translation, variables, router })
 }
 
-const substitute = <T>(
-  translation: T[keyof T],
-  variables?: Record<string, any>,
-): any => {
+interface Substitute<T> {
+  translation: T[keyof T]
+  variables?: Record<string, any>
+  router?: NextRouter
+}
+
+const substitute = <T>({
+  translation,
+  variables,
+  router,
+}: Substitute<T>): any => {
   if (typeof translation === "object") {
     return Object.keys(translation).reduce(
       (obj, key) => ({
         ...obj,
-        [key]: substitute<T>((translation as any)[key], variables),
+        [key]: substitute<T>({
+          translation: (translation as any)[key],
+          variables,
+          router,
+        }),
       }),
       {},
     )
@@ -45,21 +58,47 @@ const substitute = <T>(
     return translation
   }
 
-  const groups = translation.match(/{{(.*?)}}/gm)
+  const replaceGroups = translation.match(/{{(.*?)}}/gm)
+  const keyGroups = translation.match(/\[\[(.*?)\]\]/gm)
 
-  if (!groups) {
-    return translation
+  let ret: string = translation
+
+  if (!replaceGroups && !keyGroups) {
+    return ret
   }
 
-  if (!variables) {
+  if (keyGroups) {
+    if (!router) {
+      console.warn(
+        `WARNING: no router given to translator - needed to access query parameters in ${translation}`,
+      )
+    }
+    keyGroups?.forEach((g: string) => {
+      const key = g.slice(2, g.length - 2)
+      const replaceRegExp = new RegExp(`\\[\\[${key}\\]\\]`, "g")
+      const queryParam = router?.query?.[key] ?? "..."
+
+      if (!queryParam) {
+        console.warn(
+          `WARNING: no query param ${key} found for translation ${translation}`,
+        )
+      }
+
+      ret = ret.replace(
+        replaceRegExp,
+        Array.isArray(queryParam) ? queryParam[0] : queryParam,
+      )
+    })
+  }
+
+  if (!variables && replaceGroups) {
     console.warn(
       `WARNING: no variables present for translation string "${translation}"`,
     )
-    return translation
+    return ret
   }
 
-  let ret: string = translation
-  ;(groups || []).forEach((g: string) => {
+  ;(replaceGroups || []).forEach((g: string) => {
     const key = g.slice(2, g.length - 2)
     const variable = (variables || {})[key]
 

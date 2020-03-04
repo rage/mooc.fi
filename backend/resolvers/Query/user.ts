@@ -57,15 +57,17 @@ const UserDetailsContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
       first: intArg(),
       after: idArg(),
       last: intArg(),
+      skip: intArg(),
       before: idArg(),
     },
     resolve: async (_, args, ctx) => {
       checkAccess(ctx)
-      const { search, first, after, last, before } = args
+      const { search, first, after, last, before, skip } = args
       if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
         throw new ForbiddenError("Cannot query more than 50 objects")
       }
       const prisma: Prisma = ctx.prisma
+
       return prisma.usersConnection({
         where: {
           OR: buildSearch(
@@ -82,6 +84,7 @@ const UserDetailsContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
         last: last ?? undefined,
         after: after ?? undefined,
         before: before ?? undefined,
+        skip: skip ?? undefined,
       })
     },
   })
