@@ -10,6 +10,7 @@ import {
   prisma,
   UserCourseServiceProgress,
 } from "../../../generated/prisma-client"
+import Knex from "../../../services/knex"
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "../../../util/EmailTemplater/EmailTemplater"
@@ -46,8 +47,18 @@ export const generateUserCourseProgress = async ({
   userCourseProgress,
 }: Props) => {
   const combined = await GetCombinedUserCourseProgress(user, course)
+  const requiredExerciseCompletions = await CheckRequiredExerciseCompletions(
+    user,
+    course,
+  )
   const userCourseSettings = await GetUserCourseSettings(user, course)
-  await CheckCompletion(user, course, combined, userCourseSettings)
+  await CheckCompletion(
+    user,
+    course,
+    combined,
+    userCourseSettings,
+    requiredExerciseCompletions,
+  )
   await prisma.updateUserCourseProgress({
     where: { id: userCourseProgress.id },
     data: {
@@ -119,6 +130,24 @@ const GetCombinedUserCourseProgress = async (
   return combined
 }
 
+const CheckRequiredExerciseCompletions = async (
+  user: User,
+  course: Course,
+): Promise<boolean> => {
+  if (course.exercise_completions_needed) {
+    const exercise_completions = await Knex("exercise_completion")
+      .countDistinct("exercise_completion.exercise")
+      .join("exercise", { "exercise_completion.exercise": "exercise.id" })
+      .where("exercise.course", course.id)
+      .andWhere("exercise_completion.user", user.id)
+      .andWhere("exercise_completion.completed", true)
+      .andWhereNot("exercise.max_points", 0)
+
+    return exercise_completions[0].count >= course.exercise_completions_needed
+  }
+  return true
+}
+
 const GetUserCourseSettings = async (
   user: User,
   course: Course,
@@ -153,10 +182,12 @@ const CheckCompletion = async (
   course: Course,
   combined: CombinedUserCourseProgress,
   userCourseSettings: UserCourseSettings,
+  requiredExerciseCompletions: boolean,
 ) => {
   if (
     course.automatic_completions &&
-    combined.total_n_points >= (course.points_needed ?? 9999999)
+    combined.total_n_points >= (course.points_needed ?? 9999999) &&
+    requiredExerciseCompletions
   ) {
     const completions = await prisma.completions({
       where: {
