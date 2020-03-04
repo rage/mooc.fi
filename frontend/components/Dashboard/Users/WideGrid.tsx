@@ -13,13 +13,10 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import styled from "styled-components"
 import range from "lodash/range"
 import LangLink from "/components/LangLink"
-import {
-  UserDetailsContains_userDetailsContains_edges,
-  UserDetailsContains,
-} from "/static/types/generated/UserDetailsContains"
 import Pagination from "/components/Dashboard/Users/Pagination"
 import getUsersTranslator from "/translations/users"
 import LanguageContext from "/contexes/LanguageContext"
+import UserSearchContext from "/contexes/UserSearchContext"
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -35,52 +32,26 @@ const StyledPaper = styled(Paper)`
   margin-top: 5px;
 `
 
-interface GridProps {
-  data: UserDetailsContains
-  loadData: Function
-  loading: boolean
-  handleChangeRowsPerPage: (props: { eventValue: string }) => void
-  TablePaginationActions: Function /* (
-    props: TablePaginationActionsProps,
-  ) =>  */
-  page: number
-  rowsPerPage: number
-  searchText: string
-  setPage: React.Dispatch<React.SetStateAction<number>>
-}
-
-const WideGrid = ({
-  data,
-  loadData,
-  loading,
-  handleChangeRowsPerPage,
-  TablePaginationActions,
-  page,
-  rowsPerPage,
-  searchText,
-  setPage,
-}: GridProps) => {
+const WideGrid = () => {
   const { language } = useContext(LanguageContext)
   const t = getUsersTranslator(language)
+  const { data, rowsPerPage, page, loading } = useContext(UserSearchContext)
 
   const PaginationComponent = useCallback(
     () => (
       <TableRow>
         <td colSpan={5} align="center">
-          <Pagination
-            data={data}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            setPage={setPage}
-            searchText={searchText}
-            loadData={loadData}
-            handleChangeRowsPerPage={handleChangeRowsPerPage}
-            TablePaginationActions={TablePaginationActions}
-          />
+          {loading ? (
+            <TableCell>
+              <Skeleton />
+            </TableCell>
+          ) : (
+            <Pagination />
+          )}
         </td>
       </TableRow>
     ),
-    [data, rowsPerPage, page],
+    [data, rowsPerPage, page, loading],
   )
 
   return (
@@ -108,10 +79,7 @@ const WideGrid = ({
               </StyledTableCell>
             </TableRow>
           </TableHead>
-          <RenderResults
-            data={data?.userDetailsContains?.edges ?? []}
-            loading={loading}
-          />
+          <RenderResults />
           <TableFooter>
             <PaginationComponent />
           </TableFooter>
@@ -121,15 +89,12 @@ const WideGrid = ({
   )
 }
 
-interface RenderResultsProps {
-  data: UserDetailsContains_userDetailsContains_edges[]
-  loading: boolean
-}
-
-const RenderResults = (props: RenderResultsProps) => {
+const RenderResults = () => {
   const { language } = useContext(LanguageContext)
   const t = getUsersTranslator(language)
-  const { data, loading } = props
+  const { data, loading } = useContext(UserSearchContext)
+
+  const results = data?.userDetailsContains?.edges ?? []
 
   if (loading) {
     return (
@@ -145,7 +110,7 @@ const RenderResults = (props: RenderResultsProps) => {
     )
   }
 
-  if (!data || (data && data.length < 1))
+  if (!results || results?.length < 1)
     return (
       <TableBody>
         <TableRow>
@@ -156,7 +121,7 @@ const RenderResults = (props: RenderResultsProps) => {
 
   return (
     <TableBody>
-      {data.map(row => {
+      {results.map(row => {
         const {
           upstream_id,
           email,
