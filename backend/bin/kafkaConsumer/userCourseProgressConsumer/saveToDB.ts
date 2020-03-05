@@ -69,6 +69,7 @@ export const saveToDatabase = async (
       course: { connect: { id: message.course_id } },
       user: { connect: { id: user?.id } },
       progress: message.progress,
+      exercise_completions_by_section: message.exercise_completions_by_section,
     })
   }
 
@@ -108,6 +109,7 @@ export const saveToDatabase = async (
       course: { connect: { id: message.course_id } },
       service: { connect: { id: message.service_id } },
       progress: message.progress,
+
       user_course_progress: { connect: { id: userCourseProgress.id } },
       timestamp: timestamp.toJSDate(),
     })
