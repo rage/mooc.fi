@@ -14,6 +14,7 @@ const ExerciseCompletionsBySection = yup.object().shape({
   section: yup.number().required(),
   exercises_total: yup.number().required(),
   exercises_completed: yup.number().required(),
+  required_actions: yup.array().of(yup.string()),
 })
 
 export const MessageYupSchema = yup.object().shape({
