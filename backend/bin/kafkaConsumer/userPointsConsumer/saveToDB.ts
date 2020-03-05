@@ -63,7 +63,7 @@ export const saveToDatabase = async (
     await getUserFromTMC(prisma, message.user_id)
   }
 
-  logger.info("Checking if the exercise exists")
+  logger.info("Checking if a exercise exists with id " + message.exercise_id)
   const isExercise = await prisma.$exists.exercise({
     custom_id: message.exercise_id,
   })
