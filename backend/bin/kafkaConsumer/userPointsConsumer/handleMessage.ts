@@ -42,7 +42,7 @@ export const handleMessage = async (
     return
   }
   try {
-    logger.info("Saving")
+    logger.info("Saving. Timestamp " + message.timestamp)
     if (!(await saveToDatabase(message, prisma, logger))) {
       logger.error("Could not save event to database")
     }
