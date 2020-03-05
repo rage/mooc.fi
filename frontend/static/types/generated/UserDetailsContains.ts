@@ -47,4 +47,5 @@ export interface UserDetailsContainsVariables {
   after?: string | null
   first?: number | null
   last?: number | null
+  skip?: number | null
 }
