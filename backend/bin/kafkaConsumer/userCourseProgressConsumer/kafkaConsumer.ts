@@ -40,20 +40,32 @@ const consumer = new Kafka.KafkaConsumer(
   },
   { "auto.offset.reset": "earliest" },
 )
-logger.info("Trying to connect")
+
 consumer.connect()
 
-consumer
-  .on("ready", () => {
-    logger.info("ready")
-    consumer.subscribe(TOPIC_NAME)
-    consumer.consume()
-  })
-  .on("data", message =>
-    handleMessage(message, mutex, logger, consumer, prisma),
-  )
+consumer.on("ready", () => {
+  consumer.subscribe(TOPIC_NAME)
+  const consumerImpl = async (error: any, messages: any) => {
+    if (error) {
+      logger.error("Error while consuming", error)
+      process.exit(-1)
+    }
+    if (messages.length > 0) {
+      await handleMessage(messages[0], mutex, logger, consumer, prisma)
+      setImmediate(() => {
+        consumer.consume(1, consumerImpl)
+      })
+    } else {
+      setTimeout(() => {
+        consumer.consume(1, consumerImpl)
+      }, 10)
+    }
+  }
+  consumer.consume(1, consumerImpl)
+})
+
 consumer.on("event.error", error => {
-  logger.error("Error while consuming", { originalError: error })
+  logger.error(error)
   process.exit(-1)
 })
 

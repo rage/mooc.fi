@@ -50,7 +50,7 @@ spec:
       initContainers:
         - name: moocfi-backend-run-migrations
           image: ${BACKEND_IMAGE}
-          command: ["sh", "-c", "npm run prisma-deploy"]
+          command: ["sh", "-c", "npx prisma deploy"]
           envFrom:
           - secretRef:
               name: backend-secret
