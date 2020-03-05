@@ -12,8 +12,8 @@ const PointsByGroupYupSchema = yup.object().shape({
 const ExerciseCompletionsBySection = yup.object().shape({
   part: yup.number().required(),
   section: yup.number().required(),
-  max_points: yup.number().required(),
-  n_points: yup.number().required(),
+  exercises_total: yup.number().required(),
+  exercises_completed: yup.number().required(),
 })
 
 export const MessageYupSchema = yup.object().shape({
