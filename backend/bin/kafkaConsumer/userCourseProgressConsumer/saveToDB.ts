@@ -115,7 +115,12 @@ export const saveToDatabase = async (
     })
   }
 
-  await generateUserCourseProgress({ user, course, userCourseProgress })
+  await generateUserCourseProgress({
+    user,
+    course,
+    userCourseProgress,
+    exerciseCompletionsBySection: message.exercise_completions_by_section,
+  })
 
   pushMessageToClient(
     message.user_id,
