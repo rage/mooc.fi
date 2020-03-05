@@ -76,8 +76,6 @@ if (process.env.NODE_ENV === "production") {
   console.log("Running in production mode")
   serverStartOptions["playground"] = "/api"
   serverStartOptions["endpoint"] = "/api"
-} else {
-  serverStartOptions["endpoint"] = "/api"
 }
 
 server.start(serverStartOptions, () =>
