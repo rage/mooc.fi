@@ -11,9 +11,9 @@ import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 
-import * as knex from "knex"
+import * as _KnexConstructor from "knex"
 
-const Knex = knex({
+const Knex = _KnexConstructor({
   client: "pg",
   connection: {
     host: process.env.DB_HOST,
@@ -54,7 +54,7 @@ export const saveToDatabase = async (
 
   let user: User | null
 
-  user = (await knex("user")
+  user = (await Knex("user")
     .where("upstream_id", message.user_id)
     .limit(1))[0]
 
@@ -71,7 +71,7 @@ export const saveToDatabase = async (
     return -1
   }
 
-  let userCourseProgress = (await knex<unknown, UserCourseProgress[]>(
+  let userCourseProgress = (await Knex<unknown, UserCourseProgress[]>(
     "user_course_progress",
   )
     .where("user", user?.id)
@@ -87,7 +87,7 @@ export const saveToDatabase = async (
     })
   }
 
-  const userCourseServiceProgress = (await knex<
+  const userCourseServiceProgress = (await Knex<
     unknown,
     UserCourseServiceProgress[]
   >("user_course_service_progress")
