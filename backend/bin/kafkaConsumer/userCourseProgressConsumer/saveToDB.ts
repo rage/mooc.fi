@@ -11,9 +11,22 @@ import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 
-const isUserInDB = async (prisma: Prisma, user_id: number) => {
-  return await prisma.$exists.user({ upstream_id: user_id })
-}
+import * as knex from "knex"
+
+const Knex = knex({
+  client: "pg",
+  connection: {
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  },
+  searchPath:
+    process.env.NODE_ENV === "production"
+      ? ["moocfi$production"]
+      : ["default$default"],
+})
 
 const getUserFromTMC = async (
   prisma: Prisma,
@@ -41,28 +54,29 @@ export const saveToDatabase = async (
 
   let user: User | null
 
-  if (await isUserInDB(prisma, message.user_id)) {
-    user = await prisma.user({ upstream_id: message.user_id })
-  } else {
+  user = (await knex("user")
+    .where("upstream_id", message.user_id)
+    .limit(1))[0]
+
+  if (!user) {
     user = await getUserFromTMC(prisma, message.user_id)
   }
 
-  const course = await prisma.course({ id: message.course_id })
+  const course = (await Knex("course")
+    .where("id", message.course_id)
+    .limit(1))[0]
 
   if (!user || !course) {
-    process.exit(1)
+    logger.error("Invalid user or course")
+    return -1
   }
 
-  const userCourseProgresses: UserCourseProgress[] = await prisma.userCourseProgresses(
-    {
-      where: {
-        user: { id: user?.id },
-        course: { id: message.course_id },
-      },
-    },
+  let userCourseProgress = (await knex<unknown, UserCourseProgress[]>(
+    "user_course_progress",
   )
-
-  let userCourseProgress = userCourseProgresses[0]
+    .where("user", user?.id)
+    .where("course", message.course_id)
+    .limit(1))[0]
 
   if (!userCourseProgress) {
     userCourseProgress = await prisma.createUserCourseProgress({
@@ -73,17 +87,14 @@ export const saveToDatabase = async (
     })
   }
 
-  const userCourseServiceProgresses: UserCourseServiceProgress[] = await prisma.userCourseServiceProgresses(
-    {
-      where: {
-        user: { id: user?.id },
-        course: { id: message.course_id },
-        service: { id: message.service_id },
-      },
-    },
-  )
-
-  const userCourseServiceProgress = userCourseServiceProgresses[0]
+  const userCourseServiceProgress = (await knex<
+    unknown,
+    UserCourseServiceProgress[]
+  >("user_course_service_progress")
+    .where("user", user?.id)
+    .where("course", message.course_id)
+    .where("service", message.service_id)
+    .limit(1))[0]
 
   if (userCourseServiceProgress) {
     const oldTimestamp = DateTime.fromISO(
