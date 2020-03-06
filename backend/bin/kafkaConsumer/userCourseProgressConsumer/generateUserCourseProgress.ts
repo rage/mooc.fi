@@ -158,8 +158,8 @@ const GetUserCourseSettings = async (
   let userCourseSettings: UserCourseSettings =
     (await prisma.userCourseSettingses({
       where: {
-        user: user,
-        course: course,
+        user: { id: user.id },
+        course: { id: course.id },
       },
     }))[0] || null
 
@@ -171,8 +171,8 @@ const GetUserCourseSettings = async (
       userCourseSettings =
         (await prisma.userCourseSettingses({
           where: {
-            user: user,
-            course: inheritCourse,
+            user: { id: user.id },
+            course: { id: inheritCourse.id },
           },
         }))[0] || null
     }
