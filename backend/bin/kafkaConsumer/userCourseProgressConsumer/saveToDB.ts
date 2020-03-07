@@ -83,7 +83,6 @@ export const saveToDatabase = async (
       course: { connect: { id: message.course_id } },
       user: { connect: { id: user?.id } },
       progress: message.progress,
-      exercise_completions_by_section: message.exercise_completions_by_section,
     })
   }
 
