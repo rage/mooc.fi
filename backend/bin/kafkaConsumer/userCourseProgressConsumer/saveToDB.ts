@@ -129,7 +129,6 @@ export const saveToDatabase = async (
     user,
     course,
     userCourseProgress,
-    exerciseCompletionsBySection: message.exercise_completions_by_section,
   })
 
   pushMessageToClient(
