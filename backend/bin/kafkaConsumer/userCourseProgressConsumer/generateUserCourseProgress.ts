@@ -26,7 +26,6 @@ interface Props {
   user: User
   course: Course
   userCourseProgress: UserCourseProgress
-  exerciseCompletionsBySection: any
 }
 
 interface ServiceProgressPartType {
@@ -46,7 +45,6 @@ export const generateUserCourseProgress = async ({
   user,
   course,
   userCourseProgress,
-  exerciseCompletionsBySection,
 }: Props) => {
   const combined = await GetCombinedUserCourseProgress(user, course)
   const requiredExerciseCompletions = await CheckRequiredExerciseCompletions(
@@ -67,7 +65,6 @@ export const generateUserCourseProgress = async ({
       progress: combined.progress,
       max_points: combined.total_max_points,
       n_points: combined.total_n_points,
-      exercise_completions_by_section: exerciseCompletionsBySection,
     },
   })
 }
