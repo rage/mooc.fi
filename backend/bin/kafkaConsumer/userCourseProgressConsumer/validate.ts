@@ -9,14 +9,6 @@ const PointsByGroupYupSchema = yup.object().shape({
   progress: yup.number().required(),
 })
 
-const ExerciseCompletionsBySection = yup.object().shape({
-  part: yup.number().required(),
-  section: yup.number().required(),
-  exercises_total: yup.number().required(),
-  exercises_completed: yup.number().required(),
-  required_actions: yup.array().of(yup.string()),
-})
-
 export const MessageYupSchema = yup.object().shape({
   timestamp: yup.date().required(),
   course_id: yup
@@ -32,7 +24,6 @@ export const MessageYupSchema = yup.object().shape({
     .array()
     .of(PointsByGroupYupSchema)
     .required(),
-  exercise_completions_by_section: yup.array().of(ExerciseCompletionsBySection),
   message_format_version: yup
     .number()
     .min(CURRENT_MESSAGE_FORMAT_VERSION)
