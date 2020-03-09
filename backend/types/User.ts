@@ -1,11 +1,45 @@
 import { prismaObjectType } from "nexus-prisma"
 import { idArg, stringArg } from "nexus/dist"
 import { NexusGenRootTypes } from "/generated/nexus"
+import checkAccess from "../accessControl"
 
 const User = prismaObjectType({
   name: "User",
   definition(t) {
-    t.prismaFields(["*"])
+    t.prismaFields({ filter: ["completions"] })
+
+    t.field("completions", {
+      type: "Completion",
+      list: true,
+      nullable: false,
+      args: {
+        course_id: stringArg({ required: false }),
+        course_slug: stringArg({ required: false }),
+      },
+      resolve: async (parent, args, ctx) => {
+        checkAccess(ctx)
+        let courseId = args.course_id
+        let courseSlug = args.course_slug
+        if (!courseId && !courseSlug) {
+          return ctx.prisma.completions({ where: { user: { id: parent.id } } })
+        }
+        let handlerCourse = await ctx.prisma
+          .course({ id: args.course_id, slug: args.course_slug })
+          .completions_handled_by()
+        if (handlerCourse) {
+          courseId = handlerCourse.id
+          return await ctx.prisma.completions({
+            where: { user: { id: parent.id }, course: { id: courseId } },
+          })
+        }
+        return await ctx.prisma.completions({
+          where: {
+            user: { id: parent.id },
+            course: { id: courseId, slug: courseSlug },
+          },
+        })
+      },
+    })
 
     t.field("progress", {
       type: "Progress",
