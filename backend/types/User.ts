@@ -18,24 +18,25 @@ const User = prismaObjectType({
       },
       resolve: async (parent, args, ctx) => {
         checkAccess(ctx)
-        let courseId = args.course_id
-        let courseSlug = args.course_slug
-        if (!courseId && !courseSlug) {
-          return ctx.prisma.completions({ where: { user: { id: parent.id } } })
+
+        let { course_id, course_slug } = args
+
+        if (course_id || course_slug) {
+          const handlerCourse = await ctx.prisma
+            .course({ id: args.course_id, slug: args.course_slug })
+            .completions_handled_by()
+          if (handlerCourse) {
+            course_id = handlerCourse.id
+            course_slug = undefined
+          }
         }
-        let handlerCourse = await ctx.prisma
-          .course({ id: args.course_id, slug: args.course_slug })
-          .completions_handled_by()
-        if (handlerCourse) {
-          courseId = handlerCourse.id
-          return await ctx.prisma.completions({
-            where: { user: { id: parent.id }, course: { id: courseId } },
-          })
-        }
-        return await ctx.prisma.completions({
+        return ctx.prisma.completions({
           where: {
             user: { id: parent.id },
-            course: { id: courseId, slug: courseSlug },
+            course:
+              course_id || course_slug
+                ? { id: course_id, slug: course_slug }
+                : undefined,
           },
         })
       },
