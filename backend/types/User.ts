@@ -1,7 +1,6 @@
 import { prismaObjectType } from "nexus-prisma"
 import { idArg, stringArg } from "nexus/dist"
 import { NexusGenRootTypes } from "/generated/nexus"
-import checkAccess from "../accessControl"
 
 const User = prismaObjectType({
   name: "User",
@@ -17,7 +16,6 @@ const User = prismaObjectType({
         course_slug: stringArg({ required: false }),
       },
       resolve: async (parent, args, ctx) => {
-        checkAccess(ctx)
         let courseId = args.course_id
         let courseSlug = args.course_slug
         if (!courseId && !courseSlug) {
