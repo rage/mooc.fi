@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: moocfi-backend
-  replicas: 3
+  replicas: 5
   template:
     metadata:
       labels:
@@ -25,8 +25,10 @@ spec:
           resources:
             limits:
               memory: 1500Mi
+              cpu: 500m
             requests:
               memory: 256Mi
+              cpu: 100m
           envFrom:
           - secretRef:
               name: backend-secret
