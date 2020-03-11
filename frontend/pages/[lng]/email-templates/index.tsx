@@ -9,13 +9,11 @@ import styled from "styled-components"
 import { AllEmailTemplates } from "/static/types/generated/AllEmailTemplates"
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
-import redirect from "/lib/redirect"
-import { isAdmin, isSignedIn } from "/lib/authentication"
-import { NextPageContext as NextContext } from "next"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import LangLink from "/components/LangLink"
+import withAdmin from "/lib/with-admin"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -80,15 +78,4 @@ const EmailTemplates = (admin: Boolean) => {
   )
 }
 
-export default EmailTemplates
-
-EmailTemplates.getInitialProps = function(context: NextContext) {
-  const admin = isAdmin(context)
-
-  if (!isSignedIn(context)) {
-    redirect(context, "/sign-in")
-  }
-  return {
-    admin,
-  }
-}
+export default withAdmin(EmailTemplates)
