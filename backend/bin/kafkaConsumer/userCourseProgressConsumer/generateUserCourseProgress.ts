@@ -189,9 +189,13 @@ const CheckCompletion = async (
     combined.total_n_points >= (course.points_needed ?? 9999999) &&
     requiredExerciseCompletions
   ) {
-    const handlerCourse = await prisma.course({
-      id: course.completions_handled_by,
-    })
+    let handlerCourse = course
+
+    if (course.completions_handled_by) {
+      handlerCourse = await prisma.course({
+        id: course.completions_handled_by,
+      })
+    }
 
     const completions = await prisma.completions({
       where: {

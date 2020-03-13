@@ -61,7 +61,7 @@ type Course @db(name: "course") {
   completion_email: EmailTemplate @relation(name: "CourseCompletionEmail")
   course_variants: [CourseVariant!]! @relation(name: "CourseToCourseVariant", onDelete: CASCADE)
   inherit_settings_from: Course @relation(link: INLINE, name: "CourseToCourseInheritSettings")
-  completions_handled_by: Course! @relation(link: INLINE, name: "CourseToCourse")
+  completions_handled_by: Course @relation(link: INLINE, name: "CourseToCourse")
 }
 
 type CourseVariant @db(name: "course_variant") {
