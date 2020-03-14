@@ -189,17 +189,25 @@ const CheckCompletion = async (
     combined.total_n_points >= (course.points_needed ?? 9999999) &&
     requiredExerciseCompletions
   ) {
+    let handlerCourse = course
+
+    if (course.completions_handled_by) {
+      handlerCourse = await prisma.course({
+        id: course.completions_handled_by,
+      })
+    }
+
     const completions = await prisma.completions({
       where: {
         completion_language:
           userCourseSettings != null ? userCourseSettings.language : "unknown",
         user: user,
-        course: course,
+        course: handlerCourse,
       },
     })
     if (completions.length < 1) {
       await prisma.createCompletion({
-        course: { connect: { id: course.id } },
+        course: { connect: { id: handlerCourse.id } },
         email: user.email,
         user: { connect: { id: user.id } },
         user_upstream_id: user.upstream_id,
