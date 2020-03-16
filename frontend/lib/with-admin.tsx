@@ -24,7 +24,10 @@ export default function withAdmin(Component: any) {
       prevContext = context
 
       if (!signedIn) {
-        redirect(context, "/sign-in")
+        redirect({
+          context,
+          target: "/sign-in",
+        })
 
         return { signedIn: false }
       }
@@ -45,7 +48,10 @@ export default function withAdmin(Component: any) {
       // Logging out is communicated with a context change
       if (!this.context.loggedIn) {
         if (prevContext) {
-          redirect(prevContext, "/sign-in")
+          redirect({
+            context: prevContext,
+            target: "/sign-in",
+          })
         }
         // We don't return here because when logging out it is better to keep the old content for a moment
         // than flashing a message while the redirect happens

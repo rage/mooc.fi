@@ -1,11 +1,12 @@
-import * as React from "react"
+import React from "react"
 import Header from "../components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import Footer from "/components/Footer"
 import SkipLink from "/components/SkipLink"
 import styled from "styled-components"
 import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
-import LanguageContext from "/contexes/LanguageContext"
+import Alerts from "/components/HeaderBar/Alerts"
+import { useRouter } from "next/router"
 
 const FooterDownPusherWrapper = styled.div`
   display: flex;
@@ -15,8 +16,9 @@ const FooterDownPusherWrapper = styled.div`
 `
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const lng = React.useContext(LanguageContext)
-  const isHomePage = !!lng.hrefUrl?.match(/^\/(\[lng\])?\/?$/)
+  const router = useRouter()
+
+  const isHomePage = !!router?.asPath?.match(/^\/(\[lng\])?\/?$/)
 
   return (
     <div>
@@ -24,10 +26,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <FooterDownPusherWrapper>
         <div>
           <Header />
-
           <main id="main">
             {!isHomePage && <DashboardBreadCrumbs />}
-
+            <Alerts />
             {children}
           </main>
         </div>

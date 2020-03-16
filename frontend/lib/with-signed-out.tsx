@@ -15,7 +15,11 @@ export default function withSignedOut(redirect = "/") {
         const signedIn = isSignedIn(context)
 
         if (signedIn) {
-          redirectTo(context, redirect)
+          redirectTo({
+            context,
+            target: redirect,
+            shallow: false,
+          })
         }
 
         return {
