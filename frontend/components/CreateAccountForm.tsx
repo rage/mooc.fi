@@ -1,5 +1,10 @@
 import React from "react"
-import { TextField, Typography, Paper } from "@material-ui/core"
+import {
+  TextField,
+  Typography,
+  Paper,
+  CircularProgress,
+} from "@material-ui/core"
 import { createAccount } from "../lib/create-account"
 import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
@@ -297,7 +302,11 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
               fullWidth
               type="submit"
             >
-              {t("signupTitle")}
+              {this.state.submitting ? (
+                <CircularProgress size={20} />
+              ) : (
+                t("signupTitle")
+              )}
             </SubmitButton>
           </Row>
         </Form>

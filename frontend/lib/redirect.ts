@@ -2,7 +2,19 @@ import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
 import Router from "next/router"
 
-export default (context: NextContext, target: string, savePage = true) => {
+export interface RedirectType {
+  context: NextContext
+  target: string
+  savePage?: boolean
+  shallow?: boolean
+}
+
+export default ({
+  context,
+  target,
+  savePage = true,
+  shallow = true,
+}: RedirectType) => {
   let language = context?.query?.lng ?? "fi"
 
   if (savePage && context?.pathname /* context?.req?.originalUrl */) {
@@ -33,10 +45,10 @@ export default (context: NextContext, target: string, savePage = true) => {
     // In the browser, we just pretend like this never even happened ;)
     if (target !== "/") {
       Router.push(`/[lng]${sep}${target}`, targetWithLanguage, {
-        shallow: true,
+        shallow,
       })
     } else {
-      Router.push("/", "/", { shallow: true })
+      Router.push("/", "/", { shallow })
     }
   }
 }

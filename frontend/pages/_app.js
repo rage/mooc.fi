@@ -20,6 +20,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
 import getPageTranslator from "/translations/pages"
 import { ConfirmProvider } from "material-ui-confirm"
+import AlertContext from "../contexes/AlertContext"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -32,6 +33,7 @@ class MyApp extends App {
     this.state = {
       loggedIn: this.props.signedIn,
       logInOrOut: this.toggleLogin,
+      alerts: [],
     }
   }
 
@@ -45,6 +47,11 @@ class MyApp extends App {
       jssStyles.parentNode.removeChild(jssStyles)
     }
   }
+
+  addAlert = alert => this.setState({ alerts: this.state.alerts.concat(alert) })
+
+  removeAlert = alert =>
+    this.setState({ alerts: this.state.alerts.filter(a => a !== alert) })
 
   render() {
     const {
@@ -79,9 +86,17 @@ class MyApp extends App {
                     value={{ language: lng, url, hrefUrl }}
                   >
                     <ConfirmProvider>
-                      <Layout>
-                        <Component {...pageProps} />
-                      </Layout>
+                      <AlertContext.Provider
+                        value={{
+                          alerts: this.state.alerts,
+                          addAlert: this.addAlert,
+                          removeAlert: this.removeAlert,
+                        }}
+                      >
+                        <Layout>
+                          <Component {...pageProps} />
+                        </Layout>
+                      </AlertContext.Provider>
                     </ConfirmProvider>
                   </LanguageContext.Provider>
                 </UserDetailContext.Provider>
