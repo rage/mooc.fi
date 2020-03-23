@@ -33,7 +33,6 @@ export async function redisify<T>(
   if (!redisClient || (redisClient && !redisClient.connected)) {
     return fn instanceof Promise ? fn : fn(...params)
   }
-
   const prefixedKey = `${prefix}:${key}`
 
   return await getAsync(prefixedKey)

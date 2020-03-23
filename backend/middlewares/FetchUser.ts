@@ -55,6 +55,7 @@ const getOrganization = async (
 }
 async function getUser(rawToken: string, context: any, prisma: Prisma) {
   const client = new TmcClient(rawToken)
+  // TODO: Does this always make a request?
   const details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
     prefix: "userdetails",
     expireTime: 3600,

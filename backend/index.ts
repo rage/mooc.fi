@@ -6,6 +6,8 @@ import * as path from "path"
 import { makePrismaSchema } from "nexus-prisma"
 import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
+import cache from "./middlewares/cache"
+
 import * as winston from "winston"
 import * as types from "./types"
 
@@ -50,7 +52,7 @@ const schema = makePrismaSchema({
 const server = new GraphQLServer({
   schema,
   context: req => ({ prisma, ...req }),
-  middlewares: [fetchUser],
+  middlewares: [fetchUser, cache],
 })
 
 const serverStartOptions: Options = {
