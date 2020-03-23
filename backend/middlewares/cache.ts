@@ -31,7 +31,7 @@ const fetchUser = async (
     },
     {
       prefix: "graphql-response",
-      expireTime: 3600,
+      expireTime: 300,
       key: hash,
     },
   )
