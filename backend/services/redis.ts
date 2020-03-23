@@ -38,8 +38,10 @@ export async function redisify<T>(
   return await getAsync(prefixedKey)
     .then(async res => {
       if (res) {
+        logger.info("Cache hit")
         return await JSON.parse(res)
       }
+      logger.info("Cache miss")
 
       const value = fn instanceof Promise ? await fn : await fn(...params)
 
