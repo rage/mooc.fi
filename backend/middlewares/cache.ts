@@ -26,8 +26,8 @@ const fetchUser = async (
     .update(key)
     .digest("hex")
   const res = await redisify<any>(
-    () => {
-      return resolve(root, args, context, info)
+    async () => {
+      return await resolve(root, args, context, info)
     },
     {
       prefix: "graphql-response",
