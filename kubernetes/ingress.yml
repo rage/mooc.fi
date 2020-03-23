@@ -10,6 +10,11 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |
+     location /ws {
+        deny all;
+        return 400;
+      }
 spec:
   tls:
   - hosts:
