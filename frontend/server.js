@@ -4,6 +4,7 @@ process.on("unhandledRejection", (...args) => {
 
 const isProduction = process.env.NODE_ENV === "production"
 const express = require("express")
+const morgan = require("morgan")
 
 const next = require("next")
 
@@ -28,6 +29,7 @@ const main = async () => {
   }
 
   const server = express()
+  server.use(morgan("combined"))
   server.use(compression())
 
   if (isProduction) {
