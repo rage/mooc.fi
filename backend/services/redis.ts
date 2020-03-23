@@ -2,7 +2,7 @@ import * as redis from "redis"
 import * as winston from "winston"
 import { promisify } from "util"
 
-const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:7001"
+const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD
 
 const redisClient = redis.createClient({
@@ -43,7 +43,8 @@ export async function redisify<T>(
 
       const value = fn instanceof Promise ? await fn : await fn(...params)
 
-      redisClient.setex(prefixedKey, expireTime, JSON.stringify(value))
+      redisClient.set(prefixedKey, JSON.stringify(value))
+      redisClient.expire(prefixedKey, expireTime)
 
       return value
     })
