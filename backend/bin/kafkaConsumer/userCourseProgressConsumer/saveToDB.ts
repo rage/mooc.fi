@@ -62,9 +62,9 @@ export const saveToDatabase = async (
     user = await getUserFromTMC(prisma, message.user_id)
   }
 
-  const course = (await Knex("course")
-    .where("id", message.course_id)
-    .limit(1))[0]
+  const course = await prisma.course({
+    id: message.course_id,
+  })
 
   if (!user || !course) {
     logger.error("Invalid user or course")

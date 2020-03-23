@@ -177,6 +177,31 @@ const GetUserCourseSettings = async (
   return userCourseSettings
 }
 
+const languageCodeMapping: { [key: string]: string } = {
+  fi: "fi_FI",
+  en: "en_US",
+  sv: "sv_SE",
+  et: "et_EE",
+  de: "de_DE",
+  fr: "fr_FR",
+  it: "it_IT",
+  hu: "hu_HU",
+  lv: "lv_LV",
+  da: "da_DK",
+  nl: "nl_NL",
+  hr: "hr_HR",
+  lt: "lt_LT",
+  ga: "ga_IE",
+  bg: "bg_BG",
+  cs: "cs_CZ",
+  el: "el_GR",
+  mt: "mt_MT",
+  pt: "pt_PT",
+  ro: "ro_RO",
+  sk: "sk_SK",
+  sl: "sl_SI",
+}
+
 const CheckCompletion = async (
   user: User,
   course: Course,
@@ -212,8 +237,9 @@ const CheckCompletion = async (
         user: { connect: { id: user.id } },
         user_upstream_id: user.upstream_id,
         student_number: user.student_number,
-        completion_language:
-          userCourseSettings != null ? userCourseSettings.language : "unknown",
+        completion_language: userCourseSettings?.language
+          ? languageCodeMapping[userCourseSettings.language]
+          : "unknown",
       })
       pushMessageToClient(
         user.upstream_id,
