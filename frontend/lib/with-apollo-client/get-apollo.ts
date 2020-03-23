@@ -30,11 +30,13 @@ function create(initialState: any, originalAccessToken?: string) {
       accessToken = originalAccessToken
     }
 
+    const headersCopy = { ...headers }
+    if (accessToken) {
+      headersCopy.authorization = `Bearer ${accessToken}`
+    }
+
     return {
-      headers: {
-        ...headers,
-        authorization: accessToken ? `Bearer ${accessToken}` : "",
-      },
+      headers: headersCopy,
     }
   })
 
