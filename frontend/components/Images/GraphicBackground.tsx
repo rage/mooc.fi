@@ -12,6 +12,6 @@ export const BackgroundImage = styled.img<BackgroundProps>`
   height: 100%;
   object-fit: cover;
 
-  ${props =>
+  ${(props) =>
     `filter: hue-rotate(${props.hueRotateAngle}deg) brightness(${props.brightness});`}
 `

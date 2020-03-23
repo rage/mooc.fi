@@ -68,21 +68,25 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
       })
 
       const filtered = language
-        ? (await Promise.all(
-            modules.map(async (module: StudyModule) => {
-              const module_translations = await prisma.studyModuleTranslations({
-                where: { study_module: module, language },
-              })
+        ? (
+            await Promise.all(
+              modules.map(async (module: StudyModule) => {
+                const module_translations = await prisma.studyModuleTranslations(
+                  {
+                    where: { study_module: module, language },
+                  },
+                )
 
-              if (!module_translations.length) {
-                return Promise.resolve(null)
-              }
+                if (!module_translations.length) {
+                  return Promise.resolve(null)
+                }
 
-              const { name, description = "" } = module_translations[0]
+                const { name, description = "" } = module_translations[0]
 
-              return { ...module, name, description }
-            }),
-          )).filter(v => !!v)
+                return { ...module, name, description }
+              }),
+            )
+          ).filter((v) => !!v)
         : modules.map((module: StudyModule) => ({ ...module, description: "" }))
 
       return filtered as Array<NexusGenRootTypes["StudyModule"]>

@@ -21,8 +21,8 @@ const readFS = (stream: NodeJS.ReadStream): Promise<Buffer> => {
 
   return new Promise((resolve, reject) =>
     stream
-      .on("data", data => chunkList.push(data))
-      .on("error", err => reject(err))
+      .on("data", (data) => chunkList.push(data))
+      .on("error", (err) => reject(err))
       .on("end", () => resolve(Buffer.concat(chunkList))),
   )
 }
@@ -49,9 +49,7 @@ export const uploadImage = async ({
   const image: Buffer = await readFS(createReadStream())
   const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)?.[1]
 
-  const uncompressedImage: Buffer = await sharp(image)
-    .jpeg()
-    .toBuffer()
+  const uncompressedImage: Buffer = await sharp(image).jpeg().toBuffer()
 
   const compressedImage: Buffer = await sharp(image)
     .resize({ height: 250 })

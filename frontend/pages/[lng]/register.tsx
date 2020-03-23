@@ -195,7 +195,7 @@ const Register = () => {
     }
 
     const mIds = userOrganizationsData.userOrganizations.map(
-      uo => uo.organization.id,
+      (uo) => uo.organization.id,
     )
 
     setMemberships(mIds)
@@ -208,7 +208,7 @@ const Register = () => {
 
     const sortedOrganizations = organizationsData
       ? organizationsData.organizations
-          .filter(o => o?.organization_translations?.length)
+          .filter((o) => o?.organization_translations?.length)
           .sort((a, b) =>
             a!.organization_translations![0].name.localeCompare(
               b!.organization_translations![0].name,
@@ -270,7 +270,7 @@ const Register = () => {
             id: existing.id,
           },
         })
-        setMemberships(memberships.filter(i => i !== id))
+        setMemberships(memberships.filter((i) => i !== id))
       }
     } else {
       await addUserOrganization({
@@ -300,8 +300,8 @@ const Register = () => {
           variant="outlined"
           value={searchBox}
           autoComplete="off"
-          onChange={e => setSearchBox(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && cancelFilterDebounce()}
+          onChange={(e) => setSearchBox(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && cancelFilterDebounce()}
           placeholder={t("search")}
           InputProps={{
             endAdornment: (
@@ -320,7 +320,7 @@ const Register = () => {
         />
         <>
           {organizationsLoading || !Object.keys(organizations).length ? (
-            range(5).map(i => <SkeletonCard key={`skeleton-${i}`} />)
+            range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
           ) : Object.keys(filteredOrganizations).length ? (
             (Object.entries(filteredOrganizations) as Array<
               [string, Organizations_organizations]

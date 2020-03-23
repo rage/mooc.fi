@@ -16,7 +16,7 @@ function PointsListGrid(props: GridProps) {
 
   return (
     <Grid container spacing={3}>
-      {progressesToShow.map(progress => (
+      {progressesToShow.map((progress) => (
         <PointsListItemCard key={progress.course.id} pointsAll={progress} />
       ))}
     </Grid>

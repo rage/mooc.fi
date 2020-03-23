@@ -17,7 +17,7 @@ const Root = styled.div<RootProps>`
 
   padding-bottom: 4em;
   position: relative;
-  ${props => `background-color: ${props.backgroundColor};`}
+  ${(props) => `background-color: ${props.backgroundColor};`}
 `
 
 interface CourseHighlightsProps {
@@ -83,7 +83,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
               <CourseCard key="skeletoncard2" />
             </>
           ) : (
-            courses?.map(course => (
+            courses?.map((course) => (
               <CourseCard key={`course-${course.id}`} course={course} />
             ))
           )}

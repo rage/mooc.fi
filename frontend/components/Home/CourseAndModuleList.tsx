@@ -38,12 +38,12 @@ const CourseAndModuleList = () => {
 
   const modulesWithCourses = useMemo(
     (): AllModules_study_modules_with_courses[] =>
-      (study_modules || []).map(module => {
+      (study_modules || []).map((module) => {
         const moduleCourses =
           courses?.filter(
-            course =>
+            (course) =>
               course?.study_modules?.some(
-                courseModule => courseModule.id === module.id,
+                (courseModule) => courseModule.id === module.id,
               ) && course?.status !== CourseStatus.Ended,
           ) ?? []
 
@@ -54,14 +54,14 @@ const CourseAndModuleList = () => {
 
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
-      ["Active", "Upcoming", "Ended"].map(status =>
-        (courses || []).filter(c => !c.hidden && c.status === status),
+      ["Active", "Upcoming", "Ended"].map((status) =>
+        (courses || []).filter((c) => !c.hidden && c.status === status),
       ),
     [courses],
   )
 
   const promotedCourses = useMemo(
-    () => activeCourses?.filter(c => c.promote) ?? [],
+    () => activeCourses?.filter((c) => c.promote) ?? [],
     [activeCourses],
   )
 

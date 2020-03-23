@@ -15,7 +15,7 @@ export const ThreeOrLessCoursesListing = (props: CourseListProps) => {
   const { courses } = props
   return (
     <Grid container spacing={3}>
-      {courses.map(course => (
+      {courses.map((course) => (
         <ModuleSmallCourseCard
           key={`module-course-${course.id}`}
           course={course}
@@ -41,7 +41,7 @@ const ModuleCoursesListing = (props: CourseListProps) => {
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)
 
-  const activeCourses = courses.filter(c => c.status == CourseStatus.Active)
+  const activeCourses = courses.filter((c) => c.status == CourseStatus.Active)
   return (
     <>
       {showAll || activeCourses.length === 0 ? (

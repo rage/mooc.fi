@@ -25,7 +25,7 @@ export default class KafkaProducer {
     })
     producer.connect()
     producer.on("ready", async () => await this.producerReadyFunction())
-    producer.on("event.error", function(err) {
+    producer.on("event.error", function (err) {
       logger.error("Error from producer: " + err)
     })
   }

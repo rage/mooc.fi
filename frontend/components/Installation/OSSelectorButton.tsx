@@ -14,7 +14,7 @@ const StyledButtonBase = styled(ButtonBase)<ButtonProps>`
   margin: 1em;
   display: flex;
   flex-direction: column;
-  ${props => props.selected && `border-bottom: 4px solid #00D2FF;`}
+  ${(props) => props.selected && `border-bottom: 4px solid #00D2FF;`}
   padding: 1 em;
 `
 const StyledIcon = styled(FontAwesomeIcon)`

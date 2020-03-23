@@ -13,12 +13,12 @@ const ModuleGrid = ({ modules, loading }: ModuleGridProps) => (
   <section>
     <Grid container spacing={3}>
       {loading ? (
-        range(4).map(i => (
+        range(4).map((i) => (
           <ModuleCard key={`module-skeleton-${i}`} loading={true} />
         ))
       ) : (
         <>
-          {modules?.map(module => (
+          {modules?.map((module) => (
             <ModuleCard key={module.slug} module={module} />
           ))}
           <ModuleCard key={"newmodule"} />

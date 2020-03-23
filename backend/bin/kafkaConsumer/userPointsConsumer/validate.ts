@@ -8,14 +8,8 @@ export const MessageYupSchema = yup.object().shape({
   n_points: yup.number().nullable(),
   completed: yup.boolean().required(),
   user_id: yup.number().required(),
-  course_id: yup
-    .string()
-    .length(36)
-    .required(),
-  service_id: yup
-    .string()
-    .length(36)
-    .required(),
+  course_id: yup.string().length(36).required(),
+  service_id: yup.string().length(36).required(),
   required_actions: yup.array(yup.string()),
   message_format_version: yup
     .number()

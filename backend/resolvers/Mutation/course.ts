@@ -96,15 +96,15 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const getIds = (arr: any[]) => (arr || []).map(t => t.id)
+const getIds = (arr: any[]) => (arr || []).map((t) => t.id)
 const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
   const ids1 = getIds(arr1)
   const ids2 = getIds(arr2)
 
-  const filtered = ids1.filter(id => !ids2.includes(id))
+  const filtered = ids1.filter((id) => !ids2.includes(id))
 
   if (mapToId) {
-    return filtered.map(id => ({ id }))
+    return filtered.map((id) => ({ id }))
   }
 
   return filtered
@@ -132,10 +132,10 @@ const createMutation = async <T extends { id?: string | null }>({
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }
 
-  const newOnes = (data || []).filter(t => !t.id)
+  const newOnes = (data || []).filter((t) => !t.id)
   const updated = (data || [])
-    .filter(t => !!t.id)
-    .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+    .filter((t) => !!t.id)
+    .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
   const removed = filterNotIncluded(existing!, data)
 
   return {
@@ -252,8 +252,8 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const removedModuleIds: StudyModuleWhereUniqueInput[] = (
         existingStudyModules || []
       )
-        .filter(module => !getIds(study_modules ?? []).includes(module.id))
-        .map(module => ({ id: module.id }))
+        .filter((module) => !getIds(study_modules ?? []).includes(module.id))
+        .map((module) => ({ id: module.id }))
       const studyModuleMutation: StudyModuleUpdateManyWithoutCoursesInput = {
         connect: study_modules,
         disconnect: removedModuleIds,

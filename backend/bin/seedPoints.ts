@@ -23,12 +23,8 @@ function generateUniqueUpstreamId({ ExistingIds }: { ExistingIds: number[] }) {
 
 function generateRandomString() {
   const randomString =
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15)
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
   return randomString
 }
 
@@ -36,7 +32,7 @@ const addUsers = async () => {
   //get existing users from database
   const UsersInDatabase = await prisma.users()
   //create a list of upstream ids already in use
-  let UpstreamIdsInUse = UsersInDatabase.map(user => user.upstream_id)
+  let UpstreamIdsInUse = UsersInDatabase.map((user) => user.upstream_id)
   //Generate random data for 100 users
   //and add them to the database
   let i = 0
@@ -188,7 +184,7 @@ const addServices = async () => {
 const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })
   return await Promise.all(
-    UsersInDb.map(async user => {
+    UsersInDb.map(async (user) => {
       const ucp = {
         user: {
           connect: {
@@ -241,7 +237,7 @@ const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
 const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.users({ first: 100 })
   return await Promise.all(
-    UsersInDb.map(async user => {
+    UsersInDb.map(async (user) => {
       const ucs = {
         user: {
           connect: {

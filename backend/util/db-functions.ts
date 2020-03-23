@@ -7,7 +7,7 @@ const titleCase = (s?: string) =>
 export const buildSearch = (fields: string[], search?: string) =>
   search
     ? flatten(
-        fields.map(f => [
+        fields.map((f) => [
           { [f]: search },
           { [f]: titleCase(search) },
           { [f]: search.toLowerCase() },
