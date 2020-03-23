@@ -36,7 +36,7 @@ describe("front page", () => {
 
   describe("snapshots", () => {
     before(() => {
-      Object.keys(fixtures).forEach(language =>
+      Object.keys(fixtures).forEach((language) =>
         cy.mockGraphQl([
           {
             query: "study_modules",
@@ -55,7 +55,7 @@ describe("front page", () => {
       ["/", "fi_FI"],
       ["/en", "en_US"],
     ].forEach(([route, language]) => {
-      viewports.forEach(vp => {
+      viewports.forEach((vp) => {
         describe(`viewport ${vp}`, () => {
           it(`route ${route} should match snapshot`, () => {
             cy.viewport(vp)

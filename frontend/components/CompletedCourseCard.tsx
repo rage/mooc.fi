@@ -73,7 +73,7 @@ function CompletedCourseCard(props: CourseCardProps) {
           {humanReadableLanguage}
         </CardText>
         {isRegistered ? (
-          registeredCompletions.map(r => (
+          registeredCompletions.map((r) => (
             <RegistrationDetails>
               <CardText>
                 {t("registeredDate")} {formatDateTime(r.created_at)}

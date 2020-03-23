@@ -57,10 +57,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
     !req.headers.authorization ||
     req.headers.authorization.split(" ")[1] !== SECRET
   ) {
-    return res
-      .status(403)
-      .json({ error: "Not authorized" })
-      .send()
+    return res.status(403).json({ error: "Not authorized" }).send()
   }
 
   const { topic, payload } = req.body
@@ -69,10 +66,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
       "Received an event without a topic or without a payload",
       req.body,
     )
-    return res
-      .status(400)
-      .json({ error: "Topic or payload missing" })
-      .send()
+    return res.status(400).json({ error: "Topic or payload missing" }).send()
   }
   console.log("Producing to topic", topic, "payload", JSON.stringify(payload))
 
@@ -81,19 +75,13 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
     await flushProducer(1000)
   } catch (e) {
     console.error("Producing to kafka failed", e)
-    return res
-      .status(500)
-      .json({ error: e.toString() })
-      .send()
+    return res.status(500).json({ error: e.toString() }).send()
   }
   res.json({ msg: "Thanks!" }).send()
 })
 app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
   if (!producerReady) {
-    return res
-      .status(500)
-      .json({ error: "Kafka producer not ready" })
-      .send()
+    return res.status(500).json({ error: "Kafka producer not ready" }).send()
   }
 
   if (!producer.isConnected()) {

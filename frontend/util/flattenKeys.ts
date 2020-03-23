@@ -30,13 +30,13 @@ const flattenKeys = <T extends Record<any, any>>(
   >,
   prefix = "",
 ) => {
-  Object.keys(object).forEach(key => {
+  Object.keys(object).forEach((key) => {
     const path: T[keyof T] = object[key]
     if (Array.isArray(path)) {
       // is array, build path obj[0].next
       Object.assign(
         output,
-        ...Object.keys(path).map(key2 => ({
+        ...Object.keys(path).map((key2) => ({
           ...flattenKeys(path[key2], {}, `${key}[${key2}].`),
         })),
       )

@@ -49,7 +49,7 @@ const ModuleImage = styled.img<{ error?: boolean }>`
   width: 100%;
   height: 100%;
   max-height: 250px;
-  display: ${props => (props.error ? "none" : "")};
+  display: ${(props) => (props.error ? "none" : "")};
 `
 
 // prevent borked image on page load
@@ -177,7 +177,7 @@ const RenderForm = () => {
         </FormSubtitle>
         <Grid container direction="column">
           <FieldArray name="study_module_translations">
-            {helpers => (
+            {(helpers) => (
               <>
                 {values?.study_module_translations?.map(
                   (_: any, index: number) => (
@@ -199,7 +199,7 @@ const RenderForm = () => {
                           autoComplete="off"
                           component={StyledTextField}
                         >
-                          {languages(t).map(option => (
+                          {languages(t).map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                               {option.label}
                             </MenuItem>

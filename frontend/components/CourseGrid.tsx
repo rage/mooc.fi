@@ -13,11 +13,11 @@ const CourseGrid = ({ courses, loading }: CourseGridProps) => (
   <section>
     <Grid container spacing={3} style={{ marginBottom: "2em" }}>
       {loading ? (
-        range(6).map(i => <CourseCard key={`skeleton-${i}`} loading={true} />)
+        range(6).map((i) => <CourseCard key={`skeleton-${i}`} loading={true} />)
       ) : (
         <>
           <CourseCard key={"newcourse"} />
-          {courses?.map(course => (
+          {courses?.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </>

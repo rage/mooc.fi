@@ -41,7 +41,7 @@ const main = async () => {
 
   const redirectHandler = (req, res) => {
     const redirectNeeded = DirectFrom.find(
-      redirect => redirect.from === req.url,
+      (redirect) => redirect.from === req.url,
     )
     if (redirectNeeded) {
       res.redirect(redirectNeeded.to)

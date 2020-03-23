@@ -65,7 +65,7 @@ const StudyModuleEdit = ({
         !newStudyModule
           ? { query: StudyModuleQuery, variables: { slug: values.new_slug } }
           : undefined,
-      ].filter(v => !!v) as PureQueryOptions[]
+      ].filter((v) => !!v) as PureQueryOptions[]
 
       const moduleMutation = newStudyModule ? addStudyModule : updateStudyModule
 

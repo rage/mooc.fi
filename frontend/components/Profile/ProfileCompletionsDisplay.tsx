@@ -14,7 +14,7 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
 
   return (
     <>
-      {completions.slice(0, 10).map(c => (
+      {completions.slice(0, 10).map((c) => (
         <CompletionListItem listItem={c} key={c.id} />
       ))}
       <LangLink

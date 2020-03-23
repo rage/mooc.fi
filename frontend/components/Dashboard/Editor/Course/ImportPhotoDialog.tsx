@@ -55,7 +55,7 @@ const ImportPhotoDialog = ({
 
   const selectedCourse = useCallback(
     () =>
-      courses?.find(course => course.id === values.import_photo) ?? {
+      courses?.find((course) => course.id === values.import_photo) ?? {
         photo: undefined,
       },
     [values.import_photo],
@@ -70,8 +70,8 @@ const ImportPhotoDialog = ({
       cache: "no-cache",
       headers: { Origin: "https://www.mooc.fi" },
     })
-      .then(res => res.blob())
-      .then(blob => {
+      .then((res) => res.blob())
+      .then((blob) => {
         const file = new File([blob], photo?.name ?? "", {
           type: photo?.original_mimetype ?? "image/png",
         })

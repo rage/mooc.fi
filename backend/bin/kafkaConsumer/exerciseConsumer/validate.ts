@@ -12,18 +12,9 @@ const ExerciseDataYupSchema = yup.object().shape({
 
 export const MessageYupSchema = yup.object().shape({
   timestamp: yup.date().required(),
-  course_id: yup
-    .string()
-    .length(36)
-    .required(),
-  service_id: yup
-    .string()
-    .length(36)
-    .required(),
-  data: yup
-    .array()
-    .of(ExerciseDataYupSchema)
-    .required(),
+  course_id: yup.string().length(36).required(),
+  service_id: yup.string().length(36).required(),
+  data: yup.array().of(ExerciseDataYupSchema).required(),
   message_format_version: yup
     .number()
     .min(CURRENT_MESSAGE_FORMAT_VERSION)
