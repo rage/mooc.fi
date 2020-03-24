@@ -19,7 +19,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.match(/^\/(\[lng\])?\/?$/)
-  console.log("path", router?.asPath)
 
   return (
     <div>
