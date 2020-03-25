@@ -6,7 +6,6 @@ import {
   // CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
 import { DateTime } from "luxon"
-import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 
 export interface CourseFormValues extends FormValues {
   id?: string | null
