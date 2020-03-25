@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 // ====================================================
@@ -51,7 +52,7 @@ export interface CurrentUserUserOverView_currentUser {
   first_name: string | null
   last_name: string | null
   email: string
-  completions: CurrentUserUserOverView_currentUser_completions[] | null
+  completions: CurrentUserUserOverView_currentUser_completions[]
 }
 
 export interface CurrentUserUserOverView {
