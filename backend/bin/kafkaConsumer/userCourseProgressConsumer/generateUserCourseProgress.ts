@@ -204,6 +204,7 @@ const languageCodeMapping: { [key: string]: string } = {
   ro: "ro_RO",
   sk: "sk_SK",
   sl: "sl_SI",
+  nb: "nb_NO",
 }
 
 const CheckCompletion = async (
@@ -220,10 +221,14 @@ const CheckCompletion = async (
   ) {
     let handlerCourse = course
 
-    if (course.completions_handled_by) {
-      handlerCourse = await prisma.course({
-        id: course.completions_handled_by,
-      })
+    const otherHandlerCourse = await prisma
+
+      .course({ id: course.id })
+
+      .completions_handled_by()
+
+    if (otherHandlerCourse) {
+      handlerCourse = otherHandlerCourse
     }
 
     const completions = await prisma.completions({
