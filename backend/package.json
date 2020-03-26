@@ -27,7 +27,8 @@
     "seed": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seed.ts",
     "seedPoints": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seedPoints.ts",
     "createExports": "ts-node ./bin/createExports.ts",
-    "kafka-bridge": "ts-node  --transpile-only './bin/kafkaBridge.ts'"
+    "kafka-bridge": "ts-node  --transpile-only './bin/kafkaBridge.ts'",
+    "update-course-statuses": "ts-node --transpile-only ./bin/updateCourseStatuses.ts"
   },
   "keywords": [],
   "author": "",
