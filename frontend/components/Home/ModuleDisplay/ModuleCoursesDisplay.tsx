@@ -28,7 +28,8 @@ interface ModuleCoursesProps {
 const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {
   const { courses } = props
   const dontLimitShownCourses =
-    courses.length <= 3 || courses.every(c => c.status === CourseStatus.Active)
+    courses.length <= 3 ||
+    courses.every((c) => c.status === CourseStatus.Active)
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)
 

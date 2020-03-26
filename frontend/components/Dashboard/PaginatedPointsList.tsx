@@ -140,7 +140,10 @@ function PaginatedPointsList(props: Props) {
   }
 
   // FIXME: the gap should depend on screen width
-  const sliderMarks = range(0, 101, 10).map(value => ({ value, label: value }))
+  const sliderMarks = range(0, 101, 10).map((value) => ({
+    value,
+    label: value,
+  }))
   console.log(data)
   return (
     <ErrorBoundary>
@@ -155,7 +158,7 @@ function PaginatedPointsList(props: Props) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setSearchString(e.target.value)
             }
-            onKeyDown={e => e.key === "Enter" && setSearch()}
+            onKeyDown={(e) => e.key === "Enter" && setSearch()}
           />
         </Grid>
         <Grid item xs={4}>

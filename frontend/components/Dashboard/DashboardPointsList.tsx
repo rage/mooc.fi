@@ -14,7 +14,7 @@ const PointsList = (props: Props) => {
   return (
     <section>
       <Grid container spacing={3}>
-        {pointsForUser.map(p =>
+        {pointsForUser.map((p) =>
           p?.node?.user?.progress ? (
             <PointsListItemCard
               pointsAll={p.node.user.progress}

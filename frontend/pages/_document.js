@@ -16,7 +16,7 @@ class MyDocument extends Document {
     try {
       ctx.renderPage = () =>
         originalRenderPage({
-          enhanceApp: App => props => {
+          enhanceApp: (App) => (props) => {
             const MuiStylesDataWrapper = sheets.collect(<App {...props} />)
 
             const styledComponentsDataWrapper = sheet.collectStyles(

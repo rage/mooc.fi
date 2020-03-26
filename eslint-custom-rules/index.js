@@ -15,7 +15,7 @@ module.exports = {
             'Do not use "// @ts-ignore" comments because they suppress compilation errors. If you want to use one, add a comment after it, like // @ts-ignore: this is needed.',
         },
       },
-      create: function(context) {
+      create: function (context) {
         const tsIgnoreRegExp = /^\/*\s*@ts-ignore(?!:.*)/
         const sourceCode = context.getSourceCode()
 
@@ -23,7 +23,7 @@ module.exports = {
           Program() {
             const comments = sourceCode.getAllComments()
 
-            comments.forEach(comment => {
+            comments.forEach((comment) => {
               if (comment.type !== "Line") {
                 return
               }
@@ -51,7 +51,7 @@ module.exports = {
           noMaterialUiGridImport: "Do not use Grid component from @material-ui",
         },
       },
-      create: function(context) {
+      create: function (context) {
         return {
           ImportDeclaration(node) {
             const {
@@ -64,7 +64,7 @@ module.exports = {
             }
             const importedFromGrid = !!importedFrom.match(/Grid$/)
 
-            specifiers.forEach(spec => {
+            specifiers.forEach((spec) => {
               // if it's a default import, report if it's imported from Grid
               // if it's not, report if what we're importing is actually Grid, even if we alias it
               if (

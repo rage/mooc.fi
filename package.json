@@ -17,12 +17,12 @@
     "eslint-plugin-react": "^7.18.0",
     "eslint-plugin-react-hooks": "^2.3.0",
     "husky": "^2.3.0",
-    "prettier": "github:prettier/prettier#e48a9df343527d3bfbe67a1c7a49a3cc712963db",
+    "prettier": "^2.0.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
-    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.jsx\" \"**/*.tsx\"",
+    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
+    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\"",
     "eslint": "eslint '*/**/*.{js,ts,tsx}'"
   },
   "repository": {

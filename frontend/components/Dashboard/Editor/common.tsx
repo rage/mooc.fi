@@ -27,7 +27,7 @@ export const OutlinedFormControl = styled(FormControl)`
 export const OutlinedFormGroup = styled(FormGroup)<{ error?: boolean }>`
   border-radius: 4px;
   border: 1px solid
-    ${props => (props.error ? "#F44336" : "rgba(0, 0, 0, 0.23)")};
+    ${(props) => (props.error ? "#F44336" : "rgba(0, 0, 0, 0.23)")};
   padding: 18.5px 14px;
   transition: padding-left 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
     border-color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,

@@ -64,11 +64,11 @@ consumer.on("ready", () => {
   consumer.consume(1, consumerImpl)
 })
 
-consumer.on("event.error", error => {
+consumer.on("event.error", (error) => {
   logger.error(error)
   process.exit(-1)
 })
 
-consumer.on("event.log", function(log) {
+consumer.on("event.log", function (log) {
   console.log(log)
 })
