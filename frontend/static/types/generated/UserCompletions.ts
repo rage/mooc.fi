@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 // ====================================================
@@ -46,5 +47,5 @@ export interface UserCompletions_completions {
 
 export interface UserCompletions {
   __typename: "User"
-  completions: UserCompletions_completions[] | null
+  completions: UserCompletions_completions[]
 }

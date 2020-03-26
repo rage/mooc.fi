@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 // ====================================================
@@ -46,7 +47,7 @@ export interface RegisterCompletionUserOverView_currentUser {
   upstream_id: number
   first_name: string | null
   last_name: string | null
-  completions: RegisterCompletionUserOverView_currentUser_completions[] | null
+  completions: RegisterCompletionUserOverView_currentUser_completions[]
 }
 
 export interface RegisterCompletionUserOverView {

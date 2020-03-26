@@ -111,7 +111,7 @@
     "@types/react-dom": "^16.9.1",
     "@types/styled-components": "^4.1.19",
     "@types/testing-library__cypress": "^4.2.0",
-    "apollo": "^2.19.1",
+    "apollo": "^2.23.0",
     "babel-plugin-import": "^1.12.2",
     "babel-plugin-lodash": "^3.3.4",
     "body-parser": "^1.19.0",
