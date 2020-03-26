@@ -79,6 +79,8 @@ export const toCourseForm = ({
         thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
         ects: course.ects ?? undefined,
         import_photo: "",
+        inherit_settings_from: course.inherit_settings_from?.id,
+        completions_handled_by: course.completions_handled_by?.id,
       }
     : initialValues
 }
@@ -188,6 +190,8 @@ export const fromCourseForm = ({
       values.end_date instanceof DateTime
         ? values.end_date.toISO()
         : values.end_date,
+    inherit_settings_from: values.inherit_settings_from,
+    completions_handled_by: values.completions_handled_by,
   }
 
   return c

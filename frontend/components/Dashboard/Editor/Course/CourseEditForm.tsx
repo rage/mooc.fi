@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react"
+import React, { useCallback, useContext, useState, useMemo } from "react"
 import {
   InputLabel,
   FormControl,
@@ -9,6 +9,7 @@ import {
   Radio,
   RadioGroup,
   FormGroup,
+  MenuItem,
 } from "@material-ui/core"
 import {
   Formik,
@@ -45,6 +46,7 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 interface CoverProps {
   covered: boolean
@@ -87,7 +89,7 @@ interface RenderFormProps {
 
 const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
   const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
-
+  const secret = useQueryParameter("secret", false)
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
@@ -97,6 +99,18 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
       : values?.course_translations.length == 2
       ? "both"
       : values?.course_translations[0].language,
+  )
+  // @ts-ignore: for now
+  const [enableSuperSecret, setEnableSuperSecret] = useState(!!secret)
+  const sortedCourses = useMemo(
+    () =>
+      courses
+        ?.filter((c: CourseEditorCourses_courses) => c.id !== values?.id)
+        .sort(
+          (a: CourseEditorCourses_courses, b: CourseEditorCourses_courses) =>
+            a?.name < b?.name ? -1 : 1,
+        ),
+    [courses],
   )
 
   return (
@@ -349,6 +363,72 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
               InputLabelProps={inputLabelProps}
             />
           </FormFieldGroup>
+          {enableSuperSecret ? (
+            <>
+              <FormSubtitle
+                variant="h6"
+                component="h3"
+                align="center"
+                stlyle={{ marginTop: "3rem " }}
+              >
+                Super secret values
+              </FormSubtitle>
+              <FormFieldGroup>
+                <FormControl>
+                  <FormGroup>
+                    <StyledFieldWithAnchor
+                      name="completions_handled_by"
+                      type="select"
+                      label="completions handled by"
+                      variant="outlined"
+                      select
+                      autoComplete="off"
+                      component={StyledTextField}
+                      InputLabelProps={inputLabelProps}
+                    >
+                      <MenuItem key="handledby-empty" value={undefined}>
+                        (no choice)
+                      </MenuItem>
+                      {sortedCourses?.map(
+                        (course: CourseEditorCourses_courses) => (
+                          <MenuItem
+                            key={`handledby-${course.id}`}
+                            value={course.id}
+                          >
+                            {course.name}
+                          </MenuItem>
+                        ),
+                      )}
+                    </StyledFieldWithAnchor>
+                    <StyledFieldWithAnchor
+                      name="inherit_settings_from"
+                      type="select"
+                      label="inherit settings from"
+                      variant="outlined"
+                      select
+                      autoComplete="off"
+                      component={StyledTextField}
+                      InputLabelProps={inputLabelProps}
+                    >
+                      <MenuItem key="inheritfrom-empty" value={undefined}>
+                        (no choice)
+                      </MenuItem>
+                      {sortedCourses?.map(
+                        (course: CourseEditorCourses_courses) => (
+                          <MenuItem
+                            key={`inheritfrom-${course.id}`}
+                            value={course.id}
+                          >
+                            {course.name}
+                          </MenuItem>
+                        ),
+                      )}
+                    </StyledFieldWithAnchor>
+                  </FormGroup>
+                </FormControl>
+              </FormFieldGroup>
+            </>
+          ) : null}
           <FormSubtitle
             variant="h6"
             component="h3"

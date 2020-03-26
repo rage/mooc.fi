@@ -10,6 +10,7 @@ import {
   CourseUpdateInput,
   CourseVariantUpdateManyWithoutCourseInput,
   CourseAliasUpdateManyWithoutCourseInput,
+  CourseUpdateOneWithoutCompletions_handled_byInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, arg, idArg } from "nexus/dist"
@@ -18,6 +19,7 @@ import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "./image"
 import { omit } from "lodash"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { CourseUpdateOneWithoutInherit_settings_fromInput } from "/generated/nexus-prisma/nexus-prisma"
 
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
@@ -46,6 +48,8 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_variants,
         course_aliases,
         study_modules,
+        inherit_settings_from,
+        completions_handled_by,
       } = course
 
       const prisma: Prisma = ctx.prisma
@@ -80,6 +84,12 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           : null,
         course_variants: !!course_variants ? { create: course_variants } : null,
         course_aliases: !!course_aliases ? { create: course_aliases } : null,
+        inherit_settings_from: !!inherit_settings_from
+          ? { connect: inherit_settings_from }
+          : null,
+        completions_handled_by: !!completions_handled_by
+          ? { connect: completions_handled_by }
+          : null,
       } as CourseCreateInput)
 
       const kafkaProducer = await new KafkaProducer()
@@ -170,10 +180,10 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_aliases,
         study_modules,
         completion_email,
-
         status,
-
         delete_photo,
+        inherit_settings_from,
+        completions_handled_by,
       } = course
       let { end_date } = course
       if (!slug) {
@@ -259,6 +269,35 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         disconnect: removedModuleIds,
       }
 
+      const existingInherit = await prisma
+        .course({ slug })
+        .inherit_settings_from()
+      const inheritMutation:
+        | CourseUpdateOneWithoutInherit_settings_fromInput
+        | undefined = inherit_settings_from
+        ? {
+            connect: { id: inherit_settings_from },
+          }
+        : existingInherit
+        ? {
+            disconnect: true,
+          }
+        : undefined
+      const existingHandled = await prisma
+        .course({ slug })
+        .completions_handled_by()
+      const handledMutation:
+        | CourseUpdateOneWithoutCompletions_handled_byInput
+        | undefined = completions_handled_by
+        ? {
+            connect: { id: completions_handled_by },
+          }
+        : existingHandled
+        ? {
+            disconnect: true,
+          }
+        : undefined
+
       const updatedCourse = await prisma.updateCourse({
         where: {
           id,
@@ -290,6 +329,8 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           completion_email: completion_email
             ? { connect: { id: completion_email } }
             : null,
+          inherit_settings_from: inheritMutation,
+          completions_handled_by: handledMutation,
         } as CourseUpdateInput,
       })
 
