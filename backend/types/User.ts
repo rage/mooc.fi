@@ -62,7 +62,7 @@ const User = prismaObjectType({
         const user_course_progressess = await ctx.prisma.userCourseProgresses({
           where: { user: parent },
         })
-        const progresses = user_course_progressess.map(async p => {
+        const progresses = user_course_progressess.map(async (p) => {
           const course = await ctx.prisma
             .userCourseProgress({ id: p.id })
             .course()

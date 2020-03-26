@@ -49,7 +49,7 @@ const EmailTemplates = (admin: Boolean) => {
         <br></br>
         <br></br>
         <ul>
-          {data.email_templates.map(p => {
+          {data.email_templates.map((p) => {
             return (
               <li style={{ listStyleType: "none" }} key={p.id}>
                 <LangLink

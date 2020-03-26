@@ -35,7 +35,7 @@ export const toCourseForm = ({
   modules?: CourseEditorStudyModules_study_modules[]
 }): CourseFormValues => {
   const courseStudyModules =
-    course?.study_modules?.map(module => module.id) ?? []
+    course?.study_modules?.map((module) => module.id) ?? []
 
   return course
     ? {
@@ -54,7 +54,7 @@ export const toCourseForm = ({
         order: course.order ?? undefined,
         study_module_order: course.study_module_order ?? undefined,
         status: course.status ?? CourseStatus.Upcoming,
-        course_translations: (course.course_translations || []).map(c => ({
+        course_translations: (course.course_translations || []).map((c) => ({
           ...omit(c, "__typename"),
           link: c.link || "",
           open_university_course_link: course?.open_university_registration_links?.find(
@@ -70,7 +70,7 @@ export const toCourseForm = ({
           {},
         ),
         course_variants:
-          course?.course_variants?.map(c => ({
+          course?.course_variants?.map((c) => ({
             ...c,
             description: c.description || undefined,
           })) ?? [],
@@ -103,14 +103,14 @@ export const fromCourseForm = ({
     | Omit<updateCourse_updateCourse_course_translations, "__typename">
   )[]
 
-  const course_variants = (values?.course_variants ?? []).map(v =>
+  const course_variants = (values?.course_variants ?? []).map((v) =>
     omit(v, ["__typename"]),
   ) as (
     | Omit<addCourse_addCourse_course_variants, "__typename">
     | Omit<updateCourse_updateCourse_course_variants, "__typename">
   )[]
 
-  const course_aliases = (values?.course_aliases ?? []).map(a =>
+  const course_aliases = (values?.course_aliases ?? []).map((a) =>
     omit(a, ["__typename"]),
   ) as (
     | Omit<addCourse_addCourse_course_aliases, "__typename">
@@ -128,7 +128,7 @@ export const fromCourseForm = ({
       }
 
       const prevLink = initialValues?.open_university_registration_links?.find(
-        l => l.language === c.language,
+        (l) => l.language === c.language,
       )
 
       if (!prevLink) {
@@ -146,7 +146,7 @@ export const fromCourseForm = ({
         course_code: c.open_university_course_link.course_code.trim(),
       }
     })
-    .filter(v => !!v) as (
+    .filter((v) => !!v) as (
     | Omit<addCourse_addCourse_open_university_registration_links, "__typename">
     | Omit<
         updateCourse_updateCourse_open_university_registration_links,
@@ -158,8 +158,8 @@ export const fromCourseForm = ({
     | Omit<addCourse_addCourse_study_modules, "__typename">
     | Omit<updateCourse_updateCourse_study_modules, "__typename">
   )[] = Object.keys(values.study_modules || {})
-    .filter(key => values?.study_modules?.[key]) // FIXME: (?) why is it like this
-    .map(id => ({ id }))
+    .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
+    .map((id) => ({ id }))
 
   const c: CourseArg = {
     ...omit(values, ["id", "thumbnail", "import_photo", "__typename"]),

@@ -48,10 +48,11 @@ class MyApp extends App {
     }
   }
 
-  addAlert = alert => this.setState({ alerts: this.state.alerts.concat(alert) })
+  addAlert = (alert) =>
+    this.setState({ alerts: this.state.alerts.concat(alert) })
 
-  removeAlert = alert =>
-    this.setState({ alerts: this.state.alerts.filter(a => a !== alert) })
+  removeAlert = (alert) =>
+    this.setState({ alerts: this.state.alerts.filter((a) => a !== alert) })
 
   render() {
     const {
@@ -136,7 +137,7 @@ function createPath(originalUrl) {
   return url
 }
 
-MyApp.getInitialProps = async arg => {
+MyApp.getInitialProps = async (arg) => {
   const { ctx } = arg
   let lng = "fi"
   let url = "/"

@@ -50,7 +50,7 @@ interface CoverProps {
   covered: boolean
 }
 const SelectLanguageFirstCover = styled.div<CoverProps>`
-  ${props => `opacity: ${props.covered ? `0.2` : `1`}`}
+  ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
 `
 const ModuleList = styled(List)`
   padding: 0px;
@@ -67,7 +67,7 @@ interface Labelprops {
 }
 export const StyledLabel = styled(InputLabel)<Labelprops>`
   margin-bottom: 0.3rem;
-  ${props => `color: ${props.required ? `#DF7A46` : `#245B6D`}`}
+  ${(props) => `color: ${props.required ? `#DF7A46` : `#245B6D`}`}
 `
 
 export const FormFieldGroup = styled.div`

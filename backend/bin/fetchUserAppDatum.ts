@@ -247,7 +247,7 @@ const getUserFromTmcAndSaveToDB = async (
   return encodeURIComponent(dateTime)
 } */
 
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms))
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 async function saveProgress(prisma: Prisma, dateToDB: Date) {
   console.log("saving")
@@ -265,4 +265,4 @@ async function saveProgress(prisma: Prisma, dateToDB: Date) {
   })
 }
 
-fetchUserAppDatum().catch(e => console.log(e))
+fetchUserAppDatum().catch((e) => console.log(e))

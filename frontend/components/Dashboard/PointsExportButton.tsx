@@ -23,7 +23,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
 
   return (
     <ApolloConsumer>
-      {client => (
+      {(client) => (
         <PointsExportButtonContainer>
           <StyledButton
             color="secondary"
@@ -67,7 +67,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
 async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
   console.log("data in flatten", data)
 
-  const newData = data.map(datum => {
+  const newData = data.map((datum) => {
     const {
       upstream_id,
       first_name,

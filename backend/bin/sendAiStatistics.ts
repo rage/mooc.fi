@@ -73,8 +73,9 @@ const getDataByLanguage = async (langProps: langProps) => {
     },
   })
   const now = new Date()
-  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
-    1}.${now.getFullYear()}:
+  return `\`\`\`Stats ${now.getDate()}.${
+    now.getMonth() + 1
+  }.${now.getFullYear()}:
  
   1) ${totalByLang.length} registered students in the ${
     langProps.langName
@@ -84,9 +85,9 @@ const getDataByLanguage = async (langProps: langProps) => {
     englishInLang.length
   } people registered for the English course residing in ${langProps.country}.
   
-  In total: ${totalByLang.length} + ${
-    englishInLang.length
-  } = ${totalByLang.length + englishInLang.length}\`\`\` `
+  In total: ${totalByLang.length} + ${englishInLang.length} = ${
+    totalByLang.length + englishInLang.length
+  }\`\`\` `
 }
 
 // const getGlobalStats = async () => {
@@ -113,15 +114,18 @@ const getGlobalStats = async (): Promise<string> => {
   const course = await Knex.select("id")
     .from("course")
     .where({ slug: "elements-of-ai" })
-  const totalUsers = (await Knex.count()
-    .from("UserCourseSettings")
-    .where({ course: course[0].id }))[0].count
-  const totalCompletions = (await Knex.count()
-    .from("completion")
-    .where({ course: course[0].id }))[0].count
+  const totalUsers = (
+    await Knex.count()
+      .from("UserCourseSettings")
+      .where({ course: course[0].id })
+  )[0].count
+  const totalCompletions = (
+    await Knex.count().from("completion").where({ course: course[0].id })
+  )[0].count
   const now = new Date()
-  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
-    1}.${now.getFullYear()}:
+  return `\`\`\`Stats ${now.getDate()}.${
+    now.getMonth() + 1
+  }.${now.getFullYear()}:
     1) ${totalUsers} registered students in all versions
     2) of these ${totalCompletions} have completed the course.\`\`\` `
 }

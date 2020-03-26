@@ -48,7 +48,7 @@ function SignIn() {
       setTimeout(inputFieldSetter, 5000),
     ]
 
-    return () => timeouts.forEach(t => clearTimeout(t))
+    return () => timeouts.forEach((t) => clearTimeout(t))
   }, [])
 
   return (
@@ -60,7 +60,7 @@ function SignIn() {
           name="email"
           inputRef={emailFieldRef}
           autoComplete="nope"
-          onChange={o => {
+          onChange={(o) => {
             setEmail(o.target.value)
             setError(false)
           }}
@@ -74,7 +74,7 @@ function SignIn() {
           id="password"
           inputRef={passwordFieldRef}
           autoComplete="nope"
-          onChange={o => {
+          onChange={(o) => {
             setPassword(o.target.value)
             setError(false)
           }}
@@ -89,7 +89,7 @@ function SignIn() {
         color="secondary"
         fullWidth
         disabled={email.trim() === "" || password.trim() === ""}
-        onClick={async e => {
+        onClick={async (e) => {
           e.preventDefault()
           try {
             await signIn({ email, password, shallow: false })

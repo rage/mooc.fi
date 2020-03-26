@@ -24,7 +24,7 @@ export default async function fetchCompletions() {
 }
 
 async function getElementsOfAiInfo() {
-  const promises = elementsOfAiTags.map(async tag => {
+  const promises = elementsOfAiTags.map(async (tag) => {
     let usernames = await getPassedUsernamesByTag(tag)
     console.log(
       `Got passed students from quiznator! ${usernames.length} students have passed ${tag} so far.`,
@@ -49,8 +49,8 @@ async function removeDataThatIsInDBAlready(
       },
     },
   })
-  const usernames = users.map(user => user.username)
-  return data.filter(entry => {
+  const usernames = users.map((user) => user.username)
+  return data.filter((entry) => {
     return !usernames.includes(entry)
   })
 }

@@ -17,7 +17,7 @@ const CardBase = styled(ClickableButtonBase)<{
   ishidden?: number | null
   component?: any
 }>`
-  background-color: ${props => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
+  background-color: ${(props) => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
   display: flex;

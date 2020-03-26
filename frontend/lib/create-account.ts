@@ -18,8 +18,8 @@ export function createAccount(data: any) {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(res => {
-      res.json().then(json => {
+    }).then((res) => {
+      res.json().then((json) => {
         if (!json.success) {
           reject(json.errors)
         } else {

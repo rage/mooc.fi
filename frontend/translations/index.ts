@@ -21,7 +21,9 @@ const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   }
 
   return Array.isArray(translation)
-    ? translation.map(t => substitute<T>({ translation: t, variables, router }))
+    ? translation.map((t) =>
+        substitute<T>({ translation: t, variables, router }),
+      )
     : substitute<T>({ translation, variables, router })
 }
 

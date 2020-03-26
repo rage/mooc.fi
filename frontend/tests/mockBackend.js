@@ -31,7 +31,7 @@ const createMockBackend = async ({ redirectHandler }) => {
 
       const newCookies = { ...currentCookies, ...mockCookies }
       const cookieString = Object.keys(newCookies)
-        .map(k => `${k}=${newCookies[k]}`)
+        .map((k) => `${k}=${newCookies[k]}`)
         .join("; ")
       req.headers.cookie = cookieString
 
@@ -64,7 +64,7 @@ const createMockBackend = async ({ redirectHandler }) => {
   - if no variables specified, query return same result irregardless of arguments it gets
 */
 
-  const sortObj = o =>
+  const sortObj = (o) =>
     Object.keys(o)
       .sort()
       .reduce((acc, curr) => ({ ...acc, [curr]: o[curr] }), {})
@@ -85,8 +85,8 @@ const createMockBackend = async ({ redirectHandler }) => {
   })
 
   mockBackend.delete("/mock", (req, res) => {
-    Object.keys(resolver).forEach(k => delete resolver[k])
-    Object.keys(results).forEach(k => delete results[k])
+    Object.keys(resolver).forEach((k) => delete resolver[k])
+    Object.keys(results).forEach((k) => delete results[k])
 
     res.json({ ok: true })
   })

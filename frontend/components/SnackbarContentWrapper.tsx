@@ -22,10 +22,10 @@ interface SnackbarContentExtraProps {
 const StyledSnackbarContent = styled(SnackbarContent)<
   SnackbarContentExtraProps
 >`
-    ${props => props.type === "info" && `background-color: #3f51b5;`}
-    ${props => props.type === "success" && `background-color: #43a047;`}
-    ${props => props.type === "error" && `background-color: #d32f2f;`}
-    ${props => props.type === "warning" && `background-color: #ffa000;`}
+    ${(props) => props.type === "info" && `background-color: #3f51b5;`}
+    ${(props) => props.type === "success" && `background-color: #43a047;`}
+    ${(props) => props.type === "error" && `background-color: #d32f2f;`}
+    ${(props) => props.type === "warning" && `background-color: #ffa000;`}
     `
 
 const Span = styled.span``
