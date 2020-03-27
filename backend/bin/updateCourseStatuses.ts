@@ -22,13 +22,17 @@ const updateCourseStatuses = async () => {
         : null
       const currentDate = DateTime.local()
       if (
-        status === "Upcoming" &&
+        newStatus === "Upcoming" &&
         courseStartDate &&
         currentDate >= courseStartDate
       ) {
         newStatus = "Active"
       }
-      if (status === "Active" && courseEndDate && currentDate > courseEndDate) {
+      if (
+        newStatus === "Active" &&
+        courseEndDate &&
+        currentDate > courseEndDate
+      ) {
         newStatus = "Ended"
       }
 
