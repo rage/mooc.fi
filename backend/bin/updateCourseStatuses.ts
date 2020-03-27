@@ -21,24 +21,21 @@ const updateCourseStatuses = async () => {
         ? DateTime.fromISO(course.end_date)
         : null
       const currentDate = DateTime.local()
-
-      if (status === "Active" && courseEndDate && currentDate > courseEndDate) {
-        newStatus = "Ended"
-      } else if (
+      if (
         status === "Upcoming" &&
         courseStartDate &&
         currentDate >= courseStartDate
       ) {
         newStatus = "Active"
       }
+      if (status === "Active" && courseEndDate && currentDate > courseEndDate) {
+        newStatus = "Ended"
+      }
 
       if (status === newStatus) {
         return Promise.resolve()
       }
 
-      console.log(
-        `Updated course ${course.name} from ${status} to ${newStatus}`,
-      )
       const updatedCourse = await prisma.updateCourse({
         where: {
           id: course.id,
@@ -47,6 +44,9 @@ const updateCourseStatuses = async () => {
           status: newStatus,
         },
       })
+      console.log(
+        `Updated course ${course.name} from ${status} to ${newStatus}`,
+      )
       const msg: ProducerMessage = {
         message: JSON.stringify(updatedCourse),
         partition: null,
