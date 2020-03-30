@@ -1,6 +1,3 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { Course, Prisma, Maybe } from "../../generated/prisma-client"
 import { stringArg, intArg, idArg } from "nexus/dist"
