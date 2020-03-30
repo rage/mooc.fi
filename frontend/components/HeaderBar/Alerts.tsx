@@ -11,7 +11,7 @@ const Alerts = () => {
   return (
     <>
       {alerts
-        .filter(alert => !alert.ignorePages?.includes(router.pathname))
+        .filter((alert) => !alert.ignorePages?.includes(router.pathname))
         .map((alert, idx) => (
           <Alert
             key={`alert-${idx}`}

@@ -121,7 +121,7 @@ const GetCombinedUserCourseProgress = async (
   )
 
   let combined: CombinedUserCourseProgress = new CombinedUserCourseProgress()
-  progresses.forEach(entry => {
+  progresses.forEach((entry) => {
     entry.forEach((p: ServiceProgressPartType) => {
       combined.addProgress(p)
     })
@@ -153,12 +153,14 @@ const GetUserCourseSettings = async (
   course: Course,
 ): Promise<UserCourseSettings> => {
   let userCourseSettings: UserCourseSettings =
-    (await prisma.userCourseSettingses({
-      where: {
-        user: { id: user.id },
-        course: { id: course.id },
-      },
-    }))[0] || null
+    (
+      await prisma.userCourseSettingses({
+        where: {
+          user: { id: user.id },
+          course: { id: course.id },
+        },
+      })
+    )[0] || null
 
   if (!userCourseSettings) {
     const inheritCourse = await prisma
@@ -166,12 +168,14 @@ const GetUserCourseSettings = async (
       .inherit_settings_from()
     if (inheritCourse) {
       userCourseSettings =
-        (await prisma.userCourseSettingses({
-          where: {
-            user: { id: user.id },
-            course: { id: inheritCourse.id },
-          },
-        }))[0] || null
+        (
+          await prisma.userCourseSettingses({
+            where: {
+              user: { id: user.id },
+              course: { id: inheritCourse.id },
+            },
+          })
+        )[0] || null
     }
   }
   return userCourseSettings
@@ -200,6 +204,7 @@ const languageCodeMapping: { [key: string]: string } = {
   ro: "ro_RO",
   sk: "sk_SK",
   sl: "sl_SI",
+  nb: "nb_NO",
 }
 
 const CheckCompletion = async (
@@ -216,10 +221,14 @@ const CheckCompletion = async (
   ) {
     let handlerCourse = course
 
-    if (course.completions_handled_by) {
-      handlerCourse = await prisma.course({
-        id: course.completions_handled_by,
-      })
+    const otherHandlerCourse = await prisma
+
+      .course({ id: course.id })
+
+      .completions_handled_by()
+
+    if (otherHandlerCourse) {
+      handlerCourse = otherHandlerCourse
     }
 
     const completions = await prisma.completions({

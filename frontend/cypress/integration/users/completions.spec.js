@@ -34,7 +34,7 @@ describe("user course completion", () => {
       ])
 
       cy.visit("/fi/users/12312323/completions")
-      fixtures.notRegistered.texts.forEach(text => cy.getByText(text))
+      fixtures.notRegistered.texts.forEach((text) => cy.getByText(text))
     })
 
     it("has a registered completion", () => {
@@ -44,7 +44,7 @@ describe("user course completion", () => {
       ])
 
       cy.visit("/fi/users/12312323/completions")
-      fixtures.registered.texts.forEach(text => cy.getByText(text))
+      fixtures.registered.texts.forEach((text) => cy.getByText(text))
     })
 
     afterEach(() => cy.signOut())

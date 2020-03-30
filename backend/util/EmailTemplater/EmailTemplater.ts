@@ -26,7 +26,7 @@ export class EmailTemplater {
   }
 
   private prepare() {
-    Object.getOwnPropertyNames(this.keyWordToTemplate).forEach(p => {
+    Object.getOwnPropertyNames(this.keyWordToTemplate).forEach((p) => {
       this.keyWordToTemplate[p] = <Template>(
         new (<ITemplateConstructor>this.keyWordToTemplate[p])({
           emailTemplate: this.emailTemplate,

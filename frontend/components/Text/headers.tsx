@@ -53,7 +53,7 @@ export const H2Background = styled(Typography)<TitleProps>`
   font-family: Roboto;
   font-weight: 550;
 
-  ${props =>
+  ${(props) =>
     ` background-color: ${props.titlebackground}; color: ${props.fontcolor};`}
 `
 
@@ -78,7 +78,7 @@ export const SubtitleBackground = styled(Typography)<SubTitleProps>`
   background-color: white;
   font-family: Roboto;
   font-weight: 450;
-  ${props => `color: ${props.fontcolor ? props.fontcolor : `black`};`}
+  ${(props) => `color: ${props.fontcolor ? props.fontcolor : `black`};`}
 `
 
 export const CardTitle = styled(Typography)<any>`

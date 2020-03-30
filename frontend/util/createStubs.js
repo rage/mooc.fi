@@ -9,12 +9,12 @@ const walkDir = (dir, list) => {
   const files = fs.readdirSync(dir)
 
   return files
-    .filter(filename => !IGNORED_FILES.includes(filename))
-    .map(filename => {
+    .filter((filename) => !IGNORED_FILES.includes(filename))
+    .map((filename) => {
       const fileWithDir = dir + filename
 
       if (
-        !STUBBABLE_DIRECTORIES.some(d =>
+        !STUBBABLE_DIRECTORIES.some((d) =>
           fileWithDir.includes(`${PAGES_DIR}/${d}`),
         )
       ) {
@@ -29,14 +29,14 @@ const walkDir = (dir, list) => {
 
       return list
     })
-    .filter(v => !!v)[0]
+    .filter((v) => !!v)[0]
 }
 
 const createStubs = () => {
   const fileList = walkDir(`${PAGES_DIR}/`, [])
 
-  fileList.map(file =>
-    STUBBABLE_DIRECTORIES.map(dir => {
+  fileList.map((file) =>
+    STUBBABLE_DIRECTORIES.map((dir) => {
       const pathname = path.dirname(file.replace(`/${dir}`, ""))
 
       if (pathname !== PAGES_DIR) {

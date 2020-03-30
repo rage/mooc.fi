@@ -51,6 +51,8 @@ const CourseArg = inputObjectType({
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.id("completion_email", { required: false })
+    t.id("inherit_settings_from", { required: false })
+    t.id("completions_handled_by", { required: false })
   },
 })
 

@@ -29,9 +29,9 @@ const CourseImageInput = (props: ImageInputProps) => {
         (course: CourseEditorCourses_courses) =>
           course.slug !== values.slug && !!course?.photo?.compressed,
       )
-      .map(course => {
+      .map((course) => {
         const translation = (course.course_translations?.filter(
-          t => t.language === language,
+          (t) => t.language === language,
         ) ?? [])[0]
 
         return {

@@ -12,7 +12,7 @@ function PointsItemTable(props: TableProps) {
   const { studentPoints, showDetailedBreakdown, cutterValue } = props
   return (
     <>
-      {Object.keys(studentPoints).map(function(key) {
+      {Object.keys(studentPoints).map(function (key) {
         return (
           <PointsListItemTableChart
             key={key}

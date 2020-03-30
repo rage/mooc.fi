@@ -21,7 +21,7 @@ const fetch = async () => {
       )
       continue
     }
-    const res = await getInfoWithCourseCode(p.course_code).catch(error => {
+    const res = await getInfoWithCourseCode(p.course_code).catch((error) => {
       console.log(error)
       throw error
     })
@@ -29,7 +29,7 @@ const fetch = async () => {
 
     const now: DateTime = DateTime.fromJSDate(new Date())
 
-    const alternatives = res.map(data => {
+    const alternatives = res.map((data) => {
       const linkStartDate: DateTime = DateTime.fromISO(data.alkupvm)
       const linkStopDate: DateTime = DateTime.fromISO(data.loppupvm)
       return {
@@ -40,10 +40,10 @@ const fetch = async () => {
     })
 
     let openLinks = alternatives.filter(
-      o => o.startTime < now && o.stopDate > now,
+      (o) => o.startTime < now && o.stopDate > now,
     )
 
-    const bestLink = maxBy(openLinks, o => o.stopDate)
+    const bestLink = maxBy(openLinks, (o) => o.stopDate)
 
     if (!bestLink) {
       console.log("Did not find any open links")
@@ -91,7 +91,7 @@ interface Link {
   startTime: DateTime
 }
 
-fetch().catch(error => {
+fetch().catch((error) => {
   console.log(error)
   throw error
 })
