@@ -66,7 +66,7 @@ const Completions = (props: CompletionsProps) => {
       </Title>
 
       <Container style={{ maxWidth: 900 }}>
-        {completions?.map(c => (
+        {completions?.map((c) => (
           <CompletionListItem key={`completion-${c.id}`} listItem={c} />
         )) ?? <Typography>{t("nocompletionsText")}</Typography>}
       </Container>

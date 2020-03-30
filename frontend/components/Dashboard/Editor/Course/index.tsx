@@ -76,7 +76,7 @@ const CourseEdit = ({
         !newCourse
           ? { query: CourseQuery, variables: { slug: values.new_slug } }
           : undefined,
-      ].filter(v => !!v) as PureQueryOptions[]
+      ].filter((v) => !!v) as PureQueryOptions[]
 
       const courseMutation = newCourse ? addCourse : updateCourse
 

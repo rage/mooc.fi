@@ -3,7 +3,7 @@ import * as mutations from "../resolvers/Mutation"
 const Mutation = prismaObjectType({
   name: "Mutation",
   definition(t) {
-    Object.values(mutations).forEach(fn => fn(t))
+    Object.values(mutations).forEach((fn) => fn(t))
   },
 })
 

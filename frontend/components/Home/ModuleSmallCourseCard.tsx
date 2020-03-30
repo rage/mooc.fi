@@ -114,7 +114,7 @@ function ModuleSmallCourseCard({
             to={course.link}
             target="_blank"
             style={{ textDecoration: "none", width: "100%" }}
-            onClick={e => (course.link === "" ? e.preventDefault() : null)}
+            onClick={(e) => (course.link === "" ? e.preventDefault() : null)}
             aria-label={`To the course homepage of ${course.name}`}
           >
             {showHeader &&

@@ -77,7 +77,7 @@ const ModuleNavi = ({
               <ModuleNaviCard key="skeletonnavicard2" />
             </>
           ) : (
-            (modules || []).map(module => (
+            (modules || []).map((module) => (
               <ModuleNaviCard key={`module-${module.name}`} module={module} />
             ))
           )}

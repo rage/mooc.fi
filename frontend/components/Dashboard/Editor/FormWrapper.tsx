@@ -58,7 +58,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     (i: FormikErrors<T>): FormikTouched<T> =>
       Object.assign(
         {},
-        ...Object.keys(flattenKeys(i)).map(k => ({ [k]: true })),
+        ...Object.keys(flattenKeys(i)).map((k) => ({ [k]: true })),
       ),
     [],
   )

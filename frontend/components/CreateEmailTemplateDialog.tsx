@@ -59,7 +59,7 @@ const CreateEmailTemplateDialog = (props: CreateEmailTemplateDialogParams) => {
             type="text"
             fullWidth
             value={nameInput}
-            onChange={e => setNameInput(e.target.value)}
+            onChange={(e) => setNameInput(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
@@ -67,7 +67,7 @@ const CreateEmailTemplateDialog = (props: CreateEmailTemplateDialogParams) => {
             Cancel
           </Button>
           <ApolloConsumer>
-            {client => (
+            {(client) => (
               <Button
                 onClick={async () => {
                   try {

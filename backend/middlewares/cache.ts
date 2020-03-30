@@ -22,9 +22,7 @@ const fetchUser = async (
   const key = `${info.fieldName}-${JSON.stringify(
     info.fieldNodes,
   )}-${JSON.stringify(args)}`
-  let hash = createHash("sha512")
-    .update(key)
-    .digest("hex")
+  let hash = createHash("sha512").update(key).digest("hex")
   const res = await redisify<any>(
     async () => {
       return await resolve(root, args, context, info)

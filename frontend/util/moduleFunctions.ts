@@ -6,7 +6,7 @@ export const getPromotedCourses = (
 ): AllCourses_courses[] => {
   return (
     modules?.reduce((acc, mod) => {
-      mod?.courses?.forEach(course => {
+      mod?.courses?.forEach((course) => {
         if (course.promote) {
           acc = acc.concat(course)
         }

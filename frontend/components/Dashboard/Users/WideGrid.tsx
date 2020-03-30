@@ -99,7 +99,7 @@ const RenderResults = () => {
   if (loading) {
     return (
       <TableBody>
-        {range(5).map(n => (
+        {range(5).map((n) => (
           <TableRow key={`skeleton-${n}`}>
             <TableCell colSpan={5}>
               <Skeleton />
@@ -121,7 +121,7 @@ const RenderResults = () => {
 
   return (
     <TableBody>
-      {results.map(row => {
+      {results.map((row) => {
         const {
           upstream_id,
           email,

@@ -37,7 +37,7 @@ const UserSearch = () => {
     const params = [
       rowsPerPage !== 10 ? `rowsPerPage=${rowsPerPage}` : "",
       page > 0 ? `page=${page}` : "",
-    ].filter(v => !!v)
+    ].filter((v) => !!v)
     const query = params.length ? `?${params.join("&")}` : ""
     const as =
       searchVariables.search !== ""

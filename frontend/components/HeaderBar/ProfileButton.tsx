@@ -17,8 +17,8 @@ const StyledButton = styled(HeaderMenuButton)<ButtonProps>`
   @media (max-width: 950px) {
     font-size: 22px;
   }
-  color: ${props => (props.active ? "#3C8C7A" : "black")};
-  border-bottom: ${props => (props.active ? "1px solid #3C8C7A" : "")};
+  color: ${(props) => (props.active ? "#3C8C7A" : "black")};
+  border-bottom: ${(props) => (props.active ? "1px solid #3C8C7A" : "")};
 `
 
 const ProfileButton = () => {

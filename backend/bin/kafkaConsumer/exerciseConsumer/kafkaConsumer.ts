@@ -47,14 +47,14 @@ consumer
     consumer.subscribe(TOPIC_NAME)
     consumer.consume()
   })
-  .on("data", message =>
+  .on("data", (message) =>
     handleMessage(message, mutex, logger, consumer, prisma),
   )
-consumer.on("event.error", error => {
+consumer.on("event.error", (error) => {
   logger.error(error)
   throw error
 })
 
-consumer.on("event.log", function(log) {
+consumer.on("event.log", function (log) {
   console.log(log)
 })

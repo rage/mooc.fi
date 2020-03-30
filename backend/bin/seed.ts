@@ -392,7 +392,7 @@ const seed = async () => {
   await prisma.deleteManyCourses()
 
   await Promise.all(
-    Modules.map(async module => {
+    Modules.map(async (module) => {
       const _module: StudyModuleCreateInput = {
         ...module,
         study_module_translations: module.study_module_translations
@@ -412,7 +412,7 @@ const seed = async () => {
   )
 
   return await Promise.all(
-    Courses.map(async course => {
+    Courses.map(async (course) => {
       const _course: CourseCreateInput = {
         ...course,
         id: undefined,
@@ -444,7 +444,7 @@ const seed = async () => {
           },
           data: {
             study_modules: {
-              connect: course.study_modules.map(id => ({
+              connect: course.study_modules.map((id) => ({
                 id,
               })) as StudyModuleWhereUniqueInput[],
             },

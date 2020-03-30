@@ -41,7 +41,7 @@ const buildPromises = (
   ctx: Context,
   prisma: Prisma,
 ): Promise<CompletionRegistered>[] => {
-  return array.map(async entry => {
+  return array.map(async (entry) => {
     console.log("entry", entry)
     const course: Course = await prisma
       .completion({ id: entry.completion_id })
