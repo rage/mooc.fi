@@ -99,7 +99,7 @@ export const saveToDatabase = async (
       n_points: message.n_points,
       completed: message.completed,
       required_actions: {
-        create: message.required_actions.map(ra => {
+        create: message.required_actions.map((ra) => {
           return {
             value: ra,
           }
@@ -120,7 +120,7 @@ export const saveToDatabase = async (
         n_points: Number(message.n_points),
         completed: message.completed,
         required_actions: {
-          create: message.required_actions.map(ra => {
+          create: message.required_actions.map((ra) => {
             return {
               value: ra,
             }

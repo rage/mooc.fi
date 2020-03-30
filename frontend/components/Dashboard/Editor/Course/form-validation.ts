@@ -98,7 +98,7 @@ export const languages = (t: Function) => [
 export const study_modules: { value: any; label: any }[] = []
 
 const testUnique = <T extends FormValues>(valueField: string, field: string) =>
-  function(this: Yup.TestContext, value?: any): boolean {
+  function (this: Yup.TestContext, value?: any): boolean {
     const {
       context,
       path,
@@ -151,7 +151,7 @@ const courseEditSchema = ({
         validateSlug({ client, checkSlug, initialSlug }),
       ),
     status: Yup.mixed()
-      .oneOf(statuses(t).map(s => s.value))
+      .oneOf(statuses(t).map((s) => s.value))
       .required(t("validationRequired")),
     course_translations: Yup.array().of(
       Yup.object().shape({
@@ -159,7 +159,7 @@ const courseEditSchema = ({
         language: Yup.string()
           .required(t("validationRequired"))
           .oneOf(
-            languages(t).map(l => l.value),
+            languages(t).map((l) => l.value),
             t("validationValidLanguageCode"),
           )
           .test(
@@ -174,9 +174,7 @@ const courseEditSchema = ({
         link: Yup.string(),
         open_university_course_link: Yup.object().shape({
           course_code: Yup.string(),
-          link: Yup.string()
-            .url(t("validationValidUrl"))
-            .nullable(),
+          link: Yup.string().url(t("validationValidUrl")).nullable(),
         }),
       }),
     ),
@@ -208,10 +206,10 @@ const courseEditSchema = ({
       }),
     ),
     order: Yup.number()
-      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .transform((value) => (isNaN(value) ? undefined : Number(value)))
       .integer(t("validationInteger")),
     study_module_order: Yup.number()
-      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .transform((value) => (isNaN(value) ? undefined : Number(value)))
       .integer(t("validationInteger")),
     ects: Yup.string().matches(
       /(^\d+(\-\d+)?$|^$)/,
@@ -220,7 +218,7 @@ const courseEditSchema = ({
     start_date: Yup.date()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
-      .test("start_before_end", t("courseStartDateLaterThanEndDate"), function(
+      .test("start_before_end", t("courseStartDateLaterThanEndDate"), function (
         this: Yup.TestContext,
         value?: DateTime,
       ) {
@@ -247,7 +245,7 @@ const validateSlug = ({
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
-  async function(this: Yup.TestContext, value: string): Promise<boolean> {
+  async function (this: Yup.TestContext, value: string): Promise<boolean> {
     if (!value || value === "") {
       return true // if it's empty, it's ok by this validation and required will catch it
     }

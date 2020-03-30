@@ -48,10 +48,11 @@ class MyApp extends App {
     }
   }
 
-  addAlert = alert => this.setState({ alerts: this.state.alerts.concat(alert) })
+  addAlert = (alert) =>
+    this.setState({ alerts: this.state.alerts.concat(alert) })
 
-  removeAlert = alert =>
-    this.setState({ alerts: this.state.alerts.filter(a => a !== alert) })
+  removeAlert = (alert) =>
+    this.setState({ alerts: this.state.alerts.filter((a) => a !== alert) })
 
   render() {
     const {
@@ -112,6 +113,8 @@ class MyApp extends App {
 // We're probably not supposed to do this
 const originalGetInitialProps = MyApp.getInitialProps
 
+const languages = ["en", "fi", "se"]
+
 function createPath(originalUrl) {
   let url = ""
   /*   if (originalUrl === "/") {
@@ -136,21 +139,29 @@ function createPath(originalUrl) {
   return url
 }
 
-MyApp.getInitialProps = async arg => {
-  const { ctx } = arg
+MyApp.getInitialProps = async (props) => {
+  const { ctx } = props
   let lng = "fi"
   let url = "/"
   let hrefUrl = "/"
 
   if (typeof window !== "undefined") {
-    if (["fi", "en", "se"].includes(ctx?.asPath?.substring(1, 3) ?? "")) {
+    if (languages.includes(ctx?.asPath?.substring(1, 3) ?? "")) {
       lng = ctx.asPath.substring(1, 3)
     }
 
     url = ctx.asPath
     hrefUrl = ctx.pathname
   } else {
-    lng = ctx.query.lng || "fi"
+    const maybeLng = ctx.query.lng ?? "fi"
+
+    if (languages.includes(maybeLng)) {
+      lng = maybeLng
+    } else {
+      ctx?.res.writeHead(302, { location: "/404" })
+      ctx?.res.end()
+    }
+
     url = ctx.req.originalUrl
     hrefUrl = ctx.pathname //.req.path
   }
@@ -158,7 +169,7 @@ MyApp.getInitialProps = async arg => {
   let originalProps = {}
 
   if (originalGetInitialProps) {
-    originalProps = (await originalGetInitialProps(arg)) || {}
+    originalProps = (await originalGetInitialProps(props)) || {}
   }
 
   if (hrefUrl !== "/" && !hrefUrl.startsWith("/[lng]")) {

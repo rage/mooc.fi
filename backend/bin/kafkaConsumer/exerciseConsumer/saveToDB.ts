@@ -13,7 +13,7 @@ export const saveToDatabase = async (
     logger.error("given course does not exist")
     return false
   }
-  message.data.forEach(exercise => {
+  message.data.forEach((exercise) => {
     handleExercise(
       exercise,
       message.course_id,
@@ -28,7 +28,7 @@ export const saveToDatabase = async (
       AND: {
         course: { id: message.course_id },
         service: { id: message.service_id },
-        custom_id_not_in: message.data.map(p => p.id),
+        custom_id_not_in: message.data.map((p) => p.id),
       },
     },
     data: {

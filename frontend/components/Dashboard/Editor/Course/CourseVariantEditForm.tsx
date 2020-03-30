@@ -38,7 +38,7 @@ const CourseVariantEditForm = () => {
         <FormControl>
           <FormGroup>
             <FieldArray name="course_variants">
-              {helpers => (
+              {(helpers) => (
                 <>
                   {values!.length ? (
                     values!.map((variant, index: number) => (

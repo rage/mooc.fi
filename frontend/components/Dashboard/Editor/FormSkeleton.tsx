@@ -15,7 +15,7 @@ const FormBackground = styled(Paper)`
 const FormSkeleton: React.FC = () => (
   <FormContainer maxWidth="md">
     <FormBackground elevation={1}>
-      {range(10).map(idx => (
+      {range(10).map((idx) => (
         <Skeleton key={`skeleton-${idx}`} style={{ marginBottom: "2em" }} />
       ))}
     </FormBackground>

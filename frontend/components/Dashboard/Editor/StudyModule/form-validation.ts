@@ -64,10 +64,10 @@ const studyModuleEditSchema = ({
         language: Yup.string()
           .required(t("validationRequired"))
           .oneOf(
-            languages(t).map(l => l.value),
+            languages(t).map((l) => l.value),
             t("validationValidLanguageCode"),
           )
-          .test("unique", t("validationOneTranslation"), function(
+          .test("unique", t("validationOneTranslation"), function (
             this: Yup.TestContext,
             value?: any,
           ): boolean {
@@ -104,7 +104,7 @@ const studyModuleEditSchema = ({
       }),
     ),
     order: Yup.number()
-      .transform(value => (isNaN(value) ? undefined : Number(value)))
+      .transform((value) => (isNaN(value) ? undefined : Number(value)))
       .integer(t("validationInteger")),
   })
 
@@ -117,7 +117,7 @@ const validateSlug = ({
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
-  async function(this: Yup.TestContext, value: string): Promise<boolean> {
+  async function (this: Yup.TestContext, value: string): Promise<boolean> {
     if (!value || value === "") {
       return true // if it's empty, it's ok by this validation and required will catch it
     }

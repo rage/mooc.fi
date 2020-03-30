@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 //==============================================================
@@ -28,6 +29,7 @@ export interface CourseArg {
   automatic_completions?: boolean | null
   base64?: boolean | null
   completion_email?: string | null
+  completions_handled_by?: string | null
   course_aliases?: CourseAliasCreateUpdateInput[] | null
   course_translations?: CourseTranslationCreateUpdateInput[] | null
   course_variants?: CourseVariantCreateUpdateInput[] | null
@@ -36,6 +38,7 @@ export interface CourseArg {
   end_date?: string | null
   hidden?: boolean | null
   id?: string | null
+  inherit_settings_from?: string | null
   name?: string | null
   new_photo?: any | null
   new_slug?: string | null

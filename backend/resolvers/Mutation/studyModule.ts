@@ -64,19 +64,21 @@ const updateStudyModule = async (
         .study_module_translations()
       const newTranslations: StudyModuleTranslationCreateWithoutStudy_moduleInput[] = (
         study_module_translations || []
-      ).filter(t => !t.id)
+      ).filter((t) => !t.id)
       const updatedTranslations: StudyModuleTranslationUpdateManyWithWhereNestedInput[] = (
         study_module_translations || []
       )
-        .filter(t => !!t.id)
-        .map(t => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-      const existingTranslationIds = (existingTranslations || []).map(t => t.id)
+        .filter((t) => !!t.id)
+        .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+      const existingTranslationIds = (existingTranslations || []).map(
+        (t) => t.id,
+      )
       const moduleTranslationIds = (study_module_translations || []).map(
-        t => t.id,
+        (t) => t.id,
       )
       const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = existingTranslationIds
-        .filter(id => !moduleTranslationIds.includes(id))
-        .map(id => ({ id }))
+        .filter((id) => !moduleTranslationIds.includes(id))
+        .map((id) => ({ id }))
       /*       const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = pullAll(
         (existingTranslations || []).map(t => t.id),
         (study_module_translations || []).map(t => t.id).filter(v => !!v),

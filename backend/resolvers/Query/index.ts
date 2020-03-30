@@ -1,4 +1,4 @@
-// generated Thu Mar 05 2020 11:31:21 GMT+0200 (Eastern European Standard Time)
+// generated Wed Mar 25 2020 12:56:36 GMT+0200 (Eastern European Standard Time)
 
 export { default as addEmailTemplateQueries } from "./EmailTemplate"
 export { default as addExerciseQueries } from "./Exercise"

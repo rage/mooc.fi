@@ -37,7 +37,7 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
     background-color: #354b45;
     color: white;
     border: 1px solid #354b45;
-    ${props => `text-decoration: ${props.selected ? `underline` : `none`};`}
+    ${(props) => `text-decoration: ${props.selected ? `underline` : `none`};`}
   }
 `
 interface LanguageSelectorProps {
@@ -54,7 +54,7 @@ const CourseLanguageSelector = (props: LanguageSelectorProps) => {
         {t("courseLanguageSelectTitle")}
       </FormSubtitle>
       <FieldArray name="course_translations">
-        {helpers => (
+        {(helpers) => (
           <ButtonGroupContainer
             color="secondary"
             aria-label="course language select button group"

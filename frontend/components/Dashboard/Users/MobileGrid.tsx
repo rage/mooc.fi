@@ -76,7 +76,7 @@ const RenderCards: React.FC<any> = () => {
   if (loading) {
     return (
       <>
-        {range(5).map(n => (
+        {range(5).map((n) => (
           <DataCard key={`skeleton-card-${n}`} />
         ))}
       </>
@@ -85,7 +85,7 @@ const RenderCards: React.FC<any> = () => {
 
   return (
     <>
-      {data?.userDetailsContains?.edges?.map(row => (
+      {data?.userDetailsContains?.edges?.map((row) => (
         <DataCard
           key={row.node.upstream_id || Math.random() * 9999999}
           row={row}
@@ -131,7 +131,7 @@ const DataCard = ({
     <UserCard>
       <CardActionArea>
         <CardContent>
-          {fields.map(field => {
+          {fields.map((field) => {
             if (field.title) {
               return (
                 <Grid container key={`${field.text}-${upstream_id}`}>
