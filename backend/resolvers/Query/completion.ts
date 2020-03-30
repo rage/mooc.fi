@@ -1,8 +1,12 @@
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { Course, Prisma, Maybe } from "../../generated/prisma-client"
 import { stringArg, intArg, idArg } from "nexus/dist"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import checkAccess from "../../accessControl"
+import Knex from "../../services/knex"
 
 const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("completions", {
@@ -39,16 +43,29 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
       const prisma: Prisma = ctx.prisma
       const courseObject: Maybe<Course> = await prisma.course({ slug: course })
 
-      return prisma.completions({
-        where: {
-          course: { id: courseObject?.id },
-          completion_language: completion_language,
-        },
-        first: first ?? undefined,
-        after: after ?? undefined,
-        last: last ?? undefined,
-        before: before ?? undefined,
-      })
+      // const remove_this_var =  prisma.completions({
+      //   where: {
+      //     course: { id: courseObject?.id },
+      //     completion_language: completion_language,
+      //   },
+      //   first: first ?? undefined,
+      //   after: after ?? undefined,
+      //   last: last ?? undefined,
+      //   before: before ?? undefined,
+      // })
+
+      if (completion_language) {
+        return await Knex.select("*")
+          .from("completion")
+          .where({
+            course: courseObject?.id,
+            completion_language: completion_language,
+          })
+      } else {
+        return await Knex.select("*")
+          .from("completion")
+          .where({ course: courseObject?.id })
+      }
     },
   })
 }
