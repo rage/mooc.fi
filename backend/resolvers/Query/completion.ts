@@ -52,12 +52,10 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
       // })
 
       if (completion_language) {
-        return await Knex.select("*")
-          .from("completion")
-          .where({
-            course: courseObject?.id,
-            completion_language: completion_language,
-          })
+        return await Knex.select("*").from("completion").where({
+          course: courseObject?.id,
+          completion_language: completion_language,
+        })
       } else {
         return await Knex.select("*")
           .from("completion")
