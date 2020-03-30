@@ -63,7 +63,7 @@ function PointsListItemTableChart(props: Props) {
       {showDetailed ? (
         services ? (
           <>
-            {services.map(s => (
+            {services.map((s) => (
               <ChartContainer
                 style={{ width: "72%", marginLeft: "18%" }}
                 key={Math.floor(Math.random() * 100000)}

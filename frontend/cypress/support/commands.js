@@ -38,9 +38,9 @@ const mockGraphQl = ({ query, result, variables }) =>
     options: { headers: { "Content-Type": "application/json" } },
   })
 
-Cypress.Commands.add("mockGraphQl", params => {
+Cypress.Commands.add("mockGraphQl", (params) => {
   if (Array.isArray(params)) {
-    Promise.all(params.map(p => mockGraphQl(p)))
+    Promise.all(params.map((p) => mockGraphQl(p)))
   } else {
     mockGraphQl(params)
   }

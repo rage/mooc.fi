@@ -36,7 +36,7 @@ export async function redisify<T>(
   const prefixedKey = `${prefix}:${key}`
 
   return await getAsync(prefixedKey)
-    .then(async res => {
+    .then(async (res) => {
       if (res) {
         logger.info("Cache hit")
         return await JSON.parse(res)

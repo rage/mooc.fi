@@ -18,9 +18,10 @@ const createExports = (dir: string, pattern: string) => {
 
   return files
     .filter(
-      filename => !IGNORED_FILES.includes(filename) && filename !== OUTPUT_FILE,
+      (filename) =>
+        !IGNORED_FILES.includes(filename) && filename !== OUTPUT_FILE,
     )
-    .map(filename => {
+    .map((filename) => {
       const basename = path.parse(filename).name
       const exportName = pattern.replace(
         "%name%",

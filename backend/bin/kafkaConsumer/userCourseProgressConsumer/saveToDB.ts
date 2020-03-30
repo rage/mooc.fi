@@ -54,9 +54,7 @@ export const saveToDatabase = async (
 
   let user: User | null
 
-  user = (await Knex("user")
-    .where("upstream_id", message.user_id)
-    .limit(1))[0]
+  user = (await Knex("user").where("upstream_id", message.user_id).limit(1))[0]
 
   if (!user) {
     user = await getUserFromTMC(prisma, message.user_id)
@@ -71,12 +69,12 @@ export const saveToDatabase = async (
     return -1
   }
 
-  let userCourseProgress = (await Knex<unknown, UserCourseProgress[]>(
-    "user_course_progress",
-  )
-    .where("user", user?.id)
-    .where("course", message.course_id)
-    .limit(1))[0]
+  let userCourseProgress = (
+    await Knex<unknown, UserCourseProgress[]>("user_course_progress")
+      .where("user", user?.id)
+      .where("course", message.course_id)
+      .limit(1)
+  )[0]
 
   if (!userCourseProgress) {
     userCourseProgress = await prisma.createUserCourseProgress({
@@ -86,14 +84,15 @@ export const saveToDatabase = async (
     })
   }
 
-  const userCourseServiceProgress = (await Knex<
-    unknown,
-    UserCourseServiceProgress[]
-  >("user_course_service_progress")
-    .where("user", user?.id)
-    .where("course", message.course_id)
-    .where("service", message.service_id)
-    .limit(1))[0]
+  const userCourseServiceProgress = (
+    await Knex<unknown, UserCourseServiceProgress[]>(
+      "user_course_service_progress",
+    )
+      .where("user", user?.id)
+      .where("course", message.course_id)
+      .where("service", message.service_id)
+      .limit(1)
+  )[0]
 
   if (userCourseServiceProgress) {
     const oldTimestamp = DateTime.fromISO(

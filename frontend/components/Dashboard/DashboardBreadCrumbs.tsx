@@ -166,7 +166,7 @@ interface Props {
 const shouldFetchName = memoize((param: string | string[]): boolean => {
   if (Array.isArray(param)) {
     // no need to wait for anything if ending with courses/study-modules
-    return param.slice(0, -1).some(r => shouldFetchName(r))
+    return param.slice(0, -1).some((r) => shouldFetchName(r))
   }
 
   return ["courses", "study-modules", "register-completion"].includes(param)

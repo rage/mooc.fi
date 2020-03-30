@@ -27,7 +27,8 @@
     "seed": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seed.ts",
     "seedPoints": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seedPoints.ts",
     "createExports": "ts-node ./bin/createExports.ts",
-    "kafka-bridge": "ts-node  --transpile-only './bin/kafkaBridge.ts'"
+    "kafka-bridge": "ts-node  --transpile-only './bin/kafkaBridge.ts'",
+    "update-course-statuses": "ts-node --transpile-only ./bin/updateCourseStatuses.ts"
   },
   "keywords": [],
   "author": "",
@@ -82,8 +83,8 @@
     "nexus-prisma-generate": "^0.3.7",
     "npm-check": "^5.9.0",
     "tmc-client-js": "0.0.9",
-    "ts-node": "^8.6.2",
+    "ts-node": "^8.8.1",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   }
 }

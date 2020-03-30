@@ -20,9 +20,9 @@ function Module(props: ModuleProps) {
       orderBy(
         module?.courses || [],
         [
-          course => course.study_module_start_point === true,
-          course => course.status === CourseStatus.Active,
-          course => course.status === CourseStatus.Upcoming,
+          (course) => course.study_module_start_point === true,
+          (course) => course.status === CourseStatus.Active,
+          (course) => course.status === CourseStatus.Upcoming,
         ],
         ["desc", "desc", "desc"],
       ),

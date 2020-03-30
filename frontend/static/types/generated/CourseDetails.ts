@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 import { CourseStatus } from "./globalTypes"
@@ -52,6 +53,16 @@ export interface CourseDetails_course_course_aliases {
   course_code: string
 }
 
+export interface CourseDetails_course_inherit_settings_from {
+  __typename: "Course"
+  id: any
+}
+
+export interface CourseDetails_course_completions_handled_by {
+  __typename: "Course"
+  id: any
+}
+
 export interface CourseDetails_course {
   __typename: "Course"
   id: any
@@ -78,6 +89,8 @@ export interface CourseDetails_course {
   study_modules: CourseDetails_course_study_modules[] | null
   course_variants: CourseDetails_course_course_variants[] | null
   course_aliases: CourseDetails_course_course_aliases[] | null
+  inherit_settings_from: CourseDetails_course_inherit_settings_from | null
+  completions_handled_by: CourseDetails_course_completions_handled_by | null
 }
 
 export interface CourseDetails {

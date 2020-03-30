@@ -49,11 +49,11 @@ describe("register completion", () => {
 
       after(() => cy.signOut())
 
-      fixtures.loggedInCompletion.tests.forEach(test =>
+      fixtures.loggedInCompletion.tests.forEach((test) =>
         it(`path ${test.pathSlug}`, () => {
           cy.visit(`${test.pathSlug}register-completion/course1`)
 
-          test.texts.forEach(text => cy.getByText(text))
+          test.texts.forEach((text) => cy.getByText(text))
         }),
       )
     })

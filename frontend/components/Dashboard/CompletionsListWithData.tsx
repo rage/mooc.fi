@@ -16,7 +16,7 @@ const CompletionsListWithData = (props: CompletionsListWithDataProps) => {
   return (
     <>
       <List>
-        {completions.map(completer => (
+        {completions.map((completer) => (
           <CompletionCard completer={completer} key={completer.id} />
         ))}
       </List>

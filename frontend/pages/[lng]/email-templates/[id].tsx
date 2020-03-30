@@ -79,7 +79,7 @@ const EmailTemplateView = () => {
               label="Name"
               variant="outlined"
               value={name ?? ""}
-              onChange={e => {
+              onChange={(e) => {
                 e.preventDefault()
                 setName(e.target.value)
               }}
@@ -91,7 +91,7 @@ const EmailTemplateView = () => {
               label="Title"
               variant="outlined"
               value={title ?? ""}
-              onChange={e => {
+              onChange={(e) => {
                 e.preventDefault()
                 setTitle(e.target.value)
               }}
@@ -106,7 +106,7 @@ const EmailTemplateView = () => {
               rowsMax="40"
               value={txtBody ?? ""}
               variant="outlined"
-              onChange={e => {
+              onChange={(e) => {
                 e.preventDefault()
                 setTxtBody(e.target.value)
               }}
@@ -122,7 +122,7 @@ const EmailTemplateView = () => {
               disabled={true}
               value={htmlBody ?? ""}
               variant="outlined"
-              onChange={e => {
+              onChange={(e) => {
                 e.preventDefault()
                 setHtmlBody(e.target.value)
               }}
@@ -130,7 +130,7 @@ const EmailTemplateView = () => {
             <br></br>
             <br></br>
             <ApolloConsumer>
-              {client => (
+              {(client) => (
                 <Button
                   variant="contained"
                   color="primary"
@@ -168,7 +168,7 @@ const EmailTemplateView = () => {
               )}
             </ApolloConsumer>
             <ApolloConsumer>
-              {client => (
+              {(client) => (
                 <Button
                   variant="contained"
                   color="primary"

@@ -100,7 +100,7 @@ const RegisterCompletion = () => {
   }
 
   const completion =
-    data?.currentUser?.completions?.find(c => c.course.slug == courseSlug) ??
+    data?.currentUser?.completions?.find((c) => c.course.slug == courseSlug) ??
     undefined
 
   if (!currentUser) {

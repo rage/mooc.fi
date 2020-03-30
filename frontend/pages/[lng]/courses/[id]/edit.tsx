@@ -75,6 +75,12 @@ export const CourseQuery = gql`
         id
         course_code
       }
+      inherit_settings_from {
+        id
+      }
+      completions_handled_by {
+        id
+      }
     }
   }
 `

@@ -35,7 +35,7 @@ const CourseAliasEditForm = () => {
       <FormControl>
         <FormGroup>
           <FieldArray name="course_aliases">
-            {helpers => (
+            {(helpers) => (
               <>
                 {values!.length ? (
                   values!.map((alias, index: number) => (

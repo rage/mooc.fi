@@ -11,19 +11,10 @@ const PointsByGroupYupSchema = yup.object().shape({
 
 export const MessageYupSchema = yup.object().shape({
   timestamp: yup.date().required(),
-  course_id: yup
-    .string()
-    .length(36)
-    .required(),
-  service_id: yup
-    .string()
-    .length(36)
-    .required(),
+  course_id: yup.string().length(36).required(),
+  service_id: yup.string().length(36).required(),
   user_id: yup.number(),
-  progress: yup
-    .array()
-    .of(PointsByGroupYupSchema)
-    .required(),
+  progress: yup.array().of(PointsByGroupYupSchema).required(),
   message_format_version: yup
     .number()
     .min(CURRENT_MESSAGE_FORMAT_VERSION)
