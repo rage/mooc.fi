@@ -86,13 +86,29 @@ if (process.env.NODE_ENV === "production") {
 }
 
 server.get("/api/completions/:course", async function (req: any, res: any) {
-  var course_id = await Knex.select("id")
-    .from("course")
-    .where({ slug: req.params.course })
-    .limit(1)
-  var sql = Knex.select("*")
-    .from("completion")
-    .where({ course: course_id[0].id })
+  const rawToken = req.get("Authorization")
+  const secret: string = rawToken?.split(" ")[1] ?? ""
+  console.log(secret)
+  const org = (
+    await Knex.select("*")
+      .from("organization")
+      .where({ secret_key: secret })
+      .limit(1)
+  )[0]
+  console.log(org)
+  if (!org) {
+    return res.status(401).json({ message: "Access denied." })
+  }
+  var course_id = (
+    await Knex.select("id")
+      .from("course")
+      .where({ slug: req.params.course })
+      .limit(1)
+  )[0]
+  if (!course_id) {
+    return res.status(404).json({ message: "Course not found" })
+  }
+  var sql = Knex.select("*").from("completion").where({ course: course_id.id })
   res.set("Content-Type", "application/json")
   sql.stream().pipe(JSONStream.stringify()).pipe(res)
 })
