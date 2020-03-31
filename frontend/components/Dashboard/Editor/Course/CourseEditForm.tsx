@@ -32,7 +32,6 @@ import { CourseFormValues } from "./types"
 import styled from "styled-components"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import {
-  StyledField,
   StyledTextField,
   StyledFieldWithAnchor,
   EnumeratingAnchor,
@@ -154,17 +153,6 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
               component={StyledTextField}
               required={true}
               helperText={t("courseSlugHelper")}
-            />
-            <StyledField
-              id="course-id"
-              style={{ width: "50%" }}
-              name="id"
-              type="text"
-              disabled
-              label={t("courseID")}
-              variant="outlined"
-              InputLabelProps={inputLabelProps}
-              component={StyledTextField}
             />
             <StyledFieldWithAnchor
               style={{ width: "25%" }}
