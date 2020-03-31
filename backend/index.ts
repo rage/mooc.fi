@@ -88,14 +88,12 @@ if (process.env.NODE_ENV === "production") {
 server.get("/api/completions/:course", async function (req: any, res: any) {
   const rawToken = req.get("Authorization")
   const secret: string = rawToken?.split(" ")[1] ?? ""
-  console.log(secret)
   const org = (
     await Knex.select("*")
       .from("organization")
       .where({ secret_key: secret })
       .limit(1)
   )[0]
-  console.log(org)
   if (!org) {
     return res.status(401).json({ message: "Access denied." })
   }
