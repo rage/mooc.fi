@@ -1,3 +1,6 @@
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 require("sharp") // image library sharp seems to crash without this require
 
 import { prisma } from "./generated/prisma-client"
@@ -7,7 +10,9 @@ import { makePrismaSchema } from "nexus-prisma"
 import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
 import cache from "./middlewares/cache"
-
+//import * as JSONStream from "JSONStream"
+const JSONStream = require("JSONStream")
+import Knex from "./services/knex"
 import * as winston from "winston"
 import * as types from "./types"
 
@@ -79,6 +84,18 @@ if (process.env.NODE_ENV === "production") {
   serverStartOptions["playground"] = "/api"
   serverStartOptions["endpoint"] = "/api"
 }
+
+server.get("/api/completions/:course", async function (req: any, res: any) {
+  var course_id = await Knex.select("id")
+    .from("course")
+    .where({ slug: req.params.course })
+    .limit(1)
+  var sql = Knex.select("*")
+    .from("completion")
+    .where({ course: course_id[0].id })
+  res.set("Content-Type", "application/json")
+  sql.stream().pipe(JSONStream.stringify()).pipe(res)
+})
 
 server.start(serverStartOptions, () =>
   console.log("Server is running on http://localhost:4000"),
