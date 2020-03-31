@@ -7,7 +7,9 @@ import { makePrismaSchema } from "nexus-prisma"
 import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
 import cache from "./middlewares/cache"
-
+//import * as JSONStream from "JSONStream"
+const JSONStream = require("JSONStream")
+import Knex from "./services/knex"
 import * as winston from "winston"
 import * as types from "./types"
 
@@ -79,6 +81,35 @@ if (process.env.NODE_ENV === "production") {
   serverStartOptions["playground"] = "/api"
   serverStartOptions["endpoint"] = "/api"
 }
+
+server.get("/api/completions/:course", async function (req: any, res: any) {
+  const rawToken = req.get("Authorization")
+  const secret: string = rawToken?.split(" ")[1] ?? ""
+  const org = (
+    await Knex.select("*")
+      .from("organization")
+      .where({ secret_key: secret })
+      .limit(1)
+  )[0]
+  if (!org) {
+    return res.status(401).json({ message: "Access denied." })
+  }
+  const course_id = (
+    await Knex.select("id")
+      .from("course")
+      .where({ slug: req.params.course })
+      .limit(1)
+  )[0]
+  if (!course_id) {
+    return res.status(404).json({ message: "Course not found" })
+  }
+  const sql = Knex.select("*")
+    .from("completion")
+    .where({ course: course_id.id })
+  res.set("Content-Type", "application/json")
+  const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
+  req.on("close", stream.end.bind(stream))
+})
 
 server.start(serverStartOptions, () =>
   console.log("Server is running on http://localhost:4000"),
