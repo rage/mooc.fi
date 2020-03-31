@@ -1,6 +1,3 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
 require("sharp") // image library sharp seems to crash without this require
 
 import { prisma } from "./generated/prisma-client"
@@ -97,7 +94,7 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   if (!org) {
     return res.status(401).json({ message: "Access denied." })
   }
-  var course_id = (
+  const course_id = (
     await Knex.select("id")
       .from("course")
       .where({ slug: req.params.course })
@@ -106,9 +103,12 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   if (!course_id) {
     return res.status(404).json({ message: "Course not found" })
   }
-  var sql = Knex.select("*").from("completion").where({ course: course_id.id })
+  const sql = Knex.select("*")
+    .from("completion")
+    .where({ course: course_id.id })
   res.set("Content-Type", "application/json")
-  sql.stream().pipe(JSONStream.stringify()).pipe(res)
+  const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
+  req.on("close", stream.end.bind(stream))
 })
 
 server.start(serverStartOptions, () =>
