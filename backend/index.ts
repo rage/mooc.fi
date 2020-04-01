@@ -1,5 +1,4 @@
 require("sharp") // image library sharp seems to crash without this require
-
 import { prisma } from "./generated/prisma-client"
 import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"
@@ -85,6 +84,7 @@ if (process.env.NODE_ENV === "production") {
 server.get("/api/completions/:course", async function (req: any, res: any) {
   const rawToken = req.get("Authorization")
   const secret: string = rawToken?.split(" ")[1] ?? ""
+  let course_id: string
   const org = (
     await Knex.select("*")
       .from("organization")
@@ -94,18 +94,26 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   if (!org) {
     return res.status(401).json({ message: "Access denied." })
   }
-  const course_id = (
+  const course = (
     await Knex.select("id")
       .from("course")
       .where({ slug: req.params.course })
       .limit(1)
   )[0]
-  if (!course_id) {
-    return res.status(404).json({ message: "Course not found" })
+  if (!course) {
+    const course_alias = (
+      await Knex.select("course")
+        .from("course_alias")
+        .where({ course_code: req.params.course })
+    )[0]
+    if (!course_alias) {
+      return res.status(404).json({ message: "Course not found" })
+    }
+    course_id = course_alias.course
+  } else {
+    course_id = course.id
   }
-  const sql = Knex.select("*")
-    .from("completion")
-    .where({ course: course_id.id })
+  const sql = Knex.select("*").from("completion").where({ course: course_id })
   res.set("Content-Type", "application/json")
   const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
   req.on("close", stream.end.bind(stream))
