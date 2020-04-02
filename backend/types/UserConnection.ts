@@ -3,7 +3,7 @@ import { Prisma } from "../generated/prisma-client"
 import { stringArg } from "nexus/dist"
 import { buildSearch } from "../util/db-functions"
 
-const UserConnection = prismaObjectType({
+const UserConnection = prismaObjectType<"UserConnection">({
   name: "UserConnection",
   definition(t) {
     t.prismaFields(["*"])

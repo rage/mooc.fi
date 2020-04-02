@@ -2,7 +2,7 @@ import { prismaObjectType } from "nexus-prisma"
 import { idArg, stringArg } from "nexus/dist"
 import { NexusGenRootTypes } from "/generated/nexus"
 
-const User = prismaObjectType({
+const User = prismaObjectType<"User">({
   name: "User",
   definition(t) {
     t.prismaFields({ filter: ["completions"] })

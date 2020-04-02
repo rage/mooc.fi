@@ -144,7 +144,7 @@ function PaginatedPointsList(props: Props) {
     value,
     label: value,
   }))
-  console.log(data)
+
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>

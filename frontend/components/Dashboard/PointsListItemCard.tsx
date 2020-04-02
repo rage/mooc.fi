@@ -9,6 +9,7 @@ import formatPointsData, {
 } from "/util/formatPointsData"
 import { CardTitle, CardSubtitle } from "/components/Text/headers"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import PointsProgress from "/components/Dashboard/PointsProgress"
 
 const UserFragment = gql`
   fragment UserPointsFragment on User {
@@ -87,11 +88,9 @@ function PointsListItemCard(props: Props) {
   } = props
   const [showDetails, setShowDetails] = React.useState(false)
 
-  const formattedPointsData: formattedGroupPointsDictionary | null = formatPointsData(
-    {
-      pointsData: pointsAll,
-    },
-  )
+  const formattedPointsData: formattedGroupPointsDictionary = formatPointsData({
+    pointsData: pointsAll,
+  })
 
   return (
     <Root item sm={12} lg={12}>
@@ -102,10 +101,15 @@ function PointsListItemCard(props: Props) {
           {pointsAll.course.name}
         </CardTitle>
       )}
-      {formattedPointsData ? (
+      {Object.keys(formattedPointsData?.groups ?? {}).length ? (
         <>
+          <PointsProgress
+            total={formattedPointsData.total * 100}
+            title="Total progress"
+          />
+          <hr />
           <PointsItemTable
-            studentPoints={formattedPointsData}
+            studentPoints={formattedPointsData.groups}
             showDetailedBreakdown={showDetails}
             cutterValue={cutterValue}
           />

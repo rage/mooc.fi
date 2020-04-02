@@ -10,7 +10,7 @@ interface Props {
 
 const PointsList = (props: Props) => {
   const { pointsForUser, cutterValue } = props
-  console.log(pointsForUser)
+
   return (
     <section>
       <Grid container spacing={3}>

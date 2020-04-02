@@ -6,7 +6,7 @@ import {
   User,
 } from "../generated/prisma-client"
 
-const UserCourseProgress = prismaObjectType({
+const UserCourseProgress = prismaObjectType<"UserCourseProgress">({
   name: "UserCourseProgress",
   definition(t) {
     t.prismaFields(["*"])
