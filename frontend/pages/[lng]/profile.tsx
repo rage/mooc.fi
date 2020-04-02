@@ -30,11 +30,6 @@ export const UserOverViewQuery = gql`
           photo {
             uncompressed
           }
-          exercises {
-            id
-            part
-            section
-          }
         }
         completions_registered {
           id
