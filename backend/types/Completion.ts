@@ -3,7 +3,7 @@ import { Course } from "../generated/prisma-client"
 import { ForbiddenError } from "apollo-server-core"
 import { NexusGenRootTypes } from "/generated/nexus"
 
-const Completion = prismaObjectType({
+const Completion = prismaObjectType<"Completion">({
   name: "Completion",
   definition(t) {
     t.prismaFields([
