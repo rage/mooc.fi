@@ -125,6 +125,7 @@ type Completion @db(name: "completion") {
   completion_language: String
   "Where this completion has been registered, can have multiple locations."
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion")
+  grade: String
 }
 
 type CompletionRegistered @db(name: "completion_registered") {
