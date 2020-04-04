@@ -1,6 +1,6 @@
 import { prismaObjectType } from "nexus-prisma"
 
-const Course = prismaObjectType({
+const Course = prismaObjectType<"Course">({
   name: "Course",
   definition(t) {
     t.prismaFields(["*"])
