@@ -7,7 +7,7 @@ import { gql } from "apollo-boost"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
-import { Card } from "@material-ui/core"
+import { Card, Typography } from "@material-ui/core"
 import LanguageContext from "/contexes/LanguageContext"
 import LangLink from "/components/LangLink"
 import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
@@ -15,6 +15,11 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslator from "/translations/courses"
+import styled from "styled-components"
+
+const Title = styled(Typography)<any>`
+  margin-bottom: 0.7em;
+`
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
@@ -65,6 +70,14 @@ const Course = () => {
         <H1NoBackground component="h1" variant="h1" align="center">
           {data.course?.name}
         </H1NoBackground>
+        <Title
+          component="p"
+          variant="subtitle2"
+          align="center"
+          gutterBottom={true}
+        >
+          {data.course?.id}
+        </Title>
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           {t("courseHome")}
         </SubtitleNoBackground>
