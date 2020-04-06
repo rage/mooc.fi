@@ -8,9 +8,9 @@
 // ====================================================
 
 export interface checkModuleSlug {
-  study_module_exists: boolean
+  study_module_exists: boolean;
 }
 
 export interface checkModuleSlugVariables {
-  slug?: string | null
+  slug?: string | null;
 }
