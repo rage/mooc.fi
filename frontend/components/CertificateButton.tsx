@@ -17,7 +17,6 @@ const StyledButton = styled(Button)`
 const StyledDialog = styled(Dialog)`
   padding: 1rem;
 `
-
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
@@ -26,68 +25,77 @@ const CertificateButton = () => {
   const lng = React.useContext(LanguageContext)
   const t = getCompletionsTranslator(lng.language)
   //Names come from TMC in the end. Now mock here
-  //@ts-ignore
   const firstName = "Henkka"
-  //@ts-ignore
   const lastName = "Sukunimi"
 
   //Certificate availability for this user
-  //@ts-ignore
   const certificateAvailable = true
 
   //Certificate has been previously downloaded
-  //@ts-ignore
   const hasGeneratedCertificate = false
 
   return (
     <>
-      <StyledButton
-        onClick={() => setOpen(true)}
-        disabled={!certificateAvailable}
-      >
-        {t("createCertificate")}
-      </StyledButton>
-      <StyledDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="dialog-title"
-      >
-        <DialogTitle id="dialog-title">{t("nameFormTitle")}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{t("nameFormIntro")}</DialogContentText>
-          <StyledTextField
-            autoFocus
-            id="first-name"
-            label={t("nameFormFirstName")}
-            defaultValue={firstName}
-            fullWidth
-          />
-          <StyledTextField
-            autoFocus
-            id="last-name"
-            label={t("nameFormLastName")}
-            defaultValue={lastName}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setOpen(false)}
-            variant="outlined"
-            color="inherit"
-            fullWidth
+      {hasGeneratedCertificate ? (
+        <StyledButton
+          onClick={() => setOpen(true)}
+          disabled={!certificateAvailable}
+        >
+          {t("showCertificate")}
+        </StyledButton>
+      ) : (
+        <>
+          <StyledButton
+            onClick={() => setOpen(true)}
+            disabled={!certificateAvailable}
           >
-            {t("nameFormCancel")}
-          </Button>
-          <Button
-            onClick={() => console.log("changed name")}
-            color="primary"
-            fullWidth
+            {t("createCertificate")}
+          </StyledButton>
+          <StyledDialog
+            open={open}
+            onClose={() => setOpen(false)}
+            aria-labelledby="dialog-title"
           >
-            {t("nameFormChangeAndSubmit")}
-          </Button>
-        </DialogActions>
-      </StyledDialog>
+            <DialogTitle id="dialog-title">{t("nameFormTitle")}</DialogTitle>
+            <DialogContent>
+              <DialogContentText style={{ marginBottom: "1.5rem" }}>
+                {t("nameFormIntro")}
+              </DialogContentText>
+              <StyledTextField
+                autoFocus
+                id="first-name"
+                label={t("nameFormFirstName")}
+                defaultValue={firstName}
+                fullWidth
+              />
+              <StyledTextField
+                autoFocus
+                id="last-name"
+                label={t("nameFormLastName")}
+                defaultValue={lastName}
+                fullWidth
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setOpen(false)}
+                variant="outlined"
+                color="inherit"
+                fullWidth
+              >
+                {t("nameFormCancel")}
+              </Button>
+              <Button
+                onClick={() => console.log("changed name")}
+                color="primary"
+                fullWidth
+              >
+                {t("nameFormChangeAndSubmit")}
+              </Button>
+            </DialogActions>
+          </StyledDialog>
+        </>
+      )}
     </>
   )
 }
