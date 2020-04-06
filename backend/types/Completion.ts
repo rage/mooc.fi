@@ -16,6 +16,7 @@ const Completion = prismaObjectType<"Completion">({
       "user_upstream_id",
       "completions_registered",
       "course",
+      "grade",
     ])
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
