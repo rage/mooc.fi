@@ -98,6 +98,18 @@ const User = prismaObjectType<"User">({
         }
       },
     })
+
+    t.field("exercise_completions", {
+      type: "ExerciseCompletion",
+      list: true,
+      resolve: async (parent, _, ctx) => {
+        return ctx.prisma.exerciseCompletions({
+          where: {
+            user: { id: parent.id },
+          },
+        })
+      },
+    })
   },
 })
 

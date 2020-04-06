@@ -29,6 +29,7 @@ const PointsList = (props: Props) => {
                   p.node.user.student_number ||
                   "n/a",
               }}
+              key={`pointslistitemcard_${p.node.id}`}
             />
           ) : null,
         )}

@@ -1,8 +1,12 @@
-import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
+import {
+  UserPoints_currentUser_progresses as ProgressData,
+  UserPoints_currentUser_progresses_course_exercises,
+} from "/static/types/generated/UserPoints"
 import { groupBy, mapValues, flatten } from "lodash"
 
 export type formattedGroupPointsDictionary = {
   total: number
+  exercises: number
   groups: _.Dictionary<formattedGroupPoints>
 }
 
@@ -21,10 +25,15 @@ interface ServiceGroupPoints extends GroupPoints {
   service: string
 }
 
-function formatPointsData({ pointsData }: { pointsData: ProgressData }) {
+function formatPointsData({
+  pointsData,
+}: {
+  pointsData: ProgressData
+}): formattedGroupPointsDictionary {
   if (!pointsData.user_course_progress) {
     return {
       total: 0,
+      exercises: 0,
       groups: {},
     }
   }
@@ -56,10 +65,23 @@ function formatPointsData({ pointsData }: { pointsData: ProgressData }) {
       0,
     ) ?? 0) / (pointsData.user_course_progress.progress?.length ?? 1)
 
+  const completedExerciseIds =
+    pointsData.user_course_progress?.user?.exercise_completions?.map(
+      (e) => e.exercise.id,
+    ) ?? []
+
+  const exerciseProgress =
+    (pointsData.course?.exercises?.reduce(
+      (acc: number, curr: UserPoints_currentUser_progresses_course_exercises) =>
+        acc + (completedExerciseIds.includes(curr.id) ? 1 : 0),
+      0,
+    ) ?? 0) / (pointsData.course?.exercises?.length ?? 1)
+
   const serviceProgressesByGroup = groupBy(serviceProgressesArray, "group")
 
   return {
     total: totalProgress,
+    exercises: exerciseProgress,
     groups: mapValues(courseProgressByGroup, (o) => ({
       courseProgress: o,
       service_progresses: serviceProgressesByGroup[o.group],
