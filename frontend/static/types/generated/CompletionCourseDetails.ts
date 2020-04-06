@@ -8,15 +8,15 @@
 // ====================================================
 
 export interface CompletionCourseDetails_course {
-  __typename: "Course"
-  id: any
-  name: string
+  __typename: "Course";
+  id: any;
+  name: string;
 }
 
 export interface CompletionCourseDetails {
-  course: CompletionCourseDetails_course | null
+  course: CompletionCourseDetails_course | null;
 }
 
 export interface CompletionCourseDetailsVariables {
-  slug?: string | null
+  slug?: string | null;
 }
