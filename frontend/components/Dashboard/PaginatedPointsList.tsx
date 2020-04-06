@@ -50,6 +50,9 @@ export const StudentProgresses = gql`
               course {
                 name
                 id
+                exercises {
+                  id
+                }
               }
               user_course_progress {
                 progress
@@ -59,6 +62,11 @@ export const StudentProgresses = gql`
                   username
                   email
                   real_student_number
+                  exercise_completions {
+                    exercise {
+                      id
+                    }
+                  }
                 }
               }
               user_course_service_progresses {

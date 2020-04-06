@@ -22,6 +22,9 @@ const UserFragment = gql`
       course {
         name
         id
+        exercises {
+          id
+        }
       }
       user_course_progress {
         progress
@@ -31,6 +34,11 @@ const UserFragment = gql`
           username
           email
           real_student_number
+          exercise_completions {
+            exercise {
+              id
+            }
+          }
         }
       }
       user_course_service_progresses {
@@ -106,6 +114,10 @@ function PointsListItemCard(props: Props) {
           <PointsProgress
             total={formattedPointsData.total * 100}
             title="Total progress"
+          />
+          <PointsProgress
+            total={formattedPointsData.exercises * 100}
+            title="Exercises completed"
           />
           <hr />
           <PointsItemTable
