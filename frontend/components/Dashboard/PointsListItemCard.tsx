@@ -22,23 +22,19 @@ const UserFragment = gql`
       course {
         name
         id
-        exercises {
-          id
-        }
       }
       user_course_progress {
         progress
+        exercise_progress {
+          total
+          exercises
+        }
         user {
           first_name
           last_name
           username
           email
           real_student_number
-          exercise_completions {
-            exercise {
-              id
-            }
-          }
         }
       }
       user_course_service_progresses {
