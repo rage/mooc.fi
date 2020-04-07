@@ -8,6 +8,7 @@ const Progress = objectType({
   definition(t) {
     t.field("course", { type: Course })
     t.field("user", { type: User })
+
     t.field("user_course_progress", {
       type: UserCourseProgress,
       nullable: true,

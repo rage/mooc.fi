@@ -13,28 +13,16 @@ export interface UserCourseSettingses_UserCourseSettingses_pageInfo {
   endCursor: string | null
 }
 
-export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_course_exercises {
-  __typename: "Exercise"
-  id: any
-}
-
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_course {
   __typename: "Course"
   name: string
   id: any
-  exercises:
-    | UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_course_exercises[]
-    | null
 }
 
-export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user_exercise_completions_exercise {
-  __typename: "Exercise"
-  id: any
-}
-
-export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user_exercise_completions {
-  __typename: "ExerciseCompletion"
-  exercise: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user_exercise_completions_exercise
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_exercise_progress {
+  __typename: "ExerciseProgress"
+  total: number
+  exercises: number
 }
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user {
@@ -44,12 +32,12 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progr
   username: string
   email: string
   real_student_number: string | null
-  exercise_completions: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user_exercise_completions[]
 }
 
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress {
   __typename: "UserCourseProgress"
   progress: any
+  exercise_progress: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_exercise_progress
   user: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user
 }
 
