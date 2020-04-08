@@ -32,6 +32,9 @@ const completionsFragment = gql`
           slug
         }
       }
+      certificate {
+        certificate_id
+      }
     }
   }
 `
@@ -39,6 +42,7 @@ const completionsFragment = gql`
 export interface CompletionsProps {
   completions: ProfileUserOverView_currentUser_completions[]
 }
+
 const Title = styled(Typography)<any>`
   font-family: "Open Sans Condensed", sans-serif !important;
   margin-top: 7rem;
@@ -54,6 +58,7 @@ const Title = styled(Typography)<any>`
     font-size: 72px;
   }
 `
+
 const Completions = (props: CompletionsProps) => {
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)

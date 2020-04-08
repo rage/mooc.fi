@@ -28,6 +28,7 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
         slug: course,
       })
 
+      console.log("slugström", courseWithSlug)
       if (!courseWithSlug) {
         const courseFromAvoinCourse: Course = await ctx.prisma
           .courseAlias({ course_code: course })
@@ -64,6 +65,7 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
   })
 }
+
 const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("completionsPaginated", {
     type: "CompletionConnection",
@@ -114,6 +116,7 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
   })
 }
+
 const addCompletionsQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
   completions(t)
   completionsPaginated(t)

@@ -1,9 +1,10 @@
-// generated Wed Mar 25 2020 12:56:36 GMT+0200 (Eastern European Standard Time)
+// generated Wed Apr 08 2020 16:05:00 GMT+0300 (Eastern European Summer Time)
 
 export { default as addEmailTemplateQueries } from "./EmailTemplate"
 export { default as addExerciseQueries } from "./Exercise"
 export { default as addExerciseCompletionQueries } from "./ExerciseCompletion"
 export { default as addOpenUniversityRegistrationLinkQueries } from "./OpenUniversityRegistrationLink"
+export { default as addCertificateQueries } from "./certificate"
 export { default as addCompletionQueries } from "./completion"
 export { default as addCourseQueries } from "./course"
 export { default as addCourseAliasQueries } from "./courseAlias"

@@ -99,7 +99,7 @@ const CompletionListItem = (props: ListItemProps) => {
       ) : (
         <RegisterCompletionButton course={listItem.course.slug} />
       )}
-      {hasCertificate && <CertificateButton />}
+      {hasCertificate && <CertificateButton course={listItem.course} />}
     </ListItemContainer>
   )
 }
