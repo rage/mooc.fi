@@ -1,9 +1,10 @@
-// generated Wed Mar 25 2020 12:56:36 GMT+0200 (Eastern European Standard Time)
+// generated Wed Apr 08 2020 16:05:00 GMT+0300 (Eastern European Summer Time)
 
 export { default as addCompletionRegisteredMutations } from "./CompletionRegistered"
 export { default as addEmailTemplateMutations } from "./EmailTemplate"
 export { default as addExerciseMutations } from "./Exercise"
 export { default as addExerciseCompletionMutations } from "./ExerciseCompletion"
+export { default as addCertificateMutations } from "./certificate"
 export { default as addCompletionMutations } from "./completion"
 export { default as addCourseMutations } from "./course"
 export { default as addCourseAliasMutations } from "./courseAlias"

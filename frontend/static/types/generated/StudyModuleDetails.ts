@@ -8,35 +8,37 @@
 // ====================================================
 
 export interface StudyModuleDetails_study_module_courses {
-  __typename: "Course";
-  id: any;
-  name: string;
-  slug: string;
+  __typename: "Course"
+  id: any
+  name: string
+  slug: string
 }
 
 export interface StudyModuleDetails_study_module_study_module_translations {
-  __typename: "StudyModuleTranslation";
-  id: any;
-  name: string;
-  language: string;
-  description: string;
+  __typename: "StudyModuleTranslation"
+  id: any
+  name: string
+  language: string
+  description: string
 }
 
 export interface StudyModuleDetails_study_module {
-  __typename: "StudyModule";
-  id: any;
-  slug: string;
-  name: string;
-  image: string | null;
-  order: number | null;
-  courses: StudyModuleDetails_study_module_courses[];
-  study_module_translations: StudyModuleDetails_study_module_study_module_translations[] | null;
+  __typename: "StudyModule"
+  id: any
+  slug: string
+  name: string
+  image: string | null
+  order: number | null
+  courses: StudyModuleDetails_study_module_courses[]
+  study_module_translations:
+    | StudyModuleDetails_study_module_study_module_translations[]
+    | null
 }
 
 export interface StudyModuleDetails {
-  study_module: StudyModuleDetails_study_module | null;
+  study_module: StudyModuleDetails_study_module | null
 }
 
 export interface StudyModuleDetailsVariables {
-  slug: string;
+  slug: string
 }

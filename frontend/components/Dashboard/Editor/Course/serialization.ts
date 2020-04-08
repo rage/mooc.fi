@@ -81,6 +81,7 @@ export const toCourseForm = ({
         import_photo: "",
         inherit_settings_from: course.inherit_settings_from?.id,
         completions_handled_by: course.completions_handled_by?.id,
+        has_certificate: course?.has_certificate ?? false,
       }
     : initialValues
 }

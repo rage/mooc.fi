@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import Button from "@material-ui/core/Button"
 import styled from "styled-components"
 import DialogTitle from "@material-ui/core/DialogTitle"
@@ -7,6 +7,8 @@ import DialogContent from "@material-ui/core/DialogContent"
 import { TextField, DialogActions, DialogContentText } from "@material-ui/core"
 import LanguageContext from "/contexes/LanguageContext"
 import getCompletionsTranslator from "/translations/completions"
+import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
+import { checkCertificateAvailability } from "/lib/certificates"
 
 const StyledButton = styled(Button)`
   height: 50%;
@@ -20,25 +22,47 @@ const StyledDialog = styled(Dialog)`
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
-const CertificateButton = () => {
-  const [open, setOpen] = React.useState(false)
-  const lng = React.useContext(LanguageContext)
-  const t = getCompletionsTranslator(lng.language)
-  //Names come from TMC in the end. Now mock here
-  const firstName = "Henkka"
-  const lastName = "Sukunimi"
+
+interface CertificateProps {
+  course: ProfileUserOverView_currentUser_completions_course
+}
+
+const CertificateButton = ({ course }: CertificateProps) => {
+  const [open, setOpen] = useState(false)
 
   //Certificate availability for this user
   const certificateAvailable = true
 
   //Certificate has been previously downloaded
-  const hasGeneratedCertificate = false
+  const [hasGeneratedCertificate, setHasGeneratedCertificate] = useState(false)
+  const [certificateId, setCertificateId] = useState("")
+
+  const lng = React.useContext(LanguageContext)
+  const t = getCompletionsTranslator(lng.language)
+
+  //Names come from TMC in the end. Now mock here
+  const firstName = "Henkka"
+  const lastName = "Sukunimi"
+
+  checkCertificateAvailability(course.slug)
+    .then((res: any) => {
+      if (res?.existing_certificate) {
+        setHasGeneratedCertificate(true)
+        setCertificateId(res.existing_certificate)
+      }
+    })
+    .catch((e: any) => console.error("error?", e))
 
   return (
     <>
       {hasGeneratedCertificate ? (
         <StyledButton
-          onClick={() => setOpen(true)}
+          onClick={() =>
+            window.open(
+              `https://certificates.mooc.fi/validate/${certificateId}`,
+              "_blank",
+            )
+          }
           disabled={!certificateAvailable}
         >
           {t("showCertificate")}
@@ -86,7 +110,9 @@ const CertificateButton = () => {
                 {t("nameFormCancel")}
               </Button>
               <Button
-                onClick={() => console.log("changed name")}
+                onClick={() => {
+                  console.log("changed name")
+                }}
                 color="primary"
                 fullWidth
               >

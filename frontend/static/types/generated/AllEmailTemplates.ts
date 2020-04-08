@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface AllEmailTemplates_email_templates {
-  __typename: "EmailTemplate";
-  id: any;
-  name: string | null;
-  txt_body: string | null;
-  html_body: string | null;
-  title: string | null;
+  __typename: "EmailTemplate"
+  id: any
+  name: string | null
+  txt_body: string | null
+  html_body: string | null
+  title: string | null
 }
 
 export interface AllEmailTemplates {
-  email_templates: AllEmailTemplates_email_templates[];
+  email_templates: AllEmailTemplates_email_templates[]
 }
