@@ -26,6 +26,8 @@ const ProfileButton = () => {
   const { language, url } = useContext(LanguageContext)
   const active = whichIsActive({ url: url })
 
+  console.log("an update", currentUser)
+
   const userDisplayName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : "Oma profiili"

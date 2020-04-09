@@ -43,7 +43,6 @@ export interface ShowUserUserOverView_user_completions {
   completions_registered:
     | ShowUserUserOverView_user_completions_completions_registered[]
     | null
-  certificate_id: string | null
 }
 
 export interface ShowUserUserOverView_user {

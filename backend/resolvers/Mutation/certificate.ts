@@ -1,12 +1,12 @@
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import {
+/*import {
   checkCertificate,
   createCertificate,
 } from "../../services/certificates"
 import { stringArg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
-const generateCertificate = async (
+/* const generateCertificate = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("generateCertificate", {
@@ -92,13 +92,14 @@ const deleteCertificate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       return ctx.prisma.deleteCertificate({ id: id })
     },
   })
-}
+} */
 
 const addCertificateMutations = (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
-  generateCertificate(t)
+  /*  generateCertificate(t)
   deleteCertificate(t)
+ */
 }
 
 export default addCertificateMutations
