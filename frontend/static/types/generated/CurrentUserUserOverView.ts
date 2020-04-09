@@ -43,7 +43,6 @@ export interface CurrentUserUserOverView_currentUser_completions {
   completions_registered:
     | CurrentUserUserOverView_currentUser_completions_completions_registered[]
     | null
-  certificate_id: string | null
 }
 
 export interface CurrentUserUserOverView_currentUser {

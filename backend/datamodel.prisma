@@ -127,15 +127,7 @@ type Completion @db(name: "completion") {
   "Where this completion has been registered, can have multiple locations."
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion")
   grade: String
-  certificate: Certificate @relation(name: "CertificateToCompletion")
-}
-
-type Certificate @db(name: "certificate") {
-  id: UUID! @id
-  created_at: DateTime @createdAt
-  updated_at: DateTime @updatedAt
-  completion: Completion! @relation(link: INLINE, name: "CertificateToCompletion")
-  certificate_id: String!
+  certificate_id: String
 }
 
 type CompletionRegistered @db(name: "completion_registered") {

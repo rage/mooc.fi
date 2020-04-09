@@ -1,5 +1,5 @@
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg } from "nexus/dist"
+/*import { stringArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 
 const certificate = async (t: PrismaObjectDefinitionBlock<"Query">) => {
@@ -42,3 +42,6 @@ const addCertificateQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
 }
 
 export default addCertificateQueries
+ */
+
+export default (t: PrismaObjectDefinitionBlock<"Query">) => {}

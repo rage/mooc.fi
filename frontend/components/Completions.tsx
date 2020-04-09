@@ -32,9 +32,6 @@ const completionsFragment = gql`
           slug
         }
       }
-      certificate {
-        certificate_id
-      }
     }
   }
 `

@@ -43,7 +43,6 @@ export interface UserCompletions_completions {
   completions_registered:
     | UserCompletions_completions_completions_registered[]
     | null
-  certificate_id: string | null
 }
 
 export interface UserCompletions {

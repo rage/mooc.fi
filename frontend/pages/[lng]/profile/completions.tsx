@@ -8,7 +8,7 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withSignedIn from "/lib/with-signed-in"
 
-export const UserOverViewQuery = gql`
+export const CompletionsUserOverViewQuery = gql`
   query CurrentUserUserOverView {
     currentUser {
       id
@@ -23,7 +23,9 @@ export const UserOverViewQuery = gql`
 `
 
 function CompletionsPage() {
-  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const { loading, error, data } = useQuery<UserOverViewData>(
+    CompletionsUserOverViewQuery,
+  )
 
   if (error) {
     return (

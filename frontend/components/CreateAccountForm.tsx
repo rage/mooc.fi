@@ -5,7 +5,7 @@ import {
   Paper,
   CircularProgress,
 } from "@material-ui/core"
-import { createAccount } from "../lib/create-account"
+import { createAccount } from "../lib/account"
 import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
 import getSignUpTranslator from "/translations/sign-up"
