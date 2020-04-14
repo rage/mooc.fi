@@ -1,6 +1,6 @@
 import { prismaObjectType } from "nexus-prisma"
 
-const Organization = prismaObjectType({
+const Organization = prismaObjectType<"Organization">({
   name: "Organization",
   definition(t) {
     t.prismaFields({ filter: ["secret_key"] })

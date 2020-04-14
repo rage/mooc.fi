@@ -53,6 +53,10 @@ export const StudentProgresses = gql`
               }
               user_course_progress {
                 progress
+                exercise_progress {
+                  total
+                  exercises
+                }
                 user {
                   first_name
                   last_name
@@ -144,7 +148,7 @@ function PaginatedPointsList(props: Props) {
     value,
     label: value,
   }))
-  console.log(data)
+
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>
