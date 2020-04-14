@@ -28,7 +28,6 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
         slug: course,
       })
 
-      console.log("slugström", courseWithSlug)
       if (!courseWithSlug) {
         const courseFromAvoinCourse: Course = await ctx.prisma
           .courseAlias({ course_code: course })
