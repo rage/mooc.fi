@@ -64,7 +64,8 @@ const CompletionListItem = (props: ListItemProps) => {
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
   //Checks from the course whether it has a certificate or not
-  const hasCertificate = true
+
+  const hasCertificate = listItem.course.has_certificate
 
   return (
     <ListItemContainer>

@@ -11,7 +11,6 @@ import { ApolloProvider } from "@apollo/react-common"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
-import UserDetailContext from "../contexes/UserDetailContext"
 import LanguageContext from "../contexes/LanguageContext"
 import withApolloClient from "../lib/with-apollo-client"
 import theme from "../src/theme"
@@ -28,13 +27,35 @@ class MyApp extends App {
   constructor(props) {
     super(props)
     this.toggleLogin = () => {
-      this.setState({ loggedIn: !this.state.loggedIn })
+      this.setState({
+        loggedIn: !this.state.loggedIn,
+      })
+    }
+    this.updateCurrentUser = (user) => {
+      this.setState({
+        currentUser: user,
+      })
     }
     this.state = {
       loggedIn: this.props.signedIn,
       logInOrOut: this.toggleLogin,
       alerts: [],
+      admin: this.props.admin,
+      currentUser: this.props.currentUser,
+      updateUser: this.updateCurrentUser,
     }
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props?.currentUser !== state.currentUser) {
+      return {
+        ...state,
+        currentUser: props.currentUser,
+        admin: props.admin,
+      }
+    }
+
+    return state
   }
 
   componentDidMount() {
@@ -82,25 +103,23 @@ class MyApp extends App {
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
-                <UserDetailContext.Provider value={{ admin, currentUser }}>
-                  <LanguageContext.Provider
-                    value={{ language: lng, url, hrefUrl }}
-                  >
-                    <ConfirmProvider>
-                      <AlertContext.Provider
-                        value={{
-                          alerts: this.state.alerts,
-                          addAlert: this.addAlert,
-                          removeAlert: this.removeAlert,
-                        }}
-                      >
-                        <Layout>
-                          <Component {...pageProps} />
-                        </Layout>
-                      </AlertContext.Provider>
-                    </ConfirmProvider>
-                  </LanguageContext.Provider>
-                </UserDetailContext.Provider>
+                <LanguageContext.Provider
+                  value={{ language: lng, url, hrefUrl }}
+                >
+                  <ConfirmProvider>
+                    <AlertContext.Provider
+                      value={{
+                        alerts: this.state.alerts,
+                        addAlert: this.addAlert,
+                        removeAlert: this.removeAlert,
+                      }}
+                    >
+                      <Layout>
+                        <Component {...pageProps} />
+                      </Layout>
+                    </AlertContext.Provider>
+                  </ConfirmProvider>
+                </LanguageContext.Provider>
               </LoginStateContext.Provider>
             </ApolloProvider>
           </MuiThemeProvider>

@@ -24,6 +24,7 @@ const completionsFragment = gql`
           id
           uncompressed
         }
+        has_certificate
       }
       completions_registered {
         id
