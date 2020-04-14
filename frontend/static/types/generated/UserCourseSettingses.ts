@@ -19,6 +19,12 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progr
   id: any
 }
 
+export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_exercise_progress {
+  __typename: "ExerciseProgress"
+  total: number
+  exercises: number
+}
+
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user {
   __typename: "User"
   first_name: string | null
@@ -31,6 +37,7 @@ export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progr
 export interface UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress {
   __typename: "UserCourseProgress"
   progress: any
+  exercise_progress: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_exercise_progress
   user: UserCourseSettingses_UserCourseSettingses_edges_node_user_progress_user_course_progress_user
 }
 

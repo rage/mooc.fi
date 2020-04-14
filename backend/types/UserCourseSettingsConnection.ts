@@ -3,7 +3,9 @@ import { Prisma } from "../generated/prisma-client"
 import { stringArg, idArg } from "nexus/dist"
 import { buildSearch } from "../util/db-functions"
 
-const UserCourseSettingsConnection = prismaObjectType({
+const UserCourseSettingsConnection = prismaObjectType<
+  "UserCourseSettingsConnection"
+>({
   name: "UserCourseSettingsConnection",
   definition(t) {
     t.prismaFields(["*"])

@@ -2,7 +2,7 @@ import { prismaObjectType } from "nexus-prisma"
 import { idArg, stringArg } from "nexus/dist"
 import { NexusGenRootTypes } from "/generated/nexus"
 
-const User = prismaObjectType({
+const User = prismaObjectType<"User">({
   name: "User",
   definition(t) {
     t.prismaFields({ filter: ["completions"] })
@@ -96,6 +96,18 @@ const User = prismaObjectType({
         } else {
           return null
         }
+      },
+    })
+
+    t.field("exercise_completions", {
+      type: "ExerciseCompletion",
+      list: true,
+      resolve: async (parent, _, ctx) => {
+        return ctx.prisma.exerciseCompletions({
+          where: {
+            user: { id: parent.id },
+          },
+        })
       },
     })
   },
