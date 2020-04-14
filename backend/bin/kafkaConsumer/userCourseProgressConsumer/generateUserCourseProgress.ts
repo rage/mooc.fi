@@ -184,8 +184,8 @@ const GetUserCourseSettings = async (
 const languageCodeMapping: { [key: string]: string } = {
   fi: "fi_FI",
   en: "en_US",
-  sv: "sv_SE",
-  et: "et_EE",
+  se: "sv_SE",
+  ee: "et_EE",
   de: "de_DE",
   fr: "fr_FR",
   it: "it_IT",
