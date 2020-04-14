@@ -19,6 +19,7 @@ export interface UserCompletions_completions_course {
   slug: string
   name: string
   photo: UserCompletions_completions_course_photo | null
+  has_certificate: boolean | null
 }
 
 export interface UserCompletions_completions_completions_registered_organization {

@@ -270,9 +270,9 @@ type ExerciseCompletion @db(name: "exercise_completion") {
 }
 
 type ExerciseCompletionRequiredActions @db(name: "exercise_completion_required_actions") {
-   id: UUID! @id
-   value: String!
-   exercise_completion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
+  id: UUID! @id
+  value: String!
+  exercise_completion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
 }
 
 type Image @db(name: "image") {

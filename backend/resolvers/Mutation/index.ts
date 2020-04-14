@@ -4,7 +4,6 @@ export { default as addCompletionRegisteredMutations } from "./CompletionRegiste
 export { default as addEmailTemplateMutations } from "./EmailTemplate"
 export { default as addExerciseMutations } from "./Exercise"
 export { default as addExerciseCompletionMutations } from "./ExerciseCompletion"
-export { default as addCertificateMutations } from "./certificate"
 export { default as addCompletionMutations } from "./completion"
 export { default as addCourseMutations } from "./course"
 export { default as addCourseAliasMutations } from "./courseAlias"

@@ -4,18 +4,24 @@ import styled from "styled-components"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Dialog from "@material-ui/core/Dialog"
 import DialogContent from "@material-ui/core/DialogContent"
-import { TextField, DialogActions, DialogContentText } from "@material-ui/core"
+import {
+  TextField,
+  DialogActions,
+  DialogContentText,
+  CircularProgress,
+} from "@material-ui/core"
 import LanguageContext from "/contexes/LanguageContext"
 import getCompletionsTranslator from "/translations/completions"
 import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
-import { checkCertificateAvailability } from "/lib/certificates"
+import { checkCertificate, createCertificate } from "/lib/certificates"
 import { updateAccount } from "/lib/account"
-import UserDetailContext from "/contexes/UserDetailContext"
 import { useMutation } from "@apollo/react-hooks"
 import { gql } from "apollo-boost"
 import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
 import { UserOverViewQuery } from "/pages/[lng]/profile"
 import { CompletionsUserOverViewQuery } from "/pages/[lng]/profile/completions"
+import LoginStateContext from "/contexes/LoginStateContext"
+import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 
 const StyledButton = styled(Button)`
   height: 50%;
@@ -56,6 +62,7 @@ type ActionType =
   | "CHECK_CERTIFICATE"
   | "RECEIVE_CERTIFICATE_ID"
   | "GENERATE_CERTIFICATE"
+  | "RECEIVE_GENERATED_CERTIFICATE"
   | "UPDATE_NAME"
   | "UPDATED_NAME"
   | "ERROR"
@@ -85,7 +92,7 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
     case "RECEIVE_CERTIFICATE_ID":
       return {
         ...state,
-        status: action.payload ? "AVAILABLE" : "NOT_AVAILABLE",
+        status: "IDLE",
         certificateId: action.payload,
         error: undefined,
       }
@@ -94,6 +101,13 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
         ...state,
         status: "GENERATING",
         certificateId: undefined,
+        error: undefined,
+      }
+    case "RECEIVE_GENERATED_CERTIFICATE":
+      return {
+        ...state,
+        status: "IDLE",
+        certificateId: action.payload.id,
         error: undefined,
       }
     case "UPDATE_NAME":
@@ -122,7 +136,7 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
 const CertificateButton = ({ course }: CertificateProps) => {
   const lng = useContext(LanguageContext)
   const t = getCompletionsTranslator(lng.language)
-  const { currentUser } = useContext(UserDetailContext)
+  const { currentUser, updateUser } = useContext(LoginStateContext)
 
   const [state, dispatch] = useReducer(reducer, initialState)
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
@@ -138,22 +152,13 @@ const CertificateButton = ({ course }: CertificateProps) => {
 
   const [open, setOpen] = useState(false)
 
-  //Certificate availability for this user
-  const certificateAvailable = true
-
-  //Certificate has been previously downloaded
-  // @ts-ignore: sdf
-  const [hasGeneratedCertificate, setHasGeneratedCertificate] = useState(false)
-
-  //Names come from TMC in the end. Now mock here
   useEffect(() => {
     dispatch({ type: "CHECK_CERTIFICATE" })
-    checkCertificateAvailability(course.slug)
-      // @ts-ignore: äasdf
+    checkCertificate(course.slug)
       .then((res: any) => {
         dispatch({
           type: "RECEIVE_CERTIFICATE_ID",
-          payload: null /*res?.existing_certificate*/,
+          payload: res?.existing_certificate,
         })
       })
       .catch((e: any) => {
@@ -166,7 +171,13 @@ const CertificateButton = ({ course }: CertificateProps) => {
     (currentUser?.first_name ?? "") !== firstName ||
     (currentUser?.last_name ?? "") !== lastName
 
+  const isNameEmpty = () => firstName == "" && lastName == ""
+
   const onSubmit = async () => {
+    if (isNameEmpty()) {
+      return
+    }
+
     if (nameChanged()) {
       dispatch({ type: "UPDATE_NAME" })
       try {
@@ -177,15 +188,27 @@ const CertificateButton = ({ course }: CertificateProps) => {
             last_name: lastName,
           },
         })
-        console.log(res)
+        updateUser({
+          ...(currentUser || { email: "", id: "" }),
+          first_name: firstName,
+          last_name: lastName,
+        } as UserOverView_currentUser)
         dispatch({ type: "UPDATED_NAME", payload: res })
       } catch (e) {
         dispatch({ type: "ERROR", payload: e })
+        return
       }
     }
-  }
 
-  console.log(state, firstName, lastName, nameChanged())
+    dispatch({ type: "GENERATE_CERTIFICATE" })
+    try {
+      const res = await createCertificate(course.slug)
+      dispatch({ type: "RECEIVE_GENERATED_CERTIFICATE", payload: res })
+      setOpen(false)
+    } catch (e) {
+      dispatch({ type: "ERROR", payload: e })
+    }
+  }
 
   return (
     <>
@@ -197,16 +220,12 @@ const CertificateButton = ({ course }: CertificateProps) => {
               "_blank",
             )
           }
-          disabled={!certificateAvailable}
         >
           {t("showCertificate")}
         </StyledButton>
       ) : (
         <>
-          <StyledButton
-            onClick={() => setOpen(true)}
-            disabled={!certificateAvailable}
-          >
+          <StyledButton onClick={() => setOpen(true)}>
             {t("createCertificate")}
           </StyledButton>
           <StyledDialog
@@ -247,8 +266,17 @@ const CertificateButton = ({ course }: CertificateProps) => {
               >
                 {t("nameFormCancel")}
               </Button>
-              <Button onClick={onSubmit} color="primary" fullWidth>
-                {t("nameFormChangeAndSubmit")}
+              <Button
+                onClick={onSubmit}
+                disabled={state.status !== "IDLE" || isNameEmpty()}
+                color="primary"
+                fullWidth
+              >
+                {state.status !== "IDLE" ? (
+                  <CircularProgress size={24} color="secondary" />
+                ) : (
+                  t("nameFormChangeAndSubmit")
+                )}
               </Button>
             </DialogActions>
           </StyledDialog>
