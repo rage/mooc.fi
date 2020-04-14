@@ -9,7 +9,6 @@ import LanguageContext from "/contexes/LanguageContext"
 function Points() {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
-
   return (
     <section>
       <Container>

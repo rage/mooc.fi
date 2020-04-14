@@ -13,6 +13,12 @@ export interface UserPoints_currentUser_progresses_course {
   id: any
 }
 
+export interface UserPoints_currentUser_progresses_user_course_progress_exercise_progress {
+  __typename: "ExerciseProgress"
+  total: number
+  exercises: number
+}
+
 export interface UserPoints_currentUser_progresses_user_course_progress_user {
   __typename: "User"
   first_name: string | null
@@ -25,6 +31,7 @@ export interface UserPoints_currentUser_progresses_user_course_progress_user {
 export interface UserPoints_currentUser_progresses_user_course_progress {
   __typename: "UserCourseProgress"
   progress: any
+  exercise_progress: UserPoints_currentUser_progresses_user_course_progress_exercise_progress
   user: UserPoints_currentUser_progresses_user_course_progress_user
 }
 

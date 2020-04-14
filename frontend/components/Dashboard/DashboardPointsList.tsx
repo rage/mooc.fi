@@ -10,7 +10,7 @@ interface Props {
 
 const PointsList = (props: Props) => {
   const { pointsForUser, cutterValue } = props
-  console.log(pointsForUser)
+
   return (
     <section>
       <Grid container spacing={3}>
@@ -29,6 +29,7 @@ const PointsList = (props: Props) => {
                   p.node.user.student_number ||
                   "n/a",
               }}
+              key={`pointslistitemcard_${p.node.id}`}
             />
           ) : null,
         )}
