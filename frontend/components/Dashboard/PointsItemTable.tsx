@@ -3,7 +3,7 @@ import { formattedGroupPointsDictionary } from "/util/formatPointsData"
 import PointsListItemTableChart from "/components/Dashboard/PointsListItemTableChart"
 
 interface TableProps {
-  studentPoints: formattedGroupPointsDictionary
+  studentPoints: formattedGroupPointsDictionary["groups"]
   showDetailedBreakdown: boolean
   cutterValue: number
 }
