@@ -6,5 +6,8 @@
     "nameFormFirstName":"Etunimi",
     "nameFormLastName":"Sukunimi",
     "nameFormChangeAndSubmit":"Lähetä",
-    "nameFormCancel":"Peruuta"
+    "nameFormCancel":"Peruuta",
+    "nameFormErrorTitle": "Virhe",
+    "nameFormErrorCheckCertificate": "Virhe sertifikaatin tarkistuksessa. Yritä myöhemmin uudelleen.",
+    "nameFormErrorSubmit": "Virhe tietojen lähetyksessä. Yritä myöhemmin uudelleen."
 }
