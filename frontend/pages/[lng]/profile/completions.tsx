@@ -1,5 +1,4 @@
 import React from "react"
-import { gql } from "apollo-boost"
 import { useQuery } from "@apollo/react-hooks"
 import { CurrentUserUserOverView as UserOverViewData } from "/static/types/generated/CurrentUserUserOverView"
 import Container from "/components/Container"
