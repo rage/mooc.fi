@@ -21,6 +21,7 @@ import { UserDetailQuery } from "/lib/with-apollo-client/fetch-user-details"
 import { UserOverViewQuery } from "/pages/[lng]/profile"
 import { CompletionsUserOverViewQuery } from "/pages/[lng]/profile/completions"
 import LoginStateContext from "/contexes/LoginStateContext"
+import AlertContext from "/contexes/AlertContext"
 import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 
 const StyledButton = styled(Button)`
@@ -59,6 +60,7 @@ type Status =
   | "UPDATING_NAME"
   | "ERROR"
 type ActionType =
+  | "RESET"
   | "CHECK_CERTIFICATE"
   | "RECEIVE_CERTIFICATE_ID"
   | "GENERATE_CERTIFICATE"
@@ -84,6 +86,8 @@ const initialState: CertificateState = {
 
 const reducer = (state: CertificateState, action: Action): CertificateState => {
   switch (action.type) {
+    case "RESET":
+      return initialState
     case "CHECK_CERTIFICATE":
       return {
         ...state,
@@ -93,7 +97,7 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
       return {
         ...state,
         status: "IDLE",
-        certificateId: action.payload,
+        certificateId: action?.payload,
         error: undefined,
       }
     case "GENERATE_CERTIFICATE":
@@ -107,7 +111,7 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
       return {
         ...state,
         status: "IDLE",
-        certificateId: action.payload.id,
+        certificateId: action?.payload?.id,
         error: undefined,
       }
     case "UPDATE_NAME":
@@ -137,6 +141,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
   const lng = useContext(LanguageContext)
   const t = getCompletionsTranslator(lng.language)
   const { currentUser, updateUser } = useContext(LoginStateContext)
+  const { addAlert } = useContext(AlertContext)
 
   const [state, dispatch] = useReducer(reducer, initialState)
   const [firstName, setFirstName] = useState(currentUser?.first_name ?? "")
@@ -164,6 +169,12 @@ const CertificateButton = ({ course }: CertificateProps) => {
       .catch((e: any) => {
         dispatch({ type: "ERROR", payload: e })
         console.error("error?", e)
+        addAlert({
+          title: t("nameFormErrorTitle"),
+          message: t("nameFormErrorCheckCertificate"),
+          severity: "error",
+        })
+        dispatch({ type: "RESET" })
       })
   }, [])
 
@@ -178,9 +189,9 @@ const CertificateButton = ({ course }: CertificateProps) => {
       return
     }
 
-    if (nameChanged()) {
-      dispatch({ type: "UPDATE_NAME" })
-      try {
+    try {
+      if (nameChanged()) {
+        dispatch({ type: "UPDATE_NAME" })
         const res = await updateAccount(firstName, lastName)
         await updateUserName({
           variables: {
@@ -194,19 +205,22 @@ const CertificateButton = ({ course }: CertificateProps) => {
           last_name: lastName,
         } as UserOverView_currentUser)
         dispatch({ type: "UPDATED_NAME", payload: res })
-      } catch (e) {
-        dispatch({ type: "ERROR", payload: e })
-        return
       }
-    }
 
-    dispatch({ type: "GENERATE_CERTIFICATE" })
-    try {
+      dispatch({ type: "GENERATE_CERTIFICATE" })
       const res = await createCertificate(course.slug)
       dispatch({ type: "RECEIVE_GENERATED_CERTIFICATE", payload: res })
       setOpen(false)
     } catch (e) {
       dispatch({ type: "ERROR", payload: e })
+      setOpen(false)
+      console.error("error?", e)
+      addAlert({
+        title: t("nameFormErrorTitle"),
+        message: t("nameFormErrorSubmit"),
+        severity: "error",
+      })
+      dispatch({ type: "RESET" })
     }
   }
 
@@ -272,7 +286,7 @@ const CertificateButton = ({ course }: CertificateProps) => {
                 color="primary"
                 fullWidth
               >
-                {state.status !== "IDLE" ? (
+                {["IDLE", "ERROR"].indexOf(state.status) < 0 ? (
                   <CircularProgress size={24} color="secondary" />
                 ) : (
                   t("nameFormChangeAndSubmit")
