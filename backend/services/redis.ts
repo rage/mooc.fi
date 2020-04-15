@@ -59,15 +59,27 @@ export async function redisify<T>(
     .catch(() => (fn instanceof Promise ? fn : fn(...params)))
 }
 
-export const publisher = redis.createClient({
-  url: REDIS_URL,
-  password: process.env.REDIS_PASSWORD,
-})
+export const publisher = (() => {
+  try {
+    return redis.createClient({
+      url: REDIS_URL,
+      password: process.env.REDIS_PASSWORD,
+    })
+  } catch {
+    return null
+  }
+})()
 
-export const subscriber = redis.createClient({
-  url: REDIS_URL,
-  password: process.env.REDIS_PASSWORD,
-})
+export const subscriber = (() => {
+  try {
+    return redis.createClient({
+      url: REDIS_URL,
+      password: process.env.REDIS_PASSWORD,
+    })
+  } catch {
+    return null
+  }
+})()
 
 export const invalidate = (prefix: string, key: string) => {
   if (!redisClient?.connected) {
