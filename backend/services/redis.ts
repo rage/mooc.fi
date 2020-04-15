@@ -4,15 +4,14 @@ import { promisify } from "util"
 
 const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD
+const GENERATE_NEXUS = process.env.GENERATE_NEXUS
 
-let redisClient: redis.RedisClient | null = null
-
-try {
-  redisClient = redis.createClient({
-    url: REDIS_URL,
-    password: REDIS_PASSWORD,
-  })
-} catch {}
+const redisClient = !GENERATE_NEXUS
+  ? redis.createClient({
+      url: REDIS_URL,
+      password: REDIS_PASSWORD,
+    })
+  : null
 
 const logger = winston.createLogger({
   level: "info",
@@ -24,7 +23,9 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-redisClient?.on("error", (err: any) => logger.error("Redis error: " + err))
+redisClient?.on("error", (err: any) => {
+  logger.error("Redis error: " + err)
+})
 
 export const getAsync = redisClient
   ? promisify(redisClient?.get).bind(redisClient)
@@ -59,23 +60,19 @@ export async function redisify<T>(
     .catch(() => (fn instanceof Promise ? fn : fn(...params)))
 }
 
-let publisher: redis.RedisClient | null = null
+export const publisher = !GENERATE_NEXUS
+  ? redis.createClient({
+      url: REDIS_URL,
+      password: process.env.REDIS_PASSWORD,
+    })
+  : null
 
-try {
-  publisher = redis.createClient({
-    url: REDIS_URL,
-    password: process.env.REDIS_PASSWORD,
-  })
-} catch {}
-
-let subscriber: redis.RedisClient | null = null
-
-try {
-  subscriber = redis.createClient({
-    url: REDIS_URL,
-    password: process.env.REDIS_PASSWORD,
-  })
-} catch {}
+export const subscriber = !GENERATE_NEXUS
+  ? redis.createClient({
+      url: REDIS_URL,
+      password: process.env.REDIS_PASSWORD,
+    })
+  : null
 
 export const invalidate = (prefix: string, key: string) => {
   if (!redisClient?.connected) {
@@ -84,7 +81,5 @@ export const invalidate = (prefix: string, key: string) => {
 
   redisClient.del(`${prefix}:${key}`)
 }
-
-export { publisher, subscriber }
 
 export default redisClient
