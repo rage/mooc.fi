@@ -7,25 +7,10 @@ import Completions from "/components/Completions"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withSignedIn from "/lib/with-signed-in"
-
-export const CompletionsUserOverViewQuery = gql`
-  query CurrentUserUserOverView {
-    currentUser {
-      id
-      upstream_id
-      first_name
-      last_name
-      email
-      ...UserCompletions
-    }
-  }
-  ${Completions.fragments.completions}
-`
+import { UserOverViewQuery } from "/graphql/queries/currentUser"
 
 function CompletionsPage() {
-  const { loading, error, data } = useQuery<UserOverViewData>(
-    CompletionsUserOverViewQuery,
-  )
+  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (error) {
     return (
