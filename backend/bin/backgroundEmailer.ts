@@ -29,11 +29,15 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
 
 const main = async () => {
   while (true) {
-    console.log("Fetching a batch of emails to send.")
     const emailsToDeliver = await prisma.emailDeliveries({
       where: { sent: false, error: false },
       first: BATCH_SIZE,
     })
+    if (emailsToDeliver.length > 0) {
+      console.log(
+        `Received a batch of ${emailsToDeliver.length} emails to send.`,
+      )
+    }
     // No parallelism for now so that we don't accidentally bump into sending limits
     for (const emailDelivery of emailsToDeliver) {
       await sendEmail(emailDelivery)
