@@ -37,7 +37,7 @@ const addManualCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         .from("user")
         .whereIn(
           "upstream_id",
-          completions.map((o) => o.id),
+          completions.map((o) => o.user_id),
         )
       if (foundUsers.length !== completions.length) {
         throw new Error("All users were not found")
