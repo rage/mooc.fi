@@ -13,6 +13,11 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
   console.log(`Delivering email ${emailTemplate.name} to ${user.email}`)
   try {
     await sendEmailTemplateToUser(user, emailTemplate)
+    console.log("Marking email as delivered")
+    await prisma.updateEmailDelivery({
+      where: { id: emailDelivery.id },
+      data: { sent: true, error: false },
+    })
   } catch (e) {
     console.error("Sending failed", e.message)
     await prisma.updateEmailDelivery({
