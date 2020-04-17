@@ -9,6 +9,7 @@ import ITemplateConstructor from "./types/ITemplateConstructor"
 export class EmailTemplater {
   keyWordToTemplate: KeyWordToTemplateType = {
     completion_link: Templates.CompletionLink,
+    grade: Templates.Grade,
   }
   emailTemplate: EmailTemplate
   user: User
