@@ -33,6 +33,7 @@ const main = async () => {
     for (const emailDelivery of emailsToDeliver) {
       await sendEmail(emailDelivery)
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   }
 }
 
