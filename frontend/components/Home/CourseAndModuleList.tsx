@@ -33,23 +33,29 @@ const CourseAndModuleList = () => {
     data: modulesData,
   } = useQuery<AllModulesData>(AllModulesQuery, { variables: { language } })
 
-  const courses = coursesData?.courses ?? undefined
-  const study_modules = modulesData?.study_modules ?? undefined
+  const courses = coursesData?.courses
+  let study_modules = modulesData?.study_modules
 
   const modulesWithCourses = useMemo(
     (): AllModules_study_modules_with_courses[] =>
-      (study_modules || []).map((module) => {
-        const moduleCourses =
-          courses?.filter(
-            (course) =>
-              course?.study_modules?.some(
-                (courseModule) => courseModule.id === module.id,
-              ) && course?.status !== CourseStatus.Ended,
-          ) ?? []
+      study_modules
+        ?.map((module) => {
+          const moduleCourses =
+            courses?.filter(
+              (course) =>
+                course?.study_modules?.some(
+                  (courseModule) => courseModule.id === module.id,
+                ) && course?.status !== CourseStatus.Ended,
+            ) ?? []
 
-        return { ...module, courses: moduleCourses }
-      }),
+          return { ...module, courses: moduleCourses }
+        })
+        .filter((m) => m.courses.length > 0) ?? [],
     [study_modules, courses],
+  )
+
+  study_modules = study_modules?.filter((s) =>
+    modulesWithCourses.find((m) => m.id === s.id),
   )
 
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
