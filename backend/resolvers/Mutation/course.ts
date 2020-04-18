@@ -123,7 +123,7 @@ const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
 interface ICreateMutation<T> {
   prisma: Prisma
   slug: string
-  data: T[]
+  data?: T[] | null
   field: string
 }
 
@@ -133,6 +133,10 @@ const createMutation = async <T extends { id?: string | null }>({
   data,
   field,
 }: ICreateMutation<T>) => {
+  if (!data) {
+    return undefined
+  }
+
   let existing: T[] | undefined
 
   try {
@@ -220,41 +224,41 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       }
 
       // FIXME: I know there's probably a better way to do this
-      const translationMutation: CourseTranslationUpdateManyWithoutCourseInput = await createMutation(
-        {
-          prisma,
-          slug,
-          data: course_translations ?? [],
-          field: "course_translations",
-        },
-      )
+      const translationMutation:
+        | CourseTranslationUpdateManyWithoutCourseInput
+        | undefined = await createMutation({
+        prisma,
+        slug,
+        data: course_translations,
+        field: "course_translations",
+      })
 
-      const registrationLinkMutation: OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput = await createMutation(
-        {
-          prisma,
-          slug,
-          data: open_university_registration_links ?? [],
-          field: "open_university_registration_links",
-        },
-      )
+      const registrationLinkMutation:
+        | OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput
+        | undefined = await createMutation({
+        prisma,
+        slug,
+        data: open_university_registration_links,
+        field: "open_university_registration_links",
+      })
 
-      const courseVariantMutation: CourseVariantUpdateManyWithoutCourseInput = await createMutation(
-        {
-          prisma,
-          slug,
-          data: course_variants ?? [],
-          field: "course_variants",
-        },
-      )
+      const courseVariantMutation:
+        | CourseVariantUpdateManyWithoutCourseInput
+        | undefined = await createMutation({
+        prisma,
+        slug,
+        data: course_variants,
+        field: "course_variants",
+      })
 
-      const courseAliasMutation: CourseAliasUpdateManyWithoutCourseInput = await createMutation(
-        {
-          prisma,
-          slug,
-          data: course_aliases ?? [],
-          field: "course_aliases",
-        },
-      )
+      const courseAliasMutation:
+        | CourseAliasUpdateManyWithoutCourseInput
+        | undefined = await createMutation({
+        prisma,
+        slug,
+        data: course_aliases,
+        field: "course_aliases",
+      })
 
       // this had different logic so it's not done with the same helper
       const existingStudyModules = await prisma.course({ slug }).study_modules()
@@ -264,10 +268,14 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       )
         .filter((module) => !getIds(study_modules ?? []).includes(module.id))
         .map((module) => ({ id: module.id }))
-      const studyModuleMutation: StudyModuleUpdateManyWithoutCoursesInput = {
-        connect: study_modules,
-        disconnect: removedModuleIds,
-      }
+      const studyModuleMutation:
+        | StudyModuleUpdateManyWithoutCoursesInput
+        | undefined = study_modules
+        ? {
+            connect: study_modules,
+            disconnect: removedModuleIds,
+          }
+        : undefined
 
       const existingInherit = await prisma
         .course({ slug })
@@ -304,31 +312,37 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           slug,
         },
         data: {
-          ...omit(course, ["base64", "new_slug", "new_photo", "delete_photo"]),
+          ...omit(course, [
+            "id",
+            "base64",
+            "new_slug",
+            "new_photo",
+            "delete_photo",
+          ]),
           slug: new_slug ? new_slug : slug,
           end_date,
           // FIXME: disconnect removed photos?
           photo: !!photo ? { connect: { id: photo } } : null,
-          course_translations: Object.keys(translationMutation).length
+          course_translations: translationMutation /*Object.keys(translationMutation).length
             ? translationMutation
-            : null,
-          study_modules: Object.keys(studyModuleMutation).length
+            : null,*/,
+          study_modules: studyModuleMutation /*Object.keys(studyModuleMutation).length
             ? studyModuleMutation
-            : null,
-          open_university_registration_links: Object.keys(
+            : null,*/,
+          open_university_registration_links: registrationLinkMutation /*Object.keys(
             registrationLinkMutation,
           ).length
             ? registrationLinkMutation
-            : null,
-          course_variants: Object.keys(courseVariantMutation).length
+            : null,*/,
+          course_variants: courseVariantMutation /*Object.keys(courseVariantMutation).length
             ? courseVariantMutation
-            : null,
-          course_aliases: Object.keys(courseAliasMutation).length
+            : null,*/,
+          course_aliases: courseAliasMutation /*Object.keys(courseAliasMutation).length
             ? courseAliasMutation
-            : null,
+            : null,*/,
           completion_email: completion_email
             ? { connect: { id: completion_email } }
-            : null,
+            : undefined,
           inherit_settings_from: inheritMutation,
           completions_handled_by: handledMutation,
         } as CourseUpdateInput,
