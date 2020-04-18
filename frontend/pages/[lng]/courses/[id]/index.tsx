@@ -25,6 +25,7 @@ export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlugQuery($slug: String) {
     course(slug: $slug) {
       id
+      slug
       name
       completion_email {
         name
@@ -95,7 +96,7 @@ const Course = () => {
         ) : (
           <CreateEmailTemplateDialog
             buttonText="Create completion email"
-            course={slug}
+            course={data.course}
           />
         )}
         <CourseDashboard />
