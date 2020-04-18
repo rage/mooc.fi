@@ -54,7 +54,14 @@ const ManualCompletions = () => {
   const [
     addCompletions,
     { loading: mutationLoading, error: mutationError },
-  ] = useMutation(AddManualCompletionQuery)
+  ] = useMutation(AddManualCompletionQuery, {
+    onCompleted: () => {
+      setInput("")
+      setMessage("Completions added")
+      setMessageTitle("Success")
+      setMessageSeverity("success")
+    },
+  })
   const slug = useQueryParameter("id") ?? ""
   const {
     data: courseData,
