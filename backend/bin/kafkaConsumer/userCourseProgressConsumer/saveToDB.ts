@@ -57,7 +57,17 @@ export const saveToDatabase = async (
   user = (await Knex("user").where("upstream_id", message.user_id).limit(1))[0]
 
   if (!user) {
-    user = await getUserFromTMC(prisma, message.user_id)
+    try {
+      user = await getUserFromTMC(prisma, message.user_id)
+    } catch (e) {
+      user = (
+        await Knex("user").where("upstream_id", message.user_id).limit(1)
+      )[0]
+      if (!user) {
+        throw e
+      }
+      console.log("Mitigated race condition with user imports")
+    }
   }
 
   const course = await prisma.course({
