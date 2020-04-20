@@ -71,7 +71,10 @@ export const generateUserCourseProgress = async ({
 
 /******************************************************/
 
-async function sendMail(user: User, template: EmailTemplate) {
+export async function sendEmailTemplateToUser(
+  user: User,
+  template: EmailTemplate,
+) {
   const options: SMTPTransport.Options = {
     host: email_host,
     port: parseInt(email_port || ""),
@@ -257,7 +260,7 @@ const CheckCompletion = async (
       )
       const template = await prisma.course({ id: course.id }).completion_email()
       if (template) {
-        await sendMail(user, template)
+        await sendEmailTemplateToUser(user, template)
       }
     }
   }

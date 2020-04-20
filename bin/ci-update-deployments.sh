@@ -34,6 +34,7 @@ envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-consumer-user-course-progress
 envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-consumer-exercises.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-exercises.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-consumer-user-points.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-consumer-user-points.yml"
 envsubst < "$CURRENT_DIR/../kubernetes/kafka/kafka-bridge-deployment.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/kafka-bridge-deployment.yml"
+envsubst < "$CURRENT_DIR/../kubernetes/background-emailer-deployment.yml" > "$CURRENT_DIR/../updated-kubernetes-configs/background-emailer-deployment.yml"
 
 echo "Applying changes"
 kubectl replace -f "$CURRENT_DIR/../updated-kubernetes-configs"
