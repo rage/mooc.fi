@@ -60,7 +60,15 @@ export const saveToDatabase = async (
   const userExists = await isUserInDB(message.user_id)
   if (!userExists[0]) {
     logger.info("Importing user from TMC")
-    await getUserFromTMC(prisma, message.user_id)
+    try {
+      await getUserFromTMC(prisma, message.user_id)
+    } catch (e) {
+      const userExistsNow = await isUserInDB(message.user_id)
+      if (!userExistsNow[0]) {
+        throw e
+      }
+      console.log("Mitigated race condition with user imports")
+    }
   }
 
   logger.info("Checking if a exercise exists with id " + message.exercise_id)
