@@ -353,3 +353,14 @@ type VerifiedUser @db(name: "verified_user") {
   display_name: String
   personal_unique_code: String!
 }
+
+type EmailDelivery @db(name: "email_delivery") {
+  id: UUID! @id
+  created_at: DateTime @createdAt
+  updated_at: DateTime @updatedAt
+  user: User! @relation(link: INLINE, name: "EmailDeliveryToUser")
+  email_template: EmailTemplate @relation(link: INLINE, name: "EmailDeliveryEmailTemplate")
+  sent: Boolean! @default(value: false)
+  error: Boolean! @default(value: false)
+  error_message: String
+}

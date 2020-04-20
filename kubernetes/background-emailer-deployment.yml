@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: background-emailer
+  namespace: moocfi
+spec:
+  selector:
+    matchLabels:
+      app: background-emailer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: background-emailer
+    spec:
+      containers:
+        - name: background-emailer
+          image: ${BACKEND_IMAGE}
+          command: ["sh", "-c", "npm run background-emailer"]
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              memory: 256Mi
+          envFrom:
+          - secretRef:
+              name: backend-secret
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+          volumeMounts:
+            - name: google-cloud-storage-serviceaccount
+              mountPath: "/etc/gcs"
+              readOnly: true
+      volumes:
+        - name: google-cloud-storage-serviceaccount
+          secret:
+            secretName: google-cloud-storage-serviceaccount
+            items:
+              - key: account.json
+                path: account.json
+      initContainers:
+        - name: moocfi-backend-run-migrations
+          image: ${BACKEND_IMAGE}
+          command: ["sh", "-c", "npx prisma deploy"]
+          envFrom:
+          - secretRef:
+              name: backend-secret

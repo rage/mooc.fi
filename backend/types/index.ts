@@ -2,6 +2,7 @@
 
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
+export { default as ManualCompletionArg } from "./ManualCompletionArg"
 export { default as Course } from "./Course"
 export { default as CourseAliasCreateUpdateInput } from "./CourseAliasCreateUpdateInput"
 export { default as CourseArg } from "./CourseArg"
