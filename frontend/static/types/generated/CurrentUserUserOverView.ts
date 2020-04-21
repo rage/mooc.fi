@@ -19,6 +19,7 @@ export interface CurrentUserUserOverView_currentUser_completions_course {
   slug: string
   name: string
   photo: CurrentUserUserOverView_currentUser_completions_course_photo | null
+  has_certificate: boolean | null
 }
 
 export interface CurrentUserUserOverView_currentUser_completions_completions_registered_organization {

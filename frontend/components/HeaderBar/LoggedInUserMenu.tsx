@@ -1,6 +1,5 @@
 import * as React from "react"
 import { useContext } from "react"
-import UserDetailContext from "/contexes/UserDetailContext"
 import LanguageContext from "/contexes/LanguageContext"
 import Typography from "@material-ui/core/Typography"
 import LangLink from "../LangLink"
@@ -16,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import LoginStateContext from "/contexes/LoginStateContext"
 
 interface ButtonProps {
   active: any
@@ -36,6 +36,7 @@ const StyledButton = styled(Button)<ButtonProps>`
   color: ${(props) => (props.active ? "#3C8C7A" : "black")};
   border-bottom: ${(props) => (props.active ? "1px solid #3C8C7A" : "")};
 `
+
 const ButtonLabel = styled(Typography)<any>`
   font-family: Open Sans Condensed !important;
   font-size: 18px;
@@ -46,11 +47,13 @@ const ButtonLabel = styled(Typography)<any>`
     font-sise: 12px;
   }
 `
+
 interface UserMenuprops {
   active?: string
 }
+
 const UserMenu = (props: UserMenuprops) => {
-  const { admin } = useContext(UserDetailContext)
+  const { admin } = useContext(LoginStateContext)
   const { language } = useContext(LanguageContext)
   const t = getCommonTranslator(language)
 

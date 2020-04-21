@@ -64,6 +64,7 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
   })
 }
+
 const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("completionsPaginated", {
     type: "CompletionConnection",
@@ -114,6 +115,7 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
     },
   })
 }
+
 const addCompletionsQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
   completions(t)
   completionsPaginated(t)

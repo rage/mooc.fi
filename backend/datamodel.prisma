@@ -62,6 +62,7 @@ type Course @db(name: "course") {
   course_variants: [CourseVariant!]! @relation(name: "CourseToCourseVariant", onDelete: CASCADE)
   inherit_settings_from: Course @relation(link: INLINE, name: "CourseToCourseInheritSettings")
   completions_handled_by: Course @relation(link: INLINE, name: "CourseToCourse")
+  has_certificate: Boolean @default(value: false)
 }
 
 type CourseVariant @db(name: "course_variant") {
@@ -126,6 +127,7 @@ type Completion @db(name: "completion") {
   "Where this completion has been registered, can have multiple locations."
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion")
   grade: String
+  certificate_id: String
 }
 
 type CompletionRegistered @db(name: "completion_registered") {
@@ -268,9 +270,9 @@ type ExerciseCompletion @db(name: "exercise_completion") {
 }
 
 type ExerciseCompletionRequiredActions @db(name: "exercise_completion_required_actions") {
-   id: UUID! @id
-   value: String!
-   exercise_completion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
+  id: UUID! @id
+  value: String!
+  exercise_completion: ExerciseCompletion! @relation(link: INLINE, name: "ExerciseCompletionToRequiredActions")
 }
 
 type Image @db(name: "image") {

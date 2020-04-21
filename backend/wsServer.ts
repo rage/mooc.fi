@@ -42,13 +42,13 @@ export const pushMessageToClient = (
       )
     } else {
       connectionByUserCourse.delete(userCourseObjectString)
-      redis.publisher.publish(
+      redis.publisher?.publish(
         "websocket",
         JSON.stringify({ userId, courseId, type, message: payload }),
       )
     }
   } else {
-    redis.publisher.publish(
+    redis.publisher?.publish(
       "websocket",
       JSON.stringify({ userId, courseId, type, message: payload }),
     )
@@ -68,7 +68,7 @@ wsServer.on("request", (request: any) => {
         let user: UserInfo = JSON.parse(await redis.getAsync(accessToken))
         if (!user) {
           user = await getCurrentUserDetails(accessToken)
-          redisClient.set(accessToken, JSON.stringify(user), "EX", 3600)
+          redisClient?.set(accessToken, JSON.stringify(user), "EX", 3600)
         }
         const userCourseObject = {
           userId: user.id,
@@ -95,7 +95,7 @@ wsServer.on("request", (request: any) => {
   })
 })
 
-redis.subscriber.on("message", (channel: any, message: any) => {
+redis.subscriber?.on("message", (channel: any, message: any) => {
   const data = JSON.parse(message)
   if (data instanceof Object && data.userId && data.courseId && data.type) {
     const userId = data.userId
@@ -117,4 +117,4 @@ redis.subscriber.on("message", (channel: any, message: any) => {
   }
 })
 
-redis.subscriber.subscribe("websocket")
+redis.subscriber?.subscribe("websocket")

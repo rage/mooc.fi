@@ -14,8 +14,8 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import styled from "styled-components"
-import UserDetailContext from "/contexes/UserDetailContext"
 import withSignedIn from "/lib/with-signed-in"
+import LoginStateContext from "/contexes/LoginStateContext"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -80,7 +80,7 @@ export const UserOverViewQuery = gql`
 
 const RegisterCompletion = () => {
   const { language } = useContext(LanguageContext)
-  const { currentUser } = useContext(UserDetailContext)
+  const { currentUser } = useContext(LoginStateContext)
 
   const courseSlug = useQueryParameter("slug")
 

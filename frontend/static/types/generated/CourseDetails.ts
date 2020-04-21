@@ -91,6 +91,7 @@ export interface CourseDetails_course {
   course_aliases: CourseDetails_course_course_aliases[] | null
   inherit_settings_from: CourseDetails_course_inherit_settings_from | null
   completions_handled_by: CourseDetails_course_completions_handled_by | null
+  has_certificate: boolean | null
 }
 
 export interface CourseDetails {

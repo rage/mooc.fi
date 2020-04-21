@@ -30,6 +30,7 @@ export const UserOverViewQuery = gql`
           photo {
             uncompressed
           }
+          has_certificate
         }
         completions_registered {
           id
