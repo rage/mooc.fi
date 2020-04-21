@@ -236,8 +236,6 @@ const CheckCompletion = async (
 
     const completions = await prisma.completions({
       where: {
-        completion_language:
-          userCourseSettings != null ? userCourseSettings.language : "unknown",
         user: user,
         course: handlerCourse,
       },
