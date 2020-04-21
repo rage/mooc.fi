@@ -40,6 +40,7 @@ export interface CourseFormValues extends FormValues {
   delete_photo?: boolean
   inherit_settings_from?: string
   completions_handled_by?: string
+  has_certificate: boolean
 }
 
 export interface CourseTranslationFormValues extends FormValues {

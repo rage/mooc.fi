@@ -36,6 +36,7 @@ export interface CourseArg {
   delete_photo?: boolean | null
   ects?: string | null
   end_date?: string | null
+  has_certificate?: boolean | null
   hidden?: boolean | null
   id?: string | null
   inherit_settings_from?: string | null

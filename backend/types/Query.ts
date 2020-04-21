@@ -1,7 +1,7 @@
 import { prismaObjectType } from "nexus-prisma"
 import * as queries from "../resolvers/Query/index"
 
-const Query = prismaObjectType({
+const Query = prismaObjectType<"Query">({
   name: "Query",
   definition(t) {
     // reduce the possibility of forgetting to update a bit :p

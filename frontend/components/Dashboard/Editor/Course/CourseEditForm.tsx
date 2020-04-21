@@ -322,6 +322,15 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
                   component={CheckboxWithLabel}
                   Label={{ label: t("courseHidden") }}
                 />
+                <Field
+                  id="has_certificate"
+                  label={t("courseHasCertificate")}
+                  type="checkbox"
+                  name="has_certificate"
+                  checked={values.has_certificate}
+                  component={CheckboxWithLabel}
+                  Label={{ label: t("courseHasCertificate") }}
+                />
               </FormGroup>
             </FormControl>
           </FormFieldGroup>

@@ -9,7 +9,7 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 
-export const UserOverViewQuery = gql`
+export const CompletionsIdUserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
     user(upstream_id: $upstream_id) {
       id
@@ -27,7 +27,7 @@ function CompletionsPage() {
   const id = useQueryParameter("id")
 
   const { loading, error, data } = useQuery<UserOverViewData>(
-    UserOverViewQuery,
+    CompletionsIdUserOverViewQuery,
     { variables: { upstream_id: Number(id) } },
   )
 

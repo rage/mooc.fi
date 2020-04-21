@@ -25,12 +25,12 @@ import {
 import useDebounce from "/util/useDebounce"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
-import UserDetailContext from "/contexes/UserDetailContext"
 import getRegistrationTranslator from "/translations/register"
 import { WideContainer } from "/components/Container"
 import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
+import LoginStateContext from "/contexes/LoginStateContext"
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -142,7 +142,7 @@ const SkeletonCard = () => (
 const Register = () => {
   const { language } = useContext(LanguageContext)
   const t = getRegistrationTranslator(language)
-  const { currentUser } = useContext(UserDetailContext)
+  const { currentUser } = useContext(LoginStateContext)
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<

@@ -44,7 +44,7 @@ export const signIn = async ({
 
   if (!rawRedirectLocation || rawRedirectLocation === "") {
     window.history.back()
-    return
+    return details
   }
 
   try {

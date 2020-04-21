@@ -81,6 +81,7 @@ export const CourseQuery = gql`
       completions_handled_by {
         id
       }
+      has_certificate
     }
   }
 `

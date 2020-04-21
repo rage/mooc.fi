@@ -24,6 +24,7 @@
   "courseStartPoint": "Aloitus",
   "courseModuleStartPoint": "Kokonaisuuden aloitus",
   "courseHidden": "Piilotettu",
+  "courseHasCertificate": "Kurssilla on sertifikaatti",
   "courseModules": "Opintokokonaisuudet",
   "coursePhoto": "Kuva",
   "courseNewPhoto": "Lataa uusi kuva",

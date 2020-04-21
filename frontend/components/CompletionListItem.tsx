@@ -13,6 +13,7 @@ import Avatar from "@material-ui/core/Avatar"
 import { CardTitle, CardSubtitle } from "components/Text/headers"
 import { addDomain } from "/util/imageUtils"
 import Link from "next/link"
+import CertificateButton from "components/CertificateButton"
 
 const StyledButton = styled(Button)`
   height: 50%;
@@ -62,6 +63,9 @@ const CompletionListItem = (props: ListItemProps) => {
   const isRegistered = (listItem?.completions_registered ?? []).length > 0
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
+  //Checks from the course whether it has a certificate or not
+
+  const hasCertificate = listItem.course.has_certificate
 
   return (
     <ListItemContainer>
@@ -96,6 +100,7 @@ const CompletionListItem = (props: ListItemProps) => {
       ) : (
         <RegisterCompletionButton course={listItem.course.slug} />
       )}
+      {hasCertificate && <CertificateButton course={listItem.course} />}
     </ListItemContainer>
   )
 }
