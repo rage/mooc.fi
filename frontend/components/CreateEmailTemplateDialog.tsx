@@ -17,12 +17,18 @@ import LanguageContext from "/contexes/LanguageContext"
 import CustomSnackbar from "/components/CustomSnackbar"
 import { updateCourse } from "/static/types/generated/updateCourse"
 import { UpdateCourseMutation } from "/graphql/mutations/courses"
+import { CourseDetailsFromSlugQuery_course } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import omit from "lodash/omit"
 
 interface CreateEmailTemplateDialogParams {
-  course?: string
+  course?: CourseDetailsFromSlugQuery_course
   buttonText: string
 }
-const CreateEmailTemplateDialog = (props: CreateEmailTemplateDialogParams) => {
+
+const CreateEmailTemplateDialog = ({
+  course,
+  buttonText,
+}: CreateEmailTemplateDialogParams) => {
   const [openDialog, setOpenDialog] = React.useState(false)
   const [nameInput, setNameInput] = React.useState("")
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = React.useState(false)
@@ -38,7 +44,7 @@ const CreateEmailTemplateDialog = (props: CreateEmailTemplateDialogParams) => {
   return (
     <div>
       <Button color="primary" onClick={handleDialogClickOpen}>
-        {props.buttonText}
+        {buttonText}
       </Button>
       <Dialog
         open={openDialog}
@@ -73,14 +79,16 @@ const CreateEmailTemplateDialog = (props: CreateEmailTemplateDialogParams) => {
                   try {
                     const { data } = await client.mutate<AddEmailTemplate>({
                       mutation: AddEmailTemplateMutation,
-                      variables: { name: nameInput },
+                      variables: {
+                        name: nameInput,
+                      },
                     })
-                    if (props.course) {
+                    if (course) {
                       await client.mutate<updateCourse>({
                         mutation: UpdateCourseMutation,
                         variables: {
                           course: {
-                            slug: props.course,
+                            ...omit(course, "__typename", "id"),
                             completion_email: data?.addEmailTemplate.id,
                           },
                         },
