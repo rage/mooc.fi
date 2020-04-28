@@ -12,7 +12,7 @@ export class Grade extends Template {
       await prisma.completions({
         where: { user: { id: this.user.id }, course: { id: course.id } },
       })
-    )[0].grade
+    )[0]?.grade
     return `${grade}`
   }
 }
