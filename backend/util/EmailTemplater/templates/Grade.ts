@@ -8,6 +8,9 @@ export class Grade extends Template {
         where: { completion_email: { id: this.emailTemplate.id } },
       })
     )[0]
+    if (!course) {
+      return ""
+    }
     const grade = (
       await prisma.completions({
         where: { user: { id: this.user.id }, course: { id: course.id } },
