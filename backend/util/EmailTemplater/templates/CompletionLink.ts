@@ -7,7 +7,7 @@ export class CompletionLink extends Template {
       await prisma.courses({
         where: { completion_email: this.emailTemplate },
       })
-    )[0].slug
+    )[0]?.slug
     return `https://www.mooc.fi/register-completion/${completion_link_slug}`
   }
 }
