@@ -207,7 +207,7 @@ const languageCodeMapping: { [key: string]: string } = {
   ro: "ro_RO",
   sk: "sk_SK",
   sl: "sl_SI",
-  nb: "nb_NO",
+  no: "nb_NO",
 }
 
 const CheckCompletion = async (
