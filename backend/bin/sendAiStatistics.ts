@@ -52,7 +52,7 @@ const langArr: langProps[] = [
     langName: "German",
   },
   {
-    language: "no",
+    language: "nb",
     completion_language: "nb_NO",
     country: "Norway",
     langName: "Norwegian",
