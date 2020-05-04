@@ -7,6 +7,7 @@
     "/[lng]/courses/[id]/points": "Points - {{title}}", 
     "/[lng]/courses/new": "New course",
     "/[lng]/installation/netbeans": "NetBeans installation",
+    "/[lng]/installation/vscode": "VSCode installation",
     "/[lng]/profile": "My profile",
     "/[lng]/profile/completions": "My completions",
     "/[lng]/profile/points": "My points",

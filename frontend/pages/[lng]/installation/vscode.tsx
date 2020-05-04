@@ -3,14 +3,12 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import getUserOS from "/util/getUserOS"
 import OSSelector from "/components/Installation/OSSelector"
-import MDX_Linux from "/static/md_pages/vscode_installation_fi.mdx"
-import MDX_Linux_en from "/static/md_pages/vscode_installation_en.mdx"
-import MDX_Windows from "/static/md_pages/vscode_installation_fi.mdx"
-import MDX_Windows_en from "/static/md_pages/vscode_installation_en.mdx"
-import MDX_MAC from "/static/md_pages/vscode_installation_fi.mdx"
-import MDX_MAC_en from "/static/md_pages/vscode_installation_en.mdx"
-import MDX_Any from "/static/md_pages/vscode_installation_fi.mdx"
-import MDX_Any_en from "/static/md_pages/vscode_installation_en.mdx"
+import MDX_Linux from "/static/md_pages/vscode_installation_Linux_fi.mdx"
+import MDX_Linux_en from "/static/md_pages/vscode_installation_Linux_en.mdx"
+import MDX_Windows from "/static/md_pages/vscode_installation_Windows_fi.mdx"
+import MDX_Windows_en from "/static/md_pages/vscode_installation_Windows_en.mdx"
+import MDX_MAC from "/static/md_pages/vscode_installation_macOS_fi.mdx"
+import MDX_MAC_en from "/static/md_pages/vscode_installation_macOS_en.mdx"
 import UserOSContext from "/contexes/UserOSContext"
 import { userOsType } from "/util/getUserOS"
 import NoOsMessage from "/components/Installation/NoOsMessage"
@@ -87,7 +85,7 @@ export const ContentBox = styled.div`
   }
 `
 
-const NetBeans = () => {
+const VSCode = () => {
   const [userOS, setUserOs] = React.useState<userOsType>(getUserOS())
   const [render, setRender] = React.useState(false)
   const { language } = React.useContext(LanguageContext)
@@ -109,7 +107,7 @@ const NetBeans = () => {
     Windows: { en: <MDX_Windows_en />, fi: <MDX_Windows /> },
     macOS: { en: <MDX_MAC_en />, fi: <MDX_MAC /> },
     OS: { en: <NoOsMessage />, fi: <NoOsMessage /> },
-    ZIP: { en: <MDX_Any_en />, fi: <MDX_Any /> },
+    ZIP: { en: <NoOsMessage />, fi: <NoOsMessage /> },
   }
 
   return (
@@ -128,7 +126,7 @@ const NetBeans = () => {
         <Content>
           {render ? (
             <>
-              <OSSelector />
+              <OSSelector excludeZip={true} />
               {language == "fi"
                 ? mapOsToInstructions[userOS].fi
                 : mapOsToInstructions[userOS].en}
@@ -142,4 +140,4 @@ const NetBeans = () => {
   )
 }
 
-export default NetBeans
+export default VSCode
