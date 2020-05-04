@@ -1,0 +1,73 @@
+import {ContentBox} from "/pages/[lng]/installation/vscode"
+
+<ContentBox>
+
+## Installing to Linux
+
+---
+
+### Content
+1. [Installing Visual Studio Code](#VSCoden-asentaminen)
+2. [Installing Java](#javan-asentaminen)
+3. [Installing TestMyCode extension](#TestMyCode-asentaminen)
+
+
+</ContentBox>
+
+<!--
+3. [How to start programming](#ohjelmoinnin-aloittaminen)
+4. [Creating MOOC.fi account](#mooc.fi-tunnuksen-luominen)
+5. [Logging into programming environment](#kirjautuminen-ohjelmointiympäristöön)
+6. [Choosing an organization](#organisaation-valinta)
+7. [Choosing a course](#kurssin-valinta)
+8. [Your first programming exercise](#ensimmäisen-tehtävän-tekeminen)
+9. [Running the source code](#lähdekoodin-ajaminen)
+10. [Testing the source code](#lähdekoodin-testaaminen)
+11. [Submitting a solution to TMC-server](#tehtävän-lähettäminen-palvelimelle)
+12. [How to check your points](#pistetilanteen-tarkistaminen)
+-->
+
+<ContentBox>
+Follow the instructions below to download Visual Studio Code (VSCode) and TestMyCode (TMC) extension for VSCode. To function correctly, TestMyCode extension requires Java Runtime Environment.
+
+If you are using a computer provided by the computer science department you can skip directly to [Installing TestMyCode extension](#TestMyCode-asentaminen) section.
+
+###  Installing Visual Studio Code <a name="VSCoden-asentaminen"></a>
+
+1. Download the installation file from [https://code.visualstudio.com/download](https://code.visualstudio.com/download).
+2. Once download is completed, double-click the file to open it.
+3. Follow the instructions of the installation file.
+
+### Installing Java <a name="javan-asentaminen"></a>
+
+**NB!**
+TMC extension will download Java Runtime Environment for itself if you don't have Java installed. 
+We suggest that you install Java before continuing with the TMC extension installation. 
+If you have Java Runtime Environment installed on your computer, you can skip this part.
+
+#### 1. Install OpenJDK-package.
+
+You can install OpenJDK with the following terminal command (works for Ubuntu):
+
+> `sudo apt-get install openjdk-11-jdk`
+
+#### 2. Switch the active version of Java
+
+Use the command:
+
+> `sudo update-alternatives --config java`
+
+Type the number of the option, which says Java 11 (for example on this computer "/usr/lib/jvm/java-11-openjdk-amd64/bin/java"), and press enter.
+
+If there are multiple options with Java 11, both with status "auto mode" and "manual mode", select "manual mode".
+
+### Installing TestMyCode extension for VSCode <a name="TestMyCode-asentaminen"></a>
+
+You can install the TestMyCode extension by navigating to the "Extensions" view in VSCode and type __TestMyCode__ in the search field.
+
+The first initilization of the extension will download some necessary components (this will take a while).
+<img src="/static/images/installation/vscode/download_extension.png"
+alt="Laajennuksen asentaminen"
+width="100%" height="100%" />
+
+</ContentBox>

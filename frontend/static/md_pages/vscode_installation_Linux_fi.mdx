@@ -1,0 +1,72 @@
+import {ContentBox} from "/pages/[lng]/installation/vscode"
+
+<ContentBox>
+
+## Asentaminen Linuxiin
+
+---
+
+### Sisältö
+1. [Visual Studio Coden asentaminen](#VSCoden-asentaminen)
+2. [Javan asentaminen](#javan-asentaminen)
+3. [TestMyCode -laajennuksen asentaminen](#TestMyCode-asentaminen)
+
+</ContentBox>
+
+<!--
+3. [Ohjelmoinnin aloittaminen](#ohjelmoinnin-aloittaminen)
+4. [MOOC.fi tunnuksen luominen](#mooc.fi-tunnuksen-luominen)
+5. [Kirjautuminen ohjelmointiympäristöön](#kirjautuminen-ohjelmointiympäristöön)
+6. [Organisaation valinta](#organisaation-valinta)
+7. [Kurssin valinta](#kurssin-valinta)
+8. [Ensimmäisen tehtävän tekeminen](#ensimmäisen-tehtävän-tekeminen)
+9. [Lähdekoodin ajaminen](#lähdekoodin-ajaminen)
+10. [Lähdekoodin testaaminen](#lähdekoodin-testaaminen)
+11. [Tehtävän lähettäminen palvelimelle](#tehtävän-lähettäminen-palvelimelle)
+12. [Pistetilanteen tarkistaminen](#pistetilanteen-tarkistaminen)
+-->
+
+<ContentBox>
+Seuraa alla olevia ohjeita asentaaksesi Visual Studio Code (VSCode) ja TestMyCode (TMC) -laajennus VSCodeen. TestMyCode -laajennus tarvitsee Javan suoritysympäristöä toimiakseen oikein.
+
+Mikäli sinulla on käytössäsi Tietojenkäsittelytieteen osaston laite, voit siirtyä suoraan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen).
+
+###  Visual Studio Coden asentaminen <a name="VSCoden-asentaminen"></a>
+
+1. Lataa asennusohjelma osoitteesta [https://code.visualstudio.com/download](https://code.visualstudio.com/download)
+2. Kun tiedoston lataaminen on valmis, tuplaklikkaa tiedostoa avataksesi asennusohjelma.
+3. Tämän jälkeen seuraa ruudulle tulevia ohjeita.
+
+### Javan Asentaminen <a name="javan-asentaminen"></a>
+
+**HUOM!** TestMyCode laajennus lataa käyttöönsä Javan suoritusympäristön, mikäli tietokoneellasi ei ole Javaa asennettuna.  
+On kuitenkin suositeltavaa asentaa Java itse, ennen kuin jatkat TestMyCode-laajennuksen asentamista. 
+Mikäli koneellasi on jo Javan suoritusympäristö asennettuna, voit siirtyä kohtaan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen).  
+
+#### 1. Asenna OpenJDK-paketti.
+
+Ubuntussa sen voi tehdä komentoriviltä seuraavalla komennolla:
+
+> `sudo apt-get install openjdk-11-jdk`
+
+#### 2. Vaihda Javan aktiivinen versio
+
+Käytä komentoa:
+
+> `sudo update-alternatives --config java`
+
+Kirjoita komentoriville sen vaihtoehdon numero, jossa lukee Java 11 (esim kirjoittajan koneella "/usr/lib/jvm/java-11-openjdk-amd64/bin/java"), ja paina enter.
+
+Jos Java 11 on listalla useampaan otteeseen, sekä statuksella "auto mode" että "manual mode", valitse mieluummin "manual mode".
+
+### TestMyCode -laajennuksen asentaminen VSCodeen <a name="TestMyCode-asentaminen"></a>
+
+Saat asennettua laajennuksen siirtymällä VSCodessa Extensions -näkymään ja kirjoittamalla hakukenttään **TestMyCode**.
+
+Ensimmäisen käynnistyksen yhteydessä laajennus lataa sen tarvitsemat komponentit toimiakseen (tässä menee hetki).
+
+<img src="/static/images/installation/vscode/download_extension.png"
+alt="Laajennuksen asentaminen"
+width="100%" height="100%" />
+
+</ContentBox>
