@@ -1,0 +1,79 @@
+import {ContentBox} from "/pages/[lng]/installation/vscode"
+
+<ContentBox>
+
+## Installing to macOS
+
+---
+
+### Content
+1. [Installing Visual Studio Code](#VSCoden-asentaminen)
+2. [Installing Java](#javan-asentaminen)
+3. [Installing TestMyCode extension](#TestMyCode-asentaminen)
+
+
+</ContentBox>
+
+<!--
+3. [How to start programming](#ohjelmoinnin-aloittaminen)
+4. [Creating MOOC.fi account](#mooc.fi-tunnuksen-luominen)
+5. [Logging into programming environment](#kirjautuminen-ohjelmointiympäristöön)
+6. [Choosing an organization](#organisaation-valinta)
+7. [Choosing a course](#kurssin-valinta)
+8. [Your first programming exercise](#ensimmäisen-tehtävän-tekeminen)
+9. [Running the source code](#lähdekoodin-ajaminen)
+10. [Testing the source code](#lähdekoodin-testaaminen)
+11. [Submitting a solution to TMC-server](#tehtävän-lähettäminen-palvelimelle)
+12. [How to check your points](#pistetilanteen-tarkistaminen)
+-->
+
+
+<ContentBox>
+Follow the instructions below to download Visual Studio Code (VSCode) and TestMyCode (TMC) extension for VSCode. To function correctly, TestMyCode extension requires Java Runtime Environment.
+
+If you are using a computer provided by the computer science department you can skip directly to [Installing TestMyCode extension](#TestMyCode-asentaminen) section.
+
+###  Installing Visual Studio Code <a name="VSCoden-asentaminen"></a>
+
+1. Download the installation file from [https://code.visualstudio.com/download](https://code.visualstudio.com/download).
+2. Once download is completed, double-click the file to open it.
+3. Follow the instructions of the installation file.
+
+### Installing Java <a name="javan-asentaminen"></a>
+
+To function correctly, TestMyCode extension requires Java Runtime Environment. 
+Follow the instructions below to install the open development environment for Java 11, which includes the Java Runtime Environment needed. 
+If you have Java Runtime Environment installed on your computer, you can skip this part. 
+
+1. Download the open development and runtime environment for Java 11, AdoptOpenJDK11, from [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
+
+2. Select OpenJDK 11 (LTS) and HotSpot. Then click the "Latest release" button to download Java.
+
+3. When the download is complete, open the installation file.
+
+4. Follow the installation instructions to install Java.
+
+If in phase 3 you get a notification saying **"OpenJDK can't be opened because it is from an unidentified developer."**,
+navigate to the directory you downloaded the installation file to in Finder, right-click the filename and select "Open" (see images below).
+
+<img src="/static/images/installation/macos-openjdk-not-trusted.png"
+alt="macOS notification saying OpenJDK could not be opened because it is from an unidentified developer"
+width="100%" height="100%" />
+
+<img src="/static/images/installation/macos-openjdk-rightclick-open.png"
+alt="Finder view, where OpenJDK installer has been right clicked, and option Open is highlighed on the opened dropdown menu."
+width="100%" height="100%" />
+
+### Installing TestMyCode extension for VSCode <a name="TestMyCode-asentaminen"></a>
+
+1. Open Visual Studio Code.  
+2. At the right you can see icons, choose the Extension view (see picture point 1).  
+3. Type **TestMyCode** in the search field (see picture point 2).  
+4. Press "Install" (see picture point 3).  
+
+The first initilization of the extension will download some necessary components (this will take a while).
+<img src="/static/images/installation/vscode/download_extension.png"
+alt="Laajennuksen asentaminen"
+width="100%" height="100%" />
+
+</ContentBox>

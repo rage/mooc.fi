@@ -1,0 +1,78 @@
+import {ContentBox} from "/pages/[lng]/installation/vscode"
+
+<ContentBox>
+
+## Asentaminen macOS:iin
+
+---
+
+### Sisältö
+1. [Visual Studio Coden asentaminen](#VSCoden-asentaminen)
+2. [Javan asentaminen](#javan-asentaminen)
+3. [TestMyCode -laajennuksen asentaminen](#TestMyCode-asentaminen)
+
+</ContentBox>
+
+<!--
+3. [Ohjelmoinnin aloittaminen](#ohjelmoinnin-aloittaminen)
+4. [MOOC.fi tunnuksen luominen](#mooc.fi-tunnuksen-luominen)
+5. [Kirjautuminen ohjelmointiympäristöön](#kirjautuminen-ohjelmointiympäristöön)
+6. [Organisaation valinta](#organisaation-valinta)
+7. [Kurssin valinta](#kurssin-valinta)
+8. [Ensimmäisen tehtävän tekeminen](#ensimmäisen-tehtävän-tekeminen)
+9. [Lähdekoodin ajaminen](#lähdekoodin-ajaminen)
+10. [Lähdekoodin testaaminen](#lähdekoodin-testaaminen)
+11. [Tehtävän lähettäminen palvelimelle](#tehtävän-lähettäminen-palvelimelle)
+12. [Pistetilanteen tarkistaminen](#pistetilanteen-tarkistaminen)
+-->
+
+<ContentBox>
+Seuraa alla olevia ohjeita asentaaksesi Visual Studio Code (VSCode) ja TestMyCode (TMC) -laajennus VSCodeen. TestMyCode -laajennus tarvitsee Javan suoritysympäristöä toimiakseen oikein.
+
+Mikäli sinulla on käytössäsi Tietojenkäsittelytieteen osaston laite, voit siirtyä suoraan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen).
+
+###  Visual Studio Coden asentaminen <a name="VSCoden-asentaminen"></a>
+
+1. Lataa asennusohjelma osoitteesta [https://code.visualstudio.com/download](https://code.visualstudio.com/download)
+2. Kun tiedoston lataaminen on valmis, tuplaklikkaa tiedostoa avataksesi asennusohjelma.
+3. Tämän jälkeen seuraa ruudulle tulevia ohjeita.
+
+### Javan Asentaminen <a name="javan-asentaminen"></a>
+
+TestMyCode -laajennus tarvitsee Javan suoritysympäristöä toimiakseen oikein. 
+Asenna seuraavaksi Java 11:n avoin kehitysympäristö AdoptOpenJDK11, jonka mukana tulee tarvittava Javan suoritusympäristö. 
+Mikäli koneellasi on jo Javan suoritusympäristö asennettuna, voit siirtyä kohtaan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen). 
+
+1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
+
+2. Valitse sivulta OpenJDK 11 (LTS) ja HotSpot. Sitten voit painaa Latest release -nappia ladataksesi Javan.
+
+3. Kun olet ladannut asennustiedoston, avaa se.
+
+4. Seuraa avautuvan asennusohjelman ohjeita asentaaksesi Javan koneellesi.
+
+Jos saat 3. vaiheessa ilmoituksen **"OpenJDK can't be opened because it is from an unidentified developer."**, mene Finderissä kansioon johon latasit asennustiedoston, paina sitä hiiren oikealla näppäimellä ja valitse "Open". (katso allaolevat kuvat)
+
+<img src="/static/images/installation/macos-openjdk-not-trusted.png"
+alt="MacOS:n ilmoitus siitä, että OpenJDK:n asennusohjelmaa ei voitu avata koska se ei ole luotetulta lähteeltä."
+width="100%" height="100%" />
+
+<img src="/static/images/installation/macos-openjdk-rightclick-open.png"
+alt="Finderin näkymä, jossa OpenJDK:n asennusohjelmaa on painettu hiiren oikealla näppäimellä ja pudotusvalikon vaihtoehto Open on korostettuna."
+width="100%" height="100%" />
+
+
+### TestMyCode -laajennuksen asentaminen VSCodeen <a name="TestMyCode-asentaminen"></a>
+
+1. Avaa Visual Studio Code ohjelma.  
+2. Ohjelman vasemmassa sivupalkissa näkyy ikoneita, valitse sieltä Extensions -näkymä (kuvassa kohta 1).  
+3. Kirjoita hakukenttään **TestMyCode** (kuvassa kohta 2).  
+4. Paina "Install" -painiketta (kuvassa kohta 3).
+
+Ensimmäisen käynnistyksen yhteydessä laajennus lataa sen tarvitsemat komponentit toimiakseen (tässä menee hetki).
+
+<img src="/static/images/installation/vscode/download_extension.png"
+alt="Laajennuksen asentaminen"
+width="100%" height="100%" />
+
+</ContentBox>
