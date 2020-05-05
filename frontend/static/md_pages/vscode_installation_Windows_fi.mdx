@@ -11,22 +11,18 @@ import {ContentBox} from "/pages/[lng]/installation/vscode"
 2. [Javan asentaminen](#javan-asentaminen)
 3. [Pythonin asentaminen](#python-asentaminen)
 4. [TestMyCode -laajennuksen asentaminen](#TestMyCode-asentaminen)
-
+5. [Ohjelmoinnin aloittaminen](#ohjelmoinnin-aloittaminen)
+6. [MOOC.fi tunnuksen luominen](#mooc.fi-tunnuksen-luominen)
+7. [Kirjautuminen ohjelmointiympäristöön](#kirjautuminen-ohjelmointiympäristöön)
+8. [Organisaation valinta](#organisaation-valinta)
+9. [Kurssin valinta](#kurssin-valinta)
+10. [Ensimmäisen tehtävän tekeminen](#ensimmäisen-tehtävän-tekeminen)
+11. [Lähdekoodin ajaminen](#lähdekoodin-ajaminen)
+12. [Lähdekoodin testaaminen](#lähdekoodin-testaaminen)
+13. [Tehtävän lähettäminen palvelimelle](#tehtävän-lähettäminen-palvelimelle)
+14. [Pistetilanteen tarkistaminen](#pistetilanteen-tarkistaminen)
 
 </ContentBox>
-
-<!--
-3. [Ohjelmoinnin aloittaminen](#ohjelmoinnin-aloittaminen)
-4. [MOOC.fi tunnuksen luominen](#mooc.fi-tunnuksen-luominen)
-5. [Kirjautuminen ohjelmointiympäristöön](#kirjautuminen-ohjelmointiympäristöön)
-6. [Organisaation valinta](#organisaation-valinta)
-7. [Kurssin valinta](#kurssin-valinta)
-8. [Ensimmäisen tehtävän tekeminen](#ensimmäisen-tehtävän-tekeminen)
-9. [Lähdekoodin ajaminen](#lähdekoodin-ajaminen)
-10. [Lähdekoodin testaaminen](#lähdekoodin-testaaminen)
-11. [Tehtävän lähettäminen palvelimelle](#tehtävän-lähettäminen-palvelimelle)
-12. [Pistetilanteen tarkistaminen](#pistetilanteen-tarkistaminen)
--->
 
 <ContentBox>
 Seuraa alla olevia ohjeita asentaaksesi Visual Studio Code (VSCode) ja TestMyCode (TMC) -laajennus VSCodeen. TestMyCode -laajennus tarvitsee Javan suoritysympäristöä toimiakseen oikein.
@@ -89,22 +85,23 @@ width="100%" height="100%" />
 
 </ContentBox>
 
-<!--
+
 <ContentBox>
 
 ## Ohjelmoinnin aloittaminen <a name="ohjelmoinnin-aloittaminen"></a>
-Kun olet asentanut VSCoden ja TestMyCode -lisäosan, seuraavina askeleina on **Mooc.fi-tunnuksen** luominen sekä ohjelmoinnin aloittaminen. Mooc.fi-tunnus luodaan, jotta voimme pitää kirjaa tekemistäsi tehtävistä.
+Kun olet asentanut VSCoden, Javan suoritusympäristön ja TestMyCode -lisäosan, seuraavina askeleina on **Mooc.fi-tunnuksen** luominen sekä ohjelmoinnin aloittaminen. 
+Mooc.fi-tunnus luodaan, jotta voimme pitää kirjaa tekemistäsi tehtävistä.
 
 ### MOOC.fi -tunnuksen luominen <a name="mooc.fi-tunnuksen-luominen"></a>
 Luo itsellesi MOOC.fi tunnus kurssimateriaalissa.
 
 ### Kirjautuminen ohjelmointiympäristöön <a name="kirjautuminen-ohjelmointiympäristöön"></a>
 
-Käynnistä TestMyCode-laajennus painamalla TMC-kuvaketta vasemmassa palkissa.
+Käynnistä TestMyCode-laajennus painamalla TMC-kuvaketta vasemmassa palkissa (kuvassa kohta 1).
 
-Kirjaudu sisään painamalla sivuun ilmestynyttä **Log in** painiketta.
+Kirjaudu sisään painamalla sivuun ilmestynyttä **Log in** painiketta (kuvassa kohta 2).
 
-Käytä edellisessä kohdassa luomaasi MOOC.fi tunnusta.
+Käytä edellisessä kohdassa luomaasi MOOC.fi tunnusta kirjautumiseen.
 
 <img src="/static/images/installation/vscode/TMC_login.png"
 alt="Ohjelmointiympäristöön kirjautuminen"
@@ -112,10 +109,12 @@ width="100%" height="100%"/>
 
 ### Organisaation valinta <a name="organisaation-valinta"></a>
 Kirjauduttuasi sisään esiin tulee näkymä, joka listaa valitsemasi kurssit (aluksi se on tyhjä). 
-Kursseja voit lisätä painamlla **Add new course** painiketta.
+Mikäli My courses -näkymä ei ole aktiivinen, pääset sinne painamalla "My courses" (kuvassa kohta 1).  
 
-Painamlla **Add new course** painiketta laajennus näyttää kaikki mahdolliset organisaatiot, jotka tarjoavat kursseja.
-Valitse organisaatioksi kurssimateriaalissa mainittu organisaatio.
+Kursseja voit lisätä painamlla **Add new course** painiketta (kuvassa kohta 2).
+
+Painamalla **Add new course** painiketta laajennus näyttää kaikki mahdolliset organisaatiot, jotka tarjoavat kursseja.
+Valitse organisaatioksi kurssimateriaalissa mainittu organisaatio (kuvassa kohta 3).
 
 Esimerkiksi kurssilla "Ohjelmoinnin MOOC 2020" organisaationa on "MOOC".
 
@@ -136,27 +135,35 @@ Vaikka olisit tehnyt tehtäviä jollakin muulla kurssilla, lue ohjeet silti lopp
 
 Kun olet kirjautunut ohjelmointiympäristöön sekä valinnut kurssin, klikkaa "My courses" -näkymään ilmestynyttä kurssia `mooc-2020-ohjelmointi`.
 
-Paina sivulla näkyvää "Download exercises" -painiketta.  
-Lataa haluamasi tehtävät -- tehtävät liittyvät valitsemasi kurssin kurssimateriaaliin.
+Paina sivulla näkyvää __Download exercises__ -painiketta.  
+Lataa haluamasi tehtävät -- tehtävät liittyvät valitsemasi kurssin kurssimateriaaliin.  
+Kun lataus on valmis, valitse __Return to My courses__.  
 
 Nyt tehtävät ovat ladattuna ohjelmointiympäristössä.  
 Paina __Open exercise workspace__.
 <img src="/static/images/installation/vscode/open_exercise_workspace.png"
-alt="Organisaation valinta"
+alt="Workspacen avaaminen"
 width="100%" height="100%"/>
 
 #### Ohjelmointitehtävän tekeminen
 
-Avaa tehtävät painamalla Explorer painiketta vasemmassa yläkulmassa.
-Avaa tehtävä "Osa01_02.AdaLovelace".
+Siirry tehtävänäkymään painamalla Explorer -painiketta vasemmassa yläkulmassa (kuvassa kohta 1).  
+Painamalla "Exercises" (kuvassa kohta 2) näet kaikki valitsemasi organisaatiot ja kurssit, sekä niiden tehtävät.  
+Etsi sieltä tehtäväkansio "Osa01_02.AdaLovelace", organisaation "MOOC" ja kurssin "mooc-2020-ohjelmointi" alta.  
 <img src="/static/images/installation/vscode/click_exercises.png"
-alt="Organisaation valinta"
+alt="Tehtävän avaaminen"
+width="100%" height="100%"/>
+
+**HUOM!**
+Ensimmäisen kerran kun avaat Visual Studio Codessa ohjelmointitehtävän saatat saada suosituksia asennettavista lisäosista, nämä on asennettava valitsemalla __Install__, jotta lähdekoodia pystyy ajamaan.
+<img src="/static/images/installation/vscode/python_recommendation.png"
+alt="Python lisäosa"
 width="100%" height="100%"/>
 
 Etsi tehtävän sisältä lähdekooditiedosto "AdaLovelace.java".
 Lähdekooditiedostot löytyvät tehtäväpohjan kansiosta __"src"__.
 
-Saat tehtävän auki editorinäkymään klikkaamalla tiedostoa AdaLovelace.java.
+Saat tehtävän auki editorinäkymään klikkaamalla tiedostoa AdaLovelace.java.  
 Editorinäkymä on keskellä näkyvä tekstieditori, missä voit tehdä muutoksia ohjelman lähdekoodiin.
 
 
@@ -172,8 +179,12 @@ Muokkaa lähdekoodia siten, että editorissa on seuraava teksti:
 
 ### Lähdekoodin ajaminen <a name="lähdekoodin-ajaminen"></a>
 
-Tehtävien ajamiseen tarvitaan erillinen extension VSCodeen. Käy lataamassa jokin tähän soveltuva laajennus. Esimerkiksi Java Test Runner.
+Mikäli asensit tarvittavat ohjelmat ja lisäosat Visual Studio Codeen, voit suorittaa lähdekoodia painamalla VSCodessa oikealla ylänurkassa olevaa vihreää start painiketta.
+Tämä aukaisee VSCodessa terminaalin lähdekoodieditorin alle.
 
+<img src="/static/images/installation/vscode/python_run_terminal.png"
+alt="Python aja terminaalissa"
+width="100%" height="100%"/>
 
 Jos muokkasit AdaLovelace.java-tiedostoa edellä kuvatun näköiseksi, ohjelman tulostus on nyt seuraavanlainen.
 
@@ -185,6 +196,9 @@ Tehtävissä tulee usein mukana automaattisia testejä, jotka antavat palautetta
 
 Testit ajetaan klikkaamalla oikealla yläkulmassa näkyvää "TMC - Run tests" painiketta.
 
+<img src="/static/images/installation/vscode/tmc_run_test.png"
+alt="TMC Testien ajaminen"
+width="100%" height="100%"/>
 
 Kun suoritat yllä luodun AdaLovelace-tehtävän testit, testien pitäisi antaa virheilmoitus.
 Virheilmoitusta tarkastelemalla saamme selville, että tulostus ei ollut toivottu.
@@ -209,7 +223,11 @@ Tehtävän lähettäminen palvelimelle tarkoittaa tehtävän palauttamista arvos
 Tehtävät tarkastetaan lähes poikkeuksetta automaattisesti, joten saat tehtävistä pisteet (tai mahdollisen virheviestin) nopeasti.
 
 Tehtävän voi palauttaa joko testien ajamisen jälkeen kun testit menevät läpi, tai erikseen TMC-menusta (sijaitsee oikeassa ylänurkassa) 
-olevaa nappia painamalla.
+olevaa nappia painamalla ja valitsemalla __Submit to server__.
+
+<img src="/static/images/installation/vscode/tmc_menu.png"
+alt="TMC Menu"
+width="100%" height="100%"/>
 
 Kun tehtävä on lähetetty palvelimelle ja siihen liittyvät testit menevät läpi, saat tehtävästä pisteet sekä mahdollisen lyhyen kyselyn. Vastaathan aina kyselyihin, sillä vastaukset auttavat kurssien kehityksessä.
 
@@ -218,4 +236,3 @@ Kun tehtävä on lähetetty palvelimelle ja siihen liittyvät testit menevät l�
 Voit tarkastaa oman pistetilanteesi kirjautumalla osoitteessa [tmc.mooc.fi](https://tmc.mooc.fi) olevaan verkkopalveluun. Verkkopalveluun kirjaudutaan Mooc.fi-tunnuksilla.
 
 </ContentBox>
--->
