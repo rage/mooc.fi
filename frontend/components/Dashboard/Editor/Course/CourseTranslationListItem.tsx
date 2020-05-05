@@ -13,7 +13,6 @@ import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 
 const LanguageVersionContainer = styled.div`
   padding-top: 1rem;
-
   padding-bottom: 1.5rem;
   width: 90%;
   margin: auto;
