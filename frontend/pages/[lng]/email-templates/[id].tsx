@@ -18,11 +18,11 @@ import Router from "next/router"
 import withAdmin from "/lib/with-admin"
 
 const EmailTemplateView = () => {
-  const [emailTemplate, setEmailTemplate] = useState()
-  const [name, setName] = useState()
-  const [txtBody, setTxtBody] = useState()
-  const [htmlBody, setHtmlBody] = useState()
-  const [title, setTitle] = useState()
+  const [emailTemplate, setEmailTemplate] = useState<any>()
+  const [name, setName] = useState<any>()
+  const [txtBody, setTxtBody] = useState<any>()
+  const [htmlBody, setHtmlBody] = useState<any>()
+  const [title, setTitle] = useState<any>()
   const [didInit, setDidInit] = useState(false)
 
   const id = useQueryParameter("id")

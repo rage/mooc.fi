@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { useField, FieldInputProps } from "formik"
-import { useDropzone } from "react-dropzone"
+import { useDropzone, FileRejection } from "react-dropzone"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import getCommonTranslator from "/translations/common"
@@ -61,7 +61,7 @@ const ImageDropzoneInput = ({
     message: t("imageDropMessage"),
   })
 
-  const onDrop = (accepted: File[], rejected: File[]) => {
+  const onDrop = (accepted: File[], rejected: FileRejection[]) => {
     const reader = new FileReader()
 
     reader.onload = () => onImageLoad(reader.result)
