@@ -85,10 +85,10 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         course_variants: !!course_variants ? { create: course_variants } : null,
         course_aliases: !!course_aliases ? { create: course_aliases } : null,
         inherit_settings_from: !!inherit_settings_from
-          ? { connect: inherit_settings_from }
+          ? { connect: { id: inherit_settings_from } }
           : null,
         completions_handled_by: !!completions_handled_by
-          ? { connect: completions_handled_by }
+          ? { connect: { id: completions_handled_by } }
           : null,
       } as CourseCreateInput)
 
