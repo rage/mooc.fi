@@ -7,7 +7,7 @@ import {
   StylesProvider,
   ThemeProvider as MuiThemeProvider,
 } from "@material-ui/styles"
-import { ApolloProvider } from "@apollo/react-common"
+import { ApolloProvider } from "@apollo/react-hooks"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
 import LoginStateContext from "../contexes/LoginStateContext"
