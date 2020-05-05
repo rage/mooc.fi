@@ -41,7 +41,7 @@ import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import DatePickerField from "./DatePickers"
 import LuxonUtils from "@date-io/luxon"
-import { MuiPickersUtilsProvider } from "@material-ui/pickers"
+import { LocalizationProvider } from "@material-ui/pickers"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
@@ -113,7 +113,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
   )
 
   return (
-    <MuiPickersUtilsProvider utils={LuxonUtils}>
+    <LocalizationProvider dateAdapter={LuxonUtils}>
       <Form style={{ backgroundColor: "white", padding: "2rem" }}>
         <CourseLanguageSelector
           selectedLanguage={selectedLanguage}
@@ -446,7 +446,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
           <CourseAliasEditForm />
         </SelectLanguageFirstCover>
       </Form>
-    </MuiPickersUtilsProvider>
+    </LocalizationProvider>
   )
 }
 
