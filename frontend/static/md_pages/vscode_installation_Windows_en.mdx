@@ -11,21 +11,19 @@ import {ContentBox} from "/pages/[lng]/installation/vscode"
 2. [Installing Java](#javan-asentaminen)
 3. [Installing Python](#python-asentaminen)
 4. [Installing TestMyCode extension](#TestMyCode-asentaminen)
+5. [How to start programming](#ohjelmoinnin-aloittaminen)
+6. [Creating MOOC.fi account](#mooc.fi-tunnuksen-luominen)
+7. [Logging into programming environment](#kirjautuminen-ohjelmointiympäristöön)
+8. [Choosing an organization](#organisaation-valinta)
+9. [Choosing a course](#kurssin-valinta)
+10. [Your first programming exercise](#ensimmäisen-tehtävän-tekeminen)
+11. [Running the source code](#lähdekoodin-ajaminen)
+12. [Testing the source code](#lähdekoodin-testaaminen)
+13. [Submitting a solution to TMC-server](#tehtävän-lähettäminen-palvelimelle)
+14. [How to check your points](#pistetilanteen-tarkistaminen)
 
 </ContentBox>
 
-<!--
-3. [How to start programming](#ohjelmoinnin-aloittaminen)
-4. [Creating MOOC.fi account](#mooc.fi-tunnuksen-luominen)
-5. [Logging into programming environment](#kirjautuminen-ohjelmointiympäristöön)
-6. [Choosing an organization](#organisaation-valinta)
-7. [Choosing a course](#kurssin-valinta)
-8. [Your first programming exercise](#ensimmäisen-tehtävän-tekeminen)
-9. [Running the source code](#lähdekoodin-ajaminen)
-10. [Testing the source code](#lähdekoodin-testaaminen)
-11. [Submitting a solution to TMC-server](#tehtävän-lähettäminen-palvelimelle)
-12. [How to check your points](#pistetilanteen-tarkistaminen)
--->
 
 <ContentBox>
 Follow the instructions below to download Visual Studio Code (VSCode) and TestMyCode (TMC) extension for VSCode. To function correctly, TestMyCode extension requires Java Runtime Environment.
@@ -88,38 +86,40 @@ width="100%" height="100%" />
 
 </ContentBox>
 
-<!--
 <ContentBox>
 
 ## Starting programming <a name="ohjelmoinnin-aloittaminen"></a>
-When you have downloaded VSCode and TestMyCode extension, next step is to make a **Mooc.fi-account**. The account is made so we can track your points on the course. After that you can start programming.
+When you have downloaded Visual Studio Code, Java Runtime Environment and TestMyCode extension, next step is to make a **Mooc.fi-account**. 
+The account is made so we can track your points on the course. After that you can start programming.
 
 ### Making a MOOC.fi-account <a name="mooc.fi-tunnuksen-luominen"></a>
 Go to course material and make a MOOC-fi account.
 
 ### Logging into programming environment <a name="kirjautuminen-ohjelmointiympäristöön"></a>
 
-Start TestMyCode extension by clicking TMC icon in the left bar.
+Start TestMyCode extension by clicking TMC icon in the left bar (see picture point 1).
 
-Log in by clicking "Log in" button.
+Log in by clicking **Log in** button (see picture point 2).
 
-Use the account you made in previous step.
+Use the account you made in previous step to log in.
 
 <img src="/static/images/installation/vscode/TMC_login.png"
-alt="Ohjelmointiympäristöön kirjautuminen"
+alt="TMC Login"
 width="100%" height="100%"/>
 
 ### Choosing an organization <a name="organisaation-valinta"></a>
 When you log in, you will se a list of courses selected (at start it is empty).
-You can add courses to the list by clicking **Add new course** button.
+If you're not at this view, press "My courses" (see picture point 1).  
+
+You can add courses to the list by clicking **Add new course** button (see picture point 2).
 
 By clicking **Add new course** the extension will show all possible organizations that offer courses.
-Select the organization that is mentioned in your course material.
+Select the organization that is mentioned in your course material (see picture point 3).
 
 For example on the course "Ohjelmoinnin MOOC 2020" the organization is "MOOC".
 
 <img src="/static/images/installation/vscode/select-org.png"
-alt="Organisaation valinta"
+alt="Choose organisation"
 width="100%" height="100%"/>
 
 ### Selecting the course <a name="kurssin-valinta"></a>
@@ -134,20 +134,29 @@ Even if you have completed exercises on some other course, read the instructions
 #### Downloading exercises
 
 When you have logged in and selected the course. Click the course "mooc-java-programming-i" in "My Courses"-view.
-Download exercises you want to complete(at minimum part01-Part01_02.AdaLovelace). Instructions to these exercises will be in your course material.
+Press __Download exercises__ and you should see list of uncompleted exercises.  
+Download the exercises you want to complete(at minimum part01-Part01_02.AdaLovelace). 
+Instructions to these exercises will be in your course material.
 
-Now exercises are downloaded.
-Click "Open exercise workspace".
+Once the exercises are downloaded, select __Return to My courses__
+Click __Open exercise workspace__ (see picture below).
 <img src="/static/images/installation/vscode/open_exercise_workspace.png"
-alt="Organisaation valinta"
+alt="Open workspace"
 width="100%" height="100%"/>
 
 #### Working on your programming exercises
 
-Open exercises by clicking Explorer button in the left corner.
-Open exercise "part01-Part01_02.AdaLovelace"
+In VSCode, navigate to the Explorer view by pressing the Explorer icon at the left side bar (see picture point 1). 
+Press "Exercises" (see picture point 2), you should now see the chosen organisation and course folder.
+Find the exercise "part01-Part01_02.AdaLovelace".
 <img src="/static/images/installation/vscode/click_exercises.png"
-alt="Organisaation valinta"
+alt="Select exercise"
+width="100%" height="100%"/>
+
+**NB!**
+First time you open an exercise you may receive automatic recommendations by Visual Studio Code at the bottom right corner, please install these.
+<img src="/static/images/installation/vscode/python_recommendation.png"
+alt="Python extension"
 width="100%" height="100%"/>
 
 Find a source code file called "AdaLovelace.java".
@@ -169,8 +178,12 @@ Make the following changes to the source code:
 
 ### Running the source code <a name="lähdekoodin-ajaminen"></a>
 
-To run the source code, you need an additional extension on VSCode. Download one. Your course material will have help on this part.
-For Java there is "Java Test Runner" for example.
+If you installed all the necessary programs and extension recommendatuins you should be able to run the source code by pressing the green start button at the top right corner.
+This will open a terminal under your source code editor.
+
+<img src="/static/images/installation/vscode/python_run_terminal.png"
+alt="Python run in terminal"
+width="100%" height="100%"/>
 
 If you modified the file as instructed previously, the program should print following:
 
@@ -178,10 +191,14 @@ If you modified the file as instructed previously, the program should print foll
 
 ### Testing the source code <a name="lähdekoodin-testaaminen"></a>
 
-There will be most of the time automated test for the exercises. These tests will give information on your progress on the exercise.
-Test your solution by clicking "TMC- Run tests" in the top right corner.
+Most of the time there will be automated test for the exercises. These tests will give information on your progress on the exercise.
+Test your solution by clicking "TMC - Run tests" in the top right corner.
 
-When you run tests on the source code we just wrote, tests should give you an error message.
+<img src="/static/images/installation/vscode/tmc_run_test.png"
+alt="TMC run tests"
+width="100%" height="100%"/>
+
+When you run tests on the source code we just wrote, the tests should not pass and give you a message.
 By following the message, we see that our program printed something erroneous.
 The print hould have been "Ada Lovelace".
 
@@ -196,20 +213,23 @@ The program will print "Ada Lovelace" when you modify the source code like the f
     }
 ```
 
-Run the tests again. This time the test will pass and TMC will ask you if you want to submit your solution.
+Run the tests again. This time the test will pass and TMC you can submit your code to the server for evaluation.
 
 ### Submitting the solution to TMC-server <a name="tehtävän-lähettäminen-palvelimelle"></a>
 
 Sending the exercise to TMC-server means that your solution will be reviewed.
-It will be almost always reviewed automatically. You will get points (or possible error message) really fast.
+Your code will be almost always reviewed automatically. You will get points (or possible error message) really fast.
 
 You can return the solution after running tests or from TMC-menu which is located in the top right corner.
 
-When you have sent right solution the the server, you will be given points from the exercise. Also if you will be given a short survey, filling it is advised. We use the information to make our courses better.
+<img src="/static/images/installation/vscode/tmc_menu.png"
+alt="TMC Menu"
+width="100%" height="100%"/>
+
+When you have sent right solution the the server, you will be given points from the exercise. Also if you are given a short survey, filling it is advised. We use the information to make our courses better.
 
 ### Checking your points <a name="pistetilanteen-tarkistaminen"></a>
 
 You can check your points by logging in [tmc.mooc.fi](https://tmc.mooc.fi). Use the same user you made earlier.
 
 </ContentBox>
--->
