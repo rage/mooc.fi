@@ -38,10 +38,7 @@ If you are using a computer provided by the computer science department you can 
 
 ### Installing Java <a name="javan-asentaminen"></a>
 
-**NB!**
-TMC extension will download Java Runtime Environment for itself if you don't have Java installed. 
-We suggest that you install Java before continuing with the TMC extension installation. 
-If you have Java Runtime Environment installed on your computer, you can skip this part.
+TMC extension requires Java. Please install Java following the instructions below.
 
 #### 1. Install OpenJDK-package.
 
@@ -68,7 +65,7 @@ You can install Python3 and Python3 pip with the following terminal command (wor
 ### Installing TestMyCode extension for VSCode <a name="TestMyCode-asentaminen"></a>
 
 1. Open Visual Studio Code.  
-2. At the right you can see icons, choose the Extension view (see picture point 1).  
+2. At the left you can see icons, choose the Extension view (see picture point 1).  
 3. Type **TestMyCode** in the search field (see picture point 2).  
 4. Press the search result **TestMyCode**.
 5. Press "Install" (see picture point 3).  
@@ -83,7 +80,7 @@ width="100%" height="100%" />
 <ContentBox>
 
 ## Starting programming <a name="ohjelmoinnin-aloittaminen"></a>
-When you have downloaded Visual Studio Code, Java Runtime Environment and TestMyCode extension, next step is to make a **Mooc.fi-account**. 
+When you have downloaded Visual Studio Code, Java, Python and TestMyCode extension, next step is to make a **Mooc.fi-account**. 
 The account is made so we can track your points on the course. After that you can start programming.
 
 ### Making a MOOC.fi-account <a name="mooc.fi-tunnuksen-luominen"></a>
@@ -102,6 +99,7 @@ alt="TMC Login"
 width="100%" height="100%"/>
 
 ### Choosing an organization <a name="organisaation-valinta"></a>
+
 When you log in, you will se a list of courses selected (at start it is empty).
 If you're not at this view, press "My courses" (see picture point 1).  
 
@@ -122,18 +120,18 @@ After this, select the correct course. This is mentioned in your course material
 
 ### Completing your first programming exercise <a name="ensimmäisen-tehtävän-tekeminen"></a>
 
-Lets go through an example where you can complete the 2nd exercise on the course "mooc-java-programming-i".
+Lets go through an example where you can complete the 2nd exercise on the course "mooc-python-programming-i".
 Even if you have completed exercises on some other course, read the instructions to the end. It will have important information on the programming environment.
 
 #### Downloading exercises
 
-When you have logged in and selected the course. Click the course "mooc-java-programming-i" in "My Courses"-view.
-Press __Download exercises__ and you should see list of uncompleted exercises.  
-Download the exercises you want to complete(at minimum part01-Part01_02.AdaLovelace). 
+When you have logged in and selected the course. Click the course "mooc-python-programming-i" in "My Courses"-view.
+You land into the course details page. Press __Download exercises__ and you should see list of uncompleted exercises.  
+Download the exercises you want to complete (at minimum part01-Part01_01.hello_world). 
 Instructions to these exercises will be in your course material.
 
 Once the exercises are downloaded, select __Return to My courses__
-Click __Open exercise workspace__ (see picture below).
+Click __Open exercise workspace__ (see picture below). If this button is not visible, the workspace is open and you can continue.
 <img src="/static/images/installation/vscode/open_exercise_workspace.png"
 alt="Open workspace"
 width="100%" height="100%"/>
@@ -142,7 +140,7 @@ width="100%" height="100%"/>
 
 In VSCode, navigate to the Explorer view by pressing the Explorer icon at the left side bar (see picture point 1). 
 Press "Exercises" (see picture point 2), you should now see the chosen organisation and course folder.
-Find the exercise "part01-Part01_02.AdaLovelace".
+Find the exercise "part01-Part01_01.hello_world".
 <img src="/static/images/installation/vscode/click_exercises.png"
 alt="Select exercise"
 width="100%" height="100%"/>
@@ -153,26 +151,22 @@ First time you open an exercise you may receive automatic recommendations by Vis
 alt="Python extension"
 width="100%" height="100%"/>
 
-Find a source code file called "AdaLovelace.java".
+Find a source code file called "hello_world.py".
 Source code files are located in directory __"src"__.
 
 You can open editor by clicking the exercise.
 Editor is the view on the middle. You can type there to make changes to the source code.
 
 Make the following changes to the source code: 
-```java
 
-    public class AdaLovelace {
-        public static void main(String[]args){
-            System.out.println("Ada Lovelace :D");
-        }
-    }
-
+```python
+def main():
+    print("Hello, world! :D")
 ```
 
 ### Running the source code <a name="lähdekoodin-ajaminen"></a>
 
-If you installed all the necessary programs and extension recommendatuins you should be able to run the source code by pressing the green start button at the top right corner.
+If you installed all the necessary programs and extension recommendations you should be able to run the source code by pressing the green start button at the top right corner.
 This will open a terminal under your source code editor.
 
 <img src="/static/images/installation/vscode/python_run_terminal.png"
@@ -181,7 +175,7 @@ width="100%" height="100%"/>
 
 If you modified the file as instructed previously, the program should print following:
 
-> `Ada Lovelace :D`
+> `Hello, world! :D`
 
 ### Testing the source code <a name="lähdekoodin-testaaminen"></a>
 
@@ -194,17 +188,13 @@ width="100%" height="100%"/>
 
 When you run tests on the source code we just wrote, the tests should not pass and give you a message.
 By following the message, we see that our program printed something erroneous.
-The print hould have been "Ada Lovelace".
+The print hould have been "Hello, world!".
 
-The program will print "Ada Lovelace" when you modify the source code like the following:
+The program will print "Hello, world!" when you modify the source code like the following:
 
-```java
-    public class AdaLovelace {
-
-        public static void main(String[] args) {
-            System.out.println("Ada Lovelace");
-        }
-    }
+```python
+def main():
+    print("Hello, world!")
 ```
 
 Run the tests again. This time the test will pass and TMC you can submit your code to the server for evaluation.
