@@ -27,10 +27,7 @@ const exercise = (t: PrismaObjectDefinitionBlock<"Query">) => {
 const exercises = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.list.field("exercises", {
     type: "Exercise",
-    args: {
-      test: stringArg(),
-    },
-    resolve: (parent, args, ctx) => {
+    resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.exercises()
     },
