@@ -1,8 +1,7 @@
-// generated Tue Apr 14 2020 14:15:45 GMT+0300 (Eastern European Summer Time)
+// generated Thu May 07 2020 15:10:23 GMT+0300 (Eastern European Summer Time)
 
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
-export { default as ManualCompletionArg } from "./ManualCompletionArg"
 export { default as Course } from "./Course"
 export { default as CourseAliasCreateUpdateInput } from "./CourseAliasCreateUpdateInput"
 export { default as CourseArg } from "./CourseArg"
@@ -10,7 +9,9 @@ export { default as CourseTranslationCreateUpdateInput } from "./CourseTranslati
 export { default as CourseTranslationWithIdInput } from "./CourseTranslationWithIdInput"
 export { default as CourseVariantCreateUpdateInput } from "./CourseVariantCreateUpdateInput"
 export { default as CourseVariantWithIdInput } from "./CourseVariantWithIdInput"
+export { default as Exercise } from "./Exercise"
 export { default as ExerciseProgress } from "./ExerciseProgress"
+export { default as ManualCompletionArg } from "./ManualCompletionArg"
 export { default as Mutation } from "./Mutation"
 export { default as OpenUniversityRegistrationLinkCreateUpdateInput } from "./OpenUniversityRegistrationLinkCreateUpdateInput"
 export { default as OpenUniversityRegistrationLinkWithIdInput } from "./OpenUniversityRegistrationLinkWithIdInput"
