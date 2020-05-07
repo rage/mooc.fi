@@ -1,5 +1,5 @@
 import { prismaObjectType } from "nexus-prisma"
-import { idArg, stringArg } from "nexus/dist"
+import { stringArg, idArg } from "nexus/dist"
 import { NexusGenRootTypes } from "/generated/nexus"
 
 const User = prismaObjectType<"User">({
