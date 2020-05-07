@@ -1,6 +1,6 @@
 import { Prisma } from "../../generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg } from "nexus/dist"
+import { idArg, stringArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
 
