@@ -39,9 +39,7 @@ Kurssia varten tulisi asentamaan Visual Studio Code alla olevan linkin takaa. Vi
 
 ### Javan Asentaminen <a name="javan-asentaminen"></a>
 
-**HUOM!** TestMyCode laajennus lataa käyttöönsä Javan suoritusympäristön, mikäli tietokoneellasi ei ole Javaa asennettuna.  
-On kuitenkin suositeltavaa asentaa Java itse, ennen kuin jatkat TestMyCode-laajennuksen asentamista. 
-Mikäli koneellasi on jo Javan suoritusympäristö asennettuna, voit siirtyä kohtaan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen).  
+TestMyCode -laajennus tarvitsee käyttöönsä Javan. Saat asennettua Javan käyttöösi seuraamalla ohjeita alla.
 
 1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
 
@@ -90,7 +88,7 @@ width="100%" height="100%" />
 <ContentBox>
 
 ## Ohjelmoinnin aloittaminen <a name="ohjelmoinnin-aloittaminen"></a>
-Kun olet asentanut VSCoden, Javan suoritusympäristön ja TestMyCode -lisäosan, seuraavina askeleina on **Mooc.fi-tunnuksen** luominen sekä ohjelmoinnin aloittaminen. 
+Kun olet asentanut VSCoden, Javan, Pythonin ja TestMyCode -lisäosan, seuraavina askeleina on **Mooc.fi-tunnuksen** luominen sekä ohjelmoinnin aloittaminen. 
 Mooc.fi-tunnus luodaan, jotta voimme pitää kirjaa tekemistäsi tehtävistä.
 
 ### MOOC.fi -tunnuksen luominen <a name="mooc.fi-tunnuksen-luominen"></a>
@@ -112,7 +110,7 @@ width="100%" height="100%"/>
 Kirjauduttuasi sisään esiin tulee näkymä, joka listaa valitsemasi kurssit (aluksi se on tyhjä). 
 Mikäli My courses -näkymä ei ole aktiivinen, pääset sinne painamalla "My courses" (kuvassa kohta 1).  
 
-Kursseja voit lisätä painamlla **Add new course** painiketta (kuvassa kohta 2).
+Kursseja voit lisätä painamalla **Add new course** painiketta (kuvassa kohta 2).
 
 Painamalla **Add new course** painiketta laajennus näyttää kaikki mahdolliset organisaatiot, jotka tarjoavat kursseja.
 Valitse organisaatioksi kurssimateriaalissa mainittu organisaatio (kuvassa kohta 3).
@@ -129,19 +127,19 @@ Valitse tämän jälkeen haluamasi kurssi. Kurssin nimi on mainittu kurssimateri
 
 ### Ensimmäisen tehtävän tekeminen <a name="ensimmäisen-tehtävän-tekeminen"></a>
 
-Käydään läpi esimerkki, miten saat tehtyä kurssin "Ohjelmoinnin MOOC 2020" toisen tehtävän.
+Käydään läpi esimerkki, miten saat tehtyä kurssin "Ohjelmoinnin MOOC 2020" ensimmäisen tehtävän.
 Vaikka olisit tehnyt tehtäviä jollakin muulla kurssilla, lue ohjeet silti loppuun sillä ne sisältävät tärkeää tietoa ohjelmointiympäristön toiminnasta.
 
 #### Tehtävien lataaminen
 
-Kun olet kirjautunut ohjelmointiympäristöön sekä valinnut kurssin, klikkaa "My courses" -näkymään ilmestynyttä kurssia `mooc-2020-ohjelmointi`.
+Kun olet kirjautunut ohjelmointiympäristöön sekä valinnut kurssin, klikkaa "My courses" -näkymään ilmestynyttä kurssia `Ohjelmoinnin MOOC 2020`.
 
-Paina sivulla näkyvää __Download exercises__ -painiketta.  
-Lataa haluamasi tehtävät -- tehtävät liittyvät valitsemasi kurssin kurssimateriaaliin.  
+Saavut kurssinäkymään. Paina sivulla näkyvää __Download exercises__ -painiketta, niin näet listan tekemättömistä tehtävistä.  
+Valitse ja lataa haluamasi tehtävät -- tehtävät liittyvät valitsemasi kurssin kurssimateriaaliin.  
 Kun lataus on valmis, valitse __Return to My courses__.  
 
 Nyt tehtävät ovat ladattuna ohjelmointiympäristössä.  
-Paina __Open exercise workspace__.
+Paina __Open exercise workspace__, mikäli painike ei näy, tämä on jo avattuna ja voit siirtyä eteenpäin.
 <img src="/static/images/installation/vscode/open_exercise_workspace.png"
 alt="Workspacen avaaminen"
 width="100%" height="100%"/>
@@ -150,7 +148,7 @@ width="100%" height="100%"/>
 
 Siirry tehtävänäkymään painamalla Explorer -painiketta vasemmassa yläkulmassa (kuvassa kohta 1).  
 Painamalla "Exercises" (kuvassa kohta 2) näet kaikki valitsemasi organisaatiot ja kurssit, sekä niiden tehtävät.  
-Etsi sieltä tehtäväkansio "Osa01_02.AdaLovelace", organisaation "MOOC" ja kurssin "mooc-2020-ohjelmointi" alta.  
+Etsi sieltä tehtäväkansio "Osa01-01_hello_world", organisaation "MOOC" ja kurssin "mooc-2020-ohjelmointi" alta.  
 <img src="/static/images/installation/vscode/click_exercises.png"
 alt="Tehtävän avaaminen"
 width="100%" height="100%"/>
@@ -161,21 +159,18 @@ Ensimmäisen kerran kun avaat Visual Studio Codessa ohjelmointitehtävän saatat
 alt="Python lisäosa"
 width="100%" height="100%"/>
 
-Etsi tehtävän sisältä lähdekooditiedosto "AdaLovelace.java".
+Etsi tehtävän sisältä lähdekooditiedosto "hello_world.py".
 Lähdekooditiedostot löytyvät tehtäväpohjan kansiosta __"src"__.
 
-Saat tehtävän auki editorinäkymään klikkaamalla tiedostoa AdaLovelace.java.  
+Saat tehtävän auki editorinäkymään klikkaamalla tiedostoa hello_world.py.  
 Editorinäkymä on keskellä näkyvä tekstieditori, missä voit tehdä muutoksia ohjelman lähdekoodiin.
 
 
 Muokkaa lähdekoodia siten, että editorissa on seuraava teksti:
 
-```java
-    public class AdaLovelace {
-        public static void main(String[]args){
-            System.out.println("Ada Lovelace :D");
-        }
-    }
+```python
+def main():
+    print("Hello, world! :D")
 ```
 
 ### Lähdekoodin ajaminen <a name="lähdekoodin-ajaminen"></a>
@@ -187,9 +182,9 @@ Tämä aukaisee VSCodessa terminaalin lähdekoodieditorin alle.
 alt="Python aja terminaalissa"
 width="100%" height="100%"/>
 
-Jos muokkasit AdaLovelace.java-tiedostoa edellä kuvatun näköiseksi, ohjelman tulostus on nyt seuraavanlainen.
+Jos muokkasit hello_world.py-tiedostoa edellä kuvatun näköiseksi, ohjelman tulostus on nyt seuraavanlainen.
 
-> `Ada Lovelace :D`
+> `Hello, world! :D`
 
 ### Lähdekoodin testaaminen <a name="lähdekoodin-testaaminen"></a>
 
@@ -201,22 +196,18 @@ Testit ajetaan klikkaamalla oikealla yläkulmassa näkyvää "TMC - Run tests" p
 alt="TMC Testien ajaminen"
 width="100%" height="100%"/>
 
-Kun suoritat yllä luodun AdaLovelace-tehtävän testit, testien pitäisi antaa virheilmoitus.
+Kun suoritat yllä luodun hello_world-tehtävän testit, testien pitäisi antaa virheilmoitus.
 Virheilmoitusta tarkastelemalla saamme selville, että tulostus ei ollut toivottu.
-Tulostuksen olisi pitänyt olla muotoa "Ada Lovelace".
+Tulostuksen olisi pitänyt olla muotoa "Hello, world!".
 
-Ohjelman tulostus on muotoa "Ada Lovelace" kun muokkaat lähdekoodin seuraavanlaiseksi.
+Ohjelman tulostus on muotoa "Hello, world!" kun muokkaat lähdekoodin seuraavanlaiseksi.
 
-```java
-    public class AdaLovelace {
-
-        public static void main(String[] args) {
-            System.out.println("Ada Lovelace");
-        }
-    }
+```python
+def main():
+    print("Hello, world!")
 ```
 
-Aja nyt tehtävään liittyvät testit uudestaan. Tällä kertaa testit menevät läpi ja TMC kysyy lähetetäänkö tehtävä palvelimelle.
+Aja nyt tehtävään liittyvät testit uudestaan. Tällä kertaa testit menevät läpi ja voit lähettää tehtävän TMC-palvelimelle valitsemalla __Submit to server__.
 
 ### Tehtävän lähettäminen palvelimelle <a name="tehtävän-lähettäminen-palvelimelle"></a>
 
