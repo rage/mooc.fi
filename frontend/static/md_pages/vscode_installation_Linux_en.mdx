@@ -106,9 +106,9 @@ If you're not at this view, press "My courses" (see picture point 1).
 You can add courses to the list by clicking **Add new course** button (see picture point 2).
 
 By clicking **Add new course** the extension will show all possible organizations that offer courses.
-Select the organization that is mentioned in your course material (see picture point 3).
+Search and select the organization that is mentioned in your course material (see picture point 3).
 
-For example on the course "Ohjelmoinnin MOOC 2020" the organization is "MOOC".
+For example on the course "Python Test" the organization is "Test organization".
 
 <img src="/static/images/installation/vscode/select-org.png"
 alt="Choose organisation"
@@ -120,14 +120,14 @@ After this, select the correct course. This is mentioned in your course material
 
 ### Completing your first programming exercise <a name="ensimmäisen-tehtävän-tekeminen"></a>
 
-Lets go through an example where you can complete the 2nd exercise on the course "mooc-python-programming-i".
+Lets go through an example where you can complete the 1st exercise on the course "Python Test".
 Even if you have completed exercises on some other course, read the instructions to the end. It will have important information on the programming environment.
 
 #### Downloading exercises
 
-When you have logged in and selected the course. Click the course "mooc-python-programming-i" in "My Courses"-view.
+When you have logged in and selected the course. Click the course "Python Test" in "My Courses"-view.
 You land into the course details page. Press __Download exercises__ and you should see list of uncompleted exercises.  
-Download the exercises you want to complete (at minimum part01-Part01_01.hello_world). 
+Download the exercises you want to complete (at minimum osa01-01_hymio). 
 Instructions to these exercises will be in your course material.
 
 Once the exercises are downloaded, select __Return to My courses__
@@ -140,7 +140,7 @@ width="100%" height="100%"/>
 
 In VSCode, navigate to the Explorer view by pressing the Explorer icon at the left side bar (see picture point 1). 
 Press "Exercises" (see picture point 2), you should now see the chosen organisation and course folder.
-Find the exercise "part01-Part01_01.hello_world".
+Find the exercise "osa01-01_hymio".
 <img src="/static/images/installation/vscode/click_exercises.png"
 alt="Select exercise"
 width="100%" height="100%"/>
@@ -151,23 +151,22 @@ First time you open an exercise you may receive automatic recommendations by Vis
 alt="Python extension"
 width="100%" height="100%"/>
 
-Find a source code file called "hello_world.py".
+Find a source code file called "hymio.py".
 Source code files are located in directory __"src"__.
 
-You can open editor by clicking the exercise.
+You can open editor by clicking the exercise file hymio.py.
 Editor is the view on the middle. You can type there to make changes to the source code.
 
 Make the following changes to the source code: 
 
 ```python
-def main():
-    print("Hello, world! :D")
+print(":-D")
 ```
 
 ### Running the source code <a name="lähdekoodin-ajaminen"></a>
 
 If you installed all the necessary programs and extension recommendations you should be able to run the source code by pressing the green start button at the top right corner.
-This will open a terminal under your source code editor.
+This will open a terminal under your source code editor where the program will print its output.
 
 <img src="/static/images/installation/vscode/python_run_terminal.png"
 alt="Python run in terminal"
@@ -175,7 +174,7 @@ width="100%" height="100%"/>
 
 If you modified the file as instructed previously, the program should print following:
 
-> `Hello, world! :D`
+> `:-D`
 
 ### Testing the source code <a name="lähdekoodin-testaaminen"></a>
 
@@ -188,13 +187,12 @@ width="100%" height="100%"/>
 
 When you run tests on the source code we just wrote, the tests should not pass and give you a message.
 By following the message, we see that our program printed something erroneous.
-The print hould have been "Hello, world!".
+The print should have been ":-)".
 
-The program will print "Hello, world!" when you modify the source code like the following:
+The program will print ":-)" when you modify the source code like the following:
 
 ```python
-def main():
-    print("Hello, world!")
+print(":-)")
 ```
 
 Run the tests again. This time the test will pass and TMC you can submit your code to the server for evaluation.
