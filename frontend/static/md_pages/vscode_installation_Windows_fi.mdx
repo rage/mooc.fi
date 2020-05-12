@@ -46,15 +46,18 @@ TestMyCode -laajennus tarvitsee käyttöönsä Javan. Saat asennettua Javan käy
 
 2. Valitse sivulta OpenJDK 11 (LTS) ja HotSpot. Sitten voit painaa Latest release -nappia ladataksesi Javan.
 
-**HUOM!** Kun asennat Javaa lataamastasi asennustiedostosta, aseta Custom Setup -vaiheessa sekä "Set JAVA_HOME variable" että "JavaSoft (Oracle) registry keys" -kohtiin "Entire feature will be installed on local hard drive". (katso allaolevat kuvat)
+**HUOM!** Kun asennat Javaa lataamastasi asennustiedostosta, aseta Custom Setup -vaiheessa sekä "Set JAVA_HOME variable" (kuva 1, kohta 1) että "JavaSoft (Oracle) registry keys" -kohtiin (kuva 2, kohta 2) "Entire feature will be installed on local hard drive".  
+Kun nämä on asetettu, paina "Next" (kuva 2, kohta 3).
 
-<img src="/static/images/installation/adoptopenjdk-set-java-home.png"
+<img src="/static/images/installation/vscode/adoptopenjdk-set-java-home.png"
 alt="AdoptOpenJDK:n asennusohjelman Custom Setup -vaihe, jossa asetetaan Set JAVA_HOME variable -kohtaan vaihtoehto Entire feature will be installed on local hard drive"
 width="100%" height="100%" />
+Kuva 1
 
-<img src="/static/images/installation/adoptopenjdk-set-registry-keys.png"
+<img src="/static/images/installation/vscode/adoptopenjdk-set-registry-keys.png"
 alt="AdoptOpenJDK:n asennusohjelman Custom Setup -vaihe, jossa asetetaan JavaSoft (Oracle) registry keys -kohtaan vaihtoehto Entire feature will be installed on local hard drive"
 width="100%" height="100%" />
+Kuva 2
 
 ### Pythonin asentaminen <a name="python-asentaminen"></a>
 
@@ -203,7 +206,7 @@ Kun suoritat yllä luodun hymio-tehtävän testit, testien pitäisi antaa virhei
 Virheilmoitusta tarkastelemalla saamme selville, että tulostus ei ollut toivottu.
 Tulostuksen olisi pitänyt olla muotoa ":-)".
 
-Ohjelman tulostus on muotoa "Hello, world!" kun muokkaat lähdekoodin seuraavanlaiseksi.
+Ohjelman tulostus on muotoa ":-)" kun muokkaat lähdekoodin seuraavanlaiseksi.
 
 ```python
 print(":-)")
