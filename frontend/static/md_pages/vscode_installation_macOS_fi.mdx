@@ -27,14 +27,14 @@ import {ContentBox} from "/pages/[lng]/installation/vscode"
 <ContentBox>
 Seuraa alla olevia ohjeita asentaaksesi Visual Studio Code (VSCode) ja TestMyCode (TMC) -laajennus VSCodeen. TestMyCode -laajennus tarvitsee Javan suoritysympäristöä toimiakseen oikein.
 
-Tarvitse järjestelmävalvojaoikeudet tietokoneellesi asentaaksesi tarvittavat ohjelmat.  
+Tarvitset järjestelmävalvojaoikeudet tietokoneellesi asentaaksesi tarvittavat ohjelmat.  
 Mikäli sinulla on käytössäsi Tietojenkäsittelytieteen osaston laite, voit siirtyä suoraan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen).
 
 ###  Visual Studio Coden asentaminen <a name="VSCoden-asentaminen"></a>
 
 1. Lataa Mac asennusohjelma osoitteesta [https://code.visualstudio.com/download](https://code.visualstudio.com/download)
-2. Kun tiedoston lataaminen on valmis, tuplaklikkaa tiedostoa avataksesi asennusohjelma.
-3. Tämän jälkeen seuraa ruudulle tulevia ohjeita.
+2. Kun tiedoston lataaminen on valmis, tuplaklikkaa zip-tiedostoa avataksesi paketti.
+3. Zip-paketin sisällä on Visual Studio Code sovellus, sinun tulisi siirtää tämä sovellus __Applications__-kansioon koneellasi.
 
 ### Javan Asentaminen <a name="javan-asentaminen"></a>
 
@@ -42,11 +42,8 @@ TestMyCode -laajennus tarvitsee Javan toimiakseen oikein.
 Asenna seuraavaksi Java 11:n avoin suoritus- ja kehitysympäristö AdoptOpenJDK11.
 
 1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
-
 2. Valitse sivulta OpenJDK 11 (LTS) ja HotSpot. Sitten voit painaa Latest release -nappia ladataksesi Javan.
-
 3. Kun olet ladannut asennustiedoston, avaa se.
-
 4. Seuraa avautuvan asennusohjelman ohjeita asentaaksesi Javan koneellesi.
 
 Jos saat 3. vaiheessa ilmoituksen **"OpenJDK can't be opened because it is from an unidentified developer."**, mene Finderissä kansioon johon latasit asennustiedoston, paina sitä hiiren oikealla näppäimellä ja valitse "Open". (katso allaolevat kuvat)
@@ -62,9 +59,10 @@ width="100%" height="100%" />
 ### Pythonin asentaminen <a name="python-asentaminen"></a>
 
 1. Lataa Python3 osoitteesta [https://www.python.org/downloads/mac-osx/](https://www.python.org/downloads/mac-osx/)
-2. Valitse __Stable Release__ puolelta uusin (ylin) __macOS 64-bit installer__
+2. Paina __Stable Release__ puolelta uusin (ylin) "Download __macOS 64-bit installer__".
 3. Kun olet ladannut asennustiedoston, avaa se.
 4. Seuraa avautuvan asennusohjelman ohjeita asentaaksesi Python koneellesi.
+5. Kun ohjelma on asentunut onnistuneesti, voit sulkea ikkunan. (Sertifikaatteja ei tarvitse asentaa)
 
 ### TestMyCode -laajennuksen asentaminen VSCodeen <a name="TestMyCode-asentaminen"></a>
 
