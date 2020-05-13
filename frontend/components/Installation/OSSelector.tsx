@@ -1,4 +1,3 @@
-import React from "react"
 import OSSelectorButton from "./OSSelectorButton"
 import styled from "styled-components"
 import {
@@ -9,6 +8,7 @@ import {
 import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
 
 import userOsContext from "/contexes/UserOSContext"
+import React from "react"
 const Container = styled.div`
   display: flex;
   flex-direction: row;
@@ -33,8 +33,12 @@ const Container = styled.div`
   top: -3.5rem;
   left: 33%;
 `
+interface Props {
+  excludeZip?: boolean
+}
 
-const OSSelector = () => {
+const OSSelector = (props: Props) => {
+  const { excludeZip } = props
   const { OS } = React.useContext(userOsContext)
   return (
     <Container>
@@ -45,7 +49,9 @@ const OSSelector = () => {
         active={OS === "Windows"}
       />
       <OSSelectorButton OSName="macOS" Icon={MAC} active={OS === "macOS"} />
-      <OSSelectorButton OSName="ZIP" Icon={AnyOS} active={OS === "ZIP"} />
+      {excludeZip || (
+        <OSSelectorButton OSName="ZIP" Icon={AnyOS} active={OS === "ZIP"} />
+      )}
     </Container>
   )
 }
