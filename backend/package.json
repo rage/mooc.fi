@@ -29,7 +29,8 @@
     "createExports": "ts-node ./bin/createExports.ts",
     "kafka-bridge": "ts-node  --transpile-only './bin/kafkaBridge.ts'",
     "background-emailer": "ts-node  --transpile-only './bin/backgroundEmailer.ts'",
-    "update-course-statuses": "ts-node --transpile-only ./bin/updateCourseStatuses.ts"
+    "update-course-statuses": "ts-node --transpile-only ./bin/updateCourseStatuses.ts",
+    "remove-duplicate-completions": "ts-node ./bin/removeDuplicateCompletions.ts"
   },
   "keywords": [],
   "author": "",

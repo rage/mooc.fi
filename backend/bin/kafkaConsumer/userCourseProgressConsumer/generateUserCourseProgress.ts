@@ -47,18 +47,7 @@ export const generateUserCourseProgress = async ({
   userCourseProgress,
 }: Props) => {
   const combined = await GetCombinedUserCourseProgress(user, course)
-  const requiredExerciseCompletions = await CheckRequiredExerciseCompletions(
-    user,
-    course,
-  )
-  const userCourseSettings = await GetUserCourseSettings(user, course)
-  await CheckCompletion(
-    user,
-    course,
-    combined,
-    userCourseSettings,
-    requiredExerciseCompletions,
-  )
+  await CheckCompletion(user, course, combined)
   await prisma.updateUserCourseProgress({
     where: { id: userCourseProgress.id },
     data: {
@@ -210,13 +199,23 @@ const languageCodeMapping: { [key: string]: string } = {
   no: "nb_NO",
 }
 
-const CheckCompletion = async (
+export const CheckCompletion = async (
   user: User,
   course: Course,
-  combined: CombinedUserCourseProgress,
-  userCourseSettings: UserCourseSettings,
-  requiredExerciseCompletions: boolean,
+  combinedProgress?: CombinedUserCourseProgress,
 ) => {
+  let combined = combinedProgress
+
+  if (!combined) {
+    combined = await GetCombinedUserCourseProgress(user, course)
+  }
+
+  const requiredExerciseCompletions = await CheckRequiredExerciseCompletions(
+    user,
+    course,
+  )
+  const userCourseSettings = await GetUserCourseSettings(user, course)
+
   if (
     course.automatic_completions &&
     combined.total_n_points >= (course.points_needed ?? 9999999) &&
