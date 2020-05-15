@@ -4,7 +4,7 @@ metadata:
   name: remove-duplicate-completions
   namespace: moocfi
 spec:
-  schedule: "0/30 * * * *"
+  schedule: "4/30 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
