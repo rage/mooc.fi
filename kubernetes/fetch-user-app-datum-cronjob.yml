@@ -4,7 +4,7 @@ metadata:
   name: fetch-user-app-datum
   namespace: moocfi
 spec:
-  schedule: "30 0 * * *"
+  schedule: "12 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
