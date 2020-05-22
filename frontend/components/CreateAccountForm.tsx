@@ -4,6 +4,10 @@ import {
   Typography,
   Paper,
   CircularProgress,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Link,
 } from "@material-ui/core"
 import { createAccount } from "../lib/account"
 import { signIn as authenticate } from "../lib/authentication"
@@ -53,6 +57,7 @@ interface state {
   showPassword?: boolean
   first_name?: string
   last_name?: string
+  research?: boolean
 }
 
 export function capitalizeFirstLetter(string: String) {
@@ -158,6 +163,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
       validatePassword,
       validateEmail,
       triedSubmitting,
+      research,
     } = this.state
     if (email && validateEmail) {
       if (email.indexOf("@") === -1) {
@@ -168,6 +174,11 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
         newState.error += t("emailNoPoint")
         newState.errorObj.email = true
       }
+    }
+
+    if (typeof research == "undefined") {
+      newState.error += t("researchNotAnswered")
+      newState.errorObj.research = true
     }
 
     if (password && password_confirmation && validatePassword) {
@@ -206,6 +217,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
     validateEmail: false,
     canSubmit: true,
     triedSubmitting: true,
+    research: undefined,
   }
 
   render() {
@@ -291,6 +303,55 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
                 })
               }}
             />
+          </Row>
+
+          <h2>{t("researchTitle")}</h2>
+
+          <p>{t("research1")}</p>
+
+          <ol>
+            <li>{t("research2")}</li>
+            <li>{t("research3")}</li>
+            <li>{t("research4")}</li>
+          </ol>
+
+          <p>
+            {t("research5")}
+            <Link
+              href="https://dl.acm.org/citation.cfm?id=2858798"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Educational Data Mining and Learning Analytics in Programming:
+              Literature Review and Case Studies
+            </Link>
+            .
+          </p>
+
+          <p>{t("research6")}</p>
+
+          <p>{t("research7")}</p>
+
+          <Row>
+            <>
+              <RadioGroup
+                aria-label={t("researchAgree")}
+                name="research"
+                value={this.state.research}
+                onChange={this.handleInput}
+              >
+                <FormControlLabel
+                  value="1"
+                  control={<Radio color="primary" />}
+                  label={t("researchYes")}
+                />
+                <FormControlLabel
+                  value="0"
+                  control={<Radio />}
+                  label={t("researchNo")}
+                />
+              </RadioGroup>
+            </>
           </Row>
 
           <Row>

@@ -22,6 +22,7 @@ type User @db(name: "user") {
   "User's points in courses"
   user_course_progresses: [UserCourseProgress!]!  @relation( name: "UserCourseProgressToUser")
   organization_memberships: [UserOrganization!]! @relation(name: "UserOrganizationToUser")
+  research_consent: Boolean
 }
 
 type Course @db(name: "course") {
