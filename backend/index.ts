@@ -1,11 +1,16 @@
 require("sharp") // image library sharp seems to crash without this require
-import { prisma } from "./generated/prisma-client"
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
+
+import { prisma, Course } from "./generated/prisma-client"
 import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"
 import { makePrismaSchema } from "nexus-prisma"
 import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
 import cache from "./middlewares/cache"
+import { redisify } from "./services/redis"
 //import * as JSONStream from "JSONStream"
 const JSONStream = require("JSONStream")
 import Knex from "./services/knex"
@@ -118,6 +123,94 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
   req.on("close", stream.end.bind(stream))
 })
+
+server.get(
+  "/api/usercoursesettingscount/:course",
+  async (req: any, res: any) => {
+    let { id, visible } = await redisify<{ id: string; visible: boolean }>(
+      async () =>
+        (
+          await Knex.select(
+            "course.id",
+            "user_course_settings_visibility.visible",
+          )
+            .from("course")
+            .join("user_course_settings_visibility", {
+              "course.id": "user_course_settings_visibility.course",
+            })
+            .where({ slug: req.params.course })
+            .limit(1)
+        )[0] ?? {},
+      {
+        prefix: "usercoursesettingsvisibility",
+        expireTime: 0,
+        key: req.params.course,
+      },
+    )
+
+    let course_id: string
+
+    if (!id) {
+      const course_alias_info = await redisify<{
+        course: string
+        visible: boolean
+      }>(
+        async () =>
+          (
+            await Knex.select("course_alias.course", "visible")
+              .from("course_alias")
+              .join("course", { "course_alias.course": "course.id" })
+              .join("user_course_settings_visibility", {
+                "course.id": "user_course_settings_visibility.course",
+              })
+              .where({ course_code: req.params.course })
+          )[0],
+        {
+          prefix: "usercoursesettingsvisibility_alias",
+          expireTime: 0,
+          key: req.params.course,
+        },
+      )
+      if (!course_alias_info) {
+        return res.status(404).json({ message: "Course not found" })
+      }
+      course_id = course_alias_info.course
+      visible = course_alias_info.visible
+    } else {
+      course_id = id
+    }
+
+    if (!visible) {
+      return res.status(401).json({ message: "Not set to visible" })
+    }
+
+    res.json(
+      await redisify(
+        async () => {
+          let { count } = (
+            await Knex.countDistinct("id as count")
+              .from("UserCourseSettings")
+              .where({ course: course_id })
+          )?.[0]
+
+          if (count < 100) {
+            count = -1
+          } else {
+            const factor = count < 10000 ? 100 : 1000
+            count = Math.floor(Number(count) / factor) * factor
+          }
+
+          return { course: req.params.course, count }
+        },
+        {
+          prefix: "usercoursesettingscount",
+          expireTime: 0,
+          key: req.params.course,
+        },
+      ),
+    )
+  },
+)
 
 server.start(serverStartOptions, () =>
   console.log("Server is running on http://localhost:4000"),
