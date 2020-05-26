@@ -13,13 +13,14 @@ import {
   CourseUpdateOneWithoutCompletions_handled_byInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, arg, idArg } from "nexus/dist"
+import { stringArg, arg, idArg, booleanArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "./image"
 import { omit } from "lodash"
 import { NexusGenRootTypes } from "/generated/nexus"
 import { CourseUpdateOneWithoutInherit_settings_fromInput } from "/generated/nexus-prisma/nexus-prisma"
+import { invalidate } from "../../services/redis"
 
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
@@ -50,6 +51,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_modules,
         inherit_settings_from,
         completions_handled_by,
+        has_visible_user_count,
       } = course
 
       const prisma: Prisma = ctx.prisma
@@ -73,6 +75,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           "new_slug",
           "new_photo",
           "delete_photo",
+          "has_visible_user_count",
         ]),
         photo: !!photo ? { connect: { id: photo } } : null,
         course_translations: !!course_translations
@@ -90,6 +93,9 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         completions_handled_by: !!completions_handled_by
           ? { connect: { id: completions_handled_by } }
           : null,
+        user_course_settings_visibility: {
+          create: { visible: has_visible_user_count ?? false },
+        },
       } as CourseCreateInput)
 
       const kafkaProducer = await new KafkaProducer()
@@ -188,6 +194,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         delete_photo,
         inherit_settings_from,
         completions_handled_by,
+        has_visible_user_count,
       } = course
       let { end_date } = course
       if (!slug) {
@@ -306,6 +313,27 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           }
         : undefined
 
+      const existingVisibility = await prisma
+        .course({ slug })
+        .user_course_settings_visibility()
+      const visibilityMutation = existingVisibility
+        ? existingVisibility.visible !== has_visible_user_count
+          ? {
+              update: {
+                visible: has_visible_user_count,
+              },
+            }
+          : undefined
+        : {
+            create: {
+              visible: has_visible_user_count,
+            },
+          }
+
+      if (existingVisibility) {
+        invalidate("usercoursesettingsvisibility", slug)
+      }
+
       const updatedCourse = await prisma.updateCourse({
         where: {
           id,
@@ -318,6 +346,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             "new_slug",
             "new_photo",
             "delete_photo",
+            "has_visible_user_count",
           ]),
           slug: new_slug ? new_slug : slug,
           end_date,
@@ -345,6 +374,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             : undefined,
           inherit_settings_from: inheritMutation,
           completions_handled_by: handledMutation,
+          user_course_settings_visibility: visibilityMutation,
         } as CourseUpdateInput,
       })
 
@@ -385,10 +415,45 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
+const upsertUserCourseSettingsVisiblity = async (
+  t: PrismaObjectDefinitionBlock<"Mutation">,
+) => {
+  t.field("upsertUsercourseSettingsVisibility", {
+    type: "UserCourseSettingsVisibility",
+    args: {
+      slug: stringArg({ required: true }),
+      visible: booleanArg({ required: true }),
+    },
+    resolve: async (_, { slug, visible }, ctx) => {
+      checkAccess(ctx)
+      const { prisma } = ctx
+
+      const existing = await prisma.userCourseSettingsVisibilities({
+        where: { course: { slug } },
+      })
+
+      if (!existing || existing?.length === 0) {
+        return prisma.createUserCourseSettingsVisibility({
+          course: { connect: { slug } },
+          visible,
+        })
+      }
+
+      return prisma.updateUserCourseSettingsVisibility({
+        where: { id: existing[0].id },
+        data: {
+          visible,
+        },
+      })
+    },
+  })
+}
+
 const addCourseMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   addCourse(t)
   updateCourse(t)
   deleteCourse(t)
+  upsertUserCourseSettingsVisiblity(t)
 }
 
 export default addCourseMutations
