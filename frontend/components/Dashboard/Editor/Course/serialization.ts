@@ -39,7 +39,7 @@ export const toCourseForm = ({
 
   return course
     ? {
-        ...omit(course, ["__typename"]),
+        ...omit(course, ["__typename", "user_course_settings_visibility"]),
         teacher_in_charge_name: course.teacher_in_charge_name ?? "",
         teacher_in_charge_email: course.teacher_in_charge_email ?? "",
         support_email: course.support_email ?? "",
@@ -82,6 +82,8 @@ export const toCourseForm = ({
         inherit_settings_from: course.inherit_settings_from?.id,
         completions_handled_by: course.completions_handled_by?.id,
         has_certificate: course?.has_certificate ?? false,
+        has_visible_user_count:
+          course?.user_course_settings_visibility?.visible ?? false,
       }
     : initialValues
 }
