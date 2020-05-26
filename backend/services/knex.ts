@@ -1,7 +1,3 @@
-require("dotenv-safe").config({
-  allowEmptyValues: process.env.NODE_ENV === "production",
-})
-
 import * as knex from "knex"
 
 export default knex({
