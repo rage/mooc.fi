@@ -37,6 +37,7 @@ export interface CourseArg {
   ects?: string | null
   end_date?: string | null
   has_certificate?: boolean | null
+  has_visible_user_count?: boolean | null
   hidden?: boolean | null
   id?: string | null
   inherit_settings_from?: string | null
@@ -76,6 +77,11 @@ export interface CourseVariantCreateUpdateInput {
   description?: string | null
   id?: string | null
   slug: string
+}
+
+export interface ManualCompletionArg {
+  grade?: string | null
+  user_id: string
 }
 
 export interface OpenUniversityRegistrationLinkCreateUpdateInput {
