@@ -16,6 +16,7 @@ export interface CourseDetailsFromSlugQuery_course_completion_email {
 export interface CourseDetailsFromSlugQuery_course {
   __typename: "Course"
   id: any
+  slug: string
   name: string
   completion_email: CourseDetailsFromSlugQuery_course_completion_email | null
 }

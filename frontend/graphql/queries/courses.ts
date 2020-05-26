@@ -27,6 +27,9 @@ export const AllCoursesQuery = gql`
         language
         name
       }
+      user_course_settings_visibility {
+        visible
+      }
     }
   }
 `

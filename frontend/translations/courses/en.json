@@ -25,6 +25,7 @@
   "courseModuleStartPoint": "Study module start point",
   "courseHidden": "Hidden",
   "courseHasCertificate": "Has certificate",
+  "courseHasVisibleUserCount": "Has visible user count",
   "courseModules": "Study modules",
   "coursePhoto": "Photo", 
   "courseNewPhoto": "Upload new photo",
