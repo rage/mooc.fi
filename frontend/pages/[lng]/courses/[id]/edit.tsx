@@ -82,9 +82,7 @@ export const CourseQuery = gql`
         id
       }
       has_certificate
-      user_course_settings_visibility {
-        visible
-      }
+      user_course_settings_visibilities
     }
   }
 `

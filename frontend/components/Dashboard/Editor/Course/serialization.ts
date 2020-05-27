@@ -82,8 +82,8 @@ export const toCourseForm = ({
         inherit_settings_from: course.inherit_settings_from?.id,
         completions_handled_by: course.completions_handled_by?.id,
         has_certificate: course?.has_certificate ?? false,
-        has_visible_user_count:
-          course?.user_course_settings_visibility?.visible ?? false,
+        user_course_settings_visibilities:
+          course?.user_course_settings_visibilities ?? [],
       }
     : initialValues
 }
@@ -195,6 +195,8 @@ export const fromCourseForm = ({
         : values.end_date,
     inherit_settings_from: values.inherit_settings_from,
     completions_handled_by: values.completions_handled_by,
+    user_course_settings_visibilities:
+      values.user_course_settings_visibilities ?? [],
   }
 
   return c
