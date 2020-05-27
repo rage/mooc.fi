@@ -37,7 +37,6 @@ export interface CourseArg {
   ects?: string | null
   end_date?: string | null
   has_certificate?: boolean | null
-  has_visible_user_count?: boolean | null
   hidden?: boolean | null
   id?: string | null
   inherit_settings_from?: string | null
@@ -61,6 +60,7 @@ export interface CourseArg {
   support_email?: string | null
   teacher_in_charge_email?: string | null
   teacher_in_charge_name?: string | null
+  user_course_settings_visibilities?: string[] | null
 }
 
 export interface CourseTranslationCreateUpdateInput {
