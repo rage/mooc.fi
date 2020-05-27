@@ -63,7 +63,7 @@ type Course @db(name: "course") {
   inherit_settings_from: Course @relation(link: INLINE, name: "CourseToCourseInheritSettings")
   completions_handled_by: Course @relation(link: INLINE, name: "CourseToCourse")
   has_certificate: Boolean @default(value: false)
-  user_course_settings_visibility: UserCourseSettingsVisibility @relation(name: "UserCourseSettingsVisibilityToCourse", onDelete: CASCADE)
+  user_course_settings_visibilities: [String!]! @scalarList(strategy: "RELATION")
 }
 
 type CourseVariant @db(name: "course_variant") {
@@ -364,13 +364,4 @@ type EmailDelivery @db(name: "email_delivery") {
   sent: Boolean! @default(value: false)
   error: Boolean! @default(value: false)
   error_message: String
-}
-
-type UserCourseSettingsVisibility @db(name: "user_course_settings_visibility")
-{
-  id: UUID! @id
-  created_at: DateTime @createdAt
-  updated_at: DateTime @updatedAt
-  course: Course! @relation(link: INLINE, name: "UserCourseSettingsVisibilityToCourse")
-  visible: Boolean! @default(value: false)  
 }
