@@ -1,7 +1,5 @@
 import * as knex from "knex"
 
-require("dotenv-safe").config()
-
 export default knex({
   client: "pg",
   connection: {
