@@ -13,7 +13,7 @@ import {
   CourseUpdateOneWithoutCompletions_handled_byInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, arg, idArg, booleanArg } from "nexus/dist"
+import { stringArg, arg, idArg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "./image"
@@ -42,6 +42,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       checkAccess(ctx, { allowOrganizations: false })
 
       const {
+        slug,
         new_photo,
         base64,
         course_translations,
@@ -67,6 +68,10 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 
         photo = newImage.id
       }
+
+      user_course_settings_visibilities?.forEach((v) =>
+        invalidate("usercoursesettingscount", `${slug}-${v}`),
+      )
 
       const newCourse: Course = await prisma.createCourse({
         ...omit(course, [
@@ -267,7 +272,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       })
 
       user_course_settings_visibilities?.forEach((v) =>
-        invalidate("usercoursesettingsvisibility", `${slug}-{v}`),
+        invalidate("usercoursesettingscount", `${slug}-${v}`),
       )
 
       // this had different logic so it's not done with the same helper
@@ -411,27 +416,21 @@ const upsertUserCourseSettingsVisiblity = async (
       checkAccess(ctx)
       const { prisma } = ctx
 
-      const existing = await prisma
-        .course({
-          slug,
-        })
-        .user_course_settings_visibilities()
+      const existing =
+        (await prisma
+          .course({
+            slug,
+          })
+          .user_course_settings_visibilities()) ?? []
 
-      if (!existing || existing?.length === 0) {
-        return prisma.updateCourse({
-          where: { slug },
-          data: {
-            user_course_settings_visibilities: { set: [language] },
-          },
-        })
-      }
-
-      return prisma.updateCourse({
+      return (await prisma.updateCourse({
         where: { slug },
         data: {
-          user_course_settings_visibilities: { set: [...existing, language] },
+          user_course_settings_visibilities: {
+            set: Array.from(new Set([...existing, language])),
+          },
         },
-      })
+      })) as NexusGenRootTypes["Course"]
     },
   })
 }
