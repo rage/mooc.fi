@@ -44,7 +44,6 @@ export interface AllCourses_courses {
   link: string
   study_modules: AllCourses_courses_study_modules[] | null
   course_translations: AllCourses_courses_course_translations[] | null
-  user_course_settings_visibilities: string[]
 }
 
 export interface AllCourses {

@@ -92,7 +92,6 @@ export interface CourseDetails_course {
   inherit_settings_from: CourseDetails_course_inherit_settings_from | null
   completions_handled_by: CourseDetails_course_completions_handled_by | null
   has_certificate: boolean | null
-  user_course_settings_visibilities: string[]
 }
 
 export interface CourseDetails {

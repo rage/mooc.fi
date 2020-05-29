@@ -60,7 +60,6 @@ export interface CourseArg {
   support_email?: string | null
   teacher_in_charge_email?: string | null
   teacher_in_charge_name?: string | null
-  user_course_settings_visibilities?: string[] | null
 }
 
 export interface CourseTranslationCreateUpdateInput {
@@ -77,11 +76,6 @@ export interface CourseVariantCreateUpdateInput {
   description?: string | null
   id?: string | null
   slug: string
-}
-
-export interface ManualCompletionArg {
-  grade?: string | null
-  user_id: string
 }
 
 export interface OpenUniversityRegistrationLinkCreateUpdateInput {
