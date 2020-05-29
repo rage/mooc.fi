@@ -48,7 +48,6 @@ export interface AllEditorCourses_courses {
   course_translations: AllEditorCourses_courses_course_translations[] | null
   course_variants: AllEditorCourses_courses_course_variants[] | null
   course_aliases: AllEditorCourses_courses_course_aliases[] | null
-  user_course_settings_visibilities: string[]
 }
 
 export interface AllEditorCourses_currentUser {

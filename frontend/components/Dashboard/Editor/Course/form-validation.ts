@@ -64,7 +64,7 @@ export const initialValues: CourseFormValues = {
   course_aliases: [],
   delete_photo: false,
   has_certificate: false,
-  user_course_settings_visibilities: [],
+  has_visible_user_count: false,
 }
 
 export const statuses = (t: Function) => [
