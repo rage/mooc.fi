@@ -70,7 +70,6 @@
     "lodash": "^4.17.15",
     "lqip-loader": "^2.2.0",
     "luxon": "^1.24.1",
-    "material-ui-chip-input": "^1.1.0",
     "material-ui-confirm": "^2.0.4",
     "module-resolver": "^1.0.0",
     "morgan": "^1.10.0",

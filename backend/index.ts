@@ -122,28 +122,26 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
 })
 
 server.get(
-  "/api/usercoursesettingscount/:course/:language",
+  "/api/usercoursesettingscount/:course",
   async (req: any, res: any) => {
-    const { course, language } = req.params
-
-    const { id } = await redisify<{ id: string }>(
+    let { id, visible } = await redisify<{ id: string; visible: boolean }>(
       async () =>
         (
-          await Knex.select("id")
+          await Knex.select(
+            "course.id",
+            "user_course_settings_visibility.visible",
+          )
             .from("course")
-            .join("course_user_course_settings_visibilities", {
-              "course.id": "course_user_course_settings_visibilities.nodeId",
+            .join("user_course_settings_visibility", {
+              "course.id": "user_course_settings_visibility.course",
             })
-            .where({
-              slug: course,
-              "course_user_course_settings_visibilities.value": language,
-            })
+            .where({ slug: req.params.course })
             .limit(1)
         )[0] ?? {},
       {
         prefix: "usercoursesettingsvisibility",
         expireTime: 0,
-        key: `${course}-${language}`,
+        key: req.params.course,
       },
     )
 
@@ -152,35 +150,35 @@ server.get(
     if (!id) {
       const course_alias_info = await redisify<{
         course: string
+        visible: boolean
       }>(
         async () =>
           (
-            await Knex.select("course_alias.course")
+            await Knex.select("course_alias.course", "visible")
               .from("course_alias")
               .join("course", { "course_alias.course": "course.id" })
-              .join("course_user_course_settings_visibilities", {
-                "course.id": "course_user_course_settings_visibilities.nodeId",
+              .join("user_course_settings_visibility", {
+                "course.id": "user_course_settings_visibility.course",
               })
-              .where({
-                course_code: course,
-                "course_user_course_settings_visibilities.value": language,
-              })
+              .where({ course_code: req.params.course })
           )[0],
         {
-          prefix: "usercoursesettingsvisibility",
+          prefix: "usercoursesettingsvisibility_alias",
           expireTime: 0,
-          key: `${course}-${language}`,
+          key: req.params.course,
         },
       )
-      course_id = course_alias_info?.course
+      if (!course_alias_info) {
+        return res.status(404).json({ message: "Course not found" })
+      }
+      course_id = course_alias_info.course
+      visible = course_alias_info.visible
     } else {
       course_id = id
     }
 
-    if (!course_id) {
-      return res
-        .status(403)
-        .json({ message: "Course not found or user count not set to visible" })
+    if (!visible) {
+      return res.status(401).json({ message: "Not set to visible" })
     }
 
     res.json(
@@ -189,7 +187,7 @@ server.get(
           let { count } = (
             await Knex.countDistinct("id as count")
               .from("UserCourseSettings")
-              .where({ course: course_id, language: language })
+              .where({ course: course_id })
           )?.[0]
 
           if (count < 100) {
@@ -199,12 +197,12 @@ server.get(
             count = Math.floor(Number(count) / factor) * factor
           }
 
-          return { course: course, language: language, count }
+          return { course: req.params.course, count }
         },
         {
           prefix: "usercoursesettingscount",
           expireTime: 0,
-          key: course,
+          key: req.params.course,
         },
       ),
     )
