@@ -119,6 +119,58 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   req.on("close", stream.end.bind(stream))
 })
 
+server.get("/api/completionpointthreshold/:user/:course", async function (
+  req: any,
+  res: any,
+) {
+  const { points, exercises } =
+    (
+      await Knex.sum("n_points as points")
+        .select(
+          Knex.raw("count(case when completed = true then 1 end) as exercises"),
+        )
+        .from("exercise_completion")
+        .join("user", { "exercise_completion.user": "user.id" })
+        .where("user.upstream_id", Number(req.params.user))
+        .whereIn("exercise", function () {
+          this.select("id")
+            .from("exercise")
+            .where("max_points", "!=", 0)
+            .whereIn("course", function () {
+              this.select("id").from("course").where("slug", req.params.course)
+            })
+        })
+    )[0] || {}
+
+  const { automatic_completions, points_needed, exercise_completions_needed } =
+    (
+      await Knex.select(
+        "automatic_completions",
+        "points_needed",
+        "exercise_completions_needed",
+      )
+        .from("course")
+        .where("slug", req.params.course)
+    )[0] || {}
+
+  const completed =
+    (automatic_completions &&
+      points_needed &&
+      exercise_completions_needed &&
+      points >= points_needed &&
+      exercises >= exercise_completions_needed) ||
+    false
+
+  res.json({
+    points,
+    exercises,
+    automatic_completions,
+    points_needed,
+    exercise_completions_needed,
+    completed,
+  })
+})
+
 server.start(serverStartOptions, () =>
   console.log("Server is running on http://localhost:4000"),
 )

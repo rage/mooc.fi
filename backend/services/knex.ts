@@ -1,4 +1,7 @@
 import * as knex from "knex"
+// require("dotenv-safe").config({
+//   allowEmptyValues: process.env.NODE_ENV === "production",
+// })
 
 export default knex({
   client: "pg",
