@@ -121,52 +121,40 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   req.on("close", stream.end.bind(stream))
 })
 
-type UserCourseSettingsCountResult =
-  | {
-      course: string
-      language: string
-      count?: number
-    }
-  | {
-      course: string
-      language: string
-      error: true
-    }
-
 server.get(
   "/api/usercoursesettingscount/:course/:language",
   async (req: any, res: any) => {
-    const {
-      course,
-      language,
-    }: { course: string; language: string } = req.params
+    const { course, language } = req.params
 
-    if (!course || !language) {
-      return res
-        .status(400)
-        .json({ message: "Course and/or language not specified" })
-    }
+    const { id } = await redisify<{ id: string }>(
+      async () =>
+        (
+          await Knex.select("id")
+            .from("course")
+            .join("course_user_course_settings_visibilities", {
+              "course.id": "course_user_course_settings_visibilities.nodeId",
+            })
+            .where({
+              slug: course,
+              "course_user_course_settings_visibilities.value": language,
+            })
+            .limit(1)
+        )[0] ?? {},
+      {
+        prefix: "usercoursesettingsvisibility",
+        expireTime: 0,
+        key: `${course}-${language}`,
+      },
+    )
 
-    const resObject = await redisify<UserCourseSettingsCountResult>(
-      async () => {
-        let course_id: string
+    let course_id: string
 
-        const { id } =
+    if (!id) {
+      const course_alias_info = await redisify<{
+        course: string
+      }>(
+        async () =>
           (
-            await Knex.select("id")
-              .from("course")
-              .join("course_user_course_settings_visibilities", {
-                "course.id": "course_user_course_settings_visibilities.nodeId",
-              })
-              .where({
-                slug: course,
-                "course_user_course_settings_visibilities.value": language,
-              })
-              .limit(1)
-          )[0] ?? {}
-
-        if (!id) {
-          const courseAlias = (
             await Knex.select("course_alias.course")
               .from("course_alias")
               .join("course", { "course_alias.course": "course.id" })
@@ -177,46 +165,25 @@ server.get(
                 course_code: course,
                 "course_user_course_settings_visibilities.value": language,
               })
-          )[0]
-          course_id = courseAlias?.course
-        } else {
-          course_id = id
-        }
+          )[0],
+        {
+          prefix: "usercoursesettingsvisibility",
+          expireTime: 0,
+          key: `${course}-${language}`,
+        },
+      )
+      course_id = course_alias_info?.course
+    } else {
+      course_id = id
+    }
 
-        if (!course_id) {
-          return { course, language, error: true }
-        }
-
-        let { count } = (
-          await Knex.countDistinct("id as count")
-            .from("UserCourseSettings")
-            .where({ course: course_id, language: language })
-        )?.[0]
-
-        if (count < 100) {
-          count = -1
-        } else {
-          const factor = count < 10000 ? 100 : 1000
-          count = Math.floor(Number(count) / factor) * factor
-        }
-
-        return { course, language, count: Number(count) }
-      },
-      {
-        prefix: "usercoursesettingscount",
-        expireTime: 3600000, // hour
-        key: `${course}-${language}`,
-      },
-    )
-
-    if (resObject.error) {
+    if (!course_id) {
       return res
         .status(403)
         .json({ message: "Course not found or user count not set to visible" })
     }
 
-    res.json(resObject)
-    /*res.json(
+    res.json(
       await redisify(
         async () => {
           let { count } = (
@@ -240,7 +207,7 @@ server.get(
           key: course,
         },
       ),
-    )*/
+    )
   },
 )
 
