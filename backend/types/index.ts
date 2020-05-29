@@ -1,4 +1,4 @@
-// generated Fri May 22 2020 11:03:02 GMT+0300 (Eastern European Summer Time)
+// generated Thu May 28 2020 13:48:54 GMT+0300 (Eastern European Summer Time)
 
 export { default as Completion } from "./Completion"
 export { default as CompletionArg } from "./CompletionArg"
@@ -25,6 +25,7 @@ export { default as StudyModuleTranslationCreateUpdateInput } from "./StudyModul
 export { default as StudyModuleTranslationWithIdInput } from "./StudyModuleTranslationWithIdInput"
 export { default as Upload } from "./Upload"
 export { default as User } from "./User"
+export { default as UserArg } from "./UserArg"
 export { default as UserConnection } from "./UserConnection"
 export { default as UserCourseProgress } from "./UserCourseProgress"
 export { default as UserCourseSettingsConnection } from "./UserCourseSettingsConnection"

@@ -1,4 +1,4 @@
-// generated Fri May 22 2020 11:03:02 GMT+0300 (Eastern European Summer Time)
+// generated Thu May 28 2020 13:48:54 GMT+0300 (Eastern European Summer Time)
 
 export { default as addCompletionRegisteredMutations } from "./CompletionRegistered"
 export { default as addEmailTemplateMutations } from "./EmailTemplate"

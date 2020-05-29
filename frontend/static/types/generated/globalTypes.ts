@@ -78,6 +78,11 @@ export interface CourseVariantCreateUpdateInput {
   slug: string
 }
 
+export interface ManualCompletionArg {
+  grade?: string | null
+  user_id: string
+}
+
 export interface OpenUniversityRegistrationLinkCreateUpdateInput {
   course_code: string
   id?: string | null
@@ -108,6 +113,15 @@ export interface StudyModuleTranslationCreateUpdateInput {
 export interface StudyModuleWhereUniqueInput {
   id?: any | null
   slug?: string | null
+}
+
+export interface UserArg {
+  email: string
+  first_name: string
+  last_name: string
+  research_consent: boolean
+  upstream_id: number
+  username: string
 }
 
 //==============================================================

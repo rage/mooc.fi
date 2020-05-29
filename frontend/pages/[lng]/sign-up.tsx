@@ -9,6 +9,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import getSignUpTranslator from "/translations/sign-up"
 import { useRouter } from "next/router"
 import LoginStateContext from "/contexes/LoginStateContext"
+import { useApolloClient } from "@apollo/react-hooks"
 
 const SignUpPage = () => {
   const { language } = useContext(LanguageContext)
@@ -17,6 +18,7 @@ const SignUpPage = () => {
   const { addAlert } = useContext(AlertContext)
   const { logInOrOut } = useContext(LoginStateContext)
 
+  const apollo = useApolloClient()
   const router = useRouter()
 
   const onStepComplete = () => {
@@ -37,7 +39,7 @@ const SignUpPage = () => {
   return (
     <div>
       <RegularContainer>
-        <CreateAccountForm onComplete={onStepComplete} />
+        <CreateAccountForm onComplete={onStepComplete} apollo={apollo} />
       </RegularContainer>
     </div>
   )
