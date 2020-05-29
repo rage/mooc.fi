@@ -39,7 +39,7 @@ export const toCourseForm = ({
 
   return course
     ? {
-        ...omit(course, ["__typename"]),
+        ...omit(course, ["__typename", "user_course_settings_visibility"]),
         teacher_in_charge_name: course.teacher_in_charge_name ?? "",
         teacher_in_charge_email: course.teacher_in_charge_email ?? "",
         support_email: course.support_email ?? "",
