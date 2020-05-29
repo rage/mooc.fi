@@ -216,6 +216,31 @@ server.get(
     }
 
     res.json(resObject)
+    /*res.json(
+      await redisify(
+        async () => {
+          let { count } = (
+            await Knex.countDistinct("id as count")
+              .from("UserCourseSettings")
+              .where({ course: course_id, language: language })
+          )?.[0]
+
+          if (count < 100) {
+            count = -1
+          } else {
+            const factor = count < 10000 ? 100 : 1000
+            count = Math.floor(Number(count) / factor) * factor
+          }
+
+          return { course: course, language: language, count }
+        },
+        {
+          prefix: "usercoursesettingscount",
+          expireTime: 0,
+          key: course,
+        },
+      ),
+    )*/
   },
 )
 
