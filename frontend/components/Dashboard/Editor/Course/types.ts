@@ -41,7 +41,6 @@ export interface CourseFormValues extends FormValues {
   inherit_settings_from?: string
   completions_handled_by?: string
   has_certificate: boolean
-  user_course_settings_visibilities: string[]
 }
 
 export interface CourseTranslationFormValues extends FormValues {
