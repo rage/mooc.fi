@@ -28,11 +28,6 @@ export interface AllCourses_courses_course_translations {
   name: string
 }
 
-export interface AllCourses_courses_user_course_settings_visibility {
-  __typename: "UserCourseSettingsVisibility"
-  visible: boolean
-}
-
 export interface AllCourses_courses {
   __typename: "Course"
   id: any
@@ -49,7 +44,6 @@ export interface AllCourses_courses {
   link: string
   study_modules: AllCourses_courses_study_modules[] | null
   course_translations: AllCourses_courses_course_translations[] | null
-  user_course_settings_visibility: AllCourses_courses_user_course_settings_visibility | null
 }
 
 export interface AllCourses {
