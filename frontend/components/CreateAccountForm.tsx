@@ -16,6 +16,7 @@ import getSignUpTranslator from "/translations/sign-up"
 import LangLink from "/components/LangLink"
 import styled from "styled-components"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import { gql, ApolloClient, NormalizedCacheObject } from "apollo-boost"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -57,8 +58,16 @@ interface state {
   showPassword?: boolean
   first_name?: string
   last_name?: string
-  research?: boolean
+  research?: string
 }
+
+const updateResearchConsentMutation = gql`
+  mutation updateResearchConsent($value: Boolean!) {
+    updateResearchConsent(value: $value) {
+      id
+    }
+  }
+`
 
 export function capitalizeFirstLetter(string: String) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -66,6 +75,7 @@ export function capitalizeFirstLetter(string: String) {
 
 export interface CreateAccountFormProps {
   onComplete: Function
+  apollo: ApolloClient<NormalizedCacheObject>
 }
 
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
@@ -98,19 +108,30 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
       return
     }
     try {
-      const res = await createAccount({
+      await createAccount({
         email: this.state.email,
         first_name: this.state.first_name,
         last_name: this.state.last_name,
         password: this.state.password,
         password_confirmation: this.state.password_confirmation,
       })
-      console.log("Created an account:", JSON.stringify(res))
+
       await authenticate({
         email: this.state.email || "",
         password: this.state.password || "",
         redirect: false,
       })
+
+      await this.props.apollo.mutate({
+        mutation: updateResearchConsentMutation,
+        variables: {
+          value: this.state.research === "1",
+        },
+      })
+
+      // TODO/FIXME: above mutation will update the consent,
+      // but also a GQL error because it tries to create a new user
+      // with same upstream_id!
 
       this.props.onComplete()
     } catch (error) {

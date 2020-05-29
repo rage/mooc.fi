@@ -65,7 +65,7 @@ export const signIn = async ({
     Router.push("/", undefined, { shallow })
   }
 
-  return res
+  return details
 }
 
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {

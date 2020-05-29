@@ -64,6 +64,7 @@ async function getUser(rawToken: string, context: any, prisma: Prisma) {
 
   context.userDetails = details
   context.tmcClient = client
+
   const id: number = details.id
   const prismaDetails = {
     upstream_id: id,
@@ -73,6 +74,9 @@ async function getUser(rawToken: string, context: any, prisma: Prisma) {
     last_name: details.user_field.last_name.trim(),
     username: details.username,
   }
+
+  // TODO: this will produce an unique constrait error on
+  // creating a new user
   context.user = await prisma.upsertUser({
     where: { upstream_id: id },
     create: prismaDetails,
