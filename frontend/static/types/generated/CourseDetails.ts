@@ -63,6 +63,12 @@ export interface CourseDetails_course_completions_handled_by {
   id: any
 }
 
+export interface CourseDetails_course_user_course_settings_visibilities {
+  __typename: "UserCourseSettingsVisibility"
+  id: any
+  language: string
+}
+
 export interface CourseDetails_course {
   __typename: "Course"
   id: any
@@ -92,7 +98,9 @@ export interface CourseDetails_course {
   inherit_settings_from: CourseDetails_course_inherit_settings_from | null
   completions_handled_by: CourseDetails_course_completions_handled_by | null
   has_certificate: boolean | null
-  user_course_settings_visibilities: string[]
+  user_course_settings_visibilities:
+    | CourseDetails_course_user_course_settings_visibilities[]
+    | null
 }
 
 export interface CourseDetails {

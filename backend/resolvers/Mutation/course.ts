@@ -11,6 +11,7 @@ import {
   CourseVariantUpdateManyWithoutCourseInput,
   CourseAliasUpdateManyWithoutCourseInput,
   CourseUpdateOneWithoutCompletions_handled_byInput,
+  UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, arg, idArg } from "nexus/dist"
@@ -42,7 +43,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       checkAccess(ctx, { allowOrganizations: false })
 
       const {
-        slug,
+        // slug,
         new_photo,
         base64,
         course_translations,
@@ -69,10 +70,6 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         photo = newImage.id
       }
 
-      user_course_settings_visibilities?.forEach((v) =>
-        invalidate("usercoursesettingscount", `${slug}-${v}`),
-      )
-
       const newCourse: Course = await prisma.createCourse({
         ...omit(course, [
           "id",
@@ -97,9 +94,9 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         completions_handled_by: !!completions_handled_by
           ? { connect: { id: completions_handled_by } }
           : null,
-        user_course_settings_visibilities: {
-          set: user_course_settings_visibilities ?? [],
-        },
+        user_course_settings_visibilities: !!user_course_settings_visibilities
+          ? { create: user_course_settings_visibilities }
+          : null,
       } as CourseCreateInput)
 
       const kafkaProducer = await new KafkaProducer()
@@ -271,8 +268,20 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         field: "course_aliases",
       })
 
-      user_course_settings_visibilities?.forEach((v) =>
-        invalidate("usercoursesettingscount", `${slug}-${v}`),
+      const userCourseSettingsVisibilityMutation:
+        | UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
+        | undefined = await createMutation({
+        prisma,
+        slug,
+        data: user_course_settings_visibilities,
+        field: "user_course_settings_visibilities",
+      })
+
+      const existingVisibilities = await prisma
+        .course({ slug })
+        .user_course_settings_visibilities()
+      existingVisibilities?.forEach((visibility) =>
+        invalidate("usercoursesettingscount", `${slug}-${visibility.language}`),
       )
 
       // this had different logic so it's not done with the same helper
@@ -360,9 +369,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             : undefined,
           inherit_settings_from: inheritMutation,
           completions_handled_by: handledMutation,
-          user_course_settings_visibilities: {
-            set: user_course_settings_visibilities,
-          },
+          user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
         } as CourseUpdateInput,
       })
 
@@ -403,7 +410,7 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const upsertUserCourseSettingsVisiblity = async (
+/*const upsertUserCourseSettingsVisiblity = async (
   t: PrismaObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("upsertUsercourseSettingsVisibility", {
@@ -433,13 +440,13 @@ const upsertUserCourseSettingsVisiblity = async (
       })) as NexusGenRootTypes["Course"]
     },
   })
-}
+}*/
 
 const addCourseMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   addCourse(t)
   updateCourse(t)
   deleteCourse(t)
-  upsertUserCourseSettingsVisiblity(t)
+  // upsertUserCourseSettingsVisiblity(t)
 }
 
 export default addCourseMutations

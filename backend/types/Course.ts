@@ -1,5 +1,4 @@
 import { prismaObjectType } from "nexus-prisma"
-import { arg } from "nexus/dist"
 
 const Course = prismaObjectType<"Course">({
   name: "Course",

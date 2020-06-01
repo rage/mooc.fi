@@ -27,13 +27,15 @@ const UserCourseSettingsVisibilityEditForm = () => {
                     component={() => (
                       <ChipInput
                         label="languages where user count is visible"
-                        value={values}
+                        value={values.map((v) => v.language)}
                         variant="outlined"
                         error={(errors && errors.length > 0) || false}
                         disabled={isSubmitting}
-                        onAdd={(v: string) => helpers.push(v)}
+                        onAdd={(v: string) => helpers.push({ language: v })}
                         onDelete={(v: string) =>
-                          helpers.remove(values.findIndex((t) => t === v))
+                          helpers.remove(
+                            values.findIndex((t) => t.language === v),
+                          )
                         }
                       />
                     )}
