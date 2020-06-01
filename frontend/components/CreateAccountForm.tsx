@@ -129,10 +129,6 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
         },
       })
 
-      // TODO/FIXME: above mutation will update the consent,
-      // but also a GQL error because it tries to create a new user
-      // with same upstream_id!
-
       this.props.onComplete()
     } catch (error) {
       try {
@@ -172,6 +168,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 
   validate = () => {
+    // @ts-ignore: tst
     const t = getSignUpTranslator(this.context.language)
     let newState: state = {
       error: "",

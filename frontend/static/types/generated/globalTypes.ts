@@ -115,15 +115,6 @@ export interface StudyModuleWhereUniqueInput {
   slug?: string | null
 }
 
-export interface UserArg {
-  email: string
-  first_name: string
-  last_name: string
-  research_consent: boolean
-  upstream_id: number
-  username: string
-}
-
 //==============================================================
 // END Enums and Input Objects
 //==============================================================
