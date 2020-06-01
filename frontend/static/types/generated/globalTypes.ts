@@ -78,6 +78,11 @@ export interface CourseVariantCreateUpdateInput {
   slug: string
 }
 
+export interface ManualCompletionArg {
+  grade?: string | null
+  user_id: string
+}
+
 export interface OpenUniversityRegistrationLinkCreateUpdateInput {
   course_code: string
   id?: string | null

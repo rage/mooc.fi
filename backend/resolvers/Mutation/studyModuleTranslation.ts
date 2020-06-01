@@ -49,11 +49,11 @@ const updateStudyModuleTranslation = (
       const { id, language, name, description, study_module } = args
       const prisma: Prisma = ctx.prisma
       return prisma.updateStudyModuleTranslation({
-        where: { id: id },
+        where: { id },
         data: {
-          description: description,
-          language: language,
-          name: name,
+          description,
+          language,
+          name,
           study_module: { connect: { id: study_module } },
         },
       })
