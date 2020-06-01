@@ -39,8 +39,8 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
             ],
             search ?? "",
           ),
-          id: id,
-          upstream_id: upstream_id,
+          id,
+          upstream_id,
         },
       })
       if (!users.length) throw new UserInputError("User not found")
