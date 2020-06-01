@@ -56,6 +56,12 @@ export interface addCourse_addCourse_course_aliases {
   course_code: string
 }
 
+export interface addCourse_addCourse_user_course_settings_visibilities {
+  __typename: "UserCourseSettingsVisibility"
+  id: any
+  language: string
+}
+
 export interface addCourse_addCourse {
   __typename: "Course"
   id: any
@@ -72,6 +78,9 @@ export interface addCourse_addCourse {
   study_modules: addCourse_addCourse_study_modules[] | null
   course_variants: addCourse_addCourse_course_variants[] | null
   course_aliases: addCourse_addCourse_course_aliases[] | null
+  user_course_settings_visibilities:
+    | addCourse_addCourse_user_course_settings_visibilities[]
+    | null
 }
 
 export interface addCourse {

@@ -56,7 +56,7 @@ const CourseArg = inputObjectType({
     t.boolean("has_certificate", { required: false })
     t.field("user_course_settings_visibilities", {
       list: true,
-      type: "String",
+      type: "UserCourseSettingsVisibilityCreateUpdateInput",
       required: false,
     })
   },
