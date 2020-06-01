@@ -6,6 +6,7 @@ import {
   CourseTranslationFormValues,
   CourseVariantFormValues,
   CourseAliasFormValues,
+  UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { DocumentNode } from "apollo-boost"
 import { FormValues } from "/components/Dashboard/Editor/types"
@@ -65,6 +66,12 @@ export const initialValues: CourseFormValues = {
   delete_photo: false,
   has_certificate: false,
   user_course_settings_visibilities: [],
+}
+
+export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
+  id: undefined,
+  language: "",
+  course: undefined,
 }
 
 export const statuses = (t: Function) => [

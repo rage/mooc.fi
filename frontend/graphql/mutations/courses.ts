@@ -44,6 +44,10 @@ export const AddCourseMutation = gql`
         id
         course_code
       }
+      user_course_settings_visibilities {
+        id
+        language
+      }
     }
   }
 `
@@ -98,6 +102,10 @@ export const UpdateCourseMutation = gql`
         title
         txt_body
         html_body
+      }
+      user_course_settings_visibilities {
+        id
+        language
       }
     }
   }
