@@ -196,7 +196,7 @@ server.get(
         if (count < 100) {
           count = -1
         } else {
-          const factor = count < 10000 ? 100 : 1000
+          const factor = count < 10000 ? 10 : 100
           count = Math.floor(Number(count) / factor) * factor
         }
 
