@@ -65,6 +65,12 @@ export interface updateCourse_updateCourse_completion_email {
   html_body: string | null
 }
 
+export interface updateCourse_updateCourse_user_course_settings_visibilities {
+  __typename: "UserCourseSettingsVisibility"
+  id: any
+  language: string
+}
+
 export interface updateCourse_updateCourse {
   __typename: "Course"
   id: any
@@ -82,6 +88,9 @@ export interface updateCourse_updateCourse {
   course_variants: updateCourse_updateCourse_course_variants[] | null
   course_aliases: updateCourse_updateCourse_course_aliases[] | null
   completion_email: updateCourse_updateCourse_completion_email | null
+  user_course_settings_visibilities:
+    | updateCourse_updateCourse_user_course_settings_visibilities[]
+    | null
 }
 
 export interface updateCourse {

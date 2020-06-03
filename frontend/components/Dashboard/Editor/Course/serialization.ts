@@ -14,6 +14,7 @@ import {
   addCourse_addCourse_course_translations,
   addCourse_addCourse_course_variants,
   addCourse_addCourse_course_aliases,
+  addCourse_addCourse_user_course_settings_visibilities,
 } from "/static/types/generated/addCourse"
 import {
   updateCourse_updateCourse_open_university_registration_links,
@@ -21,6 +22,7 @@ import {
   updateCourse_updateCourse_course_translations,
   updateCourse_updateCourse_course_variants,
   updateCourse_updateCourse_course_aliases,
+  updateCourse_updateCourse_user_course_settings_visibilities,
 } from "/static/types/generated/updateCourse"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { DateTime } from "luxon"
@@ -82,6 +84,8 @@ export const toCourseForm = ({
         inherit_settings_from: course.inherit_settings_from?.id,
         completions_handled_by: course.completions_handled_by?.id,
         has_certificate: course?.has_certificate ?? false,
+        user_course_settings_visibilities:
+          course?.user_course_settings_visibilities || [],
       }
     : initialValues
 }
@@ -118,6 +122,16 @@ export const fromCourseForm = ({
   ) as (
     | Omit<addCourse_addCourse_course_aliases, "__typename">
     | Omit<updateCourse_updateCourse_course_aliases, "__typename">
+  )[]
+
+  const user_course_settings_visibilities = (
+    values?.user_course_settings_visibilities ?? []
+  ).map((v) => omit(v, ["__typename"])) as (
+    | Omit<addCourse_addCourse_user_course_settings_visibilities, "__typename">
+    | Omit<
+        updateCourse_updateCourse_user_course_settings_visibilities,
+        "__typename"
+      >
   )[]
 
   const open_university_registration_links = values?.course_translations
@@ -193,6 +207,7 @@ export const fromCourseForm = ({
         : values.end_date,
     inherit_settings_from: values.inherit_settings_from,
     completions_handled_by: values.completions_handled_by,
+    user_course_settings_visibilities,
   }
 
   return c

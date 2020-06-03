@@ -60,6 +60,9 @@ export interface CourseArg {
   support_email?: string | null
   teacher_in_charge_email?: string | null
   teacher_in_charge_name?: string | null
+  user_course_settings_visibilities?:
+    | UserCourseSettingsVisibilityCreateUpdateInput[]
+    | null
 }
 
 export interface CourseTranslationCreateUpdateInput {
@@ -113,6 +116,12 @@ export interface StudyModuleTranslationCreateUpdateInput {
 export interface StudyModuleWhereUniqueInput {
   id?: any | null
   slug?: string | null
+}
+
+export interface UserCourseSettingsVisibilityCreateUpdateInput {
+  course?: string | null
+  id?: string | null
+  language: string
 }
 
 //==============================================================
