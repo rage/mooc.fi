@@ -54,6 +54,11 @@ const CourseArg = inputObjectType({
     t.id("inherit_settings_from", { required: false })
     t.id("completions_handled_by", { required: false })
     t.boolean("has_certificate", { required: false })
+    t.field("user_course_settings_visibilities", {
+      list: true,
+      type: "UserCourseSettingsVisibilityCreateUpdateInput",
+      required: false,
+    })
   },
 })
 
