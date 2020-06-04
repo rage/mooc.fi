@@ -50,6 +50,7 @@ const CourseArg = inputObjectType({
     t.int("study_module_order")
     t.int("points_needed")
     t.boolean("automatic_completions")
+    t.boolean("automatic_completions_eligible_for_ects")
     t.id("completion_email", { required: false })
     t.id("inherit_settings_from", { required: false })
     t.id("completions_handled_by", { required: false })
