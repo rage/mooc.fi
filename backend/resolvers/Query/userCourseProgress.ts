@@ -1,10 +1,10 @@
 import { Prisma } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg, stringArg } from "nexus/dist"
+import { idArg, intArg, stringArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const userCourseProgress = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const userCourseProgress = async (t: ObjectDefinitionBlock<"Query">) => {
   t.field("UserCourseProgress", {
     type: "UserCourseProgress",
     args: {
@@ -29,7 +29,7 @@ const userCourseProgress = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const userCourseProgresses = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("UserCourseProgresses", {
     type: "UserCourseProgress",
     args: {
@@ -67,9 +67,7 @@ const userCourseProgresses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addUserCourseProgressQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const addUserCourseProgressQueries = (t: ObjectDefinitionBlock<"Query">) => {
   userCourseProgress(t)
   userCourseProgresses(t)
 }

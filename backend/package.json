@@ -37,6 +37,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/storage": "^4.7.0",
+    "@prisma/client": "^2.0.0-beta.7",
     "@types/compression": "^1.7.0",
     "@types/graphql-upload": "^8.0.3",
     "@types/lodash": "^4.14.150",
@@ -66,8 +67,8 @@
     "mime-types": "^2.1.27",
     "mkdirp": "^1.0.3",
     "morgan": "^1.10.0",
-    "nexus": "^0.11.7",
-    "nexus-prisma": "^0.3.7",
+    "nexus": "^0.22.0",
+    "nexus-prisma": "^0.13.0",
     "node-rdkafka": "^2.7.4",
     "nodemailer": "^6.4.2",
     "pg-query-stream": "^3.0.4",
@@ -82,10 +83,13 @@
     "yup": "^0.28.5"
   },
   "devDependencies": {
+    "@nexus/schema": "^0.13.1",
+    "@prisma/cli": "^2.0.0-beta.7",
     "@types/faker": "^4.1.9",
     "faker": "^4.1.0",
     "nexus-prisma-generate": "^0.3.7",
     "npm-check": "^5.9.0",
+    "prisma-upgrade": "0.0.8",
     "tmc-client-js": "0.0.9",
     "ts-node": "^8.10.1",
     "ts-node-dev": "^1.0.0-pre.44",

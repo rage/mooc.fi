@@ -1,5 +1,5 @@
 import { GraphQLUpload } from "graphql-upload"
-import { scalarType } from "nexus"
+import { scalarType } from "@nexus/schema"
 
 export const Upload = scalarType({
   name: GraphQLUpload.name,

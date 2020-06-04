@@ -8,12 +8,12 @@ import {
   StudyModuleCreateInput,
   StudyModuleUpdateInput,
 } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, arg, idArg } from "nexus/dist"
+import { stringArg, arg, idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addStudyModule = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addStudyModule", {
     type: "StudyModule",
     args: {
@@ -41,9 +41,7 @@ const addStudyModule = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const updateStudyModule = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const updateStudyModule = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateStudyModule", {
     type: "StudyModule",
     args: {
@@ -114,7 +112,7 @@ const updateStudyModule = async (
   })
 }
 
-const deleteStudyModule = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const deleteStudyModule = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteStudyModule", {
     type: "StudyModule",
     args: {
@@ -141,9 +139,7 @@ const deleteStudyModule = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addStudyModuleMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addStudyModuleMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addStudyModule(t)
   updateStudyModule(t)
   deleteStudyModule(t)

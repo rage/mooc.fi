@@ -1,7 +1,7 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const courseAliass = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const courseAliass = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("CourseAliases", {
     type: "CourseAlias",
     resolve: (_, __, ctx) => {
@@ -11,7 +11,7 @@ const courseAliass = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addCourseAliasQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addCourseAliasQueries = (t: ObjectDefinitionBlock<"Query">) => {
   courseAliass(t)
 }
 

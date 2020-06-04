@@ -1,12 +1,10 @@
 import { Prisma } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg } from "nexus/dist"
+import { idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const openUniversityRegistrationLink = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const openUniversityRegistrationLink = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("openUniversityRegistrationLink", {
     type: "OpenUniversityRegistrationLink",
     args: {
@@ -26,9 +24,7 @@ const openUniversityRegistrationLink = (
   })
 }
 
-const openUniversityRegistrationLinks = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const openUniversityRegistrationLinks = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("openUniversityRegistrationLinks", {
     type: "OpenUniversityRegistrationLink",
     resolve: (_, __, ctx) => {
@@ -39,7 +35,7 @@ const openUniversityRegistrationLinks = (
 }
 
 const addOpenUniversityRegistrationLinkQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
+  t: ObjectDefinitionBlock<"Query">,
 ) => {
   openUniversityRegistrationLink(t)
   openUniversityRegistrationLinks(t)

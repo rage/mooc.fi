@@ -1,9 +1,9 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, intArg, idArg } from "nexus/dist"
+import { stringArg, intArg, idArg } from "@nexus/schema"
 import { Prisma } from "../../generated/prisma-client"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addCompletion = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addCompletion", {
     type: "Completion",
     args: {
@@ -37,7 +37,7 @@ const addCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addCompletionMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addCompletionMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addCompletion(t)
 }
 

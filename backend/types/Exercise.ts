@@ -1,10 +1,24 @@
-import { prismaObjectType } from "nexus-prisma"
-import { arg } from "nexus/dist"
+// import { prismaObjectType } from "nexus-prisma"
+// import { arg } from "nexus/dist"
+import { objectType, arg } from "@nexus/schema"
 
-const Exercise = prismaObjectType<"Exercise">({
+const Exercise = objectType({
   name: "Exercise",
   definition(t) {
-    t.prismaFields({ filter: ["exercise_completions"] })
+    t.model.id()
+    t.model.course()
+    t.model.created_at()
+    t.model.custom_id()
+    t.model.deleted()
+    t.model.max_points()
+    t.model.name()
+    t.model.part()
+    t.model.section()
+    t.model.service()
+    t.model.timestamp()
+    t.model.updated_at()
+
+    // t.prismaFields({ filter: ["exercise_completions"] })
 
     t.field("exercise_completions", {
       type: "ExerciseCompletion",

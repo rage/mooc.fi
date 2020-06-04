@@ -1,10 +1,11 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg } from "nexus/dist"
+// import { ObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
+import { stringArg, idArg } from "@nexus/schema"
 import { Prisma } from "../../generated/prisma-client"
 import checkAccess from "../../accessControl"
 import { UserInputError } from "apollo-server-core"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addEmailTemplate = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addEmailTemplate", {
     type: "EmailTemplate",
     args: {
@@ -28,7 +29,7 @@ const addEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const updateEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const updateEmailTemplate = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateEmailTemplate", {
     type: "EmailTemplate",
     args: {
@@ -56,7 +57,7 @@ const updateEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const deleteEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const deleteEmailTemplate = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteEmailTemplate", {
     type: "EmailTemplate",
     args: {
@@ -69,9 +70,7 @@ const deleteEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addEmailTemplateMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addEmailTemplateMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addEmailTemplate(t)
   updateEmailTemplate(t)
   deleteEmailTemplate(t)

@@ -1,11 +1,33 @@
-import { prismaObjectType } from "nexus-prisma"
-import { stringArg, idArg } from "nexus/dist"
+// import { prismaObjectType } from "nexus-prisma"
+// import { stringArg, idArg } from "nexus/dist"
+import { objectType, stringArg, idArg } from "@nexus/schema"
 import { NexusGenRootTypes } from "/generated/nexus"
 
-const User = prismaObjectType<"User">({
+const User = objectType({
   name: "User",
   definition(t) {
-    t.prismaFields({ filter: ["completions"] })
+    t.model.id()
+    t.model.administrator()
+    t.model.created_at()
+    t.model.email()
+    t.model.first_name()
+    t.model.last_name()
+    t.model.real_student_number()
+    t.model.student_number()
+    t.model.updated_at()
+    t.model.upstream_id()
+    t.model.username()
+    t.model.completion()
+    // t.model.completion_registered()
+    // t.model.email_delivery()
+    // t.model.exercise_completion()
+    t.model.organization()
+    // t.model.user_course_progress()
+    // t.model.user_course_service_progress()
+    // t.model.UserCourseSettings()
+    // t.model.user_organization()
+    // t.model.verified_user()
+    // t.prismaFields({ filter: ["completions"] })
 
     t.field("completions", {
       type: "Completion",

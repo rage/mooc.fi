@@ -1,10 +1,10 @@
 import { Prisma } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg } from "nexus/dist"
+import { idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const exerciseCompletion = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const exerciseCompletion = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("exerciseCompletion", {
     type: "ExerciseCompletion",
     args: {
@@ -24,7 +24,7 @@ const exerciseCompletion = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const exercisesCompletions = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const exercisesCompletions = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("exerciseCompletions", {
     type: "ExerciseCompletion",
     resolve: (_, __, ctx) => {
@@ -34,9 +34,7 @@ const exercisesCompletions = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addExerciseCompletionQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const addExerciseCompletionQueries = (t: ObjectDefinitionBlock<"Query">) => {
   exerciseCompletion(t)
   exercisesCompletions(t)
 }

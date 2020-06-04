@@ -3,12 +3,12 @@ import {
   StudyModule,
   StudyModuleOrderByInput,
 } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg, arg } from "nexus/dist"
+import { stringArg, idArg, arg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const studyModule = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("study_module", {
     type: "StudyModule",
     args: {
@@ -52,7 +52,7 @@ const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const studyModules = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("study_modules", {
     type: "StudyModule",
     args: {
@@ -94,7 +94,7 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const studyModuleExists = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const studyModuleExists = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("study_module_exists", {
     type: "Boolean",
     args: {
@@ -110,7 +110,7 @@ const studyModuleExists = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addStudyModuleQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addStudyModuleQueries = (t: ObjectDefinitionBlock<"Query">) => {
   studyModule(t)
   studyModules(t)
   studyModuleExists(t)

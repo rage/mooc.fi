@@ -2,12 +2,12 @@ import {
   Prisma,
   OpenUniversityRegistrationLink,
 } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg } from "nexus/dist"
+import { stringArg, idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const addOpenUniversityRegistrationLink = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("addOpenUniversityRegistrationLink", {
     type: "OpenUniversityRegistrationLink",
@@ -37,7 +37,7 @@ const addOpenUniversityRegistrationLink = async (
 }
 
 const updateOpenUniversityRegistrationLink = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("updateOpenUniversityRegistrationLink", {
     type: "OpenUniversityRegistrationLink",
@@ -69,7 +69,7 @@ const updateOpenUniversityRegistrationLink = (
 }
 
 const addOpenUniversityRegistrationLinkMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   addOpenUniversityRegistrationLink(t)
   updateOpenUniversityRegistrationLink(t)

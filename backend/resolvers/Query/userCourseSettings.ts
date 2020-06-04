@@ -1,11 +1,11 @@
 import { Prisma, Course } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg, stringArg } from "nexus/dist"
+import { idArg, intArg, stringArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { buildSearch } from "../../util/db-functions"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const userCourseSettings = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const userCourseSettings = async (t: ObjectDefinitionBlock<"Query">) => {
   t.field("UserCourseSettings", {
     type: "UserCourseSettings",
     args: {
@@ -36,7 +36,7 @@ const userCourseSettings = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const userCourseSettingses = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("UserCourseSettingses", {
     type: "UserCourseSettingsConnection",
     args: {
@@ -103,7 +103,7 @@ const userCourseSettingses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const userCourseSettingsCount = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("userCourseSettingsCount", {
     type: "Int",
     args: {
@@ -127,7 +127,7 @@ const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-/* const uniqueCourseVariants = (t: PrismaObjectDefinitionBlock<"Query">) => {
+/* const uniqueCourseVariants = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("uniqueCourseVariants", {
     type: "String",
     args: {
@@ -143,9 +143,7 @@ const userCourseSettingsCount = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
  */
-const addUserCourseSettingsQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const addUserCourseSettingsQueries = (t: ObjectDefinitionBlock<"Query">) => {
   userCourseSettings(t)
   userCourseSettingses(t)
   userCourseSettingsCount(t)

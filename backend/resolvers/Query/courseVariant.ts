@@ -1,7 +1,7 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg } from "nexus/dist"
+import { idArg } from "@nexus/schema"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const courseVariant = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const courseVariant = async (t: ObjectDefinitionBlock<"Query">) => {
   t.field("courseVariant", {
     type: "CourseVariant",
     args: {
@@ -16,7 +16,7 @@ const courseVariant = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const courseVariants = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const courseVariants = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("courseVariants", {
     type: "CourseVariant",
     args: {
@@ -30,7 +30,7 @@ const courseVariants = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addCourseVariantQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addCourseVariantQueries = (t: ObjectDefinitionBlock<"Query">) => {
   courseVariant(t)
   courseVariants(t)
 }

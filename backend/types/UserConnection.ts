@@ -1,12 +1,15 @@
-import { prismaObjectType } from "nexus-prisma"
+// import { prismaObjectType } from "nexus-prisma"
+import { objectType, stringArg } from "@nexus/schema"
 import { Prisma } from "../generated/prisma-client"
-import { stringArg } from "nexus/dist"
+// import { stringArg } from "nexus/dist"
 import { buildSearch } from "../util/db-functions"
 
-const UserConnection = prismaObjectType<"UserConnection">({
+const UserConnection = objectType({
   name: "UserConnection",
   definition(t) {
-    t.prismaFields(["*"])
+    // t.prismaFields(["*"])
+
+    // TODO: dont know what this maps to
 
     t.field("count", {
       type: "Int",

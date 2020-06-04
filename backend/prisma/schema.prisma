@@ -1,0 +1,425 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://prisma:prisma@localhost:5678/prisma?schema=default$prisma2"
+}
+
+model completion {
+  certificate_id            String?
+  completion_language       String?
+  course                    String?
+  created_at                DateTime?               @default(now())
+  email                     String
+  grade                     String?
+  id                        String                  @id
+  student_number            String?
+  updated_at                DateTime?               @default(now())
+  user                      String?
+  user_upstream_id          Int?
+  course_completionTocourse course?                 @relation(fields: [course], references: [id])
+  user_completionTouser     user?                   @relation(fields: [user], references: [id])
+  completion_registered     completion_registered[]
+}
+
+model completion_registered {
+  completion                                       String?
+  course                                           String?
+  created_at                                       DateTime?     @default(now())
+  id                                               String        @id
+  organization                                     String?
+  real_student_number                              String
+  updated_at                                       DateTime?     @default(now())
+  user                                             String?
+  completion_completionTocompletion_registered     completion?   @relation(fields: [completion], references: [id])
+  course_completion_registeredTocourse             course?       @relation(fields: [course], references: [id])
+  organization_completion_registeredToorganization organization? @relation(fields: [organization], references: [id])
+  user_completion_registeredTouser                 user?         @relation(fields: [user], references: [id])
+}
+
+model course {
+  automatic_completions                              Boolean?                            @default(false)
+  completion_email                                   String?
+  completions_handled_by                             String?
+  created_at                                         DateTime?                           @default(now())
+  ects                                               String?
+  end_date                                           String?
+  exercise_completions_needed                        Int?
+  has_certificate                                    Boolean?                            @default(false)
+  hidden                                             Boolean?
+  id                                                 String                              @id
+  inherit_settings_from                              String?
+  name                                               String
+  order                                              Int?
+  owner_organization                                 String?
+  photo                                              String?
+  points_needed                                      Int?
+  promote                                            Boolean?
+  slug                                               String                              @unique
+  start_date                                         String
+  start_point                                        Boolean?
+  status                                             course_status?                      @default(Upcoming)
+  study_module_order                                 Int?
+  study_module_start_point                           Boolean?
+  support_email                                      String?
+  teacher_in_charge_email                            String
+  teacher_in_charge_name                             String
+  updated_at                                         DateTime?                           @default(now())
+  email_template                                     email_template?                     @relation(fields: [completion_email], references: [id])
+  course_courseTocourse_completions_handled_by       course?                             @relation("courseTocourse_completions_handled_by", fields: [completions_handled_by], references: [id])
+  course_courseTocourse_inherit_settings_from        course?                             @relation("courseTocourse_inherit_settings_from", fields: [inherit_settings_from], references: [id])
+  organization                                       organization?                       @relation(fields: [owner_organization], references: [id])
+  image                                              image?                              @relation(fields: [photo], references: [id])
+  completion                                         completion[]
+  completion_registered                              completion_registered[]
+  other_course_courseTocourse_completions_handled_by course[]                            @relation("courseTocourse_completions_handled_by")
+  other_course_courseTocourse_inherit_settings_from  course[]                            @relation("courseTocourse_inherit_settings_from")
+  course_alias                                       course_alias[]
+  course_organization                                course_organization[]
+  course_translation                                 course_translation[]
+  course_variant                                     course_variant[]
+  exercise                                           exercise[]
+  open_university_registration_link                  open_university_registration_link[]
+  user_course_progress                               user_course_progress[]
+  user_course_service_progress                       user_course_service_progress[]
+  UserCourseSettings                                 UserCourseSettings[]
+  user_course_settings_visibility                    user_course_settings_visibility[]
+  service                                            service[]                           @relation("CourseToService", references: [id])
+  study_module                                       study_module[]                      @relation("StudyModuleToCourse", references: [id])
+}
+
+model course_alias {
+  course                      String?
+  course_code                 String    @unique
+  created_at                  DateTime? @default(now())
+  id                          String    @id
+  updated_at                  DateTime? @default(now())
+  course_courseTocourse_alias course?   @relation(fields: [course], references: [id])
+}
+
+model course_organization {
+  course                                         String?
+  created_at                                     DateTime?     @default(now())
+  creator                                        Boolean?
+  id                                             String        @id
+  organization                                   String?
+  updated_at                                     DateTime?     @default(now())
+  course_courseTocourse_organization             course?       @relation(fields: [course], references: [id])
+  organization_course_organizationToorganization organization? @relation(fields: [organization], references: [id])
+}
+
+model course_translation {
+  course                            String?
+  created_at                        DateTime? @default(now())
+  description                       String
+  id                                String    @id
+  language                          String
+  link                              String?
+  name                              String
+  updated_at                        DateTime? @default(now())
+  course_courseTocourse_translation course?   @relation(fields: [course], references: [id])
+}
+
+model course_variant {
+  course                        String?
+  created_at                    DateTime? @default(now())
+  description                   String?
+  id                            String    @id
+  slug                          String
+  updated_at                    DateTime? @default(now())
+  course_courseTocourse_variant course?   @relation(fields: [course], references: [id])
+}
+
+model email_delivery {
+  created_at                                    DateTime?       @default(now())
+  email_template                                String?
+  error                                         Boolean         @default(false)
+  error_message                                 String?
+  id                                            String          @id
+  sent                                          Boolean         @default(false)
+  updated_at                                    DateTime?       @default(now())
+  user                                          String?
+  email_template_email_deliveryToemail_template email_template? @relation(fields: [email_template], references: [id])
+  user_email_deliveryTouser                     user?           @relation(fields: [user], references: [id])
+}
+
+model email_template {
+  created_at     DateTime?        @default(now())
+  html_body      String?
+  id             String           @id
+  name           String?
+  title          String?
+  txt_body       String?
+  updated_at     DateTime?        @default(now())
+  course         course[]
+  email_delivery email_delivery[]
+}
+
+model exercise {
+  course                    String?
+  created_at                DateTime?             @default(now())
+  custom_id                 String
+  deleted                   Boolean?              @default(false)
+  id                        String                @id
+  max_points                Int?
+  name                      String?
+  part                      Int?
+  section                   Int?
+  service                   String?
+  timestamp                 DateTime?
+  updated_at                DateTime?             @default(now())
+  course_courseToexercise   course?               @relation(fields: [course], references: [id])
+  service_exerciseToservice service?              @relation(fields: [service], references: [id])
+  exercise_completion       exercise_completion[]
+}
+
+model exercise_completion {
+  completed                              Boolean?                               @default(false)
+  created_at                             DateTime?                              @default(now())
+  exercise                               String?
+  id                                     String                                 @id
+  n_points                               Float?
+  timestamp                              DateTime
+  updated_at                             DateTime?                              @default(now())
+  user                                   String?
+  exercise_exerciseToexercise_completion exercise?                              @relation(fields: [exercise], references: [id])
+  user_exercise_completionTouser         user?                                  @relation(fields: [user], references: [id])
+  exercise_completion_required_actions   exercise_completion_required_actions[]
+}
+
+model exercise_completion_required_actions {
+  exercise_completion                                                           String?
+  id                                                                            String               @id
+  value                                                                         String
+  exercise_completion_exercise_completionToexercise_completion_required_actions exercise_completion? @relation(fields: [exercise_completion], references: [id])
+}
+
+model image {
+  compressed            String?
+  compressed_mimetype   String?
+  created_at            DateTime? @default(now())
+  default               Boolean?
+  encoding              String?
+  id                    String    @id
+  name                  String?
+  original              String
+  original_mimetype     String
+  uncompressed          String
+  uncompressed_mimetype String
+  updated_at            DateTime? @default(now())
+  course                course[]
+}
+
+model open_university_registration_link {
+  course                                           String?
+  course_code                                      String
+  created_at                                       DateTime? @default(now())
+  id                                               String    @id
+  language                                         String
+  link                                             String?
+  start_date                                       DateTime?
+  stop_date                                        DateTime?
+  updated_at                                       DateTime? @default(now())
+  course_courseToopen_university_registration_link course?   @relation(fields: [course], references: [id])
+}
+
+model organization {
+  contact_information      String?
+  created_at               DateTime?                  @default(now())
+  creator                  String?
+  disabled                 Boolean?
+  email                    String?
+  hidden                   Boolean?
+  id                       String                     @id
+  logo_content_type        String?
+  logo_file_name           String?
+  logo_file_size           Int?
+  logo_updated_at          DateTime?
+  phone                    String?
+  pinned                   Boolean?
+  secret_key               String                     @unique
+  slug                     String                     @unique
+  tmc_created_at           DateTime?
+  tmc_updated_at           DateTime?
+  updated_at               DateTime?                  @default(now())
+  verified                 Boolean?
+  verified_at              DateTime?
+  website                  String?
+  user                     user?                      @relation(fields: [creator], references: [id])
+  completion_registered    completion_registered[]
+  course                   course[]
+  course_organization      course_organization[]
+  organization_translation organization_translation[]
+  user_organization        user_organization[]
+  verified_user            verified_user[]
+}
+
+model organization_translation {
+  created_at                                          DateTime?     @default(now())
+  disabled_reason                                     String?
+  id                                                  String        @id
+  information                                         String?
+  language                                            String
+  name                                                String
+  organization                                        String?
+  updated_at                                          DateTime?     @default(now())
+  organization_organizationToorganization_translation organization? @relation(fields: [organization], references: [id])
+}
+
+model service {
+  created_at                   DateTime?                      @default(now())
+  id                           String                         @id
+  name                         String
+  updated_at                   DateTime?                      @default(now())
+  url                          String
+  exercise                     exercise[]
+  user_course_service_progress user_course_service_progress[]
+  course                       course[]                       @relation("CourseToService", references: [id])
+}
+
+model study_module {
+  created_at               DateTime?                  @default(now())
+  id                       String                     @id
+  image                    String?
+  name                     String
+  order                    Int?
+  slug                     String                     @unique
+  updated_at               DateTime?                  @default(now())
+  study_module_translation study_module_translation[]
+  course                   course[]                   @relation("StudyModuleToCourse", references: [id])
+}
+
+model study_module_translation {
+  created_at                                          DateTime?     @default(now())
+  description                                         String
+  id                                                  String        @id
+  language                                            String
+  name                                                String
+  study_module                                        String?
+  updated_at                                          DateTime?     @default(now())
+  study_module_study_moduleTostudy_module_translation study_module? @relation(fields: [study_module], references: [id])
+}
+
+model user {
+  administrator                Boolean
+  created_at                   DateTime?                      @default(now())
+  email                        String
+  first_name                   String?
+  id                           String                         @id
+  last_name                    String?
+  real_student_number          String?
+  student_number               String?
+  updated_at                   DateTime?                      @default(now())
+  upstream_id                  Int                            @unique
+  username                     String                         @unique
+  completion                   completion[]
+  completion_registered        completion_registered[]
+  email_delivery               email_delivery[]
+  exercise_completion          exercise_completion[]
+  organization                 organization[]
+  user_course_progress         user_course_progress[]
+  user_course_service_progress user_course_service_progress[]
+  UserCourseSettings           UserCourseSettings[]
+  user_organization            user_organization[]
+  verified_user                verified_user[]
+}
+
+model UserAppDatumConfig {
+  created_at DateTime? @default(now())
+  id         String    @id
+  name       String?   @unique
+  timestamp  DateTime?
+  updated_at DateTime? @default(now())
+}
+
+model user_course_progress {
+  course                              String?
+  created_at                          DateTime?                      @default(now())
+  id                                  String                         @id
+  max_points                          Float?
+  n_points                            Float?
+  progress                            Json
+  updated_at                          DateTime?                      @default(now())
+  user                                String?
+  course_courseTouser_course_progress course?                        @relation(fields: [course], references: [id])
+  user_userTouser_course_progress     user?                          @relation(fields: [user], references: [id])
+  user_course_service_progress        user_course_service_progress[]
+}
+
+model user_course_service_progress {
+  course                                                                  String?
+  created_at                                                              DateTime?             @default(now())
+  id                                                                      String                @id
+  progress                                                                Json
+  service                                                                 String?
+  timestamp                                                               DateTime?
+  updated_at                                                              DateTime?             @default(now())
+  user                                                                    String?
+  user_course_progress                                                    String?
+  course_courseTouser_course_service_progress                             course?               @relation(fields: [course], references: [id])
+  service_serviceTouser_course_service_progress                           service?              @relation(fields: [service], references: [id])
+  user_userTouser_course_service_progress                                 user?                 @relation(fields: [user], references: [id])
+  user_course_progress_user_course_progressTouser_course_service_progress user_course_progress? @relation(fields: [user_course_progress], references: [id])
+}
+
+model UserCourseSettings {
+  country                           String?
+  course                            String?
+  course_variant                    String?
+  created_at                        DateTime? @default(now())
+  id                                String    @id
+  language                          String?
+  marketing                         Boolean?
+  other                             Json?
+  research                          Boolean?
+  updated_at                        DateTime? @default(now())
+  user                              String?
+  course_UserCourseSettingsTocourse course?   @relation(fields: [course], references: [id])
+  user_UserCourseSettingsTouser     user?     @relation(fields: [user], references: [id])
+}
+
+model user_course_settings_visibility {
+  course                                         String?
+  created_at                                     DateTime? @default(now())
+  id                                             String    @id
+  language                                       String
+  updated_at                                     DateTime? @default(now())
+  course_courseTouser_course_settings_visibility course?   @relation(fields: [course], references: [id])
+}
+
+model user_organization {
+  created_at                                   DateTime?          @default(now())
+  id                                           String             @id
+  organization                                 String?
+  role                                         organization_role? @default(Student)
+  updated_at                                   DateTime?          @default(now())
+  user                                         String?
+  organization_organizationTouser_organization organization?      @relation(fields: [organization], references: [id])
+  user_userTouser_organization                 user?              @relation(fields: [user], references: [id])
+}
+
+model verified_user {
+  created_at                               DateTime?     @default(now())
+  display_name                             String?
+  id                                       String        @id
+  organization                             String?
+  personal_unique_code                     String
+  updated_at                               DateTime?     @default(now())
+  user                                     String?
+  organization_organizationToverified_user organization? @relation(fields: [organization], references: [id])
+  user_userToverified_user                 user?         @relation(fields: [user], references: [id])
+}
+
+enum course_status {
+  Active
+  Ended
+  Upcoming
+}
+
+enum organization_role {
+  OrganizationAdmin
+  Student
+  Teacher
+}

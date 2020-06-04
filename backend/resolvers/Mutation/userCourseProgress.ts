@@ -1,9 +1,9 @@
 import { Prisma } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, arg, floatArg } from "nexus/dist"
+import { idArg, arg, floatArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addUserCourseProgress = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addUserCourseProgress = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addUserCourseProgress", {
     type: "UserCourseProgress",
     args: {
@@ -29,7 +29,7 @@ const addUserCourseProgress = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 }
 
 const addUserCourseProgressMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   addUserCourseProgress(t)
 }

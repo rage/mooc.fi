@@ -13,8 +13,7 @@ import {
   CourseUpdateOneWithoutCompletions_handled_byInput,
   UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
 } from "/generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, arg, idArg } from "nexus/dist"
+import { stringArg, arg, idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "./image"
@@ -22,6 +21,7 @@ import { omit } from "lodash"
 import { NexusGenRootTypes } from "/generated/nexus"
 import { CourseUpdateOneWithoutInherit_settings_fromInput } from "/generated/nexus-prisma/nexus-prisma"
 import { invalidate } from "../../services/redis"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
@@ -30,7 +30,7 @@ import { invalidate } from "../../services/redis"
     key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
   ) */
 
-const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addCourse = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourse", {
     type: "Course",
     args: {
@@ -166,7 +166,7 @@ const createMutation = async <T extends { id?: string | null }>({
   }
 }
 
-const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const updateCourse = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateCourse", {
     type: "Course",
     args: {
@@ -378,7 +378,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const deleteCourse = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteCourse", {
     type: "Course",
     args: {
@@ -411,7 +411,7 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 }
 
 /*const upsertUserCourseSettingsVisiblity = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("upsertUsercourseSettingsVisibility", {
     type: "Course",
@@ -442,7 +442,7 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }*/
 
-const addCourseMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addCourseMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addCourse(t)
   updateCourse(t)
   deleteCourse(t)

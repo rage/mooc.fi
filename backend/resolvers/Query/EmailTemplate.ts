@@ -1,9 +1,9 @@
 import { Prisma } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg } from "nexus/dist"
+import { idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const EmailTemplate = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const EmailTemplate = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("email_template", {
     type: "EmailTemplate",
     nullable: true,
@@ -21,7 +21,7 @@ const EmailTemplate = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const EmailTemplates = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const EmailTemplates = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("email_templates", {
     type: "EmailTemplate",
     resolve: (_, __, ctx) => {
@@ -31,7 +31,7 @@ const EmailTemplates = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addEmailTemplateQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addEmailTemplateQueries = (t: ObjectDefinitionBlock<"Query">) => {
   EmailTemplates(t)
   EmailTemplate(t)
 }

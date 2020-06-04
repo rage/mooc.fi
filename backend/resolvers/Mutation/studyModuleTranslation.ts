@@ -1,10 +1,10 @@
 import { Prisma, StudyModuleTranslation } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, stringArg } from "nexus/dist"
+import { idArg, stringArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const addStudyModuleTranslation = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   t.field("addStudyModuleTranslation", {
     type: "StudyModuleTranslation",
@@ -32,9 +32,7 @@ const addStudyModuleTranslation = async (
   })
 }
 
-const updateStudyModuleTranslation = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const updateStudyModuleTranslation = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateStudyModuletranslation", {
     type: "StudyModuleTranslation",
     args: {
@@ -62,7 +60,7 @@ const updateStudyModuleTranslation = (
 }
 
 const addStudyModuleTranslationMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   addStudyModuleTranslation(t)
   updateStudyModuleTranslation(t)

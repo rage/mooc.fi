@@ -1,13 +1,11 @@
 import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { Course, Maybe } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { intArg, stringArg, idArg } from "nexus/dist"
+import { intArg, stringArg, idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { Context } from "/context"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const registeredCompletions = async (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const registeredCompletions = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("registeredCompletions", {
     type: "CompletionRegistered",
     args: {
@@ -96,9 +94,7 @@ const all = async (
   })
 }
 
-const addCompletionRegisteredQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const addCompletionRegisteredQueries = (t: ObjectDefinitionBlock<"Query">) => {
   registeredCompletions(t)
 }
 

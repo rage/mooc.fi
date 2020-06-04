@@ -1,8 +1,8 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { arg } from "nexus/dist"
+import { arg } from "@nexus/schema"
 import { ForbiddenError, AuthenticationError } from "apollo-server-core"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addVerifiedUser = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addVerifiedUser = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addVerifiedUser", {
     type: "VerifiedUser",
     args: {
@@ -41,9 +41,7 @@ const addVerifiedUser = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addVerifiedUserMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addVerifiedUserMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addVerifiedUser(t)
 }
 

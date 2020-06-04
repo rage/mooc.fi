@@ -1,8 +1,8 @@
 import { Prisma } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg } from "nexus/dist"
+import { idArg } from "@nexus/schema"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const courseOrganizations = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const courseOrganizations = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("courseOrganizations", {
     type: "CourseOrganization",
     args: {
@@ -27,9 +27,7 @@ const courseOrganizations = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addCourseOrganizationQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const addCourseOrganizationQueries = (t: ObjectDefinitionBlock<"Query">) => {
   courseOrganizations(t)
 }
 

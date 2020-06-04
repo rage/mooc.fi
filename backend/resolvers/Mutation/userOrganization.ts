@@ -1,9 +1,9 @@
 import { Prisma, UUID, User } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, arg } from "nexus/dist"
+import { idArg, arg } from "@nexus/schema"
 import checkAccess, { Role } from "../../accessControl"
 import { ForbiddenError } from "apollo-server-core"
 import { Context } from "/context"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const checkUser = async (ctx: Context, id: UUID) => {
   const { user, role } = ctx
@@ -24,7 +24,7 @@ const checkUser = async (ctx: Context, id: UUID) => {
   }
 }
 
-const addUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addUserOrganization = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addUserOrganization", {
     type: "UserOrganization",
     args: {
@@ -55,7 +55,7 @@ const addUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const updateUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const updateUserOrganization = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateUserOrganization", {
     type: "UserOrganization",
     args: {
@@ -92,7 +92,7 @@ const updateUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const deleteUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const deleteUserOrganization = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteUserOrganization", {
     type: "UserOrganization",
     args: {
@@ -113,9 +113,7 @@ const deleteUserOrganization = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addUserOrganizationMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addUserOrganizationMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addUserOrganization(t)
   updateUserOrganization(t)
   deleteUserOrganization(t)

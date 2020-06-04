@@ -1,9 +1,9 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg } from "nexus/dist"
+import { stringArg } from "@nexus/schema"
 import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const updateUserName = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const updateUserName = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateUserName", {
     type: "User",
     args: {
@@ -37,7 +37,7 @@ const updateUserName = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addUserMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addUserMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   updateUserName(t)
 }
 

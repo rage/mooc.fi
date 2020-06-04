@@ -1,4 +1,4 @@
-import { objectType } from "nexus/dist"
+import { objectType } from "@nexus/schema"
 
 const ExerciseProgress = objectType({
   name: "ExerciseProgress",

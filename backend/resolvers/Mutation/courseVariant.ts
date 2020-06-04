@@ -1,9 +1,9 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { Prisma } from "../../generated/prisma-client"
-import { stringArg, idArg } from "nexus/dist"
+import { stringArg, idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addCourseVariant = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addCourseVariant = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourseVariant", {
     type: "CourseVariant",
     args: {
@@ -26,9 +26,7 @@ const addCourseVariant = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const updateCourseVariant = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const updateCourseVariant = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateCourseVariant", {
     type: "CourseVariant",
     args: {
@@ -50,9 +48,7 @@ const updateCourseVariant = async (
   })
 }
 
-const deleteCourseVariant = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const deleteCourseVariant = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteCourseVariant", {
     type: "CourseVariant",
     args: {
@@ -69,9 +65,7 @@ const deleteCourseVariant = async (
   })
 }
 
-const addCourseVariantMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addCourseVariantMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addCourseVariant(t)
   updateCourseVariant(t)
   deleteCourseVariant(t)
