@@ -2,13 +2,11 @@ import {
   Prisma,
   UserCourseServiceProgress,
 } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg } from "nexus/dist"
+import { idArg, intArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const userCourseServiceProgress = async (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const userCourseServiceProgress = async (t: ObjectDefinitionBlock<"Query">) => {
   t.field("UserCourseServiceProgress", {
     type: "UserCourseServiceProgress",
     args: {
@@ -34,9 +32,7 @@ const userCourseServiceProgress = async (
   })
 }
 
-const userCourseServiceProgresses = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const userCourseServiceProgresses = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("UserCourseServiceProgresses", {
     type: "UserCourseServiceProgress",
     args: {
@@ -76,7 +72,7 @@ const userCourseServiceProgresses = (
 }
 
 const addUserCourseServiceProgressQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
+  t: ObjectDefinitionBlock<"Query">,
 ) => {
   userCourseServiceProgress(t)
   userCourseServiceProgresses(t)

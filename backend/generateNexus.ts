@@ -1,18 +1,19 @@
 require("sharp") // even if this doesn't use sharp, we crash without it
 
-import { prisma } from "./generated/prisma-client"
-import datamodelInfo from "./generated/nexus-prisma"
+// import { PrismaClient } from "@prisma/client"
+// import { prisma } from "./generated/prisma-client"
+// import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"
-import { makePrismaSchema } from "nexus-prisma"
+import { makeSchema } from "@nexus/schema"
+import { nexusPrismaPlugin } from "nexus-prisma"
+//import { makePrismaSchema } from "nexus-prisma"
 import * as types from "./types"
 
-const schema = makePrismaSchema({
-  types: [types],
+console.log("types", types)
+const schema = makeSchema({
+  types,
 
-  prisma: {
-    datamodelInfo,
-    client: prisma,
-  },
+  plugins: [nexusPrismaPlugin()],
 
   outputs: {
     schema: path.join(__dirname, "./generated/schema.graphql"),
@@ -21,6 +22,10 @@ const schema = makePrismaSchema({
 
   typegenAutoConfig: {
     sources: [
+      {
+        source: "@prisma/client",
+        alias: "prisma",
+      },
       {
         source: path.join(__dirname, "./context.ts"),
         alias: "ctx",

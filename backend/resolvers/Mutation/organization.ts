@@ -1,12 +1,12 @@
 import { Prisma, Organization } from "../../generated/prisma-client"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg } from "nexus/dist"
+import { stringArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addOrganization = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addOrganization = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addOrganization", {
     type: "Organization",
     args: {
@@ -51,9 +51,7 @@ export const generateSecret = async () => {
   return (await randomBytesPromise(128)).toString("hex")
 }
 
-const addOrganizationMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addOrganizationMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addOrganization(t)
 }
 

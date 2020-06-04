@@ -1,8 +1,8 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import checkAccess from "../../accessControl"
-import { stringArg } from "nexus/dist"
+import { stringArg } from "@nexus/schema"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const courseTranslations = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const courseTranslations = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("CourseTranslations", {
     type: "CourseTranslation",
     args: {
@@ -16,9 +16,7 @@ const courseTranslations = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addCourseTranslationsQueries = (
-  t: PrismaObjectDefinitionBlock<"Query">,
-) => {
+const addCourseTranslationsQueries = (t: ObjectDefinitionBlock<"Query">) => {
   courseTranslations(t)
 }
 

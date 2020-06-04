@@ -1,10 +1,10 @@
 import { Prisma, OrganizationOrderByInput } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, intArg, arg, booleanArg } from "nexus/dist"
+import { idArg, intArg, arg, booleanArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const organization = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const organization = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("organization", {
     type: "Organization",
     args: {
@@ -27,7 +27,7 @@ const organization = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const organizations = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("organizations", {
     type: "Organization",
     args: {
@@ -62,7 +62,7 @@ const organizations = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addOrganizationQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addOrganizationQueries = (t: ObjectDefinitionBlock<"Query">) => {
   organization(t)
   organizations(t)
 }

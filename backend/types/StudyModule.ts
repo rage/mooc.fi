@@ -1,12 +1,23 @@
-import { prismaObjectType } from "nexus-prisma"
-import { stringArg, arg } from "nexus/dist"
+// import { prismaObjectType } from "nexus-prisma"
+// import { stringArg, arg } from "nexus/dist"
+import { objectType, stringArg, arg } from "@nexus/schema"
 import { Course, CourseOrderByInput } from "/generated/prisma-client"
 import { NexusGenRootTypes } from "/generated/nexus"
 
-const StudyModule = prismaObjectType({
+const StudyModule = objectType({
   name: "StudyModule",
   definition(t) {
-    t.prismaFields(["*"])
+    t.model.id()
+    t.model.created_at()
+    t.model.image()
+    t.model.name()
+    t.model.order()
+    t.model.slug()
+    t.model.updated_at()
+    // t.model.study_module_translation()
+    t.model.course()
+
+    // t.prismaFields(["*"])
     t.field("description", { type: "String" })
     t.field("courses", {
       type: "Course",

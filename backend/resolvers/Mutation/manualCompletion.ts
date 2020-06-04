@@ -1,12 +1,12 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { arg, stringArg } from "nexus/dist"
+import { arg, stringArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import Knex from "../../services/knex"
 import { v4 as uuidv4 } from "uuid"
 import { groupBy } from "lodash"
 import { Completion } from "/generated/prisma-client"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addManualCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addManualCompletion = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.list.field("addManualCompletion", {
     type: "Completion",
     args: {
@@ -92,9 +92,7 @@ const addManualCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addManualCompletionMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addManualCompletionMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addManualCompletion(t)
 }
 

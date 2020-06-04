@@ -1,11 +1,9 @@
 import { Prisma } from "/generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import checkAccess from "../../accessControl"
-import { idArg, booleanArg } from "nexus/dist"
+import { idArg, booleanArg } from "@nexus/schema"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addCourseOrganization = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addCourseOrganization = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourseOrganization", {
     type: "CourseOrganization",
     args: {
@@ -38,9 +36,7 @@ const addCourseOrganization = async (
   })
 }
 
-const deleteCourseOrganization = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const deleteCourseOrganization = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteCourseOrganization", {
     type: "CourseOrganization",
     args: {
@@ -58,7 +54,7 @@ const deleteCourseOrganization = (
 }
 
 const addCourseOrganizationMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   addCourseOrganization(t)
   deleteCourseOrganization(t)

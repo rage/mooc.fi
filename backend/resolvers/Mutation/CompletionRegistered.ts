@@ -4,15 +4,13 @@ import {
   User,
   CompletionRegistered,
 } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { arg } from "nexus/dist"
+import { arg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { chunk } from "lodash"
 import { Context } from "../../context"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const registerCompletion = async (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const registerCompletion = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("registerCompletion", {
     type: "String",
     args: {
@@ -62,7 +60,7 @@ const buildPromises = (
 }
 
 const addCompletionRegisteredMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   registerCompletion(t)
 }

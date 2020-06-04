@@ -1,9 +1,9 @@
 import { Prisma, CourseAlias } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg, stringArg } from "nexus/dist"
+import { idArg, stringArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addCourseAlias = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addCourseAlias = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addCourseAlias", {
     type: "CourseAlias",
     args: {
@@ -29,9 +29,7 @@ const addCourseAlias = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addCourseAliasMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
-) => {
+const addCourseAliasMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addCourseAlias(t)
 }
 

@@ -1,12 +1,12 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg, intArg } from "nexus/dist"
+import { stringArg, idArg, intArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { Prisma, User } from "../../generated/prisma-client"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { buildSearch } from "../../util/db-functions"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const users = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const users = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("users", {
     type: "User",
     resolve: (_, __, ctx) => {
@@ -16,7 +16,7 @@ const users = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const user = async (t: ObjectDefinitionBlock<"Query">) => {
   t.field("user", {
     type: "User",
     args: {
@@ -49,7 +49,7 @@ const user = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const UserDetailsContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const UserDetailsContains = async (t: ObjectDefinitionBlock<"Query">) => {
   t.field("userDetailsContains", {
     type: "UserConnection",
     args: {
@@ -90,7 +90,7 @@ const UserDetailsContains = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const currentUser = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("currentUser", {
     type: "User",
     nullable: true,
@@ -103,7 +103,7 @@ const currentUser = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addUserQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addUserQueries = (t: ObjectDefinitionBlock<"Query">) => {
   users(t)
   currentUser(t)
   user(t)

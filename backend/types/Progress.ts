@@ -1,6 +1,5 @@
-import { objectType } from "nexus/dist"
+import { objectType } from "@nexus/schema"
 import Course from "./Course"
-import UserCourseProgress from "./UserCourseProgress"
 import User from "./User"
 
 const Progress = objectType({
@@ -10,7 +9,7 @@ const Progress = objectType({
     t.field("user", { type: User })
 
     t.field("user_course_progress", {
-      type: UserCourseProgress,
+      type: "UserCourseProgress",
       nullable: true,
       resolve: async (parent, _, ctx) => {
         const courseId = parent.course.id

@@ -1,9 +1,11 @@
 require("sharp") // image library sharp seems to crash without this require
 
-import { prisma } from "./generated/prisma-client"
-import datamodelInfo from "./generated/nexus-prisma"
+import { PrismaClient } from "@prisma/client"
+// import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"
-import { makePrismaSchema } from "nexus-prisma"
+import { makeSchema } from "@nexus/schema"
+import { nexusPrismaPlugin } from "nexus-prisma"
+// import { makePrismaSchema } from "nexus-prisma"
 import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
 import cache from "./middlewares/cache"
@@ -16,6 +18,8 @@ import * as types from "./types"
 
 import { wsListen } from "./wsServer"
 
+const prisma = new PrismaClient()
+
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -26,13 +30,10 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-const schema = makePrismaSchema({
+const schema = makeSchema({
   types: [types],
 
-  prisma: {
-    datamodelInfo,
-    client: prisma,
-  },
+  plugins: [nexusPrismaPlugin()],
 
   outputs: {
     schema: path.join(__dirname, "./generated/schema.graphql"),
@@ -41,6 +42,10 @@ const schema = makePrismaSchema({
 
   typegenAutoConfig: {
     sources: [
+      {
+        source: "@prisma/client",
+        alias: "prisma",
+      },
       {
         source: path.join(__dirname, "./context.ts"),
         alias: "ctx",

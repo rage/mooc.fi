@@ -1,11 +1,11 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { Course, Prisma, Maybe } from "../../generated/prisma-client"
-import { stringArg, intArg, idArg } from "nexus/dist"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
+import { stringArg, intArg, idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import Knex from "../../services/knex"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
+const completions = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("completions", {
     type: "Completion",
     args: {
@@ -65,7 +65,7 @@ const completions = async (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const completionsPaginated = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("completionsPaginated", {
     type: "CompletionConnection",
     args: {
@@ -116,7 +116,7 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addCompletionsQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addCompletionsQueries = (t: ObjectDefinitionBlock<"Query">) => {
   completions(t)
   completionsPaginated(t)
 }

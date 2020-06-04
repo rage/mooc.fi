@@ -1,12 +1,23 @@
-import { prismaObjectType } from "nexus-prisma"
+import { objectType } from "@nexus/schema"
+// import { prismaObjectType } from "nexus-prisma"
 import { Course } from "../generated/prisma-client"
 import { ForbiddenError } from "apollo-server-core"
 import { NexusGenRootTypes } from "/generated/nexus"
 
-const Completion = prismaObjectType<"Completion">({
+const Completion = objectType({
   name: "Completion",
   definition(t) {
-    t.prismaFields([
+    t.model.id()
+    t.model.created_at()
+    t.model.completion_language()
+    t.model.email()
+    t.model.student_number()
+    t.model.user_upstream_id()
+    // t.model.completion_registered()
+    t.model.course()
+    t.model.grade()
+    t.model.certificate_id()
+    /*t.prismaFields([
       "id",
       "created_at",
       "updated_at",
@@ -18,7 +29,7 @@ const Completion = prismaObjectType<"Completion">({
       "course",
       "grade",
       "certificate_id",
-    ])
+    ])*/
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
       type: "Course",

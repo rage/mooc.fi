@@ -1,9 +1,9 @@
 import { Prisma } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg } from "nexus/dist"
+import { stringArg, idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addService = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addService = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addService", {
     type: "Service",
     args: {
@@ -19,7 +19,7 @@ const addService = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const updateService = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const updateService = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("updateService", {
     type: "Service",
     args: {
@@ -39,7 +39,7 @@ const updateService = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addServiceMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addServiceMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addService(t)
   updateService(t)
 }

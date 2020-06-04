@@ -3,12 +3,12 @@ import {
   Course,
   CourseOrderByInput,
 } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { stringArg, idArg, arg } from "nexus/dist"
+import { stringArg, idArg, arg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const course = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("course", {
     type: "Course",
     args: {
@@ -55,7 +55,7 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const courses = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("courses", {
     type: "Course",
     args: {
@@ -99,7 +99,7 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const course_exists = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const course_exists = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("course_exists", {
     type: "Boolean",
     args: {
@@ -115,7 +115,7 @@ const course_exists = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addCourseQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addCourseQueries = (t: ObjectDefinitionBlock<"Query">) => {
   course(t)
   courses(t)
   course_exists(t)

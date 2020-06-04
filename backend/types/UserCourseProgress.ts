@@ -1,4 +1,5 @@
-import { prismaObjectType } from "nexus-prisma"
+import { objectType } from "@nexus/schema"
+// import { prismaObjectType } from "nexus-prisma"
 import {
   UserCourseSettings,
   Prisma,
@@ -6,10 +7,20 @@ import {
   User,
 } from "../generated/prisma-client"
 
-const UserCourseProgress = prismaObjectType<"UserCourseProgress">({
+const UserCourseProgress = objectType({
   name: "UserCourseProgress",
   definition(t) {
-    t.prismaFields(["*"])
+    t.model.id()
+    t.model.course()
+    t.model.created_at()
+    t.model.max_points()
+    t.model.n_points()
+    t.model.progress()
+    t.model.updated_at()
+    t.model.user()
+    // t.model.user_course_service_progress()
+
+    // t.prismaFields(["*"])
 
     t.field("UserCourseSettings", {
       type: "UserCourseSettings",

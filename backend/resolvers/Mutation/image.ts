@@ -1,11 +1,11 @@
 import { Prisma, Image } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { arg, booleanArg } from "nexus/dist"
+import { arg, booleanArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
 } from "../../services/google-cloud"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const sharp = require("sharp")
 
@@ -131,7 +131,7 @@ export const deleteImage = async ({
   return true
 }
 
-const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addImage = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addImage", {
     type: "Image",
     args: {
@@ -150,7 +150,7 @@ const addImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const _deleteImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const _deleteImage = async (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("deleteImage", {
     type: "Boolean",
     args: {
@@ -167,7 +167,7 @@ const _deleteImage = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
-const addImageMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addImageMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
   addImage(t)
   _deleteImage(t)
 }

@@ -1,10 +1,10 @@
 import { Prisma } from "../../generated/prisma-client"
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { idArg } from "nexus/dist"
+import { idArg } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const service = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const service = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("service", {
     type: "Service",
     args: {
@@ -22,7 +22,7 @@ const service = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const services = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const services = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("services", {
     type: "Service",
     resolve: (_, __, ctx) => {
@@ -33,7 +33,7 @@ const services = (t: PrismaObjectDefinitionBlock<"Query">) => {
   })
 }
 
-const addServiceQueries = (t: PrismaObjectDefinitionBlock<"Query">) => {
+const addServiceQueries = (t: ObjectDefinitionBlock<"Query">) => {
   service(t)
   services(t)
 }

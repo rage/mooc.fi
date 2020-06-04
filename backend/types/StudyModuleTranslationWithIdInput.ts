@@ -1,4 +1,4 @@
-import { inputObjectType } from "nexus/dist"
+import { inputObjectType } from "@nexus/schema"
 
 const StudyModuleTranslationWithIdInput = inputObjectType({
   name: "StudyModuleTranslationWithIdInput",

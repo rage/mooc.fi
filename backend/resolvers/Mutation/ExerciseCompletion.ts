@@ -1,9 +1,9 @@
-import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
-import { intArg, idArg } from "nexus/dist"
+import { intArg, idArg } from "@nexus/schema"
 import { Prisma } from "../../generated/prisma-client"
 import checkAccess from "../../accessControl"
+import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
-const addExerciseCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
+const addExerciseCompletion = (t: ObjectDefinitionBlock<"Mutation">) => {
   t.field("addExerciseCompletion", {
     type: "ExerciseCompletion",
     args: {
@@ -25,7 +25,7 @@ const addExerciseCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
 }
 
 const addExerciseCompletionMutations = (
-  t: PrismaObjectDefinitionBlock<"Mutation">,
+  t: ObjectDefinitionBlock<"Mutation">,
 ) => {
   addExerciseCompletion(t)
 }
