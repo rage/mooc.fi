@@ -90,7 +90,10 @@ async function saveCompletionsAndUsersToDatabase(
     }
 
     const doesCompletionExists: Completion[] = await prisma.completions({
-      where: { user: user, course: course },
+      where: {
+        user: { upstream_id: user.upstream_id },
+        course: { id: course.id },
+      },
     })
 
     if (!doesCompletionExists.length) {

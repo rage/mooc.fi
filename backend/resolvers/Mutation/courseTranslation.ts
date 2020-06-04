@@ -53,7 +53,7 @@ const updateCourseTranslation = (
       const prisma: Prisma = ctx.prisma
 
       return prisma.updateCourseTranslation({
-        where: { id: id },
+        where: { id },
         data: {
           language: language,
           name: name,
@@ -80,7 +80,7 @@ const deleteCourseTranslation = (
       const prisma: Prisma = ctx.prisma
 
       return prisma.deleteCourseTranslation({
-        id: id,
+        id,
       })
     },
   })
