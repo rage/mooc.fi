@@ -115,7 +115,10 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   } else {
     course_id = course.id
   }
-  const sql = Knex.select("*").from("completion").where({ course: course_id })
+  const sql = Knex.select("*").from("completion").where({
+    course: course_id,
+    eligible_for_ects: true,
+  })
   res.set("Content-Type", "application/json")
   const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
   req.on("close", stream.end.bind(stream))
