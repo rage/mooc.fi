@@ -224,9 +224,7 @@ export const CheckCompletion = async (
     let handlerCourse = course
 
     const otherHandlerCourse = await prisma
-
       .course({ id: course.id })
-
       .completions_handled_by()
 
     if (otherHandlerCourse) {
@@ -249,6 +247,8 @@ export const CheckCompletion = async (
         completion_language: userCourseSettings?.language
           ? languageCodeMapping[userCourseSettings.language]
           : "unknown",
+        eligible_for_ects:
+          handlerCourse.automatic_completions_eligible_for_ects,
       })
       pushMessageToClient(
         user.upstream_id,

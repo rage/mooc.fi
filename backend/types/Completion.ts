@@ -6,19 +6,7 @@ import { NexusGenRootTypes } from "/generated/nexus"
 const Completion = prismaObjectType<"Completion">({
   name: "Completion",
   definition(t) {
-    t.prismaFields([
-      "id",
-      "created_at",
-      "updated_at",
-      "completion_language",
-      "email",
-      "student_number",
-      "user_upstream_id",
-      "completions_registered",
-      "course",
-      "grade",
-      "certificate_id",
-    ])
+    t.prismaFields({ filter: ["user"] })
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
       type: "Course",

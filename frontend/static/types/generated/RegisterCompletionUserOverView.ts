@@ -39,6 +39,7 @@ export interface RegisterCompletionUserOverView_currentUser_completions {
   completions_registered:
     | RegisterCompletionUserOverView_currentUser_completions_completions_registered[]
     | null
+  eligible_for_ects: boolean | null
 }
 
 export interface RegisterCompletionUserOverView_currentUser {

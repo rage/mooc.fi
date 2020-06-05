@@ -27,6 +27,7 @@ export interface CourseAliasCreateUpdateInput {
 
 export interface CourseArg {
   automatic_completions?: boolean | null
+  automatic_completions_eligible_for_ects?: boolean | null
   base64?: boolean | null
   completion_email?: string | null
   completions_handled_by?: string | null
