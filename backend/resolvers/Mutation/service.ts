@@ -32,8 +32,8 @@ const updateService = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const { url, name, id } = args
       const prisma: Prisma = ctx.prisma
       return prisma.updateService({
-        where: { id: id },
-        data: { url: url, name: name },
+        where: { id },
+        data: { url, name },
       })
     },
   })

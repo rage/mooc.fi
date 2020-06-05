@@ -1,4 +1,5 @@
 require("sharp") // image library sharp seems to crash without this require
+
 import { prisma } from "./generated/prisma-client"
 import datamodelInfo from "./generated/nexus-prisma"
 import * as path from "path"
@@ -6,6 +7,7 @@ import { makePrismaSchema } from "nexus-prisma"
 import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
 import cache from "./middlewares/cache"
+import { redisify } from "./services/redis"
 //import * as JSONStream from "JSONStream"
 const JSONStream = require("JSONStream")
 import Knex from "./services/knex"
@@ -113,11 +115,112 @@ server.get("/api/completions/:course", async function (req: any, res: any) {
   } else {
     course_id = course.id
   }
-  const sql = Knex.select("*").from("completion").where({ course: course_id })
+  const sql = Knex.select("*").from("completion").where({
+    course: course_id,
+    eligible_for_ects: true,
+  })
   res.set("Content-Type", "application/json")
   const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
   req.on("close", stream.end.bind(stream))
 })
+
+type UserCourseSettingsCountResult =
+  | {
+      course: string
+      language: string
+      count?: number
+    }
+  | {
+      course: string
+      language: string
+      error: true
+    }
+
+server.get(
+  "/api/usercoursesettingscount/:course/:language",
+  async (req: any, res: any) => {
+    const {
+      course,
+      language,
+    }: { course: string; language: string } = req.params
+
+    if (!course || !language) {
+      return res
+        .status(400)
+        .json({ message: "Course and/or language not specified" })
+    }
+
+    const resObject = await redisify<UserCourseSettingsCountResult>(
+      async () => {
+        let course_id: string
+
+        const { id } =
+          (
+            await Knex.select("course.id")
+              .from("course")
+              .join("user_course_settings_visibility", {
+                "course.id": "user_course_settings_visibility.course",
+              })
+              .where({
+                slug: course,
+                "user_course_settings_visibility.language": language,
+              })
+              .limit(1)
+          )[0] ?? {}
+
+        if (!id) {
+          const courseAlias = (
+            await Knex.select("course_alias.course")
+              .from("course_alias")
+              .join("course", { "course_alias.course": "course.id" })
+              .join("user_course_settings_visibility", {
+                "course.id": "user_course_settings_visibility.course",
+              })
+              .where({
+                course_code: course,
+                "user_course_settings_visibility.language": language,
+              })
+          )[0]
+          course_id = courseAlias?.course
+        } else {
+          course_id = id
+        }
+
+        if (!course_id) {
+          return { course, language, error: true }
+        }
+
+        let { count } = (
+          await Knex.countDistinct("id as count")
+            .from("UserCourseSettings")
+            .where({ course: course_id, language: language })
+        )?.[0]
+
+        if (count < 100) {
+          count = -1
+        } else {
+          const factor = 100
+          count = Math.floor(Number(count) / factor) * factor
+        }
+
+        return { course, language, count: Number(count) }
+      },
+      {
+        prefix: "usercoursesettingscount",
+        expireTime: 3600000, // hour
+        key: `${course}-${language}`,
+      },
+    )
+
+    if (resObject.error) {
+      return res
+        .status(403)
+        .json({ message: "Course not found or user count not set to visible" })
+    }
+
+    res.json(resObject)
+  },
+)
 
 server.start(serverStartOptions, () =>
   console.log("Server is running on http://localhost:4000"),

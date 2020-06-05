@@ -25,8 +25,8 @@ const UserCourseProgress = prismaObjectType<"UserCourseProgress">({
         const userCourseSettings: UserCourseSettings[] = await prisma.userCourseSettingses(
           {
             where: {
-              course: course,
-              user: user,
+              course: { id: course.id },
+              user: { id: user.id },
             },
           },
         )
@@ -46,14 +46,22 @@ const UserCourseProgress = prismaObjectType<"UserCourseProgress">({
           .user()
 
         const courseProgresses = await ctx.prisma.userCourseProgresses({
-          where: { course: course, user: user },
+          where: {
+            course: { id: course.id },
+            user: { id: user.id },
+          },
         })
         const courseProgress = courseProgresses.length
           ? courseProgresses[0].progress
           : []
         const exercises = await ctx.prisma.course({ id: course.id }).exercises()
         const completedExercises = await ctx.prisma.exerciseCompletions({
-          where: { exercise: { course: course }, user: user },
+          where: {
+            exercise: {
+              course: { id: course.id },
+            },
+            user: { id: user.id },
+          },
         })
 
         const totalProgress =

@@ -54,14 +54,14 @@ const updateOpenUniversityRegistrationLink = (
       const { id, course_code, course, language, link } = args
       return prisma.updateOpenUniversityRegistrationLink({
         where: {
-          id: id,
+          id,
         },
         // TODO/FIXME: this deletes the old values?
         data: {
           course: { connect: { id: course } },
-          course_code: course_code,
-          language: language,
-          link: link,
+          course_code,
+          language,
+          link,
         },
       })
     },

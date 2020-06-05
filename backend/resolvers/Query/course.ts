@@ -7,6 +7,7 @@ import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { UserInputError } from "apollo-server-core"
 
 const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("course", {
@@ -28,9 +29,16 @@ const course = (t: PrismaObjectDefinitionBlock<"Query">) => {
         id: id,
       })
 
+      if (!course) {
+        throw new UserInputError("course not found")
+      }
+
       if (language) {
         const course_translations = await prisma.courseTranslations({
-          where: { course, language },
+          where: {
+            course: { id: course.id },
+            language,
+          },
         })
 
         if (!course_translations.length) {
@@ -75,7 +83,10 @@ const courses = (t: PrismaObjectDefinitionBlock<"Query">) => {
             await Promise.all(
               courses.map(async (course: Course) => {
                 const course_translations = await prisma.courseTranslations({
-                  where: { course, language },
+                  where: {
+                    course: { id: course.id },
+                    language,
+                  },
                 })
 
                 if (!course_translations.length) {

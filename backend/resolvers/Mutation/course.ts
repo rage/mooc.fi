@@ -11,6 +11,7 @@ import {
   CourseVariantUpdateManyWithoutCourseInput,
   CourseAliasUpdateManyWithoutCourseInput,
   CourseUpdateOneWithoutCompletions_handled_byInput,
+  UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, arg, idArg } from "nexus/dist"
@@ -20,6 +21,7 @@ import { uploadImage, deleteImage } from "./image"
 import { omit } from "lodash"
 import { NexusGenRootTypes } from "/generated/nexus"
 import { CourseUpdateOneWithoutInherit_settings_fromInput } from "/generated/nexus-prisma/nexus-prisma"
+import { invalidate } from "../../services/redis"
 
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
@@ -41,6 +43,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       checkAccess(ctx, { allowOrganizations: false })
 
       const {
+        // slug,
         new_photo,
         base64,
         course_translations,
@@ -50,6 +53,7 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         study_modules,
         inherit_settings_from,
         completions_handled_by,
+        user_course_settings_visibilities,
       } = course
 
       const prisma: Prisma = ctx.prisma
@@ -89,6 +93,9 @@ const addCourse = async (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           : null,
         completions_handled_by: !!completions_handled_by
           ? { connect: { id: completions_handled_by } }
+          : null,
+        user_course_settings_visibilities: !!user_course_settings_visibilities
+          ? { create: user_course_settings_visibilities }
           : null,
       } as CourseCreateInput)
 
@@ -188,6 +195,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         delete_photo,
         inherit_settings_from,
         completions_handled_by,
+        user_course_settings_visibilities,
       } = course
       let { end_date } = course
       if (!slug) {
@@ -259,6 +267,22 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         data: course_aliases,
         field: "course_aliases",
       })
+
+      const userCourseSettingsVisibilityMutation:
+        | UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
+        | undefined = await createMutation({
+        prisma,
+        slug,
+        data: user_course_settings_visibilities,
+        field: "user_course_settings_visibilities",
+      })
+
+      const existingVisibilities = await prisma
+        .course({ slug })
+        .user_course_settings_visibilities()
+      existingVisibilities?.forEach((visibility) =>
+        invalidate("usercoursesettingscount", `${slug}-${visibility.language}`),
+      )
 
       // this had different logic so it's not done with the same helper
       const existingStudyModules = await prisma.course({ slug }).study_modules()
@@ -345,6 +369,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
             : undefined,
           inherit_settings_from: inheritMutation,
           completions_handled_by: handledMutation,
+          user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
         } as CourseUpdateInput,
       })
 
@@ -385,10 +410,43 @@ const deleteCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   })
 }
 
+/*const upsertUserCourseSettingsVisiblity = async (
+  t: PrismaObjectDefinitionBlock<"Mutation">,
+) => {
+  t.field("upsertUsercourseSettingsVisibility", {
+    type: "Course",
+    args: {
+      slug: stringArg({ required: true }),
+      language: stringArg({ required: true }),
+    },
+    resolve: async (_, { slug, language }, ctx) => {
+      checkAccess(ctx)
+      const { prisma } = ctx
+
+      const existing =
+        (await prisma
+          .course({
+            slug,
+          })
+          .user_course_settings_visibilities()) ?? []
+
+      return (await prisma.updateCourse({
+        where: { slug },
+        data: {
+          user_course_settings_visibilities: {
+            set: Array.from(new Set([...existing, language])),
+          },
+        },
+      })) as NexusGenRootTypes["Course"]
+    },
+  })
+}*/
+
 const addCourseMutations = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
   addCourse(t)
   updateCourse(t)
   deleteCourse(t)
+  // upsertUserCourseSettingsVisiblity(t)
 }
 
 export default addCourseMutations
