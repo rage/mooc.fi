@@ -103,7 +103,7 @@ const completionsPaginated = (t: PrismaObjectDefinitionBlock<"Query">) => {
       const completions = prisma.completionsConnection({
         where: {
           course: { id: courseObject?.id },
-          completion_language: completion_language,
+          completion_language,
         },
         first: first ?? undefined,
         after: after ?? undefined,

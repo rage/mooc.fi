@@ -46,6 +46,7 @@ import { CourseEditorCourses_courses } from "/static/types/generated/CourseEdito
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import { useQueryParameter } from "/util/useQueryParameter"
+import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
 
 interface CoverProps {
   covered: boolean
@@ -444,6 +445,15 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
             {t("courseAliasesTitle")}
           </FormSubtitle>
           <CourseAliasEditForm />
+          <FormSubtitle
+            variant="h6"
+            component="h3"
+            align="center"
+            style={{ marginTop: "3rem" }}
+          >
+            {t("courseUserCourseSettingsVisibility")}
+          </FormSubtitle>
+          <UserCourseSettingsVisibilityEditForm />
         </SelectLanguageFirstCover>
       </Form>
     </LocalizationProvider>

@@ -70,9 +70,10 @@ const withCourse = async (
   const courseReference: Maybe<Course> = await ctx.prisma.course({
     slug: course,
   })
+
   return await ctx.prisma.completionRegistereds({
     where: {
-      course: courseReference,
+      course: { id: courseReference?.id },
     },
     first: first,
     after: after,

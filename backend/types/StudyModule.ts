@@ -29,7 +29,10 @@ const StudyModule = prismaObjectType({
               await Promise.all(
                 courses.map(async (course: Course) => {
                   const course_translations = await prisma.courseTranslations({
-                    where: { course, language },
+                    where: {
+                      course: { id: course.id },
+                      language,
+                    },
                   })
 
                   if (!course_translations.length) {

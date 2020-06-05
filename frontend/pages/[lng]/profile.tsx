@@ -40,6 +40,7 @@ export const UserOverViewQuery = gql`
           }
         }
       }
+      research_consent
     }
   }
 `
@@ -58,7 +59,6 @@ function Profile() {
   const last_name = data?.currentUser?.last_name || "No last name"
   const email = data?.currentUser?.email || "no email"
   const studentNumber = data?.currentUser?.student_number || "no student number"
-  const completions = data?.currentUser?.completions ?? []
 
   return (
     <>
@@ -69,7 +69,7 @@ function Profile() {
         student_number={studentNumber}
       />
       <Container style={{ maxWidth: 900 }}>
-        <StudentDataDisplay completions={completions} />
+        <StudentDataDisplay data={data?.currentUser || undefined} />
       </Container>
     </>
   )

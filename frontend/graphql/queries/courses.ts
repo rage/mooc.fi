@@ -27,6 +27,10 @@ export const AllCoursesQuery = gql`
         language
         name
       }
+      user_course_settings_visibilities {
+        id
+        language
+      }
     }
   }
 `
@@ -58,6 +62,10 @@ export const AllEditorCoursesQuery = gql`
       course_aliases {
         id
         course_code
+      }
+      user_course_settings_visibilities {
+        id
+        language
       }
     }
     currentUser {

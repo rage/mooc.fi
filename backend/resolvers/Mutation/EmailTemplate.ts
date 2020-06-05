@@ -43,7 +43,7 @@ const updateEmailTemplate = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
       const prisma: Prisma = ctx.prisma
       return prisma.updateEmailTemplate({
         where: {
-          id: id,
+          id,
         },
         data: {
           name,

@@ -7,6 +7,7 @@ import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType
 import { stringArg, idArg, arg } from "nexus/dist"
 import checkAccess from "../../accessControl"
 import { NexusGenRootTypes } from "/generated/nexus"
+import { UserInputError } from "apollo-server-core"
 
 const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
   t.field("study_module", {
@@ -27,9 +28,16 @@ const studyModule = (t: PrismaObjectDefinitionBlock<"Query">) => {
         slug,
       })
 
+      if (!study_module) {
+        throw new UserInputError("study module not found")
+      }
+
       if (language) {
         const module_translations = await prisma.studyModuleTranslations({
-          where: { study_module, language },
+          where: {
+            study_module: { id: study_module.id },
+            language,
+          },
         })
 
         if (!module_translations.length) {
@@ -73,7 +81,10 @@ const studyModules = (t: PrismaObjectDefinitionBlock<"Query">) => {
               modules.map(async (module: StudyModule) => {
                 const module_translations = await prisma.studyModuleTranslations(
                   {
-                    where: { study_module: module, language },
+                    where: {
+                      study_module: { id: module.id },
+                      language,
+                    },
                   },
                 )
 
