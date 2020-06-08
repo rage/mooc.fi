@@ -8,7 +8,7 @@ import {
 } from "../generated/prisma-client"
 
 const UserCourseProgress = objectType({
-  name: "UserCourseProgress",
+  name: "user_course_progress",
   definition(t) {
     t.model.id()
     t.model.course()
@@ -47,7 +47,7 @@ const UserCourseProgress = objectType({
     })
 
     t.field("exercise_progress", {
-      type: "ExerciseProgress",
+      type: "exercise_progress",
       resolve: async (parent, _, ctx) => {
         const course: Course = await ctx.prisma
           .userCourseProgress({ id: parent.id })

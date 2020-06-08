@@ -2,7 +2,7 @@
 import { objectType } from "@nexus/schema"
 
 const Organization = objectType({
-  name: "Organization",
+  name: "organization",
   definition(t) {
     t.model.id()
     t.model.contact_information()

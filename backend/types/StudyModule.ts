@@ -5,7 +5,7 @@ import { Course, CourseOrderByInput } from "/generated/prisma-client"
 import { NexusGenRootTypes } from "/generated/nexus"
 
 const StudyModule = objectType({
-  name: "StudyModule",
+  name: "study_module",
   definition(t) {
     t.model.id()
     t.model.created_at()

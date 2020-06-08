@@ -4,7 +4,7 @@ import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const courseTranslations = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("CourseTranslations", {
-    type: "CourseTranslation",
+    type: "course_translation",
     args: {
       language: stringArg(),
     },

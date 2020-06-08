@@ -3,7 +3,7 @@
 import { objectType, arg } from "@nexus/schema"
 
 const Exercise = objectType({
-  name: "Exercise",
+  name: "exercise",
   definition(t) {
     t.model.id()
     t.model.course()
@@ -21,7 +21,7 @@ const Exercise = objectType({
     // t.prismaFields({ filter: ["exercise_completions"] })
 
     t.field("exercise_completions", {
-      type: "ExerciseCompletion",
+      type: "exercise_completion",
       list: true,
       args: {
         orderBy: arg({

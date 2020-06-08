@@ -1,9 +1,9 @@
 // import { prismaObjectType } from "nexus-prisma"
-import { objectType } from "@nexus/schema"
+// import { objectType } from "@nexus/schema"
 import * as mutations from "../resolvers/Mutation"
+import { mutationType } from "@nexus/schema"
 
-const Mutation = objectType({
-  name: "Mutation",
+const Mutation = mutationType({
   definition(t) {
     Object.values(mutations).forEach((fn) => fn(t))
   },

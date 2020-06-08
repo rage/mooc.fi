@@ -3,7 +3,7 @@ import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const courseVariant = async (t: ObjectDefinitionBlock<"Query">) => {
   t.field("courseVariant", {
-    type: "CourseVariant",
+    type: "course_variant",
     args: {
       id: idArg(),
     },
@@ -18,7 +18,7 @@ const courseVariant = async (t: ObjectDefinitionBlock<"Query">) => {
 
 const courseVariants = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("courseVariants", {
-    type: "CourseVariant",
+    type: "course_variant",
     args: {
       course_id: idArg(),
     },
