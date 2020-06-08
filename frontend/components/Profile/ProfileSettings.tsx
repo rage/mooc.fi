@@ -9,7 +9,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 
 const updateResearchConsentMutation = gql`
-  mutation updateResearchConsent($value: Boolean!) {
+  mutation updateUpdateAccountResearchConsent($value: Boolean!) {
     updateResearchConsent(value: $value) {
       id
     }

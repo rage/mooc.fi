@@ -14,6 +14,8 @@ import styled from "styled-components"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { gql, ApolloClient } from "apollo-boost"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
+import withAlert from "/lib/with-alert"
+import { Alert } from "/contexes/AlertContext"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -56,10 +58,12 @@ interface state {
   first_name?: string
   last_name?: string
   research?: string
+  step?: number
+  researchSubmitting?: boolean
 }
 
 const updateResearchConsentMutation = gql`
-  mutation updateResearchConsent($value: Boolean!) {
+  mutation updateCreateAccountResearchConsent($value: Boolean!) {
     updateResearchConsent(value: $value) {
       id
     }
@@ -73,6 +77,7 @@ export function capitalizeFirstLetter(string: String) {
 export interface CreateAccountFormProps {
   onComplete: Function
   apollo: ApolloClient<object>
+  addAlert: (alert: Alert) => void
 }
 
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
@@ -100,10 +105,12 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
     e.preventDefault()
     const t = getSignUpTranslator(this.context.language)
     this.setState({ submitting: true, triedSubmitting: true })
+
     if (!this.validate()) {
       this.setState({ canSubmit: false, submitting: false })
       return
     }
+
     try {
       await createAccount({
         email: this.state.email,
@@ -119,14 +126,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
         redirect: false,
       })
 
-      await this.props.apollo.mutate({
-        mutation: updateResearchConsentMutation,
-        variables: {
-          value: this.state.research === "1",
-        },
-      })
-
-      this.props.onComplete()
+      this.setState({ step: 1 })
     } catch (error) {
       try {
         let message = ""
@@ -178,7 +178,6 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
       validatePassword,
       validateEmail,
       triedSubmitting,
-      research,
     } = this.state
     if (email && validateEmail) {
       if (email.indexOf("@") === -1) {
@@ -189,11 +188,6 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
         newState.error += t("emailNoPoint")
         newState.errorObj.email = true
       }
-    }
-
-    if (typeof research == "undefined") {
-      newState.error += t("researchNotAnswered")
-      newState.errorObj.research = true
     }
 
     if (password && password_confirmation && validatePassword) {
@@ -233,125 +227,182 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
     canSubmit: true,
     triedSubmitting: true,
     research: undefined,
+    step: 0,
+    researchSubmitting: false,
+  }
+
+  onResearchClick = async (_: any) => {
+    const t = getSignUpTranslator(this.context.language)
+
+    this.setState({ researchSubmitting: true })
+    try {
+      await this.props.apollo.mutate({
+        mutation: updateResearchConsentMutation,
+        variables: {
+          value: this.state.research === "1",
+        },
+      })
+      this.props.onComplete()
+    } catch (error) {
+      console.log(error)
+      this.props.addAlert({
+        title: t("error"),
+        message: t("errorResearchSubmit"),
+        severity: "error",
+      })
+      this.props.onComplete()
+    }
   }
 
   render() {
     const t = getSignUpTranslator(this.context.language)
+
     return (
       <StyledPaper>
-        <Header component="h1" variant="h4" gutterBottom={true} align="center">
-          {t("signupTitle")}
-        </Header>
-        <StyledTypography component="p" paragraph>
-          {t("formInfoText")}
-        </StyledTypography>
-        <Form onChange={this.validate}>
-          <Row>
-            <TextField
-              variant="outlined"
-              type="email"
-              name="email"
-              autoComplete="lolled"
-              label={t("formLabelEmail")}
-              error={this.state.errorObj.email}
-              fullWidth
-              value={this.state.email}
-              onChange={this.handleInput}
-              onBlur={() => {
-                this.setState({ validateEmail: true }, () => {
-                  this.validate()
-                })
-              }}
-            />
-          </Row>
-          <Row>
-            <TextField
-              variant="outlined"
-              type="text"
-              label={t("formLabelFirstName")}
-              name="first_name"
-              autoComplete="lolled"
-              fullWidth
-              value={this.state.first_name}
-              onChange={this.handleInput}
-            />
-          </Row>
-          <Row>
-            <TextField
-              variant="outlined"
-              type="text"
-              label={t("formLabelLastName")}
-              name="last_name"
-              autoComplete="lolled"
-              fullWidth
-              value={this.state.last_name}
-              onChange={this.handleInput}
-            />
-          </Row>
-          <Row>
-            <TextField
-              variant="outlined"
-              type={this.state.showPassword ? "text" : "password"}
-              label={t("formLabelPassword")}
-              name="password"
-              autoComplete="lolled"
-              error={this.state.errorObj.password}
-              fullWidth
-              value={this.state.password}
-              onChange={this.handleInput}
-            />
-          </Row>
-          <Row>
-            <TextField
-              variant="outlined"
-              type={this.state.showPassword ? "text" : "password"}
-              label={t("formLabelPasswordAgain")}
-              name="password_confirmation"
-              autoComplete="lolled"
-              error={this.state.errorObj.password_confirmation}
-              fullWidth
-              value={this.state.password_confirmation}
-              onChange={this.handleInput}
-              onBlur={() => {
-                this.setState({ validatePassword: true }, () => {
-                  this.validate()
-                })
-              }}
-            />
-          </Row>
-
-          <ResearchConsent
-            state={this.state.research}
-            disabled={this.state.submitting || false}
-            handleInput={this.handleInput}
-          />
-
-          <Row>
-            <SubmitButton
-              onClick={this.onClick}
-              disabled={this.state.submitting || !this.state.canSubmit}
-              variant="contained"
-              color="secondary"
-              fullWidth
-              type="submit"
+        {this.state.step === 0 ? (
+          <>
+            <Header
+              component="h1"
+              variant="h4"
+              gutterBottom={true}
+              align="center"
             >
-              {this.state.submitting ? (
-                <CircularProgress size={20} />
-              ) : (
-                t("signupTitle")
-              )}
-            </SubmitButton>
-          </Row>
-        </Form>
+              {t("signupTitle")}
+            </Header>
+            <Form onChange={this.validate}>
+              <StyledTypography component="p" paragraph>
+                {t("formInfoText")}
+              </StyledTypography>
+              <Row>
+                <TextField
+                  variant="outlined"
+                  type="email"
+                  name="email"
+                  autoComplete="lolled"
+                  label={t("formLabelEmail")}
+                  error={this.state.errorObj.email}
+                  fullWidth
+                  value={this.state.email}
+                  onChange={this.handleInput}
+                  onBlur={() => {
+                    this.setState({ validateEmail: true }, () => {
+                      this.validate()
+                    })
+                  }}
+                />
+              </Row>
+              <Row>
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  label={t("formLabelFirstName")}
+                  name="first_name"
+                  autoComplete="lolled"
+                  fullWidth
+                  value={this.state.first_name}
+                  onChange={this.handleInput}
+                />
+              </Row>
+              <Row>
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  label={t("formLabelLastName")}
+                  name="last_name"
+                  autoComplete="lolled"
+                  fullWidth
+                  value={this.state.last_name}
+                  onChange={this.handleInput}
+                />
+              </Row>
+              <Row>
+                <TextField
+                  variant="outlined"
+                  type={this.state.showPassword ? "text" : "password"}
+                  label={t("formLabelPassword")}
+                  name="password"
+                  autoComplete="lolled"
+                  error={this.state.errorObj.password}
+                  fullWidth
+                  value={this.state.password}
+                  onChange={this.handleInput}
+                />
+              </Row>
+              <Row>
+                <TextField
+                  variant="outlined"
+                  type={this.state.showPassword ? "text" : "password"}
+                  label={t("formLabelPasswordAgain")}
+                  name="password_confirmation"
+                  autoComplete="lolled"
+                  error={this.state.errorObj.password_confirmation}
+                  fullWidth
+                  value={this.state.password_confirmation}
+                  onChange={this.handleInput}
+                  onBlur={() => {
+                    this.setState({ validatePassword: true }, () => {
+                      this.validate()
+                    })
+                  }}
+                />
+              </Row>
 
-        <Row>
-          <LangLink
-            href="/[lng]/sign-in"
-            as={`/${this.context.language}/sign-in`}
-          >
-            <a href="/[lng]/sign-in">{t("signIn")}</a>
-          </LangLink>
-        </Row>
+              <Row>
+                <SubmitButton
+                  onClick={this.onClick}
+                  disabled={this.state.submitting || !this.state.canSubmit}
+                  variant="contained"
+                  color="secondary"
+                  fullWidth
+                  type="submit"
+                >
+                  {this.state.submitting ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    t("signupTitle")
+                  )}
+                </SubmitButton>
+              </Row>
+            </Form>
+
+            <Row>
+              <LangLink
+                href="/[lng]/sign-in"
+                as={`/${this.context.language}/sign-in`}
+              >
+                <a href="/[lng]/sign-in">{t("signIn")}</a>
+              </LangLink>
+            </Row>
+          </>
+        ) : (
+          <>
+            <ResearchConsent
+              state={this.state.research}
+              disabled={this.state.researchSubmitting || false}
+              handleInput={this.handleInput}
+            />
+            <Row>
+              <SubmitButton
+                onClick={this.onResearchClick}
+                disabled={
+                  this.state.researchSubmitting ||
+                  typeof this.state.research === "undefined"
+                }
+                variant="contained"
+                color="secondary"
+                fullWidth
+                type="submit"
+              >
+                {this.state.researchSubmitting ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  t("submit")
+                )}
+              </SubmitButton>
+            </Row>
+          </>
+        )}
+
         {this.state.error && (
           <InfoBox>
             <b>
@@ -365,4 +416,4 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
   }
 }
 
-export default CreateAccountForm
+export default withAlert(CreateAccountForm)
