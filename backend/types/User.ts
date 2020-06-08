@@ -4,7 +4,7 @@ import { objectType, stringArg, idArg } from "@nexus/schema"
 import { NexusGenRootTypes } from "/generated/nexus"
 
 const User = objectType({
-  name: "User",
+  name: "user",
   definition(t) {
     t.model.id()
     t.model.administrator()

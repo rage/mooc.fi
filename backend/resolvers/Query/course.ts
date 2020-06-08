@@ -10,7 +10,7 @@ import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const course = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("course", {
-    type: "Course",
+    type: "course",
     args: {
       slug: stringArg(),
       id: idArg(),
@@ -57,7 +57,7 @@ const course = (t: ObjectDefinitionBlock<"Query">) => {
 
 const courses = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("courses", {
-    type: "Course",
+    type: "course",
     args: {
       orderBy: arg({ type: "CourseOrderByInput" }),
       language: stringArg(),

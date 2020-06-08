@@ -2,10 +2,9 @@ import { objectType } from "@nexus/schema"
 // import { prismaObjectType } from "nexus-prisma"
 import { Course } from "../generated/prisma-client"
 import { ForbiddenError } from "apollo-server-core"
-import { NexusGenRootTypes } from "/generated/nexus"
 
 const Completion = objectType({
-  name: "Completion",
+  name: "completion",
   definition(t) {
     t.model.id()
     t.model.created_at()
@@ -61,7 +60,7 @@ const Completion = objectType({
     })
  */
     t.field("user", {
-      type: "User",
+      type: "user",
       resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
           throw new ForbiddenError(
@@ -99,7 +98,7 @@ const Completion = objectType({
           if (avoinLinks.length < 1) {
             return null
           }
-          return avoinLinks[0].link as NexusGenRootTypes["String"]
+          return avoinLinks[0].link
         },
       })
   },

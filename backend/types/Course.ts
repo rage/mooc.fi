@@ -2,7 +2,7 @@
 import { objectType } from "@nexus/schema"
 
 const Course = objectType({
-  name: "Course",
+  name: "course",
   definition(t) {
     t.model.id()
     t.model.automatic_completions()

@@ -6,7 +6,7 @@ import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const openUniversityRegistrationLink = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("openUniversityRegistrationLink", {
-    type: "OpenUniversityRegistrationLink",
+    type: "open_university_registration_link",
     args: {
       id: idArg(),
     },
@@ -26,7 +26,7 @@ const openUniversityRegistrationLink = (t: ObjectDefinitionBlock<"Query">) => {
 
 const openUniversityRegistrationLinks = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("openUniversityRegistrationLinks", {
-    type: "OpenUniversityRegistrationLink",
+    type: "open_university_registration_link",
     resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.openUniversityRegistrationLinks()

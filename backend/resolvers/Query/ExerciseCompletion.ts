@@ -6,7 +6,7 @@ import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const exerciseCompletion = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("exerciseCompletion", {
-    type: "ExerciseCompletion",
+    type: "exercise_completion",
     args: {
       id: idArg(),
     },
@@ -26,7 +26,7 @@ const exerciseCompletion = (t: ObjectDefinitionBlock<"Query">) => {
 
 const exercisesCompletions = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("exerciseCompletions", {
-    type: "ExerciseCompletion",
+    type: "exercise_completion",
     resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.exerciseCompletions()

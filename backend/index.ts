@@ -1,12 +1,7 @@
 require("sharp") // image library sharp seems to crash without this require
 
-import { PrismaClient } from "@prisma/client"
 // import datamodelInfo from "./generated/nexus-prisma"
-import * as path from "path"
-import { makeSchema } from "@nexus/schema"
-import { nexusPrismaPlugin } from "nexus-prisma"
 // import { makePrismaSchema } from "nexus-prisma"
-import { GraphQLServer, Options } from "graphql-yoga"
 import fetchUser from "./middlewares/FetchUser"
 import cache from "./middlewares/cache"
 import { redisify } from "./services/redis"
@@ -14,11 +9,14 @@ import { redisify } from "./services/redis"
 const JSONStream = require("JSONStream")
 import Knex from "./services/knex"
 import * as winston from "winston"
-import * as types from "./types"
-
+import { schema } from "./schema"
+import { GraphQLServer, Options } from "graphql-yoga"
+import { use } from "nexus"
+import { prisma } from "nexus-plugin-prisma"
 import { wsListen } from "./wsServer"
+import { PrismaClient } from "@prisma/client"
 
-const prisma = new PrismaClient()
+use(prisma({ client: { instance: new PrismaClient() } }))
 
 const logger = winston.createLogger({
   level: "info",
@@ -28,31 +26,6 @@ const logger = winston.createLogger({
   ),
   defaultMeta: { service: "backend" },
   transports: [new winston.transports.Console()],
-})
-
-const schema = makeSchema({
-  types: [types],
-
-  plugins: [nexusPrismaPlugin()],
-
-  outputs: {
-    schema: path.join(__dirname, "./generated/schema.graphql"),
-    typegen: path.join(__dirname, "./generated/nexus.ts"),
-  },
-
-  typegenAutoConfig: {
-    sources: [
-      {
-        source: "@prisma/client",
-        alias: "prisma",
-      },
-      {
-        source: path.join(__dirname, "./context.ts"),
-        alias: "ctx",
-      },
-    ],
-    contextType: "ctx.Context",
-  },
 })
 
 // DEBUG:   context: req => { console.log(req.request.headers, req.request.body.query); return ({ prisma, ...req }) },
@@ -74,7 +47,7 @@ const serverStartOptions: Options = {
     logger.warn(error)
     return error
   },
-  formatResponse: (response: any /*, query: any*/) => {
+  formatResponse: (response: any) => {
     return response
   },
   bodyParserOptions: {

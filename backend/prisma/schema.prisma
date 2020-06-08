@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://prisma:prisma@localhost:5678/prisma?schema=default$prisma2"
+  url      = env("DATABASE_URL")
 }
 
 model completion {
@@ -328,10 +328,10 @@ model user {
 
 model UserAppDatumConfig {
   created_at DateTime? @default(now())
-  id         String    @id
+  id         String    @default(uuid()) @id
   name       String?   @unique
   timestamp  DateTime?
-  updated_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
 }
 
 model user_course_progress {
@@ -369,12 +369,12 @@ model UserCourseSettings {
   course                            String?
   course_variant                    String?
   created_at                        DateTime? @default(now())
-  id                                String    @id
+  id                                String    @default(uuid()) @id
   language                          String?
   marketing                         Boolean?
   other                             Json?
   research                          Boolean?
-  updated_at                        DateTime? @default(now())
+  updated_at                        DateTime? @default(now()) @updatedAt
   user                              String?
   course_UserCourseSettingsTocourse course?   @relation(fields: [course], references: [id])
   user_UserCourseSettingsTouser     user?     @relation(fields: [user], references: [id])

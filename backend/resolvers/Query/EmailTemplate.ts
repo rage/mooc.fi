@@ -5,7 +5,7 @@ import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const EmailTemplate = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("email_template", {
-    type: "EmailTemplate",
+    type: "email_template",
     nullable: true,
     args: {
       id: idArg(),
@@ -23,7 +23,7 @@ const EmailTemplate = (t: ObjectDefinitionBlock<"Query">) => {
 
 const EmailTemplates = (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("email_templates", {
-    type: "EmailTemplate",
+    type: "email_template",
     resolve: (_, __, ctx) => {
       checkAccess(ctx)
       return ctx.prisma.emailTemplates()

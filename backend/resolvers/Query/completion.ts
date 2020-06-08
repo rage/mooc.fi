@@ -1,13 +1,13 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { Course, Prisma, Maybe } from "../../generated/prisma-client"
-import { stringArg, intArg, idArg } from "@nexus/schema"
+import { stringArg, intArg, idArg, queryType } from "@nexus/schema"
 import checkAccess from "../../accessControl"
 import Knex from "../../services/knex"
 import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 
 const completions = async (t: ObjectDefinitionBlock<"Query">) => {
   t.list.field("completions", {
-    type: "Completion",
+    type: "completion",
     args: {
       course: stringArg(),
       completion_language: stringArg(),
