@@ -42,7 +42,7 @@ export const signIn = async ({
 
   const rawRedirectLocation = nookies.get()["redirect-back"]
 
-  if (!rawRedirectLocation || rawRedirectLocation === "") {
+  if (redirect && (!rawRedirectLocation || rawRedirectLocation === "")) {
     window.history.back()
     return details
   }

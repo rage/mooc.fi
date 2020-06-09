@@ -7,9 +7,9 @@ import withSignedOut from "/lib/with-signed-out"
 import AlertContext from "/contexes/AlertContext"
 import LanguageContext from "/contexes/LanguageContext"
 import getSignUpTranslator from "/translations/sign-up"
-import { useRouter } from "next/router"
 import LoginStateContext from "/contexes/LoginStateContext"
 import { useApolloClient } from "@apollo/react-hooks"
+import Router from "next/router"
 
 const SignUpPage = () => {
   const { language } = useContext(LanguageContext)
@@ -19,17 +19,16 @@ const SignUpPage = () => {
   const { logInOrOut } = useContext(LoginStateContext)
 
   const apollo = useApolloClient()
-  const router = useRouter()
 
   const onStepComplete = () => {
     logInOrOut()
-    router.push("/", "/")
+    Router.push("/[lng]/research-consent", `/${language}/research-consent`)
 
     addAlert({
       title: t("confirmEmailTitle"),
       message: t("confirmEmailInfo"),
       severity: "info",
-      ignorePages: [router.pathname],
+      ignorePages: [Router.pathname, "/[lng]/research-consent"],
     })
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0)
