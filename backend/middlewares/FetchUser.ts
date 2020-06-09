@@ -53,6 +53,7 @@ const getOrganization = async (
   context.organization = org[0]
   context.role = Role.ORGANIZATION
 }
+
 async function getUser(rawToken: string, context: any, prisma: Prisma) {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
@@ -86,6 +87,7 @@ async function getUser(rawToken: string, context: any, prisma: Prisma) {
     username,
   }
 
+  console.log("I got here with", existingUser, prismaDetails)
   if (!existingUser) {
     context.user = await prisma.createUser(prismaDetails)
   } else {
