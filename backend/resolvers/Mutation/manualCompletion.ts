@@ -59,6 +59,7 @@ const addManualCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           course: args.course_id,
           user: databaseUser.id,
           grade: o.grade,
+          eligible_for_ects: true,
         }
       })
 
