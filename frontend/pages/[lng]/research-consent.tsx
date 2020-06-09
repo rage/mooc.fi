@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react"
 import styled from "styled-components"
-import { Paper, Typography, CircularProgress } from "@material-ui/core"
+import { Paper, CircularProgress } from "@material-ui/core"
 import LanguageContext from "/contexes/LanguageContext"
 import { useMutation, useQuery } from "@apollo/react-hooks"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
