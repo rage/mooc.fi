@@ -12,7 +12,6 @@ import getSignUpTranslator from "/translations/sign-up"
 import LangLink from "/components/LangLink"
 import styled from "styled-components"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import { ApolloClient } from "apollo-boost"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -62,7 +61,6 @@ export function capitalizeFirstLetter(string: String) {
 
 export interface CreateAccountFormProps {
   onComplete: Function
-  apollo: ApolloClient<object>
 }
 
 class CreateAccountForm extends React.Component<CreateAccountFormProps> {
