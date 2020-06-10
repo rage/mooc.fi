@@ -44,6 +44,6 @@ export const schema = makeSchema({
   },
   outputs: {
     schema: path.join(__dirname, "../generated/schema.graphql"),
-    typegen: path.join(__dirname, "../nexus.ts"),
+    typegen: path.join(__dirname, "../generated/nexus.ts"),
   },
 })

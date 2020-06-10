@@ -1,0 +1,32 @@
+import { schema } from "nexus"
+
+schema.objectType({
+  name: "progress",
+  definition(t) {
+    t.field("course", { type: "course" })
+    t.field("user", { type: "user" })
+
+    t.field("user_course_progress", {
+      type: "user_course_progress",
+      nullable: true,
+      resolve: async (parent, _, ctx) => {
+        const courseId = parent.course.id
+        const userId = parent.user.id
+        const userCourseProgresses = await ctx.prisma.userCourseProgresses({
+          where: { course: { id: courseId }, user: { id: userId } },
+        })
+        return userCourseProgresses[0]
+      },
+    })
+    t.list.field("user_course_service_progresses", {
+      type: "user_course_service_progress",
+      resolve: async (parent, _, ctx) => {
+        const courseId = parent.course.id
+        const userId = parent.user.id
+        return ctx.prisma.userCourseServiceProgresses({
+          where: { user: { id: userId }, course: { id: courseId } },
+        })
+      },
+    })
+  },
+})

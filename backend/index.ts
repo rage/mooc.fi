@@ -9,9 +9,8 @@ import { redisify } from "./services/redis"
 const JSONStream = require("JSONStream")
 import Knex from "./services/knex"
 import * as winston from "winston"
-import { schema } from "./schema"
-import { GraphQLServer, Options } from "graphql-yoga"
-import { use } from "nexus"
+// import { GraphQLServer, Options } from "graphql-yoga"
+import { use, server, settings, schema } from "nexus"
 import { prisma } from "nexus-plugin-prisma"
 import { wsListen } from "./wsServer"
 import { PrismaClient } from "@prisma/client"
@@ -30,7 +29,14 @@ const logger = winston.createLogger({
 
 // DEBUG:   context: req => { console.log(req.request.headers, req.request.body.query); return ({ prisma, ...req }) },
 
-const server = new GraphQLServer({
+schema.addToContext((req) => ({ prisma, ...req }))
+
+settings.change({
+  schema: {
+    generateGraphQLSDLFile: "./generated/schema.graphql",
+  },
+})
+/*const server = new GraphQLServer({
   schema,
   context: (req) => ({ prisma, ...req }),
   middlewares: [fetchUser, cache],
@@ -53,15 +59,18 @@ const serverStartOptions: Options = {
   bodyParserOptions: {
     limit: "10mb",
   },
-}
+}*/
 
-if (process.env.NODE_ENV === "production") {
+/*if (process.env.NODE_ENV === "production") {
   console.log("Running in production mode")
   serverStartOptions["playground"] = "/api"
   serverStartOptions["endpoint"] = "/api"
-}
+}*/
 
-server.get("/api/completions/:course", async function (req: any, res: any) {
+server.express.get("/api/completions/:course", async function (
+  req: any,
+  res: any,
+) {
   const rawToken = req.get("Authorization")
   const secret: string = rawToken?.split(" ")[1] ?? ""
   let course_id: string
@@ -111,7 +120,7 @@ type UserCourseSettingsCountResult =
       error: true
     }
 
-server.get(
+server.express.get(
   "/api/usercoursesettingscount/:course/:language",
   async (req: any, res: any) => {
     const {
@@ -197,8 +206,8 @@ server.get(
   },
 )
 
-server.start(serverStartOptions, () =>
+/*server.express.start(serverStartOptions, () =>
   console.log("Server is running on http://localhost:4000"),
-)
+)*/
 
-wsListen()
+// wsListen()

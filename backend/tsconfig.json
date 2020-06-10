@@ -4,6 +4,7 @@
     "paths": {
       "/*": ["./*"]
     },
+    "rootDir": ".",
     "lib": ["es2016", "esnext.asynciterable"],
     "outDir": "./dist",
     "strict": true,
@@ -15,6 +16,8 @@
       "node_modules/@types",
       "types"
     ],
+    "plugins": [{ "name": "nexus/typescript-language-service" }]
   },
+  "include": ["."],
   "exclude": ["node_modules", "dist", "test", "src/test"]
 }
