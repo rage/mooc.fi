@@ -1,4 +1,3 @@
-import { objectType } from "@nexus/schema"
 // import { prismaObjectType } from "nexus-prisma"
 import { ForbiddenError } from "apollo-server-core"
 import { schema } from "nexus"
@@ -69,37 +68,38 @@ schema.objectType({
         }
         return ctx.prisma.completion({ id: parent.id }).user()
       },
-    }),
-      t.field("completion_link", {
-        type: "String",
-        nullable: true,
-        resolve: async (parent, _, ctx) => {
-          const course: course = await ctx.prisma
-            .completion({ id: parent.id })
-            .course()
+    })
 
-          let filter
-          if (
-            !parent.completion_language ||
-            parent.completion_language === "unknown"
-          ) {
-            filter = {
-              course: course,
-            }
-          } else {
-            filter = {
-              course: course,
-              language: parent.completion_language,
-            }
+    t.field("completion_link", {
+      type: "String",
+      nullable: true,
+      resolve: async (parent, _, ctx) => {
+        const course: course = await ctx.prisma
+          .completion({ id: parent.id })
+          .course()
+
+        let filter
+        if (
+          !parent.completion_language ||
+          parent.completion_language === "unknown"
+        ) {
+          filter = {
+            course: course,
           }
-          const avoinLinks = await ctx.prisma.openUniversityRegistrationLinks({
-            where: filter,
-          })
-          if (avoinLinks.length < 1) {
-            return null
+        } else {
+          filter = {
+            course: course,
+            language: parent.completion_language,
           }
-          return avoinLinks[0].link
-        },
-      })
+        }
+        const avoinLinks = await ctx.prisma.openUniversityRegistrationLinks({
+          where: filter,
+        })
+        if (avoinLinks.length < 1) {
+          return null
+        }
+        return avoinLinks[0].link
+      },
+    })
   },
 })

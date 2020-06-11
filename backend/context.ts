@@ -1,13 +1,11 @@
-import { Prisma, User, Organization } from "./generated/prisma-client"
+import { user, organization } from "@prisma/client"
 import { Role } from "./accessControl"
 import { UserInfo } from "/domain/UserInfo"
 import TmcClient from "./services/tmc"
-import { Context as GraphqlContext } from "graphql-yoga/dist/types"
 
-export interface Context extends GraphqlContext {
-  prisma: Prisma
-  user: User | undefined
-  organization: Organization | undefined
+export interface Context extends NexusContext {
+  user: user | undefined
+  organization: organization | undefined
   disableRelations: boolean | undefined
   role: Role | undefined
   userDetails: UserInfo | undefined
