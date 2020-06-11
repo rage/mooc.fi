@@ -91,7 +91,7 @@ const permissions = shield({
   },
 })
 
-use(permissions)
+// use(permissions)
 
 server.express.get("/api/completions/:course", async function (
   req: any,

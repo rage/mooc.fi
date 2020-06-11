@@ -4,7 +4,9 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.crud.service()
-    t.crud.services()
+    t.crud.services({
+      pagination: false,
+    })
 
     /*t.field("service", {
       type: "service",

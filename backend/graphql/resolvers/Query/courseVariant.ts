@@ -9,6 +9,7 @@ schema.extendType({
       filtering: {
         course: true,
       },
+      pagination: false,
     })
     /*t.field("courseVariant", {
       type: "course_variant",

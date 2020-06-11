@@ -7,6 +7,7 @@ schema.extendType({
       filtering: {
         language: true,
       },
+      pagination: false,
     })
     /*t.list.field("CourseTranslations", {
       type: "course_translation",

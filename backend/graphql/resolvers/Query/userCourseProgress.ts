@@ -28,15 +28,17 @@ schema.extendType({
       },
     })
 
-    t.crud.userCourseProgresses({
+    // FIXME: (?) broken until the nexus json thing is fixed or smth
+
+    /*t.crud.userCourseProgresses({
       filtering: {
         user: true,
         course_courseTouser_course_progress: true,
       },
       pagination: true,
-    })
+    })*/
 
-    /*t.list.field("UserCourseProgresses", {
+    t.list.field("userCourseProgresses", {
       type: "user_course_progress",
       args: {
         user_id: idArg(),
@@ -66,15 +68,18 @@ schema.extendType({
           where: {
             user: user_id,
             course_courseTouser_course_progress: {
-              OR: [{
-                id: course_id
-              }, {
-                slug: course_slug
-              }]
-            }
+              OR: [
+                {
+                  id: course_id,
+                },
+                {
+                  slug: course_slug,
+                },
+              ],
+            },
           },
         })
       },
-    })*/
+    })
   },
 })
