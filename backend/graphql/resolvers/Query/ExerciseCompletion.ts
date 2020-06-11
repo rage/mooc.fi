@@ -1,42 +1,34 @@
-import { Prisma } from "../../../generated/prisma-client"
-import { idArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
-import { NexusGenRootTypes } from "/generated/nexus"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
 
-const exerciseCompletion = (t: ObjectDefinitionBlock<"Query">) => {
-  t.field("exerciseCompletion", {
-    type: "exercise_completion",
-    args: {
-      id: idArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
-      const { id } = args
-      const prisma: Prisma = ctx.prisma
+schema.extendType({
+  type: "Query",
+  definition(t) {
+    t.crud.exerciseCompletion()
+    t.crud.exerciseCompletions()
 
-      const completion = await prisma.exerciseCompletion({
-        id: id,
-      })
+    /*t.field("exerciseCompletion", {
+      type: "exercise_completion",
+      args: {
+        id: idArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        checkAccess(ctx)
+        const { id } = args
+  
+        const completion = await ctx.db.exercise_completion.findOne({
+          where: { id },
+        })
+  
+        return completion
+      },
+    })
 
-      return completion as NexusGenRootTypes["ExerciseCompletion"]
-    },
-  })
-}
-
-const exercisesCompletions = (t: ObjectDefinitionBlock<"Query">) => {
-  t.list.field("exerciseCompletions", {
-    type: "exercise_completion",
-    resolve: (_, __, ctx) => {
-      checkAccess(ctx)
-      return ctx.prisma.exerciseCompletions()
-    },
-  })
-}
-
-const addExerciseCompletionQueries = (t: ObjectDefinitionBlock<"Query">) => {
-  exerciseCompletion(t)
-  exercisesCompletions(t)
-}
-
-export default addExerciseCompletionQueries
+    t.list.field("exerciseCompletions", {
+      type: "exercise_completion",
+      resolve: (_, __, ctx) => {
+        checkAccess(ctx)
+        return ctx.db.exercise_completion.findMany()
+      },
+    })*/
+  },
+})

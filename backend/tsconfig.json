@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types",
-      "types"
+      "graphql/types"
     ],
     "plugins": [{ "name": "nexus/typescript-language-service" }]
   },

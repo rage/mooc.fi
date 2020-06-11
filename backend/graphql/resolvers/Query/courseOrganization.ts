@@ -1,34 +1,32 @@
-import { Prisma } from "../../generated/prisma-client"
 import { idArg } from "@nexus/schema"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
 
-const courseOrganizations = async (t: ObjectDefinitionBlock<"Query">) => {
-  t.list.field("courseOrganizations", {
-    type: "course_organization",
-    args: {
-      course_id: idArg(),
-      organization_id: idArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      const { course_id, organization_id } = args
-      const prisma: Prisma = ctx.prisma
+schema.extendType({
+  type: "Query",
+  definition(t) {
+    t.crud.courseOrganizations({
+      filtering: {
+        course: true,
+        organization: true,
+      },
+    })
 
-      return prisma.courseOrganizations({
-        where: {
-          course: {
-            id: course_id,
+    /*t.list.field("courseOrganizations", {
+      type: "course_organization",
+      args: {
+        course_id: idArg(),
+        organization_id: idArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { course_id, organization_id } = args
+
+        return ctx.db.course_organization.findMany({
+          where: {
+            course: course_id,
+            organization: organization_id,
           },
-          organization: {
-            id: organization_id,
-          },
-        },
-      })
-    },
-  })
-}
-
-const addCourseOrganizationQueries = (t: ObjectDefinitionBlock<"Query">) => {
-  courseOrganizations(t)
-}
-
-export default addCourseOrganizationQueries
+        })
+      },
+    })*/
+  },
+})

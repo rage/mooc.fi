@@ -1,39 +1,37 @@
-import { Prisma } from "../../../generated/prisma-client"
 import { idArg } from "@nexus/schema"
 import checkAccess from "../../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
 
-const EmailTemplate = (t: ObjectDefinitionBlock<"Query">) => {
-  t.field("email_template", {
-    type: "email_template",
-    nullable: true,
-    args: {
-      id: idArg(),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { id } = args
-      const prisma: Prisma = ctx.prisma
-      return prisma.emailTemplate({
-        id: id,
-      })
-    },
-  })
-}
+schema.extendType({
+  type: "Query",
+  definition(t) {
+    t.crud.emailTemplate()
+    t.crud.emailTemplates()
 
-const EmailTemplates = (t: ObjectDefinitionBlock<"Query">) => {
-  t.list.field("email_templates", {
-    type: "email_template",
-    resolve: (_, __, ctx) => {
-      checkAccess(ctx)
-      return ctx.prisma.emailTemplates()
-    },
-  })
-}
+    /*t.field("email_template", {
+      type: "email_template",
+      nullable: true,
+      args: {
+        id: idArg(),
+      },
+      resolve: (_, args, ctx) => {
+        checkAccess(ctx)
+        const { id } = args
 
-const addEmailTemplateQueries = (t: ObjectDefinitionBlock<"Query">) => {
-  EmailTemplates(t)
-  EmailTemplate(t)
-}
+        return ctx.db.email_template.findOne({
+          where: {
+            id
+          }
+        })
+      },
+    })
 
-export default addEmailTemplateQueries
+    t.list.field("email_templates", {
+      type: "email_template",
+      resolve: (_, __, ctx) => {
+        checkAccess(ctx)
+        return ctx.db.email_template.findMany()
+      },
+    })*/
+  },
+})

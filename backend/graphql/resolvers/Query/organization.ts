@@ -1,23 +1,11 @@
-import {
-  Prisma,
-  OrganizationOrderByInput,
-} from "../../../generated/prisma-client"
 import { idArg, intArg, arg, booleanArg } from "@nexus/schema"
 import checkAccess from "../../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
 import { schema } from "nexus"
 
-/*schema.queryType({
-  definition(t) {
-    t.crud.organizations({
-      ordering: true,
-    })
-  },
-})
-*/
 schema.extendType({
   type: "Query",
   definition(t) {
+    // TODO: handle the conditional access restriction with shield rule somehow
     t.field("organization", {
       type: "organization",
       args: {
@@ -27,31 +15,33 @@ schema.extendType({
       nullable: true,
       resolve: async (_, args, ctx) => {
         const { id, hidden } = args
-        const prisma: Prisma = ctx.prisma
 
         if (!hidden) {
-          return prisma.organization({ id })
+          return ctx.db.organization.findOne({ where: { id } })
         }
 
         checkAccess(ctx)
-        const res = await prisma.organizations({ where: { id, hidden } })
+        const res = await ctx.db.organization.findMany({
+          where: { id, hidden },
+        })
         return res.length ? res[0] : null
       },
     })
 
     t.crud.organizations({
       ordering: true,
+      pagination: true,
     })
 
+    // TODO: handle the conditional access restriction with shield rule somehow
     t.list.field("organizations", {
       type: "organization",
-      ordering: true,
       args: {
         first: intArg(),
         after: idArg(),
         last: intArg(),
         before: idArg(),
-        // orderBy: arg({ type: "organizationOrderByInput" }),
+        orderBy: arg({ type: "organizationOrderByInput" }),
         hidden: booleanArg(),
       },
       resolve: async (_, args, ctx) => {
@@ -60,14 +50,13 @@ schema.extendType({
         if (hidden) {
           checkAccess(ctx)
         }
-        const prisma: Prisma = ctx.prisma
 
-        const orgs = await prisma.organizations({
-          first: first ?? undefined,
-          last: last ?? undefined,
-          after: after ?? undefined,
-          before: before ?? undefined,
-          orderBy: (orderBy as OrganizationOrderByInput) ?? undefined,
+        const orgs = await ctx.db.organization.findMany({
+          first,
+          last,
+          after: { id: after },
+          before: { id: before },
+          orderBy,
           where: {
             hidden,
           },
@@ -78,12 +67,3 @@ schema.extendType({
     })
   },
 })
-
-/**/
-
-const addOrganizationQueries = (t: ObjectDefinitionBlock<"Query">) => {
-  // organization(t)
-  // organizations(t)
-}
-
-export default addOrganizationQueries

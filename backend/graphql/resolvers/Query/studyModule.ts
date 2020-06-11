@@ -1,12 +1,5 @@
-import {
-  Prisma,
-  StudyModule,
-  StudyModuleOrderByInput,
-} from "../../../generated/prisma-client"
 import { stringArg, idArg, arg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
-// import { NexusGenRootTypes } from "/generated/nexus"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+// import checkAccess from "../../../accessControl"
 import { schema } from "nexus"
 
 schema.extendType({
@@ -21,19 +14,29 @@ schema.extendType({
       },
       nullable: true,
       resolve: async (_, args, ctx) => {
-        checkAccess(ctx, { allowOrganizations: false })
+        // checkAccess(ctx, { allowOrganizations: false })
         const { id, slug, language } = args
-        const prisma: Prisma = ctx.prisma
 
-        const study_module = await prisma.studyModule({
-          id,
-          slug,
+        const study_module = await ctx.db.study_module.findOne({
+          where: {
+            id,
+            slug,
+          },
         })
 
+        if (!study_module) {
+          throw new Error("study module not found")
+        }
+
         if (language) {
-          const module_translations = await prisma.studyModuleTranslations({
-            where: { study_module, language },
-          })
+          const module_translations = await ctx.db.study_module_translation.findMany(
+            {
+              where: {
+                study_module: study_module.id,
+                language,
+              },
+            },
+          )
 
           if (!module_translations.length) {
             return Promise.resolve(null)
@@ -67,19 +70,18 @@ schema.extendType({
       },
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
-        const { prisma } = ctx
 
-        const modules = await prisma.studyModules({
-          orderBy: orderBy as StudyModuleOrderByInput,
+        const modules = await ctx.db.study_module.findMany({
+          orderBy,
         })
 
         const filtered = language
           ? (
               await Promise.all(
-                modules.map(async (module: StudyModule) => {
-                  const module_translations = await prisma.studyModuleTranslations(
+                modules.map(async (module: any) => {
+                  const module_translations = await ctx.db.study_module_translation.findMany(
                     {
-                      where: { study_module: module, language },
+                      where: { study_module: module.id, language },
                     },
                   )
 
@@ -93,7 +95,7 @@ schema.extendType({
                 }),
               )
             ).filter((v) => !!v)
-          : modules.map((module: StudyModule) => ({
+          : modules.map((module: any) => ({
               ...module,
               description: "",
             }))
@@ -108,20 +110,12 @@ schema.extendType({
         slug: stringArg(),
       },
       resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
+        // checkAccess(ctx)
 
         const { slug } = args
 
-        return await ctx.prisma.$exists.studyModule({ slug })
+        return !!(await ctx.db.study_module.findOne({ where: { slug } }))
       },
     })
   },
 })
-
-const addStudyModuleQueries = (t: ObjectDefinitionBlock<"Query">) => {
-  // studyModule(t)
-  // studyModules(t)
-  // studyModuleExists(t)
-}
-
-export default addStudyModuleQueries
