@@ -6,7 +6,10 @@ schema.objectType({
     t.model.id()
     t.model.created_at()
     t.model.updated_at()
-    t.model.course()
+    t.model.course({ alias: "course_id" })
+    t.model.course_courseToopen_university_registration_link({
+      alias: "course",
+    })
     t.model.course_code()
     t.model.language()
     t.model.link()

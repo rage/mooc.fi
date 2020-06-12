@@ -14,7 +14,7 @@ model completion {
   created_at                DateTime?               @default(now())
   email                     String
   grade                     String?
-  id                        String                  @id
+  id                        String                  @id @default(uuid())
   student_number            String?
   updated_at                DateTime?               @default(now())
   user                      String?
@@ -28,7 +28,7 @@ model completion_registered {
   completion                                       String?
   course                                           String?
   created_at                                       DateTime?     @default(now())
-  id                                               String        @id
+  id                                               String        @id @default(uuid())
   organization                                     String?
   real_student_number                              String
   updated_at                                       DateTime?     @default(now())
@@ -49,7 +49,7 @@ model course {
   exercise_completions_needed                        Int?
   has_certificate                                    Boolean?                            @default(false)
   hidden                                             Boolean?
-  id                                                 String                              @id
+  id                                                 String                              @id @default(uuid())
   inherit_settings_from                              String?
   name                                               String
   order                                              Int?
@@ -94,7 +94,7 @@ model course_alias {
   course                      String?
   course_code                 String    @unique
   created_at                  DateTime? @default(now())
-  id                          String    @id
+  id                          String    @id @default(uuid())
   updated_at                  DateTime? @default(now())
   course_courseTocourse_alias course?   @relation(fields: [course], references: [id])
 }
@@ -103,7 +103,7 @@ model course_organization {
   course                                         String?
   created_at                                     DateTime?     @default(now())
   creator                                        Boolean?
-  id                                             String        @id
+  id                                             String        @id @default(uuid())
   organization                                   String?
   updated_at                                     DateTime?     @default(now())
   course_courseTocourse_organization             course?       @relation(fields: [course], references: [id])
@@ -114,7 +114,7 @@ model course_translation {
   course                            String?
   created_at                        DateTime? @default(now())
   description                       String
-  id                                String    @id
+  id                                String    @id @default(uuid())
   language                          String
   link                              String?
   name                              String
@@ -126,7 +126,7 @@ model course_variant {
   course                        String?
   created_at                    DateTime? @default(now())
   description                   String?
-  id                            String    @id
+  id                            String    @id @default(uuid())
   slug                          String
   updated_at                    DateTime? @default(now())
   course_courseTocourse_variant course?   @relation(fields: [course], references: [id])
@@ -137,7 +137,7 @@ model email_delivery {
   email_template                                String?
   error                                         Boolean         @default(false)
   error_message                                 String?
-  id                                            String          @id
+  id                                            String          @id @default(uuid())
   sent                                          Boolean         @default(false)
   updated_at                                    DateTime?       @default(now())
   user                                          String?
@@ -148,7 +148,7 @@ model email_delivery {
 model email_template {
   created_at     DateTime?        @default(now())
   html_body      String?
-  id             String           @id
+  id             String           @id @default(uuid())
   name           String?
   title          String?
   txt_body       String?
@@ -162,7 +162,7 @@ model exercise {
   created_at                DateTime?             @default(now())
   custom_id                 String
   deleted                   Boolean?              @default(false)
-  id                        String                @id
+  id                        String                @id @default(uuid())
   max_points                Int?
   name                      String?
   part                      Int?
@@ -179,7 +179,7 @@ model exercise_completion {
   completed                              Boolean?                               @default(false)
   created_at                             DateTime?                              @default(now())
   exercise                               String?
-  id                                     String                                 @id
+  id                                     String                                 @id @default(uuid())
   n_points                               Float?
   timestamp                              DateTime
   updated_at                             DateTime?                              @default(now())
@@ -202,7 +202,7 @@ model image {
   created_at            DateTime? @default(now())
   default               Boolean?
   encoding              String?
-  id                    String    @id
+  id                    String    @id @default(uuid())
   name                  String?
   original              String
   original_mimetype     String
@@ -216,7 +216,7 @@ model open_university_registration_link {
   course                                           String?
   course_code                                      String
   created_at                                       DateTime? @default(now())
-  id                                               String    @id
+  id                                               String    @id @default(uuid())
   language                                         String
   link                                             String?
   start_date                                       DateTime?
@@ -232,7 +232,7 @@ model organization {
   disabled                 Boolean?
   email                    String?
   hidden                   Boolean?
-  id                       String                     @id
+  id                       String                     @id @default(uuid())
   logo_content_type        String?
   logo_file_name           String?
   logo_file_size           Int?
@@ -259,7 +259,7 @@ model organization {
 model organization_translation {
   created_at                                          DateTime?     @default(now())
   disabled_reason                                     String?
-  id                                                  String        @id
+  id                                                  String        @id @default(uuid())
   information                                         String?
   language                                            String
   name                                                String
@@ -270,7 +270,7 @@ model organization_translation {
 
 model service {
   created_at                   DateTime?                      @default(now())
-  id                           String                         @id
+  id                           String                         @id @default(uuid())
   name                         String
   updated_at                   DateTime?                      @default(now())
   url                          String
@@ -281,7 +281,7 @@ model service {
 
 model study_module {
   created_at               DateTime?                  @default(now())
-  id                       String                     @id
+  id                       String                     @id @default(uuid())
   image                    String?
   name                     String
   order                    Int?
@@ -294,7 +294,7 @@ model study_module {
 model study_module_translation {
   created_at                                          DateTime?     @default(now())
   description                                         String
-  id                                                  String        @id
+  id                                                  String        @id @default(uuid())
   language                                            String
   name                                                String
   study_module                                        String?
@@ -307,7 +307,7 @@ model user {
   created_at                   DateTime?                      @default(now())
   email                        String
   first_name                   String?
-  id                           String                         @id
+  id                           String                         @id @default(uuid())
   last_name                    String?
   real_student_number          String?
   student_number               String?
@@ -337,7 +337,7 @@ model UserAppDatumConfig {
 model user_course_progress {
   course                              String?
   created_at                          DateTime?                      @default(now())
-  id                                  String                         @id
+  id                                  String                         @id @default(uuid())
   max_points                          Float?
   n_points                            Float?
   progress                            Json
@@ -383,7 +383,7 @@ model UserCourseSettings {
 model user_course_settings_visibility {
   course                                         String?
   created_at                                     DateTime? @default(now())
-  id                                             String    @id
+  id                                             String    @id @default(uuid())
   language                                       String
   updated_at                                     DateTime? @default(now())
   course_courseTouser_course_settings_visibility course?   @relation(fields: [course], references: [id])
@@ -391,7 +391,7 @@ model user_course_settings_visibility {
 
 model user_organization {
   created_at                                   DateTime?          @default(now())
-  id                                           String             @id
+  id                                           String             @id @default(uuid())
   organization                                 String?
   role                                         organization_role? @default(Student)
   updated_at                                   DateTime?          @default(now())
@@ -403,7 +403,7 @@ model user_organization {
 model verified_user {
   created_at                               DateTime?     @default(now())
   display_name                             String?
-  id                                       String        @id
+  id                                       String        @id @default(uuid())
   organization                             String?
   personal_unique_code                     String
   updated_at                               DateTime?     @default(now())

@@ -1,7 +1,11 @@
-import { Prisma } from "../generated/prisma-client"
 import * as faker from "faker"
+import {
+  PrismaClient,
+  user_course_progressCreateInput,
+  UserCourseSettingsCreateInput,
+} from "@prisma/client"
 
-const prisma = new Prisma({ endpoint: "http://localhost:4466/default/default" })
+const prisma = new PrismaClient()
 
 //Generate integer id which is not already taken
 function generateUniqueUpstreamId({ ExistingIds }: { ExistingIds: number[] }) {
@@ -30,7 +34,7 @@ function generateRandomString() {
 
 const addUsers = async () => {
   //get existing users from database
-  const UsersInDatabase = await prisma.users()
+  const UsersInDatabase = await prisma.user.findMany()
   //create a list of upstream ids already in use
   let UpstreamIdsInUse = UsersInDatabase.map((user) => user.upstream_id)
   //Generate random data for 100 users
@@ -53,7 +57,7 @@ const addUsers = async () => {
     //add new upstreamId to ids already in use
     UpstreamIdsInUse = UpstreamIdsInUse.concat(newUser.upstream_id)
 
-    await prisma.createUser(newUser)
+    await prisma.user.create({ data: newUser })
     i += 1
   }
 }
@@ -65,7 +69,7 @@ const addServices = async () => {
       url: generateRandomString(),
       name: generateRandomString(),
     }
-    await prisma.createService(newService)
+    await prisma.service.create({ data: newService })
     i += 1
   }
 }
@@ -182,16 +186,16 @@ const addServices = async () => {
 } */
 
 const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
-  const UsersInDb = await prisma.users({ first: 100 })
+  const UsersInDb = await prisma.user.findMany({ take: 100 })
   return await Promise.all(
     UsersInDb.map(async (user) => {
-      const ucp = {
-        user: {
+      const ucp: user_course_progressCreateInput = {
+        user_userTouser_course_progress: {
           connect: {
             id: user.id,
           },
         },
-        course: {
+        course_courseTouser_course_progress: {
           connect: {
             id: courseId,
           },
@@ -229,22 +233,23 @@ const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
           },
         ],
       }
-      return await prisma.createUserCourseProgress(ucp)
+
+      return await prisma.user_course_progress.create({ data: ucp })
     }),
   )
 }
 
 const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
-  const UsersInDb = await prisma.users({ first: 100 })
+  const UsersInDb = await prisma.user.findMany({ take: 100 })
   return await Promise.all(
     UsersInDb.map(async (user) => {
-      const ucs = {
-        user: {
+      const ucs: UserCourseSettingsCreateInput = {
+        user_UserCourseSettingsTouser: {
           connect: {
             id: user.id,
           },
         },
-        course: {
+        course_UserCourseSettingsTocourse: {
           connect: {
             id: courseId,
           },
@@ -256,13 +261,15 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
         course_variant: null,
         other: null,
       }
-      return await prisma.createUserCourseSettings(ucs)
+      return await prisma.userCourseSettings.create({ data: ucs })
     }),
   )
 }
 
 const seedPointsData = async () => {
-  const course = await prisma.course({ slug: "elements-of-ai" })
+  const course = await prisma.course.findOne({
+    where: { slug: "elements-of-ai" },
+  })
   console.log("course", course)
   await addUsers()
   await addServices()

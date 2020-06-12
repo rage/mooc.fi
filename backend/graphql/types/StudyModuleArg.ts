@@ -11,7 +11,7 @@ const StudyModuleArg = inputObjectType({
     t.int("order", { required: false })
     t.field("study_module_translations", {
       list: true,
-      type: "StudyModuleTranslationCreateUpdateInput",
+      type: "study_module_translationCreateUpdateInput",
       required: false,
     })
   },

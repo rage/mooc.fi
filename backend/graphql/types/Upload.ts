@@ -1,7 +1,7 @@
 import { GraphQLUpload } from "graphql-upload"
-import { scalarType } from "@nexus/schema"
+import { schema } from "nexus"
 
-export const Upload = scalarType({
+schema.scalarType({
   name: GraphQLUpload.name,
   asNexusMethod: "upload",
   description: GraphQLUpload.description,
@@ -9,5 +9,3 @@ export const Upload = scalarType({
   parseValue: GraphQLUpload.parseValue,
   parseLiteral: GraphQLUpload.parseLiteral,
 })
-
-export default Upload

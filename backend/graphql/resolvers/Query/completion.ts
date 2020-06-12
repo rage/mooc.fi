@@ -1,6 +1,5 @@
 import { UserInputError /*, ForbiddenError*/ } from "apollo-server-core"
 import { stringArg, intArg, idArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
 import Knex from "../../../services/knex"
 import { schema } from "nexus"
 
@@ -18,12 +17,14 @@ schema.extendType({
         before: idArg(),
       },
       resolve: async (_, args, ctx) => {
-        checkAccess(ctx, { allowOrganizations: true, disallowAdmin: false })
-
         const { first, last, completion_language } = args
         let { course } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           ctx.disableRelations = true
+        }
+
+        if (!course) {
+          throw new UserInputError("no course specified")
         }
         const courseWithSlug = await ctx.db.course.findOne({
           where: {
