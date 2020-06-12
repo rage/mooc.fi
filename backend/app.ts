@@ -8,7 +8,7 @@ import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { Role } from "./accessControl"
 import { shield, rule, deny, not, and, or } from "nexus-plugin-shield"
-import fetchUser from "./middlewares/FetchUser"
+import fetchUser, { contextUser } from "./middlewares/FetchUser"
 import { Context } from "/context"
 
 const JSONStream = require("JSONStream")
@@ -25,15 +25,16 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-schema.middleware(fetchUser)
+//schema.middleware(fetchUser)
 
-schema.addToContext((req) => {
+schema.addToContext(async (req) => {
   return {
     ...req,
-    user: undefined,
-    organization: undefined,
+    ...(await contextUser(req)),
+    //user: undefined,
+    //organization: undefined,
     disableRelations: false,
-    role: Role.VISITOR,
+    //role: Role.VISITOR,
     userDetails: undefined,
     tmcClient: undefined,
   }
