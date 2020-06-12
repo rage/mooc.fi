@@ -1,9 +1,8 @@
 // import { prismaObjectType } from "nexus-prisma"
 // import { stringArg, arg } from "nexus/dist"
 import { stringArg, arg } from "@nexus/schema"
-import { Course, CourseOrderByInput } from "/generated/prisma-client"
-import { NexusGenRootTypes } from "/generated/nexus"
 import { schema } from "nexus"
+import { courseOrderByInput } from "@prisma/client"
 
 schema.objectType({
   name: "study_module",
@@ -16,33 +15,32 @@ schema.objectType({
     t.model.slug()
     t.model.updated_at()
     t.model.study_module_translation()
-    t.model.course()
 
     // t.prismaFields(["*"])
     t.field("description", { type: "String" })
-    /*t.field("courses", {
+    t.list.field("courses", {
       type: "course",
-      list: true,
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
+        orderBy: arg({ type: "courseOrderByInput" }),
         language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { language, orderBy } = args
-        const { prisma } = ctx
 
-        const courses = await prisma.courses({
-          orderBy: (orderBy as CourseOrderByInput) ?? undefined,
-          where: { study_modules_some: { id: parent.id } },
+        const courses = await ctx.db.course.findMany({
+          orderBy: (orderBy as courseOrderByInput) ?? undefined,
+          where: { study_module: { some: { id: parent.id } } },
         })
 
         const values = language
           ? (
               await Promise.all(
-                courses.map(async (course: Course) => {
-                  const course_translations = await prisma.courseTranslations({
-                    where: { course, language },
-                  })
+                courses.map(async (course) => {
+                  const course_translations = await ctx.db.course_translation.findMany(
+                    {
+                      where: { course: course.id, language },
+                    },
+                  )
 
                   if (!course_translations.length) {
                     return Promise.resolve(null)
@@ -58,14 +56,14 @@ schema.objectType({
                 }),
               )
             ).filter((v) => !!v)
-          : courses.map((course: Course) => ({
+          : courses.map((course) => ({
               ...course,
               description: "",
               link: "",
             }))
 
-        return values as Array<NexusGenRootTypes["Course"]>
+        return values
       },
-    })*/
+    })
   },
 })

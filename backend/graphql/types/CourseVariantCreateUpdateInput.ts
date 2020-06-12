@@ -1,7 +1,7 @@
-import { inputObjectType } from "@nexus/schema"
+import { schema } from "nexus"
 
-const CourseVariantCreateUpdateInput = inputObjectType({
-  name: "CourseVariantCreateUpdateInput",
+schema.inputObjectType({
+  name: "course_variantCreateUpdateInput",
   definition(t) {
     t.id("id", { required: false })
     t.id("course", { required: false })
@@ -9,5 +9,3 @@ const CourseVariantCreateUpdateInput = inputObjectType({
     t.string("description", { required: false })
   },
 })
-
-export default CourseVariantCreateUpdateInput

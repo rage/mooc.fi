@@ -1,68 +1,73 @@
-import {
-  Prisma,
-  Course,
-  User,
-  CompletionRegistered,
-} from "../../generated/prisma-client"
 import { arg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
 import { chunk } from "lodash"
-import { Context } from "../../context"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { Context } from "../../../context"
+import { schema } from "nexus"
 
-const registerCompletion = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("registerCompletion", {
-    type: "String",
-    args: {
-      completions: arg({ type: "CompletionArg", list: true }),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: true, disallowAdmin: true })
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("registerCompletion", {
+      type: "String",
+      args: {
+        completions: arg({ type: "CompletionArg", list: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        let queue = chunk(args.completions, 500)
 
-      const prisma: Prisma = ctx.prisma
+        for (let i = 0; i < queue.length; i++) {
+          const promises = buildPromises(queue[i], ctx)
+          await Promise.all(promises)
+        }
+        return "success"
+      },
+    })
 
-      let queue = chunk(args.completions, 500)
+    t.field("registerCompletion", {
+      type: "String",
+      args: {
+        completions: arg({ type: "CompletionArg", list: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        let queue = chunk(args.completions, 500)
 
-      for (let i = 0; i < queue.length; i++) {
-        const promises = buildPromises(queue[i], ctx, prisma)
-        await Promise.all(promises)
-      }
-      return "success"
-    },
-  })
-}
+        for (let i = 0; i < queue.length; i++) {
+          const promises = buildPromises(queue[i], ctx)
+          await Promise.all(promises)
+        }
+        return "success"
+      },
+    })
+  },
+})
 
-// FIXME: had [Promise<...>] as type?
-
-const buildPromises = (
-  array: any[],
-  ctx: Context,
-  prisma: Prisma,
-): Promise<CompletionRegistered>[] => {
+const buildPromises = (array: any[], ctx: Context) => {
   return array.map(async (entry) => {
     console.log("entry", entry)
-    const course: Course = await prisma
-      .completion({ id: entry.completion_id })
-      .course()
-    const user: User = await prisma
-      .completion({ id: entry.completion_id })
-      .user()
+    const course = await ctx.db.completion
+      .findOne({ where: { id: entry.completion_id } })
+      .course_completionTocourse()
+    const user = await ctx.db.completion
+      .findOne({ where: { id: entry.completion_id } })
+      .user_completionTouser()
     console.log(course, user)
 
-    return prisma.createCompletionRegistered({
-      completion: { connect: { id: entry.completion_id } },
-      organization: { connect: { id: ctx.organization?.id } },
-      course: { connect: { id: course.id } },
-      real_student_number: entry.student_number,
-      user: { connect: { id: user.id } },
+    if (!course || !user) {
+      // TODO/FIXME: we now fail silently if course/user not found
+      return Promise.resolve()
+    }
+
+    return ctx.db.completion_registered.create({
+      data: {
+        completion_completionTocompletion_registered: {
+          connect: { id: entry.completion_id },
+        },
+        organization_completion_registeredToorganization: {
+          connect: { id: ctx.organization?.id },
+        },
+        course_completion_registeredTocourse: { connect: { id: course.id } },
+        real_student_number: entry.student_number,
+        user_completion_registeredTouser: { connect: { id: user.id } },
+      },
     })
   })
 }
-
-const addCompletionRegisteredMutations = (
-  t: ObjectDefinitionBlock<"Mutation">,
-) => {
-  registerCompletion(t)
-}
-
-export default addCompletionRegisteredMutations

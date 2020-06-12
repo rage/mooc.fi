@@ -4,7 +4,9 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.crud.exerciseCompletion()
-    t.crud.exerciseCompletions()
+    t.crud.exerciseCompletions({
+      ordering: true,
+    })
 
     /*t.field("exerciseCompletion", {
       type: "exercise_completion",

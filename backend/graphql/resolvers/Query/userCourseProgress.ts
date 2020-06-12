@@ -50,7 +50,7 @@ schema.extendType({
         before: idArg(),
       },
       resolve: (_, args, ctx) => {
-        checkAccess(ctx)
+        // checkAccess(ctx)
         const {
           first,
           last,

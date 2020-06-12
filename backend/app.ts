@@ -8,10 +8,12 @@ import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { Role } from "./accessControl"
 import { shield, rule, deny, not, and, or } from "nexus-plugin-shield"
+import fetchUser from "./middlewares/FetchUser"
+import { Context } from "/context"
 
 const JSONStream = require("JSONStream")
 
-use(prisma({ migrations: false }))
+use(prisma({ migrations: false, features: { crud: true } }))
 
 const logger = winston.createLogger({
   level: "info",
@@ -23,15 +25,19 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-schema.addToContext((req) => ({
-  ...req,
-  user: undefined,
-  organization: undefined,
-  disableRelations: false,
-  role: Role.VISITOR,
-  userDetails: undefined,
-  tmcClient: undefined,
-}))
+schema.middleware(fetchUser)
+
+schema.addToContext((req) => {
+  return {
+    ...req,
+    user: undefined,
+    organization: undefined,
+    disableRelations: false,
+    role: Role.VISITOR,
+    userDetails: undefined,
+    tmcClient: undefined,
+  }
+})
 
 settings.change({
   schema: {
@@ -40,58 +46,68 @@ settings.change({
 })
 
 const isOrganization = rule({ cache: "contextual" })(
-  async (parent, args, ctx: NexusContext, info) =>
-    ctx.role === Role.ORGANIZATION,
+  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.ORGANIZATION,
 )
 
 const isAdmin = rule({ cache: "contextual" })(
-  async (parent, args, ctx: NexusContext, info) => ctx.role === Role.ADMIN,
+  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.ADMIN,
 )
 
 const isVisitor = rule({ cache: "contextual" })(
-  async (parent, args, ctx: NexusContext, info) => ctx.role === Role.VISITOR,
+  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.VISITOR,
 )
 
 const isUser = rule({ cache: "contextual" })(
-  async (parent, args, ctx: NexusContext, info) => ctx.role === Role.USER,
+  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.USER,
 )
+
+const defaultPermission = and(not(isVisitor), not(isOrganization))
 
 const permissions = shield({
   rules: {
     Query: {
-      course: not(isVisitor),
-      course_exists: not(isVisitor),
-      courseAliases: not(isVisitor),
-      courseTranslations: and(not(isVisitor), not(isOrganization)),
-      emailTemplate: not(isVisitor),
-      emailTemplates: not(isVisitor),
-      exercise: not(isVisitor),
-      exercises: not(isVisitor),
-      exerciseCompletion: not(isVisitor),
-      exerciseCompletions: not(isVisitor),
-      openUniversityRegistrationLink: not(isVisitor),
-      openUniversityRegistrationLinks: not(isVisitor),
+      completions: not(isVisitor),
+      course: defaultPermission,
+      course_exists: defaultPermission,
+      courseAliases: defaultPermission,
+      courseTranslations: defaultPermission,
+      emailTemplate: defaultPermission,
+      emailTemplates: defaultPermission,
+      exercise: defaultPermission,
+      exercises: defaultPermission,
+      exerciseCompletion: defaultPermission,
+      exerciseCompletions: defaultPermission,
+      openUniversityRegistrationLink: defaultPermission,
+      openUniversityRegistrationLinks: defaultPermission,
+      // organization and -s need special case - default if hidden parameter given
       registerCompletions: not(isVisitor),
-      service: not(isVisitor),
-      services: not(isVisitor),
-      study_module: and(not(isVisitor), not(isOrganization)),
-      study_module_exists: not(isVisitor),
-      studyModuleTranslations: and(not(isVisitor), not(isOrganization)),
-      user: not(isVisitor),
-      users: not(isVisitor),
-      userDetailsContains: not(isVisitor),
+      service: defaultPermission,
+      services: defaultPermission,
+      study_module: defaultPermission,
+      study_module_exists: defaultPermission,
+      studyModuleTranslations: defaultPermission,
+      user: defaultPermission,
+      users: defaultPermission,
+      userDetailsContains: defaultPermission,
       UserCourseProgress: isAdmin,
-      UserCourseProgresses: not(isVisitor),
-      UserCourseServiceProgress: not(isVisitor),
-      userCourseServiceProgresses: not(isVisitor),
-      UserCourseSettings: not(isVisitor),
-      userCourseSettingsCount: not(isVisitor),
-      UserCourseSettingses: not(isVisitor),
+      userCourseProgresses: defaultPermission,
+      UserCourseServiceProgress: defaultPermission,
+      userCourseServiceProgresses: defaultPermission,
+      UserCourseSettings: defaultPermission,
+      userCourseSettingsCount: defaultPermission,
+      UserCourseSettingses: defaultPermission,
     },
+    Mutation: {
+      addCompletion: defaultPermission,
+      registerCompletion: or(isUser, isOrganization),
+    },
+  },
+  options: {
+    fallbackError: "you have no permission to do this",
   },
 })
 
-// use(permissions)
+use(permissions)
 
 server.express.get("/api/completions/:course", async function (
   req: any,

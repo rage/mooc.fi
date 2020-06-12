@@ -10,6 +10,9 @@ schema.objectType({
     t.model.information()
     t.model.language()
     t.model.name()
-    t.model.organization()
+    t.model.organization({ alias: "organization_id" })
+    t.model.organization_organizationToorganization_translation({
+      alias: "organization",
+    })
   },
 })

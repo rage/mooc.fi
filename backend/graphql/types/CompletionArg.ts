@@ -1,11 +1,9 @@
-import { inputObjectType } from "@nexus/schema"
+import { schema } from "nexus"
 
-const CompletionArg = inputObjectType({
+schema.inputObjectType({
   name: "CompletionArg",
   definition(t) {
     t.string("completion_id", { required: true })
     t.string("student_number", { required: true })
   },
 })
-
-export default CompletionArg

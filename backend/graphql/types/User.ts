@@ -1,8 +1,6 @@
-// import { prismaObjectType } from "nexus-prisma"
-// import { stringArg, idArg } from "nexus/dist"
 import { stringArg, idArg } from "@nexus/schema"
-import { NexusGenRootTypes } from "/generated/nexus"
 import { schema } from "nexus"
+import { UserInputError } from "apollo-server-core"
 
 schema.objectType({
   name: "user",
@@ -19,15 +17,15 @@ schema.objectType({
     t.model.upstream_id()
     t.model.username()
     t.model.completion()
-    // t.model.completion_registered()
-    // t.model.email_delivery()
-    // t.model.exercise_completion()
+    t.model.completion_registered()
+    t.model.email_delivery()
+    t.model.exercise_completion()
     t.model.organization()
-    // t.model.user_course_progress()
-    // t.model.user_course_service_progress()
-    // t.model.UserCourseSettings()
-    // t.model.user_organization()
-    // t.model.verified_user()
+    t.model.user_course_progress()
+    t.model.user_course_service_progress()
+    t.model.UserCourseSettings()
+    t.model.user_organization()
+    t.model.verified_user()
     // t.prismaFields({ filter: ["completions"] })
 
     t.field("completions", {
@@ -42,20 +40,25 @@ schema.objectType({
         let { course_id, course_slug } = args
 
         if (course_id || course_slug) {
-          const handlerCourse = await ctx.prisma
-            .course({ id: args.course_id, slug: args.course_slug })
-            .completions_handled_by()
+          const handlerCourse = await ctx.db.course
+            .findOne({
+              where: {
+                id: args.course_id ?? undefined,
+                slug: args.course_slug ?? undefined,
+              },
+            })
+            .course_courseTocourse_completions_handled_by()
           if (handlerCourse) {
             course_id = handlerCourse.id
             course_slug = undefined
           }
         }
-        return ctx.prisma.completions({
+        return ctx.db.completion.findMany({
           where: {
-            user: { id: parent.id },
-            course:
+            user: parent.id,
+            course_completionTocourse:
               course_id || course_slug
-                ? { id: course_id, slug: course_slug }
+                ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
                 : undefined,
           },
         })
@@ -69,11 +72,16 @@ schema.objectType({
         course_id: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
-        const course = await ctx.prisma.course({ id: args.course_id })
+        if (!args.course_id) {
+          throw new UserInputError("no course specified")
+        }
+        const course = await ctx.db.course.findOne({
+          where: { id: args.course_id },
+        })
         return {
-          course: course,
+          course,
           user: parent,
-        } as NexusGenRootTypes["Progress"]
+        }
       },
     })
 
@@ -82,17 +90,19 @@ schema.objectType({
       list: true,
       nullable: false,
       resolve: async (parent, _, ctx) => {
-        const user_course_progressess = await ctx.prisma.userCourseProgresses({
-          where: { user: parent },
-        })
+        const user_course_progressess = await ctx.db.user_course_progress.findMany(
+          {
+            where: { user: parent.id },
+          },
+        )
         const progresses = user_course_progressess.map(async (p) => {
-          const course = await ctx.prisma
-            .userCourseProgress({ id: p.id })
-            .course()
+          const course = await ctx.db.user_course_progress
+            .findOne({ where: { id: p.id } })
+            .course_courseTouser_course_progress()
           return {
-            course: course,
+            course,
             user: parent,
-          } as NexusGenRootTypes["Progress"]
+          }
         })
         return progresses
       },
@@ -107,10 +117,10 @@ schema.objectType({
       resolve: async (parent, args, ctx) => {
         const { course_id } = args
 
-        const progresses = await ctx.prisma.userCourseProgresses({
+        const progresses = await ctx.db.user_course_progress.findMany({
           where: {
-            user: { id: parent.id },
-            course: { id: course_id },
+            user: parent.id,
+            course: course_id,
           },
         })
 
@@ -126,9 +136,9 @@ schema.objectType({
       type: "exercise_completion",
       list: true,
       resolve: async (parent, _, ctx) => {
-        return ctx.prisma.exerciseCompletions({
+        return ctx.db.exercise_completion.findMany({
           where: {
-            user: { id: parent.id },
+            user: parent.id,
           },
         })
       },

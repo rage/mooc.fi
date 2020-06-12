@@ -1,11 +1,11 @@
-import { Prisma, Image } from "../../generated/prisma-client"
-import { arg, booleanArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
+import { arg, booleanArg, idArg } from "@nexus/schema"
+import checkAccess from "../../../accessControl"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
-} from "../../services/google-cloud"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+} from "../../../services/google-cloud"
+import { Context } from "../../../context"
+import { schema } from "nexus"
 
 const sharp = require("sharp")
 
@@ -28,14 +28,14 @@ const readFS = (stream: NodeJS.ReadStream): Promise<Buffer> => {
 }
 
 export const uploadImage = async ({
-  prisma,
+  ctx,
   file,
   base64 = false,
 }: {
-  prisma: Prisma
+  ctx: Context
   file: any
   base64: boolean
-}): Promise<Image> => {
+}) => {
   const {
     createReadStream,
     mimetype,
@@ -88,27 +88,29 @@ export const uploadImage = async ({
     originalMimetype = "image/jpeg"
   }
 
-  const newImage: Image = await prisma.createImage({
-    name: filename,
-    original,
-    original_mimetype: originalMimetype,
-    uncompressed,
-    uncompressed_mimetype: "image/jpeg",
-    compressed,
-    compressed_mimetype: "image/webp",
+  const newImage = await ctx.db.image.create({
+    data: {
+      name: filename,
+      original,
+      original_mimetype: originalMimetype,
+      uncompressed,
+      uncompressed_mimetype: "image/jpeg",
+      compressed,
+      compressed_mimetype: "image/webp",
+    },
   })
 
   return newImage
 }
 
 export const deleteImage = async ({
-  prisma,
+  ctx,
   id,
 }: {
-  prisma: Prisma
+  ctx: Context
   id: string
 }): Promise<boolean> => {
-  const image = await prisma.image({ id })
+  const image = await ctx.db.image.findOne({ where: { id } })
 
   if (!image) {
     return false
@@ -126,50 +128,41 @@ export const deleteImage = async ({
       `There was some problem with image deletion. Statuses: compressed ${compressed} uncompressed ${uncompressed} original ${original}`,
     )
   }
-  await prisma.deleteImage({ id })
+  await ctx.db.image.delete({ where: { id } })
 
   return true
 }
 
-const addImage = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addImage", {
-    type: "Image",
-    args: {
-      file: arg({ type: "Upload", required: true }),
-      base64: booleanArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addImage", {
+      type: "image",
+      args: {
+        file: arg({ type: "Upload", required: true }),
+        base64: booleanArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        checkAccess(ctx)
 
-      const { file, base64 } = args
+        const { file, base64 } = args
 
-      const prisma: Prisma = ctx.prisma
+        return uploadImage({ ctx, file, base64: base64 ?? false })
+      },
+    })
 
-      return uploadImage({ prisma, file, base64: base64 ?? false })
-    },
-  })
-}
+    t.field("deleteImage", {
+      type: "Boolean",
+      args: {
+        id: idArg({ required: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        checkAccess(ctx)
 
-const _deleteImage = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("deleteImage", {
-    type: "Boolean",
-    args: {
-      id: arg({ type: "UUID", required: true }),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
+        const { id } = args
 
-      const { id } = args
-      const prisma: Prisma = ctx.prisma
-
-      return deleteImage({ prisma, id })
-    },
-  })
-}
-
-const addImageMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addImage(t)
-  _deleteImage(t)
-}
-
-export default addImageMutations
+        return deleteImage({ ctx, id })
+      },
+    })
+  },
+})

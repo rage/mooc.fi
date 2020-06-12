@@ -7,8 +7,10 @@ schema.objectType({
     t.model.created_at()
     t.model.updated_at()
     t.model.display_name()
-    t.model.organization()
+    t.model.organization({ alias: "organization_id" })
+    t.model.organization_organizationToverified_user({ alias: "organization" })
     t.model.personal_unique_code()
-    t.model.user()
+    t.model.user({ alias: "user_id" })
+    t.model.user_userToverified_user({ alias: "user" })
   },
 })

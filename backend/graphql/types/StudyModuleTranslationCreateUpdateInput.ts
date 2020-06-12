@@ -1,7 +1,7 @@
-import { inputObjectType } from "@nexus/schema"
+import { schema } from "nexus"
 
-const StudyModuleTranslationCreateUpdateInput = inputObjectType({
-  name: "StudyModuleTranslationCreateUpdateInput",
+schema.inputObjectType({
+  name: "study_module_translationCreateUpdateInput",
   definition(t) {
     t.id("id", { required: false })
     t.string("name", { required: true })
@@ -10,5 +10,3 @@ const StudyModuleTranslationCreateUpdateInput = inputObjectType({
     t.id("study_module", { required: false })
   },
 })
-
-export default StudyModuleTranslationCreateUpdateInput

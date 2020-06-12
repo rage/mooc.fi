@@ -12,9 +12,10 @@ schema.objectType({
     t.model.student_number()
     t.model.user_upstream_id()
     t.model.completion_registered()
-    t.model.course()
+    t.model.course({ alias: "course_id" })
     t.model.grade()
     t.model.certificate_id()
+    t.model.course_completionTocourse({ alias: "course" })
     /*t.prismaFields([
       "id",
       "created_at",
@@ -66,7 +67,9 @@ schema.objectType({
             "Cannot query relations when asking for more than 50 objects",
           )
         }
-        return ctx.prisma.completion({ id: parent.id }).user()
+        return ctx.db.completion
+          .findOne({ where: { id: parent.id } })
+          .user_completionTouser()
       },
     })
 
@@ -74,9 +77,13 @@ schema.objectType({
       type: "String",
       nullable: true,
       resolve: async (parent, _, ctx) => {
-        const course: course = await ctx.prisma
-          .completion({ id: parent.id })
-          .course()
+        const course = await ctx.db.completion
+          .findOne({ where: { id: parent.id } })
+          .course_completionTocourse()
+
+        if (!course) {
+          throw new Error("course not found")
+        }
 
         let filter
         if (
@@ -84,17 +91,19 @@ schema.objectType({
           parent.completion_language === "unknown"
         ) {
           filter = {
-            course: course,
+            course: course.id,
           }
         } else {
           filter = {
-            course: course,
+            course: course.id,
             language: parent.completion_language,
           }
         }
-        const avoinLinks = await ctx.prisma.openUniversityRegistrationLinks({
-          where: filter,
-        })
+        const avoinLinks = await ctx.db.open_university_registration_link.findMany(
+          {
+            where: filter,
+          },
+        )
         if (avoinLinks.length < 1) {
           return null
         }

@@ -1,7 +1,7 @@
-import { inputObjectType } from "@nexus/schema"
+import { schema } from "nexus"
 
-const OpenUniversityRegistrationLinkCreateUpdateInput = inputObjectType({
-  name: "OpenUniversityRegistrationLinkCreateUpdateInput",
+schema.inputObjectType({
+  name: "open_university_registration_linkCreateUpdateInput",
   definition(t) {
     t.id("id", { required: false })
     t.string("course_code", { required: true })
@@ -11,5 +11,3 @@ const OpenUniversityRegistrationLinkCreateUpdateInput = inputObjectType({
     t.field("stop_date", { type: "DateTime" })
   },
 })
-
-export default OpenUniversityRegistrationLinkCreateUpdateInput
