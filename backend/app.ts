@@ -10,10 +10,18 @@ import { Role } from "./accessControl"
 import { shield, rule, deny, not, and, or } from "nexus-plugin-shield"
 import fetchUser, { contextUser } from "./middlewares/FetchUser"
 import { Context } from "/context"
+import { PrismaClient } from "nexus-plugin-prisma/client"
 
 const JSONStream = require("JSONStream")
+const prismaClient = new PrismaClient()
 
-use(prisma({ migrations: false, features: { crud: true } }))
+use(
+  prisma({
+    client: { instance: prismaClient },
+    migrations: false,
+    features: { crud: true },
+  }),
+)
 
 const logger = winston.createLogger({
   level: "info",
@@ -28,13 +36,21 @@ const logger = winston.createLogger({
 //schema.middleware(fetchUser)
 
 schema.addToContext(async (req) => {
+  let userContext
+
+  try {
+    userContext = await contextUser(req, prismaClient)
+  } catch (e) {
+    console.log("got error getting context", e)
+  }
+
   return {
     ...req,
-    ...(await contextUser(req)),
-    //user: undefined,
-    //organization: undefined,
+    user: undefined,
+    organization: undefined,
+    role: Role.VISITOR,
+    ...userContext,
     disableRelations: false,
-    //role: Role.VISITOR,
     userDetails: undefined,
     tmcClient: undefined,
   }
@@ -43,6 +59,7 @@ schema.addToContext(async (req) => {
 settings.change({
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
+    rootTypingsGlobPattern: "./graphql/**/*.ts",
   },
 })
 
@@ -62,49 +79,74 @@ const isUser = rule({ cache: "contextual" })(
   async (_parent, _args, ctx: Context, _info) => ctx.role === Role.USER,
 )
 
-const defaultPermission = and(not(isVisitor), not(isOrganization))
+const defaultPermission = isAdmin // and(not(isVisitor), not(isUser), not(isOrganization))
 
 const permissions = shield({
   rules: {
     Query: {
-      completions: not(isVisitor),
-      course: defaultPermission,
-      course_exists: defaultPermission,
-      courseAliases: defaultPermission,
-      courseTranslations: defaultPermission,
+      completions: or(isOrganization, isAdmin),
+      course: isAdmin,
+      course_exists: isAdmin,
+      courseAliases: isAdmin,
+      courseTranslations: isAdmin,
       emailTemplate: defaultPermission,
       emailTemplates: defaultPermission,
       exercise: defaultPermission,
       exercises: defaultPermission,
       exerciseCompletion: defaultPermission,
       exerciseCompletions: defaultPermission,
-      openUniversityRegistrationLink: defaultPermission,
-      openUniversityRegistrationLinks: defaultPermission,
+      openUniversityRegistrationLink: isAdmin,
+      openUniversityRegistrationLinks: isAdmin,
       // organization and -s need special case - default if hidden parameter given
-      registerCompletions: not(isVisitor),
-      service: defaultPermission,
-      services: defaultPermission,
-      study_module: defaultPermission,
-      study_module_exists: defaultPermission,
-      studyModuleTranslations: defaultPermission,
-      user: defaultPermission,
-      users: defaultPermission,
-      userDetailsContains: defaultPermission,
+      registerCompletions: or(isOrganization, isAdmin),
+      service: isAdmin,
+      services: isAdmin,
+      study_module: isAdmin,
+      study_module_exists: isAdmin,
+      studyModuleTranslations: isAdmin,
+      user: isAdmin,
+      users: isAdmin,
+      userDetailsContains: isAdmin,
       UserCourseProgress: isAdmin,
-      userCourseProgresses: defaultPermission,
-      UserCourseServiceProgress: defaultPermission,
-      userCourseServiceProgresses: defaultPermission,
-      UserCourseSettings: defaultPermission,
-      userCourseSettingsCount: defaultPermission,
-      UserCourseSettingses: defaultPermission,
+      userCourseProgresses: isAdmin,
+      UserCourseServiceProgress: isAdmin,
+      userCourseServiceProgresses: isAdmin,
+      UserCourseSettings: isAdmin,
+      userCourseSettingsCount: isAdmin,
+      UserCourseSettingses: isAdmin,
     },
     Mutation: {
-      addCompletion: defaultPermission,
-      registerCompletion: or(isUser, isOrganization),
+      addCompletion: isAdmin,
+      registerCompletion: isOrganization,
+      addCourse: isAdmin,
+      updateCourse: isAdmin,
+      deleteCourse: isAdmin,
+      addCourseAlias: isAdmin,
+      addCourseOrganization: or(isVisitor, isAdmin),
+      deleteCourseOrganization: isAdmin,
+      addCourseTranslation: isAdmin,
+      updateCourseTranslation: isAdmin,
+      deleteCourseTranslation: isAdmin,
+      addCourseVariant: isAdmin,
+      updateCourseVariant: isAdmin,
+      deleteCourseVariant: isAdmin,
+      addEmailTemplate: isAdmin,
+      updateEmailTemplate: isAdmin,
+      deleteEmailTemplate: isAdmin,
+      addExercise: isAdmin,
+      addExerciseCompletion: isAdmin,
+      addImage: isAdmin,
+      deleteImage: isAdmin,
+      addManualCompletion: isAdmin,
+      addOpenUniversityRegistrationLink: isAdmin,
+      updateOpenUniversityRegistrationLink: isAdmin,
+      addOrganization: isAdmin,
+      addService: isAdmin,
+      updateService: isAdmin,
+      addStudyModule: isAdmin,
+      updateStudyModule: isAdmin,
+      deleteStudyModule: isAdmin,
     },
-  },
-  options: {
-    fallbackError: "you have no permission to do this",
   },
 })
 

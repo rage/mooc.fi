@@ -8,14 +8,11 @@
     "lib": ["es2016", "esnext.asynciterable"],
     "outDir": "./dist",
     "strict": true,
+    "noEmit": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "graphql/types"
-    ],
     "plugins": [{ "name": "nexus/typescript-language-service" }]
   },
   "include": ["."],

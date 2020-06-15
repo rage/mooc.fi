@@ -1,74 +1,64 @@
-import { Prisma } from "../../generated/prisma-client"
 import { stringArg, idArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
+import { UserInputError } from "apollo-server-core"
 
-const addCourseVariant = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addCourseVariant", {
-    type: "CourseVariant",
-    args: {
-      course_id: idArg({ required: true }),
-      slug: stringArg({ required: true }),
-      description: stringArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addCourseVariant", {
+      type: "course_variant",
+      args: {
+        course_id: idArg({ required: true }),
+        slug: stringArg({ required: true }),
+        description: stringArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { course_id, slug, description } = args
 
-      const { course_id, slug, description } = args
-      const prisma: Prisma = ctx.prisma
+        return ctx.db.course_variant.create({
+          data: {
+            slug,
+            description,
+            course_courseTocourse_variant: { connect: { id: course_id } },
+          },
+        })
+      },
+    })
 
-      return prisma.createCourseVariant({
-        slug,
-        description,
-        course: { connect: { id: course_id } },
-      })
-    },
-  })
-}
+    t.field("updateCourseVariant", {
+      type: "course_variant",
+      args: {
+        id: idArg({ required: true }),
+        slug: stringArg(),
+        description: stringArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { id, slug, description } = args
 
-const updateCourseVariant = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateCourseVariant", {
-    type: "CourseVariant",
-    args: {
-      id: idArg({ required: true }),
-      slug: stringArg(),
-      description: stringArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
+        return ctx.db.course_variant.update({
+          where: { id },
+          data: {
+            slug: slug ?? undefined,
+            description,
+          },
+        })
+      },
+    })
 
-      const { id, slug, description } = args
-      const prisma: Prisma = ctx.prisma
+    t.field("deleteCourseVariant", {
+      type: "course_variant",
+      args: {
+        id: idArg({ required: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        const { id } = args
 
-      return prisma.updateCourseVariant({
-        where: { id },
-        data: { slug, description },
-      })
-    },
-  })
-}
+        if (!id) {
+          throw new UserInputError("must provide id")
+        }
 
-const deleteCourseVariant = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("deleteCourseVariant", {
-    type: "CourseVariant",
-    args: {
-      id: idArg({ required: true }),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
-
-      const { id } = args
-      const prisma: Prisma = ctx.prisma
-
-      return prisma.deleteCourseVariant({ id })
-    },
-  })
-}
-
-const addCourseVariantMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addCourseVariant(t)
-  updateCourseVariant(t)
-  deleteCourseVariant(t)
-}
-
-export default addCourseVariantMutations
+        return ctx.db.course_variant.delete({ where: { id } })
+      },
+    })
+  },
+})

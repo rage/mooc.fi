@@ -1,5 +1,4 @@
 import { arg, booleanArg, idArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
@@ -143,8 +142,6 @@ schema.extendType({
         base64: booleanArg(),
       },
       resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
-
         const { file, base64 } = args
 
         return uploadImage({ ctx, file, base64: base64 ?? false })
@@ -157,8 +154,6 @@ schema.extendType({
         id: idArg({ required: true }),
       },
       resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
-
         const { id } = args
 
         return deleteImage({ ctx, id })

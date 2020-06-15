@@ -1,36 +1,36 @@
-import { Prisma, CourseAlias } from "../../generated/prisma-client"
 import { idArg, stringArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
+import { UserInputError } from "apollo-server-core"
 
-const addCourseAlias = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addCourseAlias", {
-    type: "CourseAlias",
-    args: {
-      course_code: stringArg(),
-      course: idArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
-      const { course_code, course } = args
-      const prisma: Prisma = ctx.prisma
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addCourseAlias", {
+      type: "course_alias",
+      args: {
+        course_code: stringArg(),
+        course: idArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { course_code, course } = args
 
-      // FIXME: what to do on empty course_code?
-      if (!course_code) {
-        throw "has to have a course code"
-      }
+        // FIXME: what to do on empty course_code?
+        if (!course_code) {
+          throw "has to have a course code"
+        }
 
-      const newCourseAlias: CourseAlias = await prisma.createCourseAlias({
-        course_code: course_code ?? "",
-        course: { connect: { id: course } },
-      })
-      return newCourseAlias
-    },
-  })
-}
+        if (!course) {
+          throw new UserInputError("must provide course")
+        }
 
-const addCourseAliasMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addCourseAlias(t)
-}
-
-export default addCourseAliasMutations
+        const newCourseAlias = await ctx.db.course_alias.create({
+          data: {
+            course_code: course_code ?? "",
+            course_courseTocourse_alias: { connect: { id: course } },
+          },
+        })
+        return newCourseAlias
+      },
+    })
+  },
+})

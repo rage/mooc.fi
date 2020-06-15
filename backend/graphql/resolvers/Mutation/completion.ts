@@ -1,5 +1,6 @@
 import { stringArg, intArg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
+import { UserInputError } from "apollo-server-core"
 
 schema.extendType({
   type: "Mutation",
@@ -23,6 +24,10 @@ schema.extendType({
           course,
           completion_language,
         } = args
+
+        if (!course || !user) {
+          throw new UserInputError("must provide course and user")
+        }
 
         return ctx.db.completion.create({
           data: {
