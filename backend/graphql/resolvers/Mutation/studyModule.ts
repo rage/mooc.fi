@@ -1,148 +1,130 @@
-import {
-  Prisma,
-  StudyModule,
-  StudyModuleTranslationCreateWithoutStudy_moduleInput,
-  StudyModuleTranslationUpdateManyWithWhereNestedInput,
-  StudyModuleTranslationScalarWhereInput,
-  StudyModuleTranslationUpdateManyWithoutStudy_moduleInput,
-  StudyModuleCreateInput,
-  StudyModuleUpdateInput,
-} from "../../generated/prisma-client"
 import { stringArg, arg, idArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
-import { NexusGenRootTypes } from "/generated/nexus"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
+import { UserInputError } from "apollo-server-core"
+import { omit } from "lodash"
 
-const addStudyModule = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addStudyModule", {
-    type: "StudyModule",
-    args: {
-      study_module: arg({
-        type: "StudyModuleArg",
-        required: true,
-      }),
-    },
-    resolve: async (_, { study_module }, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addStudyModule", {
+      type: "study_module",
+      args: {
+        study_module: arg({
+          type: "StudyModuleCreateArg",
+          required: true,
+        }),
+      },
+      resolve: async (_, { study_module }, ctx) => {
+        const { study_module_translations } = study_module
 
-      const { study_module_translations } = study_module
-      const prisma: Prisma = ctx.prisma
+        const newStudyModule = await ctx.db.study_module.create({
+          data: {
+            ...study_module,
+            name: study_module.name ?? "",
+            study_module_translation: !!study_module_translations
+              ? {
+                  create: study_module_translations.map((s) => ({
+                    ...s,
+                    name: s.name ?? "",
+                    id: s.id ?? undefined,
+                  })),
+                }
+              : undefined,
+          },
+        })
 
-      const newStudyModule: StudyModule = await prisma.createStudyModule({
-        ...study_module,
-        new_slug: undefined,
-        study_module_translations: !!study_module_translations
-          ? { create: study_module_translations }
-          : null,
-      } as StudyModuleCreateInput)
+        return newStudyModule
+      },
+    })
 
-      return newStudyModule as NexusGenRootTypes["StudyModule"]
-    },
-  })
-}
+    t.field("updateStudyModule", {
+      type: "study_module",
+      args: {
+        study_module: arg({
+          type: "StudyModuleUpsertArg",
+          required: true,
+        }),
+      },
+      resolve: async (_, { study_module }, ctx) => {
+        const { id, slug, new_slug, study_module_translations } = study_module
 
-const updateStudyModule = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateStudyModule", {
-    type: "StudyModule",
-    args: {
-      study_module: arg({
-        type: "StudyModuleArg",
-        required: true,
-      }),
-    },
-    resolve: async (_, { study_module }, ctx) => {
-      checkAccess(ctx)
+        if (!slug) {
+          throw new UserInputError("must provide slug")
+        }
 
-      const prisma: Prisma = ctx.prisma
+        const existingTranslations = await ctx.db.study_module
+          .findOne({ where: { slug } })
+          .study_module_translation()
+        const newTranslations = (study_module_translations || [])
+          .filter((t) => !t.id)
+          .map((t) => ({ ...t, id: undefined }))
+        const updatedTranslations = (study_module_translations || [])
+          .filter((t) => !!t.id)
+          .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+        const existingTranslationIds = (existingTranslations || []).map(
+          (t) => t.id,
+        )
+        const moduleTranslationIds = (study_module_translations || []).map(
+          (t) => t.id,
+        )
+        const removedTranslationIds = existingTranslationIds
+          .filter((id) => !moduleTranslationIds.includes(id))
+          .map((id) => ({ id }))
+        /*       const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = pullAll(
+          (existingTranslations || []).map(t => t.id),
+          (study_module_translations || []).map(t => t.id).filter(v => !!v),
+        ).map(_id => ({ id: _id })) */
 
-      const { id, slug, new_slug, study_module_translations } = study_module
+        const translationMutation = {
+          create: newTranslations.length ? newTranslations : undefined,
+          updateMany: updatedTranslations.length
+            ? updatedTranslations
+            : undefined,
+          deleteMany: removedTranslationIds.length
+            ? removedTranslationIds
+            : undefined,
+        }
 
-      const existingTranslations = await prisma
-        .studyModule({ slug })
-        .study_module_translations()
-      const newTranslations: StudyModuleTranslationCreateWithoutStudy_moduleInput[] = (
-        study_module_translations || []
-      ).filter((t) => !t.id)
-      const updatedTranslations: StudyModuleTranslationUpdateManyWithWhereNestedInput[] = (
-        study_module_translations || []
-      )
-        .filter((t) => !!t.id)
-        .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
-      const existingTranslationIds = (existingTranslations || []).map(
-        (t) => t.id,
-      )
-      const moduleTranslationIds = (study_module_translations || []).map(
-        (t) => t.id,
-      )
-      const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = existingTranslationIds
-        .filter((id) => !moduleTranslationIds.includes(id))
-        .map((id) => ({ id }))
-      /*       const removedTranslationIds: StudyModuleTranslationScalarWhereInput[] = pullAll(
-        (existingTranslations || []).map(t => t.id),
-        (study_module_translations || []).map(t => t.id).filter(v => !!v),
-      ).map(_id => ({ id: _id })) */
+        const updatedModule = await ctx.db.study_module.update({
+          where: {
+            id: id ?? undefined,
+            slug,
+          },
+          data: {
+            ...omit(study_module, ["new_slug"]),
+            slug: new_slug ? new_slug : slug,
+            study_module_translation: Object.keys(translationMutation).length
+              ? translationMutation
+              : undefined,
+          },
+        })
 
-      const translationMutation: StudyModuleTranslationUpdateManyWithoutStudy_moduleInput = {
-        create: newTranslations.length ? newTranslations : undefined,
-        updateMany: updatedTranslations.length
-          ? updatedTranslations
-          : undefined,
-        deleteMany: removedTranslationIds.length
-          ? removedTranslationIds
-          : undefined,
-      }
+        return updatedModule
+      },
+    })
 
-      const updatedModule = await prisma.updateStudyModule({
-        where: {
-          id,
-          slug,
-        },
-        data: {
-          ...study_module,
-          new_slug: undefined,
-          slug: new_slug ? new_slug : slug,
-          study_module_translations: Object.keys(translationMutation).length
-            ? translationMutation
-            : null,
-        } as StudyModuleUpdateInput,
-      })
+    t.field("deleteStudyModule", {
+      type: "study_module",
+      args: {
+        id: idArg({ required: false }),
+        slug: stringArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { id, slug } = args
 
-      return updatedModule as NexusGenRootTypes["StudyModule"]
-    },
-  })
-}
+        if (!id && !slug) {
+          throw "must have at least id or slug"
+        }
 
-const deleteStudyModule = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("deleteStudyModule", {
-    type: "StudyModule",
-    args: {
-      id: idArg({ required: false }),
-      slug: stringArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
+        const deletedModule = await ctx.db.study_module.delete({
+          where: {
+            id: id ?? undefined,
+            slug: slug ?? undefined,
+          },
+        })
 
-      const prisma: Prisma = ctx.prisma
-      const { id, slug } = args
-
-      if (!id && !slug) {
-        throw "must have at least id or slug"
-      }
-
-      const deletedModule = await prisma.deleteStudyModule({
-        id,
-        slug,
-      })
-
-      return deletedModule as NexusGenRootTypes["StudyModule"]
-    },
-  })
-}
-
-const addStudyModuleMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addStudyModule(t)
-  updateStudyModule(t)
-  deleteStudyModule(t)
-}
-
-export default addStudyModuleMutations
+        return deletedModule
+      },
+    })
+  },
+})

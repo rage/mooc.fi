@@ -1,79 +1,76 @@
-// import { ObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, idArg } from "@nexus/schema"
-import { Prisma } from "../../generated/prisma-client"
-import checkAccess from "../../accessControl"
 import { UserInputError } from "apollo-server-core"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
 
-const addEmailTemplate = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addEmailTemplate", {
-    type: "EmailTemplate",
-    args: {
-      name: stringArg({ required: true }),
-      html_body: stringArg(),
-      txt_body: stringArg(),
-      title: stringArg(),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { name, html_body, txt_body, title } = args
-      const prisma: Prisma = ctx.prisma
-      if (name == "") throw new UserInputError("Name is empty!")
-      return prisma.createEmailTemplate({
-        name,
-        html_body,
-        txt_body,
-        title,
-      })
-    },
-  })
-}
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addEmailTemplate", {
+      type: "email_template",
+      args: {
+        name: stringArg({ required: true }),
+        html_body: stringArg(),
+        txt_body: stringArg(),
+        title: stringArg(),
+      },
+      resolve: (_, args, ctx) => {
+        const { name, html_body, txt_body, title } = args
 
-const updateEmailTemplate = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateEmailTemplate", {
-    type: "EmailTemplate",
-    args: {
-      id: idArg(),
-      name: stringArg(),
-      html_body: stringArg(),
-      txt_body: stringArg(),
-      title: stringArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      const { id, name, html_body, txt_body, title } = args
-      const prisma: Prisma = ctx.prisma
-      return prisma.updateEmailTemplate({
-        where: {
-          id: id,
-        },
-        data: {
-          name,
-          html_body,
-          txt_body,
-          title,
-        },
-      })
-    },
-  })
-}
+        if (name == "") throw new UserInputError("Name is empty!")
 
-const deleteEmailTemplate = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("deleteEmailTemplate", {
-    type: "EmailTemplate",
-    args: {
-      id: idArg(),
-    },
-    resolve: (_, args, ctx) => {
-      const { id } = args
-      return ctx.prisma.deleteEmailTemplate({ id: id })
-    },
-  })
-}
+        return ctx.db.email_template.create({
+          data: {
+            name,
+            html_body,
+            txt_body,
+            title,
+          },
+        })
+      },
+    })
 
-const addEmailTemplateMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addEmailTemplate(t)
-  updateEmailTemplate(t)
-  deleteEmailTemplate(t)
-}
+    t.field("updateEmailTemplate", {
+      type: "email_template",
+      args: {
+        id: idArg(),
+        name: stringArg(),
+        html_body: stringArg(),
+        txt_body: stringArg(),
+        title: stringArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { id, name, html_body, txt_body, title } = args
 
-export default addEmailTemplateMutations
+        if (!id) {
+          throw new UserInputError("must provide id")
+        }
+
+        return ctx.db.email_template.update({
+          where: {
+            id,
+          },
+          data: {
+            name,
+            html_body,
+            txt_body,
+            title,
+          },
+        })
+      },
+    })
+
+    t.field("deleteEmailTemplate", {
+      type: "email_template",
+      args: {
+        id: idArg(),
+      },
+      resolve: (_, args, ctx) => {
+        const { id } = args
+        if (!id) {
+          throw new UserInputError("must provide id")
+        }
+        return ctx.db.email_template.delete({ where: { id } })
+      },
+    })
+  },
+})

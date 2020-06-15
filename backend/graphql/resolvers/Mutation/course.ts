@@ -8,13 +8,13 @@ import {
   courseUpdateManyWithoutCourse_courseTocourse_completions_handled_byInput,
 } from "@prisma/client"
 import { stringArg, arg, idArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
 import KafkaProducer, { ProducerMessage } from "../../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "./image"
 import { omit } from "lodash"
 import { invalidate } from "../../../services/redis"
 import { schema } from "nexus"
 import { Context } from "../../../context"
+import { UserInputError } from "apollo-server-core"
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
@@ -29,12 +29,14 @@ schema.extendType({
       type: "course",
       args: {
         course: arg({
-          type: "CourseArg",
+          type: "CourseCreateArg",
           required: true,
         }),
       },
       resolve: async (_, { course }, ctx) => {
-        checkAccess(ctx, { allowOrganizations: false })
+        /*if (!course) {
+          throw new UserInputError("must provide course")
+        }*/
 
         const {
           // slug,
@@ -62,20 +64,24 @@ schema.extendType({
           photo = newImage.id
         }
 
+        if (study_modules?.some((s) => !s.id && !s.slug)) {
+          throw new UserInputError("study modules must have id or slug")
+        }
         const newCourse = await ctx.db.course.create({
           data: {
-            ...omit(course, [
-              "id",
-              "base64",
-              "new_slug",
-              "new_photo",
-              "delete_photo",
-            ]),
+            ...omit(course, ["base64", "new_slug", "new_photo"]),
+            name: course.name ?? "",
             image: !!photo ? { connect: { id: photo } } : null,
             course_translation: !!course_translations
               ? { create: course_translations }
               : null,
-            study_module: !!study_modules ? { connect: study_modules } : null,
+            study_module: !!study_modules
+              ? {
+                  connect: study_modules.map((s) => ({
+                    id: s.id ?? undefined,
+                  })),
+                }
+              : null,
             open_university_registration_link: !!open_university_registration_links
               ? { create: open_university_registration_links }
               : null,
@@ -112,13 +118,11 @@ schema.extendType({
       type: "course",
       args: {
         course: arg({
-          type: "CourseArg",
+          type: "CourseUpsertArg",
           required: true,
         }),
       },
       resolve: async (_, { course }, ctx) => {
-        checkAccess(ctx)
-
         const {
           id,
           new_photo,
@@ -273,7 +277,7 @@ schema.extendType({
 
         const updatedCourse = await ctx.db.course.update({
           where: {
-            id,
+            id: id ?? undefined,
             slug,
           },
           data: {
@@ -287,7 +291,7 @@ schema.extendType({
             slug: new_slug ? new_slug : slug,
             end_date,
             // FIXME: disconnect removed photos?
-            image: !!photo ? { connect: { id: photo } } : null,
+            image: !!photo ? { connect: { id: photo } } : undefined,
             course_translation: translationMutation,
             study_module: studyModuleMutation,
             open_university_registration_link: registrationLinkMutation,
@@ -313,11 +317,19 @@ schema.extendType({
         slug: stringArg(),
       },
       resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
         const { id, slug } = args
 
+        if (!id && !slug) {
+          throw new UserInputError("must provide id or slug")
+        }
+
         const photo = await ctx.db.course
-          .findOne({ where: { id, slug } })
+          .findOne({
+            where: {
+              id: id ?? undefined,
+              slug: slug ?? undefined,
+            },
+          })
           .image()
 
         if (photo) {
@@ -330,8 +342,8 @@ schema.extendType({
 
         const deletedCourse = await ctx.db.course.delete({
           where: {
-            id,
-            slug,
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
         })
 
@@ -381,7 +393,9 @@ const createMutation = async <T extends { id?: string | null }>({
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }
 
-  const newOnes = (data || []).filter((t) => !t.id)
+  const newOnes = (data || [])
+    .filter((t) => !t.id)
+    .map((t) => ({ ...t, id: undefined }))
   const updated = (data || [])
     .filter((t) => !!t.id)
     .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))

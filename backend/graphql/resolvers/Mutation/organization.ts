@@ -1,58 +1,60 @@
-import { Prisma, Organization } from "../../generated/prisma-client"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 import { stringArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
-import { NexusGenRootTypes } from "/generated/nexus"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
 
-const addOrganization = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addOrganization", {
-    type: "Organization",
-    args: {
-      name: stringArg(),
-      slug: stringArg({ required: true }),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx)
-      const { name, slug } = args
-      const prisma: Prisma = ctx.prisma
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addOrganization", {
+      type: "organization",
+      args: {
+        name: stringArg(),
+        slug: stringArg({ required: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        const { name, slug } = args
 
-      let secret: string
-      let result: Organization[]
+        let secret: string
+        let result
 
-      do {
-        secret = await generateSecret()
-        result = await prisma.organizations({ where: { secret_key: secret } })
-      } while (result.length)
+        do {
+          secret = await generateSecret()
+          result = await ctx.db.organization.findMany({
+            where: { secret_key: secret },
+          })
+        } while (result.length)
 
-      // FIXME: empty name?
+        // FIXME: empty name?
 
-      const org: Organization = await prisma.createOrganization({
-        slug: slug,
-        secret_key: secret,
-      })
-      // FIXME: return value not used
-      await prisma.createOrganizationTranslation({
-        name: name ?? "",
-        language: "fi_FI", //placeholder
-        organization: { connect: { id: org.id } },
-      })
+        const org = await ctx.db.organization.create({
+          data: {
+            slug,
+            secret_key: secret,
+          },
+        })
+        // FIXME: return value not used
+        await ctx.db.organization_translation.create({
+          data: {
+            name: name ?? "",
+            language: "fi_FI", //placeholder
+            organization_organizationToorganization_translation: {
+              connect: { id: org.id },
+            },
+          },
+        })
 
-      const newOrg = await prisma.organization({ id: org.id })
+        const newOrg = await ctx.db.organization.findOne({
+          where: { id: org.id },
+        })
 
-      return newOrg as NexusGenRootTypes["Organization"]
-    },
-  })
-}
+        return newOrg
+      },
+    })
+  },
+})
 
 export const generateSecret = async () => {
   const randomBytesPromise = promisify(randomBytes)
   return (await randomBytesPromise(128)).toString("hex")
 }
-
-const addOrganizationMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addOrganization(t)
-}
-
-export default addOrganizationMutations

@@ -1,47 +1,42 @@
-import { Prisma } from "../../generated/prisma-client"
 import { stringArg, idArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
 
-const addService = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addService", {
-    type: "Service",
-    args: {
-      url: stringArg({ required: true }),
-      name: stringArg({ required: true }),
-    },
-    resolve: async (_, args, ctx) => {
-      const prisma: Prisma = ctx.prisma
-      checkAccess(ctx)
-      const { url, name } = args
-      return await prisma.createService({ url: url, name: name })
-    },
-  })
-}
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addService", {
+      type: "service",
+      args: {
+        url: stringArg({ required: true }),
+        name: stringArg({ required: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        const { url, name } = args
 
-const updateService = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateService", {
-    type: "Service",
-    args: {
-      id: idArg({ required: true }),
-      url: stringArg(),
-      name: stringArg(),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { url, name, id } = args
-      const prisma: Prisma = ctx.prisma
-      return prisma.updateService({
-        where: { id: id },
-        data: { url: url, name: name },
-      })
-    },
-  })
-}
+        return await ctx.db.service.create({
+          data: {
+            url,
+            name,
+          },
+        })
+      },
+    })
 
-const addServiceMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addService(t)
-  updateService(t)
-}
+    t.field("updateService", {
+      type: "service",
+      args: {
+        id: idArg({ required: true }),
+        url: stringArg(),
+        name: stringArg(),
+      },
+      resolve: (_, args, ctx) => {
+        const { url, name, id } = args
 
-export default addServiceMutations
+        return ctx.db.service.update({
+          where: { id },
+          data: { url, name },
+        })
+      },
+    })
+  },
+})

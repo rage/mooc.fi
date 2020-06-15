@@ -3,11 +3,9 @@ import TmcClient from "../services/tmc"
 import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
-import { Context } from "/context"
+import { Context } from "../context"
 import { PrismaClient } from "@prisma/client"
 import { Request } from "nexus/dist/runtime/schema/schema"
-
-const prisma = new PrismaClient()
 
 const fetchUser = (_config: any) => async (
   root: any,
@@ -21,7 +19,7 @@ const fetchUser = (_config: any) => async (
     return await next(root, args, ctx, info)
   }
 
-  const rawToken = ctx.headers.authorization // connection?
+  const rawToken = ctx.headers?.authorization // connection?
 
   console.log("I got rawToken", rawToken)
   if (!rawToken) {
@@ -94,7 +92,86 @@ const getUser = async (ctx: Context, rawToken: string) => {
   }
 }
 
-export const contextUser = async (req: Request) => {
+/*export class UserFetcher {
+  prisma: PrismaClient | undefined
+
+  getPrisma() {
+    if (!this.prisma) this.prisma = new PrismaClient()
+
+    return this.prisma
+  }
+
+  async get(req: Request) {
+    const rawToken = req.headers.authorization
+
+    if (!rawToken) {
+      return {
+        role: Role.VISITOR,
+        user: undefined,
+        organization: undefined,
+      }
+    }
+  
+    if (rawToken.startsWith("Basic")) {
+      const organization = await this.getPrisma().organization.findOne({
+        where: {
+          secret_key: rawToken.split(" ")?.[1] ?? "",
+        },
+      })
+  
+      if (!organization) {
+        throw new AuthenticationError("log in")
+      }
+  
+      return {
+        role: Role.ORGANIZATION,
+        organization,
+        user: undefined,
+      }
+    }
+  
+    const client = new TmcClient(rawToken)
+    // TODO: Does this always make a request?
+    let details: UserInfo | null = null
+    try {
+      details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
+        prefix: "userdetails",
+        expireTime: 3600,
+        key: rawToken,
+      })
+    } catch (e) {
+      console.log("error", e)
+    }
+  
+    if (!details) {
+      throw new AuthenticationError("invalid credentials")
+    }
+  
+    const id: number = details.id
+    const prismaDetails = {
+      upstream_id: id,
+      administrator: details.administrator,
+      email: details.email.trim(),
+      first_name: details.user_field.first_name.trim(),
+      last_name: details.user_field.last_name.trim(),
+      username: details.username,
+    }
+  
+    const user = await this.getPrisma().user.upsert({
+      where: { upstream_id: id },
+      create: prismaDetails,
+      update: prismaDetails,
+    })
+  
+    return {
+      role: details.administrator ? Role.ADMIN : Role.USER,
+      organization: undefined,
+      user,
+    }
+  }
+}*/
+
+export const contextUser = async (req: Request, prisma: PrismaClient) => {
   const rawToken = req.headers.authorization
 
   if (!rawToken) {
@@ -123,10 +200,10 @@ export const contextUser = async (req: Request) => {
     }
   }
 
-  const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
   let details: UserInfo | null = null
   try {
+    const client = new TmcClient(rawToken)
     details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
       prefix: "userdetails",
       expireTime: 3600,

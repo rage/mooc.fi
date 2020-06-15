@@ -1,33 +1,33 @@
-import { intArg, idArg } from "@nexus/schema"
-import { Prisma } from "../../generated/prisma-client"
-import checkAccess from "../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { intArg, idArg, arg } from "@nexus/schema"
+import { schema } from "nexus"
 
-const addExerciseCompletion = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addExerciseCompletion", {
-    type: "exercise_completion",
-    args: {
-      n_points: intArg(),
-      exercise: idArg(),
-      user: idArg(),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { n_points, exercise, user } = args
-      const prisma: Prisma = ctx.prisma
-      return prisma.createExerciseCompletion({
-        n_points: n_points,
-        exercise: { connect: { id: exercise } },
-        user: { connect: { id: user } },
-      })
-    },
-  })
-}
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addExerciseCompletion", {
+      type: "exercise_completion",
+      args: {
+        n_points: intArg(),
+        exercise: idArg(),
+        user: idArg(),
+        timestamp: arg({ type: "DateTime" }),
+      },
+      resolve: (_, args, ctx) => {
+        const { n_points, exercise, user, timestamp } = args
 
-const addExerciseCompletionMutations = (
-  t: ObjectDefinitionBlock<"Mutation">,
-) => {
-  addExerciseCompletion(t)
-}
-
-export default addExerciseCompletionMutations
+        return ctx.db.exercise_completion.create({
+          data: {
+            n_points,
+            exercise_exerciseToexercise_completion: exercise
+              ? { connect: { id: exercise } }
+              : undefined,
+            user_exercise_completionTouser: user
+              ? { connect: { id: user } }
+              : undefined,
+            timestamp,
+          },
+        })
+      },
+    })
+  },
+})

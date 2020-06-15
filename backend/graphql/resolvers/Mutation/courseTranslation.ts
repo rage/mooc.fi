@@ -1,90 +1,76 @@
-import { Prisma, CourseTranslation } from "../../generated/prisma-client"
 import { idArg, stringArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
 
-const addCourseTranslation = async (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addCourseTranslation", {
-    type: "CourseTranslation",
-    args: {
-      language: stringArg({ required: true }),
-      name: stringArg(),
-      description: stringArg(),
-      link: stringArg(),
-      course: idArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
-      const { language, name, description, link, course } = args
-      const prisma: Prisma = ctx.prisma
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addCourseTranslation", {
+      type: "course_translation",
+      args: {
+        language: stringArg({ required: true }),
+        name: stringArg(),
+        description: stringArg(),
+        link: stringArg(),
+        course: idArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { language, name, description, link, course } = args
 
-      const newCourseTranslation: CourseTranslation = await prisma.createCourseTranslation(
-        {
-          language: language,
-          name: name ?? "",
-          description: description ?? "",
-          link: link,
-          course: { connect: { id: course } },
-        },
-      )
-      return newCourseTranslation
-    },
-  })
-}
+        const newCourseTranslation = await ctx.db.course_translation.create({
+          data: {
+            language: language,
+            name: name ?? "",
+            description: description ?? "",
+            link: link,
+            course_courseTocourse_translation: course
+              ? { connect: { id: course } }
+              : undefined,
+          },
+        })
+        return newCourseTranslation
+      },
+    })
 
-const updateCourseTranslation = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateCourseTranslation", {
-    type: "CourseTranslation",
-    args: {
-      id: idArg({ required: true }),
-      language: stringArg({ required: true }),
-      name: stringArg(),
-      description: stringArg(),
-      link: stringArg(),
-      course: idArg(),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { id, language, name, description, link, course } = args
-      const prisma: Prisma = ctx.prisma
+    t.field("updateCourseTranslation", {
+      type: "course_translation",
+      args: {
+        id: idArg({ required: true }),
+        language: stringArg({ required: true }),
+        name: stringArg(),
+        description: stringArg(),
+        link: stringArg(),
+        course: idArg(),
+      },
+      resolve: (_, args, ctx) => {
+        const { id, language, name, description, link, course } = args
 
-      return prisma.updateCourseTranslation({
-        where: { id: id },
-        data: {
-          language: language,
-          name: name,
-          description: description,
-          link: link,
-          course: { connect: { id: course } },
-        },
-      })
-    },
-  })
-}
+        return ctx.db.course_translation.update({
+          where: { id },
+          data: {
+            language: language,
+            name: name ?? undefined,
+            description: description ?? undefined,
+            link: link,
+            course_courseTocourse_translation: course
+              ? { connect: { id: course } }
+              : undefined,
+          },
+        })
+      },
+    })
 
-const deleteCourseTranslation = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("deleteCourseTranslation", {
-    type: "CourseTranslation",
-    args: {
-      id: idArg({ required: true }),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { id } = args
-      const prisma: Prisma = ctx.prisma
+    t.field("deleteCourseTranslation", {
+      type: "course_translation",
+      args: {
+        id: idArg({ required: true }),
+      },
+      resolve: (_, args, ctx) => {
+        const { id } = args
 
-      return prisma.deleteCourseTranslation({
-        id: id,
-      })
-    },
-  })
-}
-const addCourseTranslationMutations = (
-  t: ObjectDefinitionBlock<"Mutation">,
-) => {
-  addCourseTranslation(t)
-  updateCourseTranslation(t)
-  deleteCourseTranslation(t)
-}
-
-export default addCourseTranslationMutations
+        return ctx.db.course_translation.delete({
+          where: { id },
+        })
+      },
+    })
+  },
+})
