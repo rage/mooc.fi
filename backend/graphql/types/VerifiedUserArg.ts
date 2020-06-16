@@ -1,6 +1,6 @@
-import { inputObjectType } from "@nexus/schema"
+import { schema } from "nexus"
 
-const VerifiedUserArg = inputObjectType({
+schema.inputObjectType({
   name: "VerifiedUserArg",
   definition(t) {
     t.string("display_name")
@@ -9,5 +9,3 @@ const VerifiedUserArg = inputObjectType({
     t.string("organization_secret", { required: true })
   },
 })
-
-export default VerifiedUserArg

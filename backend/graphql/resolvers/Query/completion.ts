@@ -1,4 +1,4 @@
-import { UserInputError /*, ForbiddenError*/ } from "apollo-server-core"
+import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { stringArg, intArg, idArg } from "@nexus/schema"
 import Knex from "../../../services/knex"
 import { schema } from "nexus"
@@ -75,9 +75,49 @@ schema.extendType({
         }
       },
     })
+
+    t.connectionField("completionsPaginated", {
+      type: "completion",
+      additionalArgs: {
+        course: stringArg(),
+        completion_language: stringArg(),
+      },
+      nodes: async (_, args, ctx, __) => {
+        const { completion_language, first, last } = args
+        let { course } = args
+
+        if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
+          throw new ForbiddenError("Cannot query more than 50 objects")
+        }
+
+        if (!course) {
+          throw new UserInputError("must provide course")
+        }
+
+        const courseWithSlug = await ctx.db.course.findOne({
+          where: { slug: course },
+        })
+
+        if (!courseWithSlug) {
+          const courseFromAvoinCourse = await ctx.db.course_alias
+            .findOne({ where: { course_code: course } })
+            .course_courseTocourse_alias()
+          if (!courseFromAvoinCourse) {
+            throw new UserInputError("Invalid course identifier")
+          }
+          course = courseFromAvoinCourse.slug
+        }
+
+        return ctx.db.completion.findMany({
+          where: {
+            course_completionTocourse: { slug: course },
+            completion_language,
+          },
+        })
+      },
+    })
   },
 })
-
 // is this needed anymore?
 /*const completionsPaginated = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("completionsPaginated", {

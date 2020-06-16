@@ -93,6 +93,7 @@ schema.extendType({
           data: {
             ...omit(study_module, ["new_slug"]),
             slug: new_slug ? new_slug : slug,
+            // @ts-ignore: TS doesn't get that in where: { id } the id has been already filtered
             study_module_translation: Object.keys(translationMutation).length
               ? translationMutation
               : undefined,

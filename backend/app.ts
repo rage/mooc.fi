@@ -7,8 +7,8 @@ import { redisify } from "./services/redis"
 import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { Role } from "./accessControl"
-import { shield, rule, deny, not, and, or } from "nexus-plugin-shield"
-import fetchUser, { contextUser } from "./middlewares/FetchUser"
+import { shield, rule, or } from "nexus-plugin-shield"
+import { contextUser } from "./middlewares/FetchUser"
 import { Context } from "/context"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 
@@ -33,7 +33,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-//schema.middleware(fetchUser)
+// schema.middleware(fetchUser)
 
 schema.addToContext(async (req) => {
   let userContext
@@ -41,7 +41,7 @@ schema.addToContext(async (req) => {
   try {
     userContext = await contextUser(req, prismaClient)
   } catch (e) {
-    console.log("got error getting context", e)
+    console.log("got error getting user context", e)
   }
 
   return {
@@ -53,6 +53,7 @@ schema.addToContext(async (req) => {
     disableRelations: false,
     userDetails: undefined,
     tmcClient: undefined,
+    headers: req.headers,
   }
 })
 
@@ -60,6 +61,11 @@ settings.change({
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
     rootTypingsGlobPattern: "./graphql/**/*.ts",
+    connections: {
+      default: {
+        includeNodesField: true,
+      },
+    },
   },
 })
 
@@ -85,6 +91,7 @@ const permissions = shield({
   rules: {
     Query: {
       completions: or(isOrganization, isAdmin),
+      // completionsPaginated: or(isOrganization, isAdmin),
       course: isAdmin,
       course_exists: isAdmin,
       courseAliases: isAdmin,
@@ -146,11 +153,19 @@ const permissions = shield({
       addStudyModule: isAdmin,
       updateStudyModule: isAdmin,
       deleteStudyModule: isAdmin,
+      addStudyModuleTranslation: isAdmin,
+      updateStudyModuleTranslation: isAdmin,
+      deleteStudyModuleTranslation: isAdmin,
+      addUserCourseProgress: isAdmin,
+      addUserCourseServiceProgress: isAdmin,
+      addUserOrganization: or(isVisitor, isAdmin),
+      updateUserOrganization: or(isVisitor, isAdmin),
+      deleteUserOrganization: or(isVisitor, isAdmin),
     },
   },
 })
 
-use(permissions)
+// use(permissions)
 
 server.express.get("/api/completions/:course", async function (
   req: any,

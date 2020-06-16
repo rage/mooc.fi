@@ -351,7 +351,7 @@ model user_course_progress {
 model user_course_service_progress {
   course                                                                  String?
   created_at                                                              DateTime?             @default(now())
-  id                                                                      String                @id
+  id                                                                      String                @id @default(uuid())
   progress                                                                Json
   service                                                                 String?
   timestamp                                                               DateTime?

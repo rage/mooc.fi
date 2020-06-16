@@ -1,48 +1,54 @@
 import { arg } from "@nexus/schema"
 import { ForbiddenError, AuthenticationError } from "apollo-server-core"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
+import { Context } from "/context"
 
-const addVerifiedUser = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addVerifiedUser", {
-    type: "VerifiedUser",
-    args: {
-      verified_user: arg({
-        type: "VerifiedUserArg",
-        required: true,
-      }),
-    },
-    resolve: async (_, { verified_user }, ctx) => {
-      const {
-        organization_id,
-        display_name,
-        personal_unique_code,
-        organization_secret,
-      } = verified_user
-      const { prisma, user: currentUser } = ctx
-      const organization = await prisma.organization({ id: organization_id })
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addVerifiedUser", {
+      type: "verified_user",
+      args: {
+        verified_user: arg({
+          type: "VerifiedUserArg",
+          required: true,
+        }),
+      },
+      resolve: async (_, { verified_user }, ctx: Context) => {
+        const {
+          organization_id,
+          display_name,
+          personal_unique_code,
+          organization_secret,
+        } = verified_user
+        const { user: currentUser } = ctx
 
-      if (!currentUser) {
-        throw new AuthenticationError("not logged in")
-      }
-      if (!organization || !organization?.secret_key) {
-        throw new ForbiddenError("no organization or organization secret")
-      }
-      if (organization.secret_key !== organization_secret) {
-        throw new ForbiddenError("wrong organization secret key")
-      }
+        if (!currentUser) {
+          throw new AuthenticationError("not logged in")
+        }
 
-      return prisma.createVerifiedUser({
-        organization: { connect: { id: organization.id } },
-        user: { connect: { id: currentUser.id } },
-        personal_unique_code,
-        display_name,
-      })
-    },
-  })
-}
+        const organization = await ctx.db.organization.findOne({
+          where: { id: organization_id },
+        })
 
-const addVerifiedUserMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addVerifiedUser(t)
-}
+        if (!organization || !organization?.secret_key) {
+          throw new ForbiddenError("no organization or organization secret")
+        }
+        if (organization.secret_key !== organization_secret) {
+          throw new ForbiddenError("wrong organization secret key")
+        }
 
-export default addVerifiedUserMutations
+        return ctx.db.verified_user.create({
+          data: {
+            organization_organizationToverified_user: {
+              connect: { id: organization.id },
+            },
+            user_userToverified_user: { connect: { id: currentUser.id } },
+            personal_unique_code,
+            display_name,
+          },
+        })
+      },
+    })
+  },
+})

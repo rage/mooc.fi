@@ -13,6 +13,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
     "plugins": [{ "name": "nexus/typescript-language-service" }]
   },
   "include": ["."],
