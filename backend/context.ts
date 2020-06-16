@@ -6,7 +6,7 @@ import TmcClient from "./services/tmc"
 export interface Context extends NexusContext {
   user: user | undefined
   organization: organization | undefined
-  disableRelations: boolean | undefined
+  disableRelations: boolean
   role: Role | undefined
   userDetails: UserInfo | undefined
   tmcClient: TmcClient | undefined

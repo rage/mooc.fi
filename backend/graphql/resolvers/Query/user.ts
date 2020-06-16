@@ -37,8 +37,8 @@ schema.extendType({
               ],
               search ?? "",
             ),
-            id,
-            upstream_id,
+            id: id ?? undefined,
+            upstream_id: upstream_id ?? undefined,
           },
         })
         if (!users.length) throw new UserInputError("User not found")
@@ -77,9 +77,9 @@ schema.extendType({
           },
           first,
           last,
-          after: { id: after },
-          before: { id: before },
-          skip,
+          after: after ? { id: after } : undefined,
+          before: before ? { id: before } : undefined,
+          skip: skip ?? undefined,
         })
       },
     })

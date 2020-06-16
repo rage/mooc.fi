@@ -1,16 +1,18 @@
-import { Prisma, UUID, User } from "../../generated/prisma-client"
 import { idArg, arg } from "@nexus/schema"
-import checkAccess, { Role } from "../../accessControl"
 import { ForbiddenError } from "apollo-server-core"
 import { Context } from "/context"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
+import { Role } from "../../../accessControl"
 
-const checkUser = async (ctx: Context, id: UUID) => {
+const checkUser = async (ctx: Context, id: any) => {
   const { user, role } = ctx
 
-  let existingUser: User
+  let existingUser
+
   try {
-    existingUser = await ctx.prisma.userOrganization({ id }).user()
+    existingUser = await ctx.db.user_organization
+      .findOne({ where: { id } })
+      .user_userTouser_organization()
   } catch {
     throw new Error("no such user/organization relation")
   }
@@ -24,99 +26,81 @@ const checkUser = async (ctx: Context, id: UUID) => {
   }
 }
 
-const addUserOrganization = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("addUserOrganization", {
-    type: "UserOrganization",
-    args: {
-      user_id: idArg({ required: true }),
-      organization_id: idArg({ required: true }),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowVisitors: true })
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addUserOrganization", {
+      type: "user_organization",
+      args: {
+        user_id: idArg({ required: true }),
+        organization_id: idArg({ required: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        const { user_id, organization_id } = args
 
-      const { user_id, organization_id } = args
-      const prisma: Prisma = ctx.prisma
+        const exists =
+          (
+            await ctx.db.user_organization.findMany({
+              where: {
+                user: user_id,
+                organization: organization_id,
+              },
+            })
+          ).length > 0
 
-      const exists = await prisma.$exists.userOrganization({
-        user: { id: user_id },
-        organization: { id: organization_id },
-      })
+        if (exists) {
+          throw new Error("this user/organization relation already exists")
+        }
 
-      if (exists) {
-        throw new Error("this user/organization relation already exists")
-      }
+        return ctx.db.user_organization.create({
+          data: {
+            user_userTouser_organization: { connect: { id: user_id } },
+            organization_organizationTouser_organization: {
+              connect: { id: organization_id },
+            },
+            role: "Student",
+          },
+        })
+      },
+    })
 
-      return prisma.createUserOrganization({
-        user: { connect: { id: user_id } },
-        organization: { connect: { id: organization_id } },
-        role: "Student",
-      })
-    },
-  })
-}
+    t.field("updateUserOrganization", {
+      type: "user_organization",
+      args: {
+        id: idArg({ required: true }),
+        /*       userId: idArg(),
+        organizationId: idArg(), */
+        role: arg({ type: "organization_role" }),
+      },
+      resolve: (_, args, ctx) => {
+        const { id, role } = args
 
-const updateUserOrganization = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateUserOrganization", {
-    type: "UserOrganization",
-    args: {
-      id: idArg({ required: true }),
-      /*       userId: idArg(),
-      organizationId: idArg(), */
-      role: arg({ type: "OrganizationRole" }),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx, { allowVisitors: true })
+        checkUser(ctx, id)
 
-      const { id, role } = args
+        return ctx.db.user_organization.update({
+          data: {
+            role: role ? role : "Student",
+          },
+          where: {
+            id,
+          },
+        })
+      },
+    })
 
-      /*       if (!id && !(userId && organizationId)) {
-        throw new Error("needs userid/organizationid when id is not set")
-      }
-      if (!userId && !organizationId && !id) {
-        throw new Error("needs id when userid/organizationid is not set")
-      }
- */
-      checkUser(ctx, id)
+    t.field("deleteUserOrganization", {
+      type: "user_organization",
+      args: {
+        id: idArg({ required: true }),
+      },
+      resolve: async (_, args, ctx) => {
+        const { id } = args
+        checkUser(ctx, id)
 
-      const prisma: Prisma = ctx.prisma
-
-      return prisma.updateUserOrganization({
-        data: {
-          role: role ? role : "Student",
-        },
-        where: {
-          id,
-        },
-      })
-    },
-  })
-}
-
-const deleteUserOrganization = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("deleteUserOrganization", {
-    type: "UserOrganization",
-    args: {
-      id: idArg({ required: true }),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowVisitors: true })
-
-      const { id } = args
-      checkUser(ctx, id)
-
-      const prisma: Prisma = ctx.prisma
-
-      return prisma.deleteUserOrganization({
-        id,
-      })
-    },
-  })
-}
-
-const addUserOrganizationMutations = (t: ObjectDefinitionBlock<"Mutation">) => {
-  addUserOrganization(t)
-  updateUserOrganization(t)
-  deleteUserOrganization(t)
-}
-
-export default addUserOrganizationMutations
+        return ctx.db.user_organization.delete({
+          where: { id },
+        })
+      },
+    })
+  },
+})

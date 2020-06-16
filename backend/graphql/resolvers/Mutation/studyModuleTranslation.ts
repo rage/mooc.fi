@@ -1,69 +1,69 @@
-import { Prisma, StudyModuleTranslation } from "../../generated/prisma-client"
 import { idArg, stringArg } from "@nexus/schema"
-import checkAccess from "../../accessControl"
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/core"
+import { schema } from "nexus"
+import { UserInputError } from "apollo-server-core"
 
-const addStudyModuleTranslation = async (
-  t: ObjectDefinitionBlock<"Mutation">,
-) => {
-  t.field("addStudyModuleTranslation", {
-    type: "StudyModuleTranslation",
-    args: {
-      language: stringArg({ required: true }),
-      name: stringArg(),
-      description: stringArg(),
-      study_module: idArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      checkAccess(ctx, { allowOrganizations: false })
-      const { language, name, description, study_module } = args
-      const prisma: Prisma = ctx.prisma
+schema.extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addStudyModuleTranslation", {
+      type: "study_module_translation",
+      args: {
+        language: stringArg({ required: true }),
+        name: stringArg(),
+        description: stringArg(),
+        study_module: idArg(),
+      },
+      resolve: async (_, args, ctx) => {
+        const { language, name, description, study_module } = args
 
-      const newStudyModuleTranslation: StudyModuleTranslation = await prisma.createStudyModuleTranslation(
-        {
-          language: language,
-          name: name ?? "",
-          description: description ?? "",
-          study_module: { connect: { id: study_module } },
-        },
-      )
-      return newStudyModuleTranslation
-    },
-  })
-}
+        if (!study_module) {
+          throw new UserInputError("must provide study_module")
+        }
 
-const updateStudyModuleTranslation = (t: ObjectDefinitionBlock<"Mutation">) => {
-  t.field("updateStudyModuletranslation", {
-    type: "StudyModuleTranslation",
-    args: {
-      id: idArg({ required: true }),
-      language: stringArg(),
-      name: stringArg(),
-      description: stringArg(),
-      study_module: idArg(),
-    },
-    resolve: (_, args, ctx) => {
-      checkAccess(ctx)
-      const { id, language, name, description, study_module } = args
-      const prisma: Prisma = ctx.prisma
-      return prisma.updateStudyModuleTranslation({
-        where: { id: id },
-        data: {
-          description: description,
-          language: language,
-          name: name,
-          study_module: { connect: { id: study_module } },
-        },
-      })
-    },
-  })
-}
+        const newStudyModuleTranslation = await ctx.db.study_module_translation.create(
+          {
+            data: {
+              language: language,
+              name: name ?? "",
+              description: description ?? "",
+              study_module_study_moduleTostudy_module_translation: {
+                connect: { id: study_module },
+              },
+            },
+          },
+        )
+        return newStudyModuleTranslation
+      },
+    })
 
-const addStudyModuleTranslationMutations = (
-  t: ObjectDefinitionBlock<"Mutation">,
-) => {
-  addStudyModuleTranslation(t)
-  updateStudyModuleTranslation(t)
-}
+    t.field("updateStudyModuletranslation", {
+      type: "study_module_translation",
+      args: {
+        id: idArg({ required: true }),
+        language: stringArg(),
+        name: stringArg(),
+        description: stringArg(),
+        study_module: idArg(),
+      },
+      resolve: (_, args, ctx) => {
+        const { id, language, name, description, study_module } = args
 
-export default addStudyModuleTranslationMutations
+        if (!id || !study_module) {
+          throw new UserInputError("must provide id and study_module")
+        }
+
+        return ctx.db.study_module_translation.update({
+          where: { id },
+          data: {
+            description: description ?? "",
+            language: language ?? "",
+            name: name ?? "",
+            study_module_study_moduleTostudy_module_translation: {
+              connect: { id: study_module },
+            },
+          },
+        })
+      },
+    })
+  },
+})

@@ -1,6 +1,6 @@
-import { inputObjectType } from "@nexus/schema"
+import { schema } from "nexus"
 
-const PointsByGroup = inputObjectType({
+schema.inputObjectType({
   name: "PointsByGroup",
   definition(t) {
     t.string("group", { required: true })
@@ -9,5 +9,3 @@ const PointsByGroup = inputObjectType({
     t.float("progress", { required: true })
   },
 })
-
-export default PointsByGroup
