@@ -19,26 +19,26 @@ schema.inputObjectType({
     t.string("support_email")
     t.string("start_date", { required: true })
     t.string("end_date")
-    t.field("study_modules", {
+    t.field("study_module", {
       list: true,
       type: "study_moduleWhereUniqueInput",
     })
-    t.field("course_translations", {
+    t.field("course_translation", {
       list: true,
       type: "course_translationCreateInput",
       required: false,
     })
-    t.field("open_university_registration_links", {
+    t.field("open_university_registration_link", {
       list: true,
       type: "open_university_registration_linkCreateInput",
       required: false,
     })
-    t.field("course_variants", {
+    t.field("course_variant", {
       list: true,
       type: "course_variantCreateInput",
       required: false,
     })
-    t.field("course_aliases", {
+    t.field("course_alias", {
       list: true,
       type: "course_aliasCreateInput",
       required: false,
@@ -51,7 +51,7 @@ schema.inputObjectType({
     t.id("inherit_settings_from", { required: false })
     t.id("completions_handled_by", { required: false })
     t.boolean("has_certificate", { required: false })
-    t.field("user_course_settings_visibilities", {
+    t.field("user_course_settings_visibility", {
       list: true,
       type: "user_course_settings_visibilityCreateInput",
       required: false,
@@ -81,26 +81,26 @@ schema.inputObjectType({
     t.string("support_email")
     t.string("start_date", { required: true })
     t.string("end_date")
-    t.field("study_modules", {
+    t.field("study_module", {
       list: true,
       type: "study_moduleWhereUniqueInput",
     })
-    t.field("course_translations", {
+    t.field("course_translation", {
       list: true,
       type: "course_translationUpsertInput",
       required: false,
     })
-    t.field("open_university_registration_links", {
+    t.field("open_university_registration_link", {
       list: true,
       type: "open_university_registration_linkUpsertInput",
       required: false,
     })
-    t.field("course_variants", {
+    t.field("course_variant", {
       list: true,
       type: "course_variantUpsertInput",
       required: false,
     })
-    t.field("course_aliases", {
+    t.field("course_alias", {
       list: true,
       type: "course_aliasUpsertInput",
       required: false,
@@ -113,7 +113,7 @@ schema.inputObjectType({
     t.id("inherit_settings_from", { required: false })
     t.id("completions_handled_by", { required: false })
     t.boolean("has_certificate", { required: false })
-    t.field("user_course_settings_visibilities", {
+    t.field("user_course_settings_visibility", {
       list: true,
       type: "user_course_settings_visibilityUpsertInput",
       required: false,

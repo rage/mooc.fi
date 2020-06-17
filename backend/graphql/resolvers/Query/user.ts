@@ -1,5 +1,4 @@
 import { stringArg, idArg, intArg } from "@nexus/schema"
-// import checkAccess from "../../../accessControl"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { buildSearch } from "../../../util/db-functions"
 import { schema } from "nexus"
@@ -25,7 +24,13 @@ schema.extendType({
       },
       resolve: async (_, args, ctx) => {
         const { id, search, upstream_id } = args
-        // checkAccess(ctx)
+
+        if (!id && !search && !upstream_id) {
+          throw new UserInputError(
+            "must provide id, search string or upstream_id",
+          )
+        }
+
         const users = await ctx.db.user.findMany({
           where: {
             OR: buildSearch(
@@ -46,24 +51,20 @@ schema.extendType({
       },
     })
 
-    t.field("userDetailsContains", {
+    t.connectionField("userDetailsContains", {
       type: "user",
-      args: {
+      additionalArgs: {
         search: stringArg(),
-        first: intArg(),
-        after: idArg(),
-        last: intArg(),
-        skip: intArg(),
-        before: idArg(),
+        skip: intArg({ default: 0 }),
       },
-      resolve: async (_, args, ctx) => {
-        // checkAccess(ctx)
-        const { search, first, after, last, before, skip } = args
+      nodes: async (_, args, ctx) => {
+        const { search, first, last, skip } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
         return ctx.db.user.findMany({
+          skip,
           where: {
             OR: buildSearch(
               [
@@ -75,12 +76,10 @@ schema.extendType({
               search ?? "",
             ),
           },
-          first,
-          last,
-          after: after ? { id: after } : undefined,
-          before: before ? { id: before } : undefined,
-          skip: skip ?? undefined,
         })
+      },
+      extendConnection(t) {
+        t.int("count", (_, _args, _ctx) => 1)
       },
     })
 

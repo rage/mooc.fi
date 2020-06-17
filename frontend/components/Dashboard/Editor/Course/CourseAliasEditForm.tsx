@@ -22,8 +22,8 @@ const ButtonWithWhiteText = styled(StyledButton)`
 
 const CourseAliasEditForm = () => {
   const {
-    errors: { course_aliases: errors },
-    values: { course_aliases: values },
+    errors: { course_alias: errors },
+    values: { course_alias: values },
     isSubmitting,
   } = useFormikContext<CourseFormValues>()
   const { language } = useContext(LanguageContext)
@@ -41,8 +41,8 @@ const CourseAliasEditForm = () => {
                   values!.map((alias, index: number) => (
                     <section style={{ display: "inline-block" }}>
                       <StyledFieldWithAnchor
-                        id={`course_aliases[${index}].course_code`}
-                        name={`course_aliases[${index}].course_code`}
+                        id={`course_alias[${index}].course_code`}
+                        name={`course_alias[${index}].course_code`}
                         type="text"
                         component={StyledTextField}
                         value={alias.course_code}

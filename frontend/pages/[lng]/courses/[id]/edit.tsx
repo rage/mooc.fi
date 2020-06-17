@@ -50,28 +50,28 @@ export const CourseQuery = gql`
       hidden
       study_module_start_point
       status
-      course_translations {
+      course_translation {
         id
         name
         language
         description
         link
       }
-      open_university_registration_links {
+      open_university_registration_link {
         id
         course_code
         language
         link
       }
-      study_modules {
+      study_module {
         id
       }
-      course_variants {
+      course_variant {
         id
         slug
         description
       }
-      course_aliases {
+      course_alias {
         id
         course_code
       }
@@ -82,7 +82,7 @@ export const CourseQuery = gql`
         id
       }
       has_certificate
-      user_course_settings_visibilities {
+      user_course_settings_visibility {
         id
         language
       }

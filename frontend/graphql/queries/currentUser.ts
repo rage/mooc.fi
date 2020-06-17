@@ -23,7 +23,7 @@ export const UserOverViewQuery = gql`
           }
           has_certificate
         }
-        completions_registered {
+        completion_registered {
           id
           created_at
           organization {

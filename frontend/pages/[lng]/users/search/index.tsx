@@ -85,8 +85,8 @@ const UserSearch = () => {
 const GET_DATA = gql`
   query UserDetailsContains(
     $search: String!
-    $before: ID
-    $after: ID
+    $before: String
+    $after: String
     $first: Int
     $last: Int
     $skip: Int
@@ -116,7 +116,7 @@ const GET_DATA = gql`
           last_name
         }
       }
-      count(search: $search)
+      count
     }
   }
 `

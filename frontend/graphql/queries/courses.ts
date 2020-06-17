@@ -2,7 +2,7 @@ import { gql } from "apollo-boost"
 
 export const AllCoursesQuery = gql`
   query AllCourses($language: String) {
-    courses(orderBy: order_ASC, language: $language) {
+    courses(orderBy: { id: asc }, language: $language) {
       id
       slug
       name
@@ -19,15 +19,15 @@ export const AllCoursesQuery = gql`
       hidden
       description
       link
-      study_modules {
+      study_module {
         id
       }
-      course_translations {
+      course_translation {
         id
         language
         name
       }
-      user_course_settings_visibilities {
+      user_course_settings_visibility {
         id
         language
       }
@@ -37,7 +37,7 @@ export const AllCoursesQuery = gql`
 
 export const AllEditorCoursesQuery = gql`
   query AllEditorCourses {
-    courses(orderBy: order_ASC) {
+    courses(orderBy: { id: asc }) {
       id
       name
       slug
@@ -49,21 +49,21 @@ export const AllEditorCoursesQuery = gql`
         compressed
         uncompressed
       }
-      course_translations {
+      course_translation {
         id
         language
         name
       }
-      course_variants {
+      course_variant {
         id
         slug
         description
       }
-      course_aliases {
+      course_alias {
         id
         course_code
       }
-      user_course_settings_visibilities {
+      user_course_settings_visibility {
         id
         language
       }
@@ -96,7 +96,7 @@ export const CourseEditorCoursesQuery = gql`
       id
       slug
       name
-      course_translations {
+      course_translation {
         id
         name
         language

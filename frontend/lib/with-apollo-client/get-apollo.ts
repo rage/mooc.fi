@@ -46,7 +46,7 @@ function create(initialState: any, originalAccessToken?: string) {
       ? "http://localhost:4001"
       : production
       ? "https://www.mooc.fi/api/"
-      : "http://localhost:4000",
+      : "http://localhost:4000/graphql",
     credentials: "same-origin",
     fetch: fetch,
   })

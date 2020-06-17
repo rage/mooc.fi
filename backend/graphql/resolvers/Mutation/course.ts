@@ -42,14 +42,14 @@ schema.extendType({
           // slug,
           new_photo,
           base64,
-          course_translations,
-          open_university_registration_links,
-          course_variants,
-          course_aliases,
-          study_modules,
+          course_translation,
+          open_university_registration_link,
+          course_variant,
+          course_alias,
+          study_module,
           inherit_settings_from,
           completions_handled_by,
-          user_course_settings_visibilities,
+          user_course_settings_visibility,
         } = course
 
         let photo = null
@@ -64,39 +64,39 @@ schema.extendType({
           photo = newImage.id
         }
 
-        if (study_modules?.some((s) => !s.id && !s.slug)) {
+        if (study_module?.some((s) => !s.id && !s.slug)) {
           throw new UserInputError("study modules must have id or slug")
         }
         const newCourse = await ctx.db.course.create({
           data: {
-            ...omit(course, ["base64", "new_slug", "new_photo"]),
+            ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
             image: !!photo ? { connect: { id: photo } } : null,
-            course_translation: !!course_translations
-              ? { create: course_translations }
+            course_translation: !!course_translation
+              ? { create: course_translation }
               : null,
-            study_module: !!study_modules
+            study_module: !!study_module
               ? {
-                  connect: study_modules.map((s) => ({
+                  connect: study_module.map((s) => ({
                     id: s.id ?? undefined,
                   })),
                 }
               : null,
-            open_university_registration_link: !!open_university_registration_links
-              ? { create: open_university_registration_links }
+            open_university_registration_link: !!open_university_registration_link
+              ? { create: open_university_registration_link }
               : null,
-            course_variant: !!course_variants
-              ? { create: course_variants }
+            course_variant: !!course_variant
+              ? { create: course_variant }
               : null,
-            course_alias: !!course_aliases ? { create: course_aliases } : null,
+            course_alias: !!course_alias ? { create: course_alias } : null,
             other_course_courseTocourse_inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : null,
             other_course_courseTocourse_completions_handled_by: !!completions_handled_by
               ? { connect: { id: completions_handled_by } }
               : null,
-            user_course_settings_visibility: !!user_course_settings_visibilities
-              ? { create: user_course_settings_visibilities }
+            user_course_settings_visibility: !!user_course_settings_visibility
+              ? { create: user_course_settings_visibility }
               : null,
           },
         })
@@ -123,23 +123,24 @@ schema.extendType({
         }),
       },
       resolve: async (_, { course }, ctx) => {
+        console.log("update got", course)
         const {
           id,
           new_photo,
           slug,
           new_slug,
           base64,
-          course_translations,
-          open_university_registration_links,
-          course_variants,
-          course_aliases,
-          study_modules,
+          course_translation,
+          open_university_registration_link,
+          course_variant,
+          course_alias,
+          study_module,
           completion_email,
           status,
           delete_photo,
           inherit_settings_from,
           completions_handled_by,
-          user_course_settings_visibilities,
+          user_course_settings_visibility,
         } = course
         let { end_date } = course
         if (!slug) {
@@ -181,7 +182,7 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_translations,
+          data: course_translation,
           field: "course_translation",
         })
 
@@ -190,7 +191,7 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: open_university_registration_links,
+          data: open_university_registration_link,
           field: "open_university_registration_link",
         })
 
@@ -199,7 +200,7 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_variants,
+          data: course_variant,
           field: "course_variant",
         })
 
@@ -208,8 +209,8 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_aliases,
-          field: "course_aliases",
+          data: course_alias,
+          field: "course_alias",
         })
 
         const userCourseSettingsVisibilityMutation:
@@ -217,7 +218,7 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: user_course_settings_visibilities,
+          data: user_course_settings_visibility,
           field: "user_course_settings_visibility",
         })
 
@@ -237,14 +238,23 @@ schema.extendType({
           .study_module()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
         const removedModuleIds = (existingStudyModules || [])
-          .filter((module) => !getIds(study_modules ?? []).includes(module.id))
-          .map((module) => ({ id: module.id }))
+          .filter((module) => !getIds(study_module ?? []).includes(module.id))
+          .map((module) => ({ id: module.id } as { id: string }))
+        const connectModules =
+          study_module?.map((s) => ({
+            ...s,
+            id: s.id ?? undefined,
+            slug: s.slug ?? undefined,
+          })) ?? []
+
         const studyModuleMutation:
           | study_moduleUpdateManyWithoutCourseInput
-          | undefined = study_modules
+          | undefined = study_module
           ? {
-              connect: study_modules,
-              disconnect: removedModuleIds,
+              connect: connectModules.length ? connectModules : undefined,
+              disconnect: removedModuleIds.length
+                ? removedModuleIds
+                : undefined,
             }
           : undefined
 
@@ -275,35 +285,40 @@ schema.extendType({
             }
           : undefined
 
+        const updateData = {
+          ...omit(course, [
+            "id",
+            "photo",
+            "base64",
+            "new_slug",
+            "new_photo",
+            "delete_photo",
+          ]),
+          slug: new_slug ? new_slug : slug,
+          end_date,
+          // FIXME: disconnect removed photos?
+          image: !!photo ? { connect: { id: photo } } : undefined,
+          course_translation: translationMutation,
+          study_module: studyModuleMutation,
+          open_university_registration_link: registrationLinkMutation,
+          course_variant: courseVariantMutation,
+          course_alias: courseAliasMutation,
+          email_template: completion_email
+            ? { connect: { id: completion_email } }
+            : undefined,
+          other_course_courseTocourse_inherit_settings_from: inheritMutation,
+          other_course_courseTocourse_completions_handled_by: handledMutation,
+          user_course_settings_visibility: userCourseSettingsVisibilityMutation,
+        }
+
+        console.log("and update data", updateData)
+
         const updatedCourse = await ctx.db.course.update({
           where: {
             id: id ?? undefined,
             slug,
           },
-          data: {
-            ...omit(course, [
-              "id",
-              "base64",
-              "new_slug",
-              "new_photo",
-              "delete_photo",
-            ]),
-            slug: new_slug ? new_slug : slug,
-            end_date,
-            // FIXME: disconnect removed photos?
-            image: !!photo ? { connect: { id: photo } } : undefined,
-            course_translation: translationMutation,
-            study_module: studyModuleMutation,
-            open_university_registration_link: registrationLinkMutation,
-            course_variant: courseVariantMutation,
-            course_alias: courseAliasMutation,
-            email_template: completion_email
-              ? { connect: { id: completion_email } }
-              : undefined,
-            other_course_courseTocourse_inherit_settings_from: inheritMutation,
-            other_course_courseTocourse_completions_handled_by: handledMutation,
-            user_course_settings_visibility: userCourseSettingsVisibilityMutation,
-          },
+          data: updateData,
         })
 
         return updatedCourse
@@ -398,7 +413,10 @@ const createMutation = async <T extends { id?: string | null }>({
     .map((t) => ({ ...t, id: undefined }))
   const updated = (data || [])
     .filter((t) => !!t.id)
-    .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+    .map((t) => ({
+      where: { id: t.id } as { id: string },
+      data: { ...t, id: undefined },
+    }))
   const removed = filterNotIncluded(existing!, data)
 
   return {

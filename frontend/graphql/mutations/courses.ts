@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost"
 
 export const AddCourseMutation = gql`
-  mutation addCourse($course: CourseArg!) {
+  mutation addCourse($course: CourseCreateArg!) {
     addCourse(course: $course) {
       id
       slug
@@ -19,32 +19,32 @@ export const AddCourseMutation = gql`
         uncompressed
         uncompressed_mimetype
       }
-      course_translations {
+      course_translation {
         id
         language
         name
         description
         link
       }
-      open_university_registration_links {
+      open_university_registration_link {
         id
         course_code
         language
         link
       }
-      study_modules {
+      study_module {
         id
       }
-      course_variants {
+      course_variant {
         id
         slug
         description
       }
-      course_aliases {
+      course_alias {
         id
         course_code
       }
-      user_course_settings_visibilities {
+      user_course_settings_visibility {
         id
         language
       }
@@ -53,7 +53,7 @@ export const AddCourseMutation = gql`
 `
 
 export const UpdateCourseMutation = gql`
-  mutation updateCourse($course: CourseArg!) {
+  mutation updateCourse($course: CourseUpsertArg!) {
     updateCourse(course: $course) {
       id
       slug
@@ -71,28 +71,28 @@ export const UpdateCourseMutation = gql`
         uncompressed
         uncompressed_mimetype
       }
-      course_translations {
+      course_translation {
         id
         language
         name
         description
         link
       }
-      open_university_registration_links {
+      open_university_registration_link {
         id
         course_code
         language
         link
       }
-      study_modules {
+      study_module {
         id
       }
-      course_variants {
+      course_variant {
         id
         slug
         description
       }
-      course_aliases {
+      course_alias {
         id
         course_code
       }
@@ -103,7 +103,7 @@ export const UpdateCourseMutation = gql`
         txt_body
         html_body
       }
-      user_course_settings_visibilities {
+      user_course_settings_visibility {
         id
         language
       }

@@ -12,6 +12,7 @@ schema.objectType({
     t.model.course_courseTocourse_completions_handled_by({
       alias: "completions_handled_by",
     })
+    t.model.course_translation()
     t.model.created_at()
     t.model.ects()
     t.model.end_date()

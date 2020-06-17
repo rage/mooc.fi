@@ -1,6 +1,6 @@
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
-import { CourseStatus } from "../../../../static/types/globalTypes"
+import { course_status } from "/static/types/generated/globalTypes"
 import {
   CourseFormValues,
   CourseTranslationFormValues,
@@ -11,7 +11,7 @@ import {
 import { DocumentNode } from "apollo-boost"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { DateTime } from "luxon"
-import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
+import { CourseDetails_course_open_university_registration_link } from "/static/types/generated/CourseDetails"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -22,7 +22,7 @@ export const initialTranslation: CourseTranslationFormValues = {
   open_university_course_link: {
     course_code: "",
     link: "",
-  } as CourseDetails_course_open_university_registration_links,
+  } as CourseDetails_course_open_university_registration_link,
 }
 
 export const initialVariant: CourseVariantFormValues = {
@@ -55,17 +55,17 @@ export const initialValues: CourseFormValues = {
   promote: false,
   hidden: false,
   study_module_start_point: false,
-  status: CourseStatus.Upcoming,
-  study_modules: {},
-  course_translations: [],
-  open_university_registration_links: [],
+  status: course_status.Upcoming,
+  study_module: {},
+  course_translation: [],
+  open_university_registration_link: [],
   order: undefined,
   study_module_order: undefined,
-  course_variants: [],
-  course_aliases: [],
+  course_variant: [],
+  course_alias: [],
   delete_photo: false,
   has_certificate: false,
-  user_course_settings_visibilities: [],
+  user_course_settings_visibility: [],
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
@@ -76,15 +76,15 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
 
 export const statuses = (t: Function) => [
   {
-    value: CourseStatus.Upcoming,
+    value: course_status.Upcoming,
     label: t("courseUpcoming"),
   },
   {
-    value: CourseStatus.Active,
+    value: course_status.Active,
     label: t("courseActive"),
   },
   {
-    value: CourseStatus.Ended,
+    value: course_status.Ended,
     label: t("courseEnded"),
   },
 ]
@@ -162,7 +162,7 @@ const courseEditSchema = ({
     status: Yup.mixed()
       .oneOf(statuses(t).map((s) => s.value))
       .required(t("validationRequired")),
-    course_translations: Yup.array().of(
+    course_translation: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
@@ -187,7 +187,7 @@ const courseEditSchema = ({
         }),
       }),
     ),
-    course_variants: Yup.array().of(
+    course_variant: Yup.array().of(
       Yup.object().shape({
         slug: Yup.string()
           .required(t("validationRequired"))
@@ -201,7 +201,7 @@ const courseEditSchema = ({
         description: Yup.string(),
       }),
     ),
-    course_aliases: Yup.array().of(
+    course_alias: Yup.array().of(
       Yup.object().shape({
         course_code: Yup.string()
           .required(t("validationRequired"))

@@ -1,11 +1,10 @@
 import { idArg, intArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
 import { schema } from "nexus"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.field("UserCourseServiceProgress", {
+    t.field("userCourseServiceProgress", {
       type: "user_course_service_progress",
       args: {
         user_id: idArg(),
@@ -13,7 +12,6 @@ schema.extendType({
         service_id: idArg(),
       },
       resolve: async (_, args, ctx) => {
-        // checkAccess(ctx)
         const { user_id, course_id, service_id } = args
         const result = await ctx.db.user_course_service_progress.findMany({
           where: {

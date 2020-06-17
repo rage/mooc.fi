@@ -30,7 +30,7 @@ const CourseImageInput = (props: ImageInputProps) => {
           course.slug !== values.slug && !!course?.photo?.compressed,
       )
       .map((course) => {
-        const translation = (course.course_translations?.filter(
+        const translation = (course.course_translation?.filter(
           (t) => t.language === language,
         ) ?? [])[0]
 
