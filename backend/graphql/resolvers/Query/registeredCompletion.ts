@@ -1,6 +1,5 @@
 import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { intArg, stringArg, idArg } from "@nexus/schema"
-// import checkAccess from "../../../accessControl"
 import { schema } from "nexus"
 
 schema.extendType({
@@ -16,7 +15,6 @@ schema.extendType({
         before: idArg(),
       },
       resolve: async (_, args, ctx) => {
-        // checkAccess(ctx, { allowOrganizations: true })
         const { course, first, after, last, before } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 items")
@@ -74,10 +72,10 @@ const withCourse = async (
     where: {
       course: courseReference!.id,
     },
-    first: first,
-    after: { id: after },
-    last: last,
-    before: { id: before },
+    first: first ?? undefined,
+    after: after ? { id: after } : undefined,
+    last: last ?? undefined,
+    before: before ? { id: before } : undefined,
   })
 }
 
@@ -89,9 +87,9 @@ const all = async (
   ctx: NexusContext,
 ) => {
   return await ctx.db.completion_registered.findMany({
-    first: first,
-    after: { id: after },
-    last: last,
-    before: { id: before },
+    first: first ?? undefined,
+    after: after ? { id: after } : undefined,
+    last: last ?? undefined,
+    before: before ? { id: before } : undefined,
   })
 }

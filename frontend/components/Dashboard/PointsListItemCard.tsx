@@ -12,7 +12,7 @@ import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 
 const UserFragment = gql`
-  fragment UserPointsFragment on User {
+  fragment UserPointsFragment on user {
     id
     first_name
     last_name

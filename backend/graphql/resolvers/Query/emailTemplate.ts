@@ -1,12 +1,10 @@
-import { idArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
 import { schema } from "nexus"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.emailTemplate()
-    t.crud.emailTemplates()
+    t.crud.emailTemplate({ alias: "email_template" })
+    t.crud.emailTemplates({ alias: "email_templates" })
 
     /*t.field("email_template", {
       type: "email_template",

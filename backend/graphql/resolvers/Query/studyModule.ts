@@ -1,6 +1,6 @@
 import { stringArg, idArg, arg } from "@nexus/schema"
-// import checkAccess from "../../../accessControl"
 import { schema } from "nexus"
+import { UserInputError } from "apollo-server-core"
 
 schema.extendType({
   type: "Query",
@@ -14,13 +14,16 @@ schema.extendType({
       },
       nullable: true,
       resolve: async (_, args, ctx) => {
-        // checkAccess(ctx, { allowOrganizations: false })
         const { id, slug, language } = args
+
+        if (!id && !slug) {
+          throw new UserInputError("must provide id or slug")
+        }
 
         const study_module = await ctx.db.study_module.findOne({
           where: {
-            id,
-            slug,
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
         })
 
@@ -72,7 +75,7 @@ schema.extendType({
         const { orderBy, language } = args
 
         const modules = await ctx.db.study_module.findMany({
-          orderBy,
+          orderBy: orderBy ?? undefined,
         })
 
         const filtered = language
@@ -110,9 +113,11 @@ schema.extendType({
         slug: stringArg(),
       },
       resolve: async (_, args, ctx) => {
-        // checkAccess(ctx)
-
         const { slug } = args
+
+        if (!slug) {
+          throw new UserInputError("must provide slug")
+        }
 
         return !!(await ctx.db.study_module.findOne({ where: { slug } }))
       },

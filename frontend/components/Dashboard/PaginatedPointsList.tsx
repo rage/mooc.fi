@@ -22,7 +22,7 @@ import {
 export const StudentProgresses = gql`
   query UserCourseSettingses(
     $course_id: ID
-    $cursor: ID
+    $cursor: String
     $search: String
     $course_string: String
   ) {
@@ -76,7 +76,7 @@ export const StudentProgresses = gql`
           }
         }
       }
-      count(search: $search, course_id: $course_id)
+      count
     }
   }
 `

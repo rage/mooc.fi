@@ -7,8 +7,8 @@ import ChipInput from "material-ui-chip-input"
 
 const UserCourseSettingsVisibilityEditForm = () => {
   const {
-    errors: { user_course_settings_visibilities: errors },
-    values: { user_course_settings_visibilities: values },
+    errors: { user_course_settings_visibility: errors },
+    values: { user_course_settings_visibility: values },
     isSubmitting,
   } = useFormikContext<CourseFormValues>()
 
@@ -16,13 +16,13 @@ const UserCourseSettingsVisibilityEditForm = () => {
     <section>
       <FormControl>
         <FormGroup>
-          <FieldArray name="user_course_settings_visibilities">
+          <FieldArray name="user_course_settings_visibility">
             {(helpers) => (
               <>
                 <section style={{ display: "inline-block" }}>
                   <StyledFieldWithAnchor
-                    id={`user_course_settings_visibilities`}
-                    name={`user_course_settings_visibilities`}
+                    id={`user_course_settings_visibility`}
+                    name={`user_course_settings_visibility`}
                     type="text"
                     component={() => (
                       <ChipInput

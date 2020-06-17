@@ -11,6 +11,8 @@ import { shield, rule, or } from "nexus-plugin-shield"
 import { contextUser } from "./middlewares/FetchUser"
 import { Context } from "/context"
 import { PrismaClient } from "nexus-plugin-prisma/client"
+import cors from "cors"
+import bodyParser from "body-parser"
 
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient()
@@ -74,7 +76,9 @@ const isOrganization = rule({ cache: "contextual" })(
 )
 
 const isAdmin = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.ADMIN,
+  async (_parent, _args, ctx: Context, _info) => (
+    console.log("role is", ctx.role, Role.ADMIN), ctx.role === Role.ADMIN
+  ),
 )
 
 const isVisitor = rule({ cache: "contextual" })(
@@ -85,7 +89,13 @@ const isUser = rule({ cache: "contextual" })(
   async (_parent, _args, ctx: Context, _info) => ctx.role === Role.USER,
 )
 
-const defaultPermission = isAdmin // and(not(isVisitor), not(isUser), not(isOrganization))
+const organizationPermission = rule({ cache: "contextual" })(
+  async (_parent, args, ctx: Context, _info) => {
+    if (args.hidden) return ctx.role === Role.ADMIN
+
+    return true
+  },
+)
 
 const permissions = shield({
   rules: {
@@ -96,15 +106,17 @@ const permissions = shield({
       course_exists: isAdmin,
       courseAliases: isAdmin,
       courseTranslations: isAdmin,
-      emailTemplate: defaultPermission,
-      emailTemplates: defaultPermission,
-      exercise: defaultPermission,
-      exercises: defaultPermission,
-      exerciseCompletion: defaultPermission,
-      exerciseCompletions: defaultPermission,
+      emailTemplate: isAdmin,
+      emailTemplates: isAdmin,
+      exercise: isAdmin,
+      exercises: isAdmin,
+      exerciseCompletion: isAdmin,
+      exerciseCompletions: isAdmin,
       openUniversityRegistrationLink: isAdmin,
       openUniversityRegistrationLinks: isAdmin,
       // organization and -s need special case - default if hidden parameter given
+      organization: organizationPermission,
+      organizations: organizationPermission,
       registerCompletions: or(isOrganization, isAdmin),
       service: isAdmin,
       services: isAdmin,
@@ -114,9 +126,9 @@ const permissions = shield({
       user: isAdmin,
       users: isAdmin,
       userDetailsContains: isAdmin,
-      UserCourseProgress: isAdmin,
+      userCourseProgress: isAdmin,
       userCourseProgresses: isAdmin,
-      UserCourseServiceProgress: isAdmin,
+      userCourseServiceProgress: isAdmin,
       userCourseServiceProgresses: isAdmin,
       UserCourseSettings: isAdmin,
       userCourseSettingsCount: isAdmin,
@@ -163,9 +175,20 @@ const permissions = shield({
       deleteUserOrganization: or(isVisitor, isAdmin),
     },
   },
+  options: {
+    fallbackError: "there was an error",
+  },
 })
 
 // use(permissions)
+
+server.express.use(cors())
+server.express.use(
+  bodyParser.json({
+    type: "application/json",
+    limit: "10mb",
+  }),
+)
 
 server.express.get("/api/completions/:course", async function (
   req: any,

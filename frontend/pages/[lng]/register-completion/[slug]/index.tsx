@@ -66,7 +66,7 @@ export const UserOverViewQuery = gql`
           name
           ects
         }
-        completions_registered {
+        completion_registered {
           id
           created_at
           organization {

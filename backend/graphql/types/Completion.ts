@@ -7,6 +7,7 @@ schema.objectType({
   definition(t) {
     t.model.id()
     t.model.created_at()
+    t.model.updated_at()
     t.model.completion_language()
     t.model.email()
     t.model.student_number()

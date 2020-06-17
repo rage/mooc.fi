@@ -7,7 +7,7 @@ schema.inputObjectType({
     t.string("name", { required: false })
     t.string("image", { required: false })
     t.int("order", { required: false })
-    t.field("study_module_translations", {
+    t.field("study_module_translation", {
       list: true,
       type: "study_module_translationUpsertInput",
       required: false,
@@ -24,7 +24,7 @@ schema.inputObjectType({
     t.string("name", { required: false })
     t.string("image", { required: false })
     t.int("order", { required: false })
-    t.field("study_module_translations", {
+    t.field("study_module_translation", {
       list: true,
       type: "study_module_translationUpsertInput",
       required: false,

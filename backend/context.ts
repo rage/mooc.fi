@@ -2,6 +2,7 @@ import { user, organization } from "@prisma/client"
 import { Role } from "./accessControl"
 import { UserInfo } from "/domain/UserInfo"
 import TmcClient from "./services/tmc"
+import { IncomingHttpHeaders } from "http"
 
 export interface Context extends NexusContext {
   user: user | undefined

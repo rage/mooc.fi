@@ -16,7 +16,7 @@ schema.extendType({
 
         // FIXME: what to do on empty course_code?
         if (!course_code) {
-          throw "has to have a course code"
+          throw new UserInputError("has to have a course code")
         }
 
         if (!course) {

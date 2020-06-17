@@ -77,7 +77,7 @@ async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
       real_student_number,
     } = datum?.user
     const { course_variant, country, language } =
-      datum?.UserCourseSettings ?? {}
+      datum?.userCourseSettings ?? {}
 
     const newDatum: any = {
       user_id: upstream_id,
@@ -115,7 +115,7 @@ async function dowloadInChunks(
       query: GET_DATA,
       variables: { course_slug: courseSlug, after: after, first: 100 },
     })
-    let downloaded: any = data.UserCourseProgresses
+    let downloaded: any = data.userCourseProgresses
     if (downloaded.length === 0) {
       break
     }
@@ -135,7 +135,7 @@ const GET_DATA = gql`
     $after: ID
     $first: Int
   ) {
-    UserCourseProgresses(
+    userCourseProgresses(
       course_slug: $course_slug
       after: $after
       first: $first

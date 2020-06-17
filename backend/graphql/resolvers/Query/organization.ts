@@ -1,12 +1,10 @@
 import { idArg, intArg, arg, booleanArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-core"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    // TODO: handle the conditional access restriction with shield rule somehow
     t.field("organization", {
       type: "organization",
       args: {
@@ -21,11 +19,10 @@ schema.extendType({
           throw new UserInputError("must provide id")
         }
 
-        if (!hidden) {
+        /*if (!hidden) {
           return ctx.db.organization.findOne({ where: { id } })
-        }
+        }*/
 
-        checkAccess(ctx)
         const res = await ctx.db.organization.findMany({
           where: { id, hidden },
         })
@@ -38,7 +35,6 @@ schema.extendType({
       pagination: true,
     })
 
-    // TODO: handle the conditional access restriction with shield rule somehow
     t.list.field("organizations", {
       type: "organization",
       args: {
@@ -52,15 +48,11 @@ schema.extendType({
       resolve: async (_, args, ctx) => {
         const { first, last, after, before, orderBy, hidden } = args
 
-        if (hidden) {
-          checkAccess(ctx)
-        }
-
         const orgs = await ctx.db.organization.findMany({
           first: first ?? undefined,
           last: last ?? undefined,
-          after: after ?? { id: after },
-          before: { id: before },
+          after: after ? { id: after } : undefined,
+          before: before ? { id: before } : undefined,
           orderBy: orderBy ?? undefined,
           where: {
             hidden,

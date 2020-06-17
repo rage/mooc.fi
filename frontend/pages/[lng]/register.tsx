@@ -38,7 +38,7 @@ export const OrganizationsQuery = gql`
       id
       slug
       hidden
-      organization_translations {
+      organization_translation {
         language
         name
         information
@@ -67,7 +67,7 @@ export const AddUserOrganizationMutation = gql`
 `
 
 export const UpdateUserOrganizationMutation = gql`
-  mutation updateUserOrganization($id: ID!, $role: OrganizationRole) {
+  mutation updateUserOrganization($id: ID!, $role: organization_role) {
     updateUserOrganization(id: $id, role: $role) {
       id
     }

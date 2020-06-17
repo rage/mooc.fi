@@ -18,7 +18,7 @@ export const initialValues: StudyModuleFormValues = {
   new_slug: "",
   name: "",
   image: "",
-  study_module_translations: [initialTranslation],
+  study_module_translation: [initialTranslation],
 }
 
 export const languages = (t: Function) => [
@@ -58,7 +58,7 @@ const studyModuleEditSchema = ({
         validateSlug({ client, checkSlug, initialSlug }),
       ),
     name: Yup.string().required(t("validationRequired")),
-    study_module_translations: Yup.array().of(
+    study_module_translation: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
@@ -80,7 +80,7 @@ const studyModuleEditSchema = ({
             }
 
             const {
-              values: { study_module_translations },
+              values: { study_module_translation },
             } = context
 
             if (!value || value === "") {
@@ -91,7 +91,7 @@ const studyModuleEditSchema = ({
               (path || "").match(/^.*\[(\d+)\].*$/) || []
             const currentIndex =
               currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-            const otherTranslationLanguages = study_module_translations
+            const otherTranslationLanguages = study_module_translation
               .filter(
                 (c: StudyModuleTranslationFormValues, index: number) =>
                   c.language !== "" && index !== currentIndex,

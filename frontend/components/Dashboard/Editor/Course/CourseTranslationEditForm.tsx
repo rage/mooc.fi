@@ -20,7 +20,7 @@ const AddTranslationNotice = styled(EntryContainer)`
 `
 const CourseTranslationEditForm = () => {
   const {
-    values: { course_translations: values },
+    values: { course_translation: values },
   } = useFormikContext<CourseFormValues>()
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
@@ -28,7 +28,7 @@ const CourseTranslationEditForm = () => {
   return (
     <section>
       <Grid container direction="column">
-        <FieldArray name="course_translations">
+        <FieldArray name="course_translation">
           {() => (
             <>
               {values.length ? (

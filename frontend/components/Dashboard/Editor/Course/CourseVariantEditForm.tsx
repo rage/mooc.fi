@@ -23,8 +23,8 @@ const ButtonWithWhiteText = styled(StyledButton)`
 
 const CourseVariantEditForm = () => {
   const {
-    values: { course_variants: values },
-    errors: { course_variants: errors },
+    values: { course_variant: values },
+    errors: { course_variant: errors },
     isSubmitting,
   } = useFormikContext<CourseFormValues>()
 
@@ -37,7 +37,7 @@ const CourseVariantEditForm = () => {
       <Grid item xs={12}>
         <FormControl>
           <FormGroup>
-            <FieldArray name="course_variants">
+            <FieldArray name="course_variant">
               {(helpers) => (
                 <>
                   {values!.length ? (
@@ -45,8 +45,8 @@ const CourseVariantEditForm = () => {
                       <Grid container spacing={2} key={`variant-${index}`}>
                         <Grid item xs={4}>
                           <StyledFieldWithAnchor
-                            id={`course_variants[${index}].slug`}
-                            name={`course_variants[${index}].slug`}
+                            id={`course_variant[${index}].slug`}
+                            name={`course_variant[${index}].slug`}
                             type="text"
                             component={StyledTextField}
                             value={variant.slug}
@@ -59,8 +59,8 @@ const CourseVariantEditForm = () => {
                         </Grid>
                         <Grid item xs={6}>
                           <StyledFieldWithAnchor
-                            id={`course_variants[${index}].description`}
-                            name={`course_variants[${index}].description`}
+                            id={`course_variant[${index}].description`}
+                            name={`course_variant[${index}].description`}
                             type="text"
                             component={StyledTextField}
                             value={variant.description}
