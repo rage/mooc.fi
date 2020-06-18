@@ -186,7 +186,6 @@ server.express.use(cors())
 server.express.use(
   bodyParser.json({
     type: "application/json",
-    limit: "10mb",
   }),
 )
 
