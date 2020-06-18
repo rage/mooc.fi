@@ -1,6 +1,5 @@
 import { idArg, booleanArg } from "@nexus/schema"
 import { schema } from "nexus"
-import { UserInputError } from "apollo-server-core"
 
 schema.extendType({
   type: "Mutation",
@@ -8,24 +7,21 @@ schema.extendType({
     t.field("addCourseOrganization", {
       type: "course_organization",
       args: {
-        course_id: idArg(),
-        organization_id: idArg(),
+        course_id: idArg({ required: true }),
+        organization_id: idArg({ required: true }),
         creator: booleanArg(),
       },
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id, creator } = args
 
-        if (!course_id || !organization_id) {
-          throw new UserInputError("must provide course and organization")
-        }
-        const exists = ctx.db.course_organization.findMany({
+        const exists = await ctx.db.course_organization.findMany({
           where: {
             course: course_id,
             organization: organization_id,
           },
         })
 
-        if (exists) {
+        if (exists.length > 0) {
           throw new Error("this course/organization relation already exists")
         }
 
@@ -44,14 +40,9 @@ schema.extendType({
     t.field("deleteCourseOrganization", {
       type: "course_organization",
       args: {
-        id: idArg(),
+        id: idArg({ required: true }),
       },
-      resolve: async (_, args, ctx) => {
-        const { id } = args
-
-        if (!id) {
-          throw new UserInputError("must provide id")
-        }
+      resolve: async (_, { id }, ctx) => {
         return ctx.db.course_organization.delete({ where: { id } })
       },
     })

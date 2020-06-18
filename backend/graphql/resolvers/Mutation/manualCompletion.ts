@@ -11,16 +11,15 @@ schema.extendType({
       type: "completion",
       args: {
         completions: arg({ type: "ManualCompletionArg", list: true }),
-        course_id: stringArg(),
+        course_id: stringArg({ required: true }),
       },
       resolve: async (_, args, _ctx) => {
-        if (!args.course_id) {
-          throw new Error("Course id not specified.")
-        }
+        const { course_id } = args
+
         const course = (
           await Knex.select(["id", "completion_email"])
             .from("course")
-            .where("id", args.course_id)
+            .where("id", course_id)
             .limit(1)
         )[0]
         if (!course) {
@@ -53,9 +52,10 @@ schema.extendType({
             updated_at: new Date(),
             user_upstream_id: o.user_id,
             email: databaseUser.email,
+            // FIXME: (?) databaseUser?
             student_number: o.real_student_number || o.student_number,
             completion_language: "unknown",
-            course: args.course_id,
+            course: course_id,
             user: databaseUser.id,
             grade: o.grade,
           }

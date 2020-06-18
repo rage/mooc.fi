@@ -5,7 +5,7 @@
       "/*": ["./*"]
     },
     "rootDir": ".",
-    "lib": ["es2016", "esnext.asynciterable"],
+    "lib": ["es2016", "esnext"],
     "outDir": "./dist",
     "strict": true,
     "noEmit": true,

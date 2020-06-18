@@ -1,4 +1,4 @@
-import { UserInputError, ForbiddenError } from "apollo-server-core"
+import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { stringArg, intArg, idArg } from "@nexus/schema"
 import Knex from "../../../services/knex"
 import { schema } from "nexus"
@@ -118,6 +118,7 @@ schema.extendType({
     })
   },
 })
+
 // is this needed anymore?
 /*const completionsPaginated = (t: ObjectDefinitionBlock<"Query">) => {
   t.field("completionsPaginated", {

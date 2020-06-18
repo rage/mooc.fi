@@ -1,4 +1,4 @@
-import { UserInputError, ForbiddenError } from "apollo-server-core"
+import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { idArg, intArg, stringArg } from "@nexus/schema"
 import { buildSearch } from "../../../util/db-functions"
 import { schema } from "nexus"

@@ -21,7 +21,7 @@ schema.extendType({
             language: language,
             name: name ?? "",
             description: description ?? "",
-            link: link,
+            link,
             course_courseTocourse_translation: course
               ? { connect: { id: course } }
               : undefined,
@@ -64,9 +64,7 @@ schema.extendType({
       args: {
         id: idArg({ required: true }),
       },
-      resolve: (_, args, ctx) => {
-        const { id } = args
-
+      resolve: (_, { id }, ctx) => {
         return ctx.db.course_translation.delete({
           where: { id },
         })

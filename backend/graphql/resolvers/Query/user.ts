@@ -1,5 +1,5 @@
 import { stringArg, idArg, intArg } from "@nexus/schema"
-import { UserInputError, ForbiddenError } from "apollo-server-core"
+import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { buildSearch } from "../../../util/db-functions"
 import { schema } from "nexus"
 

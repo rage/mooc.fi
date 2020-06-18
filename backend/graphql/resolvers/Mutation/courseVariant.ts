@@ -1,6 +1,5 @@
 import { stringArg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
-import { UserInputError } from "apollo-server-core"
 
 schema.extendType({
   type: "Mutation",
@@ -50,13 +49,7 @@ schema.extendType({
       args: {
         id: idArg({ required: true }),
       },
-      resolve: async (_, args, ctx) => {
-        const { id } = args
-
-        if (!id) {
-          throw new UserInputError("must provide id")
-        }
-
+      resolve: async (_, { id }, ctx) => {
         return ctx.db.course_variant.delete({ where: { id } })
       },
     })

@@ -1,5 +1,5 @@
 // import { prismaObjectType } from "nexus-prisma"
-import { ForbiddenError } from "apollo-server-core"
+import { ForbiddenError } from "apollo-server-errors"
 import { schema } from "nexus"
 
 schema.objectType({

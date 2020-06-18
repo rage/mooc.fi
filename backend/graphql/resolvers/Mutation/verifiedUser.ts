@@ -1,5 +1,5 @@
 import { arg } from "@nexus/schema"
-import { ForbiddenError, AuthenticationError } from "apollo-server-core"
+import { ForbiddenError, AuthenticationError } from "apollo-server-errors"
 import { schema } from "nexus"
 import { Context } from "/context"
 

@@ -13,8 +13,8 @@ import { uploadImage, deleteImage } from "./image"
 import { omit } from "lodash"
 import { invalidate } from "../../../services/redis"
 import { schema } from "nexus"
-import { Context } from "../../../context"
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-errors"
+import { NexusContext } from "/context"
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
@@ -34,10 +34,6 @@ schema.extendType({
         }),
       },
       resolve: async (_, { course }, ctx) => {
-        /*if (!course) {
-          throw new UserInputError("must provide course")
-        }*/
-
         const {
           // slug,
           new_photo,
@@ -67,6 +63,7 @@ schema.extendType({
         if (study_module?.some((s) => !s.id && !s.slug)) {
           throw new UserInputError("study modules must have id or slug")
         }
+
         const newCourse = await ctx.db.course.create({
           data: {
             ...omit(course, ["base64", "new_photo"]),
@@ -123,7 +120,7 @@ schema.extendType({
         }),
       },
       resolve: async (_, { course }, ctx) => {
-        console.log("update got", course)
+        console.log("I got this kind of thing", course)
         const {
           id,
           new_photo,
@@ -143,6 +140,7 @@ schema.extendType({
           user_course_settings_visibility,
         } = course
         let { end_date } = course
+
         if (!slug) {
           throw new Error("slug required for update course")
         }
@@ -285,40 +283,36 @@ schema.extendType({
             }
           : undefined
 
-        const updateData = {
-          ...omit(course, [
-            "id",
-            "photo",
-            "base64",
-            "new_slug",
-            "new_photo",
-            "delete_photo",
-          ]),
-          slug: new_slug ? new_slug : slug,
-          end_date,
-          // FIXME: disconnect removed photos?
-          image: !!photo ? { connect: { id: photo } } : undefined,
-          course_translation: translationMutation,
-          study_module: studyModuleMutation,
-          open_university_registration_link: registrationLinkMutation,
-          course_variant: courseVariantMutation,
-          course_alias: courseAliasMutation,
-          email_template: completion_email
-            ? { connect: { id: completion_email } }
-            : undefined,
-          other_course_courseTocourse_inherit_settings_from: inheritMutation,
-          other_course_courseTocourse_completions_handled_by: handledMutation,
-          user_course_settings_visibility: userCourseSettingsVisibilityMutation,
-        }
-
-        console.log("and update data", updateData)
-
         const updatedCourse = await ctx.db.course.update({
           where: {
             id: id ?? undefined,
             slug,
           },
-          data: updateData,
+          data: {
+            ...omit(course, [
+              "id",
+              "photo",
+              "base64",
+              "new_slug",
+              "new_photo",
+              "delete_photo",
+            ]),
+            slug: new_slug ? new_slug : slug,
+            end_date,
+            // FIXME: disconnect removed photos?
+            image: !!photo ? { connect: { id: photo } } : undefined,
+            course_translation: translationMutation,
+            study_module: studyModuleMutation,
+            open_university_registration_link: registrationLinkMutation,
+            course_variant: courseVariantMutation,
+            course_alias: courseAliasMutation,
+            email_template: completion_email
+              ? { connect: { id: completion_email } }
+              : undefined,
+            other_course_courseTocourse_inherit_settings_from: inheritMutation,
+            other_course_courseTocourse_completions_handled_by: handledMutation,
+            user_course_settings_visibility: userCourseSettingsVisibilityMutation,
+          },
         })
 
         return updatedCourse
@@ -328,7 +322,7 @@ schema.extendType({
     t.field("deleteCourse", {
       type: "course",
       args: {
-        id: idArg({ required: false }),
+        id: idArg(),
         slug: stringArg(),
       },
       resolve: async (_, args, ctx) => {
@@ -349,10 +343,6 @@ schema.extendType({
 
         if (photo) {
           await deleteImage({ ctx, id: photo.id })
-        }
-
-        if (!id && !slug) {
-          throw "must have id or slug"
         }
 
         const deletedCourse = await ctx.db.course.delete({
@@ -383,7 +373,7 @@ const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
 }
 
 interface ICreateMutation<T> {
-  ctx: Context
+  ctx: NexusContext
   slug: string
   data?: T[] | null
   field: string

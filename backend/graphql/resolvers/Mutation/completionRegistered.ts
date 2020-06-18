@@ -1,6 +1,6 @@
 import { arg } from "@nexus/schema"
 import { chunk } from "lodash"
-import { Context } from "../../../context"
+import { NexusContext } from "../../../context"
 import { schema } from "nexus"
 
 schema.extendType({
@@ -21,26 +21,10 @@ schema.extendType({
         return "success"
       },
     })
-
-    t.field("registerCompletion", {
-      type: "String",
-      args: {
-        completions: arg({ type: "CompletionArg", list: true }),
-      },
-      resolve: async (_, args, ctx) => {
-        let queue = chunk(args.completions, 500)
-
-        for (let i = 0; i < queue.length; i++) {
-          const promises = buildPromises(queue[i], ctx)
-          await Promise.all(promises)
-        }
-        return "success"
-      },
-    })
   },
 })
 
-const buildPromises = (array: any[], ctx: Context) => {
+const buildPromises = (array: any[], ctx: NexusContext) => {
   return array.map(async (entry) => {
     console.log("entry", entry)
     const course = await ctx.db.completion

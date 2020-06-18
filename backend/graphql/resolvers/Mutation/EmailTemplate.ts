@@ -1,5 +1,5 @@
 import { stringArg, idArg } from "@nexus/schema"
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-errors"
 import { schema } from "nexus"
 
 schema.extendType({
@@ -32,7 +32,7 @@ schema.extendType({
     t.field("updateEmailTemplate", {
       type: "email_template",
       args: {
-        id: idArg(),
+        id: idArg({ required: true }),
         name: stringArg(),
         html_body: stringArg(),
         txt_body: stringArg(),
@@ -40,10 +40,6 @@ schema.extendType({
       },
       resolve: async (_, args, ctx) => {
         const { id, name, html_body, txt_body, title } = args
-
-        if (!id) {
-          throw new UserInputError("must provide id")
-        }
 
         return ctx.db.email_template.update({
           where: {
@@ -62,13 +58,9 @@ schema.extendType({
     t.field("deleteEmailTemplate", {
       type: "email_template",
       args: {
-        id: idArg(),
+        id: idArg({ required: true }),
       },
-      resolve: (_, args, ctx) => {
-        const { id } = args
-        if (!id) {
-          throw new UserInputError("must provide id")
-        }
+      resolve: (_, { id }, ctx) => {
         return ctx.db.email_template.delete({ where: { id } })
       },
     })
