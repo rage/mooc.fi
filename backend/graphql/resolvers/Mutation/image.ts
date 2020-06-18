@@ -3,7 +3,7 @@ import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
 } from "../../../services/google-cloud"
-import { Context } from "../../../context"
+import { NexusContext } from "../../../context"
 import { schema } from "nexus"
 
 const sharp = require("sharp")
@@ -31,7 +31,7 @@ export const uploadImage = async ({
   file,
   base64 = false,
 }: {
-  ctx: Context
+  ctx: NexusContext
   file: any
   base64: boolean
 }) => {
@@ -106,7 +106,7 @@ export const deleteImage = async ({
   ctx,
   id,
 }: {
-  ctx: Context
+  ctx: NexusContext
   id: string
 }): Promise<boolean> => {
   const image = await ctx.db.image.findOne({ where: { id } })
@@ -153,9 +153,7 @@ schema.extendType({
       args: {
         id: idArg({ required: true }),
       },
-      resolve: async (_, args, ctx) => {
-        const { id } = args
-
+      resolve: async (_, { id }, ctx) => {
         return deleteImage({ ctx, id })
       },
     })

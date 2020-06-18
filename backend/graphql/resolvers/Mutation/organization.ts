@@ -31,10 +31,16 @@ schema.extendType({
           data: {
             slug,
             secret_key: secret,
+            organization_translation: {
+              create: {
+                name: name ?? "",
+                language: "fi_FI",
+              },
+            },
           },
         })
         // FIXME: return value not used
-        await ctx.db.organization_translation.create({
+        /*await ctx.db.organization_translation.create({
           data: {
             name: name ?? "",
             language: "fi_FI", //placeholder
@@ -46,9 +52,9 @@ schema.extendType({
 
         const newOrg = await ctx.db.organization.findOne({
           where: { id: org.id },
-        })
+        })*/
 
-        return newOrg
+        return org
       },
     })
   },

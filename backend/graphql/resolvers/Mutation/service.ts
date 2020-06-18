@@ -34,7 +34,10 @@ schema.extendType({
 
         return ctx.db.service.update({
           where: { id },
-          data: { url, name },
+          data: {
+            url: url ?? "",
+            name: name ?? "",
+          },
         })
       },
     })

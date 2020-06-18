@@ -1,6 +1,6 @@
 import { stringArg, arg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-errors"
 import { omit } from "lodash"
 
 schema.extendType({
@@ -15,15 +15,15 @@ schema.extendType({
         }),
       },
       resolve: async (_, { study_module }, ctx) => {
-        const { study_module_translations } = study_module
+        const { study_module_translation } = study_module
 
         const newStudyModule = await ctx.db.study_module.create({
           data: {
             ...study_module,
             name: study_module.name ?? "",
-            study_module_translation: !!study_module_translations
+            study_module_translation: !!study_module_translation
               ? {
-                  create: study_module_translations.map((s) => ({
+                  create: study_module_translation.map((s) => ({
                     ...s,
                     name: s.name ?? "",
                     id: s.id ?? undefined,
@@ -46,7 +46,7 @@ schema.extendType({
         }),
       },
       resolve: async (_, { study_module }, ctx) => {
-        const { id, slug, new_slug, study_module_translations } = study_module
+        const { id, slug, new_slug, study_module_translation } = study_module
 
         if (!slug) {
           throw new UserInputError("must provide slug")
@@ -55,16 +55,16 @@ schema.extendType({
         const existingTranslations = await ctx.db.study_module
           .findOne({ where: { slug } })
           .study_module_translation()
-        const newTranslations = (study_module_translations || [])
+        const newTranslations = (study_module_translation || [])
           .filter((t) => !t.id)
           .map((t) => ({ ...t, id: undefined }))
-        const updatedTranslations = (study_module_translations || [])
+        const updatedTranslations = (study_module_translation || [])
           .filter((t) => !!t.id)
           .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
         const existingTranslationIds = (existingTranslations || []).map(
           (t) => t.id,
         )
-        const moduleTranslationIds = (study_module_translations || []).map(
+        const moduleTranslationIds = (study_module_translation || []).map(
           (t) => t.id,
         )
         const removedTranslationIds = existingTranslationIds

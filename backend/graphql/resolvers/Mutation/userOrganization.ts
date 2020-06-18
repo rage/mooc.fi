@@ -1,5 +1,5 @@
 import { idArg, arg } from "@nexus/schema"
-import { ForbiddenError } from "apollo-server-core"
+import { ForbiddenError } from "apollo-server-errors"
 import { Context } from "/context"
 import { schema } from "nexus"
 import { Role } from "../../../accessControl"

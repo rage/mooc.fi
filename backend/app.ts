@@ -12,7 +12,7 @@ import { contextUser } from "./middlewares/FetchUser"
 import { Context } from "/context"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
-import bodyParser from "body-parser"
+import { graphqlUploadExpress } from "graphql-upload"
 
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient()
@@ -76,9 +76,7 @@ const isOrganization = rule({ cache: "contextual" })(
 )
 
 const isAdmin = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: Context, _info) => (
-    console.log("role is", ctx.role, Role.ADMIN), ctx.role === Role.ADMIN
-  ),
+  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.ADMIN,
 )
 
 const isVisitor = rule({ cache: "contextual" })(
@@ -184,8 +182,8 @@ const permissions = shield({
 
 server.express.use(cors())
 server.express.use(
-  bodyParser.json({
-    type: "application/json",
+  graphqlUploadExpress({
+    maxFileSize: 10_000_000,
   }),
 )
 

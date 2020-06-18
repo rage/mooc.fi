@@ -1,4 +1,4 @@
-import { ForbiddenError } from "apollo-server-core"
+import { ForbiddenError } from "apollo-server-errors"
 import { Context } from "./context"
 
 export enum Role {

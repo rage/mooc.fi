@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-core"
+import { UserInputError } from "apollo-server-errors"
 import { idArg, intArg, stringArg } from "@nexus/schema"
 import { schema } from "nexus"
 

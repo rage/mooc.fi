@@ -35,9 +35,9 @@ schema.extendType({
     t.field("updateOpenUniversityRegistrationLink", {
       type: "open_university_registration_link",
       args: {
-        id: idArg(),
+        id: idArg({ required: true }),
         course_code: stringArg(),
-        course: idArg(),
+        course: idArg({ required: true }),
         language: stringArg(),
         link: stringArg(),
       },
@@ -53,8 +53,8 @@ schema.extendType({
             course_courseToopen_university_registration_link: {
               connect: { id: course },
             },
-            course_code,
-            language,
+            course_code: course_code ?? "",
+            language: language ?? "",
             link,
           },
         })

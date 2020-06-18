@@ -1,5 +1,5 @@
 import { stringArg } from "@nexus/schema"
-import { AuthenticationError } from "apollo-server-core"
+import { AuthenticationError } from "apollo-server-errors"
 import { invalidate } from "../../../services/redis"
 import { schema } from "nexus"
 import { Context } from "/context"

@@ -12,7 +12,7 @@ import {
   CourseCreateArg,
   CourseUpsertArg,
 } from "/static/types/generated/globalTypes"
-import {
+/*import {
   addCourse_addCourse_open_university_registration_link,
   addCourse_addCourse_study_module,
   addCourse_addCourse_course_translation,
@@ -27,7 +27,7 @@ import {
   updateCourse_updateCourse_course_variant,
   updateCourse_updateCourse_course_alias,
   updateCourse_updateCourse_user_course_settings_visibility,
-} from "/static/types/generated/updateCourse"
+} from "/static/types/generated/updateCourse"*/
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { DateTime } from "luxon"
 
@@ -236,5 +236,5 @@ export const fromCourseForm = ({
     teacher_in_charge_name: values.teacher_in_charge_name ?? "",
   }
 
-  return c
+  return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
 }
