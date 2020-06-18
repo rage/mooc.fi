@@ -1,5 +1,5 @@
+import ApolloClient from "apollo-client"
 import {
-  ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
   defaultDataIdFromObject,

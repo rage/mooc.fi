@@ -50,7 +50,7 @@
     "@types/shortid": "0.0.29",
     "@types/uuid": "^7.0.3",
     "@types/websocket": "^1.0.0",
-    "@types/yup": "^0.28.0",
+    "@types/yup": "^0.29.3",
     "JSONStream": "^1.3.5",
     "apollo-server-core": "^2.14.4",
     "axios": "^0.19.2",
@@ -72,7 +72,7 @@
     "nexus": "^0.24.0",
     "nexus-plugin-prisma": "^0.10.0",
     "nexus-plugin-shield": "^0.1.4",
-    "node-rdkafka": "^2.7.4",
+    "node-rdkafka": "^2.9.0",
     "nodemailer": "^6.4.2",
     "pg": "^8.2.1",
     "pg-query-stream": "^3.0.4",
@@ -82,7 +82,7 @@
     "uuid": "^3.4.0",
     "websocket": "^1.0.31",
     "winston": "^3.2.1",
-    "yup": "^0.28.5"
+    "yup": "^0.29.1"
   },
   "devDependencies": {
     "@nexus/schema": "^0.14.0",
@@ -91,7 +91,7 @@
     "faker": "^4.1.0",
     "nexus-prisma-generate": "^0.3.7",
     "npm-check": "^5.9.0",
-    "prisma-upgrade": "0.0.20",
+    "prisma-upgrade": "0.0.21",
     "tmc-client-js": "0.0.9",
     "ts-node": "^8.10.1",
     "ts-node-dev": "^1.0.0-pre.44",
