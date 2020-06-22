@@ -1,6 +1,5 @@
 import { idArg, stringArg } from "@nexus/schema"
 import { schema } from "nexus"
-import { UserInputError } from "apollo-server-errors"
 
 schema.extendType({
   type: "Mutation",
@@ -11,14 +10,10 @@ schema.extendType({
         language: stringArg({ required: true }),
         name: stringArg(),
         description: stringArg(),
-        study_module: idArg(),
+        study_module: idArg({ required: true }),
       },
       resolve: async (_, args, ctx) => {
         const { language, name, description, study_module } = args
-
-        if (!study_module) {
-          throw new UserInputError("must provide study_module")
-        }
 
         const newStudyModuleTranslation = await ctx.db.study_module_translation.create(
           {
@@ -43,14 +38,10 @@ schema.extendType({
         language: stringArg(),
         name: stringArg(),
         description: stringArg(),
-        study_module: idArg(),
+        study_module: idArg({ required: true }),
       },
       resolve: (_, args, ctx) => {
         const { id, language, name, description, study_module } = args
-
-        if (!id || !study_module) {
-          throw new UserInputError("must provide id and study_module")
-        }
 
         return ctx.db.study_module_translation.update({
           where: { id },

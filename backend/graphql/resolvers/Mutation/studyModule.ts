@@ -17,7 +17,7 @@ schema.extendType({
       resolve: async (_, { study_module }, ctx) => {
         const { study_module_translation } = study_module
 
-        const newStudyModule = await ctx.db.study_module.create({
+        return ctx.db.study_module.create({
           data: {
             ...study_module,
             name: study_module.name ?? "",
@@ -32,8 +32,6 @@ schema.extendType({
               : undefined,
           },
         })
-
-        return newStudyModule
       },
     })
 
