@@ -9,7 +9,7 @@ import * as winston from "winston"
 import { Role } from "./accessControl"
 import { shield, rule, or } from "nexus-plugin-shield"
 import { contextUser } from "./middlewares/FetchUser"
-import { Context } from "/context"
+import { NexusContext } from "/context"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
 import { graphqlUploadExpress } from "graphql-upload"
@@ -72,23 +72,24 @@ settings.change({
 })
 
 const isOrganization = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.ORGANIZATION,
+  async (_parent, _args, ctx: NexusContext, _info) =>
+    ctx.role === Role.ORGANIZATION,
 )
 
 const isAdmin = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.ADMIN,
+  async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.ADMIN,
 )
 
 const isVisitor = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.VISITOR,
+  async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.VISITOR,
 )
 
 const isUser = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: Context, _info) => ctx.role === Role.USER,
+  async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.USER,
 )
 
 const organizationPermission = rule({ cache: "contextual" })(
-  async (_parent, args, ctx: Context, _info) => {
+  async (_parent, args, ctx: NexusContext, _info) => {
     if (args.hidden) return ctx.role === Role.ADMIN
 
     return true

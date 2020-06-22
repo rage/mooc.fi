@@ -1,7 +1,7 @@
 import { arg } from "@nexus/schema"
 import { ForbiddenError, AuthenticationError } from "apollo-server-errors"
 import { schema } from "nexus"
-import { Context } from "/context"
+import { NexusContext } from "/context"
 
 schema.extendType({
   type: "Mutation",
@@ -14,7 +14,7 @@ schema.extendType({
           required: true,
         }),
       },
-      resolve: async (_, { verified_user }, ctx: Context) => {
+      resolve: async (_, { verified_user }, ctx: NexusContext) => {
         const {
           organization_id,
           display_name,

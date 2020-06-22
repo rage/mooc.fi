@@ -2,7 +2,7 @@ import { stringArg } from "@nexus/schema"
 import { AuthenticationError } from "apollo-server-errors"
 import { invalidate } from "../../../services/redis"
 import { schema } from "nexus"
-import { Context } from "/context"
+import { NexusContext } from "/context"
 
 schema.extendType({
   type: "Mutation",
@@ -13,7 +13,7 @@ schema.extendType({
         first_name: stringArg(),
         last_name: stringArg(),
       },
-      resolve: (_, { first_name, last_name }, ctx: Context) => {
+      resolve: (_, { first_name, last_name }, ctx: NexusContext) => {
         const {
           user: currentUser,
           headers: { authorization },

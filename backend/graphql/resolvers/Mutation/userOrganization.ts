@@ -1,10 +1,11 @@
 import { idArg, arg } from "@nexus/schema"
 import { ForbiddenError } from "apollo-server-errors"
-import { Context } from "/context"
+import { NexusContext } from "/context"
 import { schema } from "nexus"
 import { Role } from "../../../accessControl"
+import { organization_role } from "@prisma/client"
 
-const checkUser = async (ctx: Context, id: any) => {
+const checkUser = async (ctx: NexusContext, id: any) => {
   const { user, role } = ctx
 
   let existingUser
@@ -58,7 +59,7 @@ schema.extendType({
             organization_organizationTouser_organization: {
               connect: { id: organization_id },
             },
-            role: "Student",
+            role: organization_role.Student,
           },
         })
       },
@@ -79,7 +80,7 @@ schema.extendType({
 
         return ctx.db.user_organization.update({
           data: {
-            role: role ? role : "Student",
+            role: role ? role : organization_role.Student,
           },
           where: {
             id,
