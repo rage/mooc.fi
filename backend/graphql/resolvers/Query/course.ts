@@ -1,6 +1,7 @@
 import { stringArg, idArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { course as Course } from "@prisma/client"
+import { UserInputError } from "apollo-server-errors"
 
 schema.extendType({
   type: "Query",
@@ -16,10 +17,14 @@ schema.extendType({
       resolve: async (_, args, ctx) => {
         const { slug, id, language } = args
 
+        if (!slug && !id) {
+          throw new UserInputError("must provide id or slug")
+        }
+
         const course = await ctx.db.course.findOne({
           where: {
-            slug,
-            id,
+            slug: slug ?? undefined,
+            id: id ?? undefined,
           },
         })
 
@@ -39,6 +44,7 @@ schema.extendType({
             return Promise.resolve(null)
           }
 
+          // TODO/FIXME: provide language instead of getting the first one
           const { name, description, link = "" } = course_translations[0]
           return {
             ...course,
@@ -70,7 +76,7 @@ schema.extendType({
         const { orderBy, language } = args
 
         const courses = await ctx.db.course.findMany({
-          orderBy,
+          orderBy: orderBy ?? undefined,
         })
 
         const filtered = language
@@ -108,14 +114,15 @@ schema.extendType({
               })),
             )
 
-        return filtered
+        // TODO: (?) provide proper typing
+        return filtered as (Course & { description: string; link: string })[]
       },
     })
 
     t.field("course_exists", {
       type: "Boolean",
       args: {
-        slug: stringArg(),
+        slug: stringArg({ required: true }),
       },
       resolve: async (_, args, ctx) => {
         const { slug } = args

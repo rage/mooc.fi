@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { Grid, Typography } from "@material-ui/core"
 import styled from "styled-components"
-import { CourseStatus } from "/static/types/globalTypes"
+import { course_status } from "/static/types/generated/globalTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
@@ -111,7 +111,7 @@ function ModuleSmallCourseCard({
         {course ? (
           <ReactGA.OutboundLink
             eventLabel={`modulecoursesite: ${course ? course.name : ""}`}
-            to={course.link}
+            to={course.link ?? ""}
             target="_blank"
             style={{ textDecoration: "none", width: "100%" }}
             onClick={(e) => (course.link === "" ? e.preventDefault() : null)}
@@ -119,7 +119,7 @@ function ModuleSmallCourseCard({
           >
             {showHeader &&
               (course!.study_module_start_point ||
-                course!.status === CourseStatus.Upcoming) && (
+                course!.status === course_status.Upcoming) && (
                 <Header
                   startPoint={course!.study_module_start_point}
                   upcoming={course!.status === "Upcoming"}

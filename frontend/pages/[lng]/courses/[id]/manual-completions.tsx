@@ -17,7 +17,7 @@ const StyledTextField = styled(TextField)`
 
 const AddManualCompletionQuery = gql`
   mutation AddManualCompletion(
-    $course_id: String
+    $course_id: String!
     $completions: [ManualCompletionArg!]
   ) {
     addManualCompletion(course_id: $course_id, completions: $completions) {

@@ -14,7 +14,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions(
-    $course: String
+    $course: String!
     $cursor: String
     $completionLanguage: String
   ) {
@@ -60,7 +60,7 @@ export const AllCompletionsQuery = gql`
 `
 export const PreviousPageCompletionsQuery = gql`
   query AllCompletionsPrevious(
-    $course: String
+    $course: String!
     $cursor: String
     $completionLanguage: String
   ) {

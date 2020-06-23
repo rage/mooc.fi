@@ -21,7 +21,7 @@ import {
 
 export const StudentProgresses = gql`
   query UserCourseSettingses(
-    $course_id: ID
+    $course_id: ID!
     $cursor: String
     $search: String
     $course_string: String
@@ -76,7 +76,7 @@ export const StudentProgresses = gql`
           }
         }
       }
-      count
+      count(course_id: $course_id)
     }
   }
 `
@@ -211,11 +211,12 @@ function PaginatedPointsList(props: Props) {
                 },
 
                 updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const previousData = previousResult.UserCourseSettingses.edges
+                  const previousData =
+                    previousResult?.UserCourseSettingses?.edges ?? []
                   const newData: UserCourseSettingses_UserCourseSettingses_edges[] =
                     fetchMoreResult?.UserCourseSettingses?.edges ?? []
                   const newPageInfo = fetchMoreResult
-                    ? fetchMoreResult.UserCourseSettingses.pageInfo
+                    ? fetchMoreResult?.UserCourseSettingses?.pageInfo
                     : ({} as UserCourseSettingses_UserCourseSettingses_pageInfo)
                   return {
                     UserCourseSettingses: {

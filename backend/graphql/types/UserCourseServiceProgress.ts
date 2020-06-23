@@ -6,7 +6,7 @@ schema.objectType({
     t.model.id()
     t.model.created_at()
     t.model.updated_at()
-    t.model.progress()
+    // t.model.progress()
     t.model.service({ alias: "service_id" })
     t.model.service_serviceTouser_course_service_progress({ alias: "service" })
     t.model.timestamp()
@@ -18,5 +18,17 @@ schema.objectType({
     )
     t.model.course({ alias: "course_id" })
     t.model.course_courseTouser_course_service_progress({ alias: "course" })
+
+    t.list.field("progress", {
+      type: "Json",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.db.user_course_service_progress.findOne({
+          where: { id: parent.id },
+          select: { progress: true },
+        })
+
+        return res?.progress ?? []
+      },
+    })
   },
 })

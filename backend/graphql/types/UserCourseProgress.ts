@@ -1,18 +1,38 @@
 import { schema } from "nexus"
 
+interface PointsByGroup {
+  group: string
+  max_points: number
+  n_points: number
+  progress: number
+}
+
 schema.objectType({
   name: "user_course_progress",
   definition(t) {
     t.model.id()
-    // t.model.course()
+    t.model.course({ alias: "course_id" })
     t.model.created_at()
     t.model.max_points()
     t.model.n_points()
-    t.model.progress()
+    //t.model.progress()
     t.model.updated_at()
+    t.model.user({ alias: "user_id" })
     t.model.user_userTouser_course_progress({ alias: "user" })
     t.model.course_courseTouser_course_progress({ alias: "course" })
     t.model.user_course_service_progress()
+
+    t.list.field("progress", {
+      type: "Json",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.db.user_course_progress.findOne({
+          where: { id: parent.id },
+          select: { progress: true },
+        })
+
+        return res?.progress ?? []
+      },
+    })
 
     // t.prismaFields(["*"])
 
@@ -74,7 +94,8 @@ schema.objectType({
         const courseProgresses = await ctx.db.user_course_progress.findMany({
           where: { course: course, user: user },
         })
-        const courseProgress = courseProgresses.length
+        // TODO/FIXME: proper typing
+        const courseProgress: any = courseProgresses.length
           ? courseProgresses[0].progress
           : []
         const exercises = await ctx.db.course
@@ -88,13 +109,11 @@ schema.objectType({
         })
 
         // FIXME: now it's jsonvalue or smth
-        const totalProgress = 0
-        /*const totalProgress =
-          (courseProgress.reduce(
+        const totalProgress =
+          (courseProgress?.reduce(
             (acc: number, curr: any) => acc + curr.progress,
             0,
           ) ?? 0) / (courseProgress.length || 1)
-        */
         const exerciseProgress =
           completedExercises.length / (exercises.length || 1)
 

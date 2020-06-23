@@ -31,6 +31,6 @@ export interface AddManualCompletion {
 }
 
 export interface AddManualCompletionVariables {
-  course_id?: string | null
+  course_id: string
   completions?: ManualCompletionArg[] | null
 }

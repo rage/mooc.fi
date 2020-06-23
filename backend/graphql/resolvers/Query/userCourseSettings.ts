@@ -61,21 +61,14 @@ schema.extendType({
       additionalArgs: {
         user_id: idArg(),
         user_upstream_id: intArg(),
-        course_id: idArg(),
+        course_id: idArg({ required: true }),
         search: stringArg(),
-      },
-      extendConnection(t) {
-        t.int("count", (_, _args, _ctx) => 1)
       },
       nodes: async (_, args, ctx) => {
         const { first, last, user_id, user_upstream_id, search } = args
         let { course_id } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
-        }
-
-        if (!course_id) {
-          throw new UserInputError("must provide course id")
         }
 
         const inheritSettingsCourse = await ctx.db.course
@@ -98,18 +91,56 @@ schema.extendType({
                 },
                 {
                   OR: buildSearch(
-                    [
-                      "first_name_contains",
-                      "last_name_contains",
-                      "username_contains",
-                      "email_contains",
-                    ],
+                    ["first_name", "last_name", "username", "email"],
                     search ?? "",
                   ),
                 },
               ],
             },
             course: course_id,
+          },
+        })
+      },
+      extendConnection(t) {
+        t.int("count", {
+          args: {
+            user_id: idArg(),
+            user_upstream_id: intArg(),
+            course_id: idArg({ required: true }),
+            search: stringArg(),
+          },
+          resolve: async (_, args, ctx) => {
+            const { user_id, user_upstream_id, search } = args
+            let { course_id } = args
+            const inheritSettingsCourse = await ctx.db.course
+              .findOne({ where: { id: course_id } })
+              .course_courseTocourse_inherit_settings_from()
+
+            if (inheritSettingsCourse) {
+              course_id = inheritSettingsCourse.id
+            }
+
+            return ctx.db.userCourseSettings.count({
+              where: {
+                user_UserCourseSettingsTouser: {
+                  OR: [
+                    {
+                      id: user_id ?? undefined,
+                    },
+                    {
+                      upstream_id: user_upstream_id ?? undefined,
+                    },
+                    {
+                      OR: buildSearch(
+                        ["first_name", "last_name", "username", "email"],
+                        search ?? "",
+                      ),
+                    },
+                  ],
+                },
+                course: course_id,
+              },
+            })
           },
         })
       },

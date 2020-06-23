@@ -59,27 +59,37 @@ schema.extendType({
       },
       nodes: async (_, args, ctx) => {
         const { search, first, last, skip } = args
+
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
         return ctx.db.user.findMany({
-          skip,
+          skip: skip ?? undefined,
           where: {
             OR: buildSearch(
-              [
-                "first_name_contains",
-                "last_name_contains",
-                "username_contains",
-                "email_contains",
-              ],
+              ["first_name", "last_name", "username", "email"],
               search ?? "",
             ),
           },
         })
       },
       extendConnection(t) {
-        t.int("count", (_, _args, _ctx) => 1)
+        t.int("count", {
+          args: {
+            search: stringArg(),
+          },
+          resolve: (_, { search }, ctx) => {
+            return ctx.db.user.count({
+              where: {
+                OR: buildSearch(
+                  ["first_name", "last_name", "username", "email"],
+                  search ?? "",
+                ),
+              },
+            })
+          },
+        })
       },
     })
 
@@ -90,7 +100,7 @@ schema.extendType({
       resolve: (_, __, ctx) => {
         // FIXME: why don't we search anything? where's this come from?
         // const { search } = args
-        return ctx.user
+        return ctx.user ?? null
       },
     })
   },

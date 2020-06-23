@@ -1,39 +1,39 @@
 import { ForbiddenError, UserInputError } from "apollo-server-errors"
-import { intArg, stringArg, idArg } from "@nexus/schema"
+import { intArg, stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
+import { completion_registeredWhereUniqueInput } from "@prisma/client"
 
 schema.extendType({
   type: "Query",
   definition(t) {
+    t.crud.completionRegistereds({ alias: "registeredCompletions" })
+
     t.list.field("registeredCompletions", {
       type: "completion_registered",
       args: {
         course: stringArg(),
-        first: intArg(),
-        after: idArg(),
-        last: intArg(),
-        before: idArg(),
+        skip: intArg(),
+        take: intArg(),
+        cursor: arg({ type: "completion_registeredWhereUniqueInput" }),
       },
       resolve: async (_, args, ctx) => {
-        const { course, first, after, last, before } = args
-        if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
+        const { course, skip, take, cursor } = args
+        if ((take ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 items")
         }
         if (course) {
           return await withCourse(
             course,
-            first ?? undefined,
-            after ?? undefined,
-            last ?? undefined,
-            before ?? undefined,
+            skip ?? undefined,
+            take ?? undefined,
+            cursor ? { id: cursor.id ?? undefined } : undefined,
             ctx,
           )
         } else {
           return await all(
-            first ?? undefined,
-            after ?? undefined,
-            last ?? undefined,
-            before ?? undefined,
+            skip ?? undefined,
+            take ?? undefined,
+            cursor ? { id: cursor.id ?? undefined } : undefined,
             ctx,
           )
         }
@@ -44,10 +44,9 @@ schema.extendType({
 
 const withCourse = async (
   course: string,
-  first: number | undefined,
-  after: string | undefined,
-  last: number | undefined,
-  before: string | undefined,
+  skip: number | undefined,
+  take: number | undefined,
+  cursor: completion_registeredWhereUniqueInput | undefined,
   ctx: NexusContext,
 ) => {
   let courseReference = await ctx.db.course.findOne({
@@ -72,24 +71,21 @@ const withCourse = async (
     where: {
       course: courseReference!.id,
     },
-    first: first ?? undefined,
-    after: after ? { id: after } : undefined,
-    last: last ?? undefined,
-    before: before ? { id: before } : undefined,
+    skip,
+    take,
+    cursor,
   })
 }
 
 const all = async (
-  first: number | undefined,
-  after: string | undefined,
-  last: number | undefined,
-  before: string | undefined,
+  skip: number | undefined,
+  take: number | undefined,
+  cursor: completion_registeredWhereUniqueInput | undefined,
   ctx: NexusContext,
 ) => {
   return await ctx.db.completion_registered.findMany({
-    first: first ?? undefined,
-    after: after ? { id: after } : undefined,
-    last: last ?? undefined,
-    before: before ? { id: before } : undefined,
+    skip,
+    take,
+    cursor,
   })
 }
