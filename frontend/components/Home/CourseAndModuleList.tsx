@@ -15,7 +15,7 @@ const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
-import { CourseStatus } from "/static/types/globalTypes"
+import { course_status } from "/static/types/generated/globalTypes"
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
@@ -43,9 +43,9 @@ const CourseAndModuleList = () => {
           const moduleCourses =
             courses?.filter(
               (course) =>
-                course?.study_modules?.some(
+                course?.study_module?.some(
                   (courseModule) => courseModule.id === module.id,
-                ) && course?.status !== CourseStatus.Ended,
+                ) && course?.status !== course_status.Ended,
             ) ?? []
 
           return { ...module, courses: moduleCourses }

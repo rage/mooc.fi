@@ -5,7 +5,7 @@ import XLSX from "xlsx"
 import styled from "styled-components"
 import {
   ExportUserCourseProgesses,
-  ExportUserCourseProgesses_UserCourseProgresses,
+  ExportUserCourseProgesses_userCourseProgresses,
 } from "../../static/types/generated/ExportUserCourseProgesses"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { ApolloClient } from "apollo-boost"
@@ -64,7 +64,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
   )
 }
 
-async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
+async function flatten(data: ExportUserCourseProgesses_userCourseProgresses[]) {
   console.log("data in flatten", data)
 
   const newData = data.map((datum) => {
@@ -75,9 +75,9 @@ async function flatten(data: ExportUserCourseProgesses_UserCourseProgresses[]) {
       email,
       student_number,
       real_student_number,
-    } = datum?.user
+    } = datum?.user ?? {}
     const { course_variant, country, language } =
-      datum?.userCourseSettings ?? {}
+      datum?.UserCourseSettings ?? {}
 
     const newDatum: any = {
       user_id: upstream_id,
@@ -107,24 +107,35 @@ async function dowloadInChunks(
   courseSlug: string,
   client: ApolloClient<object>,
   setMessage: any,
-): Promise<ExportUserCourseProgesses_UserCourseProgresses[]> {
+): Promise<ExportUserCourseProgesses_userCourseProgresses[]> {
   const res = []
-  let after: string | undefined = undefined
+  // let after: string | undefined = undefined
+  let skip = 0
+
   while (1 === 1) {
     const { data } = await client.query<ExportUserCourseProgesses>({
       query: GET_DATA,
-      variables: { course_slug: courseSlug, after: after, first: 100 },
+      variables: {
+        course_slug: courseSlug,
+        skip,
+        take: 100,
+        /*after: after, 
+        first: 100*/
+      },
     })
     let downloaded: any = data.userCourseProgresses
     if (downloaded.length === 0) {
       break
     }
-    after = downloaded[downloaded.length - 1]?.id
-    console.log("After:", after)
+    //after = downloaded[downloaded.length - 1]?.id
+    // console.log("After:", after)
+    skip += downloaded.length
+    console.log("Skip:", skip)
+
     const nDownLoaded = res.push(...downloaded)
     setMessage(`Downloaded progress for ${nDownLoaded} users...`)
   }
-  return (res as unknown) as ExportUserCourseProgesses_UserCourseProgresses[]
+  return (res as unknown) as ExportUserCourseProgesses_userCourseProgresses[]
 }
 
 export default PointsExportButton
@@ -132,14 +143,10 @@ export default PointsExportButton
 const GET_DATA = gql`
   query ExportUserCourseProgesses(
     $course_slug: String!
-    $after: ID
-    $first: Int
+    $skip: Int
+    $take: Int
   ) {
-    userCourseProgresses(
-      course_slug: $course_slug
-      after: $after
-      first: $first
-    ) {
+    userCourseProgresses(course_slug: $course_slug, skip: $skip, take: $take) {
       id
       user {
         id

@@ -89,7 +89,7 @@ export interface AllCompletions {
 }
 
 export interface AllCompletionsVariables {
-  course?: string | null
+  course: string
   cursor?: string | null
   completionLanguage?: string | null
 }

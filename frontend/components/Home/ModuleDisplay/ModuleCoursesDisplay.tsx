@@ -8,7 +8,7 @@ import ModuleCoursesListing, {
 } from "/components/Home/ModuleDisplay/ModuleCourseCardList"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
-import { CourseStatus } from "/static/types/globalTypes"
+import { course_status } from "/static/types/generated/globalTypes"
 
 const CoursesListContainer = styled(ContentContainer)`
   margin-top: 2rem;
@@ -29,7 +29,7 @@ const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {
   const { courses } = props
   const dontLimitShownCourses =
     courses.length <= 3 ||
-    courses.every((c) => c.status === CourseStatus.Active)
+    courses.every((c) => c.status === course_status.Active)
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)
 

@@ -1,5 +1,5 @@
 import { UserInputError } from "apollo-server-errors"
-import { idArg, intArg, stringArg } from "@nexus/schema"
+import { idArg, intArg, stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 
 schema.extendType({
@@ -19,7 +19,9 @@ schema.extendType({
             course: course_id,
           },
         })
+
         if (!result.length) throw new UserInputError("Not found")
+
         return result[0]
       },
     })
@@ -40,28 +42,37 @@ schema.extendType({
         user_id: idArg(),
         course_slug: stringArg(),
         course_id: idArg(),
-        first: intArg(),
+        skip: intArg(),
+        take: intArg(),
+        cursor: arg({ type: "user_course_progressWhereUniqueInput" }),
+        /*first: intArg(),
         after: idArg(),
         last: intArg(),
-        before: idArg(),
+        before: idArg(),*/
       },
       resolve: (_, args, ctx) => {
         // checkAccess(ctx)
         const {
-          first,
+          /*first,
           last,
           before,
-          after,
+          after,*/
+          skip,
+          take,
+          cursor,
           user_id,
           course_id,
           course_slug,
         } = args
 
         return ctx.db.user_course_progress.findMany({
-          first: first ?? undefined,
+          skip: skip ?? undefined,
+          take: take ?? undefined,
+          cursor: cursor ? { id: cursor.id ?? undefined } : undefined,
+          /*first: first ?? undefined,
           last: last ?? undefined,
           before: before ? { id: before } : undefined,
-          after: after ? { id: after } : undefined,
+          after: after ? { id: after } : undefined,*/
           where: {
             user: user_id,
             course_courseTouser_course_progress: {

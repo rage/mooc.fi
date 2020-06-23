@@ -38,21 +38,37 @@ schema.extendType({
     t.list.field("organizations", {
       type: "organization",
       args: {
-        first: intArg(),
+        take: intArg(),
+        skip: intArg(),
+        cursor: arg({ type: "organizationWhereUniqueInput" }),
+        /*first: intArg(),
         after: idArg(),
         last: intArg(),
-        before: idArg(),
+        before: idArg(),*/
         orderBy: arg({ type: "organizationOrderByInput" }),
         hidden: booleanArg(),
       },
       resolve: async (_, args, ctx) => {
-        const { first, last, after, before, orderBy, hidden } = args
+        const {
+          /*first, last, after, before, */ take,
+          skip,
+          cursor,
+          orderBy,
+          hidden,
+        } = args
 
         const orgs = await ctx.db.organization.findMany({
-          first: first ?? undefined,
+          take: take ?? undefined,
+          skip: skip ?? undefined,
+          cursor: cursor
+            ? {
+                id: cursor.id ?? undefined,
+              }
+            : undefined,
+          /*first: first ?? undefined,
           last: last ?? undefined,
           after: after ? { id: after } : undefined,
-          before: before ? { id: before } : undefined,
+          before: before ? { id: before } : undefined,*/
           orderBy: orderBy ?? undefined,
           where: {
             hidden,

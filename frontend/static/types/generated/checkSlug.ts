@@ -12,5 +12,5 @@ export interface checkSlug {
 }
 
 export interface checkSlugVariables {
-  slug?: string | null
+  slug: string
 }

@@ -1,5 +1,5 @@
-import { idArg } from "@nexus/schema"
-import checkAccess from "../../../accessControl"
+// import { idArg } from "@nexus/schema"
+// import checkAccess from "../../../accessControl"
 import { schema } from "nexus"
 
 schema.extendType({

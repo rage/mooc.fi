@@ -48,7 +48,7 @@ function formatDateTime(date: string) {
 
 function CompletedCourseCard(props: CourseCardProps) {
   const { completion } = props
-  const registeredCompletions = completion?.completions_registered ?? []
+  const registeredCompletions = completion?.completion_registered ?? []
   const isRegistered = registeredCompletions.length > 0
 
   const lng = useContext(LanguageContext)

@@ -8,9 +8,9 @@ export const buildSearch = (fields: string[], search?: string) =>
   search
     ? flatten(
         fields.map((f) => [
-          { [f]: search },
-          { [f]: titleCase(search) },
-          { [f]: search.toLowerCase() },
+          { [f]: { contains: search } },
+          { [f]: { contains: titleCase(search) } },
+          { [f]: { contains: search.toLowerCase() } },
         ]),
       )
     : undefined

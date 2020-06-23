@@ -9,7 +9,7 @@ schema.extendType({
     t.list.field("completions", {
       type: "completion",
       args: {
-        course: stringArg(),
+        course: stringArg({ required: true }),
         completion_language: stringArg(),
         first: intArg(),
         after: idArg(),
@@ -23,9 +23,6 @@ schema.extendType({
           ctx.disableRelations = true
         }
 
-        if (!course) {
-          throw new UserInputError("no course specified")
-        }
         const courseWithSlug = await ctx.db.course.findOne({
           where: {
             slug: course,
@@ -79,7 +76,7 @@ schema.extendType({
     t.connectionField("completionsPaginated", {
       type: "completion",
       additionalArgs: {
-        course: stringArg(),
+        course: stringArg({ required: true }),
         completion_language: stringArg(),
       },
       nodes: async (_, args, ctx, __) => {
@@ -88,10 +85,6 @@ schema.extendType({
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
-        }
-
-        if (!course) {
-          throw new UserInputError("must provide course")
         }
 
         const courseWithSlug = await ctx.db.course.findOne({
@@ -118,55 +111,3 @@ schema.extendType({
     })
   },
 })
-
-// is this needed anymore?
-/*const completionsPaginated = (t: ObjectDefinitionBlock<"Query">) => {
-  t.field("completionsPaginated", {
-    type: "CompletionConnection",
-    args: {
-      course: stringArg(),
-      completion_language: stringArg(),
-      first: intArg(),
-      after: idArg(),
-      last: intArg(),
-      before: idArg(),
-    },
-    resolve: async (_, args, ctx) => {
-      const prisma: Prisma = ctx.prisma
-      checkAccess(ctx, { allowOrganizations: true })
-      const { first, after, last, before, completion_language } = args
-      let { course } = args
-      if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
-        throw new ForbiddenError("Cannot query more than 50 objects")
-      }
-      const courseWithSlug: Maybe<Course> = await ctx.prisma.course({
-        slug: course,
-      })
-
-      if (!courseWithSlug) {
-        const courseFromAvoinCourse: Course = await ctx.prisma
-          .courseAlias({ course_code: course })
-          .course()
-        if (!courseFromAvoinCourse) {
-          throw new UserInputError("Invalid course identifier")
-        }
-        course = courseFromAvoinCourse.slug
-      }
-
-      const courseObject: Maybe<Course> = await prisma.course({ slug: course })
-
-      const completions = prisma.completionsConnection({
-        where: {
-          course: { id: courseObject?.id },
-          completion_language: completion_language,
-        },
-        first: first ?? undefined,
-        after: after ?? undefined,
-        last: last ?? undefined,
-        before: before ?? undefined,
-      })
-
-      return completions
-    },
-  })
-}*/
