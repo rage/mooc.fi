@@ -1,10 +1,5 @@
 import { Message } from "./interfaces"
-import {
-  PrismaClient,
-  exercise_completion,
-  exercise,
-  user,
-} from "@prisma/client"
+import { PrismaClient, exercise_completion, user } from "@prisma/client"
 import TmcClient from "../../../services/tmc"
 import { DateTime } from "luxon"
 import winston = require("winston")
@@ -26,6 +21,7 @@ const Knex = knex({
       : ["default$default"],
 })
 
+// @ts-ignore: not used
 const isUserInDB = async (user_id: number) => {
   return await Knex("user").where("upstream_id", "=", user_id)
 }
@@ -114,6 +110,7 @@ export const saveToDatabase = async (
   })
   const exerciseCompleted = exerciseCompleteds[0]
 
+  // @ts-ignore: value not used
   let savedExerciseCompletion: exercise_completion
 
   if (!exerciseCompleted) {

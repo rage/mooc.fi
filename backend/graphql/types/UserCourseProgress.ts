@@ -1,12 +1,5 @@
 import { schema } from "nexus"
 
-interface PointsByGroup {
-  group: string
-  max_points: number
-  n_points: number
-  progress: number
-}
-
 schema.objectType({
   name: "user_course_progress",
   definition(t) {
@@ -30,7 +23,7 @@ schema.objectType({
           select: { progress: true },
         })
 
-        return res?.progress ?? []
+        return (res?.progress as any) ?? [] // type error without any
       },
     })
 

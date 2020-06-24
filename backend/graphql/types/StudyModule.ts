@@ -3,6 +3,7 @@
 import { stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { courseOrderByInput } from "@prisma/client"
+import { notEmpty } from "/util/notEmpty"
 
 schema.objectType({
   name: "study_module",
@@ -55,7 +56,7 @@ schema.objectType({
                   return { ...course, name, description, link }
                 }),
               )
-            ).filter((v) => !!v)
+            ).filter(notEmpty)
           : courses.map((course) => ({
               ...course,
               description: "",
