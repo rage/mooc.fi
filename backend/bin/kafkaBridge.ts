@@ -2,10 +2,10 @@ require("dotenv-safe").config()
 
 import * as Kafka from "node-rdkafka"
 // import * as winston from "winston"
-import * as express from "express"
-import * as compression from "compression"
-import * as bodyParser from "body-parser"
-import * as morgan from "morgan"
+import express from "express"
+import compression from "compression"
+import bodyParser from "body-parser"
+import morgan from "morgan"
 import { promisify } from "util"
 
 const SECRET = process.env.KAFKA_BRIDGE_SECRET
@@ -72,7 +72,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
 
   try {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
-    await flushProducer(1000)
+    await flushProducer(1000, undefined)
   } catch (e) {
     console.error("Producing to kafka failed", e)
     return res.status(500).json({ error: e.toString() }).send()

@@ -1,5 +1,5 @@
 require("dotenv-safe").config()
-import { prisma } from "../../../generated/prisma-client"
+import { PrismaClient } from "@prisma/client"
 import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
@@ -9,6 +9,7 @@ import { handleMessage } from "./handleMessage"
 
 const config = require("../kafkaConfig")
 
+const prisma = new PrismaClient()
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
 
@@ -35,7 +36,7 @@ const consumer = new Kafka.KafkaConsumer(
     "group.id": "kafka",
     "metadata.broker.list": process.env.KAFKA_HOST,
     offset_commit_cb: logCommit,
-    "enable.auto.commit": "false",
+    "enable.auto.commit": false,
     "partition.assignment.strategy": "roundrobin",
   },
   { "auto.offset.reset": "earliest" },

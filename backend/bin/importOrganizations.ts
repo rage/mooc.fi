@@ -1,11 +1,13 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import { prisma, User, Organization } from "../generated/prisma-client"
+import { PrismaClient } from "@prisma/client"
 import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
-import { generateSecret } from "../resolvers/Mutation/organization"
+import { generateSecret } from "../graphql/resolvers/Mutation/organization"
+
 const tmc = new TmcClient()
+const prisma = new PrismaClient()
 
 const fetchOrganizations = async () => {
   const orgInfos: OrganizationInfo[] = await tmc.getOrganizations()
@@ -13,7 +15,7 @@ const fetchOrganizations = async () => {
 }
 
 const upsertOrganization = async (org: OrganizationInfo) => {
-  const user: User | null =
+  const user =
     org.creator_id != null ? await getUserFromTmc(org.creator_id) : null
 
   // FIXME: type
@@ -37,19 +39,22 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     pinned: org.pinned || false,
   }
 
-  const organizationExists = await prisma.$exists.organization({
-    slug: org.slug,
+  const existingOrganizations = await prisma.organization.findMany({
+    where: {
+      slug: org.slug,
+    },
   })
-  let organization: Organization
-  if (organizationExists) {
-    organization = await prisma.updateOrganization({
+
+  let organization
+  if (existingOrganizations.length > 0) {
+    organization = await prisma.organization.update({
       where: {
         slug: org.slug,
       },
       data: details,
     })
   } else {
-    organization = await prisma.createOrganization(
+    organization = await prisma.organization.create(
       await detailsWithSecret(details),
     )
   }
@@ -60,21 +65,21 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     information: org.information,
     organization: { connect: { id: organization.id } },
   }
-  const organizationTranslations = await prisma
-    .organization({ id: organization.id })
-    .organization_translations({
+  const organizationTranslations = await prisma.organization
+    .findOne({ where: { id: organization.id } })
+    .organization_translation({
       where: { language: translationDetails.language },
     })
   const organizationTranslationId = organizationTranslations.length
     ? organizationTranslations[0].id
     : null
   if (organizationTranslationId != null) {
-    await prisma.updateOrganizationTranslation({
+    await prisma.organization_translation.update({
       where: { id: organizationTranslationId },
       data: translationDetails,
     })
   } else {
-    await prisma.createOrganizationTranslation(translationDetails)
+    await prisma.organization_translation.create({ data: translationDetails })
   }
 }
 
@@ -84,7 +89,7 @@ const detailsWithSecret = async (details: any) => {
   return details
 }
 
-const getUserFromTmc = async (user_id: Number): Promise<User> => {
+const getUserFromTmc = async (user_id: Number) => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
     upstream_id: details.id,
@@ -94,7 +99,7 @@ const getUserFromTmc = async (user_id: Number): Promise<User> => {
     last_name: details.user_field.last_name.trim(),
     username: details.username,
   }
-  return await prisma.upsertUser({
+  return await prisma.user.upsert({
     where: { upstream_id: details.id },
     create: prismaDetails,
     update: prismaDetails,

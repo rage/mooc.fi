@@ -1,5 +1,5 @@
 require("dotenv-safe").config()
-import { prisma } from "../../../generated/prisma-client"
+import { PrismaClient } from "@prisma/client"
 import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
@@ -10,6 +10,7 @@ const config = require("../kafkaConfig.json")
 const TOPIC_NAME = [config.exercise_consumer.topic_name]
 
 const mutex = new Mutex()
+const prisma = new PrismaClient()
 
 const logger = winston.createLogger({
   level: "info",
@@ -34,7 +35,7 @@ const consumer = new Kafka.KafkaConsumer(
     "group.id": "kafka",
     "metadata.broker.list": process.env.KAFKA_HOST,
     offset_commit_cb: logCommit,
-    "enable.auto.commit": "false",
+    "enable.auto.commit": false,
     "partition.assignment.strategy": "roundrobin",
   },
   { "auto.offset.reset": "earliest" },
