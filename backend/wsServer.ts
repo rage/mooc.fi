@@ -95,7 +95,7 @@ wsServer.on("request", (request: any) => {
   })
 })
 
-redis.subscriber?.on("message", (channel: any, message: any) => {
+redis.subscriber?.on("message", (_channel: any, message: any) => {
   const data = JSON.parse(message)
   if (data instanceof Object && data.userId && data.courseId && data.type) {
     const userId = data.userId

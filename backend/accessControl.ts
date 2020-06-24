@@ -1,5 +1,5 @@
-import { ForbiddenError } from "apollo-server-errors"
-import { Context } from "./context"
+// import { ForbiddenError } from "apollo-server-errors"
+//import { Context } from "./context"
 
 export enum Role {
   USER,
@@ -7,7 +7,7 @@ export enum Role {
   ORGANIZATION, //for automated scripts, not for accounts
   VISITOR,
 }
-const checkAccess = (
+/*const checkAccess = (
   ctx: Context,
   {
     allowOrganizations = false,
@@ -24,4 +24,4 @@ const checkAccess = (
   throw new ForbiddenError("Access Denied")
 }
 
-export default checkAccess
+export default checkAccess*/

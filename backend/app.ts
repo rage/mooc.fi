@@ -4,6 +4,7 @@ import { use, schema, settings, server } from "nexus"
 import { prisma } from "nexus-plugin-prisma"
 import Knex from "./services/knex"
 import { redisify } from "./services/redis"
+// @ts-ignore: not used for now
 import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { Role } from "./accessControl"
@@ -25,6 +26,7 @@ use(
   }),
 )
 
+// @ts-ignore: not used for now
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -84,6 +86,7 @@ const isVisitor = rule({ cache: "contextual" })(
   async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.VISITOR,
 )
 
+// @ts-ignore: not used for now
 const isUser = rule({ cache: "contextual" })(
   async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.USER,
 )
@@ -179,7 +182,7 @@ const permissions = shield({
   },
 })
 
-// use(permissions)
+use(permissions)
 
 server.express.use(cors())
 server.express.use(
