@@ -191,7 +191,7 @@ model exercise_completion {
 
 model exercise_completion_required_actions {
   exercise_completion                                                           String?
-  id                                                                            String               @id
+  id                                                                            String               @id @default(uuid())
   value                                                                         String
   exercise_completion_exercise_completionToexercise_completion_required_actions exercise_completion? @relation(fields: [exercise_completion], references: [id])
 }

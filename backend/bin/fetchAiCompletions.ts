@@ -2,8 +2,9 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
-import { prisma, User, Course, Completion } from "../generated/prisma-client"
+import { PrismaClient, user } from "@prisma/client"
 
+const prisma = new PrismaClient()
 const getPassedUsernamesByTag = require("../services/quiznator")
   .getPassedUsernamesByTag
 const tmcService = require("../services/tmc_completion_script")
@@ -41,11 +42,13 @@ async function removeDataThatIsInDBAlready(
   data: string[],
   course_slug: string,
 ) {
-  const users: User[] = await prisma.users({
+  const users = await prisma.user.findMany({
     where: {
       AND: {
-        username_in: data,
-        completions_some: { course: { slug: course_slug } },
+        username: { in: data },
+        completion: {
+          some: { course_completionTocourse: { slug: course_slug } },
+        },
       },
     },
   })
@@ -64,7 +67,9 @@ async function saveCompletionsAndUsersToDatabase(
   for (let i = 0; i < data.length; i++) {
     let old = data[i]
     if (!old.id) console.log(old)
-    let user: User | null = await prisma.user({ upstream_id: old.id })
+    let user: user | null = await prisma.user.findOne({
+      where: { upstream_id: old.id },
+    })
 
     if (!user) {
       const prismaDetails = {
@@ -76,31 +81,36 @@ async function saveCompletionsAndUsersToDatabase(
         administrator: old.administrator,
         student_number: old.student_number,
       }
-      user = await prisma.upsertUser({
+      user = await prisma.user.upsert({
         where: { upstream_id: old.id },
         create: prismaDetails,
         update: prismaDetails,
       })
     }
 
-    const course: Course | null = await prisma.course({ slug: course_slug })
+    const course = await prisma.course.findOne({ where: { slug: course_slug } })
 
     if (!course) {
       process.exit(1)
     }
 
-    const doesCompletionExists: Completion[] = await prisma.completions({
-      where: { user: user, course: course },
+    const doesCompletionExists = await prisma.completion.findMany({
+      where: {
+        user: user.id,
+        course: course.id,
+      },
     })
 
     if (!doesCompletionExists.length) {
-      await prisma.createCompletion({
-        user: { connect: { upstream_id: user.upstream_id } },
-        course: { connect: { id: course.id } },
-        completion_language: determineCompletionLanguage(course_name),
-        user_upstream_id: user.upstream_id,
-        email: user.email,
-        student_number: user.student_number,
+      await prisma.completion.create({
+        data: {
+          user_completionTouser: { connect: { upstream_id: user.upstream_id } },
+          course_completionTocourse: { connect: { id: course.id } },
+          completion_language: determineCompletionLanguage(course_name),
+          user_upstream_id: user.upstream_id,
+          email: user.email,
+          student_number: user.student_number,
+        },
       })
     }
   }

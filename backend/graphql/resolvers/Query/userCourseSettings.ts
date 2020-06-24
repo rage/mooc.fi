@@ -61,7 +61,7 @@ schema.extendType({
       additionalArgs: {
         user_id: idArg(),
         user_upstream_id: intArg(),
-        course_id: idArg({ required: true }),
+        course_id: idArg(),
         search: stringArg(),
       },
       nodes: async (_, args, ctx) => {
@@ -71,12 +71,14 @@ schema.extendType({
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        const inheritSettingsCourse = await ctx.db.course
-          .findOne({ where: { id: course_id } })
-          .course_courseTocourse_inherit_settings_from()
+        if (course_id) {
+          const inheritSettingsCourse = await ctx.db.course
+            .findOne({ where: { id: course_id } })
+            .course_courseTocourse_inherit_settings_from()
 
-        if (inheritSettingsCourse) {
-          course_id = inheritSettingsCourse.id
+          if (inheritSettingsCourse) {
+            course_id = inheritSettingsCourse.id
+          }
         }
 
         return ctx.db.userCourseSettings.findMany({
@@ -97,7 +99,7 @@ schema.extendType({
                 },
               ],
             },
-            course: course_id,
+            course: course_id ?? undefined,
           },
         })
       },

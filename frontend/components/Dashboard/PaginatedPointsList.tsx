@@ -15,7 +15,6 @@ import { range } from "lodash"
 import styled from "styled-components"
 import {
   UserCourseSettingses as StudentProgressData,
-  UserCourseSettingses_UserCourseSettingses_edges,
   UserCourseSettingses_UserCourseSettingses_pageInfo,
 } from "/static/types/generated/UserCourseSettingses"
 
@@ -93,6 +92,9 @@ interface Props {
   cursor?: string
 }
 
+function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined
+}
 function PaginatedPointsList(props: Props) {
   const { courseId } = props
   const [searchString, setSearchString] = useState("")
@@ -149,6 +151,8 @@ function PaginatedPointsList(props: Props) {
     label: value,
   }))
 
+  const edges = (UserCourseSettingses?.edges ?? []).filter(notEmpty)
+
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>
@@ -195,10 +199,7 @@ function PaginatedPointsList(props: Props) {
           <div style={{ marginBottom: "1rem" }}>
             {UserCourseSettingses.count || 0} results
           </div>
-          <PointsList
-            pointsForUser={data?.UserCourseSettingses?.edges ?? []}
-            cutterValue={cutterValue}
-          />
+          <PointsList pointsForUser={edges} cutterValue={cutterValue} />
           <Button
             onClick={() =>
               fetchMore({
@@ -210,14 +211,25 @@ function PaginatedPointsList(props: Props) {
                   course_string: courseId,
                 },
 
-                updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const previousData =
+                updateQuery: (
+                  previousResult,
+                  {
+                    fetchMoreResult,
+                  }: { fetchMoreResult?: StudentProgressData },
+                ) => {
+                  const previousData = (
                     previousResult?.UserCourseSettingses?.edges ?? []
-                  const newData: UserCourseSettingses_UserCourseSettingses_edges[] =
+                  ).filter(notEmpty)
+                  const newData = (
                     fetchMoreResult?.UserCourseSettingses?.edges ?? []
-                  const newPageInfo = fetchMoreResult
-                    ? fetchMoreResult?.UserCourseSettingses?.pageInfo
-                    : ({} as UserCourseSettingses_UserCourseSettingses_pageInfo)
+                  ).filter(notEmpty)
+                  const newPageInfo: UserCourseSettingses_UserCourseSettingses_pageInfo = fetchMoreResult
+                    ?.UserCourseSettingses?.pageInfo ?? {
+                    hasNextPage: false,
+                    endCursor: null,
+                    __typename: "PageInfo",
+                  }
+
                   return {
                     UserCourseSettingses: {
                       pageInfo: {
@@ -225,8 +237,9 @@ function PaginatedPointsList(props: Props) {
                         __typename: "PageInfo",
                       },
                       edges: [...previousData, ...newData],
-                      __typename: "UserCourseSettingsConnection",
-                      count: fetchMoreResult!.UserCourseSettingses.count,
+                      __typename: "QueryUserCourseSettingses_Connection",
+                      count:
+                        fetchMoreResult!.UserCourseSettingses?.count ?? null,
                     },
                   }
                 },

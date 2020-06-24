@@ -1,17 +1,17 @@
 import { Message } from "./interfaces"
 import { DateTime } from "luxon"
 import {
-  Prisma,
-  User,
-  UserCourseProgress,
-  UserCourseServiceProgress,
-} from "../../../generated/prisma-client"
+  PrismaClient,
+  user,
+  user_course_progress,
+  user_course_service_progress,
+} from "@prisma/client"
 import TmcClient from "../../../services/tmc"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 
-import * as _KnexConstructor from "knex"
+import _KnexConstructor from "knex"
 
 const Knex = _KnexConstructor({
   client: "pg",
@@ -28,31 +28,30 @@ const Knex = _KnexConstructor({
       : ["default$default"],
 })
 
-const getUserFromTMC = async (
-  prisma: Prisma,
-  user_id: number,
-): Promise<User> => {
+const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
   const tmc: TmcClient = new TmcClient()
   const userDetails = await tmc.getUserDetailsById(user_id)
 
-  return prisma.createUser({
-    upstream_id: userDetails.id,
-    first_name: userDetails.user_field.first_name,
-    last_name: userDetails.user_field.last_name,
-    email: userDetails.email,
-    username: userDetails.username,
-    administrator: userDetails.administrator,
+  return prisma.user.create({
+    data: {
+      upstream_id: userDetails.id,
+      first_name: userDetails.user_field.first_name,
+      last_name: userDetails.user_field.last_name,
+      email: userDetails.email,
+      username: userDetails.username,
+      administrator: userDetails.administrator,
+    },
   })
 }
 
 export const saveToDatabase = async (
   message: Message,
-  prisma: Prisma,
+  prisma: PrismaClient,
   logger: Logger,
 ) => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  let user: User | null
+  let user: user | null
 
   user = (await Knex("user").where("upstream_id", message.user_id).limit(1))[0]
 
@@ -70,8 +69,8 @@ export const saveToDatabase = async (
     }
   }
 
-  const course = await prisma.course({
-    id: message.course_id,
+  const course = await prisma.course.findOne({
+    where: { id: message.course_id },
   })
 
   if (!user || !course) {
@@ -80,22 +79,26 @@ export const saveToDatabase = async (
   }
 
   let userCourseProgress = (
-    await Knex<unknown, UserCourseProgress[]>("user_course_progress")
+    await Knex<unknown, user_course_progress[]>("user_course_progress")
       .where("user", user?.id)
       .where("course", message.course_id)
       .limit(1)
   )[0]
 
   if (!userCourseProgress) {
-    userCourseProgress = await prisma.createUserCourseProgress({
-      course: { connect: { id: message.course_id } },
-      user: { connect: { id: user?.id } },
-      progress: message.progress,
+    userCourseProgress = await prisma.user_course_progress.create({
+      data: {
+        course_courseTouser_course_progress: {
+          connect: { id: message.course_id },
+        },
+        user_userTouser_course_progress: { connect: { id: user?.id } },
+        progress: message.progress as any, // type error without any
+      },
     })
   }
 
   const userCourseServiceProgress = (
-    await Knex<unknown, UserCourseServiceProgress[]>(
+    await Knex<unknown, user_course_service_progress[]>(
       "user_course_service_progress",
     )
       .where("user", user?.id)
@@ -105,32 +108,40 @@ export const saveToDatabase = async (
   )[0]
 
   if (userCourseServiceProgress) {
+    // FIXME: weird
     const oldTimestamp = DateTime.fromISO(
-      userCourseServiceProgress.timestamp ?? "",
+      userCourseServiceProgress?.timestamp?.toISOString() ?? "",
     )
 
     if (timestamp < oldTimestamp) {
       logger.error("Timestamp older than in DB, aborting")
       return false
     }
-    await prisma.updateUserCourseServiceProgress({
+    await prisma.user_course_service_progress.update({
       where: {
         id: userCourseServiceProgress.id,
       },
       data: {
-        progress: message.progress,
+        progress: message.progress as any, // type error without any
         timestamp: timestamp.toJSDate(),
       },
     })
   } else {
-    await prisma.createUserCourseServiceProgress({
-      user: { connect: { id: user?.id } },
-      course: { connect: { id: message.course_id } },
-      service: { connect: { id: message.service_id } },
-      progress: message.progress,
-
-      user_course_progress: { connect: { id: userCourseProgress.id } },
-      timestamp: timestamp.toJSDate(),
+    await prisma.user_course_service_progress.create({
+      data: {
+        user_userTouser_course_service_progress: { connect: { id: user?.id } },
+        course_courseTouser_course_service_progress: {
+          connect: { id: message.course_id },
+        },
+        service_serviceTouser_course_service_progress: {
+          connect: { id: message.service_id },
+        },
+        progress: message.progress as any, // type error without any
+        user_course_progress_user_course_progressTouser_course_service_progress: {
+          connect: { id: userCourseProgress.id },
+        },
+        timestamp: timestamp.toJSDate(),
+      },
     })
   }
 

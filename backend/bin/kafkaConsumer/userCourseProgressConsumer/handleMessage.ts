@@ -1,9 +1,9 @@
 import { Message } from "./interfaces"
 import { saveToDatabase } from "./saveToDB"
-import { Prisma } from "../../../generated/prisma-client"
+import { PrismaClient } from "@prisma/client"
 import { MessageYupSchema } from "./validate"
 import { Logger } from "winston"
-import { KafkaConsumer, ConsumerStreamMessage } from "node-rdkafka"
+import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
 import { Mutex } from "../../lib/await-semaphore"
 
 const config = require("../kafkaConfig")
@@ -13,11 +13,11 @@ let commitCounter = 0
 const commitInterval = config.commit_interval
 
 export const handleMessage = async (
-  kafkaMessage: ConsumerStreamMessage,
+  kafkaMessage: KafkaMessage,
   mutex: Mutex,
   logger: Logger,
   consumer: KafkaConsumer,
-  prisma: Prisma,
+  prisma: PrismaClient,
 ) => {
   //Going to mutex
   const release = await mutex.acquire()
@@ -25,7 +25,7 @@ export const handleMessage = async (
   logger.info("Handling message")
   let message: Message
   try {
-    message = JSON.parse(kafkaMessage.value.toString("utf8"))
+    message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (e) {
     logger.error("invalid message", e)
     await commit(kafkaMessage, consumer)
