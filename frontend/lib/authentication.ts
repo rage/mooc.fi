@@ -42,7 +42,7 @@ export const signIn = async ({
 
   const rawRedirectLocation = nookies.get()["redirect-back"]
 
-  if (!rawRedirectLocation || rawRedirectLocation === "") {
+  if (redirect && (!rawRedirectLocation || rawRedirectLocation === "")) {
     window.history.back()
     return details
   }
@@ -65,7 +65,7 @@ export const signIn = async ({
     Router.push("/", undefined, { shallow })
   }
 
-  return res
+  return details
 }
 
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {

@@ -54,6 +54,7 @@ export interface ProfileUserOverView_currentUser {
   student_number: string | null
   email: string
   completions: ProfileUserOverView_currentUser_completions[]
+  research_consent: boolean | null
 }
 
 export interface ProfileUserOverView {

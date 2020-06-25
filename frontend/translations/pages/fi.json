@@ -26,6 +26,7 @@
     "/[lng]/register-completion/[slug]": "Rekisteröi suoritus - {{title}}",
     "/[lng]/email-templates": "Email-mallit",
     "/[lng]/email-templates/[id]": "Muokkaa email-mallia - {{title}}",
+    "/[lng]/research-consent": "Osallistuminen tutkimukseen",
     "/[lng]/register-completion": "Rekisteröi suoritus",
     "/register-completion": "Rekisteröi suoritus",
     "/": "Etusivu"
