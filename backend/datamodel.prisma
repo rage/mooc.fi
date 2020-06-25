@@ -132,6 +132,7 @@ type Completion @db(name: "completion") {
   grade: String
   certificate_id: String
   eligible_for_ects: Boolean @default(value: true)
+  completion_date: DateTime
 }
 
 type CompletionRegistered @db(name: "completion_registered") {
