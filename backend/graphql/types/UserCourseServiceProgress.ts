@@ -27,7 +27,7 @@ schema.objectType({
           select: { progress: true },
         })
 
-        return res?.progress ?? []
+        return (res?.progress as any) ?? [] // errors without any typing - JSON value thing
       },
     })
   },

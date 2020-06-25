@@ -31,13 +31,14 @@ schema.objectType({
           required: false,
         }),
       },
-      resolve: async (parent, args, ctx) => {
+      resolve: async (parent, args, ctx: NexusContext) => {
         const { orderBy } = args
 
         return ctx.db.exercise
           .findOne({ where: { id: parent.id } })
           .exercise_completion({
             where: {
+              // @ts-ignore: context typing problem, FIXME
               user: ctx?.user?.id, // { id: ctx?.user?.id },
             },
             orderBy: orderBy ?? undefined,

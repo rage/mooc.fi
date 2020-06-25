@@ -1,4 +1,5 @@
 require("sharp") // image library sharp seems to crash without this require
+require("dotenv-safe").config()
 
 import { use, schema, settings, server } from "nexus"
 import { prisma } from "nexus-plugin-prisma"
@@ -9,11 +10,12 @@ import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { Role } from "./accessControl"
 import { shield, rule, or } from "nexus-plugin-shield"
-import { contextUser } from "./middlewares/FetchUser"
 import { NexusContext } from "/context"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
 import { graphqlUploadExpress } from "graphql-upload"
+import { moocfiAuthPlugin } from "nexus-plugin-moocfi-auth-plugin"
+import redisClient from "./services/redis"
 
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient()
@@ -40,24 +42,14 @@ const logger = winston.createLogger({
 // schema.middleware(fetchUser)
 
 schema.addToContext(async (req) => {
-  let userContext
-
-  try {
-    userContext = await contextUser(req, prismaClient)
-  } catch (e) {
-    console.log("got error getting user context", e)
-  }
-
   return {
     ...req,
     user: undefined,
     organization: undefined,
     role: Role.VISITOR,
-    ...userContext,
     disableRelations: false,
     userDetails: undefined,
     tmcClient: undefined,
-    headers: req.headers,
   }
 })
 
@@ -177,11 +169,14 @@ const permissions = shield({
       deleteUserOrganization: or(isVisitor, isAdmin),
     },
   },
-  options: {
-    fallbackError: "there was an error",
-  },
 })
 
+use(
+  moocfiAuthPlugin({
+    prisma: prismaClient,
+    redisClient,
+  }),
+)
 use(permissions)
 
 server.express.use(cors())

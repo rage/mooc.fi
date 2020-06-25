@@ -33,7 +33,7 @@
     "remove-duplicate-completions": "ts-node ./bin/removeDuplicateCompletions.ts",
     "nexus-dev": "nexus dev",
     "nexus-build": "nexus build",
-    "nexus-start": "node .nexus/build"
+    "nexus-start": "node dist"
   },
   "keywords": [],
   "author": "",
@@ -69,6 +69,7 @@
     "mkdirp": "^1.0.3",
     "morgan": "^1.10.0",
     "nexus": "0.24.0",
+    "nexus-plugin-moocfi-auth-plugin": "file:nexus-plugin-moocfi-auth-plugin",
     "nexus-plugin-prisma": "^0.10.0",
     "nexus-plugin-shield": "^0.1.4",
     "node-rdkafka": "^2.9.0",

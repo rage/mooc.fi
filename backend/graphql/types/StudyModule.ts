@@ -3,7 +3,7 @@
 import { stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { courseOrderByInput } from "@prisma/client"
-import { notEmpty } from "/util/notEmpty"
+import { notEmpty } from "../../util/notEmpty"
 
 schema.objectType({
   name: "study_module",

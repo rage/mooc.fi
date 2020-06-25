@@ -26,6 +26,7 @@ schema.extendType({
           service,
         } = args
 
+        ctx.db
         return ctx.db.exercise.create({
           data: {
             course_courseToexercise: course

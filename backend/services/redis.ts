@@ -11,7 +11,7 @@ const redisClient = !GENERATE_NEXUS
       url: REDIS_URL,
       password: REDIS_PASSWORD,
     })
-  : null
+  : undefined
 
 const logger = winston.createLogger({
   level: "info",
