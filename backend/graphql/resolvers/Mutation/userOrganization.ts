@@ -73,7 +73,7 @@ schema.extendType({
         organizationId: idArg(), */
         role: arg({ type: "organization_role" }),
       },
-      resolve: (_, args, ctx) => {
+      resolve: (_, args, ctx: NexusContext) => {
         const { id, role } = args
 
         checkUser(ctx, id)
@@ -94,7 +94,7 @@ schema.extendType({
       args: {
         id: idArg({ required: true }),
       },
-      resolve: async (_, args, ctx) => {
+      resolve: async (_, args, ctx: NexusContext) => {
         const { id } = args
         checkUser(ctx, id)
 

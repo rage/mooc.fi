@@ -11,7 +11,7 @@ schema.extendType({
       args: {
         completions: arg({ type: "CompletionArg", list: true }),
       },
-      resolve: async (_, args, ctx) => {
+      resolve: async (_, args, ctx: NexusContext) => {
         let queue = chunk(args.completions, 500)
 
         for (let i = 0; i < queue.length; i++) {

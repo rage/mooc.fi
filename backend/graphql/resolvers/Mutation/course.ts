@@ -33,7 +33,7 @@ schema.extendType({
           required: true,
         }),
       },
-      resolve: async (_, { course }, ctx) => {
+      resolve: async (_, { course }, ctx: NexusContext) => {
         const {
           // slug,
           new_photo,
@@ -119,7 +119,7 @@ schema.extendType({
           required: true,
         }),
       },
-      resolve: async (_, { course }, ctx) => {
+      resolve: async (_, { course }, ctx: NexusContext) => {
         console.log("I got this kind of thing", course)
         const {
           id,
@@ -325,7 +325,7 @@ schema.extendType({
         id: idArg(),
         slug: stringArg(),
       },
-      resolve: async (_, args, ctx) => {
+      resolve: async (_, args, ctx: NexusContext) => {
         const { id, slug } = args
 
         if (!id && !slug) {

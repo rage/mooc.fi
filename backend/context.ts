@@ -7,8 +7,8 @@ import { IncomingHttpHeaders } from "http"
 
 export interface NexusContext {
   db: PrismaClient
-  user: user | undefined
-  organization: organization | undefined
+  user?: user
+  organization?: organization
   disableRelations: boolean
   role: Role | undefined
   userDetails: UserInfo | undefined

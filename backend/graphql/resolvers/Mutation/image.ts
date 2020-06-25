@@ -141,7 +141,7 @@ schema.extendType({
         file: arg({ type: "Upload", required: true }),
         base64: booleanArg(),
       },
-      resolve: async (_, args, ctx) => {
+      resolve: async (_, args, ctx: NexusContext) => {
         const { file, base64 } = args
 
         return uploadImage({ ctx, file, base64: base64 ?? false })
@@ -153,7 +153,7 @@ schema.extendType({
       args: {
         id: idArg({ required: true }),
       },
-      resolve: async (_, { id }, ctx) => {
+      resolve: async (_, { id }, ctx: NexusContext) => {
         return deleteImage({ ctx, id })
       },
     })
