@@ -12,12 +12,13 @@
     "dev": "tsc --watch",
     "build:doc": "doctoc README.md --notitle",
     "build:ts": "tsc",
-    "build": "yarn -s build:ts && yarn -s build:doc",
+    "build": "npm run build:ts && npm run build:doc",
     "test": "jest",
     "publish:stable": "dripip stable",
     "publish:preview": "dripip preview",
     "publish:pr": "dripip pr",
-    "prepack": "yarn -s build"
+    "prepack": "npm run build",
+    "postinstall": "npm run build:ts"
   },
   "prettier": {
     "semi": false,

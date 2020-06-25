@@ -41,17 +41,15 @@ const logger = winston.createLogger({
 
 // schema.middleware(fetchUser)
 
-schema.addToContext(async (req) => {
-  return {
-    ...req,
-    user: undefined,
-    organization: undefined,
-    role: Role.VISITOR,
-    disableRelations: false,
-    userDetails: undefined,
-    tmcClient: undefined,
-  }
-})
+schema.addToContext(async (req) => ({
+  ...req,
+  user: undefined,
+  organization: undefined,
+  role: Role.VISITOR,
+  disableRelations: false,
+  userDetails: undefined,
+  tmcClient: undefined,
+}))
 
 settings.change({
   schema: {
