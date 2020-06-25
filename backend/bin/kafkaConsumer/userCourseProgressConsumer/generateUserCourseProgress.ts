@@ -241,6 +241,7 @@ export const CheckCompletion = async (
       await prisma.createCompletion({
         course: { connect: { id: handlerCourse.id } },
         email: user.email,
+        completion_date: Date.now(),
         user: { connect: { id: user.id } },
         user_upstream_id: user.upstream_id,
         student_number: user.student_number,
