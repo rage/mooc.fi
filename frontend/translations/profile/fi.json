@@ -7,5 +7,12 @@
     "completionLanguage":"suorituskieli: ",
     "completionNB": "Palvelua kehitetään parhaillaan, ja tässä listassa eivät vielä välttämättä näy kaikki suorittamasi kurssit.",
     "seeCompletions":"Katso kaikki kurssisuorituksesi täältä",
-    "seePoints":"Katso kaikki kurssipisteesi täältä"
+    "seePoints":"Katso kaikki kurssipisteesi täältä",
+    "researchOkAnswer": "Kiitos vastauksestasi!",
+    "researchError": "Vastaustasi ei voitu tallentaa. Yritä myöhemmin uudelleen.",
+    "researchNotification": "Haluatko osallistua tutkimukseen? Vastaa Asetukset-välilehdellä.",
+    "tabAriaLabel": "välilehti pisteille, suorituksille tai asetuksille",
+    "tabPoints": "Pisteet",
+    "tabCompletions": "Suoritukset",
+    "tabSettings": "Asetukset"
 }

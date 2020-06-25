@@ -53,6 +53,7 @@ const getOrganization = async (
   context.organization = org[0]
   context.role = Role.ORGANIZATION
 }
+
 async function getUser(rawToken: string, context: any, prisma: Prisma) {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
@@ -62,22 +63,47 @@ async function getUser(rawToken: string, context: any, prisma: Prisma) {
     key: rawToken,
   })
 
+  // TODO: the update shouldn't be needed if there's nothing to update
+
   context.userDetails = details
   context.tmcClient = client
-  const id: number = details.id
+
+  const {
+    id,
+    administrator,
+    email,
+    user_field: { first_name, last_name },
+    username,
+  } = details
+
+  const existingUser = await prisma.user({ upstream_id: id })
+
   const prismaDetails = {
     upstream_id: id,
-    administrator: details.administrator,
-    email: details.email.trim(),
-    first_name: details.user_field.first_name.trim(),
-    last_name: details.user_field.last_name.trim(),
-    username: details.username,
+    administrator,
+    email: email.trim(),
+    first_name: first_name.trim(),
+    last_name: last_name.trim(),
+    username,
   }
-  context.user = await prisma.upsertUser({
+
+  console.log("I got here with", existingUser, prismaDetails)
+  if (!existingUser) {
+    context.user = await prisma.createUser(prismaDetails)
+  } else {
+    context.user = await prisma.updateUser({
+      where: { upstream_id: id },
+      data: prismaDetails,
+    })
+  }
+  // TODO: this will produce an unique constrait error on
+  // creating a new user
+  /*context.user = await prisma.upsertUser({
     where: { upstream_id: id },
     create: prismaDetails,
     update: prismaDetails,
-  })
+  })*/
+
   if (context.user.administrator) {
     context.role = Role.ADMIN
   } else {
