@@ -93,7 +93,7 @@ const permissions = shield({
   rules: {
     Query: {
       completions: or(isOrganization, isAdmin),
-      // completionsPaginated: or(isOrganization, isAdmin),
+      completionsPaginated: or(isOrganization, isAdmin),
       course: isAdmin,
       course_exists: isAdmin,
       courseAliases: isAdmin,
