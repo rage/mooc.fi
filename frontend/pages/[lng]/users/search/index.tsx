@@ -116,7 +116,7 @@ const GET_DATA = gql`
           last_name
         }
       }
-      count
+      count(search: $search)
     }
   }
 `

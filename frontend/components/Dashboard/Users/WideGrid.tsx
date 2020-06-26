@@ -122,13 +122,8 @@ const RenderResults = () => {
   return (
     <TableBody>
       {results.map((row) => {
-        const {
-          upstream_id,
-          email,
-          first_name,
-          last_name,
-          student_number,
-        } = row.node
+        const { upstream_id, email, first_name, last_name, student_number } =
+          row?.node ?? {}
 
         return (
           <TableRow key={upstream_id}>
