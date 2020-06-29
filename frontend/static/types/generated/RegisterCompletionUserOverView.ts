@@ -37,6 +37,7 @@ export interface RegisterCompletionUserOverView_currentUser_completions {
   created_at: any | null
   course: RegisterCompletionUserOverView_currentUser_completions_course | null
   completion_registered: RegisterCompletionUserOverView_currentUser_completions_completion_registered[]
+  eligible_for_ects: boolean | null
 }
 
 export interface RegisterCompletionUserOverView_currentUser {

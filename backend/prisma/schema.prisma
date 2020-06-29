@@ -12,6 +12,7 @@ model completion {
   completion_language       String?
   course                    String?
   created_at                DateTime?               @default(now())
+  eligible_for_ects         Boolean?                @default(true)
   email                     String
   grade                     String?
   id                        String                  @id @default(uuid())
@@ -41,6 +42,7 @@ model completion_registered {
 
 model course {
   automatic_completions                              Boolean?                            @default(false)
+  automatic_completions_eligible_for_ects            Boolean?                            @default(true)
   completion_email                                   String?
   completions_handled_by                             String?
   created_at                                         DateTime?                           @default(now())
@@ -310,6 +312,7 @@ model user {
   id                           String                         @id @default(uuid())
   last_name                    String?
   real_student_number          String?
+  research_consent             Boolean?
   student_number               String?
   updated_at                   DateTime?                      @default(now())
   upstream_id                  Int                            @unique

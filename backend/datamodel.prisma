@@ -22,6 +22,7 @@ type User @db(name: "user") {
   "User's points in courses"
   user_course_progresses: [UserCourseProgress!]!  @relation( name: "UserCourseProgressToUser")
   organization_memberships: [UserOrganization!]! @relation(name: "UserOrganizationToUser")
+  research_consent: Boolean
 }
 
 type Course @db(name: "course") {
@@ -56,6 +57,7 @@ type Course @db(name: "course") {
   owner_organization: Organization
   participant_organizations: [CourseOrganization!]! @relation(name: "CourseOrganizationToCourse")
   automatic_completions: Boolean @default(value: false)
+  automatic_completions_eligible_for_ects: Boolean @default(value: true)
   points_needed: Int
   exercise_completions_needed: Int
   completion_email: EmailTemplate @relation(name: "CourseCompletionEmail")
@@ -129,6 +131,8 @@ type Completion @db(name: "completion") {
   completions_registered: [CompletionRegistered!]! @relation(name: "CompletionRegisteredToCompletion")
   grade: String
   certificate_id: String
+  eligible_for_ects: Boolean @default(value: true)
+  completion_date: DateTime
 }
 
 type CompletionRegistered @db(name: "completion_registered") {

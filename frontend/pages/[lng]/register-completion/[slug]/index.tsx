@@ -73,6 +73,7 @@ export const UserOverViewQuery = gql`
             slug
           }
         }
+        eligible_for_ects
       }
     }
   }
@@ -107,7 +108,7 @@ const RegisterCompletion = () => {
     return <div>You are not logged in. Please log in to the site</div>
   }
 
-  if (!completion) {
+  if (!completion?.eligible_for_ects) {
     return (
       <Container>
         <H1NoBackground variant="h1" component="h1" align="center">

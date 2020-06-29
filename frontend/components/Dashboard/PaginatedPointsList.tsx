@@ -23,7 +23,7 @@ export const StudentProgresses = gql`
     $course_id: ID!
     $cursor: String
     $search: String
-    $course_string: String
+    $course_string: String!
   ) {
     UserCourseSettingses(
       course_id: $course_id

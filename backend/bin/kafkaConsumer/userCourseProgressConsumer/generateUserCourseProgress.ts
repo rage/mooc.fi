@@ -252,6 +252,8 @@ export const CheckCompletion = async (
           completion_language: userCourseSettings?.language
             ? languageCodeMapping[userCourseSettings.language]
             : "unknown",
+          eligible_for_ects:
+            handlerCourse.automatic_completions_eligible_for_ects,
         },
       })
       pushMessageToClient(

@@ -14,3 +14,57 @@ export const buildSearch = (fields: string[], search?: string) =>
         ]),
       )
     : undefined
+
+interface ConvertPaginationInput {
+  first?: number | null
+  last?: number | null
+  before?: string | null
+  after?: string | null
+  skip?: number | null
+}
+
+interface ConvertPaginationOutput {
+  skip?: number
+  cursor?: { id: string }
+  take?: number
+}
+
+const isDefined = <T>(value: T | undefined | null): value is T =>
+  typeof (<T>value) !== "undefined" && <T>value !== null
+
+export const convertPagination = ({
+  first,
+  last,
+  before,
+  after,
+  skip,
+}: ConvertPaginationInput): ConvertPaginationOutput => {
+  const skipValue = skip || 0
+
+  if (!first && !last) {
+    throw new Error("first or last must be defined")
+  }
+
+  console.log(
+    "first ",
+    first,
+    "last ",
+    last,
+    "before ",
+    before,
+    "after",
+    after,
+    "skip ",
+    skip,
+  )
+
+  return {
+    skip: isDefined(before) ? skipValue + 1 : skipValue,
+    take: isDefined(last) ? -(last ?? 0) : isDefined(first) ? first : 0,
+    cursor: isDefined(before)
+      ? { id: before }
+      : isDefined(after)
+      ? { id: after }
+      : undefined,
+  }
+}

@@ -1,16 +1,32 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
 import Typography from "@material-ui/core/Typography"
 import Box from "@material-ui/core/Box"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
+import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
+import ProfileSettings from "/components/Profile/ProfileSettings"
+import getProfileTranslator from "/translations/profile"
+import LanguageContext from "/contexes/LanguageContext"
+import Warning from "@material-ui/icons/Warning"
+import styled from "styled-components"
+
+const ConsentNotification = styled.div`
+  display: flex;
+  padding: 6px 16px;
+  line-height: 1.43;
+  border-radius: 4px;
+  letter-spacing: 0.01071em;
+  background-color: rgb(255, 244, 229);
+`
 
 interface TabPanelProps {
   children?: React.ReactNode
   index: any
   value: any
 }
+
 const TabPanel = (props: TabPanelProps) => {
   const { children, value, index } = props
   return (
@@ -18,39 +34,56 @@ const TabPanel = (props: TabPanelProps) => {
       component="div"
       role="tabpanel"
       hidden={value !== index}
-      id={`completions-points-${index}`}
-      aria-labelledby={`completions-points-tab-${index}`}
+      id={`user-profile-${index}`}
+      aria-labelledby={`user-profile-tab-${index}`}
     >
       <Box p={3}>{children}</Box>
     </Typography>
   )
 }
 interface StudentDataDisplayProps {
-  completions: any[]
+  data?: ProfileUserOverView_currentUser
 }
-const StudentDataDisplay = (props: StudentDataDisplayProps) => {
-  const { completions } = props
+
+const StudentDataDisplay = ({ data }: StudentDataDisplayProps) => {
+  const { language } = useContext(LanguageContext)
+  const t = getProfileTranslator(language)
+
+  const { completions = [], research_consent } = data || {}
   const [tabOpen, setTabOpen] = useState(0)
 
   const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setTabOpen(newValue)
   }
+
   return (
     <>
+      {(research_consent === null ||
+        typeof research_consent === "undefined") && (
+        <ConsentNotification>
+          <Warning />
+          {t("researchNotification")}
+        </ConsentNotification>
+      )}
       <Tabs
         value={tabOpen}
         onChange={handleTabChange}
-        aria-label="tab to select if viewing points or completions"
+        aria-label={t("tabAriaLabel")}
       >
         <Tab
-          label="Points"
-          id="completions-points-tab-0"
-          aria-controls="completions-points-tab-0"
+          label={t("tabPoints")}
+          id="user-profile-tab-0"
+          aria-controls="user-profile-tab-0"
         />
         <Tab
-          label="Completions"
-          id="completions-points-tab-1"
-          aria-controls="completions-points-tab-1"
+          label={t("tabCompletions")}
+          id="user-profile-tab-1"
+          aria-controls="user-profile-tab-1"
+        />
+        <Tab
+          label={t("tabSettings")}
+          id="user-profile-tab2"
+          aria-controls="user-profile-tab2"
         />
       </Tabs>
       <TabPanel index={0} value={tabOpen}>
@@ -58,6 +91,9 @@ const StudentDataDisplay = (props: StudentDataDisplayProps) => {
       </TabPanel>
       <TabPanel index={1} value={tabOpen}>
         <ProfileCompletionsDisplay completions={completions} />
+      </TabPanel>
+      <TabPanel index={2} value={tabOpen}>
+        <ProfileSettings data={data} />
       </TabPanel>
     </>
   )

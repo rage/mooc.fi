@@ -88,19 +88,21 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
     e.preventDefault()
     const t = getSignUpTranslator(this.context.language)
     this.setState({ submitting: true, triedSubmitting: true })
+
     if (!this.validate()) {
       this.setState({ canSubmit: false, submitting: false })
       return
     }
+
     try {
-      const res = await createAccount({
+      await createAccount({
         email: this.state.email,
         first_name: this.state.first_name,
         last_name: this.state.last_name,
         password: this.state.password,
         password_confirmation: this.state.password_confirmation,
       })
-      console.log("Created an account:", JSON.stringify(res))
+
       await authenticate({
         email: this.state.email || "",
         password: this.state.password || "",
@@ -147,6 +149,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
 
   validate = () => {
     const t = getSignUpTranslator(this.context.language)
+
     let newState: state = {
       error: "",
       errorObj: {},
@@ -210,15 +213,16 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
 
   render() {
     const t = getSignUpTranslator(this.context.language)
+
     return (
       <StyledPaper>
         <Header component="h1" variant="h4" gutterBottom={true} align="center">
           {t("signupTitle")}
         </Header>
-        <StyledTypography component="p" paragraph>
-          {t("formInfoText")}
-        </StyledTypography>
         <Form onChange={this.validate}>
+          <StyledTypography component="p" paragraph>
+            {t("formInfoText")}
+          </StyledTypography>
           <Row>
             <TextField
               variant="outlined"
@@ -319,6 +323,7 @@ class CreateAccountForm extends React.Component<CreateAccountFormProps> {
             <a href="/[lng]/sign-in">{t("signIn")}</a>
           </LangLink>
         </Row>
+
         {this.state.error && (
           <InfoBox>
             <b>

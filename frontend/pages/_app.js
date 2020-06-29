@@ -70,7 +70,10 @@ class MyApp extends App {
   }
 
   addAlert = (alert) =>
-    this.setState({ alerts: this.state.alerts.concat(alert) })
+    this.setState((state, _) => {
+      const newAlerts = state.alerts.concat(alert)
+      return { alerts: newAlerts }
+    })
 
   removeAlert = (alert) =>
     this.setState({ alerts: this.state.alerts.filter((a) => a !== alert) })

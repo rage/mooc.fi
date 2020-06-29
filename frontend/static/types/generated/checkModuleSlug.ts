@@ -12,5 +12,5 @@ export interface checkModuleSlug {
 }
 
 export interface checkModuleSlugVariables {
-  slug?: string | null
+  slug: string
 }

@@ -110,16 +110,12 @@ schema.extendType({
     t.field("study_module_exists", {
       type: "Boolean",
       args: {
-        slug: stringArg(),
+        slug: stringArg({ required: true }),
       },
-      resolve: async (_, args, ctx) => {
-        const { slug } = args
-
-        if (!slug) {
-          throw new UserInputError("must provide slug")
-        }
-
-        return !!(await ctx.db.study_module.findOne({ where: { slug } }))
+      resolve: async (_, { slug }, ctx) => {
+        return (
+          (await ctx.db.study_module.findMany({ where: { slug } })).length > 0
+        )
       },
     })
   },

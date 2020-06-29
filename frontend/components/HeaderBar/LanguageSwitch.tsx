@@ -19,6 +19,9 @@ const SwitchLink = styled.a`
   &:focus {
     color: black;
   }
+  @media (max-width: 400px) {
+    font-size: 10px;
+  }
 `
 
 const LanguageSwitch = () => {

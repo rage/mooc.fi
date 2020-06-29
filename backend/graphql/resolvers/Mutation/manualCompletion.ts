@@ -52,8 +52,8 @@ schema.extendType({
             updated_at: new Date(),
             user_upstream_id: o.user_id,
             email: databaseUser.email,
-            // FIXME: (?) databaseUser?
-            student_number: o.real_student_number || o.student_number,
+            student_number:
+              databaseUser.real_student_number || databaseUser.student_number,
             completion_language: "unknown",
             course: course_id,
             user: databaseUser.id,
