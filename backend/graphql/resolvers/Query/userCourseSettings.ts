@@ -63,9 +63,11 @@ schema.extendType({
         user_upstream_id: intArg(),
         course_id: idArg(),
         search: stringArg(),
+        skip: intArg({ default: 0 }),
       },
       nodes: async (_, args, ctx) => {
-        const { first, last, user_id, user_upstream_id, search } = args
+        const { first, last, user_id, user_upstream_id, search, skip } = args
+
         let { course_id } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
@@ -82,6 +84,7 @@ schema.extendType({
         }
 
         return ctx.db.userCourseSettings.findMany({
+          skip: skip ?? 0,
           where: {
             user_UserCourseSettingsTouser: {
               OR: [

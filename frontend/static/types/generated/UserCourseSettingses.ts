@@ -114,5 +114,4 @@ export interface UserCourseSettingsesVariables {
   course_id: string
   cursor?: string | null
   search?: string | null
-  course_string: string
 }
