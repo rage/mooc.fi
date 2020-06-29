@@ -18,12 +18,29 @@ import { moocfiAuthPlugin } from "nexus-plugin-moocfi-auth-plugin"
 import redisClient from "./services/redis"
 
 const JSONStream = require("JSONStream")
-const prismaClient = new PrismaClient()
+const prismaClient = new PrismaClient({
+  log: [
+    {
+      emit: "event",
+      level: "query",
+    },
+  ],
+})
+
+/*prismaClient.on("query", e => {
+  e.timestamp
+  e.query
+  e.params
+  e.duration
+  e.target
+  console.log(e)
+})*/
 
 use(
   prisma({
     client: { instance: prismaClient },
     migrations: false,
+    paginationStrategy: "prisma",
     features: { crud: true },
   }),
 )
@@ -52,6 +69,11 @@ schema.addToContext(async (req) => ({
 }))
 
 settings.change({
+  logger: {
+    filter: {
+      level: "debug",
+    },
+  },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
     rootTypingsGlobPattern: "./graphql/**/*.ts",

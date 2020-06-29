@@ -67,6 +67,8 @@ schema.extendType({
       additionalArgs: {
         course: stringArg({ required: true }),
         completion_language: stringArg(),
+        skip: intArg({ default: 0 }),
+        take: intArg({ default: 0 }),
       },
       nodes: async (_, args, ctx, __) => {
         const { completion_language, first, last } = args

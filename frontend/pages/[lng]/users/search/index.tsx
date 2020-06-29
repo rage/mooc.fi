@@ -86,18 +86,18 @@ const UserSearch = () => {
 const GET_DATA = gql`
   query UserDetailsContains(
     $search: String!
-    $before: String
-    $after: String
     $first: Int
     $last: Int
+    $before: String
+    $after: String
     $skip: Int
   ) {
     userDetailsContains(
       search: $search
       first: $first
       last: $last
-      after: $after
       before: $before
+      after: $after
       skip: $skip
     ) {
       pageInfo {

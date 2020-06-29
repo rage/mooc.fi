@@ -58,6 +58,7 @@ export const convertPagination = ({
     skip,
   )
 
+  // TODO/FIXME: shouldn't skip be +1 when after is defined?
   return {
     skip: isDefined(before) ? skipValue + 1 : skipValue,
     take: isDefined(last) ? -(last ?? 0) : isDefined(first) ? first : 0,

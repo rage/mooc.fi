@@ -19,16 +19,11 @@ import {
 } from "/static/types/generated/UserCourseSettingses"
 
 export const StudentProgresses = gql`
-  query UserCourseSettingses(
-    $course_id: ID!
-    $cursor: String
-    $search: String
-    $course_string: String!
-  ) {
+  query UserCourseSettingses($course_id: ID!, $skip: Int, $search: String) {
     UserCourseSettingses(
       course_id: $course_id
       first: 15
-      after: $cursor
+      skip: $skip
       search: $search
     ) {
       pageInfo {
@@ -45,7 +40,7 @@ export const StudentProgresses = gql`
             email
             student_number
             real_student_number
-            progress(course_id: $course_string) {
+            progress(course_id: $course_id) {
               course {
                 name
                 id
@@ -113,9 +108,8 @@ function PaginatedPointsList(props: Props) {
       getData({
         variables: {
           course_id: courseId,
-          cursor: null,
+          after: null,
           search,
-          course_string: courseId,
         },
       }),
     [search],
@@ -152,6 +146,8 @@ function PaginatedPointsList(props: Props) {
   }))
 
   const edges = (UserCourseSettingses?.edges ?? []).filter(notEmpty)
+
+  console.log(UserCourseSettingses)
 
   return (
     <ErrorBoundary>
@@ -206,9 +202,9 @@ function PaginatedPointsList(props: Props) {
                 query: StudentProgresses,
                 variables: {
                   course_id: courseId,
-                  cursor: UserCourseSettingses.pageInfo.endCursor,
+                  skip: UserCourseSettingses.edges?.length ?? 0,
+                  //after: UserCourseSettingses.edges?.[UserCourseSettingses.edges?.length - 1]?.node?.id,// UserCourseSettingses.pageInfo.endCursor,
                   search: search !== "" ? search : undefined,
-                  course_string: courseId,
                 },
 
                 updateQuery: (

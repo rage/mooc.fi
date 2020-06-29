@@ -70,7 +70,7 @@ schema.objectType({
       type: "progress",
       nullable: false,
       args: {
-        course_id: stringArg({ required: true }),
+        course_id: idArg({ required: true }),
       },
       resolve: async (parent, args, ctx) => {
         const course = await ctx.db.course.findOne({

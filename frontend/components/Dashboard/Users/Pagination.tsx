@@ -29,7 +29,16 @@ const TablePaginationActions: React.FC<any> = () => {
 
   const startCursor = data?.userDetailsContains?.pageInfo?.startCursor
   const endCursor = data?.userDetailsContains?.pageInfo?.endCursor
+
+  const startId = data?.userDetailsContains?.edges?.[0]?.node?.id // data?.userDetailsContains?.pageInfo?.startCursor
+  const endId =
+    data?.userDetailsContains?.edges?.[
+      data?.userDetailsContains?.edges?.length - 1
+    ]?.node?.id // data?.userDetailsContains?.pageInfo?.endCursor
   const count = data?.userDetailsContains?.count ?? 0
+
+  console.log("data", data)
+  console.log("startCursor", startCursor, "endCursor", endCursor)
 
   const handleFirstPageButtonClick = useCallback(
     async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -60,6 +69,7 @@ const TablePaginationActions: React.FC<any> = () => {
         search: searchVariables.search,
         first: rowsPerPage,
         after: endCursor,
+        skip: 1,
       })
       setPage(page + 1)
     },
