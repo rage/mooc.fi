@@ -30,7 +30,7 @@ export interface UserPoints_currentUser_progresses_user_course_progress_user {
 
 export interface UserPoints_currentUser_progresses_user_course_progress {
   __typename: "user_course_progress"
-  progress: any
+  progress: any[] | null
   exercise_progress: UserPoints_currentUser_progresses_user_course_progress_exercise_progress | null
   user: UserPoints_currentUser_progresses_user_course_progress_user | null
 }
@@ -43,7 +43,7 @@ export interface UserPoints_currentUser_progresses_user_course_service_progresse
 
 export interface UserPoints_currentUser_progresses_user_course_service_progresses {
   __typename: "user_course_service_progress"
-  progress: any
+  progress: any[] | null
   service: UserPoints_currentUser_progresses_user_course_service_progresses_service | null
 }
 

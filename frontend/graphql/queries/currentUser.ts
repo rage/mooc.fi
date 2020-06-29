@@ -31,6 +31,7 @@ export const UserOverViewQuery = gql`
           }
         }
       }
+      research_consent
     }
   }
 `

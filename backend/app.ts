@@ -175,7 +175,7 @@ use(
     redisClient,
   }),
 )
-use(permissions)
+//use(permissions)
 
 server.express.use(cors())
 server.express.use(

@@ -26,6 +26,7 @@ schema.objectType({
     t.model.UserCourseSettings()
     t.model.user_organization()
     t.model.verified_user()
+    t.model.research_consent()
     // t.prismaFields({ filter: ["completions"] })
 
     t.field("completions", {
@@ -69,12 +70,9 @@ schema.objectType({
       type: "progress",
       nullable: false,
       args: {
-        course_id: stringArg(),
+        course_id: stringArg({ required: true }),
       },
       resolve: async (parent, args, ctx) => {
-        if (!args.course_id) {
-          throw new UserInputError("no course specified")
-        }
         const course = await ctx.db.course.findOne({
           where: { id: args.course_id },
         })

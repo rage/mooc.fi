@@ -49,17 +49,6 @@ schema.extendType({
           },
         })
 
-        // const remove_this_var =  prisma.completions({
-        //   where: {
-        //     course: { id: courseObject?.id },
-        //     completion_language: completion_language,
-        //   },
-        //   first: first ?? undefined,
-        //   after: after ?? undefined,
-        //   last: last ?? undefined,
-        //   before: before ?? undefined,
-        // })
-
         if (completion_language) {
           return await Knex.select("*").from("completion").where({
             course: courseObject?.id,

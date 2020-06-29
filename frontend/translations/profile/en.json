@@ -7,5 +7,12 @@
     "completionLanguage":"course language: ",
     "completionNB": "This page is currently under development, and all courses you have completed might not show here just yet.",
     "seeCompletions":"See all completions here",
-    "seePoints": "See all points here"
+    "seePoints": "See all points here",
+    "researchOkAnswer": "Thanks for your answer!",
+    "researchError": "There was an error updating your answer. Try again later.",
+    "researchNotification": "Do you want to participate in research? Answer on the <b>Settings</b> tab.",
+    "tabAriaLabel": "tab to select if viewing points, completions or settings",
+    "tabPoints": "Points",
+    "tabCompletions": "Completions",
+    "tabSettings": "Settings"
 }

@@ -29,7 +29,7 @@ export interface ExportUserCourseProgesses_userCourseProgresses {
   __typename: "user_course_progress"
   id: string
   user: ExportUserCourseProgesses_userCourseProgresses_user | null
-  progress: any
+  progress: any[] | null
   UserCourseSettings: ExportUserCourseProgesses_userCourseProgresses_UserCourseSettings | null
 }
 

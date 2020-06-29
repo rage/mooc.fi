@@ -1,4 +1,6 @@
 import {ContentBox} from "/pages/[lng]/installation/vscode"
+import StartingProgrammingQuide from "/static/md_pages/ohjelmoinnin_aloittaminen_vscode_en.mdx"
+import TableOfContents from "/static/md_pages/sisallysluettelo_vscode_en.mdx"
 
 <ContentBox>
 
@@ -6,21 +8,7 @@ import {ContentBox} from "/pages/[lng]/installation/vscode"
 
 ---
 
-### Content
-1. [Installing Visual Studio Code](#VSCoden-asentaminen)
-2. [Installing Java](#javan-asentaminen)
-3. [Installing Python](#python-asentaminen)
-4. [Installing TestMyCode extension](#TestMyCode-asentaminen)
-5. [How to start programming](#ohjelmoinnin-aloittaminen)
-6. [Creating MOOC.fi account](#mooc.fi-tunnuksen-luominen)
-7. [Logging into programming environment](#kirjautuminen-ohjelmointiympäristöön)
-8. [Choosing an organization](#organisaation-valinta)
-9. [Choosing a course](#kurssin-valinta)
-10. [Your first programming exercise](#ensimmäisen-tehtävän-tekeminen)
-11. [Running the source code](#lähdekoodin-ajaminen)
-12. [Testing the source code](#lähdekoodin-testaaminen)
-13. [Submitting a solution to TMC-server](#tehtävän-lähettäminen-palvelimelle)
-14. [How to check your points](#pistetilanteen-tarkistaminen)
+<TableOfContents />
 
 </ContentBox>
 
@@ -87,145 +75,4 @@ width="100%" height="100%" />
 
 </ContentBox>
 
-
-<ContentBox>
-
-## Starting programming <a name="ohjelmoinnin-aloittaminen"></a>
-When you have downloaded Visual Studio Code, Java, Python and TestMyCode extension, next step is to make a **Mooc.fi-account**. 
-The account is made so we can track your points on the course. After that you can start programming.
-
-### Making a MOOC.fi-account <a name="mooc.fi-tunnuksen-luominen"></a>
-Go to course material and make a MOOC-fi account.
-
-### Logging into programming environment <a name="kirjautuminen-ohjelmointiympäristöön"></a>
-
-Start TestMyCode extension by clicking TMC icon in the left bar (see picture point 1).
-
-Log in by clicking **Log in** button (see picture point 2).
-
-Use the account you made in previous step to log in.
-
-<img src="/static/images/installation/vscode/TMC_login.png"
-alt="TMC Login"
-width="100%" height="100%"/>
-
-### Choosing an organization <a name="organisaation-valinta"></a>
-
-When you log in, you will se a list of courses selected (at start it is empty).
-If you're not at this view, press "My courses" (see picture point 1).  
-
-You can add courses to the list by clicking **Add new course** button (see picture point 2).
-
-By clicking **Add new course** the extension will show all possible organizations that offer courses.
-Search and select the organization that is mentioned in your course material (see picture point 3).
-
-For example on the course "Python Test" the organization is "Test organization".
-
-<img src="/static/images/installation/vscode/select-org.png"
-alt="Choose organisation"
-width="100%" height="100%"/>
-
-### Selecting the course <a name="kurssin-valinta"></a>
-
-After this, select the correct course. This is mentioned in your course material.
-
-### Completing your first programming exercise <a name="ensimmäisen-tehtävän-tekeminen"></a>
-
-Lets go through an example where you can complete the 1st exercise on the course "Python Test".
-Even if you have completed exercises on some other course, read the instructions to the end. It will have important information on the programming environment.
-
-#### Downloading exercises
-
-When you have logged in and selected the course. Click the course "Python Test" in "My Courses"-view.
-You land into the course details page.  
-Press __Download exercises__ and you should see list of uncompleted exercises.  
-Select the exercises you want to complete (at minimum osa01-01_hymio). 
-Once you have selected the exercises you want to complete, press __Download selected__.
-Instructions to these exercises will be in your course material.
-
-Once the exercises are downloaded, select __Return to My courses__.  
-
-Click __Open exercise workspace__ (see picture below). If this button is not visible, the workspace is open and you can continue.
-<img src="/static/images/installation/vscode/open_exercise_workspace.png"
-alt="Open workspace"
-width="100%" height="100%"/>
-
-#### Working on your programming exercises
-
-At this point you should be see the "Exercises" folder (as in picture below) in VSCode, if you don't see this, navigate to the Explorer view by pressing the Explorer icon at the left side bar (see picture point 1). 
-Press "Exercises" (see picture point 2), you should now see the chosen organization (test) and course folder (test-python-test), as well the exercises you downloaded.
-Find the exercise "osa01-01_hymio", under organization "test" and course "test-python-test".
-<img src="/static/images/installation/vscode/click_exercises.png"
-alt="Select exercise"
-width="100%" height="100%"/>
-
-**NB!**
-First time you open an exercise you may receive automatic recommendations by Visual Studio Code at the bottom right corner, please install these.
-<img src="/static/images/installation/vscode/python_recommendation.png"
-alt="Python extension"
-width="100%" height="100%"/>
-
-Find a source code file called "hymio.py".
-Source code files are located in directory __"src"__.
-
-You can open editor by clicking the exercise file hymio.py.
-Editor is the view on the middle. You can type there to make changes to the source code.
-
-Make the following changes to the source code: 
-
-```python
-print(":-D")
-```
-
-### Running the source code <a name="lähdekoodin-ajaminen"></a>
-
-If you installed all the necessary programs and extension recommendations you should be able to run the source code by pressing the green start button at the top right corner.
-This will open a terminal under your source code editor where the program will print its output.
-
-<img src="/static/images/installation/vscode/python_run_terminal.png"
-alt="Python run in terminal"
-width="100%" height="100%"/>
-
-If you modified the file as instructed previously, the program should print following:
-
-> `:-D`
-
-### Testing the source code <a name="lähdekoodin-testaaminen"></a>
-
-Most of the time there will be automated test for the exercises. These tests will give information on your progress on the exercise.
-Test your solution by clicking the TMC __test__ button in the top right corner.
-
-<img src="/static/images/installation/vscode/tmc_run_test.png"
-alt="TMC run tests"
-width="100%" height="100%"/>
-
-When you run tests on the source code we just wrote, the tests should not pass and give you a message.
-By following the message, we see that our program printed something erroneous.
-The print should have been ":-)".
-
-The program will print ":-)" when you modify the source code like the following:
-
-```python
-print(":-)")
-```
-
-Run the tests again. This time the test will pass and TMC you can submit your code to the server for evaluation.
-
-### Submitting the solution to TMC-server <a name="tehtävän-lähettäminen-palvelimelle"></a>
-
-Sending the exercise to TMC-server means that your solution will be reviewed.
-Your code will be almost always reviewed automatically. You will get points (or possible error message) really fast.
-
-You can return the solution after running tests or from TMC-menu which is located in the top right corner.
-
-<img src="/static/images/installation/vscode/tmc_menu.png"
-alt="TMC Menu"
-width="100%" height="100%"/>
-
-When you have sent right solution the the server, you will be given points from the exercise. Also if you are given a short survey, filling it is advised. We use the information to make our courses better.
-
-### Checking your points <a name="pistetilanteen-tarkistaminen"></a>
-
-You can check your points by logging in [tmc.mooc.fi](https://tmc.mooc.fi). Use the same user you made earlier.
-
-</ContentBox>
+<StartingProgrammingQuide />

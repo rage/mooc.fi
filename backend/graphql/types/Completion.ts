@@ -16,6 +16,7 @@ schema.objectType({
     t.model.course({ alias: "course_id" })
     t.model.grade()
     t.model.certificate_id()
+    t.model.eligible_for_ects()
     t.model.course_completionTocourse({ alias: "course" })
     /*t.prismaFields([
       "id",

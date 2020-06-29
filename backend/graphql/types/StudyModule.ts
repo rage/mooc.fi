@@ -2,7 +2,6 @@
 // import { stringArg, arg } from "nexus/dist"
 import { stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
-import { courseOrderByInput } from "@prisma/client"
 import { notEmpty } from "../../util/notEmpty"
 
 schema.objectType({
@@ -29,7 +28,7 @@ schema.objectType({
         const { language, orderBy } = args
 
         const courses = await ctx.db.course.findMany({
-          orderBy: (orderBy as courseOrderByInput) ?? undefined,
+          orderBy: orderBy ?? undefined,
           where: { study_module: { some: { id: parent.id } } },
         })
 

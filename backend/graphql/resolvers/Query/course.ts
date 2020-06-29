@@ -127,7 +127,7 @@ schema.extendType({
       resolve: async (_, args, ctx) => {
         const { slug } = args
 
-        return !!(await ctx.db.course.findOne({ where: { slug } }))
+        return (await ctx.db.course.findMany({ where: { slug } })).length > 0
       },
     })
   },

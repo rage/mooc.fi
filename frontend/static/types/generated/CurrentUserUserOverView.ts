@@ -52,6 +52,7 @@ export interface CurrentUserUserOverView_currentUser {
   last_name: string | null
   email: string
   completions: CurrentUserUserOverView_currentUser_completions[]
+  research_consent: boolean | null
 }
 
 export interface CurrentUserUserOverView {

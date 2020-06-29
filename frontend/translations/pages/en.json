@@ -26,6 +26,7 @@
     "/[lng]/register-completion/[slug]": "Register completion - {{title}}",
     "/[lng]/email-templates": "Email templates",
     "/[lng]/email-templates/[id]": "Edit email template - {{title}}",
+    "/[lng]/research-consent": "Research consent",
     "/[lng]/register-completion": "Register completion",
     "/register-completion": "Register completion",
     "/": "Home"

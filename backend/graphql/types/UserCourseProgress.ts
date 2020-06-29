@@ -101,7 +101,6 @@ schema.objectType({
           },
         })
 
-        // FIXME: now it's jsonvalue or smth
         const totalProgress =
           (courseProgress?.reduce(
             (acc: number, curr: any) => acc + curr.progress,

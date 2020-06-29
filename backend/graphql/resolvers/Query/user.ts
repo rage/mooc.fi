@@ -1,6 +1,6 @@
 import { stringArg, idArg, intArg } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-errors"
-import { buildSearch } from "../../../util/db-functions"
+import { buildSearch, convertPagination } from "../../../util/db-functions"
 import { schema } from "nexus"
 
 schema.extendType({
@@ -33,15 +33,7 @@ schema.extendType({
 
         const users = await ctx.db.user.findMany({
           where: {
-            OR: buildSearch(
-              [
-                "first_name_contains",
-                "last_name_contains",
-                "username_contains",
-                "email_contains",
-              ],
-              search ?? "",
-            ),
+            OR: buildSearch(search ?? ""),
             id: id ?? undefined,
             upstream_id: upstream_id ?? undefined,
           },
@@ -55,17 +47,19 @@ schema.extendType({
       type: "user",
       additionalArgs: {
         search: stringArg(),
+        after: stringArg(),
         skip: intArg({ default: 0 }),
       },
       nodes: async (_, args, ctx) => {
-        const { search, first, last, skip } = args
+        const { search, first, last, before, after, skip } = args
 
+        console.log("args", args)
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
         return ctx.db.user.findMany({
-          skip: skip ?? undefined,
+          ...convertPagination({ first, last, before, after, skip }),
           where: {
             OR: buildSearch(
               ["first_name", "last_name", "username", "email"],
