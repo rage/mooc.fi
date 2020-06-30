@@ -2,6 +2,7 @@ import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { stringArg, intArg, idArg } from "@nexus/schema"
 import Knex from "../../../services/knex"
 import { schema } from "nexus"
+import { convertPagination } from "../../../util/db-functions"
 
 schema.extendType({
   type: "Query",
@@ -68,10 +69,10 @@ schema.extendType({
         course: stringArg({ required: true }),
         completion_language: stringArg(),
         skip: intArg({ default: 0 }),
-        take: intArg({ default: 0 }),
       },
+      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
       nodes: async (_, args, ctx, __) => {
-        const { completion_language, first, last } = args
+        const { completion_language, first, last, before, after, skip } = args
         let { course } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
@@ -93,6 +94,7 @@ schema.extendType({
         }
 
         return ctx.db.completion.findMany({
+          ...convertPagination({ first, last, before, after, skip }),
           where: {
             course_completionTocourse: { slug: course },
             completion_language,

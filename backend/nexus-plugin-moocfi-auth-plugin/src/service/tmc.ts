@@ -55,15 +55,19 @@ export default class TmcClient {
   }
 
   async getCurrentUserDetails(): Promise<UserInfo> {
-    const res = await axios.get(
-      `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
-      {
-        headers: { Authorization: this.accessToken },
-      }
-    )
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
+        {
+          headers: { Authorization: this.accessToken },
+        }
+      )
 
-    const userInfo = res.data
-    return userInfo
+      const userInfo = res.data
+      return userInfo
+    } catch (e) {
+      throw new Error(`error getting user details from TMC: ${e}`)
+    }
   }
 
   async getUserDetailsById(id: Number): Promise<UserInfo> {

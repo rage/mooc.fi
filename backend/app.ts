@@ -128,7 +128,6 @@ const permissions = shield({
       exerciseCompletions: isAdmin,
       openUniversityRegistrationLink: isAdmin,
       openUniversityRegistrationLinks: isAdmin,
-      // organization and -s need special case - default if hidden parameter given
       organization: organizationPermission,
       organizations: organizationPermission,
       registerCompletions: or(isOrganization, isAdmin),
@@ -197,7 +196,7 @@ use(
     redisClient,
   }),
 )
-//use(permissions)
+use(permissions)
 
 server.express.use(cors())
 server.express.use(

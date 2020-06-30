@@ -41,7 +41,7 @@ schema.extendType({
       args: {
         value: booleanArg({ required: true }),
       },
-      resolve: (_, { value }, ctx) => {
+      resolve: (_, { value }, ctx: NexusContext) => {
         const {
           user: currentUser,
           headers: { authorization },

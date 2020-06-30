@@ -49,5 +49,11 @@ export async function redisify<T>(
 
       return value
     })
-    .catch(() => (fn instanceof Promise ? fn : fn(...params)))
+    .catch(() => {
+      try {
+        return fn instanceof Promise ? fn : fn(...params)
+      } catch {
+        return
+      }
+    })
 }

@@ -1,6 +1,6 @@
 import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { idArg, intArg, stringArg } from "@nexus/schema"
-import { buildSearch } from "../../../util/db-functions"
+import { buildSearch, convertPagination } from "../../../util/db-functions"
 import { schema } from "nexus"
 
 schema.extendType({
@@ -66,7 +66,16 @@ schema.extendType({
         skip: intArg({ default: 0 }),
       },
       nodes: async (_, args, ctx) => {
-        const { first, last, user_id, user_upstream_id, search, skip } = args
+        const {
+          first,
+          last,
+          before,
+          after,
+          user_id,
+          user_upstream_id,
+          search,
+          skip,
+        } = args
 
         let { course_id } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
@@ -84,7 +93,7 @@ schema.extendType({
         }
 
         return ctx.db.userCourseSettings.findMany({
-          skip: skip ?? 0,
+          ...convertPagination({ first, last, before, after, skip }),
           where: {
             user_UserCourseSettingsTouser: {
               OR: [

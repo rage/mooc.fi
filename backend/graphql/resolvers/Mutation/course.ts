@@ -120,7 +120,6 @@ schema.extendType({
         }),
       },
       resolve: async (_, { course }, ctx: NexusContext) => {
-        console.log("I got this kind of thing", course)
         const {
           id,
           new_photo,

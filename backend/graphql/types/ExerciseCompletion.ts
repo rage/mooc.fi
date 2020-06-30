@@ -13,5 +13,6 @@ schema.objectType({
     t.model.timestamp()
     t.model.user({ alias: "user_id" })
     t.model.user_exercise_completionTouser({ alias: "user" })
+    t.model.exercise_completion_required_actions()
   },
 })

@@ -1,6 +1,5 @@
 import { stringArg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
-import { UserInputError } from "apollo-server-errors"
 
 schema.objectType({
   name: "user",
