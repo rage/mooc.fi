@@ -18,19 +18,6 @@ schema.objectType({
     t.model.certificate_id()
     t.model.eligible_for_ects()
     t.model.course_completionTocourse({ alias: "course" })
-    /*t.prismaFields([
-      "id",
-      "created_at",
-      "updated_at",
-      "completion_language",
-      "email",
-      "student_number",
-      "user_upstream_id",
-      "completions_registered",
-      "course",
-      "grade",
-      "certificate_id",
-    ])*/
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
       type: "Course",

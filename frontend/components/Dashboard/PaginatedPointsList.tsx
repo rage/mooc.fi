@@ -17,6 +17,7 @@ import {
   UserCourseSettingses as StudentProgressData,
   UserCourseSettingses_UserCourseSettingses_pageInfo,
 } from "/static/types/generated/UserCourseSettingses"
+import notEmpty from "/util/notEmpty"
 
 export const StudentProgresses = gql`
   query UserCourseSettingses($course_id: ID!, $skip: Int, $search: String) {
@@ -87,9 +88,6 @@ interface Props {
   cursor?: string
 }
 
-function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
-}
 function PaginatedPointsList(props: Props) {
   const { courseId } = props
   const [searchString, setSearchString] = useState("")

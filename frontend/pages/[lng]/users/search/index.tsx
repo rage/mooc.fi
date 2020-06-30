@@ -34,7 +34,6 @@ const UserSearch = () => {
   )
 
   useEffect(() => {
-    console.log("search", searchVariables)
     const params = [
       rowsPerPage !== 10 ? `rowsPerPage=${rowsPerPage}` : "",
       page > 0 ? `page=${page}` : "",

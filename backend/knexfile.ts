@@ -1,11 +1,12 @@
-// Update with your config settings.
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
 module.exports = {
   development: {
     client: "pg",
-    searchPath: ["default$prisma2"],
-    connection:
-      "postgres://prisma:prisma@localhost:5678/prisma?schema=default$prisma2",
+    searchPath: [process.env.SEARCH_PATH ?? "default$prisma2"],
+    connection: process.env.DATABASE_URL, // "postgres://prisma:prisma@localhost:5678/prisma?schema=default$prisma2",
   },
 
   staging: {

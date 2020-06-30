@@ -45,10 +45,10 @@ export async function redisify<T>(
   return await getAsync(prefixedKey)
     .then(async (res: any) => {
       if (res) {
-        logger.info("Cache hit")
+        logger.info(`Cache hit: ${prefixedKey}`)
         return await JSON.parse(res)
       }
-      logger.info("Cache miss")
+      logger.info(`Cache miss: ${prefixedKey}`)
 
       const value = fn instanceof Promise ? await fn : await fn(...params)
 
@@ -57,7 +57,10 @@ export async function redisify<T>(
 
       return value
     })
-    .catch(() => (fn instanceof Promise ? fn : fn(...params)))
+    .catch(() => {
+      logger.error("------------------------------- REDIS ERROR THING")
+      return fn instanceof Promise ? fn : fn(...params)
+    })
 }
 
 export const publisher = !GENERATE_NEXUS

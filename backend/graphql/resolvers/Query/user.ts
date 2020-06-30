@@ -50,23 +50,15 @@ schema.extendType({
       type: "user",
       additionalArgs: {
         search: stringArg(),
-        /*before: idArg(),
-        after: idArg(),*/
-        cursor: idArg(),
-        //take: intArg({ default: 0 }),
         skip: intArg({ default: 0 }),
       },
-      cursorFromNode: (node, args, ctx, info, { index, nodes }) => {
-        // console.log("args", args, "index", index, "node", node)
-        return `cursor:${nodes?.[index]?.id}`
-      },
+      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
       nodes: async (_, args, ctx) => {
-        const { search, cursor, first, last, before, after, skip } = args
+        const { search, first, last, before, after, skip } = args
 
-        console.log("args", args)
-        /*if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
+        if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
-        }*/
+        }
 
         return ctx.db.user.findMany({
           ...convertPagination({ first, last, before, after, skip }),
