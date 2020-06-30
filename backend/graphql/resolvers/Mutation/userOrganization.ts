@@ -13,7 +13,7 @@ const checkUser = async (ctx: NexusContext, id: any) => {
   try {
     existingUser = await ctx.db.user_organization
       .findOne({ where: { id } })
-      .user_userTouser_organization()
+      .user()
   } catch {
     throw new Error("no such user/organization relation")
   }
@@ -43,8 +43,8 @@ schema.extendType({
           (
             await ctx.db.user_organization.findMany({
               where: {
-                user: user_id,
-                organization: organization_id,
+                user_id,
+                organization_id,
               },
             })
           ).length > 0
@@ -55,8 +55,8 @@ schema.extendType({
 
         return ctx.db.user_organization.create({
           data: {
-            user_userTouser_organization: { connect: { id: user_id } },
-            organization_organizationTouser_organization: {
+            user: { connect: { id: user_id } },
+            organization: {
               connect: { id: organization_id },
             },
             role: organization_role.Student,

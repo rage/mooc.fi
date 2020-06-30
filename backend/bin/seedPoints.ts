@@ -244,12 +244,12 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
   return await Promise.all(
     UsersInDb.map(async (user) => {
       const ucs: UserCourseSettingsCreateInput = {
-        user_UserCourseSettingsTouser: {
+        user: {
           connect: {
             id: user.id,
           },
         },
-        course_UserCourseSettingsTocourse: {
+        course: {
           connect: {
             id: courseId,
           },

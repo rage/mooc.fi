@@ -352,24 +352,24 @@ model user_course_progress {
 }
 
 model user_course_service_progress {
-  course                                                                  String?
+  course_id                                                               String?               @map("course")
   created_at                                                              DateTime?             @default(now())
   id                                                                      String                @id @default(uuid())
   progress                                                                Json
-  service                                                                 String?
+  service_id                                                              String?               @map("service")
   timestamp                                                               DateTime?
   updated_at                                                              DateTime?             @default(now())
-  user                                                                    String?
-  user_course_progress                                                    String?
-  course_courseTouser_course_service_progress                             course?               @relation(fields: [course], references: [id])
-  service_serviceTouser_course_service_progress                           service?              @relation(fields: [service], references: [id])
-  user_userTouser_course_service_progress                                 user?                 @relation(fields: [user], references: [id])
-  user_course_progress_user_course_progressTouser_course_service_progress user_course_progress? @relation(fields: [user_course_progress], references: [id])
+  user_id                                                                 String?               @map("user")
+  user_course_progress_id                                                 String?               @map("user_course_progress")
+  course                                                                  course?               @relation(fields: [course_id], references: [id])
+  service                                                                 service?              @relation(fields: [service_id], references: [id])
+  user                                                                    user?                 @relation(fields: [user_id], references: [id])
+  user_course_progress                                                    user_course_progress? @relation(fields: [user_course_progress_id], references: [id])
 }
 
 model UserCourseSettings {
   country                           String?
-  course                            String?
+  course_id                         String?   @map("course")
   course_variant                    String?
   created_at                        DateTime? @default(now())
   id                                String    @default(uuid()) @id
@@ -378,41 +378,41 @@ model UserCourseSettings {
   other                             Json?
   research                          Boolean?
   updated_at                        DateTime? @default(now()) @updatedAt
-  user                              String?
-  course_UserCourseSettingsTocourse course?   @relation(fields: [course], references: [id])
-  user_UserCourseSettingsTouser     user?     @relation(fields: [user], references: [id])
+  user_id                           String?   @map("user")
+  course                            course?   @relation(fields: [course_id], references: [id])
+  user                              user?     @relation(fields: [user_id], references: [id])
 }
 
 model user_course_settings_visibility {
-  course                                         String?
+  course_id                                      String?   @map("course")
   created_at                                     DateTime? @default(now())
   id                                             String    @id @default(uuid())
   language                                       String
   updated_at                                     DateTime? @default(now())
-  course_courseTouser_course_settings_visibility course?   @relation(fields: [course], references: [id])
+  course                                         course?   @relation(fields: [course_id], references: [id])
 }
 
 model user_organization {
   created_at                                   DateTime?          @default(now())
   id                                           String             @id @default(uuid())
-  organization                                 String?
+  organization_id                              String?            @map("organization")
   role                                         organization_role? @default(Student)
   updated_at                                   DateTime?          @default(now())
-  user                                         String?
-  organization_organizationTouser_organization organization?      @relation(fields: [organization], references: [id])
-  user_userTouser_organization                 user?              @relation(fields: [user], references: [id])
+  user_id                                      String?            @map("user")
+  organization                                 organization?      @relation(fields: [organization_id], references: [id])
+  user                                         user?              @relation(fields: [user_id], references: [id])
 }
 
 model verified_user {
   created_at                               DateTime?     @default(now())
   display_name                             String?
   id                                       String        @id @default(uuid())
-  organization                             String?
+  organization_id                          String?       @map("organization")
   personal_unique_code                     String
   updated_at                               DateTime?     @default(now())
-  user                                     String?
-  organization_organizationToverified_user organization? @relation(fields: [organization], references: [id])
-  user_userToverified_user                 user?         @relation(fields: [user], references: [id])
+  user_id                                  String?       @map("user")
+  organization                             organization? @relation(fields: [organization_id], references: [id])
+  user                                     user?         @relation(fields: [user_id], references: [id])
 }
 
 enum course_status {

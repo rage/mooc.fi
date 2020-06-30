@@ -23,10 +23,10 @@ schema.objectType({
     t.list.field("user_course_service_progresses", {
       type: "user_course_service_progress",
       resolve: async (parent, _, ctx) => {
-        const courseId = parent.course?.id
-        const userId = parent.user?.id
+        const course_id = parent.course?.id
+        const user_id = parent.user?.id
         return ctx.db.user_course_service_progress.findMany({
-          where: { user: userId, course: courseId },
+          where: { user_id, course_id },
         })
       },
     })

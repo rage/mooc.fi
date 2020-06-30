@@ -89,7 +89,7 @@ export async function sendEmailTemplateToUser(
 }
 
 const ApplyTemplate = async (email_template: email_template, user: user) => {
-  const templater = new EmailTemplater(email_template, user)
+  const templater = new EmailTemplater(email_template, user, prisma)
   return await templater.resolve()
 }
 
@@ -101,8 +101,8 @@ const GetCombinedUserCourseProgress = async (
   const userCourseServiceProgresses = await prisma.user_course_service_progress.findMany(
     {
       where: {
-        user: user?.id,
-        course: course?.id,
+        user_id: user?.id,
+        course_id: course?.id,
       },
     },
   )
@@ -152,8 +152,8 @@ const GetUserCourseSettings = async (
     (
       await prisma.userCourseSettings.findMany({
         where: {
-          user: user.id,
-          course: course.id,
+          user_id: user.id,
+          course_id: course.id,
         },
       })
     )[0] || null
@@ -167,8 +167,8 @@ const GetUserCourseSettings = async (
         (
           await prisma.userCourseSettings.findMany({
             where: {
-              user: user.id,
-              course: inheritCourse.id,
+              user_id: user.id,
+              course_id: inheritCourse.id,
             },
           })
         )[0] || null

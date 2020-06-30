@@ -1,7 +1,7 @@
 import { ForbiddenError } from "apollo-server-errors"
-import { Context } from "../../../context"
+import { NexusContext } from "../../../context"
 
-const Completion = async (parent: any, _: any, ctx: Context) => {
+const Completion = async (parent: any, _: any, ctx: NexusContext) => {
   if (ctx.disableRelations) {
     throw new ForbiddenError(
       "Cannot query relations when asking for more than 50 objects",

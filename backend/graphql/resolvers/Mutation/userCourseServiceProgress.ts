@@ -27,17 +27,17 @@ schema.extendType({
 
         return ctx.db.user_course_service_progress.create({
           data: {
-            course_courseTouser_course_service_progress: {
+            course: {
               connect: { id: course.id },
             },
             progress: progress,
-            service_serviceTouser_course_service_progress: {
+            service: {
               connect: { id: service_id },
             },
-            user_userTouser_course_service_progress: {
+            user: {
               connect: { id: user.id },
             },
-            user_course_progress_user_course_progressTouser_course_service_progress: {
+            user_course_progress: {
               connect: { id: user_course_progress_id },
             },
           },

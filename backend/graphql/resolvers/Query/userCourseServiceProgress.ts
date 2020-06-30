@@ -15,9 +15,9 @@ schema.extendType({
         const { user_id, course_id, service_id } = args
         const result = await ctx.db.user_course_service_progress.findMany({
           where: {
-            user: user_id,
-            course: course_id,
-            service: service_id,
+            user_id: user_id,
+            course_id: course_id,
+            service_id: service_id,
           },
         })
         return result[0]
@@ -26,9 +26,9 @@ schema.extendType({
 
     t.crud.userCourseServiceProgresses({
       filtering: {
-        user: true,
-        course: true,
-        service: true,
+        user_id: true,
+        course_id: true,
+        service_id: true,
       },
       pagination: true,
     })

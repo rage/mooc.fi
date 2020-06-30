@@ -89,7 +89,7 @@ schema.objectType({
       resolve: async (parent, _, ctx) => {
         const user_course_progressess = await ctx.db.user_course_progress.findMany(
           {
-            where: { user: parent.id },
+            where: { user_id: parent.id },
           },
         )
         const progresses = user_course_progressess.map(async (p) => {

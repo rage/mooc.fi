@@ -40,10 +40,10 @@ schema.extendType({
 
         return ctx.db.verified_user.create({
           data: {
-            organization_organizationToverified_user: {
+            organization: {
               connect: { id: organization.id },
             },
-            user_userToverified_user: { connect: { id: currentUser.id } },
+            user: { connect: { id: currentUser.id } },
             personal_unique_code,
             display_name,
           },

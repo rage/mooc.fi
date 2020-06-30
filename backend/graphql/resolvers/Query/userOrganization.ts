@@ -19,8 +19,8 @@ schema.extendType({
 
         return ctx.db.user_organization.findMany({
           where: {
-            user: user_id,
-            organization: organization_id,
+            user_id,
+            organization_id,
           },
         })
       },

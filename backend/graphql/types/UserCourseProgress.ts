@@ -66,12 +66,12 @@ schema.objectType({
     t.field("exercise_progress", {
       type: "exercise_progress",
       resolve: async (parent, _, ctx) => {
-        const { course, user } =
+        const { course_id, user_id } =
           (await ctx.db.user_course_progress.findOne({
             where: { id: parent.id },
             select: {
-              course: true,
-              user: true,
+              course_id: true,
+              user_id: true,
             },
           })) || {}
         /*const course: Course = await ctx.db
@@ -81,23 +81,23 @@ schema.objectType({
           .user_course_progress.findOne({ where: { id: parent.id } })
           .user_course_service_progress()*/
 
-        if (!course || !user) {
+        if (!course_id || !user_id) {
           throw new Error("no course or user found")
         }
         const courseProgresses = await ctx.db.user_course_progress.findMany({
-          where: { course: course, user: user },
+          where: { course_id, user_id },
         })
         // TODO/FIXME: proper typing
         const courseProgress: any = courseProgresses.length
           ? courseProgresses[0].progress
           : []
         const exercises = await ctx.db.course
-          .findOne({ where: { id: course } })
+          .findOne({ where: { id: course_id } })
           .exercise()
         const completedExercises = await ctx.db.exercise_completion.findMany({
           where: {
-            exercise: { course_id: course },
-            user_id: user,
+            exercise: { course_id },
+            user_id,
           },
         })
 
