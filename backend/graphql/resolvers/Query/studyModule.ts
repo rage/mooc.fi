@@ -35,7 +35,7 @@ schema.extendType({
           const module_translations = await ctx.db.study_module_translation.findMany(
             {
               where: {
-                study_module: study_module.id,
+                study_module_id: study_module.id,
                 language,
               },
             },
@@ -84,7 +84,7 @@ schema.extendType({
                 modules.map(async (module: any) => {
                   const module_translations = await ctx.db.study_module_translation.findMany(
                     {
-                      where: { study_module: module.id, language },
+                      where: { study_module_id: module.id, language },
                     },
                   )
 

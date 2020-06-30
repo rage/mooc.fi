@@ -38,7 +38,7 @@ schema.objectType({
                 courses.map(async (course) => {
                   const course_translations = await ctx.db.course_translation.findMany(
                     {
-                      where: { course: course.id, language },
+                      where: { course_id: course.id, language },
                     },
                   )
 

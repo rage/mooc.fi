@@ -35,7 +35,7 @@ schema.extendType({
         if (language) {
           const course_translations = await ctx.db.course_translation.findMany({
             where: {
-              course: course.id,
+              course_id: course.id,
               language,
             },
           })
@@ -86,7 +86,7 @@ schema.extendType({
                   const course_translations = await ctx.db.course_translation.findMany(
                     {
                       where: {
-                        course: course.id,
+                        course_id: course.id,
                         language,
                       },
                     },

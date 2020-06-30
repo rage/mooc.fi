@@ -70,7 +70,7 @@ const getDataByLanguage = async (langProps: langProps) => {
   })
   const completionsByLang = await prisma.completion.findMany({
     where: {
-      course_completionTocourse: { slug: "elements-of-ai" },
+      course: { slug: "elements-of-ai" },
       completion_language: langProps.completion_language,
     },
   })

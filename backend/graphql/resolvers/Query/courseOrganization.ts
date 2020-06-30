@@ -6,8 +6,8 @@ schema.extendType({
   definition(t) {
     t.crud.courseOrganizations({
       filtering: {
-        course: true,
-        organization: true,
+        course_id: true,
+        organization_id: true,
       },
     })
 

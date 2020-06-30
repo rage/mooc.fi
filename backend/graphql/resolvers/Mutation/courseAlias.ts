@@ -18,7 +18,7 @@ schema.extendType({
         const newCourseAlias = await ctx.db.course_alias.create({
           data: {
             course_code: course_code ?? "",
-            course_courseTocourse_alias: { connect: { id: course } },
+            course: { connect: { id: course } },
           },
         })
         return newCourseAlias

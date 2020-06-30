@@ -4,15 +4,15 @@ schema.objectType({
   name: "user_course_progress",
   definition(t) {
     t.model.id()
-    t.model.course({ alias: "course_id" })
+    t.model.course_id()
+    t.model.course()
     t.model.created_at()
     t.model.max_points()
     t.model.n_points()
     //t.model.progress()
     t.model.updated_at()
-    t.model.user({ alias: "user_id" })
-    t.model.user_userTouser_course_progress({ alias: "user" })
-    t.model.course_courseTouser_course_progress({ alias: "course" })
+    t.model.user_id()
+    t.model.user()
     t.model.user_course_service_progress()
 
     t.list.field("progress", {
@@ -33,12 +33,12 @@ schema.objectType({
       type: "UserCourseSettings",
       nullable: true,
       resolve: async (parent, _, ctx) => {
-        const { course, user } =
+        const { course_id, user_id } =
           (await ctx.db.user_course_progress.findOne({
             where: { id: parent.id },
             select: {
-              course: true,
-              user: true,
+              course_id: true,
+              user_id: true,
             },
           })) || {}
         /*const course= await ctx.db
@@ -48,14 +48,14 @@ schema.objectType({
           .user_course_progress.findOne({ where: { id: parent.id } })
           .user_course_service_progress()*/
 
-        if (!course || !user) {
+        if (!course_id || !user_id) {
           throw new Error("course or user not found")
         }
 
         const userCourseSettings = await ctx.db.userCourseSettings.findMany({
           where: {
-            course,
-            user,
+            course_id,
+            user_id,
           },
         })
         // FIXME: what if there's not any?
@@ -96,8 +96,8 @@ schema.objectType({
           .exercise()
         const completedExercises = await ctx.db.exercise_completion.findMany({
           where: {
-            exercise_exerciseToexercise_completion: { course },
-            user,
+            exercise: { course_id: course },
+            user_id: user,
           },
         })
 

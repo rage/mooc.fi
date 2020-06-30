@@ -22,9 +22,7 @@ schema.extendType({
             name: name ?? "",
             description: description ?? "",
             link,
-            course_courseTocourse_translation: course
-              ? { connect: { id: course } }
-              : undefined,
+            course: course ? { connect: { id: course } } : undefined,
           },
         })
         return newCourseTranslation
@@ -51,9 +49,7 @@ schema.extendType({
             name: name ?? undefined,
             description: description ?? undefined,
             link: link,
-            course_courseTocourse_translation: course
-              ? { connect: { id: course } }
-              : undefined,
+            course: course ? { connect: { id: course } } : undefined,
           },
         })
       },

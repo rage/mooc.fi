@@ -56,7 +56,7 @@ const withCourse = async (
   if (!courseReference) {
     const courseFromAvoinCourse = await ctx.db.course_alias
       .findOne({ where: { course_code: course } })
-      .course_courseTocourse_alias()
+      .course()
     if (!courseFromAvoinCourse) {
       throw new UserInputError("Invalid course identifier")
     }
@@ -69,7 +69,7 @@ const withCourse = async (
 
   return await ctx.db.completion_registered.findMany({
     where: {
-      course: courseReference!.id,
+      course_id: courseReference!.id,
     },
     skip,
     take,

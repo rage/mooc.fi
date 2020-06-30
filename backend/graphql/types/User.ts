@@ -47,7 +47,7 @@ schema.objectType({
                 slug: args.course_slug ?? undefined,
               },
             })
-            .course_courseTocourse_completions_handled_by()
+            .completions_handled_by()
           if (handlerCourse) {
             course_id = handlerCourse.id
             course_slug = undefined
@@ -55,8 +55,8 @@ schema.objectType({
         }
         return ctx.db.completion.findMany({
           where: {
-            user: parent.id,
-            course_completionTocourse:
+            user_id: parent.id,
+            course:
               course_id || course_slug
                 ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
                 : undefined,
@@ -95,7 +95,7 @@ schema.objectType({
         const progresses = user_course_progressess.map(async (p) => {
           const course = await ctx.db.user_course_progress
             .findOne({ where: { id: p.id } })
-            .course_courseTouser_course_progress()
+            .course()
           return {
             course,
             user: parent,
@@ -116,8 +116,8 @@ schema.objectType({
 
         const progresses = await ctx.db.user_course_progress.findMany({
           where: {
-            user: parent.id,
-            course: course_id,
+            user_id: parent.id,
+            course_id,
           },
         })
 
@@ -135,7 +135,7 @@ schema.objectType({
       resolve: async (parent, _, ctx) => {
         return ctx.db.exercise_completion.findMany({
           where: {
-            user: parent.id,
+            user_id: parent.id,
           },
         })
       },

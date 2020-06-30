@@ -18,7 +18,7 @@ schema.extendType({
           data: {
             slug,
             description,
-            course_courseTocourse_variant: { connect: { id: course_id } },
+            course: { connect: { id: course_id } },
           },
         })
       },

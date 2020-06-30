@@ -29,8 +29,8 @@ export const saveToDatabase = async (
   await prisma.exercise.updateMany({
     where: {
       AND: {
-        course: message.course_id,
-        service: message.service_id,
+        course_id: message.course_id,
+        service_id: message.service_id,
         custom_id: { not: { in: message.data.map((p) => p.id) } },
       },
     },
@@ -57,8 +57,8 @@ const handleExercise = async (
   if (existingExercises.length > 0) {
     const oldExercises = await prisma.exercise.findMany({
       where: {
-        course: course_id,
-        service: service_id,
+        course_id: course_id,
+        service_id: service_id,
         custom_id: exercise.id,
       },
     })
@@ -95,8 +95,8 @@ const handleExercise = async (
         part: Number(exercise.part),
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
-        course_courseToexercise: { connect: { id: course_id } },
-        service_exerciseToservice: { connect: { id: service_id } },
+        course: { connect: { id: course_id } },
+        service: { connect: { id: service_id } },
         timestamp: timestamp.toJSDate(),
       },
     })

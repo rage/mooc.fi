@@ -161,7 +161,7 @@ const GetUserCourseSettings = async (
   if (!userCourseSettings) {
     const inheritCourse = await prisma.course
       .findOne({ where: { id: course.id } })
-      .course_courseTocourse_inherit_settings_from()
+      .inherit_settings_from()
     if (inheritCourse) {
       userCourseSettings =
         (
@@ -229,7 +229,7 @@ export const CheckCompletion = async (
 
     const otherHandlerCourse = await prisma.course
       .findOne({ where: { id: course.id } })
-      .course_courseTocourse_completions_handled_by()
+      .completions_handled_by()
 
     if (otherHandlerCourse) {
       handlerCourse = otherHandlerCourse
@@ -237,16 +237,16 @@ export const CheckCompletion = async (
 
     const completions = await prisma.completion.findMany({
       where: {
-        user: user.id,
-        course: handlerCourse?.id,
+        user_id: user.id,
+        course_id: handlerCourse?.id,
       },
     })
     if (completions.length < 1) {
       await prisma.completion.create({
         data: {
-          course_completionTocourse: { connect: { id: handlerCourse.id } },
+          course: { connect: { id: handlerCourse.id } },
           email: user.email,
-          user_completionTouser: { connect: { id: user.id } },
+          user: { connect: { id: user.id } },
           user_upstream_id: user.upstream_id,
           student_number: user.student_number,
           completion_language: userCourseSettings?.language
@@ -263,7 +263,7 @@ export const CheckCompletion = async (
       )
       const template = await prisma.course
         .findOne({ where: { id: course.id } })
-        .email_template() // was: completion_email
+        .completion_email()
       if (template) {
         await sendEmailTemplateToUser(user, template)
       }
