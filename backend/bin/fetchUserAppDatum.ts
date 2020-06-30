@@ -94,18 +94,18 @@ const fetchUserAppDatum = async () => {
     const existingUserCourseSettings = await prisma.userCourseSettings.findMany(
       {
         where: {
-          user_UserCourseSettingsTouser: { upstream_id: p.user_id },
-          course: course.id,
+          user: { upstream_id: p.user_id },
+          course_id: course.id,
         },
       },
     )
     if (existingUserCourseSettings.length < 1) {
       old = await prisma.userCourseSettings.create({
         data: {
-          user_UserCourseSettingsTouser: {
+          user: {
             connect: { upstream_id: p.user_id },
           },
-          course_UserCourseSettingsTocourse: { connect: { id: course.id } },
+          course: { connect: { id: course.id } },
         },
       })
     } else {

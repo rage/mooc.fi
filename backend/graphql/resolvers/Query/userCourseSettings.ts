@@ -26,8 +26,8 @@ schema.extendType({
 
         const result = await ctx.db.userCourseSettings.findMany({
           where: {
-            user: user_id,
-            course: course_id,
+            user_id,
+            course_id,
           },
         })
 
@@ -49,8 +49,8 @@ schema.extendType({
 
         return ctx.db.userCourseSettings.count({
           where: {
-            user: user_id,
-            course: course_id,
+            user_id,
+            course_id,
           },
         })
       },
@@ -95,7 +95,7 @@ schema.extendType({
         return ctx.db.userCourseSettings.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
-            user_UserCourseSettingsTouser: {
+            user: {
               OR: [
                 {
                   id: user_id ?? undefined,
@@ -111,7 +111,7 @@ schema.extendType({
                 },
               ],
             },
-            course: course_id ?? undefined,
+            course_id,
           },
         })
       },
@@ -136,7 +136,7 @@ schema.extendType({
 
             return ctx.db.userCourseSettings.count({
               where: {
-                user_UserCourseSettingsTouser: {
+                user: {
                   OR: [
                     {
                       id: user_id ?? undefined,
@@ -152,7 +152,7 @@ schema.extendType({
                     },
                   ],
                 },
-                course: course_id,
+                course_id,
               },
             })
           },

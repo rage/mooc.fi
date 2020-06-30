@@ -6,8 +6,8 @@ schema.objectType({
     t.model.id()
     t.model.created_at()
     t.model.updated_at()
-    t.model.course({ alias: "course_id" })
-    t.model.course_courseTouser_course_settings_visibility({ alias: "course" })
+    t.model.course_id()
+    t.model.course()
     t.model.language()
   },
 })

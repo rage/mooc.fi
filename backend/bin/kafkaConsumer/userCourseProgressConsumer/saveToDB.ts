@@ -129,15 +129,15 @@ export const saveToDatabase = async (
   } else {
     await prisma.user_course_service_progress.create({
       data: {
-        user_userTouser_course_service_progress: { connect: { id: user?.id } },
-        course_courseTouser_course_service_progress: {
+        user: { connect: { id: user?.id } },
+        course: {
           connect: { id: message.course_id },
         },
-        service_serviceTouser_course_service_progress: {
+        service: {
           connect: { id: message.service_id },
         },
         progress: message.progress as any, // type error without any
-        user_course_progress_user_course_progressTouser_course_service_progress: {
+        user_course_progress: {
           connect: { id: userCourseProgress.id },
         },
         timestamp: timestamp.toJSDate(),

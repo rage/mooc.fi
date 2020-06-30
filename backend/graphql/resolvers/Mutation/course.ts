@@ -4,7 +4,7 @@ import {
   study_moduleUpdateManyWithoutCourseInput,
   course_variantUpdateManyWithoutCourseInput,
   course_aliasUpdateManyWithoutCourseInput,
-  user_course_settings_visibilityUpdateManyWithoutCourse_courseTouser_course_settings_visibilityInput,
+  user_course_settings_visibilityUpdateManyWithoutCourseInput,
 } from "@prisma/client"
 import { stringArg, arg, idArg } from "@nexus/schema"
 import KafkaProducer, { ProducerMessage } from "../../../services/kafkaProducer"
@@ -215,7 +215,7 @@ schema.extendType({
         })
 
         const userCourseSettingsVisibilityMutation:
-          | user_course_settings_visibilityUpdateManyWithoutCourse_courseTouser_course_settings_visibilityInput
+          | user_course_settings_visibilityUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,

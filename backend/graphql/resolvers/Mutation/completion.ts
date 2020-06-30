@@ -26,8 +26,8 @@ schema.extendType({
 
         return ctx.db.completion.create({
           data: {
-            course_completionTocourse: { connect: { id: course } },
-            user_completionTouser: { connect: { id: user } },
+            course: { connect: { id: course } },
+            user: { connect: { id: user } },
             email: email ?? "",
             student_number,
             completion_language,
