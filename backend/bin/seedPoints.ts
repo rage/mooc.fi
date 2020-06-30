@@ -190,12 +190,12 @@ const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   return await Promise.all(
     UsersInDb.map(async (user) => {
       const ucp: user_course_progressCreateInput = {
-        user_userTouser_course_progress: {
+        user: {
           connect: {
             id: user.id,
           },
         },
-        course_courseTouser_course_progress: {
+        course: {
           connect: {
             id: courseId,
           },

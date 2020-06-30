@@ -21,7 +21,7 @@ schema.extendType({
               language: language,
               name: name ?? "",
               description: description ?? "",
-              study_module_study_moduleTostudy_module_translation: {
+              study_module: {
                 connect: { id: study_module },
               },
             },
@@ -49,7 +49,7 @@ schema.extendType({
             description: description ?? "",
             language: language ?? "",
             name: name ?? "",
-            study_module_study_moduleTostudy_module_translation: {
+            study_module: {
               connect: { id: study_module },
             },
           },

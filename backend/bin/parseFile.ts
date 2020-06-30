@@ -37,7 +37,7 @@ const doIt = async () => {
     const existing = await prisma.completion.findMany({
       where: {
         user_upstream_id: x[i].user_id,
-        course_completionTocourse: { slug: "elements-of-ai" },
+        course: { slug: "elements-of-ai" },
       },
     })
     /*const exists = await prisma.$exists.completion({

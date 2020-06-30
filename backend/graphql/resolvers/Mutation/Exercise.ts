@@ -29,12 +29,8 @@ schema.extendType({
         ctx.db
         return ctx.db.exercise.create({
           data: {
-            course_courseToexercise: course
-              ? { connect: { id: course } }
-              : undefined,
-            service_exerciseToservice: service
-              ? { connect: { id: service } }
-              : undefined,
+            course: course ? { connect: { id: course } } : undefined,
+            service: service ? { connect: { id: service } } : undefined,
             custom_id: custom_id ?? "",
             name,
             max_points,

@@ -15,8 +15,8 @@ schema.extendType({
         const { user_id, course_id } = args
         const result = await ctx.db.user_course_progress.findMany({
           where: {
-            user: user_id,
-            course: course_id,
+            user_id,
+            course_id,
           },
         })
 
@@ -74,8 +74,8 @@ schema.extendType({
           before: before ? { id: before } : undefined,
           after: after ? { id: after } : undefined,*/
           where: {
-            user: user_id,
-            course_courseTouser_course_progress: {
+            user_id,
+            course: {
               OR: [
                 {
                   id: course_id ?? undefined,

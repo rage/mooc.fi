@@ -47,7 +47,7 @@ async function removeDataThatIsInDBAlready(
       AND: {
         username: { in: data },
         completion: {
-          some: { course_completionTocourse: { slug: course_slug } },
+          some: { course: { slug: course_slug } },
         },
       },
     },
@@ -96,16 +96,16 @@ async function saveCompletionsAndUsersToDatabase(
 
     const doesCompletionExists = await prisma.completion.findMany({
       where: {
-        user: user.id,
-        course: course.id,
+        user_id: user.id,
+        course_id: course.id,
       },
     })
 
     if (!doesCompletionExists.length) {
       await prisma.completion.create({
         data: {
-          user_completionTouser: { connect: { upstream_id: user.upstream_id } },
-          course_completionTocourse: { connect: { id: course.id } },
+          user: { connect: { upstream_id: user.upstream_id } },
+          course: { connect: { id: course.id } },
           completion_language: determineCompletionLanguage(course_name),
           user_upstream_id: user.upstream_id,
           email: user.email,

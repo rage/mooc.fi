@@ -101,10 +101,10 @@ export const saveToDatabase = async (
   const exerciseCompleteds = await prisma.exercise_completion.findMany({
     take: 1,
     where: {
-      exercise_exerciseToexercise_completion: {
+      exercise: {
         custom_id: message.exercise_id,
       },
-      user_exercise_completionTouser: { upstream_id: Number(message.user_id) },
+      user: { upstream_id: Number(message.user_id) },
     },
     orderBy: { timestamp: "desc" },
   })
@@ -117,10 +117,10 @@ export const saveToDatabase = async (
     logger.info("No previous completion, creating a new one")
     savedExerciseCompletion = await prisma.exercise_completion.create({
       data: {
-        exercise_exerciseToexercise_completion: {
+        exercise: {
           connect: { id: exercise.id },
         },
-        user_exercise_completionTouser: {
+        user: {
           connect: { upstream_id: Number(message.user_id) },
         },
         n_points: message.n_points,

@@ -18,7 +18,7 @@ schema.extendType({
 
         const inheritSettingsCourse = await ctx.db.course
           .findOne({ where: { id: course_id } })
-          .course_courseTocourse_inherit_settings_from()
+          .inherit_settings_from()
 
         if (inheritSettingsCourse) {
           course_id = inheritSettingsCourse.id
@@ -85,7 +85,7 @@ schema.extendType({
         if (course_id) {
           const inheritSettingsCourse = await ctx.db.course
             .findOne({ where: { id: course_id } })
-            .course_courseTocourse_inherit_settings_from()
+            .inherit_settings_from()
 
           if (inheritSettingsCourse) {
             course_id = inheritSettingsCourse.id
@@ -128,7 +128,7 @@ schema.extendType({
             let { course_id } = args
             const inheritSettingsCourse = await ctx.db.course
               .findOne({ where: { id: course_id } })
-              .course_courseTocourse_inherit_settings_from()
+              .inherit_settings_from()
 
             if (inheritSettingsCourse) {
               course_id = inheritSettingsCourse.id

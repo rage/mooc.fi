@@ -16,8 +16,8 @@ schema.extendType({
 
         const exists = await ctx.db.course_organization.findMany({
           where: {
-            course: course_id,
-            organization: organization_id,
+            course_id: course_id,
+            organization_id: organization_id,
           },
         })
 
@@ -27,8 +27,8 @@ schema.extendType({
 
         return ctx.db.course_organization.create({
           data: {
-            course_courseTocourse_organization: { connect: { id: course_id } },
-            organization_course_organizationToorganization: {
+            course: { connect: { id: course_id } },
+            organization: {
               connect: { id: organization_id },
             },
             creator: creator ? creator : false,

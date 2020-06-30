@@ -19,7 +19,7 @@ schema.extendType({
         const openUniversityRegistrationLink = await ctx.db.open_university_registration_link.create(
           {
             data: {
-              course_courseToopen_university_registration_link: {
+              course: {
                 connect: { id: course },
               },
               course_code: course_code ?? "",
@@ -50,7 +50,7 @@ schema.extendType({
           },
           // TODO/FIXME: this deletes the old values?
           data: {
-            course_courseToopen_university_registration_link: {
+            course: {
               connect: { id: course },
             },
             course_code: course_code ?? "",

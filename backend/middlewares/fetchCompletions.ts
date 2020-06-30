@@ -1,10 +1,7 @@
-import { Prisma, Course, Completion, Maybe } from "../generated/prisma-client"
-import { Context } from "/context"
+import { NexusContext } from "/context"
+import { convertPagination } from "/util/db-functions"
 
-export default async function fetchCompletions(
-  args: any,
-  ctx: Context,
-): Promise<Completion[]> {
+export default async function fetchCompletions(args: any, ctx: NexusContext) {
   const { course } = args
   const startTime = new Date().getTime()
   const data = await getCompletionDataFromDB(args, ctx)
@@ -20,20 +17,17 @@ interface CompletionOptionTypes {
   after?: string
   last?: number
   before?: string
+  skip?: number
 }
 
 async function getCompletionDataFromDB(
-  { course, first, after, last, before }: CompletionOptionTypes,
-  ctx: Context,
-): Promise<Completion[]> {
-  const prisma: Prisma = ctx.prisma
-  const courseObject: Maybe<Course> = await prisma.course({ slug: course })
+  { course, first, after, last, before, skip }: CompletionOptionTypes,
+  ctx: NexusContext,
+) {
+  const courseObject = await ctx.db.course.findOne({ where: { slug: course } })
 
-  return prisma.completions({
+  return ctx.db.completion.findMany({
+    ...convertPagination({ first, after, last, before, skip }),
     where: { course: { id: courseObject?.id } },
-    first: first,
-    after: after,
-    last: last,
-    before: before,
   })
 }

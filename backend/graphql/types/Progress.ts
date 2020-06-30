@@ -10,11 +10,11 @@ schema.objectType({
       type: "user_course_progress",
       nullable: true,
       resolve: async (parent, _, ctx) => {
-        const courseId = parent.course?.id
-        const userId = parent.user?.id
+        const course_id = parent.course?.id
+        const user_id = parent.user?.id
         const userCourseProgresses = await ctx.db.user_course_progress.findMany(
           {
-            where: { course: courseId, user: userId },
+            where: { course_id, user_id },
           },
         )
         return userCourseProgresses[0]

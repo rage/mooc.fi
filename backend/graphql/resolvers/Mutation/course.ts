@@ -1,11 +1,10 @@
 import {
-  course_translationUpdateManyWithoutCourse_courseTocourse_translationInput,
-  open_university_registration_linkUpdateManyWithoutCourse_courseToopen_university_registration_linkInput,
+  course_translationUpdateManyWithoutCourseInput,
+  open_university_registration_linkUpdateManyWithoutCourseInput,
   study_moduleUpdateManyWithoutCourseInput,
-  course_variantUpdateManyWithoutCourse_courseTocourse_variantInput,
-  course_aliasUpdateManyWithoutCourse_courseTocourse_aliasInput,
+  course_variantUpdateManyWithoutCourseInput,
+  course_aliasUpdateManyWithoutCourseInput,
   user_course_settings_visibilityUpdateManyWithoutCourse_courseTouser_course_settings_visibilityInput,
-  courseUpdateManyWithoutCourse_courseTocourse_completions_handled_byInput,
 } from "@prisma/client"
 import { stringArg, arg, idArg } from "@nexus/schema"
 import KafkaProducer, { ProducerMessage } from "../../../services/kafkaProducer"
@@ -46,6 +45,7 @@ schema.extendType({
           inherit_settings_from,
           completions_handled_by,
           user_course_settings_visibility,
+          completion_email,
         } = course
 
         let photo = null
@@ -68,7 +68,7 @@ schema.extendType({
           data: {
             ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
-            image: !!photo ? { connect: { id: photo } } : null,
+            photo: !!photo ? { connect: { id: photo } } : null,
             course_translation: !!course_translation
               ? { create: course_translation }
               : null,
@@ -86,14 +86,18 @@ schema.extendType({
               ? { create: course_variant }
               : null,
             course_alias: !!course_alias ? { create: course_alias } : null,
-            other_course_courseTocourse_inherit_settings_from: !!inherit_settings_from
+            inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : null,
-            other_course_courseTocourse_completions_handled_by: !!completions_handled_by
+            completions_handled_by: !!completions_handled_by
               ? { connect: { id: completions_handled_by } }
               : null,
             user_course_settings_visibility: !!user_course_settings_visibility
               ? { create: user_course_settings_visibility }
+              : null,
+            // don't think this will be passed by parameter, but let's be sure
+            completion_email: !!completion_email
+              ? { connect: { id: completion_email } }
               : null,
           },
         })
@@ -175,7 +179,7 @@ schema.extendType({
 
         // FIXME: I know there's probably a better way to do this
         const translationMutation:
-          | course_translationUpdateManyWithoutCourse_courseTocourse_translationInput
+          | course_translationUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -184,7 +188,7 @@ schema.extendType({
         })
 
         const registrationLinkMutation:
-          | open_university_registration_linkUpdateManyWithoutCourse_courseToopen_university_registration_linkInput
+          | open_university_registration_linkUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -193,7 +197,7 @@ schema.extendType({
         })
 
         const courseVariantMutation:
-          | course_variantUpdateManyWithoutCourse_courseTocourse_variantInput
+          | course_variantUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -202,7 +206,7 @@ schema.extendType({
         })
 
         const courseAliasMutation:
-          | course_aliasUpdateManyWithoutCourse_courseTocourse_aliasInput
+          | course_aliasUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -257,28 +261,26 @@ schema.extendType({
 
         const existingInherit = await ctx.db.course
           .findOne({ where: { slug } })
-          .course_courseTocourse_inherit_settings_from()
+          .inherit_settings_from()
         const inheritMutation = inherit_settings_from
           ? {
               connect: { id: inherit_settings_from },
             }
           : existingInherit
           ? {
-              disconnect: { id: existingInherit.id },
+              disconnect: true, // { id: existingInherit.id },
             }
           : undefined
         const existingHandled = await ctx.db.course
           .findOne({ where: { slug } })
-          .course_courseTocourse_completions_handled_by()
-        const handledMutation:
-          | courseUpdateManyWithoutCourse_courseTocourse_completions_handled_byInput
-          | undefined = completions_handled_by
+          .completions_handled_by()
+        const handledMutation = completions_handled_by
           ? {
               connect: { id: completions_handled_by },
             }
           : existingHandled
           ? {
-              disconnect: { id: existingHandled.id },
+              disconnect: true, // { id: existingHandled.id },
             }
           : undefined
 
@@ -299,17 +301,17 @@ schema.extendType({
             slug: new_slug ? new_slug : slug,
             end_date,
             // FIXME: disconnect removed photos?
-            image: !!photo ? { connect: { id: photo } } : undefined,
+            photo: !!photo ? { connect: { id: photo } } : undefined,
             course_translation: translationMutation,
             study_module: studyModuleMutation,
             open_university_registration_link: registrationLinkMutation,
             course_variant: courseVariantMutation,
             course_alias: courseAliasMutation,
-            email_template: completion_email
+            completion_email: completion_email
               ? { connect: { id: completion_email } }
               : undefined,
-            other_course_courseTocourse_inherit_settings_from: inheritMutation,
-            other_course_courseTocourse_completions_handled_by: handledMutation,
+            inherit_settings_from: inheritMutation,
+            completions_handled_by: handledMutation,
             user_course_settings_visibility: userCourseSettingsVisibilityMutation,
           },
         })
@@ -338,7 +340,7 @@ schema.extendType({
               slug: slug ?? undefined,
             },
           })
-          .image()
+          .photo()
 
         if (photo) {
           await deleteImage({ ctx, id: photo.id })

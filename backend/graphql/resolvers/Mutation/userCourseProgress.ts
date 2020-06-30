@@ -18,8 +18,8 @@ schema.extendType({
 
         return ctx.db.user_course_progress.create({
           data: {
-            user_userTouser_course_progress: { connect: { id: user_id } },
-            course_courseTouser_course_progress: { connect: { id: course_id } },
+            user: { connect: { id: user_id } },
+            course: { connect: { id: course_id } },
             progress,
             max_points,
             n_points,

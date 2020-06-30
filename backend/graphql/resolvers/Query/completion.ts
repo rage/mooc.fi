@@ -37,7 +37,7 @@ schema.extendType({
                 course_code: course,
               },
             })
-            .course_courseTocourse_alias()
+            .course()
 
           if (!courseFromAvoinCourse) {
             throw new UserInputError("Invalid course identifier")
@@ -86,7 +86,7 @@ schema.extendType({
         if (!courseWithSlug) {
           const courseFromAvoinCourse = await ctx.db.course_alias
             .findOne({ where: { course_code: course } })
-            .course_courseTocourse_alias()
+            .course()
           if (!courseFromAvoinCourse) {
             throw new UserInputError("Invalid course identifier")
           }
@@ -96,7 +96,7 @@ schema.extendType({
         return ctx.db.completion.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
-            course_completionTocourse: { slug: course },
+            course: { slug: course },
             completion_language,
           },
         })

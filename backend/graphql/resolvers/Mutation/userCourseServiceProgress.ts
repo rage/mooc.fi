@@ -16,10 +16,10 @@ schema.extendType({
 
         const course = await ctx.db.user_course_progress
           .findOne({ where: { id: user_course_progress_id } })
-          .course_courseTouser_course_progress()
+          .course()
         const user = await ctx.db.user_course_progress
           .findOne({ where: { id: user_course_progress_id } })
-          .user_userTouser_course_progress()
+          .user()
 
         if (!course || !user) {
           throw new Error("course or user not found")

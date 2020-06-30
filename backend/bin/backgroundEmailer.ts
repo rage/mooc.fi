@@ -6,18 +6,15 @@ const BATCH_SIZE = 100
 const prisma = new PrismaClient()
 
 const sendEmail = async (emailDelivery: email_delivery) => {
-  const {
-    user_email_deliveryTouser: user,
-    email_template_email_deliveryToemail_template: emailTemplate,
-  } =
+  const { user, email_template } =
     (await prisma.email_delivery.findOne({
       where: { id: emailDelivery.id },
       select: {
-        user_email_deliveryTouser: true,
-        email_template_email_deliveryToemail_template: true,
+        user: true,
+        email_template: true,
       },
     })) ?? {}
-  if (!emailTemplate || !user) {
+  if (!email_template || !user) {
     // TODO: should this update the delivery with error?
     console.error("No email template or user found while sending email")
     return
@@ -27,9 +24,9 @@ const sendEmail = async (emailDelivery: email_delivery) => {
   const emailTemplate = await prisma
     .email_delivery.findOne({ where: { id: emailDelivery.id } })
     .email_template_email_deliveryToemail_template()*/
-  console.log(`Delivering email ${emailTemplate.name} to ${user.email}`)
+  console.log(`Delivering email ${email_template.name} to ${user.email}`)
   try {
-    await sendEmailTemplateToUser(user, emailTemplate)
+    await sendEmailTemplateToUser(user, email_template)
     console.log("Marking email as delivered")
     await prisma.email_delivery.update({
       where: { id: emailDelivery.id },

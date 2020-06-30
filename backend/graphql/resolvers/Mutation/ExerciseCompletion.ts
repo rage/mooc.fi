@@ -18,12 +18,8 @@ schema.extendType({
         return ctx.db.exercise_completion.create({
           data: {
             n_points,
-            exercise_exerciseToexercise_completion: exercise
-              ? { connect: { id: exercise } }
-              : undefined,
-            user_exercise_completionTouser: user
-              ? { connect: { id: user } }
-              : undefined,
+            exercise: exercise ? { connect: { id: exercise } } : undefined,
+            user: user ? { connect: { id: user } } : undefined,
             timestamp,
           },
         })

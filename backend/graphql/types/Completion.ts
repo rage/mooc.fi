@@ -13,11 +13,11 @@ schema.objectType({
     t.model.student_number()
     t.model.user_upstream_id()
     t.model.completion_registered()
-    t.model.course({ alias: "course_id" })
+    t.model.course_id()
     t.model.grade()
     t.model.certificate_id()
     t.model.eligible_for_ects()
-    t.model.course_completionTocourse({ alias: "course" })
+    t.model.course()
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
       type: "Course",
@@ -56,9 +56,7 @@ schema.objectType({
             "Cannot query relations when asking for more than 50 objects",
           )
         }
-        return ctx.db.completion
-          .findOne({ where: { id: parent.id } })
-          .user_completionTouser()
+        return ctx.db.completion.findOne({ where: { id: parent.id } }).user()
       },
     })
 
@@ -68,7 +66,7 @@ schema.objectType({
       resolve: async (parent, _, ctx) => {
         const course = await ctx.db.completion
           .findOne({ where: { id: parent.id } })
-          .course_completionTocourse()
+          .course()
 
         if (!course) {
           throw new Error("course not found")
@@ -80,11 +78,11 @@ schema.objectType({
           parent.completion_language === "unknown"
         ) {
           filter = {
-            course: course.id,
+            course_id: course.id,
           }
         } else {
           filter = {
-            course: course.id,
+            course_id: course.id,
             language: parent.completion_language,
           }
         }

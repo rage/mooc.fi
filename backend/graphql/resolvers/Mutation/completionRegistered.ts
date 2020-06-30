@@ -29,10 +29,10 @@ const buildPromises = (array: any[], ctx: NexusContext) => {
     console.log("entry", entry)
     const course = await ctx.db.completion
       .findOne({ where: { id: entry.completion_id } })
-      .course_completionTocourse()
+      .course()
     const user = await ctx.db.completion
       .findOne({ where: { id: entry.completion_id } })
-      .user_completionTouser()
+      .user()
     console.log(course, user)
 
     if (!course || !user) {
@@ -42,15 +42,15 @@ const buildPromises = (array: any[], ctx: NexusContext) => {
 
     return ctx.db.completion_registered.create({
       data: {
-        completion_completionTocompletion_registered: {
+        completion: {
           connect: { id: entry.completion_id },
         },
-        organization_completion_registeredToorganization: {
+        organization: {
           connect: { id: ctx.organization?.id },
         },
-        course_completion_registeredTocourse: { connect: { id: course.id } },
+        course: { connect: { id: course.id } },
         real_student_number: entry.student_number,
-        user_completion_registeredTouser: { connect: { id: user.id } },
+        user: { connect: { id: user.id } },
       },
     })
   })

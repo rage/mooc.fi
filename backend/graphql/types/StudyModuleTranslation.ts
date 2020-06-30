@@ -9,9 +9,7 @@ schema.objectType({
     t.model.description()
     t.model.language()
     t.model.name()
-    t.model.study_module({ alias: "study_module_id" })
-    t.model.study_module_study_moduleTostudy_module_translation({
-      alias: "study_module",
-    })
+    t.model.study_module_id()
+    t.model.study_module()
   },
 })

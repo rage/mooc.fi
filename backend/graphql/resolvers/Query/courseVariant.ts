@@ -7,7 +7,7 @@ schema.extendType({
     t.crud.courseVariant()
     t.crud.courseVariants({
       filtering: {
-        course: true,
+        course_id: true,
       },
       pagination: false,
     })

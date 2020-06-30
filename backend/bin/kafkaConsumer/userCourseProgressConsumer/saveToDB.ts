@@ -88,10 +88,10 @@ export const saveToDatabase = async (
   if (!userCourseProgress) {
     userCourseProgress = await prisma.user_course_progress.create({
       data: {
-        course_courseTouser_course_progress: {
+        course: {
           connect: { id: message.course_id },
         },
-        user_userTouser_course_progress: { connect: { id: user?.id } },
+        user: { connect: { id: user?.id } },
         progress: message.progress as any, // type error without any
       },
     })
