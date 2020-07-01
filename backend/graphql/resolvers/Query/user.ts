@@ -2,11 +2,14 @@ import { stringArg, idArg, intArg } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { buildSearch, convertPagination } from "../../../util/db-functions"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.users()
+    t.crud.users({
+      authorize: isAdmin,
+    })
     /*t.list.field("users", {
       type: "user",
       resolve: (_, __, ctx) => {
@@ -22,6 +25,7 @@ schema.extendType({
         search: stringArg(),
         upstream_id: intArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { id, search, upstream_id } = args
 
@@ -46,12 +50,13 @@ schema.extendType({
       },
     })
 
-    t.connectionField("userDetailsContains", {
+    t.connection("userDetailsContains", {
       type: "user",
       additionalArgs: {
         search: stringArg(),
         skip: intArg({ default: 0 }),
       },
+      authorize: isAdmin,
       cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
       nodes: async (_, args, ctx) => {
         const { search, first, last, before, after, skip } = args

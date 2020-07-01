@@ -1,11 +1,16 @@
 // import { idArg } from "@nexus/schema"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.exercise()
-    t.crud.exercises()
+    t.crud.exercise({
+      authorize: isAdmin,
+    })
+    t.crud.exercises({
+      authorize: isAdmin,
+    })
 
     /*t.field("exercise", {
       type: "exercise",

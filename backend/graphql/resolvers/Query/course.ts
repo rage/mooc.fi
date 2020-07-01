@@ -2,6 +2,7 @@ import { stringArg, idArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { course as Course } from "@prisma/client"
 import { UserInputError } from "apollo-server-errors"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
@@ -13,6 +14,7 @@ schema.extendType({
         id: idArg(),
         language: stringArg(),
       },
+      authorize: isAdmin,
       nullable: true,
       resolve: async (_, args, ctx) => {
         const { slug, id, language } = args
@@ -124,6 +126,7 @@ schema.extendType({
       args: {
         slug: stringArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { slug } = args
 

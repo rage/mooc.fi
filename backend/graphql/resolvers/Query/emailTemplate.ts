@@ -1,10 +1,17 @@
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.emailTemplate({ alias: "email_template" })
-    t.crud.emailTemplates({ alias: "email_templates" })
+    t.crud.emailTemplate({
+      alias: "email_template",
+      authorize: isAdmin,
+    })
+    t.crud.emailTemplates({
+      alias: "email_templates",
+      authorize: isAdmin,
+    })
 
     /*t.field("email_template", {
       type: "email_template",

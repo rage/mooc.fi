@@ -2,6 +2,8 @@ import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { idArg, intArg, stringArg } from "@nexus/schema"
 import { buildSearch, convertPagination } from "../../../util/db-functions"
 import { schema } from "nexus"
+import { userWhereInput } from "@prisma/client"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
@@ -12,6 +14,7 @@ schema.extendType({
         user_id: idArg({ required: true }),
         course_id: idArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id } = args
         let { course_id } = args
@@ -56,7 +59,7 @@ schema.extendType({
       },
     })
 
-    t.connectionField("UserCourseSettingses", {
+    t.connection("UserCourseSettingses", {
       type: "UserCourseSettings",
       additionalArgs: {
         user_id: idArg(),
@@ -65,6 +68,7 @@ schema.extendType({
         search: stringArg(),
         skip: intArg({ default: 0 }),
       },
+      authorize: isAdmin,
       nodes: async (_, args, ctx) => {
         const {
           first,
@@ -97,12 +101,12 @@ schema.extendType({
           where: {
             user: {
               OR: [
-                {
+                /*{
                   id: user_id ?? undefined,
                 },
                 {
                   upstream_id: user_upstream_id ?? undefined,
-                },
+                },*/
                 {
                   OR: buildSearch(
                     ["first_name", "last_name", "username", "email"],
@@ -134,27 +138,29 @@ schema.extendType({
               course_id = inheritSettingsCourse.id
             }
 
-            return ctx.db.userCourseSettings.count({
+            const orCondition: userWhereInput[] = [
+              {
+                OR: buildSearch(
+                  ["first_name", "last_name", "username", "email"],
+                  search ?? "",
+                ),
+              },
+            ]
+
+            if (user_id) orCondition.concat({ id: user_id })
+            if (user_upstream_id)
+              orCondition.concat({ upstream_id: user_upstream_id })
+
+            const count = await ctx.db.userCourseSettings.count({
               where: {
                 user: {
-                  OR: [
-                    {
-                      id: user_id ?? undefined,
-                    },
-                    {
-                      upstream_id: user_upstream_id ?? undefined,
-                    },
-                    {
-                      OR: buildSearch(
-                        ["first_name", "last_name", "username", "email"],
-                        search ?? "",
-                      ),
-                    },
-                  ],
+                  OR: orCondition,
                 },
                 course_id,
               },
             })
+
+            return count
           },
         })
       },

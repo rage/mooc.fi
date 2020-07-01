@@ -16,6 +16,7 @@ import cors from "cors"
 import { graphqlUploadExpress } from "graphql-upload"
 import { moocfiAuthPlugin } from "nexus-plugin-moocfi-auth-plugin"
 import redisClient from "./services/redis"
+import { contextUser } from "./middlewares/FetchUser"
 
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient({
@@ -56,13 +57,12 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-// schema.middleware(fetchUser)
-
 schema.addToContext(async (req) => ({
   ...req,
   user: undefined,
   organization: undefined,
-  role: Role.VISITOR,
+  // role: Role.VISITOR,
+  ...(await contextUser(req, prismaClient)),
   disableRelations: false,
   userDetails: undefined,
   tmcClient: undefined,
@@ -76,12 +76,13 @@ settings.change({
   },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
-    rootTypingsGlobPattern: "./graphql/**/*.ts",
+    // rootTypingsGlobPattern: "./graphql/**/*.ts",
     connections: {
       default: {
         includeNodesField: true,
       },
     },
+    authorization: {},
   },
 })
 
@@ -91,7 +92,10 @@ const isOrganization = rule({ cache: "contextual" })(
 )
 
 const isAdmin = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.ADMIN,
+  async (_parent, _args, ctx: NexusContext, _info) => (
+    console.log("called?", ctx.role, "should be", Role.ADMIN),
+    ctx.role === Role.ADMIN
+  ),
 )
 
 const isVisitor = rule({ cache: "contextual" })(
@@ -130,7 +134,7 @@ const permissions = shield({
       openUniversityRegistrationLinks: isAdmin,
       organization: organizationPermission,
       organizations: organizationPermission,
-      registerCompletions: or(isOrganization, isAdmin),
+      registeredCompletions: or(isOrganization, isAdmin),
       service: isAdmin,
       services: isAdmin,
       study_module: isAdmin,
@@ -190,13 +194,13 @@ const permissions = shield({
   },
 })
 
-use(
+/*use(
   moocfiAuthPlugin({
     prisma: prismaClient,
     redisClient,
   }),
-)
-use(permissions)
+)*/
+// use(permissions)
 
 server.express.use(cors())
 server.express.use(

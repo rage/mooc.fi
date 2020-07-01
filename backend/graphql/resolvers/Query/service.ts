@@ -1,11 +1,15 @@
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.service()
+    t.crud.service({
+      authorize: isAdmin,
+    })
     t.crud.services({
       pagination: false,
+      authorize: isAdmin,
     })
 
     /*t.field("service", {
