@@ -2,11 +2,15 @@ import { ForbiddenError, UserInputError } from "apollo-server-errors"
 import { intArg, stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { completion_registeredWhereUniqueInput } from "@prisma/client"
+import { isAdmin, isOrganization, or } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.completionRegistereds({ alias: "registeredCompletions" })
+    t.crud.completionRegistereds({
+      alias: "registeredCompletions",
+      authorize: or(isOrganization, isAdmin),
+    })
 
     t.list.field("registeredCompletions", {
       type: "completion_registered",
@@ -16,6 +20,7 @@ schema.extendType({
         take: intArg(),
         cursor: arg({ type: "completion_registeredWhereUniqueInput" }),
       },
+      authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
         const { course, skip, take, cursor } = args
         if ((take ?? 0) > 50) {

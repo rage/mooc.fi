@@ -45,10 +45,10 @@ export async function redisify<T>(
   return await getAsync(prefixedKey)
     .then(async (res: any) => {
       if (res) {
-        logger.info(`Cache hit: ${prefixedKey}`)
+        logger.info(`Cache hit: ${prefix}`)
         return await JSON.parse(res)
       }
-      logger.info(`Cache miss: ${prefixedKey}`)
+      logger.info(`Cache miss: ${prefix}`)
 
       const value = fn instanceof Promise ? await fn : await fn(...params)
 
@@ -58,7 +58,6 @@ export async function redisify<T>(
       return value
     })
     .catch(() => {
-      logger.error("------------------------------- REDIS ERROR THING")
       return fn instanceof Promise ? fn : fn(...params)
     })
 }

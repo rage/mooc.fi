@@ -1,5 +1,6 @@
 import { idArg } from "@nexus/schema"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
@@ -11,6 +12,7 @@ schema.extendType({
         course_id: idArg(),
         service_id: idArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
         const result = await ctx.db.user_course_service_progress.findMany({
@@ -31,6 +33,7 @@ schema.extendType({
         service_id: true,
       },
       pagination: true,
+      authorize: isAdmin,
     })
     /*t.list.field("UserCourseServiceProgresses", {
       type: "user_course_service_progress",

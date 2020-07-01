@@ -1,6 +1,18 @@
 import { idArg, intArg, arg, booleanArg } from "@nexus/schema"
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
+import { Role } from "../../../accessControl"
+
+const organizationPermission = (
+  _: any,
+  args: any,
+  ctx: NexusContext,
+  _info: any,
+) => {
+  if (args.hidden) return ctx.role === Role.ADMIN
+
+  return true
+}
 
 schema.extendType({
   type: "Query",
@@ -11,6 +23,7 @@ schema.extendType({
         id: idArg(),
         hidden: booleanArg(),
       },
+      authorize: organizationPermission,
       nullable: true,
       resolve: async (_, args, ctx) => {
         const { id, hidden } = args
@@ -33,6 +46,7 @@ schema.extendType({
     t.crud.organizations({
       ordering: true,
       pagination: true,
+      authorize: organizationPermission,
     })
 
     t.list.field("organizations", {
@@ -48,6 +62,7 @@ schema.extendType({
         orderBy: arg({ type: "organizationOrderByInput" }),
         hidden: booleanArg(),
       },
+      authorize: organizationPermission,
       resolve: async (_, args, ctx) => {
         const {
           /*first, last, after, before, */ take,

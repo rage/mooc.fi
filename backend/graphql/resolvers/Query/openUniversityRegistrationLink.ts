@@ -1,10 +1,15 @@
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.openUniversityRegistrationLink()
-    t.crud.openUniversityRegistrationLinks()
+    t.crud.openUniversityRegistrationLink({
+      authorize: isAdmin,
+    })
+    t.crud.openUniversityRegistrationLinks({
+      authorize: isAdmin,
+    })
     /*
     t.field("openUniversityRegistrationLink", {
       type: "open_university_registration_link",

@@ -1,11 +1,15 @@
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.exerciseCompletion()
+    t.crud.exerciseCompletion({
+      authorize: isAdmin,
+    })
     t.crud.exerciseCompletions({
       ordering: true,
+      authorize: isAdmin,
     })
 
     /*t.field("exerciseCompletion", {

@@ -71,7 +71,7 @@ export const StudentProgresses = gql`
           }
         }
       }
-      count(course_id: $course_id)
+      count(course_id: $course_id, search: $search)
     }
   }
 `
@@ -144,8 +144,6 @@ function PaginatedPointsList(props: Props) {
   }))
 
   const edges = (UserCourseSettingses?.edges ?? []).filter(notEmpty)
-
-  console.log(UserCourseSettingses)
 
   return (
     <ErrorBoundary>

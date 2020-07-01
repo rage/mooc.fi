@@ -3,6 +3,7 @@ import { stringArg, intArg, idArg } from "@nexus/schema"
 import Knex from "../../../services/knex"
 import { schema } from "nexus"
 import { convertPagination } from "../../../util/db-functions"
+import { or, isOrganization, isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
@@ -17,6 +18,7 @@ schema.extendType({
         last: intArg(),
         before: idArg(),
       },
+      authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
         const { first, last, completion_language } = args
         let { course } = args
@@ -63,13 +65,14 @@ schema.extendType({
       },
     })
 
-    t.connectionField("completionsPaginated", {
+    t.connection("completionsPaginated", {
       type: "completion",
       additionalArgs: {
         course: stringArg({ required: true }),
         completion_language: stringArg(),
         skip: intArg({ default: 0 }),
       },
+      authorize: or(isOrganization, isAdmin),
       cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
       nodes: async (_, args, ctx, __) => {
         const { completion_language, first, last, before, after, skip } = args

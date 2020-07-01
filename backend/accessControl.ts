@@ -1,5 +1,5 @@
 // import { ForbiddenError } from "apollo-server-errors"
-//import { Context } from "./context"
+import { NexusContext } from "./context"
 
 export enum Role {
   USER,
@@ -7,6 +7,48 @@ export enum Role {
   ORGANIZATION, //for automated scripts, not for accounts
   VISITOR,
 }
+
+export const isAdmin = (_: any, _args: any, ctx: NexusContext, _info: any) =>
+  ctx.role === Role.ADMIN
+export const isUser = (_: any, _args: any, ctx: NexusContext, _info: any) =>
+  ctx.role === Role.USER
+export const isOrganization = (
+  _: any,
+  _args: any,
+  ctx: NexusContext,
+  _info: any,
+) => ctx.role === Role.ORGANIZATION
+export const isVisitor = (_: any, _args: any, ctx: NexusContext, _info: any) =>
+  ctx.role === Role.VISITOR
+
+type AuthorizeFunction = (
+  root: any,
+  args: any,
+  ctx: NexusContext,
+  info: any,
+) => boolean
+
+export const or = (...predicates: AuthorizeFunction[]) => (
+  root: any,
+  args: any,
+  ctx: NexusContext,
+  info: any,
+) => predicates.some((p) => p(root, args, ctx, info))
+
+export const and = (...predicates: AuthorizeFunction[]) => (
+  root: any,
+  args: any,
+  ctx: NexusContext,
+  info: any,
+) => predicates.every((p) => p(root, args, ctx, info))
+
+export const not = (fn: AuthorizeFunction) => (
+  root: any,
+  args: any,
+  ctx: NexusContext,
+  info: any,
+) => !fn(root, args, ctx, info)
+
 /*const checkAccess = (
   ctx: Context,
   {

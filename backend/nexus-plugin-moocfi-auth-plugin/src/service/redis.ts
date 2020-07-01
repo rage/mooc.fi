@@ -37,7 +37,7 @@ export async function redisify<T>(
   return await getAsync(redisClient)(prefixedKey)
     .then(async (res: any) => {
       if (res) {
-        logger.info('Cache hit')
+        logger.info(`Cache hit`)
         return await JSON.parse(res)
       }
       logger.info('Cache miss')

@@ -1,6 +1,7 @@
 import { stringArg, idArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
@@ -12,6 +13,7 @@ schema.extendType({
         slug: stringArg(),
         language: stringArg(),
       },
+      authorize: isAdmin,
       nullable: true,
       resolve: async (_, args, ctx) => {
         const { id, slug, language } = args
@@ -112,6 +114,7 @@ schema.extendType({
       args: {
         slug: stringArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {
         return (
           (await ctx.db.study_module.findMany({ where: { slug } })).length > 0

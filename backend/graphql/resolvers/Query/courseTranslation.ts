@@ -1,4 +1,5 @@
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
@@ -8,6 +9,7 @@ schema.extendType({
         language: true,
       },
       pagination: false,
+      authorize: isAdmin,
     })
     /*t.list.field("CourseTranslations", {
       type: "course_translation",

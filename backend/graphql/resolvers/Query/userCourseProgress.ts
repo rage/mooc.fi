@@ -1,6 +1,7 @@
 import { UserInputError } from "apollo-server-errors"
 import { idArg, intArg, stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Query",
@@ -11,6 +12,7 @@ schema.extendType({
         user_id: idArg({ required: true }),
         course_id: idArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id } = args
         const result = await ctx.db.user_course_progress.findMany({
@@ -50,6 +52,7 @@ schema.extendType({
         last: intArg(),
         before: idArg(),*/
       },
+      authorize: isAdmin,
       resolve: (_, args, ctx) => {
         // checkAccess(ctx)
         const {
