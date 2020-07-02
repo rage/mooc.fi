@@ -1,6 +1,8 @@
 import { ForbiddenError } from "apollo-server-errors"
 import { NexusContext } from "../../../context"
 
+// FIXME/DELETE: what's this relic?
+
 const Completion = async (parent: any, _: any, ctx: NexusContext) => {
   if (ctx.disableRelations) {
     throw new ForbiddenError(
