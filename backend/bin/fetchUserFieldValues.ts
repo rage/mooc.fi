@@ -5,10 +5,11 @@ import TmcClient from "../services/tmc"
 import { PrismaClient } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
+import prismaClient from "./lib/prisma"
 
 const CONFIG_NAME = "userFieldValues"
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const fetcUserFieldValues = async () => {
   const startTime = new Date().getTime()

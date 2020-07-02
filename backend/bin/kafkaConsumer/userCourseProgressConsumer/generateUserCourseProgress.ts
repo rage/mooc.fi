@@ -3,7 +3,6 @@ require("dotenv-safe").config({
 })
 import {
   UserCourseSettings,
-  PrismaClient,
   User,
   Course,
   UserCourseProgress,
@@ -15,8 +14,9 @@ import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "../../../util/EmailTemplater/EmailTemplater"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
+import prismaClient from "../../lib/prisma"
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER

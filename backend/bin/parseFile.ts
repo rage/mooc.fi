@@ -2,11 +2,11 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import { uniqBy } from "lodash"
-import { PrismaClient } from "@prisma/client"
 import TmcClient from "../services/tmc"
+import prismaClient from "./lib/prisma"
 
 const tmc = new TmcClient()
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const doIt = async () => {
   const data = await tmc.getUserAppDatum(null)

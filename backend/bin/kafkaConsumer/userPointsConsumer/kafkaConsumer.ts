@@ -1,5 +1,4 @@
 require("dotenv-safe").config()
-import { PrismaClient } from "@prisma/client"
 import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
@@ -7,11 +6,12 @@ import * as winston from "winston"
 const config = require("../kafkaConfig")
 
 import { handleMessage } from "./handleMessage"
+import prismaClient from "../../lib/prisma"
 
 const TOPIC_NAME = [config.user_points_consumer.topic_name]
 
 const mutex = new Mutex()
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const logger = winston.createLogger({
   level: "info",

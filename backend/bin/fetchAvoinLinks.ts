@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client"
 import axios from "axios"
 import { DateTime } from "luxon"
 import { maxBy } from "lodash"
-
+import prismaClient from "./lib/prisma"
 require("dotenv-safe").config()
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const fetch = async () => {
   const avoinObjects = await prisma.openUniversityRegistrationLink.findMany({})

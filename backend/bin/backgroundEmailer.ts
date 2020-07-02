@@ -1,9 +1,9 @@
-import { PrismaClient, EmailDelivery } from "@prisma/client"
+import { EmailDelivery } from "@prisma/client"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
-
+import prismaClient from "./lib/prisma"
 const BATCH_SIZE = 100
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {
   const { user, email_template } =

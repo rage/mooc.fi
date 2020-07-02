@@ -1,13 +1,13 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import { PrismaClient } from "@prisma/client"
 import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/resolvers/Mutation/organization"
+import prismaClient from "./lib/prisma"
 
 const tmc = new TmcClient()
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const fetchOrganizations = async () => {
   const orgInfos: OrganizationInfo[] = await tmc.getOrganizations()

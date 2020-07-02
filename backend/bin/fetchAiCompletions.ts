@@ -2,9 +2,10 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
-import { PrismaClient, User } from "@prisma/client"
+import { User } from "@prisma/client"
+import prismaClient from "./lib/prisma"
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 const getPassedUsernamesByTag = require("../services/quiznator")
   .getPassedUsernamesByTag
 const tmcService = require("../services/tmc_completion_script")
