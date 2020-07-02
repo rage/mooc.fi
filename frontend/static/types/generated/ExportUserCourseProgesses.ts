@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface ExportUserCourseProgesses_userCourseProgresses_user {
-  __typename: "user"
+  __typename: "User"
   id: string
   email: string
   student_number: string | null
@@ -26,7 +26,7 @@ export interface ExportUserCourseProgesses_userCourseProgresses_UserCourseSettin
 }
 
 export interface ExportUserCourseProgesses_userCourseProgresses {
-  __typename: "user_course_progress"
+  __typename: "UserCourseProgress"
   id: string
   user: ExportUserCourseProgesses_userCourseProgresses_user | null
   progress: any[] | null

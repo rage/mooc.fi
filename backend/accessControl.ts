@@ -8,6 +8,7 @@ export enum Role {
   VISITOR,
 }
 
+// TODO: caching?
 export const isAdmin = (_: any, _args: any, ctx: NexusContext, _info: any) =>
   ctx.role === Role.ADMIN
 export const isUser = (_: any, _args: any, ctx: NexusContext, _info: any) =>

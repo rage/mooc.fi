@@ -7,7 +7,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.field("study_module", {
-      type: "study_module",
+      type: "StudyModule",
       args: {
         id: idArg(),
         slug: stringArg(),
@@ -22,7 +22,7 @@ schema.extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const study_module = await ctx.db.study_module.findOne({
+        const study_module = await ctx.db.studyModule.findOne({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
@@ -34,7 +34,7 @@ schema.extendType({
         }
 
         if (language) {
-          const module_translations = await ctx.db.study_module_translation.findMany(
+          const module_translations = await ctx.db.studyModuleTranslation.findMany(
             {
               where: {
                 study_module_id: study_module.id,
@@ -68,15 +68,15 @@ schema.extendType({
     })
 
     t.list.field("study_modules", {
-      type: "study_module",
+      type: "StudyModule",
       args: {
-        orderBy: arg({ type: "study_moduleOrderByInput" }),
+        orderBy: arg({ type: "StudyModuleOrderByInput" }),
         language: stringArg(),
       },
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
-        const modules = await ctx.db.study_module.findMany({
+        const modules = await ctx.db.studyModule.findMany({
           orderBy: orderBy ?? undefined,
         })
 
@@ -84,7 +84,7 @@ schema.extendType({
           ? (
               await Promise.all(
                 modules.map(async (module: any) => {
-                  const module_translations = await ctx.db.study_module_translation.findMany(
+                  const module_translations = await ctx.db.studyModuleTranslation.findMany(
                     {
                       where: { study_module_id: module.id, language },
                     },
@@ -117,7 +117,7 @@ schema.extendType({
       authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {
         return (
-          (await ctx.db.study_module.findMany({ where: { slug } })).length > 0
+          (await ctx.db.studyModule.findMany({ where: { slug } })).length > 0
         )
       },
     })

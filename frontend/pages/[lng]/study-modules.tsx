@@ -28,7 +28,10 @@ const StudyModules = () => {
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("allStudyModules")}
         </H1NoBackground>
-        <ModuleGrid modules={data?.study_modules} loading={loading} />
+        <ModuleGrid
+          modules={data?.study_modules ?? undefined}
+          loading={loading}
+        />
       </WideContainer>
     </>
   )

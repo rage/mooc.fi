@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "user_course_progress",
+  name: "UserCourseProgress",
   definition(t) {
     t.model.id()
     t.model.course_id()
@@ -18,7 +18,7 @@ schema.objectType({
     t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
-        const res = await ctx.db.user_course_progress.findOne({
+        const res = await ctx.db.userCourseProgress.findOne({
           where: { id: parent.id },
           select: { progress: true },
         })
@@ -34,7 +34,7 @@ schema.objectType({
       nullable: true,
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id } =
-          (await ctx.db.user_course_progress.findOne({
+          (await ctx.db.userCourseProgress.findOne({
             where: { id: parent.id },
             select: {
               course_id: true,
@@ -64,10 +64,10 @@ schema.objectType({
     })
 
     t.field("exercise_progress", {
-      type: "exercise_progress",
+      type: "ExerciseProgress",
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id } =
-          (await ctx.db.user_course_progress.findOne({
+          (await ctx.db.userCourseProgress.findOne({
             where: { id: parent.id },
             select: {
               course_id: true,
@@ -84,17 +84,15 @@ schema.objectType({
         if (!course_id || !user_id) {
           throw new Error("no course or user found")
         }
-        const courseProgresses = await ctx.db.user_course_progress.findMany({
+        const courseProgresses = await ctx.db.userCourseProgress.findMany({
           where: { course_id, user_id },
         })
         // TODO/FIXME: proper typing
-        const courseProgress: any = courseProgresses.length
-          ? courseProgresses[0].progress
-          : []
+        const courseProgress: any = courseProgresses?.[0].progress ?? []
         const exercises = await ctx.db.course
           .findOne({ where: { id: course_id } })
           .exercise()
-        const completedExercises = await ctx.db.exercise_completion.findMany({
+        const completedExercises = await ctx.db.exerciseCompletion.findMany({
           where: {
             exercise: { course_id },
             user_id,

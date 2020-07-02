@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { course_status } from "./globalTypes"
+import { CourseStatus } from "./globalTypes"
 
 // ====================================================
 // GraphQL query operation: CourseDetails
 // ====================================================
 
 export interface CourseDetails_course_photo {
-  __typename: "image"
+  __typename: "Image"
   id: string
   compressed: string | null
   compressed_mimetype: string | null
@@ -19,7 +19,7 @@ export interface CourseDetails_course_photo {
 }
 
 export interface CourseDetails_course_course_translation {
-  __typename: "course_translation"
+  __typename: "CourseTranslation"
   id: string
   name: string
   language: string
@@ -28,7 +28,7 @@ export interface CourseDetails_course_course_translation {
 }
 
 export interface CourseDetails_course_open_university_registration_link {
-  __typename: "open_university_registration_link"
+  __typename: "OpenUniversityRegistrationLink"
   id: string
   course_code: string
   language: string
@@ -36,41 +36,41 @@ export interface CourseDetails_course_open_university_registration_link {
 }
 
 export interface CourseDetails_course_study_module {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
 }
 
 export interface CourseDetails_course_course_variant {
-  __typename: "course_variant"
+  __typename: "CourseVariant"
   id: string
   slug: string
   description: string | null
 }
 
 export interface CourseDetails_course_course_alias {
-  __typename: "course_alias"
+  __typename: "CourseAlias"
   id: string
   course_code: string
 }
 
 export interface CourseDetails_course_inherit_settings_from {
-  __typename: "course"
+  __typename: "Course"
   id: string
 }
 
 export interface CourseDetails_course_completions_handled_by {
-  __typename: "course"
+  __typename: "Course"
   id: string
 }
 
 export interface CourseDetails_course_user_course_settings_visibility {
-  __typename: "user_course_settings_visibility"
+  __typename: "UserCourseSettingsVisibility"
   id: string
   language: string
 }
 
 export interface CourseDetails_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   name: string
   slug: string
@@ -87,7 +87,7 @@ export interface CourseDetails_course {
   start_point: boolean | null
   hidden: boolean | null
   study_module_start_point: boolean | null
-  status: course_status | null
+  status: CourseStatus | null
   course_translation: CourseDetails_course_course_translation[]
   open_university_registration_link: CourseDetails_course_open_university_registration_link[]
   study_module: CourseDetails_course_study_module[]

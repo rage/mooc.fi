@@ -2,22 +2,24 @@ import { stringArg, arg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
 import { omit } from "lodash"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addStudyModule", {
-      type: "study_module",
+      type: "StudyModule",
       args: {
         study_module: arg({
           type: "StudyModuleCreateArg",
           required: true,
         }),
       },
+      authorize: isAdmin,
       resolve: async (_, { study_module }, ctx) => {
         const { study_module_translation } = study_module
 
-        return ctx.db.study_module.create({
+        return ctx.db.studyModule.create({
           data: {
             ...study_module,
             name: study_module.name ?? "",
@@ -36,13 +38,14 @@ schema.extendType({
     })
 
     t.field("updateStudyModule", {
-      type: "study_module",
+      type: "StudyModule",
       args: {
         study_module: arg({
           type: "StudyModuleUpsertArg",
           required: true,
         }),
       },
+      authorize: isAdmin,
       resolve: async (_, { study_module }, ctx) => {
         const { id, slug, new_slug, study_module_translation } = study_module
 
@@ -50,7 +53,7 @@ schema.extendType({
           throw new UserInputError("must provide slug")
         }
 
-        const existingTranslations = await ctx.db.study_module
+        const existingTranslations = await ctx.db.studyModule
           .findOne({ where: { slug } })
           .study_module_translation()
         const newTranslations = (study_module_translation || [])
@@ -83,7 +86,7 @@ schema.extendType({
             : undefined,
         }
 
-        const updatedModule = await ctx.db.study_module.update({
+        const updatedModule = await ctx.db.studyModule.update({
           where: {
             id: id ?? undefined,
             slug,
@@ -103,11 +106,12 @@ schema.extendType({
     })
 
     t.field("deleteStudyModule", {
-      type: "study_module",
+      type: "StudyModule",
       args: {
         id: idArg({ required: false }),
         slug: stringArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { id, slug } = args
 
@@ -115,7 +119,7 @@ schema.extendType({
           throw "must have at least id or slug"
         }
 
-        const deletedModule = await ctx.db.study_module.delete({
+        const deletedModule = await ctx.db.studyModule.delete({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,

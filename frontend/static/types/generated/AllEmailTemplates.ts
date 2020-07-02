@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface AllEmailTemplates_email_templates {
-  __typename: "email_template"
+  __typename: "EmailTemplate"
   id: string
   name: string | null
   txt_body: string | null

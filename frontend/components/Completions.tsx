@@ -10,7 +10,7 @@ import { useContext } from "react"
 import CompletionListItem from "/components/CompletionListItem"
 
 const completionsFragment = gql`
-  fragment UserCompletions on user {
+  fragment UserCompletions on User {
     completions {
       id
       completion_language

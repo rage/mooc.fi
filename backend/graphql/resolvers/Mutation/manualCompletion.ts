@@ -3,16 +3,18 @@ import Knex from "../../../services/knex"
 import { v4 as uuidv4 } from "uuid"
 import { groupBy } from "lodash"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
   definition(t) {
     t.list.field("addManualCompletion", {
-      type: "completion",
+      type: "Completion",
       args: {
         completions: arg({ type: "ManualCompletionArg", list: true }),
         course_id: stringArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, args, _ctx) => {
         const { course_id } = args
 

@@ -31,6 +31,7 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"
+import notEmpty from "/util/notEmpty"
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -67,7 +68,7 @@ export const AddUserOrganizationMutation = gql`
 `
 
 export const UpdateUserOrganizationMutation = gql`
-  mutation updateUserOrganization($id: ID!, $role: organization_role) {
+  mutation updateUserOrganization($id: ID!, $role: OrganizationRole) {
     updateUserOrganization(id: $id, role: $role) {
       id
     }
@@ -194,9 +195,10 @@ const Register = () => {
       return
     }
 
-    const mIds = userOrganizationsData.userOrganizations.map(
-      (uo) => uo.organization.id,
-    )
+    const mIds =
+      userOrganizationsData.userOrganizations
+        ?.map((uo) => uo.organization?.id)
+        .filter(notEmpty) ?? []
 
     setMemberships(mIds)
   }, [userOrganizationsData])
@@ -206,16 +208,15 @@ const Register = () => {
       return
     }
 
-    const sortedOrganizations = organizationsData
-      ? organizationsData.organizations
-          .filter((o) => o?.organization_translations?.length)
-          .sort((a, b) =>
-            a!.organization_translations![0].name.localeCompare(
-              b!.organization_translations![0].name,
-              "fi-FI",
-            ),
-          )
-      : []
+    const sortedOrganizations =
+      organizationsData?.organizations
+        ?.filter((o) => o?.organization_translation?.length)
+        .sort((a, b) =>
+          a!.organization_translation![0].name.localeCompare(
+            b!.organization_translation![0].name,
+            "fi-FI",
+          ),
+        ) ?? []
 
     const orgs = sortedOrganizations.reduce(
       (acc, curr) => ({
@@ -244,7 +245,7 @@ const Register = () => {
       Object.entries(organizations).reduce((acc, [key, value]) => {
         if (
           !value!
-            .organization_translations![0].name.toLowerCase()
+            .organization_translation![0].name.toLowerCase()
             .includes(searchFilter.toLowerCase())
         ) {
           return acc
@@ -261,7 +262,7 @@ const Register = () => {
   const toggleMembership = (id: string) => async () => {
     if (memberships.includes(id)) {
       const existing = userOrganizationsData?.userOrganizations?.find(
-        (uo: UserOrganizations_userOrganizations) => uo.organization.id === id,
+        (uo: UserOrganizations_userOrganizations) => uo.organization?.id === id,
       )
 
       if (existing) {
@@ -327,7 +328,7 @@ const Register = () => {
             >).map(([id, organization]) => (
               <OrganizationCard
                 key={`card-${id}`}
-                name={organization!.organization_translations![0].name}
+                name={organization!.organization_translation![0].name}
                 isMember={memberships.includes(id)}
                 onToggle={toggleMembership(id)}
               />

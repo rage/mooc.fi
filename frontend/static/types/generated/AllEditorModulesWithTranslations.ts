@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface AllEditorModulesWithTranslations_study_modules_study_module_translation {
-  __typename: "study_module_translation"
+  __typename: "StudyModuleTranslation"
   id: string
   language: string
   name: string
@@ -16,7 +16,7 @@ export interface AllEditorModulesWithTranslations_study_modules_study_module_tra
 }
 
 export interface AllEditorModulesWithTranslations_study_modules {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
   slug: string
   name: string

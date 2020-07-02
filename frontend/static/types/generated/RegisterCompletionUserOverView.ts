@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface RegisterCompletionUserOverView_currentUser_completions_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   slug: string
   name: string
@@ -16,19 +16,19 @@ export interface RegisterCompletionUserOverView_currentUser_completions_course {
 }
 
 export interface RegisterCompletionUserOverView_currentUser_completions_completion_registered_organization {
-  __typename: "organization"
+  __typename: "Organization"
   slug: string
 }
 
 export interface RegisterCompletionUserOverView_currentUser_completions_completion_registered {
-  __typename: "completion_registered"
+  __typename: "CompletionRegistered"
   id: string
   created_at: any | null
   organization: RegisterCompletionUserOverView_currentUser_completions_completion_registered_organization | null
 }
 
 export interface RegisterCompletionUserOverView_currentUser_completions {
-  __typename: "completion"
+  __typename: "Completion"
   id: string
   email: string
   completion_language: string | null
@@ -41,7 +41,7 @@ export interface RegisterCompletionUserOverView_currentUser_completions {
 }
 
 export interface RegisterCompletionUserOverView_currentUser {
-  __typename: "user"
+  __typename: "User"
   id: string
   upstream_id: number
   first_name: string | null

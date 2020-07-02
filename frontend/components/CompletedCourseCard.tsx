@@ -63,7 +63,7 @@ function CompletedCourseCard(props: CourseCardProps) {
     <Grid item xs={12}>
       <Background>
         <CourseTitle component="h3" variant="h6" gutterBottom={true}>
-          {completion.course.name}
+          {completion.course?.name}
         </CourseTitle>
         <CardText>
           {t("completedDate")} {formatDateTime(completion.created_at)}
@@ -87,7 +87,7 @@ function CompletedCourseCard(props: CourseCardProps) {
           ))
         ) : (
           <Button
-            href={`/register-completion/${completion.course.slug}`}
+            href={`/register-completion/${completion.course?.slug}`}
             style={{
               color: "red",
               marginRight: "0.5rem",

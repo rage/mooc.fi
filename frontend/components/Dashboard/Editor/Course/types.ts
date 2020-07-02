@@ -1,4 +1,4 @@
-import { course_status } from "/static/types/generated/globalTypes"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 import { FormValues } from "../types"
 import {
   CourseDetails_course_photo,
@@ -22,7 +22,7 @@ export interface CourseFormValues extends FormValues {
   promote: boolean
   hidden: boolean
   study_module_start_point: boolean
-  status: course_status
+  status: CourseStatus
   course_translation: CourseTranslationFormValues[]
   open_university_registration_link?:
     | CourseDetails_course_open_university_registration_link[]

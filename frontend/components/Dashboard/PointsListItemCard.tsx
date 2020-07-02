@@ -12,7 +12,7 @@ import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import PointsProgress from "/components/Dashboard/PointsProgress"
 
 const UserFragment = gql`
-  fragment UserPointsFragment on user {
+  fragment UserPointsFragment on User {
     id
     first_name
     last_name
@@ -102,7 +102,7 @@ function PointsListItemCard(props: Props) {
         <PersonalDetailsDisplay personalDetails={personalDetails} />
       ) : (
         <CardTitle component="h2" variant="h3">
-          {pointsAll.course.name}
+          {pointsAll.course?.name}
         </CardTitle>
       )}
       {Object.keys(formattedPointsData?.groups ?? {}).length ? (

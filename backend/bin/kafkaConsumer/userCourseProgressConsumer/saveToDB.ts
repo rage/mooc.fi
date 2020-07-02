@@ -2,9 +2,9 @@ import { Message } from "./interfaces"
 import { DateTime } from "luxon"
 import {
   PrismaClient,
-  user,
-  user_course_progress,
-  user_course_service_progress,
+  User,
+  UserCourseProgress,
+  UserCourseServiceProgress,
 } from "@prisma/client"
 import TmcClient from "../../../services/tmc"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
@@ -51,7 +51,7 @@ export const saveToDatabase = async (
 ) => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  let user: user | null
+  let user: User | null
 
   user = (await Knex("user").where("upstream_id", message.user_id).limit(1))[0]
 
@@ -79,14 +79,14 @@ export const saveToDatabase = async (
   }
 
   let userCourseProgress = (
-    await Knex<unknown, user_course_progress[]>("user_course_progress")
+    await Knex<unknown, UserCourseProgress[]>("user_course_progress")
       .where("user", user?.id)
       .where("course", message.course_id)
       .limit(1)
   )[0]
 
   if (!userCourseProgress) {
-    userCourseProgress = await prisma.user_course_progress.create({
+    userCourseProgress = await prisma.userCourseProgress.create({
       data: {
         course: {
           connect: { id: message.course_id },
@@ -98,7 +98,7 @@ export const saveToDatabase = async (
   }
 
   const userCourseServiceProgress = (
-    await Knex<unknown, user_course_service_progress[]>(
+    await Knex<unknown, UserCourseServiceProgress[]>(
       "user_course_service_progress",
     )
       .where("user", user?.id)
@@ -117,7 +117,7 @@ export const saveToDatabase = async (
       logger.error("Timestamp older than in DB, aborting")
       return false
     }
-    await prisma.user_course_service_progress.update({
+    await prisma.userCourseServiceProgress.update({
       where: {
         id: userCourseServiceProgress.id,
       },
@@ -127,7 +127,7 @@ export const saveToDatabase = async (
       },
     })
   } else {
-    await prisma.user_course_service_progress.create({
+    await prisma.userCourseServiceProgress.create({
       data: {
         user: { connect: { id: user?.id } },
         course: {

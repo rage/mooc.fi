@@ -37,7 +37,7 @@ const Courses = () => {
         <H1Background component="h1" variant="h1" align="center">
           {t("allCourses")}
         </H1Background>
-        <CourseGrid courses={data?.courses} loading={loading} />
+        <CourseGrid courses={data?.courses ?? undefined} loading={loading} />
       </WideContainer>
     </Background>
   )

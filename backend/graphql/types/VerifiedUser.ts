@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "verified_user",
+  name: "VerifiedUser",
   definition(t) {
     t.model.id()
     t.model.created_at()

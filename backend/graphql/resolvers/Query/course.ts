@@ -1,6 +1,6 @@
 import { stringArg, idArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
-import { course as Course } from "@prisma/client"
+import { Course } from "@prisma/client"
 import { UserInputError } from "apollo-server-errors"
 import { isAdmin } from "../../../accessControl"
 
@@ -8,7 +8,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.field("course", {
-      type: "course",
+      type: "Course",
       args: {
         slug: stringArg(),
         id: idArg(),
@@ -35,7 +35,7 @@ schema.extendType({
         }
 
         if (language) {
-          const course_translations = await ctx.db.course_translation.findMany({
+          const course_translations = await ctx.db.courseTranslation.findMany({
             where: {
               course_id: course.id,
               language,
@@ -69,9 +69,9 @@ schema.extendType({
     })
 
     t.list.field("courses", {
-      type: "course",
+      type: "Course",
       args: {
-        orderBy: arg({ type: "courseOrderByInput" }),
+        orderBy: arg({ type: "CourseOrderByInput" }),
         language: stringArg(),
       },
       resolve: async (_, args, ctx) => {
@@ -85,7 +85,7 @@ schema.extendType({
           ? (
               await Promise.all(
                 courses.map(async (course: Course) => {
-                  const course_translations = await ctx.db.course_translation.findMany(
+                  const course_translations = await ctx.db.courseTranslation.findMany(
                     {
                       where: {
                         course_id: course.id,

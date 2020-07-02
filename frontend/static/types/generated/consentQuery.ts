@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface consentQuery_currentUser {
-  __typename: "user"
+  __typename: "User"
   id: string
   research_consent: boolean | null
 }

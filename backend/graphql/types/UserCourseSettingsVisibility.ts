@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "user_course_settings_visibility",
+  name: "UserCourseSettingsVisibility",
   definition(t) {
     t.model.id()
     t.model.created_at()

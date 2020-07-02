@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { Grid, Typography } from "@material-ui/core"
 import styled from "styled-components"
-import { course_status } from "/static/types/generated/globalTypes"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
@@ -119,7 +119,7 @@ function ModuleSmallCourseCard({
           >
             {showHeader &&
               (course!.study_module_start_point ||
-                course!.status === course_status.Upcoming) && (
+                course!.status === CourseStatus.Upcoming) && (
                 <Header
                   startPoint={course!.study_module_start_point}
                   upcoming={course!.status === "Upcoming"}

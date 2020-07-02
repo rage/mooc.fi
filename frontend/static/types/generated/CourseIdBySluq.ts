@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface CourseIdBySluq_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
 }
 

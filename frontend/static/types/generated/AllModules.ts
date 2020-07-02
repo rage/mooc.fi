@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface AllModules_study_modules {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
   slug: string
   name: string

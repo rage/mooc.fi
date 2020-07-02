@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface BreadcrumbCourse_course_course_translation {
-  __typename: "course_translation"
+  __typename: "CourseTranslation"
   id: string
   language: string
   name: string
 }
 
 export interface BreadcrumbCourse_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   slug: string
   name: string

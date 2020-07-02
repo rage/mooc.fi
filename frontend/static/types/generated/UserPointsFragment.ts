@@ -8,19 +8,19 @@
 // ====================================================
 
 export interface UserPointsFragment_progresses_course {
-  __typename: "course"
+  __typename: "Course"
   name: string
   id: string
 }
 
 export interface UserPointsFragment_progresses_user_course_progress_exercise_progress {
-  __typename: "exercise_progress"
+  __typename: "ExerciseProgress"
   total: number | null
   exercises: number | null
 }
 
 export interface UserPointsFragment_progresses_user_course_progress_user {
-  __typename: "user"
+  __typename: "User"
   first_name: string | null
   last_name: string | null
   username: string
@@ -29,26 +29,26 @@ export interface UserPointsFragment_progresses_user_course_progress_user {
 }
 
 export interface UserPointsFragment_progresses_user_course_progress {
-  __typename: "user_course_progress"
+  __typename: "UserCourseProgress"
   progress: any[] | null
   exercise_progress: UserPointsFragment_progresses_user_course_progress_exercise_progress | null
   user: UserPointsFragment_progresses_user_course_progress_user | null
 }
 
 export interface UserPointsFragment_progresses_user_course_service_progresses_service {
-  __typename: "service"
+  __typename: "Service"
   name: string
   id: string
 }
 
 export interface UserPointsFragment_progresses_user_course_service_progresses {
-  __typename: "user_course_service_progress"
+  __typename: "UserCourseServiceProgress"
   progress: any[] | null
   service: UserPointsFragment_progresses_user_course_service_progresses_service | null
 }
 
 export interface UserPointsFragment_progresses {
-  __typename: "progress"
+  __typename: "Progress"
   course: UserPointsFragment_progresses_course | null
   user_course_progress: UserPointsFragment_progresses_user_course_progress | null
   user_course_service_progresses:
@@ -57,7 +57,7 @@ export interface UserPointsFragment_progresses {
 }
 
 export interface UserPointsFragment {
-  __typename: "user"
+  __typename: "User"
   id: string
   first_name: string | null
   last_name: string | null

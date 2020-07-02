@@ -43,12 +43,14 @@ const UserPage = () => {
       </Container>
     )
   }
-  data.UserCourseSettingses.edges.push(...more)
+
+  data?.UserCourseSettingses?.edges?.push(...more)
+
   return (
     <>
       <Container>
         <pre>
-          {JSON.stringify(data.UserCourseSettingses.edges, undefined, 2)}
+          {JSON.stringify(data?.UserCourseSettingses?.edges, undefined, 2)}
         </pre>
         <Button
           variant="contained"

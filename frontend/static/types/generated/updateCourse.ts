@@ -10,7 +10,7 @@ import { CourseUpsertArg } from "./globalTypes"
 // ====================================================
 
 export interface updateCourse_updateCourse_photo {
-  __typename: "image"
+  __typename: "Image"
   id: string
   name: string | null
   original: string
@@ -22,7 +22,7 @@ export interface updateCourse_updateCourse_photo {
 }
 
 export interface updateCourse_updateCourse_course_translation {
-  __typename: "course_translation"
+  __typename: "CourseTranslation"
   id: string
   language: string
   name: string
@@ -31,7 +31,7 @@ export interface updateCourse_updateCourse_course_translation {
 }
 
 export interface updateCourse_updateCourse_open_university_registration_link {
-  __typename: "open_university_registration_link"
+  __typename: "OpenUniversityRegistrationLink"
   id: string
   course_code: string
   language: string
@@ -39,25 +39,25 @@ export interface updateCourse_updateCourse_open_university_registration_link {
 }
 
 export interface updateCourse_updateCourse_study_module {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
 }
 
 export interface updateCourse_updateCourse_course_variant {
-  __typename: "course_variant"
+  __typename: "CourseVariant"
   id: string
   slug: string
   description: string | null
 }
 
 export interface updateCourse_updateCourse_course_alias {
-  __typename: "course_alias"
+  __typename: "CourseAlias"
   id: string
   course_code: string
 }
 
 export interface updateCourse_updateCourse_completion_email {
-  __typename: "email_template"
+  __typename: "EmailTemplate"
   id: string
   name: string | null
   title: string | null
@@ -66,13 +66,13 @@ export interface updateCourse_updateCourse_completion_email {
 }
 
 export interface updateCourse_updateCourse_user_course_settings_visibility {
-  __typename: "user_course_settings_visibility"
+  __typename: "UserCourseSettingsVisibility"
   id: string
   language: string
 }
 
 export interface updateCourse_updateCourse {
-  __typename: "course"
+  __typename: "Course"
   id: string
   slug: string
   ects: string | null

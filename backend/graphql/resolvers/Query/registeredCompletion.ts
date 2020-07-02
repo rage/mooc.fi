@@ -1,7 +1,7 @@
 import { ForbiddenError, UserInputError } from "apollo-server-errors"
 import { intArg, stringArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
-import { completion_registeredWhereUniqueInput } from "@prisma/client"
+import { CompletionRegisteredWhereUniqueInput } from "@prisma/client"
 import { isAdmin, isOrganization, or } from "../../../accessControl"
 
 schema.extendType({
@@ -13,12 +13,12 @@ schema.extendType({
     })
 
     t.list.field("registeredCompletions", {
-      type: "completion_registered",
+      type: "CompletionRegistered",
       args: {
         course: stringArg(),
         skip: intArg(),
         take: intArg(),
-        cursor: arg({ type: "completion_registeredWhereUniqueInput" }),
+        cursor: arg({ type: "CompletionRegisteredWhereUniqueInput" }),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -51,7 +51,7 @@ const withCourse = async (
   course: string,
   skip: number | undefined,
   take: number | undefined,
-  cursor: completion_registeredWhereUniqueInput | undefined,
+  cursor: CompletionRegisteredWhereUniqueInput | undefined,
   ctx: NexusContext,
 ) => {
   let courseReference = await ctx.db.course.findOne({
@@ -59,7 +59,7 @@ const withCourse = async (
   })
 
   if (!courseReference) {
-    const courseFromAvoinCourse = await ctx.db.course_alias
+    const courseFromAvoinCourse = await ctx.db.courseAlias
       .findOne({ where: { course_code: course } })
       .course()
     if (!courseFromAvoinCourse) {
@@ -72,7 +72,7 @@ const withCourse = async (
     })
   }
 
-  return await ctx.db.completion_registered.findMany({
+  return await ctx.db.completionRegistered.findMany({
     where: {
       course_id: courseReference!.id,
     },
@@ -85,10 +85,10 @@ const withCourse = async (
 const all = async (
   skip: number | undefined,
   take: number | undefined,
-  cursor: completion_registeredWhereUniqueInput | undefined,
+  cursor: CompletionRegisteredWhereUniqueInput | undefined,
   ctx: NexusContext,
 ) => {
-  return await ctx.db.completion_registered.findMany({
+  return await ctx.db.completionRegistered.findMany({
     skip,
     take,
     cursor,

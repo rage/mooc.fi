@@ -2,16 +2,18 @@ import { randomBytes } from "crypto"
 import { promisify } from "util"
 import { stringArg } from "@nexus/schema"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addOrganization", {
-      type: "organization",
+      type: "Organization",
       args: {
         name: stringArg(),
         slug: stringArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { name, slug } = args
 

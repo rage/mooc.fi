@@ -2,7 +2,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "course",
+  name: "Course",
   definition(t) {
     t.model.id()
     t.model.automatic_completions()

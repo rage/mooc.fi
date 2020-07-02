@@ -8,13 +8,13 @@
 // ====================================================
 
 export interface CourseDetailsFromSlugQuery_course_completion_email {
-  __typename: "email_template"
+  __typename: "EmailTemplate"
   name: string | null
   id: string
 }
 
 export interface CourseDetailsFromSlugQuery_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   slug: string
   name: string

@@ -5,6 +5,7 @@ import {
 } from "../../../services/google-cloud"
 import { NexusContext } from "../../../context"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 const sharp = require("sharp")
 
@@ -136,11 +137,12 @@ schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addImage", {
-      type: "image",
+      type: "Image",
       args: {
         file: arg({ type: "Upload", required: true }),
         base64: booleanArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx: NexusContext) => {
         const { file, base64 } = args
 
@@ -153,6 +155,7 @@ schema.extendType({
       args: {
         id: idArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, { id }, ctx: NexusContext) => {
         return deleteImage({ ctx, id })
       },

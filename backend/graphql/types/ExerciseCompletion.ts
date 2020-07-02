@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "exercise_completion",
+  name: "ExerciseCompletion",
   definition(t) {
     t.model.id()
     t.model.created_at()

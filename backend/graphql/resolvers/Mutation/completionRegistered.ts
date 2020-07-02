@@ -2,6 +2,7 @@ import { arg } from "@nexus/schema"
 import { chunk } from "lodash"
 import { NexusContext } from "../../../context"
 import { schema } from "nexus"
+import { isOrganization } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
@@ -11,6 +12,7 @@ schema.extendType({
       args: {
         completions: arg({ type: "CompletionArg", list: true }),
       },
+      authorize: isOrganization,
       resolve: async (_, args, ctx: NexusContext) => {
         let queue = chunk(args.completions, 500)
 
@@ -40,7 +42,7 @@ const buildPromises = (array: any[], ctx: NexusContext) => {
       return Promise.resolve()
     }
 
-    return ctx.db.completion_registered.create({
+    return ctx.db.completionRegistered.create({
       data: {
         completion: {
           connect: { id: entry.completion_id },

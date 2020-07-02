@@ -2,7 +2,7 @@ import { stringArg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "user",
+  name: "User",
   definition(t) {
     t.model.id()
     t.model.administrator()
@@ -29,7 +29,7 @@ schema.objectType({
     // t.prismaFields({ filter: ["completions"] })
 
     t.field("completions", {
-      type: "completion",
+      type: "Completion",
       list: true,
       nullable: false,
       args: {
@@ -66,7 +66,7 @@ schema.objectType({
     })
 
     t.field("progress", {
-      type: "progress",
+      type: "Progress",
       nullable: false,
       args: {
         course_id: idArg({ required: true }),
@@ -83,17 +83,17 @@ schema.objectType({
     })
 
     t.field("progresses", {
-      type: "progress",
+      type: "Progress",
       list: true,
       nullable: false,
       resolve: async (parent, _, ctx) => {
-        const user_course_progressess = await ctx.db.user_course_progress.findMany(
+        const user_course_progressess = await ctx.db.userCourseProgress.findMany(
           {
             where: { user_id: parent.id },
           },
         )
         const progresses = user_course_progressess.map(async (p) => {
-          const course = await ctx.db.user_course_progress
+          const course = await ctx.db.userCourseProgress
             .findOne({ where: { id: p.id } })
             .course()
           return {
@@ -106,7 +106,7 @@ schema.objectType({
     })
 
     t.field("user_course_progressess", {
-      type: "user_course_progress",
+      type: "UserCourseProgress",
       nullable: true,
       args: {
         course_id: idArg(),
@@ -114,7 +114,7 @@ schema.objectType({
       resolve: async (parent, args, ctx) => {
         const { course_id } = args
 
-        const progresses = await ctx.db.user_course_progress.findMany({
+        const progresses = await ctx.db.userCourseProgress.findMany({
           where: {
             user_id: parent.id,
             course_id,
@@ -130,10 +130,10 @@ schema.objectType({
     })
 
     t.field("exercise_completions", {
-      type: "exercise_completion",
+      type: "ExerciseCompletion",
       list: true,
       resolve: async (parent, _, ctx) => {
-        return ctx.db.exercise_completion.findMany({
+        return ctx.db.exerciseCompletion.findMany({
           where: {
             user_id: parent.id,
           },

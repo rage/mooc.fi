@@ -25,19 +25,6 @@ const StyledA = styled.a`
   margin: auto;
 `
 
-const RegisterCompletionButton = ({ course }: { course: string }) => {
-  return (
-    <Link
-      href="/register-completion/[slug]"
-      as={`/register-completion/${course}`}
-    >
-      <StyledA>
-        <StyledButton color="secondary">Register Completion</StyledButton>
-      </StyledA>
-    </Link>
-  )
-}
-
 const CourseAvatar = ({ photo }: { photo: any }) => {
   if (photo) {
     return (
@@ -60,18 +47,18 @@ interface ListItemProps {
 }
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
-  const isRegistered = (listItem?.completions_registered ?? []).length > 0
+  const isRegistered = (listItem?.completion_registered ?? []).length > 0
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
   //Checks from the course whether it has a certificate or not
 
-  const hasCertificate = listItem.course.has_certificate
+  const hasCertificate = listItem?.course?.has_certificate
 
   return (
     <ListItemContainer>
-      <CourseAvatar photo={listItem.course.photo} />
+      <CourseAvatar photo={listItem?.course?.photo} />
       <CardTitle component="h2" variant="h3">
-        {listItem.course.name}
+        {listItem?.course?.name}
       </CardTitle>
       <div style={{ margin: "auto" }}>
         <CardSubtitle>{`${t("completedDate")}${formatDateTime(
@@ -84,8 +71,8 @@ const CompletionListItem = (props: ListItemProps) => {
           }`}
         </CardSubtitle>
       </div>
-      {isRegistered && listItem.completions_registered ? (
-        listItem.completions_registered.map((r) => {
+      {isRegistered && listItem.completion_registered ? (
+        listItem.completion_registered.map((r) => {
           ;<div style={{ margin: "auto" }}>
             <CardSubtitle>
               {t("registeredDate")}
@@ -98,9 +85,20 @@ const CompletionListItem = (props: ListItemProps) => {
           </div>
         })
       ) : (
-        <RegisterCompletionButton course={listItem.course.slug} />
+        <Link
+          href="/register-completion/[slug]"
+          as={`/register-completion/${listItem.course?.slug}`}
+        >
+          <StyledA>
+            <StyledButton color="secondary">
+              {t("registerCompletion")}
+            </StyledButton>
+          </StyledA>
+        </Link>
       )}
-      {hasCertificate && <CertificateButton course={listItem.course} />}
+      {hasCertificate && listItem?.course ? (
+        <CertificateButton course={listItem.course} />
+      ) : null}
     </ListItemContainer>
   )
 }

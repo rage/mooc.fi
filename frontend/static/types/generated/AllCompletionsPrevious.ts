@@ -28,7 +28,7 @@ export interface AllCompletionsPrevious_completionsPaginated_pageInfo {
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_user {
-  __typename: "user"
+  __typename: "User"
   id: string
   first_name: string | null
   last_name: string | null
@@ -36,25 +36,25 @@ export interface AllCompletionsPrevious_completionsPaginated_edges_node_user {
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   name: string
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_completion_registered_organization {
-  __typename: "organization"
+  __typename: "Organization"
   id: string
   slug: string
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_completion_registered {
-  __typename: "completion_registered"
+  __typename: "CompletionRegistered"
   id: string
   organization: AllCompletionsPrevious_completionsPaginated_edges_node_completion_registered_organization | null
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node {
-  __typename: "completion"
+  __typename: "Completion"
   id: string
   email: string
   completion_language: string | null
@@ -65,7 +65,7 @@ export interface AllCompletionsPrevious_completionsPaginated_edges_node {
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges {
-  __typename: "completionEdge"
+  __typename: "CompletionEdge"
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Node
    */
@@ -73,7 +73,7 @@ export interface AllCompletionsPrevious_completionsPaginated_edges {
 }
 
 export interface AllCompletionsPrevious_completionsPaginated {
-  __typename: "completionConnection"
+  __typename: "CompletionConnection"
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
    */

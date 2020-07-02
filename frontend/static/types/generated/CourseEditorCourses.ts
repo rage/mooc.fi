@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface CourseEditorCourses_courses_course_translation {
-  __typename: "course_translation"
+  __typename: "CourseTranslation"
   id: string
   name: string
   language: string
 }
 
 export interface CourseEditorCourses_courses_photo {
-  __typename: "image"
+  __typename: "Image"
   id: string
   name: string | null
   original: string
@@ -27,7 +27,7 @@ export interface CourseEditorCourses_courses_photo {
 }
 
 export interface CourseEditorCourses_courses {
-  __typename: "course"
+  __typename: "Course"
   id: string
   slug: string
   name: string

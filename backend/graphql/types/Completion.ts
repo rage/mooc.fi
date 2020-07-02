@@ -3,7 +3,7 @@ import { ForbiddenError } from "apollo-server-errors"
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "completion",
+  name: "Completion",
   definition(t) {
     t.model.id()
     t.model.created_at()
@@ -49,7 +49,7 @@ schema.objectType({
     })
  */
     t.field("user", {
-      type: "user",
+      type: "User",
       resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
           throw new ForbiddenError(
@@ -86,7 +86,7 @@ schema.objectType({
             language: parent.completion_language,
           }
         }
-        const avoinLinks = await ctx.db.open_university_registration_link.findMany(
+        const avoinLinks = await ctx.db.openUniversityRegistrationLink.findMany(
           {
             where: filter,
           },

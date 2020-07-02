@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface addUserOrganization_addUserOrganization {
-  __typename: "user_organization"
+  __typename: "UserOrganization"
   id: string
 }
 

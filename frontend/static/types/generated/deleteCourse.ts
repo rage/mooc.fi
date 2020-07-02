@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface deleteCourse_deleteCourse {
-  __typename: "course"
+  __typename: "Course"
   id: string
   slug: string
 }

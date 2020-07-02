@@ -14,5 +14,6 @@
     "tabAriaLabel": "välilehti pisteille, suorituksille tai asetuksille",
     "tabPoints": "Pisteet",
     "tabCompletions": "Suoritukset",
-    "tabSettings": "Asetukset"
+    "tabSettings": "Asetukset",
+    "registerCompletion": "Rekisteröi suoritus"
 }

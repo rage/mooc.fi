@@ -8,9 +8,7 @@ require("dotenv-safe").config()
 const prisma = new PrismaClient()
 
 const fetch = async () => {
-  const avoinObjects = await prisma.open_university_registration_link.findMany(
-    {},
-  )
+  const avoinObjects = await prisma.openUniversityRegistrationLink.findMany({})
 
   for (const p of avoinObjects) {
     console.log("Processing link", p.course_code, p.language)
@@ -54,7 +52,7 @@ const fetch = async () => {
     const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
 
     console.log("Updating link to", url)
-    await prisma.open_university_registration_link.update({
+    await prisma.openUniversityRegistrationLink.update({
       where: {
         id: p.id,
       },
