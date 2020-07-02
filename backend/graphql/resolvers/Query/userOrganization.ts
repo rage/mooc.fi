@@ -5,7 +5,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.list.field("userOrganizations", {
-      type: "user_organization",
+      type: "UserOrganization",
       args: {
         user_id: idArg(),
         organization_id: idArg(),
@@ -17,7 +17,7 @@ schema.extendType({
           throw new Error("must provide at least one of user/organization id")
         }
 
-        return ctx.db.user_organization.findMany({
+        return ctx.db.userOrganization.findMany({
           where: {
             user_id,
             organization_id,

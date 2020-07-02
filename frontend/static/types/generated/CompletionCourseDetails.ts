@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface CompletionCourseDetails_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   name: string
 }

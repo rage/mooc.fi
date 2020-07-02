@@ -101,7 +101,7 @@ const RegisterCompletion = () => {
   }
 
   const completion =
-    data?.currentUser?.completions?.find((c) => c.course.slug == courseSlug) ??
+    data?.currentUser?.completions?.find((c) => c.course?.slug == courseSlug) ??
     undefined
 
   if (!currentUser) {
@@ -132,7 +132,7 @@ const RegisterCompletion = () => {
         <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("open_university_registration_not_open")}{" "}
-            {completion.course.name} {completion.completion_language}.
+            {completion.course?.name} {completion.completion_language}.
           </Typography>
         </StyledPaper>
       </div>
@@ -146,11 +146,11 @@ const RegisterCompletion = () => {
           {t("title")}
         </H1NoBackground>
         <StyledText>
-          {t("course", { course: completion.course.name })}
+          {t("course", { course: completion.course?.name })}
         </StyledText>
-        {completion.course.ects && (
+        {completion.course?.ects && (
           <StyledText variant="h6" component="p" gutterBottom={true}>
-            {t("credits", { ects: completion.course.ects })}
+            {t("credits", { ects: completion.course?.ects })}
           </StyledText>
         )}
         <StyledPaper>

@@ -89,7 +89,7 @@ const CreateEmailTemplateDialog = ({
                         variables: {
                           course: {
                             ...omit(course, "__typename", "id"),
-                            completion_email: data?.addEmailTemplate.id,
+                            completion_email: data?.addEmailTemplate?.id,
                           },
                         },
                       })
@@ -98,7 +98,7 @@ const CreateEmailTemplateDialog = ({
                       "/" +
                       language +
                       "/email-templates/" +
-                      data?.addEmailTemplate.id
+                      data?.addEmailTemplate?.id
                     Router.push(url)
                   } catch {
                     setIsErrorSnackbarOpen(true)

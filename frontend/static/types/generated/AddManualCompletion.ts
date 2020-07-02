@@ -10,14 +10,14 @@ import { ManualCompletionArg } from "./globalTypes"
 // ====================================================
 
 export interface AddManualCompletion_addManualCompletion_user {
-  __typename: "user"
+  __typename: "User"
   upstream_id: number
   username: string
   email: string
 }
 
 export interface AddManualCompletion_addManualCompletion {
-  __typename: "completion"
+  __typename: "Completion"
   id: string
   created_at: any | null
   updated_at: any | null

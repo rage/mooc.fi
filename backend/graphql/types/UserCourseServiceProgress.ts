@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "user_course_service_progress",
+  name: "UserCourseServiceProgress",
   definition(t) {
     t.model.id()
     t.model.created_at()
@@ -20,7 +20,7 @@ schema.objectType({
     t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
-        const res = await ctx.db.user_course_service_progress.findOne({
+        const res = await ctx.db.userCourseServiceProgress.findOne({
           where: { id: parent.id },
           select: { progress: true },
         })

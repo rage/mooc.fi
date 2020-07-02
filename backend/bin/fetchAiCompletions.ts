@@ -2,7 +2,7 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
-import { PrismaClient, user } from "@prisma/client"
+import { PrismaClient, User } from "@prisma/client"
 
 const prisma = new PrismaClient()
 const getPassedUsernamesByTag = require("../services/quiznator")
@@ -67,7 +67,7 @@ async function saveCompletionsAndUsersToDatabase(
   for (let i = 0; i < data.length; i++) {
     let old = data[i]
     if (!old.id) console.log(old)
-    let user: user | null = await prisma.user.findOne({
+    let user: User | null = await prisma.user.findOne({
       where: { upstream_id: old.id },
     })
 

@@ -2,7 +2,7 @@ import { arg } from "@nexus/schema"
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "exercise",
+  name: "Exercise",
   definition(t) {
     t.model.id()
     t.model.course_id()
@@ -22,12 +22,12 @@ schema.objectType({
     // t.prismaFields({ filter: ["exercise_completions"] })
 
     t.field("exercise_completions", {
-      type: "exercise_completion",
+      type: "ExerciseCompletion",
       list: true,
       args: {
         orderBy: arg({
           // FIXME?
-          type: "exercise_completionOrderByInput",
+          type: "ExerciseCompletionOrderByInput",
           required: false,
         }),
       },

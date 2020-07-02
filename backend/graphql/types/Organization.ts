@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "organization",
+  name: "Organization",
   definition(t) {
     t.model.id()
     t.model.contact_information()

@@ -28,7 +28,7 @@ export interface UserDetailsContains_userDetailsContains_pageInfo {
 }
 
 export interface UserDetailsContains_userDetailsContains_edges_node {
-  __typename: "user"
+  __typename: "User"
   id: string
   email: string
   student_number: string | null
@@ -39,7 +39,7 @@ export interface UserDetailsContains_userDetailsContains_edges_node {
 }
 
 export interface UserDetailsContains_userDetailsContains_edges {
-  __typename: "userEdge"
+  __typename: "UserEdge"
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Node
    */
@@ -65,9 +65,9 @@ export interface UserDetailsContains {
 
 export interface UserDetailsContainsVariables {
   search: string
-  before?: string | null
-  after?: string | null
   first?: number | null
   last?: number | null
+  before?: string | null
+  after?: string | null
   skip?: number | null
 }

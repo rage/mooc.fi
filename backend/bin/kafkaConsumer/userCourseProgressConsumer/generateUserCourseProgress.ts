@@ -4,11 +4,11 @@ require("dotenv-safe").config({
 import {
   UserCourseSettings,
   PrismaClient,
-  user,
-  course,
-  user_course_progress,
-  email_template,
-  user_course_service_progress,
+  User,
+  Course,
+  UserCourseProgress,
+  EmailTemplate,
+  UserCourseServiceProgress,
 } from "@prisma/client"
 import Knex from "../../../services/knex"
 import * as nodemailer from "nodemailer"
@@ -25,9 +25,9 @@ const email_port = process.env.SMTP_PORT
 const email_from = process.env.SMTP_FROM
 
 interface Props {
-  user: user
-  course: course
-  userCourseProgress: user_course_progress
+  user: User
+  course: Course
+  userCourseProgress: UserCourseProgress
 }
 
 interface ServiceProgressPartType {
@@ -50,7 +50,7 @@ export const generateUserCourseProgress = async ({
 }: Props) => {
   const combined = await GetCombinedUserCourseProgress(user, course)
   await CheckCompletion(user, course, combined)
-  await prisma.user_course_progress.update({
+  await prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
       progress: combined.progress as any, // errors unless typed as any
@@ -63,8 +63,8 @@ export const generateUserCourseProgress = async ({
 /******************************************************/
 
 export async function sendEmailTemplateToUser(
-  user: user,
-  template: email_template,
+  user: User,
+  template: EmailTemplate,
 ) {
   const options: SMTPTransport.Options = {
     host: email_host,
@@ -88,17 +88,17 @@ export async function sendEmailTemplateToUser(
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
 
-const ApplyTemplate = async (email_template: email_template, user: user) => {
+const ApplyTemplate = async (email_template: EmailTemplate, user: User) => {
   const templater = new EmailTemplater(email_template, user, prisma)
   return await templater.resolve()
 }
 
 const GetCombinedUserCourseProgress = async (
-  user: user,
-  course: course,
+  user: User,
+  course: Course,
 ): Promise<CombinedUserCourseProgress> => {
   /* Get UserCourseServiceProgresses */
-  const userCourseServiceProgresses = await prisma.user_course_service_progress.findMany(
+  const userCourseServiceProgresses = await prisma.userCourseServiceProgress.findMany(
     {
       where: {
         user_id: user?.id,
@@ -113,7 +113,7 @@ const GetCombinedUserCourseProgress = async (
    * It is still 2-dimensional!
    */
   const progresses: ServiceProgressType[] = userCourseServiceProgresses.map(
-    (entry: user_course_service_progress) => entry.progress as any, // type error otherwise
+    (entry: UserCourseServiceProgress) => entry.progress as any, // type error otherwise
   )
 
   let combined: CombinedUserCourseProgress = new CombinedUserCourseProgress()
@@ -127,8 +127,8 @@ const GetCombinedUserCourseProgress = async (
 }
 
 const CheckRequiredExerciseCompletions = async (
-  user: user,
-  course: course,
+  user: User,
+  course: Course,
 ): Promise<boolean> => {
   if (course.exercise_completions_needed) {
     const exercise_completions = await Knex("exercise_completion")
@@ -145,8 +145,8 @@ const CheckRequiredExerciseCompletions = async (
 }
 
 const GetUserCourseSettings = async (
-  user: user,
-  course: course,
+  user: User,
+  course: Course,
 ): Promise<UserCourseSettings> => {
   let userCourseSettings: UserCourseSettings =
     (
@@ -204,8 +204,8 @@ const languageCodeMapping: { [key: string]: string } = {
 }
 
 export const CheckCompletion = async (
-  user: user,
-  course: course,
+  user: User,
+  course: Course,
   combinedProgress?: CombinedUserCourseProgress,
 ) => {
   let combined = combinedProgress

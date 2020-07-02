@@ -13,7 +13,7 @@ schema.inputObjectType({
     t.boolean("promote")
     t.boolean("hidden")
     t.boolean("study_module_start_point")
-    t.field("status", { type: "course_status" })
+    t.field("status", { type: "CourseStatus" })
     t.string("teacher_in_charge_name", { required: true })
     t.string("teacher_in_charge_email", { required: true })
     t.string("support_email")
@@ -21,26 +21,26 @@ schema.inputObjectType({
     t.string("end_date")
     t.field("study_module", {
       list: true,
-      type: "study_moduleWhereUniqueInput",
+      type: "StudyModuleWhereUniqueInput",
     })
     t.field("course_translation", {
       list: true,
-      type: "course_translationCreateInput",
+      type: "CourseTranslationCreateInput",
       required: false,
     })
     t.field("open_university_registration_link", {
       list: true,
-      type: "open_university_registration_linkCreateInput",
+      type: "OpenUniversityRegistrationLinkCreateInput",
       required: false,
     })
     t.field("course_variant", {
       list: true,
-      type: "course_variantCreateInput",
+      type: "CourseVariantCreateInput",
       required: false,
     })
     t.field("course_alias", {
       list: true,
-      type: "course_aliasCreateInput",
+      type: "CourseAliasCreateInput",
       required: false,
     })
     t.int("order")
@@ -54,7 +54,7 @@ schema.inputObjectType({
     t.boolean("has_certificate", { required: false })
     t.field("user_course_settings_visibility", {
       list: true,
-      type: "user_course_settings_visibilityCreateInput",
+      type: "UserCourseSettingsVisibilityCreateInput",
       required: false,
     })
   },
@@ -76,7 +76,7 @@ schema.inputObjectType({
     t.boolean("promote")
     t.boolean("hidden")
     t.boolean("study_module_start_point")
-    t.field("status", { type: "course_status" })
+    t.field("status", { type: "CourseStatus" })
     t.string("teacher_in_charge_name", { required: true })
     t.string("teacher_in_charge_email", { required: true })
     t.string("support_email")
@@ -84,26 +84,26 @@ schema.inputObjectType({
     t.string("end_date")
     t.field("study_module", {
       list: true,
-      type: "study_moduleWhereUniqueInput",
+      type: "StudyModuleWhereUniqueInput",
     })
     t.field("course_translation", {
       list: true,
-      type: "course_translationUpsertInput",
+      type: "CourseTranslationUpsertInput",
       required: false,
     })
     t.field("open_university_registration_link", {
       list: true,
-      type: "open_university_registration_linkUpsertInput",
+      type: "OpenUniversityRegistrationLinkUpsertInput",
       required: false,
     })
     t.field("course_variant", {
       list: true,
-      type: "course_variantUpsertInput",
+      type: "CourseVariantUpsertInput",
       required: false,
     })
     t.field("course_alias", {
       list: true,
-      type: "course_aliasUpsertInput",
+      type: "CourseAliasUpsertInput",
       required: false,
     })
     t.int("order")
@@ -117,7 +117,7 @@ schema.inputObjectType({
     t.boolean("has_certificate", { required: false })
     t.field("user_course_settings_visibility", {
       list: true,
-      type: "user_course_settings_visibilityUpsertInput",
+      type: "UserCourseSettingsVisibilityUpsertInput",
       required: false,
     })
   },

@@ -7,7 +7,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.field("userCourseProgress", {
-      type: "user_course_progress",
+      type: "UserCourseProgress",
       args: {
         user_id: idArg({ required: true }),
         course_id: idArg({ required: true }),
@@ -15,7 +15,7 @@ schema.extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id } = args
-        const result = await ctx.db.user_course_progress.findMany({
+        const result = await ctx.db.userCourseProgress.findMany({
           where: {
             user_id,
             course_id,
@@ -39,36 +39,20 @@ schema.extendType({
     })*/
 
     t.list.field("userCourseProgresses", {
-      type: "user_course_progress",
+      type: "UserCourseProgress",
       args: {
         user_id: idArg(),
         course_slug: stringArg(),
         course_id: idArg(),
         skip: intArg(),
         take: intArg(),
-        cursor: arg({ type: "user_course_progressWhereUniqueInput" }),
-        /*first: intArg(),
-        after: idArg(),
-        last: intArg(),
-        before: idArg(),*/
+        cursor: arg({ type: "UserCourseProgressWhereUniqueInput" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        // checkAccess(ctx)
-        const {
-          /*first,
-          last,
-          before,
-          after,*/
-          skip,
-          take,
-          cursor,
-          user_id,
-          course_id,
-          course_slug,
-        } = args
+        const { skip, take, cursor, user_id, course_id, course_slug } = args
 
-        return ctx.db.user_course_progress.findMany({
+        return ctx.db.userCourseProgress.findMany({
           skip: skip ?? undefined,
           take: take ?? undefined,
           cursor: cursor ? { id: cursor.id ?? undefined } : undefined,

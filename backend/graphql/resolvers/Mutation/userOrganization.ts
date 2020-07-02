@@ -2,8 +2,8 @@ import { idArg, arg } from "@nexus/schema"
 import { ForbiddenError } from "apollo-server-errors"
 import { NexusContext } from "/context"
 import { schema } from "nexus"
-import { Role } from "../../../accessControl"
-import { organization_role } from "@prisma/client"
+import { Role, or, isVisitor, isAdmin } from "../../../accessControl"
+import { OrganizationRole } from "@prisma/client"
 
 const checkUser = async (ctx: NexusContext, id: any) => {
   const { user, role } = ctx
@@ -11,7 +11,7 @@ const checkUser = async (ctx: NexusContext, id: any) => {
   let existingUser
 
   try {
-    existingUser = await ctx.db.user_organization
+    existingUser = await ctx.db.userOrganization
       .findOne({ where: { id } })
       .user()
   } catch {
@@ -31,17 +31,18 @@ schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserOrganization", {
-      type: "user_organization",
+      type: "UserOrganization",
       args: {
         user_id: idArg({ required: true }),
         organization_id: idArg({ required: true }),
       },
+      authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
 
         const exists =
           (
-            await ctx.db.user_organization.findMany({
+            await ctx.db.userOrganization.findMany({
               where: {
                 user_id,
                 organization_id,
@@ -53,34 +54,35 @@ schema.extendType({
           throw new Error("this user/organization relation already exists")
         }
 
-        return ctx.db.user_organization.create({
+        return ctx.db.userOrganization.create({
           data: {
             user: { connect: { id: user_id } },
             organization: {
               connect: { id: organization_id },
             },
-            role: organization_role.Student,
+            role: OrganizationRole.Student,
           },
         })
       },
     })
 
     t.field("updateUserOrganization", {
-      type: "user_organization",
+      type: "UserOrganization",
       args: {
         id: idArg({ required: true }),
         /*       userId: idArg(),
         organizationId: idArg(), */
-        role: arg({ type: "organization_role" }),
+        role: arg({ type: "OrganizationRole" }),
       },
+      authorize: or(isVisitor, isAdmin),
       resolve: (_, args, ctx: NexusContext) => {
         const { id, role } = args
 
         checkUser(ctx, id)
 
-        return ctx.db.user_organization.update({
+        return ctx.db.userOrganization.update({
           data: {
-            role: role ? role : organization_role.Student,
+            role: role ? role : OrganizationRole.Student,
           },
           where: {
             id,
@@ -90,15 +92,16 @@ schema.extendType({
     })
 
     t.field("deleteUserOrganization", {
-      type: "user_organization",
+      type: "UserOrganization",
       args: {
         id: idArg({ required: true }),
       },
+      authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx: NexusContext) => {
         const { id } = args
         checkUser(ctx, id)
 
-        return ctx.db.user_organization.delete({
+        return ctx.db.userOrganization.delete({
           where: { id },
         })
       },

@@ -1,6 +1,6 @@
 import * as Yup from "yup"
 import { ApolloClient } from "apollo-client"
-import { course_status } from "/static/types/generated/globalTypes"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 import {
   CourseFormValues,
   CourseTranslationFormValues,
@@ -55,7 +55,7 @@ export const initialValues: CourseFormValues = {
   promote: false,
   hidden: false,
   study_module_start_point: false,
-  status: course_status.Upcoming,
+  status: CourseStatus.Upcoming,
   study_module: {},
   course_translation: [],
   open_university_registration_link: [],
@@ -76,15 +76,15 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
 
 export const statuses = (t: Function) => [
   {
-    value: course_status.Upcoming,
+    value: CourseStatus.Upcoming,
     label: t("courseUpcoming"),
   },
   {
-    value: course_status.Active,
+    value: CourseStatus.Active,
     label: t("courseActive"),
   },
   {
-    value: course_status.Ended,
+    value: CourseStatus.Ended,
     label: t("courseEnded"),
   },
 ]

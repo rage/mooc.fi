@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.inputObjectType({
-  name: "course_variantCreateInput",
+  name: "CourseVariantCreateInput",
   definition(t) {
     t.id("course", { required: false })
     t.string("slug", { required: true })
@@ -10,7 +10,7 @@ schema.inputObjectType({
 })
 
 schema.inputObjectType({
-  name: "course_variantUpsertInput",
+  name: "CourseVariantUpsertInput",
   definition(t) {
     t.id("id", { required: false })
     t.id("course", { required: false })

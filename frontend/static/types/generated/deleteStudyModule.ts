@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface deleteStudyModule_deleteStudyModule {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
   slug: string
 }

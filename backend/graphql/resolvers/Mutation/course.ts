@@ -1,10 +1,10 @@
 import {
-  course_translationUpdateManyWithoutCourseInput,
-  open_university_registration_linkUpdateManyWithoutCourseInput,
-  study_moduleUpdateManyWithoutCourseInput,
-  course_variantUpdateManyWithoutCourseInput,
-  course_aliasUpdateManyWithoutCourseInput,
-  user_course_settings_visibilityUpdateManyWithoutCourseInput,
+  CourseTranslationUpdateManyWithoutCourseInput,
+  OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput,
+  StudyModuleUpdateManyWithoutCourseInput,
+  CourseVariantUpdateManyWithoutCourseInput,
+  CourseAliasUpdateManyWithoutCourseInput,
+  UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
 } from "@prisma/client"
 import { stringArg, arg, idArg } from "@nexus/schema"
 import KafkaProducer, { ProducerMessage } from "../../../services/kafkaProducer"
@@ -14,6 +14,7 @@ import { invalidate } from "../../../services/redis"
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
 import { NexusContext } from "/context"
+import { isAdmin } from "../../../accessControl"
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
@@ -25,13 +26,14 @@ schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourse", {
-      type: "course",
+      type: "Course",
       args: {
         course: arg({
           type: "CourseCreateArg",
           required: true,
         }),
       },
+      authorize: isAdmin,
       resolve: async (_, { course }, ctx: NexusContext) => {
         const {
           // slug,
@@ -116,13 +118,14 @@ schema.extendType({
     })
 
     t.field("updateCourse", {
-      type: "course",
+      type: "Course",
       args: {
         course: arg({
           type: "CourseUpsertArg",
           required: true,
         }),
       },
+      authorize: isAdmin,
       resolve: async (_, { course }, ctx: NexusContext) => {
         const {
           id,
@@ -179,7 +182,7 @@ schema.extendType({
 
         // FIXME: I know there's probably a better way to do this
         const translationMutation:
-          | course_translationUpdateManyWithoutCourseInput
+          | CourseTranslationUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -188,7 +191,7 @@ schema.extendType({
         })
 
         const registrationLinkMutation:
-          | open_university_registration_linkUpdateManyWithoutCourseInput
+          | OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -197,7 +200,7 @@ schema.extendType({
         })
 
         const courseVariantMutation:
-          | course_variantUpdateManyWithoutCourseInput
+          | CourseVariantUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -206,7 +209,7 @@ schema.extendType({
         })
 
         const courseAliasMutation:
-          | course_aliasUpdateManyWithoutCourseInput
+          | CourseAliasUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -215,7 +218,7 @@ schema.extendType({
         })
 
         const userCourseSettingsVisibilityMutation:
-          | user_course_settings_visibilityUpdateManyWithoutCourseInput
+          | UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -249,7 +252,7 @@ schema.extendType({
           })) ?? []
 
         const studyModuleMutation:
-          | study_moduleUpdateManyWithoutCourseInput
+          | StudyModuleUpdateManyWithoutCourseInput
           | undefined = study_module
           ? {
               connect: connectModules.length ? connectModules : undefined,
@@ -321,11 +324,12 @@ schema.extendType({
     })
 
     t.field("deleteCourse", {
-      type: "course",
+      type: "Course",
       args: {
         id: idArg(),
         slug: stringArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx: NexusContext) => {
         const { id, slug } = args
 

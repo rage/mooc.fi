@@ -42,11 +42,11 @@ function formatPointsData({
   const courseProgressByGroup = mapValues(courseProgressesByGroup, (o) => o[0])
 
   const serviceProgressesArray = flatten(
-    pointsData.user_course_service_progresses.map(
+    pointsData?.user_course_service_progresses?.map(
       (o) =>
-        o.progress.map((o2: GroupPoints) => {
+        o?.progress?.map((o2: GroupPoints) => {
           return {
-            service: o.service.name,
+            service: o?.service?.name,
             group: o2.group,
             max_points: o2.max_points,
             n_points: o2.n_points,
@@ -59,7 +59,9 @@ function formatPointsData({
   const serviceProgressesByGroup = groupBy(serviceProgressesArray, "group")
 
   return {
-    ...pointsData.user_course_progress.exercise_progress,
+    total: pointsData.user_course_progress.exercise_progress?.total ?? 0,
+    exercises:
+      pointsData.user_course_progress.exercise_progress?.exercises ?? 0,
     groups: mapValues(courseProgressByGroup, (o) => ({
       courseProgress: o,
       service_progresses: serviceProgressesByGroup[o.group],

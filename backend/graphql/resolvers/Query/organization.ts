@@ -18,7 +18,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.field("organization", {
-      type: "organization",
+      type: "Organization",
       args: {
         id: idArg(),
         hidden: booleanArg(),
@@ -50,16 +50,16 @@ schema.extendType({
     })
 
     t.list.field("organizations", {
-      type: "organization",
+      type: "Organization",
       args: {
         take: intArg(),
         skip: intArg(),
-        cursor: arg({ type: "organizationWhereUniqueInput" }),
+        cursor: arg({ type: "OrganizationWhereUniqueInput" }),
         /*first: intArg(),
         after: idArg(),
         last: intArg(),
         before: idArg(),*/
-        orderBy: arg({ type: "organizationOrderByInput" }),
+        orderBy: arg({ type: "OrganizationOrderByInput" }),
         hidden: booleanArg(),
       },
       authorize: organizationPermission,

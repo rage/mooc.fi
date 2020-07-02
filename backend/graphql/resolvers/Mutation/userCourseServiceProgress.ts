@@ -1,23 +1,25 @@
 import { arg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserCourseServiceProgress", {
-      type: "user_course_service_progress",
+      type: "UserCourseServiceProgress",
       args: {
         progress: arg({ type: "PointsByGroup", required: true }),
         service_id: idArg({ required: true }),
         user_course_progress_id: idArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { service_id, progress, user_course_progress_id } = args
 
-        const course = await ctx.db.user_course_progress
+        const course = await ctx.db.userCourseProgress
           .findOne({ where: { id: user_course_progress_id } })
           .course()
-        const user = await ctx.db.user_course_progress
+        const user = await ctx.db.userCourseProgress
           .findOne({ where: { id: user_course_progress_id } })
           .user()
 
@@ -25,7 +27,7 @@ schema.extendType({
           throw new Error("course or user not found")
         }
 
-        return ctx.db.user_course_service_progress.create({
+        return ctx.db.userCourseServiceProgress.create({
           data: {
             course: {
               connect: { id: course.id },

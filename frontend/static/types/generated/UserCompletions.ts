@@ -8,13 +8,13 @@
 // ====================================================
 
 export interface UserCompletions_completions_course_photo {
-  __typename: "image"
+  __typename: "Image"
   id: string
   uncompressed: string
 }
 
 export interface UserCompletions_completions_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   slug: string
   name: string
@@ -23,19 +23,19 @@ export interface UserCompletions_completions_course {
 }
 
 export interface UserCompletions_completions_completion_registered_organization {
-  __typename: "organization"
+  __typename: "Organization"
   slug: string
 }
 
 export interface UserCompletions_completions_completion_registered {
-  __typename: "completion_registered"
+  __typename: "CompletionRegistered"
   id: string
   created_at: any | null
   organization: UserCompletions_completions_completion_registered_organization | null
 }
 
 export interface UserCompletions_completions {
-  __typename: "completion"
+  __typename: "Completion"
   id: string
   completion_language: string | null
   student_number: string | null
@@ -45,6 +45,6 @@ export interface UserCompletions_completions {
 }
 
 export interface UserCompletions {
-  __typename: "user"
+  __typename: "User"
   completions: UserCompletions_completions[]
 }

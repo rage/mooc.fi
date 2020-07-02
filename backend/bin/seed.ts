@@ -1,16 +1,4 @@
-/*import {
-  Prisma,
-  CourseCreateInput,
-  CourseStatus,
-  CourseTranslationCreateWithoutCourseInput,
-  CourseTranslationCreateManyWithoutCourseInput,
-  StudyModuleCreateInput,
-  StudyModuleTranslationCreateWithoutStudy_moduleInput,
-  StudyModuleTranslationCreateManyWithoutStudy_moduleInput,
-  StudyModuleWhereUniqueInput,
-  CourseTranslation,
-} from "../generated/prisma-client"*/
-import { PrismaClient, course_status, course_translation } from "@prisma/client"
+import { PrismaClient, CourseStatus, CourseTranslation } from "@prisma/client"
 
 const Modules = [
   {
@@ -389,7 +377,7 @@ const Courses = [
 const prisma = new PrismaClient()
 
 const seed = async () => {
-  await prisma.study_module.deleteMany({ where: {} })
+  await prisma.studyModule.deleteMany({ where: {} })
   await prisma.course.deleteMany({ where: {} })
 
   await Promise.all(
@@ -406,7 +394,7 @@ const seed = async () => {
           : null,
       }
 
-      return await prisma.study_module.create({
+      return await prisma.studyModule.create({
         data: _module,
       })
     }),
@@ -421,11 +409,11 @@ const seed = async () => {
         teacher_in_charge_name: "",
         teacher_in_charge_email: "",
         start_date: "",
-        status: course.status as course_status,
+        status: course.status as CourseStatus,
         course_translation: course.course_translation
           ? {
               create:
-                (course?.course_translation as course_translation[])?.map(
+                (course?.course_translation as CourseTranslation[])?.map(
                   (t) => ({
                     ...t,
                     id: undefined,

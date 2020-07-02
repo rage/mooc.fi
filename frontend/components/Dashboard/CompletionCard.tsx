@@ -42,7 +42,7 @@ function CompletionCard({
   const completionLanguage =
     MapLangToLanguage[completer?.completion_language ?? ""] ??
     "No language available"
-  const completionsRegistered = completer?.completions_registered ?? []
+  const completionsRegistered = completer?.completion_registered ?? []
   const studentId = completer?.user?.student_number
     ? `HY SID: ${completer.user.student_number}`
     : "No student number"
@@ -65,7 +65,7 @@ function CompletionCard({
           )}
         </ListItemIcon>
         <ListItemText
-          primary={`${completer.user.first_name} ${completer.user.last_name}`}
+          primary={`${completer.user?.first_name} ${completer.user?.last_name}`}
           secondary={
             <React.Fragment>
               <Typography component="span" style={{ display: "block" }}>

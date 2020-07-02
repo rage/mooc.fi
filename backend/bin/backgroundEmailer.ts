@@ -1,13 +1,13 @@
-import { PrismaClient, email_delivery } from "@prisma/client"
+import { PrismaClient, EmailDelivery } from "@prisma/client"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
 
 const BATCH_SIZE = 100
 
 const prisma = new PrismaClient()
 
-const sendEmail = async (emailDelivery: email_delivery) => {
+const sendEmail = async (emailDelivery: EmailDelivery) => {
   const { user, email_template } =
-    (await prisma.email_delivery.findOne({
+    (await prisma.emailDelivery.findOne({
       where: { id: emailDelivery.id },
       select: {
         user: true,
@@ -28,13 +28,13 @@ const sendEmail = async (emailDelivery: email_delivery) => {
   try {
     await sendEmailTemplateToUser(user, email_template)
     console.log("Marking email as delivered")
-    await prisma.email_delivery.update({
+    await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: { sent: true, error: false },
     })
   } catch (e) {
     console.error("Sending failed", e.message)
-    await prisma.email_delivery.update({
+    await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: { error: true, error_message: e.message },
     })
@@ -43,7 +43,7 @@ const sendEmail = async (emailDelivery: email_delivery) => {
 
 const main = async () => {
   while (true) {
-    const emailsToDeliver = await prisma.email_delivery.findMany({
+    const emailsToDeliver = await prisma.emailDelivery.findMany({
       where: { sent: false, error: false },
       take: BATCH_SIZE,
     })

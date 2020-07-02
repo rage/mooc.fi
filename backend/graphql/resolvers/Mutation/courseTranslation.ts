@@ -1,11 +1,12 @@
 import { idArg, stringArg } from "@nexus/schema"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourseTranslation", {
-      type: "course_translation",
+      type: "CourseTranslation",
       args: {
         language: stringArg({ required: true }),
         name: stringArg(),
@@ -13,10 +14,11 @@ schema.extendType({
         link: stringArg(),
         course: idArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { language, name, description, link, course } = args
 
-        const newCourseTranslation = await ctx.db.course_translation.create({
+        const newCourseTranslation = await ctx.db.courseTranslation.create({
           data: {
             language: language,
             name: name ?? "",
@@ -30,7 +32,7 @@ schema.extendType({
     })
 
     t.field("updateCourseTranslation", {
-      type: "course_translation",
+      type: "CourseTranslation",
       args: {
         id: idArg({ required: true }),
         language: stringArg({ required: true }),
@@ -39,10 +41,11 @@ schema.extendType({
         link: stringArg(),
         course: idArg(),
       },
+      authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const { id, language, name, description, link, course } = args
 
-        return ctx.db.course_translation.update({
+        return ctx.db.courseTranslation.update({
           where: { id },
           data: {
             language: language,
@@ -56,12 +59,13 @@ schema.extendType({
     })
 
     t.field("deleteCourseTranslation", {
-      type: "course_translation",
+      type: "CourseTranslation",
       args: {
         id: idArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
-        return ctx.db.course_translation.delete({
+        return ctx.db.courseTranslation.delete({
           where: { id },
         })
       },

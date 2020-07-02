@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface CourseEditorStudyModules_study_modules {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
   name: string
   slug: string

@@ -1,5 +1,5 @@
 import { Message } from "./interfaces"
-import { PrismaClient, exercise_completion, user } from "@prisma/client"
+import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
 import TmcClient from "../../../services/tmc"
 import { DateTime } from "luxon"
 import winston = require("winston")
@@ -52,7 +52,7 @@ export const saveToDatabase = async (
 
   console.log(`Checking if user ${message.user_id} exists.`)
 
-  let user: user | null
+  let user: User | null
 
   user = (await Knex("user").where("upstream_id", message.user_id).limit(1))[0]
 
@@ -98,7 +98,7 @@ export const saveToDatabase = async (
   const exercise = exercises[0]
 
   logger.info("Getting the completion")
-  const exerciseCompleteds = await prisma.exercise_completion.findMany({
+  const exerciseCompleteds = await prisma.exerciseCompletion.findMany({
     take: 1,
     where: {
       exercise: {
@@ -111,11 +111,11 @@ export const saveToDatabase = async (
   const exerciseCompleted = exerciseCompleteds[0]
 
   // @ts-ignore: value not used
-  let savedExerciseCompletion: exercise_completion
+  let savedExerciseCompletion: ExerciseCompletion
 
   if (!exerciseCompleted) {
     logger.info("No previous completion, creating a new one")
-    savedExerciseCompletion = await prisma.exercise_completion.create({
+    savedExerciseCompletion = await prisma.exerciseCompletion.create({
       data: {
         exercise: {
           connect: { id: exercise.id },
@@ -144,7 +144,7 @@ export const saveToDatabase = async (
       logger.error("Timestamp older than in DB, aborting")
       return false
     }
-    savedExerciseCompletion = await prisma.exercise_completion.update({
+    savedExerciseCompletion = await prisma.exerciseCompletion.update({
       where: { id: exerciseCompleted.id },
       data: {
         n_points: Number(message.n_points),

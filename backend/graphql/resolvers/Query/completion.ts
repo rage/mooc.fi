@@ -9,7 +9,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.list.field("completions", {
-      type: "completion",
+      type: "Completion",
       args: {
         course: stringArg({ required: true }),
         completion_language: stringArg(),
@@ -33,7 +33,7 @@ schema.extendType({
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.course_alias
+          const courseFromAvoinCourse = await ctx.db.courseAlias
             .findOne({
               where: {
                 course_code: course,
@@ -66,7 +66,7 @@ schema.extendType({
     })
 
     t.connection("completionsPaginated", {
-      type: "completion",
+      type: "Completion",
       additionalArgs: {
         course: stringArg({ required: true }),
         completion_language: stringArg(),
@@ -87,7 +87,7 @@ schema.extendType({
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.course_alias
+          const courseFromAvoinCourse = await ctx.db.courseAlias
             .findOne({ where: { course_code: course } })
             .course()
           if (!courseFromAvoinCourse) {

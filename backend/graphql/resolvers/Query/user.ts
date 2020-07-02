@@ -19,7 +19,7 @@ schema.extendType({
     })*/
 
     t.field("user", {
-      type: "user",
+      type: "User",
       args: {
         id: idArg(),
         search: stringArg(),
@@ -51,7 +51,7 @@ schema.extendType({
     })
 
     t.connection("userDetailsContains", {
-      type: "user",
+      type: "User",
       additionalArgs: {
         search: stringArg(),
         skip: intArg({ default: 0 }),
@@ -95,7 +95,7 @@ schema.extendType({
     })
 
     t.field("currentUser", {
-      type: "user",
+      type: "User",
       nullable: true,
       args: { search: stringArg() }, // was: email
       resolve: (_, __, ctx) => {

@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface updateUpdateAccountResearchConsent_updateResearchConsent {
-  __typename: "user"
+  __typename: "User"
   id: string
 }
 

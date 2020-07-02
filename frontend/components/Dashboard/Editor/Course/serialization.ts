@@ -8,26 +8,10 @@ import {
   CourseDetails_course_open_university_registration_link,
 } from "/static/types/generated/CourseDetails"
 import {
-  course_status,
+  CourseStatus,
   CourseCreateArg,
   CourseUpsertArg,
 } from "/static/types/generated/globalTypes"
-/*import {
-  addCourse_addCourse_open_university_registration_link,
-  addCourse_addCourse_study_module,
-  addCourse_addCourse_course_translation,
-  addCourse_addCourse_course_variant,
-  addCourse_addCourse_course_alias,
-  addCourse_addCourse_user_course_settings_visibility,
-} from "/static/types/generated/addCourse"
-import {
-  updateCourse_updateCourse_open_university_registration_link,
-  updateCourse_updateCourse_study_module,
-  updateCourse_updateCourse_course_translation,
-  updateCourse_updateCourse_course_variant,
-  updateCourse_updateCourse_course_alias,
-  updateCourse_updateCourse_user_course_settings_visibility,
-} from "/static/types/generated/updateCourse"*/
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { DateTime } from "luxon"
 
@@ -59,7 +43,7 @@ export const toCourseForm = ({
         study_module_start_point: course.study_module_start_point ?? false,
         order: course.order ?? undefined,
         study_module_order: course.study_module_order ?? undefined,
-        status: course.status ?? course_status.Upcoming,
+        status: course.status ?? CourseStatus.Upcoming,
         course_translation: (course.course_translation || []).map((c) => ({
           ...omit(c, "__typename"),
           link: c.link || "",
@@ -108,38 +92,20 @@ export const fromCourseForm = ({
       ...omit(c, "open_university_course_link"),
       link: c.link || "",
       id: !c.id || c.id === "" ? undefined : c.id,
-    })) ??
-    [] /* as (
-    | Omit<addCourse_addCourse_course_translation, "__typename">
-    | Omit<updateCourse_updateCourse_course_translation, "__typename">
-  )[]*/
+    })) ?? []
 
   const course_variant = (values?.course_variant ?? []).map((v) =>
     omit(v, ["__typename"]),
-  ) /* as (
-    | Omit<addCourse_addCourse_course_variant, "__typename">
-    | Omit<updateCourse_updateCourse_course_variant, "__typename">
-  )[]*/
+  )
 
   const course_alias = (values?.course_alias ?? []).map((a) => ({
     ...omit(a, ["__typename"]),
     course_code: a.course_code ?? undefined,
-  })) /* as (
-    | Omit<addCourse_addCourse_course_alias, "__typename">
-    | Omit<updateCourse_updateCourse_course_alias, "__typename">
-  )[]*/
+  }))
 
   const user_course_settings_visibility = (
     values?.user_course_settings_visibility ?? []
-  ).map((v) =>
-    omit(v, ["__typename"]),
-  ) /* as (
-    | Omit<addCourse_addCourse_user_course_settings_visibility, "__typename">
-    | Omit<
-        updateCourse_updateCourse_user_course_settings_visibility,
-        "__typename"
-      >
-  )[]*/
+  ).map((v) => omit(v, ["__typename"]))
 
   const open_university_registration_link = values?.course_translation
     ?.map((c: CourseTranslationFormValues) => {
@@ -170,15 +136,7 @@ export const fromCourseForm = ({
         course_code: c.open_university_course_link.course_code.trim(),
       }
     })
-    .filter(
-      (v) => !!v,
-    ) /* as (
-    | Omit<addCourse_addCourse_open_university_registration_link, "__typename">
-    | Omit<
-        updateCourse_updateCourse_open_university_registration_link,
-        "__typename"
-      >
-  )[]*/
+    .filter((v) => !!v)
 
   const study_module /*: (
     | Omit<addCourse_addCourse_study_module, "__typename">

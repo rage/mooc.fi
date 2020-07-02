@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface CourseDetailsFromSlug_course {
-  __typename: "course"
+  __typename: "Course"
   id: string
   name: string
 }

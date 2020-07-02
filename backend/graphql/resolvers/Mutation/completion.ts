@@ -1,11 +1,12 @@
 import { stringArg, intArg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCompletion", {
-      type: "completion",
+      type: "Completion",
       args: {
         user_upstream_id: intArg(),
         email: stringArg(),
@@ -14,6 +15,7 @@ schema.extendType({
         course: idArg({ required: true }),
         completion_language: stringArg(),
       },
+      authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const {
           user_upstream_id,

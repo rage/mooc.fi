@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "email_template",
+  name: "EmailTemplate",
   definition(t) {
     t.model.id()
     t.model.created_at()

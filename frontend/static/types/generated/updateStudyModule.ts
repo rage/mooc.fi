@@ -10,7 +10,7 @@ import { StudyModuleUpsertArg } from "./globalTypes"
 // ====================================================
 
 export interface updateStudyModule_updateStudyModule_study_module_translation {
-  __typename: "study_module_translation"
+  __typename: "StudyModuleTranslation"
   id: string
   language: string
   name: string
@@ -18,7 +18,7 @@ export interface updateStudyModule_updateStudyModule_study_module_translation {
 }
 
 export interface updateStudyModule_updateStudyModule {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
   slug: string
   name: string

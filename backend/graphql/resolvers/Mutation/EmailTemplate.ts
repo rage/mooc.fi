@@ -1,24 +1,26 @@
 import { stringArg, idArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-errors"
 import { schema } from "nexus"
+import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addEmailTemplate", {
-      type: "email_template",
+      type: "EmailTemplate",
       args: {
         name: stringArg({ required: true }),
         html_body: stringArg(),
         txt_body: stringArg(),
         title: stringArg(),
       },
+      authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const { name, html_body, txt_body, title } = args
 
         if (name == "") throw new UserInputError("Name is empty!")
 
-        return ctx.db.email_template.create({
+        return ctx.db.emailTemplate.create({
           data: {
             name,
             html_body,
@@ -30,7 +32,7 @@ schema.extendType({
     })
 
     t.field("updateEmailTemplate", {
-      type: "email_template",
+      type: "EmailTemplate",
       args: {
         id: idArg({ required: true }),
         name: stringArg(),
@@ -38,10 +40,11 @@ schema.extendType({
         txt_body: stringArg(),
         title: stringArg(),
       },
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { id, name, html_body, txt_body, title } = args
 
-        return ctx.db.email_template.update({
+        return ctx.db.emailTemplate.update({
           where: {
             id,
           },
@@ -56,12 +59,13 @@ schema.extendType({
     })
 
     t.field("deleteEmailTemplate", {
-      type: "email_template",
+      type: "EmailTemplate",
       args: {
         id: idArg({ required: true }),
       },
+      authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
-        return ctx.db.email_template.delete({ where: { id } })
+        return ctx.db.emailTemplate.delete({ where: { id } })
       },
     })
   },

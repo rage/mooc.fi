@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface UserOverView_currentUser {
-  __typename: "user"
+  __typename: "User"
   id: string
   first_name: string | null
   last_name: string | null

@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface StudyModuleDetails_study_module_courses {
-  __typename: "course"
+  __typename: "Course"
   id: string
   name: string
   slug: string
 }
 
 export interface StudyModuleDetails_study_module_study_module_translation {
-  __typename: "study_module_translation"
+  __typename: "StudyModuleTranslation"
   id: string
   name: string
   language: string
@@ -23,7 +23,7 @@ export interface StudyModuleDetails_study_module_study_module_translation {
 }
 
 export interface StudyModuleDetails_study_module {
-  __typename: "study_module"
+  __typename: "StudyModule"
   id: string
   slug: string
   name: string

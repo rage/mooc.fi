@@ -5,7 +5,7 @@ import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import getHomeTranslator from "/translations/home"
-import { course_status } from "/static/types/generated/globalTypes"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 
 interface CourseListProps {
   courses: CourseData[]
@@ -41,7 +41,7 @@ const ModuleCoursesListing = (props: CourseListProps) => {
   const lngCtx = useContext(LanguageContext)
   const t = getHomeTranslator(lngCtx.language)
 
-  const activeCourses = courses.filter((c) => c.status == course_status.Active)
+  const activeCourses = courses.filter((c) => c.status == CourseStatus.Active)
   return (
     <>
       {showAll || activeCourses.length === 0 ? (

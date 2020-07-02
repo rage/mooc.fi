@@ -8,14 +8,9 @@ import { redisify } from "./services/redis"
 // @ts-ignore: not used for now
 import { wsListen } from "./wsServer"
 import * as winston from "winston"
-import { Role } from "./accessControl"
-import { shield, rule, or } from "nexus-plugin-shield"
-import { NexusContext } from "/context"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
 import { graphqlUploadExpress } from "graphql-upload"
-import { moocfiAuthPlugin } from "nexus-plugin-moocfi-auth-plugin"
-import redisClient from "./services/redis"
 import { contextUser } from "./middlewares/FetchUser"
 
 const JSONStream = require("JSONStream")
@@ -86,121 +81,12 @@ settings.change({
   },
 })
 
-const isOrganization = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: NexusContext, _info) =>
-    ctx.role === Role.ORGANIZATION,
-)
-
-const isAdmin = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: NexusContext, _info) => (
-    console.log("called?", ctx.role, "should be", Role.ADMIN),
-    ctx.role === Role.ADMIN
-  ),
-)
-
-const isVisitor = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.VISITOR,
-)
-
-// @ts-ignore: not used for now
-const isUser = rule({ cache: "contextual" })(
-  async (_parent, _args, ctx: NexusContext, _info) => ctx.role === Role.USER,
-)
-
-const organizationPermission = rule({ cache: "contextual" })(
-  async (_parent, args, ctx: NexusContext, _info) => {
-    if (args.hidden) return ctx.role === Role.ADMIN
-
-    return true
-  },
-)
-
-const permissions = shield({
-  rules: {
-    Query: {
-      completions: or(isOrganization, isAdmin),
-      completionsPaginated: or(isOrganization, isAdmin),
-      course: isAdmin,
-      course_exists: isAdmin,
-      courseAliases: isAdmin,
-      courseTranslations: isAdmin,
-      emailTemplate: isAdmin,
-      emailTemplates: isAdmin,
-      exercise: isAdmin,
-      exercises: isAdmin,
-      exerciseCompletion: isAdmin,
-      exerciseCompletions: isAdmin,
-      openUniversityRegistrationLink: isAdmin,
-      openUniversityRegistrationLinks: isAdmin,
-      organization: organizationPermission,
-      organizations: organizationPermission,
-      registeredCompletions: or(isOrganization, isAdmin),
-      service: isAdmin,
-      services: isAdmin,
-      study_module: isAdmin,
-      study_module_exists: isAdmin,
-      studyModuleTranslations: isAdmin,
-      user: isAdmin,
-      users: isAdmin,
-      userDetailsContains: isAdmin,
-      userCourseProgress: isAdmin,
-      userCourseProgresses: isAdmin,
-      userCourseServiceProgress: isAdmin,
-      userCourseServiceProgresses: isAdmin,
-      UserCourseSettings: isAdmin,
-      userCourseSettingsCount: isAdmin,
-      UserCourseSettingses: isAdmin,
-    },
-    Mutation: {
-      addCompletion: isAdmin,
-      registerCompletion: isOrganization,
-      addCourse: isAdmin,
-      updateCourse: isAdmin,
-      deleteCourse: isAdmin,
-      addCourseAlias: isAdmin,
-      addCourseOrganization: or(isVisitor, isAdmin),
-      deleteCourseOrganization: isAdmin,
-      addCourseTranslation: isAdmin,
-      updateCourseTranslation: isAdmin,
-      deleteCourseTranslation: isAdmin,
-      addCourseVariant: isAdmin,
-      updateCourseVariant: isAdmin,
-      deleteCourseVariant: isAdmin,
-      addEmailTemplate: isAdmin,
-      updateEmailTemplate: isAdmin,
-      deleteEmailTemplate: isAdmin,
-      addExercise: isAdmin,
-      addExerciseCompletion: isAdmin,
-      addImage: isAdmin,
-      deleteImage: isAdmin,
-      addManualCompletion: isAdmin,
-      addOpenUniversityRegistrationLink: isAdmin,
-      updateOpenUniversityRegistrationLink: isAdmin,
-      addOrganization: isAdmin,
-      addService: isAdmin,
-      updateService: isAdmin,
-      addStudyModule: isAdmin,
-      updateStudyModule: isAdmin,
-      deleteStudyModule: isAdmin,
-      addStudyModuleTranslation: isAdmin,
-      updateStudyModuleTranslation: isAdmin,
-      deleteStudyModuleTranslation: isAdmin,
-      addUserCourseProgress: isAdmin,
-      addUserCourseServiceProgress: isAdmin,
-      addUserOrganization: or(isVisitor, isAdmin),
-      updateUserOrganization: or(isVisitor, isAdmin),
-      deleteUserOrganization: or(isVisitor, isAdmin),
-    },
-  },
-})
-
 /*use(
   moocfiAuthPlugin({
     prisma: prismaClient,
     redisClient,
   }),
 )*/
-// use(permissions)
 
 server.express.use(cors())
 server.express.use(

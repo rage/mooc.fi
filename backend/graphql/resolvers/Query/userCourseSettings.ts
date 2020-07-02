@@ -2,7 +2,7 @@ import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { idArg, intArg, stringArg } from "@nexus/schema"
 import { buildSearch, convertPagination } from "../../../util/db-functions"
 import { schema } from "nexus"
-import { userWhereInput } from "@prisma/client"
+import { UserWhereInput } from "@prisma/client"
 import { isAdmin } from "../../../accessControl"
 
 schema.extendType({
@@ -96,24 +96,24 @@ schema.extendType({
           }
         }
 
+        const orCondition: UserWhereInput[] = [
+          {
+            OR: buildSearch(
+              ["first_name", "last_name", "username", "email"],
+              search ?? "",
+            ),
+          },
+        ]
+
+        if (user_id) orCondition.concat({ id: user_id })
+        if (user_upstream_id)
+          orCondition.concat({ upstream_id: user_upstream_id })
+
         return ctx.db.userCourseSettings.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             user: {
-              OR: [
-                /*{
-                  id: user_id ?? undefined,
-                },
-                {
-                  upstream_id: user_upstream_id ?? undefined,
-                },*/
-                {
-                  OR: buildSearch(
-                    ["first_name", "last_name", "username", "email"],
-                    search ?? "",
-                  ),
-                },
-              ],
+              OR: orCondition,
             },
             course_id,
           },
@@ -138,7 +138,7 @@ schema.extendType({
               course_id = inheritSettingsCourse.id
             }
 
-            const orCondition: userWhereInput[] = [
+            const orCondition: UserWhereInput[] = [
               {
                 OR: buildSearch(
                   ["first_name", "last_name", "username", "email"],

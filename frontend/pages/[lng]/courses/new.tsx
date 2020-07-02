@@ -48,8 +48,8 @@ const NewCourse = () => {
           <FormSkeleton />
         ) : (
           <CourseEdit
-            modules={studyModulesData?.study_modules}
-            courses={coursesData?.courses}
+            modules={studyModulesData?.study_modules ?? undefined}
+            courses={coursesData?.courses ?? undefined}
           />
         )}
       </WideContainer>

@@ -7,7 +7,7 @@ schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("addVerifiedUser", {
-      type: "verified_user",
+      type: "VerifiedUser",
       args: {
         verified_user: arg({
           type: "VerifiedUserArg",
@@ -38,7 +38,7 @@ schema.extendType({
           throw new ForbiddenError("wrong organization secret key")
         }
 
-        return ctx.db.verified_user.create({
+        return ctx.db.verifiedUser.create({
           data: {
             organization: {
               connect: { id: organization.id },

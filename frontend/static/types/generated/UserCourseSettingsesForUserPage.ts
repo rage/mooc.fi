@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface UserCourseSettingsesForUserPage_UserCourseSettingses_edges_node_course {
-  __typename: "course"
+  __typename: "Course"
   name: string
 }
 

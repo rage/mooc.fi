@@ -6,7 +6,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.field("userCourseServiceProgress", {
-      type: "user_course_service_progress",
+      type: "UserCourseServiceProgress",
       args: {
         user_id: idArg(),
         course_id: idArg(),
@@ -15,7 +15,7 @@ schema.extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
-        const result = await ctx.db.user_course_service_progress.findMany({
+        const result = await ctx.db.userCourseServiceProgress.findMany({
           where: {
             user_id: user_id,
             course_id: course_id,

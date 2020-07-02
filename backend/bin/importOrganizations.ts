@@ -74,12 +74,12 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     ? organizationTranslations[0].id
     : null
   if (organizationTranslationId != null) {
-    await prisma.organization_translation.update({
+    await prisma.organizationTranslation.update({
       where: { id: organizationTranslationId },
       data: translationDetails,
     })
   } else {
-    await prisma.organization_translation.create({ data: translationDetails })
+    await prisma.organizationTranslation.create({ data: translationDetails })
   }
 }
 

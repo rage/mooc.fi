@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.inputObjectType({
-  name: "open_university_registration_linkCreateInput",
+  name: "OpenUniversityRegistrationLinkCreateInput",
   definition(t) {
     t.string("course_code", { required: true })
     t.string("language", { required: true })
@@ -12,7 +12,7 @@ schema.inputObjectType({
 })
 
 schema.inputObjectType({
-  name: "open_university_registration_linkUpsertInput",
+  name: "OpenUniversityRegistrationLinkUpsertInput",
   definition(t) {
     t.id("id", { required: false })
     t.string("course_code", { required: true })

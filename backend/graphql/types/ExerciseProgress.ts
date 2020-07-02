@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "exercise_progress",
+  name: "ExerciseProgress",
   definition(t) {
     t.float("total")
     t.float("exercises")

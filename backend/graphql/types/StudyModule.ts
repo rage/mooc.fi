@@ -5,7 +5,7 @@ import { schema } from "nexus"
 import { notEmpty } from "../../util/notEmpty"
 
 schema.objectType({
-  name: "study_module",
+  name: "StudyModule",
   definition(t) {
     t.model.id()
     t.model.created_at()
@@ -19,9 +19,9 @@ schema.objectType({
     // t.prismaFields(["*"])
     t.field("description", { type: "String" })
     t.list.field("courses", {
-      type: "course",
+      type: "Course",
       args: {
-        orderBy: arg({ type: "courseOrderByInput" }),
+        orderBy: arg({ type: "CourseOrderByInput" }),
         language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
@@ -36,7 +36,7 @@ schema.objectType({
           ? (
               await Promise.all(
                 courses.map(async (course) => {
-                  const course_translations = await ctx.db.course_translation.findMany(
+                  const course_translations = await ctx.db.courseTranslation.findMany(
                     {
                       where: { course_id: course.id, language },
                     },

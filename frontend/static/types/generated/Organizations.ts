@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface Organizations_organizations_organization_translation {
-  __typename: "organization_translation"
+  __typename: "OrganizationTranslation"
   language: string
   name: string
   information: string | null
 }
 
 export interface Organizations_organizations {
-  __typename: "organization"
+  __typename: "Organization"
   id: string
   slug: string
   hidden: boolean | null

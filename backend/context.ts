@@ -1,4 +1,4 @@
-import { user, organization } from "@prisma/client"
+import { User, Organization } from "@prisma/client"
 import { Role } from "./accessControl"
 import { UserInfo } from "/domain/UserInfo"
 import TmcClient from "./services/tmc"
@@ -7,8 +7,8 @@ import { IncomingHttpHeaders } from "http"
 
 export interface NexusContext {
   db: PrismaClient
-  user?: user
-  organization?: organization
+  user?: User
+  organization?: Organization
   disableRelations: boolean
   role: Role | undefined
   userDetails: UserInfo | undefined

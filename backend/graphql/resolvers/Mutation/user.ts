@@ -8,7 +8,7 @@ schema.extendType({
   type: "Mutation",
   definition(t) {
     t.field("updateUserName", {
-      type: "user",
+      type: "User",
       args: {
         first_name: stringArg(),
         last_name: stringArg(),
@@ -37,7 +37,7 @@ schema.extendType({
     })
 
     t.field("updateResearchConsent", {
-      type: "user",
+      type: "User",
       args: {
         value: booleanArg({ required: true }),
       },
@@ -65,7 +65,7 @@ schema.extendType({
     })
 
     t.field("addUser", {
-      type: "user",
+      type: "User",
       args: {
         user: arg({
           type: "UserArg",

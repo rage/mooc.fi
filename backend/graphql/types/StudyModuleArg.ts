@@ -9,7 +9,7 @@ schema.inputObjectType({
     t.int("order", { required: false })
     t.field("study_module_translation", {
       list: true,
-      type: "study_module_translationUpsertInput",
+      type: "StudyModuleTranslationUpsertInput",
       required: false,
     })
   },
@@ -26,7 +26,7 @@ schema.inputObjectType({
     t.int("order", { required: false })
     t.field("study_module_translation", {
       list: true,
-      type: "study_module_translationUpsertInput",
+      type: "StudyModuleTranslationUpsertInput",
       required: false,
     })
   },
