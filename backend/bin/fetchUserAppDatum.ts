@@ -5,10 +5,11 @@ import TmcClient from "../services/tmc"
 import { PrismaClient, UserCourseSettings } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
+import prismaClient from "./lib/prisma"
 
 const CONFIG_NAME = "userAppDatum"
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 let course
 let old: UserCourseSettings
 

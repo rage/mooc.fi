@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client"
 import KafkaProducer, { ProducerMessage } from "../services/kafkaProducer"
 import { DateTime } from "luxon"
+import prismaClient from "./lib/prisma"
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 const updateCourseStatuses = async () => {
   const courses = await prisma.course.findMany({})

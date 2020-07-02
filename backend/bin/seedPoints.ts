@@ -1,11 +1,11 @@
 import * as faker from "faker"
 import {
-  PrismaClient,
   UserCourseProgressCreateInput,
   UserCourseSettingsCreateInput,
 } from "@prisma/client"
+import prismaClient from "./lib/prisma"
 
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 //Generate integer id which is not already taken
 function generateUniqueUpstreamId({ ExistingIds }: { ExistingIds: number[] }) {

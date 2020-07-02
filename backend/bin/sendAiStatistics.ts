@@ -2,8 +2,8 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import SlackPoster from "../services/slackPoster"
-import { PrismaClient } from "@prisma/client"
 import Knex from "../services/knex"
+import prismaClient from "./lib/prisma"
 
 const slackPoster: SlackPoster = new SlackPoster()
 const url: string | undefined = process.env.AI_SLACK_URL
@@ -13,7 +13,7 @@ if (!url) {
 }
 
 let data = { text: "" }
-const prisma = new PrismaClient()
+const prisma = prismaClient()
 
 interface langProps {
   language: string
