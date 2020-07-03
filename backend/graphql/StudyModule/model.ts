@@ -14,7 +14,7 @@ schema.objectType({
     t.model.order()
     t.model.slug()
     t.model.updated_at()
-    t.model.study_module_translation()
+    t.model.study_module_translations()
 
     // t.prismaFields(["*"])
     t.field("description", { type: "String" })
@@ -29,7 +29,7 @@ schema.objectType({
 
         const courses = await ctx.db.course.findMany({
           orderBy: orderBy ?? undefined,
-          where: { study_module: { some: { id: parent.id } } },
+          where: { study_modules: { some: { id: parent.id } } },
         })
 
         const values = language

@@ -13,8 +13,8 @@ schema.objectType({
     t.model.name()
     t.model.title()
     t.model.txt_body()
-    t.model.course()
-    t.model.email_delivery()
+    t.model.courses()
+    t.model.email_deliveries()
   },
 })
 

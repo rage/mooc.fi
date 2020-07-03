@@ -12,11 +12,12 @@ schema.objectType({
     t.model.created_at()
     t.model.max_points()
     t.model.n_points()
-    //t.model.progress()
+    // TODO/FIXME: this was borked on some previous version because of JSON, might work now
+    // t.model.progress()
     t.model.updated_at()
     t.model.user_id()
     t.model.user()
-    t.model.user_course_service_progress()
+    t.model.user_course_service_progresses()
 
     t.list.field("progress", {
       type: "Json",
@@ -32,8 +33,8 @@ schema.objectType({
 
     // t.prismaFields(["*"])
 
-    t.field("UserCourseSettings", {
-      type: "UserCourseSettings",
+    t.field("user_course_settings", {
+      type: "UserCourseSetting",
       nullable: true,
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id } =
@@ -55,7 +56,7 @@ schema.objectType({
           throw new Error("course or user not found")
         }
 
-        const userCourseSettings = await ctx.db.userCourseSettings.findMany({
+        const userCourseSettings = await ctx.db.userCourseSetting.findMany({
           where: {
             course_id,
             user_id,
@@ -94,7 +95,7 @@ schema.objectType({
         const courseProgress: any = courseProgresses?.[0].progress ?? []
         const exercises = await ctx.db.course
           .findOne({ where: { id: course_id } })
-          .exercise()
+          .exercises()
         const completedExercises = await ctx.db.exerciseCompletion.findMany({
           where: {
             exercise: { course_id },

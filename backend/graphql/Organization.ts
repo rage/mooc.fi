@@ -30,12 +30,12 @@ schema.objectType({
     t.model.website()
     t.model.creator_id()
     t.model.creator()
-    t.model.completion_registered()
-    t.model.course()
-    t.model.course_organization()
-    t.model.organization_translation()
-    t.model.user_organization()
-    t.model.verified_user()
+    t.model.completions_registered()
+    t.model.courses()
+    t.model.course_organizations()
+    t.model.organization_translations()
+    t.model.user_organizations()
+    t.model.verified_users()
   },
 })
 
@@ -161,7 +161,7 @@ schema.extendType({
           data: {
             slug,
             secret_key: secret,
-            organization_translation: {
+            organization_translations: {
               create: {
                 name: name ?? "",
                 language: "fi_FI",

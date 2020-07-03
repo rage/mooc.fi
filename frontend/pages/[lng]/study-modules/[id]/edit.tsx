@@ -30,7 +30,7 @@ export const StudyModuleQuery = gql`
         name
         slug
       }
-      study_module_translation {
+      study_module_translations {
         id
         name
         language

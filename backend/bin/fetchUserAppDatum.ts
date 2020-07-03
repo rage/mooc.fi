@@ -2,7 +2,7 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import TmcClient from "../services/tmc"
-import { PrismaClient, UserCourseSettings } from "@prisma/client"
+import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 import prismaClient from "./lib/prisma"
@@ -11,7 +11,7 @@ const CONFIG_NAME = "userAppDatum"
 
 const prisma = prismaClient()
 let course
-let old: UserCourseSettings
+let old: UserCourseSetting
 
 const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
@@ -92,16 +92,14 @@ const fetchUserAppDatum = async () => {
       process.exit(1)
     }
 
-    const existingUserCourseSettings = await prisma.userCourseSettings.findMany(
-      {
-        where: {
-          user: { upstream_id: p.user_id },
-          course_id: course.id,
-        },
+    const existingUserCourseSettings = await prisma.userCourseSetting.findMany({
+      where: {
+        user: { upstream_id: p.user_id },
+        course_id: course.id,
       },
-    )
+    })
     if (existingUserCourseSettings.length < 1) {
-      old = await prisma.userCourseSettings.create({
+      old = await prisma.userCourseSetting.create({
         data: {
           user: {
             connect: { upstream_id: p.user_id },
@@ -144,7 +142,7 @@ const fetchUserAppDatum = async () => {
 }
 
 const saveLanguage = async (p: any) => {
-  await prisma.userCourseSettings.update({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -154,7 +152,7 @@ const saveLanguage = async (p: any) => {
   })
 }
 const saveCountry = async (p: any) => {
-  await prisma.userCourseSettings.update({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -165,7 +163,7 @@ const saveCountry = async (p: any) => {
 }
 const saveResearch = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
-  await prisma.userCourseSettings.update({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -176,7 +174,7 @@ const saveResearch = async (p: any) => {
 }
 const saveMarketing = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
-  await prisma.userCourseSettings.update({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -186,7 +184,7 @@ const saveMarketing = async (p: any) => {
   })
 }
 const saveCourseVariant = async (p: any) => {
-  await prisma.userCourseSettings.update({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -205,7 +203,7 @@ const saveOther = async (p: any) => {
   }
   other[p.field_name] = p.value
 
-  await prisma.userCourseSettings.update({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },

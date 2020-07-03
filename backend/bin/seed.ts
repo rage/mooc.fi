@@ -433,7 +433,7 @@ const seed = async () => {
             id: newCourse.id,
           },
           data: {
-            study_module: {
+            study_modules: {
               connect: course.study_module.map((id) => ({
                 id,
               })),

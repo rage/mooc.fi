@@ -38,7 +38,7 @@ schema.objectType({
 
         return ctx.db.exercise
           .findOne({ where: { id: parent.id } })
-          .exercise_completion({
+          .exercise_completions({
             where: {
               // @ts-ignore: context typing problem, FIXME
               user_id: ctx?.user?.id, // { id: ctx?.user?.id },

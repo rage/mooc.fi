@@ -16,27 +16,27 @@ export interface AllEditorCourses_courses_photo {
   uncompressed: string
 }
 
-export interface AllEditorCourses_courses_course_translation {
+export interface AllEditorCourses_courses_course_translations {
   __typename: "CourseTranslation"
   id: string
   language: string
   name: string
 }
 
-export interface AllEditorCourses_courses_course_variant {
+export interface AllEditorCourses_courses_course_variants {
   __typename: "CourseVariant"
   id: string
   slug: string
   description: string | null
 }
 
-export interface AllEditorCourses_courses_course_alias {
+export interface AllEditorCourses_courses_course_aliases {
   __typename: "CourseAlias"
   id: string
   course_code: string
 }
 
-export interface AllEditorCourses_courses_user_course_settings_visibility {
+export interface AllEditorCourses_courses_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
   id: string
   language: string
@@ -51,10 +51,10 @@ export interface AllEditorCourses_courses {
   status: CourseStatus | null
   hidden: boolean | null
   photo: AllEditorCourses_courses_photo | null
-  course_translation: AllEditorCourses_courses_course_translation[]
-  course_variant: AllEditorCourses_courses_course_variant[]
-  course_alias: AllEditorCourses_courses_course_alias[]
-  user_course_settings_visibility: AllEditorCourses_courses_user_course_settings_visibility[]
+  course_translations: AllEditorCourses_courses_course_translations[]
+  course_variants: AllEditorCourses_courses_course_variants[]
+  course_aliases: AllEditorCourses_courses_course_aliases[]
+  user_course_settings_visibilities: AllEditorCourses_courses_user_course_settings_visibilities[]
 }
 
 export interface AllEditorCourses_currentUser {

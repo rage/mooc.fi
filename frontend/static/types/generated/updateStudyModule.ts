@@ -9,7 +9,7 @@ import { StudyModuleUpsertArg } from "./globalTypes"
 // GraphQL mutation operation: updateStudyModule
 // ====================================================
 
-export interface updateStudyModule_updateStudyModule_study_module_translation {
+export interface updateStudyModule_updateStudyModule_study_module_translations {
   __typename: "StudyModuleTranslation"
   id: string
   language: string
@@ -24,7 +24,7 @@ export interface updateStudyModule_updateStudyModule {
   name: string
   image: string | null
   order: number | null
-  study_module_translation: updateStudyModule_updateStudyModule_study_module_translation[]
+  study_module_translations: updateStudyModule_updateStudyModule_study_module_translations[]
 }
 
 export interface updateStudyModule {

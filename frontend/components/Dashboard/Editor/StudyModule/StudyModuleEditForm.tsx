@@ -176,21 +176,21 @@ const RenderForm = () => {
           {t("moduleTranslationsTitle")}
         </FormSubtitle>
         <Grid container direction="column">
-          <FieldArray name="study_module_translation">
+          <FieldArray name="study_module_translations">
             {(helpers) => (
               <>
-                {values?.study_module_translation?.map(
+                {values?.study_module_translations?.map(
                   (_: any, index: number) => (
                     <LanguageEntry item key={`translation-${index}`}>
                       <EntryContainer elevation={2}>
                         <StyledFieldWithAnchor
-                          name={`study_module_translation[${index}].language`}
+                          name={`study_module_translations[${index}].language`}
                           type="select"
                           label={t("moduleLanguage")}
                           errors={[
                             getIn(
                               errors,
-                              `study_module_translation[${index}].language`,
+                              `study_module_translations[${index}].language`,
                             ),
                           ]}
                           fullWidth
@@ -206,12 +206,12 @@ const RenderForm = () => {
                           ))}
                         </StyledFieldWithAnchor>
                         <StyledFieldWithAnchor
-                          name={`study_module_translation[${index}].name`}
+                          name={`study_module_translations[${index}].name`}
                           type="text"
                           label={t("moduleName")}
                           error={getIn(
                             errors,
-                            `study_module_translation[${index}].name`,
+                            `study_module_translations[${index}].name`,
                           )}
                           fullWidth
                           autoComplete="off"
@@ -219,12 +219,12 @@ const RenderForm = () => {
                           component={StyledTextField}
                         />
                         <StyledFieldWithAnchor
-                          name={`study_module_translation[${index}].description`}
+                          name={`study_module_translations[${index}].description`}
                           type="textarea"
                           label={t("moduleDescription")}
                           error={getIn(
                             errors,
-                            `study_module_translation[${index}].description`,
+                            `study_module_translations[${index}].description`,
                           )}
                           fullWidth
                           multiline
@@ -263,7 +263,7 @@ const RenderForm = () => {
                     </Typography>
                   </EntryContainer>
                 )}
-                {values?.study_module_translation?.length <
+                {values?.study_module_translations?.length <
                   languages(t).length && (
                   <FormSubmitButton
                     variant="contained"

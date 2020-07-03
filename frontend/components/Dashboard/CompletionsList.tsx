@@ -44,7 +44,7 @@ export const AllCompletionsQuery = gql`
             id
             name
           }
-          completion_registered {
+          completions_registered {
             id
             organization {
               id
@@ -90,7 +90,7 @@ export const PreviousPageCompletionsQuery = gql`
             id
             name
           }
-          completion_registered {
+          completions_registered {
             id
             organization {
               id

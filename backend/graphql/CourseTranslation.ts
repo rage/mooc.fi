@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { arg, idArg, stringArg } from "@nexus/schema"
+import { idArg, stringArg } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
 schema.objectType({

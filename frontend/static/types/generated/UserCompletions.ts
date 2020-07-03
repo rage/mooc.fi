@@ -22,16 +22,16 @@ export interface UserCompletions_completions_course {
   has_certificate: boolean | null
 }
 
-export interface UserCompletions_completions_completion_registered_organization {
+export interface UserCompletions_completions_completions_registered_organization {
   __typename: "Organization"
   slug: string
 }
 
-export interface UserCompletions_completions_completion_registered {
+export interface UserCompletions_completions_completions_registered {
   __typename: "CompletionRegistered"
   id: string
   created_at: any | null
-  organization: UserCompletions_completions_completion_registered_organization | null
+  organization: UserCompletions_completions_completions_registered_organization | null
 }
 
 export interface UserCompletions_completions {
@@ -41,7 +41,7 @@ export interface UserCompletions_completions {
   student_number: string | null
   created_at: any | null
   course: UserCompletions_completions_course | null
-  completion_registered: UserCompletions_completions_completion_registered[]
+  completions_registered: UserCompletions_completions_completions_registered[]
 }
 
 export interface UserCompletions {

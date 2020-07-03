@@ -1,7 +1,7 @@
 import {
   CourseTranslationUpdateManyWithoutCourseInput,
   OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput,
-  StudyModuleUpdateManyWithoutCourseInput,
+  StudyModuleUpdateManyWithoutCoursesInput,
   CourseVariantUpdateManyWithoutCourseInput,
   CourseAliasUpdateManyWithoutCourseInput,
   UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
@@ -15,6 +15,7 @@ import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
 import { NexusContext } from "../../context"
 import { isAdmin } from "../../accessControl"
+import { Prisma__CourseClient, Course } from "nexus-plugin-prisma/client"
 // for debug
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
@@ -39,14 +40,14 @@ schema.extendType({
           // slug,
           new_photo,
           base64,
-          course_translation,
-          open_university_registration_link,
-          course_variant,
-          course_alias,
-          study_module,
+          course_translations,
+          open_university_registration_links,
+          course_variants,
+          course_aliases,
+          study_modules,
           inherit_settings_from,
           completions_handled_by,
-          user_course_settings_visibility,
+          user_course_settings_visibilities,
           completion_email,
         } = course
 
@@ -62,7 +63,7 @@ schema.extendType({
           photo = newImage.id
         }
 
-        if (study_module?.some((s) => !s.id && !s.slug)) {
+        if (study_modules?.some((s) => !s.id && !s.slug)) {
           throw new UserInputError("study modules must have id or slug")
         }
 
@@ -71,31 +72,33 @@ schema.extendType({
             ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : null,
-            course_translation: !!course_translation
-              ? { create: course_translation }
+            course_translations: !!course_translations
+              ? { create: course_translations }
               : null,
-            study_module: !!study_module
+            study_modules: !!study_modules
               ? {
-                  connect: study_module.map((s) => ({
+                  connect: study_modules.map((s) => ({
                     id: s.id ?? undefined,
                   })),
                 }
               : null,
-            open_university_registration_link: !!open_university_registration_link
-              ? { create: open_university_registration_link }
+            open_university_registration_links: !!open_university_registration_links
+              ? { create: open_university_registration_links }
               : null,
-            course_variant: !!course_variant
-              ? { create: course_variant }
+            course_variants: !!course_variants
+              ? { create: course_variants }
               : null,
-            course_alias: !!course_alias ? { create: course_alias } : null,
+            course_aliases: !!course_aliases
+              ? { create: course_aliases }
+              : null,
             inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : null,
             completions_handled_by: !!completions_handled_by
               ? { connect: { id: completions_handled_by } }
               : null,
-            user_course_settings_visibility: !!user_course_settings_visibility
-              ? { create: user_course_settings_visibility }
+            user_course_settings_visibilities: !!user_course_settings_visibilities
+              ? { create: user_course_settings_visibilities }
               : null,
             // don't think this will be passed by parameter, but let's be sure
             completion_email: !!completion_email
@@ -133,17 +136,17 @@ schema.extendType({
           slug,
           new_slug,
           base64,
-          course_translation,
-          open_university_registration_link,
-          course_variant,
-          course_alias,
-          study_module,
+          course_translations,
+          open_university_registration_links,
+          course_variants,
+          course_aliases,
+          study_modules,
           completion_email,
           status,
           delete_photo,
           inherit_settings_from,
           completions_handled_by,
-          user_course_settings_visibility,
+          user_course_settings_visibilities,
         } = course
         let { end_date } = course
 
@@ -186,8 +189,8 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_translation,
-          field: "course_translation",
+          data: course_translations,
+          field: "course_translations",
         })
 
         const registrationLinkMutation:
@@ -195,8 +198,8 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: open_university_registration_link,
-          field: "open_university_registration_link",
+          data: open_university_registration_links,
+          field: "open_university_registration_links",
         })
 
         const courseVariantMutation:
@@ -204,8 +207,8 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_variant,
-          field: "course_variant",
+          data: course_variants,
+          field: "course_variants",
         })
 
         const courseAliasMutation:
@@ -213,8 +216,8 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_alias,
-          field: "course_alias",
+          data: course_aliases,
+          field: "course_aliases",
         })
 
         const userCourseSettingsVisibilityMutation:
@@ -222,13 +225,13 @@ schema.extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: user_course_settings_visibility,
-          field: "user_course_settings_visibility",
+          data: user_course_settings_visibilities,
+          field: "user_course_settings_visibilities",
         })
 
         const existingVisibilities = await ctx.db.course
           .findOne({ where: { slug } })
-          .user_course_settings_visibility()
+          .user_course_settings_visibilities()
         existingVisibilities?.forEach((visibility) =>
           invalidate(
             "usercoursesettingscount",
@@ -239,21 +242,21 @@ schema.extendType({
         // this had different logic so it's not done with the same helper
         const existingStudyModules = await ctx.db.course
           .findOne({ where: { slug } })
-          .study_module()
+          .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
         const removedModuleIds = (existingStudyModules || [])
-          .filter((module) => !getIds(study_module ?? []).includes(module.id))
+          .filter((module) => !getIds(study_modules ?? []).includes(module.id))
           .map((module) => ({ id: module.id } as { id: string }))
         const connectModules =
-          study_module?.map((s) => ({
+          study_modules?.map((s) => ({
             ...s,
             id: s.id ?? undefined,
             slug: s.slug ?? undefined,
           })) ?? []
 
         const studyModuleMutation:
-          | StudyModuleUpdateManyWithoutCourseInput
-          | undefined = study_module
+          | StudyModuleUpdateManyWithoutCoursesInput
+          | undefined = study_modules
           ? {
               connect: connectModules.length ? connectModules : undefined,
               disconnect: removedModuleIds.length
@@ -305,17 +308,17 @@ schema.extendType({
             end_date,
             // FIXME: disconnect removed photos?
             photo: !!photo ? { connect: { id: photo } } : undefined,
-            course_translation: translationMutation,
-            study_module: studyModuleMutation,
-            open_university_registration_link: registrationLinkMutation,
-            course_variant: courseVariantMutation,
-            course_alias: courseAliasMutation,
+            course_translations: translationMutation,
+            study_modules: studyModuleMutation,
+            open_university_registration_links: registrationLinkMutation,
+            course_variants: courseVariantMutation,
+            course_aliases: courseAliasMutation,
             completion_email: completion_email
               ? { connect: { id: completion_email } }
               : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
-            user_course_settings_visibility: userCourseSettingsVisibilityMutation,
+            user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
           },
         })
 
@@ -381,7 +384,7 @@ interface ICreateMutation<T> {
   ctx: NexusContext
   slug: string
   data?: T[] | null
-  field: string
+  field: keyof Prisma__CourseClient<Course>
 }
 
 const createMutation = async <T extends { id?: string | null }>({

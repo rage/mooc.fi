@@ -2,8 +2,7 @@ import { CourseStatus } from "/static/types/generated/globalTypes"
 import { FormValues } from "../types"
 import {
   CourseDetails_course_photo,
-  CourseDetails_course_open_university_registration_link,
-  // CourseDetails_course_open_university_registration_links,
+  CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
 import { DateTime } from "luxon"
 
@@ -23,13 +22,13 @@ export interface CourseFormValues extends FormValues {
   hidden: boolean
   study_module_start_point: boolean
   status: CourseStatus
-  course_translation: CourseTranslationFormValues[]
-  open_university_registration_link?:
-    | CourseDetails_course_open_university_registration_link[]
+  course_translations: CourseTranslationFormValues[]
+  open_university_registration_links?:
+    | CourseDetails_course_open_university_registration_links[]
     | null
-  study_module?: { [key: string]: boolean } | null
-  course_variant: CourseVariantFormValues[]
-  course_alias: CourseAliasFormValues[]
+  study_modules?: { [key: string]: boolean } | null
+  course_variants: CourseVariantFormValues[]
+  course_aliases: CourseAliasFormValues[]
   thumbnail?: string | null
   new_photo?: File | null
   new_slug: string
@@ -41,7 +40,7 @@ export interface CourseFormValues extends FormValues {
   inherit_settings_from?: string
   completions_handled_by?: string
   has_certificate: boolean
-  user_course_settings_visibility: UserCourseSettingsVisibilityFormValues[]
+  user_course_settings_visibilities: UserCourseSettingsVisibilityFormValues[]
 }
 
 export interface CourseTranslationFormValues extends FormValues {
@@ -52,7 +51,7 @@ export interface CourseTranslationFormValues extends FormValues {
   link?: string | null
   course?: string
   // open_university_course_code?: string
-  open_university_course_link?: CourseDetails_course_open_university_registration_link
+  open_university_course_link?: CourseDetails_course_open_university_registration_links
 }
 
 export interface OpenUniversityRegistrationValues extends FormValues {

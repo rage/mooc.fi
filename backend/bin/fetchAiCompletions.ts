@@ -47,7 +47,7 @@ async function removeDataThatIsInDBAlready(
     where: {
       AND: {
         username: { in: data },
-        completion: {
+        completions: {
           some: { course: { slug: course_slug } },
         },
       },

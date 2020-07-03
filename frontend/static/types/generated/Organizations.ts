@@ -7,7 +7,7 @@
 // GraphQL query operation: Organizations
 // ====================================================
 
-export interface Organizations_organizations_organization_translation {
+export interface Organizations_organizations_organization_translations {
   __typename: "OrganizationTranslation"
   language: string
   name: string
@@ -19,7 +19,7 @@ export interface Organizations_organizations {
   id: string
   slug: string
   hidden: boolean | null
-  organization_translation: Organizations_organizations_organization_translation[]
+  organization_translations: Organizations_organizations_organization_translations[]
 }
 
 export interface Organizations {

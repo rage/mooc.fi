@@ -43,7 +43,7 @@ const CourseAndModuleList = () => {
           const moduleCourses =
             courses?.filter(
               (course) =>
-                course?.study_module?.some(
+                course?.study_modules?.some(
                   (courseModule) => courseModule.id === module.id,
                 ) && course?.status !== CourseStatus.Ended,
             ) ?? []

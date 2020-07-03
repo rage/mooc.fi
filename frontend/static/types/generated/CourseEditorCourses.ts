@@ -7,7 +7,7 @@
 // GraphQL query operation: CourseEditorCourses
 // ====================================================
 
-export interface CourseEditorCourses_courses_course_translation {
+export interface CourseEditorCourses_courses_course_translations {
   __typename: "CourseTranslation"
   id: string
   name: string
@@ -31,7 +31,7 @@ export interface CourseEditorCourses_courses {
   id: string
   slug: string
   name: string
-  course_translation: CourseEditorCourses_courses_course_translation[]
+  course_translations: CourseEditorCourses_courses_course_translations[]
   photo: CourseEditorCourses_courses_photo | null
 }
 

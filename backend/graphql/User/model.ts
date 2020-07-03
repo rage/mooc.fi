@@ -15,16 +15,16 @@ schema.objectType({
     t.model.updated_at()
     t.model.upstream_id()
     t.model.username()
-    t.model.completion()
-    t.model.completion_registered()
-    t.model.email_delivery()
-    t.model.exercise_completion()
-    t.model.organization()
-    t.model.user_course_progress()
-    t.model.user_course_service_progress()
-    t.model.UserCourseSettings()
-    t.model.user_organization()
-    t.model.verified_user()
+    // t.model.completions()
+    t.model.completions_registered()
+    t.model.email_deliveries()
+    t.model.exercise_completions()
+    t.model.organizations()
+    t.model.user_course_progresses()
+    t.model.user_course_service_progresses()
+    t.model.user_course_settings()
+    t.model.user_organizations()
+    t.model.verified_users()
     t.model.research_consent()
     // t.prismaFields({ filter: ["completions"] })
 
@@ -105,6 +105,7 @@ schema.objectType({
       },
     })
 
+    // TODO/FIXME: is this used anywhere? if is, find better name
     t.field("user_course_progressess", {
       type: "UserCourseProgress",
       nullable: true,

@@ -18,8 +18,8 @@ export interface ExportUserCourseProgesses_userCourseProgresses_user {
   last_name: string | null
 }
 
-export interface ExportUserCourseProgesses_userCourseProgresses_UserCourseSettings {
-  __typename: "UserCourseSettings"
+export interface ExportUserCourseProgesses_userCourseProgresses_user_course_settings {
+  __typename: "UserCourseSetting"
   course_variant: string | null
   country: string | null
   language: string | null
@@ -30,7 +30,7 @@ export interface ExportUserCourseProgesses_userCourseProgresses {
   id: string
   user: ExportUserCourseProgesses_userCourseProgresses_user | null
   progress: any[] | null
-  UserCourseSettings: ExportUserCourseProgesses_userCourseProgresses_UserCourseSettings | null
+  user_course_settings: ExportUserCourseProgesses_userCourseProgresses_user_course_settings | null
 }
 
 export interface ExportUserCourseProgesses {

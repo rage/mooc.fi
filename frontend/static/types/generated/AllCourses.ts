@@ -16,19 +16,19 @@ export interface AllCourses_courses_photo {
   uncompressed: string
 }
 
-export interface AllCourses_courses_study_module {
+export interface AllCourses_courses_study_modules {
   __typename: "StudyModule"
   id: string
 }
 
-export interface AllCourses_courses_course_translation {
+export interface AllCourses_courses_course_translations {
   __typename: "CourseTranslation"
   id: string
   language: string
   name: string
 }
 
-export interface AllCourses_courses_user_course_settings_visibility {
+export interface AllCourses_courses_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
   id: string
   language: string
@@ -48,9 +48,9 @@ export interface AllCourses_courses {
   hidden: boolean | null
   description: string | null
   link: string | null
-  study_module: AllCourses_courses_study_module[]
-  course_translation: AllCourses_courses_course_translation[]
-  user_course_settings_visibility: AllCourses_courses_user_course_settings_visibility[]
+  study_modules: AllCourses_courses_study_modules[]
+  course_translations: AllCourses_courses_course_translations[]
+  user_course_settings_visibilities: AllCourses_courses_user_course_settings_visibilities[]
 }
 
 export interface AllCourses {

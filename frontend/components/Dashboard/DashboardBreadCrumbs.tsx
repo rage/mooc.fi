@@ -16,7 +16,7 @@ const BreadcrumbCourseQuery = gql`
       id
       slug
       name
-      course_translation {
+      course_translations {
         id
         language
         name
@@ -31,7 +31,7 @@ const BreadcrumbModuleQuery = gql`
       id
       slug
       name
-      study_module_translation {
+      study_module_translations {
         id
         language
         name

@@ -7,7 +7,7 @@
 // GraphQL query operation: AllEditorModulesWithTranslations
 // ====================================================
 
-export interface AllEditorModulesWithTranslations_study_modules_study_module_translation {
+export interface AllEditorModulesWithTranslations_study_modules_study_module_translations {
   __typename: "StudyModuleTranslation"
   id: string
   language: string
@@ -22,7 +22,7 @@ export interface AllEditorModulesWithTranslations_study_modules {
   name: string
   image: string | null
   order: number | null
-  study_module_translation: AllEditorModulesWithTranslations_study_modules_study_module_translation[]
+  study_module_translations: AllEditorModulesWithTranslations_study_modules_study_module_translations[]
 }
 
 export interface AllEditorModulesWithTranslations {

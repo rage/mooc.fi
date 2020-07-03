@@ -62,7 +62,7 @@ const langArr: langProps[] = [
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
-  const totalByLang = await prisma.userCourseSettings.findMany({
+  const totalByLang = await prisma.userCourseSetting.findMany({
     where: {
       language: langProps.language,
       course: { slug: "elements-of-ai" },
@@ -74,7 +74,7 @@ const getDataByLanguage = async (langProps: langProps) => {
       completion_language: langProps.completion_language,
     },
   })
-  const englishInLang = await prisma.userCourseSettings.findMany({
+  const englishInLang = await prisma.userCourseSetting.findMany({
     where: {
       country: langProps.country,
       language: "en",

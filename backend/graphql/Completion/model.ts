@@ -11,7 +11,7 @@ schema.objectType({
     t.model.email()
     t.model.student_number()
     t.model.user_upstream_id()
-    t.model.completion_registered()
+    t.model.completions_registered()
     t.model.course_id()
     t.model.grade()
     t.model.certificate_id()
