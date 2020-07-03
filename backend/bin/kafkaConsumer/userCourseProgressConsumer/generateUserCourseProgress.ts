@@ -2,7 +2,7 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import {
-  UserCourseSettings,
+  UserCourseSetting,
   User,
   Course,
   UserCourseProgress,
@@ -147,25 +147,25 @@ const CheckRequiredExerciseCompletions = async (
 const GetUserCourseSettings = async (
   user: User,
   course: Course,
-): Promise<UserCourseSettings> => {
-  let userCourseSettings: UserCourseSettings =
+): Promise<UserCourseSetting> => {
+  let userCourseSetting: UserCourseSetting =
     (
-      await prisma.userCourseSettings.findMany({
+      await prisma.userCourseSetting.findMany({
         where: {
           user_id: user.id,
           course_id: course.id,
         },
       })
-    )[0] || null
+    )?.[0] || null
 
-  if (!userCourseSettings) {
+  if (!userCourseSetting) {
     const inheritCourse = await prisma.course
       .findOne({ where: { id: course.id } })
       .inherit_settings_from()
     if (inheritCourse) {
-      userCourseSettings =
+      userCourseSetting =
         (
-          await prisma.userCourseSettings.findMany({
+          await prisma.userCourseSetting.findMany({
             where: {
               user_id: user.id,
               course_id: inheritCourse.id,
@@ -174,7 +174,7 @@ const GetUserCourseSettings = async (
         )[0] || null
     }
   }
-  return userCourseSettings
+  return userCourseSetting
 }
 
 const languageCodeMapping: { [key: string]: string } = {

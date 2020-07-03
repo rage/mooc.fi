@@ -19,15 +19,15 @@ export const AllCoursesQuery = gql`
       hidden
       description
       link
-      study_module {
+      study_modules {
         id
       }
-      course_translation {
+      course_translations {
         id
         language
         name
       }
-      user_course_settings_visibility {
+      user_course_settings_visibilities {
         id
         language
       }
@@ -49,21 +49,21 @@ export const AllEditorCoursesQuery = gql`
         compressed
         uncompressed
       }
-      course_translation {
+      course_translations {
         id
         language
         name
       }
-      course_variant {
+      course_variants {
         id
         slug
         description
       }
-      course_alias {
+      course_aliases {
         id
         course_code
       }
-      user_course_settings_visibility {
+      user_course_settings_visibilities {
         id
         language
       }
@@ -96,7 +96,7 @@ export const CourseEditorCoursesQuery = gql`
       id
       slug
       name
-      course_translation {
+      course_translations {
         id
         name
         language

@@ -1,7 +1,7 @@
 import * as faker from "faker"
 import {
   UserCourseProgressCreateInput,
-  UserCourseSettingsCreateInput,
+  UserCourseSettingCreateInput,
 } from "@prisma/client"
 import prismaClient from "./lib/prisma"
 
@@ -243,7 +243,7 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.user.findMany({ take: 100 })
   return await Promise.all(
     UsersInDb.map(async (user) => {
-      const ucs: UserCourseSettingsCreateInput = {
+      const ucs: UserCourseSettingCreateInput = {
         user: {
           connect: {
             id: user.id,
@@ -261,7 +261,7 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
         course_variant: null,
         other: null,
       }
-      return await prisma.userCourseSettings.create({ data: ucs })
+      return await prisma.userCourseSetting.create({ data: ucs })
     }),
   )
 }

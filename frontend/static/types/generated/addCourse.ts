@@ -21,7 +21,7 @@ export interface addCourse_addCourse_photo {
   uncompressed_mimetype: string
 }
 
-export interface addCourse_addCourse_course_translation {
+export interface addCourse_addCourse_course_translations {
   __typename: "CourseTranslation"
   id: string
   language: string
@@ -30,7 +30,7 @@ export interface addCourse_addCourse_course_translation {
   link: string | null
 }
 
-export interface addCourse_addCourse_open_university_registration_link {
+export interface addCourse_addCourse_open_university_registration_links {
   __typename: "OpenUniversityRegistrationLink"
   id: string
   course_code: string
@@ -38,25 +38,25 @@ export interface addCourse_addCourse_open_university_registration_link {
   link: string | null
 }
 
-export interface addCourse_addCourse_study_module {
+export interface addCourse_addCourse_study_modules {
   __typename: "StudyModule"
   id: string
 }
 
-export interface addCourse_addCourse_course_variant {
+export interface addCourse_addCourse_course_variants {
   __typename: "CourseVariant"
   id: string
   slug: string
   description: string | null
 }
 
-export interface addCourse_addCourse_course_alias {
+export interface addCourse_addCourse_course_aliases {
   __typename: "CourseAlias"
   id: string
   course_code: string
 }
 
-export interface addCourse_addCourse_user_course_settings_visibility {
+export interface addCourse_addCourse_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
   id: string
   language: string
@@ -71,12 +71,12 @@ export interface addCourse_addCourse {
   order: number | null
   study_module_order: number | null
   photo: addCourse_addCourse_photo | null
-  course_translation: addCourse_addCourse_course_translation[]
-  open_university_registration_link: addCourse_addCourse_open_university_registration_link[]
-  study_module: addCourse_addCourse_study_module[]
-  course_variant: addCourse_addCourse_course_variant[]
-  course_alias: addCourse_addCourse_course_alias[]
-  user_course_settings_visibility: addCourse_addCourse_user_course_settings_visibility[]
+  course_translations: addCourse_addCourse_course_translations[]
+  open_university_registration_links: addCourse_addCourse_open_university_registration_links[]
+  study_modules: addCourse_addCourse_study_modules[]
+  course_variants: addCourse_addCourse_course_variants[]
+  course_aliases: addCourse_addCourse_course_aliases[]
+  user_course_settings_visibilities: addCourse_addCourse_user_course_settings_visibilities[]
 }
 
 export interface addCourse {

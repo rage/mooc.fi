@@ -94,11 +94,11 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
   const t = getCoursesTranslator(language)
   const statuses = statusesT(t)
   const [selectedLanguage, setSelectedLanguage] = useState(
-    values?.course_translation.length === 0
+    values?.course_translations.length === 0
       ? ""
-      : values?.course_translation.length == 2
+      : values?.course_translations.length == 2
       ? "both"
-      : values?.course_translation[0].language,
+      : values?.course_translations[0].language,
   )
   // @ts-ignore: for now
   const [enableSuperSecret, setEnableSuperSecret] = useState(!!secret)
@@ -263,16 +263,16 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
               <FormLabel>{t("courseModules")}</FormLabel>
               <FormGroup>
                 <ModuleList>
-                  <EnumeratingAnchor id="study_module" />
+                  <EnumeratingAnchor id="study_modules" />
                   {studyModules?.map(
                     (module: CourseEditorStudyModules_study_modules) => (
                       <ModuleListItem key={module.id}>
                         <Field
-                          id={`study_module[${module.id}]`}
+                          id={`study_modules[${module.id}]`}
                           label={module.name}
                           type="checkbox"
-                          name={`study_module[${module.id}]`}
-                          checked={values?.study_module?.[module.id]}
+                          name={`study_modules[${module.id}]`}
+                          checked={values?.study_modules?.[module.id]}
                           component={CheckboxWithLabel}
                           Label={{ label: module.name }}
                         />

@@ -42,7 +42,7 @@ function CompletionCard({
   const completionLanguage =
     MapLangToLanguage[completer?.completion_language ?? ""] ??
     "No language available"
-  const completionsRegistered = completer?.completion_registered ?? []
+  const completionsRegistered = completer?.completions_registered ?? []
   const studentId = completer?.user?.student_number
     ? `HY SID: ${completer.user.student_number}`
     : "No student number"

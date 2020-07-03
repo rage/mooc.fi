@@ -41,16 +41,16 @@ export interface AllCompletions_completionsPaginated_edges_node_course {
   name: string
 }
 
-export interface AllCompletions_completionsPaginated_edges_node_completion_registered_organization {
+export interface AllCompletions_completionsPaginated_edges_node_completions_registered_organization {
   __typename: "Organization"
   id: string
   slug: string
 }
 
-export interface AllCompletions_completionsPaginated_edges_node_completion_registered {
+export interface AllCompletions_completionsPaginated_edges_node_completions_registered {
   __typename: "CompletionRegistered"
   id: string
-  organization: AllCompletions_completionsPaginated_edges_node_completion_registered_organization | null
+  organization: AllCompletions_completionsPaginated_edges_node_completions_registered_organization | null
 }
 
 export interface AllCompletions_completionsPaginated_edges_node {
@@ -61,7 +61,7 @@ export interface AllCompletions_completionsPaginated_edges_node {
   created_at: any | null
   user: AllCompletions_completionsPaginated_edges_node_user | null
   course: AllCompletions_completionsPaginated_edges_node_course | null
-  completion_registered: AllCompletions_completionsPaginated_edges_node_completion_registered[]
+  completions_registered: AllCompletions_completionsPaginated_edges_node_completions_registered[]
 }
 
 export interface AllCompletions_completionsPaginated_edges {

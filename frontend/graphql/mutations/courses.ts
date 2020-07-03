@@ -19,32 +19,32 @@ export const AddCourseMutation = gql`
         uncompressed
         uncompressed_mimetype
       }
-      course_translation {
+      course_translations {
         id
         language
         name
         description
         link
       }
-      open_university_registration_link {
+      open_university_registration_links {
         id
         course_code
         language
         link
       }
-      study_module {
+      study_modules {
         id
       }
-      course_variant {
+      course_variants {
         id
         slug
         description
       }
-      course_alias {
+      course_aliases {
         id
         course_code
       }
-      user_course_settings_visibility {
+      user_course_settings_visibilities {
         id
         language
       }
@@ -71,28 +71,28 @@ export const UpdateCourseMutation = gql`
         uncompressed
         uncompressed_mimetype
       }
-      course_translation {
+      course_translations {
         id
         language
         name
         description
         link
       }
-      open_university_registration_link {
+      open_university_registration_links {
         id
         course_code
         language
         link
       }
-      study_module {
+      study_modules {
         id
       }
-      course_variant {
+      course_variants {
         id
         slug
         description
       }
-      course_alias {
+      course_aliases {
         id
         course_code
       }
@@ -103,7 +103,7 @@ export const UpdateCourseMutation = gql`
         txt_body
         html_body
       }
-      user_course_settings_visibility {
+      user_course_settings_visibilities {
         id
         language
       }

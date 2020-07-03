@@ -47,7 +47,7 @@ interface ListItemProps {
 }
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
-  const isRegistered = (listItem?.completion_registered ?? []).length > 0
+  const isRegistered = (listItem?.completions_registered ?? []).length > 0
   const lng = useContext(LanguageContext)
   const t = getProfileTranslator(lng.language)
   //Checks from the course whether it has a certificate or not
@@ -71,8 +71,8 @@ const CompletionListItem = (props: ListItemProps) => {
           }`}
         </CardSubtitle>
       </div>
-      {isRegistered && listItem.completion_registered ? (
-        listItem.completion_registered.map((r) => {
+      {isRegistered && listItem.completions_registered ? (
+        listItem.completions_registered.map((r) => {
           ;<div style={{ margin: "auto" }}>
             <CardSubtitle>
               {t("registeredDate")}

@@ -6,7 +6,7 @@ import { UserWhereInput } from "@prisma/client"
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
-  name: "UserCourseSettings",
+  name: "UserCourseSetting",
   definition(t) {
     t.model.id()
     t.model.created_at()
@@ -27,8 +27,8 @@ schema.objectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.field("UserCourseSettings", {
-      type: "UserCourseSettings",
+    t.field("userCourseSetting", {
+      type: "UserCourseSetting",
       args: {
         user_id: idArg({ required: true }),
         course_id: idArg({ required: true }),
@@ -46,7 +46,7 @@ schema.extendType({
           course_id = inheritSettingsCourse.id
         }
 
-        const result = await ctx.db.userCourseSettings.findMany({
+        const result = await ctx.db.userCourseSetting.findMany({
           where: {
             user_id,
             course_id,
@@ -60,7 +60,7 @@ schema.extendType({
       },
     })
 
-    t.field("userCourseSettingsCount", {
+    t.field("userCourseSettingCount", {
       type: "Int",
       args: {
         user_id: idArg(),
@@ -69,7 +69,7 @@ schema.extendType({
       resolve: (_, args, ctx) => {
         const { user_id, course_id } = args
 
-        return ctx.db.userCourseSettings.count({
+        return ctx.db.userCourseSetting.count({
           where: {
             user_id,
             course_id,
@@ -78,8 +78,8 @@ schema.extendType({
       },
     })
 
-    t.connection("UserCourseSettingses", {
-      type: "UserCourseSettings",
+    t.connection("userCourseSettings", {
+      type: "UserCourseSetting",
       additionalArgs: {
         user_id: idArg(),
         user_upstream_id: intArg(),
@@ -128,7 +128,7 @@ schema.extendType({
         if (user_upstream_id)
           orCondition.concat({ upstream_id: user_upstream_id })
 
-        return ctx.db.userCourseSettings.findMany({
+        return ctx.db.userCourseSetting.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             user: {
@@ -170,7 +170,7 @@ schema.extendType({
             if (user_upstream_id)
               orCondition.concat({ upstream_id: user_upstream_id })
 
-            const count = await ctx.db.userCourseSettings.count({
+            const count = await ctx.db.userCourseSetting.count({
               where: {
                 user: {
                   OR: orCondition,

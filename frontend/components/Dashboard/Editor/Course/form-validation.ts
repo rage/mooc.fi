@@ -11,7 +11,7 @@ import {
 import { DocumentNode } from "apollo-boost"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { DateTime } from "luxon"
-import { CourseDetails_course_open_university_registration_link } from "/static/types/generated/CourseDetails"
+import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -22,7 +22,7 @@ export const initialTranslation: CourseTranslationFormValues = {
   open_university_course_link: {
     course_code: "",
     link: "",
-  } as CourseDetails_course_open_university_registration_link,
+  } as CourseDetails_course_open_university_registration_links,
 }
 
 export const initialVariant: CourseVariantFormValues = {
@@ -56,16 +56,16 @@ export const initialValues: CourseFormValues = {
   hidden: false,
   study_module_start_point: false,
   status: CourseStatus.Upcoming,
-  study_module: {},
-  course_translation: [],
-  open_university_registration_link: [],
+  study_modules: {},
+  course_translations: [],
+  open_university_registration_links: [],
   order: undefined,
   study_module_order: undefined,
-  course_variant: [],
-  course_alias: [],
+  course_variants: [],
+  course_aliases: [],
   delete_photo: false,
   has_certificate: false,
-  user_course_settings_visibility: [],
+  user_course_settings_visibilities: [],
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
@@ -106,7 +106,10 @@ export const languages = (t: Function) => [
 
 export const study_modules: { value: any; label: any }[] = []
 
-const testUnique = <T extends FormValues>(valueField: string, field: string) =>
+const testUnique = <T extends FormValues>(
+  valueField: keyof CourseFormValues,
+  field: string,
+) =>
   function (this: Yup.TestContext, value?: any): boolean {
     const {
       context,
@@ -162,7 +165,7 @@ const courseEditSchema = ({
     status: Yup.mixed()
       .oneOf(statuses(t).map((s) => s.value))
       .required(t("validationRequired")),
-    course_translation: Yup.array().of(
+    course_translations: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
@@ -187,7 +190,7 @@ const courseEditSchema = ({
         }),
       }),
     ),
-    course_variant: Yup.array().of(
+    course_variants: Yup.array().of(
       Yup.object().shape({
         slug: Yup.string()
           .required(t("validationRequired"))
@@ -201,7 +204,7 @@ const courseEditSchema = ({
         description: Yup.string(),
       }),
     ),
-    course_alias: Yup.array().of(
+    course_aliases: Yup.array().of(
       Yup.object().shape({
         course_code: Yup.string()
           .required(t("validationRequired"))

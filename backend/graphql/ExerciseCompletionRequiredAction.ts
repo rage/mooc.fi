@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 
 schema.objectType({
-  name: "ExerciseCompletionRequiredActions",
+  name: "ExerciseCompletionRequiredAction",
   definition(t) {
     t.model.id()
     t.model.exercise_completion_id()

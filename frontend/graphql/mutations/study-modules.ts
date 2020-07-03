@@ -8,7 +8,7 @@ export const AddStudyModuleMutation = gql`
       name
       image
       order
-      study_module_translation {
+      study_module_translations {
         id
         language
         name
@@ -26,7 +26,7 @@ export const UpdateStudyModuleMutation = gql`
       name
       image
       order
-      study_module_translation {
+      study_module_translations {
         id
         language
         name

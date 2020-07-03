@@ -10,9 +10,9 @@ schema.objectType({
     t.model.updated_at()
     t.model.name()
     t.model.url()
-    t.model.exercise()
-    t.model.user_course_service_progress()
-    t.model.course()
+    t.model.exercises()
+    t.model.user_course_service_progresses()
+    t.model.courses()
   },
 })
 

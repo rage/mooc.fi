@@ -21,7 +21,7 @@ export interface updateCourse_updateCourse_photo {
   uncompressed_mimetype: string
 }
 
-export interface updateCourse_updateCourse_course_translation {
+export interface updateCourse_updateCourse_course_translations {
   __typename: "CourseTranslation"
   id: string
   language: string
@@ -30,7 +30,7 @@ export interface updateCourse_updateCourse_course_translation {
   link: string | null
 }
 
-export interface updateCourse_updateCourse_open_university_registration_link {
+export interface updateCourse_updateCourse_open_university_registration_links {
   __typename: "OpenUniversityRegistrationLink"
   id: string
   course_code: string
@@ -38,19 +38,19 @@ export interface updateCourse_updateCourse_open_university_registration_link {
   link: string | null
 }
 
-export interface updateCourse_updateCourse_study_module {
+export interface updateCourse_updateCourse_study_modules {
   __typename: "StudyModule"
   id: string
 }
 
-export interface updateCourse_updateCourse_course_variant {
+export interface updateCourse_updateCourse_course_variants {
   __typename: "CourseVariant"
   id: string
   slug: string
   description: string | null
 }
 
-export interface updateCourse_updateCourse_course_alias {
+export interface updateCourse_updateCourse_course_aliases {
   __typename: "CourseAlias"
   id: string
   course_code: string
@@ -65,7 +65,7 @@ export interface updateCourse_updateCourse_completion_email {
   html_body: string | null
 }
 
-export interface updateCourse_updateCourse_user_course_settings_visibility {
+export interface updateCourse_updateCourse_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
   id: string
   language: string
@@ -80,13 +80,13 @@ export interface updateCourse_updateCourse {
   order: number | null
   study_module_order: number | null
   photo: updateCourse_updateCourse_photo | null
-  course_translation: updateCourse_updateCourse_course_translation[]
-  open_university_registration_link: updateCourse_updateCourse_open_university_registration_link[]
-  study_module: updateCourse_updateCourse_study_module[]
-  course_variant: updateCourse_updateCourse_course_variant[]
-  course_alias: updateCourse_updateCourse_course_alias[]
+  course_translations: updateCourse_updateCourse_course_translations[]
+  open_university_registration_links: updateCourse_updateCourse_open_university_registration_links[]
+  study_modules: updateCourse_updateCourse_study_modules[]
+  course_variants: updateCourse_updateCourse_course_variants[]
+  course_aliases: updateCourse_updateCourse_course_aliases[]
   completion_email: updateCourse_updateCourse_completion_email | null
-  user_course_settings_visibility: updateCourse_updateCourse_user_course_settings_visibility[]
+  user_course_settings_visibilities: updateCourse_updateCourse_user_course_settings_visibilities[]
 }
 
 export interface updateCourse {

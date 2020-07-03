@@ -77,7 +77,7 @@ async function flatten(data: ExportUserCourseProgesses_userCourseProgresses[]) {
       real_student_number,
     } = datum?.user ?? {}
     const { course_variant, country, language } =
-      datum?.UserCourseSettings ?? {}
+      datum?.user_course_settings ?? {}
 
     const newDatum: any = {
       user_id: upstream_id,
@@ -158,7 +158,7 @@ const GET_DATA = gql`
         last_name
       }
       progress
-      UserCourseSettings {
+      user_course_settings {
         course_variant
         country
         language

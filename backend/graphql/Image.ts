@@ -24,7 +24,7 @@ schema.objectType({
     t.model.original_mimetype()
     t.model.uncompressed()
     t.model.uncompressed_mimetype()
-    t.model.course()
+    t.model.courses()
   },
 })
 

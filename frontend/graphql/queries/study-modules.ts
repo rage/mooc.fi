@@ -21,7 +21,7 @@ export const AllEditorModulesQuery = gql`
       name
       image
       order
-      study_module_translation {
+      study_module_translations {
         id
         language
         name

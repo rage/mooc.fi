@@ -39,7 +39,7 @@ export const OrganizationsQuery = gql`
       id
       slug
       hidden
-      organization_translation {
+      organization_translations {
         language
         name
         information
@@ -210,10 +210,10 @@ const Register = () => {
 
     const sortedOrganizations =
       organizationsData?.organizations
-        ?.filter((o) => o?.organization_translation?.length)
+        ?.filter((o) => o?.organization_translations?.length)
         .sort((a, b) =>
-          a!.organization_translation![0].name.localeCompare(
-            b!.organization_translation![0].name,
+          a!.organization_translations![0].name.localeCompare(
+            b!.organization_translations![0].name,
             "fi-FI",
           ),
         ) ?? []
@@ -245,7 +245,7 @@ const Register = () => {
       Object.entries(organizations).reduce((acc, [key, value]) => {
         if (
           !value!
-            .organization_translation![0].name.toLowerCase()
+            .organization_translations![0].name.toLowerCase()
             .includes(searchFilter.toLowerCase())
         ) {
           return acc
@@ -328,7 +328,7 @@ const Register = () => {
             >).map(([id, organization]) => (
               <OrganizationCard
                 key={`card-${id}`}
-                name={organization!.organization_translation![0].name}
+                name={organization!.organization_translations![0].name}
                 isMember={memberships.includes(id)}
                 onToggle={toggleMembership(id)}
               />

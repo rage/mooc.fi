@@ -22,7 +22,7 @@ model Completion {
   user_upstream_id          Int?
   course                    Course?                 @relation(fields: [course_id], references: [id])
   user                      User?                   @relation(fields: [user_id], references: [id])
-  completion_registered     CompletionRegistered[]
+  completions_registered    CompletionRegistered[]
 
   @@map("completion")
 }
@@ -78,22 +78,22 @@ model Course {
   inherit_settings_from                              Course?                             @relation("courseTocourse_inherit_settings_from", fields: [inherit_settings_from_id], references: [id])
   owner_organization                                 Organization?                       @relation(fields: [owner_organization_id], references: [id])
   photo                                              Image?                              @relation(fields: [photo_id], references: [id])
-  completion                                         Completion[]
-  completion_registered                              CompletionRegistered[]
+  completions                                        Completion[]
+  completions_registered                             CompletionRegistered[]
   other_course_courseTocourse_completions_handled_by Course[]                            @relation("courseTocourse_completions_handled_by")
   other_course_courseTocourse_inherit_settings_from  Course[]                            @relation("courseTocourse_inherit_settings_from")
-  course_alias                                       CourseAlias[]
-  course_organization                                CourseOrganization[]
-  course_translation                                 CourseTranslation[]
-  course_variant                                     CourseVariant[]
-  exercise                                           Exercise[]
-  open_university_registration_link                  OpenUniversityRegistrationLink[]
-  user_course_progress                               UserCourseProgress[]
-  user_course_service_progress                       UserCourseServiceProgress[]
-  UserCourseSettings                                 UserCourseSettings[]
-  user_course_settings_visibility                    UserCourseSettingsVisibility[]
-  service                                            Service[]                           @relation("CourseToService", references: [id])
-  study_module                                       StudyModule[]                       @relation("StudyModuleToCourse", references: [id])
+  course_aliases                                     CourseAlias[]
+  course_organizations                               CourseOrganization[]
+  course_translations                                CourseTranslation[]
+  course_variants                                    CourseVariant[]
+  exercises                                          Exercise[]
+  open_university_registration_links                 OpenUniversityRegistrationLink[]
+  user_course_progresses                             UserCourseProgress[]
+  user_course_service_progresses                     UserCourseServiceProgress[]
+  user_course_settings                               UserCourseSetting[]
+  user_course_settings_visibilities                  UserCourseSettingsVisibility[]
+  services                                           Service[]                           @relation("CourseToService", references: [id])
+  study_modules                                      StudyModule[]                       @relation("StudyModuleToCourse", references: [id])
 
   @@map("course")
 }
@@ -164,15 +164,15 @@ model EmailDelivery {
 }
 
 model EmailTemplate {
-  created_at     DateTime?        @default(now())
-  html_body      String?
-  id             String           @id @default(uuid())
-  name           String?
-  title          String?
-  txt_body       String?
-  updated_at     DateTime?        @default(now()) @updatedAt
-  course         Course[]
-  email_delivery EmailDelivery[]
+  created_at       DateTime?        @default(now())
+  html_body        String?
+  id               String           @id @default(uuid())
+  name             String?
+  title            String?
+  txt_body         String?
+  updated_at       DateTime?        @default(now()) @updatedAt
+  courses          Course[]
+  email_deliveries EmailDelivery[]
 
   @@map("email_template")
 }
@@ -192,7 +192,7 @@ model Exercise {
   updated_at                DateTime?             @default(now()) @updatedAt
   course                    Course?               @relation(fields: [course_id], references: [id])
   service                   Service?              @relation(fields: [service_id], references: [id])
-  exercise_completion       ExerciseCompletion[]
+  exercise_completions      ExerciseCompletion[]
 
   @@map("exercise")
 }
@@ -208,12 +208,12 @@ model ExerciseCompletion {
   user_id                                String?                                @map("user")
   exercise                               Exercise?                              @relation(fields: [exercise_id], references: [id])
   user                                   User?                                  @relation(fields: [user_id], references: [id])
-  exercise_completion_required_actions   ExerciseCompletionRequiredActions[]
+  exercise_completion_required_actions   ExerciseCompletionRequiredAction[]
 
   @@map("exercise_completion")
 }
 
-model ExerciseCompletionRequiredActions {
+model ExerciseCompletionRequiredAction {
   exercise_completion_id                                                        String?              @map("exercise_completion")
   id                                                                            String               @id @default(uuid())
   value                                                                         String
@@ -235,7 +235,7 @@ model Image {
   uncompressed          String
   uncompressed_mimetype String
   updated_at            DateTime? @default(now()) @updatedAt
-  course                Course[]
+  courses               Course[]
 
   @@map("image")
 }
@@ -256,34 +256,34 @@ model OpenUniversityRegistrationLink {
 }
 
 model Organization {
-  contact_information      String?
-  created_at               DateTime?                  @default(now())
-  creator_id               String?                    @map("creator")
-  disabled                 Boolean?
-  email                    String?
-  hidden                   Boolean?
-  id                       String                     @id @default(uuid())
-  logo_content_type        String?
-  logo_file_name           String?
-  logo_file_size           Int?
-  logo_updated_at          DateTime?
-  phone                    String?
-  pinned                   Boolean?
-  secret_key               String                     @unique
-  slug                     String                     @unique
-  tmc_created_at           DateTime?
-  tmc_updated_at           DateTime?
-  updated_at               DateTime?                  @default(now()) @updatedAt
-  verified                 Boolean?
-  verified_at              DateTime?
-  website                  String?
-  creator                  User?                      @relation(fields: [creator_id], references: [id])
-  completion_registered    CompletionRegistered[]
-  course                   Course[]
-  course_organization      CourseOrganization[]
-  organization_translation OrganizationTranslation[]
-  user_organization        UserOrganization[]
-  verified_user            VerifiedUser[]
+  contact_information       String?
+  created_at                DateTime?                  @default(now())
+  creator_id                String?                    @map("creator")
+  disabled                  Boolean?
+  email                     String?
+  hidden                    Boolean?
+  id                        String                     @id @default(uuid())
+  logo_content_type         String?
+  logo_file_name            String?
+  logo_file_size            Int?
+  logo_updated_at           DateTime?
+  phone                     String?
+  pinned                    Boolean?
+  secret_key                String                     @unique
+  slug                      String                     @unique
+  tmc_created_at            DateTime?
+  tmc_updated_at            DateTime?
+  updated_at                DateTime?                  @default(now()) @updatedAt
+  verified                  Boolean?
+  verified_at               DateTime?
+  website                   String?
+  creator                   User?                      @relation(fields: [creator_id], references: [id])
+  completions_registered    CompletionRegistered[]
+  courses                   Course[]
+  course_organizations      CourseOrganization[]
+  organization_translations OrganizationTranslation[]
+  user_organizations        UserOrganization[]
+  verified_users            VerifiedUser[]
 
   @@map("organization")
 }
@@ -303,28 +303,28 @@ model OrganizationTranslation {
 }
 
 model Service {
-  created_at                   DateTime?                      @default(now())
-  id                           String                         @id @default(uuid())
-  name                         String
-  updated_at                   DateTime?                      @default(now()) @updatedAt
-  url                          String
-  exercise                     Exercise[]
-  user_course_service_progress UserCourseServiceProgress[]
-  course                       Course[]                       @relation("CourseToService", references: [id])
+  created_at                     DateTime?                      @default(now())
+  id                             String                         @id @default(uuid())
+  name                           String
+  updated_at                     DateTime?                      @default(now()) @updatedAt
+  url                            String
+  exercises                      Exercise[]
+  user_course_service_progresses UserCourseServiceProgress[]
+  courses                        Course[]                       @relation("CourseToService", references: [id])
 
   @@map("service")
 }
 
 model StudyModule {
-  created_at               DateTime?                  @default(now())
-  id                       String                     @id @default(uuid())
-  image                    String?
-  name                     String
-  order                    Int?
-  slug                     String                     @unique
-  updated_at               DateTime?                  @default(now()) @updatedAt
-  study_module_translation StudyModuleTranslation[]
-  course                   Course[]                   @relation("StudyModuleToCourse", references: [id])
+  created_at                DateTime?                  @default(now())
+  id                        String                     @id @default(uuid())
+  image                     String?
+  name                      String
+  order                     Int?
+  slug                      String                     @unique
+  updated_at                DateTime?                  @default(now()) @updatedAt
+  study_module_translations StudyModuleTranslation[]
+  courses                   Course[]                   @relation("StudyModuleToCourse", references: [id])
 
   @@map("study_module")
 }
@@ -343,28 +343,28 @@ model StudyModuleTranslation {
 }
 
 model User {
-  administrator                Boolean
-  created_at                   DateTime?                      @default(now())
-  email                        String
-  first_name                   String?
-  id                           String                         @id @default(uuid())
-  last_name                    String?
-  real_student_number          String?
-  research_consent             Boolean?
-  student_number               String?
-  updated_at                   DateTime?                      @default(now()) @updatedAt
-  upstream_id                  Int                            @unique
-  username                     String                         @unique
-  completion                   Completion[]
-  completion_registered        CompletionRegistered[]
-  email_delivery               EmailDelivery[]
-  exercise_completion          ExerciseCompletion[]
-  organization                 Organization[]
-  user_course_progress         UserCourseProgress[]
-  user_course_service_progress UserCourseServiceProgress[]
-  UserCourseSettings           UserCourseSettings[]
-  user_organization            UserOrganization[]
-  verified_user                VerifiedUser[]
+  administrator                  Boolean
+  created_at                     DateTime?                      @default(now())
+  email                          String
+  first_name                     String?
+  id                             String                         @id @default(uuid())
+  last_name                      String?
+  real_student_number            String?
+  research_consent               Boolean?
+  student_number                 String?
+  updated_at                     DateTime?                      @default(now()) @updatedAt
+  upstream_id                    Int                            @unique
+  username                       String                         @unique
+  completions                    Completion[]
+  completions_registered         CompletionRegistered[]
+  email_deliveries               EmailDelivery[]
+  exercise_completions           ExerciseCompletion[]
+  organizations                  Organization[]
+  user_course_progresses         UserCourseProgress[]
+  user_course_service_progresses UserCourseServiceProgress[]
+  user_course_settings           UserCourseSetting[]
+  user_organizations             UserOrganization[]
+  verified_users                 VerifiedUser[]
 
   @@map("user")
 }
@@ -388,7 +388,7 @@ model UserCourseProgress {
   user_id                             String?                        @map("user")
   course                              Course?                        @relation(fields: [course_id], references: [id])
   user                                User?                          @relation(fields: [user_id], references: [id])
-  user_course_service_progress        UserCourseServiceProgress[]
+  user_course_service_progresses      UserCourseServiceProgress[]
 
   @@map("user_course_progress")
 }
@@ -411,7 +411,7 @@ model UserCourseServiceProgress {
   @@map("user_course_service_progress")  
 }
 
-model UserCourseSettings {
+model UserCourseSetting {
   country                           String?
   course_id                         String?   @map("course")
   course_variant                    String?
@@ -425,6 +425,8 @@ model UserCourseSettings {
   user_id                           String?   @map("user")
   course                            Course?   @relation(fields: [course_id], references: [id])
   user                              User?     @relation(fields: [user_id], references: [id])
+
+  @@map("UserCourseSettings")
 }
 
 model UserCourseSettingsVisibility {

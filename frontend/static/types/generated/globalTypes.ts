@@ -36,9 +36,9 @@ export interface CourseCreateArg {
   base64?: boolean | null
   completion_email?: string | null
   completions_handled_by?: string | null
-  course_alias?: CourseAliasCreateInput[] | null
-  course_translation?: CourseTranslationCreateInput[] | null
-  course_variant?: CourseVariantCreateInput[] | null
+  course_aliases?: CourseAliasCreateInput[] | null
+  course_translations?: CourseTranslationCreateInput[] | null
+  course_variants?: CourseVariantCreateInput[] | null
   ects?: string | null
   end_date?: string | null
   has_certificate?: boolean | null
@@ -46,7 +46,7 @@ export interface CourseCreateArg {
   inherit_settings_from?: string | null
   name?: string | null
   new_photo?: any | null
-  open_university_registration_link?:
+  open_university_registration_links?:
     | OpenUniversityRegistrationLinkCreateInput[]
     | null
   order?: number | null
@@ -57,13 +57,13 @@ export interface CourseCreateArg {
   start_date: string
   start_point?: boolean | null
   status?: CourseStatus | null
-  study_module?: StudyModuleWhereUniqueInput[] | null
   study_module_order?: number | null
   study_module_start_point?: boolean | null
+  study_modules?: StudyModuleWhereUniqueInput[] | null
   support_email?: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  user_course_settings_visibility?:
+  user_course_settings_visibilities?:
     | UserCourseSettingsVisibilityCreateInput[]
     | null
 }
@@ -91,9 +91,9 @@ export interface CourseUpsertArg {
   base64?: boolean | null
   completion_email?: string | null
   completions_handled_by?: string | null
-  course_alias?: CourseAliasUpsertInput[] | null
-  course_translation?: CourseTranslationUpsertInput[] | null
-  course_variant?: CourseVariantUpsertInput[] | null
+  course_aliases?: CourseAliasUpsertInput[] | null
+  course_translations?: CourseTranslationUpsertInput[] | null
+  course_variants?: CourseVariantUpsertInput[] | null
   delete_photo?: boolean | null
   ects?: string | null
   end_date?: string | null
@@ -104,7 +104,7 @@ export interface CourseUpsertArg {
   name: string
   new_photo?: any | null
   new_slug?: string | null
-  open_university_registration_link?:
+  open_university_registration_links?:
     | OpenUniversityRegistrationLinkUpsertInput[]
     | null
   order?: number | null
@@ -115,13 +115,13 @@ export interface CourseUpsertArg {
   start_date: string
   start_point?: boolean | null
   status?: CourseStatus | null
-  study_module?: StudyModuleWhereUniqueInput[] | null
   study_module_order?: number | null
   study_module_start_point?: boolean | null
+  study_modules?: StudyModuleWhereUniqueInput[] | null
   support_email?: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  user_course_settings_visibility?:
+  user_course_settings_visibilities?:
     | UserCourseSettingsVisibilityUpsertInput[]
     | null
 }
@@ -166,7 +166,7 @@ export interface StudyModuleCreateArg {
   name?: string | null
   order?: number | null
   slug: string
-  study_module_translation?: StudyModuleTranslationUpsertInput[] | null
+  study_module_translations?: StudyModuleTranslationUpsertInput[] | null
 }
 
 export interface StudyModuleTranslationUpsertInput {
@@ -184,7 +184,7 @@ export interface StudyModuleUpsertArg {
   new_slug?: string | null
   order?: number | null
   slug: string
-  study_module_translation?: StudyModuleTranslationUpsertInput[] | null
+  study_module_translations?: StudyModuleTranslationUpsertInput[] | null
 }
 
 export interface StudyModuleWhereUniqueInput {

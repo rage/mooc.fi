@@ -37,7 +37,7 @@ interface Props {
 }
 const CourseTranslationListItem = (props: Props) => {
   const {
-    errors: { course_translation: errors },
+    errors: { course_translations: errors },
   } = useFormikContext<CourseFormValues>()
 
   const { index, translationLanguage } = props
@@ -53,8 +53,8 @@ const CourseTranslationListItem = (props: Props) => {
         }`}
       </LanguageVersionTitle>
       <StyledFieldWithAnchor
-        id={`course_translation[${index}].name`}
-        name={`course_translation[${index}].name`}
+        id={`course_translations[${index}].name`}
+        name={`course_translations[${index}].name`}
         label={t("courseName")}
         InputLabelProps={inputLabelProps}
         type="text"
@@ -66,8 +66,8 @@ const CourseTranslationListItem = (props: Props) => {
         component={StyledTextField}
       />
       <StyledFieldWithAnchor
-        id={`course_translation[${index}].description`}
-        name={`course_translation[${index}].description`}
+        id={`course_translations[${index}].description`}
+        name={`course_translations[${index}].description`}
         type="textarea"
         label={t("courseDescription")}
         InputLabelProps={inputLabelProps}
@@ -80,8 +80,8 @@ const CourseTranslationListItem = (props: Props) => {
         component={StyledTextField}
       />
       <StyledFieldWithAnchor
-        id={`course_translation[${index}].link`}
-        name={`course_translation[${index}].link`}
+        id={`course_translations[${index}].link`}
+        name={`course_translations[${index}].link`}
         type="text"
         label={t("courseLink")}
         InputLabelProps={inputLabelProps}
@@ -94,8 +94,8 @@ const CourseTranslationListItem = (props: Props) => {
       <StyledFieldWithAnchor
         label={t("courseOpenCode")}
         InputLabelProps={inputLabelProps}
-        id={`course_translation[${index}].open_university_course_link.course_code`}
-        name={`course_translation[${index}].open_university_course_link.course_code`}
+        id={`course_translations[${index}].open_university_course_link.course_code`}
+        name={`course_translations[${index}].open_university_course_link.course_code`}
         type="text"
         error={getIn(
           errors,
@@ -110,8 +110,8 @@ const CourseTranslationListItem = (props: Props) => {
       <StyledFieldWithAnchor
         label={t("courseOpenLink")}
         InputLabelProps={inputLabelProps}
-        id={`course_translation[${index}].open_university_course_link.link`}
-        name={`course_translation[${index}].open_university_course_link.link`}
+        id={`course_translations[${index}].open_university_course_link.link`}
+        name={`course_translations[${index}].open_university_course_link.link`}
         type="text"
         error={getIn(errors, `[${index}].open_university_course_link.link`)}
         fullWidth

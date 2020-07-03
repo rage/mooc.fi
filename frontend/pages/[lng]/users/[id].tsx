@@ -2,7 +2,7 @@ import * as React from "react"
 import Container from "/components/Container"
 import gql from "graphql-tag"
 import { useQuery, useApolloClient } from "@apollo/react-hooks"
-import { UserCourseSettingsesForUserPage } from "/static/types/generated/UserCourseSettingsesForUserPage"
+import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
 import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"
 import { CircularProgress } from "@material-ui/core"
@@ -21,7 +21,7 @@ const UserPage = () => {
 
   const [more, setMore]: any[] = React.useState([])
 
-  const { loading, error, data } = useQuery<UserCourseSettingsesForUserPage>(
+  const { loading, error, data } = useQuery<UserCourseSettingsForUserPage>(
     GET_DATA,
     { variables: { upstream_id: Number(id) } },
   )
@@ -44,13 +44,13 @@ const UserPage = () => {
     )
   }
 
-  data?.UserCourseSettingses?.edges?.push(...more)
+  data?.userCourseSettings?.edges?.push(...more)
 
   return (
     <>
       <Container>
         <pre>
-          {JSON.stringify(data?.UserCourseSettingses?.edges, undefined, 2)}
+          {JSON.stringify(data?.userCourseSettings?.edges, undefined, 2)}
         </pre>
         <Button
           variant="contained"
@@ -60,7 +60,7 @@ const UserPage = () => {
               variables: { upstream_id: Number(id) },
             })
             let newData = more
-            newData.push(...data.UserCourseSettingses.edges)
+            newData.push(...data.userCourseSettings.edges)
             setMore(newData)
           }}
           disabled={false}
@@ -75,8 +75,8 @@ const UserPage = () => {
 export default withAdmin(UserPage)
 
 const GET_DATA = gql`
-  query UserCourseSettingsesForUserPage($upstream_id: Int) {
-    UserCourseSettingses(user_upstream_id: $upstream_id, first: 50) {
+  query UserCourseSettingsForUserPage($upstream_id: Int) {
+    userCourseSettings(user_upstream_id: $upstream_id, first: 50) {
       edges {
         node {
           id

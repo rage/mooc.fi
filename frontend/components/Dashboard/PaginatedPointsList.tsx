@@ -14,14 +14,14 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
 import styled from "styled-components"
 import {
-  UserCourseSettingses as StudentProgressData,
-  UserCourseSettingses_UserCourseSettingses_pageInfo,
-} from "/static/types/generated/UserCourseSettingses"
+  UserCourseSettings as StudentProgressData,
+  UserCourseSettings_userCourseSettings_pageInfo,
+} from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"
 
 export const StudentProgresses = gql`
-  query UserCourseSettingses($course_id: ID!, $skip: Int, $search: String) {
-    UserCourseSettingses(
+  query UserCourseSettings($course_id: ID!, $skip: Int, $search: String) {
+    userCourseSettings(
       course_id: $course_id
       first: 15
       skip: $skip
@@ -131,9 +131,9 @@ function PaginatedPointsList(props: Props) {
     return null
   }
 
-  const { UserCourseSettingses } = data
+  const { userCourseSettings } = data
 
-  if (!UserCourseSettingses) {
+  if (!userCourseSettings) {
     return null
   }
 
@@ -143,7 +143,7 @@ function PaginatedPointsList(props: Props) {
     label: value,
   }))
 
-  const edges = (UserCourseSettingses?.edges ?? []).filter(notEmpty)
+  const edges = (userCourseSettings?.edges ?? []).filter(notEmpty)
 
   return (
     <ErrorBoundary>
@@ -189,7 +189,7 @@ function PaginatedPointsList(props: Props) {
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {UserCourseSettingses.count || 0} results
+            {userCourseSettings.count || 0} results
           </div>
           <PointsList pointsForUser={edges} cutterValue={cutterValue} />
           <Button
@@ -198,8 +198,7 @@ function PaginatedPointsList(props: Props) {
                 query: StudentProgresses,
                 variables: {
                   course_id: courseId,
-                  skip: UserCourseSettingses.edges?.length ?? 0,
-                  //after: UserCourseSettingses.edges?.[UserCourseSettingses.edges?.length - 1]?.node?.id,// UserCourseSettingses.pageInfo.endCursor,
+                  skip: userCourseSettings.edges?.length ?? 0,
                   search: search !== "" ? search : undefined,
                 },
 
@@ -210,34 +209,33 @@ function PaginatedPointsList(props: Props) {
                   }: { fetchMoreResult?: StudentProgressData },
                 ) => {
                   const previousData = (
-                    previousResult?.UserCourseSettingses?.edges ?? []
+                    previousResult?.userCourseSettings?.edges ?? []
                   ).filter(notEmpty)
                   const newData = (
-                    fetchMoreResult?.UserCourseSettingses?.edges ?? []
+                    fetchMoreResult?.userCourseSettings?.edges ?? []
                   ).filter(notEmpty)
-                  const newPageInfo: UserCourseSettingses_UserCourseSettingses_pageInfo = fetchMoreResult
-                    ?.UserCourseSettingses?.pageInfo ?? {
+                  const newPageInfo: UserCourseSettings_userCourseSettings_pageInfo = fetchMoreResult
+                    ?.userCourseSettings?.pageInfo ?? {
                     hasNextPage: false,
                     endCursor: null,
                     __typename: "PageInfo",
                   }
 
                   return {
-                    UserCourseSettingses: {
+                    userCourseSettings: {
                       pageInfo: {
                         ...newPageInfo,
                         __typename: "PageInfo",
                       },
                       edges: [...previousData, ...newData],
-                      __typename: "QueryUserCourseSettingses_Connection",
-                      count:
-                        fetchMoreResult!.UserCourseSettingses?.count ?? null,
+                      __typename: "QueryUserCourseSettings_Connection",
+                      count: fetchMoreResult!.userCourseSettings?.count ?? null,
                     },
                   }
                 },
               })
             }
-            disabled={!UserCourseSettingses.pageInfo.hasNextPage}
+            disabled={!userCourseSettings.pageInfo.hasNextPage}
             fullWidth
             style={{ marginTop: "1rem", fontSize: 22 }}
           >

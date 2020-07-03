@@ -9,7 +9,7 @@ import { StudyModuleCreateArg } from "./globalTypes"
 // GraphQL mutation operation: addStudyModule
 // ====================================================
 
-export interface addStudyModule_addStudyModule_study_module_translation {
+export interface addStudyModule_addStudyModule_study_module_translations {
   __typename: "StudyModuleTranslation"
   id: string
   language: string
@@ -24,7 +24,7 @@ export interface addStudyModule_addStudyModule {
   name: string
   image: string | null
   order: number | null
-  study_module_translation: addStudyModule_addStudyModule_study_module_translation[]
+  study_module_translations: addStudyModule_addStudyModule_study_module_translations[]
 }
 
 export interface addStudyModule {

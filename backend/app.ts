@@ -12,6 +12,17 @@ import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
 import { graphqlUploadExpress } from "graphql-upload"
 import { contextUser } from "./middlewares/FetchUser"
+import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
+import path from "path"
+
+nexusSchemaPrisma({
+  outputs: {
+    typegen: path.join(
+      __dirname,
+      "./node_modules/@types/nexus-typegen/index.d.ts",
+    ),
+  },
+})
 
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient({

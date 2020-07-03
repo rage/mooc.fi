@@ -3,7 +3,7 @@ require("dotenv-safe").config({
 })
 import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
-import { generateSecret } from "../graphql/resolvers/Mutation/organization"
+import { generateSecret } from "../graphql/Organization"
 import prismaClient from "./lib/prisma"
 
 const tmc = new TmcClient()
@@ -67,7 +67,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   }
   const organizationTranslations = await prisma.organization
     .findOne({ where: { id: organization.id } })
-    .organization_translation({
+    .organization_translations({
       where: { language: translationDetails.language },
     })
   const organizationTranslationId = organizationTranslations.length
