@@ -5,6 +5,7 @@ import { getCurrentUserDetails } from "./services/tmc"
 import { UserInfo } from "./domain/UserInfo"
 
 const webSocketsServerPort = 9000
+
 const server = createServer()
 
 export const wsListen = () => server.listen(webSocketsServerPort)
@@ -65,7 +66,9 @@ wsServer.on("request", (request: any) => {
       const accessToken = data.accessToken
       const courseId = data.courseId
       try {
-        let user: UserInfo = JSON.parse(await redis.getAsync(accessToken))
+        let user: UserInfo = JSON.parse(
+          (await redis.getAsync(accessToken)) ?? "",
+        )
         if (!user) {
           user = await getCurrentUserDetails(accessToken)
           redisClient?.set(accessToken, JSON.stringify(user), "EX", 3600)

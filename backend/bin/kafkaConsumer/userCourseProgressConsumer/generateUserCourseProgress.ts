@@ -116,7 +116,7 @@ const GetCombinedUserCourseProgress = async (
     (entry: UserCourseServiceProgress) => entry.progress as any, // type error otherwise
   )
 
-  let combined: CombinedUserCourseProgress = new CombinedUserCourseProgress()
+  let combined = new CombinedUserCourseProgress()
   progresses.forEach((entry) => {
     entry.forEach((p: ServiceProgressPartType) => {
       combined.addProgress(p)

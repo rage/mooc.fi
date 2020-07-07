@@ -2,7 +2,9 @@ import * as Knex from "knex"
 
 export async function up(knex: Knex): Promise<any> {
   // JSON fields
-  await knex.raw(
+  // note: the old backend doesn't work properly if these are altered -
+  // the new one doesn't really care, so best not change them until the old one is not in use anymore
+  /*await knex.raw(
     `ALTER TABLE "user_course_progress" ALTER COLUMN progress TYPE JSON USING "progress"::json;`,
   )
   await knex.raw(
@@ -10,7 +12,7 @@ export async function up(knex: Knex): Promise<any> {
   )
   await knex.raw(
     `ALTER TABLE "UserCourseSettings" ALTER COLUMN other TYPE JSON using "other"::json;`,
-  )
+  )*/
 
   // enums
   await knex.raw(
@@ -20,12 +22,14 @@ export async function up(knex: Knex): Promise<any> {
     `CREATE TYPE "OrganizationRole" AS ENUM ('OrganizationAdmin', 'Student', 'Teacher');`,
   )
 
-  await knex.raw(
+  // note: same as json fields
+
+  /*await knex.raw(
     `ALTER TABLE "course" ALTER COLUMN "status" TYPE "CourseStatus" USING "status"::"CourseStatus";`,
   )
   await knex.raw(
     `ALTER TABLE "user_organization" ALTER COLUMN "role" TYPE "OrganizationRole" USING "role"::"OrganizationRole";`,
-  )
+  )*/
 
   // defaults
   await knex.raw(
@@ -132,11 +136,6 @@ export async function up(knex: Knex): Promise<any> {
   await knex.raw(
     `ALTER TABLE "verified_user" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;`,
   )
-
-  return knex.schema.hasTable("course")
-  // should updated_at defaults be done as well?
 }
 
-export async function down(knex: Knex): Promise<any> {
-  return knex.schema.hasTable("course")
-}
+export async function down(_knex: Knex): Promise<any> {}

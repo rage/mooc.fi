@@ -41,12 +41,7 @@ schema.extendType({
         })
       },
     })
-  },
-})
 
-schema.extendType({
-  type: "Mutation",
-  definition(t) {
     t.list.field("addManualCompletion", {
       type: "Completion",
       args: {

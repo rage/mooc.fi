@@ -471,10 +471,14 @@ enum CourseStatus {
   Active
   Ended
   Upcoming
+
+  @@map("course_status")
 }
 
 enum OrganizationRole {
   OrganizationAdmin
   Student
   Teacher
+
+  @@map("organization_role")
 }

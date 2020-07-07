@@ -5,7 +5,6 @@ import { use, schema, settings, server } from "nexus"
 import { prisma } from "nexus-plugin-prisma"
 import Knex from "./services/knex"
 import { redisify } from "./services/redis"
-// @ts-ignore: not used for now
 import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { PrismaClient } from "nexus-plugin-prisma/client"

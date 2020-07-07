@@ -1,0 +1,1348 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.3 (Debian 10.3-1.pgdg90+1)
+-- Dumped by pg_dump version 12.3 (Ubuntu 12.3-1.pgdg18.04+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: default$prisma2; Type: SCHEMA; Schema: -; Owner: prisma
+--
+
+CREATE SCHEMA "default$prisma2";
+
+
+ALTER SCHEMA "default$prisma2" OWNER TO prisma;
+
+--
+-- Name: course_status; Type: TYPE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TYPE "default$prisma2".course_status AS ENUM (
+    'Active',
+    'Ended',
+    'Upcoming'
+);
+
+
+ALTER TYPE "default$prisma2".course_status OWNER TO prisma;
+
+--
+-- Name: organization_role; Type: TYPE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TYPE "default$prisma2".organization_role AS ENUM (
+    'Teacher',
+    'Student',
+    'OrganizationAdmin'
+);
+
+
+ALTER TYPE "default$prisma2".organization_role OWNER TO prisma;
+
+SET default_tablespace = '';
+
+--
+-- Name: UserAppDatumConfig; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2"."UserAppDatumConfig" (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    name text,
+    "timestamp" timestamp(3) without time zone
+);
+
+
+ALTER TABLE "default$prisma2"."UserAppDatumConfig" OWNER TO prisma;
+
+--
+-- Name: UserCourseSettings; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2"."UserCourseSettings" (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    language text,
+    country text,
+    research boolean,
+    marketing boolean,
+    course_variant text,
+    other json,
+    "user" uuid,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2"."UserCourseSettings" OWNER TO prisma;
+
+--
+-- Name: _CourseToService; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2"."_CourseToService" (
+    "A" uuid NOT NULL,
+    "B" uuid NOT NULL
+);
+
+
+ALTER TABLE "default$prisma2"."_CourseToService" OWNER TO prisma;
+
+--
+-- Name: _StudyModuleToCourse; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2"."_StudyModuleToCourse" (
+    "A" uuid NOT NULL,
+    "B" uuid NOT NULL
+);
+
+
+ALTER TABLE "default$prisma2"."_StudyModuleToCourse" OWNER TO prisma;
+
+--
+-- Name: completion; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".completion (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    user_upstream_id integer,
+    email text NOT NULL,
+    student_number text,
+    completion_language text,
+    grade text,
+    certificate_id text,
+    course uuid,
+    "user" uuid,
+    eligible_for_ects boolean DEFAULT true
+);
+
+
+ALTER TABLE "default$prisma2".completion OWNER TO prisma;
+
+--
+-- Name: completion_registered; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".completion_registered (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    real_student_number text NOT NULL,
+    "user" uuid,
+    completion uuid,
+    course uuid,
+    organization uuid
+);
+
+
+ALTER TABLE "default$prisma2".completion_registered OWNER TO prisma;
+
+--
+-- Name: course; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".course (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    teacher_in_charge_name text NOT NULL,
+    teacher_in_charge_email text NOT NULL,
+    support_email text,
+    start_date text NOT NULL,
+    end_date text,
+    name text NOT NULL,
+    slug text NOT NULL,
+    ects text,
+    promote boolean,
+    status "default$prisma2".course_status DEFAULT 'Upcoming'::"default$prisma2".course_status,
+    start_point boolean,
+    hidden boolean,
+    study_module_start_point boolean,
+    "order" integer,
+    study_module_order integer,
+    automatic_completions boolean DEFAULT false,
+    points_needed integer,
+    exercise_completions_needed integer,
+    has_certificate boolean DEFAULT false,
+    owner_organization uuid,
+    completion_email uuid,
+    inherit_settings_from uuid,
+    completions_handled_by uuid,
+    photo uuid,
+    automatic_completions_eligible_for_ects boolean DEFAULT true
+);
+
+
+ALTER TABLE "default$prisma2".course OWNER TO prisma;
+
+--
+-- Name: course_alias; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".course_alias (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    course_code text NOT NULL,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2".course_alias OWNER TO prisma;
+
+--
+-- Name: course_organization; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".course_organization (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    creator boolean,
+    course uuid,
+    organization uuid
+);
+
+
+ALTER TABLE "default$prisma2".course_organization OWNER TO prisma;
+
+--
+-- Name: course_translation; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".course_translation (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    name text NOT NULL,
+    language text NOT NULL,
+    description text NOT NULL,
+    link text,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2".course_translation OWNER TO prisma;
+
+--
+-- Name: course_variant; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".course_variant (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    slug text NOT NULL,
+    description text,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2".course_variant OWNER TO prisma;
+
+--
+-- Name: email_delivery; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".email_delivery (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    sent boolean DEFAULT false NOT NULL,
+    error boolean DEFAULT false NOT NULL,
+    error_message text,
+    "user" uuid,
+    email_template uuid
+);
+
+
+ALTER TABLE "default$prisma2".email_delivery OWNER TO prisma;
+
+--
+-- Name: email_template; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".email_template (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    name text,
+    txt_body text,
+    html_body text,
+    title text
+);
+
+
+ALTER TABLE "default$prisma2".email_template OWNER TO prisma;
+
+--
+-- Name: exercise; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".exercise (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    custom_id text NOT NULL,
+    name text,
+    part integer,
+    section integer,
+    max_points integer,
+    "timestamp" timestamp(3) without time zone,
+    deleted boolean DEFAULT false,
+    service uuid,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2".exercise OWNER TO prisma;
+
+--
+-- Name: exercise_completion; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".exercise_completion (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    n_points numeric(65,30),
+    "timestamp" timestamp(3) without time zone NOT NULL,
+    completed boolean DEFAULT false,
+    "user" uuid,
+    exercise uuid
+);
+
+
+ALTER TABLE "default$prisma2".exercise_completion OWNER TO prisma;
+
+--
+-- Name: exercise_completion_required_actions; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".exercise_completion_required_actions (
+    id uuid NOT NULL,
+    value text NOT NULL,
+    exercise_completion uuid
+);
+
+
+ALTER TABLE "default$prisma2".exercise_completion_required_actions OWNER TO prisma;
+
+--
+-- Name: image; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".image (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    name text,
+    original text NOT NULL,
+    original_mimetype text NOT NULL,
+    uncompressed text NOT NULL,
+    uncompressed_mimetype text NOT NULL,
+    compressed text,
+    compressed_mimetype text,
+    encoding text,
+    "default" boolean
+);
+
+
+ALTER TABLE "default$prisma2".image OWNER TO prisma;
+
+--
+-- Name: knex_migrations; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".knex_migrations (
+    id integer NOT NULL,
+    name character varying(255),
+    batch integer,
+    migration_time timestamp with time zone
+);
+
+
+ALTER TABLE "default$prisma2".knex_migrations OWNER TO prisma;
+
+--
+-- Name: knex_migrations_id_seq; Type: SEQUENCE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE SEQUENCE "default$prisma2".knex_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "default$prisma2".knex_migrations_id_seq OWNER TO prisma;
+
+--
+-- Name: knex_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER SEQUENCE "default$prisma2".knex_migrations_id_seq OWNED BY "default$prisma2".knex_migrations.id;
+
+
+--
+-- Name: knex_migrations_lock; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".knex_migrations_lock (
+    index integer NOT NULL,
+    is_locked integer
+);
+
+
+ALTER TABLE "default$prisma2".knex_migrations_lock OWNER TO prisma;
+
+--
+-- Name: knex_migrations_lock_index_seq; Type: SEQUENCE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE SEQUENCE "default$prisma2".knex_migrations_lock_index_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "default$prisma2".knex_migrations_lock_index_seq OWNER TO prisma;
+
+--
+-- Name: knex_migrations_lock_index_seq; Type: SEQUENCE OWNED BY; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER SEQUENCE "default$prisma2".knex_migrations_lock_index_seq OWNED BY "default$prisma2".knex_migrations_lock.index;
+
+
+--
+-- Name: open_university_registration_link; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".open_university_registration_link (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    course_code text NOT NULL,
+    language text NOT NULL,
+    link text,
+    start_date timestamp(3) without time zone,
+    stop_date timestamp(3) without time zone,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2".open_university_registration_link OWNER TO prisma;
+
+--
+-- Name: organization; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".organization (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    slug text NOT NULL,
+    verified_at timestamp(3) without time zone,
+    verified boolean,
+    disabled boolean,
+    hidden boolean,
+    tmc_created_at timestamp(3) without time zone,
+    tmc_updated_at timestamp(3) without time zone,
+    logo_file_name text,
+    logo_content_type text,
+    logo_file_size integer,
+    logo_updated_at timestamp(3) without time zone,
+    phone text,
+    contact_information text,
+    email text,
+    website text,
+    pinned boolean,
+    secret_key text NOT NULL,
+    creator uuid
+);
+
+
+ALTER TABLE "default$prisma2".organization OWNER TO prisma;
+
+--
+-- Name: organization_translation; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".organization_translation (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    language text NOT NULL,
+    name text NOT NULL,
+    disabled_reason text,
+    information text,
+    organization uuid
+);
+
+
+ALTER TABLE "default$prisma2".organization_translation OWNER TO prisma;
+
+--
+-- Name: service; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".service (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    url text NOT NULL,
+    name text NOT NULL
+);
+
+
+ALTER TABLE "default$prisma2".service OWNER TO prisma;
+
+--
+-- Name: study_module; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".study_module (
+    id uuid NOT NULL,
+    slug text NOT NULL,
+    name text NOT NULL,
+    image text,
+    "order" integer,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE "default$prisma2".study_module OWNER TO prisma;
+
+--
+-- Name: study_module_translation; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".study_module_translation (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    name text NOT NULL,
+    language text NOT NULL,
+    description text NOT NULL,
+    study_module uuid
+);
+
+
+ALTER TABLE "default$prisma2".study_module_translation OWNER TO prisma;
+
+--
+-- Name: user; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2"."user" (
+    id uuid NOT NULL,
+    upstream_id integer NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    first_name text,
+    last_name text,
+    username text NOT NULL,
+    email text NOT NULL,
+    administrator boolean NOT NULL,
+    student_number text,
+    real_student_number text,
+    research_consent boolean
+);
+
+
+ALTER TABLE "default$prisma2"."user" OWNER TO prisma;
+
+--
+-- Name: user_course_progress; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".user_course_progress (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    progress json NOT NULL,
+    max_points numeric(65,30),
+    n_points numeric(65,30),
+    "user" uuid,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2".user_course_progress OWNER TO prisma;
+
+--
+-- Name: user_course_service_progress; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".user_course_service_progress (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    progress json NOT NULL,
+    "timestamp" timestamp(3) without time zone,
+    service uuid,
+    "user" uuid,
+    course uuid,
+    user_course_progress uuid
+);
+
+
+ALTER TABLE "default$prisma2".user_course_service_progress OWNER TO prisma;
+
+--
+-- Name: user_course_settings_visibility; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".user_course_settings_visibility (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    language text NOT NULL,
+    course uuid
+);
+
+
+ALTER TABLE "default$prisma2".user_course_settings_visibility OWNER TO prisma;
+
+--
+-- Name: user_organization; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".user_organization (
+    id uuid NOT NULL,
+    role "default$prisma2".organization_role DEFAULT 'Student'::"default$prisma2".organization_role,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    organization uuid,
+    "user" uuid
+);
+
+
+ALTER TABLE "default$prisma2".user_organization OWNER TO prisma;
+
+--
+-- Name: verified_user; Type: TABLE; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE TABLE "default$prisma2".verified_user (
+    id uuid NOT NULL,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    display_name text,
+    personal_unique_code text NOT NULL,
+    organization uuid,
+    "user" uuid
+);
+
+
+ALTER TABLE "default$prisma2".verified_user OWNER TO prisma;
+
+--
+-- Name: knex_migrations id; Type: DEFAULT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".knex_migrations ALTER COLUMN id SET DEFAULT nextval('"default$prisma2".knex_migrations_id_seq'::regclass);
+
+
+--
+-- Name: knex_migrations_lock index; Type: DEFAULT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".knex_migrations_lock ALTER COLUMN index SET DEFAULT nextval('"default$prisma2".knex_migrations_lock_index_seq'::regclass);
+
+
+--
+-- Name: UserAppDatumConfig UserAppDatumConfig_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."UserAppDatumConfig"
+    ADD CONSTRAINT "UserAppDatumConfig_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: UserCourseSettings UserCourseSettings_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."UserCourseSettings"
+    ADD CONSTRAINT "UserCourseSettings_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: completion completion_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion
+    ADD CONSTRAINT completion_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: completion_registered completion_registered_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion_registered
+    ADD CONSTRAINT completion_registered_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: course_alias course_alias_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_alias
+    ADD CONSTRAINT course_alias_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: course_organization course_organization_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_organization
+    ADD CONSTRAINT course_organization_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: course course_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course
+    ADD CONSTRAINT course_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: course_translation course_translation_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_translation
+    ADD CONSTRAINT course_translation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: course_variant course_variant_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_variant
+    ADD CONSTRAINT course_variant_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_delivery email_delivery_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".email_delivery
+    ADD CONSTRAINT email_delivery_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_template email_template_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".email_template
+    ADD CONSTRAINT email_template_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: exercise_completion exercise_completion_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise_completion
+    ADD CONSTRAINT exercise_completion_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: exercise_completion_required_actions exercise_completion_required_actions_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise_completion_required_actions
+    ADD CONSTRAINT exercise_completion_required_actions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: exercise exercise_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise
+    ADD CONSTRAINT exercise_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: image image_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".image
+    ADD CONSTRAINT image_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: knex_migrations_lock knex_migrations_lock_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".knex_migrations_lock
+    ADD CONSTRAINT knex_migrations_lock_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: knex_migrations knex_migrations_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".knex_migrations
+    ADD CONSTRAINT knex_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: open_university_registration_link open_university_registration_link_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".open_university_registration_link
+    ADD CONSTRAINT open_university_registration_link_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organization organization_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".organization
+    ADD CONSTRAINT organization_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organization_translation organization_translation_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".organization_translation
+    ADD CONSTRAINT organization_translation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: service service_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".service
+    ADD CONSTRAINT service_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: study_module study_module_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".study_module
+    ADD CONSTRAINT study_module_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: study_module_translation study_module_translation_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".study_module_translation
+    ADD CONSTRAINT study_module_translation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_course_progress user_course_progress_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_progress
+    ADD CONSTRAINT user_course_progress_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_course_service_progress user_course_service_progress_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_service_progress
+    ADD CONSTRAINT user_course_service_progress_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_course_settings_visibility user_course_settings_visibility_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_settings_visibility
+    ADD CONSTRAINT user_course_settings_visibility_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_organization user_organization_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_organization
+    ADD CONSTRAINT user_organization_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: verified_user verified_user_pkey; Type: CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".verified_user
+    ADD CONSTRAINT verified_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: _CourseToService_AB_unique; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "_CourseToService_AB_unique" ON "default$prisma2"."_CourseToService" USING btree ("A", "B");
+
+
+--
+-- Name: _CourseToService_B; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE INDEX "_CourseToService_B" ON "default$prisma2"."_CourseToService" USING btree ("B");
+
+
+--
+-- Name: _StudyModuleToCourse_AB_unique; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "_StudyModuleToCourse_AB_unique" ON "default$prisma2"."_StudyModuleToCourse" USING btree ("A", "B");
+
+
+--
+-- Name: _StudyModuleToCourse_B; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE INDEX "_StudyModuleToCourse_B" ON "default$prisma2"."_StudyModuleToCourse" USING btree ("B");
+
+
+--
+-- Name: default$prisma2.UserAppDatumConfig.name._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.UserAppDatumConfig.name._UNIQUE" ON "default$prisma2"."UserAppDatumConfig" USING btree (name);
+
+
+--
+-- Name: default$prisma2.course.slug._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.course.slug._UNIQUE" ON "default$prisma2".course USING btree (slug);
+
+
+--
+-- Name: default$prisma2.course_alias.course_code._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.course_alias.course_code._UNIQUE" ON "default$prisma2".course_alias USING btree (course_code);
+
+
+--
+-- Name: default$prisma2.organization.secret_key._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.organization.secret_key._UNIQUE" ON "default$prisma2".organization USING btree (secret_key);
+
+
+--
+-- Name: default$prisma2.organization.slug._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.organization.slug._UNIQUE" ON "default$prisma2".organization USING btree (slug);
+
+
+--
+-- Name: default$prisma2.study_module.slug._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.study_module.slug._UNIQUE" ON "default$prisma2".study_module USING btree (slug);
+
+
+--
+-- Name: default$prisma2.user.upstream_id._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.user.upstream_id._UNIQUE" ON "default$prisma2"."user" USING btree (upstream_id);
+
+
+--
+-- Name: default$prisma2.user.username._UNIQUE; Type: INDEX; Schema: default$prisma2; Owner: prisma
+--
+
+CREATE UNIQUE INDEX "default$prisma2.user.username._UNIQUE" ON "default$prisma2"."user" USING btree (username);
+
+
+--
+-- Name: UserCourseSettings UserCourseSettings_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."UserCourseSettings"
+    ADD CONSTRAINT "UserCourseSettings_course_fkey" FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: UserCourseSettings UserCourseSettings_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."UserCourseSettings"
+    ADD CONSTRAINT "UserCourseSettings_user_fkey" FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: _CourseToService _CourseToService_A_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."_CourseToService"
+    ADD CONSTRAINT "_CourseToService_A_fkey" FOREIGN KEY ("A") REFERENCES "default$prisma2".course(id) ON DELETE CASCADE;
+
+
+--
+-- Name: _CourseToService _CourseToService_B_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."_CourseToService"
+    ADD CONSTRAINT "_CourseToService_B_fkey" FOREIGN KEY ("B") REFERENCES "default$prisma2".service(id) ON DELETE CASCADE;
+
+
+--
+-- Name: _StudyModuleToCourse _StudyModuleToCourse_A_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."_StudyModuleToCourse"
+    ADD CONSTRAINT "_StudyModuleToCourse_A_fkey" FOREIGN KEY ("A") REFERENCES "default$prisma2".course(id) ON DELETE CASCADE;
+
+
+--
+-- Name: _StudyModuleToCourse _StudyModuleToCourse_B_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2"."_StudyModuleToCourse"
+    ADD CONSTRAINT "_StudyModuleToCourse_B_fkey" FOREIGN KEY ("B") REFERENCES "default$prisma2".study_module(id) ON DELETE CASCADE;
+
+
+--
+-- Name: completion completion_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion
+    ADD CONSTRAINT completion_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: completion_registered completion_registered_completion_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion_registered
+    ADD CONSTRAINT completion_registered_completion_fkey FOREIGN KEY (completion) REFERENCES "default$prisma2".completion(id) ON DELETE SET NULL;
+
+
+--
+-- Name: completion_registered completion_registered_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion_registered
+    ADD CONSTRAINT completion_registered_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: completion_registered completion_registered_organization_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion_registered
+    ADD CONSTRAINT completion_registered_organization_fkey FOREIGN KEY (organization) REFERENCES "default$prisma2".organization(id) ON DELETE SET NULL;
+
+
+--
+-- Name: completion_registered completion_registered_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion_registered
+    ADD CONSTRAINT completion_registered_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: completion completion_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".completion
+    ADD CONSTRAINT completion_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course_alias course_alias_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_alias
+    ADD CONSTRAINT course_alias_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course course_completion_email_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course
+    ADD CONSTRAINT course_completion_email_fkey FOREIGN KEY (completion_email) REFERENCES "default$prisma2".email_template(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course course_completions_handled_by_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course
+    ADD CONSTRAINT course_completions_handled_by_fkey FOREIGN KEY (completions_handled_by) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course course_inherit_settings_from_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course
+    ADD CONSTRAINT course_inherit_settings_from_fkey FOREIGN KEY (inherit_settings_from) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course_organization course_organization_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_organization
+    ADD CONSTRAINT course_organization_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course_organization course_organization_organization_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_organization
+    ADD CONSTRAINT course_organization_organization_fkey FOREIGN KEY (organization) REFERENCES "default$prisma2".organization(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course course_owner_organization_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course
+    ADD CONSTRAINT course_owner_organization_fkey FOREIGN KEY (owner_organization) REFERENCES "default$prisma2".organization(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course course_photo_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course
+    ADD CONSTRAINT course_photo_fkey FOREIGN KEY (photo) REFERENCES "default$prisma2".image(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course_translation course_translation_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_translation
+    ADD CONSTRAINT course_translation_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: course_variant course_variant_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".course_variant
+    ADD CONSTRAINT course_variant_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: email_delivery email_delivery_email_template_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".email_delivery
+    ADD CONSTRAINT email_delivery_email_template_fkey FOREIGN KEY (email_template) REFERENCES "default$prisma2".email_template(id) ON DELETE SET NULL;
+
+
+--
+-- Name: email_delivery email_delivery_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".email_delivery
+    ADD CONSTRAINT email_delivery_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: exercise_completion exercise_completion_exercise_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise_completion
+    ADD CONSTRAINT exercise_completion_exercise_fkey FOREIGN KEY (exercise) REFERENCES "default$prisma2".exercise(id) ON DELETE SET NULL;
+
+
+--
+-- Name: exercise_completion_required_actions exercise_completion_required_actions_exercise_completion_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise_completion_required_actions
+    ADD CONSTRAINT exercise_completion_required_actions_exercise_completion_fkey FOREIGN KEY (exercise_completion) REFERENCES "default$prisma2".exercise_completion(id) ON DELETE SET NULL;
+
+
+--
+-- Name: exercise_completion exercise_completion_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise_completion
+    ADD CONSTRAINT exercise_completion_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: exercise exercise_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise
+    ADD CONSTRAINT exercise_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: exercise exercise_service_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".exercise
+    ADD CONSTRAINT exercise_service_fkey FOREIGN KEY (service) REFERENCES "default$prisma2".service(id) ON DELETE SET NULL;
+
+
+--
+-- Name: open_university_registration_link open_university_registration_link_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".open_university_registration_link
+    ADD CONSTRAINT open_university_registration_link_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: organization organization_creator_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".organization
+    ADD CONSTRAINT organization_creator_fkey FOREIGN KEY (creator) REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: organization_translation organization_translation_organization_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".organization_translation
+    ADD CONSTRAINT organization_translation_organization_fkey FOREIGN KEY (organization) REFERENCES "default$prisma2".organization(id) ON DELETE SET NULL;
+
+
+--
+-- Name: study_module_translation study_module_translation_study_module_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".study_module_translation
+    ADD CONSTRAINT study_module_translation_study_module_fkey FOREIGN KEY (study_module) REFERENCES "default$prisma2".study_module(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_course_progress user_course_progress_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_progress
+    ADD CONSTRAINT user_course_progress_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_course_progress user_course_progress_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_progress
+    ADD CONSTRAINT user_course_progress_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_course_service_progress user_course_service_progress_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_service_progress
+    ADD CONSTRAINT user_course_service_progress_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_course_service_progress user_course_service_progress_service_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_service_progress
+    ADD CONSTRAINT user_course_service_progress_service_fkey FOREIGN KEY (service) REFERENCES "default$prisma2".service(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_course_service_progress user_course_service_progress_user_course_progress_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_service_progress
+    ADD CONSTRAINT user_course_service_progress_user_course_progress_fkey FOREIGN KEY (user_course_progress) REFERENCES "default$prisma2".user_course_progress(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_course_service_progress user_course_service_progress_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_service_progress
+    ADD CONSTRAINT user_course_service_progress_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_course_settings_visibility user_course_settings_visibility_course_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_course_settings_visibility
+    ADD CONSTRAINT user_course_settings_visibility_course_fkey FOREIGN KEY (course) REFERENCES "default$prisma2".course(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_organization user_organization_organization_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_organization
+    ADD CONSTRAINT user_organization_organization_fkey FOREIGN KEY (organization) REFERENCES "default$prisma2".organization(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_organization user_organization_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".user_organization
+    ADD CONSTRAINT user_organization_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- Name: verified_user verified_user_organization_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".verified_user
+    ADD CONSTRAINT verified_user_organization_fkey FOREIGN KEY (organization) REFERENCES "default$prisma2".organization(id) ON DELETE SET NULL;
+
+
+--
+-- Name: verified_user verified_user_user_fkey; Type: FK CONSTRAINT; Schema: default$prisma2; Owner: prisma
+--
+
+ALTER TABLE ONLY "default$prisma2".verified_user
+    ADD CONSTRAINT verified_user_user_fkey FOREIGN KEY ("user") REFERENCES "default$prisma2"."user"(id) ON DELETE SET NULL;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

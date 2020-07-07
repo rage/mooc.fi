@@ -46,7 +46,7 @@
     "@types/luxon": "^1.24.1",
     "@types/morgan": "^1.9.1",
     "@types/nodemailer": "^6.4.0",
-    "@types/redis": "^2.8.23",
+    "@types/redis": "^2.8.24",
     "@types/shortid": "0.0.29",
     "@types/uuid": "^8.0.0",
     "@types/websocket": "^1.0.0",

@@ -204,7 +204,11 @@ schema.extendType({
       args: {
         user_id: idArg({ required: true }),
         course_id: idArg({ required: true }),
-        progress: arg({ type: "PointsByGroup", required: true }),
+        progress: arg({
+          type: "PointsByGroup",
+          list: true,
+          required: true,
+        }),
         max_points: floatArg(),
         n_points: floatArg(),
       },
