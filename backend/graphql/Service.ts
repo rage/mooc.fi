@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { stringArg, idArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -19,30 +19,22 @@ schema.objectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.service({
+    t.field("service", {
+      type: "Service",
+      args: {
+        service_id: schema.idArg({ required: true }),
+      },
       authorize: isAdmin,
+      resolve: async (_, { service_id }, ctx) =>
+        ctx.db.service.findOne({ where: { id: service_id } }),
     })
+
     t.crud.services({
       pagination: false,
       authorize: isAdmin,
     })
 
-    /*t.field("service", {
-      type: "service",
-      args: {
-        service_id: idArg(),
-      },
-      resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
-        const { service_id } = args
-  
-        const service = await ctx.db.service.findOne({ where: { id: service_id } })
-  
-        return service
-      },
-    })
-
-    t.list.field("services", {
+    /*t.list.field("services", {
       type: "service",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
@@ -59,8 +51,8 @@ schema.extendType({
     t.field("addService", {
       type: "Service",
       args: {
-        url: stringArg({ required: true }),
-        name: stringArg({ required: true }),
+        url: schema.stringArg({ required: true }),
+        name: schema.stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -78,9 +70,9 @@ schema.extendType({
     t.field("updateService", {
       type: "Service",
       args: {
-        id: idArg({ required: true }),
-        url: stringArg(),
-        name: stringArg(),
+        id: schema.idArg({ required: true }),
+        url: schema.stringArg(),
+        name: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {

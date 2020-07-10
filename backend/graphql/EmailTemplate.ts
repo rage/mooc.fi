@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { stringArg, idArg } from "@nexus/schema"
+
 import { UserInputError } from "apollo-server-errors"
 import { isAdmin } from "../accessControl"
 
@@ -21,40 +21,26 @@ schema.objectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.emailTemplate({
-      alias: "email_template",
-      authorize: isAdmin,
-    })
-    t.crud.emailTemplates({
-      alias: "email_templates",
-      authorize: isAdmin,
-    })
-
-    /*t.field("email_template", {
-      type: "email_template",
+    t.field("email_template", {
+      type: "EmailTemplate",
       nullable: true,
       args: {
-        id: idArg(),
+        id: schema.idArg({ required: true }),
       },
-      resolve: (_, args, ctx) => {
-        checkAccess(ctx)
-        const { id } = args
-
-        return ctx.db.email_template.findOne({
+      authorize: isAdmin,
+      resolve: (_, { id }, ctx) =>
+        ctx.db.emailTemplate.findOne({
           where: {
-            id
-          }
-        })
-      },
+            id,
+          },
+        }),
     })
 
     t.list.field("email_templates", {
-      type: "email_template",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.db.email_template.findMany()
-      },
-    })*/
+      type: "EmailTemplate",
+      authorize: isAdmin,
+      resolve: (_, __, ctx) => ctx.db.emailTemplate.findMany(),
+    })
   },
 })
 
@@ -64,10 +50,10 @@ schema.extendType({
     t.field("addEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        name: stringArg({ required: true }),
-        html_body: stringArg(),
-        txt_body: stringArg(),
-        title: stringArg(),
+        name: schema.stringArg({ required: true }),
+        html_body: schema.stringArg(),
+        txt_body: schema.stringArg(),
+        title: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -89,11 +75,11 @@ schema.extendType({
     t.field("updateEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: idArg({ required: true }),
-        name: stringArg(),
-        html_body: stringArg(),
-        txt_body: stringArg(),
-        title: stringArg(),
+        id: schema.idArg({ required: true }),
+        name: schema.stringArg(),
+        html_body: schema.stringArg(),
+        txt_body: schema.stringArg(),
+        title: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -116,7 +102,7 @@ schema.extendType({
     t.field("deleteEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {

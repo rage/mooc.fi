@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { intArg, idArg, arg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -22,32 +22,24 @@ schema.objectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.exerciseCompletion({
+    t.field("exerciseCompletion", {
+      type: "ExerciseCompletion",
+      args: {
+        id: schema.idArg({ required: true }),
+      },
       authorize: isAdmin,
+      resolve: async (_, { id }, ctx) =>
+        ctx.db.exerciseCompletion.findOne({
+          where: { id },
+        }),
     })
+
     t.crud.exerciseCompletions({
       ordering: true,
       authorize: isAdmin,
     })
 
-    /*t.field("exerciseCompletion", {
-      type: "exercise_completion",
-      args: {
-        id: idArg(),
-      },
-      resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
-        const { id } = args
-  
-        const completion = await ctx.db.exercise_completion.findOne({
-          where: { id },
-        })
-  
-        return completion
-      },
-    })
-
-    t.list.field("exerciseCompletions", {
+    /*t.list.field("exerciseCompletions", {
       type: "exercise_completion",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
@@ -63,10 +55,10 @@ schema.extendType({
     t.field("addExerciseCompletion", {
       type: "ExerciseCompletion",
       args: {
-        n_points: intArg(),
-        exercise: idArg(),
-        user: idArg(),
-        timestamp: arg({ type: "DateTime" }),
+        n_points: schema.intArg(),
+        exercise: schema.idArg(),
+        user: schema.idArg(),
+        timestamp: schema.arg({ type: "DateTime" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {

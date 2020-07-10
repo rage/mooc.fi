@@ -13,6 +13,7 @@ import { graphqlUploadExpress } from "graphql-upload"
 import { contextUser } from "./middlewares/FetchUser"
 import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
 import path from "path"
+import cache from "./middlewares/cache"
 
 nexusSchemaPrisma({
   outputs: {
@@ -50,6 +51,7 @@ use(
     features: { crud: true },
   }),
 )
+schema.middleware(cache)
 
 // @ts-ignore: not used for now
 const logger = winston.createLogger({
@@ -75,6 +77,7 @@ schema.addToContext(async (req) => ({
 
 settings.change({
   logger: {
+    pretty: true,
     filter: {
       level: "debug",
     },
@@ -247,4 +250,7 @@ server.express.get(
   },
 )
 
-// wsListen()
+if (!process.env.NEXUS_REFLECTION) {
+  // only runtime
+  wsListen()
+}

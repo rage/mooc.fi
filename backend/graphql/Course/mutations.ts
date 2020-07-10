@@ -6,7 +6,7 @@ import {
   CourseAliasUpdateManyWithoutCourseInput,
   UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
 } from "@prisma/client"
-import { stringArg, arg, idArg } from "@nexus/schema"
+
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "../Image"
 import { omit } from "lodash"
@@ -29,7 +29,7 @@ schema.extendType({
     t.field("addCourse", {
       type: "Course",
       args: {
-        course: arg({
+        course: schema.arg({
           type: "CourseCreateArg",
           required: true,
         }),
@@ -123,7 +123,7 @@ schema.extendType({
     t.field("updateCourse", {
       type: "Course",
       args: {
-        course: arg({
+        course: schema.arg({
           type: "CourseUpsertArg",
           required: true,
         }),
@@ -329,8 +329,8 @@ schema.extendType({
     t.field("deleteCourse", {
       type: "Course",
       args: {
-        id: idArg(),
-        slug: stringArg(),
+        id: schema.idArg(),
+        slug: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx: NexusContext) => {

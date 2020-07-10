@@ -1,6 +1,6 @@
 // import { prismaObjectType } from "nexus-prisma"
 // import { stringArg, arg } from "nexus/dist"
-import { stringArg, arg } from "@nexus/schema"
+
 import { schema } from "nexus"
 import { notEmpty } from "../../util/notEmpty"
 
@@ -21,8 +21,8 @@ schema.objectType({
     t.list.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
-        language: stringArg(),
+        orderBy: schema.arg({ type: "CourseOrderByInput" }),
+        language: schema.stringArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { language, orderBy } = args

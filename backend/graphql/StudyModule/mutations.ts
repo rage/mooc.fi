@@ -1,4 +1,3 @@
-import { stringArg, arg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
 import { omit } from "lodash"
@@ -10,7 +9,7 @@ schema.extendType({
     t.field("addStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: arg({
+        study_module: schema.arg({
           type: "StudyModuleCreateArg",
           required: true,
         }),
@@ -40,7 +39,7 @@ schema.extendType({
     t.field("updateStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: arg({
+        study_module: schema.arg({
           type: "StudyModuleUpsertArg",
           required: true,
         }),
@@ -109,8 +108,8 @@ schema.extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: idArg({ required: false }),
-        slug: stringArg(),
+        id: schema.idArg({ required: false }),
+        slug: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

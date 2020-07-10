@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { idArg, booleanArg } from "@nexus/schema"
+
 import { or, isVisitor, isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -19,30 +19,23 @@ schema.objectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.courseOrganizations({
-      filtering: {
-        course_id: true,
-        organization_id: true,
-      },
-    })
-
-    /*t.list.field("courseOrganizations", {
-      type: "course_organization",
+    t.list.field("courseOrganizations", {
+      type: "CourseOrganization",
       args: {
-        course_id: idArg(),
-        organization_id: idArg(),
+        course_id: schema.idArg(),
+        organization_id: schema.idArg(),
       },
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id } = args
 
-        return ctx.db.course_organization.findMany({
+        return ctx.db.courseOrganization.findMany({
           where: {
-            course: course_id,
-            organization: organization_id,
+            course_id: course_id ?? undefined,
+            organization_id: organization_id ?? undefined,
           },
         })
       },
-    })*/
+    })
   },
 })
 
@@ -52,9 +45,9 @@ schema.extendType({
     t.field("addCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        course_id: idArg({ required: true }),
-        organization_id: idArg({ required: true }),
-        creator: booleanArg(),
+        course_id: schema.idArg({ required: true }),
+        organization_id: schema.idArg({ required: true }),
+        creator: schema.booleanArg(),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -86,7 +79,7 @@ schema.extendType({
     t.field("deleteCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        id: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {

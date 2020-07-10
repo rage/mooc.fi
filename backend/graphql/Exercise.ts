@@ -1,6 +1,5 @@
-import { arg } from "@nexus/schema"
 import { schema } from "nexus"
-import { stringArg, intArg, idArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -27,7 +26,7 @@ schema.objectType({
       type: "ExerciseCompletion",
       list: true,
       args: {
-        orderBy: arg({
+        orderBy: schema.arg({
           // FIXME?
           type: "ExerciseCompletionOrderByInput",
           required: false,
@@ -53,31 +52,23 @@ schema.objectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.exercise({
+    t.field("exercise", {
+      type: "Exercise",
+      args: {
+        id: schema.idArg({ required: true }),
+      },
       authorize: isAdmin,
+      resolve: async (_, { id }, ctx) =>
+        ctx.db.exercise.findOne({
+          where: { id },
+        }),
     })
+
     t.crud.exercises({
       authorize: isAdmin,
     })
 
-    /*t.field("exercise", {
-      type: "exercise",
-      args: {
-        id: idArg(),
-      },
-      resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
-        const { id } = args
-  
-        const exercise = await ctx.db.exercise.findOne({
-          where: { id }
-        })
-  
-        return exercise
-      },
-    })
-
-    t.list.field("exercises", {
+    /*t.list.field("exercises", {
       type: "exercise",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
@@ -93,13 +84,13 @@ schema.extendType({
     t.field("addExercise", {
       type: "Exercise",
       args: {
-        custom_id: stringArg(),
-        name: stringArg(),
-        part: intArg(),
-        section: intArg(),
-        max_points: intArg(),
-        course: idArg(),
-        service: idArg(),
+        custom_id: schema.stringArg(),
+        name: schema.stringArg(),
+        part: schema.intArg(),
+        section: schema.intArg(),
+        max_points: schema.intArg(),
+        course: schema.idArg(),
+        service: schema.idArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {

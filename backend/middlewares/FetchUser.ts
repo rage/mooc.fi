@@ -3,9 +3,9 @@ import TmcClient from "../services/tmc"
 import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
-import { NexusContext } from "../context"
 import { PrismaClient } from "@prisma/client"
 import { IncomingMessage } from "http"
+import { NexusContext } from "../context"
 
 const fetchUser = (_config: any) => async (
   root: any,

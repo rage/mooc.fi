@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { arg, stringArg, intArg, idArg } from "@nexus/schema"
+
 import Knex from "../../services/knex"
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
@@ -11,12 +11,12 @@ schema.extendType({
     t.field("addCompletion", {
       type: "Completion",
       args: {
-        user_upstream_id: intArg(),
-        email: stringArg(),
-        student_number: stringArg(),
-        user: idArg({ required: true }),
-        course: idArg({ required: true }),
-        completion_language: stringArg(),
+        user_upstream_id: schema.intArg(),
+        email: schema.stringArg(),
+        student_number: schema.stringArg(),
+        user: schema.idArg({ required: true }),
+        course: schema.idArg({ required: true }),
+        completion_language: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -45,8 +45,8 @@ schema.extendType({
     t.list.field("addManualCompletion", {
       type: "Completion",
       args: {
-        completions: arg({ type: "ManualCompletionArg", list: true }),
-        course_id: stringArg({ required: true }),
+        completions: schema.arg({ type: "ManualCompletionArg", list: true }),
+        course_id: schema.stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, _ctx) => {

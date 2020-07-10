@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { arg, idArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -41,9 +41,9 @@ schema.extendType({
     t.field("userCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        user_id: idArg(),
-        course_id: idArg(),
-        service_id: idArg(),
+        user_id: schema.idArg(),
+        course_id: schema.idArg(),
+        service_id: schema.idArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -71,13 +71,13 @@ schema.extendType({
     /*t.list.field("UserCourseServiceProgresses", {
       type: "user_course_service_progress",
       args: {
-        user_id: idArg(),
-        course_id: idArg(),
-        service_id: idArg(),
-        first: intArg(),
-        after: idArg(),
-        last: intArg(),
-        before: idArg(),
+        user_id: schema.idArg(),
+        course_id: schema.idArg(),
+        service_id: schema.idArg(),
+        first: schema.intArg(),
+        after: schema.idArg(),
+        last: schema.intArg(),
+        before: schema.idArg(),
       },
       resolve: (_, args, ctx) => {
         checkAccess(ctx)
@@ -114,9 +114,9 @@ schema.extendType({
     t.field("addUserCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        progress: arg({ type: "PointsByGroup", required: true }),
-        service_id: idArg({ required: true }),
-        user_course_progress_id: idArg({ required: true }),
+        progress: schema.arg({ type: "PointsByGroup", required: true }),
+        service_id: schema.idArg({ required: true }),
+        user_course_progress_id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

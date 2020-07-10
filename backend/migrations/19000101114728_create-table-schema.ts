@@ -527,4 +527,4 @@ export async function up(knex: Knex): Promise<any> {
     ADD CONSTRAINT verified_user_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
 }
 
-export async function down(knex: Knex): Promise<any> {}
+export async function down(_knex: Knex): Promise<any> {}

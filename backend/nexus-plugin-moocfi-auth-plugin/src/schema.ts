@@ -12,7 +12,8 @@ export enum Role {
   VISITOR,
 }
 
-export const schemaPlugin = ({ prisma, redisClient }: Settings) => {
+// upgrades broke typing somehow; anyway, plugin isn't used
+export const schemaPlugin: any = ({ prisma, redisClient }: Settings) => {
   return plugin({
     name: 'MOOC.fi Auth Plugin',
     onCreateFieldResolver(config) {

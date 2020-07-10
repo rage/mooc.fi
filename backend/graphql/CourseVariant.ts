@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { stringArg, idArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -37,37 +37,26 @@ schema.inputObjectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.courseVariant()
-    t.crud.courseVariants({
-      filtering: {
-        course_id: true,
-      },
-      pagination: false,
-    })
-    /*t.field("courseVariant", {
-      type: "course_variant",
+    t.field("courseVariant", {
+      type: "CourseVariant",
       args: {
-        id: idArg(),
+        id: schema.idArg({ required: true }),
       },
       nullable: true,
-      resolve: (_, args, ctx) => {
-        const { id } = args
-
-        return ctx.db.course_variant.findOne({ where: { id } })
-      },
+      resolve: (_, { id }, ctx) =>
+        ctx.db.courseVariant.findOne({ where: { id: id ?? undefined } }),
     })
 
     t.list.field("courseVariants", {
-      type: "course_variant",
+      type: "CourseVariant",
       args: {
-        course_id: idArg(),
+        course_id: schema.idArg(),
       },
-      resolve: (_, args, ctx) => {
-        const { course_id } = args
-
-        return ctx.db.course.findOne({ where: { id: course_id } }).course_variant()
-      },
-    })*/
+      resolve: (_, { course_id }, ctx) =>
+        ctx.db.course
+          .findOne({ where: { id: course_id ?? undefined } })
+          .course_variants(),
+    })
   },
 })
 
@@ -77,9 +66,9 @@ schema.extendType({
     t.field("addCourseVariant", {
       type: "CourseVariant",
       args: {
-        course_id: idArg({ required: true }),
-        slug: stringArg({ required: true }),
-        description: stringArg(),
+        course_id: schema.idArg({ required: true }),
+        slug: schema.stringArg({ required: true }),
+        description: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -98,9 +87,9 @@ schema.extendType({
     t.field("updateCourseVariant", {
       type: "CourseVariant",
       args: {
-        id: idArg({ required: true }),
-        slug: stringArg(),
-        description: stringArg(),
+        id: schema.idArg({ required: true }),
+        slug: schema.stringArg(),
+        description: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -119,7 +108,7 @@ schema.extendType({
     t.field("deleteCourseVariant", {
       type: "CourseVariant",
       args: {
-        id: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {

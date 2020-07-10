@@ -1,6 +1,6 @@
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
-import { idArg, intArg, stringArg, arg, floatArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -126,8 +126,8 @@ schema.extendType({
     t.field("userCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: idArg({ required: true }),
-        course_id: idArg({ required: true }),
+        user_id: schema.idArg({ required: true }),
+        course_id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -158,12 +158,12 @@ schema.extendType({
     t.list.field("userCourseProgresses", {
       type: "UserCourseProgress",
       args: {
-        user_id: idArg(),
-        course_slug: stringArg(),
-        course_id: idArg(),
-        skip: intArg(),
-        take: intArg(),
-        cursor: arg({ type: "UserCourseProgressWhereUniqueInput" }),
+        user_id: schema.idArg(),
+        course_slug: schema.stringArg(),
+        course_id: schema.idArg(),
+        skip: schema.intArg(),
+        take: schema.intArg(),
+        cursor: schema.arg({ type: "UserCourseProgressWhereUniqueInput" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -202,15 +202,15 @@ schema.extendType({
     t.field("addUserCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: idArg({ required: true }),
-        course_id: idArg({ required: true }),
-        progress: arg({
+        user_id: schema.idArg({ required: true }),
+        course_id: schema.idArg({ required: true }),
+        progress: schema.arg({
           type: "PointsByGroup",
           list: true,
           required: true,
         }),
-        max_points: floatArg(),
-        n_points: floatArg(),
+        max_points: schema.floatArg(),
+        n_points: schema.floatArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {

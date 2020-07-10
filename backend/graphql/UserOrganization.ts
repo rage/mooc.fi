@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { idArg, arg } from "@nexus/schema"
+
 import { ForbiddenError } from "apollo-server-errors"
 import { NexusContext } from "../context"
 import { Role, or, isVisitor, isAdmin } from "../accessControl"
@@ -25,8 +25,8 @@ schema.extendType({
     t.list.field("userOrganizations", {
       type: "UserOrganization",
       args: {
-        user_id: idArg(),
-        organization_id: idArg(),
+        user_id: schema.idArg(),
+        organization_id: schema.idArg(),
       },
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
@@ -74,8 +74,8 @@ schema.extendType({
     t.field("addUserOrganization", {
       type: "UserOrganization",
       args: {
-        user_id: idArg({ required: true }),
-        organization_id: idArg({ required: true }),
+        user_id: schema.idArg({ required: true }),
+        organization_id: schema.idArg({ required: true }),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -110,10 +110,10 @@ schema.extendType({
     t.field("updateUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: idArg({ required: true }),
-        /*       userId: idArg(),
-        organizationId: idArg(), */
-        role: arg({ type: "OrganizationRole" }),
+        id: schema.idArg({ required: true }),
+        /*       userId: schema.idArg(),
+        organizationId: schema.idArg(), */
+        role: schema.arg({ type: "OrganizationRole" }),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: (_, args, ctx: NexusContext) => {
@@ -135,7 +135,7 @@ schema.extendType({
     t.field("deleteUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx: NexusContext) => {

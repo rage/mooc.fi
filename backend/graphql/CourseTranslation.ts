@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { idArg, stringArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -43,24 +43,17 @@ schema.inputObjectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.courseTranslations({
-      filtering: {
-        language: true,
-      },
-      pagination: false,
-      authorize: isAdmin,
-    })
-    /*t.list.field("CourseTranslations", {
-      type: "course_translation",
+    t.list.field("CourseTranslations", {
+      type: "CourseTranslation",
       args: {
-        language: stringArg(),
+        language: schema.stringArg(),
       },
-      resolve: (_, args, ctx) => {
-        const { language } = args
-        checkAccess(ctx, { allowOrganizations: false })
-        return ctx.db.course_translation.findMany({ where: { language } })
-      },
-    })*/
+      authorize: isAdmin,
+      resolve: (_, { language }, ctx) =>
+        ctx.db.courseTranslation.findMany({
+          where: { language: language ?? undefined },
+        }),
+    })
   },
 })
 
@@ -70,11 +63,11 @@ schema.extendType({
     t.field("addCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        language: stringArg({ required: true }),
-        name: stringArg(),
-        description: stringArg(),
-        link: stringArg(),
-        course: idArg(),
+        language: schema.stringArg({ required: true }),
+        name: schema.stringArg(),
+        description: schema.stringArg(),
+        link: schema.stringArg(),
+        course: schema.idArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -96,12 +89,12 @@ schema.extendType({
     t.field("updateCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        id: idArg({ required: true }),
-        language: stringArg({ required: true }),
-        name: stringArg(),
-        description: stringArg(),
-        link: stringArg(),
-        course: idArg(),
+        id: schema.idArg({ required: true }),
+        language: schema.stringArg({ required: true }),
+        name: schema.stringArg(),
+        description: schema.stringArg(),
+        link: schema.stringArg(),
+        course: schema.idArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -123,7 +116,7 @@ schema.extendType({
     t.field("deleteCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        id: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
