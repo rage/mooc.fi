@@ -1,4 +1,3 @@
-import { stringArg, idArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-errors"
 import { isAdmin } from "../../accessControl"
@@ -9,9 +8,9 @@ schema.extendType({
     t.field("study_module", {
       type: "StudyModule",
       args: {
-        id: idArg(),
-        slug: stringArg(),
-        language: stringArg(),
+        id: schema.idArg(),
+        slug: schema.stringArg(),
+        language: schema.stringArg(),
       },
       authorize: isAdmin,
       nullable: true,
@@ -70,8 +69,8 @@ schema.extendType({
     t.list.field("study_modules", {
       type: "StudyModule",
       args: {
-        orderBy: arg({ type: "StudyModuleOrderByInput" }),
-        language: stringArg(),
+        orderBy: schema.arg({ type: "StudyModuleOrderByInput" }),
+        language: schema.stringArg(),
       },
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
@@ -112,7 +111,7 @@ schema.extendType({
     t.field("study_module_exists", {
       type: "Boolean",
       args: {
-        slug: stringArg({ required: true }),
+        slug: schema.stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {

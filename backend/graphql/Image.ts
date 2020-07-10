@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { arg, booleanArg, idArg } from "@nexus/schema"
+
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
@@ -34,8 +34,8 @@ schema.extendType({
     t.field("addImage", {
       type: "Image",
       args: {
-        file: arg({ type: "Upload", required: true }),
-        base64: booleanArg(),
+        file: schema.arg({ type: "Upload", required: true }),
+        base64: schema.booleanArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx: NexusContext) => {
@@ -48,7 +48,7 @@ schema.extendType({
     t.field("deleteImage", {
       type: "Boolean",
       args: {
-        id: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx: NexusContext) => {

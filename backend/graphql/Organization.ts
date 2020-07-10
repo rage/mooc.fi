@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { idArg, intArg, arg, booleanArg, stringArg } from "@nexus/schema"
+
 import { UserInputError } from "apollo-server-errors"
 import { Role, isAdmin } from "../accessControl"
 import { NexusContext } from "../context"
@@ -56,8 +56,8 @@ schema.extendType({
     t.field("organization", {
       type: "Organization",
       args: {
-        id: idArg(),
-        hidden: booleanArg(),
+        id: schema.idArg(),
+        hidden: schema.booleanArg(),
       },
       authorize: organizationPermission,
       nullable: true,
@@ -88,15 +88,15 @@ schema.extendType({
     t.list.field("organizations", {
       type: "Organization",
       args: {
-        take: intArg(),
-        skip: intArg(),
-        cursor: arg({ type: "OrganizationWhereUniqueInput" }),
-        /*first: intArg(),
-        after: idArg(),
-        last: intArg(),
-        before: idArg(),*/
-        orderBy: arg({ type: "OrganizationOrderByInput" }),
-        hidden: booleanArg(),
+        take: schema.intArg(),
+        skip: schema.intArg(),
+        cursor: schema.arg({ type: "OrganizationWhereUniqueInput" }),
+        /*first: schema.intArg(),
+        after: schema.idArg(),
+        last: schema.intArg(),
+        before: schema.idArg(),*/
+        orderBy: schema.arg({ type: "OrganizationOrderByInput" }),
+        hidden: schema.booleanArg(),
       },
       authorize: organizationPermission,
       resolve: async (_, args, ctx) => {
@@ -138,8 +138,8 @@ schema.extendType({
     t.field("addOrganization", {
       type: "Organization",
       args: {
-        name: stringArg(),
-        slug: stringArg({ required: true }),
+        name: schema.stringArg(),
+        slug: schema.stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { idArg, stringArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -60,10 +60,10 @@ schema.extendType({
     t.field("addStudyModuleTranslation", {
       type: "StudyModuleTranslation",
       args: {
-        language: stringArg({ required: true }),
-        name: stringArg(),
-        description: stringArg(),
-        study_module: idArg({ required: true }),
+        language: schema.stringArg({ required: true }),
+        name: schema.stringArg(),
+        description: schema.stringArg(),
+        study_module: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -88,11 +88,11 @@ schema.extendType({
     t.field("updateStudyModuletranslation", {
       type: "StudyModuleTranslation",
       args: {
-        id: idArg({ required: true }),
-        language: stringArg(),
-        name: stringArg(),
-        description: stringArg(),
-        study_module: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
+        language: schema.stringArg(),
+        name: schema.stringArg(),
+        description: schema.stringArg(),
+        study_module: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -115,7 +115,7 @@ schema.extendType({
     t.field("deleteStudyModuleTranslation", {
       type: "StudyModuleTranslation",
       args: {
-        id: idArg({ required: true }),
+        id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>

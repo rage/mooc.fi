@@ -1,6 +1,6 @@
 import { schema } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-errors"
-import { idArg, intArg, stringArg } from "@nexus/schema"
+
 import { buildSearch, convertPagination } from "../util/db-functions"
 import { UserWhereInput } from "@prisma/client"
 import { isAdmin } from "../accessControl"
@@ -30,8 +30,8 @@ schema.extendType({
     t.field("userCourseSetting", {
       type: "UserCourseSetting",
       args: {
-        user_id: idArg({ required: true }),
-        course_id: idArg({ required: true }),
+        user_id: schema.idArg({ required: true }),
+        course_id: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -63,8 +63,8 @@ schema.extendType({
     t.field("userCourseSettingCount", {
       type: "Int",
       args: {
-        user_id: idArg(),
-        course_id: idArg(),
+        user_id: schema.idArg(),
+        course_id: schema.idArg(),
       },
       resolve: (_, args, ctx) => {
         const { user_id, course_id } = args
@@ -81,11 +81,11 @@ schema.extendType({
     t.connection("userCourseSettings", {
       type: "UserCourseSetting",
       additionalArgs: {
-        user_id: idArg(),
-        user_upstream_id: intArg(),
-        course_id: idArg(),
-        search: stringArg(),
-        skip: intArg({ default: 0 }),
+        user_id: schema.idArg(),
+        user_upstream_id: schema.intArg(),
+        course_id: schema.idArg(),
+        search: schema.stringArg(),
+        skip: schema.intArg({ default: 0 }),
       },
       authorize: isAdmin,
       nodes: async (_, args, ctx) => {
@@ -141,10 +141,10 @@ schema.extendType({
       extendConnection(t) {
         t.int("count", {
           args: {
-            user_id: idArg(),
-            user_upstream_id: intArg(),
-            course_id: idArg({ required: true }),
-            search: stringArg(),
+            user_id: schema.idArg(),
+            user_upstream_id: schema.intArg(),
+            course_id: schema.idArg({ required: true }),
+            search: schema.stringArg(),
           },
           resolve: async (_, args, ctx) => {
             const { user_id, user_upstream_id, search } = args

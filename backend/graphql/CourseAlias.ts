@@ -1,6 +1,5 @@
 import { schema } from "nexus"
 import { isAdmin } from "../accessControl"
-import { idArg, stringArg } from "@nexus/schema"
 
 schema.objectType({
   name: "CourseAlias",
@@ -53,8 +52,8 @@ schema.extendType({
     t.field("addCourseAlias", {
       type: "CourseAlias",
       args: {
-        course_code: stringArg({ required: true }),
-        course: idArg({ required: true }),
+        course_code: schema.stringArg({ required: true }),
+        course: schema.idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

@@ -1,4 +1,3 @@
-import { stringArg, idArg, arg } from "@nexus/schema"
 import { schema } from "nexus"
 import { Course } from "@prisma/client"
 import { UserInputError } from "apollo-server-errors"
@@ -10,9 +9,9 @@ schema.extendType({
     t.field("course", {
       type: "Course",
       args: {
-        slug: stringArg(),
-        id: idArg(),
-        language: stringArg(),
+        slug: schema.stringArg(),
+        id: schema.idArg(),
+        language: schema.stringArg(),
       },
       authorize: isAdmin,
       nullable: true,
@@ -71,8 +70,8 @@ schema.extendType({
     t.list.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
-        language: stringArg(),
+        orderBy: schema.arg({ type: "CourseOrderByInput" }),
+        language: schema.stringArg(),
       },
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
@@ -124,7 +123,7 @@ schema.extendType({
     t.field("course_exists", {
       type: "Boolean",
       args: {
-        slug: stringArg({ required: true }),
+        slug: schema.stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

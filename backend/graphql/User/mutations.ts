@@ -1,4 +1,3 @@
-import { stringArg, booleanArg, arg } from "@nexus/schema"
 import { AuthenticationError } from "apollo-server-errors"
 import { invalidate } from "../../services/redis"
 import { schema } from "nexus"
@@ -10,8 +9,8 @@ schema.extendType({
     t.field("updateUserName", {
       type: "User",
       args: {
-        first_name: stringArg(),
-        last_name: stringArg(),
+        first_name: schema.stringArg(),
+        last_name: schema.stringArg(),
       },
       resolve: (_, { first_name, last_name }, ctx: NexusContext) => {
         const {
@@ -39,7 +38,7 @@ schema.extendType({
     t.field("updateResearchConsent", {
       type: "User",
       args: {
-        value: booleanArg({ required: true }),
+        value: schema.booleanArg({ required: true }),
       },
       resolve: (_, { value }, ctx: NexusContext) => {
         const {
@@ -67,7 +66,7 @@ schema.extendType({
     t.field("addUser", {
       type: "User",
       args: {
-        user: arg({
+        user: schema.arg({
           type: "UserArg",
           required: true,
         }),

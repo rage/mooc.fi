@@ -21,7 +21,7 @@ schema.objectType({
     /*     t.field("course", {
       type: "Course",
       args: {
-        language: stringArg({ required: false }),
+        language: schema.stringArg({ required: false }),
       },
       resolve: async (parent, args, ctx) => {
         const { language } = args

@@ -1,4 +1,3 @@
-import { stringArg, idArg } from "@nexus/schema"
 import { schema } from "nexus"
 
 schema.objectType({
@@ -33,8 +32,8 @@ schema.objectType({
       list: true,
       nullable: false,
       args: {
-        course_id: stringArg({ required: false }),
-        course_slug: stringArg({ required: false }),
+        course_id: schema.stringArg({ required: false }),
+        course_slug: schema.stringArg({ required: false }),
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug } = args
@@ -69,7 +68,7 @@ schema.objectType({
       type: "Progress",
       nullable: false,
       args: {
-        course_id: idArg({ required: true }),
+        course_id: schema.idArg({ required: true }),
       },
       resolve: async (parent, args, ctx) => {
         const course = await ctx.db.course.findOne({
@@ -110,7 +109,7 @@ schema.objectType({
       type: "UserCourseProgress",
       nullable: true,
       args: {
-        course_id: idArg(),
+        course_id: schema.idArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { course_id } = args

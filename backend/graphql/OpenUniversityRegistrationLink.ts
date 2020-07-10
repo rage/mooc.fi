@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { stringArg, idArg } from "@nexus/schema"
+
 import { isAdmin } from "../accessControl"
 
 schema.objectType({
@@ -44,31 +44,22 @@ schema.inputObjectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.openUniversityRegistrationLink({
+    t.field("openUniversityRegistrationLink", {
+      type: "OpenUniversityRegistrationLink",
+      args: {
+        id: schema.idArg({ required: true }),
+      },
       authorize: isAdmin,
+      resolve: async (_, { id }, ctx) =>
+        ctx.db.openUniversityRegistrationLink.findOne({
+          where: { id },
+        }),
     })
+
     t.crud.openUniversityRegistrationLinks({
       authorize: isAdmin,
     })
-    /*
-    t.field("openUniversityRegistrationLink", {
-      type: "open_university_registration_link",
-      args: {
-        id: idArg(),
-      },
-      resolve: async (_, args, ctx) => {
-        checkAccess(ctx)
-        const { id } = args
-  
-        const link = await ctx.db.open_university_registration_link.findOne({
-          where: { id },
-        })
-  
-        return link
-      },
-    })
-
-    t.list.field("openUniversityRegistrationLinks", {
+    /*t.list.field("openUniversityRegistrationLinks", {
       type: "open_university_registration_link",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
@@ -84,10 +75,10 @@ schema.extendType({
     t.field("addOpenUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        course_code: stringArg({ required: true }),
-        course: idArg({ required: true }),
-        language: stringArg(),
-        link: stringArg(),
+        course_code: schema.stringArg({ required: true }),
+        course: schema.idArg({ required: true }),
+        language: schema.stringArg(),
+        link: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -113,11 +104,11 @@ schema.extendType({
     t.field("updateOpenUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        id: idArg({ required: true }),
-        course_code: stringArg(),
-        course: idArg({ required: true }),
-        language: stringArg(),
-        link: stringArg(),
+        id: schema.idArg({ required: true }),
+        course_code: schema.stringArg(),
+        course: schema.idArg({ required: true }),
+        language: schema.stringArg(),
+        link: schema.stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

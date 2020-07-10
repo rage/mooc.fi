@@ -1,9 +1,7 @@
 import { schema } from "nexus"
 import { chunk } from "lodash"
-import { NexusContext } from "../context"
 import { or, isOrganization, isAdmin } from "../accessControl"
 import { ForbiddenError, UserInputError } from "apollo-server-errors"
-import { intArg, stringArg, arg } from "@nexus/schema"
 import { CompletionRegisteredWhereUniqueInput } from "@prisma/client"
 
 schema.objectType({
@@ -29,18 +27,13 @@ schema.objectType({
 schema.extendType({
   type: "Query",
   definition(t) {
-    t.crud.completionRegistereds({
-      alias: "registeredCompletions",
-      authorize: or(isOrganization, isAdmin),
-    })
-
     t.list.field("registeredCompletions", {
       type: "CompletionRegistered",
       args: {
-        course: stringArg(),
-        skip: intArg(),
-        take: intArg(),
-        cursor: arg({ type: "CompletionRegisteredWhereUniqueInput" }),
+        course: schema.stringArg(),
+        skip: schema.intArg(),
+        take: schema.intArg(),
+        cursor: schema.arg({ type: "CompletionRegisteredWhereUniqueInput" }),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -124,7 +117,7 @@ schema.extendType({
     t.field("registerCompletion", {
       type: "String",
       args: {
-        completions: arg({ type: "CompletionArg", list: true }),
+        completions: schema.arg({ type: "CompletionArg", list: true }),
       },
       authorize: isOrganization,
       resolve: async (_, args, ctx: NexusContext) => {

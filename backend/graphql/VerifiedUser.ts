@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { arg } from "@nexus/schema"
+
 import { ForbiddenError, AuthenticationError } from "apollo-server-errors"
 import { NexusContext } from "../context"
 
@@ -34,7 +34,7 @@ schema.extendType({
     t.field("addVerifiedUser", {
       type: "VerifiedUser",
       args: {
-        verified_user: arg({
+        verified_user: schema.arg({
           type: "VerifiedUserArg",
           required: true,
         }),

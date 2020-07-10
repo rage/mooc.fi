@@ -1,6 +1,6 @@
 import { User, Organization } from "@prisma/client"
 import { Role } from "./accessControl"
-import { UserInfo } from "/domain/UserInfo"
+import { UserInfo } from "./domain/UserInfo"
 import TmcClient from "./services/tmc"
 import { PrismaClient } from "@prisma/client"
 import { IncomingHttpHeaders } from "http"

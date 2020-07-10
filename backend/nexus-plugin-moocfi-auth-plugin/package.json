@@ -10,34 +10,19 @@
   ],
   "scripts": {
     "dev": "tsc --watch",
-    "build:doc": "doctoc README.md --notitle",
-    "build:ts": "tsc",
-    "build": "npm run build:ts && npm run build:doc",
-    "test": "jest",
-    "publish:stable": "dripip stable",
-    "publish:preview": "dripip preview",
-    "publish:pr": "dripip pr",
+    "build": "tsc",
     "prepack": "npm run build",
-    "postinstall": "npm run build:ts"
+    "postinstall": "npm run build"
   },
   "prettier": {
     "semi": false,
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ]
-  },
   "devDependencies": {
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@nexus/schema": "^0.14.0",
     "apollo-server-errors": "^2.4.1",
     "axios": "^0.19.2"
   }

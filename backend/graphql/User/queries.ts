@@ -1,4 +1,3 @@
-import { stringArg, idArg, intArg } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-errors"
 import { buildSearch, convertPagination } from "../../util/db-functions"
 import { schema } from "nexus"
@@ -8,6 +7,7 @@ schema.extendType({
   type: "Query",
   definition(t) {
     t.crud.users({
+      filtering: false,
       authorize: isAdmin,
     })
     /*t.list.field("users", {
@@ -21,9 +21,9 @@ schema.extendType({
     t.field("user", {
       type: "User",
       args: {
-        id: idArg(),
-        search: stringArg(),
-        upstream_id: intArg(),
+        id: schema.idArg(),
+        search: schema.stringArg(),
+        upstream_id: schema.intArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -53,8 +53,8 @@ schema.extendType({
     t.connection("userDetailsContains", {
       type: "User",
       additionalArgs: {
-        search: stringArg(),
-        skip: intArg({ default: 0 }),
+        search: schema.stringArg(),
+        skip: schema.intArg({ default: 0 }),
       },
       authorize: isAdmin,
       cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
@@ -78,7 +78,7 @@ schema.extendType({
       extendConnection(t) {
         t.int("count", {
           args: {
-            search: stringArg(),
+            search: schema.stringArg(),
           },
           resolve: (_, { search }, ctx) => {
             return ctx.db.user.count({
@@ -97,7 +97,7 @@ schema.extendType({
     t.field("currentUser", {
       type: "User",
       nullable: true,
-      args: { search: stringArg() }, // was: email
+      args: { search: schema.stringArg() }, // was: email
       resolve: (_, __, ctx) => {
         // FIXME: why don't we search anything? where's this come from?
         // const { search } = args
