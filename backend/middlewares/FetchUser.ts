@@ -87,7 +87,6 @@ async function getUser(rawToken: string, context: any, prisma: Prisma) {
     username,
   }
 
-  console.log("I got here with", existingUser, prismaDetails)
   if (!existingUser) {
     context.user = await prisma.createUser(prismaDetails)
   } else {

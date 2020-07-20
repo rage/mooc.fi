@@ -12,6 +12,7 @@ import {
   CourseAliasUpdateManyWithoutCourseInput,
   CourseUpdateOneWithoutCompletions_handled_byInput,
   UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
+  CourseStatus,
 } from "/generated/prisma-client"
 import { PrismaObjectDefinitionBlock } from "nexus-prisma/dist/blocks/objectType"
 import { stringArg, arg, idArg } from "nexus/dist"
@@ -370,6 +371,7 @@ const updateCourse = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           inherit_settings_from: inheritMutation,
           completions_handled_by: handledMutation,
           user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
+          status: course.status as CourseStatus,
         } as CourseUpdateInput,
       })
 
