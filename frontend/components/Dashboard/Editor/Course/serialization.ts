@@ -178,6 +178,15 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
     .map((id) => ({ id }))
 
+  const status =
+    values.status === "Active"
+      ? CourseStatus.Active
+      : values.status === "Ended"
+      ? CourseStatus.Ended
+      : values.status === "Upcoming"
+      ? CourseStatus.Upcoming
+      : undefined
+
   const c: CourseArg = {
     ...omit(values, ["id", "thumbnail", "import_photo", "__typename"]),
     slug: !newCourse ? values.slug : values.new_slug.trim(),
@@ -208,6 +217,7 @@ export const fromCourseForm = ({
     inherit_settings_from: values.inherit_settings_from,
     completions_handled_by: values.completions_handled_by,
     user_course_settings_visibilities,
+    status, //values.status as CourseStatus
   }
 
   return c

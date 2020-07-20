@@ -28,6 +28,8 @@ const addManualCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         throw new Error("Course not found")
       }
       const completions: any[] = args.completions || []
+      console.log("completions", completions)
+
       const foundUsers = await Knex.select([
         "id",
         "email",
@@ -54,12 +56,14 @@ const addManualCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
           updated_at: new Date(),
           user_upstream_id: o.user_id,
           email: databaseUser.email,
-          student_number: o.real_student_number || o.student_number,
+          student_number:
+            databaseUser.real_student_number || databaseUser.student_number,
           completion_language: "unknown",
           course: args.course_id,
           user: databaseUser.id,
           grade: o.grade,
           eligible_for_ects: true,
+          completion_date: o.completion_date,
         }
       })
 
