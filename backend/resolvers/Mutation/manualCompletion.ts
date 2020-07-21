@@ -28,7 +28,6 @@ const addManualCompletion = (t: PrismaObjectDefinitionBlock<"Mutation">) => {
         throw new Error("Course not found")
       }
       const completions: any[] = args.completions || []
-      console.log("completions", completions)
 
       const foundUsers = await Knex.select([
         "id",
