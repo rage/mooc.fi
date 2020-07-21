@@ -14,6 +14,7 @@ export class Grade extends Template {
     const grade = (
       await prisma.completions({
         where: { user: { id: this.user.id }, course: { id: course.id } },
+        orderBy: "completion_date_DESC",
       })
     )[0]?.grade
     return `${grade}`
