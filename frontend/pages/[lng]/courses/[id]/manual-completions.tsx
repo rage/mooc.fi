@@ -113,7 +113,8 @@ const ManualCompletions = () => {
         />
       </LocalizationProvider>
       <Typography>
-        Format: csv with header with fields: user_id,grade[,completion_date]
+        Format: csv with header with fields: user_id,grade[,completion_date] -
+        optional date in ISO 8601 format
       </Typography>
       <br />
       <StyledTextField
@@ -149,9 +150,9 @@ const ManualCompletions = () => {
             completion_date:
               d.completion_date === "" || !d.completion_date
                 ? completionDate
-                  ? completionDate?.toISODate()
+                  ? completionDate?.toString()
                   : undefined
-                : new Date(Date.parse(d.completion_date)).toISOString(),
+                : DateTime.fromISO(d.completion_date).toString(),
           }))
           console.log(data)
           if (data.length === 0) {
