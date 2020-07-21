@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm.fullname" . }}-backend
+  labels:
+    app: {{ include "helm.fullname" . }}-backend
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    name: "backend-http"
+    targetPort: backend-http
+  selector:
+    app: {{ include "helm.fullname" . }}-backend

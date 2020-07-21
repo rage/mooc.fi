@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.fullname" . }}-frontend
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "helm.fullname" . }}-frontend
+  replicas: {{ .Values.frontend.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "helm.fullname" . }}-frontend
+    spec:
+      containers:
+        - name: {{ include "helm.fullname" . }}-frontend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          ports:
+            - name: frontend-http
+              containerPort: 3021
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              memory: 150Mi
