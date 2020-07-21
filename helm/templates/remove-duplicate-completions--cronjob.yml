@@ -1,0 +1,26 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: remove-duplicate-completions
+spec:
+  schedule: "4/30 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 3600
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: remove-duplicate-completions
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              command: ["sh", "-c", "npm run remove-duplicate-completions"]
+              envFrom:
+              - secretRef:
+                  name: backend-secret
+              env:
+                - name: REDIS_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: redis
+                      key: redis-password

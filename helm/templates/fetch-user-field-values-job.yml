@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fetch-user-field-values
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: fetch-user-field-values
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["sh", "-c", "npm run fetch-user-field-values"]
+          envFrom:
+          - secretRef:
+              name: backend-secret
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password

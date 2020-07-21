@@ -1,33 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helm.fullname" . }}-backend
+  name: background-emailer
 spec:
   selector:
     matchLabels:
-      app: {{ include "helm.fullname" . }}-backend
-  replicas: {{ .Values.backend.replicaCount }}
+      app: background-emailer
+  replicas: 1
   template:
     metadata:
       labels:
-        app: {{ include "helm.fullname" . }}-backend
+        app: background-emailer
     spec:
       containers:
-        - name: {{ include "helm.fullname" . }}-backend
+        - name: background-emailer
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["sh", "-c", "npm run background-emailer"]
           imagePullPolicy: Always
-          ports:
-            - name: backend-http
-              containerPort: 4000
-            - name: ws
-              containerPort: 9000
           resources:
             limits:
-              memory: 1500Mi
-              cpu: 500m
+              memory: 500Mi
             requests:
               memory: 256Mi
-              cpu: 100m
           envFrom:
           - secretRef:
               name: backend-secret
@@ -55,9 +49,3 @@ spec:
           envFrom:
           - secretRef:
               name: backend-secret
-          env:
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis
-                  key: redis-password
