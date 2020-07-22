@@ -19,7 +19,7 @@
     "kafka-consumer-user-course-progress": "ts-node --transpile-only ./bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.ts",
     "kafka-consumer-user-points": "ts-node  --transpile-only ./bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.ts",
     "kafka-consumer-exercises": "ts-node  --transpile-only ./bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.ts",
-    "generate": "prisma generate && nexus-prisma-generate --client ./generated/prisma-client --output ./generated/nexus-prisma",
+    "generate": "prisma generate",
     "generate-nexus": "GOOGLE_CLOUD_STORAGE_BUCKET=x GENERATE_NEXUS=x ts-node --transpile-only generateNexus",
     "seed": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seed.ts",
     "seedPoints": "ts-node -O '{\"module\": \"commonjs\"}' ./bin/seedPoints.ts",
@@ -84,6 +84,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.6",
     "@types/faker": "^4.1.12",
+    "@types/mime-types": "^2.1.0",
     "faker": "^4.1.0",
     "tmc-client-js": "0.0.9",
     "ts-node": "^8.10.2",

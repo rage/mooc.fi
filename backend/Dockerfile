@@ -4,14 +4,24 @@ RUN apt-get update \
   && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
   && rm -rf /var/lib/apt/lists/*
 
-COPY --chown=node . /app
+RUN mkdir -p /app && chown -R node /app
 
 USER node
 
 WORKDIR /app
 
-RUN npm ci \
-  && npm run build
+COPY --chown=node package.json /app/
+COPY --chown=node package-lock.json /app/
+
+RUN npm ci
+
+COPY --chown=node . /app
+
+RUN cp .env.example .env \
+    && npm run generate \
+    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x GENERATE_NEXUS=x npm run build \
+    && rm .env
+
 
 ENV NODE_ENV=production
 
