@@ -20,8 +20,7 @@ jobs:
       - image: google/cloud-sdk
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: "Build backend image"
           command: "bin/build-docker-frontend.sh"
@@ -34,8 +33,7 @@ jobs:
       - image: google/cloud-sdk
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
