@@ -5,9 +5,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node --transpile-only index.ts",
-    "dev": "ts-node-dev --no-notify --respawn --transpileOnly index.ts",
-    "build": "tsc",
     "upgrade-interactive": "npm-check --update",
     "prisma-deploy": "prisma deploy --force",
     "fetch-ai-completions": "ts-node ./bin/fetchAiCompletions.ts",
@@ -31,9 +28,9 @@
     "background-emailer": "ts-node  --transpile-only './bin/backgroundEmailer.ts'",
     "update-course-statuses": "ts-node --transpile-only ./bin/updateCourseStatuses.ts",
     "remove-duplicate-completions": "ts-node ./bin/removeDuplicateCompletions.ts",
-    "nexus-dev": "nexus dev",
-    "nexus-build": "nexus build",
-    "nexus-start": "node dist"
+    "dev": "nexus dev",
+    "build": "nexus build",
+    "start": "node dist"
   },
   "keywords": [],
   "author": "",
