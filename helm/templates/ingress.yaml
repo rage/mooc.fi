@@ -13,6 +13,17 @@ metadata:
     {{- include "helm.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "100"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "6000"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |
+     location /ws {
+        deny all;
+        return 400;
+      }
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
@@ -32,10 +43,18 @@ spec:
       http:
         paths:
           {{- range .paths }}
-          - path: {{ . }}
+          - path: /api
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              serviceName: {{ include "helm.fullname" . }}-backend
+              servicePort: 80
+          - path: /kafka-bridge/api/v0
+            backend:
+              serviceName: kafka-bridge
+              servicePort: 80
+          - path: /
+            backend:
+              serviceName: {{ include "helm.fullname" . }}-frontend
+              servicePort: 80
           {{- end }}
     {{- end }}
   {{- end }}

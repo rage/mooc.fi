@@ -30,7 +30,9 @@
     "remove-duplicate-completions": "ts-node ./bin/removeDuplicateCompletions.ts",
     "dev": "nexus dev",
     "build": "nexus build",
-    "start": "node dist"
+    "start": "node dist",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback"
   },
   "keywords": [],
   "author": "",
