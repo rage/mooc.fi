@@ -1,5 +1,7 @@
 require("sharp") // image library sharp seems to crash without this require
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
 import { use, schema, settings, server } from "nexus"
 import { prisma } from "nexus-plugin-prisma"
