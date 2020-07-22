@@ -46,10 +46,3 @@ spec:
             items:
               - key: account.json
                 path: account.json
-      initContainers:
-        - name: moocfi-backend-run-migrations
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["sh", "-c", "npx prisma deploy"]
-          envFrom:
-          - secretRef:
-              name: backend-secret

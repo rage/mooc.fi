@@ -8,6 +8,10 @@ backend:
 frontend:
   replicaCount: 1
 
+email:
+  # controls whether the background email service should be running
+  enabled: false
+
 image:
   repository: eu.gcr.io
   pullPolicy: IfNotPresent
