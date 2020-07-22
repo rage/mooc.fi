@@ -254,6 +254,7 @@ export const CheckCompletion = async (
             : "unknown",
           eligible_for_ects:
             handlerCourse.automatic_completions_eligible_for_ects,
+          completion_date: new Date(),
         },
       })
       pushMessageToClient(
