@@ -1,4 +1,6 @@
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
 import * as Kafka from "node-rdkafka"
 // import * as winston from "winston"

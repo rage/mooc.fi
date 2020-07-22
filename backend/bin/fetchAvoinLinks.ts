@@ -2,7 +2,10 @@ import axios from "axios"
 import { DateTime } from "luxon"
 import { maxBy } from "lodash"
 import prismaClient from "./lib/prisma"
-require("dotenv-safe").config()
+
+require("dotenv-safe").config({
+  allowEmptyValues: true,
+})
 
 const prisma = prismaClient()
 
