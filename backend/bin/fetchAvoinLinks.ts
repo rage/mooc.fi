@@ -4,7 +4,7 @@ import { maxBy } from "lodash"
 import prismaClient from "./lib/prisma"
 
 require("dotenv-safe").config({
-  allowEmptyValues: true,
+  allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
 const prisma = prismaClient()
