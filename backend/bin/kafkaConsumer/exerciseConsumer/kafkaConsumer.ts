@@ -1,4 +1,7 @@
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
+
 import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
