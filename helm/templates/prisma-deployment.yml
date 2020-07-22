@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: prisma
+  name: prisma
+  namespace: moocfi
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: prisma
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - prisma
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: prisma
+          image: prismagraphql/prisma:1.34
+          resources:
+            limits:
+              memory: 2000Mi
+              cpu: 1000m
+            requests:
+              memory: 1000Mi
+              cpu: 1000m
+          envFrom:
+            - secretRef:
+                name: backend-secret
+          env:
+            - name: PRISMA_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: prisma-configmap
+                  key: PRISMA_CONFIG
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+          ports:
+            - containerPort: 4466
+          resources: {}
+      restartPolicy: Always
+status: {}
