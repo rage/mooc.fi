@@ -84,6 +84,9 @@ settings.change({
       level: "debug",
     },
   },
+  server: {
+    path: "/",
+  },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
     // rootTypingsGlobPattern: "./graphql/**/*.ts",

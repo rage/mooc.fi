@@ -17,5 +17,5 @@ export interface AllEmailTemplates_email_templates {
 }
 
 export interface AllEmailTemplates {
-  email_templates: AllEmailTemplates_email_templates[]
+  email_templates: AllEmailTemplates_email_templates[] | null
 }

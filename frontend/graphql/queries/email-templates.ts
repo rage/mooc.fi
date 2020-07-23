@@ -13,8 +13,8 @@ export const AllEmailTemplatesQuery = gql`
 `
 
 export const EmailTemplateQuery = gql`
-  query EmailTemplate($id: String) {
-    email_template(where: { id: $id }) {
+  query EmailTemplate($id: ID!) {
+    email_template(id: $id) {
       id
       created_at
       updated_at

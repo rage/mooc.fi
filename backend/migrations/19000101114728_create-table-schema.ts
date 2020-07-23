@@ -12,15 +12,15 @@ export async function up(knex: Knex): Promise<any> {
     'OrganizationAdmin'
   );`)
 
-  await knex.raw(`CREATE TABLE "UserAppDatumConfig" (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS "UserAppDatumConfig" (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     name text,
     "timestamp" timestamp(3) without time zone
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE "UserCourseSettings" (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS "UserCourseSettings" (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -32,19 +32,19 @@ export async function up(knex: Knex): Promise<any> {
     other text,
     "user" uuid,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE "_CourseToService" (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS "_CourseToService" (
     "A" uuid NOT NULL,
     "B" uuid NOT NULL
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE "_StudyModuleToCourse" (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS "_StudyModuleToCourse" (
     "A" uuid NOT NULL,
     "B" uuid NOT NULL
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE completion (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS completion (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -57,9 +57,9 @@ export async function up(knex: Knex): Promise<any> {
     course uuid,
     "user" uuid,
     eligible_for_ects boolean DEFAULT true
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE completion_registered (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS completion_registered (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -68,9 +68,9 @@ export async function up(knex: Knex): Promise<any> {
     completion uuid,
     course uuid,
     organization uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE course (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS course (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -99,26 +99,26 @@ export async function up(knex: Knex): Promise<any> {
     completions_handled_by uuid,
     photo uuid,
     automatic_completions_eligible_for_ects boolean DEFAULT true
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE course_alias (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS course_alias (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     course_code text NOT NULL,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE course_organization (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS course_organization (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     creator boolean,
     course uuid,
     organization uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE course_translation (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS course_translation (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -127,18 +127,18 @@ export async function up(knex: Knex): Promise<any> {
     description text NOT NULL,
     link text,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE course_variant (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS course_variant (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     slug text NOT NULL,
     description text,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE email_delivery (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS email_delivery (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -147,9 +147,9 @@ export async function up(knex: Knex): Promise<any> {
     error_message text,
     "user" uuid,
     email_template uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE email_template (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS email_template (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -157,9 +157,9 @@ export async function up(knex: Knex): Promise<any> {
     txt_body text,
     html_body text,
     title text
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE exercise (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS exercise (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -172,9 +172,9 @@ export async function up(knex: Knex): Promise<any> {
     deleted boolean DEFAULT false,
     service uuid,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE exercise_completion (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS exercise_completion (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -183,15 +183,15 @@ export async function up(knex: Knex): Promise<any> {
     completed boolean DEFAULT false,
     "user" uuid,
     exercise uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE exercise_completion_required_actions (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS exercise_completion_required_actions (
     id uuid NOT NULL,
     value text NOT NULL,
     exercise_completion uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE image (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS image (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -204,9 +204,9 @@ export async function up(knex: Knex): Promise<any> {
     compressed_mimetype text,
     encoding text,
     "default" boolean
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE open_university_registration_link (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS open_university_registration_link (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -216,9 +216,9 @@ export async function up(knex: Knex): Promise<any> {
     start_date timestamp(3) without time zone,
     stop_date timestamp(3) without time zone,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE organization (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS organization (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -240,9 +240,9 @@ export async function up(knex: Knex): Promise<any> {
     pinned boolean,
     secret_key text NOT NULL,
     creator uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE organization_translation (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS organization_translation (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -251,17 +251,17 @@ export async function up(knex: Knex): Promise<any> {
     disabled_reason text,
     information text,
     organization uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE service (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS service (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     url text NOT NULL,
     name text NOT NULL
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE study_module (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS study_module (
     id uuid NOT NULL,
     slug text NOT NULL,
     name text NOT NULL,
@@ -269,9 +269,9 @@ export async function up(knex: Knex): Promise<any> {
     "order" integer,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE study_module_translation (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS study_module_translation (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -279,9 +279,9 @@ export async function up(knex: Knex): Promise<any> {
     language text NOT NULL,
     description text NOT NULL,
     study_module uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE "user" (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS "user" (
     id uuid NOT NULL,
     upstream_id integer NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -294,9 +294,9 @@ export async function up(knex: Knex): Promise<any> {
     student_number text,
     real_student_number text,
     research_consent boolean
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE user_course_progress (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS user_course_progress (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -305,11 +305,11 @@ export async function up(knex: Knex): Promise<any> {
     n_points numeric(65,30),
     "user" uuid,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE user_course_service_progress (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS user_course_service_progress (
     id uuid NOT NULL,
-    created_at timestamp(3) without time zone CURRENT_TIMESTAMP,
+    created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     progress json NOT NULL,
     "timestamp" timestamp(3) without time zone,
@@ -317,27 +317,27 @@ export async function up(knex: Knex): Promise<any> {
     "user" uuid,
     course uuid,
     user_course_progress uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE user_course_settings_visibility (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS user_course_settings_visibility (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     language text NOT NULL,
     course uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
   // TODO: check organization_role vs OrganizationRole
-  await knex.raw(`CREATE TABLE user_organization (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS user_organization (
     id uuid NOT NULL,
     role organization_role DEFAULT 'Student'::organization_role,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
     organization uuid,
     "user" uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`CREATE TABLE verified_user (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS verified_user (
     id uuid NOT NULL,
     created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp(3) without time zone,
@@ -345,186 +345,198 @@ export async function up(knex: Knex): Promise<any> {
     personal_unique_code text NOT NULL,
     organization uuid,
     "user" uuid
-  ) IF NOT EXISTS;`)
+  );`)
 
-  await knex.raw(`ALTER TABLE ONLY "UserAppDatumConfig" 
-    ADD CONSTRAINT "UserAppDatumConfig_pkey" PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY "UserCourseSettings"
-    ADD CONSTRAINT "UserCourseSettings_pkey" PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY completion
-    ADD CONSTRAINT completion_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY completion_registered
-    ADD CONSTRAINT completion_registered_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY course_alias
-    ADD CONSTRAINT course_alias_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY course_organization
-    ADD CONSTRAINT course_organization_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY course
-    ADD CONSTRAINT course_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY course_translation
-    ADD CONSTRAINT course_translation_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY course_variant
-    ADD CONSTRAINT course_variant_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY email_template
-    ADD CONSTRAINT email_template_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY exercise_completion
-    ADD CONSTRAINT exercise_completion_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY exercise_completion_required_actions
-    ADD CONSTRAINT exercise_completion_required_actions_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY exercise
-    ADD CONSTRAINT exercise_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY image
-    ADD CONSTRAINT image_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY open_university_registration_link
-    ADD CONSTRAINT open_university_registration_link_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY organization
-    ADD CONSTRAINT organization_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY organization_translation
-    ADD CONSTRAINT organization_translation_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY service
-    ADD CONSTRAINT service_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY study_module
-    ADD CONSTRAINT study_module_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY study_module_translation
-    ADD CONSTRAINT study_module_translation_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY user_course_progress
-    ADD CONSTRAINT user_course_progress_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY user_course_service_progress
-    ADD CONSTRAINT user_course_service_progress_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY user_course_settings_visibility
-    ADD CONSTRAINT user_course_settings_visibility_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY user_organization
-    ADD CONSTRAINT user_organization_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY "user"
-    ADD CONSTRAINT user_pkey PRIMARY KEY (id);`)
-  await knex.raw(`ALTER TABLE ONLY verified_user
-    ADD CONSTRAINT verified_user_pkey PRIMARY KEY (id);`)
+  try {
+    await knex.transaction(async (trx) => {
+      await trx.raw(`ALTER TABLE ONLY "UserAppDatumConfig" 
+        ADD CONSTRAINT "UserAppDatumConfig_pkey" PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY "UserCourseSettings"
+        ADD CONSTRAINT "UserCourseSettings_pkey" PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY completion
+        ADD CONSTRAINT completion_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY completion_registered
+        ADD CONSTRAINT completion_registered_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY course_alias
+        ADD CONSTRAINT course_alias_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY course_organization
+        ADD CONSTRAINT course_organization_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY course
+        ADD CONSTRAINT course_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY course_translation
+        ADD CONSTRAINT course_translation_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY course_variant
+        ADD CONSTRAINT course_variant_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY email_template
+        ADD CONSTRAINT email_template_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY exercise_completion
+        ADD CONSTRAINT exercise_completion_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY exercise_completion_required_actions
+        ADD CONSTRAINT exercise_completion_required_actions_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY exercise
+        ADD CONSTRAINT exercise_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY image
+        ADD CONSTRAINT image_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY open_university_registration_link
+        ADD CONSTRAINT open_university_registration_link_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY organization
+        ADD CONSTRAINT organization_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY organization_translation
+        ADD CONSTRAINT organization_translation_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY service
+        ADD CONSTRAINT service_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY study_module
+        ADD CONSTRAINT study_module_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY study_module_translation
+        ADD CONSTRAINT study_module_translation_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY user_course_progress
+        ADD CONSTRAINT user_course_progress_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY user_course_service_progress
+        ADD CONSTRAINT user_course_service_progress_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY user_course_settings_visibility
+        ADD CONSTRAINT user_course_settings_visibility_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY user_organization
+        ADD CONSTRAINT user_organization_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY "user"
+        ADD CONSTRAINT user_pkey PRIMARY KEY (id);`)
+      await trx.raw(`ALTER TABLE ONLY verified_user
+        ADD CONSTRAINT verified_user_pkey PRIMARY KEY (id);`)
+    })
+  } catch {
+    console.log("some error adding constraints, ignoring...")
+  }
 
   await knex.raw(
-    `CREATE UNIQUE INDEX "_CourseToService_AB_unique" ON "_CourseToService" USING btree ("A", "B");`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "_CourseToService_AB_unique" ON "_CourseToService" USING btree ("A", "B");`,
   )
   await knex.raw(
-    `CREATE INDEX "_CourseToService_B" ON "_CourseToService" USING btree ("B");`,
+    `CREATE INDEX IF NOT EXISTS "_CourseToService_B" ON "_CourseToService" USING btree ("B");`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "_StudyModuleToCourse_AB_unique" ON "_StudyModuleToCourse" USING btree ("A", "B");`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "_StudyModuleToCourse_AB_unique" ON "_StudyModuleToCourse" USING btree ("A", "B");`,
   )
   await knex.raw(
-    `CREATE INDEX "_StudyModuleToCourse_B" ON "_StudyModuleToCourse" USING btree ("B");`,
+    `CREATE INDEX IF NOT EXISTS "_StudyModuleToCourse_B" ON "_StudyModuleToCourse" USING btree ("B");`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "UserAppDatumConfig.name._UNIQUE" ON "UserAppDatumConfig" USING btree (name);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "UserAppDatumConfig.name._UNIQUE" ON "UserAppDatumConfig" USING btree (name);`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "course.slug._UNIQUE" ON course USING btree (slug);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "course.slug._UNIQUE" ON course USING btree (slug);`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "course_alias.course_code._UNIQUE" ON course_alias USING btree (course_code);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "course_alias.course_code._UNIQUE" ON course_alias USING btree (course_code);`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "organization.secret_key._UNIQUE" ON organization USING btree (secret_key);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "organization.secret_key._UNIQUE" ON organization USING btree (secret_key);`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "organization.slug._UNIQUE" ON organization USING btree (slug);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "organization.slug._UNIQUE" ON organization USING btree (slug);`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "study_module.slug._UNIQUE" ON study_module USING btree (slug);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "study_module.slug._UNIQUE" ON study_module USING btree (slug);`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "user.upstream_id._UNIQUE" ON "user" USING btree (upstream_id);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "user.upstream_id._UNIQUE" ON "user" USING btree (upstream_id);`,
   )
   await knex.raw(
-    `CREATE UNIQUE INDEX "user.username._UNIQUE" ON "user" USING btree (username);`,
+    `CREATE UNIQUE INDEX IF NOT EXISTS "user.username._UNIQUE" ON "user" USING btree (username);`,
   )
 
-  await knex.raw(`ALTER TABLE ONLY "UserCourseSettings"
-    ADD CONSTRAINT "UserCourseSettings_course_fkey" FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY "UserCourseSettings"
-    ADD CONSTRAINT "UserCourseSettings_user_fkey" FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY "_CourseToService"
-    ADD CONSTRAINT "_CourseToService_A_fkey" FOREIGN KEY ("A") REFERENCES course(id) ON DELETE CASCADE;`)
-  await knex.raw(`ALTER TABLE ONLY "_CourseToService"
-    ADD CONSTRAINT "_CourseToService_B_fkey" FOREIGN KEY ("B") REFERENCES service(id) ON DELETE CASCADE;`)
-  await knex.raw(`ALTER TABLE ONLY "_StudyModuleToCourse"
-    ADD CONSTRAINT "_StudyModuleToCourse_A_fkey" FOREIGN KEY ("A") REFERENCES course(id) ON DELETE CASCADE;`)
-  await knex.raw(`ALTER TABLE ONLY "_StudyModuleToCourse"
-    ADD CONSTRAINT "_StudyModuleToCourse_B_fkey" FOREIGN KEY ("B") REFERENCES study_module(id) ON DELETE CASCADE;`)
-  await knex.raw(`ALTER TABLE ONLY completion
-    ADD CONSTRAINT completion_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY completion_registered
-    ADD CONSTRAINT completion_registered_completion_fkey FOREIGN KEY (completion) REFERENCES completion(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY completion_registered
-    ADD CONSTRAINT completion_registered_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY completion_registered
-    ADD CONSTRAINT completion_registered_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY completion_registered
-    ADD CONSTRAINT completion_registered_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY completion
-    ADD CONSTRAINT completion_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course_alias
-    ADD CONSTRAINT course_alias_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course
-    ADD CONSTRAINT course_completion_email_fkey FOREIGN KEY (completion_email) REFERENCES email_template(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course
-    ADD CONSTRAINT course_completions_handled_by_fkey FOREIGN KEY (completions_handled_by) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course
-    ADD CONSTRAINT course_inherit_settings_from_fkey FOREIGN KEY (inherit_settings_from) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course_organization
-    ADD CONSTRAINT course_organization_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course_organization
-    ADD CONSTRAINT course_organization_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course
-    ADD CONSTRAINT course_owner_organization_fkey FOREIGN KEY (owner_organization) REFERENCES organization(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course
-    ADD CONSTRAINT course_photo_fkey FOREIGN KEY (photo) REFERENCES image(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course_translation
-    ADD CONSTRAINT course_translation_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY course_variant
-    ADD CONSTRAINT course_variant_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY email_delivery
-    ADD CONSTRAINT email_delivery_email_template_fkey FOREIGN KEY (email_template) REFERENCES email_template(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY email_delivery
-    ADD CONSTRAINT email_delivery_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY exercise_completion
-    ADD CONSTRAINT exercise_completion_exercise_fkey FOREIGN KEY (exercise) REFERENCES exercise(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY exercise_completion_required_actions
-    ADD CONSTRAINT exercise_completion_required_actions_exercise_completion_fkey FOREIGN KEY (exercise_completion) REFERENCES exercise_completion(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY exercise_completion
-    ADD CONSTRAINT exercise_completion_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY exercise
-    ADD CONSTRAINT exercise_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY exercise
-    ADD CONSTRAINT exercise_service_fkey FOREIGN KEY (service) REFERENCES service(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY open_university_registration_link
-    ADD CONSTRAINT open_university_registration_link_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY organization
-    ADD CONSTRAINT organization_creator_fkey FOREIGN KEY (creator) REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY organization_translation
-    ADD CONSTRAINT organization_translation_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY study_module_translation
-    ADD CONSTRAINT study_module_translation_study_module_fkey FOREIGN KEY (study_module) REFERENCES study_module(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_course_progress
-    ADD CONSTRAINT user_course_progress_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_course_progress
-    ADD CONSTRAINT user_course_progress_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_course_service_progress
-    ADD CONSTRAINT user_course_service_progress_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_course_service_progress
-    ADD CONSTRAINT user_course_service_progress_service_fkey FOREIGN KEY (service) REFERENCES service(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_course_service_progress
-    ADD CONSTRAINT user_course_service_progress_user_course_progress_fkey FOREIGN KEY (user_course_progress) REFERENCES user_course_progress(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_course_service_progress
-    ADD CONSTRAINT user_course_service_progress_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_course_settings_visibility
-    ADD CONSTRAINT user_course_settings_visibility_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_organization
-    ADD CONSTRAINT user_organization_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY user_organization
-    ADD CONSTRAINT user_organization_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY verified_user
-    ADD CONSTRAINT verified_user_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
-  await knex.raw(`ALTER TABLE ONLY verified_user
-    ADD CONSTRAINT verified_user_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+  try {
+    await knex.transaction(async (trx) => {
+      await trx.raw(`ALTER TABLE ONLY "UserCourseSettings"
+        ADD CONSTRAINT "UserCourseSettings_course_fkey" FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY "UserCourseSettings"
+        ADD CONSTRAINT "UserCourseSettings_user_fkey" FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY "_CourseToService"
+        ADD CONSTRAINT "_CourseToService_A_fkey" FOREIGN KEY ("A") REFERENCES course(id) ON DELETE CASCADE;`)
+      await trx.raw(`ALTER TABLE ONLY "_CourseToService"
+        ADD CONSTRAINT "_CourseToService_B_fkey" FOREIGN KEY ("B") REFERENCES service(id) ON DELETE CASCADE;`)
+      await trx.raw(`ALTER TABLE ONLY "_StudyModuleToCourse"
+        ADD CONSTRAINT "_StudyModuleToCourse_A_fkey" FOREIGN KEY ("A") REFERENCES course(id) ON DELETE CASCADE;`)
+      await trx.raw(`ALTER TABLE ONLY "_StudyModuleToCourse"
+        ADD CONSTRAINT "_StudyModuleToCourse_B_fkey" FOREIGN KEY ("B") REFERENCES study_module(id) ON DELETE CASCADE;`)
+      await trx.raw(`ALTER TABLE ONLY completion
+        ADD CONSTRAINT completion_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY completion_registered
+        ADD CONSTRAINT completion_registered_completion_fkey FOREIGN KEY (completion) REFERENCES completion(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY completion_registered
+        ADD CONSTRAINT completion_registered_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY completion_registered
+        ADD CONSTRAINT completion_registered_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY completion_registered
+        ADD CONSTRAINT completion_registered_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY completion
+        ADD CONSTRAINT completion_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course_alias
+        ADD CONSTRAINT course_alias_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course
+        ADD CONSTRAINT course_completion_email_fkey FOREIGN KEY (completion_email) REFERENCES email_template(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course
+        ADD CONSTRAINT course_completions_handled_by_fkey FOREIGN KEY (completions_handled_by) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course
+        ADD CONSTRAINT course_inherit_settings_from_fkey FOREIGN KEY (inherit_settings_from) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course_organization
+        ADD CONSTRAINT course_organization_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course_organization
+        ADD CONSTRAINT course_organization_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course
+        ADD CONSTRAINT course_owner_organization_fkey FOREIGN KEY (owner_organization) REFERENCES organization(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course
+        ADD CONSTRAINT course_photo_fkey FOREIGN KEY (photo) REFERENCES image(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course_translation
+        ADD CONSTRAINT course_translation_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY course_variant
+        ADD CONSTRAINT course_variant_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY email_delivery
+        ADD CONSTRAINT email_delivery_email_template_fkey FOREIGN KEY (email_template) REFERENCES email_template(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY email_delivery
+        ADD CONSTRAINT email_delivery_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY exercise_completion
+        ADD CONSTRAINT exercise_completion_exercise_fkey FOREIGN KEY (exercise) REFERENCES exercise(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY exercise_completion_required_actions
+        ADD CONSTRAINT exercise_completion_required_actions_exercise_completion_fkey FOREIGN KEY (exercise_completion) REFERENCES exercise_completion(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY exercise_completion
+        ADD CONSTRAINT exercise_completion_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY exercise
+        ADD CONSTRAINT exercise_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY exercise
+        ADD CONSTRAINT exercise_service_fkey FOREIGN KEY (service) REFERENCES service(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY open_university_registration_link
+        ADD CONSTRAINT open_university_registration_link_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY organization
+        ADD CONSTRAINT organization_creator_fkey FOREIGN KEY (creator) REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY organization_translation
+        ADD CONSTRAINT organization_translation_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY study_module_translation
+        ADD CONSTRAINT study_module_translation_study_module_fkey FOREIGN KEY (study_module) REFERENCES study_module(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_course_progress
+        ADD CONSTRAINT user_course_progress_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_course_progress
+        ADD CONSTRAINT user_course_progress_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_course_service_progress
+        ADD CONSTRAINT user_course_service_progress_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_course_service_progress
+        ADD CONSTRAINT user_course_service_progress_service_fkey FOREIGN KEY (service) REFERENCES service(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_course_service_progress
+        ADD CONSTRAINT user_course_service_progress_user_course_progress_fkey FOREIGN KEY (user_course_progress) REFERENCES user_course_progress(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_course_service_progress
+        ADD CONSTRAINT user_course_service_progress_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_course_settings_visibility
+        ADD CONSTRAINT user_course_settings_visibility_course_fkey FOREIGN KEY (course) REFERENCES course(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_organization
+        ADD CONSTRAINT user_organization_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY user_organization
+        ADD CONSTRAINT user_organization_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY verified_user
+        ADD CONSTRAINT verified_user_organization_fkey FOREIGN KEY (organization) REFERENCES organization(id) ON DELETE SET NULL;`)
+      await trx.raw(`ALTER TABLE ONLY verified_user
+        ADD CONSTRAINT verified_user_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
+    })
+  } catch {
+    console.log("some error adding constraints, ignoring...")
+  }
 }
 
 export async function down(_knex: Knex): Promise<any> {}
