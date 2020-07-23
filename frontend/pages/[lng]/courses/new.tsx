@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { WideContainer } from "/components/Container"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import CourseEdit from "/components/Dashboard/Editor/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"

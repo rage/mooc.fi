@@ -1,6 +1,6 @@
 import React from "react"
-import { gql } from "apollo-boost"
-import { useQuery } from "@apollo/react-hooks"
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { ProfileUserOverView as UserOverViewData } from "/static/types/generated/ProfileUserOverView"
 import Spinner from "/components/Spinner"
 import ErrorMessage from "/components/ErrorMessage"

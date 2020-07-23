@@ -3,7 +3,7 @@ import { Grid } from "@material-ui/core"
 import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 import formatPointsData, {
   formattedGroupPointsDictionary,
 } from "/util/formatPointsData"

@@ -1,7 +1,7 @@
 import TmcClient from "tmc-client-js"
 import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
-import { ApolloClient } from "apollo-boost"
+import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import Router from "next/router"
 

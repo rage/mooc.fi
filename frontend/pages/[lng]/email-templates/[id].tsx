@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react"
 import { WideContainer } from "/components/Container"
-import { useQuery, ApolloConsumer } from "@apollo/react-hooks"
+import { useQuery, ApolloConsumer } from "@apollo/client"
 import { SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { EmailTemplate } from "/static/types/generated/EmailTemplate"

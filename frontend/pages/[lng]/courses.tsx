@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import CourseGrid from "/components/CourseGrid"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"

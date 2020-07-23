@@ -1,4 +1,4 @@
-import { ApolloConsumer } from "@apollo/react-hooks"
+import { ApolloConsumer } from "@apollo/client"
 import * as React from "react"
 import {
   Button,

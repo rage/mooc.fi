@@ -1,7 +1,7 @@
 import * as React from "react"
 import { WideContainer } from "/components/Container"
 import { AllEmailTemplatesQuery } from "/graphql/queries/email-templates"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import AdminError from "/components/Dashboard/AdminError"
 import Spinner from "/components/Spinner"
 import { H1Background } from "/components/Text/headers"

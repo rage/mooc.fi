@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
-import { gql } from "apollo-boost"
-import { useQuery, useMutation } from "@apollo/react-hooks"
+import { gql } from "@apollo/client"
+import { useQuery, useMutation } from "@apollo/client"
 import {
   Button,
   Card,

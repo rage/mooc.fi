@@ -1,7 +1,6 @@
 import * as React from "react"
 import Container from "/components/Container"
-import gql from "graphql-tag"
-import { useQuery, useApolloClient } from "@apollo/react-hooks"
+import { gql, useQuery, useApolloClient } from "@apollo/client"
 import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
 import { Grid } from "@material-ui/core"
 import Button from "@material-ui/core/Button"

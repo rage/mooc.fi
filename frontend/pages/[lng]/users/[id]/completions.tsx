@@ -1,6 +1,6 @@
 import React from "react"
-import { gql } from "apollo-boost"
-import { useQuery } from "@apollo/react-hooks"
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"

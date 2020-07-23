@@ -1,6 +1,6 @@
 import * as React from "react"
 import { signOut } from "/lib/authentication"
-import { useApolloClient } from "@apollo/react-hooks"
+import { useApolloClient } from "@apollo/client"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import getCommonTranslator from "/translations/common"

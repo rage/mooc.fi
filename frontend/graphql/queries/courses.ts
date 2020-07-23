@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 
 export const AllCoursesQuery = gql`
   query AllCourses($language: String) {
@@ -21,6 +21,7 @@ export const AllCoursesQuery = gql`
       link
       study_modules {
         id
+        slug
       }
       course_translations {
         id

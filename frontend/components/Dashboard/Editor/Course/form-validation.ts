@@ -1,5 +1,4 @@
 import * as Yup from "yup"
-import { ApolloClient } from "apollo-client"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import {
   CourseFormValues,
@@ -8,7 +7,7 @@ import {
   CourseAliasFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { DocumentNode } from "apollo-boost"
+import { ApolloClient, DocumentNode } from "@apollo/client"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { DateTime } from "luxon"
 import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
