@@ -94,6 +94,7 @@ schema.extendType({
             course: course_id,
             user: databaseUser.id,
             grade: o.grade,
+            completion_date: o.completion_date,
           }
         })
 

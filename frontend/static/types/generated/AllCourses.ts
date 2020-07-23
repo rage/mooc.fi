@@ -19,6 +19,7 @@ export interface AllCourses_courses_photo {
 export interface AllCourses_courses_study_modules {
   __typename: "StudyModule"
   id: string
+  slug: string
 }
 
 export interface AllCourses_courses_course_translations {
