@@ -194,7 +194,7 @@ function PaginatedPointsList(props: Props) {
           <PointsList pointsForUser={edges} cutterValue={cutterValue} />
           <Button
             onClick={() =>
-              fetchMore({
+              fetchMore?.({
                 query: StudentProgresses,
                 variables: {
                   course_id: courseId,
