@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 import ErrorBoundary from "../ErrorBoundary"
-import { useLazyQuery } from "@apollo/react-hooks"
+import { useLazyQuery } from "@apollo/client"
 
 import PointsList from "./DashboardPointsList"
 

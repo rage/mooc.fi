@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from "react"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
-import { useMutation, useApolloClient } from "@apollo/react-hooks"
+import { useMutation, useApolloClient } from "@apollo/client"
 import {
   AddStudyModuleMutation,
   UpdateStudyModuleMutation,
@@ -16,7 +16,7 @@ import studyModuleEditSchema from "./form-validation"
 import { FormikHelpers } from "formik"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
-import { PureQueryOptions } from "apollo-boost"
+import { PureQueryOptions } from "@apollo/client"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"

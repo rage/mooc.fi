@@ -1,14 +1,13 @@
 import React, { useState } from "react"
-import gql from "graphql-tag"
-import { ApolloConsumer } from "@apollo/react-hooks"
+import { gql, ApolloConsumer } from "@apollo/client"
 import XLSX from "xlsx"
 import styled from "styled-components"
 import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_userCourseProgresses,
-} from "../../static/types/generated/ExportUserCourseProgesses"
+} from "/static/types/generated/ExportUserCourseProgesses"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import { ApolloClient } from "apollo-boost"
+import { ApolloClient } from "@apollo/client"
 const PointsExportButtonContainer = styled.div`
   margin-bottom: 1rem;
 `
@@ -123,7 +122,7 @@ async function dowloadInChunks(
         first: 100*/
       },
     })
-    let downloaded: any = data.userCourseProgresses
+    let downloaded: any = data?.userCourseProgresses ?? []
     if (downloaded.length === 0) {
       break
     }

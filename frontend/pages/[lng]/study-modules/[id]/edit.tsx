@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
-import { gql } from "apollo-boost"
-import { useQuery } from "@apollo/react-hooks"
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { SingletonRouter, withRouter } from "next/router"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"

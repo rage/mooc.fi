@@ -1,5 +1,5 @@
 import React from "react"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { CurrentUserUserOverView as UserOverViewData } from "/static/types/generated/CurrentUserUserOverView"
 import Container from "/components/Container"
 import Completions from "/components/Completions"

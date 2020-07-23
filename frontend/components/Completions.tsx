@@ -3,7 +3,7 @@ import { ProfileUserOverView_currentUser_completions } from "/static/types/gener
 import { RegularContainer as Container } from "/components/Container"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
 import { useContext } from "react"

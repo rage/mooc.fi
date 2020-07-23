@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { WideContainer } from "/components/Container"
 import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
 import ModuleGrid from "/components/ModuleGrid"

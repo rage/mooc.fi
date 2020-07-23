@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { UserPointsQuery } from "/components/User/Points/PointsQuery"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { studentHasPoints } from "/components/User/Points/PointsList"

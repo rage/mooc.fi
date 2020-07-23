@@ -1,6 +1,6 @@
 import * as React from "react"
-import { gql } from "apollo-boost"
-import { useQuery } from "@apollo/react-hooks"
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import RegisterCompletionText from "/components/RegisterCompletionText"

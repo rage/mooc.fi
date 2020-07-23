@@ -1,13 +1,13 @@
-import ApolloClient from "apollo-client"
 import {
+  ApolloClient,
+  ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
   defaultDataIdFromObject,
-} from "apollo-boost"
-import { onError } from "apollo-link-error"
-import { ApolloLink } from "apollo-link"
+} from "@apollo/client"
+import { onError } from "@apollo/client/link/error"
 import { createUploadLink } from "apollo-upload-client"
-import { setContext } from "apollo-link-context"
+import { setContext } from "@apollo/client/link/context"
 import fetch from "isomorphic-unfetch"
 import nookies from "nookies"
 
@@ -65,7 +65,7 @@ function create(initialState: any, originalAccessToken?: string) {
 
   // these cache settings are mainly for the breadcrumbs
   const cache: InMemoryCache = new InMemoryCache({
-    cacheRedirects: {
+    /*cacheRedirects: {
       Query: {
         course: (_, args, { getCacheKey }) =>
           getCacheKey({ __typename: "Course", slug: args.slug, id: args.id }),
@@ -76,7 +76,7 @@ function create(initialState: any, originalAccessToken?: string) {
             id: args.id,
           }),
       },
-    },
+    },*/
     dataIdFromObject: (object: any) => {
       switch (object.__typename) {
         case "Course":

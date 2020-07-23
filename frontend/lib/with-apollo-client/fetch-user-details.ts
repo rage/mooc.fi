@@ -1,5 +1,4 @@
-import gql from "graphql-tag"
-import { ApolloClient, NormalizedCacheObject } from "apollo-boost"
+import { gql, ApolloClient, NormalizedCacheObject } from "@apollo/client"
 
 export const UserDetailQuery = gql`
   query UserOverView {
