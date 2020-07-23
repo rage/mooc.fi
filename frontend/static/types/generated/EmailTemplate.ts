@@ -23,5 +23,5 @@ export interface EmailTemplate {
 }
 
 export interface EmailTemplateVariables {
-  id?: string | null
+  id: string
 }

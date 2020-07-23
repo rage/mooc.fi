@@ -23,7 +23,8 @@ model Completion {
   course                    Course?                 @relation(fields: [course_id], references: [id])
   user                      User?                   @relation(fields: [user_id], references: [id])
   completions_registered    CompletionRegistered[]
-
+  completion_date           DateTime?
+  
   @@map("completion")
 }
 
