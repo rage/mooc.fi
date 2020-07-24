@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: kafka-consumer-user-course-progress
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["sh", "-c", "npm run kafka-consumer-user-course-progress"]
           imagePullPolicy: Always
           ports:

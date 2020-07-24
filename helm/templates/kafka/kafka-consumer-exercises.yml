@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: kafka-consumer-exercises
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["sh", "-c", "npm run kafka-consumer-exercises"]
           imagePullPolicy: Always
           ports:
