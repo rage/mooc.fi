@@ -1,6 +1,3 @@
-// import { prismaObjectType } from "nexus-prisma"
-// import { stringArg, arg } from "nexus/dist"
-
 import { schema } from "nexus"
 import { notEmpty } from "../../util/notEmpty"
 

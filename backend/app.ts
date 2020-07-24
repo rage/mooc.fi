@@ -11,7 +11,7 @@ import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
-import { graphqlUploadExpress } from "graphql-upload"
+// import { graphqlUploadExpress } from "graphql-upload"
 import { contextUser } from "./middlewares/FetchUser"
 import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
 import path from "path"
@@ -105,13 +105,14 @@ settings.change({
     redisClient,
   }),
 )*/
-
 server.express.use(cors())
-server.express.use(
+
+// enable this when graphql-upload can be upgraded again:
+/*server.express.use(
   graphqlUploadExpress({
     maxFileSize: 10_000_000,
   }),
-)
+)*/
 
 server.express.get("/api/completions/:course", async function (
   req: any,
