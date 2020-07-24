@@ -4,6 +4,7 @@ metadata:
   name: ws
   labels:
     app: {{ include "helm.fullname" . }}-backend
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: NodePort
   ports:
@@ -12,3 +13,4 @@ spec:
     targetPort: ws
   selector:
     app: {{ include "helm.fullname" . }}-backend
+    {{- include "helm.selectorLabels" . | nindent 4 }}

@@ -2,8 +2,16 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: fetch-user-field-values
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       restartPolicy: OnFailure
       containers:

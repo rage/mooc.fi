@@ -3,15 +3,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: background-emailer
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
       app: background-emailer
+      {{- include "helm.selectorLabels" . | nindent 6 }}
   replicas: 1
   template:
     metadata:
       labels:
         app: background-emailer
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: background-emailer

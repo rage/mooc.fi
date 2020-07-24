@@ -2,10 +2,18 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: send-ai-statistics
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "helm.selectorLabels" . | nindent 6 }}
   schedule: "1 7 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       activeDeadlineSeconds: 1000
       template:

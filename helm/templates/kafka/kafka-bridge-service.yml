@@ -4,6 +4,7 @@ metadata:
   name: kafka-bridge
   labels:
     app: kafka-bridge
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: NodePort
   ports:
@@ -11,3 +12,4 @@ spec:
     targetPort: kafka-bridge
   selector:
     app: kafka-bridge
+    {{- include "helm.selectorLabels" . | nindent 4 }}
