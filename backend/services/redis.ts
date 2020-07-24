@@ -4,9 +4,9 @@ import { promisify } from "util"
 
 const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD
-const GENERATE_NEXUS = process.env.GENERATE_NEXUS
+const NEXUS_REFLECTION = process.env.NEXUS_REFLECTION
 
-const redisClient = !GENERATE_NEXUS
+const redisClient = !NEXUS_REFLECTION
   ? redis.createClient({
       url: REDIS_URL,
       password: REDIS_PASSWORD,
@@ -50,7 +50,12 @@ export async function redisify<T>(
       }
       logger.info(`Cache miss: ${prefix}`)
 
-      const value = fn instanceof Promise ? await fn : await fn(...params)
+      const value =
+        fn instanceof Promise
+          ? await fn
+          : params
+          ? await fn(...params)
+          : await fn()
 
       redisClient?.set(prefixedKey, JSON.stringify(value))
       redisClient?.expire(prefixedKey, expireTime)
@@ -58,18 +63,18 @@ export async function redisify<T>(
       return value
     })
     .catch(() => {
-      return fn instanceof Promise ? fn : fn(...params)
+      return fn instanceof Promise ? fn : params ? fn(...params) : fn()
     })
 }
 
-export const publisher = !GENERATE_NEXUS
+export const publisher = !NEXUS_REFLECTION
   ? redis.createClient({
       url: REDIS_URL,
       password: process.env.REDIS_PASSWORD,
     })
   : null
 
-export const subscriber = !GENERATE_NEXUS
+export const subscriber = !NEXUS_REFLECTION
   ? redis.createClient({
       url: REDIS_URL,
       password: process.env.REDIS_PASSWORD,

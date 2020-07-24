@@ -87,6 +87,7 @@
     "@types/cors": "^2.8.6",
     "@types/faker": "^4.1.12",
     "@types/mime-types": "^2.1.0",
+    "esm": "^3.2.25",
     "faker": "^4.1.0",
     "tmc-client-js": "0.0.9",
     "ts-node": "^8.10.2",

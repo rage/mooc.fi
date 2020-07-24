@@ -57,7 +57,7 @@ const host = process.env.KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   if (
     !req.headers.authorization ||
-    req.headers.authorization.split(" ")[1] !== SECRET
+    req?.headers?.authorization?.split(" ")[1] !== SECRET
   ) {
     return res.status(403).json({ error: "Not authorized" }).send()
   }

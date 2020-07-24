@@ -11,7 +11,7 @@ const cache = (_config: any) => async (
 ) => {
   let rawToken: string | undefined = undefined
   if (context.headers) {
-    rawToken = context.headers.authorization
+    rawToken = context?.headers?.authorization
   } /* else if (context.connection) {
     rawToken = context.connection.context["Authorization"]
   }*/
@@ -24,11 +24,14 @@ const cache = (_config: any) => async (
   )}-${JSON.stringify(args)}`
 
   let hash = createHash("sha512").update(key).digest("hex")
-  const res = await redisify<any>(next(root, args, context, info), {
-    prefix: "graphql-response",
-    expireTime: 300,
-    key: hash,
-  })
+  const res = await redisify<any>(
+    async () => await next(root, args, context, info),
+    {
+      prefix: "graphql-response",
+      expireTime: 300,
+      key: hash,
+    },
+  )
   return res
 }
 
