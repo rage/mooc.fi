@@ -13,7 +13,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: update-course-statuses
-              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
               command: ["sh", "-c", "npm run update-course-statuses"]
               envFrom:
               - secretRef:

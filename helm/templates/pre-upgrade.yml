@@ -26,7 +26,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: run-migrations
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["npm", "run", "migrate", "--", "--env", "production"]
           envFrom:
             - secretRef:

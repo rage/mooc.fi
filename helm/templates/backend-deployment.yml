@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: {{ include "helm.fullname" . }}-backend
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
             - name: backend-http
