@@ -12,16 +12,13 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   activeDeadlineSeconds: 600
-  selector:
-    matchLabels:
-      {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       name: "{{ .Release.Name }}"
       labels:
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
-      # restartPolicy: Never
+      restartPolicy: Never
       containers:
         - name: run-migrations
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
