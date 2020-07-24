@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka-consumer-user-course-progress
-  namespace: moocfi
 spec:
   selector:
     matchLabels:
