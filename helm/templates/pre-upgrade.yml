@@ -3,10 +3,7 @@ kind: Job
 metadata:
   name: "{{ .Release.Name }}-run-migrations"
   labels:
-    app.kubernetes.io/managed-by: "{ { .Release.Service | quote } }"
-    app.kubernetes.io/instance: "{ { .Release.Name | quote } }"
-    app.kubernetes.io/version: "{ { .Chart.AppVersion } }"
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    {{- include "helm.labels" . | nindent 4 }}
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
@@ -15,15 +12,16 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   activeDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       name: "{{ .Release.Name }}"
       labels:
-        app.kubernetes.io/managed-by: "{ { .Release.Service | quote } }"
-        app.kubernetes.io/instance: "{ { .Release.Name | quote } }"
-        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
-      restartPolicy: Never
+      # restartPolicy: Never
       containers:
         - name: run-migrations
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
