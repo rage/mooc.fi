@@ -4,7 +4,7 @@ require("dotenv-safe").config({
 
 let url = process.env.DATABASE_URL
 if (url && url?.lastIndexOf("?") !== -1) {
-  url = url.substring(0, url.lastIndexOf("?"));
+  url = url.substring(0, url.lastIndexOf("?"))
 }
 
 module.exports = {
