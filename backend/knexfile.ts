@@ -2,16 +2,21 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 
+let url = process.env.DATABASE_URL
+if (url && url?.lastIndexOf("?") !== -1) {
+  url = url.substring(0, url.lastIndexOf("?"))
+}
+
 module.exports = {
   development: {
     client: "pg",
     searchPath: [process.env.SEARCH_PATH ?? "default$prisma2"],
-    connection: process.env.DATABASE_URL, // "postgres://prisma:prisma@localhost:5678/prisma?schema=default$prisma2",
+    connection: url, // "postgres://prisma:prisma@localhost:5678/prisma?schema=default$prisma2",
   },
 
   production: {
-    client: "postgresql",
-    connection: process.env.DATABASE_URL,
+    client: "pg",
+    connection: url,
     searchPath: [process.env.SEARCH_PATH],
     /*connection: {
       database: process.env.DB_NAME,

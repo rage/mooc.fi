@@ -2,13 +2,18 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: fetch-user-field-values
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   template:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       restartPolicy: OnFailure
       containers:
         - name: fetch-user-field-values
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["sh", "-c", "npm run fetch-user-field-values"]
           envFrom:
           - secretRef:

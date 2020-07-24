@@ -4,6 +4,7 @@ metadata:
   name: {{ include "helm.fullname" . }}-frontend
   labels:
     app: {{ include "helm.fullname" . }}-frontend
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: NodePort
   ports:
@@ -11,3 +12,4 @@ spec:
     targetPort: frontend-http
   selector:
     app: {{ include "helm.fullname" . }}-frontend
+    {{- include "helm.selectorLabels" . | nindent 4 }}

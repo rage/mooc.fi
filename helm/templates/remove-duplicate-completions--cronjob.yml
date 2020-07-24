@@ -2,10 +2,15 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: remove-duplicate-completions
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   schedule: "4/30 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       activeDeadlineSeconds: 3600
       template:
@@ -13,7 +18,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: remove-duplicate-completions
-              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
               command: ["sh", "-c", "npm run remove-duplicate-completions"]
               envFrom:
               - secretRef:

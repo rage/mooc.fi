@@ -2,20 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka-consumer-user-points
-  namespace: moocfi
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
       app: kafka-consumer-user-points
+      {{- include "helm.selectorLabels" . | nindent 6 }}
   replicas: 1
   template:
     metadata:
       labels:
         app: kafka-consumer-user-points
+        {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: kafka-consumer-user-points
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["sh", "-c", "npm run kafka-consumer-user-points"]
           imagePullPolicy: Always
           ports:
