@@ -5,9 +5,6 @@ metadata:
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  selector:
-    matchLabels:
-      {{- include "helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
