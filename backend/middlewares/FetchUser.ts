@@ -4,7 +4,7 @@ import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
 import { PrismaClient } from "@prisma/client"
-import { IncomingMessage } from "http"
+// import { IncomingMessage } from "http"
 import { NexusContext } from "../context"
 
 const fetchUser = (_config: any) => async (
@@ -90,10 +90,10 @@ const getUser = async (ctx: NexusContext, rawToken: string) => {
 export default fetchUser
 
 export const contextUser = async (
-  req: IncomingMessage,
+  req: any, // was: IncomingMessage, but somehow it's wrapped in req
   prisma: PrismaClient,
 ) => {
-  const rawToken = req.headers.authorization
+  const rawToken = req?.req?.headers?.authorization
 
   if (!rawToken) {
     return {
@@ -125,11 +125,14 @@ export const contextUser = async (
   let details: UserInfo | null = null
   try {
     const client = new TmcClient(rawToken)
-    details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
-      prefix: "userdetails",
-      expireTime: 3600,
-      key: rawToken,
-    })
+    details = await redisify<UserInfo>(
+      async () => await client.getCurrentUserDetails(),
+      {
+        prefix: "userdetails",
+        expireTime: 3600,
+        key: rawToken,
+      },
+    )
   } catch (e) {
     console.log("error", e)
   }

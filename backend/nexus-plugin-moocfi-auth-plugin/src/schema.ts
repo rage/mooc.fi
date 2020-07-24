@@ -63,12 +63,15 @@ export const schemaPlugin: any = ({ prisma, redisClient }: Settings) => {
         let details: UserInfo | null = null
         try {
           const client = new TmcClient(rawToken)
-          details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
-            prefix: 'userdetails',
-            expireTime: 3600,
-            key: rawToken,
-            redisClient,
-          })
+          details = await redisify<UserInfo>(
+            async () => await client.getCurrentUserDetails(),
+            {
+              prefix: 'userdetails',
+              expireTime: 3600,
+              key: rawToken,
+              redisClient,
+            }
+          )
         } catch (e) {
           console.log('error', e)
         }
