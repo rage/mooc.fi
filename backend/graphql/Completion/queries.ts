@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { UserInputError, ForbiddenError } from "apollo-server-errors"
+import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
 import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"

@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { UserInputError, ForbiddenError } from "apollo-server-errors"
+import { UserInputError, ForbiddenError } from "apollo-server-core"
 
 import { buildSearch, convertPagination } from "../util/db-functions"
 import { UserWhereInput } from "@prisma/client"

@@ -1,7 +1,7 @@
 import { schema } from "nexus"
 import { chunk } from "lodash"
 import { or, isOrganization, isAdmin } from "../accessControl"
-import { ForbiddenError, UserInputError } from "apollo-server-errors"
+import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { CompletionRegisteredWhereUniqueInput } from "@prisma/client"
 
 schema.objectType({

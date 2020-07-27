@@ -1,4 +1,4 @@
-import { AuthenticationError } from "apollo-server-errors"
+import { AuthenticationError } from "apollo-server-core"
 import TmcClient from "../services/tmc"
 import { Role } from "../accessControl"
 import { redisify } from "../services/redis"

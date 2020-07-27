@@ -1,4 +1,4 @@
-import { UserInputError, ForbiddenError } from "apollo-server-errors"
+import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { buildSearch, convertPagination } from "../../util/db-functions"
 import { schema } from "nexus"
 import { isAdmin } from "../../accessControl"

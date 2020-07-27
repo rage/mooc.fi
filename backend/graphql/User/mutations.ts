@@ -1,4 +1,4 @@
-import { AuthenticationError } from "apollo-server-errors"
+import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
 import { schema } from "nexus"
 import { NexusContext } from "../../context"
