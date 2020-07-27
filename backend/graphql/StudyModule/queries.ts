@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { UserInputError } from "apollo-server-errors"
+import { UserInputError } from "apollo-server-core"
 import { isAdmin } from "../../accessControl"
 
 schema.extendType({

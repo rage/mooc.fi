@@ -1,6 +1,6 @@
 import { schema } from "nexus"
 
-import { ForbiddenError, AuthenticationError } from "apollo-server-errors"
+import { ForbiddenError, AuthenticationError } from "apollo-server-core"
 import { NexusContext } from "../context"
 
 schema.objectType({

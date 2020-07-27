@@ -13,18 +13,9 @@ import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
 // import { graphqlUploadExpress } from "graphql-upload"
 import { contextUser } from "./middlewares/FetchUser"
-import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
-import path from "path"
+//import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
+//import path from "path"
 import cache from "./middlewares/cache"
-
-nexusSchemaPrisma({
-  outputs: {
-    typegen: path.join(
-      __dirname,
-      "./node_modules/@types/nexus-typegen/index.d.ts",
-    ),
-  },
-})
 
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient({
@@ -53,6 +44,16 @@ use(
     features: { crud: true },
   }),
 )
+
+/*nexusSchemaPrisma({
+  outputs: {
+    typegen: path.join(
+      __dirname,
+      "./node_modules/@types/nexus-typegen/index.d.ts",
+    ),
+  },
+})*/
+
 schema.middleware(cache)
 
 // @ts-ignore: not used for now
@@ -84,9 +85,9 @@ settings.change({
       level: "debug",
     },
   },
-  server: {
+  /*  server: {
     path: "/",
-  },
+  },*/
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
     // rootTypingsGlobPattern: "./graphql/**/*.ts",

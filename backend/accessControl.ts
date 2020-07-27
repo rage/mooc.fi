@@ -1,4 +1,4 @@
-// import { ForbiddenError } from "apollo-server-errors"
+// import { ForbiddenError } from "apollo-server-core"
 import { NexusContext } from "./context"
 
 export enum Role {

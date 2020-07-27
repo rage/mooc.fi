@@ -1,6 +1,6 @@
 import { schema } from "nexus"
 
-import { ForbiddenError } from "apollo-server-errors"
+import { ForbiddenError } from "apollo-server-core"
 import { NexusContext } from "../context"
 import { Role, or, isVisitor, isAdmin } from "../accessControl"
 import { OrganizationRole } from "@prisma/client"

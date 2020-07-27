@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { ForbiddenError } from "apollo-server-errors"
+import { ForbiddenError } from "apollo-server-core"
 
 schema.objectType({
   name: "Completion",

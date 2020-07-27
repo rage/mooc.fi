@@ -1,5 +1,5 @@
 import { schema } from "nexus"
-import { UserInputError } from "apollo-server-errors"
+import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
 

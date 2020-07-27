@@ -1,6 +1,6 @@
 import { schema } from "nexus"
 
-import { UserInputError } from "apollo-server-errors"
+import { UserInputError } from "apollo-server-core"
 import { Role, isAdmin } from "../accessControl"
 import { NexusContext } from "../context"
 import { randomBytes } from "crypto"
