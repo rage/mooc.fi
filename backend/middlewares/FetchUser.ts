@@ -93,7 +93,9 @@ export const contextUser = async (
   req: any, // was: IncomingMessage, but somehow it's wrapped in req
   prisma: PrismaClient,
 ) => {
-  const rawToken = req?.req?.headers?.authorization
+  // TODO/FIXME:
+  // Future versions of nexus seem to wrap this, so its req?.req?...
+  const rawToken = req?.headers?.authorization
 
   if (!rawToken) {
     return {

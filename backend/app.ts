@@ -17,6 +17,8 @@ import { contextUser } from "./middlewares/FetchUser"
 //import path from "path"
 import cache from "./middlewares/cache"
 
+const PRODUCTION = process.env.NODE_ENV === "production"
+
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient({
   log: [
@@ -27,14 +29,14 @@ const prismaClient = new PrismaClient({
   ],
 })
 
-/*prismaClient.on("query", e => {
+prismaClient.on("query", (e) => {
   e.timestamp
   e.query
   e.params
   e.duration
   e.target
   console.log(e)
-})*/
+})
 
 use(
   prisma({
@@ -85,9 +87,11 @@ settings.change({
       level: "debug",
     },
   },
-  /*  server: {
-    path: "/",
-  },*/
+  server: {
+    port: 4000,
+    path: PRODUCTION ? "/api" : "/",
+    playground: { path: PRODUCTION ? "/api" : "/" },
+  },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
     // rootTypingsGlobPattern: "./graphql/**/*.ts",
@@ -107,7 +111,6 @@ settings.change({
   }),
 )*/
 server.express.use(cors())
-
 // enable this when graphql-upload can be upgraded again:
 /*server.express.use(
   graphqlUploadExpress({
