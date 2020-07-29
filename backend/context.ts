@@ -10,8 +10,8 @@ export interface NexusContext {
   user?: User
   organization?: Organization
   disableRelations: boolean
-  role: Role | undefined
-  userDetails: UserInfo | undefined
+  role?: Role | undefined
+  userDetails?: UserInfo | undefined
   tmcClient: TmcClient | undefined
   headers: IncomingHttpHeaders
 }
