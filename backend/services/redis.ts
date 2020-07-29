@@ -33,7 +33,12 @@ export const getAsync = redisClient
 
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
-  options: { prefix: string; expireTime: number; key: string; params?: any },
+  options: {
+    prefix: string
+    expireTime: number
+    key: string
+    params?: any
+  },
 ) {
   const { prefix, expireTime, key, params } = options
 

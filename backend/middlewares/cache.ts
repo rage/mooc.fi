@@ -1,6 +1,6 @@
 import { createHash } from "crypto"
 import { redisify } from "../services/redis"
-import { NexusContext } from "../context"
+// import { NexusContext } from "../context"
 
 const cache = (_config: any) => async (
   root: any,

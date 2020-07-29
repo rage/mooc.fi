@@ -6,17 +6,18 @@ require("dotenv-safe").config({
 import { use, schema, settings, server } from "nexus"
 import { prisma } from "nexus-plugin-prisma"
 import Knex from "./services/knex"
-import { redisify } from "./services/redis"
+import redisClient, { redisify } from "./services/redis"
 import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
 // import { graphqlUploadExpress } from "graphql-upload"
-import { contextUser } from "./middlewares/FetchUser"
+// import { contextUser } from "./middlewares/FetchUser"
 //import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
 //import path from "path"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
+import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
@@ -57,8 +58,6 @@ use(
   },
 })*/
 
-schema.middleware(cache)
-
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -71,14 +70,23 @@ const logger = winston.createLogger({
 
 schema.addToContext(async (req) => ({
   ...req,
-  user: undefined,
-  organization: undefined,
+  // user: undefined,
+  // organization: undefined,
   // role: Role.VISITOR,
-  ...(await contextUser(req, prismaClient)),
+  // ...(await contextUser(req, prismaClient)),
   disableRelations: false,
-  userDetails: undefined,
+  // userDetails: undefined,
   tmcClient: undefined,
 }))
+
+schema.middleware(cache)
+
+use(
+  moocfiAuthPlugin({
+    prisma: prismaClient,
+    redisClient,
+  }),
+)
 
 settings.change({
   logger: {
@@ -104,12 +112,6 @@ settings.change({
   },
 })
 
-/*use(
-  moocfiAuthPlugin({
-    prisma: prismaClient,
-    redisClient,
-  }),
-)*/
 schema.middleware((config: any) => async (root, args, ctx, info, next) => {
   // only log root level query/mutation, not fields queried
   if (!info.path?.prev) {
