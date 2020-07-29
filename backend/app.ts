@@ -15,6 +15,7 @@ import cors from "cors"
 import { contextUser } from "./middlewares/FetchUser"
 //import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
 //import path from "path"
+import morgan from "morgan"
 import cache from "./middlewares/cache"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
@@ -29,14 +30,14 @@ const prismaClient = new PrismaClient({
   ],
 })
 
-prismaClient.on("query", (e) => {
+/*prismaClient.on("query", (e) => {
   e.timestamp
   e.query
   e.params
   e.duration
   e.target
   console.log(e)
-})
+})*/
 
 use(
   prisma({
@@ -58,7 +59,6 @@ use(
 
 schema.middleware(cache)
 
-// @ts-ignore: not used for now
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
@@ -110,7 +110,29 @@ settings.change({
     redisClient,
   }),
 )*/
+schema.middleware((config: any) => async (root, args, ctx, info, next) => {
+  // only log root level query/mutation, not fields queried
+  if (!info.path?.prev) {
+    logger.info(
+      `${info.operation.operation}: ${info.path.key}, args: ${JSON.stringify(
+        args,
+      )}`,
+    )
+  }
+
+  try {
+    const result = await next(root, args, ctx, info)
+
+    return result
+  } catch (e) {
+    logger.error(
+      `error: ${e}\n  in type ${config?.parentTypeConfig?.name}, field ${config?.fieldConfig?.name} with args ${config?.args}`,
+    )
+  }
+})
+
 server.express.use(cors())
+server.express.use(morgan("combined"))
 // enable this when graphql-upload can be upgraded again:
 /*server.express.use(
   graphqlUploadExpress({

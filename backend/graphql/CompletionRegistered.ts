@@ -135,14 +135,12 @@ schema.extendType({
 
 const buildPromises = (array: any[], ctx: NexusContext) => {
   return array.map(async (entry) => {
-    console.log("entry", entry)
     const course = await ctx.db.completion
       .findOne({ where: { id: entry.completion_id } })
       .course()
     const user = await ctx.db.completion
       .findOne({ where: { id: entry.completion_id } })
       .user()
-    console.log(course, user)
 
     if (!course || !user) {
       // TODO/FIXME: we now fail silently if course/user not found

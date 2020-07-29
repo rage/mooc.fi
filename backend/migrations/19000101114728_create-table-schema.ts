@@ -403,7 +403,9 @@ export async function up(knex: Knex): Promise<any> {
         ADD CONSTRAINT verified_user_pkey PRIMARY KEY (id);`)
     })
   } catch {
-    console.log("some error adding constraints, ignoring...")
+    console.log(
+      "Error adding primary key constraints. Probably because they already existed.",
+    )
   }
 
   await knex.raw(
@@ -535,7 +537,9 @@ export async function up(knex: Knex): Promise<any> {
         ADD CONSTRAINT verified_user_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id) ON DELETE SET NULL;`)
     })
   } catch {
-    console.log("some error adding constraints, ignoring...")
+    console.log(
+      "Error adding foreign key constraints. Probably because they existed already.",
+    )
   }
 }
 
