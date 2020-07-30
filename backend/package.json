@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "test": "echo \"Error: no test specified\" && exit 1",
     "upgrade-interactive": "npm-check --update",
     "prisma-deploy": "prisma deploy --force",
@@ -60,7 +61,7 @@
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "graphql-middleware": "^4.0.2",
-    "graphql-upload": "8.1.0",
+    "graphql-upload": "^11.0.0",
     "knex": "^0.21.2",
     "lodash": "^4.17.19",
     "luxon": "^1.24.1",
@@ -93,5 +94,8 @@
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.9.7"
+  },
+  "resolutions": {
+    "graphql-upload": "^11.0.0"
   }
 }

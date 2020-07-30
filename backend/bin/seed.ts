@@ -1,5 +1,10 @@
-import { CourseStatus, CourseTranslation } from "@prisma/client"
+import {
+  CourseStatus,
+  CourseTranslation,
+  StudyModuleCreateArgs,
+} from "@prisma/client"
 import prismaClient from "./lib/prisma"
+import { StudyModule, Course } from "nexus-plugin-prisma/client"
 
 const Modules = [
   {
@@ -7,7 +12,7 @@ const Modules = [
     slug: "webdev",
     name: "Web development",
     image: "WebModule.jpg",
-    study_module_translation: [
+    study_module_translations: [
       {
         id: "0616fba6-e119-4d77-9b71-2b0fae2101b3",
         language: "en_US",
@@ -27,7 +32,7 @@ const Modules = [
     slug: "program",
     name: "Programming skills",
     image: "CodeModule.jpg",
-    study_module_translation: [
+    study_module_translations: [
       {
         id: "9fa46739-8993-4b32-8624-00d30e47830b",
         language: "fi_FI",
@@ -49,7 +54,7 @@ const Courses = [
     id: "jdoifsbf",
     name: "Ohjelmoinnin MOOC 2019",
     slug: "ohpe",
-    course_translation: [
+    course_translations: [
       {
         name: "Ohjelmoinnin MOOC 2019",
         language: "fi_FI",
@@ -61,13 +66,13 @@ const Courses = [
     promote: true,
     status: "Active",
     start_point: true,
-    study_module: ["662f537e-4395-40db-a32d-710b51fa169e"],
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "dgoijdgoijf8904",
     name: "Full stack open 2019",
     slug: "fullstack",
-    course_translation: [
+    course_translations: [
       {
         id: "idojgf4903",
         name: "Full stack open 2019",
@@ -88,13 +93,13 @@ const Courses = [
     promote: false,
     status: "Active",
     start_point: true,
-    study_module: ["21d838c9-54c7-4fbb-8e4c-91e8f14f0d73"],
+    study_modules: ["21d838c9-54c7-4fbb-8e4c-91e8f14f0d73"],
   },
   {
     id: "tfujhgfdgrs",
     name: "Elements of AI",
     slug: "elements-of-ai",
-    course_translation: [
+    course_translations: [
       {
         id: "ifghdfdh",
         name: "Elements of AI",
@@ -120,7 +125,7 @@ const Courses = [
     id: "hftsgtraet",
     name: "Data Analysis with Python",
     slug: "data-analysis-python",
-    course_translation: [
+    course_translations: [
       {
         id: "gdstreedst",
         name: "Data Analysis with Python",
@@ -148,7 +153,7 @@ const Courses = [
     id: "hfhdrr",
     name: "Web-palvelinohjelmointi Java",
     slug: "wepa",
-    course_translation: [
+    course_translations: [
       {
         id: "jyr6876",
         name: "Web-palvelinohjelmointi JAVA",
@@ -161,13 +166,13 @@ const Courses = [
     promote: false,
     status: "Ended",
     start_point: false,
-    study_module: ["21d838c9-54c7-4fbb-8e4c-91e8f14f0d73"],
+    study_modules: ["21d838c9-54c7-4fbb-8e4c-91e8f14f0d73"],
   },
   {
     id: "gsrhrthrs",
     name: "Johdatus tietoliikenteeseen",
     slug: "johto",
-    course_translation: [
+    course_translations: [
       {
         id: "fdnjeso",
         name: "Johdatus tietoliikenteeseen",
@@ -185,7 +190,7 @@ const Courses = [
     id: "es646rki",
     name: "DevOps with Docker",
     slug: "docker",
-    course_translation: [
+    course_translations: [
       {
         id: "545thjftfhes",
         name: "DevOps with Docker",
@@ -211,7 +216,7 @@ const Courses = [
     id: "egdfhftuer65745",
     name: "Tietokantojen perusteet",
     slug: "tikape",
-    course_translation: [
+    course_translations: [
       {
         id: "gdjiaoter",
         name: "Tietokantojen perusteet",
@@ -224,13 +229,13 @@ const Courses = [
     promote: false,
     status: "Ended",
     start_point: true,
-    study_module: ["662f537e-4395-40db-a32d-710b51fa169e"],
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "dhyrrtutrutrik",
     name: "Tietorakenteet ja algoritmit",
     slug: "tira",
-    course_translation: [
+    course_translations: [
       {
         id: "gdfgtewt",
         name: "Tietorakenteet ja algoritmit",
@@ -243,13 +248,13 @@ const Courses = [
     promote: false,
     status: "Upcoming",
     start_point: true,
-    study_module: ["662f537e-4395-40db-a32d-710b51fa169e"],
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "290e6506-00e3-433d-b938-1a258b6b04f2",
     name: "Tietokoneen toiminnan perusteet",
     slug: "tito",
-    course_translation: [
+    course_translations: [
       {
         id: "fsdedhbdf",
         name: "Tietokoneen toiminnan perusteet",
@@ -262,13 +267,13 @@ const Courses = [
     promote: false,
     status: "Upcoming",
     start_point: true,
-    study_module: ["662f537e-4395-40db-a32d-710b51fa169e"],
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "hfdhgdrdeetteet4et4",
     name: "Cyber Security Base",
     slug: "cyber",
-    course_translation: [
+    course_translations: [
       {
         id: "fsjieojewoirtjoi",
         name: "Cyber Security Base",
@@ -294,7 +299,7 @@ const Courses = [
     id: "sgjdeirotueori",
     name: "Ohjelmoinnin MOOC 2018",
     slug: "ohpe18",
-    course_translation: [
+    course_translations: [
       {
         id: "jfsjoidfoijdfoijdfsoijdfsoij",
         name: "Ohjelmoinnin MOOC 2018",
@@ -307,13 +312,13 @@ const Courses = [
     promote: false,
     status: "Ended",
     start_point: true,
-    study_module: ["662f537e-4395-40db-a32d-710b51fa169e"],
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "4545thythyggh",
     name: "Cyber Security Base(2018)",
     slug: "cyber2018",
-    course_translation: [
+    course_translations: [
       {
         id: "4243trhftghf",
         name: "Cyber Security Base(2018)",
@@ -339,7 +344,7 @@ const Courses = [
     id: "<rwjogh<ugrixtjö",
     name: "2013 Programming with Java I",
     slug: "ohpe13",
-    course_translation: [
+    course_translations: [
       {
         id: "75tyjfxkhmx,kgxmj",
         name: "2013 Programming with Java I",
@@ -352,13 +357,13 @@ const Courses = [
     promote: true,
     status: "Active",
     start_point: true,
-    study_module: ["662f537e-4395-40db-a32d-710b51fa169e"],
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
   {
     id: "<rwjghrsyt",
     name: "2013 Programming with Java II",
     slug: "ohpe13-2",
-    course_translation: [
+    course_translations: [
       {
         id: "75tyjfxkhmx,kgxmj",
         name: "2013 Programming with Java II",
@@ -371,7 +376,7 @@ const Courses = [
     promote: false,
     status: "Active",
     start_point: true,
-    study_module: ["662f537e-4395-40db-a32d-710b51fa169e"],
+    study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
 ]
 
@@ -385,9 +390,9 @@ const seed = async () => {
     Modules.map(async (module) => {
       const _module = {
         ...module,
-        study_module_translation: module.study_module_translation
+        study_module_translations: module.study_module_translations
           ? {
-              create: (module.study_module_translation || []).map((t) => ({
+              create: (module.study_module_translations || []).map((t) => ({
                 ...t,
                 id: undefined,
               })),
@@ -411,10 +416,10 @@ const seed = async () => {
         teacher_in_charge_email: "",
         start_date: "",
         status: course.status as CourseStatus,
-        course_translation: course.course_translation
+        course_translations: course.course_translations
           ? {
               create:
-                (course?.course_translation as CourseTranslation[])?.map(
+                (course?.course_translations as CourseTranslation[])?.map(
                   (t) => ({
                     ...t,
                     id: undefined,
@@ -423,18 +428,18 @@ const seed = async () => {
                 ) ?? undefined,
             }
           : null,
-        study_module: null,
+        study_modules: null,
       }
 
       const newCourse = await prisma.course.create({ data: _course })
-      if (course.study_module) {
+      if (course.study_modules) {
         await prisma.course.update({
           where: {
             id: newCourse.id,
           },
           data: {
             study_modules: {
-              connect: course.study_module.map((id) => ({
+              connect: course.study_modules.map((id) => ({
                 id,
               })),
             },

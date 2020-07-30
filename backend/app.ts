@@ -11,13 +11,14 @@ import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
-// import { graphqlUploadExpress } from "graphql-upload"
+import { graphqlUploadExpress } from "graphql-upload"
 // import { contextUser } from "./middlewares/FetchUser"
 //import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
 //import path from "path"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
+// import bodyParser from "body-parser"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
@@ -135,12 +136,14 @@ schema.middleware((config: any) => async (root, args, ctx, info, next) => {
 
 server.express.use(cors())
 server.express.use(morgan("combined"))
+/*server.express.use(bodyParser.raw({type: 'application/octet-stream', limit: '50mb'}))
+server.express.use(bodyParser.json({ type: "application/json", limit: "10mb" }))*/
 // enable this when graphql-upload can be upgraded again:
-/*server.express.use(
+server.express.use(
   graphqlUploadExpress({
     maxFileSize: 10_000_000,
   }),
-)*/
+)
 
 server.express.get("/api/completions/:course", async function (
   req: any,
