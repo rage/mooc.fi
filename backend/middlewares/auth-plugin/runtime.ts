@@ -5,6 +5,8 @@ import { AuthenticationError } from "apollo-server-errors"
 import { UserInfo } from "../../domain/UserInfo"
 import { Role } from "../../accessControl"
 import { Settings } from "./settings"
+import { User } from "@prisma/client"
+import hashUser from "../../util/hashUser"
 
 export const plugin: RuntimePlugin<Settings, "required"> = (
   settings: Settings,
@@ -80,11 +82,19 @@ export const plugin: RuntimePlugin<Settings, "required"> = (
         username: details.username,
       }
 
-      const user = await prisma.user.upsert({
-        where: { upstream_id: id },
-        create: prismaDetails,
-        update: prismaDetails,
-      })
+      const user = await redisify<User>(
+        async () =>
+          await prisma.user.upsert({
+            where: { upstream_id: id },
+            create: prismaDetails,
+            update: prismaDetails,
+          }),
+        {
+          prefix: "user",
+          expireTime: 3600,
+          key: hashUser(prismaDetails),
+        },
+      )
 
       return {
         details,
