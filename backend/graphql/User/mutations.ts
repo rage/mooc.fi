@@ -2,6 +2,7 @@ import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
 import { schema } from "nexus"
 import { NexusContext } from "../../context"
+import hashUser from "../../util/hashUser"
 
 schema.extendType({
   type: "Mutation",
@@ -24,6 +25,7 @@ schema.extendType({
         const access_token = authorization?.split(" ")[1]
 
         invalidate("userdetails", `Bearer ${access_token}`)
+        invalidate("user", hashUser(currentUser))
 
         return ctx.db.user.update({
           where: { id: currentUser.id },
@@ -53,6 +55,7 @@ schema.extendType({
         const access_token = authorization?.split(" ")[1]
 
         invalidate("userdetails", `Bearer ${access_token}`)
+        invalidate("user", hashUser(currentUser))
 
         return ctx.db.user.update({
           where: { id: currentUser.id },
