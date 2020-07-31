@@ -118,6 +118,10 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
         prismaDetails,
       )}. Values found from the database: ${JSON.stringify(details)}`,
     )
+    if (e.meta?.target?.includes("username")) {
+      console.log(`Removing user with duplicate username`)
+      await prisma.user.delete({ where: { username: details.username } })
+    }
     throw e
   }
 }
