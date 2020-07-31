@@ -47,7 +47,6 @@ const Course = () => {
     },
   )
 
-  //TODO add circular progress
   if (loading || !data) {
     return <Spinner />
   }
