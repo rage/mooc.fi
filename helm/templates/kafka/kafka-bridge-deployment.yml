@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: kafka-bridge
       {{- include "helm.selectorLabels" . | nindent 6 }}
-  replicas: 3
+  replicas: {{ .Values.kafkaBridge.replicaCount }}
   template:
     metadata:
       labels:
@@ -39,8 +39,10 @@ spec:
           resources:
             limits:
               memory: 1000Mi
+              cpu: 50m
             requests:
               memory: 256Mi
+              cpu: 10m
           envFrom:
           - secretRef:
               name: backend-secret

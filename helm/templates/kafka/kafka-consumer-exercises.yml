@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: kafka-consumer-exercises
       {{- include "helm.selectorLabels" . | nindent 6 }}
-  replicas: 1
+  replicas: {{ .Values.kafkaConsumer.exercises }}
   template:
     metadata:
       labels:
@@ -27,8 +27,10 @@ spec:
           resources:
             limits:
               memory: 500Mi
+              cpu: 50m
             requests:
               memory: 256Mi
+              cpu: 10m
           envFrom:
           - secretRef:
               name: backend-secret

@@ -8,6 +8,17 @@ backend:
 frontend:
   replicaCount: 1
 
+kafkaBridge:
+  replicaCount: 3
+
+kafkaConsumer:
+  exercises:
+    replicaCount: 1
+  userCourseProgress:
+    replicaCount: 1
+  userPoints:
+    replicaCount: 1
+  
 email:
   # controls whether the background email service should be running
   enabled: false

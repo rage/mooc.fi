@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: kafka-consumer-user-course-progress
       {{- include "helm.selectorLabels" . | nindent 6 }}
-  replicas: 1
+  replicas: {{ .Values.kafkaConsumer.userCourseProgress }}
   template:
     metadata:
       labels:
@@ -27,8 +27,10 @@ spec:
           resources:
             limits:
               memory: 500Mi
+              cpu: 100m
             requests:
               memory: 256Mi
+              cpu: 30m
           envFrom:
           - secretRef:
               name: backend-secret
