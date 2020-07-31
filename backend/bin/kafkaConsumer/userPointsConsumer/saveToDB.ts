@@ -16,6 +16,7 @@ const Knex = knex({
     database: process.env.DB_NAME,
   },
   searchPath:
+    // TODO: should this use the env search path?
     process.env.NODE_ENV === "production"
       ? ["moocfi$production"]
       : ["default$default"],

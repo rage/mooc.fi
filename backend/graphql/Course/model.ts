@@ -50,10 +50,8 @@ schema.objectType({
     t.model.user_course_settings_visibilities()
     t.model.services()
     t.model.study_modules()
+    t.model.automatic_completions_eligible_for_ects()
     t.string("description")
     t.string("link")
-    /*t.prismaFields(["*"])
-    t.field("description", { type: "String" })
-    t.field("link", { type: "String" })*/
   },
 })

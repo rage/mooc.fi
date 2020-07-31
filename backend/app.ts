@@ -136,9 +136,6 @@ schema.middleware((config: any) => async (root, args, ctx, info, next) => {
 
 server.express.use(cors())
 server.express.use(morgan("combined"))
-/*server.express.use(bodyParser.raw({type: 'application/octet-stream', limit: '50mb'}))
-server.express.use(bodyParser.json({ type: "application/json", limit: "10mb" }))*/
-// enable this when graphql-upload can be upgraded again:
 server.express.use(
   graphqlUploadExpress({
     maxFileSize: 10_000_000,
