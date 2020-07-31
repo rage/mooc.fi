@@ -24,9 +24,11 @@ spec:
           imagePullPolicy: Always
           resources:
             limits:
-              memory: 500Mi
+              memory: 512Mi
+              cpu: 100m
             requests:
               memory: 256Mi
+              cpu: 50m
           envFrom:
           - secretRef:
               name: backend-secret
