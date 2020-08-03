@@ -224,11 +224,13 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     username: details.username,
   }
   try {
-    return await prisma.user.upsert({
+    const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
       update: prismaDetails,
     })
+
+    return result
   } catch (e) {
     console.log(
       `Failed to upsert user with upstream id ${
@@ -237,6 +239,10 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
         prismaDetails,
       )}. Values found from the database: ${JSON.stringify(details)}`,
     )
+    if (e.meta?.target?.includes("username")) {
+      console.log(`Removing user with duplicate username`)
+      await prisma.user.delete({ where: { username: details.username } })
+    }
     throw e
   }
 }
