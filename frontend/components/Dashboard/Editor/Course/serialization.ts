@@ -140,22 +140,17 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
     .map((id) => ({ id }))
 
-  const formValues = newCourse
-    ? omit(values, [
-        "id",
-        "new_slug",
-        "thumbnail",
-        "import_photo",
-        "delete_photo",
-      ])
-    : {
-        ...omit(values, ["id", "thumbnail", "import_photo"]),
-        new_slug: values.new_slug.trim(),
-      }
+  const status =
+    values.status === "Active"
+      ? CourseStatus.Active
+      : values.status === "Ended"
+      ? CourseStatus.Ended
+      : values.status === "Upcoming"
+      ? CourseStatus.Upcoming
+      : undefined
 
   const c = {
-    ...formValues,
-    name: values.name ?? "",
+    ...omit(values, ["id", "thumbnail", "import_photo", "__typename"]),
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,
     base64: !isProduction,
@@ -185,6 +180,7 @@ export const fromCourseForm = ({
     user_course_settings_visibilities,
     teacher_in_charge_email: values.teacher_in_charge_email ?? "",
     teacher_in_charge_name: values.teacher_in_charge_name ?? "",
+    status, //values.status as CourseStatus
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
