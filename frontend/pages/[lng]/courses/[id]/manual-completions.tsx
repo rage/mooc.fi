@@ -10,6 +10,9 @@ import AlertTitle from "@material-ui/lab/AlertTitle"
 import gql from "graphql-tag"
 import { useMutation, useQuery } from "@apollo/react-hooks"
 import { useQueryParameter } from "/util/useQueryParameter"
+import { DatePicker, LocalizationProvider } from "@material-ui/pickers"
+import LuxonUtils from "@date-io/luxon"
+import { DateTime } from "luxon"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -51,6 +54,8 @@ const ManualCompletions = () => {
   const [messageSeverity, setMessageSeverity] = useState<
     "info" | "error" | "success" | "warning" | undefined
   >("info")
+  const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
+
   const [
     addCompletions,
     { loading: mutationLoading, error: mutationError },
@@ -96,7 +101,20 @@ const ManualCompletions = () => {
       )}
       <br />
       <Typography>
-        Format: csv with header with fields: user_id, grade
+        Completion date (optional) - if provided, will be default for every
+        completion with no date set
+      </Typography>
+      <LocalizationProvider dateAdapter={LuxonUtils}>
+        <DatePicker
+          inputFormat="yyyy-MM-dd"
+          placeholder="yyyy-MM-dd"
+          onChange={setCompletionDate}
+          value={completionDate}
+        />
+      </LocalizationProvider>
+      <Typography>
+        Format: csv with header with fields: user_id,grade[,completion_date] -
+        optional date in ISO 8601 format
       </Typography>
       <br />
       <StyledTextField
@@ -123,7 +141,19 @@ const ManualCompletions = () => {
             return
           }
 
-          const data: { user_id: string; grade: string }[] = parsed.data
+          const data: {
+            user_id: string
+            grade: string
+            completion_date?: string
+          }[] = parsed.data.map((d) => ({
+            ...d,
+            completion_date:
+              d.completion_date === "" || !d.completion_date
+                ? completionDate
+                  ? completionDate?.toString()
+                  : undefined
+                : DateTime.fromISO(d.completion_date).toString(),
+          }))
           console.log(data)
           if (data.length === 0) {
             setMessage(
@@ -141,6 +171,7 @@ const ManualCompletions = () => {
             setSubmitting(false)
             return
           }
+
           addCompletions({
             variables: { course_id: courseData.course.id, completions: data },
           })

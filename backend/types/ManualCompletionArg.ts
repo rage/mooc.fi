@@ -5,6 +5,7 @@ const ManualCompletionArg = inputObjectType({
   definition(t) {
     t.string("user_id", { required: true })
     t.string("grade", { required: false })
+    t.field("completion_date", { type: "DateTime", required: false })
   },
 })
 
