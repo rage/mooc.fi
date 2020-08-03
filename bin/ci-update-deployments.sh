@@ -14,8 +14,7 @@ else
   REV="$DATE-$(git rev-parse --verify HEAD)"
 fi
 
-export FRONTEND_IMAGE="eu.gcr.io/moocfi/moocfi-frontend:build-$REV"
-export BACKEND_IMAGE="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
+export IMAGE_TAG="build-$REV"
 
-
-echo "No deploy for now"
+echo "Deploying..."
+helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi --install
