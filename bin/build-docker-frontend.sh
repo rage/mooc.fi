@@ -15,6 +15,7 @@ TAG="eu.gcr.io/moocfi/moocfi-frontend:build-$REV"
 
 if [ -n "$CIRCLE_SHA1" ]; then
   echo "Trying to setup google cloud"
+  CURRENT_DIR="$(dirname "$0")"
   source "$CURRENT_DIR/ci-setup-google-cloud.sh"
 fi
 
