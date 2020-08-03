@@ -7,6 +7,7 @@ import CourseAndModuleList from "/components/Home/CourseAndModuleList"
 const Home = () => {
   return (
     <div>
+      <p>Hello</p>
       <ExplanationHero />
       <NaviCardList />
       <CourseAndModuleList />
