@@ -1,10 +1,9 @@
 import Template from "../types/Template"
-import { prisma } from "../../../generated/prisma-client"
 
 export class Grade extends Template {
   async resolve() {
     const course = (
-      await prisma.courses({
+      await this.prisma.course.findMany({
         where: { completion_email: { id: this.emailTemplate.id } },
       })
     )[0]
@@ -12,7 +11,7 @@ export class Grade extends Template {
       return ""
     }
     const grade = (
-      await prisma.completions({
+      await this.prisma.completion.findMany({
         where: { user: { id: this.user.id }, course: { id: course.id } },
         orderBy: "completion_date_DESC",
       })

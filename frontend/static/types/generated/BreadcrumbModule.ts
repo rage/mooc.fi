@@ -9,19 +9,17 @@
 
 export interface BreadcrumbModule_study_module_study_module_translations {
   __typename: "StudyModuleTranslation"
-  id: any
+  id: string
   language: string
   name: string
 }
 
 export interface BreadcrumbModule_study_module {
   __typename: "StudyModule"
-  id: any
+  id: string
   slug: string
   name: string
-  study_module_translations:
-    | BreadcrumbModule_study_module_study_module_translations[]
-    | null
+  study_module_translations: BreadcrumbModule_study_module_study_module_translations[]
 }
 
 export interface BreadcrumbModule {

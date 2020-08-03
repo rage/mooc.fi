@@ -9,14 +9,14 @@
 
 export interface CourseEditorCourses_courses_course_translations {
   __typename: "CourseTranslation"
-  id: any
+  id: string
   name: string
   language: string
 }
 
 export interface CourseEditorCourses_courses_photo {
   __typename: "Image"
-  id: any
+  id: string
   name: string | null
   original: string
   original_mimetype: string
@@ -28,13 +28,13 @@ export interface CourseEditorCourses_courses_photo {
 
 export interface CourseEditorCourses_courses {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
   name: string
-  course_translations: CourseEditorCourses_courses_course_translations[] | null
+  course_translations: CourseEditorCourses_courses_course_translations[]
   photo: CourseEditorCourses_courses_photo | null
 }
 
 export interface CourseEditorCourses {
-  courses: CourseEditorCourses_courses[]
+  courses: CourseEditorCourses_courses[] | null
 }

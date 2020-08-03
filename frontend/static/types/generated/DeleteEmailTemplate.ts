@@ -9,7 +9,7 @@
 
 export interface DeleteEmailTemplate_deleteEmailTemplate {
   __typename: "EmailTemplate"
-  id: any
+  id: string
   name: string | null
   html_body: string | null
   txt_body: string | null
@@ -17,7 +17,7 @@ export interface DeleteEmailTemplate_deleteEmailTemplate {
 }
 
 export interface DeleteEmailTemplate {
-  deleteEmailTemplate: DeleteEmailTemplate_deleteEmailTemplate
+  deleteEmailTemplate: DeleteEmailTemplate_deleteEmailTemplate | null
 }
 
 export interface DeleteEmailTemplateVariables {

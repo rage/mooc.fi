@@ -2,29 +2,34 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import TmcClient from "../services/tmc"
-import { Prisma, User } from "../generated/prisma-client"
+import { PrismaClient } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
+import prismaClient from "./lib/prisma"
 
 const CONFIG_NAME = "userFieldValues"
 
-const prisma: Prisma = new Prisma()
+const prisma = prismaClient()
 
 const fetcUserFieldValues = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
-  const prisma: Prisma = new Prisma()
+  // const prisma: Prisma = new Prisma()
 
-  const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
-    name: CONFIG_NAME,
-  }))
-    ? ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
-    : null
+  const existingConfig = await prisma.userAppDatumConfig.findMany({
+    where: { name: CONFIG_NAME },
+  })
+  const latestTimeStamp =
+    existingConfig.length > 0
+      ? existingConfig[0].timestamp // ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
+      : null
 
   console.log(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserFieldValues(latestTimeStamp ?? null)
+  const data_from_tmc = await tmc.getUserFieldValues(
+    latestTimeStamp?.toISOString() ?? null,
+  )
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")
@@ -47,10 +52,12 @@ const fetcUserFieldValues = async () => {
       console.log("not p:", p, "i is", i, "while data.length is", data.length)
       continue
     }
-    const isUser: Boolean = await prisma.$exists.user({
-      upstream_id: p.user_id,
+    const existingUsers = await prisma.user.findMany({
+      where: {
+        upstream_id: p.user_id,
+      },
     })
-    if (!isUser) {
+    if (existingUsers.length < 1) {
       try {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {
@@ -68,7 +75,7 @@ const fetcUserFieldValues = async () => {
       p.value &&
       p.value.trim() != ""
     ) {
-      await prisma.updateUser({
+      await prisma.user.update({
         where: { upstream_id: p.user_id },
         data: {
           student_number: p.value.trim(),
@@ -87,10 +94,7 @@ const fetcUserFieldValues = async () => {
   console.log("used", stopTime - startTime, "milliseconds")
 }
 
-const getUserFromTmcAndSaveToDB = async (
-  user_id: Number,
-  tmc: TmcClient,
-): Promise<User> => {
+const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
     upstream_id: details.id,
@@ -101,11 +105,13 @@ const getUserFromTmcAndSaveToDB = async (
     username: details.username,
   }
   try {
-    return await prisma.upsertUser({
+    const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
       update: prismaDetails,
     })
+
+    return result
   } catch (e) {
     console.log(
       `Failed to upsert user with upstream id ${
@@ -114,6 +120,10 @@ const getUserFromTmcAndSaveToDB = async (
         prismaDetails,
       )}. Values found from the database: ${JSON.stringify(details)}`,
     )
+    if (e.meta?.target?.includes("username")) {
+      console.log(`Removing user with duplicate username`)
+      await prisma.user.delete({ where: { username: details.username } })
+    }
     throw e
   }
 }
@@ -130,11 +140,11 @@ const getUserFromTmcAndSaveToDB = async (
 } */
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-async function saveProgress(prisma: Prisma, dateToDB: Date) {
+async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   console.log("saving")
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
-  await prisma.upsertUserAppDatumConfig({
+  await prisma.userAppDatumConfig.upsert({
     where: { name: CONFIG_NAME },
     create: {
       name: CONFIG_NAME,

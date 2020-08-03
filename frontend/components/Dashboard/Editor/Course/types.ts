@@ -1,9 +1,8 @@
-import { CourseStatus } from "/static/types/globalTypes"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 import { FormValues } from "../types"
 import {
   CourseDetails_course_photo,
   CourseDetails_course_open_university_registration_links,
-  // CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
 import { DateTime } from "luxon"
 

@@ -9,11 +9,11 @@
 
 export interface CourseEditorStudyModules_study_modules {
   __typename: "StudyModule"
-  id: any
+  id: string
   name: string
   slug: string
 }
 
 export interface CourseEditorStudyModules {
-  study_modules: CourseEditorStudyModules_study_modules[]
+  study_modules: CourseEditorStudyModules_study_modules[] | null
 }

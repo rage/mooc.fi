@@ -9,13 +9,13 @@
 
 export interface CurrentUserUserOverView_currentUser_completions_course_photo {
   __typename: "Image"
-  id: any
+  id: string
   uncompressed: string
 }
 
 export interface CurrentUserUserOverView_currentUser_completions_course {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
   name: string
   photo: CurrentUserUserOverView_currentUser_completions_course_photo | null
@@ -29,26 +29,25 @@ export interface CurrentUserUserOverView_currentUser_completions_completions_reg
 
 export interface CurrentUserUserOverView_currentUser_completions_completions_registered {
   __typename: "CompletionRegistered"
-  id: any
+  id: string
   created_at: any | null
   organization: CurrentUserUserOverView_currentUser_completions_completions_registered_organization | null
 }
 
 export interface CurrentUserUserOverView_currentUser_completions {
   __typename: "Completion"
-  id: any
+  id: string
   completion_language: string | null
   student_number: string | null
   created_at: any | null
-  course: CurrentUserUserOverView_currentUser_completions_course
-  completions_registered:
-    | CurrentUserUserOverView_currentUser_completions_completions_registered[]
-    | null
+  course: CurrentUserUserOverView_currentUser_completions_course | null
+  completion_date: any | null
+  completions_registered: CurrentUserUserOverView_currentUser_completions_completions_registered[]
 }
 
 export interface CurrentUserUserOverView_currentUser {
   __typename: "User"
-  id: any
+  id: string
   upstream_id: number
   first_name: string | null
   last_name: string | null

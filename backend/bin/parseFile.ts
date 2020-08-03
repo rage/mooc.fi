@@ -2,10 +2,11 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import { uniqBy } from "lodash"
-import { Prisma } from "../generated/prisma-client"
 import TmcClient from "../services/tmc"
+import prismaClient from "./lib/prisma"
 
 const tmc = new TmcClient()
+const prisma = prismaClient()
 
 const doIt = async () => {
   const data = await tmc.getUserAppDatum(null)
@@ -18,14 +19,32 @@ const doIt = async () => {
   )
   x = uniqBy(x, (p) => p.user_id)
   console.log(x.length)
-  const prisma: Prisma = new Prisma()
+  // const prisma: Prisma = new Prisma()
   let counter = 0
+  /*
+    couldn't this be replaced by
+
+    counter = (await prisma.completion.findMany({ 
+      where: {
+        user_upstream_id: { in: x[i].map(y => y.user_id) },
+        course_completionTocourse: { slug: "elements-of-ai" }
+      }
+    })).length
+
+    ?
+  */
   for (let i = 0; i < x.length; i++) {
-    const exists = await prisma.$exists.completion({
+    const existing = await prisma.completion.findMany({
+      where: {
+        user_upstream_id: x[i].user_id,
+        course: { slug: "elements-of-ai" },
+      },
+    })
+    /*const exists = await prisma.$exists.completion({
       user_upstream_id: x[i].user_id,
       course: { slug: "elements-of-ai" },
-    })
-    if (exists) counter++
+    })*/
+    if (existing.length > 0) counter++
   }
   console.log(counter)
   let y = data.filter(

@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CourseArg } from "./globalTypes"
+import { CourseCreateArg } from "./globalTypes"
 
 // ====================================================
 // GraphQL mutation operation: addCourse
@@ -11,7 +11,7 @@ import { CourseArg } from "./globalTypes"
 
 export interface addCourse_addCourse_photo {
   __typename: "Image"
-  id: any
+  id: string
   name: string | null
   original: string
   original_mimetype: string
@@ -23,7 +23,7 @@ export interface addCourse_addCourse_photo {
 
 export interface addCourse_addCourse_course_translations {
   __typename: "CourseTranslation"
-  id: any
+  id: string
   language: string
   name: string
   description: string
@@ -32,7 +32,7 @@ export interface addCourse_addCourse_course_translations {
 
 export interface addCourse_addCourse_open_university_registration_links {
   __typename: "OpenUniversityRegistrationLink"
-  id: any
+  id: string
   course_code: string
   language: string
   link: string | null
@@ -40,53 +40,49 @@ export interface addCourse_addCourse_open_university_registration_links {
 
 export interface addCourse_addCourse_study_modules {
   __typename: "StudyModule"
-  id: any
+  id: string
 }
 
 export interface addCourse_addCourse_course_variants {
   __typename: "CourseVariant"
-  id: any
+  id: string
   slug: string
   description: string | null
 }
 
 export interface addCourse_addCourse_course_aliases {
   __typename: "CourseAlias"
-  id: any
+  id: string
   course_code: string
 }
 
 export interface addCourse_addCourse_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
-  id: any
+  id: string
   language: string
 }
 
 export interface addCourse_addCourse {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
   ects: string | null
   name: string
   order: number | null
   study_module_order: number | null
   photo: addCourse_addCourse_photo | null
-  course_translations: addCourse_addCourse_course_translations[] | null
-  open_university_registration_links:
-    | addCourse_addCourse_open_university_registration_links[]
-    | null
-  study_modules: addCourse_addCourse_study_modules[] | null
-  course_variants: addCourse_addCourse_course_variants[] | null
-  course_aliases: addCourse_addCourse_course_aliases[] | null
-  user_course_settings_visibilities:
-    | addCourse_addCourse_user_course_settings_visibilities[]
-    | null
+  course_translations: addCourse_addCourse_course_translations[]
+  open_university_registration_links: addCourse_addCourse_open_university_registration_links[]
+  study_modules: addCourse_addCourse_study_modules[]
+  course_variants: addCourse_addCourse_course_variants[]
+  course_aliases: addCourse_addCourse_course_aliases[]
+  user_course_settings_visibilities: addCourse_addCourse_user_course_settings_visibilities[]
 }
 
 export interface addCourse {
-  addCourse: addCourse_addCourse
+  addCourse: addCourse_addCourse | null
 }
 
 export interface addCourseVariables {
-  course: CourseArg
+  course: CourseCreateArg
 }

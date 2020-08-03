@@ -9,17 +9,17 @@
 
 export interface BreadcrumbCourse_course_course_translations {
   __typename: "CourseTranslation"
-  id: any
+  id: string
   language: string
   name: string
 }
 
 export interface BreadcrumbCourse_course {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
   name: string
-  course_translations: BreadcrumbCourse_course_course_translations[] | null
+  course_translations: BreadcrumbCourse_course_course_translations[]
 }
 
 export interface BreadcrumbCourse {

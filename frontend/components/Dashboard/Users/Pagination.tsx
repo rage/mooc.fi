@@ -60,6 +60,7 @@ const TablePaginationActions: React.FC<any> = () => {
         search: searchVariables.search,
         first: rowsPerPage,
         after: endCursor,
+        skip: 1,
       })
       setPage(page + 1)
     },

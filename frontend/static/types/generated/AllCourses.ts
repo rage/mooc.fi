@@ -11,32 +11,33 @@ import { CourseStatus } from "./globalTypes"
 
 export interface AllCourses_courses_photo {
   __typename: "Image"
-  id: any
+  id: string
   compressed: string | null
   uncompressed: string
 }
 
 export interface AllCourses_courses_study_modules {
   __typename: "StudyModule"
-  id: any
+  id: string
+  slug: string
 }
 
 export interface AllCourses_courses_course_translations {
   __typename: "CourseTranslation"
-  id: any
+  id: string
   language: string
   name: string
 }
 
 export interface AllCourses_courses_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
-  id: any
+  id: string
   language: string
 }
 
 export interface AllCourses_courses {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
   name: string
   order: number | null
@@ -46,17 +47,15 @@ export interface AllCourses_courses {
   start_point: boolean | null
   study_module_start_point: boolean | null
   hidden: boolean | null
-  description: string
-  link: string
-  study_modules: AllCourses_courses_study_modules[] | null
-  course_translations: AllCourses_courses_course_translations[] | null
-  user_course_settings_visibilities:
-    | AllCourses_courses_user_course_settings_visibilities[]
-    | null
+  description: string | null
+  link: string | null
+  study_modules: AllCourses_courses_study_modules[]
+  course_translations: AllCourses_courses_course_translations[]
+  user_course_settings_visibilities: AllCourses_courses_user_course_settings_visibilities[]
 }
 
 export interface AllCourses {
-  courses: AllCourses_courses[]
+  courses: AllCourses_courses[] | null
 }
 
 export interface AllCoursesVariables {

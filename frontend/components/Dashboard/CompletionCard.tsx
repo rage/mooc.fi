@@ -65,7 +65,7 @@ function CompletionCard({
           )}
         </ListItemIcon>
         <ListItemText
-          primary={`${completer.user.first_name} ${completer.user.last_name}`}
+          primary={`${completer.user?.first_name} ${completer.user?.last_name}`}
           secondary={
             <React.Fragment>
               <Typography component="span" style={{ display: "block" }}>

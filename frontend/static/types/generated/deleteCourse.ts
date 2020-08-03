@@ -9,12 +9,12 @@
 
 export interface deleteCourse_deleteCourse {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
 }
 
 export interface deleteCourse {
-  deleteCourse: deleteCourse_deleteCourse
+  deleteCourse: deleteCourse_deleteCourse | null
 }
 
 export interface deleteCourseVariables {

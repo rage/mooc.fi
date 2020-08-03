@@ -1,17 +1,17 @@
 import { Message } from "./interfaces"
 import { DateTime } from "luxon"
 import {
-  Prisma,
+  PrismaClient,
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
-} from "../../../generated/prisma-client"
+} from "@prisma/client"
 import TmcClient from "../../../services/tmc"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 
-import * as _KnexConstructor from "knex"
+import _KnexConstructor from "knex"
 
 const Knex = _KnexConstructor({
   client: "pg",
@@ -28,26 +28,25 @@ const Knex = _KnexConstructor({
       : ["default$default"],
 })
 
-const getUserFromTMC = async (
-  prisma: Prisma,
-  user_id: number,
-): Promise<User> => {
+const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
   const tmc: TmcClient = new TmcClient()
   const userDetails = await tmc.getUserDetailsById(user_id)
 
-  return prisma.createUser({
-    upstream_id: userDetails.id,
-    first_name: userDetails.user_field.first_name,
-    last_name: userDetails.user_field.last_name,
-    email: userDetails.email,
-    username: userDetails.username,
-    administrator: userDetails.administrator,
+  return prisma.user.create({
+    data: {
+      upstream_id: userDetails.id,
+      first_name: userDetails.user_field.first_name,
+      last_name: userDetails.user_field.last_name,
+      email: userDetails.email,
+      username: userDetails.username,
+      administrator: userDetails.administrator,
+    },
   })
 }
 
 export const saveToDatabase = async (
   message: Message,
-  prisma: Prisma,
+  prisma: PrismaClient,
   logger: Logger,
 ) => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
@@ -70,8 +69,8 @@ export const saveToDatabase = async (
     }
   }
 
-  const course = await prisma.course({
-    id: message.course_id,
+  const course = await prisma.course.findOne({
+    where: { id: message.course_id },
   })
 
   if (!user || !course) {
@@ -87,10 +86,14 @@ export const saveToDatabase = async (
   )[0]
 
   if (!userCourseProgress) {
-    userCourseProgress = await prisma.createUserCourseProgress({
-      course: { connect: { id: message.course_id } },
-      user: { connect: { id: user?.id } },
-      progress: message.progress,
+    userCourseProgress = await prisma.userCourseProgress.create({
+      data: {
+        course: {
+          connect: { id: message.course_id },
+        },
+        user: { connect: { id: user?.id } },
+        progress: message.progress as any, // type error without any
+      },
     })
   }
 
@@ -105,32 +108,40 @@ export const saveToDatabase = async (
   )[0]
 
   if (userCourseServiceProgress) {
+    // FIXME: weird
     const oldTimestamp = DateTime.fromISO(
-      userCourseServiceProgress.timestamp ?? "",
+      userCourseServiceProgress?.timestamp?.toISOString() ?? "",
     )
 
     if (timestamp < oldTimestamp) {
       logger.error("Timestamp older than in DB, aborting")
       return false
     }
-    await prisma.updateUserCourseServiceProgress({
+    await prisma.userCourseServiceProgress.update({
       where: {
         id: userCourseServiceProgress.id,
       },
       data: {
-        progress: message.progress,
+        progress: message.progress as any, // type error without any
         timestamp: timestamp.toJSDate(),
       },
     })
   } else {
-    await prisma.createUserCourseServiceProgress({
-      user: { connect: { id: user?.id } },
-      course: { connect: { id: message.course_id } },
-      service: { connect: { id: message.service_id } },
-      progress: message.progress,
-
-      user_course_progress: { connect: { id: userCourseProgress.id } },
-      timestamp: timestamp.toJSDate(),
+    await prisma.userCourseServiceProgress.create({
+      data: {
+        user: { connect: { id: user?.id } },
+        course: {
+          connect: { id: message.course_id },
+        },
+        service: {
+          connect: { id: message.service_id },
+        },
+        progress: message.progress as any, // type error without any
+        user_course_progress: {
+          connect: { id: userCourseProgress.id },
+        },
+        timestamp: timestamp.toJSDate(),
+      },
     })
   }
 

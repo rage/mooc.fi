@@ -1,4 +1,4 @@
-import * as knex from "knex"
+import knex from "knex"
 
 // require("dotenv-safe").config()
 

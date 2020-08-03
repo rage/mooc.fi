@@ -1,15 +1,10 @@
 import { Message } from "./interfaces"
-import {
-  Prisma,
-  ExerciseCompletion,
-  Exercise,
-  User,
-} from "../../../generated/prisma-client"
+import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
 import TmcClient from "../../../services/tmc"
 import { DateTime } from "luxon"
 import winston = require("winston")
 import { CheckCompletion } from "../userCourseProgressConsumer/generateUserCourseProgress"
-import * as knex from "knex"
+import knex from "knex"
 
 const Knex = knex({
   client: "pg",
@@ -21,35 +16,36 @@ const Knex = knex({
     database: process.env.DB_NAME,
   },
   searchPath:
+    // TODO: should this use the env search path?
     process.env.NODE_ENV === "production"
       ? ["moocfi$production"]
       : ["default$default"],
 })
 
+// @ts-ignore: not used
 const isUserInDB = async (user_id: number) => {
   return await Knex("user").where("upstream_id", "=", user_id)
 }
 
-const getUserFromTMC = async (
-  prisma: Prisma,
-  user_id: number,
-): Promise<User> => {
+const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
   const tmc: TmcClient = new TmcClient()
   const userDetails = await tmc.getUserDetailsById(user_id)
 
-  return prisma.createUser({
-    upstream_id: userDetails.id,
-    first_name: userDetails.user_field.first_name,
-    last_name: userDetails.user_field.last_name,
-    email: userDetails.email,
-    username: userDetails.username,
-    administrator: userDetails.administrator,
+  return prisma.user.create({
+    data: {
+      upstream_id: userDetails.id,
+      first_name: userDetails.user_field.first_name,
+      last_name: userDetails.user_field.last_name,
+      email: userDetails.email,
+      username: userDetails.username,
+      administrator: userDetails.administrator,
+    },
   })
 }
 
 export const saveToDatabase = async (
   message: Message,
-  prisma: Prisma,
+  prisma: PrismaClient,
   logger: winston.Logger,
 ): Promise<Boolean> => {
   console.log("Parsing timestamp")
@@ -75,8 +71,8 @@ export const saveToDatabase = async (
     }
   }
 
-  const course = await prisma.course({
-    id: message.course_id,
+  const course = await prisma.course.findOne({
+    where: { id: message.course_id },
   })
 
   if (!user || !course) {
@@ -85,16 +81,16 @@ export const saveToDatabase = async (
   }
 
   logger.info("Checking if a exercise exists with id " + message.exercise_id)
-  const isExercise = await prisma.$exists.exercise({
-    custom_id: message.exercise_id,
+  const existingExercises = await prisma.exercise.findMany({
+    where: { custom_id: message.exercise_id },
   })
-  if (!isExercise) {
+  if (existingExercises.length < 1) {
     logger.error("Given exercise does not exist")
     return false
   }
   logger.info("Getting the exercise")
-  const exercises: Exercise[] = await prisma.exercises({
-    first: 1,
+  const exercises = await prisma.exercise.findMany({
+    take: 1,
     where: {
       custom_id: message.exercise_id,
     },
@@ -103,47 +99,58 @@ export const saveToDatabase = async (
   const exercise = exercises[0]
 
   logger.info("Getting the completion")
-  const exerciseCompleteds: ExerciseCompletion[] = await prisma.exerciseCompletions(
-    {
-      first: 1,
-      where: {
-        exercise: { custom_id: message.exercise_id },
-        user: { upstream_id: Number(message.user_id) },
+  const exerciseCompleteds = await prisma.exerciseCompletion.findMany({
+    take: 1,
+    where: {
+      exercise: {
+        custom_id: message.exercise_id,
       },
-      orderBy: "timestamp_DESC",
+      user: { upstream_id: Number(message.user_id) },
     },
-  )
+    orderBy: { timestamp: "desc" },
+  })
   const exerciseCompleted = exerciseCompleteds[0]
+
+  // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion
+
   if (!exerciseCompleted) {
     logger.info("No previous completion, creating a new one")
-    savedExerciseCompletion = await prisma.createExerciseCompletion({
-      exercise: { connect: { id: exercise.id } },
-      user: { connect: { upstream_id: Number(message.user_id) } },
-      n_points: message.n_points,
-      completed: message.completed,
-      required_actions: {
-        create: message.required_actions.map((ra) => {
-          return {
-            value: ra,
-          }
-        }),
+    savedExerciseCompletion = await prisma.exerciseCompletion.create({
+      data: {
+        exercise: {
+          connect: { id: exercise.id },
+        },
+        user: {
+          connect: { upstream_id: Number(message.user_id) },
+        },
+        n_points: message.n_points,
+        completed: message.completed,
+        exercise_completion_required_actions: {
+          create: message.required_actions.map((ra) => {
+            return {
+              value: ra,
+            }
+          }),
+        },
+        timestamp: message.timestamp,
       },
-      timestamp: message.timestamp,
     })
   } else {
     logger.info("Updating previous completion")
-    const oldTimestamp = DateTime.fromISO(exerciseCompleted.timestamp ?? "")
+    const oldTimestamp = DateTime.fromISO(
+      exerciseCompleted?.timestamp?.toISOString() ?? "",
+    )
     if (timestamp <= oldTimestamp) {
       logger.error("Timestamp older than in DB, aborting")
       return false
     }
-    savedExerciseCompletion = await prisma.updateExerciseCompletion({
+    savedExerciseCompletion = await prisma.exerciseCompletion.update({
       where: { id: exerciseCompleted.id },
       data: {
         n_points: Number(message.n_points),
         completed: message.completed,
-        required_actions: {
+        exercise_completion_required_actions: {
           create: message.required_actions.map((ra) => {
             return {
               value: ra,

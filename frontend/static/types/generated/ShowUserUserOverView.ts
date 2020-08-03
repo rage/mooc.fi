@@ -9,13 +9,13 @@
 
 export interface ShowUserUserOverView_user_completions_course_photo {
   __typename: "Image"
-  id: any
+  id: string
   uncompressed: string
 }
 
 export interface ShowUserUserOverView_user_completions_course {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
   name: string
   photo: ShowUserUserOverView_user_completions_course_photo | null
@@ -29,26 +29,24 @@ export interface ShowUserUserOverView_user_completions_completions_registered_or
 
 export interface ShowUserUserOverView_user_completions_completions_registered {
   __typename: "CompletionRegistered"
-  id: any
+  id: string
   created_at: any | null
   organization: ShowUserUserOverView_user_completions_completions_registered_organization | null
 }
 
 export interface ShowUserUserOverView_user_completions {
   __typename: "Completion"
-  id: any
+  id: string
   completion_language: string | null
   student_number: string | null
   created_at: any | null
-  course: ShowUserUserOverView_user_completions_course
-  completions_registered:
-    | ShowUserUserOverView_user_completions_completions_registered[]
-    | null
+  course: ShowUserUserOverView_user_completions_course | null
+  completions_registered: ShowUserUserOverView_user_completions_completions_registered[]
 }
 
 export interface ShowUserUserOverView_user {
   __typename: "User"
-  id: any
+  id: string
   upstream_id: number
   first_name: string | null
   last_name: string | null
@@ -57,7 +55,7 @@ export interface ShowUserUserOverView_user {
 }
 
 export interface ShowUserUserOverView {
-  user: ShowUserUserOverView_user
+  user: ShowUserUserOverView_user | null
 }
 
 export interface ShowUserUserOverViewVariables {

@@ -1,26 +1,40 @@
-import { Prisma, EmailDelivery } from "../generated/prisma-client"
+import { EmailDelivery } from "@prisma/client"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
-
+import prismaClient from "./lib/prisma"
 const BATCH_SIZE = 100
 
-const prisma = new Prisma()
+const prisma = prismaClient()
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {
-  const user = await prisma.emailDelivery({ id: emailDelivery.id }).user()
+  const { user, email_template } =
+    (await prisma.emailDelivery.findOne({
+      where: { id: emailDelivery.id },
+      select: {
+        user: true,
+        email_template: true,
+      },
+    })) ?? {}
+  if (!email_template || !user) {
+    // TODO: should this update the delivery with error?
+    console.error("No email template or user found while sending email")
+    return
+  }
+
+  /*const user = await prisma.email_delivery.findOne({ where: { id: emailDelivery.id } }).user_email_deliveryTouser()
   const emailTemplate = await prisma
-    .emailDelivery({ id: emailDelivery.id })
-    .email_template()
-  console.log(`Delivering email ${emailTemplate.name} to ${user.email}`)
+    .email_delivery.findOne({ where: { id: emailDelivery.id } })
+    .email_template_email_deliveryToemail_template()*/
+  console.log(`Delivering email ${email_template.name} to ${user.email}`)
   try {
-    await sendEmailTemplateToUser(user, emailTemplate)
+    await sendEmailTemplateToUser(user, email_template)
     console.log("Marking email as delivered")
-    await prisma.updateEmailDelivery({
+    await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: { sent: true, error: false },
     })
   } catch (e) {
     console.error("Sending failed", e.message)
-    await prisma.updateEmailDelivery({
+    await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: { error: true, error_message: e.message },
     })
@@ -29,9 +43,9 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
 
 const main = async () => {
   while (true) {
-    const emailsToDeliver = await prisma.emailDeliveries({
+    const emailsToDeliver = await prisma.emailDelivery.findMany({
       where: { sent: false, error: false },
-      first: BATCH_SIZE,
+      take: BATCH_SIZE,
     })
     if (emailsToDeliver.length > 0) {
       console.log(

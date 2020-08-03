@@ -42,7 +42,7 @@ function Module(props: ModuleProps) {
         {module ? (
           <ModuleDisplayContent
             name={module.name}
-            description={module.description}
+            description={module.description ?? ""}
             orderedCourses={orderedCourses}
           />
         ) : (

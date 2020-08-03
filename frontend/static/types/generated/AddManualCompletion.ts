@@ -18,19 +18,19 @@ export interface AddManualCompletion_addManualCompletion_user {
 
 export interface AddManualCompletion_addManualCompletion {
   __typename: "Completion"
-  id: any
+  id: string
   created_at: any | null
   updated_at: any | null
   completion_language: string | null
   grade: string | null
-  user: AddManualCompletion_addManualCompletion_user
+  user: AddManualCompletion_addManualCompletion_user | null
 }
 
 export interface AddManualCompletion {
-  addManualCompletion: AddManualCompletion_addManualCompletion[]
+  addManualCompletion: AddManualCompletion_addManualCompletion[] | null
 }
 
 export interface AddManualCompletionVariables {
-  course_id?: string | null
+  course_id: string
   completions?: ManualCompletionArg[] | null
 }

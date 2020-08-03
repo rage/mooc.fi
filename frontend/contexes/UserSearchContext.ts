@@ -3,6 +3,7 @@ import { UserDetailsContains } from "/static/types/generated/UserDetailsContains
 
 export interface SearchVariables {
   search: string
+  cursor?: string
   first?: number
   last?: number
   skip?: number

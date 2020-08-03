@@ -1,6 +1,5 @@
 import * as Yup from "yup"
-import { ApolloClient } from "apollo-client"
-import { CourseStatus } from "../../../../static/types/globalTypes"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 import {
   CourseFormValues,
   CourseTranslationFormValues,
@@ -8,7 +7,7 @@ import {
   CourseAliasFormValues,
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
-import { DocumentNode } from "apollo-boost"
+import { ApolloClient, DocumentNode } from "@apollo/client"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { DateTime } from "luxon"
 import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
@@ -106,7 +105,10 @@ export const languages = (t: Function) => [
 
 export const study_modules: { value: any; label: any }[] = []
 
-const testUnique = <T extends FormValues>(valueField: string, field: string) =>
+const testUnique = <T extends FormValues>(
+  valueField: keyof CourseFormValues,
+  field: string,
+) =>
   function (this: Yup.TestContext, value?: any): boolean {
     const {
       context,

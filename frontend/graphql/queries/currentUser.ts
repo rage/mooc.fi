@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 
 export const UserOverViewQuery = gql`
   query CurrentUserUserOverView {
@@ -23,6 +23,7 @@ export const UserOverViewQuery = gql`
           }
           has_certificate
         }
+        completion_date
         completions_registered {
           id
           created_at

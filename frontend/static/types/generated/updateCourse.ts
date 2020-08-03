@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CourseArg } from "./globalTypes"
+import { CourseUpsertArg } from "./globalTypes"
 
 // ====================================================
 // GraphQL mutation operation: updateCourse
@@ -11,7 +11,7 @@ import { CourseArg } from "./globalTypes"
 
 export interface updateCourse_updateCourse_photo {
   __typename: "Image"
-  id: any
+  id: string
   name: string | null
   original: string
   original_mimetype: string
@@ -23,7 +23,7 @@ export interface updateCourse_updateCourse_photo {
 
 export interface updateCourse_updateCourse_course_translations {
   __typename: "CourseTranslation"
-  id: any
+  id: string
   language: string
   name: string
   description: string
@@ -32,7 +32,7 @@ export interface updateCourse_updateCourse_course_translations {
 
 export interface updateCourse_updateCourse_open_university_registration_links {
   __typename: "OpenUniversityRegistrationLink"
-  id: any
+  id: string
   course_code: string
   language: string
   link: string | null
@@ -40,25 +40,25 @@ export interface updateCourse_updateCourse_open_university_registration_links {
 
 export interface updateCourse_updateCourse_study_modules {
   __typename: "StudyModule"
-  id: any
+  id: string
 }
 
 export interface updateCourse_updateCourse_course_variants {
   __typename: "CourseVariant"
-  id: any
+  id: string
   slug: string
   description: string | null
 }
 
 export interface updateCourse_updateCourse_course_aliases {
   __typename: "CourseAlias"
-  id: any
+  id: string
   course_code: string
 }
 
 export interface updateCourse_updateCourse_completion_email {
   __typename: "EmailTemplate"
-  id: any
+  id: string
   name: string | null
   title: string | null
   txt_body: string | null
@@ -67,36 +67,32 @@ export interface updateCourse_updateCourse_completion_email {
 
 export interface updateCourse_updateCourse_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
-  id: any
+  id: string
   language: string
 }
 
 export interface updateCourse_updateCourse {
   __typename: "Course"
-  id: any
+  id: string
   slug: string
   ects: string | null
   name: string
   order: number | null
   study_module_order: number | null
   photo: updateCourse_updateCourse_photo | null
-  course_translations: updateCourse_updateCourse_course_translations[] | null
-  open_university_registration_links:
-    | updateCourse_updateCourse_open_university_registration_links[]
-    | null
-  study_modules: updateCourse_updateCourse_study_modules[] | null
-  course_variants: updateCourse_updateCourse_course_variants[] | null
-  course_aliases: updateCourse_updateCourse_course_aliases[] | null
+  course_translations: updateCourse_updateCourse_course_translations[]
+  open_university_registration_links: updateCourse_updateCourse_open_university_registration_links[]
+  study_modules: updateCourse_updateCourse_study_modules[]
+  course_variants: updateCourse_updateCourse_course_variants[]
+  course_aliases: updateCourse_updateCourse_course_aliases[]
   completion_email: updateCourse_updateCourse_completion_email | null
-  user_course_settings_visibilities:
-    | updateCourse_updateCourse_user_course_settings_visibilities[]
-    | null
+  user_course_settings_visibilities: updateCourse_updateCourse_user_course_settings_visibilities[]
 }
 
 export interface updateCourse {
-  updateCourse: updateCourse_updateCourse
+  updateCourse: updateCourse_updateCourse | null
 }
 
 export interface updateCourseVariables {
-  course: CourseArg
+  course: CourseUpsertArg
 }

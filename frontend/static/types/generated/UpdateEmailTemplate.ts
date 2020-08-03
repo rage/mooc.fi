@@ -9,7 +9,7 @@
 
 export interface UpdateEmailTemplate_updateEmailTemplate {
   __typename: "EmailTemplate"
-  id: any
+  id: string
   name: string | null
   html_body: string | null
   txt_body: string | null
@@ -17,7 +17,7 @@ export interface UpdateEmailTemplate_updateEmailTemplate {
 }
 
 export interface UpdateEmailTemplate {
-  updateEmailTemplate: UpdateEmailTemplate_updateEmailTemplate
+  updateEmailTemplate: UpdateEmailTemplate_updateEmailTemplate | null
 }
 
 export interface UpdateEmailTemplateVariables {

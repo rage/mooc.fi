@@ -9,16 +9,16 @@
 
 export interface AllModules_study_modules {
   __typename: "StudyModule"
-  id: any
+  id: string
   slug: string
   name: string
-  description: string
+  description: string | null
   image: string | null
   order: number | null
 }
 
 export interface AllModules {
-  study_modules: AllModules_study_modules[]
+  study_modules: AllModules_study_modules[] | null
 }
 
 export interface AllModulesVariables {

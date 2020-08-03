@@ -2,12 +2,8 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import SlackPoster from "../services/slackPoster"
-import {
-  Prisma,
-  UserCourseSettings,
-  Completion,
-} from "../generated/prisma-client"
 import Knex from "../services/knex"
+import prismaClient from "./lib/prisma"
 
 const slackPoster: SlackPoster = new SlackPoster()
 const url: string | undefined = process.env.AI_SLACK_URL
@@ -17,7 +13,7 @@ if (!url) {
 }
 
 let data = { text: "" }
-const prisma: Prisma = new Prisma()
+const prisma = prismaClient()
 
 interface langProps {
   language: string
@@ -66,19 +62,19 @@ const langArr: langProps[] = [
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
-  const totalByLang: UserCourseSettings[] = await prisma.userCourseSettingses({
+  const totalByLang = await prisma.userCourseSetting.findMany({
     where: {
       language: langProps.language,
       course: { slug: "elements-of-ai" },
     },
   })
-  const completionsByLang: Completion[] = await prisma.completions({
+  const completionsByLang = await prisma.completion.findMany({
     where: {
       course: { slug: "elements-of-ai" },
       completion_language: langProps.completion_language,
     },
   })
-  const englishInLang = await prisma.userCourseSettingses({
+  const englishInLang = await prisma.userCourseSetting.findMany({
     where: {
       country: langProps.country,
       language: "en",

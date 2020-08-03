@@ -2,37 +2,37 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import TmcClient from "../services/tmc"
-import {
-  Prisma,
-  Course,
-  UserCourseSettings,
-  User,
-  Maybe,
-} from "../generated/prisma-client"
+import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
+import prismaClient from "./lib/prisma"
 
 const CONFIG_NAME = "userAppDatum"
 
-const prisma: Prisma = new Prisma()
-let course: Maybe<Course>
-let old: UserCourseSettings
+const prisma = prismaClient()
+let course
+let old: UserCourseSetting
 
 const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
-  const prisma: Prisma = new Prisma()
+  // const prisma: Prisma = new Prisma()
 
-  const latestTimeStamp = (await prisma.$exists.userAppDatumConfig({
-    name: CONFIG_NAME,
-  }))
-    ? ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
-    : null
+  const existingConfigs = await prisma.userAppDatumConfig.findMany({
+    where: { name: CONFIG_NAME },
+  })
+  const latestTimeStamp =
+    existingConfigs.length > 0
+      ? existingConfigs[0].timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
+      : null
 
   console.log(latestTimeStamp)
 
-  const data_from_tmc = await tmc.getUserAppDatum(latestTimeStamp ?? null)
+  // weird
+  const data_from_tmc = await tmc.getUserAppDatum(
+    latestTimeStamp?.toISOString() ?? null,
+  )
   console.log("Got data from tmc")
   console.log("data length", data_from_tmc.length)
   console.log("sorting")
@@ -55,10 +55,10 @@ const fetchUserAppDatum = async () => {
       console.log("not p:", p, "i is", i, "while data.length is", data.length)
       continue
     }
-    const isUser: Boolean = await prisma.$exists.user({
-      upstream_id: p.user_id,
+    const existingUsers = await prisma.user.findMany({
+      where: { upstream_id: p.user_id },
     })
-    if (!isUser) {
+    if (existingUsers.length < 1) {
       try {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {
@@ -70,41 +70,45 @@ const fetchUserAppDatum = async () => {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       }
     }
-    const isCourse: Boolean = await prisma.$exists.course({ slug: p.namespace })
-    if (!isCourse) {
-      await prisma.createCourse({
-        slug: p.namespace,
-        name: p.namespace,
-        hidden: true,
-        teacher_in_charge_name: "",
-        teacher_in_charge_email: "",
-        start_date: "",
+    const existingCourses = await prisma.course.findMany({
+      where: { slug: p.namespace },
+    })
+    if (existingCourses.length < 1) {
+      await prisma.course.create({
+        data: {
+          slug: p.namespace,
+          name: p.namespace,
+          hidden: true,
+          teacher_in_charge_name: "",
+          teacher_in_charge_email: "",
+          start_date: "",
+        },
       })
     }
 
-    course = await prisma.course({ slug: p.namespace })
+    course = await prisma.course.findOne({ where: { slug: p.namespace } })
 
     if (!course) {
       process.exit(1)
     }
 
-    const isOld: Boolean = await prisma.$exists.userCourseSettings({
-      user: { upstream_id: p.user_id },
-      course: { id: course.id },
+    const existingUserCourseSettings = await prisma.userCourseSetting.findMany({
+      where: {
+        user: { upstream_id: p.user_id },
+        course_id: course.id,
+      },
     })
-    if (!isOld) {
-      old = await prisma.createUserCourseSettings({
-        user: { connect: { upstream_id: p.user_id } },
-        course: { connect: { id: course.id } },
-      })
-    } else {
-      const tmp: UserCourseSettings[] = await prisma.userCourseSettingses({
-        where: {
-          user: { upstream_id: p.user_id },
-          course: { id: course.id },
+    if (existingUserCourseSettings.length < 1) {
+      old = await prisma.userCourseSetting.create({
+        data: {
+          user: {
+            connect: { upstream_id: p.user_id },
+          },
+          course: { connect: { id: course.id } },
         },
       })
-      old = tmp[0]
+    } else {
+      old = existingUserCourseSettings[0]
     }
 
     switch (p.field_name) {
@@ -138,7 +142,7 @@ const fetchUserAppDatum = async () => {
 }
 
 const saveLanguage = async (p: any) => {
-  await prisma.updateUserCourseSettings({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -148,7 +152,7 @@ const saveLanguage = async (p: any) => {
   })
 }
 const saveCountry = async (p: any) => {
-  await prisma.updateUserCourseSettings({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -159,7 +163,7 @@ const saveCountry = async (p: any) => {
 }
 const saveResearch = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
-  await prisma.updateUserCourseSettings({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -170,7 +174,7 @@ const saveResearch = async (p: any) => {
 }
 const saveMarketing = async (p: any) => {
   const value: boolean = p.value == "t" ? true : false
-  await prisma.updateUserCourseSettings({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -180,7 +184,7 @@ const saveMarketing = async (p: any) => {
   })
 }
 const saveCourseVariant = async (p: any) => {
-  await prisma.updateUserCourseSettings({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -189,13 +193,17 @@ const saveCourseVariant = async (p: any) => {
     },
   })
 }
+
 const saveOther = async (p: any) => {
-  const other = old.other ?? {}
-  if (p.value == "t") p.value = true
-  else if (p.value == "f") p.value = false
+  const other: any = old.other ?? {}
+  if (p.value == "t") {
+    p.value = true
+  } else if (p.value == "f") {
+    p.value = false
+  }
   other[p.field_name] = p.value
 
-  await prisma.updateUserCourseSettings({
+  await prisma.userCourseSetting.update({
     where: {
       id: old.id,
     },
@@ -205,10 +213,7 @@ const saveOther = async (p: any) => {
   })
 }
 
-const getUserFromTmcAndSaveToDB = async (
-  user_id: Number,
-  tmc: TmcClient,
-): Promise<User> => {
+const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   const details: UserInfo = await tmc.getUserDetailsById(user_id)
   const prismaDetails = {
     upstream_id: details.id,
@@ -219,7 +224,7 @@ const getUserFromTmcAndSaveToDB = async (
     username: details.username,
   }
   try {
-    return await prisma.upsertUser({
+    return await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
       update: prismaDetails,
@@ -249,11 +254,11 @@ const getUserFromTmcAndSaveToDB = async (
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-async function saveProgress(prisma: Prisma, dateToDB: Date) {
+async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   console.log("saving")
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
-  await prisma.upsertUserAppDatumConfig({
+  await prisma.userAppDatumConfig.upsert({
     where: { name: CONFIG_NAME },
     create: {
       name: CONFIG_NAME,

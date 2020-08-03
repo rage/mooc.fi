@@ -3,7 +3,7 @@ import { Grid } from "@material-ui/core"
 import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
 import PointsItemTable from "./PointsItemTable"
 import styled from "styled-components"
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 import formatPointsData, {
   formattedGroupPointsDictionary,
 } from "/util/formatPointsData"
@@ -102,7 +102,7 @@ function PointsListItemCard(props: Props) {
         <PersonalDetailsDisplay personalDetails={personalDetails} />
       ) : (
         <CardTitle component="h2" variant="h3">
-          {pointsAll.course.name}
+          {pointsAll.course?.name}
         </CardTitle>
       )}
       {Object.keys(formattedPointsData?.groups ?? {}).length ? (

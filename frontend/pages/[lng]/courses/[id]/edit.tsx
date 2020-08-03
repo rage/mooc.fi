@@ -3,8 +3,8 @@ import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
-import { useQuery } from "@apollo/react-hooks"
-import { gql } from "apollo-boost"
+import { useQuery } from "@apollo/client"
+import { gql } from "@apollo/client"
 import styled from "styled-components"
 import { CourseDetails } from "/static/types/generated/CourseDetails"
 import CourseEdit from "/components/Dashboard/Editor/Course"
@@ -157,9 +157,9 @@ const EditCourse = ({ router }: EditCourseProps) => {
         </H1Background>
         {courseLoading || studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
-        ) : courseData!.course ? (
+        ) : courseData?.course ? (
           <CourseEdit
-            course={courseData!.course}
+            course={courseData.course}
             modules={studyModulesData?.study_modules ?? []}
             courses={coursesData?.courses ?? []}
           />

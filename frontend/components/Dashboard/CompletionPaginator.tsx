@@ -6,16 +6,17 @@ import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft"
 interface PaginatorProps {
   getNext: () => void
   getPrevious: () => void
-  pageNumber: number
+  hasPrevious: boolean
+  hasNext: boolean
 }
 
 function Paginator(props: PaginatorProps) {
-  const { getNext, getPrevious, pageNumber } = props
+  const { getNext, getPrevious, hasPrevious, hasNext } = props
   return (
     <Grid item xs={12} sm={12} lg={8}>
       <Grid container direction="row" alignItems="center">
         <Grid item>
-          {pageNumber !== 1 ? (
+          {hasPrevious ? (
             <IconButton onClick={getPrevious}>
               <KeyboardArrowLeftIcon />
             </IconButton>
@@ -24,9 +25,13 @@ function Paginator(props: PaginatorProps) {
           )}
         </Grid>
         <Grid item>
-          <IconButton onClick={getNext}>
-            <KeyboardArrowRightIcon />
-          </IconButton>
+          {hasNext ? (
+            <IconButton onClick={getNext}>
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          ) : (
+            ""
+          )}
         </Grid>
       </Grid>
     </Grid>

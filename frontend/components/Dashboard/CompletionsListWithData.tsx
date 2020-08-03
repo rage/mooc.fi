@@ -8,11 +8,12 @@ interface CompletionsListWithDataProps {
   completions: AllCompletions_completionsPaginated_edges_node[]
   onLoadMore: () => void
   onGoBack: () => void
-  pageNumber: number
+  hasPrevious: boolean
+  hasNext: boolean
 }
 
 const CompletionsListWithData = (props: CompletionsListWithDataProps) => {
-  const { completions, onLoadMore, onGoBack, pageNumber } = props
+  const { completions, onLoadMore, onGoBack, hasPrevious, hasNext } = props
   return (
     <>
       <List>
@@ -23,7 +24,8 @@ const CompletionsListWithData = (props: CompletionsListWithDataProps) => {
       <CompletionPaginator
         getNext={onLoadMore}
         getPrevious={onGoBack}
-        pageNumber={pageNumber}
+        hasPrevious={hasPrevious}
+        hasNext={hasNext}
       />
     </>
   )

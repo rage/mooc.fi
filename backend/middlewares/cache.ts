@@ -1,22 +1,22 @@
 import { createHash } from "crypto"
-import { redisify } from "..//services/redis"
-import { Context } from "/context"
+import { redisify } from "../services/redis"
+// import { NexusContext } from "../context"
 
-const fetchUser = async (
-  resolve: Function,
+const cache = (_config: any) => async (
   root: any,
   args: Record<string, any>,
-  context: Context,
+  context: NexusContext,
   info: any,
+  next: Function,
 ) => {
-  let rawToken: string | null = null
-  if (context.request) {
-    rawToken = context.request.get("Authorization")
-  } else if (context.connection) {
+  let rawToken: string | undefined = undefined
+  if (context.headers) {
+    rawToken = context?.headers?.authorization
+  } /* else if (context.connection) {
     rawToken = context.connection.context["Authorization"]
-  }
+  }*/
   if (root || info.parentType.toString() !== "Query" || rawToken) {
-    return await resolve(root, args, context, info)
+    return await next(root, args, context, info)
   }
 
   const key = `${info.fieldName}-${JSON.stringify(
@@ -25,9 +25,7 @@ const fetchUser = async (
 
   let hash = createHash("sha512").update(key).digest("hex")
   const res = await redisify<any>(
-    async () => {
-      return await resolve(root, args, context, info)
-    },
+    async () => await next(root, args, context, info),
     {
       prefix: "graphql-response",
       expireTime: 300,
@@ -37,4 +35,4 @@ const fetchUser = async (
   return res
 }
 
-export default fetchUser
+export default cache

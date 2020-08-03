@@ -11,7 +11,7 @@ import { CourseStatus } from "./globalTypes"
 
 export interface CourseDetails_course_photo {
   __typename: "Image"
-  id: any
+  id: string
   compressed: string | null
   compressed_mimetype: string | null
   uncompressed: string
@@ -20,7 +20,7 @@ export interface CourseDetails_course_photo {
 
 export interface CourseDetails_course_course_translations {
   __typename: "CourseTranslation"
-  id: any
+  id: string
   name: string
   language: string
   description: string
@@ -29,7 +29,7 @@ export interface CourseDetails_course_course_translations {
 
 export interface CourseDetails_course_open_university_registration_links {
   __typename: "OpenUniversityRegistrationLink"
-  id: any
+  id: string
   course_code: string
   language: string
   link: string | null
@@ -37,41 +37,41 @@ export interface CourseDetails_course_open_university_registration_links {
 
 export interface CourseDetails_course_study_modules {
   __typename: "StudyModule"
-  id: any
+  id: string
 }
 
 export interface CourseDetails_course_course_variants {
   __typename: "CourseVariant"
-  id: any
+  id: string
   slug: string
   description: string | null
 }
 
 export interface CourseDetails_course_course_aliases {
   __typename: "CourseAlias"
-  id: any
+  id: string
   course_code: string
 }
 
 export interface CourseDetails_course_inherit_settings_from {
   __typename: "Course"
-  id: any
+  id: string
 }
 
 export interface CourseDetails_course_completions_handled_by {
   __typename: "Course"
-  id: any
+  id: string
 }
 
 export interface CourseDetails_course_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
-  id: any
+  id: string
   language: string
 }
 
 export interface CourseDetails_course {
   __typename: "Course"
-  id: any
+  id: string
   name: string
   slug: string
   ects: string | null
@@ -88,19 +88,15 @@ export interface CourseDetails_course {
   hidden: boolean | null
   study_module_start_point: boolean | null
   status: CourseStatus | null
-  course_translations: CourseDetails_course_course_translations[] | null
-  open_university_registration_links:
-    | CourseDetails_course_open_university_registration_links[]
-    | null
-  study_modules: CourseDetails_course_study_modules[] | null
-  course_variants: CourseDetails_course_course_variants[] | null
-  course_aliases: CourseDetails_course_course_aliases[] | null
+  course_translations: CourseDetails_course_course_translations[]
+  open_university_registration_links: CourseDetails_course_open_university_registration_links[]
+  study_modules: CourseDetails_course_study_modules[]
+  course_variants: CourseDetails_course_course_variants[]
+  course_aliases: CourseDetails_course_course_aliases[]
   inherit_settings_from: CourseDetails_course_inherit_settings_from | null
   completions_handled_by: CourseDetails_course_completions_handled_by | null
   has_certificate: boolean | null
-  user_course_settings_visibilities:
-    | CourseDetails_course_user_course_settings_visibilities[]
-    | null
+  user_course_settings_visibilities: CourseDetails_course_user_course_settings_visibilities[]
 }
 
 export interface CourseDetails {

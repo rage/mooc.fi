@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
-import { gql } from "apollo-boost"
-import { useQuery, useMutation } from "@apollo/react-hooks"
+import { gql } from "@apollo/client"
+import { useQuery, useMutation } from "@apollo/client"
 import {
   Button,
   Card,
@@ -31,6 +31,7 @@ import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"
+import notEmpty from "/util/notEmpty"
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -194,9 +195,10 @@ const Register = () => {
       return
     }
 
-    const mIds = userOrganizationsData.userOrganizations.map(
-      (uo) => uo.organization.id,
-    )
+    const mIds =
+      userOrganizationsData.userOrganizations
+        ?.map((uo) => uo.organization?.id)
+        .filter(notEmpty) ?? []
 
     setMemberships(mIds)
   }, [userOrganizationsData])
@@ -206,16 +208,15 @@ const Register = () => {
       return
     }
 
-    const sortedOrganizations = organizationsData
-      ? organizationsData.organizations
-          .filter((o) => o?.organization_translations?.length)
-          .sort((a, b) =>
-            a!.organization_translations![0].name.localeCompare(
-              b!.organization_translations![0].name,
-              "fi-FI",
-            ),
-          )
-      : []
+    const sortedOrganizations =
+      organizationsData?.organizations
+        ?.filter((o) => o?.organization_translations?.length)
+        .sort((a, b) =>
+          a!.organization_translations![0].name.localeCompare(
+            b!.organization_translations![0].name,
+            "fi-FI",
+          ),
+        ) ?? []
 
     const orgs = sortedOrganizations.reduce(
       (acc, curr) => ({
@@ -261,7 +262,7 @@ const Register = () => {
   const toggleMembership = (id: string) => async () => {
     if (memberships.includes(id)) {
       const existing = userOrganizationsData?.userOrganizations?.find(
-        (uo: UserOrganizations_userOrganizations) => uo.organization.id === id,
+        (uo: UserOrganizations_userOrganizations) => uo.organization?.id === id,
       )
 
       if (existing) {

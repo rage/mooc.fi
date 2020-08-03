@@ -9,13 +9,13 @@
 
 export interface updateUserName_updateUserName {
   __typename: "User"
-  id: any
+  id: string
   first_name: string | null
   last_name: string | null
 }
 
 export interface updateUserName {
-  updateUserName: updateUserName_updateUserName
+  updateUserName: updateUserName_updateUserName | null
 }
 
 export interface updateUserNameVariables {

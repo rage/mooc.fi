@@ -10,14 +10,15 @@ import ImagePreview from "/components/Dashboard/ImagePreview"
 import { addDomain } from "/util/imageUtils"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
-import { initialValues } from "./form-validation"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 
 interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
 }
 const CourseImageInput = (props: ImageInputProps) => {
-  const { values, setFieldValue } = useFormikContext<CourseFormValues>()
+  const { values, setFieldValue, initialValues } = useFormikContext<
+    CourseFormValues
+  >()
   const { courses } = props
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)

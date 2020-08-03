@@ -11,11 +11,11 @@ import { OrganizationRole } from "./globalTypes"
 
 export interface updateUserOrganization_updateUserOrganization {
   __typename: "UserOrganization"
-  id: any
+  id: string
 }
 
 export interface updateUserOrganization {
-  updateUserOrganization: updateUserOrganization_updateUserOrganization
+  updateUserOrganization: updateUserOrganization_updateUserOrganization | null
 }
 
 export interface updateUserOrganizationVariables {

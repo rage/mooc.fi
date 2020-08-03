@@ -9,7 +9,7 @@
 
 export interface consentQuery_currentUser {
   __typename: "User"
-  id: any
+  id: string
   research_consent: boolean | null
 }
 

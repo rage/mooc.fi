@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { StudyModuleArg } from "./globalTypes"
+import { StudyModuleCreateArg } from "./globalTypes"
 
 // ====================================================
 // GraphQL mutation operation: addStudyModule
@@ -11,7 +11,7 @@ import { StudyModuleArg } from "./globalTypes"
 
 export interface addStudyModule_addStudyModule_study_module_translations {
   __typename: "StudyModuleTranslation"
-  id: any
+  id: string
   language: string
   name: string
   description: string
@@ -19,20 +19,18 @@ export interface addStudyModule_addStudyModule_study_module_translations {
 
 export interface addStudyModule_addStudyModule {
   __typename: "StudyModule"
-  id: any
+  id: string
   slug: string
   name: string
   image: string | null
   order: number | null
-  study_module_translations:
-    | addStudyModule_addStudyModule_study_module_translations[]
-    | null
+  study_module_translations: addStudyModule_addStudyModule_study_module_translations[]
 }
 
 export interface addStudyModule {
-  addStudyModule: addStudyModule_addStudyModule
+  addStudyModule: addStudyModule_addStudyModule | null
 }
 
 export interface addStudyModuleVariables {
-  study_module: StudyModuleArg
+  study_module: StudyModuleCreateArg
 }

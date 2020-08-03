@@ -1,6 +1,6 @@
 import React from "react"
 import { UserPointsQuery } from "./PointsQuery"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"

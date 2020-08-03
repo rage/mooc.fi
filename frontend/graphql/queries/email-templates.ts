@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 
 export const AllEmailTemplatesQuery = gql`
   query AllEmailTemplates {
@@ -13,7 +13,7 @@ export const AllEmailTemplatesQuery = gql`
 `
 
 export const EmailTemplateQuery = gql`
-  query EmailTemplate($id: ID) {
+  query EmailTemplate($id: ID!) {
     email_template(id: $id) {
       id
       created_at

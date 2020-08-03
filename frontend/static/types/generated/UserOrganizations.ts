@@ -9,17 +9,17 @@
 
 export interface UserOrganizations_userOrganizations_organization {
   __typename: "Organization"
-  id: any
+  id: string
 }
 
 export interface UserOrganizations_userOrganizations {
   __typename: "UserOrganization"
-  id: any
-  organization: UserOrganizations_userOrganizations_organization
+  id: string
+  organization: UserOrganizations_userOrganizations_organization | null
 }
 
 export interface UserOrganizations {
-  userOrganizations: UserOrganizations_userOrganizations[]
+  userOrganizations: UserOrganizations_userOrganizations[] | null
 }
 
 export interface UserOrganizationsVariables {

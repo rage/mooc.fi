@@ -11,61 +11,59 @@ import { CourseStatus } from "./globalTypes"
 
 export interface AllEditorCourses_courses_photo {
   __typename: "Image"
-  id: any
+  id: string
   compressed: string | null
   uncompressed: string
 }
 
 export interface AllEditorCourses_courses_course_translations {
   __typename: "CourseTranslation"
-  id: any
+  id: string
   language: string
   name: string
 }
 
 export interface AllEditorCourses_courses_course_variants {
   __typename: "CourseVariant"
-  id: any
+  id: string
   slug: string
   description: string | null
 }
 
 export interface AllEditorCourses_courses_course_aliases {
   __typename: "CourseAlias"
-  id: any
+  id: string
   course_code: string
 }
 
 export interface AllEditorCourses_courses_user_course_settings_visibilities {
   __typename: "UserCourseSettingsVisibility"
-  id: any
+  id: string
   language: string
 }
 
 export interface AllEditorCourses_courses {
   __typename: "Course"
-  id: any
+  id: string
   name: string
   slug: string
   order: number | null
   status: CourseStatus | null
   hidden: boolean | null
   photo: AllEditorCourses_courses_photo | null
-  course_translations: AllEditorCourses_courses_course_translations[] | null
-  course_variants: AllEditorCourses_courses_course_variants[] | null
-  course_aliases: AllEditorCourses_courses_course_aliases[] | null
-  user_course_settings_visibilities:
-    | AllEditorCourses_courses_user_course_settings_visibilities[]
-    | null
+  course_translations: AllEditorCourses_courses_course_translations[]
+  course_variants: AllEditorCourses_courses_course_variants[]
+  course_aliases: AllEditorCourses_courses_course_aliases[]
+  user_course_settings_visibilities: AllEditorCourses_courses_user_course_settings_visibilities[]
 }
 
 export interface AllEditorCourses_currentUser {
   __typename: "User"
-  id: any
+  id: string
   administrator: boolean
 }
 
 export interface AllEditorCourses {
-  courses: AllEditorCourses_courses[]
+  courses: AllEditorCourses_courses[] | null
   currentUser: AllEditorCourses_currentUser | null
 }

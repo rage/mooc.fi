@@ -9,7 +9,7 @@
 
 export interface CompletionCourseDetails_course {
   __typename: "Course"
-  id: any
+  id: string
   name: string
 }
 
