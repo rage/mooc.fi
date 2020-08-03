@@ -45,7 +45,7 @@ function create(initialState: any, originalAccessToken?: string) {
     uri: cypress
       ? "http://localhost:4001"
       : production
-      ? "https://staging.mooc.fi/api/" // https://www.mooc.fi/api/
+      ? "https://www.mooc.fi/api/"
       : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
