@@ -18,7 +18,7 @@ kafkaConsumer:
     replicaCount: 1
   userPoints:
     replicaCount: 1
-  
+
 email:
   # controls whether the background email service should be running
   enabled: false
@@ -66,11 +66,11 @@ ingress:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
-    - host: staging.mooc.fi
+    - host: mooc.fi
   tls:
    - secretName: moocfi-tls
      hosts:
-       - staging.mooc.fi
+       - mooc.fi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
