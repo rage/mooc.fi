@@ -12,10 +12,21 @@ else
 fi
 
 TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-echo Building "$TAG"
+
+if [ -n "$CIRCLE_SHA1" ]; then
+  echo "Trying to setup google cloud"
+  source "$CURRENT_DIR/ci-setup-google-cloud.sh"
+fi
 
 cd backend
-docker build . -f Dockerfile -t "$TAG"
+
+echo "Pulling cache"
+
+docker pull eu.gcr.io/moocfi/moocfi-backend:latest || true
+
+echo Building "$TAG"
+
+docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile -t "$TAG"
 cd ..
 
 echo "Successfully built image: $TAG"

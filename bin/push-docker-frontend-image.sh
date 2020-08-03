@@ -21,6 +21,11 @@ fi
 
 TAG="eu.gcr.io/moocfi/moocfi-frontend:build-$REV"
 
+docker tag "$TAG" eu.gcr.io/moocfi/moocfi-frontend:latest
+
 echo "Pushing image $TAG"
 
-docker push $TAG
+docker push "$TAG"
+
+echo "Pushing latest"
+docker push eu.gcr.io/moocfi/moocfi-frontend:latest
