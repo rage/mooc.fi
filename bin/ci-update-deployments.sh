@@ -16,5 +16,9 @@ fi
 
 export IMAGE_TAG="build-$REV"
 
-echo "Deploying..."
-helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi --install
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "$BRANCH" == "master" ]]; then
+  echo "Deploying..."
+  helm upgrade moocfi ./helm --set image.tag="$IMAGE_TAG" --namespace moocfi --install
+fi
