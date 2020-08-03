@@ -69,7 +69,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-schema.addToContext(async (req) => ({
+schema.addToContext(async ({ req }) => ({
   ...req,
   // user: undefined,
   // organization: undefined,
