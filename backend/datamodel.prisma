@@ -1,5 +1,5 @@
 type User @db(name: "user") {
-  id: UUID! @id
+  id: UUID! @id 
   "User's unique identifier from TMC"
   upstream_id: Int! @unique
   created_at: DateTime @createdAt

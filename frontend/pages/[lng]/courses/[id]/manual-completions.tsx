@@ -7,8 +7,7 @@ import * as Papa from "papaparse"
 import styled from "styled-components"
 import Alert from "@material-ui/lab/Alert"
 import AlertTitle from "@material-ui/lab/AlertTitle"
-import gql from "graphql-tag"
-import { useMutation, useQuery } from "@apollo/react-hooks"
+import { gql, useMutation, useQuery } from "@apollo/client"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { DatePicker, LocalizationProvider } from "@material-ui/pickers"
 import LuxonUtils from "@date-io/luxon"
@@ -20,7 +19,7 @@ const StyledTextField = styled(TextField)`
 
 const AddManualCompletionQuery = gql`
   mutation AddManualCompletion(
-    $course_id: String
+    $course_id: String!
     $completions: [ManualCompletionArg!]
   ) {
     addManualCompletion(course_id: $course_id, completions: $completions) {

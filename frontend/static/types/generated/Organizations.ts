@@ -16,14 +16,12 @@ export interface Organizations_organizations_organization_translations {
 
 export interface Organizations_organizations {
   __typename: "Organization"
-  id: any
+  id: string
   slug: string
   hidden: boolean | null
-  organization_translations:
-    | Organizations_organizations_organization_translations[]
-    | null
+  organization_translations: Organizations_organizations_organization_translations[]
 }
 
 export interface Organizations {
-  organizations: Organizations_organizations[]
+  organizations: Organizations_organizations[] | null
 }

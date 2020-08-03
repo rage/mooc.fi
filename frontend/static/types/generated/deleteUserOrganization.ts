@@ -9,11 +9,11 @@
 
 export interface deleteUserOrganization_deleteUserOrganization {
   __typename: "UserOrganization"
-  id: any
+  id: string
 }
 
 export interface deleteUserOrganization {
-  deleteUserOrganization: deleteUserOrganization_deleteUserOrganization
+  deleteUserOrganization: deleteUserOrganization_deleteUserOrganization | null
 }
 
 export interface deleteUserOrganizationVariables {

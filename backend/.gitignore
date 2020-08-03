@@ -1,3 +1,5 @@
 generated/
 bin/tmp/
 .vscode
+.tmp_build/
+.nexus

@@ -9,7 +9,7 @@
 
 export interface UserOverView_currentUser {
   __typename: "User"
-  id: any
+  id: string
   first_name: string | null
   last_name: string | null
   email: string

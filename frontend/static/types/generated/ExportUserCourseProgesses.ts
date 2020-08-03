@@ -7,9 +7,9 @@
 // GraphQL query operation: ExportUserCourseProgesses
 // ====================================================
 
-export interface ExportUserCourseProgesses_UserCourseProgresses_user {
+export interface ExportUserCourseProgesses_userCourseProgresses_user {
   __typename: "User"
-  id: any
+  id: string
   email: string
   student_number: string | null
   real_student_number: string | null
@@ -18,27 +18,27 @@ export interface ExportUserCourseProgesses_UserCourseProgresses_user {
   last_name: string | null
 }
 
-export interface ExportUserCourseProgesses_UserCourseProgresses_UserCourseSettings {
-  __typename: "UserCourseSettings"
+export interface ExportUserCourseProgesses_userCourseProgresses_user_course_settings {
+  __typename: "UserCourseSetting"
   course_variant: string | null
   country: string | null
   language: string | null
 }
 
-export interface ExportUserCourseProgesses_UserCourseProgresses {
+export interface ExportUserCourseProgesses_userCourseProgresses {
   __typename: "UserCourseProgress"
-  id: any
-  user: ExportUserCourseProgesses_UserCourseProgresses_user
-  progress: any
-  UserCourseSettings: ExportUserCourseProgesses_UserCourseProgresses_UserCourseSettings | null
+  id: string
+  user: ExportUserCourseProgesses_userCourseProgresses_user | null
+  progress: any[] | null
+  user_course_settings: ExportUserCourseProgesses_userCourseProgresses_user_course_settings | null
 }
 
 export interface ExportUserCourseProgesses {
-  UserCourseProgresses: ExportUserCourseProgesses_UserCourseProgresses[]
+  userCourseProgresses: ExportUserCourseProgesses_userCourseProgresses[] | null
 }
 
 export interface ExportUserCourseProgessesVariables {
   course_slug: string
-  after?: string | null
-  first?: number | null
+  skip?: number | null
+  take?: number | null
 }

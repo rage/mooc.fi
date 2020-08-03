@@ -1,17 +1,16 @@
-import {
-  Prisma,
-  OpenUniversityRegistrationLink,
-} from "../generated/prisma-client"
 import axios from "axios"
 import { DateTime } from "luxon"
 import { maxBy } from "lodash"
+import prismaClient from "./lib/prisma"
 
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
-const prisma: Prisma = new Prisma()
+const prisma = prismaClient()
 
 const fetch = async () => {
-  const avoinObjects: OpenUniversityRegistrationLink[] = await prisma.openUniversityRegistrationLinks()
+  const avoinObjects = await prisma.openUniversityRegistrationLink.findMany({})
 
   for (const p of avoinObjects) {
     console.log("Processing link", p.course_code, p.language)
@@ -55,7 +54,7 @@ const fetch = async () => {
     const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
 
     console.log("Updating link to", url)
-    await prisma.updateOpenUniversityRegistrationLink({
+    await prisma.openUniversityRegistrationLink.update({
       where: {
         id: p.id,
       },

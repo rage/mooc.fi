@@ -1,15 +1,17 @@
 import { Message, ExerciseData } from "./interfaces"
-import { Prisma, Exercise, prisma } from "../../../generated/prisma-client"
+import { PrismaClient } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
 
 export const saveToDatabase = async (
   message: Message,
-  prisma: Prisma,
+  prisma: PrismaClient,
   logger: winston.Logger,
 ): Promise<Boolean> => {
-  const courseExists = await prisma.$exists.course({ id: message.course_id })
-  if (!courseExists) {
+  const existingCourse = await prisma.course.findOne({
+    where: { id: message.course_id },
+  })
+  if (!existingCourse) {
     logger.error("given course does not exist")
     return false
   }
@@ -20,15 +22,16 @@ export const saveToDatabase = async (
       DateTime.fromISO(message.timestamp),
       message.service_id,
       logger,
+      prisma,
     )
   })
 
-  await prisma.updateManyExercises({
+  await prisma.exercise.updateMany({
     where: {
       AND: {
-        course: { id: message.course_id },
-        service: { id: message.service_id },
-        custom_id_not_in: message.data.map((p) => p.id),
+        course_id: message.course_id,
+        service_id: message.service_id,
+        custom_id: { not: { in: message.data.map((p) => p.id) } },
       },
     },
     data: {
@@ -46,21 +49,25 @@ const handleExercise = async (
   timestamp: DateTime,
   service_id: string,
   logger: winston.Logger,
+  prisma: PrismaClient,
 ) => {
-  const exerciseExists = await prisma.$exists.exercise({
-    custom_id: exercise.id,
+  const existingExercises = await prisma.exercise.findMany({
+    where: { custom_id: exercise.id },
   })
-  if (exerciseExists) {
-    const oldExercises: Exercise[] = await prisma.exercises({
+  if (existingExercises.length > 0) {
+    const oldExercises = await prisma.exercise.findMany({
       where: {
-        course: { id: course_id },
-        service: { id: service_id },
+        course_id: course_id,
+        service_id: service_id,
         custom_id: exercise.id,
       },
     })
 
     const oldExercise = oldExercises[0]
-    if (DateTime.fromISO(oldExercise.timestamp ?? "") > timestamp) {
+    // FIXME: well this is weird
+    if (
+      DateTime.fromISO(oldExercise.timestamp?.toISOString() ?? "") > timestamp
+    ) {
       logger.error(
         "Timestamp is older than on existing exercise on " +
           exercise +
@@ -68,7 +75,7 @@ const handleExercise = async (
       )
       return
     }
-    await prisma.updateExercise({
+    await prisma.exercise.update({
       where: { id: oldExercise.id },
       data: {
         name: exercise.name,
@@ -81,15 +88,17 @@ const handleExercise = async (
       },
     })
   } else {
-    await prisma.createExercise({
-      name: exercise.name,
-      custom_id: exercise.id,
-      part: Number(exercise.part),
-      section: Number(exercise.section),
-      max_points: Number(exercise.max_points),
-      course: { connect: { id: course_id } },
-      service: { connect: { id: service_id } },
-      timestamp: timestamp.toJSDate(),
+    await prisma.exercise.create({
+      data: {
+        name: exercise.name,
+        custom_id: exercise.id,
+        part: Number(exercise.part),
+        section: Number(exercise.section),
+        max_points: Number(exercise.max_points),
+        course: { connect: { id: course_id } },
+        service: { connect: { id: service_id } },
+        timestamp: timestamp.toJSDate(),
+      },
     })
   }
 }

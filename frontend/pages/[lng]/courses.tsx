@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import CourseGrid from "/components/CourseGrid"
 import { WideContainer } from "/components/Container"
 import styled from "styled-components"
@@ -37,7 +37,7 @@ const Courses = () => {
         <H1Background component="h1" variant="h1" align="center">
           {t("allCourses")}
         </H1Background>
-        <CourseGrid courses={data?.courses} loading={loading} />
+        <CourseGrid courses={data?.courses ?? undefined} loading={loading} />
       </WideContainer>
     </Background>
   )

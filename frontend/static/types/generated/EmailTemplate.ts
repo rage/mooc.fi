@@ -9,7 +9,7 @@
 
 export interface EmailTemplate_email_template {
   __typename: "EmailTemplate"
-  id: any
+  id: string
   created_at: any | null
   updated_at: any | null
   name: string | null
@@ -23,5 +23,5 @@ export interface EmailTemplate {
 }
 
 export interface EmailTemplateVariables {
-  id?: string | null
+  id: string
 }

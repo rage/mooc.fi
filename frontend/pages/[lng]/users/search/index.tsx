@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
-import gql from "graphql-tag"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import Container from "/components/Container"
-import { useLazyQuery } from "@apollo/react-hooks"
+import { gql, useLazyQuery } from "@apollo/client"
 import withAdmin from "/lib/with-admin"
 import LanguageContext from "/contexes/LanguageContext"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -85,18 +84,18 @@ const UserSearch = () => {
 const GET_DATA = gql`
   query UserDetailsContains(
     $search: String!
-    $before: ID
-    $after: ID
     $first: Int
     $last: Int
+    $before: String
+    $after: String
     $skip: Int
   ) {
     userDetailsContains(
       search: $search
       first: $first
       last: $last
-      after: $after
       before: $before
+      after: $after
       skip: $skip
     ) {
       pageInfo {

@@ -9,7 +9,7 @@
 
 export interface CourseDetailsFromSlug_course {
   __typename: "Course"
-  id: any
+  id: string
   name: string
 }
 

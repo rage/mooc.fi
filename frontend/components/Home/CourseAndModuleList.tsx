@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { AllModules as AllModulesData } from "/static/types/generated/AllModules"
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import ModuleNavi from "./ModuleNavi"
@@ -15,7 +15,7 @@ const highlightsBanner = "/static/images/backgroundPattern.svg"
 
 import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
-import { CourseStatus } from "/static/types/globalTypes"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)

@@ -9,14 +9,14 @@
 
 export interface StudyModuleDetails_study_module_courses {
   __typename: "Course"
-  id: any
+  id: string
   name: string
   slug: string
 }
 
 export interface StudyModuleDetails_study_module_study_module_translations {
   __typename: "StudyModuleTranslation"
-  id: any
+  id: string
   name: string
   language: string
   description: string
@@ -24,15 +24,13 @@ export interface StudyModuleDetails_study_module_study_module_translations {
 
 export interface StudyModuleDetails_study_module {
   __typename: "StudyModule"
-  id: any
+  id: string
   slug: string
   name: string
   image: string | null
   order: number | null
-  courses: StudyModuleDetails_study_module_courses[]
-  study_module_translations:
-    | StudyModuleDetails_study_module_study_module_translations[]
-    | null
+  courses: StudyModuleDetails_study_module_courses[] | null
+  study_module_translations: StudyModuleDetails_study_module_study_module_translations[]
 }
 
 export interface StudyModuleDetails {

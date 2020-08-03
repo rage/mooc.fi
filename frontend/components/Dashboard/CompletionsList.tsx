@@ -1,21 +1,19 @@
 import React, { useState } from "react"
-import { gql } from "apollo-boost"
-import {
-  AllCompletions as AllCompletionsData,
-  AllCompletions_completionsPaginated_edges,
-} from "/static/types/generated/AllCompletions"
+import { gql } from "@apollo/client"
+import { AllCompletions as AllCompletionsData } from "/static/types/generated/AllCompletions"
 import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
 import { CircularProgress } from "@material-ui/core"
-import { useRouter } from "next/router"
 import CompletionsListWithData from "./CompletionsListWithData"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import notEmpty from "/util/notEmpty"
+import { useQueryParameter } from "/util/useQueryParameter"
 
 export const AllCompletionsQuery = gql`
   query AllCompletions(
-    $course: String
-    $cursor: ID
+    $course: String!
+    $cursor: String
     $completionLanguage: String
   ) {
     completionsPaginated(
@@ -60,8 +58,8 @@ export const AllCompletionsQuery = gql`
 `
 export const PreviousPageCompletionsQuery = gql`
   query AllCompletionsPrevious(
-    $course: String
-    $cursor: ID
+    $course: String!
+    $cursor: String
     $completionLanguage: String
   ) {
     completionsPaginated(
@@ -105,14 +103,12 @@ export const PreviousPageCompletionsQuery = gql`
   }
 `
 const CompletionsList = () => {
-  const router = useRouter()
   const completionLanguage = React.useContext(CourseLanguageContext)
-
-  const course: string | string[] = router?.query?.id ?? ""
+  const course = useQueryParameter("id")
 
   interface queryDetailsInterface {
-    start: string | null
-    end: string | null
+    start?: string | null
+    end?: string | null
     back: boolean
     page: number
   }
@@ -131,7 +127,7 @@ const CompletionsList = () => {
   const cursor = queryDetails.back ? queryDetails.end : queryDetails.start
 
   interface Variables {
-    cursor: string | null
+    cursor?: string | null
     course: string | string[]
     completionLanguage?: string
   }
@@ -169,11 +165,12 @@ const CompletionsList = () => {
     return <div>no data</div>
   }
 
-  const completions = data.completionsPaginated.edges.map(
-    (edge: AllCompletions_completionsPaginated_edges) => edge.node,
-  )
-  const startCursor = data.completionsPaginated.pageInfo.startCursor
-  const endCursor = data.completionsPaginated.pageInfo.endCursor
+  const completions =
+    data.completionsPaginated?.edges
+      ?.map((edge) => edge?.node)
+      .filter(notEmpty) ?? []
+  const startCursor = data.completionsPaginated?.pageInfo?.startCursor
+  const endCursor = data.completionsPaginated?.pageInfo?.endCursor
 
   return (
     <CompletionsListWithData
@@ -194,7 +191,11 @@ const CompletionsList = () => {
           page: queryDetails.page - 1,
         })
       }
-      pageNumber={queryDetails.page}
+      hasPrevious={
+        data.completionsPaginated?.pageInfo?.hasPreviousPage || false
+      }
+      hasNext={data.completionsPaginated?.pageInfo?.hasNextPage || false}
+      // pageNumber={queryDetails.page}
     />
   )
 }

@@ -1,8 +1,8 @@
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 
 export const AllCoursesQuery = gql`
   query AllCourses($language: String) {
-    courses(orderBy: order_ASC, language: $language) {
+    courses(orderBy: { id: asc }, language: $language) {
       id
       slug
       name
@@ -21,6 +21,7 @@ export const AllCoursesQuery = gql`
       link
       study_modules {
         id
+        slug
       }
       course_translations {
         id
@@ -37,7 +38,7 @@ export const AllCoursesQuery = gql`
 
 export const AllEditorCoursesQuery = gql`
   query AllEditorCourses {
-    courses(orderBy: order_ASC) {
+    courses(orderBy: { id: asc }) {
       id
       name
       slug
@@ -76,7 +77,7 @@ export const AllEditorCoursesQuery = gql`
 `
 
 export const CheckSlugQuery = gql`
-  query checkSlug($slug: String) {
+  query checkSlug($slug: String!) {
     course_exists(slug: $slug)
   }
 `

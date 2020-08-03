@@ -1,11 +1,13 @@
-require("dotenv-safe").config()
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
 
 import * as Kafka from "node-rdkafka"
 // import * as winston from "winston"
-import * as express from "express"
-import * as compression from "compression"
-import * as bodyParser from "body-parser"
-import * as morgan from "morgan"
+import express from "express"
+import compression from "compression"
+import bodyParser from "body-parser"
+import morgan from "morgan"
 import { promisify } from "util"
 
 const SECRET = process.env.KAFKA_BRIDGE_SECRET
@@ -55,7 +57,7 @@ const host = process.env.KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   if (
     !req.headers.authorization ||
-    req.headers.authorization.split(" ")[1] !== SECRET
+    req?.headers?.authorization?.split(" ")[1] !== SECRET
   ) {
     return res.status(403).json({ error: "Not authorized" }).send()
   }
@@ -72,7 +74,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
 
   try {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
-    await flushProducer(1000)
+    await flushProducer(1000, undefined)
   } catch (e) {
     console.error("Producing to kafka failed", e)
     return res.status(500).json({ error: e.toString() }).send()

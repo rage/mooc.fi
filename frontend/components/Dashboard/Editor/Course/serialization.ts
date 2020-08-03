@@ -5,25 +5,12 @@ import { omit } from "lodash"
 import {
   CourseDetails_course_photo,
   CourseDetails_course,
-  CourseDetails_course_open_university_registration_links,
 } from "/static/types/generated/CourseDetails"
-import { CourseStatus, CourseArg } from "/static/types/generated/globalTypes"
 import {
-  addCourse_addCourse_open_university_registration_links,
-  addCourse_addCourse_study_modules,
-  addCourse_addCourse_course_translations,
-  addCourse_addCourse_course_variants,
-  addCourse_addCourse_course_aliases,
-  addCourse_addCourse_user_course_settings_visibilities,
-} from "/static/types/generated/addCourse"
-import {
-  updateCourse_updateCourse_open_university_registration_links,
-  updateCourse_updateCourse_study_modules,
-  updateCourse_updateCourse_course_translations,
-  updateCourse_updateCourse_course_variants,
-  updateCourse_updateCourse_course_aliases,
-  updateCourse_updateCourse_user_course_settings_visibilities,
-} from "/static/types/generated/updateCourse"
+  CourseStatus,
+  CourseCreateArg,
+  CourseUpsertArg,
+} from "/static/types/generated/globalTypes"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { DateTime } from "luxon"
 
@@ -60,8 +47,7 @@ export const toCourseForm = ({
           ...omit(c, "__typename"),
           link: c.link || "",
           open_university_course_link: course?.open_university_registration_links?.find(
-            (l: CourseDetails_course_open_university_registration_links) =>
-              l.language === c.language,
+            (l) => l.language === c.language,
           ),
         })),
         study_modules: modules?.reduce(
@@ -96,43 +82,28 @@ export const fromCourseForm = ({
 }: {
   values: CourseFormValues
   initialValues: CourseFormValues
-}): CourseArg => {
+}): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
-  const course_translations = (values?.course_translations?.map(
-    (c: CourseTranslationFormValues) => ({
+  const course_translations =
+    values?.course_translations?.map((c: CourseTranslationFormValues) => ({
       ...omit(c, "open_university_course_link"),
       link: c.link || "",
-      id: !c.id || c.id === "" ? null : c.id,
-    }),
-  ) ?? []) as (
-    | Omit<addCourse_addCourse_course_translations, "__typename">
-    | Omit<updateCourse_updateCourse_course_translations, "__typename">
-  )[]
+      id: !c.id || c.id === "" ? undefined : c.id,
+    })) ?? []
 
   const course_variants = (values?.course_variants ?? []).map((v) =>
     omit(v, ["__typename"]),
-  ) as (
-    | Omit<addCourse_addCourse_course_variants, "__typename">
-    | Omit<updateCourse_updateCourse_course_variants, "__typename">
-  )[]
+  )
 
-  const course_aliases = (values?.course_aliases ?? []).map((a) =>
-    omit(a, ["__typename"]),
-  ) as (
-    | Omit<addCourse_addCourse_course_aliases, "__typename">
-    | Omit<updateCourse_updateCourse_course_aliases, "__typename">
-  )[]
+  const course_aliases = (values?.course_aliases ?? []).map((a) => ({
+    ...omit(a, ["__typename"]),
+    course_code: a.course_code ?? undefined,
+  }))
 
   const user_course_settings_visibilities = (
     values?.user_course_settings_visibilities ?? []
-  ).map((v) => omit(v, ["__typename"])) as (
-    | Omit<addCourse_addCourse_user_course_settings_visibilities, "__typename">
-    | Omit<
-        updateCourse_updateCourse_user_course_settings_visibilities,
-        "__typename"
-      >
-  )[]
+  ).map((v) => omit(v, ["__typename"]))
 
   const open_university_registration_links = values?.course_translations
     ?.map((c: CourseTranslationFormValues) => {
@@ -163,18 +134,9 @@ export const fromCourseForm = ({
         course_code: c.open_university_course_link.course_code.trim(),
       }
     })
-    .filter((v) => !!v) as (
-    | Omit<addCourse_addCourse_open_university_registration_links, "__typename">
-    | Omit<
-        updateCourse_updateCourse_open_university_registration_links,
-        "__typename"
-      >
-  )[]
+    .filter((v) => !!v)
 
-  const study_modules: (
-    | Omit<addCourse_addCourse_study_modules, "__typename">
-    | Omit<updateCourse_updateCourse_study_modules, "__typename">
-  )[] = Object.keys(values.study_modules || {})
+  const study_modules = Object.keys(values.study_modules || {})
     .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
     .map((id) => ({ id }))
 
@@ -187,10 +149,9 @@ export const fromCourseForm = ({
       ? CourseStatus.Upcoming
       : undefined
 
-  const c: CourseArg = {
+  const c = {
     ...omit(values, ["id", "thumbnail", "import_photo", "__typename"]),
     slug: !newCourse ? values.slug : values.new_slug.trim(),
-    new_slug: values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,
     base64: !isProduction,
     photo: getIn(values, "photo.id"),
@@ -217,8 +178,10 @@ export const fromCourseForm = ({
     inherit_settings_from: values.inherit_settings_from,
     completions_handled_by: values.completions_handled_by,
     user_course_settings_visibilities,
+    teacher_in_charge_email: values.teacher_in_charge_email ?? "",
+    teacher_in_charge_name: values.teacher_in_charge_name ?? "",
     status, //values.status as CourseStatus
   }
 
-  return c
+  return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)
 }

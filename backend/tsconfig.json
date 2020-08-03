@@ -4,17 +4,19 @@
     "paths": {
       "/*": ["./*"]
     },
-    "lib": ["es2016", "esnext.asynciterable"],
+    "rootDir": ".",
+    "lib": ["es2016", "esnext"],
     "outDir": "./dist",
     "strict": true,
+    "noEmit": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "types"
-    ],
+    "esModuleInterop": true,
+    "plugins": [{ "name": "nexus/typescript-language-service" }],
+    "typeRoots": ["node_modules/@types", "types"]
   },
-  "exclude": ["node_modules", "dist", "test", "src/test"]
+  "include": [".", "types.d.ts"],
+  // "exclude": ["node_modules", "dist", "test", "src/test"]
 }

@@ -14,5 +14,6 @@
     "tabAriaLabel": "tab to select if viewing points, completions or settings",
     "tabPoints": "Points",
     "tabCompletions": "Completions",
-    "tabSettings": "Settings"
+    "tabSettings": "Settings",
+    "registerCompletion": "Register Completion"
 }

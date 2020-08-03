@@ -2,19 +2,21 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import {
-  UserCourseProgress,
-  Course,
+  UserCourseSetting,
   User,
-  UserCourseSettings,
+  Course,
+  UserCourseProgress,
   EmailTemplate,
-  prisma,
   UserCourseServiceProgress,
-} from "../../../generated/prisma-client"
+} from "@prisma/client"
 import Knex from "../../../services/knex"
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "../../../util/EmailTemplater/EmailTemplater"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
+import prismaClient from "../../lib/prisma"
+
+const prisma = prismaClient()
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
@@ -48,10 +50,10 @@ export const generateUserCourseProgress = async ({
 }: Props) => {
   const combined = await GetCombinedUserCourseProgress(user, course)
   await CheckCompletion(user, course, combined)
-  await prisma.updateUserCourseProgress({
+  await prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
-      progress: combined.progress,
+      progress: combined.progress as any, // errors unless typed as any
       max_points: combined.total_max_points,
       n_points: combined.total_n_points,
     },
@@ -78,16 +80,16 @@ export async function sendEmailTemplateToUser(
   let info = await transporter.sendMail({
     from: email_from, // sender address
     to: user.email, // list of receivers
-    subject: template.title, // Subject line
+    subject: template.title ?? undefined, // Subject line
     text: await ApplyTemplate(template, user), // plain text body
-    html: template.html_body, // html body
+    html: template.html_body ?? undefined, // html body
   })
   console.log("Message sent: %s", info.messageId)
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
 
 const ApplyTemplate = async (email_template: EmailTemplate, user: User) => {
-  const templater = new EmailTemplater(email_template, user)
+  const templater = new EmailTemplater(email_template, user, prisma)
   return await templater.resolve()
 }
 
@@ -96,12 +98,14 @@ const GetCombinedUserCourseProgress = async (
   course: Course,
 ): Promise<CombinedUserCourseProgress> => {
   /* Get UserCourseServiceProgresses */
-  const userCourseServiceProgresses = await prisma.userCourseServiceProgresses({
-    where: {
-      user: { id: user?.id },
-      course: { id: course?.id },
+  const userCourseServiceProgresses = await prisma.userCourseServiceProgress.findMany(
+    {
+      where: {
+        user_id: user?.id,
+        course_id: course?.id,
+      },
     },
-  })
+  )
 
   /*
    * Get rid of everything we dont neeed. After this the array looks like this:
@@ -109,10 +113,10 @@ const GetCombinedUserCourseProgress = async (
    * It is still 2-dimensional!
    */
   const progresses: ServiceProgressType[] = userCourseServiceProgresses.map(
-    (entry: UserCourseServiceProgress) => entry.progress,
+    (entry: UserCourseServiceProgress) => entry.progress as any, // type error otherwise
   )
 
-  let combined: CombinedUserCourseProgress = new CombinedUserCourseProgress()
+  let combined = new CombinedUserCourseProgress()
   progresses.forEach((entry) => {
     entry.forEach((p: ServiceProgressPartType) => {
       combined.addProgress(p)
@@ -143,34 +147,34 @@ const CheckRequiredExerciseCompletions = async (
 const GetUserCourseSettings = async (
   user: User,
   course: Course,
-): Promise<UserCourseSettings> => {
-  let userCourseSettings: UserCourseSettings =
+): Promise<UserCourseSetting> => {
+  let userCourseSetting: UserCourseSetting =
     (
-      await prisma.userCourseSettingses({
+      await prisma.userCourseSetting.findMany({
         where: {
-          user: { id: user.id },
-          course: { id: course.id },
+          user_id: user.id,
+          course_id: course.id,
         },
       })
-    )[0] || null
+    )?.[0] || null
 
-  if (!userCourseSettings) {
-    const inheritCourse = await prisma
-      .course({ id: course.id })
+  if (!userCourseSetting) {
+    const inheritCourse = await prisma.course
+      .findOne({ where: { id: course.id } })
       .inherit_settings_from()
     if (inheritCourse) {
-      userCourseSettings =
+      userCourseSetting =
         (
-          await prisma.userCourseSettingses({
+          await prisma.userCourseSetting.findMany({
             where: {
-              user: { id: user.id },
-              course: { id: inheritCourse.id },
+              user_id: user.id,
+              course_id: inheritCourse.id,
             },
           })
         )[0] || null
     }
   }
-  return userCourseSettings
+  return userCourseSetting
 }
 
 const languageCodeMapping: { [key: string]: string } = {
@@ -223,40 +227,44 @@ export const CheckCompletion = async (
   ) {
     let handlerCourse = course
 
-    const otherHandlerCourse = await prisma
-      .course({ id: course.id })
+    const otherHandlerCourse = await prisma.course
+      .findOne({ where: { id: course.id } })
       .completions_handled_by()
 
     if (otherHandlerCourse) {
       handlerCourse = otherHandlerCourse
     }
 
-    const completions = await prisma.completions({
+    const completions = await prisma.completion.findMany({
       where: {
-        user: user,
-        course: handlerCourse,
+        user_id: user.id,
+        course_id: handlerCourse?.id,
       },
     })
     if (completions.length < 1) {
-      await prisma.createCompletion({
-        course: { connect: { id: handlerCourse.id } },
-        email: user.email,
-        completion_date: new Date(),
-        user: { connect: { id: user.id } },
-        user_upstream_id: user.upstream_id,
-        student_number: user.student_number,
-        completion_language: userCourseSettings?.language
-          ? languageCodeMapping[userCourseSettings.language]
-          : "unknown",
-        eligible_for_ects:
-          handlerCourse.automatic_completions_eligible_for_ects,
+      await prisma.completion.create({
+        data: {
+          course: { connect: { id: handlerCourse.id } },
+          email: user.email,
+          user: { connect: { id: user.id } },
+          user_upstream_id: user.upstream_id,
+          student_number: user.student_number,
+          completion_language: userCourseSettings?.language
+            ? languageCodeMapping[userCourseSettings.language]
+            : "unknown",
+          eligible_for_ects:
+            handlerCourse.automatic_completions_eligible_for_ects,
+          completion_date: new Date(),
+        },
       })
       pushMessageToClient(
         user.upstream_id,
         course.id,
         MessageType.COURSE_CONFIRMED,
       )
-      const template = await prisma.course({ id: course.id }).completion_email()
+      const template = await prisma.course
+        .findOne({ where: { id: course.id } })
+        .completion_email()
       if (template) {
         await sendEmailTemplateToUser(user, template)
       }
@@ -273,8 +281,11 @@ class CombinedUserCourseProgress {
     this.total_max_points += newProgress.max_points
     this.total_n_points += newProgress.n_points
     let index = this.groupIndex(newProgress.group)
-    if (index < 0) this.progress.push(newProgress)
-    else this.addToExistingProgress(newProgress, index)
+    if (index < 0) {
+      this.progress.push(newProgress)
+    } else {
+      this.addToExistingProgress(newProgress, index)
+    }
   }
 
   private groupIndex(part: string) {

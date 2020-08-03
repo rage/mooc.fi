@@ -87,8 +87,8 @@ const RenderCards: React.FC<any> = () => {
     <>
       {data?.userDetailsContains?.edges?.map((row) => (
         <DataCard
-          key={row.node.upstream_id || Math.random() * 9999999}
-          row={row}
+          key={row?.node?.upstream_id || Math.random() * 9999999}
+          row={row ?? undefined}
         />
       ))}
     </>
@@ -103,9 +103,8 @@ const DataCard = ({
   const { language } = useContext(LanguageContext)
   const t = getUsersTranslator(language)
 
-  const { email, upstream_id, first_name, last_name, student_number } = row
-    ? row.node
-    : ({} as UserDetailsContains_userDetailsContains_edges_node)
+  const { email, upstream_id, first_name, last_name, student_number } =
+    row?.node ?? ({} as UserDetailsContains_userDetailsContains_edges_node)
 
   const fields = [
     {

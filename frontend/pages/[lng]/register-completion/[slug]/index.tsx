@@ -1,6 +1,6 @@
 import * as React from "react"
-import { gql } from "apollo-boost"
-import { useQuery } from "@apollo/react-hooks"
+import { gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import RegisterCompletionText from "/components/RegisterCompletionText"
@@ -101,7 +101,7 @@ const RegisterCompletion = () => {
   }
 
   const completion =
-    data?.currentUser?.completions?.find((c) => c.course.slug == courseSlug) ??
+    data?.currentUser?.completions?.find((c) => c.course?.slug == courseSlug) ??
     undefined
 
   if (!currentUser) {
@@ -132,7 +132,7 @@ const RegisterCompletion = () => {
         <StyledPaper>
           <Typography variant="body1" paragraph>
             {t("open_university_registration_not_open")}{" "}
-            {completion.course.name} {completion.completion_language}.
+            {completion.course?.name} {completion.completion_language}.
           </Typography>
         </StyledPaper>
       </div>
@@ -146,11 +146,11 @@ const RegisterCompletion = () => {
           {t("title")}
         </H1NoBackground>
         <StyledText>
-          {t("course", { course: completion.course.name })}
+          {t("course", { course: completion.course?.name })}
         </StyledText>
-        {completion.course.ects && (
+        {completion.course?.ects && (
           <StyledText variant="h6" component="p" gutterBottom={true}>
-            {t("credits", { ects: completion.course.ects })}
+            {t("credits", { ects: completion.course?.ects })}
           </StyledText>
         )}
         <StyledPaper>

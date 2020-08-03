@@ -4,14 +4,14 @@ import { promisify } from "util"
 
 const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD
-const GENERATE_NEXUS = process.env.GENERATE_NEXUS
+const NEXUS_REFLECTION = process.env.NEXUS_REFLECTION
 
-const redisClient = !GENERATE_NEXUS
+const redisClient = !NEXUS_REFLECTION
   ? redis.createClient({
       url: REDIS_URL,
       password: REDIS_PASSWORD,
     })
-  : null
+  : undefined
 
 const logger = winston.createLogger({
   level: "info",
@@ -33,7 +33,12 @@ export const getAsync = redisClient
 
 export async function redisify<T>(
   fn: ((...props: any[]) => Promise<T> | T) | Promise<T>,
-  options: { prefix: string; expireTime: number; key: string; params?: any },
+  options: {
+    prefix: string
+    expireTime: number
+    key: string
+    params?: any
+  },
 ) {
   const { prefix, expireTime, key, params } = options
 
@@ -45,29 +50,36 @@ export async function redisify<T>(
   return await getAsync(prefixedKey)
     .then(async (res: any) => {
       if (res) {
-        logger.info("Cache hit")
+        logger.info(`Cache hit: ${prefix}`)
         return await JSON.parse(res)
       }
-      logger.info("Cache miss")
+      logger.info(`Cache miss: ${prefix}`)
 
-      const value = fn instanceof Promise ? await fn : await fn(...params)
+      const value =
+        fn instanceof Promise
+          ? await fn
+          : params
+          ? await fn(...params)
+          : await fn()
 
       redisClient?.set(prefixedKey, JSON.stringify(value))
       redisClient?.expire(prefixedKey, expireTime)
 
       return value
     })
-    .catch(() => (fn instanceof Promise ? fn : fn(...params)))
+    .catch(() => {
+      return fn instanceof Promise ? fn : params ? fn(...params) : fn()
+    })
 }
 
-export const publisher = !GENERATE_NEXUS
+export const publisher = !NEXUS_REFLECTION
   ? redis.createClient({
       url: REDIS_URL,
       password: process.env.REDIS_PASSWORD,
     })
   : null
 
-export const subscriber = !GENERATE_NEXUS
+export const subscriber = !NEXUS_REFLECTION
   ? redis.createClient({
       url: REDIS_URL,
       password: process.env.REDIS_PASSWORD,

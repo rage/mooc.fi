@@ -1,15 +1,15 @@
-import { Prisma, Course } from "../generated/prisma-client"
 import KafkaProducer, { ProducerMessage } from "../services/kafkaProducer"
 import { DateTime } from "luxon"
+import prismaClient from "./lib/prisma"
 
-const prisma = new Prisma()
+const prisma = prismaClient()
 
 const updateCourseStatuses = async () => {
-  const courses = await prisma.courses()
+  const courses = await prisma.course.findMany({})
   const kafkaProducer = new KafkaProducer()
 
   Promise.all(
-    courses.map(async (course: Course) => {
+    courses.map(async (course) => {
       const { status } = course
 
       let newStatus = status
@@ -40,7 +40,7 @@ const updateCourseStatuses = async () => {
         return Promise.resolve()
       }
 
-      const updatedCourse = await prisma.updateCourse({
+      const updatedCourse = await prisma.course.update({
         where: {
           id: course.id,
         },

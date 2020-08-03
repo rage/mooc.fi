@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { WideContainer } from "/components/Container"
 import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
 import ModuleGrid from "/components/ModuleGrid"
@@ -28,7 +28,10 @@ const StudyModules = () => {
         <H1NoBackground component="h1" variant="h1" align="center">
           {t("allStudyModules")}
         </H1NoBackground>
-        <ModuleGrid modules={data?.study_modules} loading={loading} />
+        <ModuleGrid
+          modules={data?.study_modules ?? undefined}
+          loading={loading}
+        />
       </WideContainer>
     </>
   )

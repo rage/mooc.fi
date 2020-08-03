@@ -4,14 +4,20 @@ RUN apt-get update \
   && apt-get install -y build-essential libgl1-mesa-glx \
   && rm -rf /var/lib/apt/lists/*
 
-COPY --chown=node . /app
+RUN mkdir -p /app && chown -R node /app
 
 USER node
 
 WORKDIR /app
 
-RUN npm ci \
-  && rm schema.graphql \
+COPY --chown=node package.json /app/
+COPY --chown=node package-lock.json /app/
+
+RUN npm ci
+
+COPY --chown=node . /app
+
+RUN rm schema.graphql \
   && npm run build
 
 ENV NODE_ENV=production

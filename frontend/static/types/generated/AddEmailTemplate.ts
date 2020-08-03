@@ -9,7 +9,7 @@
 
 export interface AddEmailTemplate_addEmailTemplate {
   __typename: "EmailTemplate"
-  id: any
+  id: string
   name: string | null
   html_body: string | null
   txt_body: string | null
@@ -17,7 +17,7 @@ export interface AddEmailTemplate_addEmailTemplate {
 }
 
 export interface AddEmailTemplate {
-  addEmailTemplate: AddEmailTemplate_addEmailTemplate
+  addEmailTemplate: AddEmailTemplate_addEmailTemplate | null
 }
 
 export interface AddEmailTemplateVariables {

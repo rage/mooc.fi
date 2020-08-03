@@ -1,7 +1,7 @@
-import { gql } from "apollo-boost"
+import { gql } from "@apollo/client"
 
 export const AddCourseMutation = gql`
-  mutation addCourse($course: CourseArg!) {
+  mutation addCourse($course: CourseCreateArg!) {
     addCourse(course: $course) {
       id
       slug
@@ -53,7 +53,7 @@ export const AddCourseMutation = gql`
 `
 
 export const UpdateCourseMutation = gql`
-  mutation updateCourse($course: CourseArg!) {
+  mutation updateCourse($course: CourseUpsertArg!) {
     updateCourse(course: $course) {
       id
       slug

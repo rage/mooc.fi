@@ -9,11 +9,11 @@
 
 export interface updateCreateAccountResearchConsent_updateResearchConsent {
   __typename: "User"
-  id: any
+  id: string
 }
 
 export interface updateCreateAccountResearchConsent {
-  updateResearchConsent: updateCreateAccountResearchConsent_updateResearchConsent
+  updateResearchConsent: updateCreateAccountResearchConsent_updateResearchConsent | null
 }
 
 export interface updateCreateAccountResearchConsentVariables {

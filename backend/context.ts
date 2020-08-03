@@ -1,15 +1,17 @@
-import { Prisma, User, Organization } from "./generated/prisma-client"
+import { User, Organization } from "@prisma/client"
 import { Role } from "./accessControl"
-import { UserInfo } from "/domain/UserInfo"
+import { UserInfo } from "./domain/UserInfo"
 import TmcClient from "./services/tmc"
-import { Context as GraphqlContext } from "graphql-yoga/dist/types"
+import { PrismaClient } from "@prisma/client"
+import { IncomingHttpHeaders } from "http"
 
-export interface Context extends GraphqlContext {
-  prisma: Prisma
-  user: User | undefined
-  organization: Organization | undefined
-  disableRelations: boolean | undefined
-  role: Role | undefined
-  userDetails: UserInfo | undefined
+export interface NexusContext {
+  db: PrismaClient
+  user?: User
+  organization?: Organization
+  disableRelations: boolean
+  role?: Role | undefined
+  userDetails?: UserInfo | undefined
   tmcClient: TmcClient | undefined
+  headers: IncomingHttpHeaders
 }

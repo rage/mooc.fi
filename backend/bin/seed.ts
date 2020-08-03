@@ -1,15 +1,10 @@
 import {
-  Prisma,
-  CourseCreateInput,
   CourseStatus,
-  CourseTranslationCreateWithoutCourseInput,
-  CourseTranslationCreateManyWithoutCourseInput,
-  StudyModuleCreateInput,
-  StudyModuleTranslationCreateWithoutStudy_moduleInput,
-  StudyModuleTranslationCreateManyWithoutStudy_moduleInput,
-  StudyModuleWhereUniqueInput,
   CourseTranslation,
-} from "../generated/prisma-client"
+  StudyModuleCreateArgs,
+} from "@prisma/client"
+import prismaClient from "./lib/prisma"
+import { StudyModule, Course } from "nexus-plugin-prisma/client"
 
 const Modules = [
   {
@@ -385,35 +380,35 @@ const Courses = [
   },
 ]
 
-const prisma = new Prisma({ endpoint: "http://localhost:4466/default/default" })
+const prisma = prismaClient()
 
 const seed = async () => {
-  await prisma.deleteManyStudyModules()
-  await prisma.deleteManyCourses()
+  await prisma.studyModule.deleteMany({ where: {} })
+  await prisma.course.deleteMany({ where: {} })
 
   await Promise.all(
     Modules.map(async (module) => {
-      const _module: StudyModuleCreateInput = {
+      const _module = {
         ...module,
         study_module_translations: module.study_module_translations
-          ? ({
-              create: (module.study_module_translations || []).map(
-                (t: StudyModuleTranslationCreateWithoutStudy_moduleInput) => ({
-                  ...t,
-                  id: undefined,
-                }),
-              ),
-            } as StudyModuleTranslationCreateManyWithoutStudy_moduleInput)
+          ? {
+              create: (module.study_module_translations || []).map((t) => ({
+                ...t,
+                id: undefined,
+              })),
+            }
           : null,
       }
 
-      return await prisma.createStudyModule(_module)
+      return await prisma.studyModule.create({
+        data: _module,
+      })
     }),
   )
 
   return await Promise.all(
     Courses.map(async (course) => {
-      const _course: CourseCreateInput = {
+      const _course = {
         ...course,
         id: undefined,
         photo: undefined,
@@ -422,23 +417,23 @@ const seed = async () => {
         start_date: "",
         status: course.status as CourseStatus,
         course_translations: course.course_translations
-          ? ({
+          ? {
               create:
                 (course?.course_translations as CourseTranslation[])?.map(
-                  (t: CourseTranslationCreateWithoutCourseInput) => ({
+                  (t) => ({
                     ...t,
                     id: undefined,
                     link: t.link || "",
                   }),
                 ) ?? undefined,
-            } as CourseTranslationCreateManyWithoutCourseInput)
+            }
           : null,
         study_modules: null,
       }
 
-      const newCourse = await prisma.createCourse(_course)
+      const newCourse = await prisma.course.create({ data: _course })
       if (course.study_modules) {
-        await prisma.updateCourse({
+        await prisma.course.update({
           where: {
             id: newCourse.id,
           },
@@ -446,7 +441,7 @@ const seed = async () => {
             study_modules: {
               connect: course.study_modules.map((id) => ({
                 id,
-              })) as StudyModuleWhereUniqueInput[],
+              })),
             },
           },
         })
