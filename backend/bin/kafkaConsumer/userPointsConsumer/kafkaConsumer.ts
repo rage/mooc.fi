@@ -35,7 +35,7 @@ const logCommit = (err: any, topicPartitions: any) => {
 
 const consumer = new Kafka.KafkaConsumer(
   {
-    "group.id": "kafka-beta",
+    "group.id": "kafka",
     "metadata.broker.list": process.env.KAFKA_HOST,
     offset_commit_cb: logCommit,
     "enable.auto.commit": false,
