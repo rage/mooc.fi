@@ -25,7 +25,7 @@ export const handleMessage = async (
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (e) {
     logger.error("invalid message", e)
-    // await commit(kafkaMessage, consumer)
+    await commit(kafkaMessage, consumer)
     release()
     return
   }
@@ -34,7 +34,7 @@ export const handleMessage = async (
     await MessageYupSchema.validate(message)
   } catch (error) {
     logger.error("JSON VALIDATE FAILED: " + error, { message })
-    // await commit(kafkaMessage, consumer)
+    await commit(kafkaMessage, consumer)
     release()
     return
   }
@@ -47,7 +47,7 @@ export const handleMessage = async (
   } catch (error) {
     logger.error("Could not save event to database:", error)
   }
-  // await commit(kafkaMessage, consumer)
+  await commit(kafkaMessage, consumer)
   //Releasing mutex
   release()
 }
