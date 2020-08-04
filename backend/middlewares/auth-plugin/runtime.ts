@@ -7,7 +7,6 @@ import { Role } from "../../accessControl"
 import { Settings } from "./settings"
 import { User } from "@prisma/client"
 import hashUser from "../../util/hashUser"
-import { Sentry } from "../../services/sentry"
 
 export const plugin: RuntimePlugin<Settings, "required"> = (
   settings: Settings,
@@ -96,12 +95,6 @@ export const plugin: RuntimePlugin<Settings, "required"> = (
           key: hashUser(prismaDetails),
         },
       )
-
-      /*if (process.env.SENTRY_DSN) {
-        Sentry.configureScope(scope => {
-          scope.setUser({ id: `${user.id}`})
-        })
-      }*/
 
       return {
         details,
