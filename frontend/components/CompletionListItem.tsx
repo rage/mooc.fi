@@ -72,8 +72,8 @@ const CompletionListItem = (props: ListItemProps) => {
         </CardSubtitle>
       </div>
       {isRegistered && listItem.completions_registered ? (
-        listItem.completions_registered.map((r) => {
-          ;<div style={{ margin: "auto" }}>
+        listItem.completions_registered.map((r) => (
+          <div style={{ margin: "auto" }} key={`completion-registered-${r.id}`}>
             <CardSubtitle>
               {t("registeredDate")}
               {formatDateTime(r.created_at)}
@@ -83,7 +83,7 @@ const CompletionListItem = (props: ListItemProps) => {
             </CardSubtitle>
             <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
           </div>
-        })
+        ))
       ) : (
         <Link
           href="/register-completion/[slug]"
