@@ -27,7 +27,7 @@ docker pull eu.gcr.io/moocfi/moocfi-backend:latest || true
 
 echo Building "$TAG"
 
-docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile -t "$TAG"
+docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile -t "$TAG" --build-arg=GIT_COMMIT="$(git rev-parse --short HEAD)"
 cd ..
 
 echo "Successfully built image: $TAG"
