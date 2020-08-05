@@ -1,10 +1,10 @@
 import { Message } from "./interfaces"
 import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
-import TmcClient from "../../../services/tmc"
 import { DateTime } from "luxon"
 import winston = require("winston")
 import { CheckCompletion } from "../userCourseProgressConsumer/generateUserCourseProgress"
 import knex from "knex"
+import getUserFromTMC from "../../common/getUserFromTMC"
 
 const Knex = knex({
   client: "pg",
@@ -27,21 +27,6 @@ const isUserInDB = async (user_id: number) => {
   return await Knex("user").where("upstream_id", "=", user_id)
 }
 
-const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
-  const tmc: TmcClient = new TmcClient()
-  const userDetails = await tmc.getUserDetailsById(user_id)
-
-  return prisma.user.create({
-    data: {
-      upstream_id: userDetails.id,
-      first_name: userDetails.user_field.first_name,
-      last_name: userDetails.user_field.last_name,
-      email: userDetails.email,
-      username: userDetails.username,
-      administrator: userDetails.administrator,
-    },
-  })
-}
 
 export const saveToDatabase = async (
   message: Message,
