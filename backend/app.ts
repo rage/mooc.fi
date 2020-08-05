@@ -18,7 +18,7 @@ import { graphqlUploadExpress } from "graphql-upload"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
-// import bodyParser from "body-parser"
+import sentry from "./middlewares/sentry"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
@@ -80,6 +80,7 @@ schema.addToContext(async (req) => ({
   tmcClient: undefined,
 }))
 
+schema.middleware(sentry)
 schema.middleware(cache)
 
 use(
@@ -113,7 +114,7 @@ settings.change({
   },
 })
 
-schema.middleware((config: any) => async (root, args, ctx, info, next) => {
+schema.middleware((_config: any) => async (root, args, ctx, info, next) => {
   // only log root level query/mutation, not fields queried
   if (!info.path?.prev) {
     logger.info(
@@ -123,7 +124,8 @@ schema.middleware((config: any) => async (root, args, ctx, info, next) => {
     )
   }
 
-  try {
+  return await next(root, args, ctx, info)
+  /*try {
     const result = await next(root, args, ctx, info)
 
     return result
@@ -131,7 +133,7 @@ schema.middleware((config: any) => async (root, args, ctx, info, next) => {
     logger.error(
       `error: ${e}\n  in type ${config?.parentTypeConfig?.name}, field ${config?.fieldConfig?.name} with args ${config?.args}`,
     )
-  }
+  }*/
 })
 
 server.express.use(cors())
