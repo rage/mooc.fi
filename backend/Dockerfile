@@ -1,5 +1,8 @@
 FROM node:12
 
+ARG GIT_COMMIT=""
+LABEL GIT_COMMIT=${GIT_COMMIT}
+
 RUN apt-get update \
   && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
   && rm -rf /var/lib/apt/lists/*
@@ -34,3 +37,5 @@ EXPOSE 4000
 EXPOSE 7001
 
 CMD [ "npm", "run", "start" ]
+
+ENV GIT_COMMIT=${GIT_COMMIT}

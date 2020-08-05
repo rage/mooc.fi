@@ -23,7 +23,7 @@ export interface RegisterCompletionUserOverView_currentUser_completions_completi
 export interface RegisterCompletionUserOverView_currentUser_completions_completions_registered {
   __typename: "CompletionRegistered"
   id: string
-  created_at: any | null
+  completion_id: string | null
   organization: RegisterCompletionUserOverView_currentUser_completions_completions_registered_organization | null
 }
 

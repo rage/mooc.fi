@@ -276,4 +276,6 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   })
 }
 
-fetchUserAppDatum().catch((e) => console.log(e))
+fetchUserAppDatum()
+  .then(() => process.exit(0))
+  .catch((e) => console.log(e))
