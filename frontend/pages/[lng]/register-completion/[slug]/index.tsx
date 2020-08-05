@@ -68,7 +68,7 @@ export const UserOverViewQuery = gql`
         }
         completions_registered {
           id
-          created_at
+          completion_id
           organization {
             slug
           }
@@ -108,6 +108,11 @@ const RegisterCompletion = () => {
     return <div>You are not logged in. Please log in to the site</div>
   }
 
+  const registeredCompletion =
+    completion?.completions_registered?.find(
+      (c) => c?.completion_id === completion?.id,
+    ) ?? undefined
+
   if (!completion?.eligible_for_ects) {
     return (
       <Container>
@@ -115,6 +120,31 @@ const RegisterCompletion = () => {
           {t("course_completion_not_found_title")}
         </H1NoBackground>
         <Typography>{t("course_completion_not_found")}</Typography>
+      </Container>
+    )
+  }
+
+  if (registeredCompletion) {
+    return (
+      <Container>
+        <H1NoBackground variant="h1" component="h1" align="center">
+          {t("course_completion_already_registered_title")}
+        </H1NoBackground>
+        <Typography>{t("course_completion_already_registered")}</Typography>
+        <StyledPaperColumn>
+          <Typography variant="body1">
+            {t("see_completion_link")}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://opintopolku.fi/oma-opintopolku/"
+            >
+              {" "}
+              opintopolku.fi/oma-opintopolku/
+            </a>
+          </Typography>
+          <Typography variant="body1">{t("see_completion_NB")}</Typography>
+        </StyledPaperColumn>
       </Container>
     )
   }
