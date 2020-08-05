@@ -1,4 +1,4 @@
-import TmcClient from "../../services/tmc"
+import TmcClient from "../../../services/tmc"
 import { PrismaClient } from "@prisma/client"
 
 const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
