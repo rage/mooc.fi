@@ -13,14 +13,16 @@ const sentry = (config: any) => async (
 
     return result
   } catch (error) {
-    Sentry.withScope((scope) => {
-      scope.setExtra("type", config.parentTypeConfig.name)
-      scope.setExtra("field", config.fieldConfig.name)
-      scope.setExtra("args", args)
-      scope.setUser({ id: context.user?.id })
+    if (process.env.NODE_ENV === "production") {
+      Sentry.withScope((scope) => {
+        scope.setExtra("type", config.parentTypeConfig.name)
+        scope.setExtra("field", config.fieldConfig.name)
+        scope.setExtra("args", args)
+        scope.setUser({ id: context.user?.id })
 
-      Sentry.captureException(error)
-    })
+        Sentry.captureException(error)
+      })
+    }
 
     log.error("error", { error })
   }
