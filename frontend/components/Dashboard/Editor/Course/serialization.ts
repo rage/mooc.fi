@@ -140,6 +140,19 @@ export const fromCourseForm = ({
     .filter((key) => values?.study_modules?.[key]) // FIXME: (?) why is it like this
     .map((id) => ({ id }))
 
+  const formValues = newCourse
+    ? omit(values, [
+        "id",
+        "new_slug",
+        "thumbnail",
+        "import_photo",
+        "delete_photo",
+      ])
+    : {
+        ...omit(values, ["id", "thumbnail", "import_photo"]),
+        new_slug: values.new_slug.trim(),
+      }
+
   const status =
     values.status === "Active"
       ? CourseStatus.Active
@@ -150,7 +163,8 @@ export const fromCourseForm = ({
       : undefined
 
   const c = {
-    ...omit(values, ["id", "thumbnail", "import_photo", "__typename"]),
+    ...formValues,
+    name: values.name ?? "",
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,
     base64: !isProduction,

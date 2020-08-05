@@ -27,6 +27,9 @@ export const CourseDetailsFromSlugQuery = gql`
       id
       slug
       name
+      teacher_in_charge_name
+      teacher_in_charge_email
+      start_date
       completion_email {
         name
         id
