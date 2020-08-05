@@ -24,6 +24,7 @@ export const UserOverViewQuery = gql`
           has_certificate
         }
         completion_date
+        registered
         completions_registered {
           id
           created_at

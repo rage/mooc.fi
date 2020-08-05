@@ -97,5 +97,16 @@ schema.objectType({
         return avoinLinks[0].link
       },
     })
+
+    t.field("registered", {
+      type: "Boolean",
+      resolve: async (parent, _, ctx) => {
+        const registered = await ctx.db.completionRegistered.findMany({
+          where: { completion_id: parent.id },
+        })
+
+        return registered.length > 0
+      },
+    })
   },
 })
