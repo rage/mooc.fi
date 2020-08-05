@@ -4,7 +4,7 @@ import { DateTime } from "luxon"
 import winston = require("winston")
 import { CheckCompletion } from "../userCourseProgressConsumer/generateUserCourseProgress"
 import knex from "knex"
-import getUserFromTMC from "../../common/getUserFromTMC"
+import getUserFromTMC from "../common/getUserFromTMC"
 
 const Knex = knex({
   client: "pg",
@@ -26,7 +26,6 @@ const Knex = knex({
 const isUserInDB = async (user_id: number) => {
   return await Knex("user").where("upstream_id", "=", user_id)
 }
-
 
 export const saveToDatabase = async (
   message: Message,

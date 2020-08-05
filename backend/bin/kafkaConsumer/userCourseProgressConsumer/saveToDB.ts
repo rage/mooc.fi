@@ -9,7 +9,7 @@ import {
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
-import getUserFromTMC from "../../common/getUserFromTMC"
+import getUserFromTMC from "../common/getUserFromTMC"
 
 import _KnexConstructor from "knex"
 
