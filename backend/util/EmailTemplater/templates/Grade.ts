@@ -13,7 +13,7 @@ export class Grade extends Template {
     const grade = (
       await this.prisma.completion.findMany({
         where: { user: { id: this.user.id }, course: { id: course.id } },
-        orderBy: "completion_date_DESC",
+        orderBy: { completion_date: "desc" },
       })
     )[0]?.grade
     return `${grade}`
