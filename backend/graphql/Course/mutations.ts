@@ -71,39 +71,39 @@ schema.extendType({
           data: {
             ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
-            photo: !!photo ? { connect: { id: photo } } : null,
+            photo: !!photo ? { connect: { id: photo } } : undefined,
             course_translations: !!course_translations
               ? { create: course_translations }
-              : null,
+              : undefined,
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
                     id: s.id ?? undefined,
                   })),
                 }
-              : null,
+              : undefined,
             open_university_registration_links: !!open_university_registration_links
               ? { create: open_university_registration_links }
-              : null,
+              : undefined,
             course_variants: !!course_variants
               ? { create: course_variants }
-              : null,
+              : undefined,
             course_aliases: !!course_aliases
               ? { create: course_aliases }
-              : null,
+              : undefined,
             inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
-              : null,
+              : undefined,
             completions_handled_by: !!completions_handled_by
               ? { connect: { id: completions_handled_by } }
-              : null,
+              : undefined,
             user_course_settings_visibilities: !!user_course_settings_visibilities
               ? { create: user_course_settings_visibilities }
-              : null,
+              : undefined,
             // don't think this will be passed by parameter, but let's be sure
             completion_email: !!completion_email
               ? { connect: { id: completion_email } }
-              : null,
+              : undefined,
           },
         })
 
