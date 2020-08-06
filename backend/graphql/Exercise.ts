@@ -1,6 +1,6 @@
 import { schema } from "nexus"
-
 import { isAdmin } from "../accessControl"
+import { filterNull } from "../util/db-functions"
 
 schema.objectType({
   name: "Exercise",
@@ -42,7 +42,7 @@ schema.objectType({
               // @ts-ignore: context typing problem, FIXME
               user_id: ctx?.user?.id, // { id: ctx?.user?.id },
             },
-            orderBy: orderBy ?? undefined,
+            orderBy: filterNull(orderBy) ?? undefined,
           })
       },
     })

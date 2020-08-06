@@ -5,6 +5,7 @@ import { Role, isAdmin } from "../accessControl"
 import { NexusContext } from "../context"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
+import { filterNull } from "../util/db-functions"
 
 schema.objectType({
   name: "Organization",
@@ -120,7 +121,7 @@ schema.extendType({
           last: last ?? undefined,
           after: after ? { id: after } : undefined,
           before: before ? { id: before } : undefined,*/
-          orderBy: orderBy ?? undefined,
+          orderBy: filterNull(orderBy) ?? undefined,
           where: {
             hidden,
           },
