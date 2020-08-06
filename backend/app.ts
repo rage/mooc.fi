@@ -1,3 +1,4 @@
+require("newrelic")
 require("sharp") // image library sharp seems to crash without this require
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -18,6 +19,7 @@ import { graphqlUploadExpress } from "graphql-upload"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
+import { newrelicPlugin } from "./middlewares/newrelic-plugin"
 import sentry from "./middlewares/sentry"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
@@ -89,6 +91,7 @@ use(
     redisClient,
   }),
 )
+use(newrelicPlugin())
 
 settings.change({
   logger: {
