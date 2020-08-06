@@ -3,3 +3,4 @@ bin/tmp/
 .vscode
 .tmp_build/
 .nexus
+newrelic.js
