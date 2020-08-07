@@ -1,4 +1,10 @@
-require("newrelic")
+if (process.env.NODE_ENV === "production" && !process.env.NEXUS_REFLECTION) {
+  if (process.env.NEW_RELIC_LICENSE_KEY) {
+    require("newrelic")
+  } else {
+    console.log("New Relic license key missing")
+  }
+}
 require("sharp") // image library sharp seems to crash without this require
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -13,9 +19,6 @@ import * as winston from "winston"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
 import { graphqlUploadExpress } from "graphql-upload"
-// import { contextUser } from "./middlewares/FetchUser"
-//import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
-//import path from "path"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
@@ -91,7 +94,13 @@ use(
     redisClient,
   }),
 )
-use(newrelicPlugin())
+if (
+  PRODUCTION &&
+  !process.env.NEXUS_REFLECTION &&
+  process.env.NEW_RELIC_LICENSE_KEY
+) {
+  use(newrelicPlugin())
+}
 
 settings.change({
   logger: {
