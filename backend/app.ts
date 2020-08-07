@@ -19,6 +19,7 @@ import morgan from "morgan"
 import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
 import sentry from "./middlewares/sentry"
+import axios from "axios"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
@@ -150,6 +151,7 @@ server.express.get("/api/completions/:course", async function (
 ) {
   const rawToken = req.get("Authorization")
   const secret: string = rawToken?.split(" ")[1] ?? ""
+
   let course_id: string
   const org = (
     await Knex.select("*")
@@ -283,6 +285,59 @@ server.express.get(
     }
 
     res.json(resObject)
+  },
+)
+
+server.express.get(
+  "/api/courseprogress/:course/:tmccourse/:user",
+  async (req: any, res: any) => {
+    const rawToken = req.get("Authorization")
+
+    const {
+      course,
+      tmccourse,
+      user,
+    }: { course: string; tmccourse: string; user: string } = req.params
+
+    if (!course || !tmccourse || !user) {
+      return res
+        .status(400)
+        .json({ message: "must specify course, tmccourse, user" })
+    }
+
+    const { data: quizzesData = {} } =
+      (await axios({
+        method: "GET",
+        url: `https://quizzes.mooc.fi/api/v1/quizzes/answer/answered/${course}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: rawToken,
+        },
+      })) ?? {}
+    const { data: tmcData = [] } =
+      (await axios({
+        method: "GET",
+        url: `https://tmc.mooc.fi/api/v8/courses/${tmccourse}/users/${user}/points`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: rawToken,
+        },
+      })) ?? {}
+
+    const quizzesResult = Object.entries(quizzesData).map(
+      ([id, data]: [string, any]) => ({
+        id,
+        pointAwarded: data?.answered && data?.correct,
+      }),
+    )
+    const tmcResult = tmcData.map((entry: any) => ({
+      id: entry?.exercise_id,
+      pointAwarded: !!entry?.awarded_point,
+    }))
+
+    res.json({
+      data: quizzesResult.concat(tmcResult),
+    })
   },
 )
 
