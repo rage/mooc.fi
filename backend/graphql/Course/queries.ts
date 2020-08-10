@@ -2,7 +2,7 @@ import { schema } from "nexus"
 import { Course } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin } from "../../accessControl"
-
+import { filterNull } from "../../util/db-functions"
 schema.extendType({
   type: "Query",
   definition(t) {
@@ -77,7 +77,7 @@ schema.extendType({
         const { orderBy, language } = args
 
         const courses = await ctx.db.course.findMany({
-          orderBy: orderBy ?? undefined,
+          orderBy: filterNull(orderBy) ?? undefined,
         })
 
         const filtered = language
