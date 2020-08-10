@@ -18,7 +18,6 @@ import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
-import { graphqlUploadExpress } from "graphql-upload"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
@@ -74,7 +73,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-schema.addToContext(async (req) => ({
+schema.addToContext(async ({ req }) => ({
   ...req,
   // user: undefined,
   // organization: undefined,
@@ -112,7 +111,6 @@ settings.change({
   server: {
     port: 4000,
     path: PRODUCTION ? "/api" : "/",
-    playground: { path: PRODUCTION ? "/api" : "/" },
   },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
@@ -150,11 +148,11 @@ schema.middleware((_config: any) => async (root, args, ctx, info, next) => {
 
 server.express.use(cors())
 server.express.use(morgan("combined"))
-server.express.use(
+/*server.express.use(
   graphqlUploadExpress({
     maxFileSize: 10_000_000,
   }),
-)
+)*/
 
 server.express.get("/api/completions/:course", async function (
   req: any,
