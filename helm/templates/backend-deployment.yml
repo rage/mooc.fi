@@ -41,6 +41,8 @@ spec:
                 secretKeyRef:
                   name: redis
                   key: redis-password
+            - name: NEW_RELIC_NO_CONFIG_FILE
+              value: "true"
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"
