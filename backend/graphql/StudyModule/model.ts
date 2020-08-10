@@ -1,5 +1,6 @@
 import { schema } from "nexus"
 import { notEmpty } from "../../util/notEmpty"
+import { filterNull } from "../../util/db-functions"
 
 schema.objectType({
   name: "StudyModule",
@@ -25,7 +26,7 @@ schema.objectType({
         const { language, orderBy } = args
 
         const courses = await ctx.db.course.findMany({
-          orderBy: orderBy ?? undefined,
+          orderBy: filterNull(orderBy) ?? undefined,
           where: { study_modules: { some: { id: parent.id } } },
         })
 

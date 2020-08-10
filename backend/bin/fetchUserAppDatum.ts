@@ -6,12 +6,23 @@ import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 import prismaClient from "./lib/prisma"
+import * as winston from "winston"
 
 const CONFIG_NAME = "userAppDatum"
 
 const prisma = prismaClient()
 let course
 let old: UserCourseSetting
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  defaultMeta: { service: "fetch-user-app-datum" },
+  transports: [new winston.transports.Console()],
+})
 
 const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
@@ -27,22 +38,24 @@ const fetchUserAppDatum = async () => {
       ? existingConfigs[0].timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
       : null
 
-  console.log(latestTimeStamp)
+  logger.info(latestTimeStamp)
 
   // weird
   const data_from_tmc = await tmc.getUserAppDatum(
     latestTimeStamp?.toISOString() ?? null,
   )
-  console.log("Got data from tmc")
-  console.log("data length", data_from_tmc.length)
-  console.log("sorting")
+  logger.info("Got data from tmc")
+  logger.info("data length", data_from_tmc.length)
+  logger.info("sorting")
+
   const data = data_from_tmc.sort(
     (a, b) =>
       DateTime.fromISO(a.updated_at).toMillis() -
       DateTime.fromISO(b.updated_at).toMillis(),
   )
-  console.log(data)
-  console.log("sorted")
+
+  logger.info(data)
+  logger.info("sorted")
   const saveInterval = 10000
   let saveCounter = 0
 
@@ -50,9 +63,16 @@ const fetchUserAppDatum = async () => {
     saveCounter++
     let p = data[i]
     if (p.user_id == null) continue
-    if (i % 1000 == 0) console.log(i)
+    if (i % 1000 == 0) logger.info(i)
     if (!p || p == "undefined" || p == null) {
-      console.log("not p:", p, "i is", i, "while data.length is", data.length)
+      logger.warning(
+        "not p:",
+        p,
+        "i is",
+        i,
+        "while data.length is",
+        data.length,
+      )
       continue
     }
     const existingUsers = await prisma.user.findMany({
@@ -62,10 +82,10 @@ const fetchUserAppDatum = async () => {
       try {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {
-        console.log(
+        logger.error(
           "error in getting user data from tmc, trying again in 30s...",
         )
-        console.log("above error is:", error)
+        logger.error("above error is:", error)
         await delay(30 * 1000)
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       }
@@ -138,7 +158,7 @@ const fetchUserAppDatum = async () => {
   await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
 
   const stopTime = new Date().getTime()
-  console.log("used", stopTime - startTime, "milliseconds")
+  logger.info("used", stopTime - startTime, "milliseconds")
 }
 
 const saveLanguage = async (p: any) => {
@@ -232,7 +252,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
 
     return result
   } catch (e) {
-    console.log(
+    logger.error(
       `Failed to upsert user with upstream id ${
         details.id
       }. Values we tried to upsert: ${JSON.stringify(
@@ -240,7 +260,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
       )}. Values found from the database: ${JSON.stringify(details)}`,
     )
     if (e.meta?.target?.includes("username")) {
-      console.log(`Removing user with duplicate username`)
+      logger.info(`Removing user with duplicate username`)
       await prisma.user.delete({ where: { username: details.username } })
     }
     throw e
@@ -261,7 +281,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
-  console.log("saving")
+  logger.info("saving")
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
   await prisma.userAppDatumConfig.upsert({
@@ -278,4 +298,4 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
 
 fetchUserAppDatum()
   .then(() => process.exit(0))
-  .catch((e) => console.log(e))
+  .catch((e) => logger.error(e))

@@ -1,3 +1,10 @@
+if (process.env.NODE_ENV === "production" && !process.env.NEXUS_REFLECTION) {
+  if (process.env.NEW_RELIC_LICENSE_KEY) {
+    require("newrelic")
+  } else {
+    console.log("New Relic license key missing")
+  }
+}
 require("sharp") // image library sharp seems to crash without this require
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -11,13 +18,10 @@ import { wsListen } from "./wsServer"
 import * as winston from "winston"
 import { PrismaClient } from "nexus-plugin-prisma/client"
 import cors from "cors"
-import { graphqlUploadExpress } from "graphql-upload"
-// import { contextUser } from "./middlewares/FetchUser"
-//import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema"
-//import path from "path"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
+import { newrelicPlugin } from "./middlewares/newrelic-plugin"
 import sentry from "./middlewares/sentry"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
@@ -69,7 +73,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-schema.addToContext(async (req) => ({
+schema.addToContext(async ({ req }) => ({
   ...req,
   // user: undefined,
   // organization: undefined,
@@ -89,6 +93,13 @@ use(
     redisClient,
   }),
 )
+if (
+  PRODUCTION &&
+  !process.env.NEXUS_REFLECTION &&
+  process.env.NEW_RELIC_LICENSE_KEY
+) {
+  use(newrelicPlugin())
+}
 
 settings.change({
   logger: {
@@ -100,7 +111,6 @@ settings.change({
   server: {
     port: 4000,
     path: PRODUCTION ? "/api" : "/",
-    playground: { path: PRODUCTION ? "/api" : "/" },
   },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
@@ -138,11 +148,11 @@ schema.middleware((_config: any) => async (root, args, ctx, info, next) => {
 
 server.express.use(cors())
 server.express.use(morgan("combined"))
-server.express.use(
+/*server.express.use(
   graphqlUploadExpress({
     maxFileSize: 10_000_000,
   }),
-)
+)*/
 
 server.express.get("/api/completions/:course", async function (
   req: any,
