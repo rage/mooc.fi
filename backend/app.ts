@@ -111,6 +111,7 @@ settings.change({
   server: {
     port: 4000,
     path: PRODUCTION ? "/api" : "/",
+    playground: true,
   },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
