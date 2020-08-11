@@ -2,6 +2,7 @@ import axios from "axios"
 import { DateTime } from "luxon"
 import { maxBy } from "lodash"
 import prismaClient from "./lib/prisma"
+import * as winston from "winston"
 
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -9,22 +10,32 @@ require("dotenv-safe").config({
 
 const prisma = prismaClient()
 
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  defaultMeta: { service: "fetch-avoin-links" },
+  transports: [new winston.transports.Console()],
+})
+
 const fetch = async () => {
   const avoinObjects = await prisma.openUniversityRegistrationLink.findMany({})
 
   for (const p of avoinObjects) {
-    console.log("Processing link", p.course_code, p.language)
+    logger.info("Processing link", p.course_code, p.language)
     if (!p.course_code) {
-      console.log(
+      logger.info(
         "Since this link has no course code, I won't try to fetch new links.",
       )
       continue
     }
     const res = await getInfoWithCourseCode(p.course_code).catch((error) => {
-      console.log(error)
+      logger.error(error)
       throw error
     })
-    console.log("Open university info: ", JSON.stringify(res, undefined, 2))
+    logger.info("Open university info: ", JSON.stringify(res, undefined, 2))
 
     const now: DateTime = DateTime.fromJSDate(new Date())
 
@@ -45,15 +56,15 @@ const fetch = async () => {
     const bestLink = maxBy(openLinks, (o) => o.stopDate)
 
     if (!bestLink) {
-      console.log("Did not find any open links")
+      logger.warn("Did not find any open links")
       continue
     }
 
-    console.log(`Best link found was: ${JSON.stringify(bestLink)}`)
+    logger.info(`Best link found was: ${JSON.stringify(bestLink)}`)
 
     const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
 
-    console.log("Updating link to", url)
+    logger.info("Updating link to", url)
     await prisma.openUniversityRegistrationLink.update({
       where: {
         id: p.id,
@@ -91,6 +102,6 @@ interface Link {
 }
 
 fetch().catch((error) => {
-  console.log(error)
+  logger.error(error)
   throw error
 })
