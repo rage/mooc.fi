@@ -111,7 +111,12 @@ settings.change({
   server: {
     port: 4000,
     path: PRODUCTION ? "/api" : "/",
-    playground: true,
+    graphql: {
+      introspection: true,
+    },
+    playground: {
+      enabled: true,
+    },
   },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
