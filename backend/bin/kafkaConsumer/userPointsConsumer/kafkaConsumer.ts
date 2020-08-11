@@ -7,7 +7,10 @@ import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
 const config = require("../kafkaConfig")
 
-import { handleMessage } from "./handleMessage"
+import { handleMessage } from "../common/handleMessage"
+import { Message } from "./interfaces"
+import { MessageYupSchema } from "./validate"
+import { saveToDatabase } from "./saveToDB"
 import prismaClient from "../../lib/prisma"
 
 const TOPIC_NAME = [config.user_points_consumer.topic_name]
@@ -54,7 +57,15 @@ consumer.on("ready", () => {
       process.exit(-1)
     }
     if (messages.length > 0) {
-      await handleMessage(messages[0], mutex, logger, consumer, prisma)
+      await handleMessage<Message>({
+        kafkaMessage: messages[0],
+        mutex,
+        logger,
+        consumer,
+        prisma,
+        MessageYupSchema,
+        saveToDatabase,
+      })
       setImmediate(() => {
         consumer.consume(1, consumerImpl)
       })
