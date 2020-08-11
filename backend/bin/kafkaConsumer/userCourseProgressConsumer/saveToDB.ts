@@ -64,8 +64,8 @@ export const saveToDatabase = async (
 
   let userCourseProgress = (
     await Knex<unknown, UserCourseProgress[]>("user_course_progress")
-      .where("user", user?.id)
-      .where("course", message.course_id)
+      .where("user_id", user?.id)
+      .where("course_id", message.course_id)
       .limit(1)
   )[0]
 
@@ -85,9 +85,9 @@ export const saveToDatabase = async (
     await Knex<unknown, UserCourseServiceProgress[]>(
       "user_course_service_progress",
     )
-      .where("user", user?.id)
-      .where("course", message.course_id)
-      .where("service", message.service_id)
+      .where("user_id", user?.id)
+      .where("course_id", message.course_id)
+      .where("service_id", message.service_id)
       .limit(1)
   )[0]
 
