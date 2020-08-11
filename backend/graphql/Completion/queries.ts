@@ -53,13 +53,13 @@ schema.extendType({
 
         if (completion_language) {
           return await Knex.select("*").from("completion").where({
-            course: courseObject?.id,
+            course_id: courseObject?.id,
             completion_language: completion_language,
           })
         } else {
           return await Knex.select("*")
             .from("completion")
-            .where({ course: courseObject?.id })
+            .where({ course_id: courseObject?.id })
         }
       },
     })
