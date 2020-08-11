@@ -70,7 +70,7 @@ const handleExercise = async (
     ) {
       logger.error(
         "Timestamp is older than on existing exercise on " +
-          exercise +
+          JSON.stringify(exercise) +
           "skipping this exercise",
       )
       return
