@@ -125,10 +125,10 @@ const getGlobalStats = async (): Promise<string> => {
   const totalUsers = (
     await Knex.count()
       .from("UserCourseSettings")
-      .where({ course: course[0].id })
+      .where({ course_id: course[0].id })
   )[0].count
   const totalCompletions = (
-    await Knex.count().from("completion").where({ course: course[0].id })
+    await Knex.count().from("completion").where({ course_id: course[0].id })
   )[0].count
   const now = new Date()
   return `\`\`\`Stats ${now.getDate()}.${
