@@ -53,7 +53,7 @@ schema.extendType({
         const { course_id } = args
 
         const course = (
-          await Knex.select(["id", "completion_email"])
+          await Knex.select(["id", "completion_email_id"])
             .from("course")
             .where("id", course_id)
             .limit(1)
@@ -91,8 +91,8 @@ schema.extendType({
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: "unknown",
-            course: course_id,
-            user: databaseUser.id,
+            course_id: course_id,
+            user_id: databaseUser.id,
             grade: o.grade,
             completion_date: o.completion_date,
           }
@@ -104,8 +104,8 @@ schema.extendType({
             id: uuidv4(),
             created_at: new Date(),
             updated_at: new Date(),
-            user: databaseUser.id,
-            email_template: course.completion_email,
+            user_id: databaseUser.id,
+            email_template_id: course.completion_email_id,
             sent: false,
             error: false,
           }
@@ -116,7 +116,7 @@ schema.extendType({
             .batchInsert("completion", newCompletions)
             .returning("*")
 
-          if (course.completion_email) {
+          if (course.completion_email_id) {
             await trx.batchInsert("email_delivery", newEmailDeliveries)
           }
 

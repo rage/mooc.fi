@@ -132,10 +132,10 @@ const CheckRequiredExerciseCompletions = async (
 ): Promise<boolean> => {
   if (course.exercise_completions_needed) {
     const exercise_completions = await Knex("exercise_completion")
-      .countDistinct("exercise_completion.exercise")
-      .join("exercise", { "exercise_completion.exercise": "exercise.id" })
-      .where("exercise.course", course.id)
-      .andWhere("exercise_completion.user", user.id)
+      .countDistinct("exercise_completion.exercise_id")
+      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+      .where("exercise.course_id", course.id)
+      .andWhere("exercise_completion.user_id", user.id)
       .andWhere("exercise_completion.completed", true)
       .andWhereNot("exercise.max_points", 0)
 
