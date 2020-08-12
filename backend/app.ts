@@ -306,10 +306,20 @@ server.express.get(
   },
 )
 
-const baiCourseIds = {
-  beginner: "e1eaff32-8b2c-4423-998d-d3477535a1f9",
-  intermediate: "3a2790fc-227c-4045-9f4c-40a2bdabe76a",
-  advanced: "0e9d1a22-0e19-4320-8c8c-84115bb26452",
+const baiCourseTiers: Record<string, string> = {
+  "e1eaff32-8b2c-4423-998d-d3477535a1f9": "beginner",
+  "3a2790fc-227c-4045-9f4c-40a2bdabe76a": "intermediate",
+  "0e9d1a22-0e19-4320-8c8c-84115bb26452": "advanced",
+}
+
+interface ExerciseCompletionResult {
+  exercise_id: string
+  n_points: string
+  part: number
+  section: number
+  max_points: number
+  completed: boolean
+  quizzes_id: string
 }
 
 server.express.get("/api/baiprogress", async (req: any, res: any) => {
@@ -338,39 +348,28 @@ server.express.get("/api/baiprogress", async (req: any, res: any) => {
     return res.status(400).json({ message: "invalid credentials" })
   }
 
-  const resObject = await Object.entries(baiCourseIds).reduce(
-    async (acc, [tier, course_id]) => {
-      const results = await Knex.select(
-        "exercise_id",
-        "n_points",
-        "part",
-        "section",
-        "max_points",
-        "completed",
-      )
-        .from("exercise_completion")
-        .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-        .where({
-          "exercise.custom_id": course_id,
-        })
+  const completions = await Knex.select<any, ExerciseCompletionResult[]>(
+    "exercise_id",
+    "n_points",
+    "part",
+    "section",
+    "max_points",
+    "completed",
+    "custom_id as quizzes_id",
+  )
+    .from("exercise_completion")
+    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+    .whereIn("exercise.custom_id", Object.keys(baiCourseTiers))
 
-      const exercises = (results ?? []).reduce(
-        (eacc, ecurr) => ({
-          ...eacc,
-          [ecurr.exercise_id]: {
-            ...ecurr,
-            tier,
-          },
-        }),
-        {},
-      )
-
-      return {
-        ...(await acc),
-        ...exercises,
-      }
-    },
-    Promise.resolve({} as any),
+  const resObject = (completions ?? []).reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.exercise_id]: {
+        ...curr,
+        tier: baiCourseTiers[curr.quizzes_id],
+      },
+    }),
+    {} as { [id: string]: ExerciseCompletionResult & { tier: string } },
   )
 
   res.json({
