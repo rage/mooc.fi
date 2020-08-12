@@ -1,30 +1,43 @@
-import { Message } from "./interfaces"
-import { saveToDatabase } from "./saveToDB"
 import { PrismaClient } from "@prisma/client"
-import { MessageYupSchema } from "./validate"
 import { Mutex } from "../../lib/await-semaphore"
 import { Logger } from "winston"
 import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
+import * as yup from "yup"
 
-const config = require("../kafkaConfig")
+const config = require("../kafkaConfig.json")
 
 let commitCounter = 0
 
 const commitInterval = config.commit_interval
 
-export const handleMessage = async (
-  kafkaMessage: KafkaMessage,
-  mutex: Mutex,
-  logger: Logger,
-  consumer: KafkaConsumer,
-  prisma: PrismaClient,
-) => {
+interface HandleMessageConfig<Message extends { timestamp: string }> {
+  kafkaMessage: KafkaMessage
+  mutex: Mutex
+  logger: Logger
+  consumer: KafkaConsumer
+  prisma: PrismaClient
+  MessageYupSchema: yup.ObjectSchema<any>
+  saveToDatabase: (
+    message: Message,
+    prisma: PrismaClient,
+    logger: Logger,
+  ) => Promise<any>
+}
+
+export const handleMessage = async <Message extends { timestamp: string }>({
+  kafkaMessage,
+  mutex,
+  logger,
+  consumer,
+  prisma,
+  MessageYupSchema,
+  saveToDatabase,
+}: HandleMessageConfig<Message>) => {
   //Going to mutex
   const release = await mutex.acquire()
-  logger.info("Processing message")
+  logger.info(kafkaMessage)
   let message: Message
   try {
-    logger.info("Parsing message")
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (e) {
     logger.error("invalid message", e)
@@ -32,8 +45,8 @@ export const handleMessage = async (
     release()
     return
   }
+
   try {
-    logger.info("Validating message")
     await MessageYupSchema.validate(message)
   } catch (error) {
     logger.error("JSON VALIDATE FAILED: " + error, { message })
@@ -41,6 +54,7 @@ export const handleMessage = async (
     release()
     return
   }
+
   try {
     logger.info("Saving. Timestamp " + message.timestamp)
     if (!(await saveToDatabase(message, prisma, logger))) {

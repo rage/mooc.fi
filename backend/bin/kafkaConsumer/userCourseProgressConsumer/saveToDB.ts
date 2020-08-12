@@ -6,10 +6,10 @@ import {
   UserCourseProgress,
   UserCourseServiceProgress,
 } from "@prisma/client"
-import TmcClient from "../../../services/tmc"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
+import getUserFromTMC from "../common/getUserFromTMC"
 
 import _KnexConstructor from "knex"
 
@@ -27,22 +27,6 @@ const Knex = _KnexConstructor({
       ? ["moocfi$production"]
       : ["default$default"],
 })
-
-const getUserFromTMC = async (prisma: PrismaClient, user_id: number) => {
-  const tmc: TmcClient = new TmcClient()
-  const userDetails = await tmc.getUserDetailsById(user_id)
-
-  return prisma.user.create({
-    data: {
-      upstream_id: userDetails.id,
-      first_name: userDetails.user_field.first_name,
-      last_name: userDetails.user_field.last_name,
-      email: userDetails.email,
-      username: userDetails.username,
-      administrator: userDetails.administrator,
-    },
-  })
-}
 
 export const saveToDatabase = async (
   message: Message,
@@ -80,8 +64,8 @@ export const saveToDatabase = async (
 
   let userCourseProgress = (
     await Knex<unknown, UserCourseProgress[]>("user_course_progress")
-      .where("user", user?.id)
-      .where("course", message.course_id)
+      .where("user_id", user?.id)
+      .where("course_id", message.course_id)
       .limit(1)
   )[0]
 
@@ -101,9 +85,9 @@ export const saveToDatabase = async (
     await Knex<unknown, UserCourseServiceProgress[]>(
       "user_course_service_progress",
     )
-      .where("user", user?.id)
-      .where("course", message.course_id)
-      .where("service", message.service_id)
+      .where("user_id", user?.id)
+      .where("course_id", message.course_id)
+      .where("service_id", message.service_id)
       .limit(1)
   )[0]
 
