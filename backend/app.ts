@@ -23,7 +23,8 @@ import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
 import { newrelicPlugin } from "./middlewares/newrelic-plugin"
 import sentry from "./middlewares/sentry"
-import axios from "axios"
+import TmcClient from "./services/tmc"
+import { UserInfo } from "./domain/UserInfo"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
@@ -305,58 +306,77 @@ server.express.get(
   },
 )
 
-server.express.get(
-  "/api/courseprogress/:course/:tmccourse/:user",
-  async (req: any, res: any) => {
-    const rawToken = req.get("Authorization")
+const baiCourseIds = {
+  beginner: "e1eaff32-8b2c-4423-998d-d3477535a1f9",
+  intermediate: "3a2790fc-227c-4045-9f4c-40a2bdabe76a",
+  advanced: "0e9d1a22-0e19-4320-8c8c-84115bb26452",
+}
 
-    const {
-      course,
-      tmccourse,
-      user,
-    }: { course: string; tmccourse: string; user: string } = req.params
+server.express.get("/api/baiprogress", async (req: any, res: any) => {
+  const rawToken = req.get("Authorization")
 
-    if (!course || !tmccourse || !user) {
-      return res
-        .status(400)
-        .json({ message: "must specify course, tmccourse, user" })
-    }
+  if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
+    return res.status(400).json({ message: "not logged in" })
+  }
 
-    const { data: quizzesData = {} } =
-      (await axios({
-        method: "GET",
-        url: `https://quizzes.mooc.fi/api/v1/quizzes/answer/answered/${course}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: rawToken,
-        },
-      })) ?? {}
-    const { data: tmcData = [] } =
-      (await axios({
-        method: "GET",
-        url: `https://tmc.mooc.fi/api/v8/courses/${tmccourse}/users/${user}/points`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: rawToken,
-        },
-      })) ?? {}
-
-    const quizzesResult = Object.entries(quizzesData).map(
-      ([id, data]: [string, any]) => ({
-        id,
-        pointAwarded: data?.answered && data?.correct,
-      }),
+  let details: UserInfo | null = null
+  try {
+    const client = new TmcClient(rawToken)
+    details = await redisify<UserInfo>(
+      async () => await client.getCurrentUserDetails(),
+      {
+        prefix: "userdetails",
+        expireTime: 3600,
+        key: rawToken,
+      },
     )
-    const tmcResult = tmcData.map((entry: any) => ({
-      id: entry?.exercise_id,
-      pointAwarded: !!entry?.awarded_point,
-    }))
+  } catch (e) {
+    console.log("error", e)
+  }
 
-    res.json({
-      data: quizzesResult.concat(tmcResult),
-    })
-  },
-)
+  if (!details) {
+    return res.status(400).json({ message: "invalid credentials" })
+  }
+
+  const resObject = await Object.entries(baiCourseIds).reduce(
+    async (acc, [tier, course_id]) => {
+      const results = await Knex.select(
+        "exercise_id",
+        "n_points",
+        "part",
+        "section",
+        "max_points",
+        "completed",
+      )
+        .from("exercise_completion")
+        .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+        .where({
+          "exercise.custom_id": course_id,
+        })
+
+      const exercises = (results ?? []).reduce(
+        (eacc, ecurr) => ({
+          ...eacc,
+          [ecurr.exercise_id]: {
+            ...ecurr,
+            tier,
+          },
+        }),
+        {},
+      )
+
+      return {
+        ...(await acc),
+        ...exercises,
+      }
+    },
+    Promise.resolve({} as any),
+  )
+
+  res.json({
+    data: resObject,
+  })
+})
 
 if (!process.env.NEXUS_REFLECTION) {
   // only runtime
