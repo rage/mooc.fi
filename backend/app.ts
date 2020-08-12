@@ -273,7 +273,7 @@ server.express.get(
 
         let { count } = (
           await Knex.countDistinct("id as count")
-            .from("UserCourseSettings")
+            .from("user_course_setting")
             .where({ course_id, language: language })
         )?.[0]
 

@@ -124,7 +124,7 @@ const getGlobalStats = async (): Promise<string> => {
     .where({ slug: "elements-of-ai" })
   const totalUsers = (
     await Knex.count()
-      .from("UserCourseSettings")
+      .from("user_course_setting")
       .where({ course_id: course[0].id })
   )[0].count
   const totalCompletions = (

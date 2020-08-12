@@ -93,8 +93,8 @@ model Course {
   user_course_service_progresses                     UserCourseServiceProgress[]
   user_course_settings                               UserCourseSetting[]
   user_course_settings_visibilities                  UserCourseSettingsVisibility[]
-  services                                           Service[]                           @relation("CourseToService", references: [id])
-  study_modules                                      StudyModule[]                       @relation("StudyModuleToCourse", references: [id])
+  services                                           Service[]                           @relation("course_to_service", references: [id])
+  study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
 
   @@map("course")
 }
@@ -311,7 +311,7 @@ model Service {
   url                            String
   exercises                      Exercise[]
   user_course_service_progresses UserCourseServiceProgress[]
-  courses                        Course[]                       @relation("CourseToService", references: [id])
+  courses                        Course[]                       @relation("course_to_service", references: [id])
 
   @@map("service")
 }
@@ -325,7 +325,7 @@ model StudyModule {
   slug                      String                     @unique
   updated_at                DateTime?                  @updatedAt
   study_module_translations StudyModuleTranslation[]
-  courses                   Course[]                   @relation("StudyModuleToCourse", references: [id])
+  courses                   Course[]                   @relation("study_module_to_course", references: [id])
 
   @@map("study_module")
 }
@@ -376,6 +376,8 @@ model UserAppDatumConfig {
   name       String?   @unique
   timestamp  DateTime?
   updated_at DateTime? @updatedAt
+
+  @@map("user_app_datum_config")
 }
 
 model UserCourseProgress {
@@ -427,7 +429,7 @@ model UserCourseSetting {
   course                            Course?   @relation(fields: [course_id], references: [id])
   user                              User?     @relation(fields: [user_id], references: [id])
 
-  @@map("UserCourseSettings")
+  @@map("user_course_setting")
 }
 
 model UserCourseSettingsVisibility {
