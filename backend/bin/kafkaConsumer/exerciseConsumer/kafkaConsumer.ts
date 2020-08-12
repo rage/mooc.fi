@@ -8,7 +8,11 @@ import * as Kafka from "node-rdkafka"
 import * as winston from "winston"
 import prismaClient from "../../lib/prisma"
 
-import { handleMessage } from "./handleMessage"
+import { handleMessage } from "../common/handleMessage"
+import { Message } from "./interfaces"
+import { MessageYupSchema } from "./validate"
+import { saveToDatabase } from "./saveToDB"
+
 const config = require("../kafkaConfig.json")
 const TOPIC_NAME = [config.exercise_consumer.topic_name]
 
@@ -52,7 +56,15 @@ consumer
     consumer.consume()
   })
   .on("data", (message) =>
-    handleMessage(message, mutex, logger, consumer, prisma),
+    handleMessage<Message>({
+      kafkaMessage: message,
+      mutex,
+      logger,
+      consumer,
+      prisma,
+      MessageYupSchema,
+      saveToDatabase,
+    }),
   )
 consumer.on("event.error", (error) => {
   logger.error(error)

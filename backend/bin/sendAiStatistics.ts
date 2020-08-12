@@ -124,11 +124,11 @@ const getGlobalStats = async (): Promise<string> => {
     .where({ slug: "elements-of-ai" })
   const totalUsers = (
     await Knex.count()
-      .from("UserCourseSettings")
-      .where({ course: course[0].id })
+      .from("user_course_setting")
+      .where({ course_id: course[0].id })
   )[0].count
   const totalCompletions = (
-    await Knex.count().from("completion").where({ course: course[0].id })
+    await Knex.count().from("completion").where({ course_id: course[0].id })
   )[0].count
   const now = new Date()
   return `\`\`\`Stats ${now.getDate()}.${

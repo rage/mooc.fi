@@ -10,7 +10,7 @@ datasource db {
 model Completion {
   certificate_id            String?
   completion_language       String?
-  course_id                 String?                 @map("course")
+  course_id                 String?                 
   created_at                DateTime?               @default(now())
   eligible_for_ects         Boolean?                @default(true)
   email                     String
@@ -18,7 +18,7 @@ model Completion {
   id                        String                  @id @default(uuid())
   student_number            String?
   updated_at                DateTime?               @updatedAt
-  user_id                   String?                 @map("user")
+  user_id                   String?                 
   user_upstream_id          Int?
   course                    Course?                 @relation(fields: [course_id], references: [id])
   user                      User?                   @relation(fields: [user_id], references: [id])
@@ -29,14 +29,14 @@ model Completion {
 }
 
 model CompletionRegistered {
-  completion_id                                    String?       @map("completion")
-  course_id                                        String?       @map("course")
+  completion_id                                    String?       
+  course_id                                        String?       
   created_at                                       DateTime?     @default(now())
   id                                               String        @id @default(uuid())
-  organization_id                                  String?       @map("organization")
+  organization_id                                  String?       
   real_student_number                              String
   updated_at                                       DateTime?     @updatedAt
-  user_id                                          String?       @map("user")
+  user_id                                          String?       
   completion                                       Completion?   @relation(fields: [completion_id], references: [id])
   course                                           Course?       @relation(fields: [course_id], references: [id])
   organization                                     Organization? @relation(fields: [organization_id], references: [id])
@@ -48,8 +48,8 @@ model CompletionRegistered {
 model Course {
   automatic_completions                              Boolean?                            @default(false)
   automatic_completions_eligible_for_ects            Boolean?                            @default(true)
-  completion_email_id                                String?                             @map("completion_email")
-  completions_handled_by_id                          String?                             @map("completions_handled_by")
+  completion_email_id                                String?                             
+  completions_handled_by_id                          String?                             
   created_at                                         DateTime?                           @default(now())
   ects                                               String?
   end_date                                           String?
@@ -57,11 +57,11 @@ model Course {
   has_certificate                                    Boolean?                            @default(false)
   hidden                                             Boolean?
   id                                                 String                              @id @default(uuid())
-  inherit_settings_from_id                           String?                             @map("inherit_settings_from")
+  inherit_settings_from_id                           String?                             
   name                                               String
   order                                              Int?
-  owner_organization_id                              String?                             @map("owner_organization")
-  photo_id                                           String?                             @map("photo")
+  owner_organization_id                              String?                             
+  photo_id                                           String?                             
   points_needed                                      Int?
   promote                                            Boolean?
   slug                                               String                              @unique
@@ -93,14 +93,14 @@ model Course {
   user_course_service_progresses                     UserCourseServiceProgress[]
   user_course_settings                               UserCourseSetting[]
   user_course_settings_visibilities                  UserCourseSettingsVisibility[]
-  services                                           Service[]                           @relation("CourseToService", references: [id])
-  study_modules                                      StudyModule[]                       @relation("StudyModuleToCourse", references: [id])
+  services                                           Service[]                           @relation("course_to_service", references: [id])
+  study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
 
   @@map("course")
 }
 
 model CourseAlias {
-  course_id                   String?   @map("course")
+  course_id                   String?   
   course_code                 String    @unique
   created_at                  DateTime? @default(now())
   id                          String    @id @default(uuid())
@@ -111,11 +111,11 @@ model CourseAlias {
 }
 
 model CourseOrganization {
-  course_id                                      String?       @map("course")
+  course_id                                      String?       
   created_at                                     DateTime?     @default(now())
   creator                                        Boolean?
   id                                             String        @id @default(uuid())
-  organization_id                                String?       @map("organization")
+  organization_id                                String?       
   updated_at                                     DateTime?     @updatedAt
   course                                         Course?       @relation(fields: [course_id], references: [id])
   organization                                   Organization? @relation(fields: [organization_id], references: [id])
@@ -124,7 +124,7 @@ model CourseOrganization {
 }
 
 model CourseTranslation {
-  course_id                         String?   @map("course")
+  course_id                         String?   
   created_at                        DateTime? @default(now())
   description                       String
   id                                String    @id @default(uuid())
@@ -138,7 +138,7 @@ model CourseTranslation {
 }
 
 model CourseVariant {
-  course_id                     String?   @map("course")
+  course_id                     String?   
   created_at                    DateTime? @default(now())
   description                   String?
   id                            String    @id @default(uuid())
@@ -151,13 +151,13 @@ model CourseVariant {
 
 model EmailDelivery {
   created_at                                    DateTime?       @default(now())
-  email_template_id                             String?         @map("email_template")
+  email_template_id                             String?         
   error                                         Boolean         @default(false)
   error_message                                 String?
   id                                            String          @id @default(uuid())
   sent                                          Boolean         @default(false)
   updated_at                                    DateTime?       @updatedAt
-  user_id                                       String?         @map("user")
+  user_id                                       String?         
   email_template                                EmailTemplate?  @relation(fields: [email_template_id], references: [id])
   user                                          User?           @relation(fields: [user_id], references: [id])
 
@@ -179,7 +179,7 @@ model EmailTemplate {
 }
 
 model Exercise {
-  course_id                 String?               @map("course")
+  course_id                 String?               
   created_at                DateTime?             @default(now())
   custom_id                 String
   deleted                   Boolean?              @default(false)
@@ -188,7 +188,7 @@ model Exercise {
   name                      String?
   part                      Int?
   section                   Int?
-  service_id                String?               @map("service")
+  service_id                String?               
   timestamp                 DateTime?
   updated_at                DateTime?             @updatedAt
   course                    Course?               @relation(fields: [course_id], references: [id])
@@ -201,12 +201,12 @@ model Exercise {
 model ExerciseCompletion {
   completed                              Boolean?                               @default(false)
   created_at                             DateTime?                              @default(now())
-  exercise_id                            String?                                @map("exercise")
+  exercise_id                            String?                                
   id                                     String                                 @id @default(uuid())
   n_points                               Float?
   timestamp                              DateTime
   updated_at                             DateTime?                              @updatedAt
-  user_id                                String?                                @map("user")
+  user_id                                String?                                
   exercise                               Exercise?                              @relation(fields: [exercise_id], references: [id])
   user                                   User?                                  @relation(fields: [user_id], references: [id])
   exercise_completion_required_actions   ExerciseCompletionRequiredAction[]
@@ -215,7 +215,7 @@ model ExerciseCompletion {
 }
 
 model ExerciseCompletionRequiredAction {
-  exercise_completion_id                                                        String?              @map("exercise_completion")
+  exercise_completion_id                                                        String?              
   id                                                                            String               @id @default(uuid())
   value                                                                         String
   exercise_completion                                                           ExerciseCompletion?  @relation(fields: [exercise_completion_id], references: [id])
@@ -242,7 +242,7 @@ model Image {
 }
 
 model OpenUniversityRegistrationLink {
-  course_id                                        String?   @map("course")
+  course_id                                        String?   
   course_code                                      String
   created_at                                       DateTime? @default(now())
   id                                               String    @id @default(uuid())
@@ -259,7 +259,7 @@ model OpenUniversityRegistrationLink {
 model Organization {
   contact_information       String?
   created_at                DateTime?                  @default(now())
-  creator_id                String?                    @map("creator")
+  creator_id                String?                    
   disabled                  Boolean?
   email                     String?
   hidden                    Boolean?
@@ -296,7 +296,7 @@ model OrganizationTranslation {
   information                                         String?
   language                                            String
   name                                                String
-  organization_id                                     String?       @map("organization")
+  organization_id                                     String?       
   updated_at                                          DateTime?     @updatedAt
   organization                                        Organization? @relation(fields: [organization_id], references: [id])
 
@@ -311,7 +311,7 @@ model Service {
   url                            String
   exercises                      Exercise[]
   user_course_service_progresses UserCourseServiceProgress[]
-  courses                        Course[]                       @relation("CourseToService", references: [id])
+  courses                        Course[]                       @relation("course_to_service", references: [id])
 
   @@map("service")
 }
@@ -325,7 +325,7 @@ model StudyModule {
   slug                      String                     @unique
   updated_at                DateTime?                  @updatedAt
   study_module_translations StudyModuleTranslation[]
-  courses                   Course[]                   @relation("StudyModuleToCourse", references: [id])
+  courses                   Course[]                   @relation("study_module_to_course", references: [id])
 
   @@map("study_module")
 }
@@ -336,7 +336,7 @@ model StudyModuleTranslation {
   id                                                  String        @id @default(uuid())
   language                                            String
   name                                                String
-  study_module_id                                     String?       @map("study_module")
+  study_module_id                                     String?       
   updated_at                                          DateTime?     @updatedAt
   study_module                                        StudyModule? @relation(fields: [study_module_id], references: [id])
 
@@ -376,17 +376,19 @@ model UserAppDatumConfig {
   name       String?   @unique
   timestamp  DateTime?
   updated_at DateTime? @updatedAt
+
+  @@map("user_app_datum_config")
 }
 
 model UserCourseProgress {
-  course_id                           String?                        @map("course")
+  course_id                           String?                        
   created_at                          DateTime?                      @default(now())
   id                                  String                         @id @default(uuid())
   max_points                          Float?
   n_points                            Float?
   progress                            Json
   updated_at                          DateTime?                      @updatedAt
-  user_id                             String?                        @map("user")
+  user_id                             String?                        
   course                              Course?                        @relation(fields: [course_id], references: [id])
   user                                User?                          @relation(fields: [user_id], references: [id])
   user_course_service_progresses      UserCourseServiceProgress[]
@@ -395,15 +397,15 @@ model UserCourseProgress {
 }
 
 model UserCourseServiceProgress {
-  course_id                                                               String?               @map("course")
+  course_id                                                               String?               
   created_at                                                              DateTime?             @default(now())
   id                                                                      String                @id @default(uuid())
   progress                                                                Json
-  service_id                                                              String?               @map("service")
+  service_id                                                              String?               
   timestamp                                                               DateTime?
   updated_at                                                              DateTime?             @updatedAt
-  user_id                                                                 String?               @map("user")
-  user_course_progress_id                                                 String?               @map("user_course_progress")
+  user_id                                                                 String?               
+  user_course_progress_id                                                 String?               
   course                                                                  Course?               @relation(fields: [course_id], references: [id])
   service                                                                 Service?              @relation(fields: [service_id], references: [id])
   user                                                                    User?                 @relation(fields: [user_id], references: [id])
@@ -414,7 +416,7 @@ model UserCourseServiceProgress {
 
 model UserCourseSetting {
   country                           String?
-  course_id                         String?   @map("course")
+  course_id                         String?   
   course_variant                    String?
   created_at                        DateTime? @default(now())
   id                                String    @default(uuid()) @id
@@ -423,15 +425,15 @@ model UserCourseSetting {
   other                             Json?
   research                          Boolean?
   updated_at                        DateTime? @updatedAt
-  user_id                           String?   @map("user")
+  user_id                           String?   
   course                            Course?   @relation(fields: [course_id], references: [id])
   user                              User?     @relation(fields: [user_id], references: [id])
 
-  @@map("UserCourseSettings")
+  @@map("user_course_setting")
 }
 
 model UserCourseSettingsVisibility {
-  course_id                                      String?   @map("course")
+  course_id                                      String?   
   created_at                                     DateTime? @default(now())
   id                                             String    @id @default(uuid())
   language                                       String
@@ -444,10 +446,10 @@ model UserCourseSettingsVisibility {
 model UserOrganization {
   created_at                                   DateTime?          @default(now())
   id                                           String             @id @default(uuid())
-  organization_id                              String?            @map("organization")
+  organization_id                              String?            
   role                                         OrganizationRole?  @default(Student)
   updated_at                                   DateTime?          @updatedAt
-  user_id                                      String?            @map("user")
+  user_id                                      String?            
   organization                                 Organization?      @relation(fields: [organization_id], references: [id])
   user                                         User?              @relation(fields: [user_id], references: [id])
 
@@ -458,10 +460,10 @@ model VerifiedUser {
   created_at                               DateTime?     @default(now())
   display_name                             String?
   id                                       String        @id @default(uuid())
-  organization_id                          String?       @map("organization")
+  organization_id                          String?       
   personal_unique_code                     String
   updated_at                               DateTime?     @updatedAt
-  user_id                                  String?       @map("user")
+  user_id                                  String?       
   organization                             Organization? @relation(fields: [organization_id], references: [id])
   user                                     User?         @relation(fields: [user_id], references: [id])
 

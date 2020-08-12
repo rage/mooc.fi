@@ -112,6 +112,12 @@ settings.change({
   server: {
     port: 4000,
     path: PRODUCTION ? "/api" : "/",
+    graphql: {
+      introspection: true,
+    },
+    playground: {
+      enabled: true,
+    },
   },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
@@ -180,19 +186,19 @@ server.express.get("/api/completions/:course", async function (
   )[0]
   if (!course) {
     const course_alias = (
-      await Knex.select("course")
+      await Knex.select("course_id")
         .from("course_alias")
         .where({ course_code: req.params.course })
     )[0]
     if (!course_alias) {
       return res.status(404).json({ message: "Course not found" })
     }
-    course_id = course_alias.course
+    course_id = course_alias.course_id
   } else {
     course_id = course.id
   }
   const sql = Knex.select("*").from("completion").where({
-    course: course_id,
+    course_id,
     eligible_for_ects: true,
   })
   res.set("Content-Type", "application/json")
@@ -235,7 +241,7 @@ server.express.get(
             await Knex.select("course.id")
               .from("course")
               .join("user_course_settings_visibility", {
-                "course.id": "user_course_settings_visibility.course",
+                "course.id": "user_course_settings_visibility.course_id",
               })
               .where({
                 slug: course,
@@ -244,20 +250,21 @@ server.express.get(
               .limit(1)
           )[0] ?? {}
 
+        console.log("id", id)
         if (!id) {
           const courseAlias = (
-            await Knex.select("course_alias.course")
+            await Knex.select("course_alias.course_id")
               .from("course_alias")
-              .join("course", { "course_alias.course": "course.id" })
+              .join("course", { "course_alias.course_id": "course.id" })
               .join("user_course_settings_visibility", {
-                "course.id": "user_course_settings_visibility.course",
+                "course.id": "user_course_settings_visibility.course_id",
               })
               .where({
                 course_code: course,
                 "user_course_settings_visibility.language": language,
               })
           )[0]
-          course_id = courseAlias?.course
+          course_id = courseAlias?.course_id
         } else {
           course_id = id
         }
@@ -268,8 +275,8 @@ server.express.get(
 
         let { count } = (
           await Knex.countDistinct("id as count")
-            .from("UserCourseSettings")
-            .where({ course: course_id, language: language })
+            .from("user_course_setting")
+            .where({ course_id, language: language })
         )?.[0]
 
         if (count < 100) {
