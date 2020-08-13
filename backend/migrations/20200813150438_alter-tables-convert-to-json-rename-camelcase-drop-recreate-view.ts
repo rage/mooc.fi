@@ -32,7 +32,7 @@ export async function up(knex: Knex): Promise<void> {
       await knex.raw(
         `CREATE materialized VIEW reaktor.user_course_settings AS
         SELECT
-            user_id,
+            user_id AS "user",
             language,
             country,
             course_variant,
@@ -47,7 +47,7 @@ export async function up(knex: Knex): Promise<void> {
             course_id = '55dff8af-c06c-4a97-88e6-af7c04d252ca';
         `,
       )
-      await knex.raw(`CREATE INDEX on reaktor.user_course_settings (user_id)`)
+      await knex.raw(`CREATE INDEX on reaktor.user_course_settings ("user")`)
       await knex.raw(
         `CREATE materialized VIEW reaktor."user" AS
         SELECT
@@ -63,7 +63,7 @@ export async function up(knex: Knex): Promise<void> {
         WHERE
             id IN (
                 SELECT
-                    user_id
+                    "user"
                 FROM
                     reaktor.user_course_settings
             );
@@ -74,7 +74,7 @@ export async function up(knex: Knex): Promise<void> {
       await knex.raw(
         `CREATE materialized VIEW reaktor.completion AS
         SELECT
-            user_id,
+            user_id AS "user",
             user_upstream_id,
             email,
             completion_language,
@@ -86,7 +86,7 @@ export async function up(knex: Knex): Promise<void> {
             course_id = '55dff8af-c06c-4a97-88e6-af7c04d252ca';
         `,
       )
-      await knex.raw(`CREATE INDEX ON reaktor.completion (user_id);`)
+      await knex.raw(`CREATE INDEX ON reaktor.completion ("user");`)
       await knex.raw(`CREATE INDEX ON reaktor.completion (user_upstream_id);`)
 
       await knex.raw(`GRANT SELECT ON ALL TABLES IN SCHEMA reaktor TO reaktor;`)
