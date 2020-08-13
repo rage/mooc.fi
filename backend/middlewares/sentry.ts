@@ -25,6 +25,8 @@ const sentry = (config: any) => async (
     }
 
     log.error("error", { error })
+
+    return error
   }
 }
 

@@ -24,6 +24,7 @@ RUN env BUILD_LIBRDKAFKA=0 npm ci
 COPY --chown=node . /app
 
 RUN cp .env.example .env \
+    && cp tsconfig.production.json tsconfig.json \
     && npm run generate \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build \
     && rm .env
