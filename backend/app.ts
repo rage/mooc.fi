@@ -306,11 +306,11 @@ server.express.get(
   },
 )
 
-const baiCourseTiers: Record<string, string> = {
+/*const baiCourseTiers: Record<string, string> = {
   "e1eaff32-8b2c-4423-998d-d3477535a1f9": "beginner",
   "3a2790fc-227c-4045-9f4c-40a2bdabe76a": "intermediate",
   "0e9d1a22-0e19-4320-8c8c-84115bb26452": "advanced",
-}
+}*/
 
 interface ExerciseCompletionResult {
   exercise_id: string
@@ -322,11 +322,17 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
-server.express.get("/api/baiprogress", async (req: any, res: any) => {
+server.express.get("/api/progress/:id", async (req: any, res: any) => {
   const rawToken = req.get("Authorization")
 
   if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
     return res.status(400).json({ message: "not logged in" })
+  }
+
+  const { id }: { id: string } = req.params
+
+  if (!id) {
+    return res.status(400).json({ message: "must provide id " })
   }
 
   let details: UserInfo | null = null
@@ -359,17 +365,17 @@ server.express.get("/api/baiprogress", async (req: any, res: any) => {
   )
     .from("exercise_completion")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-    .whereIn("exercise.custom_id", Object.keys(baiCourseTiers))
+    .where("exercise.custom_id", id)
 
   const resObject = (completions ?? []).reduce(
     (acc, curr) => ({
       ...acc,
       [curr.exercise_id]: {
         ...curr,
-        tier: baiCourseTiers[curr.quizzes_id],
+        // tier: baiCourseTiers[curr.quizzes_id],
       },
     }),
-    {} as { [id: string]: ExerciseCompletionResult & { tier: string } },
+    {},
   )
 
   res.json({
