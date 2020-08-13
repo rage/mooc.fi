@@ -88,6 +88,8 @@ export async function up(knex: Knex): Promise<void> {
       )
       await knex.raw(`CREATE INDEX ON reaktor.completion (user_id);`)
       await knex.raw(`CREATE INDEX ON reaktor.completion (user_upstream_id);`)
+
+      await knex.raw(`GRANT SELECT ON ALL TABLES IN SCHEMA reaktor TO reaktor;`)
     } catch {}
   }
 }
