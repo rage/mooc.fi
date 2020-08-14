@@ -18,6 +18,9 @@ export interface CourseDetailsFromSlugQuery_course {
   id: string
   slug: string
   name: string
+  teacher_in_charge_name: string
+  teacher_in_charge_email: string
+  start_date: string
   completion_email: CourseDetailsFromSlugQuery_course_completion_email | null
 }
 
