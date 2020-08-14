@@ -3,11 +3,9 @@ const isProduction = process.env.NODE_ENV === "production"
 
 export async function up(knex: Knex): Promise<void> {
   if (isProduction) {
-    try {
-      await knex.raw(`DROP MATERIALIZED VIEW reaktor.completion;`)
-      await knex.raw(`DROP MATERIALIZED VIEW reaktor."user";`)
-      await knex.raw(`DROP MATERIALIZED VIEW reaktor.user_course_settings;`)
-    } catch {}
+    await knex.raw(`DROP MATERIALIZED VIEW reaktor.completion;`)
+    await knex.raw(`DROP MATERIALIZED VIEW reaktor."user";`)
+    await knex.raw(`DROP MATERIALIZED VIEW reaktor.user_course_settings;`)
   }
 
   await knex.raw(
@@ -28,9 +26,8 @@ export async function up(knex: Knex): Promise<void> {
   )
 
   if (isProduction) {
-    try {
-      await knex.raw(
-        `CREATE materialized VIEW reaktor.user_course_settings AS
+    await knex.raw(
+      `CREATE materialized VIEW reaktor.user_course_settings AS
         SELECT
             user_id AS "user",
             language,
@@ -46,10 +43,10 @@ export async function up(knex: Knex): Promise<void> {
         WHERE
             course_id = '55dff8af-c06c-4a97-88e6-af7c04d252ca';
         `,
-      )
-      await knex.raw(`CREATE INDEX on reaktor.user_course_settings ("user")`)
-      await knex.raw(
-        `CREATE materialized VIEW reaktor."user" AS
+    )
+    await knex.raw(`CREATE INDEX on reaktor.user_course_settings ("user")`)
+    await knex.raw(
+      `CREATE materialized VIEW reaktor."user" AS
         SELECT
             id,
             upstream_id,
@@ -68,11 +65,11 @@ export async function up(knex: Knex): Promise<void> {
                     reaktor.user_course_settings
             );
         `,
-      )
-      await knex.raw(`CREATE INDEX ON reaktor."user" (id);`)
-      await knex.raw(`CREATE INDEX ON reaktor."user" (upstream_id);`)
-      await knex.raw(
-        `CREATE materialized VIEW reaktor.completion AS
+    )
+    await knex.raw(`CREATE INDEX ON reaktor."user" (id);`)
+    await knex.raw(`CREATE INDEX ON reaktor."user" (upstream_id);`)
+    await knex.raw(
+      `CREATE materialized VIEW reaktor.completion AS
         SELECT
             user_id AS "user",
             user_upstream_id,
@@ -85,12 +82,11 @@ export async function up(knex: Knex): Promise<void> {
         WHERE
             course_id = '55dff8af-c06c-4a97-88e6-af7c04d252ca';
         `,
-      )
-      await knex.raw(`CREATE INDEX ON reaktor.completion ("user");`)
-      await knex.raw(`CREATE INDEX ON reaktor.completion (user_upstream_id);`)
+    )
+    await knex.raw(`CREATE INDEX ON reaktor.completion ("user");`)
+    await knex.raw(`CREATE INDEX ON reaktor.completion (user_upstream_id);`)
 
-      await knex.raw(`GRANT SELECT ON ALL TABLES IN SCHEMA reaktor TO reaktor;`)
-    } catch {}
+    await knex.raw(`GRANT SELECT ON ALL TABLES IN SCHEMA reaktor TO reaktor;`)
   }
 }
 
