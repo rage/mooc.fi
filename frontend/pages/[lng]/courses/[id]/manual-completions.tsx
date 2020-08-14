@@ -144,7 +144,7 @@ const ManualCompletions = () => {
             user_id: string
             grade: string
             completion_date?: string
-          }[] = parsed.data.map((d) => ({
+          }[] = parsed.data.map((d: any) => ({
             ...d,
             completion_date:
               d.completion_date === "" || !d.completion_date
