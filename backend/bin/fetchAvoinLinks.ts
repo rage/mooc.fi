@@ -2,7 +2,7 @@ import axios from "axios"
 import { DateTime } from "luxon"
 import { maxBy } from "lodash"
 import prismaClient from "./lib/prisma"
-import * as winston from "winston"
+import sentryLogger from "./lib/logger"
 
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -10,15 +10,7 @@ require("dotenv-safe").config({
 
 const prisma = prismaClient()
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
-  defaultMeta: { service: "fetch-avoin-links" },
-  transports: [new winston.transports.Console()],
-})
+const logger = sentryLogger({ service: "fetch-avoin-links" })
 
 const fetch = async () => {
   const avoinObjects = await prisma.openUniversityRegistrationLink.findMany({})

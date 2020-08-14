@@ -6,7 +6,7 @@ import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 import prismaClient from "./lib/prisma"
-import * as winston from "winston"
+import sentryLogger from "./lib/logger"
 
 const CONFIG_NAME = "userAppDatum"
 
@@ -14,15 +14,7 @@ const prisma = prismaClient()
 let course
 let old: UserCourseSetting
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
-  defaultMeta: { service: "fetch-user-app-datum" },
-  transports: [new winston.transports.Console()],
-})
+const logger = sentryLogger({ service: "fetch-user-app-datum" })
 
 const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
