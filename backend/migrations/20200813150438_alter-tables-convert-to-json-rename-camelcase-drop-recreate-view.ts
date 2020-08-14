@@ -44,7 +44,7 @@ export async function up(knex: Knex): Promise<void> {
             course_id = '55dff8af-c06c-4a97-88e6-af7c04d252ca';
         `,
     )
-    await knex.raw(`CREATE INDEX on reaktor.user_course_settings ("user")`)
+    await knex.raw(`CREATE INDEX on reaktor.user_course_settings ("user");`)
     await knex.raw(
       `CREATE materialized VIEW reaktor."user" AS
         SELECT
