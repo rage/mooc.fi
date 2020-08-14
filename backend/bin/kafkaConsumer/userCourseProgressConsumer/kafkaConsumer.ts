@@ -4,13 +4,13 @@ require("dotenv-safe").config({
 import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
-import * as winston from "winston"
 
 import { handleMessage } from "../common/handleMessage"
 import { Message } from "./interfaces"
 import { MessageYupSchema } from "./validate"
 import { saveToDatabase } from "./saveToDB"
 import prismaClient from "../../lib/prisma"
+import sentryLogger from "../../lib/logger"
 
 const config = require("../kafkaConfig")
 
@@ -18,15 +18,7 @@ const prisma = prismaClient()
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
-  defaultMeta: { service: "kafka-consumer-UserCourseProgress" },
-  transports: [new winston.transports.Console()],
-})
+const logger = sentryLogger({ service: "kafka-consumer-UserCourseProgress" })
 
 const logCommit = (err: any, topicPartitions: any) => {
   if (err) {

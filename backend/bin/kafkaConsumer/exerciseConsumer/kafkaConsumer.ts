@@ -5,8 +5,8 @@ require("dotenv-safe").config({
 import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
-import * as winston from "winston"
 import prismaClient from "../../lib/prisma"
+import sentryLogger from "../../lib/logger"
 
 import { handleMessage } from "../common/handleMessage"
 import { Message } from "./interfaces"
@@ -19,15 +19,7 @@ const TOPIC_NAME = [config.exercise_consumer.topic_name]
 const mutex = new Mutex()
 const prisma = prismaClient()
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
-  defaultMeta: { service: "kafka-consumer-exercise" },
-  transports: [new winston.transports.Console()],
-})
+const logger = sentryLogger({ service: "kafka-consumer-exercise" })
 
 const logCommit = (err: any, topicPartitions: any) => {
   if (err) {
