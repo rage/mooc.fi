@@ -121,7 +121,6 @@ const RegisterCompletion = () => {
     return <div>You are not logged in. Please log in to the site</div>
   }
 
-  console.log("courseData", courseData)
   if (!(courseData?.course_exists ?? false)) {
     return (
       <Container>
