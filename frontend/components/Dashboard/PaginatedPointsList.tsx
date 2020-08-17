@@ -117,33 +117,13 @@ function PaginatedPointsList(props: Props) {
     return <p>ERROR: {JSON.stringify(error)}</p>
   }
 
-  if (loading) {
-    return (
-      <>
-        <LoadingPointCardSkeleton variant="rect" />
-        <LoadingPointCardSkeleton variant="rect" />
-        <LoadingPointCardSkeleton variant="rect" />
-      </>
-    )
-  }
-
-  if (!data) {
-    return null
-  }
-
-  const { userCourseSettings } = data
-
-  if (!userCourseSettings) {
-    return null
-  }
-
   // FIXME: the gap should depend on screen width
   const sliderMarks = range(0, 101, 10).map((value) => ({
     value,
     label: value,
   }))
 
-  const edges = (userCourseSettings?.edges ?? []).filter(notEmpty)
+  const edges = (data?.userCourseSettings?.edges ?? []).filter(notEmpty)
 
   return (
     <ErrorBoundary>
@@ -185,11 +165,15 @@ function PaginatedPointsList(props: Props) {
         </Grid>
       </Grid>
       {loading ? (
-        <Skeleton variant="rect" width={120} height={180} />
+        <>
+          <LoadingPointCardSkeleton variant="rect" />
+          <LoadingPointCardSkeleton variant="rect" />
+          <LoadingPointCardSkeleton variant="rect" />
+        </>
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {userCourseSettings.count || 0} results
+            {data?.userCourseSettings?.count || 0} results
           </div>
           <PointsList pointsForUser={edges} cutterValue={cutterValue} />
           <Button
@@ -198,7 +182,7 @@ function PaginatedPointsList(props: Props) {
                 query: StudentProgresses,
                 variables: {
                   course_id: courseId,
-                  skip: userCourseSettings.edges?.length ?? 0,
+                  skip: data?.userCourseSettings?.edges?.length ?? 0,
                   search: search !== "" ? search : undefined,
                 },
 
@@ -235,7 +219,7 @@ function PaginatedPointsList(props: Props) {
                 },
               })
             }
-            disabled={!userCourseSettings.pageInfo.hasNextPage}
+            disabled={!data?.userCourseSettings?.pageInfo.hasNextPage}
             fullWidth
             style={{ marginTop: "1rem", fontSize: 22 }}
           >
