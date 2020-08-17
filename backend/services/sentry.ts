@@ -1,6 +1,7 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
+import rootdir from "../root"
 import * as Sentry from "@sentry/node"
 import { RewriteFrames } from "@sentry/integrations"
 import * as path from "path"
@@ -19,13 +20,13 @@ Sentry.init({
   },
   integrations: [
     new RewriteFrames({
-      root: global.__rootdir__,
+      root: rootdir,
       iteratee: (frame) => {
         if (!frame?.filename) return frame
 
         const filename = path.basename(frame.filename)
         const fileDir = path.dirname(frame.filename)
-        const relativePath = path.relative(global.__rootdir__, fileDir)
+        const relativePath = path.relative(rootdir, fileDir)
 
         frame.filename = `app:///${relativePath}/${filename}`
 
