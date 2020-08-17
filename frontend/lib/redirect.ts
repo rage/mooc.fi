@@ -9,12 +9,12 @@ export interface RedirectType {
   shallow?: boolean
 }
 
-export default ({
+export default function redirect({
   context,
   target,
   savePage = true,
   shallow = true,
-}: RedirectType) => {
+}: RedirectType) {
   let language = context?.query?.lng ?? "fi"
 
   if (savePage && context?.pathname /* context?.req?.originalUrl */) {
