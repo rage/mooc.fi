@@ -7,6 +7,16 @@ interface LoggerOptions {
 }
 
 export default function logger({ service }: LoggerOptions) {
+  const transports: winston.transport[] = [new winston.transports.Console()]
+
+  //if (process.env.NODE_ENV === "production") {
+    transports.push(new WinstonSentry({
+      tags: [service],
+      sentryClient: Sentry,
+      isClientInitialized: true,
+    }))
+  //}
+
   return winston.createLogger({
     level: "info",
     format: winston.format.combine(
@@ -14,13 +24,6 @@ export default function logger({ service }: LoggerOptions) {
       winston.format.json(),
     ),
     defaultMeta: { service },
-    transports: [
-      new winston.transports.Console(),
-      new WinstonSentry({
-        tags: [service],
-        sentryClient: Sentry,
-        isClientInitialized: true,
-      }),
-    ],
+    transports
   })
 }
