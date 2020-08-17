@@ -16,6 +16,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import styled from "styled-components"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"
+import { CheckSlugQuery } from "/graphql/queries/courses"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -86,26 +87,49 @@ const RegisterCompletion = () => {
   const courseSlug = useQueryParameter("slug")
 
   const t = getRegisterCompletionTranslator(language)
-  const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const {
+    loading: courseLoading,
+    error: courseError,
+    data: courseData,
+  } = useQuery(CheckSlugQuery, {
+    variables: {
+      slug: courseSlug,
+    },
+  })
+  const { loading: userLoading, error: userError, data: userData } = useQuery<
+    UserOverViewData
+  >(UserOverViewQuery)
 
-  if (loading || !data) {
+  if (courseLoading || userLoading) {
     return <Spinner />
   }
 
-  if (error) {
+  if (userError || courseError) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(error, undefined, 2)}
+        errorMessage={JSON.stringify(userError || courseError, undefined, 2)}
       />
     )
   }
 
   const completion =
-    data?.currentUser?.completions?.find((c) => c.course?.slug == courseSlug) ??
-    undefined
+    userData?.currentUser?.completions?.find(
+      (c) => c.course?.slug == courseSlug,
+    ) ?? undefined
 
   if (!currentUser) {
     return <div>You are not logged in. Please log in to the site</div>
+  }
+
+  if (!(courseData?.course_exists ?? false)) {
+    return (
+      <Container>
+        <H1NoBackground variant="h1" component="h1" align="center">
+          {t("course_not_found_title")}
+        </H1NoBackground>
+        <Typography>{t("course_not_found", { course: courseSlug })}</Typography>
+      </Container>
+    )
   }
 
   const registeredCompletion =
