@@ -2,11 +2,12 @@ import { gql } from "@apollo/client"
 
 export const AllCoursesQuery = gql`
   query AllCourses($language: String) {
-    courses(orderBy: { id: asc }, language: $language) {
+    courses(orderBy: { order: asc }, language: $language) {
       id
       slug
       name
       order
+      study_module_order
       photo {
         id
         compressed
@@ -38,7 +39,7 @@ export const AllCoursesQuery = gql`
 
 export const AllEditorCoursesQuery = gql`
   query AllEditorCourses {
-    courses(orderBy: { id: asc }) {
+    courses(orderBy: { name: asc }) {
       id
       name
       slug
