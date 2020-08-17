@@ -15,6 +15,8 @@
     "linkAria": "To the registration form. Opens in a new tab. Moves to the service of the open university.",
     "course_completion_not_found_title": "Completion not found",
     "course_completion_not_found": "Cannot find course completion. Are you logged in with the right account?",
+    "course_not_found_title": "Course not found",
+    "course_not_found": "Cannot find course {{course}}. Check the link you received and try again.",
     "course_completion_already_registered_title": "Completion already registered",
     "course_completion_already_registered": "Course completion has already been registered.",
     "see_completion_link": "After your completion has been registered, you can view your completed credits at Koski: ",

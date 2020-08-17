@@ -15,6 +15,8 @@
     "linkAria": "Linkki rekisteröitymislomakkeeseen. Avautuu uudessa välilehdessä. Siirtyy avoimen yliopiston palveluun.",
     "course_completion_not_found_title": "Suoritusta ei löytynyt",
     "course_completion_not_found": "Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?",
+    "course_not_found_title": "Kurssia ei löytynyt",
+    "course_not_found": "Kurssia {{course}} ei löytynyt. Tarkista saamasi linkki ja yritä uudelleen.",
     "course_completion_already_registered_title": "Suoritus jo rekisteröity",
     "course_completion_already_registered": "Kurssisuorituksesi on rekisteröity jo aiemmin.",
     "see_completion_link":"Kun opintosuorituksesi on rekisteröity, pääset tarkastelemaan opintosuorituksesi tietoja Koski-palvelusta:",
