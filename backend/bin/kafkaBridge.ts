@@ -47,6 +47,15 @@ producer.connect(undefined, (err, data) => {
   console.log("Connected to producer", data)
 })
 
+producer.setPollInterval(100)
+
+producer.on("delivery-report", function (err, report) {
+  if (err) {
+    console.error("Delivery report error", err)
+  }
+  console.log("Delivery report", report)
+})
+
 let app = express()
 app.use(compression())
 app.use(bodyParser.json())
