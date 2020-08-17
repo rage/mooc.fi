@@ -41,6 +41,7 @@ export interface AllCourses_courses {
   slug: string
   name: string
   order: number | null
+  study_module_order: number | null
   photo: AllCourses_courses_photo | null
   promote: boolean | null
   status: CourseStatus | null
