@@ -3,6 +3,7 @@ import rootdir from "../root"
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
+import rootdir from "../root"
 import * as Sentry from "@sentry/node"
 import { RewriteFrames } from "@sentry/integrations"
 import * as path from "path"

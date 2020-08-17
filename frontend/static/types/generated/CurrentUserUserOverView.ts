@@ -42,6 +42,7 @@ export interface CurrentUserUserOverView_currentUser_completions {
   created_at: any | null
   course: CurrentUserUserOverView_currentUser_completions_course | null
   completion_date: any | null
+  registered: boolean | null
   completions_registered: CurrentUserUserOverView_currentUser_completions_completions_registered[]
 }
 
