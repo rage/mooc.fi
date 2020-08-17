@@ -52,7 +52,11 @@ const handleExercise = async (
   prisma: PrismaClient,
 ) => {
   const existingExercises = await prisma.exercise.findMany({
-    where: { custom_id: exercise.id },
+    where: {
+      course_id: course_id,
+      service_id: service_id,
+      custom_id: exercise.id,
+    },
   })
   if (existingExercises.length > 0) {
     const oldExercises = await prisma.exercise.findMany({
