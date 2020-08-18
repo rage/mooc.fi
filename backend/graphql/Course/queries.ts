@@ -1,8 +1,8 @@
 import { schema } from "nexus"
-import { Course } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
-import { isAdmin, isUser, or } from "../../accessControl"
+import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
+import { Course } from "nexus-plugin-prisma/client"
 
 schema.extendType({
   type: "Query",
@@ -28,6 +28,15 @@ schema.extendType({
             slug: slug ?? undefined,
             id: id ?? undefined,
           },
+          ...(ctx.role !== Role.ADMIN
+            ? {
+                select: {
+                  id: true,
+                  slug: true,
+                  name: true,
+                },
+              }
+            : {}),
         })
 
         if (!course) {
@@ -130,7 +139,14 @@ schema.extendType({
       resolve: async (_, args, ctx) => {
         const { slug } = args
 
-        return (await ctx.db.course.findMany({ where: { slug } })).length > 0
+        return (
+          (
+            await ctx.db.course.findMany({
+              where: { slug },
+              select: { id: true },
+            })
+          ).length > 0
+        )
       },
     })
   },
