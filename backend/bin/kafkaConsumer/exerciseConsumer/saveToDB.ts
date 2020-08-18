@@ -72,7 +72,7 @@ const handleExercise = async (
     if (
       DateTime.fromISO(oldExercise.timestamp?.toISOString() ?? "") > timestamp
     ) {
-      logger.error(
+      logger.warn(
         "Timestamp is older than on existing exercise on " +
           JSON.stringify(exercise) +
           "skipping this exercise",
