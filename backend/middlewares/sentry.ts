@@ -15,6 +15,7 @@ const sentry = (config: any) => async (
   } catch (error) {
     if (process.env.NODE_ENV === "production") {
       Sentry.withScope((scope) => {
+        scope.setFingerprint(["{{ default }}", config.fieldConfig.name])
         scope.setExtra("type", config.parentTypeConfig.name)
         scope.setExtra("field", config.fieldConfig.name)
         scope.setExtra("args", args)
