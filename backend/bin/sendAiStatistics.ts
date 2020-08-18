@@ -148,3 +148,4 @@ const post = async () => {
 }
 
 post()
+  .then(() => process.exit(0))
