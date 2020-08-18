@@ -153,6 +153,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
               autoComplete="off"
               component={StyledTextField}
               required={true}
+              validateOnChange={true}
               helperText={t("courseSlugHelper")}
             />
             <StyledFieldWithAnchor
@@ -493,7 +494,12 @@ const CourseEditForm = React.memo(
     }, [])
 
     return (
-      <Formik initialValues={course} validate={validate} onSubmit={onSubmit}>
+      <Formik
+        initialValues={course}
+        validate={validate}
+        onSubmit={onSubmit}
+        validateOnChange={false}
+      >
         <FormWrapper<CourseFormValues>
           renderForm={renderForm({
             initialValues: course,
