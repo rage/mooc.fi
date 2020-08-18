@@ -21,5 +21,6 @@
     "studyModule": "Study module",
     "showLimited": "Show less",
     "showAll": "Show all",
-    "moduleCourseTitle": "Courses belonging to this module"
+    "moduleCourseTitle": "Courses belonging to this module",
+    "materialAvailable": "Course material available!"
 }
