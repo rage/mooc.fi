@@ -147,4 +147,4 @@ const post = async () => {
   Knex.destroy()
 }
 
-post()
+post().then(() => process.exit(0))
