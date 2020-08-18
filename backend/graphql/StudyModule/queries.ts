@@ -1,6 +1,6 @@
 import { schema } from "nexus"
 import { UserInputError } from "apollo-server-core"
-import { isAdmin } from "../../accessControl"
+import { isAdmin, or, isUser, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 
 schema.extendType({
@@ -13,7 +13,7 @@ schema.extendType({
         slug: schema.stringArg(),
         language: schema.stringArg(),
       },
-      authorize: isAdmin,
+      authorize: or(isAdmin, isUser),
       nullable: true,
       resolve: async (_, args, ctx) => {
         const { id, slug, language } = args
@@ -27,6 +27,15 @@ schema.extendType({
             id: id ?? undefined,
             slug: slug ?? undefined,
           },
+          ...(ctx.role !== Role.ADMIN
+            ? {
+                select: {
+                  id: true,
+                  slug: true,
+                  name: true,
+                },
+              }
+            : {}),
         })
 
         if (!study_module) {
