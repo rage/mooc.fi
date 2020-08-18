@@ -1,14 +1,3 @@
-/*// for sentry 
-declare global {
-  namespace NodeJS {
-    interface Global {
-      __rootdir__: string
-    }
-  }
-}
-
-global.__rootdir__ = __dirname || process.cwd()*/
-
 if (process.env.NODE_ENV === "production" && !process.env.NEXUS_REFLECTION) {
   if (process.env.NEW_RELIC_LICENSE_KEY) {
     require("newrelic")
