@@ -1,14 +1,9 @@
-if (process.env.NODE_ENV === "production" && !process.env.NEXUS_REFLECTION) {
-  if (process.env.NEW_RELIC_LICENSE_KEY) {
-    require("newrelic")
-  } else {
-    console.log("New Relic license key missing")
-  }
-}
 require("sharp") // image library sharp seems to crash without this require
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
+
+const PRODUCTION = process.env.NODE_ENV === "production"
 
 import { use, schema, settings, server } from "nexus"
 import { prisma } from "nexus-plugin-prisma"
@@ -26,7 +21,13 @@ import sentry from "./middlewares/sentry"
 import TmcClient from "./services/tmc"
 import { UserInfo } from "./domain/UserInfo"
 
-const PRODUCTION = process.env.NODE_ENV === "production"
+if (PRODUCTION && !process.env.NEXUS_REFLECTION) {
+  if (process.env.NEW_RELIC_LICENSE_KEY) {
+    require("newrelic")
+  } else {
+    console.log("New Relic license key missing")
+  }
+}
 
 const JSONStream = require("JSONStream")
 const prismaClient = new PrismaClient({
