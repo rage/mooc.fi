@@ -34,6 +34,8 @@ import cache from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
 import { newrelicPlugin } from "./middlewares/newrelic-plugin"
 import sentry from "./middlewares/sentry"
+import TmcClient from "./services/tmc"
+import { UserInfo } from "./domain/UserInfo"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
@@ -177,6 +179,7 @@ server.express.get("/api/completions/:course", async function (
 ) {
   const rawToken = req.get("Authorization")
   const secret: string = rawToken?.split(" ")[1] ?? ""
+
   let course_id: string
   const org = (
     await Knex.select("*")
@@ -313,6 +316,83 @@ server.express.get(
     res.json(resObject)
   },
 )
+
+/*const baiCourseTiers: Record<string, string> = {
+  "e1eaff32-8b2c-4423-998d-d3477535a1f9": "beginner",
+  "3a2790fc-227c-4045-9f4c-40a2bdabe76a": "intermediate",
+  "0e9d1a22-0e19-4320-8c8c-84115bb26452": "advanced",
+}*/
+
+interface ExerciseCompletionResult {
+  exercise_id: string
+  n_points: string
+  part: number
+  section: number
+  max_points: number
+  completed: boolean
+  quizzes_id: string
+}
+
+server.express.get("/api/progress/:id", async (req: any, res: any) => {
+  const rawToken = req.get("Authorization")
+
+  if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
+    return res.status(400).json({ message: "not logged in" })
+  }
+
+  const { id }: { id: string } = req.params
+
+  if (!id) {
+    return res.status(400).json({ message: "must provide id " })
+  }
+
+  let details: UserInfo | null = null
+  try {
+    const client = new TmcClient(rawToken)
+    details = await redisify<UserInfo>(
+      async () => await client.getCurrentUserDetails(),
+      {
+        prefix: "userdetails",
+        expireTime: 3600,
+        key: rawToken,
+      },
+    )
+  } catch (e) {
+    console.log("error", e)
+  }
+
+  if (!details) {
+    return res.status(400).json({ message: "invalid credentials" })
+  }
+
+  const completions = await Knex.select<any, ExerciseCompletionResult[]>(
+    "exercise_id",
+    "n_points",
+    "part",
+    "section",
+    "max_points",
+    "completed",
+    "custom_id as quizzes_id",
+  )
+    .from("exercise_completion")
+    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+    .where("exercise.custom_id", id)
+
+  const resObject = (completions ?? []).reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.exercise_id]: {
+        ...curr,
+        // tier: baiCourseTiers[curr.quizzes_id],
+      },
+    }),
+    {},
+  )
+
+  res.json({
+    data: resObject,
+  })
+})
 
 if (!process.env.NEXUS_REFLECTION) {
   // only runtime
