@@ -98,7 +98,7 @@ export default function CourseCard({ course }: CourseCardProps) {
                 <CardTitle component="h3" variant="h3">
                   {course.name}
                 </CardTitle>
-                {course?.status === "Upcoming" && course?.upcoming_active_link && (
+                {course?.link && course?.status === "Upcoming" && course?.upcoming_active_link && (
                   <Typography
                     variant="subtitle2"
                     style={{
