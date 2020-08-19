@@ -98,18 +98,20 @@ export default function CourseCard({ course }: CourseCardProps) {
                 <CardTitle component="h3" variant="h3">
                   {course.name}
                 </CardTitle>
-                {course?.link && course?.status === "Upcoming" && course?.upcoming_active_link && (
-                  <Typography
-                    variant="subtitle2"
-                    style={{
-                      marginTop: "-0.5rem",
-                      marginBottom: "0.3rem",
-                      color: "#378170",
-                    }}
-                  >
-                    {t("materialAvailable")}
-                  </Typography>
-                )}
+                {course?.link &&
+                  course?.status === "Upcoming" &&
+                  course?.upcoming_active_link && (
+                    <Typography
+                      variant="subtitle2"
+                      style={{
+                        marginTop: "-0.5rem",
+                        marginBottom: "0.3rem",
+                        color: "#378170",
+                      }}
+                    >
+                      {t("materialAvailable")}
+                    </Typography>
+                  )}
                 <CardText component="p" variant="body1" paragraph align="left">
                   {course.description}
                 </CardText>
