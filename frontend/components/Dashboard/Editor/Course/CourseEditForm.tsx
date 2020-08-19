@@ -493,7 +493,12 @@ const CourseEditForm = React.memo(
     }, [])
 
     return (
-      <Formik initialValues={course} validate={validate} onSubmit={onSubmit}>
+      <Formik
+        initialValues={course}
+        validate={validate}
+        onSubmit={onSubmit}
+        validateOnChange={false}
+      >
         <FormWrapper<CourseFormValues>
           renderForm={renderForm({
             initialValues: course,
