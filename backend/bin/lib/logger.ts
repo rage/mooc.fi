@@ -12,10 +12,13 @@ export default function logger({ service }: LoggerOptions) {
   if (process.env.NODE_ENV === "production") {
     transports.push(
       new WinstonSentry({
-        tags: [service],
+        tags: {
+          service,
+        },
         level: "error",
         sentryClient: Sentry,
         isClientInitialized: true,
+        fingerprint: ["{{ default }}", service],
       }),
     )
   }
