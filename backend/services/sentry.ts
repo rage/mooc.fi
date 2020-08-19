@@ -10,9 +10,11 @@ import * as path from "path"
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   release: `moocfi-backend@${process.env.GIT_COMMIT}`,
-  beforeBreadcrumb(breadcrumb, hint) {
+  beforeBreadcrumb(breadcrumb, _hint) {
     if (breadcrumb.type === "http") {
-      if ((hint?.response?.url ?? "").includes("newrelic.com/agent_listener")) {
+      if (
+        (breadcrumb.data?.url ?? "").includes("newrelic.com/agent_listener")
+      ) {
         return null
       }
     }
