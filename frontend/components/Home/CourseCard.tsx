@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
-import { Grid, Typography } from "@material-ui/core"
+import { Grid, Chip } from "@material-ui/core"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
 import Skeleton from "@material-ui/lab/Skeleton"
@@ -54,6 +54,12 @@ const TextArea = styled.div`
   }
 `
 
+const ImageContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+`
+
 const CardLinkWithGA = styled(ReactGA.OutboundLink)`
   text-decoration: none;
 `
@@ -83,14 +89,31 @@ export default function CourseCard({ course }: CourseCardProps) {
           component="div"
         >
           <ResponsiveCourseImageBase>
-            {course ? (
-              <CourseImage
-                photo={course.photo}
-                style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
-              />
-            ) : (
-              <Skeleton variant="rect" height="100%" />
-            )}
+            <ImageContainer>
+              {course ? (
+                <CourseImage
+                  photo={course.photo}
+                  style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
+                />
+              ) : (
+                <Skeleton variant="rect" height="100%" />
+              )}
+              {course?.link &&
+                course?.status === "Upcoming" &&
+                course?.upcoming_active_link && (
+                  <Chip
+                    variant="outlined"
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      backgroundColor: "white",
+                    }}
+                    clickable
+                    label={t("coursePageAvailable")}
+                  />
+                )}
+            </ImageContainer>
           </ResponsiveCourseImageBase>
           <TextArea>
             {course ? (
@@ -98,20 +121,6 @@ export default function CourseCard({ course }: CourseCardProps) {
                 <CardTitle component="h3" variant="h3">
                   {course.name}
                 </CardTitle>
-                {course?.link &&
-                  course?.status === "Upcoming" &&
-                  course?.upcoming_active_link && (
-                    <Typography
-                      variant="subtitle2"
-                      style={{
-                        marginTop: "-0.5rem",
-                        marginBottom: "0.3rem",
-                        color: "#378170",
-                      }}
-                    >
-                      {t("materialAvailable")}
-                    </Typography>
-                  )}
                 <CardText component="p" variant="body1" paragraph align="left">
                   {course.description}
                 </CardText>
