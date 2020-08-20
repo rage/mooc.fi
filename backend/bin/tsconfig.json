@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig",
+  "outDir": "./dist",
+  "sourceRoot": "/",
+  "noEmit": false,
+  "sourceMap": true,
+  "inlineSources": true,
+  "importHelpers": true,
+}

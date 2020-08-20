@@ -1,10 +1,8 @@
 import {
   CourseStatus,
   CourseTranslation,
-  StudyModuleCreateArgs,
 } from "@prisma/client"
 import prismaClient from "./lib/prisma"
-import { StudyModule, Course } from "nexus-plugin-prisma/client"
 
 const Modules = [
   {
@@ -397,7 +395,7 @@ const seed = async () => {
                 id: undefined,
               })),
             }
-          : null,
+          : undefined,
       }
 
       return await prisma.studyModule.create({
@@ -427,8 +425,8 @@ const seed = async () => {
                   }),
                 ) ?? undefined,
             }
-          : null,
-        study_modules: null,
+          : undefined,
+        study_modules: undefined,
       }
 
       const newCourse = await prisma.course.create({ data: _course })
