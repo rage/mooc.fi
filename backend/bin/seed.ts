@@ -1,7 +1,4 @@
-import {
-  CourseStatus,
-  CourseTranslation,
-} from "@prisma/client"
+import { CourseStatus, CourseTranslation } from "@prisma/client"
 import prismaClient from "./lib/prisma"
 
 const Modules = [
