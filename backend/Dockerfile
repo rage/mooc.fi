@@ -26,7 +26,8 @@ COPY --chown=node . /app
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
     && npm run generate \
-    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build \
+    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build
+RUN npm run build-bin \
     && rm .env
 
 ENV NODE_ENV=production
