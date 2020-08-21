@@ -72,6 +72,7 @@ export const toCourseForm = ({
         has_certificate: course?.has_certificate ?? false,
         user_course_settings_visibilities:
           course?.user_course_settings_visibilities || [],
+        upcoming_active_link: course?.upcoming_active_link ?? false,
       }
     : initialValues
 }
@@ -195,6 +196,7 @@ export const fromCourseForm = ({
     teacher_in_charge_email: values.teacher_in_charge_email ?? "",
     teacher_in_charge_name: values.teacher_in_charge_name ?? "",
     status, //values.status as CourseStatus
+    upcoming_active_link: values.upcoming_active_link ?? false,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)

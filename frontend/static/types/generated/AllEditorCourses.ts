@@ -55,6 +55,7 @@ export interface AllEditorCourses_courses {
   course_variants: AllEditorCourses_courses_course_variants[]
   course_aliases: AllEditorCourses_courses_course_aliases[]
   user_course_settings_visibilities: AllEditorCourses_courses_user_course_settings_visibilities[]
+  upcoming_active_link: boolean | null
 }
 
 export interface AllEditorCourses_currentUser {

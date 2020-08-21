@@ -57,6 +57,7 @@ schema.inputObjectType({
       type: "UserCourseSettingsVisibilityCreateInput",
       required: false,
     })
+    t.boolean("upcoming_active_link", { required: false })
   },
 })
 
@@ -120,5 +121,6 @@ schema.inputObjectType({
       type: "UserCourseSettingsVisibilityUpsertInput",
       required: false,
     })
+    t.boolean("upcoming_active_link", { required: false })
   },
 })
