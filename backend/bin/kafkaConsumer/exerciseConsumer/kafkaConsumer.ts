@@ -12,8 +12,8 @@ import { handleMessage } from "../common/handleMessage"
 import { Message } from "./interfaces"
 import { MessageYupSchema } from "./validate"
 import { saveToDatabase } from "./saveToDB"
+import config from "../kafkaConfig"
 
-const config = require("../kafkaConfig.json")
 const TOPIC_NAME = [config.exercise_consumer.topic_name]
 
 const mutex = new Mutex()
