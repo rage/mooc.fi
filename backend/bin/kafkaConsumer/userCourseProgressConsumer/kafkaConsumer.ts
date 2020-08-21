@@ -11,8 +11,7 @@ import { MessageYupSchema } from "./validate"
 import { saveToDatabase } from "./saveToDB"
 import prismaClient from "../../lib/prisma"
 import sentryLogger from "../../lib/logger"
-
-const config = require("../kafkaConfig")
+import config from "../kafkaConfig"
 
 const prisma = prismaClient()
 const mutex = new Mutex()

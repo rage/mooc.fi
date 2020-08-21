@@ -4,7 +4,7 @@ require("dotenv-safe").config({
 import { Mutex } from "../../lib/await-semaphore"
 
 import * as Kafka from "node-rdkafka"
-const config = require("../kafkaConfig")
+import config from "../kafkaConfig"
 
 import { handleMessage } from "../common/handleMessage"
 import { Message } from "./interfaces"
