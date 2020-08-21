@@ -65,6 +65,7 @@ export const initialValues: CourseFormValues = {
   delete_photo: false,
   has_certificate: false,
   user_course_settings_visibilities: [],
+  upcoming_active_link: false,
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {

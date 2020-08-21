@@ -41,6 +41,7 @@ export interface CourseFormValues extends FormValues {
   completions_handled_by?: string
   has_certificate: boolean
   user_course_settings_visibilities: UserCourseSettingsVisibilityFormValues[]
+  upcoming_active_link?: boolean
 }
 
 export interface CourseTranslationFormValues extends FormValues {

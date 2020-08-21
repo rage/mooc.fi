@@ -97,6 +97,7 @@ export interface CourseDetails_course {
   completions_handled_by: CourseDetails_course_completions_handled_by | null
   has_certificate: boolean | null
   user_course_settings_visibilities: CourseDetails_course_user_course_settings_visibilities[]
+  upcoming_active_link: boolean | null
 }
 
 export interface CourseDetails {
