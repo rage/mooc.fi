@@ -28,6 +28,7 @@
     "/[lng]/email-templates/[id]": "Muokkaa email-mallia - {{title}}",
     "/[lng]/research-consent": "Osallistuminen tutkimukseen",
     "/[lng]/register-completion": "Rekisteröi suoritus",
+    "/[lng]/faq/[topic]": "Usein kysytyt kysymykset",
     "/register-completion": "Rekisteröi suoritus",
     "/": "Etusivu"
   },
