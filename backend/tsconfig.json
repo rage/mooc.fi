@@ -15,12 +15,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "plugins": [{ "name": "nexus/typescript-language-service" }],
-    "typeRoots": ["node_modules/@types", "types"],
-    "sourceMap": true,
-    "inlineSources": true,
-    "noEmitHelpers": true,
-    "importHelpers": true,
-    "sourceRoot": "/"
+    "typeRoots": ["node_modules/@types", "types"]
   },
-  "include": [".", "types.d.ts"],
+  "include": [".", "./bin/**/*", "types.d.ts"],
 }

@@ -32,10 +32,10 @@ export const saveToDatabase = async (
   prisma: PrismaClient,
   logger: winston.Logger,
 ): Promise<Boolean> => {
-  console.log("Parsing timestamp")
+  logger.info("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  console.log(`Checking if user ${message.user_id} exists.`)
+  logger.info(`Checking if user ${message.user_id} exists.`)
 
   let user: User | null
 
@@ -69,7 +69,7 @@ export const saveToDatabase = async (
     where: { custom_id: message.exercise_id },
   })
   if (existingExercises.length < 1) {
-    logger.error("Given exercise does not exist")
+    logger.error(`Given exercise does not exist: id ${message.exercise_id}`)
     return false
   }
   logger.info("Getting the exercise")
