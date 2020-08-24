@@ -3,8 +3,7 @@ import { Mutex } from "../../lib/await-semaphore"
 import { Logger } from "winston"
 import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
-
-const config = require("../kafkaConfig.json")
+import config from "../kafkaConfig"
 
 let commitCounter = 0
 
