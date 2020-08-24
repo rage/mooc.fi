@@ -12,7 +12,7 @@ import {
 import Knex from "../../../services/knex"
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
-import { EmailTemplater } from "../../../util/EmailTemplater/EmailTemplater"
+import { EmailTemplater } from "../common/EmailTemplater/EmailTemplater"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 import prismaClient from "../../lib/prisma"
 
