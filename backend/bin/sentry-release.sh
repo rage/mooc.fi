@@ -7,7 +7,7 @@ if [[ "$BRANCH" != "master" ]]; then
 fi
 
 GIT_COMMIT_HASH=$(git rev-parse --short HEAD) 
-SENTRY_RELEASE="moocfi-backend@$(GIT_COMMIT_HASH)"
+SENTRY_RELEASE="moocfi-backend@$GIT_COMMIT_HASH"
 SENTRY_PROJECT="moocfi"
 SENTRY_ORG="moocfi"
 
