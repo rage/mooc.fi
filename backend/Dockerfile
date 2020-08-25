@@ -28,8 +28,8 @@ RUN cp .env.example .env \
     && npm run generate \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build
 RUN npm run build-sourcemap 
-RUN ["chmod", "+x", "./bin/sentry-release.sh"]
-RUN ./bin/sentry-release.sh \
+RUN chmod +x ./bin/sentry-release.sh \
+    && bash ./bin/sentry-release.sh \
     && rm .env
 
 ENV NODE_ENV=production
