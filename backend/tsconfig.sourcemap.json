@@ -6,7 +6,7 @@
     },
     "rootDir": ".",
     "lib": ["es2016", "esnext"],
-    "outDir": "./bin/dist",
+    "outDir": "./sourcemap",
     "strict": true,
     "noEmit": false,
     "noImplicitAny": true,

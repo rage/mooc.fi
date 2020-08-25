@@ -27,7 +27,8 @@ RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
     && npm run generate \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build
-RUN npm run build-bin \
+RUN npm run build-sourcemap 
+RUN ./bin/sentry-release.sh \
     && rm .env
 
 ENV NODE_ENV=production

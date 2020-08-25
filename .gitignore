@@ -13,3 +13,4 @@ backend/MOOCfi-*.json
 frontend/.nyc_output
 frontend/coverage
 newrelic_agent.log
+sourcemap
