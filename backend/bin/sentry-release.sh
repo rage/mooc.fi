@@ -1,13 +1,15 @@
 #/bin/bash
+set -euo pipefail
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$BRANCH" != "master" ]]; then
   exit 0
 fi
 
-export SENTRY_RELEASE="moocfi-backend@$(GIT_COMMIT)"
-export SENTRY_PROJECT="moocfi"
-export SENTRY_ORG="moocfi"
+GIT_COMMIT_HASH=$(git rev-parse --short HEAD) 
+SENTRY_RELEASE="moocfi-backend@$(GIT_COMMIT_HASH)"
+SENTRY_PROJECT="moocfi"
+SENTRY_ORG="moocfi"
 
 npx @sentry/cli releases --org $SENTRY_ORG new $SENTRY_RELEASE --project $SENTRY_PROJECT
 npx @sentry/cli releases --org $SENTRY_ORG -p $SENTRY_PROJECT files $SENTRY_RELEASE upload-sourcemaps ./backend/sourcemap
