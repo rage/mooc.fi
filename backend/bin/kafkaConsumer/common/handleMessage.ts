@@ -4,6 +4,7 @@ import { Logger } from "winston"
 import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 import config from "../kafkaConfig"
+import { Result } from "./result"
 
 let commitCounter = 0
 
@@ -20,7 +21,7 @@ interface HandleMessageConfig<Message extends { timestamp: string }> {
     message: Message,
     prisma: PrismaClient,
     logger: Logger,
-  ) => Promise<any>
+  ) => Promise<Result<string, string>>
 }
 
 export const handleMessage = async <Message extends { timestamp: string }>({
@@ -58,11 +59,17 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 
   try {
     logger.info("Saving. Timestamp " + message.timestamp)
-    if (!(await saveToDatabase(message, prisma, logger))) {
-      logger.error("Could not save event to database")
+
+    const saveResult = await saveToDatabase(message, prisma, logger)
+
+    if (saveResult.isOk()) {
+      if (saveResult.value.length > 0) logger.info(saveResult.value)
+    } else {
+      if (saveResult.error.length > 0)
+        logger.error(saveResult.error, { message: JSON.stringify(message) })
     }
   } catch (error) {
-    logger.error("Could not save event to database:", error)
+    logger.error("Could not save event to database, got error", error)
   }
   await commit(kafkaMessage, consumer)
   //Releasing mutex
