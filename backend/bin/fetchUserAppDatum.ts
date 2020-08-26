@@ -151,6 +151,8 @@ const fetchUserAppDatum = async () => {
 
   const stopTime = new Date().getTime()
   logger.info("used", stopTime - startTime, "milliseconds")
+
+  process.exit(0)
 }
 
 const saveLanguage = async (p: any) => {
@@ -288,6 +290,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   })
 }
 
-fetchUserAppDatum()
-  .then(() => process.exit(0))
-  .catch((e) => logger.error(e))
+fetchUserAppDatum().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})

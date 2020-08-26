@@ -145,6 +145,8 @@ const post = async () => {
   }
   await slackPoster.post(url, data)
   Knex.destroy()
+
+  process.exit(0)
 }
 
-post().then(() => process.exit(0))
+post()
