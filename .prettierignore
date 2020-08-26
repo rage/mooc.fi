@@ -1,5 +1,6 @@
 backend/generated
 backend/dist
+backend/sourcemap
 __generated__
 node_modules
 .next
