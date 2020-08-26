@@ -9,7 +9,7 @@ module.exports = {
     },
     project: "./tsconfig.json",
   },
-  ignorePatterns: ["node_modules/", "generated/", "dist/"],
+  ignorePatterns: ["node_modules/", "generated/", "dist/", "sourcemap/"],
   rules: {
     "eslint-custom-rules/ban-ts-ignore-without-comment": "error",
     "no-restricted-imports": [
