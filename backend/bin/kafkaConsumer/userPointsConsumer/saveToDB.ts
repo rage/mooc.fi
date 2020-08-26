@@ -126,7 +126,7 @@ export const saveToDatabase = async (
       exerciseCompleted?.timestamp?.toISOString() ?? "",
     )
     if (timestamp <= oldTimestamp) {
-      logger.error("Timestamp older than in DB, aborting")
+      logger.info("Timestamp older than in DB, aborting")
       return false
     }
     savedExerciseCompletion = await prisma.exerciseCompletion.update({

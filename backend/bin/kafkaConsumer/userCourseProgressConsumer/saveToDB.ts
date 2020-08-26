@@ -98,7 +98,7 @@ export const saveToDatabase = async (
     )
 
     if (timestamp < oldTimestamp) {
-      logger.error("Timestamp older than in DB, aborting")
+      logger.info("Timestamp older than in DB, aborting")
       return false
     }
     await prisma.userCourseServiceProgress.update({
