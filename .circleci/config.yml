@@ -32,7 +32,7 @@ jobs:
 
   build_backend:
     docker:
-      - image: google/cloud-sdk
+      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - checkout
       - setup_remote_docker
