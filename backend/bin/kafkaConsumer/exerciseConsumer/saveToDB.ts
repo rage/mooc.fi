@@ -2,18 +2,18 @@ import { Message, ExerciseData } from "./interfaces"
 import { PrismaClient } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
+import { ok, err, Result } from "../common/types"
 
 export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
   logger: winston.Logger,
-): Promise<Boolean> => {
+): Promise<Result<string, string>> => {
   const existingCourse = await prisma.course.findOne({
     where: { id: message.course_id },
   })
   if (!existingCourse) {
-    logger.error("given course does not exist")
-    return false
+    return err("given course does not exist")
   }
   message.data.forEach((exercise) => {
     handleExercise(
@@ -39,8 +39,7 @@ export const saveToDatabase = async (
     },
   })
 
-  logger.info("Saved to DB succesfully")
-  return true
+  return ok("Saved to DB successfully")
 }
 
 const handleExercise = async (

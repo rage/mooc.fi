@@ -10,6 +10,7 @@ import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 import getUserFromTMC from "../common/getUserFromTMC"
+import { ok, err, Result } from "../common/result"
 
 import _KnexConstructor from "knex"
 
@@ -32,7 +33,7 @@ export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
   logger: Logger,
-) => {
+): Promise<Result<string, string>> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
   let user: User | null
@@ -58,8 +59,7 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    logger.error("Invalid user or course")
-    return -1
+    return err("Invalid user or course")
   }
 
   let userCourseProgress = (
@@ -98,8 +98,8 @@ export const saveToDatabase = async (
     )
 
     if (timestamp < oldTimestamp) {
-      logger.info("Timestamp older than in DB, aborting")
-      return false
+      // logger.info()
+      return ok("Timestamp older than in DB, aborting")
     }
     await prisma.userCourseServiceProgress.update({
       where: {
@@ -140,6 +140,6 @@ export const saveToDatabase = async (
     message.course_id,
     MessageType.PROGRESS_UPDATED,
   )
-  logger.info("Saved to DB succesfully")
-  return true
+
+  return ok("Saved to DB succesfully")
 }

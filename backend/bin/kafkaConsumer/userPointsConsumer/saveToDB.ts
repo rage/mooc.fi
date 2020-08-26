@@ -5,6 +5,7 @@ import winston = require("winston")
 import { CheckCompletion } from "../userCourseProgressConsumer/generateUserCourseProgress"
 import knex from "knex"
 import getUserFromTMC from "../common/getUserFromTMC"
+import { ok, err, Result } from "../common/types"
 
 const Knex = knex({
   client: "pg",
@@ -31,7 +32,7 @@ export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
   logger: winston.Logger,
-): Promise<Boolean> => {
+): Promise<Result<string, string>> => {
   logger.info("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
@@ -60,8 +61,7 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    logger.error("Invalid user or course")
-    return false
+    return err("Invalid user or course")
   }
 
   logger.info("Checking if a exercise exists with id " + message.exercise_id)
@@ -69,8 +69,7 @@ export const saveToDatabase = async (
     where: { custom_id: message.exercise_id },
   })
   if (existingExercises.length < 1) {
-    logger.error(`Given exercise does not exist: id ${message.exercise_id}`)
-    return false
+    return err(`Given exercise does not exist: id ${message.exercise_id}`)
   }
   logger.info("Getting the exercise")
   const exercises = await prisma.exercise.findMany({
@@ -126,8 +125,7 @@ export const saveToDatabase = async (
       exerciseCompleted?.timestamp?.toISOString() ?? "",
     )
     if (timestamp <= oldTimestamp) {
-      logger.info("Timestamp older than in DB, aborting")
-      return false
+      return ok("Timestamp older than in DB, aborting")
     }
     savedExerciseCompletion = await prisma.exerciseCompletion.update({
       where: { id: exerciseCompleted.id },
@@ -146,6 +144,6 @@ export const saveToDatabase = async (
     })
   }
   await CheckCompletion(user, course)
-  logger.info("Saved to DB succesfully")
-  return true
+
+  return ok("Saved to DB successfully")
 }
