@@ -28,7 +28,7 @@
     "/[lng]/email-templates/[id]": "Edit email template - {{title}}",
     "/[lng]/research-consent": "Research consent",
     "/[lng]/register-completion": "Register completion",
-    "/[lng]/faq/[topic]": "Frequently asked questions",
+    "/[lng]/faq": "Frequently asked questions",
     "/register-completion": "Register completion",
     "/": "Home"
   },
@@ -44,6 +44,7 @@
     "/[lng]/register-completion/[slug]": "Register completion",
     "/[lng]/study-modules/new": "New",
     "/[lng]/users/search": "Search",
-    "/[lng]/email-templates/[id]": "Edit"
+    "/[lng]/email-templates/[id]": "Edit",
+    "/[lng]/faq": "Frequently asked questions"
   }
 }
