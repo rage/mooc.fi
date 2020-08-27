@@ -1,7 +1,7 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import SlackPoster from "../services/slackPoster"
+import SlackPoster from "./lib/slackPoster"
 import Knex from "../services/knex"
 import prismaClient from "./lib/prisma"
 
