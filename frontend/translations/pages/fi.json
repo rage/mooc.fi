@@ -28,7 +28,7 @@
     "/[lng]/email-templates/[id]": "Muokkaa email-mallia - {{title}}",
     "/[lng]/research-consent": "Osallistuminen tutkimukseen",
     "/[lng]/register-completion": "Rekisteröi suoritus",
-    "/[lng]/faq/[topic]": "Usein kysytyt kysymykset",
+    "/[lng]/faq": "Usein kysytyt kysymykset",
     "/register-completion": "Rekisteröi suoritus",
     "/": "Etusivu"
   },
@@ -44,6 +44,7 @@
     "/[lng]/users/[id]/completions": "Suoritukset",
     "/[lng]/users/search": "Hae",
     "/[lng]/register-completion/[slug]": "Rekisteröi suoritus",
-    "/[lng]/email-templates/[id]": "Muokkaa"
+    "/[lng]/email-templates/[id]": "Muokkaa",
+    "/[lng]/faq": "Usein kysytyt kysymykset"
   }
 }

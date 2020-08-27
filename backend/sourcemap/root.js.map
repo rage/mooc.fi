@@ -1,0 +1,1 @@
+{"version":3,"file":"root.js","sourceRoot":"","sources":["../root.ts"],"names":[],"mappings":";;AAAA,IAAM,OAAO,GAAG,SAAS,IAAI,OAAO,CAAC,GAAG,EAAE,CAAA;AAE1C,qBAAe,OAAO,CAAA","sourcesContent":["const rootdir = __dirname || process.cwd()\n\nexport default rootdir\n"]}

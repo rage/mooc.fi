@@ -1,0 +1,1 @@
+{"version":3,"file":"TemplateParams.js","sourceRoot":"","sources":["../../../../../../bin/kafkaConsumer/common/EmailTemplater/types/TemplateParams.ts"],"names":[],"mappings":"","sourcesContent":["import { PrismaClient, EmailTemplate, User } from \"@prisma/client\"\n\nexport type TemplateParams = {\n  emailTemplate: EmailTemplate\n  user: User\n  prisma: PrismaClient\n}\n"]}

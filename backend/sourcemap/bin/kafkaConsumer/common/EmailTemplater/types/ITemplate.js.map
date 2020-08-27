@@ -1,0 +1,1 @@
+{"version":3,"file":"ITemplate.js","sourceRoot":"","sources":["../../../../../../bin/kafkaConsumer/common/EmailTemplater/types/ITemplate.ts"],"names":[],"mappings":"","sourcesContent":["export default interface ITemplate {\n  resolve(): Promise<string>\n}\n"]}
