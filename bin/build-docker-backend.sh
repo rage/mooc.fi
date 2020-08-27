@@ -28,6 +28,14 @@ docker pull eu.gcr.io/moocfi/moocfi-backend:latest || true
 echo Building "$TAG"
 
 docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile -t "$TAG" --build-arg=GIT_COMMIT="$(git rev-parse --short HEAD)"
-cd ..
 
 echo "Successfully built image: $TAG"
+
+echo "Copying source map from container to host"
+docker create -ti --name tmpcontainer "$TAG" sh
+docker cp tmpcontainer:/app/sourcemap sourcemap
+docker rm -f tmpcontainer
+
+echo "Source map copied from container!"
+
+cd ..
