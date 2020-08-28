@@ -38,7 +38,7 @@ const fetchUserAppDatum = async () => {
     latestTimeStamp?.toISOString() ?? null,
   )
   logger.info("Got data from tmc")
-  logger.info("data length", data_from_tmc.length)
+  logger.info(`data length ${data_from_tmc.length}`)
   logger.info("sorting")
 
   const data = data_from_tmc.sort(
@@ -153,7 +153,7 @@ const fetchUserAppDatum = async () => {
   await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
 
   const stopTime = new Date().getTime()
-  logger.info("used", stopTime - startTime, "milliseconds")
+  logger.info(`used ${stopTime - startTime} milliseconds`)
 
   process.exit(0)
 }

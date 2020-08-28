@@ -1,5 +1,3 @@
-import { LibrdKafkaError } from "node-rdkafka"
-
 class CustomError extends Error {
   constructor(message: string) {
     super(message)
@@ -37,8 +35,8 @@ export class KafkaMessageError extends CustomError {
 export class KafkaError extends CustomError {
   name = "KafkaError"
 
-  constructor(message: string, readonly kafkaError: LibrdKafkaError) {
-    super(`${message}; original message: ${kafkaError.message}`)
+  constructor(message: string, readonly kafkaError: any) {
+    super(`${message}; original message: ${kafkaError?.message}`)
   }
 }
 

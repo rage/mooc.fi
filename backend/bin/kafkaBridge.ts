@@ -57,7 +57,7 @@ producer.on("delivery-report", function (err, report) {
   if (err) {
     logger.error(new KafkaError("Delivery report error", err))
   }
-  logger.info("Delivery report", report)
+  logger.info(`Delivery report ${JSON.stringify(report)}`)
 })
 
 let app = express()
@@ -78,12 +78,13 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   const { topic, payload } = req.body
   if (!topic || !payload) {
     logger.info(
-      "Received an event without a topic or without a payload",
-      req.body,
+      `Received an event without a topic or without a payload ${JSON.stringify(
+        req.body,
+      )}`,
     )
     return res.status(400).json({ error: "Topic or payload missing" }).send()
   }
-  logger.info("Producing to topic", topic, "payload", JSON.stringify(payload))
+  logger.info(`Producing to topic ${topic} payload ${JSON.stringify(payload)}`)
 
   try {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
