@@ -42,9 +42,6 @@ jobs:
       - run:
           name: "Push image if on master"
           command: "bin/push-docker-backend-image.sh"
-      - run:
-          name: "Push Sentry release if on master"
-          command: "bin/sentry-release.sh"
 
   deploy_to_production:
     docker:

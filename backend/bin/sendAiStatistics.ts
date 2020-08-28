@@ -1,7 +1,7 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import SlackPoster from "../services/slackPoster"
+import SlackPoster from "./lib/slackPoster"
 import Knex from "../services/knex"
 import prismaClient from "./lib/prisma"
 
@@ -145,6 +145,8 @@ const post = async () => {
   }
   await slackPoster.post(url, data)
   Knex.destroy()
+
+  process.exit(0)
 }
 
-post().then(() => process.exit(0))
+post()
