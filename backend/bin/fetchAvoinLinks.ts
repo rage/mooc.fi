@@ -16,7 +16,7 @@ const fetch = async () => {
   const avoinObjects = await prisma.openUniversityRegistrationLink.findMany({})
 
   for (const p of avoinObjects) {
-    logger.info("Processing link", p.course_code, p.language)
+    logger.info(`Processing link ${p.link}, ${p.course_code}, ${p.language}`)
     if (!p.course_code) {
       logger.info(
         "Since this link has no course code, I won't try to fetch new links.",
@@ -27,7 +27,7 @@ const fetch = async () => {
       logger.error(error)
       throw error
     })
-    logger.info("Open university info: ", JSON.stringify(res, undefined, 2))
+    logger.info("Open university info: " + JSON.stringify(res, undefined, 2))
 
     const now: DateTime = DateTime.fromJSDate(new Date())
 
@@ -56,7 +56,7 @@ const fetch = async () => {
 
     const url = `https://www.avoin.helsinki.fi/palvelut/esittely.aspx?o=${bestLink.link}`
 
-    logger.info("Updating link to", url)
+    logger.info("Updating link to " + url)
     await prisma.openUniversityRegistrationLink.update({
       where: {
         id: p.id,
