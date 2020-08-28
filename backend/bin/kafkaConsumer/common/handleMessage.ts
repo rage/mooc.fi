@@ -4,6 +4,7 @@ import { Logger } from "winston"
 import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 import config from "../kafkaConfig"
+import { InvalidKafkaMessageError, ValidationError } from "../../lib/errors"
 
 let commitCounter = 0
 
@@ -39,7 +40,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   try {
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (e) {
-    logger.error("invalid message", e)
+    logger.error(new InvalidKafkaMessageError("invalid message", kafkaMessage))
     await commit(kafkaMessage, consumer)
     release()
     return
@@ -48,9 +49,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   try {
     await MessageYupSchema.validate(message)
   } catch (error) {
-    logger.error("JSON VALIDATE FAILED: " + error, {
-      message: JSON.stringify(message),
-    })
+    logger.error(new ValidationError("JSON validation failed", message))
     await commit(kafkaMessage, consumer)
     release()
     return
