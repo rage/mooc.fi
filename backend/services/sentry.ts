@@ -27,12 +27,15 @@ Sentry.init({
       iteratee: (frame) => {
         if (!frame?.filename) return frame
 
+        console.log("frame", frame)
+
         const filename = path.basename(frame.filename)
         const fileDir = path.dirname(frame.filename)
         const relativePath = path.relative(rootdir, fileDir)
 
         frame.filename = `app:///${relativePath}/${filename}`
 
+        console.log("relativePath", relativePath, "filename", filename)
         return frame
       },
     }),
