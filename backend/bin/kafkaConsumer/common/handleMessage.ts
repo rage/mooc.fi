@@ -26,7 +26,7 @@ interface HandleMessageConfig<Message extends { timestamp: string }> {
     message: Message,
     prisma: PrismaClient,
     logger: Logger,
-  ) => Promise<Result<string, any>>
+  ) => Promise<Result<string, Error>>
 }
 
 export const handleMessage = async <Message extends { timestamp: string }>({
