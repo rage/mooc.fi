@@ -7,6 +7,7 @@ import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 import prismaClient from "./lib/prisma"
 import sentryLogger from "./lib/logger"
+import { DatabaseInputError, TMCError } from "./lib/errors"
 
 const CONFIG_NAME = "userFieldValues"
 
@@ -72,9 +73,11 @@ const fetcUserFieldValues = async () => {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {
         logger.error(
-          "error in getting user data from tmc, trying again in 30s...",
+          new TMCError(
+            "error in getting user data from tmc, trying again in 30s...",
+            error,
+          ),
         )
-        logger.error("above error is:", error)
         await delay(30 * 1000)
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       }
@@ -126,11 +129,14 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     return result
   } catch (e) {
     logger.error(
-      `Failed to upsert user with upstream id ${
-        details.id
-      }. Values we tried to upsert: ${JSON.stringify(
-        prismaDetails,
-      )}. Values found from the database: ${JSON.stringify(details)}`,
+      new DatabaseInputError(
+        `Failed to upsert user with upstream id ${
+          details.id
+        }. Values we tried to upsert: ${JSON.stringify(
+          prismaDetails,
+        )}. Values found from the database: ${JSON.stringify(details)}`,
+        e,
+      ),
     )
     if (e.meta?.target?.includes("username")) {
       logger.info(`Removing user with duplicate username`)
