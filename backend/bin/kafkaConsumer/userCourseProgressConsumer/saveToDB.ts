@@ -34,7 +34,7 @@ export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
   _logger: Logger,
-): Promise<Result<string, string>> => {
+): Promise<Result<string, Error>> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
   let user: User | null
