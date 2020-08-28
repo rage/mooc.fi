@@ -1,3 +1,5 @@
+import { LibrdKafkaError } from "node-rdkafka"
+
 class CustomError extends Error {
   constructor(message: string) {
     super(message)
@@ -10,17 +12,33 @@ class CustomError extends Error {
 
 export class TMCError extends CustomError {
   name = "TMCError"
+
+  constructor(message: string, readonly error?: any) {
+    super(message)
+  }
 }
 
-export class DatabaseError extends CustomError {
-  name = "DatabaseError"
+export class DatabaseInputError extends CustomError {
+  name = "DatabaseInputError"
+
+  constructor(message: string, readonly data?: object) {
+    super(message)
+  }
 }
 
-export class InvalidKafkaMessageError extends CustomError {
-  name = "InvalidKafkaMessageError"
+export class KafkaMessageError extends CustomError {
+  name = "KafkaMessageError"
 
   constructor(message: string, readonly kafkaMessage?: object) {
     super(message)
+  }
+}
+
+export class KafkaError extends CustomError {
+  name = "KafkaError"
+
+  constructor(message: string, readonly kafkaError: LibrdKafkaError) {
+    super(`${message}; original message: ${kafkaError.message}`)
   }
 }
 
