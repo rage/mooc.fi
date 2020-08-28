@@ -102,6 +102,8 @@ const fetcUserFieldValues = async () => {
 
   const stopTime = new Date().getTime()
   logger.info("used", stopTime - startTime, "milliseconds")
+
+  process.exit(0)
 }
 
 const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
@@ -166,6 +168,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   })
 }
 
-fetcUserFieldValues()
-  .then(() => process.exit(0))
-  .catch((e) => logger.error(e))
+fetcUserFieldValues().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})
