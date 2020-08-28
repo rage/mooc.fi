@@ -366,7 +366,7 @@ server.express.get("/api/progress/:id", async (req: any, res: any) => {
   )
     .from("exercise_completion")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-    .where("exercise.custom_id", id)
+    .where("exercise.course_id", id)
 
   const resObject = (completions ?? []).reduce(
     (acc, curr) => ({
