@@ -18,7 +18,7 @@ export default function logger({ service }: LoggerOptions) {
         level: "error",
         sentryClient: Sentry,
         isClientInitialized: true,
-        fingerprint: ["{{ default }}", service],
+        fingerprint: service,
       }),
     )
   }

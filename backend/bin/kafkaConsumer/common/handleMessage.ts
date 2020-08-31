@@ -4,6 +4,12 @@ import { Logger } from "winston"
 import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 import config from "../kafkaConfig"
+import {
+  DatabaseInputError,
+  KafkaMessageError,
+  ValidationError,
+} from "../../lib/errors"
+import { Result } from "./result"
 
 let commitCounter = 0
 
@@ -20,7 +26,7 @@ interface HandleMessageConfig<Message extends { timestamp: string }> {
     message: Message,
     prisma: PrismaClient,
     logger: Logger,
-  ) => Promise<any>
+  ) => Promise<Result<string, Error>>
 }
 
 export const handleMessage = async <Message extends { timestamp: string }>({
@@ -39,7 +45,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   try {
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (e) {
-    logger.error("invalid message", e)
+    logger.error(new KafkaMessageError("invalid message", kafkaMessage))
     await commit(kafkaMessage, consumer)
     release()
     return
@@ -48,9 +54,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   try {
     await MessageYupSchema.validate(message)
   } catch (error) {
-    logger.error("JSON VALIDATE FAILED: " + error, {
-      message: JSON.stringify(message),
-    })
+    logger.error(new ValidationError("JSON validation failed", message))
     await commit(kafkaMessage, consumer)
     release()
     return
@@ -58,11 +62,18 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 
   try {
     logger.info("Saving. Timestamp " + message.timestamp)
-    if (!(await saveToDatabase(message, prisma, logger))) {
-      logger.error("Could not save event to database")
+
+    const saveResult = await saveToDatabase(message, prisma, logger)
+
+    if (saveResult.isOk()) {
+      if (saveResult.hasValue()) logger.info(saveResult.value)
+    } else {
+      if (saveResult.hasError()) logger.error(saveResult.error)
     }
   } catch (error) {
-    logger.error("Could not save event to database:", error)
+    logger.error(
+      new DatabaseInputError("Could not save event to database", error),
+    )
   }
   await commit(kafkaMessage, consumer)
   //Releasing mutex
