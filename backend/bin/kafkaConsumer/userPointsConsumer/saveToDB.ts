@@ -67,7 +67,9 @@ export const saveToDatabase = async (
 
   logger.info("Checking if a exercise exists with id " + message.exercise_id)
   const existingExercises = await prisma.exercise.findMany({
-    where: { custom_id: message.exercise_id },
+    where: {
+      custom_id: message.exercise_id,
+    },
   })
   if (existingExercises.length < 1) {
     return err(new DatabaseInputError(`Given exercise does not exist`, message))
