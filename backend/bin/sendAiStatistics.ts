@@ -4,8 +4,11 @@ require("dotenv-safe").config({
 import SlackPoster from "./lib/slackPoster"
 import Knex from "../services/knex"
 import prismaClient from "./lib/prisma"
+import sentryLogger from "./lib/logger"
 
-const slackPoster: SlackPoster = new SlackPoster()
+const logger = sentryLogger({ service: "send-ai-statistics" })
+const slackPoster: SlackPoster = new SlackPoster(logger)
+
 const url: string | undefined = process.env.AI_SLACK_URL
 
 if (!url) {
@@ -131,6 +134,7 @@ const getGlobalStats = async (): Promise<string> => {
     await Knex.count().from("completion").where({ course_id: course[0].id })
   )[0].count
   const now = new Date()
+
   return `\`\`\`Stats ${now.getDate()}.${
     now.getMonth() + 1
   }.${now.getFullYear()}:
