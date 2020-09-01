@@ -1,9 +1,13 @@
 import { EmailDelivery } from "@prisma/client"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
 import prismaClient from "./lib/prisma"
+import sentryLogger from "./lib/logger"
+import { EmailTemplaterError } from "./lib/errors"
+
 const BATCH_SIZE = 100
 
 const prisma = prismaClient()
+const logger = sentryLogger({ service: "background-emailer" })
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {
   const { user, email_template } =
@@ -16,7 +20,11 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
     })) ?? {}
   if (!email_template || !user) {
     // TODO: should this update the delivery with error?
-    console.error("No email template or user found while sending email")
+    logger.error(
+      new EmailTemplaterError(
+        "No email template or user found while sending email",
+      ),
+    )
     return
   }
 
@@ -24,16 +32,17 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
   const emailTemplate = await prisma
     .email_delivery.findOne({ where: { id: emailDelivery.id } })
     .email_template_email_deliveryToemail_template()*/
-  console.log(`Delivering email ${email_template.name} to ${user.email}`)
+  logger.info(`Delivering email ${email_template.name} to ${user.email}`)
+
   try {
     await sendEmailTemplateToUser(user, email_template)
-    console.log("Marking email as delivered")
+    logger.info("Marking email as delivered")
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: { sent: true, error: false },
     })
   } catch (e) {
-    console.error("Sending failed", e.message)
+    logger.error(new EmailTemplaterError("Sending failed", e))
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: { error: true, error_message: e.message },
@@ -48,7 +57,7 @@ const main = async () => {
       take: BATCH_SIZE,
     })
     if (emailsToDeliver.length > 0) {
-      console.log(
+      logger.info(
         `Received a batch of ${emailsToDeliver.length} emails to send.`,
       )
     }

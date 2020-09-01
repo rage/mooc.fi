@@ -53,7 +53,7 @@ export const saveToDatabase = async (
       if (!user) {
         throw e
       }
-      console.log("Mitigated race condition with user imports")
+      logger.info("Mitigated race condition with user imports")
     }
   }
 
