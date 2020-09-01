@@ -90,7 +90,6 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
     flushProducer(1000, undefined)
   } catch (e) {
-    // TODO/FIXME: e is not necessarily a librdkafkaerror?
     logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()
   }

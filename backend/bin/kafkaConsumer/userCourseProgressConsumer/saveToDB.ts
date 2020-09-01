@@ -33,7 +33,7 @@ const Knex = _KnexConstructor({
 export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
-  _logger: Logger,
+  logger: Logger,
 ): Promise<Result<string, Error>> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
@@ -51,7 +51,7 @@ export const saveToDatabase = async (
       if (!user) {
         throw e
       }
-      console.log("Mitigated race condition with user imports")
+      logger.info("Mitigated race condition with user imports")
     }
   }
 
