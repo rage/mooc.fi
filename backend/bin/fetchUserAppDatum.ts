@@ -47,8 +47,8 @@ const fetchUserAppDatum = async () => {
       DateTime.fromISO(b.updated_at).toMillis(),
   )
 
-  logger.info(data)
-  logger.info("sorted")
+  //  logger.info(data)
+  // logger.info("sorted")
   const saveInterval = 10000
   let saveCounter = 0
 
@@ -56,7 +56,7 @@ const fetchUserAppDatum = async () => {
     saveCounter++
     let p = data[i]
     if (p.user_id == null) continue
-    if (i % 1000 == 0) logger.info(i)
+    if (i % 1000 == 0) logger.info(`${i}/${data.length}`)
     if (!p || p == "undefined" || p == null) {
       logger.warning(
         "not p:",
