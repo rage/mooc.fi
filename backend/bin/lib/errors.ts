@@ -20,8 +20,8 @@ export class DatabaseInputError extends CustomError {
   name = "DatabaseInputError"
 
   constructor(message: string, data?: object)
-  constructor(message: string, error?: Error, data?: object)
-  constructor(message: string, readonly error?: Error, readonly data?: object) {
+  constructor(message: string, data?: object, error?: Error)
+  constructor(message: string, readonly data?: object, readonly error?: Error) {
     super(message)
   }
 }
@@ -30,11 +30,11 @@ export class KafkaMessageError extends CustomError {
   name = "KafkaMessageError"
 
   constructor(message: string, kafkaMessage?: object)
-  constructor(message: string, error?: Error, kafkaMessage?: object)
+  constructor(message: string, kafkaMessage?: object, error?: Error)
   constructor(
     message: string,
-    readonly error?: Error,
     readonly kafkaMessage?: object,
+    readonly error?: Error,
   ) {
     super(message)
   }
@@ -51,7 +51,7 @@ export class KafkaError extends CustomError {
 export class ValidationError extends CustomError {
   name = "ValidationError"
 
-  constructor(message: string, readonly error: Error, readonly data: object) {
+  constructor(message: string, readonly data: object, readonly error?: Error) {
     super(message)
   }
 }
