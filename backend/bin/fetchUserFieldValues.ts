@@ -42,8 +42,8 @@ const fetcUserFieldValues = async () => {
       DateTime.fromISO(a.updated_at).toMillis() -
       DateTime.fromISO(b.updated_at).toMillis(),
   )
-  logger.info(data)
-  logger.info("sorted")
+  // logger.info(data)
+  // logger.info("sorted")
   const saveInterval = 10000
   let saveCounter = 0
 
@@ -51,7 +51,7 @@ const fetcUserFieldValues = async () => {
     saveCounter++
     let p = data[i]
     if (p.user_id == null) continue
-    if (i % 1000 == 0) logger.info(i)
+    if (i % 1000 == 0) logger.info(`${i}/${data.length}`)
     if (!p || p == null) {
       logger.warning(
         "not p:",
@@ -135,6 +135,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
         }. Values we tried to upsert: ${JSON.stringify(
           prismaDetails,
         )}. Values found from the database: ${JSON.stringify(details)}`,
+        details,
         e,
       ),
     )

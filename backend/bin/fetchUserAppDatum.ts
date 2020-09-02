@@ -256,6 +256,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
         }. Values we tried to upsert: ${JSON.stringify(
           prismaDetails,
         )}. Values found from the database: ${JSON.stringify(details)}`,
+        details,
         e,
       ),
     )
