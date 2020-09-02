@@ -11,7 +11,7 @@ import Knex from "./services/knex"
 import redisClient, { redisify } from "./services/redis"
 import { wsListen } from "./wsServer"
 import * as winston from "winston"
-import { PrismaClient } from "nexus-plugin-prisma/client"
+import { PrismaClient, User } from "nexus-plugin-prisma/client"
 import cors from "cors"
 import morgan from "morgan"
 import cache from "./middlewares/cache"
@@ -314,6 +314,7 @@ server.express.get(
 }*/
 
 interface ExerciseCompletionResult {
+  user_id: string
   exercise_id: string
   n_points: string
   part: number
@@ -333,7 +334,7 @@ server.express.get("/api/progress/:id", async (req: any, res: any) => {
   const { id }: { id: string } = req.params
 
   if (!id) {
-    return res.status(400).json({ message: "must provide id " })
+    return res.status(400).json({ message: "must provide id" })
   }
 
   let details: UserInfo | null = null
@@ -355,7 +356,17 @@ server.express.get("/api/progress/:id", async (req: any, res: any) => {
     return res.status(400).json({ message: "invalid credentials" })
   }
 
+  const user = await Knex.select<any, User[]>("id")
+    .from("user")
+    .where("upstream_id", details.id)
+
+  // TODO: (?) might need to create user from details
+  if (user.length === 0) {
+    return res.status(400).json({ message: "user not found" })
+  }
+
   const completions = await Knex.select<any, ExerciseCompletionResult[]>(
+    "user_id",
     "exercise_id",
     "n_points",
     "part",
@@ -367,6 +378,7 @@ server.express.get("/api/progress/:id", async (req: any, res: any) => {
     .from("exercise_completion")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
     .where("exercise.course_id", id)
+    .andWhere("exercise_completion.user_id", user[0].id)
 
   const resObject = (completions ?? []).reduce(
     (acc, curr) => ({
