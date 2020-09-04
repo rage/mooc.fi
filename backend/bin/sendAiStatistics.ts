@@ -143,10 +143,14 @@ const getGlobalStats = async (): Promise<string> => {
 }
 
 const post = async () => {
+  logger.info("getting global stats")
   data.text = data.text.concat(await getGlobalStats())
+
+  logger.info("getting data by language")
   for (let i = 0; i < langArr.length; i++) {
     data.text = data.text.concat(await getDataByLanguage(langArr[i]))
   }
+
   await slackPoster.post(url, data)
   Knex.destroy()
 
