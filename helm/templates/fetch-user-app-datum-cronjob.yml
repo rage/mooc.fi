@@ -6,6 +6,7 @@ metadata:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   schedule: "12 * * * *"
+  startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
@@ -13,7 +14,6 @@ spec:
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       activeDeadlineSeconds: 7200
-      startingDeadlineSeconds: 3600
       template:
         spec:
           restartPolicy: OnFailure
