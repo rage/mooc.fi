@@ -17,7 +17,7 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: fetch-ai-completions
+            - name: fetch-avoin-links
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
               command: ["sh", "-c", "npm run fetch-avoin-links"]
               envFrom:
