@@ -40,6 +40,10 @@ The first initilization of the extension will download some necessary components
 alt="Laajennuksen asentaminen"
 width="100%" height="100%" />
 
+</ContentBox>
+
+<ContentBox>
+
 ### Installing Python <a name="python-asentaminen"></a>
 
 You will need Python3 to run your source code. Python3 pip you will need later on the course, so please install it as well.
@@ -48,17 +52,24 @@ You can install Python3 and Python3 pip with the following terminal command (wor
 
 > `sudo apt-get install python3 python3-pip`
 
-### Installing Java <a name="javan-asentaminen"></a>
+</ContentBox>
 
-You will need Java Development kit & Runtime Environment to run your source code for courses using Java. Please install Java following the instructions below.
+<ContentBox>
 
-#### 1. Install OpenJDK-package.
+### Installing Java environment <a name="javan-asentaminen"></a>
+
+You will need Java Development kit & Runtime Environment and Maven to run your source code for courses using Java.  
+Please install Java following the instructions below.
+
+#### Installing Java
+
+##### 1. Install OpenJDK-package.
 
 You can install OpenJDK with the following terminal command (works for Ubuntu):
 
 > `sudo apt-get install openjdk-11-jdk`
 
-#### 2. Switch the active version of Java
+##### 2. Switch the active version of Java
 
 Use the command:
 
@@ -67,6 +78,17 @@ Use the command:
 Type the number of the option, which says Java 11 (for example on this computer "/usr/lib/jvm/java-11-openjdk-amd64/bin/java"), and press enter.
 
 If there are multiple options with Java 11, both with status "auto mode" and "manual mode", select "manual mode".
+
+#### Installing Maven
+
+You can install Maven by following the instructions below.  
+**NB!** In commands, change the version number to match the downloaded version.
+
+1. Download the latest Source tar.gz archive, `apache-maven-3.6.3-src.tar.gz`, from [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
+2. Extract the archive to your desired location, e.g. `/usr/local/`, this will create automatically a folder named `apache-maven-3.x.y`.
+3. Open terminal and run the following command, remember to change PATH to correct location:  
+`export PATH=/usr/local/apache-maven-3.x.y/bin:$PATH`
+4. Make sure that Maven is installed correctly by running the command `mvn --version`
 
 </ContentBox>
 

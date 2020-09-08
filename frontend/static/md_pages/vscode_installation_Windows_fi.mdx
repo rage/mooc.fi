@@ -40,7 +40,13 @@ Ensimmäisen käynnistyksen yhteydessä laajennus lataa sen tarvitsemat komponen
 alt="Laajennuksen asentaminen"
 width="100%" height="100%" />
 
+</ContentBox>
+
+<ContentBox>
+
 ### Pythonin asentaminen <a name="python-asentaminen"></a>
+
+Tarvitset Python3:sta suorittaaksesi lähdekoodia Python -ohjelmointikursseilla. Saat asennettua Pythonin käyttöösi seuraamalla ohjeita alla.
 
 1. Mene osoitteeseen [https://www.python.org/downloads/](https://www.python.org/downloads/)
 2. Lataa viimeisin saatavilla oleva versio Python 3:sta.
@@ -53,9 +59,16 @@ width="100%" height="100%" />
 alt="Pythonin asentaminen asetukset"
 width="100%" height="100%" />
 
-### Javan Asentaminen <a name="javan-asentaminen"></a>
+</ContentBox>
 
-Tarvitset Java kehitys- ja suoritusympäristön suorittaaksesi lähdekoodia Java -ohjelmointikursseilla. Saat asennettua nämä käyttöösi seuraamalla ohjeita alla.
+<ContentBox>
+
+### Java ympäristö <a name="javan-asentaminen"></a>
+
+Tarvitset Java kehitys- ja suoritusympäristön ja Mavenin suorittaaksesi lähdekoodia Java -ohjelmointikursseilla.  
+Saat asennettua nämä käyttöösi seuraamalla ohjeita alla.
+
+#### Javan asentaminen
 
 1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
 2. Valitse sivulta OpenJDK 11 (LTS) ja HotSpot. Sitten voit painaa Latest release -nappia ladataksesi Javan.
@@ -72,6 +85,21 @@ Kuva 1
 alt="AdoptOpenJDK:n asennusohjelman Custom Setup -vaihe, jossa asetetaan JavaSoft (Oracle) registry keys -kohtaan vaihtoehto Entire feature will be installed on local hard drive"
 width="100%" height="100%" />
 Kuva 2
+
+#### Mavenin asentaminen
+
+Saat asennettua Mavenin seuraamalla alla olevia ohjeita.  
+**HUOM!** Muutathan komennoissa versionumeron vastaamaan lataamaasi versiota.
+
+1. Lataa viimeisin Binary zip archive, `apache-maven-3.x.y-bin.zip`, osoitteesta [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
+2. Pura arkisto haluaamaasi paikkaan, esim. `C:\Program Files\`, tämä luo automaattisesti kansion `apache-maven-3.x.y` purkamaasi paikkaan.
+3. Avaa komentokehote (cmd.exe) ja syötä seuraava komento ruutuun, muutathan osoitteen viittaamaan oikeaan paikkaan:  
+`set PATH="c:\program files\apache-maven-3.x.y\bin";%PATH%`
+4. Varmista, että Maven on asennettu oikein kirjoittamalla samaan ruutuun `mvn --version`
+
+<img src="/static/images/installation/vscode/maven_windows.png"
+alt="Maven asennus Windows"
+width="100%" height="100%" />
 
 </ContentBox>
 
