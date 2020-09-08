@@ -231,7 +231,7 @@ const courseEditSchema = ({
     start_date: Yup.date()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
-      .transform((datetime: DateTime) => new Date(datetime.toISO()))
+      .transform((datetime?: DateTime) => new Date(datetime?.toISO() ?? ""))
       .test("start_before_end", t("courseStartDateLaterThanEndDate"), function (
         this: Yup.TestContext,
         value?: Date | null,
@@ -258,7 +258,7 @@ const validateSlug = ({
   checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
-}): TestFunction<string | null | undefined> =>
+}) =>
   async function (
     this: Yup.TestContext,
     value?: string | null,
