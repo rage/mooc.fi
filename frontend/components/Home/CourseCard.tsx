@@ -15,6 +15,8 @@ import getHomeTranslator from "/translations/home"
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: 100%;
   @media (max-width: 960px) {
     flex-direction: row;
   }
@@ -37,9 +39,10 @@ const ResponsiveCourseImageBase = styled(CourseImageBase)`
 
 const TextArea = styled.div`
   padding: 1rem 1rem 2rem 1rem;
-  height: 230px;
+  height: 100%;
   color: black;
   width: 100%;
+  min-height: 230px;
   @media (max-width: 430px) {
     width: 70%;
     text-align: left;
