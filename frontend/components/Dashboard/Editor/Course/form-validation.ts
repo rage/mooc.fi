@@ -11,7 +11,6 @@ import { ApolloClient, DocumentNode } from "@apollo/client"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { DateTime } from "luxon"
 import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
-import { TestFunction } from "yup"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
