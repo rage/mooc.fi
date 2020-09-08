@@ -11,6 +11,7 @@ import { ApolloClient, DocumentNode } from "@apollo/client"
 import { FormValues } from "/components/Dashboard/Editor/types"
 import { DateTime } from "luxon"
 import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
+import { TestFunction } from "yup"
 
 export const initialTranslation: CourseTranslationFormValues = {
   id: undefined,
@@ -230,9 +231,10 @@ const courseEditSchema = ({
     start_date: Yup.date()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
+      .transform((datetime: DateTime) => new Date(datetime.toISO()))
       .test("start_before_end", t("courseStartDateLaterThanEndDate"), function (
         this: Yup.TestContext,
-        value?: DateTime,
+        value?: Date | null,
       ) {
         const start = value
         const end = this.parent.end_date
@@ -256,8 +258,11 @@ const validateSlug = ({
   checkSlug: DocumentNode
   client: ApolloClient<object>
   initialSlug: string | null
-}) =>
-  async function (this: Yup.TestContext, value: string): Promise<boolean> {
+}): TestFunction<string | null | undefined> =>
+  async function (
+    this: Yup.TestContext,
+    value?: string | null,
+  ): Promise<boolean> {
     if (!value || value === "") {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
