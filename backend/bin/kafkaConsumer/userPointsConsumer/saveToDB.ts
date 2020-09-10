@@ -68,7 +68,7 @@ export const saveToDatabase = async (
   logger.info("Checking if a exercise exists with id " + message.exercise_id)
   const existingExercises = await prisma.exercise.findMany({
     where: {
-      custom_id: message.exercise_id,
+      custom_id: message.exercise_id?.toString(),
     },
   })
   if (existingExercises.length < 1) {
@@ -78,7 +78,7 @@ export const saveToDatabase = async (
   const exercises = await prisma.exercise.findMany({
     take: 1,
     where: {
-      custom_id: message.exercise_id,
+      custom_id: message.exercise_id?.toString(),
     },
   })
 
@@ -89,7 +89,7 @@ export const saveToDatabase = async (
     take: 1,
     where: {
       exercise: {
-        custom_id: message.exercise_id,
+        custom_id: message.exercise_id?.toString(),
       },
       user: { upstream_id: Number(message.user_id) },
     },
