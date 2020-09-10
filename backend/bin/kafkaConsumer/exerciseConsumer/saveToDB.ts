@@ -55,7 +55,7 @@ const handleExercise = async (
     where: {
       course_id: course_id,
       service_id: service_id,
-      custom_id: exercise.id?.toString(),
+      custom_id: exercise.id,
     },
   })
   if (existingExercises.length > 0) {
@@ -63,7 +63,7 @@ const handleExercise = async (
       where: {
         course_id: course_id,
         service_id: service_id,
-        custom_id: exercise.id?.toString(),
+        custom_id: exercise.id,
       },
     })
 
@@ -83,7 +83,7 @@ const handleExercise = async (
       where: { id: oldExercise.id },
       data: {
         name: exercise.name,
-        custom_id: exercise.id?.toString(),
+        custom_id: exercise.id,
         part: Number(exercise.part),
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
@@ -95,7 +95,7 @@ const handleExercise = async (
     await prisma.exercise.create({
       data: {
         name: exercise.name,
-        custom_id: exercise.id?.toString(),
+        custom_id: exercise.id,
         part: Number(exercise.part),
         section: Number(exercise.section),
         max_points: Number(exercise.max_points),
