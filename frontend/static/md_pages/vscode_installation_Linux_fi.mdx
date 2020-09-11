@@ -56,12 +56,12 @@ Python3 ja Python3 pip asentaminen voi tehdä komentoriviltä seuraavalla komenn
 
 <ContentBox>
 
-### Javan ympäristö <a name="javan-asentaminen"></a>
+### Java ympäristön asentaminen <a name="javan-asentaminen"></a>
 
-Tarvitset Javan kehitys- ja suoritusympäristön ja Mavenin suorittaaksesi lähdekoodia Java -ohjelmointikursseilla.  
+Java ohjelmointikursseilla tarvitset Java kehitys- ja suoritusympäristön, Java laajennuksen Visual Studio Codeen ja Mavenin.  
 Saat asennettua nämä käyttöösi seuraamalla ohjeita alla.
 
-#### Javan asentaminen
+#### Javan asentaminen <a name="adopt-open-jdk"></a>
 
 ##### 1. Asenna OpenJDK-paketti.
 
@@ -79,16 +79,27 @@ Kirjoita komentoriville sen vaihtoehdon numero, jossa lukee Java 11 (esim kirjoi
 
 Jos Java 11 on listalla useampaan otteeseen, sekä statuksella "auto mode" että "manual mode", valitse mieluummin "manual mode".
 
-#### Maven asentaminen
 
-Saat asennettua Mavenin seuraamalla alla olevia ohjeita.  
-**HUOM!** Muutathan komennoissa versionumeron vastaamaan lataamaasi versiota.
+#### Java laajennuksen asentaminen VSCode:n <a name="java-laajennus"></a>
 
-1. Lataa viimeisin Source tar.gz archive, `apache-maven-3.x.y-src.tar.gzs`, osoitteesta [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
-2. Pura arkisto haluaamaasi paikkaan, esim. `/usr/local/`, tämä luo automaattisesti kansion `apache-maven-3.x.y` purkamaasi paikkaan.
-3. Avaa komentokehote (Terminal) ja syötä seuraava komento ruutuun, muutathan osoitteen viittaamaan oikeaan paikkaan:  
-`export PATH=/usr/local/apache-maven-3.x.y/bin:$PATH`
-4. Varmista, että Maven on asennettu oikein kirjoittamalla samaan ruutuun `mvn --version`
+Tarvitset Java laajennuksen Visual Studio Codessa, jotta voit kääntää ja suorittaa kirjoittamaasi Java koodia.
+
+1. Aukaise Visual Studio Code
+2. Paina vasemmassa palkissa olevaa "Extensions" välilehteä (kuvassa 1).
+3. Hakukenttään kirjoita `Java Extension Pack` ja valitse tämä (kuvassa 2).
+4. Paina `Install` painiketta (kuvassa 3).
+
+<img src="/static/images/installation/vscode/vscode_java_extension_pack.png"
+alt="Maven asennus Windows haku"
+width="100%" height="100%" />
+
+
+#### Mavenin asentaminen ja asetusten määrittäminen <a name="maven-ja-asetukset"></a>
+
+Ubuntussa sen voi tehdä komentoriviltä seuraavalla komennolla:
+> `sudo apt-get install maven`
+
+Ubuntussa asetukset määrittyvät automaattisesti.
 
 </ContentBox>
 

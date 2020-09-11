@@ -44,7 +44,7 @@ width="100%" height="100%" />
 
 <ContentBox>
 
-### Installing Python <a name="python-asentaminen"></a>
+### Installing Python environment <a name="python-asentaminen"></a>
 
 You will need Python to run your source code for courses using Python. Please install Python following the instructions below.
 
@@ -65,10 +65,10 @@ width="100%" height="100%" />
 
 ### Installing Java environment <a name="javan-asentaminen"></a>
 
-You will need Java Development kit & Runtime Environment and Maven to run and build your source code for courses using Java.  
+For courses using Java, you will need Java Development kit & Runtime Environment, Java Extension Pack for Visual Studio Code and Maven to build and run your source code.  
 Please install Java following the instructions below.
 
-#### Installing Java
+#### Installing Java <a name="adopt-open-jdk"></a>
 
 1. Download AdoptOpenJDK11, open development and runtime environment for Java 11, from [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
 2. Select OpenJDK 11 (LTS) and HotSpot. Then click "Latest release" to download Java.
@@ -86,20 +86,37 @@ alt="Custom Setup phase of AdoptOpenJDK installer, where JavaSoft (Oracle) regis
 width="100%" height="100%" />
 Picture 2
 
-#### Installing Maven
+#### Java Extension Pack for VSCode <a name="java-laajennus"></a>
+
+You will need Java Extension Pack for Visual Studio Code to compile and run your Java code.
+
+1. Open Visual Studio Code
+2. On the left bar, press "Extensions" tab (in pic 1.)
+3. In the search field, type `Java Extension Pack` (in pic 2.)
+4. Press `Install` button (in pic 3.)
+
+<img src="/static/images/installation/vscode/vscode_java_extension_pack.png"
+alt="Maven asennus Windows haku"
+width="100%" height="100%" />
+
+
+#### Installing Maven and confuring settings <a name="maven-ja-asetukset"></a>
 
 You can install Maven by following the instructions below.  
-**NB!** In commands, change the version number to match the downloaded version.
 
 1. Download the latest Binary zip archive, `apache-maven-3.x.y-bin.zip`, from [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
 2. Extract the archive to your desired location, e.g. `C:\Program Files\`, this will create automatically a folder named `apache-maven-3.x.y`.
-3. Open command prompt (cmd.exe) and run the following command, remember to change PATH to correct location:  
-`set PATH="c:\program files\apache-maven-3.x.y\bin";%PATH%`
-4. Make sure that Maven is installed correctly by running the command `mvn --version`
+3. If you installed the Java Extension Pack in VSCode, it comes with `Maven for Java`. Set Maven path in this extension as below:
+    * Open Visual Studio Code
+    * Press at top left "File -> Preferences -> Settings" or use the hotkey: `CTRL + ,`
+    * Find `maven.executable.path` (pic below 1.) and set Maven path (pic below 2.) as:  
+    `<your extracted location\apache-maven-3.x.y\bin\mvn.cmd`  
+    for example with version 3.6.3 of Maven extracted to C:\Program Files the path would be:  
+    `C:\Program Files\apache-maven-3.6.3\bin\mvn.cmd`
 
-<img src="/static/images/installation/vscode/maven_windows.png"
-alt="Maven installation"
-width="100%" height="100%" />
+    <img src="/static/images/installation/vscode/maven_executable_path.png"
+    alt="Maven asennus Windows"
+    width="100%" height="100%" />
 
 </ContentBox>
 
