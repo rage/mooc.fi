@@ -5,9 +5,12 @@ import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
 import prismaClient from "./lib/prisma"
+import sentryLogger from "./lib/logger"
+import { TMCError } from "./lib/errors"
 
 const tmc = new TmcClient()
 const prisma = prismaClient()
+const logger = sentryLogger({ service: "import-organizations" })
 
 const fetchOrganizations = async () => {
   const orgInfos: OrganizationInfo[] = await tmc.getOrganizations()
@@ -90,7 +93,15 @@ const detailsWithSecret = async (details: any) => {
 }
 
 const getUserFromTmc = async (user_id: Number) => {
-  const details: UserInfo = await tmc.getUserDetailsById(user_id)
+  let details: UserInfo | undefined
+
+  try {
+    details = await tmc.getUserDetailsById(user_id)
+  } catch (e) {
+    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    throw e
+  }
+
   const prismaDetails = {
     upstream_id: details.id,
     administrator: details.administrator,
