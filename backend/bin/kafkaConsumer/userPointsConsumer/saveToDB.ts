@@ -34,6 +34,7 @@ export const saveToDatabase = async (
   prisma: PrismaClient,
   logger: winston.Logger,
 ): Promise<Result<string, Error>> => {
+  logger.info("Handling message: " + JSON.stringify(message))
   logger.info("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 

@@ -32,7 +32,6 @@ consumer.on("ready", () => {
       process.exit(-1)
     }
     if (messages.length > 0) {
-      logger.info("Received messages: " + JSON.stringify(messages))
       await handleMessage<Message>({
         kafkaMessage: messages[0],
         mutex,
