@@ -7,6 +7,7 @@ import knex from "knex"
 import getUserFromTMC from "../common/getUserFromTMC"
 import { ok, err, Result } from "../common/result"
 import { DatabaseInputError, TMCError } from "../../lib/errors"
+import { time } from "console"
 
 const Knex = knex({
   client: "pg",
@@ -121,7 +122,7 @@ export const saveToDatabase = async (
             }
           }),
         },
-        timestamp: message.timestamp,
+        timestamp: timestamp.toJSDate(),
       },
     })
   } else {
@@ -144,7 +145,7 @@ export const saveToDatabase = async (
             }
           }),
         },
-        timestamp: message.timestamp,
+        timestamp: timestamp.toJSDate(),
       },
     })
   }
