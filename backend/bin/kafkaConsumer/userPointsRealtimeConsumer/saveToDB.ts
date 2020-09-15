@@ -128,7 +128,11 @@ export const saveToDatabase = async (
         data,
       })
     } catch (e) {
-      logger.warn("Inserting exercise completion failed ", +e.message)
+      if (e instanceof Error) {
+        logger.warn(
+          `Inserting exercise completion failed ${e.name}: ${e.message}`,
+        )
+      }
     }
   } else {
     logger.info("Updating previous completion")
