@@ -120,7 +120,7 @@ export const saveToDatabase = async (
       //     }
       //   }),
       // },
-      timestamp: message.timestamp,
+      timestamp: timestamp.toJSDate(),
     }
     logger.info(`Inserting ${JSON.stringify(data)}`)
     try {
@@ -154,7 +154,7 @@ export const saveToDatabase = async (
             }
           }),
         },
-        timestamp: message.timestamp,
+        timestamp: timestamp.toJSDate(),
       },
     })
   }
