@@ -18,6 +18,7 @@
     "start-kafka-consumers": "concurrently --kill-others --restart-tries 2 npm:kafka-consumer-*",
     "kafka-consumer-user-course-progress": "node ./dist/bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.js",
     "kafka-consumer-user-points": "node ./dist/bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.js",
+    "kafka-consumer-user-points-realtime": "node ./dist/bin/kafkaConsumer/userPointsRealtimeConsumer/kafkaConsumer.js",
     "kafka-consumer-exercises": "node ./dist/bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.js",
     "generate": "prisma generate",
     "seed": "node ./dist/bin/seed.js",
