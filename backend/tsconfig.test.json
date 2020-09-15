@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "/*": ["./*"]
+    },
+    "rootDir": ".",
+    "lib": ["es2016", "esnext"],
+    "outDir": "./dist",
+    "strict": true,
+    "noEmit": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "plugins": [{ "name": "nexus/typescript-language-service" }],
+    "typeRoots": ["node_modules/@types", "types"]
+  },
+  "include": [".", "./bin/**/*", "types.d.ts"],
+}

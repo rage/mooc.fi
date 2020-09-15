@@ -44,6 +44,19 @@ export default class TmcClient {
     return userInfo
   }
 
+  async getBatchUserDetailsById(ids: Number[]): Promise<UserInfo[]> {
+    const res = await axios.post(
+      `${BASE_URL}/api/v8/users/basic_info_by_ids?show_user_fields=1&extra_fields=1`,
+      { ids },
+      {
+        headers: { Authorization: `Bearer ${await getAccessToken()}` },
+      },
+    )
+
+    const userInfo = res.data
+    return userInfo
+  }
+
   async getOrganizations(): Promise<OrganizationInfo[]> {
     const res = await axios.get(`${BASE_URL}/api/v8/org.json`, {
       headers: { Authorization: `Bearer ${await getAccessToken()}` },

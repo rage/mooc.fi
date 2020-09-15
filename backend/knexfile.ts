@@ -1,3 +1,5 @@
+import { Config } from "knex"
+
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
@@ -7,17 +9,22 @@ if (url && url?.lastIndexOf("?") !== -1) {
   url = url.substring(0, url.lastIndexOf("?"))
 }
 
-module.exports = {
+const configOptions: { [env: string]: Config } = {
   development: {
     client: "pg",
     searchPath: [process.env.SEARCH_PATH ?? "default$prisma2"],
     connection: url, // "postgres://prisma:prisma@localhost:5678/prisma?schema=default$prisma2",
   },
 
+  test: {
+    client: "pg",
+    connection: process.env.TEST_DATABASE_URL,
+  },
+
   production: {
     client: "pg",
     connection: url,
-    searchPath: [process.env.SEARCH_PATH],
+    searchPath: process.env.SEARCH_PATH && [process.env.SEARCH_PATH],
     /*connection: {
       database: process.env.DB_NAME,
       user: process.env.DB_USER,
@@ -34,3 +41,5 @@ module.exports = {
     },
   },
 }
+
+module.exports = configOptions[process.env.NODE_ENV || "development"]
