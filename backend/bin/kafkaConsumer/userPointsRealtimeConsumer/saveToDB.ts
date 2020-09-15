@@ -104,26 +104,32 @@ export const saveToDatabase = async (
 
   if (!exerciseCompleted) {
     logger.info("No previous completion, creating a new one")
-    savedExerciseCompletion = await prisma.exerciseCompletion.create({
-      data: {
-        exercise: {
-          connect: { id: exercise.id },
-        },
-        user: {
-          connect: { upstream_id: Number(message.user_id) },
-        },
-        n_points: message.n_points,
-        completed: message.completed,
-        exercise_completion_required_actions: {
-          create: message.required_actions.map((ra) => {
-            return {
-              value: ra,
-            }
-          }),
-        },
-        timestamp: message.timestamp,
+    const data = {
+      exercise: {
+        connect: { id: exercise.id },
       },
-    })
+      user: {
+        connect: { upstream_id: Number(message.user_id) },
+      },
+      n_points: message.n_points,
+      completed: message.completed,
+      // exercise_completion_required_actions: {
+      //   create: message.required_actions.map((ra) => {
+      //     return {
+      //       value: ra,
+      //     }
+      //   }),
+      // },
+      timestamp: message.timestamp,
+    }
+    logger.info(`Inserting ${JSON.stringify(data)}`)
+    try {
+      savedExerciseCompletion = await prisma.exerciseCompletion.create({
+        data,
+      })
+    } catch (e) {
+      logger.warn("Inserting exercise completion failed ", +e.message)
+    }
   } else {
     logger.info("Updating previous completion")
     const oldTimestamp = DateTime.fromISO(
