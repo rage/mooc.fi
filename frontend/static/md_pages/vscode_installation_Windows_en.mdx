@@ -40,7 +40,16 @@ The first initilization of the extension will download some necessary components
 alt="Installing extension"
 width="100%" height="100%" />
 
-### Installing Python <a name="python-asentaminen"></a>
+</ContentBox>
+
+<ContentBox>
+
+### Installing Python environment <a name="python-asentaminen"></a>
+
+For courses using Python you will need Python and Python Extension for VSCode to run your source code.  
+Please install Python following the instructions below.
+
+#### Installing Python <a name="python3"></a>
 
 1. Go to [https://www.python.org/downloads/](https://www.python.org/downloads/)
 2. Download the latest version of Python 3.
@@ -53,9 +62,27 @@ width="100%" height="100%" />
 alt="Setup phase for Python - settings"
 width="100%" height="100%" />
 
-### Installing Java <a name="javan-asentaminen"></a>
+#### Installing Python Extension for VSCode <a name="python-laajennus"></a>
 
-You will need Java Development kit & Runtime Environment to run your source code for courses using Java. Please install Java following the instructions below.
+1. Open Visual Studio Code
+2. On the left bar, press "Extensions" tab (in pic 1.)
+3. In the search field, type `Python` and select the extension by Microsoft (in pic 2.)
+4. Press `Install` button (in pic 3.)
+
+<img src="/static/images/installation/vscode/vscode_python_extension.png"
+alt="Pythonin laajennus"
+width="100%" height="100%" />
+
+</ContentBox>
+
+<ContentBox>
+
+### Installing Java environment <a name="javan-asentaminen"></a>
+
+For courses using Java you will need Java Development kit & Runtime Environment, Java Extension Pack for Visual Studio Code and Maven to build and run your source code.  
+Please install Java following the instructions below.
+
+#### Installing Java <a name="adopt-open-jdk"></a>
 
 1. Download AdoptOpenJDK11, open development and runtime environment for Java 11, from [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
 2. Select OpenJDK 11 (LTS) and HotSpot. Then click "Latest release" to download Java.
@@ -72,6 +99,38 @@ Picture 1
 alt="Custom Setup phase of AdoptOpenJDK installer, where JavaSoft (Oracle) registry keys is set to Entire feature will be installed on local hard drive. "
 width="100%" height="100%" />
 Picture 2
+
+#### Java Extension Pack for VSCode <a name="java-laajennus"></a>
+
+You will need Java Extension Pack for Visual Studio Code to compile and run your Java code.
+
+1. Open Visual Studio Code
+2. On the left bar, press "Extensions" tab (in pic 1.)
+3. In the search field, type `Java Extension Pack` (in pic 2.)
+4. Press `Install` button (in pic 3.)
+
+<img src="/static/images/installation/vscode/vscode_java_extension_pack.png"
+alt="Maven asennus Windows haku"
+width="100%" height="100%" />
+
+
+#### Installing Maven and confuring settings <a name="maven-ja-asetukset"></a>
+
+You can install Maven by following the instructions below.  
+
+1. Download the latest Binary zip archive, `apache-maven-3.x.y-bin.zip`, from [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
+2. Extract the archive to your desired location, e.g. `C:\Program Files\`, this will create automatically a folder named `apache-maven-3.x.y`.
+3. If you installed the Java Extension Pack in VSCode, it comes with `Maven for Java`. Set Maven path in this extension as below:
+    * Open Visual Studio Code
+    * Press at top left "File -> Preferences -> Settings" or use the hotkey: `CTRL + ,`
+    * Find `maven.executable.path` (pic below 1.) and set Maven path (pic below 2.) as:  
+    `<your extracted location\apache-maven-3.x.y\bin\mvn.cmd`  
+    for example with version 3.6.3 of Maven extracted to C:\Program Files the path would be:  
+    `C:\Program Files\apache-maven-3.6.3\bin\mvn.cmd`
+
+    <img src="/static/images/installation/vscode/maven_executable_path.png"
+    alt="Maven asennus Windows"
+    width="100%" height="100%" />
 
 </ContentBox>
 
