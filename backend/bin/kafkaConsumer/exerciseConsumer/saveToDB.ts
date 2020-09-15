@@ -10,12 +10,16 @@ export const saveToDatabase = async (
   prisma: PrismaClient,
   logger: winston.Logger,
 ): Promise<Result<string, Error>> => {
+  if (!message.course_id) {
+    return err(new DatabaseInputError("no course specified", message))
+  }
   const existingCourse = await prisma.course.findOne({
     where: { id: message.course_id },
   })
   if (!existingCourse) {
     return err(new DatabaseInputError("given course does not exist", message))
   }
+
   message.data.forEach((exercise) => {
     handleExercise(
       exercise,

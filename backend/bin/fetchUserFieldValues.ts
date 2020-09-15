@@ -110,7 +110,15 @@ const fetcUserFieldValues = async () => {
 }
 
 const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
-  const details: UserInfo = await tmc.getUserDetailsById(user_id)
+  let details: UserInfo | undefined
+
+  try {
+    details = await tmc.getUserDetailsById(user_id)
+  } catch (e) {
+    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    throw e
+  }
+
   const prismaDetails = {
     upstream_id: details.id,
     administrator: details.administrator,
