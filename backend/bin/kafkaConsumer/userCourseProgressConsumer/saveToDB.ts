@@ -13,7 +13,7 @@ import getUserFromTMC from "../common/getUserFromTMC"
 import { ok, err, Result } from "../common/result"
 
 import _KnexConstructor from "knex"
-import { DatabaseInputError } from "../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../lib/errors"
 
 const Knex = _KnexConstructor({
   client: "pg",
@@ -49,6 +49,7 @@ export const saveToDatabase = async (
         await Knex("user").where("upstream_id", message.user_id).limit(1)
       )[0]
       if (!user) {
+        logger.error(new TMCError(`couldn't find user ${message.user_id}`, e))
         throw e
       }
       logger.info("Mitigated race condition with user imports")
