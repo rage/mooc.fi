@@ -113,13 +113,13 @@ export const saveToDatabase = async (
       },
       n_points: message.n_points,
       completed: message.completed,
-      // exercise_completion_required_actions: {
-      //   create: message.required_actions.map((ra) => {
-      //     return {
-      //       value: ra,
-      //     }
-      //   }),
-      // },
+      exercise_completion_required_actions: {
+        create: message.required_actions.map((ra) => {
+          return {
+            value: ra,
+          }
+        }),
+      },
       timestamp: timestamp.toJSDate(),
     }
     logger.info(`Inserting ${JSON.stringify(data)}`)
