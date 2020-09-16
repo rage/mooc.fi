@@ -18,7 +18,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
     logger.info(
       "Since this link has no course code, I won't try to fetch new links.",
     )
-    continue
+    return
   }
   const res = await getInfoWithCourseCode(p.course_code).catch((error) => {
     logger.error(error)
