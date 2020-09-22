@@ -58,6 +58,7 @@ schema.inputObjectType({
       required: false,
     })
     t.boolean("upcoming_active_link", { required: false })
+    t.int("tier")
   },
 })
 
@@ -122,5 +123,6 @@ schema.inputObjectType({
       required: false,
     })
     t.boolean("upcoming_active_link", { required: false })
+    t.int("tier")
   },
 })

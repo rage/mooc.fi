@@ -81,7 +81,7 @@ model Course {
   photo                                              Image?                              @relation(fields: [photo_id], references: [id])
   completions                                        Completion[]
   completions_registered                             CompletionRegistered[]
-  other_course_courseTocourse_completions_handled_by Course[]                            @relation("courseTocourse_completions_handled_by")
+  handles_completions_for                            Course[]                            @relation("courseTocourse_completions_handled_by")
   other_course_courseTocourse_inherit_settings_from  Course[]                            @relation("courseTocourse_inherit_settings_from")
   course_aliases                                     CourseAlias[]
   course_organizations                               CourseOrganization[]
@@ -96,7 +96,8 @@ model Course {
   services                                           Service[]                           @relation("course_to_service", references: [id])
   study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
   upcoming_active_link                               Boolean?
-  
+  tier                                               Int?
+
   @@map("course")
 }
 

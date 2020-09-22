@@ -15,6 +15,8 @@ import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "../common/EmailTemplater/EmailTemplater"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 import prismaClient from "../../lib/prisma"
+import { range } from "lodash"
+import { BAIexercises, BAItiers, requiredByTier } from "./courseConfig"
 
 const prisma = prismaClient()
 
@@ -144,6 +146,50 @@ const CheckRequiredExerciseCompletions = async (
   return true
 }
 
+interface ExerciseCompletionPart {
+  course_id: string
+  exercise_id: string
+  max_points?: number
+  n_points?: number
+}
+
+const getExerciseCompletionsForCourses = async (
+  user: User,
+  courses: Course[],
+) => {
+  const exercise_completions: ExerciseCompletionPart[] = await Knex<
+    any,
+    ExerciseCompletionPart[]
+  >("exercise_completion")
+    .select(
+      "exercise.course_id",
+      "exercise.max_points",
+      "exercise_completion.exercise_id",
+      "exercise_completion.n_points",
+    )
+    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+    .whereIn(
+      "exercise.course_id",
+      courses.map((c) => c.id),
+    )
+    .andWhere("exercise_completion.user_id", user.id)
+    .andWhere("exercise_completion.completed", true)
+    .andWhereNot("exercise.max_points", 0)
+
+  /*const result: Record<string, string[]> = exercise_completions.reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.course_id]: (acc[curr.course_id] ?? []).concat(curr.exercise_id),
+    }),
+    {},
+  )*/
+
+  /*
+    [{ course_id, exercise_id, max_points, n_points }, ...] 
+   */
+  return exercise_completions
+}
+
 const GetUserCourseSettings = async (
   user: User,
   course: Course,
@@ -203,6 +249,153 @@ const languageCodeMapping: { [key: string]: string } = {
   no: "nb_NO",
 }
 
+export const checkBAICompletion = async (
+  user: User,
+  course: Course,
+  combinedProgress?: CombinedUserCourseProgress, // this is for the tier course we got
+) => {
+  const handlerCourse = await prisma.course
+    .findOne({ where: { id: course.id } })
+    .completions_handled_by()
+
+  if (!handlerCourse) {
+    // TODO: error
+    return
+  }
+
+  // this is not needed if we hard code the course ids, as the function it's
+  // passed to only needs the ids
+  const tierCourses = await prisma.course
+    .findOne({ where: { id: handlerCourse.id } })
+    .handles_completions_for()
+
+  const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses(
+    user,
+    tierCourses,
+  )
+  /*
+    [{ course_id, exercise_id, n_points }...] for all the tiers
+  */
+
+  const highestTiersAndPoints = exerciseCompletionsForCourses.reduce(
+    (acc, curr) => {
+      const exercise = BAIexercises[curr.exercise_id]
+
+      if (!exercise) return acc
+
+      return {
+        ...acc,
+        [exercise.exercise]: {
+          tier: Math.max(acc[exercise.exercise]?.tier ?? 0, exercise.tier),
+          max_points: curr.max_points ?? 0,
+          n_points: Math.max(
+            acc[exercise.exercise]?.n_points ?? 0,
+            curr.n_points ?? 0,
+          ),
+        },
+      }
+    },
+    {} as Record<
+      number,
+      { tier: number; max_points: number; n_points: number }
+    >,
+  )
+  /*
+    [exercise #]: { tier, n_points, max_points } -- what's the maximum tier completed and 
+      what's the highest amount of points received, not necessarily from maximum tier 
+    ...
+  */
+
+  const totalPoints = Object.values(highestTiersAndPoints).reduce(
+    (acc, curr) => acc + curr.n_points / (curr.max_points || 1),
+    0,
+  )
+
+  const hasEnoughPoints =
+    totalPoints >= (handlerCourse.points_needed ?? 9999999)
+  const hasEnoughExerciseCompletions =
+    Object.keys(highestTiersAndPoints).length >
+    (handlerCourse.exercise_completions_needed ?? 0)
+  const hasBasicRule = hasEnoughPoints && hasEnoughExerciseCompletions
+
+  const tierCompletions = range(1, 4).reduce(
+    (acc, tier) => ({
+      ...acc,
+      [tier]: Object.values(highestTiersAndPoints).filter((t) => t.tier >= tier)
+        .length,
+    }),
+    {} as Record<number, number>,
+  )
+  /*
+    [tier #]: # of exercises completed from _at least_ this tier,
+      so tier 3 is counted in both 1 and 2, and so on 
+  */
+  const hasTier = {
+    1: hasBasicRule,
+    2: hasBasicRule && tierCompletions[2] >= requiredByTier[2],
+    3: hasBasicRule && tierCompletions[3] >= requiredByTier[3],
+  }
+
+  const missingFromTier = range(1, 4).reduce(
+    (acc, tier) => ({
+      ...acc,
+      [tier]: Math.max(0, requiredByTier[tier] - tierCompletions[tier]),
+    }),
+    {} as Record<number, number>,
+  )
+  /* 
+    [tier #]: how many exercises missing to get to this tier
+  */
+
+  const highestTier = Object.entries(hasTier).reduce(
+    (acc, [tier, has]) => (has ? Math.max(acc, Number(tier)) : acc),
+    0,
+  )
+
+  // todo: create and update handler course progress
+
+  if (highestTier < 1) {
+    return
+  }
+
+  const completions = await prisma.completion.findMany({
+    where: {
+      user_id: user.id,
+      course_id: BAItiers[highestTier],
+    },
+  })
+
+  if (completions.length < 1) {
+    const userCourseSettings = await GetUserCourseSettings(user, course)
+    await prisma.completion.create({
+      data: {
+        course: { connect: { id: handlerCourse.id } },
+        email: user.email,
+        user: { connect: { id: user.id } },
+        user_upstream_id: user.upstream_id,
+        student_number: user.student_number,
+        completion_language: userCourseSettings?.language
+          ? languageCodeMapping[userCourseSettings.language]
+          : "unknown",
+        eligible_for_ects:
+          handlerCourse.automatic_completions_eligible_for_ects,
+        completion_date: new Date(),
+      },
+    })
+    pushMessageToClient(
+      user.upstream_id,
+      course.id,
+      MessageType.COURSE_CONFIRMED,
+    )
+    const template = await prisma.course
+      .findOne({ where: { id: course.id } })
+      .completion_email()
+    if (template) {
+      await sendEmailTemplateToUser(user, template)
+    }
+  }
+}
+
 export const CheckCompletion = async (
   user: User,
   course: Course,
@@ -213,6 +406,8 @@ export const CheckCompletion = async (
   if (!combined) {
     combined = await GetCombinedUserCourseProgress(user, course)
   }
+
+  // branch here?
 
   const requiredExerciseCompletions = await CheckRequiredExerciseCompletions(
     user,

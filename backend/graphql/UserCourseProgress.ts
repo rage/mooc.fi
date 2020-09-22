@@ -21,13 +21,8 @@ schema.objectType({
 
     t.list.field("progress", {
       type: "Json",
-      resolve: async (parent, _args, ctx) => {
-        const res = await ctx.db.userCourseProgress.findOne({
-          where: { id: parent.id },
-          select: { progress: true },
-        })
-
-        return (res?.progress as any) ?? [] // type error without any
+      resolve: async (parent, _args, _ctx) => {
+        return (parent.progress as any) ?? [] // hmm?
       },
     })
 
