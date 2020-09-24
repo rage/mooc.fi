@@ -7,5 +7,6 @@ export interface Message {
   course_id: string
   service_id: string
   required_actions: string[]
+  attempted: boolean | null
   message_format_version: number
 }
