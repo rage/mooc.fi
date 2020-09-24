@@ -5,45 +5,6 @@ interface ExerciseInfo {
   course_id: string
 }
 
-export const BAITestExercises: Record<string, ExerciseInfo> = {
-  beginner1: {
-    exercise: 1,
-    tier: 1,
-    title: "beginner1",
-    course_id: "f5dd98e3-2d9c-40d1-a133-250379a022ad",
-  },
-  beginner2: {
-    exercise: 2,
-    tier: 1,
-    title: "beginner2",
-    course_id: "f5dd98e3-2d9c-40d1-a133-250379a022ad",
-  },
-  intermediate1: {
-    exercise: 1,
-    tier: 2,
-    title: "intermediate1",
-    course_id: "a6915bf9-6a93-42bd-b146-af6f4f7e8d94",
-  },
-  intermediate2: {
-    exercise: 2,
-    tier: 2,
-    title: "intermediate2",
-    course_id: "a6915bf9-6a93-42bd-b146-af6f4f7e8d94",
-  },
-  advanced1: {
-    exercise: 1,
-    tier: 3,
-    title: "advanced1",
-    course_id: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
-  },
-  advanced2: {
-    exercise: 2,
-    tier: 3,
-    title: "advanced2",
-    course_id: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
-  },
-}
-
 export const BAIexercises: Record<string, ExerciseInfo> = {
   "95054": {
     exercise: 1,
@@ -440,12 +401,6 @@ export const BAIbadge = {
   },
 }
 
-export const BAITestTiers: Record<number, string> = {
-  1: "f5dd98e3-2d9c-40d1-a133-250379a022ad",
-  2: "a6915bf9-6a93-42bd-b146-af6f4f7e8d94",
-  3: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
-}
-
 export const BAItiers: Record<number, string> = {
   1: "e1eaff32-8b2c-4423-998d-d3477535a1f9",
   2: "3a2790fc-227c-4045-9f4c-40a2bdabe76a",
@@ -457,6 +412,12 @@ export const requiredByTestTier: Record<number, number> = {
   2: 1,
   3: 1,
 }
+
+export const pointsTestNeeded = 2
+export const exerciseTestCompletionsNeeded = 2
+
+export const pointsNeeded = 10.5
+export const exerciseCompletionsNeeded = 19
 
 export const requiredByTier: Record<number, number> = {
   1: 19,
