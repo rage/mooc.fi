@@ -6,6 +6,7 @@ metadata:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   schedule: "1 7 * * *"
+  startingDeadlineSeconds: 500
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:

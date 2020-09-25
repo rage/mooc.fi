@@ -51,6 +51,8 @@ schema.objectType({
     t.model.services()
     t.model.study_modules()
     t.model.automatic_completions_eligible_for_ects()
+    t.model.upcoming_active_link()
+
     t.string("description")
     t.string("link")
   },

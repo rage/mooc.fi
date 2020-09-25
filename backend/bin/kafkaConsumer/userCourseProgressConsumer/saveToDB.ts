@@ -10,8 +10,10 @@ import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 import getUserFromTMC from "../common/getUserFromTMC"
+import { ok, err, Result } from "../common/result"
 
 import _KnexConstructor from "knex"
+import { DatabaseInputError, TMCError } from "../../lib/errors"
 
 const Knex = _KnexConstructor({
   client: "pg",
@@ -32,7 +34,7 @@ export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
   logger: Logger,
-) => {
+): Promise<Result<string, Error>> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
   let user: User | null
@@ -47,9 +49,10 @@ export const saveToDatabase = async (
         await Knex("user").where("upstream_id", message.user_id).limit(1)
       )[0]
       if (!user) {
+        logger.error(new TMCError(`couldn't find user ${message.user_id}`, e))
         throw e
       }
-      console.log("Mitigated race condition with user imports")
+      logger.info("Mitigated race condition with user imports")
     }
   }
 
@@ -58,8 +61,7 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    logger.error("Invalid user or course")
-    return -1
+    return err(new DatabaseInputError("Invalid user or course", message))
   }
 
   let userCourseProgress = (
@@ -98,8 +100,8 @@ export const saveToDatabase = async (
     )
 
     if (timestamp < oldTimestamp) {
-      logger.error("Timestamp older than in DB, aborting")
-      return false
+      // logger.info()
+      return ok("Timestamp older than in DB, aborting")
     }
     await prisma.userCourseServiceProgress.update({
       where: {
@@ -140,6 +142,6 @@ export const saveToDatabase = async (
     message.course_id,
     MessageType.PROGRESS_UPDATED,
   )
-  logger.info("Saved to DB succesfully")
-  return true
+
+  return ok("Saved to DB succesfully")
 }

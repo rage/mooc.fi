@@ -12,7 +12,7 @@ const ExerciseDataYupSchema = yup.object().shape({
 
 export const MessageYupSchema = yup.object().shape({
   timestamp: yup.date().required(),
-  course_id: yup.string().length(36).required(),
+  course_id: yup.string().length(36).nullable(), // we catch the nulls in saveToDB
   service_id: yup.string().length(36).required(),
   data: yup.array().of(ExerciseDataYupSchema).required(),
   message_format_version: yup

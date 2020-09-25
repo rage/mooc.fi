@@ -28,7 +28,7 @@ function HideOnScroll(props: Props) {
   )
 }
 
-const StyledToolbar = styled(Toolbar)`
+const StyledToolbar = styled<any>(Toolbar)`
   display: flex;
   flex-direction: row;
 `
@@ -58,7 +58,7 @@ function Header() {
     <>
       <CssBaseline />
       <HideOnScroll>
-        <AppBar color="inherit" style={{ position: "sticky" }}>
+        <AppBar color="inherit" position="sticky">
           <StyledToolbar>
             <MoocLogo />
             <MenuContainer>

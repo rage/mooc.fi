@@ -20,6 +20,7 @@ export const AllCoursesQuery = gql`
       hidden
       description
       link
+      upcoming_active_link
       study_modules {
         id
         slug
@@ -69,6 +70,7 @@ export const AllEditorCoursesQuery = gql`
         id
         language
       }
+      upcoming_active_link
     }
     currentUser {
       id

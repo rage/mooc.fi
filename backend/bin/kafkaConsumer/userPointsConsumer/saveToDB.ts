@@ -5,6 +5,8 @@ import winston = require("winston")
 import { CheckCompletion } from "../userCourseProgressConsumer/generateUserCourseProgress"
 import knex from "knex"
 import getUserFromTMC from "../common/getUserFromTMC"
+import { ok, err, Result } from "../common/result"
+import { DatabaseInputError, TMCError } from "../../lib/errors"
 
 const Knex = knex({
   client: "pg",
@@ -31,11 +33,12 @@ export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
   logger: winston.Logger,
-): Promise<Boolean> => {
-  console.log("Parsing timestamp")
+): Promise<Result<string, Error>> => {
+  logger.info("Handling message: " + JSON.stringify(message))
+  logger.info("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  console.log(`Checking if user ${message.user_id} exists.`)
+  logger.info(`Checking if user ${message.user_id} exists.`)
 
   let user: User | null
 
@@ -49,9 +52,10 @@ export const saveToDatabase = async (
         await Knex("user").where("upstream_id", message.user_id).limit(1)
       )[0]
       if (!user) {
+        logger.error(new TMCError(`couldn't find user ${message.user_id}`, e))
         throw e
       }
-      console.log("Mitigated race condition with user imports")
+      logger.info("Mitigated race condition with user imports")
     }
   }
 
@@ -60,23 +64,23 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    logger.error("Invalid user or course")
-    return false
+    return err(new DatabaseInputError("Invalid user or course", message))
   }
 
   logger.info("Checking if a exercise exists with id " + message.exercise_id)
   const existingExercises = await prisma.exercise.findMany({
-    where: { custom_id: message.exercise_id },
+    where: {
+      custom_id: message.exercise_id?.toString(),
+    },
   })
   if (existingExercises.length < 1) {
-    logger.error("Given exercise does not exist")
-    return false
+    return err(new DatabaseInputError(`Given exercise does not exist`, message))
   }
   logger.info("Getting the exercise")
   const exercises = await prisma.exercise.findMany({
     take: 1,
     where: {
-      custom_id: message.exercise_id,
+      custom_id: message.exercise_id?.toString(),
     },
   })
 
@@ -87,7 +91,7 @@ export const saveToDatabase = async (
     take: 1,
     where: {
       exercise: {
-        custom_id: message.exercise_id,
+        custom_id: message.exercise_id?.toString(),
       },
       user: { upstream_id: Number(message.user_id) },
     },
@@ -117,7 +121,7 @@ export const saveToDatabase = async (
             }
           }),
         },
-        timestamp: message.timestamp,
+        timestamp: timestamp.toJSDate(),
       },
     })
   } else {
@@ -126,8 +130,7 @@ export const saveToDatabase = async (
       exerciseCompleted?.timestamp?.toISOString() ?? "",
     )
     if (timestamp <= oldTimestamp) {
-      logger.error("Timestamp older than in DB, aborting")
-      return false
+      return ok("Timestamp older than in DB, aborting")
     }
     savedExerciseCompletion = await prisma.exerciseCompletion.update({
       where: { id: exerciseCompleted.id },
@@ -141,11 +144,11 @@ export const saveToDatabase = async (
             }
           }),
         },
-        timestamp: message.timestamp,
+        timestamp: timestamp.toJSDate(),
       },
     })
   }
   await CheckCompletion(user, course)
-  logger.info("Saved to DB succesfully")
-  return true
+
+  return ok("Saved to DB successfully")
 }

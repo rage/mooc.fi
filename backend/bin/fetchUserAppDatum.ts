@@ -7,6 +7,7 @@ import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
 import prismaClient from "./lib/prisma"
 import sentryLogger from "./lib/logger"
+import { DatabaseInputError, TMCError } from "./lib/errors"
 
 const CONFIG_NAME = "userAppDatum"
 
@@ -37,7 +38,7 @@ const fetchUserAppDatum = async () => {
     latestTimeStamp?.toISOString() ?? null,
   )
   logger.info("Got data from tmc")
-  logger.info("data length", data_from_tmc.length)
+  logger.info(`data length ${data_from_tmc.length}`)
   logger.info("sorting")
 
   const data = data_from_tmc.sort(
@@ -46,8 +47,8 @@ const fetchUserAppDatum = async () => {
       DateTime.fromISO(b.updated_at).toMillis(),
   )
 
-  logger.info(data)
-  logger.info("sorted")
+  //  logger.info(data)
+  // logger.info("sorted")
   const saveInterval = 10000
   let saveCounter = 0
 
@@ -55,7 +56,7 @@ const fetchUserAppDatum = async () => {
     saveCounter++
     let p = data[i]
     if (p.user_id == null) continue
-    if (i % 1000 == 0) logger.info(i)
+    if (i % 1000 == 0) logger.info(`${i}/${data.length}`)
     if (!p || p == "undefined" || p == null) {
       logger.warning(
         "not p:",
@@ -75,9 +76,11 @@ const fetchUserAppDatum = async () => {
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       } catch (error) {
         logger.error(
-          "error in getting user data from tmc, trying again in 30s...",
+          new TMCError(
+            "error in getting user data from tmc, trying again in 30s...",
+            error,
+          ),
         )
-        logger.error("above error is:", error)
         await delay(30 * 1000)
         await getUserFromTmcAndSaveToDB(p.user_id, tmc)
       }
@@ -150,7 +153,9 @@ const fetchUserAppDatum = async () => {
   await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
 
   const stopTime = new Date().getTime()
-  logger.info("used", stopTime - startTime, "milliseconds")
+  logger.info(`used ${stopTime - startTime} milliseconds`)
+
+  process.exit(0)
 }
 
 const saveLanguage = async (p: any) => {
@@ -226,7 +231,15 @@ const saveOther = async (p: any) => {
 }
 
 const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
-  const details: UserInfo = await tmc.getUserDetailsById(user_id)
+  let details: UserInfo | undefined
+
+  try {
+    details = await tmc.getUserDetailsById(user_id)
+  } catch (e) {
+    logger.error(new TMCError(`couldn't find user ${user_id}`, e))
+    throw e
+  }
+
   const prismaDetails = {
     upstream_id: details.id,
     administrator: details.administrator,
@@ -245,11 +258,15 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     return result
   } catch (e) {
     logger.error(
-      `Failed to upsert user with upstream id ${
-        details.id
-      }. Values we tried to upsert: ${JSON.stringify(
-        prismaDetails,
-      )}. Values found from the database: ${JSON.stringify(details)}`,
+      new DatabaseInputError(
+        `Failed to upsert user with upstream id ${
+          details.id
+        }. Values we tried to upsert: ${JSON.stringify(
+          prismaDetails,
+        )}. Values found from the database: ${JSON.stringify(details)}`,
+        details,
+        e,
+      ),
     )
     if (e.meta?.target?.includes("username")) {
       logger.info(`Removing user with duplicate username`)
@@ -288,6 +305,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
   })
 }
 
-fetchUserAppDatum()
-  .then(() => process.exit(0))
-  .catch((e) => logger.error(e))
+fetchUserAppDatum().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})

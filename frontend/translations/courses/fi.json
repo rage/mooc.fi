@@ -86,11 +86,11 @@
   "courseVariantsTitle": "Kurssivariantit",
   "courseUserCourseSettingsVisibility": "Käyttäjämäärä näkyvillä",
   "courseAliasesTitle": "Kurssialiakset",
+  "courseUpcomingActiveLink": "Kurssilinkki aktiivinen kun kurssi tulossa",
   "importPhotoButton": "Tuo kuva toisesta kurssista...",
   "importPhotoDialogTitle": "Tuo kuva",
   "importPhotoDialogContent": "Valitse kurssi",
   "importPhotoLabel": "Valitse...",
   "importPhotoDialogSelect": "OK",
   "importPhotoDialogCancel": "Peru"
-  
 }

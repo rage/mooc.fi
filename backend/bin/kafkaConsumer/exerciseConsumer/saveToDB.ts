@@ -2,19 +2,24 @@ import { Message, ExerciseData } from "./interfaces"
 import { PrismaClient } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
+import { ok, err, Result } from "../common/result"
+import { DatabaseInputError } from "../../lib/errors"
 
 export const saveToDatabase = async (
   message: Message,
   prisma: PrismaClient,
   logger: winston.Logger,
-): Promise<Boolean> => {
+): Promise<Result<string, Error>> => {
+  if (!message.course_id) {
+    return err(new DatabaseInputError("no course specified", message))
+  }
   const existingCourse = await prisma.course.findOne({
     where: { id: message.course_id },
   })
   if (!existingCourse) {
-    logger.error("given course does not exist")
-    return false
+    return err(new DatabaseInputError("given course does not exist", message))
   }
+
   message.data.forEach((exercise) => {
     handleExercise(
       exercise,
@@ -31,7 +36,7 @@ export const saveToDatabase = async (
       AND: {
         course_id: message.course_id,
         service_id: message.service_id,
-        custom_id: { not: { in: message.data.map((p) => p.id) } },
+        custom_id: { not: { in: message.data.map((p) => p.id.toString()) } },
       },
     },
     data: {
@@ -39,8 +44,7 @@ export const saveToDatabase = async (
     },
   })
 
-  logger.info("Saved to DB succesfully")
-  return true
+  return ok("Saved to DB successfully")
 }
 
 const handleExercise = async (
