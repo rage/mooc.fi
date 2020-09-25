@@ -71,6 +71,12 @@ export const BAItiers: Record<number, string> = {
   3: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
 }
 
+export const BAITierNames: Record<number, string> = {
+  1: "beginner",
+  2: "intermediate",
+  3: "advanced",
+}
+
 export const requiredByTier: Record<number, number> = {
   1: 2,
   2: 1,
