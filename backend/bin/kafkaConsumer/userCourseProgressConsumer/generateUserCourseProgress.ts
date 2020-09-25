@@ -19,6 +19,7 @@ import { range } from "lodash"
 import {
   BAIexercises,
   BAItiers,
+  BAITierNames,
   requiredByTier,
   BAIbadge,
   pointsNeeded,
@@ -291,8 +292,7 @@ export const checkBAICompletion = async (
     .findOne({ where: { id: handlerCourse.id } })
     .handles_completions_for())
     .map(c => c.id)
-
-  console.log("tierCourses", tierCourses)*/
+  */
   const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses(
     user,
     Object.values(BAItiers), // tierCourses
@@ -341,7 +341,7 @@ export const checkBAICompletion = async (
   await createCompletion({
     user,
     course_id: highestTierCourseId,
-    handlerCourse,
+    handlerCourse: course,
   })
 }
 
@@ -387,10 +387,10 @@ const getBAIProgress = async (
     { total_n_points: 0, total_max_points: 0 },
   )
 
-  const exerciseCompletions = Object.keys(tierProgress).length
+  const totalExerciseCompletions = Object.keys(tierProgress).length
   const hasEnoughPoints = progress.total_n_points >= pointsNeeded //(handlerCourse.points_needed ?? 9999999)
   const hasEnoughExerciseCompletions =
-    exerciseCompletions >= exerciseCompletionsNeeded //(handlerCourse.exercise_completions_needed ?? 0)
+    totalExerciseCompletions >= exerciseCompletionsNeeded //(handlerCourse.exercise_completions_needed ?? 0)
   const hasBasicRule = hasEnoughPoints && hasEnoughExerciseCompletions
 
   const tierCompletions = range(1, 4).reduce(
@@ -406,7 +406,7 @@ const getBAIProgress = async (
       so tier 3 is counted in both 1 and 2, and so on 
   */
 
-  const hasTier = {
+  const hasTier: Record<number, boolean> = {
     1: hasBasicRule,
     2: hasBasicRule && tierCompletions[2] >= requiredByTier[2],
     3: hasBasicRule && tierCompletions[3] >= requiredByTier[3],
@@ -428,18 +428,31 @@ const getBAIProgress = async (
     0,
   )
 
+  const tierInfo = Object.keys(BAItiers)
+    .map(Number)
+    .reduce(
+      (acc, tier) => ({
+        ...acc,
+        [BAITierNames[tier]]: {
+          hasTier: hasTier[tier],
+          missingFromTier: missingFromTier[tier],
+          exerciseCompletions: tierCompletions[tier],
+        },
+      }),
+      {},
+    )
+
   const projectCompletion = await checkBAIProjectCompletion(user)
   const newProgress = {
     max_points: progress.total_max_points,
     n_points: progress.total_n_points,
     progress: [
       {
+        tiers: tierInfo as any,
         exercises: tierProgressMap as any,
         projectCompletion,
         highestTier,
-        missingFromTier,
-        tierCompletions,
-        exerciseCompletions,
+        totalExerciseCompletions,
       },
     ],
   }
