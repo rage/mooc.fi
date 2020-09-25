@@ -6,18 +6,19 @@ metadata:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   schedule: "12 * * * *"
+  startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
       labels:
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
-      activeDeadlineSeconds: 604800
+      activeDeadlineSeconds: 7200
       template:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: fetch-ai-completions
+            - name: fetch-user-app-datum
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
               command: ["sh", "-c", "npm run fetch-user-app-datum"]
               envFrom:

@@ -9,8 +9,12 @@ import compression from "compression"
 import bodyParser from "body-parser"
 import morgan from "morgan"
 import { promisify } from "util"
+import sentryLogger from "./lib/logger"
+import { KafkaError } from "./lib/errors"
 
 const SECRET = process.env.KAFKA_BRIDGE_SECRET
+
+const logger = sentryLogger({ service: "kafka-bridge" })
 
 if (!SECRET) {
   console.error("No secret defined in KAFKA_BRIDGE_SECRET, exiting.")
@@ -41,19 +45,19 @@ producer.on("ready", () => {
 
 producer.connect(undefined, (err, data) => {
   if (err) {
-    console.error("Error while connecting producer", err)
+    logger.error(new KafkaError("Error while connecting producer", err))
     return
   }
-  console.log("Connected to producer", data)
+  logger.info("Connected to producer", data)
 })
 
 producer.setPollInterval(100)
 
 producer.on("delivery-report", function (err, report) {
   if (err) {
-    console.error("Delivery report error", err)
+    logger.error(new KafkaError("Delivery report error", err))
   }
-  console.log("Delivery report", report)
+  logger.info(`Delivery report ${JSON.stringify(report)}`)
 })
 
 let app = express()
@@ -73,19 +77,20 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
 
   const { topic, payload } = req.body
   if (!topic || !payload) {
-    console.log(
-      "Received an event without a topic or without a payload",
-      req.body,
+    logger.info(
+      `Received an event without a topic or without a payload ${JSON.stringify(
+        req.body,
+      )}`,
     )
     return res.status(400).json({ error: "Topic or payload missing" }).send()
   }
-  console.log("Producing to topic", topic, "payload", JSON.stringify(payload))
+  logger.info(`Producing to topic ${topic} payload ${JSON.stringify(payload)}`)
 
   try {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
     flushProducer(1000, undefined)
   } catch (e) {
-    console.error("Producing to kafka failed", e)
+    logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()
   }
   res.json({ msg: "Thanks!" }).send()

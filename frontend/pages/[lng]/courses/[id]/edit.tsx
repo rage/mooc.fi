@@ -86,6 +86,7 @@ export const CourseQuery = gql`
         id
         language
       }
+      upcoming_active_link
     }
   }
 `

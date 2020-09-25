@@ -21,5 +21,6 @@
     "studyModule": "Opintokokonaisuus",
     "showLimited": "Näytä vain rajatut",
     "showAll": "Näytä kaikki",
-    "moduleCourseTitle": "Opintokokonaisuuteen kuuluvat kurssit"
+    "moduleCourseTitle": "Opintokokonaisuuteen kuuluvat kurssit",
+    "coursePageAvailable": "Kurssisivu jo nähtävillä"
 }

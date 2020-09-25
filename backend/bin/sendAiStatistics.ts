@@ -1,11 +1,14 @@
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-import SlackPoster from "../services/slackPoster"
+import SlackPoster from "./lib/slackPoster"
 import Knex from "../services/knex"
 import prismaClient from "./lib/prisma"
+import sentryLogger from "./lib/logger"
 
-const slackPoster: SlackPoster = new SlackPoster()
+const logger = sentryLogger({ service: "send-ai-statistics" })
+const slackPoster: SlackPoster = new SlackPoster(logger)
+
 const url: string | undefined = process.env.AI_SLACK_URL
 
 if (!url) {
@@ -131,6 +134,7 @@ const getGlobalStats = async (): Promise<string> => {
     await Knex.count().from("completion").where({ course_id: course[0].id })
   )[0].count
   const now = new Date()
+
   return `\`\`\`Stats ${now.getDate()}.${
     now.getMonth() + 1
   }.${now.getFullYear()}:
@@ -139,12 +143,18 @@ const getGlobalStats = async (): Promise<string> => {
 }
 
 const post = async () => {
+  logger.info("getting global stats")
   data.text = data.text.concat(await getGlobalStats())
+
+  logger.info("getting data by language")
   for (let i = 0; i < langArr.length; i++) {
     data.text = data.text.concat(await getDataByLanguage(langArr[i]))
   }
+
   await slackPoster.post(url, data)
   Knex.destroy()
+
+  process.exit(0)
 }
 
-post().then(() => process.exit(0))
+post()

@@ -65,6 +65,7 @@ export const initialValues: CourseFormValues = {
   delete_photo: false,
   has_certificate: false,
   user_course_settings_visibilities: [],
+  upcoming_active_link: false,
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
@@ -229,9 +230,10 @@ const courseEditSchema = ({
     start_date: Yup.date()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
+      .transform((datetime?: DateTime) => new Date(datetime?.toISO() ?? ""))
       .test("start_before_end", t("courseStartDateLaterThanEndDate"), function (
         this: Yup.TestContext,
-        value?: DateTime,
+        value?: Date | null,
       ) {
         const start = value
         const end = this.parent.end_date
@@ -256,7 +258,10 @@ const validateSlug = ({
   client: ApolloClient<object>
   initialSlug: string | null
 }) =>
-  async function (this: Yup.TestContext, value: string): Promise<boolean> {
+  async function (
+    this: Yup.TestContext,
+    value?: string | null,
+  ): Promise<boolean> {
     if (!value || value === "") {
       return true // if it's empty, it's ok by this validation and required will catch it
     }

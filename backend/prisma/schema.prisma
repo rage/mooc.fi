@@ -95,7 +95,8 @@ model Course {
   user_course_settings_visibilities                  UserCourseSettingsVisibility[]
   services                                           Service[]                           @relation("course_to_service", references: [id])
   study_modules                                      StudyModule[]                       @relation("study_module_to_course", references: [id])
-
+  upcoming_active_link                               Boolean?
+  
   @@map("course")
 }
 
