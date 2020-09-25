@@ -1,17 +1,14 @@
-import { useContext, useEffect, useState } from "react"
-import LanguageContext from "/contexes/LanguageContext"
-import getFAQTranslator from "/translations/faq"
-import { useQueryParameter } from "/util/useQueryParameter"
+import React, { useContext, useEffect, useState } from "react"
 import {
   ContentBox,
   FAQComponent,
-  FAQPage,
   SectionBox,
+  FAQPage,
 } from "/components/Home/FAQ/Common"
+import LanguageContext from "/contexes/LanguageContext"
 
-export default function FAQTopic() {
+export default function FAQ() {
   const { language } = useContext(LanguageContext)
-  const t = getFAQTranslator(language)
 
   const [render, setRender] = useState(false)
   const [error, setError] = useState(false)
@@ -20,13 +17,8 @@ export default function FAQTopic() {
 
   useEffect(() => setRender(true), [])
 
-  const topic: string = useQueryParameter("topic")
-  const sanitizedTopic = topic.replace(/[./\\]/g, "").trim()
-
   const Component = FAQComponent({
-    mdxImport: import(
-      `../../../../static/md_pages/${sanitizedTopic}_${language}.mdx`
-    ),
+    mdxImport: import(`../../../static/md_pages/toc_faq_${language}.mdx`),
     onSuccess: (mdx: any) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")
@@ -45,7 +37,7 @@ export default function FAQTopic() {
         {render && !error ? <Component /> : null}
         {error ? (
           <ContentBox>
-            <SectionBox>{t("unknownTopic", { topic })}</SectionBox>
+            <SectionBox>Could not load FAQ page.</SectionBox>
           </ContentBox>
         ) : null}
       </>

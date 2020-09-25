@@ -30,6 +30,7 @@ const Title = styled(Typography)<any>`
   margin-bottom: 0.4em;
   padding: 1rem;
 `
+
 const TitleBackground = styled.div`
   background-color: white;
   max-width: 75%;

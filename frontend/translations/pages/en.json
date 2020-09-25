@@ -29,6 +29,8 @@
     "/[lng]/research-consent": "Research consent",
     "/[lng]/register-completion": "Register completion",
     "/[lng]/faq": "Frequently asked questions",
+    "/en/faq/registering_completion": "Frequenty asked questions: Registering completions",
+    "/en/faq/suoritusten_rekisterointi": "Frequenty asked questions: Registering completions",
     "/register-completion": "Register completion",
     "/": "Home"
   },
@@ -45,6 +47,11 @@
     "/[lng]/study-modules/new": "New",
     "/[lng]/users/search": "Search",
     "/[lng]/email-templates/[id]": "Edit",
-    "/[lng]/faq": "Frequently asked questions"
+    "/[lng]/faq": "Frequently asked questions",
+    "/[lng]/installation": "Installation",
+    "/en/installation/vscode": "VSCode",
+    "/en/installation/netbeans": "Netbeans",
+    "/en/faq/registering_completion": "Registering completions",
+    "/en/faq/suoritusten_rekisterointi": "Registering completions"
   }
 }
