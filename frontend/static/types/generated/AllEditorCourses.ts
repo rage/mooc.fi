@@ -50,6 +50,7 @@ export interface AllEditorCourses_courses {
   order: number | null
   status: CourseStatus | null
   hidden: boolean | null
+  tier: number | null
   photo: AllEditorCourses_courses_photo | null
   course_translations: AllEditorCourses_courses_course_translations[]
   course_variants: AllEditorCourses_courses_course_variants[]

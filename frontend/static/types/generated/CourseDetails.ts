@@ -82,6 +82,7 @@ export interface CourseDetails_course {
   support_email: string | null
   start_date: string
   end_date: string | null
+  tier: number | null
   photo: CourseDetails_course_photo | null
   promote: boolean | null
   start_point: boolean | null
