@@ -113,6 +113,7 @@ export const saveToDatabase = async (
       },
       n_points: message.n_points,
       completed: message.completed,
+      attempted: message.attempted !== null ? message.attempted : undefined,
       exercise_completion_required_actions: {
         create: message.required_actions.map((ra) => {
           return {
@@ -147,6 +148,7 @@ export const saveToDatabase = async (
       data: {
         n_points: Number(message.n_points),
         completed: message.completed,
+        attempted: message.attempted !== null ? message.attempted : undefined,
         exercise_completion_required_actions: {
           create: message.required_actions.map((ra) => {
             return {
