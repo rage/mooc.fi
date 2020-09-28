@@ -321,6 +321,7 @@ interface ExerciseCompletionResult {
   section: number
   max_points: number
   completed: boolean
+  attempted?: boolean | null
   quizzes_id: string
 }
 
@@ -373,6 +374,7 @@ server.express.get("/api/progress/:id", async (req: any, res: any) => {
     "section",
     "max_points",
     "completed",
+    "attempted",
     "custom_id as quizzes_id",
   )
     .from("exercise_completion")
