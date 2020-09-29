@@ -85,6 +85,7 @@ class MyApp extends App {
       apollo,
       admin,
       lng,
+      languageSwitchUrl,
       url,
       hrefUrl,
       currentUser,
@@ -92,7 +93,9 @@ class MyApp extends App {
 
     // give router to translator to get query parameters
     const t = getPageTranslator(lng, Router.router)
-    const titleString = t("title", { title: "..." })?.[hrefUrl]
+    const titleString =
+      t("title", { title: "..." })?.[hrefUrl] ||
+      t("title", { title: "..." })?.[url]
 
     const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
 
@@ -111,7 +114,7 @@ class MyApp extends App {
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
                 <LanguageContext.Provider
-                  value={{ language: lng, url, hrefUrl }}
+                  value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
                 >
                   <ConfirmProvider>
                     <AlertContext.Provider
@@ -207,7 +210,8 @@ MyApp.getInitialProps = async (props) => {
     signedIn: isSignedIn(ctx),
     admin: isAdmin(ctx),
     lng,
-    url: createPath(url),
+    url,
+    languageSwitchUrl: createPath(url),
     hrefUrl,
   }
 }
