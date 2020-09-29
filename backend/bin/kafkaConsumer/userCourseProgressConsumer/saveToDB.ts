@@ -10,7 +10,7 @@ import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 import getUserFromTMC from "../common/getUserFromTMC"
-import { ok, err, Result } from "../common/result"
+import { ok, err, Result } from "../../../util/result"
 
 import _KnexConstructor from "knex"
 import { DatabaseInputError, TMCError } from "../../lib/errors"
