@@ -88,7 +88,7 @@ schema.objectType({
           where: {
             course: {
               id: handlerCourse?.id ?? course_id ?? undefined,
-              slug: course_slug ?? undefined,
+              slug: handlerCourse ? undefined : course_slug ?? undefined,
             },
             user: { id: parent.id },
           },
