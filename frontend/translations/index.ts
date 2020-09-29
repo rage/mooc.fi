@@ -1,4 +1,3 @@
-import { isNullOrUndefined } from "util"
 import { NextRouter } from "next/router"
 
 const defaultLanguage = "en"
@@ -104,7 +103,7 @@ const substitute = <T>({
     const key = g.slice(2, g.length - 2)
     const variable = (variables || {})[key]
 
-    if (isNullOrUndefined(variable)) {
+    if (variable === null || variable === undefined) {
       console.warn(
         `WARNING: no variable present for translation string "${translation}" and key "${key}"`,
       )

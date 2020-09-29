@@ -212,6 +212,7 @@ model ExerciseCompletion {
   exercise                               Exercise?                              @relation(fields: [exercise_id], references: [id])
   user                                   User?                                  @relation(fields: [user_id], references: [id])
   exercise_completion_required_actions   ExerciseCompletionRequiredAction[]
+  attempted                              Boolean?
 
   @@map("exercise_completion")
 }
