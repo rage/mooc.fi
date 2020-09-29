@@ -108,5 +108,31 @@ schema.objectType({
         return registered.length > 0
       },
     })
+
+    t.field("project_completion", {
+      type: "Boolean",
+      resolve: async (parent, _, ctx) => {
+        if (!parent.course_id) {
+          return false
+        }
+
+        const handlerCourse = await ctx.db.course
+          .findOne({
+            where: { id: parent.course_id },
+          })
+          .completions_handled_by()
+
+        const progresses = await ctx.db.userCourseProgress.findMany({
+          where: {
+            course_id: handlerCourse?.id ?? parent.course_id,
+            user_id: parent.user_id,
+          },
+        })
+
+        return (
+          progresses?.some((p) => (p?.extra as any)?.projectCompletion) ?? false
+        )
+      },
+    })
   },
 })

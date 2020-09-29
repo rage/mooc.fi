@@ -389,6 +389,7 @@ model UserCourseProgress {
   max_points                          Float?
   n_points                            Float?
   progress                            Json
+  extra                               Json?
   updated_at                          DateTime?                      @updatedAt
   user_id                             String?                        
   course                              Course?                        @relation(fields: [course_id], references: [id])

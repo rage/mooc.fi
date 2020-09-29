@@ -444,17 +444,21 @@ const getBAIProgress = async (
 
   const projectCompletion = await checkBAIProjectCompletion(user)
   const newProgress = {
-    max_points: progress.total_max_points,
-    n_points: progress.total_n_points,
     progress: [
       {
-        tiers: tierInfo as any,
-        exercises: tierProgressMap as any,
-        projectCompletion,
-        highestTier,
-        totalExerciseCompletions,
+        group: "total",
+        max_points: progress.total_max_points,
+        n_points: progress.total_n_points,
+        progress: progress.total_n_points / (progress.total_max_points || 1),
       },
     ],
+    extra: {
+      tiers: tierInfo as any,
+      exercises: tierProgressMap as any,
+      projectCompletion,
+      highestTier,
+      totalExerciseCompletions,
+    },
   }
 
   return {

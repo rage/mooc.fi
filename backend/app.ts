@@ -252,7 +252,6 @@ server.express.get(
               .limit(1)
           )[0] ?? {}
 
-        console.log("id", id)
         if (!id) {
           const courseAlias = (
             await Knex.select("course_alias.course_id")
