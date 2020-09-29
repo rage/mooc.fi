@@ -121,6 +121,7 @@ export const saveToDatabase = async (
             }
           }),
         },
+        attempted: message.attempted !== null ? message.attempted : undefined,
         timestamp: timestamp.toJSDate(),
       },
     })
@@ -144,6 +145,7 @@ export const saveToDatabase = async (
             }
           }),
         },
+        attempted: message.attempted !== null ? message.attempted : undefined,
         timestamp: timestamp.toJSDate(),
       },
     })

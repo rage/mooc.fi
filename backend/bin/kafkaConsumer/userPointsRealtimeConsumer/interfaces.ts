@@ -6,6 +6,7 @@ export interface Message {
   user_id: number
   course_id: string
   service_id: string
+  attempted: boolean | null
   required_actions: string[]
   message_format_version: number
 }

@@ -16,6 +16,7 @@ schema.objectType({
     t.model.user_id()
     t.model.user()
     t.model.exercise_completion_required_actions()
+    t.model.attempted()
   },
 })
 
