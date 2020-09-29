@@ -264,6 +264,7 @@ const DashboardBreadCrumbs = React.memo((props: Props) => {
 
         let content =
           t("breadcrumb")?.[route] ||
+          t("breadcrumb")?.[urlWithQueryAndAnchorRemoved] ||
           t("title", { title: "..." })?.[route] ||
           component
 
