@@ -3,7 +3,7 @@ import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
 
-export default extendType({
+export const StudyModuleMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addStudyModule", {

@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { objectType, inputObjectType } from "@nexus/schema"
 
-schema.objectType({
+export const UserCourseSettingsVisibility = objectType({
   name: "UserCourseSettingsVisibility",
   definition(t) {
     t.model.id()
@@ -12,7 +12,7 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const UserCourseSettingVisibilityCreateInput = inputObjectType({
   name: "UserCourseSettingsVisibilityCreateInput",
   definition(t) {
     t.string("language", { required: true })
@@ -20,7 +20,7 @@ schema.inputObjectType({
   },
 })
 
-schema.inputObjectType({
+export const UserCourseSettingVisibilityUpsertInput = inputObjectType({
   name: "UserCourseSettingsVisibilityUpsertInput",
   definition(t) {
     t.id("id", { required: false })

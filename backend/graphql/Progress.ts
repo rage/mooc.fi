@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { objectType } from "@nexus/schema"
 
-schema.objectType({
+export const Progress = objectType({
   name: "Progress",
   definition(t) {
     t.field("course", { type: "Course" })

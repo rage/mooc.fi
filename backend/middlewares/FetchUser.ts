@@ -5,13 +5,13 @@ import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
 import { PrismaClient } from "@prisma/client"
 // import { IncomingMessage } from "http"
-import { NexusContext } from "../context"
+import { Context } from "../context"
 
 // this is the version suitable for middleware, not used for now
 const fetchUser = (_config: any) => async (
   root: any,
   args: Record<string, any>,
-  ctx: NexusContext,
+  ctx: Context,
   info: any,
   next: Function,
 ) => {
@@ -32,7 +32,7 @@ const fetchUser = (_config: any) => async (
   return await next(root, args, ctx, info)
 }
 
-const getOrganization = async (ctx: NexusContext, rawToken: string | null) => {
+const getOrganization = async (ctx: Context, rawToken: string | null) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""
 
   const org = await ctx.db.organization.findMany({
@@ -46,7 +46,7 @@ const getOrganization = async (ctx: NexusContext, rawToken: string | null) => {
   ctx.role = Role.ORGANIZATION
 }
 
-const getUser = async (ctx: NexusContext, rawToken: string) => {
+const getUser = async (ctx: Context, rawToken: string) => {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
   let details: UserInfo | null = null

@@ -8,7 +8,7 @@ import {
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"
-import { NexusContext } from "/context"
+import { Context } from "/context"
 
 export const Exercise = objectType({
   name: "Exercise",
@@ -40,7 +40,7 @@ export const Exercise = objectType({
           required: false,
         }),
       },
-      resolve: async (parent, args, ctx: NexusContext) => {
+      resolve: async (parent, args, ctx: Context) => {
         const { orderBy } = args
 
         return ctx.db.exercise

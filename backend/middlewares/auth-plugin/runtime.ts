@@ -1,4 +1,4 @@
-import { RuntimePlugin } from "nexus/plugin"
+import { plugin } from "nexus/plugin"
 import TmcClient from "../../services/tmc"
 import { redisify } from "../../services/redis"
 import { AuthenticationError } from "apollo-server-errors"

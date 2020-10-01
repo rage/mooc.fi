@@ -1,10 +1,10 @@
-import { extendType, idArg, stringArg } from "@nexus/schema"
+import { arg, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 import { Course } from "nexus-plugin-prisma/client"
 
-export default extendType({
+export const CourseQueris = extendType({
   type: "Query",
   definition(t) {
     t.field("course", {

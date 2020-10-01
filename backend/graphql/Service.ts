@@ -1,8 +1,7 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, idArg, stringArg } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const Service = objectType({
   name: "Service",
   definition(t) {
     t.model.id()
@@ -16,13 +15,13 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const ServiceQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("service", {
       type: "Service",
       args: {
-        service_id: schema.idArg({ required: true }),
+        service_id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { service_id }, ctx) =>
@@ -45,14 +44,14 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const ServiceMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addService", {
       type: "Service",
       args: {
-        url: schema.stringArg({ required: true }),
-        name: schema.stringArg({ required: true }),
+        url: stringArg({ required: true }),
+        name: stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -70,9 +69,9 @@ schema.extendType({
     t.field("updateService", {
       type: "Service",
       args: {
-        id: schema.idArg({ required: true }),
-        url: schema.stringArg(),
-        name: schema.stringArg(),
+        id: idArg({ required: true }),
+        url: stringArg(),
+        name: stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {

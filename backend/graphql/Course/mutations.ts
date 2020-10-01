@@ -12,7 +12,7 @@ import { uploadImage, deleteImage } from "../Image"
 import { omit } from "lodash"
 import { invalidate } from "../../services/redis"
 import { UserInputError } from "apollo-server-core"
-import { NexusContext } from "../../context"
+import { Context } from "../../context"
 import { isAdmin } from "../../accessControl"
 import { Prisma__CourseClient, Course } from "nexus-plugin-prisma/client"
 
@@ -23,7 +23,7 @@ import { extendType, arg, idArg, stringArg } from "@nexus/schema"
     key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
   ) */
 
-export default extendType({
+export const CourseMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourse", {
@@ -35,7 +35,7 @@ export default extendType({
         }),
       },
       authorize: isAdmin,
-      resolve: async (_, { course }, ctx: NexusContext) => {
+      resolve: async (_, { course }, ctx: Context) => {
         const {
           // slug,
           new_photo,
@@ -129,7 +129,7 @@ export default extendType({
         }),
       },
       authorize: isAdmin,
-      resolve: async (_, { course }, ctx: NexusContext) => {
+      resolve: async (_, { course }, ctx: Context) => {
         const {
           id,
           new_photo,
@@ -333,7 +333,7 @@ export default extendType({
         slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         const { id, slug } = args
 
         if (!id && !slug) {
@@ -381,7 +381,7 @@ const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
 }
 
 interface ICreateMutation<T> {
-  ctx: NexusContext
+  ctx: Context
   slug: string
   data?: T[] | null
   field: keyof Prisma__CourseClient<Course>

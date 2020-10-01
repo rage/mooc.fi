@@ -1,11 +1,10 @@
-import { schema } from "nexus"
-
 import { ForbiddenError } from "apollo-server-core"
-import { NexusContext } from "../context"
+import { Context } from "../context"
 import { Role, or, isVisitor, isAdmin } from "../accessControl"
 import { OrganizationRole } from "@prisma/client"
+import { objectType, extendType, idArg, arg } from "@nexus/schema"
 
-schema.objectType({
+export const UserOrganization = objectType({
   name: "UserOrganization",
   definition(t) {
     t.model.id()
@@ -19,14 +18,14 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const UserOrganizationQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("userOrganizations", {
       type: "UserOrganization",
       args: {
-        user_id: schema.idArg(),
-        organization_id: schema.idArg(),
+        user_id: idArg(),
+        organization_id: idArg(),
       },
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
@@ -46,7 +45,7 @@ schema.extendType({
   },
 })
 
-const checkUser = async (ctx: NexusContext, id: any) => {
+const checkUser = async (ctx: Context, id: any) => {
   const { user, role } = ctx
 
   let existingUser
@@ -68,14 +67,14 @@ const checkUser = async (ctx: NexusContext, id: any) => {
   }
 }
 
-schema.extendType({
+export const UserOrganizationMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserOrganization", {
       type: "UserOrganization",
       args: {
-        user_id: schema.idArg({ required: true }),
-        organization_id: schema.idArg({ required: true }),
+        user_id: idArg({ required: true }),
+        organization_id: idArg({ required: true }),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -110,13 +109,13 @@ schema.extendType({
     t.field("updateUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
         /*       userId: schema.idArg(),
         organizationId: schema.idArg(), */
-        role: schema.arg({ type: "OrganizationRole" }),
+        role: arg({ type: "OrganizationRole" }),
       },
       authorize: or(isVisitor, isAdmin),
-      resolve: (_, args, ctx: NexusContext) => {
+      resolve: (_, args, ctx: Context) => {
         const { id, role } = args
 
         checkUser(ctx, id)
@@ -135,10 +134,10 @@ schema.extendType({
     t.field("deleteUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: or(isVisitor, isAdmin),
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         const { id } = args
         checkUser(ctx, id)
 
