@@ -5,7 +5,7 @@ import TmcClient from "./services/tmc"
 import { PrismaClient } from "@prisma/client"
 import { IncomingHttpHeaders } from "http"
 
-export interface NexusContext {
+export type Context = {
   db: PrismaClient
   user?: User
   organization?: Organization

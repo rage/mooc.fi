@@ -2,7 +2,7 @@ import { objectType, arg, stringArg } from "@nexus/schema"
 import { notEmpty } from "../../util/notEmpty"
 import { filterNull } from "../../util/db-functions"
 
-export default objectType({
+export const StudyModule = objectType({
   name: "StudyModule",
   definition(t) {
     t.model.id()

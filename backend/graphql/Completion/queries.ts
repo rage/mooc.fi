@@ -4,7 +4,7 @@ import Knex from "../../services/knex"
 import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"
 
-export default extendType({
+export const CompletionQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("completions", {

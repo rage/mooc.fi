@@ -1,9 +1,9 @@
-import { extendType, idArg, stringArg } from "@nexus/schema"
+import { arg, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, or, isUser, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 
-export default extendType({
+export const StudyModuleQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("study_module", {

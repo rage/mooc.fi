@@ -1,10 +1,10 @@
-import { log } from "nexus"
+// import { log } from "nexus"
 import { Sentry } from "../services/sentry"
 
 const sentry = (config: any) => async (
   root: any,
   args: Record<string, any>,
-  context: NexusContext,
+  context: Context,
   info: any,
   next: Function,
 ) => {
@@ -25,7 +25,7 @@ const sentry = (config: any) => async (
       })
     }
 
-    log.error("error", { error })
+    console.error("error", { error }) // TODO: fix log
 
     return error
   }

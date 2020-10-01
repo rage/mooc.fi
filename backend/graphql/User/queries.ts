@@ -3,7 +3,7 @@ import { buildSearch, convertPagination } from "../../util/db-functions"
 import { extendType, idArg, stringArg, intArg } from "@nexus/schema"
 import { isAdmin } from "../../accessControl"
 
-export default extendType({
+export const UserQueries = extendType({
   type: "Query",
   definition(t) {
     t.crud.users({

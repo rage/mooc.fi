@@ -1,9 +1,17 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  extendType,
+  idArg,
+  stringArg,
+  intArg,
+  arg,
+  floatArg,
+} from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
   definition(t) {
     t.model.id()
@@ -120,14 +128,14 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const UserCourseProgressQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("userCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: schema.idArg({ required: true }),
-        course_id: schema.idArg({ required: true }),
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -158,12 +166,12 @@ schema.extendType({
     t.list.field("userCourseProgresses", {
       type: "UserCourseProgress",
       args: {
-        user_id: schema.idArg(),
-        course_slug: schema.stringArg(),
-        course_id: schema.idArg(),
-        skip: schema.intArg(),
-        take: schema.intArg(),
-        cursor: schema.arg({ type: "UserCourseProgressWhereUniqueInput" }),
+        user_id: idArg(),
+        course_slug: stringArg(),
+        course_id: idArg(),
+        skip: intArg(),
+        take: intArg(),
+        cursor: arg({ type: "UserCourseProgressWhereUniqueInput" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -196,24 +204,24 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const UserCourseProgressMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: schema.idArg({ required: true }),
-        course_id: schema.idArg({ required: true }),
-        progress: schema.arg({
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
+        progress: arg({
           type: "PointsByGroup",
           list: true,
           required: true,
         }),
-        extra: schema.arg({
+        extra: arg({
           type: "Json",
         }),
-        max_points: schema.floatArg(),
-        n_points: schema.floatArg(),
+        max_points: floatArg(),
+        n_points: floatArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {

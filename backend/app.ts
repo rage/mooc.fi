@@ -5,17 +5,27 @@ require("dotenv-safe").config({
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
-import { use, schema, settings, server } from "nexus"
-import { prisma } from "nexus-plugin-prisma"
-import redisClient from "./services/redis"
+import {
+  makeSchema,
+  connectionPlugin,
+  fieldAuthorizePlugin,
+} from "@nexus/schema"
+import * as types from "./graphql"
+// import redisClient from "./services/redis"
 import { wsListen } from "./wsServer"
 import * as winston from "winston"
-import { PrismaClient } from "nexus-plugin-prisma/client"
+import { nexusPrisma } from "nexus-plugin-prisma"
 import cache from "./middlewares/cache"
-import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
-import { newrelicPlugin } from "./middlewares/newrelic-plugin"
+// import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
+// import { newrelicPlugin } from "./middlewares/newrelic-plugin"
 import sentry from "./middlewares/sentry"
-import { setupServer } from "./server"
+import { ApolloServer } from "apollo-server-express"
+import express from "./server"
+import * as path from "path"
+import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
+import { GraphQLScalarType } from "graphql/type"
+import { notEmpty } from "./util/notEmpty"
+import { PrismaClient } from "@prisma/client"
 
 if (PRODUCTION && !process.env.NEXUS_REFLECTION) {
   if (process.env.NEW_RELIC_LICENSE_KEY) {
@@ -34,6 +44,66 @@ const prismaClient = new PrismaClient({
   ],
 })
 
+const plugins = [
+  nexusPrisma({
+    // prismaClient: (_ctx: any) => prismaClient,
+    experimentalCRUD: true,
+    scalars: {
+      DateTime: DateTimeResolver,
+      Json: new GraphQLScalarType({
+        ...JSONObjectResolver,
+        name: "Json",
+        description:
+          "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
+      }),
+    },
+  }),
+  connectionPlugin({
+    nexusFieldName: "connection",
+  }),
+  fieldAuthorizePlugin(),
+  /*moocfiAuthPlugin({
+    prisma: prismaClient,
+    redisClient,
+  }),
+  PRODUCTION && !process.env.NEXUS_REFLECTION && process.env.NEW_RELIC_LICENSE_KEY 
+    ? newrelicPlugin()
+    : undefined*/
+].filter(notEmpty)
+
+const schema = makeSchema({
+  types,
+  typegenAutoConfig: {
+    sources: [
+      {
+        source: require.resolve("./context"),
+        alias: "Context",
+      },
+      {
+        source: require.resolve(".prisma/client/index.d.ts"),
+        alias: "prisma",
+      },
+    ],
+    contextType: "Context.Context",
+  },
+  plugins,
+  outputs: {
+    typegen: path.join(
+      __dirname,
+      "./node_modules/@types/nexus-typegen/index.d.ts",
+    ),
+    schema: __dirname + "/generated/schema.graphql",
+  },
+  shouldExitAfterGenerateArtifacts: Boolean(process.env.NEXUS_REFLECTION),
+})
+
+const apollo = new ApolloServer({
+  schema,
+  context: (ctx) => ({ ...ctx, db: prismaClient }),
+})
+
+apollo.applyMiddleware({ app: express })
+
 /*prismaClient.on("query", (e) => {
   e.timestamp
   e.query
@@ -43,14 +113,14 @@ const prismaClient = new PrismaClient({
   console.log(e)
 })*/
 
-use(
+/*use(
   prisma({
     client: { instance: prismaClient },
     migrations: false,
     paginationStrategy: "prisma",
     features: { crud: true },
   }),
-)
+)*/
 
 /*nexusSchemaPrisma({
   outputs: {
@@ -71,7 +141,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-schema.addToContext(async ({ req }) => ({
+/*schema.addToContext(async ({ req }: { req: any }) => ({
   ...req,
   // user: undefined,
   // organization: undefined,
@@ -80,26 +150,12 @@ schema.addToContext(async ({ req }) => ({
   disableRelations: false,
   // userDetails: undefined,
   tmcClient: undefined,
-}))
+}))*/
 
-schema.middleware(sentry)
-schema.middleware(cache)
+// schema.middleware(sentry)
+// schema.middleware(cache)
 
-use(
-  moocfiAuthPlugin({
-    prisma: prismaClient,
-    redisClient,
-  }),
-)
-if (
-  PRODUCTION &&
-  !process.env.NEXUS_REFLECTION &&
-  process.env.NEW_RELIC_LICENSE_KEY
-) {
-  use(newrelicPlugin())
-}
-
-settings.change({
+/*settings.change({
   logger: {
     pretty: true,
     filter: {
@@ -118,7 +174,6 @@ settings.change({
   },
   schema: {
     generateGraphQLSDLFile: "./generated/schema.graphql",
-    // rootTypingsGlobPattern: "./graphql/**/*.ts",
     connections: {
       default: {
         includeNodesField: true,
@@ -126,9 +181,9 @@ settings.change({
     },
     authorization: {},
   },
-})
+})*/
 
-schema.middleware((_config: any) => async (root, args, ctx, info, next) => {
+/*schema.middleware((_config: any) => async (root: any, args: any, ctx: any, info: any, next: any) => {
   // only log root level query/mutation, not fields queried
   if (!info.path?.prev) {
     logger.info(
@@ -139,18 +194,7 @@ schema.middleware((_config: any) => async (root, args, ctx, info, next) => {
   }
 
   return await next(root, args, ctx, info)
-  /*try {
-    const result = await next(root, args, ctx, info)
-
-    return result
-  } catch (e) {
-    logger.error(
-      `error: ${e}\n  in type ${config?.parentTypeConfig?.name}, field ${config?.fieldConfig?.name} with args ${config?.args}`,
-    )
-  }*/
-})
-
-setupServer(server)
+})*/
 
 if (!process.env.NEXUS_REFLECTION) {
   // only runtime

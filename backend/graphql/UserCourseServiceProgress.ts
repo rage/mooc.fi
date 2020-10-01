@@ -1,8 +1,8 @@
-import { schema } from "nexus"
+import { objectType, extendType, idArg, arg } from "@nexus/schema"
 
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const UserCourseServiceProgress = objectType({
   name: "UserCourseServiceProgress",
   definition(t) {
     t.model.id()
@@ -35,15 +35,15 @@ schema.objectType({
 
 /*********************** QUERIES **********************/
 
-schema.extendType({
+export const UserCourseServiceProgressQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("userCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        user_id: schema.idArg(),
-        course_id: schema.idArg(),
-        service_id: schema.idArg(),
+        user_id: idArg(),
+        course_id: idArg(),
+        service_id: idArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -108,15 +108,15 @@ schema.extendType({
 
 /********************** MUTATIONS *********************/
 
-schema.extendType({
+export const UserCourseServiceProgressMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        progress: schema.arg({ type: "PointsByGroup", required: true }),
-        service_id: schema.idArg({ required: true }),
-        user_course_progress_id: schema.idArg({ required: true }),
+        progress: arg({ type: "PointsByGroup", required: true }),
+        service_id: idArg({ required: true }),
+        user_course_progress_id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

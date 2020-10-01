@@ -67,7 +67,7 @@ const withCourse = async (
   skip: number | undefined,
   take: number | undefined,
   cursor: CompletionRegisteredWhereUniqueInput | undefined,
-  ctx: NexusContext,
+  ctx: Context,
 ) => {
   let courseReference = await ctx.db.course.findOne({
     where: { slug: course },
@@ -101,7 +101,7 @@ const all = async (
   skip: number | undefined,
   take: number | undefined,
   cursor: CompletionRegisteredWhereUniqueInput | undefined,
-  ctx: NexusContext,
+  ctx: Context,
 ) => {
   return await ctx.db.completionRegistered.findMany({
     skip,
@@ -120,7 +120,7 @@ export const CompletionRegisteredMutations = extendType({
         completions: arg({ type: "CompletionArg", list: true }),
       },
       authorize: isOrganization,
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         let queue = chunk(args.completions, 500)
 
         for (let i = 0; i < queue.length; i++) {
@@ -133,7 +133,7 @@ export const CompletionRegisteredMutations = extendType({
   },
 })
 
-const buildPromises = (array: any[], ctx: NexusContext) => {
+const buildPromises = (array: any[], ctx: Context) => {
   return array.map(async (entry) => {
     const course = await ctx.db.completion
       .findOne({ where: { id: entry.completion_id } })

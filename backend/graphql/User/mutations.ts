@@ -1,10 +1,10 @@
 import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
 import { extendType, stringArg, booleanArg, arg } from "@nexus/schema"
-import { NexusContext } from "../../context"
+import { Context } from "../../context"
 import hashUser from "../../util/hashUser"
 
-export default extendType({
+export const UserMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("updateUserName", {
@@ -13,7 +13,7 @@ export default extendType({
         first_name: stringArg(),
         last_name: stringArg(),
       },
-      resolve: (_, { first_name, last_name }, ctx: NexusContext) => {
+      resolve: (_, { first_name, last_name }, ctx: Context) => {
         const {
           user: currentUser,
           headers: { authorization },
@@ -42,7 +42,7 @@ export default extendType({
       args: {
         value: booleanArg({ required: true }),
       },
-      resolve: (_, { value }, ctx: NexusContext) => {
+      resolve: (_, { value }, ctx: Context) => {
         const {
           user: currentUser,
           headers: { authorization },

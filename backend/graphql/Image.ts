@@ -3,7 +3,7 @@ import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
 } from "../services/google-cloud"
-import { NexusContext } from "../context"
+import { Context } from "../context"
 import { isAdmin } from "../accessControl"
 
 const sharp = require("sharp")
@@ -37,7 +37,7 @@ export const ImageMutations = extendType({
         base64: booleanArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         const { file, base64 } = args
 
         return uploadImage({ ctx, file, base64: base64 ?? false })
@@ -50,7 +50,7 @@ export const ImageMutations = extendType({
         id: idArg({ required: true }),
       },
       authorize: isAdmin,
-      resolve: async (_, { id }, ctx: NexusContext) => {
+      resolve: async (_, { id }, ctx: Context) => {
         return deleteImage({ ctx, id })
       },
     })
@@ -80,7 +80,7 @@ export const uploadImage = async ({
   file,
   base64 = false,
 }: {
-  ctx: NexusContext
+  ctx: Context
   file: any
   base64: boolean
 }) => {
@@ -155,7 +155,7 @@ export const deleteImage = async ({
   ctx,
   id,
 }: {
-  ctx: NexusContext
+  ctx: Context
   id: string
 }): Promise<boolean> => {
   const image = await ctx.db.image.findOne({ where: { id } })
