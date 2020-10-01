@@ -47,6 +47,7 @@ export const AllEditorCoursesQuery = gql`
       order
       status
       hidden
+      tier
       photo {
         id
         compressed

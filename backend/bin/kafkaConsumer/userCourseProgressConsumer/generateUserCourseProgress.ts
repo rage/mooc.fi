@@ -15,6 +15,16 @@ import SMTPTransport = require("nodemailer/lib/smtp-transport")
 import { EmailTemplater } from "../common/EmailTemplater/EmailTemplater"
 import { pushMessageToClient, MessageType } from "../../../wsServer"
 import prismaClient from "../../lib/prisma"
+import { range } from "lodash"
+import {
+  BAIexercises,
+  BAItiers,
+  BAITierNames,
+  requiredByTier,
+  BAIbadge,
+  pointsNeeded,
+  exerciseCompletionsNeeded,
+} from "./courseConfig"
 
 const prisma = prismaClient()
 
@@ -49,7 +59,13 @@ export const generateUserCourseProgress = async ({
   userCourseProgress,
 }: Props) => {
   const combined = await GetCombinedUserCourseProgress(user, course)
-  await CheckCompletion(user, course, combined)
+
+  if (Object.values(BAItiers).includes(course.id)) {
+    await checkBAICompletion(user, course)
+  } else {
+    await CheckCompletion(user, course, combined)
+  }
+
   await prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
@@ -144,23 +160,69 @@ const CheckRequiredExerciseCompletions = async (
   return true
 }
 
+interface ExerciseCompletionPart {
+  course_id: string
+  exercise_id: string
+  max_points?: number
+  n_points?: number
+  custom_id?: string
+}
+
+const getExerciseCompletionsForCourses = async (
+  user: User,
+  courseIds: string[],
+) => {
+  const exercise_completions: ExerciseCompletionPart[] = await Knex<
+    any,
+    ExerciseCompletionPart[]
+  >("exercise_completion")
+    .select(
+      "exercise.course_id",
+      "exercise.custom_id",
+      "exercise.max_points",
+      "exercise_completion.exercise_id",
+      "exercise_completion.n_points",
+    )
+    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+    .whereIn("exercise.course_id", courseIds)
+    .andWhere("exercise_completion.user_id", user.id)
+    .andWhere("exercise_completion.completed", true)
+    .andWhereNot("exercise.max_points", 0)
+
+  /*
+    [{ course_id, custom_id, exercise_id, max_points, n_points }, ...] 
+   */
+  return exercise_completions
+}
+
+const checkBAIProjectCompletion = async (user: User) => {
+  const completions = await Knex("exercise_completion")
+    .select("exercise_completion.completed")
+    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+    .whereIn("exercise.custom_id", Object.keys(BAIbadge))
+    .andWhere("exercise_completion.user_id", user.id)
+    .andWhere("exercise_completion.completed", true)
+
+  return completions.length > 0
+}
+
 const GetUserCourseSettings = async (
   user: User,
-  course: Course,
+  course_id: string,
 ): Promise<UserCourseSetting> => {
   let userCourseSetting: UserCourseSetting =
     (
       await prisma.userCourseSetting.findMany({
         where: {
           user_id: user.id,
-          course_id: course.id,
+          course_id,
         },
       })
     )?.[0] || null
 
   if (!userCourseSetting) {
     const inheritCourse = await prisma.course
-      .findOne({ where: { id: course.id } })
+      .findOne({ where: { id: course_id } })
       .inherit_settings_from()
     if (inheritCourse) {
       userCourseSetting =
@@ -203,6 +265,256 @@ const languageCodeMapping: { [key: string]: string } = {
   no: "nb_NO",
 }
 
+interface TierProgress {
+  tier: number
+  n_points: number
+  max_points: number
+  progress: number
+}
+
+export const checkBAICompletion = async (
+  user: User,
+  course: Course,
+  // combinedProgress?: CombinedUserCourseProgress, // this is for the tier course we got
+) => {
+  const handlerCourse = await prisma.course
+    .findOne({ where: { id: course.id } })
+    .completions_handled_by()
+
+  if (!handlerCourse) {
+    // TODO: error
+    return
+  }
+
+  // this is not needed if we hard code the course ids, as the function it's
+  // passed to only needs the ids
+  /*const tierCourses = (await prisma.course
+    .findOne({ where: { id: handlerCourse.id } })
+    .handles_completions_for())
+    .map(c => c.id)
+  */
+  const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses(
+    user,
+    Object.values(BAItiers), // tierCourses
+  )
+  /*
+    [{ course_id, exercise_id, n_points }...] for all the tiers
+  */
+
+  const { progress: newProgress, highestTier } = await getBAIProgress(
+    user,
+    handlerCourse,
+    exerciseCompletionsForCourses,
+  )
+  const existingProgress = await prisma.userCourseProgress.findMany({
+    where: {
+      course_id: handlerCourse.id,
+      user_id: user.id,
+    },
+  })
+
+  if (existingProgress.length < 1) {
+    await prisma.userCourseProgress.create({
+      data: {
+        course: {
+          connect: { id: handlerCourse.id },
+        },
+        user: { connect: { id: user?.id } },
+        ...newProgress,
+      },
+    })
+  } else {
+    await prisma.userCourseProgress.update({
+      where: {
+        id: existingProgress[0].id,
+      },
+      data: newProgress,
+    })
+  }
+
+  if (highestTier < 1) {
+    return
+  }
+
+  const highestTierCourseId = BAItiers[highestTier]
+
+  await createCompletion({
+    user,
+    course_id: highestTierCourseId,
+    handlerCourse: course,
+  })
+}
+
+const getBAIProgress = async (
+  user: User,
+  // @ts-ignore: not needed now
+  handlerCourse: Course,
+  exerciseCompletionsForCourses: ExerciseCompletionPart[],
+) => {
+  const tierProgressMap = exerciseCompletionsForCourses.reduce((acc, curr) => {
+    const { exercise, tier } = BAIexercises[curr.custom_id ?? ""] ?? {}
+
+    if (!exercise) return acc
+
+    const max_points = curr.max_points ?? 0
+    const n_points = Math.max(acc[exercise]?.n_points ?? 0, curr.n_points ?? 0)
+
+    return {
+      ...acc,
+      [exercise]: {
+        tier: Math.max(acc[exercise]?.tier ?? 0, tier),
+        max_points,
+        n_points,
+        progress: n_points / (max_points || 1),
+      },
+    }
+  }, {} as Record<number, TierProgress>)
+  /*
+    [exercise #]: { tier, n_points, max_points } -- what's the maximum tier completed and 
+      what's the highest amount of points received, not necessarily from maximum tier 
+    ...
+  */
+  const tierProgress = Object.entries(tierProgressMap).map(([key, value]) => ({
+    group: key,
+    ...value,
+  }))
+
+  const progress = Object.values(tierProgressMap).reduce(
+    (acc, curr) => ({
+      total_n_points: acc.total_n_points + curr.n_points,
+      total_max_points: acc.total_max_points + curr.max_points,
+    }),
+    { total_n_points: 0, total_max_points: 0 },
+  )
+
+  const totalExerciseCompletions = Object.keys(tierProgress).length
+  const hasEnoughPoints = progress.total_n_points >= pointsNeeded //(handlerCourse.points_needed ?? 9999999)
+  const hasEnoughExerciseCompletions =
+    totalExerciseCompletions >= exerciseCompletionsNeeded //(handlerCourse.exercise_completions_needed ?? 0)
+  const hasBasicRule = hasEnoughPoints && hasEnoughExerciseCompletions
+
+  const tierCompletions = range(1, 4).reduce(
+    (acc, tier) => ({
+      ...acc,
+      [tier]: Object.values(tierProgressMap).filter((t) => t.tier >= tier)
+        .length,
+    }),
+    {} as Record<number, number>,
+  )
+  /*
+    [tier #]: # of exercises completed from _at least_ this tier,
+      so tier 3 is counted in both 1 and 2, and so on 
+  */
+
+  const hasTier: Record<number, boolean> = {
+    1: hasBasicRule,
+    2: hasBasicRule && tierCompletions[2] >= requiredByTier[2],
+    3: hasBasicRule && tierCompletions[3] >= requiredByTier[3],
+  }
+
+  const missingFromTier = range(1, 4).reduce(
+    (acc, tier) => ({
+      ...acc,
+      [tier]: Math.max(0, requiredByTier[tier] - tierCompletions[tier]),
+    }),
+    {} as Record<number, number>,
+  )
+  /* 
+    [tier #]: how many exercises missing to get to this tier
+  */
+
+  const highestTier = Object.entries(hasTier).reduce(
+    (acc, [tier, has]) => (has ? Math.max(acc, Number(tier)) : acc),
+    0,
+  )
+
+  const tierInfo = Object.keys(BAItiers)
+    .map(Number)
+    .reduce(
+      (acc, tier) => ({
+        ...acc,
+        [BAITierNames[tier]]: {
+          hasTier: hasTier[tier],
+          missingFromTier: missingFromTier[tier],
+          exerciseCompletions: tierCompletions[tier],
+        },
+      }),
+      {},
+    )
+
+  const projectCompletion = await checkBAIProjectCompletion(user)
+  const newProgress = {
+    progress: [
+      {
+        group: "total",
+        max_points: progress.total_max_points,
+        n_points: progress.total_n_points,
+        progress: progress.total_n_points / (progress.total_max_points || 1),
+      },
+    ],
+    extra: {
+      tiers: tierInfo as any,
+      exercises: tierProgressMap as any,
+      projectCompletion,
+      highestTier,
+      totalExerciseCompletions,
+    },
+  }
+
+  return {
+    progress: newProgress,
+    highestTier,
+  }
+}
+
+interface CreateCompletion {
+  user: User
+  course_id: string
+  handlerCourse: Course
+}
+
+const createCompletion = async ({
+  user,
+  course_id,
+  handlerCourse,
+}: CreateCompletion) => {
+  const userCourseSettings = await GetUserCourseSettings(user, course_id)
+  const completions = await prisma.completion.findMany({
+    where: {
+      user_id: user.id,
+      course_id: handlerCourse?.id,
+    },
+  })
+  if (completions.length < 1) {
+    await prisma.completion.create({
+      data: {
+        course: { connect: { id: handlerCourse.id } },
+        email: user.email,
+        user: { connect: { id: user.id } },
+        user_upstream_id: user.upstream_id,
+        student_number: user.student_number,
+        completion_language: userCourseSettings?.language
+          ? languageCodeMapping[userCourseSettings.language]
+          : "unknown",
+        eligible_for_ects:
+          handlerCourse.automatic_completions_eligible_for_ects,
+        completion_date: new Date(),
+      },
+    })
+    pushMessageToClient(
+      user.upstream_id,
+      course_id,
+      MessageType.COURSE_CONFIRMED,
+    )
+    const template = await prisma.course
+      .findOne({ where: { id: course_id } })
+      .completion_email()
+    if (template) {
+      await sendEmailTemplateToUser(user, template)
+    }
+  }
+}
+
 export const CheckCompletion = async (
   user: User,
   course: Course,
@@ -218,8 +530,6 @@ export const CheckCompletion = async (
     user,
     course,
   )
-  const userCourseSettings = await GetUserCourseSettings(user, course)
-
   if (
     course.automatic_completions &&
     combined.total_n_points >= (course.points_needed ?? 9999999) &&
@@ -235,40 +545,11 @@ export const CheckCompletion = async (
       handlerCourse = otherHandlerCourse
     }
 
-    const completions = await prisma.completion.findMany({
-      where: {
-        user_id: user.id,
-        course_id: handlerCourse?.id,
-      },
+    await createCompletion({
+      user,
+      course_id: course.id,
+      handlerCourse,
     })
-    if (completions.length < 1) {
-      await prisma.completion.create({
-        data: {
-          course: { connect: { id: handlerCourse.id } },
-          email: user.email,
-          user: { connect: { id: user.id } },
-          user_upstream_id: user.upstream_id,
-          student_number: user.student_number,
-          completion_language: userCourseSettings?.language
-            ? languageCodeMapping[userCourseSettings.language]
-            : "unknown",
-          eligible_for_ects:
-            handlerCourse.automatic_completions_eligible_for_ects,
-          completion_date: new Date(),
-        },
-      })
-      pushMessageToClient(
-        user.upstream_id,
-        course.id,
-        MessageType.COURSE_CONFIRMED,
-      )
-      const template = await prisma.course
-        .findOne({ where: { id: course.id } })
-        .completion_email()
-      if (template) {
-        await sendEmailTemplateToUser(user, template)
-      }
-    }
   }
 }
 

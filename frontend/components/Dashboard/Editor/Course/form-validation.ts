@@ -66,6 +66,7 @@ export const initialValues: CourseFormValues = {
   has_certificate: false,
   user_course_settings_visibilities: [],
   upcoming_active_link: false,
+  tier: undefined,
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {

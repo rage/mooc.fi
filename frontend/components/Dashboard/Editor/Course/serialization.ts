@@ -73,6 +73,7 @@ export const toCourseForm = ({
         user_course_settings_visibilities:
           course?.user_course_settings_visibilities || [],
         upcoming_active_link: course?.upcoming_active_link ?? false,
+        tier: course?.tier ?? undefined,
       }
     : initialValues
 }

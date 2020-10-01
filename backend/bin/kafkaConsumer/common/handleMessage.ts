@@ -9,7 +9,7 @@ import {
   KafkaMessageError,
   ValidationError,
 } from "../../lib/errors"
-import { Result } from "./result"
+import { Result } from "../../../util/result"
 
 let commitCounter = 0
 

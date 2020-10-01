@@ -38,6 +38,7 @@ export const CourseQuery = gql`
       support_email
       start_date
       end_date
+      tier
       photo {
         id
         compressed

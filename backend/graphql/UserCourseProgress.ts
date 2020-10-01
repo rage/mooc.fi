@@ -18,6 +18,7 @@ schema.objectType({
     t.model.user_id()
     t.model.user()
     t.model.user_course_service_progresses()
+    t.model.extra()
 
     t.list.field("progress", {
       type: "Json",
@@ -26,8 +27,7 @@ schema.objectType({
           where: { id: parent.id },
           select: { progress: true },
         })
-
-        return (res?.progress as any) ?? [] // type error without any
+        return (res?.progress as any) || []
       },
     })
 
@@ -209,18 +209,29 @@ schema.extendType({
           list: true,
           required: true,
         }),
+        extra: schema.arg({
+          type: "Json",
+        }),
         max_points: schema.floatArg(),
         n_points: schema.floatArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
-        const { user_id, course_id, progress, max_points, n_points } = args
+        const {
+          user_id,
+          course_id,
+          progress,
+          max_points,
+          n_points,
+          extra,
+        } = args
 
         return ctx.db.userCourseProgress.create({
           data: {
             user: { connect: { id: user_id } },
             course: { connect: { id: course_id } },
             progress,
+            extra,
             max_points,
             n_points,
           },

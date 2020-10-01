@@ -63,6 +63,7 @@ export interface CourseCreateArg {
   support_email?: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
+  tier?: number | null
   upcoming_active_link?: boolean | null
   user_course_settings_visibilities?:
     | UserCourseSettingsVisibilityCreateInput[]
@@ -122,6 +123,7 @@ export interface CourseUpsertArg {
   support_email?: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
+  tier?: number | null
   upcoming_active_link?: boolean | null
   user_course_settings_visibilities?:
     | UserCourseSettingsVisibilityUpsertInput[]
