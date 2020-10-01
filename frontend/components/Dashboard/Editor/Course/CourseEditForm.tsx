@@ -408,6 +408,17 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
                       )}
                     </StyledFieldWithAnchor>
                     <StyledFieldWithAnchor
+                      name="tier"
+                      type="number"
+                      label="tier"
+                      variant="outlined"
+                      autoComplete="off"
+                      component={StyledTextField}
+                      error={errors.tier}
+                      style={{ width: "20%" }}
+                      InputLabelProps={inputLabelProps}
+                    />
+                    <StyledFieldWithAnchor
                       name="inherit_settings_from"
                       type="select"
                       label="inherit settings from"

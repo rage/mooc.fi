@@ -42,6 +42,7 @@ export interface CourseFormValues extends FormValues {
   has_certificate: boolean
   user_course_settings_visibilities: UserCourseSettingsVisibilityFormValues[]
   upcoming_active_link?: boolean
+  tier?: number
 }
 
 export interface CourseTranslationFormValues extends FormValues {

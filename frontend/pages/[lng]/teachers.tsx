@@ -121,9 +121,7 @@ const ForTeachers = () => {
             </TextBlock>
           </ContentBlock>
         </section>
-      ) : (
-        ""
-      )}
+      ) : null}
       <ContentBlock>
         <StyledIcon icon={faComments} size="3x" />
         <H1NoBackground variant="h4" component="h2" align="center">

@@ -2,7 +2,7 @@ import { Message, ExerciseData } from "./interfaces"
 import { PrismaClient } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
-import { ok, err, Result } from "../common/result"
+import { ok, err, Result } from "../../../util/result"
 import { DatabaseInputError } from "../../lib/errors"
 
 export const saveToDatabase = async (

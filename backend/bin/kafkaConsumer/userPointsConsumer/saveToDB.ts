@@ -5,7 +5,7 @@ import winston = require("winston")
 import { CheckCompletion } from "../userCourseProgressConsumer/generateUserCourseProgress"
 import knex from "knex"
 import getUserFromTMC from "../common/getUserFromTMC"
-import { ok, err, Result } from "../common/result"
+import { ok, err, Result } from "../../../util/result"
 import { DatabaseInputError, TMCError } from "../../lib/errors"
 
 const Knex = knex({

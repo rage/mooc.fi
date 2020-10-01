@@ -64,6 +64,42 @@ schema.objectType({
       },
     })
 
+    t.field("project_completion", {
+      type: "Boolean",
+      args: {
+        course_id: schema.idArg({ required: false }),
+        course_slug: schema.stringArg({ required: false }),
+      },
+      resolve: async (parent, { course_id, course_slug }, ctx) => {
+        if (!course_id && !course_slug) {
+          throw new Error("need course_id or course_slug")
+        }
+
+        const handlerCourse = await ctx.db.course
+          .findOne({
+            where: {
+              id: course_id ?? undefined,
+              slug: course_slug ?? undefined,
+            },
+          })
+          .completions_handled_by()
+
+        const progresses = await ctx.db.userCourseProgress.findMany({
+          where: {
+            course: {
+              id: handlerCourse?.id ?? course_id ?? undefined,
+              slug: handlerCourse ? undefined : course_slug ?? undefined,
+            },
+            user: { id: parent.id },
+          },
+        })
+
+        return (
+          progresses?.some((p) => (p?.extra as any)?.projectCompletion) ?? false
+        )
+      },
+    })
+
     t.field("progress", {
       type: "Progress",
       nullable: false,
