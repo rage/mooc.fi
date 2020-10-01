@@ -1,8 +1,8 @@
-import { schema } from "nexus"
+import { objectType, arg, stringArg } from "@nexus/schema"
 import { notEmpty } from "../../util/notEmpty"
 import { filterNull } from "../../util/db-functions"
 
-schema.objectType({
+export default objectType({
   name: "StudyModule",
   definition(t) {
     t.model.id()
@@ -19,8 +19,8 @@ schema.objectType({
     t.list.field("courses", {
       type: "Course",
       args: {
-        orderBy: schema.arg({ type: "CourseOrderByInput" }),
-        language: schema.stringArg(),
+        orderBy: arg({ type: "CourseOrderByInput" }),
+        language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { language, orderBy } = args

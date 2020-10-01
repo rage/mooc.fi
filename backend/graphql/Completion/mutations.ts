@@ -1,11 +1,11 @@
-import { schema } from "nexus"
+import { extendType } from "@nexus/schema"
 
 import Knex from "../../services/knex"
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
 import { groupBy } from "lodash"
 
-schema.extendType({
+export default extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCompletion", {

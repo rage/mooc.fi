@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { inputObjectType } from "@nexus/schema"
 
-schema.inputObjectType({
+export const CompletionArg = inputObjectType({
   name: "CompletionArg",
   definition(t) {
     t.string("completion_id", { required: true })
@@ -9,7 +9,7 @@ schema.inputObjectType({
   },
 })
 
-schema.inputObjectType({
+export const ManualCompletionArg = inputObjectType({
   name: "ManualCompletionArg",
   definition(t) {
     t.string("user_id", { required: true })

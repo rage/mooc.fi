@@ -1,5 +1,4 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, arg, booleanArg, idArg } from "@nexus/schema"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
@@ -9,7 +8,7 @@ import { isAdmin } from "../accessControl"
 
 const sharp = require("sharp")
 
-schema.objectType({
+export const Image = objectType({
   name: "Image",
   definition(t) {
     t.model.id()
@@ -28,14 +27,14 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const ImageMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addImage", {
       type: "Image",
       args: {
-        file: schema.arg({ type: "Upload", required: true }),
-        base64: schema.booleanArg(),
+        file: arg({ type: "Upload", required: true }),
+        base64: booleanArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx: NexusContext) => {
@@ -48,7 +47,7 @@ schema.extendType({
     t.field("deleteImage", {
       type: "Boolean",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx: NexusContext) => {

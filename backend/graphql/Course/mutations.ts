@@ -11,25 +11,25 @@ import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "../Image"
 import { omit } from "lodash"
 import { invalidate } from "../../services/redis"
-import { schema } from "nexus"
 import { UserInputError } from "apollo-server-core"
 import { NexusContext } from "../../context"
 import { isAdmin } from "../../accessControl"
 import { Prisma__CourseClient, Course } from "nexus-plugin-prisma/client"
-// for debug
+
+import { extendType, arg, idArg, stringArg } from "@nexus/schema"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
     key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
   ) */
 
-schema.extendType({
+export default extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourse", {
       type: "Course",
       args: {
-        course: schema.arg({
+        course: arg({
           type: "CourseCreateArg",
           required: true,
         }),
@@ -123,7 +123,7 @@ schema.extendType({
     t.field("updateCourse", {
       type: "Course",
       args: {
-        course: schema.arg({
+        course: arg({
           type: "CourseUpsertArg",
           required: true,
         }),
@@ -329,8 +329,8 @@ schema.extendType({
     t.field("deleteCourse", {
       type: "Course",
       args: {
-        id: schema.idArg(),
-        slug: schema.stringArg(),
+        id: idArg(),
+        slug: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx: NexusContext) => {

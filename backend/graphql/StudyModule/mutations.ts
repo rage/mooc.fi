@@ -1,15 +1,15 @@
-import { schema } from "nexus"
+import { extendType, arg, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
 
-schema.extendType({
+export default extendType({
   type: "Mutation",
   definition(t) {
     t.field("addStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: schema.arg({
+        study_module: arg({
           type: "StudyModuleCreateArg",
           required: true,
         }),
@@ -39,7 +39,7 @@ schema.extendType({
     t.field("updateStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: schema.arg({
+        study_module: arg({
           type: "StudyModuleUpsertArg",
           required: true,
         }),
@@ -108,8 +108,8 @@ schema.extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: schema.idArg({ required: false }),
-        slug: schema.stringArg(),
+        id: idArg({ required: false }),
+        slug: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

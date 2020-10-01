@@ -1,7 +1,6 @@
-// import { prismaObjectType } from "nexus-prisma"
-import { schema } from "nexus"
+import { objectType } from "@nexus/schema"
 
-schema.objectType({
+export const Course = objectType({
   name: "Course",
   definition(t) {
     t.model.id()
