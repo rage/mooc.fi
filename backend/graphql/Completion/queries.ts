@@ -1,21 +1,21 @@
-import { schema } from "nexus"
+import { extendType, stringArg, intArg, idArg } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
 import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"
 
-schema.extendType({
+export default extendType({
   type: "Query",
   definition(t) {
     t.list.field("completions", {
       type: "Completion",
       args: {
-        course: schema.stringArg({ required: true }),
-        completion_language: schema.stringArg(),
-        first: schema.intArg(),
-        after: schema.idArg(),
-        last: schema.intArg(),
-        before: schema.idArg(),
+        course: stringArg({ required: true }),
+        completion_language: stringArg(),
+        first: intArg(),
+        after: idArg(),
+        last: intArg(),
+        before: idArg(),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -67,9 +67,9 @@ schema.extendType({
     t.connection("completionsPaginated", {
       type: "Completion",
       additionalArgs: {
-        course: schema.stringArg({ required: true }),
-        completion_language: schema.stringArg(),
-        skip: schema.intArg({ default: 0 }),
+        course: stringArg({ required: true }),
+        completion_language: stringArg(),
+        skip: intArg({ default: 0 }),
       },
       authorize: or(isOrganization, isAdmin),
       cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,

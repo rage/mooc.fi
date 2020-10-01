@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { objectType } from "@nexus/schema"
 
-schema.objectType({
+export const ExerciseCompletionRequiredAction = objectType({
   name: "ExerciseCompletionRequiredAction",
   definition(t) {
     t.model.id()

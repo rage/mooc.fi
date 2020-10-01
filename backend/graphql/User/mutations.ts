@@ -1,17 +1,17 @@
 import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
-import { schema } from "nexus"
+import { extendType, stringArg, booleanArg, arg } from "@nexus/schema"
 import { NexusContext } from "../../context"
 import hashUser from "../../util/hashUser"
 
-schema.extendType({
+export default extendType({
   type: "Mutation",
   definition(t) {
     t.field("updateUserName", {
       type: "User",
       args: {
-        first_name: schema.stringArg(),
-        last_name: schema.stringArg(),
+        first_name: stringArg(),
+        last_name: stringArg(),
       },
       resolve: (_, { first_name, last_name }, ctx: NexusContext) => {
         const {
@@ -40,7 +40,7 @@ schema.extendType({
     t.field("updateResearchConsent", {
       type: "User",
       args: {
-        value: schema.booleanArg({ required: true }),
+        value: booleanArg({ required: true }),
       },
       resolve: (_, { value }, ctx: NexusContext) => {
         const {
@@ -69,7 +69,7 @@ schema.extendType({
     t.field("addUser", {
       type: "User",
       args: {
-        user: schema.arg({
+        user: arg({
           type: "UserArg",
           required: true,
         }),

@@ -1,8 +1,7 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, idArg, arg, intArg } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const ExerciseCompletion = objectType({
   name: "ExerciseCompletion",
   definition(t) {
     t.model.id()
@@ -20,13 +19,13 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const ExerciseCompletionQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("exerciseCompletion", {
       type: "ExerciseCompletion",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
@@ -50,16 +49,16 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const ExerciseCompletionMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addExerciseCompletion", {
       type: "ExerciseCompletion",
       args: {
-        n_points: schema.intArg(),
-        exercise: schema.idArg(),
-        user: schema.idArg(),
-        timestamp: schema.arg({ type: "DateTime" }),
+        n_points: intArg(),
+        exercise: idArg(),
+        user: idArg(),
+        timestamp: arg({ type: "DateTime" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {

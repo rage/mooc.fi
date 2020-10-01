@@ -1,7 +1,13 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  idArg,
+  stringArg,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const CourseAlias = objectType({
   name: "CourseAlias",
   definition(t) {
     t.model.id()
@@ -13,7 +19,7 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const CourseAliasCreateInput = inputObjectType({
   name: "CourseAliasCreateInput",
   definition(t) {
     t.id("course", { required: false })
@@ -21,7 +27,7 @@ schema.inputObjectType({
   },
 })
 
-schema.inputObjectType({
+export const CourseAliasUpsertInput = inputObjectType({
   name: "CourseAliasUpsertInput",
   definition(t) {
     t.id("id", { required: false })
@@ -30,7 +36,7 @@ schema.inputObjectType({
   },
 })
 
-schema.extendType({
+export const CourseAliasQueries = extendType({
   type: "Query",
   definition(t) {
     t.crud.courseAliases({
@@ -46,14 +52,14 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const CourseAliasMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourseAlias", {
       type: "CourseAlias",
       args: {
-        course_code: schema.stringArg({ required: true }),
-        course: schema.idArg({ required: true }),
+        course_code: stringArg({ required: true }),
+        course: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { inputObjectType } from "@nexus/schema"
 
-schema.inputObjectType({
+export const StudyModuleCreateArg = inputObjectType({
   name: "StudyModuleCreateArg",
   definition(t) {
     t.string("slug", { required: true })
@@ -15,7 +15,7 @@ schema.inputObjectType({
   },
 })
 
-schema.inputObjectType({
+export const StudyModuleUpsertArg = inputObjectType({
   name: "StudyModuleUpsertArg",
   definition(t) {
     t.id("id", { required: false })

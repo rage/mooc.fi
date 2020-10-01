@@ -1,7 +1,7 @@
-import { schema } from "nexus"
 import { ForbiddenError } from "apollo-server-core"
+import { objectType } from "@nexus/schema"
 
-schema.objectType({
+export const Completion = objectType({
   name: "Completion",
   definition(t) {
     t.model.id()

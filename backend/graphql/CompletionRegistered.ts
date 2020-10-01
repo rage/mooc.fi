@@ -1,10 +1,10 @@
-import { schema } from "nexus"
+import { objectType, extendType, stringArg, intArg, arg } from "@nexus/schema"
 import { chunk } from "lodash"
 import { or, isOrganization, isAdmin } from "../accessControl"
 import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { CompletionRegisteredWhereUniqueInput } from "@prisma/client"
 
-schema.objectType({
+export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
   definition(t) {
     t.model.id()
@@ -24,16 +24,16 @@ schema.objectType({
 
 /************************* QUERIES **********************/
 
-schema.extendType({
+export const CompletionRegisteredQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("registeredCompletions", {
       type: "CompletionRegistered",
       args: {
-        course: schema.stringArg(),
-        skip: schema.intArg(),
-        take: schema.intArg(),
-        cursor: schema.arg({ type: "CompletionRegisteredWhereUniqueInput" }),
+        course: stringArg(),
+        skip: intArg(),
+        take: intArg(),
+        cursor: arg({ type: "CompletionRegisteredWhereUniqueInput" }),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -111,13 +111,13 @@ const all = async (
 }
 
 /************************ MUTATIONS *********************/
-schema.extendType({
+export const CompletionRegisteredMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("registerCompletion", {
       type: "String",
       args: {
-        completions: schema.arg({ type: "CompletionArg", list: true }),
+        completions: arg({ type: "CompletionArg", list: true }),
       },
       authorize: isOrganization,
       resolve: async (_, args, ctx: NexusContext) => {

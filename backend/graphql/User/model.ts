@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { objectType, stringArg, idArg } from "@nexus/schema"
 
-schema.objectType({
+export const User = objectType({
   name: "User",
   definition(t) {
     t.model.id()
@@ -32,8 +32,8 @@ schema.objectType({
       list: true,
       nullable: false,
       args: {
-        course_id: schema.stringArg({ required: false }),
-        course_slug: schema.stringArg({ required: false }),
+        course_id: stringArg({ required: false }),
+        course_slug: stringArg({ required: false }),
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug } = args
@@ -67,8 +67,8 @@ schema.objectType({
     t.field("project_completion", {
       type: "Boolean",
       args: {
-        course_id: schema.idArg({ required: false }),
-        course_slug: schema.stringArg({ required: false }),
+        course_id: idArg({ required: false }),
+        course_slug: stringArg({ required: false }),
       },
       resolve: async (parent, { course_id, course_slug }, ctx) => {
         if (!course_id && !course_slug) {
@@ -104,7 +104,7 @@ schema.objectType({
       type: "Progress",
       nullable: false,
       args: {
-        course_id: schema.idArg({ required: true }),
+        course_id: idArg({ required: true }),
       },
       resolve: async (parent, args, ctx) => {
         const course = await ctx.db.course.findOne({
@@ -145,7 +145,7 @@ schema.objectType({
       type: "UserCourseProgress",
       nullable: true,
       args: {
-        course_id: schema.idArg(),
+        course_id: idArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { course_id } = args

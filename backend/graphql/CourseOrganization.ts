@@ -1,8 +1,7 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, idArg, booleanArg } from "@nexus/schema"
 import { or, isVisitor, isAdmin } from "../accessControl"
 
-schema.objectType({
+export const CourseOrganization = objectType({
   name: "CourseOrganization",
   definition(t) {
     t.model.id()
@@ -16,14 +15,14 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const CourseOrganizationQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("courseOrganizations", {
       type: "CourseOrganization",
       args: {
-        course_id: schema.idArg(),
-        organization_id: schema.idArg(),
+        course_id: idArg(),
+        organization_id: idArg(),
       },
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id } = args
@@ -39,15 +38,15 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const CourseOrganizationMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        course_id: schema.idArg({ required: true }),
-        organization_id: schema.idArg({ required: true }),
-        creator: schema.booleanArg(),
+        course_id: idArg({ required: true }),
+        organization_id: idArg({ required: true }),
+        creator: booleanArg(),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -79,7 +78,7 @@ schema.extendType({
     t.field("deleteCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {

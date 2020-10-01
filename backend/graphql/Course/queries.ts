@@ -1,18 +1,18 @@
-import { schema } from "nexus"
+import { extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 import { Course } from "nexus-plugin-prisma/client"
 
-schema.extendType({
+export default extendType({
   type: "Query",
   definition(t) {
     t.field("course", {
       type: "Course",
       args: {
-        slug: schema.stringArg(),
-        id: schema.idArg(),
-        language: schema.stringArg(),
+        slug: stringArg(),
+        id: idArg(),
+        language: stringArg(),
       },
       authorize: or(isAdmin, isUser),
       nullable: true,
@@ -80,8 +80,8 @@ schema.extendType({
     t.list.field("courses", {
       type: "Course",
       args: {
-        orderBy: schema.arg({ type: "CourseOrderByInput" }),
-        language: schema.stringArg(),
+        orderBy: arg({ type: "CourseOrderByInput" }),
+        language: stringArg(),
       },
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
@@ -133,7 +133,7 @@ schema.extendType({
     t.field("course_exists", {
       type: "Boolean",
       args: {
-        slug: schema.stringArg({ required: true }),
+        slug: stringArg({ required: true }),
       },
       authorize: or(isAdmin, isUser),
       resolve: async (_, args, ctx) => {

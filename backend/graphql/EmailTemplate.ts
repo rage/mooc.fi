@@ -1,9 +1,8 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const EmailTemplate = objectType({
   name: "EmailTemplate",
   definition(t) {
     t.model.id()
@@ -18,14 +17,14 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const EmailTemplateQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("email_template", {
       type: "EmailTemplate",
       nullable: true,
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>
@@ -44,16 +43,16 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const EmailTemplateMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        name: schema.stringArg({ required: true }),
-        html_body: schema.stringArg(),
-        txt_body: schema.stringArg(),
-        title: schema.stringArg(),
+        name: stringArg({ required: true }),
+        html_body: stringArg(),
+        txt_body: stringArg(),
+        title: stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -75,11 +74,11 @@ schema.extendType({
     t.field("updateEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: schema.idArg({ required: true }),
-        name: schema.stringArg(),
-        html_body: schema.stringArg(),
-        txt_body: schema.stringArg(),
-        title: schema.stringArg(),
+        id: idArg({ required: true }),
+        name: stringArg(),
+        html_body: stringArg(),
+        txt_body: stringArg(),
+        title: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -102,7 +101,7 @@ schema.extendType({
     t.field("deleteEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
