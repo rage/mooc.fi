@@ -20,7 +20,8 @@
     "kafka-consumer-user-points": "node ./dist/bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.js",
     "kafka-consumer-user-points-realtime": "node ./dist/bin/kafkaConsumer/userPointsRealtimeConsumer/kafkaConsumer.js",
     "kafka-consumer-exercises": "node ./dist/bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.js",
-    "generate": "prisma generate",
+    "generate": "npm run generate:prisma && npm run generate:nexus",
+    "generate:prisma": "prisma generate",
     "seed": "node ./dist/bin/seed.js",
     "seedPoints": "node ./dist/bin/seedPoints.js",
     "createExports": "ts-node ./bin/createExports.ts",
@@ -30,8 +31,8 @@
     "remove-duplicate-completions": "node ./dist/bin/removeDuplicateCompletions.js",
     "dev": "ts-node-dev --transpile-only ./app.ts",
     "dev:typecheck": "tsc --noEmit --watch",
-    "reflect": "env NEXUS_REFLECTION=true NODE_ENV=production ts-node ./schema.ts",
-    "build": "npm run reflect && tsc",
+    "generate:nexus": "env NEXUS_REFLECTION=true NODE_ENV=production ts-node --transpile-only ./schema.ts",
+    "build": "tsc --noEmit false",
     "old-dev": "nexus dev",
     "old-build": "nexus build",
     "start": "node dist",
@@ -111,6 +112,7 @@
     "typescript": "^4.0.3"
   },
   "resolutions": {
-    "graphql-upload": "11.0.0"
+    "graphql-upload": "11.0.0",
+    "graphql": "14.6.0"
   }
 }
