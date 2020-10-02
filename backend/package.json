@@ -35,7 +35,7 @@
     "build": "tsc --noEmit false",
     "old-dev": "nexus dev",
     "old-build": "nexus build",
-    "start": "node dist",
+    "start": "node dist/app.js",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
     "build-sourcemap": "tsc --build tsconfig.sourcemap.json"
