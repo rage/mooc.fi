@@ -1,5 +1,10 @@
+const PRODUCTION = process.env.NODE_ENV === "production"
+
+require("dotenv-safe").config({
+  allowEmptyValues: PRODUCTION,
+})
 if (process.env.NEXUS_REFLECTION) {
-  require("sharp") 
+  require("sharp")
 }
 
 import {
@@ -18,8 +23,6 @@ import { sentryPlugin } from "./middlewares/sentry"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
 import { newRelicPlugin } from "./middlewares/newrelic"
-
-const PRODUCTION = process.env.NODE_ENV === "production"
 
 const plugins = [
   nexusPrisma({
