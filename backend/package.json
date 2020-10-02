@@ -35,8 +35,7 @@
     "build": "npm run createExports && tsc --noEmit false",
     "start": "node dist/app.js",
     "migrate": "knex migrate:latest",
-    "rollback": "knex migrate:rollback",
-    "build-sourcemap": "tsc --build tsconfig.sourcemap.json"
+    "rollback": "knex migrate:rollback"
   },
   "keywords": [],
   "author": "",

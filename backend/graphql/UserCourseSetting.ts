@@ -115,18 +115,19 @@ export const UserCourseSettingQueries = extendType({
           }
         }
 
-        const orCondition: UserWhereInput[] = [
-          {
+        const orCondition: UserWhereInput[] = []
+
+        if (search)
+          orCondition.push({
             OR: buildSearch(
               ["first_name", "last_name", "username", "email"],
               search ?? "",
             ),
-          },
-        ]
+          })
 
-        if (user_id) orCondition.concat({ id: user_id })
+        if (user_id) orCondition.push({ id: user_id })
         if (user_upstream_id)
-          orCondition.concat({ upstream_id: user_upstream_id })
+          orCondition.push({ upstream_id: user_upstream_id })
 
         return ctx.prisma.userCourseSetting.findMany({
           ...convertPagination({ first, last, before, after, skip }),
@@ -157,18 +158,19 @@ export const UserCourseSettingQueries = extendType({
               course_id = inheritSettingsCourse.id
             }
 
-            const orCondition: UserWhereInput[] = [
-              {
+            const orCondition: UserWhereInput[] = []
+
+            if (search)
+              orCondition.push({
                 OR: buildSearch(
                   ["first_name", "last_name", "username", "email"],
                   search ?? "",
                 ),
-              },
-            ]
+              })
 
-            if (user_id) orCondition.concat({ id: user_id })
+            if (user_id) orCondition.push({ id: user_id })
             if (user_upstream_id)
-              orCondition.concat({ upstream_id: user_upstream_id })
+              orCondition.push({ upstream_id: user_upstream_id })
 
             const count = await ctx.prisma.userCourseSetting.count({
               where: {
