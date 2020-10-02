@@ -1,3 +1,7 @@
+if (process.env.NEXUS_REFLECTION) {
+  require("sharp") 
+}
+
 import {
   makeSchema,
   connectionPlugin,
