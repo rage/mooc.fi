@@ -25,7 +25,6 @@ export const User = objectType({
     t.model.user_organizations()
     t.model.verified_users()
     t.model.research_consent()
-    // t.prismaFields({ filter: ["completions"] })
 
     t.field("completions", {
       type: "Completion",
@@ -39,7 +38,7 @@ export const User = objectType({
         let { course_id, course_slug } = args
 
         if (course_id || course_slug) {
-          const handlerCourse = await ctx.db.course
+          const handlerCourse = await ctx.prisma.course
             .findOne({
               where: {
                 id: args.course_id ?? undefined,
@@ -52,7 +51,7 @@ export const User = objectType({
             course_slug = undefined
           }
         }
-        return ctx.db.completion.findMany({
+        return ctx.prisma.completion.findMany({
           where: {
             user_id: parent.id,
             course:
@@ -75,7 +74,7 @@ export const User = objectType({
           throw new Error("need course_id or course_slug")
         }
 
-        const handlerCourse = await ctx.db.course
+        const handlerCourse = await ctx.prisma.course
           .findOne({
             where: {
               id: course_id ?? undefined,
@@ -84,7 +83,7 @@ export const User = objectType({
           })
           .completions_handled_by()
 
-        const progresses = await ctx.db.userCourseProgress.findMany({
+        const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
             course: {
               id: handlerCourse?.id ?? course_id ?? undefined,
@@ -107,36 +106,38 @@ export const User = objectType({
         course_id: idArg({ required: true }),
       },
       resolve: async (parent, args, ctx) => {
-        const course = await ctx.db.course.findOne({
+        const course = await ctx.prisma.course.findOne({
           where: { id: args.course_id },
         })
         return {
           course,
           user: parent,
-        }
+        } as any
       },
     })
 
-    t.field("progresses", {
+    t.list.field("progresses", {
       type: "Progress",
-      list: true,
       nullable: false,
       resolve: async (parent, _, ctx) => {
-        const user_course_progressess = await ctx.db.userCourseProgress.findMany(
+        const user_course_progressess = await ctx.prisma.userCourseProgress.findMany(
           {
             where: { user_id: parent.id },
           },
         )
-        const progresses = user_course_progressess.map(async (p) => {
-          const course = await ctx.db.userCourseProgress
-            .findOne({ where: { id: p.id } })
-            .course()
-          return {
-            course,
-            user: parent,
-          }
-        })
-        return progresses
+        const progresses = await Promise.all(
+          user_course_progressess.map(async (p) => {
+            const course = await ctx.prisma.userCourseProgress
+              .findOne({ where: { id: p.id } })
+              .course()
+            return {
+              course,
+              user: parent,
+            }
+          }),
+        )
+
+        return progresses as any
       },
     })
 
@@ -150,7 +151,7 @@ export const User = objectType({
       resolve: async (parent, args, ctx) => {
         const { course_id } = args
 
-        const progresses = await ctx.db.userCourseProgress.findMany({
+        const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
             user_id: parent.id,
             course_id,
@@ -169,7 +170,7 @@ export const User = objectType({
       type: "ExerciseCompletion",
       list: true,
       resolve: async (parent, _, ctx) => {
-        return ctx.db.exerciseCompletion.findMany({
+        return ctx.prisma.exerciseCompletion.findMany({
           where: {
             user_id: parent.id,
           },

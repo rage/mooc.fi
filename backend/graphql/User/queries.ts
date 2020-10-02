@@ -14,7 +14,7 @@ export const UserQueries = extendType({
       type: "user",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.user.findMany()
+        return ctx.prisma.user.findMany()
       },
     })*/
 
@@ -35,7 +35,7 @@ export const UserQueries = extendType({
           )
         }
 
-        const users = await ctx.db.user.findMany({
+        const users = await ctx.prisma.user.findMany({
           where: {
             OR: buildSearch(
               ["first_name", "last_name", "username", "email"],
@@ -65,7 +65,7 @@ export const UserQueries = extendType({
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        return ctx.db.user.findMany({
+        return ctx.prisma.user.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             OR: buildSearch(
@@ -81,7 +81,7 @@ export const UserQueries = extendType({
             search: stringArg(),
           },
           resolve: (_, { search }, ctx) => {
-            return ctx.db.user.count({
+            return ctx.prisma.user.count({
               where: {
                 OR: buildSearch(
                   ["first_name", "last_name", "username", "email"],

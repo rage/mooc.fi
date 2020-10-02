@@ -61,9 +61,11 @@ producer.on("delivery-report", function (err, report) {
 })
 
 let app = express()
+
 app.use(compression())
 app.use(bodyParser.json())
 app.use(morgan("combined"))
+
 const port = parseInt(process.env.KAFKA_BRIDGE_SERVER_PORT || "3003")
 const host = process.env.KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 

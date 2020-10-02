@@ -43,7 +43,7 @@ export const Exercise = objectType({
       resolve: async (parent, args, ctx: Context) => {
         const { orderBy } = args
 
-        return ctx.db.exercise
+        return ctx.prisma.exercise
           .findOne({ where: { id: parent.id } })
           .exercise_completions({
             where: {
@@ -65,9 +65,10 @@ export const ExerciseQueries = extendType({
       args: {
         id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        ctx.db.exercise.findOne({
+        await ctx.prisma.exercise.findOne({
           where: { id },
         }),
     })
@@ -80,7 +81,7 @@ export const ExerciseQueries = extendType({
       type: "exercise",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.exercise.findMany()
+        return ctx.prisma.exercise.findMany()
       },
     })*/
   },
@@ -112,8 +113,8 @@ export const ExerciseMutations = extendType({
           service,
         } = args
 
-        ctx.db
-        return ctx.db.exercise.create({
+        ctx.prisma
+        return ctx.prisma.exercise.create({
           data: {
             course: course ? { connect: { id: course } } : undefined,
             service: service ? { connect: { id: service } } : undefined,

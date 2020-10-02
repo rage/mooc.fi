@@ -25,14 +25,14 @@ export const CompletionQueries = extendType({
           ctx.disableRelations = true
         }
 
-        const courseWithSlug = await ctx.db.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findOne({
           where: {
             slug: course,
           },
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.courseAlias
+          const courseFromAvoinCourse = await ctx.prisma.courseAlias
             .findOne({
               where: {
                 course_code: course,
@@ -45,7 +45,7 @@ export const CompletionQueries = extendType({
           }
           course = courseFromAvoinCourse.slug
         }
-        const courseObject = await ctx.db.course.findOne({
+        const courseObject = await ctx.prisma.course.findOne({
           where: {
             slug: course,
           },
@@ -81,12 +81,12 @@ export const CompletionQueries = extendType({
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        const courseWithSlug = await ctx.db.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findOne({
           where: { slug: course },
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.courseAlias
+          const courseFromAvoinCourse = await ctx.prisma.courseAlias
             .findOne({ where: { course_code: course } })
             .course()
           if (!courseFromAvoinCourse) {
@@ -95,7 +95,7 @@ export const CompletionQueries = extendType({
           course = courseFromAvoinCourse.slug
         }
 
-        return ctx.db.completion.findMany({
+        return ctx.prisma.completion.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             course: { slug: course },

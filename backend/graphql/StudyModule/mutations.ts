@@ -18,7 +18,7 @@ export const StudyModuleMutations = extendType({
       resolve: async (_, { study_module }, ctx) => {
         const { study_module_translations } = study_module
 
-        return ctx.db.studyModule.create({
+        return ctx.prisma.studyModule.create({
           data: {
             ...study_module,
             name: study_module.name ?? "",
@@ -52,7 +52,7 @@ export const StudyModuleMutations = extendType({
           throw new UserInputError("must provide slug")
         }
 
-        const existingTranslations = await ctx.db.studyModule
+        const existingTranslations = await ctx.prisma.studyModule
           .findOne({ where: { slug } })
           .study_module_translations()
         const newTranslations = (study_module_translations || [])
@@ -85,7 +85,7 @@ export const StudyModuleMutations = extendType({
             : undefined,
         }
 
-        const updatedModule = await ctx.db.studyModule.update({
+        const updatedModule = await ctx.prisma.studyModule.update({
           where: {
             id: id ?? undefined,
             slug,
@@ -119,7 +119,7 @@ export const StudyModuleMutations = extendType({
           throw "must have at least id or slug"
         }
 
-        const deletedModule = await ctx.db.studyModule.delete({
+        const deletedModule = await ctx.prisma.studyModule.delete({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
