@@ -51,7 +51,7 @@ export const VerifiedUserMutations = extendType({
           throw new AuthenticationError("not logged in")
         }
 
-        const organization = await ctx.db.organization.findOne({
+        const organization = await ctx.prisma.organization.findOne({
           where: { id: organization_id },
         })
 
@@ -62,7 +62,7 @@ export const VerifiedUserMutations = extendType({
           throw new ForbiddenError("wrong organization secret key")
         }
 
-        return ctx.db.verifiedUser.create({
+        return ctx.prisma.verifiedUser.create({
           data: {
             organization: {
               connect: { id: organization.id },

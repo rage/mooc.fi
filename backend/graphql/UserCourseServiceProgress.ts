@@ -22,7 +22,7 @@ export const UserCourseServiceProgress = objectType({
     t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
-        const res = await ctx.db.userCourseServiceProgress.findOne({
+        const res = await ctx.prisma.userCourseServiceProgress.findOne({
           where: { id: parent.id },
           select: { progress: true },
         })
@@ -48,7 +48,7 @@ export const UserCourseServiceProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
-        const result = await ctx.db.userCourseServiceProgress.findMany({
+        const result = await ctx.prisma.userCourseServiceProgress.findMany({
           where: {
             user_id: user_id,
             course_id: course_id,
@@ -90,7 +90,7 @@ export const UserCourseServiceProgressQueries = extendType({
           before,
           after,
         } = args
-        return ctx.db.user_course_service_progress.findMany({
+        return ctx.prisma.user_course_service_progress.findMany({
           where: {
             user: user_id,
             course: course_id,
@@ -122,10 +122,10 @@ export const UserCourseServiceProgressMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { service_id, progress, user_course_progress_id } = args
 
-        const course = await ctx.db.userCourseProgress
+        const course = await ctx.prisma.userCourseProgress
           .findOne({ where: { id: user_course_progress_id } })
           .course()
-        const user = await ctx.db.userCourseProgress
+        const user = await ctx.prisma.userCourseProgress
           .findOne({ where: { id: user_course_progress_id } })
           .user()
 
@@ -133,7 +133,7 @@ export const UserCourseServiceProgressMutations = extendType({
           throw new Error("course or user not found")
         }
 
-        return ctx.db.userCourseServiceProgress.create({
+        return ctx.prisma.userCourseServiceProgress.create({
           data: {
             course: {
               connect: { id: course.id },

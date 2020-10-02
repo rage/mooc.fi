@@ -55,7 +55,7 @@ export const CourseTranslationQueries = extendType({
       },
       authorize: isAdmin,
       resolve: (_, { language }, ctx) =>
-        ctx.db.courseTranslation.findMany({
+        ctx.prisma.courseTranslation.findMany({
           where: { language: language ?? undefined },
         }),
     })
@@ -78,7 +78,7 @@ export const CourseTranslationMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { language, name, description, link, course } = args
 
-        const newCourseTranslation = await ctx.db.courseTranslation.create({
+        const newCourseTranslation = await ctx.prisma.courseTranslation.create({
           data: {
             language: language,
             name: name ?? "",
@@ -105,7 +105,7 @@ export const CourseTranslationMutations = extendType({
       resolve: (_, args, ctx) => {
         const { id, language, name, description, link, course } = args
 
-        return ctx.db.courseTranslation.update({
+        return ctx.prisma.courseTranslation.update({
           where: { id },
           data: {
             language: language,
@@ -125,7 +125,7 @@ export const CourseTranslationMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
-        return ctx.db.courseTranslation.delete({
+        return ctx.prisma.courseTranslation.delete({
           where: { id },
         })
       },

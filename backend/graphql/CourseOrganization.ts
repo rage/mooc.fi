@@ -27,7 +27,7 @@ export const CourseOrganizationQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id } = args
 
-        return ctx.db.courseOrganization.findMany({
+        return ctx.prisma.courseOrganization.findMany({
           where: {
             course_id: course_id ?? undefined,
             organization_id: organization_id ?? undefined,
@@ -52,7 +52,7 @@ export const CourseOrganizationMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id, creator } = args
 
-        const exists = await ctx.db.courseOrganization.findMany({
+        const exists = await ctx.prisma.courseOrganization.findMany({
           where: {
             course_id: course_id,
             organization_id: organization_id,
@@ -63,7 +63,7 @@ export const CourseOrganizationMutations = extendType({
           throw new Error("this course/organization relation already exists")
         }
 
-        return ctx.db.courseOrganization.create({
+        return ctx.prisma.courseOrganization.create({
           data: {
             course: { connect: { id: course_id } },
             organization: {
@@ -82,7 +82,7 @@ export const CourseOrganizationMutations = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {
-        return ctx.db.courseOrganization.delete({ where: { id } })
+        return ctx.prisma.courseOrganization.delete({ where: { id } })
       },
     })
   },

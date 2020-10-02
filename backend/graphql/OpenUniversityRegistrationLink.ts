@@ -54,9 +54,10 @@ export const OpenUniversityRegistrationLinkQueries = extendType({
       args: {
         id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        ctx.db.openUniversityRegistrationLink.findOne({
+        await ctx.prisma.openUniversityRegistrationLink.findOne({
           where: { id },
         }),
     })
@@ -68,7 +69,7 @@ export const OpenUniversityRegistrationLinkQueries = extendType({
       type: "open_university_registration_link",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.open_university_registration_link.findMany()
+        return ctx.prisma.open_university_registration_link.findMany()
       },
     })*/
   },
@@ -90,7 +91,7 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
         const { course_code, course, language, link } = args
 
         // FIXME: empty course_code and/or language?
-        const openUniversityRegistrationLink = await ctx.db.openUniversityRegistrationLink.create(
+        const openUniversityRegistrationLink = await ctx.prisma.openUniversityRegistrationLink.create(
           {
             data: {
               course: {
@@ -119,7 +120,7 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { id, course_code, course, language, link } = args
 
-        return ctx.db.openUniversityRegistrationLink.update({
+        return ctx.prisma.openUniversityRegistrationLink.update({
           where: {
             id,
           },

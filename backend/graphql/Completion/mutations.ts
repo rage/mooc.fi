@@ -29,7 +29,7 @@ export const CompletionMutations = extendType({
           completion_language,
         } = args
 
-        return ctx.db.completion.create({
+        return ctx.prisma.completion.create({
           data: {
             course: { connect: { id: course } },
             user: { connect: { id: user } },

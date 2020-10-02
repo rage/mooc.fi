@@ -23,9 +23,10 @@ export const ServiceQueries = extendType({
       args: {
         service_id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { service_id }, ctx) =>
-        ctx.db.service.findOne({ where: { id: service_id } }),
+        await ctx.prisma.service.findOne({ where: { id: service_id } }),
     })
 
     t.crud.services({
@@ -38,7 +39,7 @@ export const ServiceQueries = extendType({
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
 
-        return ctx.db.service.findMany()
+        return ctx.prisma.service.findMany()
       },
     })*/
   },
@@ -57,7 +58,7 @@ export const ServiceMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { url, name } = args
 
-        return await ctx.db.service.create({
+        return await ctx.prisma.service.create({
           data: {
             url,
             name,
@@ -77,7 +78,7 @@ export const ServiceMutations = extendType({
       resolve: (_, args, ctx) => {
         const { url, name, id } = args
 
-        return ctx.db.service.update({
+        return ctx.prisma.service.update({
           where: { id },
           data: {
             url: url ?? "",

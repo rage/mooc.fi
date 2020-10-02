@@ -14,10 +14,8 @@ export const UserMutations = extendType({
         last_name: stringArg(),
       },
       resolve: (_, { first_name, last_name }, ctx: Context) => {
-        const {
-          user: currentUser,
-          headers: { authorization },
-        } = ctx
+        const { user: currentUser } = ctx
+        const authorization = ctx?.req?.headers?.authorization
 
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
@@ -27,7 +25,7 @@ export const UserMutations = extendType({
         invalidate("userdetails", `Bearer ${access_token}`)
         invalidate("user", hashUser(currentUser))
 
-        return ctx.db.user.update({
+        return ctx.prisma.user.update({
           where: { id: currentUser.id },
           data: {
             first_name,
@@ -43,10 +41,8 @@ export const UserMutations = extendType({
         value: booleanArg({ required: true }),
       },
       resolve: (_, { value }, ctx: Context) => {
-        const {
-          user: currentUser,
-          headers: { authorization },
-        } = ctx
+        const { user: currentUser } = ctx
+        const authorization = ctx?.req?.headers?.authorization
 
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
@@ -57,7 +53,7 @@ export const UserMutations = extendType({
         invalidate("userdetails", `Bearer ${access_token}`)
         invalidate("user", hashUser(currentUser))
 
-        return ctx.db.user.update({
+        return ctx.prisma.user.update({
           where: { id: currentUser.id },
           data: {
             research_consent: value,
@@ -75,7 +71,7 @@ export const UserMutations = extendType({
         }),
       },
       resolve: async (_, { user }, ctx) => {
-        const exists = await ctx.db.user.findMany({
+        const exists = await ctx.prisma.user.findMany({
           where: { upstream_id: user.upstream_id },
         })
 
@@ -83,7 +79,7 @@ export const UserMutations = extendType({
           throw new Error("user with that upstream id already exists")
         }
 
-        return ctx.db.user.create({
+        return ctx.prisma.user.create({
           data: {
             ...user,
             administrator: false,

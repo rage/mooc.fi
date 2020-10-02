@@ -14,8 +14,9 @@ export const StudyModule = objectType({
     t.model.updated_at()
     t.model.study_module_translations()
 
-    // t.prismaFields(["*"])
-    t.field("description", { type: "String" })
+    // @ts-ignore: false error
+    t.string("description")
+
     t.list.field("courses", {
       type: "Course",
       args: {
@@ -25,7 +26,7 @@ export const StudyModule = objectType({
       resolve: async (parent, args, ctx) => {
         const { language, orderBy } = args
 
-        const courses = await ctx.db.course.findMany({
+        const courses = await ctx.prisma.course.findMany({
           orderBy: filterNull(orderBy) ?? undefined,
           where: { study_modules: { some: { id: parent.id } } },
         })
@@ -34,7 +35,7 @@ export const StudyModule = objectType({
           ? (
               await Promise.all(
                 courses.map(async (course) => {
-                  const course_translations = await ctx.db.courseTranslation.findMany(
+                  const course_translations = await ctx.prisma.courseTranslation.findMany(
                     {
                       where: { course_id: course.id, language },
                     },

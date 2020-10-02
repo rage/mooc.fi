@@ -78,10 +78,10 @@ export const OrganizationQueries = extendType({
         }
 
         /*if (!hidden) {
-          return ctx.db.organization.findOne({ where: { id } })
+          return ctx.prisma.organization.findOne({ where: { id } })
         }*/
 
-        const res = await ctx.db.organization.findMany({
+        const res = await ctx.prisma.organization.findMany({
           where: { id, hidden },
         })
         return res.length ? res[0] : null
@@ -117,7 +117,7 @@ export const OrganizationQueries = extendType({
           hidden,
         } = args
 
-        const orgs = await ctx.db.organization.findMany({
+        const orgs = await ctx.prisma.organization.findMany({
           take: take ?? undefined,
           skip: skip ?? undefined,
           cursor: cursor
@@ -159,14 +159,14 @@ export const OrganizationMutations = extendType({
 
         do {
           secret = await generateSecret()
-          result = await ctx.db.organization.findMany({
+          result = await ctx.prisma.organization.findMany({
             where: { secret_key: secret },
           })
         } while (result.length)
 
         // FIXME: empty name?
 
-        const org = await ctx.db.organization.create({
+        const org = await ctx.prisma.organization.create({
           data: {
             slug,
             secret_key: secret,
@@ -179,7 +179,7 @@ export const OrganizationMutations = extendType({
           },
         })
         // FIXME: return value not used
-        /*await ctx.db.organization_translation.create({
+        /*await ctx.prisma.organization_translation.create({
           data: {
             name: name ?? "",
             language: "fi_FI", //placeholder
@@ -189,7 +189,7 @@ export const OrganizationMutations = extendType({
           },
         })
 
-        const newOrg = await ctx.db.organization.findOne({
+        const newOrg = await ctx.prisma.organization.findOne({
           where: { id: org.id },
         })*/
 

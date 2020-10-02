@@ -27,9 +27,10 @@ export const ExerciseCompletionQueries = extendType({
       args: {
         id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        ctx.db.exerciseCompletion.findOne({
+        await ctx.prisma.exerciseCompletion.findOne({
           where: { id },
         }),
     })
@@ -43,7 +44,7 @@ export const ExerciseCompletionQueries = extendType({
       type: "exercise_completion",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.exercise_completion.findMany()
+        return ctx.prisma.exercise_completion.findMany()
       },
     })*/
   },
@@ -64,7 +65,7 @@ export const ExerciseCompletionMutations = extendType({
       resolve: (_, args, ctx) => {
         const { n_points, exercise, user, timestamp } = args
 
-        return ctx.db.exerciseCompletion.create({
+        return ctx.prisma.exerciseCompletion.create({
           data: {
             n_points,
             exercise: exercise ? { connect: { id: exercise } } : undefined,

@@ -136,7 +136,7 @@ export const uploadImage = async ({
     originalMimetype = "image/jpeg"
   }
 
-  const newImage = await ctx.db.image.create({
+  const newImage = await ctx.prisma.image.create({
     data: {
       name: filename,
       original,
@@ -158,7 +158,7 @@ export const deleteImage = async ({
   ctx: Context
   id: string
 }): Promise<boolean> => {
-  const image = await ctx.db.image.findOne({ where: { id } })
+  const image = await ctx.prisma.image.findOne({ where: { id } })
 
   if (!image) {
     return false
@@ -176,7 +176,7 @@ export const deleteImage = async ({
       `There was some problem with image deletion. Statuses: compressed ${compressed} uncompressed ${uncompressed} original ${original}`,
     )
   }
-  await ctx.db.image.delete({ where: { id } })
+  await ctx.prisma.image.delete({ where: { id } })
 
   return true
 }

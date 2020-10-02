@@ -46,7 +46,7 @@ export const CourseAliasQueries = extendType({
       type: "course_alias",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.course_alias.findMany()
+        return ctx.prisma.course_alias.findMany()
       },
     })*/
   },
@@ -67,7 +67,7 @@ export const CourseAliasMutations = extendType({
 
         // FIXME: what to do on empty course_code?
 
-        const newCourseAlias = await ctx.db.courseAlias.create({
+        const newCourseAlias = await ctx.prisma.courseAlias.create({
           data: {
             course_code: course_code ?? "",
             course: { connect: { id: course } },

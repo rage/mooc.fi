@@ -50,13 +50,18 @@ export const Completion = objectType({
  */
     t.field("user", {
       type: "User",
+      nullable: true,
       resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
           throw new ForbiddenError(
             "Cannot query relations when asking for more than 50 objects",
           )
         }
-        return ctx.db.completion.findOne({ where: { id: parent.id } }).user()
+        const user = await ctx.prisma.completion
+          .findOne({ where: { id: parent.id } })
+          .user()
+
+        return user
       },
     })
 
@@ -64,7 +69,7 @@ export const Completion = objectType({
       type: "String",
       nullable: true,
       resolve: async (parent, _, ctx) => {
-        const course = await ctx.db.completion
+        const course = await ctx.prisma.completion
           .findOne({ where: { id: parent.id } })
           .course()
 
@@ -86,7 +91,7 @@ export const Completion = objectType({
             language: parent.completion_language,
           }
         }
-        const avoinLinks = await ctx.db.openUniversityRegistrationLink.findMany(
+        const avoinLinks = await ctx.prisma.openUniversityRegistrationLink.findMany(
           {
             where: filter,
           },
@@ -101,7 +106,7 @@ export const Completion = objectType({
     t.field("registered", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
-        const registered = await ctx.db.completionRegistered.findMany({
+        const registered = await ctx.prisma.completionRegistered.findMany({
           where: { completion_id: parent.id },
         })
 
@@ -116,13 +121,13 @@ export const Completion = objectType({
           return false
         }
 
-        const handlerCourse = await ctx.db.course
+        const handlerCourse = await ctx.prisma.course
           .findOne({
             where: { id: parent.course_id },
           })
           .completions_handled_by()
 
-        const progresses = await ctx.db.userCourseProgress.findMany({
+        const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
             course_id: handlerCourse?.id ?? parent.course_id,
             user_id: parent.user_id,

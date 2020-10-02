@@ -28,7 +28,7 @@ export const EmailTemplateQueries = extendType({
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>
-        ctx.db.emailTemplate.findOne({
+        ctx.prisma.emailTemplate.findOne({
           where: {
             id,
           },
@@ -38,7 +38,7 @@ export const EmailTemplateQueries = extendType({
     t.list.field("email_templates", {
       type: "EmailTemplate",
       authorize: isAdmin,
-      resolve: (_, __, ctx) => ctx.db.emailTemplate.findMany(),
+      resolve: (_, __, ctx) => ctx.prisma.emailTemplate.findMany(),
     })
   },
 })
@@ -60,7 +60,7 @@ export const EmailTemplateMutations = extendType({
 
         if (name == "") throw new UserInputError("Name is empty!")
 
-        return ctx.db.emailTemplate.create({
+        return ctx.prisma.emailTemplate.create({
           data: {
             name,
             html_body,
@@ -84,7 +84,7 @@ export const EmailTemplateMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { id, name, html_body, txt_body, title } = args
 
-        return ctx.db.emailTemplate.update({
+        return ctx.prisma.emailTemplate.update({
           where: {
             id,
           },
@@ -105,7 +105,7 @@ export const EmailTemplateMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
-        return ctx.db.emailTemplate.delete({ where: { id } })
+        return ctx.prisma.emailTemplate.delete({ where: { id } })
       },
     })
   },

@@ -22,7 +22,7 @@ export const StudyModuleQueries = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const study_module = await ctx.db.studyModule.findOne({
+        const study_module = await ctx.prisma.studyModule.findOne({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
@@ -43,7 +43,7 @@ export const StudyModuleQueries = extendType({
         }
 
         if (language) {
-          const module_translations = await ctx.db.studyModuleTranslation.findMany(
+          const module_translations = await ctx.prisma.studyModuleTranslation.findMany(
             {
               where: {
                 study_module_id: study_module.id,
@@ -85,7 +85,7 @@ export const StudyModuleQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
-        const modules = await ctx.db.studyModule.findMany({
+        const modules = await ctx.prisma.studyModule.findMany({
           orderBy: filterNull(orderBy) ?? undefined,
         })
 
@@ -93,7 +93,7 @@ export const StudyModuleQueries = extendType({
           ? (
               await Promise.all(
                 modules.map(async (module: any) => {
-                  const module_translations = await ctx.db.studyModuleTranslation.findMany(
+                  const module_translations = await ctx.prisma.studyModuleTranslation.findMany(
                     {
                       where: { study_module_id: module.id, language },
                     },
@@ -126,7 +126,8 @@ export const StudyModuleQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {
         return (
-          (await ctx.db.studyModule.findMany({ where: { slug } })).length > 0
+          (await ctx.prisma.studyModule.findMany({ where: { slug } })).length >
+          0
         )
       },
     })

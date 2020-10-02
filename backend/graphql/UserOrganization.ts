@@ -34,7 +34,7 @@ export const UserOrganizationQueries = extendType({
           throw new Error("must provide at least one of user/organization id")
         }
 
-        return ctx.db.userOrganization.findMany({
+        return ctx.prisma.userOrganization.findMany({
           where: {
             user_id,
             organization_id,
@@ -51,7 +51,7 @@ const checkUser = async (ctx: Context, id: any) => {
   let existingUser
 
   try {
-    existingUser = await ctx.db.userOrganization
+    existingUser = await ctx.prisma.userOrganization
       .findOne({ where: { id } })
       .user()
   } catch {
@@ -82,7 +82,7 @@ export const UserOrganizationMutations = extendType({
 
         const exists =
           (
-            await ctx.db.userOrganization.findMany({
+            await ctx.prisma.userOrganization.findMany({
               where: {
                 user_id,
                 organization_id,
@@ -94,7 +94,7 @@ export const UserOrganizationMutations = extendType({
           throw new Error("this user/organization relation already exists")
         }
 
-        return ctx.db.userOrganization.create({
+        return ctx.prisma.userOrganization.create({
           data: {
             user: { connect: { id: user_id } },
             organization: {
@@ -120,7 +120,7 @@ export const UserOrganizationMutations = extendType({
 
         checkUser(ctx, id)
 
-        return ctx.db.userOrganization.update({
+        return ctx.prisma.userOrganization.update({
           data: {
             role: role ? role : OrganizationRole.Student,
           },
@@ -141,7 +141,7 @@ export const UserOrganizationMutations = extendType({
         const { id } = args
         checkUser(ctx, id)
 
-        return ctx.db.userOrganization.delete({
+        return ctx.prisma.userOrganization.delete({
           where: { id },
         })
       },

@@ -6,36 +6,42 @@ import { UserInfo } from "/domain/UserInfo"
 import { PrismaClient } from "@prisma/client"
 // import { IncomingMessage } from "http"
 import { Context } from "../context"
+import { plugin } from "@nexus/schema"
 
 // this is the version suitable for middleware, not used for now
-const fetchUser = (_config: any) => async (
-  root: any,
-  args: Record<string, any>,
-  ctx: Context,
-  info: any,
-  next: Function,
-) => {
-  if (ctx.userDetails || ctx.organization) {
-    return await next(root, args, ctx, info)
-  }
+export const moocfiAuthPlugin = plugin({
+  name: "moocfiAuthPlugin",
+  onCreateFieldResolver(_config: any) {
+    return async (
+      root: any,
+      args: Record<string, any>,
+      ctx: Context,
+      info: any,
+      next: Function,
+    ) => {
+      if (ctx.userDetails || ctx.organization) {
+        return await next(root, args, ctx, info)
+      }
 
-  const rawToken = ctx.headers?.authorization // connection?
+      const rawToken = ctx.req?.headers?.authorization // connection?
 
-  if (!rawToken) {
-    ctx.role = Role.VISITOR
-  } else if (rawToken.startsWith("Basic")) {
-    await getOrganization(ctx, rawToken)
-  } else {
-    await getUser(ctx, rawToken)
-  }
+      if (!rawToken) {
+        ctx.role = Role.VISITOR
+      } else if (rawToken.startsWith("Basic")) {
+        await getOrganization(ctx, rawToken)
+      } else {
+        await getUser(ctx, rawToken)
+      }
 
-  return await next(root, args, ctx, info)
-}
+      return await next(root, args, ctx, info)
+    }
+  },
+})
 
 const getOrganization = async (ctx: Context, rawToken: string | null) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""
 
-  const org = await ctx.db.organization.findMany({
+  const org = await ctx.prisma.organization.findMany({
     where: { secret_key: secret },
   })
   if (org.length < 1) {
@@ -76,7 +82,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
     last_name: details.user_field.last_name.trim(),
     username: details.username,
   }
-  ctx.user = await ctx.db.user.upsert({
+  ctx.user = await ctx.prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,
     update: prismaDetails,
@@ -87,8 +93,6 @@ const getUser = async (ctx: Context, rawToken: string) => {
     ctx.role = Role.USER
   }
 }
-
-export default fetchUser
 
 // this is the one suitable for context, not use for now
 export const contextUser = async (

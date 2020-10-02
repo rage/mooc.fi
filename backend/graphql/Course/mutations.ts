@@ -14,7 +14,7 @@ import { invalidate } from "../../services/redis"
 import { UserInputError } from "apollo-server-core"
 import { Context } from "../../context"
 import { isAdmin } from "../../accessControl"
-import { Prisma__CourseClient, Course } from "nexus-plugin-prisma/client"
+import { Prisma__CourseClient, Course } from "@prisma/client"
 
 import { extendType, arg, idArg, stringArg } from "@nexus/schema"
 /* const shallowCompare = (obj1: object, obj2: object) =>
@@ -67,7 +67,7 @@ export const CourseMutations = extendType({
           throw new UserInputError("study modules must have id or slug")
         }
 
-        const newCourse = await ctx.db.course.create({
+        const newCourse = await ctx.prisma.course.create({
           data: {
             ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
@@ -169,7 +169,9 @@ export const CourseMutations = extendType({
           photo = newImage.id
         }
 
-        const existingCourse = await ctx.db.course.findOne({ where: { slug } })
+        const existingCourse = await ctx.prisma.course.findOne({
+          where: { slug },
+        })
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
@@ -229,7 +231,7 @@ export const CourseMutations = extendType({
           field: "user_course_settings_visibilities",
         })
 
-        const existingVisibilities = await ctx.db.course
+        const existingVisibilities = await ctx.prisma.course
           .findOne({ where: { slug } })
           .user_course_settings_visibilities()
         existingVisibilities?.forEach((visibility) =>
@@ -240,7 +242,7 @@ export const CourseMutations = extendType({
         )
 
         // this had different logic so it's not done with the same helper
-        const existingStudyModules = await ctx.db.course
+        const existingStudyModules = await ctx.prisma.course
           .findOne({ where: { slug } })
           .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
@@ -265,7 +267,7 @@ export const CourseMutations = extendType({
             }
           : undefined
 
-        const existingInherit = await ctx.db.course
+        const existingInherit = await ctx.prisma.course
           .findOne({ where: { slug } })
           .inherit_settings_from()
         const inheritMutation = inherit_settings_from
@@ -277,7 +279,7 @@ export const CourseMutations = extendType({
               disconnect: true, // { id: existingInherit.id },
             }
           : undefined
-        const existingHandled = await ctx.db.course
+        const existingHandled = await ctx.prisma.course
           .findOne({ where: { slug } })
           .completions_handled_by()
         const handledMutation = completions_handled_by
@@ -290,7 +292,7 @@ export const CourseMutations = extendType({
             }
           : undefined
 
-        const updatedCourse = await ctx.db.course.update({
+        const updatedCourse = await ctx.prisma.course.update({
           where: {
             id: id ?? undefined,
             slug,
@@ -340,7 +342,7 @@ export const CourseMutations = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const photo = await ctx.db.course
+        const photo = await ctx.prisma.course
           .findOne({
             where: {
               id: id ?? undefined,
@@ -353,7 +355,7 @@ export const CourseMutations = extendType({
           await deleteImage({ ctx, id: photo.id })
         }
 
-        const deletedCourse = await ctx.db.course.delete({
+        const deletedCourse = await ctx.prisma.course.delete({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
@@ -401,7 +403,7 @@ const createMutation = async <T extends { id?: string | null }>({
 
   try {
     // @ts-ignore: can't be arsed to do the typing, works
-    existing = await ctx.db.course.findOne({ where: { slug } })[field]()
+    existing = await ctx.prisma.course.findOne({ where: { slug } })[field]()
   } catch (e) {
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }

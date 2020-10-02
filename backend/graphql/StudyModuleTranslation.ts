@@ -53,7 +53,7 @@ export const StudyModuleTranslationQueries = extendType({
       type: "study_module_translation",
       resolve: (_, __, ctx) => {
         // checkAccess(ctx, { allowOrganizations: false })
-        return ctx.db.study_module_translation.findMany()
+        return ctx.prisma.study_module_translation.findMany()
       },
     })*/
   },
@@ -74,7 +74,7 @@ export const StudyModuleTranslationMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { language, name, description, study_module } = args
 
-        const newStudyModuleTranslation = await ctx.db.studyModuleTranslation.create(
+        const newStudyModuleTranslation = await ctx.prisma.studyModuleTranslation.create(
           {
             data: {
               language: language,
@@ -103,7 +103,7 @@ export const StudyModuleTranslationMutations = extendType({
       resolve: (_, args, ctx) => {
         const { id, language, name, description, study_module } = args
 
-        return ctx.db.studyModuleTranslation.update({
+        return ctx.prisma.studyModuleTranslation.update({
           where: { id },
           data: {
             description: description ?? "",
@@ -124,7 +124,7 @@ export const StudyModuleTranslationMutations = extendType({
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>
-        ctx.db.studyModuleTranslation.delete({ where: { id } }),
+        ctx.prisma.studyModuleTranslation.delete({ where: { id } }),
     })
   },
 })

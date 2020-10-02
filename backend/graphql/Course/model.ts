@@ -54,7 +54,9 @@ export const Course = objectType({
     t.model.tier()
     t.model.handles_completions_for()
 
+    // @ts-ignore: false error
     t.string("description")
+    // @ts-ignore: false error
     t.string("link")
   },
 })

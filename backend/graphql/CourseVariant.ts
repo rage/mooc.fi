@@ -49,7 +49,7 @@ export const CourseVariantQueries = extendType({
       },
       nullable: true,
       resolve: (_, { id }, ctx) =>
-        ctx.db.courseVariant.findOne({ where: { id: id ?? undefined } }),
+        ctx.prisma.courseVariant.findOne({ where: { id: id ?? undefined } }),
     })
 
     t.list.field("courseVariants", {
@@ -58,7 +58,7 @@ export const CourseVariantQueries = extendType({
         course_id: idArg(),
       },
       resolve: (_, { course_id }, ctx) =>
-        ctx.db.course
+        ctx.prisma.course
           .findOne({ where: { id: course_id ?? undefined } })
           .course_variants(),
     })
@@ -79,7 +79,7 @@ export const CourseVariantMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { course_id, slug, description } = args
 
-        return ctx.db.courseVariant.create({
+        return ctx.prisma.courseVariant.create({
           data: {
             slug,
             description,
@@ -100,7 +100,7 @@ export const CourseVariantMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { id, slug, description } = args
 
-        return ctx.db.courseVariant.update({
+        return ctx.prisma.courseVariant.update({
           where: { id },
           data: {
             slug: slug ?? undefined,
@@ -117,7 +117,7 @@ export const CourseVariantMutations = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {
-        return ctx.db.courseVariant.delete({ where: { id } })
+        return ctx.prisma.courseVariant.delete({ where: { id } })
       },
     })
   },

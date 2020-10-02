@@ -38,7 +38,7 @@ export const UserCourseSettingQueries = extendType({
         const { user_id } = args
         let { course_id } = args
 
-        const inheritSettingsCourse = await ctx.db.course
+        const inheritSettingsCourse = await ctx.prisma.course
           .findOne({ where: { id: course_id } })
           .inherit_settings_from()
 
@@ -46,7 +46,7 @@ export const UserCourseSettingQueries = extendType({
           course_id = inheritSettingsCourse.id
         }
 
-        const result = await ctx.db.userCourseSetting.findMany({
+        const result = await ctx.prisma.userCourseSetting.findMany({
           where: {
             user_id,
             course_id,
@@ -69,7 +69,7 @@ export const UserCourseSettingQueries = extendType({
       resolve: (_, args, ctx) => {
         const { user_id, course_id } = args
 
-        return ctx.db.userCourseSetting.count({
+        return ctx.prisma.userCourseSetting.count({
           where: {
             user_id,
             course_id,
@@ -106,7 +106,7 @@ export const UserCourseSettingQueries = extendType({
         }
 
         if (course_id) {
-          const inheritSettingsCourse = await ctx.db.course
+          const inheritSettingsCourse = await ctx.prisma.course
             .findOne({ where: { id: course_id } })
             .inherit_settings_from()
 
@@ -128,7 +128,7 @@ export const UserCourseSettingQueries = extendType({
         if (user_upstream_id)
           orCondition.concat({ upstream_id: user_upstream_id })
 
-        return ctx.db.userCourseSetting.findMany({
+        return ctx.prisma.userCourseSetting.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             user: {
@@ -149,7 +149,7 @@ export const UserCourseSettingQueries = extendType({
           resolve: async (_, args, ctx) => {
             const { user_id, user_upstream_id, search } = args
             let { course_id } = args
-            const inheritSettingsCourse = await ctx.db.course
+            const inheritSettingsCourse = await ctx.prisma.course
               .findOne({ where: { id: course_id } })
               .inherit_settings_from()
 
@@ -170,7 +170,7 @@ export const UserCourseSettingQueries = extendType({
             if (user_upstream_id)
               orCondition.concat({ upstream_id: user_upstream_id })
 
-            const count = await ctx.db.userCourseSetting.count({
+            const count = await ctx.prisma.userCourseSetting.count({
               where: {
                 user: {
                   OR: orCondition,

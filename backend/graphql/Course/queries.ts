@@ -2,7 +2,7 @@ import { arg, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
-import { Course } from "nexus-plugin-prisma/client"
+import { Course } from "@prisma/client"
 
 export const CourseQueris = extendType({
   type: "Query",
@@ -23,7 +23,7 @@ export const CourseQueris = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const course = await ctx.db.course.findOne({
+        const course = await ctx.prisma.course.findOne({
           where: {
             slug: slug ?? undefined,
             id: id ?? undefined,
@@ -44,12 +44,14 @@ export const CourseQueris = extendType({
         }
 
         if (language) {
-          const course_translations = await ctx.db.courseTranslation.findMany({
-            where: {
-              course_id: course.id,
-              language,
+          const course_translations = await ctx.prisma.courseTranslation.findMany(
+            {
+              where: {
+                course_id: course.id,
+                language,
+              },
             },
-          })
+          )
 
           if (!course_translations.length) {
             return Promise.resolve(null)
@@ -86,7 +88,7 @@ export const CourseQueris = extendType({
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
-        const courses = await ctx.db.course.findMany({
+        const courses = await ctx.prisma.course.findMany({
           orderBy: filterNull(orderBy) ?? undefined,
         })
 
@@ -94,7 +96,7 @@ export const CourseQueris = extendType({
           ? (
               await Promise.all(
                 courses.map(async (course: Course) => {
-                  const course_translations = await ctx.db.courseTranslation.findMany(
+                  const course_translations = await ctx.prisma.courseTranslation.findMany(
                     {
                       where: {
                         course_id: course.id,
@@ -141,7 +143,7 @@ export const CourseQueris = extendType({
 
         return (
           (
-            await ctx.db.course.findMany({
+            await ctx.prisma.course.findMany({
               where: { slug },
               select: { id: true },
             })

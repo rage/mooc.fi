@@ -5,27 +5,22 @@ require("dotenv-safe").config({
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 
-import {
-  makeSchema,
-  connectionPlugin,
-  fieldAuthorizePlugin,
-} from "@nexus/schema"
-import * as types from "./graphql"
-// import redisClient from "./services/redis"
 import { wsListen } from "./wsServer"
-import * as winston from "winston"
-import { nexusPrisma } from "nexus-plugin-prisma"
-import cache from "./middlewares/cache"
-// import { moocfiAuthPlugin } from "./middlewares/auth-plugin"
-// import { newrelicPlugin } from "./middlewares/newrelic-plugin"
-import sentry from "./middlewares/sentry"
 import { ApolloServer } from "apollo-server-express"
 import express from "./server"
-import * as path from "path"
-import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
-import { GraphQLScalarType } from "graphql/type"
-import { notEmpty } from "./util/notEmpty"
 import { PrismaClient } from "@prisma/client"
+import { schema } from "./schema"
+import * as winston from "winston"
+
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json(),
+  ),
+  defaultMeta: { service: "backend" },
+  transports: [new winston.transports.Console()],
+})
 
 if (PRODUCTION && !process.env.NEXUS_REFLECTION) {
   if (process.env.NEW_RELIC_LICENSE_KEY) {
@@ -44,65 +39,21 @@ const prismaClient = new PrismaClient({
   ],
 })
 
-const plugins = [
-  nexusPrisma({
-    // prismaClient: (_ctx: any) => prismaClient,
-    experimentalCRUD: true,
-    scalars: {
-      DateTime: DateTimeResolver,
-      Json: new GraphQLScalarType({
-        ...JSONObjectResolver,
-        name: "Json",
-        description:
-          "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
-      }),
-    },
-  }),
-  connectionPlugin({
-    nexusFieldName: "connection",
-  }),
-  fieldAuthorizePlugin(),
-  /*moocfiAuthPlugin({
-    prisma: prismaClient,
-    redisClient,
-  }),
-  PRODUCTION && !process.env.NEXUS_REFLECTION && process.env.NEW_RELIC_LICENSE_KEY 
-    ? newrelicPlugin()
-    : undefined*/
-].filter(notEmpty)
-
-const schema = makeSchema({
-  types,
-  typegenAutoConfig: {
-    sources: [
-      {
-        source: require.resolve("./context"),
-        alias: "Context",
-      },
-      {
-        source: require.resolve(".prisma/client/index.d.ts"),
-        alias: "prisma",
-      },
-    ],
-    contextType: "Context.Context",
-  },
-  plugins,
-  outputs: {
-    typegen: path.join(
-      __dirname,
-      "./node_modules/@types/nexus-typegen/index.d.ts",
-    ),
-    schema: __dirname + "/generated/schema.graphql",
-  },
-  shouldExitAfterGenerateArtifacts: Boolean(process.env.NEXUS_REFLECTION),
-})
-
 const apollo = new ApolloServer({
   schema,
-  context: (ctx) => ({ ...ctx, db: prismaClient }),
+  context: (ctx) => ({
+    ...ctx,
+    prisma: prismaClient,
+    logger,
+  }),
+  playground: {
+    endpoint: PRODUCTION ? "/api" : "",
+  },
+  introspection: true,
+  logger,
 })
 
-apollo.applyMiddleware({ app: express })
+apollo.applyMiddleware({ app: express, path: PRODUCTION ? "/api" : "/" })
 
 /*prismaClient.on("query", (e) => {
   e.timestamp
@@ -130,16 +81,6 @@ apollo.applyMiddleware({ app: express })
     ),
   },
 })*/
-
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(),
-  ),
-  defaultMeta: { service: "backend" },
-  transports: [new winston.transports.Console()],
-})
 
 /*schema.addToContext(async ({ req }: { req: any }) => ({
   ...req,

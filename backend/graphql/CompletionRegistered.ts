@@ -3,6 +3,7 @@ import { chunk } from "lodash"
 import { or, isOrganization, isAdmin } from "../accessControl"
 import { ForbiddenError, UserInputError } from "apollo-server-core"
 import { CompletionRegisteredWhereUniqueInput } from "@prisma/client"
+import { Context } from "/context"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -69,12 +70,12 @@ const withCourse = async (
   cursor: CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  let courseReference = await ctx.db.course.findOne({
+  let courseReference = await ctx.prisma.course.findOne({
     where: { slug: course },
   })
 
   if (!courseReference) {
-    const courseFromAvoinCourse = await ctx.db.courseAlias
+    const courseFromAvoinCourse = await ctx.prisma.courseAlias
       .findOne({ where: { course_code: course } })
       .course()
     if (!courseFromAvoinCourse) {
@@ -82,12 +83,12 @@ const withCourse = async (
     }
 
     // TODO: isn't this the same as courseFromAvoinCourse?
-    courseReference = await ctx.db.course.findOne({
+    courseReference = await ctx.prisma.course.findOne({
       where: { slug: courseFromAvoinCourse.slug },
     })
   }
 
-  return await ctx.db.completionRegistered.findMany({
+  return await ctx.prisma.completionRegistered.findMany({
     where: {
       course_id: courseReference!.id,
     },
@@ -103,7 +104,7 @@ const all = async (
   cursor: CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  return await ctx.db.completionRegistered.findMany({
+  return await ctx.prisma.completionRegistered.findMany({
     skip,
     take,
     cursor,
@@ -135,10 +136,10 @@ export const CompletionRegisteredMutations = extendType({
 
 const buildPromises = (array: any[], ctx: Context) => {
   return array.map(async (entry) => {
-    const course = await ctx.db.completion
+    const course = await ctx.prisma.completion
       .findOne({ where: { id: entry.completion_id } })
       .course()
-    const user = await ctx.db.completion
+    const user = await ctx.prisma.completion
       .findOne({ where: { id: entry.completion_id } })
       .user()
 
@@ -147,7 +148,7 @@ const buildPromises = (array: any[], ctx: Context) => {
       return Promise.resolve()
     }
 
-    return ctx.db.completionRegistered.create({
+    return ctx.prisma.completionRegistered.create({
       data: {
         completion: {
           connect: { id: entry.completion_id },

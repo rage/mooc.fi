@@ -4,30 +4,31 @@ import * as mime from "mime-types"
 
 const isProduction = process.env.NODE_ENV === "production"
 const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
-// const isReflection = process.env.NEXUS_REFLECTION
+const isReflection = process.env.NEXUS_REFLECTION
 
-if (!bucketName && isProduction) {
+if (!bucketName && isProduction && !isReflection) {
   console.error("no bucket name defined in GOOGLE_CLOUD_STORAGE_BUCKET")
   process.exit(1)
 }
 
-const storage = isProduction
-  ? new Storage({
-      projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT,
-      keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE,
-    })
-  : {
-      bucket: () => ({
-        file: () => ({
-          save: (
-            _: any, // buffer
-            __: any, // options
-            cb: (error?: string) => void,
-          ): any => cb(),
-          delete: (): any => Promise.resolve(true),
+const storage =
+  isProduction && !isReflection
+    ? new Storage({
+        projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT,
+        keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE,
+      })
+    : {
+        bucket: () => ({
+          file: () => ({
+            save: (
+              _: any, // buffer
+              __: any, // options
+              cb: (error?: string) => void,
+            ): any => cb(),
+            delete: (): any => Promise.resolve(true),
+          }),
         }),
-      }),
-    }
+      }
 // FIXME: doesn't actually upload in dev even with base64 set to false unless isproduction is true
 
 const bucket = storage.bucket(bucketName ?? "") // this shouldn't ever happen in production
