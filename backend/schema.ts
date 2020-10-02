@@ -84,6 +84,6 @@ export const schema = makeSchema({
     ),
     schema: __dirname + "/generated/schema.graphql",
   },
-  shouldGenerateArtifacts: !PRODUCTION,
+  shouldGenerateArtifacts: true,
   shouldExitAfterGenerateArtifacts: Boolean(process.env.NEXUS_REFLECTION),
 })
