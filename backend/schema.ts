@@ -21,6 +21,12 @@ const plugins = [
   nexusPrisma({
     experimentalCRUD: true,
     paginationStrategy: "prisma",
+    outputs: {
+      typegen: path.join(
+        __dirname,
+        "./node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts",
+      ),
+    },
     shouldGenerateArtifacts: true,
     scalars: {
       DateTime: DateTimeResolver,
@@ -34,6 +40,7 @@ const plugins = [
   }),
   connectionPlugin({
     nexusFieldName: "connection",
+    includeNodesField: true,
   }),
   loggerPlugin,
   cachePlugin,
@@ -70,5 +77,6 @@ export const schema = makeSchema({
     ),
     schema: __dirname + "/generated/schema.graphql",
   },
+  shouldGenerateArtifacts: true,
   shouldExitAfterGenerateArtifacts: Boolean(process.env.NEXUS_REFLECTION),
 })
