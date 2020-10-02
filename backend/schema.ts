@@ -16,7 +16,6 @@ import { nexusPrisma } from "nexus-plugin-prisma"
 import * as types from "./graphql"
 import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
 import { GraphQLScalarType } from "graphql/type"
-import { notEmpty } from "./util/notEmpty"
 import * as path from "path"
 import { loggerPlugin } from "./middlewares/logger"
 import { sentryPlugin } from "./middlewares/sentry"
@@ -54,12 +53,15 @@ const plugins = [
   moocfiAuthPlugin,
   fieldAuthorizePlugin(),
   sentryPlugin,
+]
+
+if (
   PRODUCTION &&
   !process.env.NEXUS_REFLECTION &&
   process.env.NEW_RELIC_LICENSE_KEY
-    ? newRelicPlugin
-    : undefined,
-].filter(notEmpty)
+) {
+  plugins.push(newRelicPlugin)
+}
 
 export const schema = makeSchema({
   types,

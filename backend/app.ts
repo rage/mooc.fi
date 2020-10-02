@@ -46,7 +46,7 @@ const apollo = new ApolloServer({
     logger,
   }),
   playground: {
-    endpoint: PRODUCTION ? "/api" : "",
+    endpoint: PRODUCTION ? "/api" : "/",
   },
   introspection: true,
   logger,

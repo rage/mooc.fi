@@ -80,7 +80,7 @@ export const UserQueries = extendType({
           args: {
             search: stringArg(),
           },
-          resolve: (_, { search }, ctx) => {
+          resolve: async (_, { search }, ctx) => {
             return ctx.prisma.user.count({
               where: {
                 OR: buildSearch(
