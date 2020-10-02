@@ -294,5 +294,7 @@ async function getUser(
   })
 }
 
-express.listen(4000)
+express.listen(4000, () => {
+  console.log("server running on port 4000")
+})
 export default express

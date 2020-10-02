@@ -4,7 +4,7 @@ import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 import { Course } from "@prisma/client"
 
-export const CourseQueris = extendType({
+export const CourseQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("course", {
