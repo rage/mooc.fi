@@ -190,7 +190,7 @@ const getExerciseCompletionsForCourses = async (
     .andWhereNot("exercise.max_points", 0)
 
   /*
-    [{ course_id, custom_id, exercise_id, max_points, n_points }, ...] 
+    [{ course_id, custom_id, exercise_id, max_points, n_points }, ...]
    */
   return exercise_completions
 }
@@ -263,6 +263,8 @@ const languageCodeMapping: { [key: string]: string } = {
   sk: "sk_SK",
   sl: "sl_SI",
   no: "nb_NO",
+  "fr-be": "fr_BE",
+  "nl-be": "nl_BE",
 }
 
 interface TierProgress {
@@ -370,8 +372,8 @@ const getBAIProgress = async (
     }
   }, {} as Record<number, TierProgress>)
   /*
-    [exercise #]: { tier, n_points, max_points } -- what's the maximum tier completed and 
-      what's the highest amount of points received, not necessarily from maximum tier 
+    [exercise #]: { tier, n_points, max_points } -- what's the maximum tier completed and
+      what's the highest amount of points received, not necessarily from maximum tier
     ...
   */
   const tierProgress = Object.entries(tierProgressMap).map(([key, value]) => ({
@@ -403,7 +405,7 @@ const getBAIProgress = async (
   )
   /*
     [tier #]: # of exercises completed from _at least_ this tier,
-      so tier 3 is counted in both 1 and 2, and so on 
+      so tier 3 is counted in both 1 and 2, and so on
   */
 
   const hasTier: Record<number, boolean> = {
@@ -419,7 +421,7 @@ const getBAIProgress = async (
     }),
     {} as Record<number, number>,
   )
-  /* 
+  /*
     [tier #]: how many exercises missing to get to this tier
   */
 
