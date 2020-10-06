@@ -4,6 +4,7 @@ import { maxBy } from "lodash"
 import prismaClient from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { OpenUniversityRegistrationLink } from "nexus-plugin-prisma/client"
+import { AvoinError } from "./lib/errors"
 
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -21,7 +22,17 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
     return
   }
   const res = await getInfoWithCourseCode(p.course_code).catch((error) => {
-    logger.error(error)
+    if (error instanceof Error) {
+      logger.error(error)
+    } else {
+      logger.error(
+        new AvoinError(
+          `Error getting info with course code ${p.course_code}`,
+          p,
+          error,
+        ),
+      )
+    }
     throw error
   })
   logger.info("Open university info: " + JSON.stringify(res, undefined, 2))
@@ -74,7 +85,13 @@ const fetch = async () => {
     try {
       await processLink(p)
     } catch (e) {
-      logger.error("Processing link failed.")
+      logger.error(
+        new AvoinError(
+          `Processing link failed for course code ${p.course_code}`,
+          p,
+          e,
+        ),
+      )
     }
   }
 }
@@ -103,6 +120,10 @@ interface Link {
 }
 
 fetch().catch((error) => {
-  logger.error(error)
+  if (error instanceof Error) {
+    logger.error(error)
+  } else {
+    logger.error(new AvoinError("Error fetching", {}, error))
+  }
   throw error
 })
