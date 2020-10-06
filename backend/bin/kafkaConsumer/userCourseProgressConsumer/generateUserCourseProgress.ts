@@ -358,13 +358,13 @@ const getBAIProgress = async (
 
     if (!exercise) return acc
 
-    const max_points = curr.max_points ?? 0
-    const n_points = Math.max(acc[exercise]?.n_points ?? 0, curr.n_points ?? 0)
+    const max_points = curr.max_points || 0
+    const n_points = Math.max(acc[exercise]?.n_points || 0, curr.n_points || 0)
 
     return {
       ...acc,
       [exercise]: {
-        tier: Math.max(acc[exercise]?.tier ?? 0, tier),
+        tier: Math.max(acc[exercise]?.tier || 0, tier),
         max_points,
         n_points,
         progress: n_points / (max_points || 1),
@@ -451,7 +451,8 @@ const getBAIProgress = async (
         group: "total",
         max_points: progress.total_max_points,
         n_points: progress.total_n_points,
-        progress: progress.total_n_points / (progress.total_max_points || 1),
+        progress:
+          (progress.total_n_points || 0) / (progress.total_max_points || 1),
       },
     ],
     extra: {

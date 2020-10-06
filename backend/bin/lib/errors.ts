@@ -71,3 +71,11 @@ export class EmailTemplaterError extends CustomError {
     super(message)
   }
 }
+
+export class AvoinError extends CustomError {
+  name = "AvoinError"
+
+  constructor(message: string, readonly data: object, readonly error?: Error) {
+    super(message)
+  }
+}
