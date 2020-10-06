@@ -445,14 +445,15 @@ const getBAIProgress = async (
     )
 
   const projectCompletion = await checkBAIProjectCompletion(user)
+  const pointsProgress =
+    (progress.total_n_points || 0) / (progress.total_max_points || 1)
   const newProgress = {
     progress: [
       {
         group: "total",
         max_points: progress.total_max_points,
         n_points: progress.total_n_points,
-        progress:
-          (progress.total_n_points || 0) / (progress.total_max_points || 1),
+        progress: isNaN(pointsProgress) ? 0 : pointsProgress,
       },
     ],
     extra: {
@@ -586,6 +587,7 @@ class CombinedUserCourseProgress {
     this.progress[index].max_points += progress.max_points
     this.progress[index].n_points += progress.n_points
     this.progress[index].progress =
-      this.progress[index].n_points / this.progress[index].max_points
+      (this.progress[index].n_points || 0) /
+      (this.progress[index].max_points || 1)
   }
 }
