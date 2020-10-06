@@ -128,10 +128,14 @@ const getGlobalStats = async (): Promise<string> => {
   const totalUsers = (
     await Knex.count()
       .from("user_course_setting")
-      .where({ course_id: course[0].id })
+      .whereNotNull("language")
+      .andWhere({ course_id: course[0].id })
   )[0].count
   const totalCompletions = (
-    await Knex.count().from("completion").where({ course_id: course[0].id })
+    await Knex.count()
+      .from("completion")
+      .whereNotNull("language")
+      .andWhere({ course_id: course[0].id })
   )[0].count
   const now = new Date()
 

@@ -30,7 +30,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     tmc_created_at: org.created_at,
     tmc_updated_at: org.updated_at,
     hidden: org.hidden || false,
-    creator: user != null ? { connect: { id: user.id } } : null,
+    creator: user !== null ? { connect: { id: user.id } } : undefined,
     logo_file_name: org.logo_file_name,
     logo_content_type: org.logo_content_type,
     logo_file_size: Number(org.logo_file_size),

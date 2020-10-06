@@ -17,7 +17,12 @@ export const saveToDatabase = async (
     where: { id: message.course_id },
   })
   if (!existingCourse) {
-    return err(new DatabaseInputError("given course does not exist", message))
+    return err(
+      new DatabaseInputError(
+        `Given course does not exist: id ${message.course_id}`,
+        message,
+      ),
+    )
   }
 
   message.data.forEach((exercise) => {

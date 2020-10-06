@@ -64,7 +64,12 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    return err(new DatabaseInputError("Invalid user or course", message))
+    return err(
+      new DatabaseInputError(
+        `Invalid user or course: user ${message.user_id}, course ${message.course_id}`,
+        message,
+      ),
+    )
   }
 
   logger.info("Checking if a exercise exists with id " + message.exercise_id)
@@ -74,7 +79,12 @@ export const saveToDatabase = async (
     },
   })
   if (existingExercises.length < 1) {
-    return err(new DatabaseInputError(`Given exercise does not exist`, message))
+    return err(
+      new DatabaseInputError(
+        `Given exercise does not exist: id ${message.exercise_id}`,
+        message,
+      ),
+    )
   }
   logger.info("Getting the exercise")
   const exercises = await prisma.exercise.findMany({
