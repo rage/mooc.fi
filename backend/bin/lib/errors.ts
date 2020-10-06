@@ -50,9 +50,11 @@ export class KafkaError extends CustomError {
 
 export class ValidationError extends CustomError {
   name = "ValidationError"
+  data_string: string
 
   constructor(message: string, readonly data: object, readonly error?: Error) {
     super(message)
+    this.data_string = JSON.stringify(data ?? {})
   }
 }
 
