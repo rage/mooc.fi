@@ -7,13 +7,15 @@ const PointsByGroupYupSchema = yup.object().shape({
   max_points: yup.number().required(),
   n_points: yup.number().required(),
   progress: yup.number().required(),
-  extra: yup.object().shape({
+  extra: yup.object(),
+  // commented this out in case we need to stick some other stuff to extra
+  /*.shape({
     tiers: yup.object(),
     exercises: yup.object(),
     projectCompletion: yup.boolean(),
     highestTier: yup.number(),
     totalExerciseCompletions: yup.number(),
-  }),
+  })*/
 })
 
 export const MessageYupSchema = yup.object().shape({
