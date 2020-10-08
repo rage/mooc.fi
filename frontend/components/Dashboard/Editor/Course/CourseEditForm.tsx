@@ -10,6 +10,8 @@ import {
   RadioGroup,
   FormGroup,
   MenuItem,
+  Tabs,
+  Tab,
 } from "@material-ui/core"
 import {
   Formik,
@@ -36,6 +38,7 @@ import {
   StyledFieldWithAnchor,
   EnumeratingAnchor,
   inputLabelProps,
+  CheckboxField,
 } from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
@@ -87,7 +90,15 @@ interface RenderFormProps {
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
+interface RenderProps {
+  tab: number
+  setTab: React.Dispatch<React.SetStateAction<number>>
+}
+
+const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
+  tab,
+  setTab,
+}: RenderProps) => {
   const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
   const secret = useQueryParameter("secret", false)
   const { language } = useContext(LanguageContext)
@@ -229,147 +240,171 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => () => {
             />
           </FormFieldGroup>
 
-          <FormFieldGroup>
-            <FormControl component="fieldset">
-              <FormLabel component="legend" style={{ color: "#DF7A46" }}>
-                {t("courseStatus")}*
-              </FormLabel>
-              <EnumeratingAnchor id="status" />
-              <RadioGroup
-                aria-label="course status"
-                name="status"
-                value={values.status}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setFieldValue(
-                    "status",
-                    (event.target as HTMLInputElement).value,
-                  )
-                }
-              >
-                {statuses.map((option: { value: string; label: string }) => (
-                  <FormControlLabel
-                    key={`status-${option.value}`}
-                    value={option.value}
-                    control={<Radio />}
-                    label={option.label}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-          </FormFieldGroup>
+          <Tabs value={tab} onChange={(_, newTab) => setTab(newTab)}>
+            <Tab label="Basic settings" value={0} />
+            <Tab label="Advanced settings" value={1} />
+          </Tabs>
+          <section style={{ display: tab !== 0 ? "none" : "initial" }}>
+            <FormFieldGroup>
+              <FormControl component="fieldset">
+                <FormLabel component="legend" style={{ color: "#DF7A46" }}>
+                  {t("courseStatus")}*
+                </FormLabel>
+                <EnumeratingAnchor id="status" />
+                <RadioGroup
+                  aria-label="course status"
+                  name="status"
+                  value={values.status}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    setFieldValue(
+                      "status",
+                      (event.target as HTMLInputElement).value,
+                    )
+                  }
+                >
+                  {statuses.map((option: { value: string; label: string }) => (
+                    <FormControlLabel
+                      key={`status-${option.value}`}
+                      value={option.value}
+                      control={<Radio />}
+                      label={option.label}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            </FormFieldGroup>
 
-          <FormFieldGroup>
-            <FormControl>
-              <FormLabel>{t("courseModules")}</FormLabel>
-              <FormGroup>
-                <ModuleList>
-                  <EnumeratingAnchor id="study_modules" />
-                  {studyModules?.map(
-                    (module: CourseEditorStudyModules_study_modules) => (
-                      <ModuleListItem key={module.id}>
-                        <Field
-                          id={`study_modules[${module.id}]`}
-                          label={module.name}
-                          type="checkbox"
-                          name={`study_modules[${module.id}]`}
-                          checked={values?.study_modules?.[module.id]}
-                          component={CheckboxWithLabel}
-                          Label={{ label: module.name }}
-                        />
-                      </ModuleListItem>
-                    ),
-                  )}
-                </ModuleList>
-              </FormGroup>
-            </FormControl>
-          </FormFieldGroup>
-          <FormFieldGroup>
-            <FormControl>
-              <FormLabel>{t("courseProperties")}</FormLabel>
-              <FormGroup>
-                <Field
-                  id="promote"
-                  label={t("coursePromote")}
-                  type="checkbox"
-                  name="promote"
-                  checked={values.promote}
-                  component={CheckboxWithLabel}
-                  Label={{ label: t("coursePromote") }}
-                />
-                <Field
-                  id="start_point"
-                  label={t("courseStartPoint")}
-                  type="checkbox"
-                  name="start_point"
-                  checked={values.start_point}
-                  component={CheckboxWithLabel}
-                  Label={{ label: t("courseStartPoint") }}
-                />
-                <Field
-                  id="study_module_start_point"
-                  label={t("courseModuleStartPoint")}
-                  type="checkbox"
-                  name="study_module_start_point"
-                  checked={values.study_module_start_point}
-                  component={CheckboxWithLabel}
-                  Label={{ label: t("courseModuleStartPoint") }}
-                />
-                <Field
-                  id="hidden"
-                  label={t("courseHidden")}
-                  type="checkbox"
-                  name="hidden"
-                  checked={values.hidden}
-                  component={CheckboxWithLabel}
-                  Label={{ label: t("courseHidden") }}
-                />
-                <Field
-                  id="has_certificate"
-                  label={t("courseHasCertificate")}
-                  type="checkbox"
-                  name="has_certificate"
-                  checked={values.has_certificate}
-                  component={CheckboxWithLabel}
-                  Label={{ label: t("courseHasCertificate") }}
-                />
-                <Field
-                  id="upcoming_active_link"
-                  label={t("courseUpcomingActiveLink")}
-                  type="checkbox"
-                  name="upcoming_active_link"
-                  checked={values.upcoming_active_link}
-                  component={CheckboxWithLabel}
-                  Label={{ label: t("courseUpcomingActiveLink") }}
-                />
-              </FormGroup>
-            </FormControl>
-          </FormFieldGroup>
-          <FormFieldGroup>
-            <StyledFieldWithAnchor
-              name="order"
-              type="number"
-              label={t("courseOrder")}
-              error={errors.order}
-              fullWidth
-              autoComplete="off"
-              variant="outlined"
-              component={StyledTextField}
-              style={{ width: "20%" }}
-              InputLabelProps={inputLabelProps}
-            />
-            <StyledFieldWithAnchor
-              label={t("courseModuleOrder")}
-              name="study_module_order"
-              type="number"
-              error={errors.study_module_order}
-              fullWidth
-              autoComplete="off"
-              variant="outlined"
-              component={StyledTextField}
-              style={{ width: "20%" }}
-              InputLabelProps={inputLabelProps}
-            />
-          </FormFieldGroup>
+            <FormFieldGroup>
+              <FormControl>
+                <FormLabel>{t("courseModules")}</FormLabel>
+                <FormGroup>
+                  <ModuleList>
+                    <EnumeratingAnchor id="study_modules" />
+                    {studyModules?.map(
+                      (module: CourseEditorStudyModules_study_modules) => (
+                        <ModuleListItem key={module.id}>
+                          <Field
+                            id={`study_modules[${module.id}]`}
+                            label={module.name}
+                            type="checkbox"
+                            name={`study_modules[${module.id}]`}
+                            checked={values?.study_modules?.[module.id]}
+                            component={CheckboxWithLabel}
+                            Label={{ label: module.name }}
+                          />
+                        </ModuleListItem>
+                      ),
+                    )}
+                  </ModuleList>
+                </FormGroup>
+              </FormControl>
+            </FormFieldGroup>
+            <FormFieldGroup>
+              <FormControl>
+                <FormLabel>{t("courseProperties")}</FormLabel>
+                <FormGroup>
+                  <CheckboxField
+                    id="promote"
+                    label={t("coursePromote")}
+                    checked={values.promote}
+                  />
+                  <CheckboxField
+                    id="start_point"
+                    label={t("courseStartPoint")}
+                    checked={values.start_point}
+                  />
+                  <CheckboxField
+                    id="study_module_start_point"
+                    label={t("courseModuleStartPoint")}
+                    checked={values.study_module_start_point}
+                  />
+                  <CheckboxField
+                    id="hidden"
+                    label={t("courseHidden")}
+                    checked={values.hidden}
+                  />
+                  <CheckboxField
+                    id="has_certificate"
+                    label={t("courseHasCertificate")}
+                    checked={values.has_certificate}
+                  />
+                  <CheckboxField
+                    id="upcoming_active_link"
+                    label={t("courseUpcomingActiveLink")}
+                    checked={values.upcoming_active_link ?? false}
+                  />
+                  <CheckboxField
+                    id="automatic_completions"
+                    label={t("courseAutomaticCompletions")}
+                    checked={values.automatic_completions ?? false}
+                  />
+                  <CheckboxField
+                    id="automatic_completions_eligible_for_ects"
+                    label={t("courseAutomaticCompletionsEligibleForEcts")}
+                    checked={
+                      values.automatic_completions_eligible_for_ects ?? false
+                    }
+                  />
+                </FormGroup>
+              </FormControl>
+            </FormFieldGroup>
+            <FormFieldGroup>
+              <StyledFieldWithAnchor
+                name="order"
+                type="number"
+                label={t("courseOrder")}
+                error={errors.order}
+                fullWidth
+                autoComplete="off"
+                variant="outlined"
+                component={StyledTextField}
+                style={{ width: "20%" }}
+                InputLabelProps={inputLabelProps}
+              />
+              <StyledFieldWithAnchor
+                label={t("courseModuleOrder")}
+                name="study_module_order"
+                type="number"
+                error={errors.study_module_order}
+                fullWidth
+                autoComplete="off"
+                variant="outlined"
+                component={StyledTextField}
+                style={{ width: "20%" }}
+                InputLabelProps={inputLabelProps}
+              />
+            </FormFieldGroup>
+          </section>
+          <section style={{ display: tab !== 1 ? "none" : "initial" }}>
+            <FormFieldGroup>
+              <StyledFieldWithAnchor
+                name="exercise_completions_needed"
+                type="number"
+                label={t("courseExerciseCompletionsNeeded")}
+                error={errors.exercise_completions_needed}
+                fullWidth
+                autoComplete="off"
+                variant="outlined"
+                component={StyledTextField}
+                style={{ width: "60%" }}
+                InputLabelProps={inputLabelProps}
+                tab={1}
+              />
+              <StyledFieldWithAnchor
+                name="points_needed"
+                type="number"
+                label={t("coursePointsNeeded")}
+                error={errors.points_needed}
+                fullWidth
+                autoComplete="off"
+                variant="outlined"
+                component={StyledTextField}
+                style={{ width: "60%" }}
+                InputLabelProps={inputLabelProps}
+                tab={1}
+              />
+            </FormFieldGroup>
+          </section>
           {enableSuperSecret ? (
             <>
               <FormSubtitle
@@ -512,6 +547,8 @@ const CourseEditForm = React.memo(
       }
     }, [])
 
+    const [tab, setTab] = useState(0)
+
     return (
       <Formik
         initialValues={course}
@@ -527,6 +564,8 @@ const CourseEditForm = React.memo(
           })}
           onCancel={onCancel}
           onDelete={onDelete}
+          tab={tab}
+          setTab={setTab}
         />
       </Formik>
     )

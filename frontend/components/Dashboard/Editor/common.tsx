@@ -9,6 +9,7 @@ import { TextField } from "formik-material-ui"
 import styled from "styled-components"
 import { useContext } from "react"
 import AnchorContext from "/contexes/AnchorContext"
+import { CheckboxWithLabel } from "formik-material-ui"
 
 export const StyledTextField = styled(TextField)`
   margin-bottom: 1.5rem;
@@ -71,22 +72,52 @@ export const AdjustingAnchorLink = styled.a<{ id: string }>`
   visibliity: hidden;
 `
 
-export const EnumeratingAnchor: React.FC<any> = ({ id }: { id: string }) => {
+export const CheckboxField = ({
+  id,
+  label,
+  checked,
+}: {
+  id: string
+  label: string
+  checked: boolean
+}) => (
+  <Field
+    id={id}
+    label={label}
+    type="checkbox"
+    name={id}
+    checked={checked}
+    component={CheckboxWithLabel}
+    Label={{ label: label }}
+  />
+)
+
+interface EnumeratingAnchorProps {
+  id: string
+  tab: number
+}
+
+export const EnumeratingAnchor: React.FC<any> = ({
+  id,
+  tab,
+}: EnumeratingAnchorProps) => {
   const { addAnchor } = useContext(AnchorContext)
-  addAnchor(id)
+  addAnchor(id, tab)
 
   return <AdjustingAnchorLink id={id} />
 }
 
 export const StyledFieldWithAnchor: React.FC<any> = ({
   name,
+  tab = 0,
   ...props
 }: {
   name: string
+  tab: number
 }) => {
   return (
     <>
-      <EnumeratingAnchor id={name} />
+      <EnumeratingAnchor id={name} tab={tab} />
       <StyledField name={name} {...props} />
     </>
   )
