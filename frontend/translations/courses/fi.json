@@ -92,5 +92,9 @@
   "importPhotoDialogContent": "Valitse kurssi",
   "importPhotoLabel": "Valitse...",
   "importPhotoDialogSelect": "OK",
-  "importPhotoDialogCancel": "Peru"
+  "importPhotoDialogCancel": "Peru",
+  "courseAutomaticCompletions": "Automatic completions",
+  "courseAutomaticCompletionsEligibleForEcts": "Automatic completions eligible for ECTS",
+  "coursePointsNeeded": "Points needed",
+  "courseExerciseCompletionsNeeded": "Exercise completions needed"
 }

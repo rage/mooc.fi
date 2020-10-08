@@ -88,6 +88,10 @@ export const CourseQuery = gql`
         language
       }
       upcoming_active_link
+      automatic_completions
+      automatic_completions_eligible_for_ects
+      exercise_completions_needed
+      points_needed
     }
   }
 `
