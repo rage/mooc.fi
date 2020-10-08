@@ -1,8 +1,8 @@
-import Anchor from "/contexes/AnchorContext"
+import { Anchor } from "/contexes/AnchorContext"
 
 export function useEnumeratingAnchors(): [
-  Record<string, number>,
-  (_: string) => void,
+  Record<string, Anchor>,
+  (_: string, __: number) => void,
 ] {
   let anchorId = 0
 
