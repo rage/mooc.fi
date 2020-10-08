@@ -158,7 +158,7 @@ const getGlobalStats = async (): Promise<string> => {
   const totalCompletions = (
     await Knex.count()
       .from("completion")
-      .whereNotNull("language")
+      .whereNotNull("completion_language")
       .andWhere({ course_id: course[0].id })
   )[0].count
   const now = new Date()
