@@ -15,25 +15,20 @@ const prisma = prismaClient()
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 
 const processLink = async (p: OpenUniversityRegistrationLink) => {
-  if (!p.course_code) {
+  if (!p.course_code || p.course_code === "null") {
     logger.info(
       "Since this link has no course code, I won't try to fetch new links.",
     )
     return
   }
   const res = await getInfoWithCourseCode(p.course_code).catch((error) => {
-    if (error instanceof Error) {
-      logger.error(error)
-    } else {
-      logger.error(
-        new AvoinError(
-          `Error getting info with course code ${p.course_code}`,
-          p,
-          error,
-        ),
-      )
-    }
-    throw error
+    const e = new AvoinError(
+      `Error getting info with course code ${p.course_code}`,
+      p,
+      error,
+    )
+    logger.error(e)
+    throw e
   })
   logger.info("Open university info: " + JSON.stringify(res, undefined, 2))
 
