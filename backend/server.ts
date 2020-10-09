@@ -242,7 +242,7 @@ export function setupServer(server: typeof nexusServer) {
 
     res.json({
       data: {
-        course_id: data[0]?.course_id,
+        course_id: id,
         ...data[0]?.extra,
       },
     })
