@@ -62,6 +62,36 @@ const langArr: langProps[] = [
     country: "Latvia",
     langName: "Latvian",
   },
+  {
+    language: "lt",
+    completion_language: "lt_LT",
+    country: "Lithuania",
+    langName: "Lithuanian",
+  },
+  {
+    language: "fr",
+    completion_language: "fr_FR",
+    country: "France",
+    langName: "French",
+  },
+  {
+    language: "fr-be",
+    completion_language: "fr_BE",
+    country: "Belgium",
+    langName: "French (Belgium)",
+  },
+  {
+    language: "nl-be",
+    completion_language: "nl_BE",
+    country: "Belgium",
+    langName: "Dutch (Belgium)",
+  },
+  {
+    language: "mt",
+    completion_language: "mt_MT",
+    country: "Malta",
+    langName: "Maltan",
+  },
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
@@ -128,10 +158,14 @@ const getGlobalStats = async (): Promise<string> => {
   const totalUsers = (
     await Knex.count()
       .from("user_course_setting")
-      .where({ course_id: course[0].id })
+      .whereNotNull("language")
+      .andWhere({ course_id: course[0].id })
   )[0].count
   const totalCompletions = (
-    await Knex.count().from("completion").where({ course_id: course[0].id })
+    await Knex.count()
+      .from("completion")
+      .whereNotNull("completion_language")
+      .andWhere({ course_id: course[0].id })
   )[0].count
   const now = new Date()
 

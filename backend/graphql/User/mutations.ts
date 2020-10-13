@@ -71,11 +71,12 @@ export const UserMutations = extendType({
         }),
       },
       resolve: async (_, { user }, ctx) => {
-        const exists = await ctx.prisma.user.findMany({
+        const exists = await ctx.prisma.user.findFirst({
+          select: { id: true },
           where: { upstream_id: user.upstream_id },
         })
 
-        if (exists.length > 0) {
+        if (exists) {
           throw new Error("user with that upstream id already exists")
         }
 

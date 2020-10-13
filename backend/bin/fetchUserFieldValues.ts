@@ -19,15 +19,10 @@ const fetcUserFieldValues = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
-  // const prisma: Prisma = new Prisma()
-
-  const existingConfig = await prisma.userAppDatumConfig.findMany({
+  const existingConfig = await prisma.userAppDatumConfig.findFirst({
     where: { name: CONFIG_NAME },
   })
-  const latestTimeStamp =
-    existingConfig.length > 0
-      ? existingConfig[0].timestamp // ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
-      : null
+  const latestTimeStamp = existingConfig?.timestamp
 
   logger.info(latestTimeStamp)
 
@@ -140,9 +135,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
       new DatabaseInputError(
         `Failed to upsert user with upstream id ${
           details.id
-        }. Values we tried to upsert: ${JSON.stringify(
-          prismaDetails,
-        )}. Values found from the database: ${JSON.stringify(details)}`,
+        }. Values we tried to upsert: ${JSON.stringify(prismaDetails)}`,
         details,
         e,
       ),

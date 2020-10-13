@@ -80,15 +80,15 @@ export const UserOrganizationMutations = extendType({
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
 
-        const exists =
-          (
-            await ctx.prisma.userOrganization.findMany({
-              where: {
-                user_id,
-                organization_id,
-              },
-            })
-          ).length > 0
+        const exists = await ctx.prisma.userOrganization.findFirst({
+          select: {
+            id: true,
+          },
+          where: {
+            user_id,
+            organization_id,
+          },
+        })
 
         if (exists) {
           throw new Error("this user/organization relation already exists")

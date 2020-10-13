@@ -41,14 +41,14 @@ export const moocfiAuthPlugin = plugin({
 const getOrganization = async (ctx: Context, rawToken: string | null) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""
 
-  const org = await ctx.prisma.organization.findMany({
+  const org = await ctx.prisma.organization.findFirst({
     where: { secret_key: secret },
   })
-  if (org.length < 1) {
+  if (!org) {
     throw new AuthenticationError("Please log in.")
   }
 
-  ctx.organization = org[0]
+  ctx.organization = org
   ctx.role = Role.ORGANIZATION
 }
 

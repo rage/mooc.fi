@@ -81,10 +81,9 @@ export const OrganizationQueries = extendType({
           return ctx.prisma.organization.findOne({ where: { id } })
         }*/
 
-        const res = await ctx.prisma.organization.findMany({
+        return await ctx.prisma.organization.findFirst({
           where: { id, hidden },
         })
-        return res.length ? res[0] : null
       },
     })
 

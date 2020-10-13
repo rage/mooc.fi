@@ -240,7 +240,7 @@ express.get("/api/tierprogress/:id", async (req: any, res: any) => {
 
   res.json({
     data: {
-      course_id: data[0]?.course_id,
+      course_id: id,
       ...data[0]?.extra,
     },
   })
@@ -280,16 +280,30 @@ async function getUser(
     return err(res.status(400).json({ message: "invalid credentials" }))
   }
 
-  const user = await Knex.select<any, User[]>("id")
-    .from("user")
-    .where("upstream_id", details.id)
+  let user = (
+    await Knex.select<any, User[]>("id")
+      .from("user")
+      .where("upstream_id", details.id)
+  )?.[0]
 
-  if (user.length === 0) {
-    return err(res.status(400).json({ message: "user not found" }))
+  if (!user) {
+    user = (
+      await Knex("user")
+        .insert({
+          upstream_id: details.id,
+          administrator: details.administrator,
+          email: details.email.trim(),
+          first_name: details.user_field.first_name.trim(),
+          last_name: details.user_field.last_name.trim(),
+          username: details.username,
+        })
+        .returning("id")
+    )?.[0]
+    // return err(res.status(400).json({ message: "user not found" }))
   }
 
   return ok({
-    user: user[0],
+    user,
     details,
   })
 }

@@ -1,16 +1,17 @@
-import { checkBAICompletion } from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
+import {
+  generateUserCourseProgress /*checkBAICompletion*/,
+} from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
 import prismaClient from "./lib/prisma"
 
 const prisma = prismaClient()
 
 const test = async () => {
-  const user = (
-    await prisma.user.findMany({
-      where: {
-        username: "mikko_ai",
-      },
-    })
-  )[0]
+  const user = await prisma.user.findFirst({
+    where: {
+      username: "mikko_ai",
+    },
+  })
+
   /*
     testing:
 
@@ -24,7 +25,19 @@ const test = async () => {
       id: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
     },
   })
-  await checkBAICompletion(user, course!)
+  const progress = await prisma.userCourseProgress.findFirst({
+    where: {
+      user_id: user!.id,
+      course_id: course!.id,
+    },
+  })
+
+  await generateUserCourseProgress({
+    user: user!,
+    course: course!,
+    userCourseProgress: progress!,
+  })
+  process.exit(0)
 }
 
 test()

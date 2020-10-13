@@ -1,5 +1,6 @@
 import { ForbiddenError } from "apollo-server-core"
 import { objectType } from "@nexus/schema"
+import { UserCourseProgress } from "@prisma/client"
 
 export const Completion = objectType({
   name: "Completion",
@@ -91,26 +92,24 @@ export const Completion = objectType({
             language: parent.completion_language,
           }
         }
-        const avoinLinks = await ctx.prisma.openUniversityRegistrationLink.findMany(
+        const avoinLink = await ctx.prisma.openUniversityRegistrationLink.findFirst(
           {
             where: filter,
           },
         )
-        if (avoinLinks.length < 1) {
-          return null
-        }
-        return avoinLinks[0].link
+
+        return avoinLink?.link
       },
     })
 
     t.field("registered", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
-        const registered = await ctx.prisma.completionRegistered.findMany({
+        const registered = await ctx.prisma.completionRegistered.findFirst({
           where: { completion_id: parent.id },
         })
 
-        return registered.length > 0
+        return Boolean(registered)
       },
     })
 
@@ -135,7 +134,9 @@ export const Completion = objectType({
         })
 
         return (
-          progresses?.some((p) => (p?.extra as any)?.projectCompletion) ?? false
+          progresses?.some(
+            (p: UserCourseProgress) => (p?.extra as any)?.projectCompletion,
+          ) ?? false
         )
       },
     })

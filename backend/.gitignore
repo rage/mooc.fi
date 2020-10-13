@@ -4,3 +4,4 @@ bin/tmp/
 .tmp_build/
 .nexus
 newrelic.js
+env.json

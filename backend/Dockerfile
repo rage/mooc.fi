@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:12.18.4
 
 RUN apt-get update \
   && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
