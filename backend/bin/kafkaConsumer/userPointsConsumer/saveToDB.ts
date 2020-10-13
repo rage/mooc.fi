@@ -2,7 +2,7 @@ import { Message } from "./interfaces"
 import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
-import { CheckCompletion } from "../userCourseProgressConsumer/generateUserCourseProgress"
+import { CheckCompletion } from "../common/userCourseProgress/generateUserCourseProgress"
 import knex from "knex"
 import getUserFromTMC from "../common/getUserFromTMC"
 import { ok, err, Result } from "../../../util/result"
