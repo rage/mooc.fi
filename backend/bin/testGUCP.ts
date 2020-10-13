@@ -1,6 +1,6 @@
 import {
   generateUserCourseProgress /*checkBAICompletion*/,
-} from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
+} from "./kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import prismaClient from "./lib/prisma"
 
 const prisma = prismaClient()
