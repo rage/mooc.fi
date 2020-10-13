@@ -278,7 +278,6 @@ const validateSlug = ({
     this: Yup.TestContext,
     value?: string | null,
   ): Promise<boolean> {
-    console.log("slug value", value)
     if (!value || value === "") {
       return true // if it's empty, it's ok by this validation and required will catch it
     }
