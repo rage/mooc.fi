@@ -43,6 +43,10 @@ export interface CourseFormValues extends FormValues {
   user_course_settings_visibilities: UserCourseSettingsVisibilityFormValues[]
   upcoming_active_link?: boolean
   tier?: number
+  automatic_completions?: boolean
+  automatic_completions_eligible_for_ects?: boolean
+  exercise_completions_needed?: number
+  points_needed?: number
 }
 
 export interface CourseTranslationFormValues extends FormValues {

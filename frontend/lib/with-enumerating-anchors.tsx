@@ -1,12 +1,15 @@
 import * as React from "react"
-import AnchorContext from "/contexes/AnchorContext"
+import AnchorContext, { Anchor } from "/contexes/AnchorContext"
 
 const withEnumeratingAnchors = <T,>(Component: any) => (props: any) => {
   let anchorId = 0
-  const anchors: Record<string, number> = {}
-  const addAnchor = (anchor: string) => {
+  const anchors: Record<string, Anchor> = {}
+  const addAnchor = (anchor: string, tab: number = 0) => {
     if (!anchors[anchor]) {
-      anchors[anchor] = anchorId++
+      anchors[anchor] = {
+        id: anchorId++,
+        tab,
+      }
     }
   }
 
