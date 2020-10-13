@@ -39,6 +39,7 @@ import {
   EnumeratingAnchor,
   inputLabelProps,
   CheckboxField,
+  TabSection,
 } from "/components/Dashboard/Editor/common"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
@@ -244,7 +245,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
             <Tab label="Basic settings" value={0} />
             <Tab label="Advanced settings" value={1} />
           </Tabs>
-          <section style={{ display: tab !== 0 ? "none" : "initial" }}>
+          <TabSection currentTab={tab} tab={0}>
             <FormFieldGroup>
               <FormControl component="fieldset">
                 <FormLabel component="legend" style={{ color: "#DF7A46" }}>
@@ -333,18 +334,6 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
                     label={t("courseUpcomingActiveLink")}
                     checked={values.upcoming_active_link ?? false}
                   />
-                  <CheckboxField
-                    id="automatic_completions"
-                    label={t("courseAutomaticCompletions")}
-                    checked={values.automatic_completions ?? false}
-                  />
-                  <CheckboxField
-                    id="automatic_completions_eligible_for_ects"
-                    label={t("courseAutomaticCompletionsEligibleForEcts")}
-                    checked={
-                      values.automatic_completions_eligible_for_ects ?? false
-                    }
-                  />
                 </FormGroup>
               </FormControl>
             </FormFieldGroup>
@@ -374,8 +363,9 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
                 InputLabelProps={inputLabelProps}
               />
             </FormFieldGroup>
-          </section>
-          <section style={{ display: tab !== 1 ? "none" : "initial" }}>
+          </TabSection>
+
+          <TabSection currentTab={tab} tab={1}>
             <FormFieldGroup>
               <StyledFieldWithAnchor
                 name="exercise_completions_needed"
@@ -403,8 +393,20 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
                 InputLabelProps={inputLabelProps}
                 tab={1}
               />
+              <CheckboxField
+                id="automatic_completions"
+                label={t("courseAutomaticCompletions")}
+                checked={values.automatic_completions ?? false}
+              />
+              <CheckboxField
+                id="automatic_completions_eligible_for_ects"
+                label={t("courseAutomaticCompletionsEligibleForEcts")}
+                checked={
+                  values.automatic_completions_eligible_for_ects ?? false
+                }
+              />
             </FormFieldGroup>
-          </section>
+          </TabSection>
           {enableSuperSecret ? (
             <>
               <FormSubtitle

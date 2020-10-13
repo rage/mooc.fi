@@ -7,7 +7,7 @@ import {
 import { Field } from "formik"
 import { TextField } from "formik-material-ui"
 import styled from "styled-components"
-import { useContext } from "react"
+import { PropsWithChildren, useContext } from "react"
 import AnchorContext from "/contexes/AnchorContext"
 import { CheckboxWithLabel } from "formik-material-ui"
 
@@ -122,6 +122,21 @@ export const StyledFieldWithAnchor: React.FC<any> = ({
     </>
   )
 }
+
+interface TabSectionProps {
+  currentTab: number
+  tab: number
+}
+
+export const TabSection = ({
+  currentTab,
+  tab,
+  children,
+}: PropsWithChildren<TabSectionProps>) => (
+  <section style={{ display: currentTab !== tab ? "none" : "initial" }}>
+    {children}
+  </section>
+)
 
 export const inputLabelProps = {
   fontSize: 16,
