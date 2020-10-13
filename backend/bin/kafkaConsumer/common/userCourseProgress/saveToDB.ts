@@ -8,12 +8,12 @@ import {
 } from "@prisma/client"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
-import { pushMessageToClient, MessageType } from "../../../wsServer"
-import getUserFromTMC from "../common/getUserFromTMC"
-import { ok, err, Result } from "../../../util/result"
+import { pushMessageToClient, MessageType } from "../../../../wsServer"
+import getUserFromTMC from "../getUserFromTMC"
+import { ok, err, Result } from "../../../../util/result"
 
 import _KnexConstructor from "knex"
-import { DatabaseInputError, TMCError } from "../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
 
 const Knex = _KnexConstructor({
   client: "pg",
