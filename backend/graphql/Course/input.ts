@@ -59,6 +59,8 @@ schema.inputObjectType({
     })
     t.boolean("upcoming_active_link", { required: false })
     t.int("tier")
+    t.int("exercise_completions_needed")
+    t.int("points_needed")
   },
 })
 
@@ -124,5 +126,7 @@ schema.inputObjectType({
     })
     t.boolean("upcoming_active_link", { required: false })
     t.int("tier")
+    t.int("exercise_completions_needed")
+    t.int("points_needed")
   },
 })

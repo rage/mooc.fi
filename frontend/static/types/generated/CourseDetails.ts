@@ -99,6 +99,10 @@ export interface CourseDetails_course {
   has_certificate: boolean | null
   user_course_settings_visibilities: CourseDetails_course_user_course_settings_visibilities[]
   upcoming_active_link: boolean | null
+  automatic_completions: boolean | null
+  automatic_completions_eligible_for_ects: boolean | null
+  exercise_completions_needed: number | null
+  points_needed: number | null
 }
 
 export interface CourseDetails {
