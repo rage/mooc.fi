@@ -9,12 +9,12 @@ import {
   EmailTemplate,
   UserCourseServiceProgress,
 } from "@prisma/client"
-import Knex from "../../../services/knex"
+import Knex from "../../../../services/knex"
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
-import { EmailTemplater } from "../common/EmailTemplater/EmailTemplater"
-import { pushMessageToClient, MessageType } from "../../../wsServer"
-import prismaClient from "../../lib/prisma"
+import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
+import { pushMessageToClient, MessageType } from "../../../../wsServer"
+import prismaClient from "../../../lib/prisma"
 import { range } from "lodash"
 import {
   BAIexercises,
