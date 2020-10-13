@@ -23,13 +23,10 @@ const fetchUserAppDatum = async () => {
 
   // const prisma: Prisma = new Prisma()
 
-  const existingConfigs = await prisma.userAppDatumConfig.findMany({
+  const existingConfig = await prisma.userAppDatumConfig.findFirst({
     where: { name: CONFIG_NAME },
   })
-  const latestTimeStamp =
-    existingConfigs.length > 0
-      ? existingConfigs[0].timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
-      : null
+  const latestTimeStamp = existingConfig?.timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
 
   logger.info(latestTimeStamp)
 
@@ -107,13 +104,13 @@ const fetchUserAppDatum = async () => {
       process.exit(1)
     }
 
-    const existingUserCourseSettings = await prisma.userCourseSetting.findMany({
+    const existingUserCourseSetting = await prisma.userCourseSetting.findFirst({
       where: {
         user: { upstream_id: p.user_id },
         course_id: course.id,
       },
     })
-    if (existingUserCourseSettings.length < 1) {
+    if (!existingUserCourseSetting) {
       old = await prisma.userCourseSetting.create({
         data: {
           user: {
@@ -123,7 +120,7 @@ const fetchUserAppDatum = async () => {
         },
       })
     } else {
-      old = existingUserCourseSettings[0]
+      old = existingUserCourseSetting
     }
 
     switch (p.field_name) {
@@ -261,9 +258,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
       new DatabaseInputError(
         `Failed to upsert user with upstream id ${
           details.id
-        }. Values we tried to upsert: ${JSON.stringify(
-          prismaDetails,
-        )}. Values found from the database: ${JSON.stringify(details)}`,
+        }. Values we tried to upsert: ${JSON.stringify(prismaDetails)}`,
         details,
         e,
       ),

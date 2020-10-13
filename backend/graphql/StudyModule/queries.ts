@@ -43,7 +43,7 @@ export const StudyModuleQueries = extendType({
         }
 
         if (language) {
-          const module_translations = await ctx.prisma.studyModuleTranslation.findMany(
+          const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
             {
               where: {
                 study_module_id: study_module.id,
@@ -52,11 +52,11 @@ export const StudyModuleQueries = extendType({
             },
           )
 
-          if (!module_translations.length) {
+          if (!module_translation) {
             return Promise.resolve(null)
           }
 
-          const { name, description = "" } = module_translations[0]
+          const { name, description = "" } = module_translation
           return {
             ...study_module,
             name,
@@ -93,17 +93,17 @@ export const StudyModuleQueries = extendType({
           ? (
               await Promise.all(
                 modules.map(async (module: any) => {
-                  const module_translations = await ctx.prisma.studyModuleTranslation.findMany(
+                  const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
                     {
                       where: { study_module_id: module.id, language },
                     },
                   )
 
-                  if (!module_translations.length) {
+                  if (!module_translation) {
                     return Promise.resolve(null)
                   }
 
-                  const { name, description = "" } = module_translations[0]
+                  const { name, description = "" } = module_translation
 
                   return { ...module, name, description }
                 }),
@@ -125,9 +125,11 @@ export const StudyModuleQueries = extendType({
       },
       authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {
-        return (
-          (await ctx.prisma.studyModule.findMany({ where: { slug } })).length >
-          0
+        return Boolean(
+          await ctx.prisma.studyModule.findFirst({
+            select: { id: true },
+            where: { slug },
+          }),
         )
       },
     })

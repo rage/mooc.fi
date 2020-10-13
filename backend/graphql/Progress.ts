@@ -12,12 +12,9 @@ export const Progress = objectType({
       resolve: async (parent, _, ctx) => {
         const course_id = parent.course?.id
         const user_id = parent.user?.id
-        const userCourseProgresses = await ctx.prisma.userCourseProgress.findMany(
-          {
-            where: { course_id, user_id },
-          },
-        )
-        return userCourseProgresses[0]
+        return await ctx.prisma.userCourseProgress.findFirst({
+          where: { course_id, user_id },
+        })
       },
     })
     t.list.field("user_course_service_progresses", {

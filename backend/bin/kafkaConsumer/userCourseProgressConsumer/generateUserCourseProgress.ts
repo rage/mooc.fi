@@ -190,7 +190,7 @@ const getExerciseCompletionsForCourses = async (
     .andWhereNot("exercise.max_points", 0)
 
   /*
-    [{ course_id, custom_id, exercise_id, max_points, n_points }, ...] 
+    [{ course_id, custom_id, exercise_id, max_points, n_points }, ...]
    */
   return exercise_completions
 }
@@ -209,31 +209,25 @@ const checkBAIProjectCompletion = async (user: User) => {
 const GetUserCourseSettings = async (
   user: User,
   course_id: string,
-): Promise<UserCourseSetting> => {
-  let userCourseSetting: UserCourseSetting =
-    (
-      await prisma.userCourseSetting.findMany({
-        where: {
-          user_id: user.id,
-          course_id,
-        },
-      })
-    )?.[0] || null
+): Promise<UserCourseSetting | null> => {
+  let userCourseSetting = await prisma.userCourseSetting.findFirst({
+    where: {
+      user_id: user.id,
+      course_id,
+    },
+  })
 
   if (!userCourseSetting) {
     const inheritCourse = await prisma.course
       .findOne({ where: { id: course_id } })
       .inherit_settings_from()
     if (inheritCourse) {
-      userCourseSetting =
-        (
-          await prisma.userCourseSetting.findMany({
-            where: {
-              user_id: user.id,
-              course_id: inheritCourse.id,
-            },
-          })
-        )[0] || null
+      userCourseSetting = await prisma.userCourseSetting.findFirst({
+        where: {
+          user_id: user.id,
+          course_id: inheritCourse.id,
+        },
+      })
     }
   }
   return userCourseSetting
@@ -263,6 +257,8 @@ const languageCodeMapping: { [key: string]: string } = {
   sk: "sk_SK",
   sl: "sl_SI",
   no: "nb_NO",
+  "fr-be": "fr_BE",
+  "nl-be": "nl_BE",
 }
 
 interface TierProgress {
@@ -356,13 +352,13 @@ const getBAIProgress = async (
 
     if (!exercise) return acc
 
-    const max_points = curr.max_points ?? 0
-    const n_points = Math.max(acc[exercise]?.n_points ?? 0, curr.n_points ?? 0)
+    const max_points = curr.max_points || 0
+    const n_points = Math.max(acc[exercise]?.n_points || 0, curr.n_points || 0)
 
     return {
       ...acc,
       [exercise]: {
-        tier: Math.max(acc[exercise]?.tier ?? 0, tier),
+        tier: Math.max(acc[exercise]?.tier || 0, tier),
         max_points,
         n_points,
         progress: n_points / (max_points || 1),
@@ -370,8 +366,8 @@ const getBAIProgress = async (
     }
   }, {} as Record<number, TierProgress>)
   /*
-    [exercise #]: { tier, n_points, max_points } -- what's the maximum tier completed and 
-      what's the highest amount of points received, not necessarily from maximum tier 
+    [exercise #]: { tier, n_points, max_points } -- what's the maximum tier completed and
+      what's the highest amount of points received, not necessarily from maximum tier
     ...
   */
   const tierProgress = Object.entries(tierProgressMap).map(([key, value]) => ({
@@ -403,7 +399,7 @@ const getBAIProgress = async (
   )
   /*
     [tier #]: # of exercises completed from _at least_ this tier,
-      so tier 3 is counted in both 1 and 2, and so on 
+      so tier 3 is counted in both 1 and 2, and so on
   */
 
   const hasTier: Record<number, boolean> = {
@@ -419,7 +415,7 @@ const getBAIProgress = async (
     }),
     {} as Record<number, number>,
   )
-  /* 
+  /*
     [tier #]: how many exercises missing to get to this tier
   */
 
@@ -443,13 +439,15 @@ const getBAIProgress = async (
     )
 
   const projectCompletion = await checkBAIProjectCompletion(user)
+  const pointsProgress =
+    (progress.total_n_points || 0) / (progress.total_max_points || 1)
   const newProgress = {
     progress: [
       {
         group: "total",
         max_points: progress.total_max_points,
         n_points: progress.total_n_points,
-        progress: progress.total_n_points / (progress.total_max_points || 1),
+        progress: isNaN(pointsProgress) ? 0 : pointsProgress,
       },
     ],
     extra: {
@@ -583,6 +581,7 @@ class CombinedUserCourseProgress {
     this.progress[index].max_points += progress.max_points
     this.progress[index].n_points += progress.n_points
     this.progress[index].progress =
-      this.progress[index].n_points / this.progress[index].max_points
+      (this.progress[index].n_points || 0) /
+      (this.progress[index].max_points || 1)
   }
 }

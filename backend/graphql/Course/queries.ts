@@ -44,7 +44,7 @@ export const CourseQueries = extendType({
         }
 
         if (language) {
-          const course_translations = await ctx.prisma.courseTranslation.findMany(
+          const course_translation = await ctx.prisma.courseTranslation.findFirst(
             {
               where: {
                 course_id: course.id,
@@ -53,12 +53,12 @@ export const CourseQueries = extendType({
             },
           )
 
-          if (!course_translations.length) {
+          if (!course_translation) {
             return Promise.resolve(null)
           }
 
           // TODO/FIXME: provide language instead of getting the first one
-          const { name, description, link = "" } = course_translations[0]
+          const { name, description, link = "" } = course_translation
           return {
             ...course,
             name,
@@ -96,7 +96,7 @@ export const CourseQueries = extendType({
           ? (
               await Promise.all(
                 courses.map(async (course: Course) => {
-                  const course_translations = await ctx.prisma.courseTranslation.findMany(
+                  const course_translation = await ctx.prisma.courseTranslation.findFirst(
                     {
                       where: {
                         course_id: course.id,
@@ -105,15 +105,11 @@ export const CourseQueries = extendType({
                     },
                   )
 
-                  if (!course_translations.length) {
+                  if (!course_translation) {
                     return Promise.resolve(null)
                   }
 
-                  const {
-                    name,
-                    description,
-                    link = "",
-                  } = course_translations[0]
+                  const { name, description, link = "" } = course_translation
 
                   return { ...course, name, description, link }
                 }),
@@ -141,13 +137,11 @@ export const CourseQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { slug } = args
 
-        return (
-          (
-            await ctx.prisma.course.findMany({
-              where: { slug },
-              select: { id: true },
-            })
-          ).length > 0
+        return Boolean(
+          await ctx.prisma.course.findFirst({
+            where: { slug },
+            select: { id: true },
+          }),
         )
       },
     })

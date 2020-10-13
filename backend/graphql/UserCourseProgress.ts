@@ -64,14 +64,12 @@ export const UserCourseProgress = objectType({
           throw new Error("course or user not found")
         }
 
-        const userCourseSettings = await ctx.prisma.userCourseSetting.findMany({
+        return await ctx.prisma.userCourseSetting.findFirst({
           where: {
             course_id,
             user_id,
           },
         })
-        // FIXME: what if there's not any?
-        return userCourseSettings?.[0] ?? null
       },
     })
 
@@ -142,16 +140,16 @@ export const UserCourseProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id } = args
-        const result = await ctx.prisma.userCourseProgress.findMany({
+        const result = await ctx.prisma.userCourseProgress.findFirst({
           where: {
             user_id,
             course_id,
           },
         })
 
-        if (!result.length) throw new UserInputError("Not found")
+        if (!result) throw new UserInputError("Not found")
 
-        return result[0]
+        return result
       },
     })
 

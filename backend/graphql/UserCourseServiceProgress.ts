@@ -48,14 +48,13 @@ export const UserCourseServiceProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
-        const result = await ctx.prisma.userCourseServiceProgress.findMany({
+        return await ctx.prisma.userCourseServiceProgress.findFirst({
           where: {
             user_id: user_id,
             course_id: course_id,
             service_id: service_id,
           },
         })
-        return result[0]
       },
     })
 

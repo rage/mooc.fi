@@ -46,17 +46,17 @@ export const UserCourseSettingQueries = extendType({
           course_id = inheritSettingsCourse.id
         }
 
-        const result = await ctx.prisma.userCourseSetting.findMany({
+        const result = await ctx.prisma.userCourseSetting.findFirst({
           where: {
             user_id,
             course_id,
           },
         })
 
-        if (!result.length) {
+        if (!result) {
           throw new UserInputError("Not found")
         }
-        return result[0]
+        return result
       },
     })
 

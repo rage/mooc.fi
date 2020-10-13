@@ -151,18 +151,12 @@ export const User = objectType({
       resolve: async (parent, args, ctx) => {
         const { course_id } = args
 
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
+        return await ctx.prisma.userCourseProgress.findFirst({
           where: {
             user_id: parent.id,
             course_id,
           },
         })
-
-        if (progresses.length > 0) {
-          return progresses[0]
-        } else {
-          return null
-        }
       },
     })
 

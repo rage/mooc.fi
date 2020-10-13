@@ -64,30 +64,31 @@ export const saveToDatabase = async (
   })
 
   if (!user || !course) {
-    return err(new DatabaseInputError("Invalid user or course", message))
+    return err(
+      new DatabaseInputError(
+        `Invalid user or course: user ${message.user_id}, course ${message.course_id}`,
+        message,
+      ),
+    )
   }
 
-  logger.info("Checking if a exercise exists with id " + message.exercise_id)
-  const existingExercises = await prisma.exercise.findMany({
-    where: {
-      custom_id: message.exercise_id?.toString(),
-    },
-  })
-  if (existingExercises.length < 1) {
-    return err(new DatabaseInputError(`Given exercise does not exist`, message))
-  }
   logger.info("Getting the exercise")
-  const exercises = await prisma.exercise.findMany({
-    take: 1,
+  const exercise = await prisma.exercise.findFirst({
     where: {
       custom_id: message.exercise_id?.toString(),
     },
   })
-
-  const exercise = exercises[0]
+  if (!exercise) {
+    return err(
+      new DatabaseInputError(
+        `Given exercise does not exist: id ${message.exercise_id}`,
+        message,
+      ),
+    )
+  }
 
   logger.info("Getting the completion")
-  const exerciseCompleteds = await prisma.exerciseCompletion.findMany({
+  const exerciseCompleted = await prisma.exerciseCompletion.findFirst({
     take: 1,
     where: {
       exercise: {
@@ -97,7 +98,6 @@ export const saveToDatabase = async (
     },
     orderBy: { timestamp: "desc" },
   })
-  const exerciseCompleted = exerciseCompleteds[0]
 
   // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion

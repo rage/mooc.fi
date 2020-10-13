@@ -35,7 +35,7 @@ export const UserQueries = extendType({
           )
         }
 
-        const users = await ctx.prisma.user.findMany({
+        const user = await ctx.prisma.user.findFirst({
           where: {
             OR: buildSearch(
               ["first_name", "last_name", "username", "email"],
@@ -45,8 +45,8 @@ export const UserQueries = extendType({
             upstream_id: upstream_id ?? undefined,
           },
         })
-        if (!users.length) throw new UserInputError("User not found")
-        return users[0]
+        if (!user) throw new UserInputError("User not found")
+        return user
       },
     })
 

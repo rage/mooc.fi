@@ -35,21 +35,17 @@ export const StudyModule = objectType({
           ? (
               await Promise.all(
                 courses.map(async (course) => {
-                  const course_translations = await ctx.prisma.courseTranslation.findMany(
+                  const course_translation = await ctx.prisma.courseTranslation.findFirst(
                     {
                       where: { course_id: course.id, language },
                     },
                   )
 
-                  if (!course_translations.length) {
+                  if (!course_translation) {
                     return Promise.resolve(null)
                   }
 
-                  const {
-                    name,
-                    description,
-                    link = "",
-                  } = course_translations[0]
+                  const { name, description, link = "" } = course_translation
 
                   return { ...course, name, description, link }
                 }),
