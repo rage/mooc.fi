@@ -86,6 +86,12 @@ const langArr: langProps[] = [
     country: "Belgium",
     langName: "Dutch (Belgium)",
   },
+  {
+    language: "mt",
+    completion_language: "mt_MT",
+    country: "Malta",
+    langName: "Maltan",
+  },
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
