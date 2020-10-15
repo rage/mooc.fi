@@ -16,7 +16,7 @@ kafkaConsumer:
     replicaCount: 1
   userCourseProgress:
     replicaCount: 1
-  userCourseProgressRealTime:
+  userCourseProgressRealtime:
     replicaCount: 1
   userPoints:
     replicaCount: 1
