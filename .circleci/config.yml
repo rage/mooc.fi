@@ -16,6 +16,9 @@ jobs:
       - run:
           name: "ESLint"
           command: "bin/eslint.sh"
+      - run:
+          name: "Helm"
+          command: "bin/helm.sh"
 
   build_frontend:
     docker:
