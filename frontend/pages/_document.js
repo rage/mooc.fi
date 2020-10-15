@@ -1,5 +1,5 @@
 import React from "react"
-import Document, { Head, Main, NextScript } from "next/document"
+import Document, { Html, Head, Main, NextScript } from "next/document"
 import flush from "styled-jsx/server"
 import { ServerStyleSheets } from "@material-ui/styles"
 import theme from "../src/theme"
@@ -47,7 +47,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <html lang="fi" dir="ltr">
+      <Html lang="fi" dir="ltr">
         <Head>
           <meta charSet="utf-8" />
           <meta name="theme-color" content={theme.palette.primary.main} />
@@ -62,7 +62,7 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     )
   }
 }
