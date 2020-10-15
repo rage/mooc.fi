@@ -30,7 +30,7 @@
     "update-course-statuses": "node ./dist/bin/updateCourseStatuses.js",
     "remove-duplicate-completions": "node ./dist/bin/removeDuplicateCompletions.js",
     "download-env": "node ./bin/downloadEnv.js",
-    "copy-env": "cp ./bin/kafkaConsumer/userCourseProgressConsumer/env.json ./dist/bin/kafkaConsumer/userCourseProgressConsumer/env.json",
+    "copy-env": "cp ./bin/kafkaConsumer/common/userCourseProgress/env.json ./dist/bin/kafkaConsumer/common/userCourseProgress/env.json",
     "dev": "npm run download-env && nexus dev",
     "build": "npm run download-env && nexus build",
     "start": "node dist",
