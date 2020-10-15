@@ -26,7 +26,7 @@ import {
   exerciseCompletionsNeeded,
 } from "./courseConfig"
 import * as winston from "winston"
-import { DatabaseInputError } from "/bin/lib/errors"
+import { DatabaseInputError } from "../../../lib/errors"
 
 const prisma = prismaClient()
 let logger: winston.Logger | null = null
