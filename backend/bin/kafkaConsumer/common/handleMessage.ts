@@ -61,7 +61,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   }
 
   try {
-    logger.info("Saving message", { message })
+    logger.info("Saving message", { message: JSON.stringify(message) })
 
     const saveResult = await saveToDatabase(message, prisma, logger)
 
