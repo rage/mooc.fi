@@ -58,8 +58,8 @@ test("Handles one message", async () => {
     logger,
   )
   expect(res).toBe(1)
-  const users = await knex("user");
-  expect(users.map(o => o.upstream_id)).toContain(14581)
+  const users = await knex("user")
+  expect(users.map((o) => o.upstream_id)).toContain(14581)
 })
 
 function messageToFakeKafkaMessage(message: Message): KafkaMessage {

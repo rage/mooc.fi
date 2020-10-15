@@ -52,7 +52,7 @@ export const getBatchUsersFromTMC = async (
           administrator: o.administrator,
         })
         .returning("*")
-      res.push(newUser)
+      res.push(newUser[0])
     } catch (e) {
       const user = (await Knex("user").where("upstream_id", o.id).limit(1))[0]
       res.push(user)

@@ -3,11 +3,12 @@ import { Logger } from "winston"
 import { Message as KafkaMessage } from "node-rdkafka"
 import { KafkaMessageError, ValidationError } from "../../lib/errors"
 import { MessageYupSchema } from "../userPointsConsumer/validate"
-import { groupBy, uniq, compact, difference } from "lodash"
+import { groupBy, uniq, compact, difference, partition } from "lodash"
 import { getBatchUsersFromTMC } from "../common/getUserFromTMC"
 import { Course } from "/generated/prisma-client"
 import { Exercise, ExerciseCompletion } from "nexus-plugin-prisma/client"
 import knex from "../../../util/knex"
+import { DateTime } from "luxon"
 
 const handleMessages = async (messages: KafkaMessage[], logger: Logger) => {
   logger.info(`Handling ${messages.length} messages.`)
@@ -78,11 +79,108 @@ const handleMessages = async (messages: KafkaMessage[], logger: Logger) => {
   const courseById = groupBy(courses, "id")
   const exerciseById = groupBy(exercises, "custom_id")
   const usersById = groupBy(users, "upstream_id")
-  const exerciseCompletionsByExerciseId = groupBy(
+  const exerciseCompletionsByUserDatabaseId = groupBy(
     exerciseCompletions,
-    "exercises.custom_id",
+    "user_id",
   )
+
+  // handle new completions
+  logger.info("Figuring out new exercise completions")
+  const [newCompletionMessages, existingCompletionMessages] = partition(
+    validMessages,
+    (m) => {
+      const user = (usersById[m.user_id] || [])[0]
+      if (!user) {
+        logger.error("User not found", { message: m })
+        return false
+      }
+      const userExerciseCompletions = (exerciseCompletionsByUserDatabaseId[
+        user.id
+      ] || []).filter((c) => c.exercise_id === m.exercise_id)
+      return userExerciseCompletions.length === 0
+    },
+  )
+
+  logger.info(
+    `${newCompletionMessages.length} messages require a new exercise completion`,
+  )
+
+  const insertableObject = constructInsertableObjects(newCompletionMessages)
+  logger.info("Inserting...")
+  await knex("exercise_completion").insert(insertableObject)
+
+  logger.info(
+    `${existingCompletionMessages.length} reference an existing completion. Comparing timestamps with db.`,
+  )
+
+  const messagesNewerThanDb = existingCompletionMessages.filter((m) => {
+    const user = (usersById[m.user_id] || [])[0]
+    if (!user) {
+      console.error("User not found", { message: m })
+      return false
+    }
+    const userExerciseCompletion = (exerciseCompletionsByUserDatabaseId[
+      user.id
+    ] || []).filter((c) => c.exercise_id === m.exercise_id)[0]
+    if (!userExerciseCompletion) {
+      logger.error("Exercise completion disappeared.")
+      return false
+    }
+    const timestamp: DateTime = DateTime.fromISO(m.timestamp)
+    const oldTimestamp = DateTime.fromISO(
+      userExerciseCompletion?.timestamp?.toISOString() ?? "",
+    )
+    if (timestamp <= oldTimestamp) {
+      return false
+    }
+    return true
+  })
+
+  const updateObjects = constructInsertableObjects(messagesNewerThanDb)
+  // We have to add existing database ids to the update objects so that we
+  // can do the update.
+  for (const u of updateObjects) {
+
+  }
+
   return 1
+}
+
+// Constructs objects to be inserted. Makes sure that newer timestamps are respected.
+function constructInsertableObjects(messages: Message[]) {
+  const dict: Map<String, any> = new Map()
+  // Put the newest entry for (exercise, user) combination to the dict
+  for (const message of messages) {
+    const key = `${message.exercise_id}-${message.user_id}}`
+    const existingValue = dict.get(key)
+    const timestamp: DateTime = DateTime.fromISO(message.timestamp)
+    const insertableObject = {
+      n_points: Number(message.n_points),
+      completed: message.completed,
+      // TODO: figure out whether to keep required actions
+      // exercise_completion_required_actions: message.required_actions.map(
+      //   (ra) => {
+      //     return {
+      //       value: ra,
+      //     }
+      //   },
+      // ),
+      timestamp: timestamp.toJSDate(),
+    }
+    if (!existingValue) {
+      dict.set(key, insertableObject)
+    } else {
+      // We want to accept the value with a newer timestamp
+
+      const oldTimestamp = DateTime.fromISO(existingValue.timestamp)
+      if (timestamp <= oldTimestamp) {
+        // Older messages can be discarded
+        continue
+      }
+      dict.set(key, insertableObject)
+    }
+  }
+  return Object.values(dict)
 }
 
 // const saveExerciseCompletion = async (message: Message, course: Course, exercise: Exercise, user: User, exerciseCompletion: ExerciseCompletion, logger: Logger) => {
