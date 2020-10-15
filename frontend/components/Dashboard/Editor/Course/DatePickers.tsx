@@ -22,6 +22,7 @@ const DatePickerField = ({ ...props }: any) => {
         {...field}
         {...props}
         format="yyyy-MM-dd"
+        mask="____-__-__"
         style={{
           marginBottom: error ? "0rem" : "1.5rem",
           width: "70%",
