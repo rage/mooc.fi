@@ -21,6 +21,7 @@
     "kafka-consumer-user-points": "node ./dist/bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.js",
     "kafka-consumer-user-points-realtime": "node ./dist/bin/kafkaConsumer/userPointsRealtimeConsumer/kafkaConsumer.js",
     "kafka-consumer-exercises": "node ./dist/bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.js",
+    "kafka-status": "node ./dist/bin/kafkaStatus.js",
     "generate": "prisma generate",
     "seed": "node ./dist/bin/seed.js",
     "seedPoints": "node ./dist/bin/seedPoints.js",
