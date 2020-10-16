@@ -1,10 +1,14 @@
 import WinstonSentry from "winston-sentry-log"
-import winston from "winston"
+import winston, { format } from "winston"
 import { Sentry } from "../../services/sentry"
 
 interface LoggerOptions {
   service: string
 }
+
+const myFormat = format.printf(({ level, message, timestamp, ...metadata }) => {
+  return `${timestamp} ${level}: ${message}, ${JSON.stringify(metadata)}`
+})
 
 export default function logger({ service }: LoggerOptions) {
   const transports: winston.transport[] = [new winston.transports.Console()]
@@ -25,9 +29,12 @@ export default function logger({ service }: LoggerOptions) {
 
   return winston.createLogger({
     level: "info",
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.json(),
+    format: format.combine(
+      format.timestamp({
+        format: "YYYY-MM-DD HH:mm:ss",
+      }),
+      format.colorize(),
+      myFormat,
     ),
     defaultMeta: { service },
     transports,

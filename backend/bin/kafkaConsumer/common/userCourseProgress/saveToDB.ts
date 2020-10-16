@@ -140,6 +140,7 @@ export const saveToDatabase = async (
     user,
     course,
     userCourseProgress,
+    logger,
   })
 
   pushMessageToClient(

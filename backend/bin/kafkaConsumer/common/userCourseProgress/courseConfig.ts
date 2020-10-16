@@ -410,9 +410,9 @@ export const BAIbadge = {
 }
 
 export const BAItiers: Record<number, string> = {
-  1: "e1eaff32-8b2c-4423-998d-d3477535a1f9",
-  2: "3a2790fc-227c-4045-9f4c-40a2bdabe76a",
-  3: "0e9d1a22-0e19-4320-8c8c-84115bb26452",
+  1: env.BEGINNER_COURSE_ID,
+  2: env.INTERMEDIATE_COURSE_ID,
+  3: env.ADVANCED_COURSE_ID,
 }
 
 export const BAITierNames: Record<number, string> = {
