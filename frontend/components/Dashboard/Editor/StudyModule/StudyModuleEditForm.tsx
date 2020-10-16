@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useContext, useState } from "react"
+import { useCallback, useEffect, useContext, useState } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Formik,

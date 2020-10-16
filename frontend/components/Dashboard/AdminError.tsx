@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { Typography } from "@material-ui/core"
 import getCommonTranslator from "/translations/common"
 import LanguageContext from "/contexes/LanguageContext"

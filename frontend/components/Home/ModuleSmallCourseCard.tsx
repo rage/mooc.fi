@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { Grid, Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { CourseStatus } from "/static/types/generated/globalTypes"

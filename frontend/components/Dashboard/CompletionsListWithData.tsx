@@ -1,4 +1,3 @@
-import React from "react"
 import { List } from "@material-ui/core"
 import CompletionCard from "./CompletionCard"
 import CompletionPaginator from "./CompletionPaginator"

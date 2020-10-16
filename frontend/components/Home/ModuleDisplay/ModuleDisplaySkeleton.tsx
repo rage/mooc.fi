@@ -1,4 +1,3 @@
-import React from "react"
 import Skeleton from "@material-ui/lab/Skeleton"
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"

@@ -1,4 +1,3 @@
-import React from "react"
 import { DatePicker } from "@material-ui/pickers"
 import { ErrorMessage, useField } from "formik"
 import styled from "styled-components"

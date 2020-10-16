@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { WideContainer } from "/components/Container"
 import { useQuery } from "@apollo/client"
 import CourseEdit from "/components/Dashboard/Editor/Course"

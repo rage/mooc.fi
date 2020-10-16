@@ -1,4 +1,4 @@
-import React from "react"
+import { useState } from "react"
 import { Grid } from "@material-ui/core"
 import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
 import PointsItemTable from "./PointsItemTable"
@@ -90,7 +90,7 @@ function PointsListItemCard(props: Props) {
     showPersonalDetails,
     personalDetails,
   } = props
-  const [showDetails, setShowDetails] = React.useState(false)
+  const [showDetails, setShowDetails] = useState(false)
 
   const formattedPointsData: formattedGroupPointsDictionary = formatPointsData({
     pointsData: pointsAll,

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react"
+import { useCallback, useContext, FC } from "react"
 import {
   Grid,
   Card,
@@ -31,7 +31,7 @@ const UserCard = styled(Card)`
   margin-bottom: 0.5rem;
 `
 
-const MobileGrid: React.FC<any> = () => {
+const MobileGrid: FC<any> = () => {
   const { language } = useContext(LanguageContext)
   const { data, page, rowsPerPage, loading } = useContext(UserSearchContext)
   const t = getUsersTranslator(language)
@@ -70,7 +70,7 @@ const MobileGrid: React.FC<any> = () => {
   )
 }
 
-const RenderCards: React.FC<any> = () => {
+const RenderCards: FC<any> = () => {
   const { data, loading } = useContext(UserSearchContext)
 
   if (loading) {

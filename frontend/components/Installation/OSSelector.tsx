@@ -8,7 +8,7 @@ import {
 import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
 
 import userOsContext from "/contexes/UserOSContext"
-import React from "react"
+import { useContext } from "react"
 const Container = styled.div`
   display: flex;
   flex-direction: row;
@@ -39,7 +39,7 @@ interface Props {
 
 const OSSelector = (props: Props) => {
   const { excludeZip } = props
-  const { OS } = React.useContext(userOsContext)
+  const { OS } = useContext(userOsContext)
   return (
     <Container>
       <OSSelectorButton OSName="Linux" Icon={Linux} active={OS === "Linux"} />

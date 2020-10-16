@@ -1,4 +1,3 @@
-import * as React from "react"
 import Container from "/components/Container"
 import { gql, useQuery, useApolloClient } from "@apollo/client"
 import { UserCourseSettingsForUserPage } from "/static/types/generated/UserCourseSettingsForUserPage"
@@ -9,7 +8,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCommonTranslator from "/translations/common"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 
 const UserPage = () => {
@@ -18,7 +17,7 @@ const UserPage = () => {
   const { language } = useContext(LanguageContext)
   const t = getCommonTranslator(language)
 
-  const [more, setMore]: any[] = React.useState([])
+  const [more, setMore]: any[] = useState([])
 
   const { loading, error, data } = useQuery<UserCourseSettingsForUserPage>(
     GET_DATA,

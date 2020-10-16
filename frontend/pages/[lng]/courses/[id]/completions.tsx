@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react"
+import { useContext, useState } from "react"
+import { ChangeEvent } from "react"
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import { WideContainer } from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
@@ -39,7 +40,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
 
   const slug = useQueryParameter("id")
 
-  const handleLanguageChange = (event: React.ChangeEvent<unknown>) => {
+  const handleLanguageChange = (event: ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes
 
     const href = `/${language}/courses/${slug}/completions?language=${
