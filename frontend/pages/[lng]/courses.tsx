@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
 import { useQuery } from "@apollo/client"
 import CourseGrid from "/components/CourseGrid"
@@ -15,7 +15,7 @@ const Background = styled.section`
   background-color: #61baad;
 `
 
-const Courses = () => {
+function Courses() {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
 

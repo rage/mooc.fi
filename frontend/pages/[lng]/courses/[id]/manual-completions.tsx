@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import Typography from "@material-ui/core/Typography"
 import { withRouter } from "next/router"
 import withAdmin from "/lib/with-admin"

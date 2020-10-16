@@ -1,4 +1,3 @@
-import React from "react"
 import { Grid, IconButton } from "@material-ui/core"
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight"
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft"

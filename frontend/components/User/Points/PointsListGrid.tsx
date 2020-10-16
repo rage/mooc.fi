@@ -1,4 +1,3 @@
-import React from "react"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import Grid from "@material-ui/core/Grid"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"

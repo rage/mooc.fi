@@ -1,4 +1,3 @@
-import React from "react"
 import { UserPointsQuery } from "./PointsQuery"
 import { useQuery } from "@apollo/client"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"

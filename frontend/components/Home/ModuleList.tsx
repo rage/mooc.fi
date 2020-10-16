@@ -1,4 +1,3 @@
-import React from "react"
 import Module from "./ModuleDisplay/ModuleDisplay"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 

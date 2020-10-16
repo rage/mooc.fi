@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext, ChangeEvent } from "react"
 import getCommonTranslator from "/translations/common"
 import LanguageContext from "/contexes/LanguageContext"
 import { Link, RadioGroup, FormControlLabel, Radio } from "@material-ui/core"
@@ -10,10 +10,7 @@ const Row = styled.div`
 
 interface ResearchConsentProps {
   state?: string
-  handleInput: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: string,
-  ) => void
+  handleInput: (event: ChangeEvent<HTMLInputElement>, value: string) => void
   disabled: boolean
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import { useState, useContext, ChangeEvent } from "react"
 import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { gql } from "@apollo/client"
@@ -54,7 +54,7 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
   )
 
   const handleResearchConsentInput = async (
-    _event: React.ChangeEvent<{}>,
+    _event: ChangeEvent<{}>,
     value: string,
   ) => {
     setResearchConsent(value)

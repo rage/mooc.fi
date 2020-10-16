@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import { useState, useContext } from "react"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { Grid, Button } from "@material-ui/core"
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"

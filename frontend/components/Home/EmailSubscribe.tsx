@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useState, createRef, useContext } from "react"
 import styled from "styled-components"
 import Send from "@material-ui/icons/Send"
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied"
@@ -55,8 +55,8 @@ const StyledButton = styled(Button)`
 `
 
 function EmailSubscribe() {
-  const [sent, setSent] = React.useState(false)
-  const formRef = React.createRef<HTMLFormElement>()
+  const [sent, setSent] = useState(false)
+  const formRef = createRef<HTMLFormElement>()
   const lng = useContext(LanguageContext)
   const t = getHomeTranslator(lng.language)
 

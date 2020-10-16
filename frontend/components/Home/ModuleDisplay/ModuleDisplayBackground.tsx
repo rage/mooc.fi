@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 import { mime } from "/util/imageUtils"

@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import Skeleton from "@material-ui/lab/Skeleton"

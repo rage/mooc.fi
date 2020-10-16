@@ -1,4 +1,4 @@
-import React from "react"
+import { Component as ReactComponent } from "react"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
@@ -8,7 +8,7 @@ let prevContext: NextContext | null = null
 
 // TODO: might need to wrap in function to give redirect parameters (= shallow?)
 export default function withSignedIn(Component: any) {
-  return class WithSignedIn extends React.Component<{ signedIn: boolean }> {
+  return class WithSignedIn extends ReactComponent<{ signedIn: boolean }> {
     static displayName = `withSignedIn(${
       Component.name || Component.displayName || "AnonymousComponent"
     })`

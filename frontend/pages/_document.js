@@ -1,4 +1,4 @@
-import React from "react"
+import { Fragment } from "react"
 import Document, { Html, Head, Main, NextScript } from "next/document"
 import flush from "styled-jsx/server"
 import { ServerStyleSheets } from "@material-ui/styles"
@@ -32,12 +32,12 @@ class MyDocument extends Document {
 
         // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
         styles: (
-          <React.Fragment>
+          <Fragment>
             {initialProps.styles}
             {sheets.getStyleElement()}
             {sheet.getStyleElement()}
             {flush() || null}
-          </React.Fragment>
+          </Fragment>
         ),
       }
     } finally {

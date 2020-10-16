@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { WideContainer } from "/components/Container"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import { H1NoBackground } from "/components/Text/headers"

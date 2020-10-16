@@ -1,4 +1,3 @@
-import React from "react"
 import getApollo, { initNewApollo } from "./get-apollo"
 import Head from "next/head"
 import { getMarkupFromTree } from "@apollo/client/react/ssr"

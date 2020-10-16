@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useContext } from "react"
+import { FC, useState, useCallback, useEffect, useContext, memo } from "react"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import { gql, useApolloClient } from "@apollo/client"
@@ -136,7 +136,7 @@ const getRoute = (target?: string) =>
     return acc.replace(regex, replace)
   }, target || "")
 
-const BreadcrumbComponent: React.FC<{ target?: string }> = React.memo(
+const BreadcrumbComponent: FC<{ target?: string }> = memo(
   ({ target, children }) => {
     const href = getRoute(target)
 
@@ -171,7 +171,7 @@ const shouldFetchName = memoize((param: string | string[]): boolean => {
   return ["courses", "study-modules", "register-completion"].includes(param)
 })
 
-const DashboardBreadCrumbs = React.memo((props: Props) => {
+const DashboardBreadCrumbs = memo((props: Props) => {
   const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
   const client = useApolloClient()
   const { router } = props

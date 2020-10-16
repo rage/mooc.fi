@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import { useState, useContext } from "react"
 import { WideContainer } from "/components/Container"
 import { useQuery, ApolloConsumer } from "@apollo/client"
 import { SubtitleNoBackground } from "/components/Text/headers"
