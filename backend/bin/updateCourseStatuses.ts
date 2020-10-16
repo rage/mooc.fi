@@ -1,6 +1,7 @@
 import KafkaProducer, { ProducerMessage } from "../services/kafkaProducer"
 import { DateTime } from "luxon"
 import prismaClient from "./lib/prisma"
+import { convertUpdate } from "../util/db-functions"
 
 const prisma = prismaClient()
 
@@ -44,9 +45,9 @@ const updateCourseStatuses = async () => {
         where: {
           id: course.id,
         },
-        data: {
+        data: convertUpdate({
           status: newStatus,
-        },
+        }),
       })
       console.log(
         `Updated course ${course.name} from ${status} to ${newStatus}`,

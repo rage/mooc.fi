@@ -8,6 +8,7 @@ import { DateTime } from "luxon"
 import prismaClient from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
+import { convertUpdate } from "../util/db-functions"
 
 const CONFIG_NAME = "userAppDatum"
 
@@ -160,9 +161,9 @@ const saveLanguage = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: {
+    data: convertUpdate({
       language: p.value,
-    },
+    }),
   })
 }
 const saveCountry = async (p: any) => {
@@ -170,9 +171,9 @@ const saveCountry = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: {
+    data: convertUpdate({
       country: p.value,
-    },
+    }),
   })
 }
 const saveResearch = async (p: any) => {
@@ -181,9 +182,9 @@ const saveResearch = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: {
+    data: convertUpdate({
       research: value,
-    },
+    }),
   })
 }
 const saveMarketing = async (p: any) => {
@@ -192,9 +193,9 @@ const saveMarketing = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: {
+    data: convertUpdate({
       marketing: value,
-    },
+    }),
   })
 }
 const saveCourseVariant = async (p: any) => {
@@ -202,9 +203,9 @@ const saveCourseVariant = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: {
+    data: convertUpdate({
       course_variant: p.value,
-    },
+    }),
   })
 }
 
@@ -221,9 +222,9 @@ const saveOther = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: {
+    data: convertUpdate({
       other: other,
-    },
+    }),
   })
 }
 
@@ -249,7 +250,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
-      update: prismaDetails,
+      update: convertUpdate(prismaDetails),
     })
 
     return result
@@ -295,7 +296,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
       timestamp: dateToDB,
     },
     update: {
-      timestamp: dateToDB,
+      timestamp: convertUpdate(dateToDB),
     },
   })
 }

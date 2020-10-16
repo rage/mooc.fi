@@ -30,6 +30,7 @@ RUN cp .env.example .env \
 # RUN npm run build-sourcemap \
 #    && cp -R sourcemap/bin dist/bin \
 #    && rm .env
+RUN npm run copy-env 
 
 ENV NODE_ENV=production
 

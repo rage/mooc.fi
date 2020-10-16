@@ -15,6 +15,13 @@ const typeIcon = {
   info: InfoIcon,
 }
 
+const bgColor: Record<keyof typeof typeIcon, string> = {
+  success: "#43a047",
+  warning: "#ffa000",
+  error: "#d32f2f",
+  info: "#3f51b5",
+}
+
 interface SnackbarContentExtraProps {
   type: keyof typeof typeIcon
 }
@@ -22,13 +29,11 @@ interface SnackbarContentExtraProps {
 const StyledSnackbarContent = styled(SnackbarContent)<
   SnackbarContentExtraProps
 >`
-  ${(props) => props.type === "info" && `background-color: #3f51b5;`}
-  ${(props) => props.type === "success" && `background-color: #43a047;`}
-    ${(props) => props.type === "error" && `background-color: #d32f2f;`}
-    ${(props) => props.type === "warning" && `background-color: #ffa000;`}
+  background-color: ${(props) => bgColor[props.type]};
 `
 
 const Span = styled.span``
+
 export interface Props {
   className?: string
   message?: string

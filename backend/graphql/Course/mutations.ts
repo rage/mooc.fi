@@ -17,6 +17,7 @@ import { isAdmin } from "../../accessControl"
 import { Prisma__CourseClient, Course } from "@prisma/client"
 
 import { extendType, arg, idArg, stringArg } from "@nexus/schema"
+import { convertUpdate } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
@@ -63,7 +64,7 @@ export const CourseMutations = extendType({
           photo = newImage.id
         }
 
-        if (study_modules?.some((s) => !s.id && !s.slug)) {
+        if (study_modules?.some((s) => !s?.id && !s?.slug)) {
           throw new UserInputError("study modules must have id or slug")
         }
 
@@ -78,7 +79,7 @@ export const CourseMutations = extendType({
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
-                    id: s.id ?? undefined,
+                    id: s?.id ?? undefined,
                   })),
                 }
               : undefined,
@@ -252,8 +253,8 @@ export const CourseMutations = extendType({
         const connectModules =
           study_modules?.map((s) => ({
             ...s,
-            id: s.id ?? undefined,
-            slug: s.slug ?? undefined,
+            id: s?.id ?? undefined,
+            slug: s?.slug ?? undefined,
           })) ?? []
 
         const studyModuleMutation:
@@ -297,7 +298,7 @@ export const CourseMutations = extendType({
             id: id ?? undefined,
             slug,
           },
-          data: {
+          data: convertUpdate({
             ...omit(course, [
               "id",
               "photo",
@@ -321,7 +322,7 @@ export const CourseMutations = extendType({
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
             user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
-          },
+          }),
         })
 
         return updatedCourse
@@ -409,13 +410,13 @@ const createMutation = async <T extends { id?: string | null }>({
   }
 
   const newOnes = (data || [])
-    .filter((t) => !t.id)
+    .filter(hasNotId) // (t) => !t.id
     .map((t) => ({ ...t, id: undefined }))
   const updated = (data || [])
-    .filter((t) => !!t.id)
+    .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
       where: { id: t.id } as { id: string },
-      data: { ...t, id: undefined },
+      data: convertUpdate({ ...t, id: undefined }),
     }))
   const removed = filterNotIncluded(existing!, data)
 
@@ -425,3 +426,6 @@ const createMutation = async <T extends { id?: string | null }>({
     deleteMany: removed.length ? removed : undefined,
   }
 }
+
+const hasId = (data: any): data is any & { id: string | null } => !!data?.id
+const hasNotId = (data: any) => !hasId(data)

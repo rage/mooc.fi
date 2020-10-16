@@ -17,11 +17,13 @@
     "parse-file": "node ./dist/bin/parseFile.js",
     "start-kafka-consumers": "concurrently --kill-others --restart-tries 2 npm:kafka-consumer-*",
     "kafka-consumer-user-course-progress": "node ./dist/bin/kafkaConsumer/userCourseProgressConsumer/kafkaConsumer.js",
+    "kafka-consumer-user-course-progress-realtime": "node ./dist/bin/kafkaConsumer/userCourseProgressRealtimeConsumer/kafkaConsumer.js",
     "kafka-consumer-user-points": "node ./dist/bin/kafkaConsumer/userPointsConsumer/kafkaConsumer.js",
     "kafka-consumer-user-points-realtime": "node ./dist/bin/kafkaConsumer/userPointsRealtimeConsumer/kafkaConsumer.js",
     "kafka-consumer-exercises": "node ./dist/bin/kafkaConsumer/exerciseConsumer/kafkaConsumer.js",
     "generate": "npm run generate:prisma && npm run generate:nexus",
     "generate:prisma": "prisma generate",
+    "kafka-status": "node ./dist/bin/kafkaStatus.js",
     "seed": "node ./dist/bin/seed.js",
     "seedPoints": "node ./dist/bin/seedPoints.js",
     "createExports": "ts-node ./bin/createExports.ts",
@@ -35,6 +37,7 @@
     "generate:nexus": "env NEXUS_REFLECTION=true NODE_ENV=production ts-node --transpile-only ./schema.ts",
     "build": "npm run download-env && npm run createExports && tsc --noEmit false",
     "start": "node dist/app.js",
+    "copy-env": "cp ./bin/kafkaConsumer/common/userCourseProgress/env.json ./dist/bin/kafkaConsumer/common/userCourseProgress/env.json",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback"
   },
@@ -43,8 +46,8 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/storage": "^5.3.0",
-    "@nexus/schema": "0.15.0",
-    "@prisma/client": "^2.8.1",
+    "@nexus/schema": "^0.16.0",
+    "@prisma/client": "^2.9.0",
     "@sentry/integrations": "^5.23.0",
     "@sentry/node": "^5.23.0",
     "@types/compression": "^1.7.0",
@@ -67,7 +70,7 @@
     "cors": "^2.8.5",
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
-    "graphql": "14.6.0",
+    "graphql": "^15.3.0",
     "graphql-middleware": "^4.0.2",
     "graphql-scalars": "^1.4.0",
     "graphql-upload": "^11.0.0",
@@ -79,7 +82,7 @@
     "mkdirp": "^1.0.4",
     "morgan": "^1.10.0",
     "newrelic": "^6.13.0",
-    "nexus-plugin-prisma": "^0.21.0",
+    "nexus-plugin-prisma": "^0.22.0",
     "node-rdkafka": "^2.9.1",
     "nodemailer": "^6.4.11",
     "pg": "^8.3.3",
@@ -95,7 +98,7 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.8.1",
+    "@prisma/cli": "^2.9.0",
     "@types/cors": "^2.8.8",
     "@types/express": "^4.17.8",
     "@types/express-serve-static-core": "^4.17.13",
@@ -110,7 +113,6 @@
     "typescript": "^4.0.3"
   },
   "resolutions": {
-    "graphql-upload": "11.0.0",
-    "graphql": "14.6.0"
+    "graphql-upload": "11.0.0"
   }
 }

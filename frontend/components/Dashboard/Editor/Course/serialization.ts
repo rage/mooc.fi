@@ -74,6 +74,12 @@ export const toCourseForm = ({
           course?.user_course_settings_visibilities || [],
         upcoming_active_link: course?.upcoming_active_link ?? false,
         tier: course?.tier ?? undefined,
+        automatic_completions: course?.automatic_completions ?? false,
+        automatic_completions_eligible_for_ects:
+          course?.automatic_completions_eligible_for_ects ?? false,
+        exercise_completions_needed:
+          course?.exercise_completions_needed ?? undefined,
+        points_needed: course?.points_needed ?? undefined,
       }
     : initialValues
 }
@@ -198,6 +204,15 @@ export const fromCourseForm = ({
     teacher_in_charge_name: values.teacher_in_charge_name ?? "",
     status, //values.status as CourseStatus
     upcoming_active_link: values.upcoming_active_link ?? false,
+    automatic_completions: values.automatic_completions ?? false,
+    automatic_completions_eligible_for_ects:
+      values.automatic_completions_eligible_for_ects ?? false,
+    exercise_completions_needed:
+      (values.exercise_completions_needed as unknown) === ""
+        ? null
+        : values.exercise_completions_needed,
+    points_needed:
+      (values.points_needed as unknown) == "" ? null : values.points_needed,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)

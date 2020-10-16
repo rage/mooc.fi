@@ -1,6 +1,7 @@
 import { objectType, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin } from "../accessControl"
+import { convertUpdate } from "../util/db-functions"
 
 export const EmailTemplate = objectType({
   name: "EmailTemplate",
@@ -88,12 +89,12 @@ export const EmailTemplateMutations = extendType({
           where: {
             id,
           },
-          data: {
+          data: convertUpdate({
             name,
             html_body,
             txt_body,
             title,
-          },
+          }),
         })
       },
     })

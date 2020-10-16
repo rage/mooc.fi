@@ -3,6 +3,7 @@ import { invalidate } from "../../services/redis"
 import { extendType, stringArg, booleanArg, arg } from "@nexus/schema"
 import { Context } from "../../context"
 import hashUser from "../../util/hashUser"
+import { convertUpdate } from "../../util/db-functions"
 
 export const UserMutations = extendType({
   type: "Mutation",
@@ -27,10 +28,10 @@ export const UserMutations = extendType({
 
         return ctx.prisma.user.update({
           where: { id: currentUser.id },
-          data: {
+          data: convertUpdate({
             first_name,
             last_name,
-          },
+          }),
         })
       },
     })
@@ -55,9 +56,9 @@ export const UserMutations = extendType({
 
         return ctx.prisma.user.update({
           where: { id: currentUser.id },
-          data: {
+          data: convertUpdate({
             research_consent: value,
-          },
+          }),
         })
       },
     })

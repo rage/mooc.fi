@@ -1,36 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-consumer-user-points-realtime
+  name: kafka-consumer-user-course-progress-realtime
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: kafka-consumer-user-points-realtime
+      app: kafka-consumer-user-course-progress-realtime
       {{- include "helm.selectorLabels" . | nindent 6 }}
-  replicas: {{ .Values.kafkaConsumer.userPointsRealtime.replicaCount }}
+  replicas: {{ .Values.kafkaConsumer.userCourseProgressRealtime.replicaCount }}
   template:
     metadata:
       labels:
-        app: kafka-consumer-user-points-realtime
+        app: kafka-consumer-user-course-progress-realtime
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: kafka-consumer-user-points-realtime
+        - name: kafka-consumer-user-course-progress-realtime
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["sh", "-c", "npm run kafka-consumer-user-points-realtime"]
+          command: ["sh", "-c", "npm run kafka-consumer-user-course-progress-realtime"]
           imagePullPolicy: Always
           ports:
             - name: backend-http
               containerPort: 4000
           resources:
             limits:
-              memory: 1000Mi
-              cpu: 200m
-            requests:
               memory: 500Mi
-              cpu: 50m
+              cpu: 100m
+            requests:
+              memory: 256Mi
+              cpu: 30m
           envFrom:
           - secretRef:
               name: backend-secret

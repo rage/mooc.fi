@@ -9,12 +9,12 @@ import {
   EmailTemplate,
   UserCourseServiceProgress,
 } from "@prisma/client"
-import Knex from "../../../services/knex"
+import Knex from "../../../../services/knex"
 import * as nodemailer from "nodemailer"
 import SMTPTransport = require("nodemailer/lib/smtp-transport")
-import { EmailTemplater } from "../common/EmailTemplater/EmailTemplater"
-import { pushMessageToClient, MessageType } from "../../../wsServer"
-import prismaClient from "../../lib/prisma"
+import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
+import { pushMessageToClient, MessageType } from "../../../../wsServer"
+import prismaClient from "../../../lib/prisma"
 import { range } from "lodash"
 import {
   BAIexercises,
@@ -25,8 +25,12 @@ import {
   pointsNeeded,
   exerciseCompletionsNeeded,
 } from "./courseConfig"
+import * as winston from "winston"
+import { DatabaseInputError } from "../../../lib/errors"
+import { convertUpdate } from "../../../../util/db-functions"
 
 const prisma = prismaClient()
+let logger: winston.Logger | null = null
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
@@ -38,6 +42,7 @@ interface Props {
   user: User
   course: Course
   userCourseProgress: UserCourseProgress
+  logger: winston.Logger
 }
 
 interface ServiceProgressPartType {
@@ -57,7 +62,9 @@ export const generateUserCourseProgress = async ({
   user,
   course,
   userCourseProgress,
+  logger: _logger,
 }: Props) => {
+  logger = _logger
   const combined = await GetCombinedUserCourseProgress(user, course)
 
   if (Object.values(BAItiers).includes(course.id)) {
@@ -68,11 +75,11 @@ export const generateUserCourseProgress = async ({
 
   await prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
-    data: {
+    data: convertUpdate({
       progress: combined.progress as any, // errors unless typed as any
       max_points: combined.total_max_points,
       n_points: combined.total_n_points,
-    },
+    }),
   })
 }
 
@@ -279,6 +286,12 @@ export const checkBAICompletion = async (
 
   if (!handlerCourse) {
     // TODO: error
+    logger?.error(
+      new DatabaseInputError(
+        `No handler course found for ${course.id}`,
+        course,
+      ),
+    )
     return
   }
 
@@ -289,6 +302,7 @@ export const checkBAICompletion = async (
     .handles_completions_for())
     .map(c => c.id)
   */
+  logger?.info("Getting exercise completions")
   const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses(
     user,
     Object.values(BAItiers), // tierCourses
@@ -297,6 +311,7 @@ export const checkBAICompletion = async (
     [{ course_id, exercise_id, n_points }...] for all the tiers
   */
 
+  logger?.info("Getting BAI course progress")
   const { progress: newProgress, highestTier } = await getBAIProgress(
     user,
     handlerCourse,
@@ -310,6 +325,7 @@ export const checkBAICompletion = async (
   })
 
   if (existingProgress.length < 1) {
+    logger?.info("No existing progress found, creating new...")
     await prisma.userCourseProgress.create({
       data: {
         course: {
@@ -320,11 +336,12 @@ export const checkBAICompletion = async (
       },
     })
   } else {
+    logger?.info("Updating existing progress")
     await prisma.userCourseProgress.update({
       where: {
         id: existingProgress[0].id,
       },
-      data: newProgress,
+      data: convertUpdate(newProgress),
     })
   }
 
@@ -334,10 +351,11 @@ export const checkBAICompletion = async (
 
   const highestTierCourseId = BAItiers[highestTier]
 
+  logger?.info("Creating completion")
   await createCompletion({
     user,
     course_id: highestTierCourseId,
-    handlerCourse: course,
+    handlerCourse,
   })
 }
 
@@ -484,6 +502,7 @@ const createCompletion = async ({
     },
   })
   if (completions.length < 1) {
+    logger?.info("No existing completion found, creating new...")
     await prisma.completion.create({
       data: {
         course: { connect: { id: handlerCourse.id } },
@@ -499,6 +518,7 @@ const createCompletion = async ({
         completion_date: new Date(),
       },
     })
+    // TODO: this only sends the completion email for the first tier completed
     pushMessageToClient(
       user.upstream_id,
       course_id,

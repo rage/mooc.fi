@@ -16,7 +16,11 @@ kafkaConsumer:
     replicaCount: 1
   userCourseProgress:
     replicaCount: 1
+  userCourseProgressRealtime:
+    replicaCount: 1
   userPoints:
+    replicaCount: 1
+  userPointsRealtime:
     replicaCount: 1
 
 email:

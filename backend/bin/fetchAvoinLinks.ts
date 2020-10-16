@@ -3,8 +3,9 @@ import { DateTime } from "luxon"
 import { maxBy } from "lodash"
 import prismaClient from "./lib/prisma"
 import sentryLogger from "./lib/logger"
-import { OpenUniversityRegistrationLink } from "nexus-plugin-prisma/client"
+import { OpenUniversityRegistrationLink } from "@prisma/client"
 import { AvoinError } from "./lib/errors"
+import { convertUpdate } from "../util/db-functions"
 
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
@@ -64,11 +65,11 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
     where: {
       id: p.id,
     },
-    data: {
+    data: convertUpdate({
       link: url,
       start_date: bestLink.startTime.toJSDate(),
       stop_date: bestLink.stopDate.toJSDate(),
-    },
+    }),
   })
 }
 

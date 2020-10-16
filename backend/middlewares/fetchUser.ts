@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client"
 // import { IncomingMessage } from "http"
 import { Context } from "../context"
 import { plugin } from "@nexus/schema"
+import { convertUpdate } from "../util/db-functions"
 
 // this is the version suitable for middleware, not used for now
 export const moocfiAuthPlugin = plugin({
@@ -85,7 +86,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
   ctx.user = await ctx.prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,
-    update: prismaDetails,
+    update: convertUpdate(prismaDetails),
   })
   if (ctx.user.administrator) {
     ctx.role = Role.ADMIN
@@ -162,7 +163,7 @@ export const contextUser = async (
   const user = await prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,
-    update: prismaDetails,
+    update: convertUpdate(prismaDetails),
   })
 
   return {
