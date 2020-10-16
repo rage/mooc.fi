@@ -33,6 +33,8 @@ interface FormWrapperProps<T> {
   onCancel: () => void
   onDelete: (values: T) => void
   renderForm: (props: any) => React.ReactNode
+  tab?: number
+  setTab?: React.Dispatch<React.SetStateAction<number>>
 }
 
 const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
@@ -45,7 +47,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     status,
     setTouched,
   } = useFormikContext<T>()
-  const { onCancel, onDelete, renderForm } = props
+  const { onCancel, onDelete, renderForm, setTab = (_) => {} } = props
   const { language } = useContext(LanguageContext)
   const t = getCommonTranslator(language)
   const { anchors } = useContext(AnchorContext)
@@ -68,8 +70,9 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
       setTouched(errorsToTouched(errors) as FormikTouched<T>)
 
       const [key, value] = Object.entries(flattenKeys(errors)).sort(
-        (a, b) => anchors[a[0]] - anchors[b[0]],
+        (a, b) => anchors[a[0]]?.id - anchors[b[0]]?.id,
       )[0]
+      const anchor = anchors[key]
 
       let anchorLink = key
       if (Array.isArray(value)) {
@@ -78,9 +81,12 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
           Object.keys(value[firstIndex])[0]
         }`
       }
+      setTab(anchor?.tab ?? 0)
 
-      const element = document.getElementById(anchorLink)
-      element?.scrollIntoView()
+      setTimeout(() => {
+        const element = document.getElementById(anchorLink)
+        element?.scrollIntoView()
+      }, 100)
     } else {
       setSubmitted(true)
       submitForm()

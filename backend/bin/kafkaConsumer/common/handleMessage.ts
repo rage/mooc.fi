@@ -40,7 +40,12 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 }: HandleMessageConfig<Message>) => {
   //Going to mutex
   const release = await mutex.acquire()
-  logger.info("Handling a message.")
+  logger.info("Handling a message.", {
+    topic: kafkaMessage.topic,
+    offset: kafkaMessage.offset,
+    partition: kafkaMessage.partition,
+    key: kafkaMessage.key,
+  })
   let message: Message
   try {
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
@@ -61,7 +66,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   }
 
   try {
-    logger.info("Saving. Timestamp " + message.timestamp)
+    logger.info("Saving message", { message: JSON.stringify(message) })
 
     const saveResult = await saveToDatabase(message, prisma, logger)
 

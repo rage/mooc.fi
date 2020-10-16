@@ -1,7 +1,8 @@
 import {
   generateUserCourseProgress /*checkBAICompletion*/,
-} from "./kafkaConsumer/userCourseProgressConsumer/generateUserCourseProgress"
+} from "./kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import prismaClient from "./lib/prisma"
+import * as winston from "winston"
 
 const prisma = prismaClient()
 
@@ -36,6 +37,7 @@ const test = async () => {
     user: user!,
     course: course!,
     userCourseProgress: progress!,
+    logger: (null as unknown) as winston.Logger,
   })
   process.exit(0)
 }

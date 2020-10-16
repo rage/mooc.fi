@@ -92,6 +92,9 @@
   "importPhotoDialogContent": "Select course",
   "importPhotoLabel": "Select...",
   "importPhotoDialogSelect": "OK",
-  "importPhotoDialogCancel": "Cancel"
-  
+  "importPhotoDialogCancel": "Cancel",
+  "courseAutomaticCompletions": "Automatic completions",
+  "courseAutomaticCompletionsEligibleForEcts": "Automatic completions eligible for ECTS",
+  "coursePointsNeeded": "Points needed",
+  "courseExerciseCompletionsNeeded": "Exercise completions needed"
 }

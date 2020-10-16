@@ -2,6 +2,7 @@ import { extendType, arg, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
+import { convertUpdate } from "../../util/db-functions"
 
 export const StudyModuleMutations = extendType({
   type: "Mutation",
@@ -56,10 +57,10 @@ export const StudyModuleMutations = extendType({
           .findOne({ where: { slug } })
           .study_module_translations()
         const newTranslations = (study_module_translations || [])
-          .filter((t) => !t.id)
+          .filter((t) => !t?.id)
           .map((t) => ({ ...t, id: undefined }))
         const updatedTranslations = (study_module_translations || [])
-          .filter((t) => !!t.id)
+          .filter((t) => !!t?.id)
           .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
         const existingTranslationIds = (existingTranslations || []).map(
           (t) => t.id,
@@ -78,7 +79,7 @@ export const StudyModuleMutations = extendType({
         const translationMutation = {
           create: newTranslations.length ? newTranslations : undefined,
           updateMany: updatedTranslations.length
-            ? updatedTranslations
+            ? updatedTranslations.map(convertUpdate)
             : undefined,
           deleteMany: removedTranslationIds.length
             ? removedTranslationIds
@@ -90,7 +91,7 @@ export const StudyModuleMutations = extendType({
             id: id ?? undefined,
             slug,
           },
-          data: {
+          data: convertUpdate({
             ...omit(study_module, ["new_slug"]),
             slug: new_slug ? new_slug : slug,
             // FIXME/TODO: implement something like notEmpty for id field to fix typing
@@ -98,7 +99,7 @@ export const StudyModuleMutations = extendType({
             study_module_translations: Object.keys(translationMutation).length
               ? translationMutation
               : undefined,
-          },
+          }),
         })
 
         return updatedModule

@@ -41,6 +41,7 @@ export interface CourseCreateArg {
   course_variants?: CourseVariantCreateInput[] | null
   ects?: string | null
   end_date?: string | null
+  exercise_completions_needed?: number | null
   has_certificate?: boolean | null
   hidden?: boolean | null
   inherit_settings_from?: string | null
@@ -99,6 +100,7 @@ export interface CourseUpsertArg {
   delete_photo?: boolean | null
   ects?: string | null
   end_date?: string | null
+  exercise_completions_needed?: number | null
   has_certificate?: boolean | null
   hidden?: boolean | null
   id?: string | null

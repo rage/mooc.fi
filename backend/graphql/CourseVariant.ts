@@ -6,6 +6,7 @@ import {
   stringArg,
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
+import { convertUpdate } from "../util/db-functions"
 
 export const CourseVariant = objectType({
   name: "CourseVariant",
@@ -102,10 +103,10 @@ export const CourseVariantMutations = extendType({
 
         return ctx.prisma.courseVariant.update({
           where: { id },
-          data: {
+          data: convertUpdate({
             slug: slug ?? undefined,
             description,
-          },
+          }),
         })
       },
     })

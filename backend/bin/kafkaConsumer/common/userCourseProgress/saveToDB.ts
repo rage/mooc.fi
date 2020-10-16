@@ -8,12 +8,13 @@ import {
 } from "@prisma/client"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { Logger } from "winston"
-import { pushMessageToClient, MessageType } from "../../../wsServer"
-import getUserFromTMC from "../common/getUserFromTMC"
-import { ok, err, Result } from "../../../util/result"
+import { pushMessageToClient, MessageType } from "../../../../wsServer"
+import getUserFromTMC from "../getUserFromTMC"
+import { ok, err, Result } from "../../../../util/result"
 
 import _KnexConstructor from "knex"
-import { DatabaseInputError, TMCError } from "../../lib/errors"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { convertUpdate } from "../../../../util/db-functions"
 
 const Knex = _KnexConstructor({
   client: "pg",
@@ -112,10 +113,10 @@ export const saveToDatabase = async (
       where: {
         id: userCourseServiceProgress.id,
       },
-      data: {
+      data: convertUpdate({
         progress: message.progress as any, // type error without any
         timestamp: timestamp.toJSDate(),
-      },
+      }),
     })
   } else {
     await prisma.userCourseServiceProgress.create({
@@ -140,6 +141,7 @@ export const saveToDatabase = async (
     user,
     course,
     userCourseProgress,
+    logger,
   })
 
   pushMessageToClient(

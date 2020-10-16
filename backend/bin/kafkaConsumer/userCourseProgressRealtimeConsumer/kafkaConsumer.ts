@@ -16,9 +16,11 @@ import { LibrdKafkaError } from "node-rdkafka"
 
 const prisma = prismaClient()
 const mutex = new Mutex()
-const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
+const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]
 
-const logger = sentryLogger({ service: "kafka-consumer-UserCourseProgress" })
+const logger = sentryLogger({
+  service: "kafka-consumer-UserCourseProgress-realtime",
+})
 const consumer = createKafkaConsumer(logger)
 
 consumer.connect()

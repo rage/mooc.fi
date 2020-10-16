@@ -67,6 +67,10 @@ export const initialValues: CourseFormValues = {
   user_course_settings_visibilities: [],
   upcoming_active_link: false,
   tier: undefined,
+  automatic_completions: undefined,
+  automatic_completions_eligible_for_ects: undefined,
+  exercise_completions_needed: undefined,
+  points_needed: undefined,
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
@@ -231,7 +235,12 @@ const courseEditSchema = ({
     start_date: Yup.date()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
-      .transform((datetime?: DateTime) => new Date(datetime?.toISO() ?? ""))
+      .transform(
+        (datetime?: string | DateTime) =>
+          new Date(
+            (datetime instanceof DateTime ? datetime.toISO() : datetime) ?? "",
+          ),
+      )
       .test("start_before_end", t("courseStartDateLaterThanEndDate"), function (
         this: Yup.TestContext,
         value?: Date | null,
@@ -248,6 +257,12 @@ const courseEditSchema = ({
       .email(t("courseEmailInvalid"))
       .required(t("courseTeacherEmailRequired")),
     support_email: Yup.string().email(t("courseEmailInvalid")),
+    exercise_completions_needed: Yup.number()
+      .transform((value) => (isNaN(value) ? undefined : Number(value)))
+      .positive(),
+    points_needed: Yup.number()
+      .transform((value) => (isNaN(value) ? undefined : Number(value)))
+      .positive(),
   })
 
 const validateSlug = ({
