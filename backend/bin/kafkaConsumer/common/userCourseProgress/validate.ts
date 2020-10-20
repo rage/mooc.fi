@@ -43,14 +43,13 @@ const handleNullProgressImpl = (value: any) => ({
   })),
 })
 
-export const handleNullProgress = (message: KafkaMessage) =>
-  ({
-    ...message,
-    value: Buffer.from(
-      JSON.stringify(
-        handleNullProgressImpl(
-          JSON.parse(message?.value?.toString("utf8") ?? ""),
-        ),
+export const handleNullProgress = (message: KafkaMessage) => ({
+  ...message,
+  value: Buffer.from(
+    JSON.stringify(
+      handleNullProgressImpl(
+        JSON.parse(message?.value?.toString("utf8") ?? ""),
       ),
     ),
-  })
+  ),
+})
