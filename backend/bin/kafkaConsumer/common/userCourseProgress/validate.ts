@@ -1,4 +1,5 @@
 import * as yup from "yup"
+import { Message as KafkaMessage } from "node-rdkafka"
 
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
 
@@ -31,23 +32,22 @@ export const MessageYupSchema = yup.object().shape({
     .required(),
 })
 
-const handleNullProgressImpl = (message: any) => ({
-  ...message,
-  value: message?.value
-    ? {
-        ...message?.value,
-        progress: message?.value?.progress?.map((progress: any) => ({
-          ...progress,
-          progress:
-            progress.progress === null || isNaN(progress.progress)
-              ? 0
-              : progress.progress,
-        })),
-      }
-    : undefined,
+const handleNullProgressImpl = (value: any) => ({
+  ...value,
+  progress: value?.progress?.map((progress: any) => ({
+    ...progress,
+    progress:
+      progress.progress === null || isNaN(progress.progress)
+        ? 0
+        : progress.progress,
+  })),
 })
 
-export const handleNullProgress = (message: any) =>
-  typeof message === "string"
-    ? JSON.stringify(handleNullProgressImpl(JSON.parse(message)))
-    : handleNullProgressImpl(message)
+export const handleNullProgress = (message: KafkaMessage) =>
+  ({
+    ...message,
+    value:
+      typeof message.value === "string"
+        ? JSON.stringify(handleNullProgressImpl(JSON.parse(message.value)))
+        : handleNullProgressImpl(message.value),
+  } as KafkaMessage)
