@@ -5,7 +5,10 @@ import { Mutex } from "../../lib/await-semaphore"
 
 import { handleMessage } from "../common/handleMessage"
 import { Message } from "../common/userCourseProgress/interfaces"
-import { MessageYupSchema } from "../common/userCourseProgress/validate"
+import {
+  MessageYupSchema,
+  handleNullProgress,
+} from "../common/userCourseProgress/validate"
 import { saveToDatabase } from "../common/userCourseProgress/saveToDB"
 import prismaClient from "../../lib/prisma"
 import sentryLogger from "../../lib/logger"
@@ -33,8 +36,9 @@ consumer.on("ready", () => {
       process.exit(-1)
     }
     if (messages.length > 0) {
+      const message = handleNullProgress(messages[0])
       await handleMessage<Message>({
-        kafkaMessage: messages[0],
+        kafkaMessage: message,
         mutex,
         logger,
         consumer,
