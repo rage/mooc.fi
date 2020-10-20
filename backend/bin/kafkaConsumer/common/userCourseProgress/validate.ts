@@ -31,7 +31,7 @@ export const MessageYupSchema = yup.object().shape({
     .required(),
 })
 
-export const handleNullProgress = (message: any) => ({
+const handleNullProgressImpl = (message: any) => ({
   ...message,
   progress: message?.progress?.map((progress: any) => ({
     ...progress,
@@ -41,3 +41,8 @@ export const handleNullProgress = (message: any) => ({
         : progress.progress,
   })),
 })
+
+export const handleNullProgress = (message: any) =>
+  typeof message === "string"
+    ? JSON.stringify(handleNullProgressImpl(JSON.parse(message)))
+    : handleNullProgressImpl(message)
