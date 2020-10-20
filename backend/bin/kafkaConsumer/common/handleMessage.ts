@@ -10,6 +10,7 @@ import {
   ValidationError,
 } from "../../lib/errors"
 import { Result } from "../../../util/result"
+import winston from "winston/lib/winston/config"
 
 let commitCounter = 0
 
@@ -51,7 +52,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (error) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
-    await commit(kafkaMessage, consumer)
+    await commit(kafkaMessage, consumer, logger)
     release()
     return
   }
@@ -60,7 +61,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     await MessageYupSchema.validate(message)
   } catch (error) {
     logger.error(new ValidationError("JSON validation failed", message, error))
-    await commit(kafkaMessage, consumer)
+    await commit(kafkaMessage, consumer, logger)
     release()
     return
   }
@@ -84,13 +85,18 @@ export const handleMessage = async <Message extends { timestamp: string }>({
       ),
     )
   }
-  await commit(kafkaMessage, consumer)
+  await commit(kafkaMessage, consumer, logger)
   //Releasing mutex
   release()
 }
 
-const commit = async (message: any, consumer: KafkaConsumer) => {
+const commit = async (
+  message: any,
+  consumer: KafkaConsumer,
+  logger: Logger,
+) => {
   if (commitCounter >= commitInterval) {
+    logger.info("Committing...")
     await consumer.commitMessage(message)
     commitCounter = 0
   }
