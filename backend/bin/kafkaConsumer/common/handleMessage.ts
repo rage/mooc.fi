@@ -10,7 +10,6 @@ import {
   ValidationError,
 } from "../../lib/errors"
 import { Result } from "../../../util/result"
-import winston from "winston/lib/winston/config"
 
 let commitCounter = 0
 
