@@ -1,4 +1,4 @@
-import React from "react"
+import { Component as ReactComponent } from "react"
 import { NextPageContext as NextContext } from "next"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import AdminError from "/components/Dashboard/AdminError"
@@ -8,7 +8,7 @@ import LoginStateContext from "/contexes/LoginStateContext"
 let prevContext: NextContext | null = null
 
 export default function withAdmin(Component: any) {
-  return class WithAdmin extends React.Component<{
+  return class WithAdmin extends ReactComponent<{
     admin: boolean
     signedIn: boolean
   }> {

@@ -1,4 +1,4 @@
-import React from "react"
+import { Component, PropsWithChildren } from "react"
 
 import ErrorMessage from "./ErrorMessage"
 
@@ -10,15 +10,11 @@ type ErrorBoundaryError = {
   error: Error | null | undefined
 }
 
-interface ErrorBoundaryProps {
-  children: React.ReactChildren
-}
-
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component {
   state: ErrorBoundaryState = {
     hasError: undefined,
   }
-  constructor(props: ErrorBoundaryProps) {
+  constructor(props: PropsWithChildren<{}>) {
     super(props)
     this.state = { hasError: false }
   }

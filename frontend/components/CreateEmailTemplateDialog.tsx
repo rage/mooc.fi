@@ -1,5 +1,5 @@
 import { ApolloConsumer } from "@apollo/client"
-import * as React from "react"
+import { useContext, useState } from "react"
 import {
   Button,
   Dialog,
@@ -12,7 +12,6 @@ import {
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
 import Router from "next/router"
-import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import CustomSnackbar from "/components/CustomSnackbar"
 import { updateCourse } from "/static/types/generated/updateCourse"
@@ -29,9 +28,9 @@ const CreateEmailTemplateDialog = ({
   course,
   buttonText,
 }: CreateEmailTemplateDialogParams) => {
-  const [openDialog, setOpenDialog] = React.useState(false)
-  const [nameInput, setNameInput] = React.useState("")
-  const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = React.useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [nameInput, setNameInput] = useState("")
+  const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { language } = useContext(LanguageContext)
   const handleDialogClickOpen = () => {
     setOpenDialog(true)

@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegisterCompletionTranslator from "/translations/register-completion"

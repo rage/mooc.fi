@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 import { H2Background } from "/components/Text/headers"

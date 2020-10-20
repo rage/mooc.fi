@@ -1,4 +1,4 @@
-import React from "react"
+import { useContext } from "react"
 import ButtonBase from "@material-ui/core/ButtonBase"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
@@ -34,7 +34,7 @@ interface Props {
 }
 const OSSelectorButton = (props: Props) => {
   const { OSName, Icon, active } = props
-  const { changeOS } = React.useContext(UserOSContext)
+  const { changeOS } = useContext(UserOSContext)
   return (
     <StyledButtonBase onClick={() => changeOS(OSName)} selected={active}>
       <StyledIcon icon={Icon} size="4x" />

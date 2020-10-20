@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react"
+import { useContext, useMemo } from "react"
 import CourseHighlights from "./CourseHighlights"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 import { useQuery } from "@apollo/client"

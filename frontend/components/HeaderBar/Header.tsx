@@ -1,4 +1,4 @@
-import * as React from "react"
+import { ReactElement } from "react"
 import { AppBar, Toolbar } from "@material-ui/core"
 import LanguageSwitch from "./LanguageSwitch"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -14,7 +14,7 @@ import { useContext } from "react"
 
 interface Props {
   window?: () => Window
-  children: React.ReactElement
+  children: ReactElement
 }
 
 function HideOnScroll(props: Props) {

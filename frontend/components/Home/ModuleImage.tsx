@@ -1,4 +1,3 @@
-import React from "react"
 import { mime } from "/util/imageUtils"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"

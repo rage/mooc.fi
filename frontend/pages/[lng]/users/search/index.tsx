@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { UserDetailsContains } from "/static/types/generated/UserDetailsContains"
 import Container from "/components/Container"
 import { gql, useLazyQuery } from "@apollo/client"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useField, FieldInputProps } from "formik"
 import { useDropzone, FileRejection } from "react-dropzone"
 import { Typography } from "@material-ui/core"

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import { useMemo } from "react"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import { orderBy } from "lodash"
 import { CourseStatus } from "/static/types/generated/globalTypes"
