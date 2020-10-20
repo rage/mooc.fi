@@ -15,7 +15,7 @@ import sentryLogger from "../../lib/logger"
 import config from "../kafkaConfig"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
-import { LibrdKafkaError } from "node-rdkafka"
+import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 
 const prisma = prismaClient()
 const mutex = new Mutex()
@@ -30,7 +30,10 @@ consumer.connect()
 
 consumer.on("ready", () => {
   consumer.subscribe(TOPIC_NAME)
-  const consumerImpl = async (error: LibrdKafkaError, messages: any) => {
+  const consumerImpl = async (
+    error: LibrdKafkaError,
+    messages: KafkaMessage[],
+  ) => {
     if (error) {
       logger.error(new KafkaError("Error while consuming", error))
       process.exit(-1)
