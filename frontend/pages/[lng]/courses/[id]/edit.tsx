@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { WideContainer } from "/components/Container"

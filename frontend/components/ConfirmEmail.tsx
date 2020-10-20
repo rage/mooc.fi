@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"

@@ -1,4 +1,4 @@
-import React from "react"
+import { PropsWithChildren } from "react"
 import { WideContainer } from "/components/Container"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
@@ -7,11 +7,10 @@ const Header = styled(Typography)<any>`
   margin-top: 1em;
 `
 
-interface EditorContainerProps {
-  title: string
-  children: React.ReactNode
-}
-const EditorContainer = ({ title, children }: EditorContainerProps) => (
+const EditorContainer = ({
+  title,
+  children,
+}: PropsWithChildren<{ title: string }>) => (
   <>
     <section>
       <WideContainer>

@@ -1,4 +1,3 @@
-import React from "react"
 import { Grid } from "@material-ui/core"
 import ModuleCard from "./ModuleCard"
 import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"

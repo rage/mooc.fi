@@ -1,4 +1,3 @@
-import React from "react"
 import { Container, Grid, CircularProgress } from "@material-ui/core"
 
 const Spinner = () => (

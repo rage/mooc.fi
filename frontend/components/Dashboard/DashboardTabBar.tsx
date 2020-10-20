@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext, useState, ChangeEvent } from "react"
 import AppBar from "@material-ui/core/AppBar"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
@@ -59,9 +59,9 @@ interface DashboardTabsProps {
 export default function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
   const { language } = useContext(LanguageContext)
-  const [value, setValue] = React.useState(selectedValue)
+  const [value, setValue] = useState(selectedValue)
 
-  function handleChange(_: React.ChangeEvent<{}>, newValue: number) {
+  function handleChange(_: ChangeEvent<{}>, newValue: number) {
     setValue(newValue)
   }
 

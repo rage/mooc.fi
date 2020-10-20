@@ -1,4 +1,3 @@
-import * as React from "react"
 import AnchorContext, { Anchor } from "/contexes/AnchorContext"
 
 const withEnumeratingAnchors = <T,>(Component: any) => (props: any) => {

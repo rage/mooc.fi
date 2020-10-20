@@ -1,4 +1,3 @@
-import * as React from "react"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import Typography from "@material-ui/core/Typography"

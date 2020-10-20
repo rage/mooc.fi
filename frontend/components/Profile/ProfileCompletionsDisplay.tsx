@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import CompletionListItem from "/components/CompletionListItem"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"

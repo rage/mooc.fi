@@ -1,4 +1,3 @@
-import React from "react"
 import Grid from "@material-ui/core/Grid"
 import CourseCard from "./CourseCard"
 import Container from "/components/Container"

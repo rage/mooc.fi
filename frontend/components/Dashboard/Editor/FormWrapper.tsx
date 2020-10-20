@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useContext, useCallback } from "react"
+import {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  Dispatch,
+  ReactNode,
+} from "react"
 import {
   Container,
   Paper,
@@ -32,9 +39,9 @@ const Status = styled.p<any>`
 interface FormWrapperProps<T> {
   onCancel: () => void
   onDelete: (values: T) => void
-  renderForm: (props: any) => React.ReactNode
+  renderForm: (props: any) => ReactNode
   tab?: number
-  setTab?: React.Dispatch<React.SetStateAction<number>>
+  setTab?: Dispatch<React.SetStateAction<number>>
 }
 
 const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {

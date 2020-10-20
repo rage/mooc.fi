@@ -1,13 +1,9 @@
-import React, { useContext } from "react"
+import { useContext, Children, cloneElement, PropsWithChildren } from "react"
 import Link, { LinkProps } from "next/link"
 import LanguageContext from "/contexes/LanguageContext"
 import { parse, format } from "url"
 
-/* interface LangLinkProps extends LinkProps {
-  children: JSX.Element | JSX.Element[]
-} */
-
-const LangLink: React.FC<LinkProps> = (props): any => {
+export default function LangLink(props: PropsWithChildren<LinkProps>): any {
   const { as: _as, href: _href, children } = props
   const { language } = useContext(LanguageContext)
   const isFi = language === "fi"
@@ -20,32 +16,30 @@ const LangLink: React.FC<LinkProps> = (props): any => {
 
   if (isOutsideLink) {
     if (children && Array.isArray(children)) {
-      const _children: React.ReactNode = React.Children.map(
-        children,
-        (child, idx) => {
-          if (idx === 0) {
-            if ((child as any)?.type?.target === "a") {
-              return React.cloneElement(child as any, {
-                href: parsedAs,
-                target: "_blank",
-                rel: "noreferrer noopener",
-              })
-            }
-            console.warn(
-              "You're trying to link outside the site with a LangLink but you're not providing an <a> tag - just use a regular link or pass a link as the first child!",
-            )
+      return Children.map(children, (child, idx) => {
+        if (idx === 0) {
+          if ((child as any)?.type?.target === "a") {
+            return cloneElement(child as any, {
+              href: parsedAs,
+              target: "_blank",
+              rel: "noreferrer noopener",
+            })
           }
-          return child
-        },
-      )
+          console.warn(
+            "You're trying to link outside the site with a LangLink but you're not providing an <a> tag - just use a regular link or pass a link as the first child!",
+          )
+        }
 
-      return _children
+        return child
+      })
     }
-    return React.cloneElement(children as any, {
-      href: parsedAs,
-      target: "_blank",
-      rel: "noreferrer noopener",
-    })
+    return (
+      cloneElement(children as any, {
+        href: parsedAs,
+        target: "_blank",
+        rel: "noreferrer noopener",
+      }) ?? null
+    )
   }
 
   let as = isOutsideLink
@@ -74,5 +68,3 @@ const LangLink: React.FC<LinkProps> = (props): any => {
     </Link>
   )
 }
-
-export default LangLink

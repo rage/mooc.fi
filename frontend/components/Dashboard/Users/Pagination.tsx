@@ -1,4 +1,9 @@
-import React, { useContext, useCallback } from "react"
+import {
+  useContext,
+  useCallback,
+  MouseEvent as ReactMouseEvent,
+  ChangeEvent,
+} from "react"
 import { TablePagination } from "@material-ui/core"
 import getUsersTranslator from "/translations/users"
 import LanguageContext from "/contexes/LanguageContext"
@@ -32,7 +37,7 @@ const TablePaginationActions: React.FC<any> = () => {
   const count = data?.userDetailsContains?.count ?? 0
 
   const handleFirstPageButtonClick = useCallback(
-    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
         first: rowsPerPage,
@@ -43,7 +48,7 @@ const TablePaginationActions: React.FC<any> = () => {
   )
 
   const handleBackButtonClick = useCallback(
-    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
         last: rowsPerPage,
@@ -55,7 +60,7 @@ const TablePaginationActions: React.FC<any> = () => {
   )
 
   const handleNextButtonClick = useCallback(
-    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
         first: rowsPerPage,
@@ -68,7 +73,7 @@ const TablePaginationActions: React.FC<any> = () => {
   )
 
   const handleLastPageButtonClick = useCallback(
-    async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (_: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       setSearchVariables({
         search: searchVariables.search,
         last: rowsPerPage - (rowsPerPage - (count % rowsPerPage)),
@@ -166,7 +171,7 @@ const Pagination: React.FC<any> = () => {
       }
       onChangePage={() => null}
       onChangeRowsPerPage={(
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       ) => handleChangeRowsPerPage({ eventValue: event.target.value })}
       ActionsComponent={() => <TablePaginationActions />}
     />

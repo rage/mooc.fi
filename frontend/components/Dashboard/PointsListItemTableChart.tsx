@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import LinearProgress from "@material-ui/core/LinearProgress"
 import { formattedGroupPoints } from "/util/formatPointsData"
