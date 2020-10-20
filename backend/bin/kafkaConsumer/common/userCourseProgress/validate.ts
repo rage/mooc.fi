@@ -33,13 +33,18 @@ export const MessageYupSchema = yup.object().shape({
 
 const handleNullProgressImpl = (message: any) => ({
   ...message,
-  progress: message?.progress?.map((progress: any) => ({
-    ...progress,
-    progress:
-      progress.progress === null || isNaN(progress.progress)
-        ? 0
-        : progress.progress,
-  })),
+  value: message?.value
+    ? {
+        ...message?.value,
+        progress: message?.value?.progress?.map((progress: any) => ({
+          ...progress,
+          progress:
+            progress.progress === null || isNaN(progress.progress)
+              ? 0
+              : progress.progress,
+        })),
+      }
+    : undefined,
 })
 
 export const handleNullProgress = (message: any) =>
