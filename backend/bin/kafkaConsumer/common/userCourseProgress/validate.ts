@@ -30,3 +30,14 @@ export const MessageYupSchema = yup.object().shape({
     .max(CURRENT_MESSAGE_FORMAT_VERSION)
     .required(),
 })
+
+export const handleNullProgress = (message: any) => ({
+  ...message,
+  progress: message?.progress?.map((progress: any) => ({
+    ...progress,
+    progress:
+      progress.progress === null || isNaN(progress.progress)
+        ? 0
+        : progress.progress,
+  })),
+})
