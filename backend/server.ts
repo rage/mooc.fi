@@ -300,9 +300,12 @@ async function getUser(
           last_name: details.user_field.last_name.trim(),
           username: details.username,
         })
-        .returning("id")
+        .returning("*")
     )?.[0]
-    // return err(res.status(400).json({ message: "user not found" }))
+
+    if (!user) {
+      return err(res.status(500).json({ message: "error creating user" }))
+    }
   }
 
   return ok({
