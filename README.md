@@ -34,12 +34,14 @@ By default, `node-rdkafka` builds `librdkafka` from the source. This can take mi
 
 Do this in some other directory than the project one:
 
-```bash
-wget https://github.com/edenhill/librdkafka/archive/v1.4.0.tar.gz
+```bash 
+wget https://github.com/edenhill/librdkafka/archive/v1.4.0.tar.gz  -O - | tar -xz
 cd librdkafka-1.4.0
 ./configure --prefix=/usr
 make && make install
 ```
+
+(Ubuntu 20.04 and later seem to require v1.5.0, so change accordingly.)
 
 You may have to do some of that as root. Alternatively, you can install a prebuilt package - see [here](https://github.com/edenhill/librdkafka) for more information. Just be sure to install version >1.4.0.
 
