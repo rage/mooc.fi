@@ -138,7 +138,7 @@ export function setupServer(server: typeof nexusServer) {
 
           let { count } = (
             await Knex.countDistinct("id as count")
-              .from("user_course_settin g")
+              .from("user_course_setting")
               .where({ course_id, language: language })
           )?.[0]
 
@@ -302,7 +302,7 @@ async function getUser(
         })
         .returning("*")
     )?.[0]
-    
+
     if (!user) {
       return err(res.status(500).json({ message: "error creating user" }))
     }
