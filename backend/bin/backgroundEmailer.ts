@@ -1,5 +1,5 @@
 import { EmailDelivery } from "@prisma/client"
-import { sendEmailTemplateToUser } from "./kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
 import prismaClient from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { EmailTemplaterError } from "./lib/errors"
