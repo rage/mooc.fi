@@ -290,21 +290,30 @@ async function getUser(
   )?.[0]
 
   if (!user) {
-    user = (
-      await Knex("user")
-        .insert({
-          upstream_id: details.id,
-          administrator: details.administrator,
-          email: details.email.trim(),
-          first_name: details.user_field.first_name.trim(),
-          last_name: details.user_field.last_name.trim(),
-          username: details.username,
-        })
-        .returning("*")
-    )?.[0]
+    try {
+      user = (
+        await Knex("user")
+          .insert({
+            upstream_id: details.id,
+            administrator: details.administrator,
+            email: details.email.trim(),
+            first_name: details.user_field.first_name.trim(),
+            last_name: details.user_field.last_name.trim(),
+            username: details.username,
+          })
+          .returning("*")
+      )?.[0]
+    } catch {
+      // race condition or something
+      let user = (
+        await Knex.select<any, User[]>("id")
+          .from("user")
+          .where("upstream_id", details.id)
+      )?.[0]
 
-    if (!user) {
-      return err(res.status(500).json({ message: "error creating user" }))
+      if (!user) {
+        return err(res.status(500).json({ message: "error creating user" }))
+      }
     }
   }
 
