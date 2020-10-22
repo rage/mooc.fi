@@ -9,7 +9,7 @@ const logCommit = (logger: winston.Logger) => (
   if (err) {
     logger.error(new KafkaError("Error in commit", err))
   } else {
-    logger.info("Committed. topicPartitions:" + topicPartitions)
+    logger.info("Committed. topicPartitions:" + JSON.stringify(topicPartitions))
   }
 }
 
