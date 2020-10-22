@@ -2,7 +2,7 @@ import { Message } from "./interfaces"
 import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
-import { CheckCompletion } from "../common/userCourseProgress/generateUserCourseProgress"
+import { checkCompletion } from "../common/userCourseProgress/userFunctions"
 import knex from "knex"
 import getUserFromTMC from "../common/getUserFromTMC"
 import { ok, err, Result } from "../../../util/result"
@@ -170,7 +170,7 @@ export const saveToDatabase = async (
       },
     })
   }
-  await CheckCompletion(user, course)
+  await checkCompletion({ user, course, logger })
 
   return ok("Saved to DB successfully")
 }
