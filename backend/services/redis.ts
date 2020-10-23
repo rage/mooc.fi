@@ -5,13 +5,15 @@ import { promisify } from "util"
 const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:7001"
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD
 const NEXUS_REFLECTION = process.env.NEXUS_REFLECTION
+const TEST = process.env.NODE_ENV === "test"
 
-const redisClient = !NEXUS_REFLECTION
-  ? redis.createClient({
-      url: REDIS_URL,
-      password: REDIS_PASSWORD,
-    })
-  : undefined
+const redisClient =
+  !NEXUS_REFLECTION && !TEST
+    ? redis.createClient({
+        url: REDIS_URL,
+        password: REDIS_PASSWORD,
+      })
+    : undefined
 
 const logger = winston.createLogger({
   level: "info",
@@ -72,19 +74,21 @@ export async function redisify<T>(
     })
 }
 
-export const publisher = !NEXUS_REFLECTION
-  ? redis.createClient({
-      url: REDIS_URL,
-      password: process.env.REDIS_PASSWORD,
-    })
-  : null
+export const publisher =
+  !NEXUS_REFLECTION && !TEST
+    ? redis.createClient({
+        url: REDIS_URL,
+        password: process.env.REDIS_PASSWORD,
+      })
+    : null
 
-export const subscriber = !NEXUS_REFLECTION
-  ? redis.createClient({
-      url: REDIS_URL,
-      password: process.env.REDIS_PASSWORD,
-    })
-  : null
+export const subscriber =
+  !NEXUS_REFLECTION && !TEST
+    ? redis.createClient({
+        url: REDIS_URL,
+        password: process.env.REDIS_PASSWORD,
+      })
+    : null
 
 export const invalidate = (prefix: string, key: string) => {
   if (!redisClient?.connected) {
