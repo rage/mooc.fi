@@ -305,7 +305,7 @@ async function getUser(
       )?.[0]
     } catch {
       // race condition or something
-      let user = (
+      user = (
         await Knex.select<any, User[]>("id")
           .from("user")
           .where("upstream_id", details.id)
