@@ -229,8 +229,7 @@ export const createCompletion = async ({
   } else if (
     tier !== null &&
     tier !== undefined &&
-    completions[0]?.tier &&
-    tier > completions[0]!.tier
+    tier > (completions[0]!.tier ?? 0)
   ) {
     logger?.info("Existing completion found, updating tier...")
     await prisma.completion.update({
