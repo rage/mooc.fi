@@ -223,7 +223,7 @@ export function setupServer(server: typeof nexusServer) {
     })
   })
 
-  server.express.get("/api/progress/:id/v2", async (req: any, res: any) => {
+  server.express.get("/api/progressv2/:id", async (req: any, res: any) => {
     const { id }: { id: string } = req.params
 
     if (!id) {
@@ -255,16 +255,16 @@ export function setupServer(server: typeof nexusServer) {
       .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
       .where("exercise.course_id", id)
       .andWhere("exercise_completion.user_id", user.id)
-    const handlerCourseId = (
-      await Knex.select("completions_handled_by_id")
-        .from("course")
-        .where("id", id)
-    )[0]
-    console.log(handlerCourseId)
+    const { completions_handled_by_id = id } =
+      (
+        await Knex.select("completions_handled_by_id")
+          .from("course")
+          .where("id", id)
+      )[0] ?? {}
 
     const completions = await Knex.select<any, Completion[]>("*")
       .from("completion")
-      .where("course_id", handlerCourseId ?? id)
+      .where("course_id", completions_handled_by_id)
       .andWhere("user_id", user.id)
 
     const exercise_completions_map = (exercise_completions ?? []).reduce(
@@ -280,6 +280,8 @@ export function setupServer(server: typeof nexusServer) {
 
     res.json({
       data: {
+        course_id: id,
+        user_id: user.id,
         exercise_completions: exercise_completions_map,
         completion: completions[0] ?? {},
       },
