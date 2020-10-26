@@ -18,6 +18,8 @@ schema.objectType({
     t.model.eligible_for_ects()
     t.model.course()
     t.model.completion_date()
+    t.model.tier()
+
     // we're not querying completion course languages for now, and this was buggy
     /*     t.field("course", {
       type: "Course",
