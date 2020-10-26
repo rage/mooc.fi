@@ -180,6 +180,7 @@ interface CreateCompletion {
   course_id: string
   handlerCourse: Course
   logger: winston.Logger
+  tier?: number
 }
 
 export const createCompletion = async ({
@@ -187,6 +188,7 @@ export const createCompletion = async ({
   course_id,
   handlerCourse,
   logger,
+  tier,
 }: CreateCompletion) => {
   const userCourseSettings = await getUserCourseSettings(user, course_id)
   const completions = await prisma.completion.findMany({
@@ -224,6 +226,22 @@ export const createCompletion = async ({
     if (template) {
       await sendEmailTemplateToUser(user, template)
     }
+  } else if (
+    tier !== null &&
+    tier !== undefined &&
+    completions[0]?.tier &&
+    tier > completions[0]!.tier
+  ) {
+    logger?.info("Existing completion found, updating tier...")
+    await prisma.completion.update({
+      where: {
+        id: completions[0]!.id,
+      },
+      data: {
+        ...completions[0],
+        tier,
+      },
+    })
   }
 }
 
