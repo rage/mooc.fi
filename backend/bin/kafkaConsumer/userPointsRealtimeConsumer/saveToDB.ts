@@ -121,7 +121,7 @@ export const saveToDatabase = async (
       user: {
         connect: { upstream_id: Number(message.user_id) },
       },
-      n_points: message.n_points,
+      n_points: Number(message.n_points),
       completed: message.completed,
       attempted: message.attempted !== null ? message.attempted : undefined,
       exercise_completion_required_actions: {

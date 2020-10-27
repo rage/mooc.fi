@@ -32,15 +32,24 @@ const checkBAIProjectCompletion = async (user: User) => {
   return completions.length > 0
 }
 
-export const checkBAICompletion = async (
-  user: User,
-  course: Course,
-  logger: winston.Logger,
-  // combinedProgress?: CombinedUserCourseProgress, // this is for the tier course we got
-) => {
-  const handlerCourse = await prisma.course
-    .findOne({ where: { id: course.id } })
-    .completions_handled_by()
+interface CheckBAICompletion {
+  user: User
+  course: Course
+  logger: winston.Logger
+  isHandler?: boolean
+}
+
+export const checkBAICompletion = async ({
+  user,
+  course,
+  logger,
+  isHandler = false,
+}: CheckBAICompletion) => {
+  const handlerCourse = isHandler
+    ? course
+    : await prisma.course
+        .findOne({ where: { id: course.id } })
+        .completions_handled_by()
 
   if (!handlerCourse) {
     // TODO: error

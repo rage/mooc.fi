@@ -27,7 +27,7 @@ export const generateUserCourseProgress = async ({
   const combined = await getCombinedUserCourseProgress(user, course)
 
   if (Object.values(BAItiers).includes(course.id)) {
-    await checkBAICompletion(user, course, logger)
+    await checkBAICompletion({ user, course, logger })
   } else {
     await checkCompletion({ user, course, combinedProgress: combined, logger })
   }

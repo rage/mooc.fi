@@ -42,7 +42,14 @@ const updateBAICompletionTiers = async () => {
   logger.info(`Updating ${usersWithoutTiers.length} users...`)
 
   await Promise.all(
-    usersWithoutTiers.map((user) => checkBAICompletion(user, course, logger)),
+    usersWithoutTiers.map((user) =>
+      checkBAICompletion({
+        user,
+        course,
+        logger,
+        isHandler: true,
+      }),
+    ),
   )
   logger.info("Done")
 
