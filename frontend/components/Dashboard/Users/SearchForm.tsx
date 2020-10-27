@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react"
+import { useCallback, useContext, useState } from "react"
 import UserSearchContext from "/contexes/UserSearchContext"
 import { H1NoBackground } from "/components/Text/headers"
 import { TextField, useMediaQuery } from "@material-ui/core"

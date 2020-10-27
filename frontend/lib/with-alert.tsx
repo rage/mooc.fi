@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import AlertContext from "/contexes/AlertContext"
 
 export default (Component: any) => (props: any) => {

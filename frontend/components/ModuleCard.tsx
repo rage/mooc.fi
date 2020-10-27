@@ -1,4 +1,3 @@
-import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"

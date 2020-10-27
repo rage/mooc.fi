@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
 import { gql } from "@apollo/client"
 import ErrorBoundary from "../ErrorBoundary"
 import { useLazyQuery } from "@apollo/client"
@@ -135,7 +135,7 @@ function PaginatedPointsList(props: Props) {
             value={searchString}
             autoComplete="off"
             variant="outlined"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setSearchString(e.target.value)
             }
             onKeyDown={(e) => e.key === "Enter" && setSearch()}
@@ -158,7 +158,7 @@ function PaginatedPointsList(props: Props) {
             value={cutterValue}
             autoComplete="off"
             variant="outlined"
-            onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
+            onChange={(e: ChangeEvent<{ value: unknown }>) =>
               setCutterValue(e.target.value as number)
             }
           />

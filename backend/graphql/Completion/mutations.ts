@@ -17,6 +17,7 @@ export const CompletionMutations = extendType({
         user: idArg({ required: true }),
         course: idArg({ required: true }),
         completion_language: stringArg(),
+        tier: intArg({ required: false }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -27,6 +28,7 @@ export const CompletionMutations = extendType({
           user,
           course,
           completion_language,
+          tier,
         } = args
 
         return ctx.prisma.completion.create({
@@ -37,6 +39,7 @@ export const CompletionMutations = extendType({
             student_number,
             completion_language,
             user_upstream_id,
+            tier,
           },
         })
       },

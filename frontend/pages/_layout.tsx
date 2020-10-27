@@ -1,4 +1,4 @@
-import React from "react"
+import { ReactNode } from "react"
 import Header from "../components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import Footer from "/components/Footer"
@@ -15,7 +15,7 @@ const FooterDownPusherWrapper = styled.div`
   justify-content: space-between;
 `
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
 
   const isHomePage = !!router?.asPath?.match(/^\/(\[lng\])?\/?$/)

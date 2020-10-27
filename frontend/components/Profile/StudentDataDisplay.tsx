@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import { useState, useContext, PropsWithChildren, ChangeEvent } from "react"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
 import Typography from "@material-ui/core/Typography"
@@ -22,25 +22,26 @@ const ConsentNotification = styled.div`
 `
 
 interface TabPanelProps {
-  children?: React.ReactNode
   index: any
   value: any
 }
 
-const TabPanel = (props: TabPanelProps) => {
-  const { children, value, index } = props
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`user-profile-${index}`}
-      aria-labelledby={`user-profile-tab-${index}`}
-    >
-      <Box p={3}>{children}</Box>
-    </Typography>
-  )
-}
+const TabPanel = ({
+  value,
+  index,
+  children,
+}: PropsWithChildren<TabPanelProps>) => (
+  <Typography
+    component="div"
+    role="tabpanel"
+    hidden={value !== index}
+    id={`user-profile-${index}`}
+    aria-labelledby={`user-profile-tab-${index}`}
+  >
+    <Box p={3}>{children}</Box>
+  </Typography>
+)
+
 interface StudentDataDisplayProps {
   data?: ProfileUserOverView_currentUser
 }
@@ -52,7 +53,7 @@ const StudentDataDisplay = ({ data }: StudentDataDisplayProps) => {
   const { completions = [], research_consent } = data || {}
   const [tabOpen, setTabOpen] = useState(0)
 
-  const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabChange = (_event: ChangeEvent<{}>, newValue: number) => {
     setTabOpen(newValue)
   }
 

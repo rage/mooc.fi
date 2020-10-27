@@ -1,4 +1,3 @@
-import React from "react"
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"

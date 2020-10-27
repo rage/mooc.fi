@@ -1,4 +1,3 @@
-import React from "react"
 import ModuleDescription from "/components/Home/ModuleDisplay/ModuleDescription"
 import ModuleCoursesDisplay from "/components/Home/ModuleDisplay/ModuleCoursesDisplay"
 import styled from "styled-components"

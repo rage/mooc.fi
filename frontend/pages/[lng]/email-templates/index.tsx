@@ -1,4 +1,3 @@
-import * as React from "react"
 import { WideContainer } from "/components/Container"
 import { AllEmailTemplatesQuery } from "/graphql/queries/email-templates"
 import { useQuery } from "@apollo/client"

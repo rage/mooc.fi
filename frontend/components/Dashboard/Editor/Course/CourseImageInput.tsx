@@ -1,4 +1,9 @@
-import React, { useContext, useState, useCallback } from "react"
+import {
+  useContext,
+  useState,
+  useCallback,
+  MouseEvent as ReactMouseEvent,
+} from "react"
 import { FormFieldGroup } from "./CourseEditForm"
 import { FormControl, Button } from "@material-ui/core"
 import { Field, useFormikContext, FieldInputProps } from "formik"
@@ -71,7 +76,7 @@ const CourseImageInput = (props: ImageInputProps) => {
               <ImagePreview
                 file={addDomain(values.thumbnail)}
                 onClose={(
-                  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                  e: ReactMouseEvent<HTMLButtonElement, MouseEvent>,
                 ): void => {
                   e.stopPropagation()
                   e.nativeEvent.stopImmediatePropagation()

@@ -1,4 +1,3 @@
-import React from "react"
 import { Grid } from "@material-ui/core"
 import PointsListItemCard from "./PointsListItemCard"
 import { UserCourseSettings_userCourseSettings_edges as Points } from "/static/types/generated/UserCourseSettings"

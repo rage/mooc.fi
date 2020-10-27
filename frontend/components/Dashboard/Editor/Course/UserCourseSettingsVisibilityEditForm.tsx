@@ -1,4 +1,3 @@
-import React from "react"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { FieldArray, useFormikContext } from "formik"
 import { StyledFieldWithAnchor } from "/components/Dashboard/Editor/common"

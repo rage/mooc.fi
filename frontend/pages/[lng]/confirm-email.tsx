@@ -1,4 +1,3 @@
-import React from "react"
 import { RegularContainer } from "/components/Container"
 import ConfirmEmail from "/components/ConfirmEmail"
 import withSignedIn from "/lib/with-signed-in"

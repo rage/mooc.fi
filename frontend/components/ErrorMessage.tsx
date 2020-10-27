@@ -1,4 +1,3 @@
-import React from "react"
 import CardActions from "@material-ui/core/CardActions"
 import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"

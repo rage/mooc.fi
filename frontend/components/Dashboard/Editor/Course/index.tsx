@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react"
+import { useCallback, useContext } from "react"
 import CourseEditForm from "./CourseEditForm"
 import { useMutation, useApolloClient } from "@apollo/client"
 import { CourseFormValues } from "./types"

@@ -24,7 +24,8 @@ model Completion {
   user                      User?                   @relation(fields: [user_id], references: [id])
   completions_registered    CompletionRegistered[]
   completion_date           DateTime?
-  
+  tier                      Int?
+
   @@map("completion")
 }
 

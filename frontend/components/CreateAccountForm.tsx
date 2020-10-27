@@ -1,4 +1,4 @@
-import React from "react"
+import { Component } from "react"
 import {
   TextField,
   Typography,
@@ -63,7 +63,7 @@ export interface CreateAccountFormProps {
   onComplete: Function
 }
 
-class CreateAccountForm extends React.Component<CreateAccountFormProps> {
+class CreateAccountForm extends Component<CreateAccountFormProps> {
   static contextType = LanguageContext
   constructor(props: CreateAccountFormProps) {
     super(props)

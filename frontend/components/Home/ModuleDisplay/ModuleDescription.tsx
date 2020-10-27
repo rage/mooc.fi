@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import { H2NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 

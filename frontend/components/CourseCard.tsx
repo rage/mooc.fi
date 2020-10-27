@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, Fragment } from "react"
 import { Grid, CardContent, CardActionArea } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
@@ -32,7 +32,7 @@ interface CourseCardProps {
   loading?: boolean
 }
 
-const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
+const CourseCard = memo(({ course, loading }: CourseCardProps) => (
   <Grid item xs={12} sm={4} lg={3}>
     <CardBase component="div" ishidden={course?.hidden ? 1 : undefined}>
       <CourseImageBase>
@@ -72,7 +72,7 @@ const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
             <Skeleton variant="rect" width="100%" />
           </>
         ) : course ? (
-          <React.Fragment>
+          <Fragment>
             <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
               <StyledLink
                 aria-label={`To the homepage of course ${course.name}`}
@@ -93,7 +93,7 @@ const CourseCard = React.memo(({ course, loading }: CourseCardProps) => (
                 </StyledButton>
               </StyledLink>
             </LangLink>
-          </React.Fragment>
+          </Fragment>
         ) : (
           <LangLink href={`/courses/new`}>
             <StyledLink>

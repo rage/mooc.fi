@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useReducer } from "react"
+import { useContext, useEffect, useState, useReducer } from "react"
 import Button from "@material-ui/core/Button"
 import styled from "styled-components"
 import DialogTitle from "@material-ui/core/DialogTitle"

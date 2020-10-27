@@ -1,5 +1,5 @@
-import * as React from "react"
+import { createContext } from "react"
 
-const CourseLanguageContext = React.createContext("")
+const CourseLanguageContext = createContext("")
 
 export default CourseLanguageContext

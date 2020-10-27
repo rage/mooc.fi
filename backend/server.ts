@@ -2,7 +2,7 @@ import { UserInfo } from "./domain/UserInfo"
 import Knex from "./services/knex"
 import { redisify } from "./services/redis"
 import TmcClient from "./services/tmc"
-import { User } from "@prisma/client"
+import { User, Completion } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
 import { ok, err, Result } from "./util/result"
@@ -187,7 +187,10 @@ express.get("/api/progress/:id", async (req: any, res: any) => {
 
   const { user } = getUserResult.value
 
-  const completions = await Knex.select<any, ExerciseCompletionResult[]>(
+  const exercise_completions = await Knex.select<
+    any,
+    ExerciseCompletionResult[]
+  >(
     "user_id",
     "exercise_id",
     "n_points",
@@ -202,7 +205,7 @@ express.get("/api/progress/:id", async (req: any, res: any) => {
     .where("exercise.course_id", id)
     .andWhere("exercise_completion.user_id", user.id)
 
-  const resObject = (completions ?? []).reduce(
+  const resObject = (exercise_completions ?? []).reduce(
     (acc, curr) => ({
       ...acc,
       [curr.exercise_id]: {
@@ -215,6 +218,71 @@ express.get("/api/progress/:id", async (req: any, res: any) => {
 
   res.json({
     data: resObject,
+  })
+})
+
+express.get("/api/progressv2/:id", async (req: any, res: any) => {
+  const { id }: { id: string } = req.params
+
+  if (!id) {
+    return res.status(400).json({ message: "must provide id" })
+  }
+
+  const getUserResult = await getUser(req, res)
+
+  if (getUserResult.isErr()) {
+    return getUserResult.error
+  }
+
+  const { user } = getUserResult.value
+
+  const exercise_completions = await Knex.select<
+    any,
+    ExerciseCompletionResult[]
+  >(
+    "user_id",
+    "exercise_id",
+    "n_points",
+    "part",
+    "section",
+    "max_points",
+    "completed",
+    "custom_id as quizzes_id",
+  )
+    .from("exercise_completion")
+    .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+    .where("exercise.course_id", id)
+    .andWhere("exercise_completion.user_id", user.id)
+  const { completions_handled_by_id = id } =
+    (
+      await Knex.select("completions_handled_by_id")
+        .from("course")
+        .where("id", id)
+    )[0] ?? {}
+
+  const completions = await Knex.select<any, Completion[]>("*")
+    .from("completion")
+    .where("course_id", completions_handled_by_id)
+    .andWhere("user_id", user.id)
+
+  const exercise_completions_map = (exercise_completions ?? []).reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.exercise_id]: {
+        ...curr,
+        // tier: baiCourseTiers[curr.quizzes_id],
+      },
+    }),
+    {},
+  )
+
+  res.json({
+    data: {
+      course_id: id,
+      user_id: user.id,
+      exercise_completions: exercise_completions_map,
+      completion: completions[0] ?? {},
+    },
   })
 })
 
@@ -287,19 +355,31 @@ async function getUser(
   )?.[0]
 
   if (!user) {
-    user = (
-      await Knex("user")
-        .insert({
-          upstream_id: details.id,
-          administrator: details.administrator,
-          email: details.email.trim(),
-          first_name: details.user_field.first_name.trim(),
-          last_name: details.user_field.last_name.trim(),
-          username: details.username,
-        })
-        .returning("id")
-    )?.[0]
-    // return err(res.status(400).json({ message: "user not found" }))
+    try {
+      user = (
+        await Knex("user")
+          .insert({
+            upstream_id: details.id,
+            administrator: details.administrator,
+            email: details.email.trim(),
+            first_name: details.user_field.first_name.trim(),
+            last_name: details.user_field.last_name.trim(),
+            username: details.username,
+          })
+          .returning("*")
+      )?.[0]
+    } catch {
+      // race condition or something
+      user = (
+        await Knex.select<any, User[]>("id")
+          .from("user")
+          .where("upstream_id", details.id)
+      )?.[0]
+
+      if (!user) {
+        return err(res.status(500).json({ message: "error creating user" }))
+      }
+    }
   }
 
   return ok({

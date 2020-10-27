@@ -1,4 +1,4 @@
-import * as React from "react"
+import { useContext } from "react"
 import { useQuery } from "@apollo/client"
 import { WideContainer } from "/components/Container"
 import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
@@ -10,8 +10,8 @@ import withAdmin from "/lib/with-admin"
 import getStudyModulesTranslator from "/translations/study-modules"
 import LanguageContext from "/contexes/LanguageContext"
 
-const StudyModules = () => {
-  const { language } = React.useContext(LanguageContext)
+function StudyModules() {
+  const { language } = useContext(LanguageContext)
   const t = getStudyModulesTranslator(language)
 
   const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(

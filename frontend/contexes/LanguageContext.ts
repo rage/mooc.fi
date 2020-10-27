@@ -1,4 +1,4 @@
-import * as React from "react"
+import { createContext } from "react"
 
 interface PageLanguageDetails {
   language: string
@@ -6,7 +6,7 @@ interface PageLanguageDetails {
   hrefUrl: string
 }
 
-const LanguageContext = React.createContext<PageLanguageDetails>({
+const LanguageContext = createContext<PageLanguageDetails>({
   language: "fi",
   url: "",
   hrefUrl: "",
