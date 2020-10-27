@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useContext, useState } from "react"
 import { gql } from "@apollo/client"
 import { AllCompletions as AllCompletionsData } from "/static/types/generated/AllCompletions"
 import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
@@ -103,7 +103,7 @@ export const PreviousPageCompletionsQuery = gql`
   }
 `
 const CompletionsList = () => {
-  const completionLanguage = React.useContext(CourseLanguageContext)
+  const completionLanguage = useContext(CourseLanguageContext)
   const course = useQueryParameter("id")
 
   interface queryDetailsInterface {

@@ -1,4 +1,3 @@
-import React from "react"
 import { formattedGroupPointsDictionary } from "/util/formatPointsData"
 import PointsListItemTableChart from "/components/Dashboard/PointsListItemTableChart"
 

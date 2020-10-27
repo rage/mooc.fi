@@ -1,4 +1,3 @@
-import React from "react"
 import { DatePicker } from "@material-ui/pickers"
 import { ErrorMessage, useField } from "formik"
 import styled from "styled-components"
@@ -22,6 +21,7 @@ const DatePickerField = ({ ...props }: any) => {
         {...field}
         {...props}
         format="yyyy-MM-dd"
+        mask="____-__-__"
         style={{
           marginBottom: error ? "0rem" : "1.5rem",
           width: "70%",

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState, useMemo } from "react"
+import { useCallback, useContext, useState, useMemo, memo } from "react"
 import {
   InputLabel,
   FormControl,
@@ -517,7 +517,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
   )
 }
 
-const CourseEditForm = React.memo(
+const CourseEditForm = memo(
   ({
     course,
     studyModules,

@@ -1,4 +1,4 @@
-import React from "react"
+import { Fragment } from "react"
 import { AllCompletions_completionsPaginated_edges_node } from "/static/types/generated/AllCompletions"
 import {
   ListItem,
@@ -67,7 +67,7 @@ function CompletionCard({
         <ListItemText
           primary={`${completer.user?.first_name} ${completer.user?.last_name}`}
           secondary={
-            <React.Fragment>
+            <Fragment>
               <Typography component="span" style={{ display: "block" }}>
                 {completer.email} {studentId}
               </Typography>
@@ -77,7 +77,7 @@ function CompletionCard({
               <Typography component="span" style={{ display: "block" }}>
                 {completionDate}
               </Typography>
-            </React.Fragment>
+            </Fragment>
           }
         />
       </ListItem>

@@ -1,4 +1,3 @@
-import React from "react"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from "styled-components"

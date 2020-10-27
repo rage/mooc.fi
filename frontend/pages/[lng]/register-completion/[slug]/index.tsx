@@ -1,4 +1,3 @@
-import * as React from "react"
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { RegisterCompletionUserOverView as UserOverViewData } from "/static/types/generated/RegisterCompletionUserOverView"

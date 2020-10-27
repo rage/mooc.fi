@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import SvgIcon, { SvgIconProps } from "@material-ui/core/SvgIcon"

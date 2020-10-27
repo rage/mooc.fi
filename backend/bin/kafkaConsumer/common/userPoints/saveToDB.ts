@@ -2,11 +2,11 @@ import { Message } from "./interfaces"
 import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
-import { CheckCompletion } from "../common/userCourseProgress/generateUserCourseProgress"
+import { checkCompletion } from "../userCourseProgress/userFunctions"
 import knex from "knex"
-import getUserFromTMC from "../common/getUserFromTMC"
-import { ok, err, Result } from "../../../util/result"
-import { DatabaseInputError, TMCError } from "../../lib/errors"
+import getUserFromTMC from "../getUserFromTMC"
+import { ok, err, Result } from "../../../../util/result"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { convertUpdate } from "../../../util/db-functions"
 
 const Knex = knex({
@@ -112,7 +112,7 @@ export const saveToDatabase = async (
       user: {
         connect: { upstream_id: Number(message.user_id) },
       },
-      n_points: message.n_points,
+      n_points: Number(message.n_points),
       completed: message.completed,
       attempted: message.attempted !== null ? message.attempted : undefined,
       exercise_completion_required_actions: {
@@ -161,7 +161,7 @@ export const saveToDatabase = async (
       }),
     })
   }
-  await CheckCompletion(user, course)
+  await checkCompletion({ user, course, logger })
 
   return ok("Saved to DB successfully")
 }

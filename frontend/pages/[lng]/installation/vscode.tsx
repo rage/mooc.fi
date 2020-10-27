@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { useState, useContext, useEffect } from "react"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import getUserOS from "/util/getUserOS"
@@ -86,9 +86,9 @@ export const ContentBox = styled.div`
 `
 
 const VSCode = () => {
-  const [userOS, setUserOs] = React.useState<userOsType>(getUserOS())
-  const [render, setRender] = React.useState(false)
-  const { language } = React.useContext(LanguageContext)
+  const [userOS, setUserOs] = useState<userOsType>(getUserOS())
+  const [render, setRender] = useState(false)
+  const { language } = useContext(LanguageContext)
   const t = getInstallationTranslator(language)
 
   const changeOS = (OS: userOsType) => {

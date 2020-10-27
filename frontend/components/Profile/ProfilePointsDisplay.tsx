@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { UserPointsQuery } from "/components/User/Points/PointsQuery"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import { useQuery } from "@apollo/client"

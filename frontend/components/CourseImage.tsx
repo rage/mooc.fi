@@ -1,4 +1,4 @@
-import React from "react"
+import { memo } from "react"
 import styled from "styled-components"
 import { addDomain } from "/util/imageUtils"
 import { AllCourses_courses_photo } from "/static/types/generated/AllCourses"
@@ -14,7 +14,7 @@ interface CourseImageProps {
   [k: string]: any
 }
 
-const CourseImage = React.memo((props: CourseImageProps) => {
+const CourseImage = memo((props: CourseImageProps) => {
   const { photo, ...rest } = props
 
   if (!photo) {
