@@ -3,7 +3,7 @@ import { UserInfo } from "./domain/UserInfo"
 import Knex from "./services/knex"
 import { redisify } from "./services/redis"
 import TmcClient from "./services/tmc"
-import { User } from "@prisma/client"
+import { User, Completion } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
 import { ok, err, Result } from "./util/result"
@@ -189,7 +189,10 @@ export function setupServer(server: typeof nexusServer) {
 
     const { user } = getUserResult.value
 
-    const completions = await Knex.select<any, ExerciseCompletionResult[]>(
+    const exercise_completions = await Knex.select<
+      any,
+      ExerciseCompletionResult[]
+    >(
       "user_id",
       "exercise_id",
       "n_points",
@@ -204,7 +207,7 @@ export function setupServer(server: typeof nexusServer) {
       .where("exercise.course_id", id)
       .andWhere("exercise_completion.user_id", user.id)
 
-    const resObject = (completions ?? []).reduce(
+    const resObject = (exercise_completions ?? []).reduce(
       (acc, curr) => ({
         ...acc,
         [curr.exercise_id]: {
@@ -217,6 +220,71 @@ export function setupServer(server: typeof nexusServer) {
 
     res.json({
       data: resObject,
+    })
+  })
+
+  server.express.get("/api/progressv2/:id", async (req: any, res: any) => {
+    const { id }: { id: string } = req.params
+
+    if (!id) {
+      return res.status(400).json({ message: "must provide id" })
+    }
+
+    const getUserResult = await getUser(req, res)
+
+    if (getUserResult.isErr()) {
+      return getUserResult.error
+    }
+
+    const { user } = getUserResult.value
+
+    const exercise_completions = await Knex.select<
+      any,
+      ExerciseCompletionResult[]
+    >(
+      "user_id",
+      "exercise_id",
+      "n_points",
+      "part",
+      "section",
+      "max_points",
+      "completed",
+      "custom_id as quizzes_id",
+    )
+      .from("exercise_completion")
+      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+      .where("exercise.course_id", id)
+      .andWhere("exercise_completion.user_id", user.id)
+    const { completions_handled_by_id = id } =
+      (
+        await Knex.select("completions_handled_by_id")
+          .from("course")
+          .where("id", id)
+      )[0] ?? {}
+
+    const completions = await Knex.select<any, Completion[]>("*")
+      .from("completion")
+      .where("course_id", completions_handled_by_id)
+      .andWhere("user_id", user.id)
+
+    const exercise_completions_map = (exercise_completions ?? []).reduce(
+      (acc, curr) => ({
+        ...acc,
+        [curr.exercise_id]: {
+          ...curr,
+          // tier: baiCourseTiers[curr.quizzes_id],
+        },
+      }),
+      {},
+    )
+
+    res.json({
+      data: {
+        course_id: id,
+        user_id: user.id,
+        exercise_completions: exercise_completions_map,
+        completion: completions[0] ?? {},
+      },
     })
   })
 
