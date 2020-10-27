@@ -2,11 +2,11 @@ import { Message } from "./interfaces"
 import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
 import { DateTime } from "luxon"
 import winston = require("winston")
-import { checkCompletion } from "../common/userCourseProgress/userFunctions"
+import { checkCompletion } from "../userCourseProgress/userFunctions"
 import knex from "knex"
-import getUserFromTMC from "../common/getUserFromTMC"
-import { ok, err, Result } from "../../../util/result"
-import { DatabaseInputError, TMCError } from "../../lib/errors"
+import getUserFromTMC from "../getUserFromTMC"
+import { ok, err, Result } from "../../../../util/result"
+import { DatabaseInputError, TMCError } from "../../../lib/errors"
 
 const Knex = knex({
   client: "pg",
@@ -72,7 +72,7 @@ export const saveToDatabase = async (
     )
   }
 
-  logger.info("Checking if a exercise exists with id " + message.exercise_id)
+  logger.info("Getting exercise with id " + message.exercise_id)
   const existingExercises = await prisma.exercise.findMany({
     where: {
       custom_id: message.exercise_id?.toString(),
@@ -86,15 +86,7 @@ export const saveToDatabase = async (
       ),
     )
   }
-  logger.info("Getting the exercise")
-  const exercises = await prisma.exercise.findMany({
-    take: 1,
-    where: {
-      custom_id: message.exercise_id?.toString(),
-    },
-  })
-
-  const exercise = exercises[0]
+  const exercise = existingExercises[0]
 
   logger.info("Getting the completion")
   const exerciseCompleteds = await prisma.exerciseCompletion.findMany({
@@ -114,27 +106,37 @@ export const saveToDatabase = async (
 
   if (!exerciseCompleted) {
     logger.info("No previous completion, creating a new one")
-    savedExerciseCompletion = await prisma.exerciseCompletion.create({
-      data: {
-        exercise: {
-          connect: { id: exercise.id },
-        },
-        user: {
-          connect: { upstream_id: Number(message.user_id) },
-        },
-        n_points: Number(message.n_points),
-        completed: message.completed,
-        exercise_completion_required_actions: {
-          create: message.required_actions.map((ra) => {
-            return {
-              value: ra,
-            }
-          }),
-        },
-        attempted: message.attempted !== null ? message.attempted : undefined,
-        timestamp: timestamp.toJSDate(),
+    const data = {
+      exercise: {
+        connect: { id: exercise.id },
       },
-    })
+      user: {
+        connect: { upstream_id: Number(message.user_id) },
+      },
+      n_points: Number(message.n_points),
+      completed: message.completed,
+      attempted: message.attempted !== null ? message.attempted : undefined,
+      exercise_completion_required_actions: {
+        create: message.required_actions.map((ra) => {
+          return {
+            value: ra,
+          }
+        }),
+      },
+      timestamp: timestamp.toJSDate(),
+    }
+    logger.info(`Inserting ${JSON.stringify(data)}`)
+    try {
+      savedExerciseCompletion = await prisma.exerciseCompletion.create({
+        data,
+      })
+    } catch (e) {
+      if (e instanceof Error) {
+        logger.warn(
+          `Inserting exercise completion failed ${e.name}: ${e.message}`,
+        )
+      }
+    }
   } else {
     logger.info("Updating previous completion")
     const oldTimestamp = DateTime.fromISO(
@@ -148,6 +150,7 @@ export const saveToDatabase = async (
       data: {
         n_points: Number(message.n_points),
         completed: message.completed,
+        attempted: message.attempted !== null ? message.attempted : undefined,
         exercise_completion_required_actions: {
           create: message.required_actions.map((ra) => {
             return {
@@ -155,7 +158,6 @@ export const saveToDatabase = async (
             }
           }),
         },
-        attempted: message.attempted !== null ? message.attempted : undefined,
         timestamp: timestamp.toJSDate(),
       },
     })
