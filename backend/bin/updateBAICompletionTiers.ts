@@ -1,0 +1,52 @@
+require("dotenv-safe").config({
+  allowEmptyValues: process.env.NODE_ENV === "production",
+})
+import { Completion, User } from "@prisma/client"
+import prismaClient from "./lib/prisma"
+import sentryLogger from "./lib/logger"
+import Knex from "../services/knex"
+import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/generateBAIUserCourseProgress"
+
+const prisma = prismaClient()
+const logger = sentryLogger({ service: "update-bai-completion-tiers" })
+
+const PARENT_COURSE_ID = "49cbadd8-be32-454f-9b7d-e84d52100b74"
+
+const updateBAICompletionTiers = async () => {
+  const course = await prisma.course.findOne({
+    where: { id: PARENT_COURSE_ID },
+  })
+
+  if (!course) {
+    logger.error(new Error("couldn't find parent course!"))
+    process.exit(1)
+  }
+
+  logger.info("Getting completions")
+
+  const userIdsWithoutTiers = await Knex<any, Pick<Completion, "user_id">[]>(
+    "completion",
+  )
+    .select("user_id")
+    .where("course_id", PARENT_COURSE_ID)
+    .andWhere("tier", "is", null)
+
+  logger.info("Getting users")
+  const usersWithoutTiers = await Knex<any, User[]>("user")
+    .select("*")
+    .whereIn(
+      "id",
+      userIdsWithoutTiers.map((u) => u.user_id),
+    )
+
+  logger.info(`Updating ${usersWithoutTiers.length} users...`)
+
+  await Promise.all(
+    usersWithoutTiers.map((user) => checkBAICompletion(user, course, logger)),
+  )
+  logger.info("Done")
+
+  process.exit(0)
+}
+
+updateBAICompletionTiers()

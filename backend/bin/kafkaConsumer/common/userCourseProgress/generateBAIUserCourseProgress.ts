@@ -115,6 +115,7 @@ export const checkBAICompletion = async (
     course_id: highestTierCourseId,
     handlerCourse,
     logger,
+    tier: highestTier,
   })
 }
 

@@ -6,6 +6,7 @@ schema.inputObjectType({
     t.string("completion_id", { required: true })
     t.string("student_number", { required: true })
     t.boolean("eligible_for_ects", { required: false })
+    t.int("tier", { required: false })
   },
 })
 
@@ -15,5 +16,6 @@ schema.inputObjectType({
     t.string("user_id", { required: true })
     t.string("grade", { required: false })
     t.field("completion_date", { type: "DateTime", required: false })
+    t.int("tier", { required: false })
   },
 })
