@@ -43,17 +43,19 @@ Some libraries allow to use autocommit feature. Autocommit with commit every mes
 ---
 ## In Points.mooc.fi
 
-At the moment we have four topics in mooc.fi kafka:
+At the moment we have six topics in mooc.fi kafka:
 
-* user-course-progress
-* user-points
+* user-course-progress-realtime
+* user-course-progress-batch
+* user-points-realtime
+* user-points-batch
 * exercise
 * course
 
-First three are meant to be consumed by points and the last is produced by points
+First sive are meant to be consumed by us and the last is produced by us. The topics ending with `-realtime` are meant for events that are supposed to processed right away. The topics ending with `-batch` are for events don't have to be processed right away. Use the batch topics if you're going to produce a large number of events
 
 ---
-### user-course-progress
+### user-course-progress-realtime / user-course-progress-batch
 `Current message format version is: 1`  
 
 This is for submitting users progress in a specific course from a specific service. In typescript the message format looks like this: 
@@ -143,7 +145,7 @@ ExerciseData:
 | max_points | exercises max points
 
 ---
-### user-points
+### user-points-realtime / user-points-batch
 `Current message format version is: 1`
 
 This is for submitting users points in single exercise.
