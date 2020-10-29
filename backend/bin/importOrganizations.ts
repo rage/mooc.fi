@@ -13,8 +13,13 @@ const prisma = prismaClient()
 const logger = sentryLogger({ service: "import-organizations" })
 
 const fetchOrganizations = async () => {
+  logger.info("Fetching organizations...")
   const orgInfos: OrganizationInfo[] = await tmc.getOrganizations()
-  await Promise.all(orgInfos.map((p) => upsertOrganization(p)))
+  logger.info(`Received ${orgInfos.length} organizations.`)
+  for (const org of orgInfos) {
+    logger.info(`Upserting organization ${org.slug}`)
+    await upsertOrganization(org)
+  }
 }
 
 const upsertOrganization = async (org: OrganizationInfo) => {
@@ -118,3 +123,5 @@ const getUserFromTmc = async (user_id: Number) => {
 }
 
 fetchOrganizations()
+logger.info("Done")
+process.exit(0)
