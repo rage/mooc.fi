@@ -66,9 +66,8 @@ const updateCourseStatuses = async () => {
   }
   logger.info("Disconnecting from Kafka")
   await kafkaProducer.disconnect()
+  logger.info("Done")
+  process.exit(0)
 }
 
 updateCourseStatuses()
-
-logger.info("Done")
-process.exit(0)
