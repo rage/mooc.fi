@@ -69,3 +69,6 @@ const updateCourseStatuses = async () => {
 }
 
 updateCourseStatuses()
+
+logger.info("Done")
+process.exit(0)
