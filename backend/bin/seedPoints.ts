@@ -3,9 +3,7 @@ import {
   UserCourseProgressCreateInput,
   UserCourseSettingCreateInput,
 } from "@prisma/client"
-import prismaClient from "./lib/prisma"
-
-const prisma = prismaClient()
+import prisma from "./lib/prisma"
 
 //Generate integer id which is not already taken
 function generateUniqueUpstreamId({ ExistingIds }: { ExistingIds: number[] }) {

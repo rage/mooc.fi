@@ -1,12 +1,11 @@
 import { EmailDelivery } from "@prisma/client"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { EmailTemplaterError } from "./lib/errors"
 
 const BATCH_SIZE = 100
 
-const prisma = prismaClient()
 const logger = sentryLogger({ service: "background-emailer" })
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {

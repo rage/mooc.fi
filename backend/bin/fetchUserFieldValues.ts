@@ -5,13 +5,11 @@ import TmcClient from "../services/tmc"
 import { PrismaClient } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 
 const CONFIG_NAME = "userFieldValues"
-
-const prisma = prismaClient()
 
 const logger = sentryLogger({ service: "fetch-user-field-values" })
 

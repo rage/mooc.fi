@@ -1,7 +1,7 @@
 import axios from "axios"
 import { DateTime } from "luxon"
 import { maxBy } from "lodash"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { OpenUniversityRegistrationLink } from "nexus-plugin-prisma/client"
 import { AvoinError } from "./lib/errors"
@@ -9,8 +9,6 @@ import { AvoinError } from "./lib/errors"
 require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
-
-const prisma = prismaClient()
 
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 

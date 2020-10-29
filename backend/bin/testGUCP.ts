@@ -1,10 +1,8 @@
 import {
   generateUserCourseProgress /*checkBAICompletion*/,
 } from "./kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import * as winston from "winston"
-
-const prisma = prismaClient()
 
 const test = async () => {
   const user = (

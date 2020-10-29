@@ -1,5 +1,5 @@
 import { CourseStatus, CourseTranslation } from "@prisma/client"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 
 const Modules = [
   {
@@ -374,8 +374,6 @@ const Courses = [
     study_modules: ["662f537e-4395-40db-a32d-710b51fa169e"],
   },
 ]
-
-const prisma = prismaClient()
 
 const seed = async () => {
   await prisma.studyModule.deleteMany({ where: {} })
