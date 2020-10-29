@@ -81,3 +81,11 @@ export class AvoinError extends CustomError {
     super(message)
   }
 }
+
+export class RemoveDuplicateCompletionsError extends CustomError {
+  name = "RemoveDuplicateCompletionsError"
+
+  constructor(message: string, readonly error?: Error) {
+    super(message)
+  }
+}

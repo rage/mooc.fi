@@ -237,7 +237,6 @@ export const createCompletion = async ({
         id: completions[0]!.id,
       },
       data: {
-        ...completions[0],
         tier,
       },
     })
