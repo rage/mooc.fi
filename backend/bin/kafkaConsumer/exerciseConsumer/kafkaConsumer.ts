@@ -4,7 +4,7 @@ require("dotenv-safe").config({
 
 import { Mutex } from "../../lib/await-semaphore"
 
-import prismaClient from "../../lib/prisma"
+import prisma from "../../lib/prisma"
 import sentryLogger from "../../lib/logger"
 
 import { handleMessage } from "../common/handleMessage"
@@ -19,7 +19,6 @@ import { LibrdKafkaError } from "node-rdkafka"
 const TOPIC_NAME = [config.exercise_consumer.topic_name]
 
 const mutex = new Mutex()
-const prisma = prismaClient()
 
 const logger = sentryLogger({ service: "kafka-consumer-exercise" })
 

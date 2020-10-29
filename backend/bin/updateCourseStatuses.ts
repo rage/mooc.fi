@@ -1,64 +1,68 @@
 import KafkaProducer, { ProducerMessage } from "../services/kafkaProducer"
 import { DateTime } from "luxon"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
+import sentryLogger from "./lib/logger"
 
-const prisma = prismaClient()
+const logger = sentryLogger({ service: "update-course-statuses" })
 
 const updateCourseStatuses = async () => {
-  const courses = await prisma.course.findMany({})
+  logger.info("Fetching list of courses")
+  const courses = await prisma.course.findMany()
+  logger.info(`Checking ${courses.length} courses...`)
   const kafkaProducer = new KafkaProducer()
 
-  Promise.all(
-    courses.map(async (course) => {
-      const { status } = course
+  for (const course of courses) {
+    logger.info(`Handling course ${course.id}`)
+    const { status } = course
 
-      let newStatus = status
+    let newStatus = status
 
-      const courseStartDate = course.start_date
-        ? DateTime.fromISO(course.start_date)
-        : null
-      const courseEndDate = course.end_date
-        ? DateTime.fromISO(course.end_date)
-        : null
-      const currentDate = DateTime.local()
-      if (
-        newStatus === "Upcoming" &&
-        courseStartDate &&
-        currentDate >= courseStartDate
-      ) {
-        newStatus = "Active"
-      }
-      if (
-        newStatus === "Active" &&
-        courseEndDate &&
-        currentDate > courseEndDate
-      ) {
-        newStatus = "Ended"
-      }
+    const courseStartDate = course.start_date
+      ? DateTime.fromISO(course.start_date)
+      : null
+    const courseEndDate = course.end_date
+      ? DateTime.fromISO(course.end_date)
+      : null
+    const currentDate = DateTime.local()
+    if (
+      newStatus === "Upcoming" &&
+      courseStartDate &&
+      currentDate >= courseStartDate
+    ) {
+      newStatus = "Active"
+    }
+    if (
+      newStatus === "Active" &&
+      courseEndDate &&
+      currentDate > courseEndDate
+    ) {
+      newStatus = "Ended"
+    }
 
-      if (status === newStatus) {
-        return Promise.resolve()
-      }
+    if (status === newStatus) {
+      logger.info("Status does not need updating. Continuing...")
+      continue
+    }
 
-      const updatedCourse = await prisma.course.update({
-        where: {
-          id: course.id,
-        },
-        data: {
-          status: newStatus,
-        },
-      })
-      console.log(
-        `Updated course ${course.name} from ${status} to ${newStatus}`,
-      )
-      const msg: ProducerMessage = {
-        message: JSON.stringify(updatedCourse),
-        partition: null,
-        topic: "updated-course-status",
-      }
-      await kafkaProducer.queueProducerMessage(msg)
-    }),
-  )
+    logger.info("Updating course status")
+    const updatedCourse = await prisma.course.update({
+      where: {
+        id: course.id,
+      },
+      data: {
+        status: newStatus,
+      },
+    })
+    logger.info(`Updated course ${course.name} from ${status} to ${newStatus}`)
+    const msg: ProducerMessage = {
+      message: JSON.stringify(updatedCourse),
+      partition: null,
+      topic: "updated-course-status",
+    }
+    logger.info("Producing the change to Kafka")
+    await kafkaProducer.queueProducerMessage(msg)
+  }
+  logger.info("Disconnecting from Kafka")
   await kafkaProducer.disconnect()
 }
 

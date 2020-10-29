@@ -5,13 +5,12 @@ import TmcClient from "../services/tmc"
 import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 
 const CONFIG_NAME = "userAppDatum"
 
-const prisma = prismaClient()
 let course
 let old: UserCourseSetting
 

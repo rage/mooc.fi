@@ -17,6 +17,7 @@ schema.extendType({
         user: schema.idArg({ required: true }),
         course: schema.idArg({ required: true }),
         completion_language: schema.stringArg(),
+        tier: schema.intArg({ required: false }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -27,6 +28,7 @@ schema.extendType({
           user,
           course,
           completion_language,
+          tier,
         } = args
 
         return ctx.db.completion.create({
@@ -37,6 +39,7 @@ schema.extendType({
             student_number,
             completion_language,
             user_upstream_id,
+            tier,
           },
         })
       },

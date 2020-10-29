@@ -10,14 +10,13 @@ import {
   handleNullProgress,
 } from "../common/userCourseProgress/validate"
 import { saveToDatabase } from "../common/userCourseProgress/saveToDB"
-import prismaClient from "../../lib/prisma"
+import prisma from "../../lib/prisma"
 import sentryLogger from "../../lib/logger"
 import config from "../kafkaConfig"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 
-const prisma = prismaClient()
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
 

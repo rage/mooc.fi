@@ -10,7 +10,7 @@ import {
 } from "./courseConfig"
 import { DatabaseInputError } from "../../../lib/errors"
 import Knex from "../../../../services/knex"
-import prismaClient from "../../../lib/prisma"
+import prisma from "../../../lib/prisma"
 import * as winston from "winston"
 import {
   getExerciseCompletionsForCourses,
@@ -18,9 +18,6 @@ import {
 } from "./userFunctions"
 import { ExerciseCompletionPart, TierProgress } from "./interfaces"
 import { range } from "lodash"
-import { BooleanSchema } from "yup"
-
-const prisma = prismaClient()
 
 const checkBAIProjectCompletion = async (user: User) => {
   const completions = await Knex("exercise_completion")
@@ -33,15 +30,24 @@ const checkBAIProjectCompletion = async (user: User) => {
   return completions.length > 0
 }
 
-export const checkBAICompletion = async (
-  user: User,
-  course: Course,
-  logger: winston.Logger,
-  // combinedProgress?: CombinedUserCourseProgress, // this is for the tier course we got
-) => {
-  const handlerCourse = await prisma.course
-    .findOne({ where: { id: course.id } })
-    .completions_handled_by()
+interface CheckBAICompletion {
+  user: User
+  course: Course
+  logger: winston.Logger
+  isHandler?: boolean
+}
+
+export const checkBAICompletion = async ({
+  user,
+  course,
+  logger,
+  isHandler = false,
+}: CheckBAICompletion) => {
+  const handlerCourse = isHandler
+    ? course
+    : await prisma.course
+        .findOne({ where: { id: course.id } })
+        .completions_handled_by()
 
   if (!handlerCourse) {
     // TODO: error
@@ -119,6 +125,7 @@ export const checkBAICompletion = async (
     course_id: highestTierCourseId,
     handlerCourse,
     logger,
+    tier: highestTier,
   })
 }
 
@@ -290,7 +297,7 @@ interface GetProgress {
   max_points?: number | null
   tierInfo: TierInfo
   tierProgressMap: TierProgressMap
-  projectCompletion: Boolean
+  projectCompletion: boolean
   highestTier: number
   totalExerciseCompletions: number
 }

@@ -5,15 +5,13 @@ import { User, EmailTemplate } from "@prisma/client"
 import * as nodemailer from "nodemailer"
 import SMTPTransport from "nodemailer/lib/smtp-transport"
 import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
-import prismaClient from "../../../lib/prisma"
+import prisma from "../../../lib/prisma"
 
 const email_host = process.env.SMTP_HOST
 const email_user = process.env.SMTP_USER
 const email_pass = process.env.SMTP_PASS
 const email_port = process.env.SMTP_PORT
 const email_from = process.env.SMTP_FROM
-
-const prisma = prismaClient()
 
 export async function sendEmailTemplateToUser(
   user: User,

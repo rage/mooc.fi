@@ -4,12 +4,12 @@ require("dotenv-safe").config({
 import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { TMCError } from "./lib/errors"
 
 const tmc = new TmcClient()
-const prisma = prismaClient()
+
 const logger = sentryLogger({ service: "import-organizations" })
 
 const fetchOrganizations = async () => {

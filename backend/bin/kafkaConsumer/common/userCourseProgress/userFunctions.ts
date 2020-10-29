@@ -9,13 +9,11 @@ import {
   ServiceProgressPartType,
   ExerciseCompletionPart,
 } from "./interfaces"
-import prismaClient from "../../../lib/prisma"
+import prisma from "../../../lib/prisma"
 import Knex from "../../../../services/knex"
 import * as winston from "winston"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
-
-const prisma = prismaClient()
 
 export const getCombinedUserCourseProgress = async (
   user: User,
@@ -180,6 +178,7 @@ interface CreateCompletion {
   course_id: string
   handlerCourse: Course
   logger: winston.Logger
+  tier?: number
 }
 
 export const createCompletion = async ({
@@ -187,6 +186,7 @@ export const createCompletion = async ({
   course_id,
   handlerCourse,
   logger,
+  tier,
 }: CreateCompletion) => {
   const userCourseSettings = await getUserCourseSettings(user, course_id)
   const completions = await prisma.completion.findMany({
@@ -224,6 +224,20 @@ export const createCompletion = async ({
     if (template) {
       await sendEmailTemplateToUser(user, template)
     }
+  } else if (
+    tier !== null &&
+    tier !== undefined &&
+    tier > (completions[0]!.tier ?? 0)
+  ) {
+    logger?.info("Existing completion found, updating tier...")
+    await prisma.completion.update({
+      where: {
+        id: completions[0]!.id,
+      },
+      data: {
+        tier,
+      },
+    })
   }
 }
 
