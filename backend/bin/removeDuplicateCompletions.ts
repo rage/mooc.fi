@@ -37,8 +37,8 @@ const removeDuplicateCompletions = async () => {
     )
     process.exit(-1)
   }
+  logger.info("Done")
+  process.exit(0)
 }
 
 removeDuplicateCompletions()
-logger.info("Done")
-process.exit(0)
