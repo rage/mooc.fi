@@ -39,7 +39,8 @@
     "start": "node dist/app.js",
     "copy-env": "cp ./bin/kafkaConsumer/common/userCourseProgress/env.json ./dist/bin/kafkaConsumer/common/userCourseProgress/env.json",
     "migrate": "knex migrate:latest",
-    "rollback": "knex migrate:rollback"
+    "rollback": "knex migrate:rollback",
+    "create-test-db": "ts-node --transpile-only ./bin/create-db-for-tests.ts"
   },
   "keywords": [],
   "author": "",

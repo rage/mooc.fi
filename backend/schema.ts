@@ -21,7 +21,6 @@ import { loggerPlugin } from "./middlewares/logger"
 import { sentryPlugin } from "./middlewares/sentry"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
-import { newRelicPlugin } from "./middlewares/newrelic"
 
 const plugins = [
   nexusPrisma({
@@ -60,6 +59,7 @@ if (
   !process.env.NEXUS_REFLECTION &&
   process.env.NEW_RELIC_LICENSE_KEY
 ) {
+  const { newRelicPlugin } = require("./middlewares/newrelic")
   plugins.push(newRelicPlugin)
 }
 

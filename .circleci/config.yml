@@ -36,11 +36,12 @@ jobs:
           command: "bin/push-docker-frontend-image.sh"
 
   build_backend:
-    docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    # docker:
+    machine:
+      image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
     steps:
       - checkout
-      - setup_remote_docker
+      # - setup_remote_docker
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
@@ -50,17 +51,25 @@ jobs:
             set -x curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
             chmod +x /usr/local/bin/docker-compose
       - run:
-          name: "Run tests"
+          name: Build
+          environment:
+            NEW_RELIC_NO_CONFIG_FILE: "true"
+            NEW_RELIC_LICENSE_KEY: ""
           command : |
             cd backend
+            cp .env.example .env
             npm i
             npm run generate:nexus
             npm run build
-            npm run download-env
+            set -x
             docker-compose up -d
-            sleep 10
+            npm run create-test-db
+      - run:
+          name: "Run tests"
+          command: |
+            cd backend
             npm run test
-            cd ..            
+            cd ..       
       - run:
           name: "Push image if on master"
           command: "bin/push-docker-backend-image.sh"
