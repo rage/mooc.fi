@@ -45,7 +45,7 @@ export async function redisify<T>(
   const { prefix, expireTime, key, params } = options
 
   if (!redisClient?.connected) {
-    return fn instanceof Promise ? fn : fn(...params)
+    return fn instanceof Promise ? fn : params ? fn(...params) : fn()
   }
   const prefixedKey = `${prefix}:${key}`
 
