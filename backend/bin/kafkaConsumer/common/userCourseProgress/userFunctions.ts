@@ -210,7 +210,9 @@ export const createCompletion = async ({
           ? languageCodeMapping[userCourseSettings.language]
           : "unknown",
         eligible_for_ects:
-          handlerCourse.automatic_completions_eligible_for_ects,
+          tier === 1
+            ? false
+            : handlerCourse.automatic_completions_eligible_for_ects,
         completion_date: new Date(),
       },
     })
@@ -238,6 +240,10 @@ export const createCompletion = async ({
       },
       data: {
         tier,
+        eligible_for_ects:
+          tier === 1
+            ? false
+            : handlerCourse.automatic_completions_eligible_for_ects,
       },
     })
   }
