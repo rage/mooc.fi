@@ -1,8 +1,8 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, idArg, stringArg } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
+import { convertUpdate } from "../util/db-functions"
 
-schema.objectType({
+export const Service = objectType({
   name: "Service",
   definition(t) {
     t.model.id()
@@ -16,17 +16,18 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const ServiceQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("service", {
       type: "Service",
       args: {
-        service_id: schema.idArg({ required: true }),
+        service_id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { service_id }, ctx) =>
-        ctx.db.service.findOne({ where: { id: service_id } }),
+        await ctx.prisma.service.findOne({ where: { id: service_id } }),
     })
 
     t.crud.services({
@@ -39,26 +40,26 @@ schema.extendType({
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
 
-        return ctx.db.service.findMany()
+        return ctx.prisma.service.findMany()
       },
     })*/
   },
 })
 
-schema.extendType({
+export const ServiceMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addService", {
       type: "Service",
       args: {
-        url: schema.stringArg({ required: true }),
-        name: schema.stringArg({ required: true }),
+        url: stringArg({ required: true }),
+        name: stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { url, name } = args
 
-        return await ctx.db.service.create({
+        return await ctx.prisma.service.create({
           data: {
             url,
             name,
@@ -70,20 +71,20 @@ schema.extendType({
     t.field("updateService", {
       type: "Service",
       args: {
-        id: schema.idArg({ required: true }),
-        url: schema.stringArg(),
-        name: schema.stringArg(),
+        id: idArg({ required: true }),
+        url: stringArg(),
+        name: stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const { url, name, id } = args
 
-        return ctx.db.service.update({
+        return ctx.prisma.service.update({
           where: { id },
-          data: {
+          data: convertUpdate({
             url: url ?? "",
             name: name ?? "",
-          },
+          }),
         })
       },
     })

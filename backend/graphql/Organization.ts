@@ -1,13 +1,21 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  extendType,
+  stringArg,
+  arg,
+  booleanArg,
+  idArg,
+  intArg,
+} from "@nexus/schema"
 
 import { UserInputError } from "apollo-server-core"
 import { Role, isAdmin } from "../accessControl"
-import { NexusContext } from "../context"
+import { Context } from "../context"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 import { filterNull } from "../util/db-functions"
 
-schema.objectType({
+export const Organization = objectType({
   name: "Organization",
   definition(t) {
     t.model.id()
@@ -43,7 +51,7 @@ schema.objectType({
 const organizationPermission = (
   _: any,
   args: any,
-  ctx: NexusContext,
+  ctx: Context,
   _info: any,
 ) => {
   if (args.hidden) return ctx.role === Role.ADMIN
@@ -51,14 +59,14 @@ const organizationPermission = (
   return true
 }
 
-schema.extendType({
+export const OrganizationQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("organization", {
       type: "Organization",
       args: {
-        id: schema.idArg(),
-        hidden: schema.booleanArg(),
+        id: idArg(),
+        hidden: booleanArg(),
       },
       authorize: organizationPermission,
       nullable: true,
@@ -70,13 +78,12 @@ schema.extendType({
         }
 
         /*if (!hidden) {
-          return ctx.db.organization.findOne({ where: { id } })
+          return ctx.prisma.organization.findOne({ where: { id } })
         }*/
 
-        const res = await ctx.db.organization.findMany({
+        return await ctx.prisma.organization.findFirst({
           where: { id, hidden },
         })
-        return res.length ? res[0] : null
       },
     })
 
@@ -89,15 +96,15 @@ schema.extendType({
     t.list.field("organizations", {
       type: "Organization",
       args: {
-        take: schema.intArg(),
-        skip: schema.intArg(),
-        cursor: schema.arg({ type: "OrganizationWhereUniqueInput" }),
+        take: intArg(),
+        skip: intArg(),
+        cursor: arg({ type: "OrganizationWhereUniqueInput" }),
         /*first: schema.intArg(),
         after: schema.idArg(),
         last: schema.intArg(),
         before: schema.idArg(),*/
-        orderBy: schema.arg({ type: "OrganizationOrderByInput" }),
-        hidden: schema.booleanArg(),
+        orderBy: arg({ type: "OrganizationOrderByInput" }),
+        hidden: booleanArg(),
       },
       authorize: organizationPermission,
       resolve: async (_, args, ctx) => {
@@ -109,7 +116,7 @@ schema.extendType({
           hidden,
         } = args
 
-        const orgs = await ctx.db.organization.findMany({
+        const orgs = await ctx.prisma.organization.findMany({
           take: take ?? undefined,
           skip: skip ?? undefined,
           cursor: cursor
@@ -133,14 +140,14 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const OrganizationMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addOrganization", {
       type: "Organization",
       args: {
-        name: schema.stringArg(),
-        slug: schema.stringArg({ required: true }),
+        name: stringArg(),
+        slug: stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -151,14 +158,14 @@ schema.extendType({
 
         do {
           secret = await generateSecret()
-          result = await ctx.db.organization.findMany({
+          result = await ctx.prisma.organization.findMany({
             where: { secret_key: secret },
           })
         } while (result.length)
 
         // FIXME: empty name?
 
-        const org = await ctx.db.organization.create({
+        const org = await ctx.prisma.organization.create({
           data: {
             slug,
             secret_key: secret,
@@ -171,7 +178,7 @@ schema.extendType({
           },
         })
         // FIXME: return value not used
-        /*await ctx.db.organization_translation.create({
+        /*await ctx.prisma.organization_translation.create({
           data: {
             name: name ?? "",
             language: "fi_FI", //placeholder
@@ -181,7 +188,7 @@ schema.extendType({
           },
         })
 
-        const newOrg = await ctx.db.organization.findOne({
+        const newOrg = await ctx.prisma.organization.findOne({
           where: { id: org.id },
         })*/
 

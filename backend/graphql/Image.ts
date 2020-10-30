@@ -1,15 +1,14 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, arg, booleanArg, idArg } from "@nexus/schema"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
 } from "../services/google-cloud"
-import { NexusContext } from "../context"
+import { Context } from "../context"
 import { isAdmin } from "../accessControl"
 
 const sharp = require("sharp")
 
-schema.objectType({
+export const Image = objectType({
   name: "Image",
   definition(t) {
     t.model.id()
@@ -28,17 +27,17 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const ImageMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addImage", {
       type: "Image",
       args: {
-        file: schema.arg({ type: "Upload", required: true }),
-        base64: schema.booleanArg(),
+        file: arg({ type: "Upload", required: true }),
+        base64: booleanArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         const { file, base64 } = args
 
         return uploadImage({ ctx, file, base64: base64 ?? false })
@@ -48,10 +47,10 @@ schema.extendType({
     t.field("deleteImage", {
       type: "Boolean",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: isAdmin,
-      resolve: async (_, { id }, ctx: NexusContext) => {
+      resolve: async (_, { id }, ctx: Context) => {
         return deleteImage({ ctx, id })
       },
     })
@@ -81,7 +80,7 @@ export const uploadImage = async ({
   file,
   base64 = false,
 }: {
-  ctx: NexusContext
+  ctx: Context
   file: any
   base64: boolean
 }) => {
@@ -137,7 +136,7 @@ export const uploadImage = async ({
     originalMimetype = "image/jpeg"
   }
 
-  const newImage = await ctx.db.image.create({
+  const newImage = await ctx.prisma.image.create({
     data: {
       name: filename,
       original,
@@ -156,10 +155,10 @@ export const deleteImage = async ({
   ctx,
   id,
 }: {
-  ctx: NexusContext
+  ctx: Context
   id: string
 }): Promise<boolean> => {
-  const image = await ctx.db.image.findOne({ where: { id } })
+  const image = await ctx.prisma.image.findOne({ where: { id } })
 
   if (!image) {
     return false
@@ -177,7 +176,7 @@ export const deleteImage = async ({
       `There was some problem with image deletion. Statuses: compressed ${compressed} uncompressed ${uncompressed} original ${original}`,
     )
   }
-  await ctx.db.image.delete({ where: { id } })
+  await ctx.prisma.image.delete({ where: { id } })
 
   return true
 }

@@ -64,3 +64,14 @@ export const filterNull = (o: any) =>
         {},
       )
     : undefined
+
+// helper function to convert to atomicNumberOperations
+// https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
+export const convertUpdate = (input: { [key: string]: any }) =>
+  Object.entries(input).reduce(
+    (acc: any, [key, value]: [string, any]) => ({
+      ...acc,
+      [key]: ["string", "number"].includes(typeof key) ? { set: value } : value,
+    }),
+    {},
+  )

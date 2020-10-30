@@ -1,15 +1,16 @@
-import { schema } from "nexus"
+import { extendType, arg, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
+import { convertUpdate } from "../../util/db-functions"
 
-schema.extendType({
+export const StudyModuleMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: schema.arg({
+        study_module: arg({
           type: "StudyModuleCreateArg",
           required: true,
         }),
@@ -18,7 +19,7 @@ schema.extendType({
       resolve: async (_, { study_module }, ctx) => {
         const { study_module_translations } = study_module
 
-        return ctx.db.studyModule.create({
+        return ctx.prisma.studyModule.create({
           data: {
             ...study_module,
             name: study_module.name ?? "",
@@ -39,7 +40,7 @@ schema.extendType({
     t.field("updateStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: schema.arg({
+        study_module: arg({
           type: "StudyModuleUpsertArg",
           required: true,
         }),
@@ -52,14 +53,14 @@ schema.extendType({
           throw new UserInputError("must provide slug")
         }
 
-        const existingTranslations = await ctx.db.studyModule
+        const existingTranslations = await ctx.prisma.studyModule
           .findOne({ where: { slug } })
           .study_module_translations()
         const newTranslations = (study_module_translations || [])
-          .filter((t) => !t.id)
+          .filter((t) => !t?.id)
           .map((t) => ({ ...t, id: undefined }))
         const updatedTranslations = (study_module_translations || [])
-          .filter((t) => !!t.id)
+          .filter((t) => !!t?.id)
           .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
         const existingTranslationIds = (existingTranslations || []).map(
           (t) => t.id,
@@ -78,19 +79,19 @@ schema.extendType({
         const translationMutation = {
           create: newTranslations.length ? newTranslations : undefined,
           updateMany: updatedTranslations.length
-            ? updatedTranslations
+            ? updatedTranslations.map(convertUpdate)
             : undefined,
           deleteMany: removedTranslationIds.length
             ? removedTranslationIds
             : undefined,
         }
 
-        const updatedModule = await ctx.db.studyModule.update({
+        const updatedModule = await ctx.prisma.studyModule.update({
           where: {
             id: id ?? undefined,
             slug,
           },
-          data: {
+          data: convertUpdate({
             ...omit(study_module, ["new_slug"]),
             slug: new_slug ? new_slug : slug,
             // FIXME/TODO: implement something like notEmpty for id field to fix typing
@@ -98,7 +99,7 @@ schema.extendType({
             study_module_translations: Object.keys(translationMutation).length
               ? translationMutation
               : undefined,
-          },
+          }),
         })
 
         return updatedModule
@@ -108,8 +109,8 @@ schema.extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: schema.idArg({ required: false }),
-        slug: schema.stringArg(),
+        id: idArg({ required: false }),
+        slug: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -119,7 +120,7 @@ schema.extendType({
           throw "must have at least id or slug"
         }
 
-        const deletedModule = await ctx.db.studyModule.delete({
+        const deletedModule = await ctx.prisma.studyModule.delete({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,

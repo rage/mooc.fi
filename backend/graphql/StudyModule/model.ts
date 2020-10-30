@@ -1,8 +1,8 @@
-import { schema } from "nexus"
+import { objectType, arg, stringArg } from "@nexus/schema"
 import { notEmpty } from "../../util/notEmpty"
 import { filterNull } from "../../util/db-functions"
 
-schema.objectType({
+export const StudyModule = objectType({
   name: "StudyModule",
   definition(t) {
     t.model.id()
@@ -14,18 +14,19 @@ schema.objectType({
     t.model.updated_at()
     t.model.study_module_translations()
 
-    // t.prismaFields(["*"])
-    t.field("description", { type: "String" })
+    // @ts-ignore: false error
+    t.string("description")
+
     t.list.field("courses", {
       type: "Course",
       args: {
-        orderBy: schema.arg({ type: "CourseOrderByInput" }),
-        language: schema.stringArg(),
+        orderBy: arg({ type: "CourseOrderByInput" }),
+        language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { language, orderBy } = args
 
-        const courses = await ctx.db.course.findMany({
+        const courses = await ctx.prisma.course.findMany({
           orderBy: filterNull(orderBy) ?? undefined,
           where: { study_modules: { some: { id: parent.id } } },
         })
@@ -34,21 +35,17 @@ schema.objectType({
           ? (
               await Promise.all(
                 courses.map(async (course) => {
-                  const course_translations = await ctx.db.courseTranslation.findMany(
+                  const course_translation = await ctx.prisma.courseTranslation.findFirst(
                     {
                       where: { course_id: course.id, language },
                     },
                   )
 
-                  if (!course_translations.length) {
+                  if (!course_translation) {
                     return Promise.resolve(null)
                   }
 
-                  const {
-                    name,
-                    description,
-                    link = "",
-                  } = course_translations[0]
+                  const { name, description, link = "" } = course_translation
 
                   return { ...course, name, description, link }
                 }),

@@ -7,6 +7,7 @@ import knex from "knex"
 import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { convertUpdate } from "../../../util/db-functions"
 
 const Knex = knex({
   client: "pg",
@@ -72,13 +73,13 @@ export const saveToDatabase = async (
     )
   }
 
-  logger.info("Getting exercise with id " + message.exercise_id)
-  const existingExercises = await prisma.exercise.findMany({
+  logger.info("Getting the exercise")
+  const exercise = await prisma.exercise.findFirst({
     where: {
       custom_id: message.exercise_id?.toString(),
     },
   })
-  if (existingExercises.length < 1) {
+  if (!exercise) {
     return err(
       new DatabaseInputError(
         `Given exercise does not exist: id ${message.exercise_id}`,
@@ -86,10 +87,9 @@ export const saveToDatabase = async (
       ),
     )
   }
-  const exercise = existingExercises[0]
 
   logger.info("Getting the completion")
-  const exerciseCompleteds = await prisma.exerciseCompletion.findMany({
+  const exerciseCompleted = await prisma.exerciseCompletion.findFirst({
     take: 1,
     where: {
       exercise: {
@@ -99,7 +99,6 @@ export const saveToDatabase = async (
     },
     orderBy: { timestamp: "desc" },
   })
-  const exerciseCompleted = exerciseCompleteds[0]
 
   // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion
@@ -147,7 +146,7 @@ export const saveToDatabase = async (
     }
     savedExerciseCompletion = await prisma.exerciseCompletion.update({
       where: { id: exerciseCompleted.id },
-      data: {
+      data: convertUpdate({
         n_points: Number(message.n_points),
         completed: message.completed,
         attempted: message.attempted !== null ? message.attempted : undefined,
@@ -159,7 +158,7 @@ export const saveToDatabase = async (
           }),
         },
         timestamp: timestamp.toJSDate(),
-      },
+      }),
     })
   }
   await checkCompletion({ user, course, logger })

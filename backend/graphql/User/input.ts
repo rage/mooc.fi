@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { inputObjectType } from "@nexus/schema"
 
-schema.inputObjectType({
+export const UserArg = inputObjectType({
   name: "UserArg",
   definition(t) {
     t.int("upstream_id", { required: true })

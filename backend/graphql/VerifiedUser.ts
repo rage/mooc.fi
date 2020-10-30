@@ -1,9 +1,8 @@
-import { schema } from "nexus"
-
+import { objectType, inputObjectType, extendType, arg } from "@nexus/schema"
 import { ForbiddenError, AuthenticationError } from "apollo-server-core"
-import { NexusContext } from "../context"
+import { Context } from "../context"
 
-schema.objectType({
+export const VerifiedUser = objectType({
   name: "VerifiedUser",
   definition(t) {
     t.model.id()
@@ -18,7 +17,7 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const VerifiedUserArg = inputObjectType({
   name: "VerifiedUserArg",
   definition(t) {
     t.string("display_name")
@@ -28,18 +27,18 @@ schema.inputObjectType({
   },
 })
 
-schema.extendType({
+export const VerifiedUserMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addVerifiedUser", {
       type: "VerifiedUser",
       args: {
-        verified_user: schema.arg({
+        verified_user: arg({
           type: "VerifiedUserArg",
           required: true,
         }),
       },
-      resolve: async (_, { verified_user }, ctx: NexusContext) => {
+      resolve: async (_, { verified_user }, ctx: Context) => {
         const {
           organization_id,
           display_name,
@@ -52,7 +51,7 @@ schema.extendType({
           throw new AuthenticationError("not logged in")
         }
 
-        const organization = await ctx.db.organization.findOne({
+        const organization = await ctx.prisma.organization.findOne({
           where: { id: organization_id },
         })
 
@@ -63,7 +62,7 @@ schema.extendType({
           throw new ForbiddenError("wrong organization secret key")
         }
 
-        return ctx.db.verifiedUser.create({
+        return ctx.prisma.verifiedUser.create({
           data: {
             organization: {
               connect: { id: organization.id },

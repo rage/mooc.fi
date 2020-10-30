@@ -14,6 +14,7 @@ import { ok, err, Result } from "../../../../util/result"
 
 import _KnexConstructor from "knex"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { convertUpdate } from "../../../../util/db-functions"
 
 const Knex = _KnexConstructor({
   client: "pg",
@@ -112,10 +113,10 @@ export const saveToDatabase = async (
       where: {
         id: userCourseServiceProgress.id,
       },
-      data: {
+      data: convertUpdate({
         progress: message.progress as any, // type error without any
         timestamp: timestamp.toJSDate(),
-      },
+      }),
     })
   } else {
     await prisma.userCourseServiceProgress.create({

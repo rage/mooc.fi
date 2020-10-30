@@ -5,13 +5,12 @@ import prisma from "./lib/prisma"
 import * as winston from "winston"
 
 const test = async () => {
-  const user = (
-    await prisma.user.findMany({
-      where: {
-        username: "mikko_ai",
-      },
-    })
-  )[0]
+  const user = await prisma.user.findFirst({
+    where: {
+      username: "mikko_ai",
+    },
+  })
+
   /*
     testing:
 
@@ -25,17 +24,15 @@ const test = async () => {
       id: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
     },
   })
-  const progress = (
-    await prisma.userCourseProgress.findMany({
-      where: {
-        user_id: user.id,
-        course_id: course!.id,
-      },
-    })
-  )?.[0]
+  const progress = await prisma.userCourseProgress.findFirst({
+    where: {
+      user_id: user!.id,
+      course_id: course!.id,
+    },
+  })
 
   await generateUserCourseProgress({
-    user,
+    user: user!,
     course: course!,
     userCourseProgress: progress!,
     logger: (null as unknown) as winston.Logger,

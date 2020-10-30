@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { inputObjectType } from "@nexus/schema"
 
-schema.inputObjectType({
+export const PointsByGroup = inputObjectType({
   name: "PointsByGroup",
   definition(t) {
     t.string("group", { required: true })

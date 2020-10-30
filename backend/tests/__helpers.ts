@@ -1,29 +1,32 @@
-// tests/__helpers.ts
 import { PrismaClient } from "@prisma/client"
-// import { ServerInfo } from "apollo-server"
+import { Server } from "http"
 import { execSync } from "child_process"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { nanoid } from "nanoid"
 import { join } from "path"
-import { Client } from "pg"
-import { server } from "../api/server"
+import knex from "knex"
+import express from "../server"
+import { ApolloServer } from "apollo-server-express"
+import { schema } from "../schema"
 
 type TestContext = {
   client: GraphQLClient
-  db: PrismaClient
+  prisma: PrismaClient
 }
 
 export function createTestContext(): TestContext {
   let ctx = {} as TestContext
-  // const graphqlCtx = graphqlTestContext()
+
+  const graphqlCtx = graphqlTestContext()
   const prismaCtx = prismaTestContext()
+
   beforeEach(async () => {
     const client = await graphqlCtx.before()
-    const db = await prismaCtx.before()
+    const prisma = await prismaCtx.before()
     Object.assign(ctx, {
       client,
-      db,
+      prisma,
     })
   })
   afterEach(async () => {
@@ -34,34 +37,55 @@ export function createTestContext(): TestContext {
 }
 
 function graphqlTestContext() {
-  let serverInstance: ServerInfo | null = null
+  let apolloInstance: ApolloServer | null = null
+  let serverInstance: Server | null = null
   return {
     async before() {
-      const port = await getPort({ port: makeRange(4000, 6000) })
-      serverInstance = await server.listen({ port })
-      return new GraphQLClient(`http://localhost:${port}`)
+      const port = await getPort({ port: makeRange(4001, 6000) })
+      console.log(`creating test server on port ${port}`)
+      serverInstance = express.listen({ port })
+      apolloInstance = new ApolloServer({ schema })
+      apolloInstance.applyMiddleware({ app: express })
+      return new GraphQLClient(`http://localhost:${port}`, {
+        headers: {
+          authorization:
+            "Bearer a19e04d586d0085ceaaa39b62e18be724e3799a1fe1721d600f8703efc58f753",
+        },
+      })
     },
     async after() {
-      serverInstance?.server.close()
+      serverInstance?.close()
+      apolloInstance?.stop()
     },
   }
 }
+
 function prismaTestContext() {
-  const prismaBinary = join(__dirname, "..", "node_modules", ".bin", "prisma")
+  // const prismaBinary = join(__dirname, "..", "node_modules", ".bin", "prisma")
   const knexBinary = join(__dirname, "..", "node_modules", ".bin", "knex")
 
-  let schema = ""
+  let schemaName = ""
   let databaseUrl = ""
   let prismaClient: null | PrismaClient = null
+
   return {
     async before() {
       // Generate a unique schema identifier for this test context
-      schema = `test_${nanoid()}`
+      schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
-      databaseUrl = `postgres://prisma:prisma@localhost:5678/testing?schema=${schema}`
+      databaseUrl = `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
       // Set the required environment variable to contain the connection string
       // to our database test schema
       process.env.DATABASE_URL = databaseUrl
+
+      const client = knex({
+        client: "pg",
+        connection: databaseUrl,
+        debug: true,
+      })
+      await client.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
+      await client.destroy()
+
       // Run the migrations to ensure our schema has the required structure
       execSync(`${knexBinary} migrate:up`, {
         env: {
@@ -70,17 +94,19 @@ function prismaTestContext() {
         },
       })
       // Construct a new Prisma Client connected to the generated Postgres schema
-      prismaClient = new PrismaClient()
+      prismaClient = new PrismaClient({
+        datasources: { db: { url: databaseUrl } },
+      })
       return prismaClient
     },
     async after() {
       // Drop the schema after the tests have completed
-      const client = new Client({
-        connectionString: databaseUrl,
+      /*const client = knex({
+        client: "pg",
+        connection: databaseUrl
       })
-      await client.connect()
-      await client.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`)
-      await client.end()
+      await client.raw(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE;`)
+      await client.destroy()*/
       // Release the Prisma Client connection
       await prismaClient?.$disconnect()
     },

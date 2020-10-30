@@ -1,8 +1,16 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  extendType,
+  arg,
+  idArg,
+  intArg,
+  stringArg,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"
+import { Context } from "/context"
 
-schema.objectType({
+export const Exercise = objectType({
   name: "Exercise",
   definition(t) {
     t.model.id()
@@ -26,16 +34,16 @@ schema.objectType({
       type: "ExerciseCompletion",
       list: true,
       args: {
-        orderBy: schema.arg({
+        orderBy: arg({
           // FIXME?
           type: "ExerciseCompletionOrderByInput",
           required: false,
         }),
       },
-      resolve: async (parent, args, ctx: NexusContext) => {
+      resolve: async (parent, args, ctx: Context) => {
         const { orderBy } = args
 
-        return ctx.db.exercise
+        return ctx.prisma.exercise
           .findOne({ where: { id: parent.id } })
           .exercise_completions({
             where: {
@@ -49,17 +57,18 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const ExerciseQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("exercise", {
       type: "Exercise",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        ctx.db.exercise.findOne({
+        await ctx.prisma.exercise.findOne({
           where: { id },
         }),
     })
@@ -72,25 +81,25 @@ schema.extendType({
       type: "exercise",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.exercise.findMany()
+        return ctx.prisma.exercise.findMany()
       },
     })*/
   },
 })
 
-schema.extendType({
+export const ExerciseMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addExercise", {
       type: "Exercise",
       args: {
-        custom_id: schema.stringArg(),
-        name: schema.stringArg(),
-        part: schema.intArg(),
-        section: schema.intArg(),
-        max_points: schema.intArg(),
-        course: schema.idArg(),
-        service: schema.idArg(),
+        custom_id: stringArg(),
+        name: stringArg(),
+        part: intArg(),
+        section: intArg(),
+        max_points: intArg(),
+        course: idArg(),
+        service: idArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -104,8 +113,8 @@ schema.extendType({
           service,
         } = args
 
-        ctx.db
-        return ctx.db.exercise.create({
+        ctx.prisma
+        return ctx.prisma.exercise.create({
           data: {
             course: course ? { connect: { id: course } } : undefined,
             service: service ? { connect: { id: service } } : undefined,

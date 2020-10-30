@@ -3,10 +3,10 @@ import Template from "../types/Template"
 export class CompletionLink extends Template {
   async resolve() {
     const completion_link_slug = (
-      await this.prisma.course.findMany({
+      await this.prisma.course.findFirst({
         where: { completion_email: { id: this.emailTemplate.id } },
       })
-    )[0]?.slug
+    )?.slug
     return `https://www.mooc.fi/register-completion/${completion_link_slug}`
   }
 }

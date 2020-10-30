@@ -1,8 +1,14 @@
-import { schema } from "nexus"
-
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  idArg,
+  stringArg,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
+import { convertUpdate } from "../util/db-functions"
 
-schema.objectType({
+export const OpenUniversityRegistrationLink = objectType({
   name: "OpenUniversityRegistrationLink",
   definition(t) {
     t.model.id()
@@ -18,7 +24,7 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const OpenUniversityRegistrationLinkCreateInput = inputObjectType({
   name: "OpenUniversityRegistrationLinkCreateInput",
   definition(t) {
     t.string("course_code", { required: true })
@@ -29,7 +35,7 @@ schema.inputObjectType({
   },
 })
 
-schema.inputObjectType({
+export const OpenUniversityRegistrationLinkUpsertInput = inputObjectType({
   name: "OpenUniversityRegistrationLinkUpsertInput",
   definition(t) {
     t.id("id", { required: false })
@@ -41,17 +47,18 @@ schema.inputObjectType({
   },
 })
 
-schema.extendType({
+export const OpenUniversityRegistrationLinkQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("openUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        ctx.db.openUniversityRegistrationLink.findOne({
+        await ctx.prisma.openUniversityRegistrationLink.findOne({
           where: { id },
         }),
     })
@@ -63,29 +70,29 @@ schema.extendType({
       type: "open_university_registration_link",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.open_university_registration_link.findMany()
+        return ctx.prisma.open_university_registration_link.findMany()
       },
     })*/
   },
 })
 
-schema.extendType({
+export const OpenUniversityRegistrationLinkMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addOpenUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        course_code: schema.stringArg({ required: true }),
-        course: schema.idArg({ required: true }),
-        language: schema.stringArg(),
-        link: schema.stringArg(),
+        course_code: stringArg({ required: true }),
+        course: idArg({ required: true }),
+        language: stringArg(),
+        link: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { course_code, course, language, link } = args
 
         // FIXME: empty course_code and/or language?
-        const openUniversityRegistrationLink = await ctx.db.openUniversityRegistrationLink.create(
+        const openUniversityRegistrationLink = await ctx.prisma.openUniversityRegistrationLink.create(
           {
             data: {
               course: {
@@ -104,29 +111,29 @@ schema.extendType({
     t.field("updateOpenUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        id: schema.idArg({ required: true }),
-        course_code: schema.stringArg(),
-        course: schema.idArg({ required: true }),
-        language: schema.stringArg(),
-        link: schema.stringArg(),
+        id: idArg({ required: true }),
+        course_code: stringArg(),
+        course: idArg({ required: true }),
+        language: stringArg(),
+        link: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { id, course_code, course, language, link } = args
 
-        return ctx.db.openUniversityRegistrationLink.update({
+        return ctx.prisma.openUniversityRegistrationLink.update({
           where: {
             id,
           },
           // TODO/FIXME: this deletes the old values?
-          data: {
+          data: convertUpdate({
             course: {
               connect: { id: course },
             },
             course_code: course_code ?? "",
             language: language ?? "",
             link,
-          },
+          }),
         })
       },
     })

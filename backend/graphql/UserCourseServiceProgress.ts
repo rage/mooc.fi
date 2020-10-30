@@ -1,8 +1,8 @@
-import { schema } from "nexus"
+import { objectType, extendType, idArg, arg } from "@nexus/schema"
 
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const UserCourseServiceProgress = objectType({
   name: "UserCourseServiceProgress",
   definition(t) {
     t.model.id()
@@ -22,7 +22,7 @@ schema.objectType({
     t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
-        const res = await ctx.db.userCourseServiceProgress.findOne({
+        const res = await ctx.prisma.userCourseServiceProgress.findOne({
           where: { id: parent.id },
           select: { progress: true },
         })
@@ -35,27 +35,26 @@ schema.objectType({
 
 /*********************** QUERIES **********************/
 
-schema.extendType({
+export const UserCourseServiceProgressQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("userCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        user_id: schema.idArg(),
-        course_id: schema.idArg(),
-        service_id: schema.idArg(),
+        user_id: idArg(),
+        course_id: idArg(),
+        service_id: idArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
-        const result = await ctx.db.userCourseServiceProgress.findMany({
+        return await ctx.prisma.userCourseServiceProgress.findFirst({
           where: {
             user_id: user_id,
             course_id: course_id,
             service_id: service_id,
           },
         })
-        return result[0]
       },
     })
 
@@ -90,7 +89,7 @@ schema.extendType({
           before,
           after,
         } = args
-        return ctx.db.user_course_service_progress.findMany({
+        return ctx.prisma.user_course_service_progress.findMany({
           where: {
             user: user_id,
             course: course_id,
@@ -108,24 +107,24 @@ schema.extendType({
 
 /********************** MUTATIONS *********************/
 
-schema.extendType({
+export const UserCourseServiceProgressMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        progress: schema.arg({ type: "PointsByGroup", required: true }),
-        service_id: schema.idArg({ required: true }),
-        user_course_progress_id: schema.idArg({ required: true }),
+        progress: arg({ type: "PointsByGroup", required: true }),
+        service_id: idArg({ required: true }),
+        user_course_progress_id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { service_id, progress, user_course_progress_id } = args
 
-        const course = await ctx.db.userCourseProgress
+        const course = await ctx.prisma.userCourseProgress
           .findOne({ where: { id: user_course_progress_id } })
           .course()
-        const user = await ctx.db.userCourseProgress
+        const user = await ctx.prisma.userCourseProgress
           .findOne({ where: { id: user_course_progress_id } })
           .user()
 
@@ -133,7 +132,7 @@ schema.extendType({
           throw new Error("course or user not found")
         }
 
-        return ctx.db.userCourseServiceProgress.create({
+        return ctx.prisma.userCourseServiceProgress.create({
           data: {
             course: {
               connect: { id: course.id },

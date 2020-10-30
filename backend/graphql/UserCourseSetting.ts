@@ -1,11 +1,11 @@
-import { schema } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 
 import { buildSearch, convertPagination } from "../util/db-functions"
 import { UserWhereInput } from "@prisma/client"
 import { isAdmin } from "../accessControl"
+import { objectType, extendType, idArg, intArg, stringArg } from "@nexus/schema"
 
-schema.objectType({
+export const UserCourseSetting = objectType({
   name: "UserCourseSetting",
   definition(t) {
     t.model.id()
@@ -24,21 +24,21 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const UserCourseSettingQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("userCourseSetting", {
       type: "UserCourseSetting",
       args: {
-        user_id: schema.idArg({ required: true }),
-        course_id: schema.idArg({ required: true }),
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id } = args
         let { course_id } = args
 
-        const inheritSettingsCourse = await ctx.db.course
+        const inheritSettingsCourse = await ctx.prisma.course
           .findOne({ where: { id: course_id } })
           .inherit_settings_from()
 
@@ -46,30 +46,30 @@ schema.extendType({
           course_id = inheritSettingsCourse.id
         }
 
-        const result = await ctx.db.userCourseSetting.findMany({
+        const result = await ctx.prisma.userCourseSetting.findFirst({
           where: {
             user_id,
             course_id,
           },
         })
 
-        if (!result.length) {
+        if (!result) {
           throw new UserInputError("Not found")
         }
-        return result[0]
+        return result
       },
     })
 
     t.field("userCourseSettingCount", {
       type: "Int",
       args: {
-        user_id: schema.idArg(),
-        course_id: schema.idArg(),
+        user_id: idArg(),
+        course_id: idArg(),
       },
       resolve: (_, args, ctx) => {
         const { user_id, course_id } = args
 
-        return ctx.db.userCourseSetting.count({
+        return ctx.prisma.userCourseSetting.count({
           where: {
             user_id,
             course_id,
@@ -81,11 +81,11 @@ schema.extendType({
     t.connection("userCourseSettings", {
       type: "UserCourseSetting",
       additionalArgs: {
-        user_id: schema.idArg(),
-        user_upstream_id: schema.intArg(),
-        course_id: schema.idArg(),
-        search: schema.stringArg(),
-        skip: schema.intArg({ default: 0 }),
+        user_id: idArg(),
+        user_upstream_id: intArg(),
+        course_id: idArg(),
+        search: stringArg(),
+        skip: intArg({ default: 0 }),
       },
       authorize: isAdmin,
       nodes: async (_, args, ctx) => {
@@ -106,7 +106,7 @@ schema.extendType({
         }
 
         if (course_id) {
-          const inheritSettingsCourse = await ctx.db.course
+          const inheritSettingsCourse = await ctx.prisma.course
             .findOne({ where: { id: course_id } })
             .inherit_settings_from()
 
@@ -115,20 +115,21 @@ schema.extendType({
           }
         }
 
-        const orCondition: UserWhereInput[] = [
-          {
+        const orCondition: UserWhereInput[] = []
+
+        if (search)
+          orCondition.push({
             OR: buildSearch(
               ["first_name", "last_name", "username", "email"],
               search ?? "",
             ),
-          },
-        ]
+          })
 
-        if (user_id) orCondition.concat({ id: user_id })
+        if (user_id) orCondition.push({ id: user_id })
         if (user_upstream_id)
-          orCondition.concat({ upstream_id: user_upstream_id })
+          orCondition.push({ upstream_id: user_upstream_id })
 
-        return ctx.db.userCourseSetting.findMany({
+        return ctx.prisma.userCourseSetting.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             user: {
@@ -141,15 +142,15 @@ schema.extendType({
       extendConnection(t) {
         t.int("count", {
           args: {
-            user_id: schema.idArg(),
-            user_upstream_id: schema.intArg(),
-            course_id: schema.idArg({ required: true }),
-            search: schema.stringArg(),
+            user_id: idArg(),
+            user_upstream_id: intArg(),
+            course_id: idArg({ required: true }),
+            search: stringArg(),
           },
           resolve: async (_, args, ctx) => {
             const { user_id, user_upstream_id, search } = args
             let { course_id } = args
-            const inheritSettingsCourse = await ctx.db.course
+            const inheritSettingsCourse = await ctx.prisma.course
               .findOne({ where: { id: course_id } })
               .inherit_settings_from()
 
@@ -157,20 +158,21 @@ schema.extendType({
               course_id = inheritSettingsCourse.id
             }
 
-            const orCondition: UserWhereInput[] = [
-              {
+            const orCondition: UserWhereInput[] = []
+
+            if (search)
+              orCondition.push({
                 OR: buildSearch(
                   ["first_name", "last_name", "username", "email"],
                   search ?? "",
                 ),
-              },
-            ]
+              })
 
-            if (user_id) orCondition.concat({ id: user_id })
+            if (user_id) orCondition.push({ id: user_id })
             if (user_upstream_id)
-              orCondition.concat({ upstream_id: user_upstream_id })
+              orCondition.push({ upstream_id: user_upstream_id })
 
-            const count = await ctx.db.userCourseSetting.count({
+            const count = await ctx.prisma.userCourseSetting.count({
               where: {
                 user: {
                   OR: orCondition,

@@ -6,6 +6,7 @@
     },
     "rootDir": ".",
     "lib": ["es2016", "esnext"],
+    "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
     "noEmit": true,
@@ -15,7 +16,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "plugins": [{ "name": "nexus/typescript-language-service" }],
-    "typeRoots": ["node_modules/@types", "types"]
+    // "typeRoots": ["node_modules/@types", "types"]
   },
   "include": [".", "./bin/**/*", "types.d.ts"],
 }

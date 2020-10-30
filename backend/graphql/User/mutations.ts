@@ -1,23 +1,22 @@
 import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
-import { schema } from "nexus"
-import { NexusContext } from "../../context"
+import { extendType, stringArg, booleanArg, arg } from "@nexus/schema"
+import { Context } from "../../context"
 import hashUser from "../../util/hashUser"
+import { convertUpdate } from "../../util/db-functions"
 
-schema.extendType({
+export const UserMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("updateUserName", {
       type: "User",
       args: {
-        first_name: schema.stringArg(),
-        last_name: schema.stringArg(),
+        first_name: stringArg(),
+        last_name: stringArg(),
       },
-      resolve: (_, { first_name, last_name }, ctx: NexusContext) => {
-        const {
-          user: currentUser,
-          headers: { authorization },
-        } = ctx
+      resolve: (_, { first_name, last_name }, ctx: Context) => {
+        const { user: currentUser } = ctx
+        const authorization = ctx?.req?.headers?.authorization
 
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
@@ -27,12 +26,12 @@ schema.extendType({
         invalidate("userdetails", `Bearer ${access_token}`)
         invalidate("user", hashUser(currentUser))
 
-        return ctx.db.user.update({
+        return ctx.prisma.user.update({
           where: { id: currentUser.id },
-          data: {
+          data: convertUpdate({
             first_name,
             last_name,
-          },
+          }),
         })
       },
     })
@@ -40,13 +39,11 @@ schema.extendType({
     t.field("updateResearchConsent", {
       type: "User",
       args: {
-        value: schema.booleanArg({ required: true }),
+        value: booleanArg({ required: true }),
       },
-      resolve: (_, { value }, ctx: NexusContext) => {
-        const {
-          user: currentUser,
-          headers: { authorization },
-        } = ctx
+      resolve: (_, { value }, ctx: Context) => {
+        const { user: currentUser } = ctx
+        const authorization = ctx?.req?.headers?.authorization
 
         if (!currentUser) {
           throw new AuthenticationError("not logged in")
@@ -57,11 +54,11 @@ schema.extendType({
         invalidate("userdetails", `Bearer ${access_token}`)
         invalidate("user", hashUser(currentUser))
 
-        return ctx.db.user.update({
+        return ctx.prisma.user.update({
           where: { id: currentUser.id },
-          data: {
+          data: convertUpdate({
             research_consent: value,
-          },
+          }),
         })
       },
     })
@@ -69,21 +66,22 @@ schema.extendType({
     t.field("addUser", {
       type: "User",
       args: {
-        user: schema.arg({
+        user: arg({
           type: "UserArg",
           required: true,
         }),
       },
       resolve: async (_, { user }, ctx) => {
-        const exists = await ctx.db.user.findMany({
+        const exists = await ctx.prisma.user.findFirst({
+          select: { id: true },
           where: { upstream_id: user.upstream_id },
         })
 
-        if (exists.length > 0) {
+        if (exists) {
           throw new Error("user with that upstream id already exists")
         }
 
-        return ctx.db.user.create({
+        return ctx.prisma.user.create({
           data: {
             ...user,
             administrator: false,

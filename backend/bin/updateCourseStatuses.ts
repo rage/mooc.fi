@@ -50,7 +50,7 @@ const updateCourseStatuses = async () => {
         id: course.id,
       },
       data: {
-        status: newStatus,
+        status: { set: newStatus },
       },
     })
     logger.info(`Updated course ${course.name} from ${status} to ${newStatus}`)

@@ -1,21 +1,21 @@
-import { schema } from "nexus"
+import { extendType, stringArg, intArg, idArg } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
 import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"
 
-schema.extendType({
+export const CompletionQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("completions", {
       type: "Completion",
       args: {
-        course: schema.stringArg({ required: true }),
-        completion_language: schema.stringArg(),
-        first: schema.intArg(),
-        after: schema.idArg(),
-        last: schema.intArg(),
-        before: schema.idArg(),
+        course: stringArg({ required: true }),
+        completion_language: stringArg(),
+        first: intArg(),
+        after: idArg(),
+        last: intArg(),
+        before: idArg(),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -25,14 +25,14 @@ schema.extendType({
           ctx.disableRelations = true
         }
 
-        const courseWithSlug = await ctx.db.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findOne({
           where: {
             slug: course,
           },
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.courseAlias
+          const courseFromAvoinCourse = await ctx.prisma.courseAlias
             .findOne({
               where: {
                 course_code: course,
@@ -45,7 +45,7 @@ schema.extendType({
           }
           course = courseFromAvoinCourse.slug
         }
-        const courseObject = await ctx.db.course.findOne({
+        const courseObject = await ctx.prisma.course.findOne({
           where: {
             slug: course,
           },
@@ -67,9 +67,9 @@ schema.extendType({
     t.connection("completionsPaginated", {
       type: "Completion",
       additionalArgs: {
-        course: schema.stringArg({ required: true }),
-        completion_language: schema.stringArg(),
-        skip: schema.intArg({ default: 0 }),
+        course: stringArg({ required: true }),
+        completion_language: stringArg(),
+        skip: intArg({ default: 0 }),
       },
       authorize: or(isOrganization, isAdmin),
       cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
@@ -81,12 +81,12 @@ schema.extendType({
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        const courseWithSlug = await ctx.db.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findOne({
           where: { slug: course },
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.courseAlias
+          const courseFromAvoinCourse = await ctx.prisma.courseAlias
             .findOne({ where: { course_code: course } })
             .course()
           if (!courseFromAvoinCourse) {
@@ -95,7 +95,7 @@ schema.extendType({
           course = courseFromAvoinCourse.slug
         }
 
-        return ctx.db.completion.findMany({
+        return ctx.prisma.completion.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             course: { slug: course },

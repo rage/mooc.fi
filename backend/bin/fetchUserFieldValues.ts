@@ -8,6 +8,7 @@ import { DateTime } from "luxon"
 import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
+import { convertUpdate } from "../util/db-functions"
 
 const CONFIG_NAME = "userFieldValues"
 
@@ -17,13 +18,10 @@ const fetcUserFieldValues = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
-  const existingConfig = await prisma.userAppDatumConfig.findMany({
+  const existingConfig = await prisma.userAppDatumConfig.findFirst({
     where: { name: CONFIG_NAME },
   })
-  const latestTimeStamp =
-    existingConfig.length > 0
-      ? existingConfig[0].timestamp // ((await prisma.userAppDatumConfig({ name: CONFIG_NAME })) ?? {}).timestamp
-      : null
+  const latestTimeStamp = existingConfig?.timestamp
 
   logger.info(latestTimeStamp)
 
@@ -86,9 +84,9 @@ const fetcUserFieldValues = async () => {
     ) {
       await prisma.user.update({
         where: { upstream_id: p.user_id },
-        data: {
+        data: convertUpdate({
           student_number: p.value.trim(),
-        },
+        }),
       })
     }
 
@@ -127,7 +125,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
-      update: prismaDetails,
+      update: convertUpdate(prismaDetails),
     })
 
     return result
@@ -172,7 +170,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
       timestamp: dateToDB,
     },
     update: {
-      timestamp: dateToDB,
+      timestamp: convertUpdate(dateToDB),
     },
   })
 }

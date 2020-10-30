@@ -1,9 +1,17 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  extendType,
+  idArg,
+  stringArg,
+  intArg,
+  arg,
+  floatArg,
+} from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
   definition(t) {
     t.model.id()
@@ -23,7 +31,7 @@ schema.objectType({
     t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
-        const res = await ctx.db.userCourseProgress.findOne({
+        const res = await ctx.prisma.userCourseProgress.findOne({
           where: { id: parent.id },
           select: { progress: true },
         })
@@ -38,17 +46,17 @@ schema.objectType({
       nullable: true,
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id } =
-          (await ctx.db.userCourseProgress.findOne({
+          (await ctx.prisma.userCourseProgress.findOne({
             where: { id: parent.id },
             select: {
               course_id: true,
               user_id: true,
             },
           })) || {}
-        /*const course= await ctx.db
+        /*const course= await ctx.prisma
           .user_course_progress.findOne({ where: { id: parent.id } })
           .course_courseTouser_course_progress()
-        const user: User = await ctx.db
+        const user: User = await ctx.prisma
           .user_course_progress.findOne({ where: { id: parent.id } })
           .user_course_service_progress()*/
 
@@ -56,14 +64,12 @@ schema.objectType({
           throw new Error("course or user not found")
         }
 
-        const userCourseSettings = await ctx.db.userCourseSetting.findMany({
+        return await ctx.prisma.userCourseSetting.findFirst({
           where: {
             course_id,
             user_id,
           },
         })
-        // FIXME: what if there's not any?
-        return userCourseSettings?.[0] ?? null
       },
     })
 
@@ -71,37 +77,39 @@ schema.objectType({
       type: "ExerciseProgress",
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id } =
-          (await ctx.db.userCourseProgress.findOne({
+          (await ctx.prisma.userCourseProgress.findOne({
             where: { id: parent.id },
             select: {
               course_id: true,
               user_id: true,
             },
           })) || {}
-        /*const course: Course = await ctx.db
+        /*const course: Course = await ctx.prisma
           .user_course_progress.findOne({ where: { id: parent.id } })
           .course_courseTouser_course_progress()
-        const user: User = await ctx.db
+        const user: User = await ctx.prisma
           .user_course_progress.findOne({ where: { id: parent.id } })
           .user_course_service_progress()*/
 
         if (!course_id || !user_id) {
           throw new Error("no course or user found")
         }
-        const courseProgresses = await ctx.db.userCourseProgress.findMany({
+        const courseProgresses = await ctx.prisma.userCourseProgress.findMany({
           where: { course_id, user_id },
         })
         // TODO/FIXME: proper typing
         const courseProgress: any = courseProgresses?.[0].progress ?? []
-        const exercises = await ctx.db.course
+        const exercises = await ctx.prisma.course
           .findOne({ where: { id: course_id } })
           .exercises()
-        const completedExercises = await ctx.db.exerciseCompletion.findMany({
-          where: {
-            exercise: { course_id },
-            user_id,
+        const completedExercises = await ctx.prisma.exerciseCompletion.findMany(
+          {
+            where: {
+              exercise: { course_id },
+              user_id,
+            },
           },
-        })
+        )
 
         const totalProgress =
           (courseProgress?.reduce(
@@ -120,28 +128,28 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const UserCourseProgressQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("userCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: schema.idArg({ required: true }),
-        course_id: schema.idArg({ required: true }),
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id } = args
-        const result = await ctx.db.userCourseProgress.findMany({
+        const result = await ctx.prisma.userCourseProgress.findFirst({
           where: {
             user_id,
             course_id,
           },
         })
 
-        if (!result.length) throw new UserInputError("Not found")
+        if (!result) throw new UserInputError("Not found")
 
-        return result[0]
+        return result
       },
     })
 
@@ -158,18 +166,18 @@ schema.extendType({
     t.list.field("userCourseProgresses", {
       type: "UserCourseProgress",
       args: {
-        user_id: schema.idArg(),
-        course_slug: schema.stringArg(),
-        course_id: schema.idArg(),
-        skip: schema.intArg(),
-        take: schema.intArg(),
-        cursor: schema.arg({ type: "UserCourseProgressWhereUniqueInput" }),
+        user_id: idArg(),
+        course_slug: stringArg(),
+        course_id: idArg(),
+        skip: intArg(),
+        take: intArg(),
+        cursor: arg({ type: "UserCourseProgressWhereUniqueInput" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const { skip, take, cursor, user_id, course_id, course_slug } = args
 
-        return ctx.db.userCourseProgress.findMany({
+        return ctx.prisma.userCourseProgress.findMany({
           skip: skip ?? undefined,
           take: take ?? undefined,
           cursor: cursor ? { id: cursor.id ?? undefined } : undefined,
@@ -196,24 +204,24 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const UserCourseProgressMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: schema.idArg({ required: true }),
-        course_id: schema.idArg({ required: true }),
-        progress: schema.arg({
+        user_id: idArg({ required: true }),
+        course_id: idArg({ required: true }),
+        progress: arg({
           type: "PointsByGroup",
           list: true,
           required: true,
         }),
-        extra: schema.arg({
+        extra: arg({
           type: "Json",
         }),
-        max_points: schema.floatArg(),
-        n_points: schema.floatArg(),
+        max_points: floatArg(),
+        n_points: floatArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -226,7 +234,7 @@ schema.extendType({
           extra,
         } = args
 
-        return ctx.db.userCourseProgress.create({
+        return ctx.prisma.userCourseProgress.create({
           data: {
             user: { connect: { id: user_id } },
             course: { connect: { id: course_id } },
