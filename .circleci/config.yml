@@ -52,11 +52,14 @@ jobs:
       - run:
           name: "Run tests"
           command : |
-            cd backend &&
-            npm i &&
-            docker-compose up -d &&
-            sleep 10 &&
-            npm run test &&
+            cd backend
+            npm i
+            npm run generate:nexus
+            npm run build
+            npm run download-env
+            docker-compose up -d
+            sleep 10
+            npm run test
             cd ..            
       - run:
           name: "Push image if on master"
