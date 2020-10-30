@@ -39,8 +39,7 @@
     "start": "node dist/app.js",
     "copy-env": "cp ./bin/kafkaConsumer/common/userCourseProgress/env.json ./dist/bin/kafkaConsumer/common/userCourseProgress/env.json",
     "migrate": "knex migrate:latest",
-    "rollback": "knex migrate:rollback",
-    "postinstall": "npm run download-env"
+    "rollback": "knex migrate:rollback"
   },
   "keywords": [],
   "author": "",
