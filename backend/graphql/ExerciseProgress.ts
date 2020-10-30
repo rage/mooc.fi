@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { objectType } from "@nexus/schema"
 
-schema.objectType({
+export const ExerciseProgress = objectType({
   name: "ExerciseProgress",
   definition(t) {
     t.float("total")

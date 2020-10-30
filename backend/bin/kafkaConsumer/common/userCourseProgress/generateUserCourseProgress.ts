@@ -5,6 +5,7 @@ import { User, Course, UserCourseProgress } from "@prisma/client"
 import prisma from "../../../lib/prisma"
 import { BAItiers } from "./courseConfig"
 import * as winston from "winston"
+import { convertUpdate } from "../../../../util/db-functions"
 import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
 import { checkBAICompletion } from "./generateBAIUserCourseProgress"
 
@@ -34,10 +35,10 @@ export const generateUserCourseProgress = async ({
 
   await prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
-    data: {
+    data: convertUpdate({
       progress: combined.progress as any, // errors unless typed as any
       max_points: combined.total_max_points,
       n_points: combined.total_n_points,
-    },
+    }),
   })
 }

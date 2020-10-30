@@ -11,31 +11,32 @@ import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "../Image"
 import { omit } from "lodash"
 import { invalidate } from "../../services/redis"
-import { schema } from "nexus"
 import { UserInputError } from "apollo-server-core"
-import { NexusContext } from "../../context"
+import { Context } from "../../context"
 import { isAdmin } from "../../accessControl"
-import { Prisma__CourseClient, Course } from "nexus-plugin-prisma/client"
-// for debug
+import { Prisma__CourseClient, Course } from "@prisma/client"
+
+import { extendType, arg, idArg, stringArg } from "@nexus/schema"
+import { convertUpdate } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
     key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
   ) */
 
-schema.extendType({
+export const CourseMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourse", {
       type: "Course",
       args: {
-        course: schema.arg({
+        course: arg({
           type: "CourseCreateArg",
           required: true,
         }),
       },
       authorize: isAdmin,
-      resolve: async (_, { course }, ctx: NexusContext) => {
+      resolve: async (_, { course }, ctx: Context) => {
         const {
           // slug,
           new_photo,
@@ -63,11 +64,11 @@ schema.extendType({
           photo = newImage.id
         }
 
-        if (study_modules?.some((s) => !s.id && !s.slug)) {
+        if (study_modules?.some((s) => !s?.id && !s?.slug)) {
           throw new UserInputError("study modules must have id or slug")
         }
 
-        const newCourse = await ctx.db.course.create({
+        const newCourse = await ctx.prisma.course.create({
           data: {
             ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
@@ -78,7 +79,7 @@ schema.extendType({
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
-                    id: s.id ?? undefined,
+                    id: s?.id ?? undefined,
                   })),
                 }
               : undefined,
@@ -123,13 +124,13 @@ schema.extendType({
     t.field("updateCourse", {
       type: "Course",
       args: {
-        course: schema.arg({
+        course: arg({
           type: "CourseUpsertArg",
           required: true,
         }),
       },
       authorize: isAdmin,
-      resolve: async (_, { course }, ctx: NexusContext) => {
+      resolve: async (_, { course }, ctx: Context) => {
         const {
           id,
           new_photo,
@@ -169,7 +170,9 @@ schema.extendType({
           photo = newImage.id
         }
 
-        const existingCourse = await ctx.db.course.findOne({ where: { slug } })
+        const existingCourse = await ctx.prisma.course.findOne({
+          where: { slug },
+        })
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
@@ -229,7 +232,7 @@ schema.extendType({
           field: "user_course_settings_visibilities",
         })
 
-        const existingVisibilities = await ctx.db.course
+        const existingVisibilities = await ctx.prisma.course
           .findOne({ where: { slug } })
           .user_course_settings_visibilities()
         existingVisibilities?.forEach((visibility) =>
@@ -240,7 +243,7 @@ schema.extendType({
         )
 
         // this had different logic so it's not done with the same helper
-        const existingStudyModules = await ctx.db.course
+        const existingStudyModules = await ctx.prisma.course
           .findOne({ where: { slug } })
           .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
@@ -250,8 +253,8 @@ schema.extendType({
         const connectModules =
           study_modules?.map((s) => ({
             ...s,
-            id: s.id ?? undefined,
-            slug: s.slug ?? undefined,
+            id: s?.id ?? undefined,
+            slug: s?.slug ?? undefined,
           })) ?? []
 
         const studyModuleMutation:
@@ -265,7 +268,7 @@ schema.extendType({
             }
           : undefined
 
-        const existingInherit = await ctx.db.course
+        const existingInherit = await ctx.prisma.course
           .findOne({ where: { slug } })
           .inherit_settings_from()
         const inheritMutation = inherit_settings_from
@@ -277,7 +280,7 @@ schema.extendType({
               disconnect: true, // { id: existingInherit.id },
             }
           : undefined
-        const existingHandled = await ctx.db.course
+        const existingHandled = await ctx.prisma.course
           .findOne({ where: { slug } })
           .completions_handled_by()
         const handledMutation = completions_handled_by
@@ -290,12 +293,12 @@ schema.extendType({
             }
           : undefined
 
-        const updatedCourse = await ctx.db.course.update({
+        const updatedCourse = await ctx.prisma.course.update({
           where: {
             id: id ?? undefined,
             slug,
           },
-          data: {
+          data: convertUpdate({
             ...omit(course, [
               "id",
               "photo",
@@ -319,7 +322,7 @@ schema.extendType({
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
             user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
-          },
+          }),
         })
 
         return updatedCourse
@@ -329,18 +332,18 @@ schema.extendType({
     t.field("deleteCourse", {
       type: "Course",
       args: {
-        id: schema.idArg(),
-        slug: schema.stringArg(),
+        id: idArg(),
+        slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         const { id, slug } = args
 
         if (!id && !slug) {
           throw new UserInputError("must provide id or slug")
         }
 
-        const photo = await ctx.db.course
+        const photo = await ctx.prisma.course
           .findOne({
             where: {
               id: id ?? undefined,
@@ -353,7 +356,7 @@ schema.extendType({
           await deleteImage({ ctx, id: photo.id })
         }
 
-        const deletedCourse = await ctx.db.course.delete({
+        const deletedCourse = await ctx.prisma.course.delete({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
@@ -381,7 +384,7 @@ const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
 }
 
 interface ICreateMutation<T> {
-  ctx: NexusContext
+  ctx: Context
   slug: string
   data?: T[] | null
   field: keyof Prisma__CourseClient<Course>
@@ -401,19 +404,19 @@ const createMutation = async <T extends { id?: string | null }>({
 
   try {
     // @ts-ignore: can't be arsed to do the typing, works
-    existing = await ctx.db.course.findOne({ where: { slug } })[field]()
+    existing = await ctx.prisma.course.findOne({ where: { slug } })[field]()
   } catch (e) {
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }
 
   const newOnes = (data || [])
-    .filter((t) => !t.id)
+    .filter(hasNotId) // (t) => !t.id
     .map((t) => ({ ...t, id: undefined }))
   const updated = (data || [])
-    .filter((t) => !!t.id)
+    .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
       where: { id: t.id } as { id: string },
-      data: { ...t, id: undefined },
+      data: convertUpdate({ ...t, id: undefined }),
     }))
   const removed = filterNotIncluded(existing!, data)
 
@@ -423,3 +426,6 @@ const createMutation = async <T extends { id?: string | null }>({
     deleteMany: removed.length ? removed : undefined,
   }
 }
+
+const hasId = (data: any): data is any & { id: string | null } => !!data?.id
+const hasNotId = (data: any) => !hasId(data)

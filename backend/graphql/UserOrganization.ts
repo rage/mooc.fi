@@ -1,11 +1,11 @@
-import { schema } from "nexus"
-
 import { ForbiddenError } from "apollo-server-core"
-import { NexusContext } from "../context"
+import { Context } from "../context"
 import { Role, or, isVisitor, isAdmin } from "../accessControl"
 import { OrganizationRole } from "@prisma/client"
+import { objectType, extendType, idArg, arg } from "@nexus/schema"
+import { convertUpdate } from "../util/db-functions"
 
-schema.objectType({
+export const UserOrganization = objectType({
   name: "UserOrganization",
   definition(t) {
     t.model.id()
@@ -19,14 +19,14 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const UserOrganizationQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("userOrganizations", {
       type: "UserOrganization",
       args: {
-        user_id: schema.idArg(),
-        organization_id: schema.idArg(),
+        user_id: idArg(),
+        organization_id: idArg(),
       },
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
@@ -35,7 +35,7 @@ schema.extendType({
           throw new Error("must provide at least one of user/organization id")
         }
 
-        return ctx.db.userOrganization.findMany({
+        return ctx.prisma.userOrganization.findMany({
           where: {
             user_id,
             organization_id,
@@ -46,13 +46,13 @@ schema.extendType({
   },
 })
 
-const checkUser = async (ctx: NexusContext, id: any) => {
+const checkUser = async (ctx: Context, id: any) => {
   const { user, role } = ctx
 
   let existingUser
 
   try {
-    existingUser = await ctx.db.userOrganization
+    existingUser = await ctx.prisma.userOrganization
       .findOne({ where: { id } })
       .user()
   } catch {
@@ -68,34 +68,34 @@ const checkUser = async (ctx: NexusContext, id: any) => {
   }
 }
 
-schema.extendType({
+export const UserOrganizationMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addUserOrganization", {
       type: "UserOrganization",
       args: {
-        user_id: schema.idArg({ required: true }),
-        organization_id: schema.idArg({ required: true }),
+        user_id: idArg({ required: true }),
+        organization_id: idArg({ required: true }),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
         const { user_id, organization_id } = args
 
-        const exists =
-          (
-            await ctx.db.userOrganization.findMany({
-              where: {
-                user_id,
-                organization_id,
-              },
-            })
-          ).length > 0
+        const exists = await ctx.prisma.userOrganization.findFirst({
+          select: {
+            id: true,
+          },
+          where: {
+            user_id,
+            organization_id,
+          },
+        })
 
         if (exists) {
           throw new Error("this user/organization relation already exists")
         }
 
-        return ctx.db.userOrganization.create({
+        return ctx.prisma.userOrganization.create({
           data: {
             user: { connect: { id: user_id } },
             organization: {
@@ -110,21 +110,21 @@ schema.extendType({
     t.field("updateUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
         /*       userId: schema.idArg(),
         organizationId: schema.idArg(), */
-        role: schema.arg({ type: "OrganizationRole" }),
+        role: arg({ type: "OrganizationRole" }),
       },
       authorize: or(isVisitor, isAdmin),
-      resolve: (_, args, ctx: NexusContext) => {
+      resolve: (_, args, ctx: Context) => {
         const { id, role } = args
 
         checkUser(ctx, id)
 
-        return ctx.db.userOrganization.update({
-          data: {
+        return ctx.prisma.userOrganization.update({
+          data: convertUpdate({
             role: role ? role : OrganizationRole.Student,
-          },
+          }),
           where: {
             id,
           },
@@ -135,14 +135,14 @@ schema.extendType({
     t.field("deleteUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: or(isVisitor, isAdmin),
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         const { id } = args
         checkUser(ctx, id)
 
-        return ctx.db.userOrganization.delete({
+        return ctx.prisma.userOrganization.delete({
           where: { id },
         })
       },

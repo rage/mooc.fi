@@ -1,8 +1,14 @@
-import { schema } from "nexus"
-
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  idArg,
+  stringArg,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
+import { convertUpdate } from "../util/db-functions"
 
-schema.objectType({
+export const StudyModuleTranslation = objectType({
   name: "StudyModuleTranslation",
   definition(t) {
     t.model.id()
@@ -16,7 +22,7 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const StudyModuleTranslationCreateInput = inputObjectType({
   name: "StudyModuleTranslationCreateInput",
   definition(t) {
     t.string("name", { required: true })
@@ -26,7 +32,7 @@ schema.inputObjectType({
   },
 })
 
-schema.inputObjectType({
+export const StudyModuleTranslationUpsertInput = inputObjectType({
   name: "StudyModuleTranslationUpsertInput",
   definition(t) {
     t.id("id", { required: false })
@@ -37,7 +43,7 @@ schema.inputObjectType({
   },
 })
 
-schema.extendType({
+export const StudyModuleTranslationQueries = extendType({
   type: "Query",
   definition(t) {
     t.crud.studyModuleTranslations({
@@ -48,28 +54,28 @@ schema.extendType({
       type: "study_module_translation",
       resolve: (_, __, ctx) => {
         // checkAccess(ctx, { allowOrganizations: false })
-        return ctx.db.study_module_translation.findMany()
+        return ctx.prisma.study_module_translation.findMany()
       },
     })*/
   },
 })
 
-schema.extendType({
+export const StudyModuleTranslationMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addStudyModuleTranslation", {
       type: "StudyModuleTranslation",
       args: {
-        language: schema.stringArg({ required: true }),
-        name: schema.stringArg(),
-        description: schema.stringArg(),
-        study_module: schema.idArg({ required: true }),
+        language: stringArg({ required: true }),
+        name: stringArg(),
+        description: stringArg(),
+        study_module: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { language, name, description, study_module } = args
 
-        const newStudyModuleTranslation = await ctx.db.studyModuleTranslation.create(
+        const newStudyModuleTranslation = await ctx.prisma.studyModuleTranslation.create(
           {
             data: {
               language: language,
@@ -88,26 +94,26 @@ schema.extendType({
     t.field("updateStudyModuletranslation", {
       type: "StudyModuleTranslation",
       args: {
-        id: schema.idArg({ required: true }),
-        language: schema.stringArg(),
-        name: schema.stringArg(),
-        description: schema.stringArg(),
-        study_module: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
+        language: stringArg(),
+        name: stringArg(),
+        description: stringArg(),
+        study_module: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const { id, language, name, description, study_module } = args
 
-        return ctx.db.studyModuleTranslation.update({
+        return ctx.prisma.studyModuleTranslation.update({
           where: { id },
-          data: {
+          data: convertUpdate({
             description: description ?? "",
             language: language ?? "",
             name: name ?? "",
             study_module: {
               connect: { id: study_module },
             },
-          },
+          }),
         })
       },
     })
@@ -115,11 +121,11 @@ schema.extendType({
     t.field("deleteStudyModuleTranslation", {
       type: "StudyModuleTranslation",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>
-        ctx.db.studyModuleTranslation.delete({ where: { id } }),
+        ctx.prisma.studyModuleTranslation.delete({ where: { id } }),
     })
   },
 })

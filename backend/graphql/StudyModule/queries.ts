@@ -1,17 +1,17 @@
-import { schema } from "nexus"
+import { arg, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, or, isUser, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 
-schema.extendType({
+export const StudyModuleQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("study_module", {
       type: "StudyModule",
       args: {
-        id: schema.idArg(),
-        slug: schema.stringArg(),
-        language: schema.stringArg(),
+        id: idArg(),
+        slug: stringArg(),
+        language: stringArg(),
       },
       authorize: or(isAdmin, isUser),
       nullable: true,
@@ -22,7 +22,7 @@ schema.extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const study_module = await ctx.db.studyModule.findOne({
+        const study_module = await ctx.prisma.studyModule.findOne({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
@@ -43,7 +43,7 @@ schema.extendType({
         }
 
         if (language) {
-          const module_translations = await ctx.db.studyModuleTranslation.findMany(
+          const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
             {
               where: {
                 study_module_id: study_module.id,
@@ -52,11 +52,11 @@ schema.extendType({
             },
           )
 
-          if (!module_translations.length) {
+          if (!module_translation) {
             return Promise.resolve(null)
           }
 
-          const { name, description = "" } = module_translations[0]
+          const { name, description = "" } = module_translation
           return {
             ...study_module,
             name,
@@ -79,13 +79,13 @@ schema.extendType({
     t.list.field("study_modules", {
       type: "StudyModule",
       args: {
-        orderBy: schema.arg({ type: "StudyModuleOrderByInput" }),
-        language: schema.stringArg(),
+        orderBy: arg({ type: "StudyModuleOrderByInput" }),
+        language: stringArg(),
       },
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
-        const modules = await ctx.db.studyModule.findMany({
+        const modules = await ctx.prisma.studyModule.findMany({
           orderBy: filterNull(orderBy) ?? undefined,
         })
 
@@ -93,17 +93,17 @@ schema.extendType({
           ? (
               await Promise.all(
                 modules.map(async (module: any) => {
-                  const module_translations = await ctx.db.studyModuleTranslation.findMany(
+                  const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
                     {
                       where: { study_module_id: module.id, language },
                     },
                   )
 
-                  if (!module_translations.length) {
+                  if (!module_translation) {
                     return Promise.resolve(null)
                   }
 
-                  const { name, description = "" } = module_translations[0]
+                  const { name, description = "" } = module_translation
 
                   return { ...module, name, description }
                 }),
@@ -121,12 +121,15 @@ schema.extendType({
     t.field("study_module_exists", {
       type: "Boolean",
       args: {
-        slug: schema.stringArg({ required: true }),
+        slug: stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {
-        return (
-          (await ctx.db.studyModule.findMany({ where: { slug } })).length > 0
+        return Boolean(
+          await ctx.prisma.studyModule.findFirst({
+            select: { id: true },
+            where: { slug },
+          }),
         )
       },
     })

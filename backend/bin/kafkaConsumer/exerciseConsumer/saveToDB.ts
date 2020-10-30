@@ -4,6 +4,7 @@ import { DateTime } from "luxon"
 import winston = require("winston")
 import { ok, err, Result } from "../../../util/result"
 import { DatabaseInputError } from "../../lib/errors"
+import { convertUpdate } from "../../../util/db-functions"
 
 export const saveToDatabase = async (
   message: Message,
@@ -44,9 +45,9 @@ export const saveToDatabase = async (
         custom_id: { not: { in: message.data.map((p) => p.id.toString()) } },
       },
     },
-    data: {
+    data: convertUpdate({
       deleted: true,
-    },
+    }),
   })
 
   return ok("Saved to DB successfully")
@@ -60,26 +61,18 @@ const handleExercise = async (
   logger: winston.Logger,
   prisma: PrismaClient,
 ) => {
-  const existingExercises = await prisma.exercise.findMany({
+  const existingExercise = await prisma.exercise.findFirst({
     where: {
       course_id: course_id,
       service_id: service_id,
       custom_id: exercise.id,
     },
   })
-  if (existingExercises.length > 0) {
-    const oldExercises = await prisma.exercise.findMany({
-      where: {
-        course_id: course_id,
-        service_id: service_id,
-        custom_id: exercise.id,
-      },
-    })
-
-    const oldExercise = oldExercises[0]
+  if (existingExercise) {
     // FIXME: well this is weird
     if (
-      DateTime.fromISO(oldExercise.timestamp?.toISOString() ?? "") > timestamp
+      DateTime.fromISO(existingExercise.timestamp?.toISOString() ?? "") >
+      timestamp
     ) {
       logger.warn(
         "Timestamp is older than on existing exercise on " +
@@ -89,8 +82,8 @@ const handleExercise = async (
       return
     }
     await prisma.exercise.update({
-      where: { id: oldExercise.id },
-      data: {
+      where: { id: existingExercise.id },
+      data: convertUpdate({
         name: exercise.name,
         custom_id: exercise.id,
         part: Number(exercise.part),
@@ -98,7 +91,7 @@ const handleExercise = async (
         max_points: Number(exercise.max_points),
         timestamp: timestamp.toJSDate(),
         deleted: false,
-      },
+      }),
     })
   } else {
     await prisma.exercise.create({

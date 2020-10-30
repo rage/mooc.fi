@@ -1,18 +1,18 @@
-import { schema } from "nexus"
+import { arg, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
-import { Course } from "nexus-plugin-prisma/client"
+import { Course } from "@prisma/client"
 
-schema.extendType({
+export const CourseQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("course", {
       type: "Course",
       args: {
-        slug: schema.stringArg(),
-        id: schema.idArg(),
-        language: schema.stringArg(),
+        slug: stringArg(),
+        id: idArg(),
+        language: stringArg(),
       },
       authorize: or(isAdmin, isUser),
       nullable: true,
@@ -23,7 +23,7 @@ schema.extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const course = await ctx.db.course.findOne({
+        const course = await ctx.prisma.course.findOne({
           where: {
             slug: slug ?? undefined,
             id: id ?? undefined,
@@ -44,19 +44,21 @@ schema.extendType({
         }
 
         if (language) {
-          const course_translations = await ctx.db.courseTranslation.findMany({
-            where: {
-              course_id: course.id,
-              language,
+          const course_translation = await ctx.prisma.courseTranslation.findFirst(
+            {
+              where: {
+                course_id: course.id,
+                language,
+              },
             },
-          })
+          )
 
-          if (!course_translations.length) {
+          if (!course_translation) {
             return Promise.resolve(null)
           }
 
           // TODO/FIXME: provide language instead of getting the first one
-          const { name, description, link = "" } = course_translations[0]
+          const { name, description, link = "" } = course_translation
           return {
             ...course,
             name,
@@ -80,13 +82,13 @@ schema.extendType({
     t.list.field("courses", {
       type: "Course",
       args: {
-        orderBy: schema.arg({ type: "CourseOrderByInput" }),
-        language: schema.stringArg(),
+        orderBy: arg({ type: "CourseOrderByInput" }),
+        language: stringArg(),
       },
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
-        const courses = await ctx.db.course.findMany({
+        const courses = await ctx.prisma.course.findMany({
           orderBy: filterNull(orderBy) ?? undefined,
         })
 
@@ -94,7 +96,7 @@ schema.extendType({
           ? (
               await Promise.all(
                 courses.map(async (course: Course) => {
-                  const course_translations = await ctx.db.courseTranslation.findMany(
+                  const course_translation = await ctx.prisma.courseTranslation.findFirst(
                     {
                       where: {
                         course_id: course.id,
@@ -103,15 +105,11 @@ schema.extendType({
                     },
                   )
 
-                  if (!course_translations.length) {
+                  if (!course_translation) {
                     return Promise.resolve(null)
                   }
 
-                  const {
-                    name,
-                    description,
-                    link = "",
-                  } = course_translations[0]
+                  const { name, description, link = "" } = course_translation
 
                   return { ...course, name, description, link }
                 }),
@@ -133,19 +131,17 @@ schema.extendType({
     t.field("course_exists", {
       type: "Boolean",
       args: {
-        slug: schema.stringArg({ required: true }),
+        slug: stringArg({ required: true }),
       },
       authorize: or(isAdmin, isUser),
       resolve: async (_, args, ctx) => {
         const { slug } = args
 
-        return (
-          (
-            await ctx.db.course.findMany({
-              where: { slug },
-              select: { id: true },
-            })
-          ).length > 0
+        return Boolean(
+          await ctx.prisma.course.findFirst({
+            where: { slug },
+            select: { id: true },
+          }),
         )
       },
     })

@@ -1,8 +1,7 @@
-import { schema } from "nexus"
-
+import { objectType, extendType, idArg, arg, intArg } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const ExerciseCompletion = objectType({
   name: "ExerciseCompletion",
   definition(t) {
     t.model.id()
@@ -20,17 +19,18 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const ExerciseCompletionQueries = extendType({
   type: "Query",
   definition(t) {
     t.field("exerciseCompletion", {
       type: "ExerciseCompletion",
       args: {
-        id: schema.idArg({ required: true }),
+        id: idArg({ required: true }),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        ctx.db.exerciseCompletion.findOne({
+        await ctx.prisma.exerciseCompletion.findOne({
           where: { id },
         }),
     })
@@ -44,28 +44,28 @@ schema.extendType({
       type: "exercise_completion",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.exercise_completion.findMany()
+        return ctx.prisma.exercise_completion.findMany()
       },
     })*/
   },
 })
 
-schema.extendType({
+export const ExerciseCompletionMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addExerciseCompletion", {
       type: "ExerciseCompletion",
       args: {
-        n_points: schema.intArg(),
-        exercise: schema.idArg(),
-        user: schema.idArg(),
-        timestamp: schema.arg({ type: "DateTime" }),
+        n_points: intArg(),
+        exercise: idArg(),
+        user: idArg(),
+        timestamp: arg({ type: "DateTime" }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const { n_points, exercise, user, timestamp } = args
 
-        return ctx.db.exerciseCompletion.create({
+        return ctx.prisma.exerciseCompletion.create({
           data: {
             n_points,
             exercise: exercise ? { connect: { id: exercise } } : undefined,

@@ -3,6 +3,7 @@ import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/s
 import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { EmailTemplaterError } from "./lib/errors"
+import { convertUpdate } from "../util/db-functions"
 
 const BATCH_SIZE = 100
 
@@ -38,13 +39,19 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
     logger.info("Marking email as delivered")
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
-      data: { sent: true, error: false },
+      data: convertUpdate({
+        sent: true,
+        error: false,
+      }),
     })
   } catch (e) {
     logger.error(new EmailTemplaterError("Sending failed", e))
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
-      data: { error: true, error_message: e.message },
+      data: convertUpdate({
+        error: true,
+        error_message: e.message,
+      }),
     })
   }
 }

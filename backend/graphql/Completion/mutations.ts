@@ -1,23 +1,23 @@
-import { schema } from "nexus"
+import { arg, extendType, idArg, intArg, stringArg } from "@nexus/schema"
 
 import Knex from "../../services/knex"
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
 import { groupBy } from "lodash"
 
-schema.extendType({
+export const CompletionMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCompletion", {
       type: "Completion",
       args: {
-        user_upstream_id: schema.intArg(),
-        email: schema.stringArg(),
-        student_number: schema.stringArg(),
-        user: schema.idArg({ required: true }),
-        course: schema.idArg({ required: true }),
-        completion_language: schema.stringArg(),
-        tier: schema.intArg({ required: false }),
+        user_upstream_id: intArg(),
+        email: stringArg(),
+        student_number: stringArg(),
+        user: idArg({ required: true }),
+        course: idArg({ required: true }),
+        completion_language: stringArg(),
+        tier: intArg({ required: false }),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -31,7 +31,7 @@ schema.extendType({
           tier,
         } = args
 
-        return ctx.db.completion.create({
+        return ctx.prisma.completion.create({
           data: {
             course: { connect: { id: course } },
             user: { connect: { id: user } },
@@ -48,8 +48,8 @@ schema.extendType({
     t.list.field("addManualCompletion", {
       type: "Completion",
       args: {
-        completions: schema.arg({ type: "ManualCompletionArg", list: true }),
-        course_id: schema.stringArg({ required: true }),
+        completions: arg({ type: "ManualCompletionArg", list: true }),
+        course_id: stringArg({ required: true }),
       },
       authorize: isAdmin,
       resolve: async (_, args, _ctx) => {

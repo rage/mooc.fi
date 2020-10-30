@@ -1,9 +1,9 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { buildSearch, convertPagination } from "../../util/db-functions"
-import { schema } from "nexus"
+import { extendType, idArg, stringArg, intArg } from "@nexus/schema"
 import { isAdmin } from "../../accessControl"
 
-schema.extendType({
+export const UserQueries = extendType({
   type: "Query",
   definition(t) {
     t.crud.users({
@@ -14,16 +14,16 @@ schema.extendType({
       type: "user",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.user.findMany()
+        return ctx.prisma.user.findMany()
       },
     })*/
 
     t.field("user", {
       type: "User",
       args: {
-        id: schema.idArg(),
-        search: schema.stringArg(),
-        upstream_id: schema.intArg(),
+        id: idArg(),
+        search: stringArg(),
+        upstream_id: intArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -35,7 +35,7 @@ schema.extendType({
           )
         }
 
-        const users = await ctx.db.user.findMany({
+        const user = await ctx.prisma.user.findFirst({
           where: {
             OR: buildSearch(
               ["first_name", "last_name", "username", "email"],
@@ -45,16 +45,16 @@ schema.extendType({
             upstream_id: upstream_id ?? undefined,
           },
         })
-        if (!users.length) throw new UserInputError("User not found")
-        return users[0]
+        if (!user) throw new UserInputError("User not found")
+        return user
       },
     })
 
     t.connection("userDetailsContains", {
       type: "User",
       additionalArgs: {
-        search: schema.stringArg(),
-        skip: schema.intArg({ default: 0 }),
+        search: stringArg(),
+        skip: intArg({ default: 0 }),
       },
       authorize: isAdmin,
       cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
@@ -65,7 +65,7 @@ schema.extendType({
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        return ctx.db.user.findMany({
+        return ctx.prisma.user.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             OR: buildSearch(
@@ -78,10 +78,10 @@ schema.extendType({
       extendConnection(t) {
         t.int("count", {
           args: {
-            search: schema.stringArg(),
+            search: stringArg(),
           },
-          resolve: (_, { search }, ctx) => {
-            return ctx.db.user.count({
+          resolve: async (_, { search }, ctx) => {
+            return ctx.prisma.user.count({
               where: {
                 OR: buildSearch(
                   ["first_name", "last_name", "username", "email"],
@@ -97,7 +97,7 @@ schema.extendType({
     t.field("currentUser", {
       type: "User",
       nullable: true,
-      args: { search: schema.stringArg() }, // was: email
+      args: { search: stringArg() }, // was: email
       resolve: (_, __, ctx) => {
         // FIXME: why don't we search anything? where's this come from?
         // const { search } = args

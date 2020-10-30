@@ -7,6 +7,7 @@ import { generateSecret } from "../graphql/Organization"
 import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { TMCError } from "./lib/errors"
+import { convertUpdate } from "../util/db-functions"
 
 const tmc = new TmcClient()
 
@@ -54,7 +55,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
       where: {
         slug: org.slug,
       },
-      data: details,
+      data: convertUpdate(details),
     })
   } else {
     organization = await prisma.organization.create(
@@ -79,7 +80,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
   if (organizationTranslationId != null) {
     await prisma.organizationTranslation.update({
       where: { id: organizationTranslationId },
-      data: translationDetails,
+      data: convertUpdate(translationDetails),
     })
   } else {
     await prisma.organizationTranslation.create({ data: translationDetails })
@@ -113,7 +114,7 @@ const getUserFromTmc = async (user_id: Number) => {
   return await prisma.user.upsert({
     where: { upstream_id: details.id },
     create: prismaDetails,
-    update: prismaDetails,
+    update: convertUpdate(prismaDetails),
   })
 }
 
