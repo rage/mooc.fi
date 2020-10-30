@@ -45,6 +45,20 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - run:
+          name: Install Docker Compose
+          command: |
+            set -x curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+      - run:
+          name: "Run tests"
+          command : |
+            cd backend &&
+            npm i &&
+            docker-compose up -d &&
+            sleep 10 &&
+            npm run test &&
+            cd ..            
+      - run:
           name: "Push image if on master"
           command: "bin/push-docker-backend-image.sh"
 

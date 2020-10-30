@@ -1,4 +1,5 @@
 import { extendType, arg, idArg, stringArg } from "@nexus/schema"
+import { StudyModuleTranslationCreateWithoutStudy_moduleInput } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
@@ -27,9 +28,9 @@ export const StudyModuleMutations = extendType({
               ? {
                   create: study_module_translations.map((s) => ({
                     ...s,
-                    name: s.name ?? "",
-                    id: s.id ?? undefined,
-                  })),
+                    name: s?.name ?? "",
+                    id: s?.id ?? undefined,
+                  })) as StudyModuleTranslationCreateWithoutStudy_moduleInput[],
                 }
               : undefined,
           },
@@ -61,12 +62,12 @@ export const StudyModuleMutations = extendType({
           .map((t) => ({ ...t, id: undefined }))
         const updatedTranslations = (study_module_translations || [])
           .filter((t) => !!t?.id)
-          .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+          .map((t) => ({ where: { id: t?.id }, data: { ...t, id: undefined } }))
         const existingTranslationIds = (existingTranslations || []).map(
           (t) => t.id,
         )
         const moduleTranslationIds = (study_module_translations || []).map(
-          (t) => t.id,
+          (t) => t?.id,
         )
         const removedTranslationIds = existingTranslationIds
           .filter((id) => !moduleTranslationIds.includes(id))

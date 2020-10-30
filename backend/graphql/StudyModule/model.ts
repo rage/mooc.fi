@@ -1,6 +1,7 @@
 import { objectType, arg, stringArg } from "@nexus/schema"
 import { notEmpty } from "../../util/notEmpty"
 import { filterNull } from "../../util/db-functions"
+import { CourseOrderByInput } from "@prisma/client"
 
 export const StudyModule = objectType({
   name: "StudyModule",
@@ -27,7 +28,7 @@ export const StudyModule = objectType({
         const { language, orderBy } = args
 
         const courses = await ctx.prisma.course.findMany({
-          orderBy: filterNull(orderBy) ?? undefined,
+          orderBy: (filterNull(orderBy) as CourseOrderByInput) ?? undefined,
           where: { study_modules: { some: { id: parent.id } } },
         })
 

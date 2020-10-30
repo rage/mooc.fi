@@ -6,6 +6,7 @@ import {
   intArg,
   stringArg,
 } from "@nexus/schema"
+import { ExerciseCompletionOrderByInput } from "@prisma/client"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"
 import { Context } from "/context"
@@ -50,7 +51,9 @@ export const Exercise = objectType({
               // @ts-ignore: context typing problem, FIXME
               user_id: ctx?.user?.id, // { id: ctx?.user?.id },
             },
-            orderBy: filterNull(orderBy) ?? undefined,
+            orderBy:
+              (filterNull(orderBy) as ExerciseCompletionOrderByInput) ??
+              undefined,
           })
       },
     })

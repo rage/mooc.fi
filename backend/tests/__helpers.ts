@@ -30,6 +30,7 @@ export function getTestContext(): TestContext {
   } as TestContext
 
   const ctx = createTestContext()
+  // @ts-ignore: not used
   let knexClient: knex | null = null
 
   beforeEach(async () => {

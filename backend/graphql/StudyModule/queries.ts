@@ -1,4 +1,5 @@
 import { arg, extendType, idArg, stringArg } from "@nexus/schema"
+import { StudyModuleOrderByInput } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, or, isUser, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
@@ -86,7 +87,8 @@ export const StudyModuleQueries = extendType({
         const { orderBy, language } = args
 
         const modules = await ctx.prisma.studyModule.findMany({
-          orderBy: filterNull(orderBy) ?? undefined,
+          orderBy:
+            (filterNull(orderBy) as StudyModuleOrderByInput) ?? undefined,
         })
 
         const filtered = language

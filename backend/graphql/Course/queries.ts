@@ -2,7 +2,7 @@ import { arg, extendType, idArg, stringArg } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
-import { Course } from "@prisma/client"
+import { Course, CourseOrderByInput } from "@prisma/client"
 
 export const CourseQueries = extendType({
   type: "Query",
@@ -90,7 +90,7 @@ export const CourseQueries = extendType({
 
         console.log("I'm getting here, but with ctx", ctx)
         const courses = await ctx.prisma.course.findMany({
-          orderBy: filterNull(orderBy) ?? undefined,
+          orderBy: (filterNull(orderBy) as CourseOrderByInput) ?? undefined,
         })
 
         const filtered = language

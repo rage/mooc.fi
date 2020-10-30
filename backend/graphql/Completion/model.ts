@@ -100,7 +100,7 @@ export const Completion = objectType({
           },
         )
 
-        return avoinLink?.link
+        return avoinLink?.link ?? null
       },
     })
 
