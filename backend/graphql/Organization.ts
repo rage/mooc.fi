@@ -14,6 +14,7 @@ import { Context } from "../context"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 import { filterNull } from "../util/db-functions"
+import { OrganizationOrderByInput } from "@prisma/client"
 
 export const Organization = objectType({
   name: "Organization",
@@ -128,7 +129,8 @@ export const OrganizationQueries = extendType({
           last: last ?? undefined,
           after: after ? { id: after } : undefined,
           before: before ? { id: before } : undefined,*/
-          orderBy: filterNull(orderBy) ?? undefined,
+          orderBy:
+            (filterNull(orderBy) as OrganizationOrderByInput) ?? undefined,
           where: {
             hidden,
           },

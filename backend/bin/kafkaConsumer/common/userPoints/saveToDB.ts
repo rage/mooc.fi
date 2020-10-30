@@ -7,7 +7,7 @@ import knex from "knex"
 import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
-import { convertUpdate } from "../../../util/db-functions"
+import { convertUpdate } from "../../../../util/db-functions"
 
 const Knex = knex({
   client: "pg",

@@ -1,5 +1,4 @@
 import {
-  getBAIProgress,
   getProgress,
   getRules,
   getTierInfo,
@@ -7,7 +6,6 @@ import {
   TierInfo,
   TierProgressMap,
 } from "../generateBAIUserCourseProgress"
-import { User, Course } from "@prisma/client"
 import { ExerciseCompletionPart } from "../interfaces"
 
 const env = require("../env.json")

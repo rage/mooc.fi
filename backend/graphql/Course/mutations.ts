@@ -17,7 +17,7 @@ import { isAdmin } from "../../accessControl"
 import { Prisma__CourseClient, Course } from "@prisma/client"
 
 import { extendType, arg, idArg, stringArg } from "@nexus/schema"
-import { convertUpdate } from "../../util/db-functions"
+import { convertUpdate, filterNull } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
@@ -74,7 +74,7 @@ export const CourseMutations = extendType({
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : undefined,
             course_translations: !!course_translations
-              ? { create: course_translations }
+              ? { create: filterNull(course_translations) }
               : undefined,
             study_modules: !!study_modules
               ? {
@@ -84,13 +84,13 @@ export const CourseMutations = extendType({
                 }
               : undefined,
             open_university_registration_links: !!open_university_registration_links
-              ? { create: open_university_registration_links }
+              ? { create: filterNull(open_university_registration_links) }
               : undefined,
             course_variants: !!course_variants
-              ? { create: course_variants }
+              ? { create: filterNull(course_variants) }
               : undefined,
             course_aliases: !!course_aliases
-              ? { create: course_aliases }
+              ? { create: filterNull(course_aliases) }
               : undefined,
             inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
@@ -99,7 +99,7 @@ export const CourseMutations = extendType({
               ? { connect: { id: completions_handled_by } }
               : undefined,
             user_course_settings_visibilities: !!user_course_settings_visibilities
-              ? { create: user_course_settings_visibilities }
+              ? { create: filterNull(user_course_settings_visibilities) }
               : undefined,
             // don't think this will be passed by parameter, but let's be sure
             completion_email: !!completion_email
@@ -192,7 +192,7 @@ export const CourseMutations = extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_translations,
+          data: filterNull(course_translations),
           field: "course_translations",
         })
 
@@ -201,7 +201,7 @@ export const CourseMutations = extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: open_university_registration_links,
+          data: filterNull(open_university_registration_links),
           field: "open_university_registration_links",
         })
 
@@ -210,7 +210,7 @@ export const CourseMutations = extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_variants,
+          data: filterNull(course_variants),
           field: "course_variants",
         })
 
@@ -219,7 +219,7 @@ export const CourseMutations = extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: course_aliases,
+          data: filterNull(course_aliases),
           field: "course_aliases",
         })
 
@@ -228,7 +228,7 @@ export const CourseMutations = extendType({
           | undefined = await createMutation({
           ctx,
           slug,
-          data: user_course_settings_visibilities,
+          data: filterNull(user_course_settings_visibilities),
           field: "user_course_settings_visibilities",
         })
 
