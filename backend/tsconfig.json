@@ -6,6 +6,7 @@
     },
     "rootDir": ".",
     "lib": ["es2016", "esnext"],
+    "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,

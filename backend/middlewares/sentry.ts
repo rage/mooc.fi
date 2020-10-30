@@ -30,7 +30,7 @@ export const sentryPlugin = plugin({
           })
         }
 
-        ctx?.logger.error("error", { error })
+        ctx?.logger?.error("error", { error })
 
         return error
       }

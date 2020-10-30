@@ -57,12 +57,16 @@ const getUser = async (ctx: Context, rawToken: string) => {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
   let details: UserInfo | null = null
+
   try {
-    details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
-      prefix: "userdetails",
-      expireTime: 3600,
-      key: rawToken,
-    })
+    details = await redisify<UserInfo>(
+      async () => await client.getCurrentUserDetails(),
+      {
+        prefix: "userdetails",
+        expireTime: 3600,
+        key: rawToken,
+      },
+    )
   } catch (e) {
     console.log("error", e)
   }

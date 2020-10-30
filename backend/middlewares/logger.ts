@@ -7,7 +7,7 @@ export const loggerPlugin = plugin({
     return async (root: any, args: any, ctx: Context, info: any, next: any) => {
       // only log root level query/mutation, not fields queried
       if (!info.path?.prev) {
-        ctx?.logger.info(
+        ctx?.logger?.info(
           `${info.operation.operation}: ${
             info.path.key
           }, args: ${JSON.stringify(args)}`,

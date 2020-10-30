@@ -88,6 +88,7 @@ export const CourseQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
+        console.log("I'm getting here, but with ctx", ctx)
         const courses = await ctx.prisma.course.findMany({
           orderBy: filterNull(orderBy) ?? undefined,
         })

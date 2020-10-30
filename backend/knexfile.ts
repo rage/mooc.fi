@@ -16,6 +16,7 @@ module.exports = {
   test: {
     client: "pg",
     connection: url,
+    searchPath: [process.env.SEARCH_PATH],
   },
   production: {
     client: "pg",
