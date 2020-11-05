@@ -4,8 +4,7 @@ import { ProfileUserOverView_currentUser_completions as CompletionsData } from "
 import Button from "@material-ui/core/Button"
 import {
   formatDateTime,
-  mapLangToLanguage,
-  mapTier,
+  mapLangToLanguage
 } from "/components/DataFormatFunctions"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
