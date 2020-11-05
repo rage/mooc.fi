@@ -13,6 +13,7 @@ export const UserOverViewQuery = gql`
         completion_language
         student_number
         created_at
+        tier
         course {
           id
           slug

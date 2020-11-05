@@ -15,6 +15,7 @@ const completionsFragment = gql`
       completion_language
       student_number
       created_at
+      tier
       course {
         id
         slug

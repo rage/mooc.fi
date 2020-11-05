@@ -40,6 +40,7 @@ export interface UserCompletions_completions {
   completion_language: string | null
   student_number: string | null
   created_at: any | null
+  tier: number | null
   course: UserCompletions_completions_course | null
   completions_registered: UserCompletions_completions_completions_registered[]
 }

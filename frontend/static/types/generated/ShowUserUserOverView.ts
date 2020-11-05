@@ -40,6 +40,7 @@ export interface ShowUserUserOverView_user_completions {
   completion_language: string | null
   student_number: string | null
   created_at: any | null
+  tier: number | null
   course: ShowUserUserOverView_user_completions_course | null
   completions_registered: ShowUserUserOverView_user_completions_completions_registered[]
 }

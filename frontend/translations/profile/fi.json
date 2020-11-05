@@ -15,5 +15,9 @@
     "tabPoints": "Pisteet",
     "tabCompletions": "Suoritukset",
     "tabSettings": "Asetukset",
-    "registerCompletion": "Rekisteröi suoritus"
+    "registerCompletion": "Rekisteröi suoritus",
+    "completionTier": "suoritustaso: ",
+    "completionTier-1": "aloittelija",
+    "completionTier-2": "keskitaso",
+    "completionTier-3": "edistynyt"
 }

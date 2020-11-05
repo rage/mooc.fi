@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button"
 import {
   formatDateTime,
   mapLangToLanguage,
+  mapTier,
 } from "/components/DataFormatFunctions"
 import LanguageContext from "/contexes/LanguageContext"
 import getProfileTranslator from "/translations/profile"
@@ -70,6 +71,15 @@ const CompletionListItem = (props: ListItemProps) => {
             listItem.completion_language
           }`}
         </CardSubtitle>
+        {listItem.tier !== null && listItem.tier !== undefined ? (
+          <CardSubtitle>
+            {t("completionTier")}
+            {
+              // @ts-ignore: tier thingy
+              t(`completionTier-${listItem.tier}`)
+            }
+          </CardSubtitle>
+        ) : null}
       </div>
       {isRegistered && listItem.completions_registered ? (
         listItem.completions_registered.map((r) => (
@@ -84,7 +94,9 @@ const CompletionListItem = (props: ListItemProps) => {
             <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
           </div>
         ))
-      ) : (
+      ) : listItem.tier === null ||
+        listItem.tier === undefined ||
+        listItem.tier > 1 ? (
         <Link
           href="/register-completion/[slug]"
           as={`/register-completion/${listItem.course?.slug}`}
@@ -95,6 +107,8 @@ const CompletionListItem = (props: ListItemProps) => {
             </StyledButton>
           </StyledA>
         </Link>
+      ) : (
+        <StyledA>&nbsp;</StyledA>
       )}
       {hasCertificate && listItem?.course ? (
         <CertificateButton course={listItem.course} />
