@@ -34,6 +34,7 @@ export function getTestContext(): TestContext {
   let knexClient: knex | null = null
 
   beforeEach(async () => {
+    console.log("Running beforeEach test")
     const { prisma, client, knexClient: _knexClient } = await ctx.before()
 
     Object.assign(testContext, {
@@ -44,6 +45,7 @@ export function getTestContext(): TestContext {
     knexClient = _knexClient
   })
   afterEach(async () => {
+    console.log("Running afterEach test")
     await ctx.after()
   })
   return testContext
@@ -57,6 +59,7 @@ function createTestContext() {
 
   return {
     async before() {
+      console.log("Running before testContext")
       const port = await getPort({ port: makeRange(4001, 6000) })
       const { knexClient, prisma } = await prismaCtx.before()
 
@@ -83,6 +86,7 @@ function createTestContext() {
       }
     },
     async after() {
+      console.log("Running after testContext")
       await prismaCtx.after()
       serverInstance?.close()
       apolloInstance?.stop()
@@ -104,7 +108,7 @@ function prismaTestContext() {
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
-      databaseUrl = `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
+      databaseUrl = `postgres://postgres:postgres@localhost:5432/testing?schema=${schemaName}`
       // Set the required environment variable to contain the connection string
       // to our database test schema
       process.env.DATABASE_URL = databaseUrl
@@ -114,6 +118,7 @@ function prismaTestContext() {
         connection: databaseUrl,
         // debug: true,
       })
+      console.log("Creating schema ", schemaName)
       await knexClient.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
       await knexClient.raw(`SET SEARCH_PATH TO "${schemaName}";`)
       await knexClient.raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
@@ -137,6 +142,7 @@ function prismaTestContext() {
       }
     },
     async after() {
+      console.log("Dropping schema ", schemaName)
       // Drop the schema after the tests have completed
       await knexClient?.raw(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE;`)
       await knexClient?.destroy()

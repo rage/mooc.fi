@@ -9,7 +9,6 @@ import { Context } from "../context"
 import { plugin } from "@nexus/schema"
 import { convertUpdate } from "../util/db-functions"
 
-// this is the version suitable for middleware, not used for now
 export const moocfiAuthPlugin = plugin({
   name: "moocfiAuthPlugin",
   onCreateFieldResolver(_config: any) {
@@ -26,6 +25,8 @@ export const moocfiAuthPlugin = plugin({
 
       const rawToken = ctx.req?.headers?.authorization // connection?
 
+      console.log("Hello, I am in moocfi plugin with rawToken", rawToken)
+      // console.log("ctx is ", ctx)
       if (!rawToken) {
         ctx.role = Role.VISITOR
       } else if (rawToken.startsWith("Basic")) {
@@ -99,7 +100,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
   }
 }
 
-// this is the one suitable for context, not use for now
+// this is the one suitable for context, not used for now
 export const contextUser = async (
   req: any, // was: IncomingMessage, but somehow it's wrapped in req
   prisma: PrismaClient,

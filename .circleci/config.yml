@@ -36,20 +36,19 @@ jobs:
           command: "bin/push-docker-frontend-image.sh"
 
   build_backend:
-    # docker:
-    machine:
-      image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+    docker:
+      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: prisma
+          POSTGRES_PASSWORD: prisma
+          POSTGRES_DB: testing
     steps:
       - checkout
-      # - setup_remote_docker
+      - setup_remote_docker
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
-      - run:
-          name: Install Docker Compose
-          command: |
-            set -x curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
       - run:
           name: Build
           environment:
@@ -61,8 +60,6 @@ jobs:
             npm i
             npm run generate:nexus
             npm run build
-            set -x
-            docker-compose up -d
             npm run create-test-db
       - run:
           name: "Run tests"
@@ -79,7 +76,7 @@ jobs:
       - image: google/cloud-sdk
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker      
       - helm/install-helm-client:
           version: v3.2.4
       - run:

@@ -88,69 +88,69 @@ describe("user mutations", () => {
       }).rejects.toThrow()
     })
   })
+})
 
-  describe("updateResearchConsent", () => {
-    beforeEach(async () => {
-      await ctx.prisma.user.create({
-        data: {
-          upstream_id: 1,
-          administrator: false,
-          email: "e@mail.com",
-          first_name: "first",
-          last_name: "last",
-          username: "user",
-          research_consent: false,
-        },
-      })
-
-      const userDetails: UserInfo = {
-        id: 1,
+describe("updateResearchConsent", () => {
+  beforeEach(async () => {
+    await ctx.prisma.user.create({
+      data: {
+        upstream_id: 1,
         administrator: false,
         email: "e@mail.com",
-        user_field: {
-          first_name: "first",
-          last_name: "last",
-          course_announcements: false,
-          html1: "",
-          organizational_id: "",
-        },
+        first_name: "first",
+        last_name: "last",
         username: "user",
-        extra_fields: {},
-      }
-
-      jest
-        .spyOn(TmcClient.prototype, "getCurrentUserDetails")
-        .mockImplementation(async () => userDetails)
-
-      ctx.client.setHeader("Authorization", "Bearer 12345")
+        research_consent: false,
+      },
     })
 
-    afterEach(async () => {
-      await ctx.prisma.user.delete({ where: { upstream_id: 1 } })
-      jest.restoreAllMocks()
+    const userDetails: UserInfo = {
+      id: 1,
+      administrator: false,
+      email: "e@mail.com",
+      user_field: {
+        first_name: "first",
+        last_name: "last",
+        course_announcements: false,
+        html1: "",
+        organizational_id: "",
+      },
+      username: "user",
+      extra_fields: {},
+    }
+
+    jest
+      .spyOn(TmcClient.prototype, "getCurrentUserDetails")
+      .mockImplementation(async () => userDetails)
+
+    ctx.client.setHeader("Authorization", "Bearer 12345")
+  })
+
+  afterEach(async () => {
+    await ctx.prisma.user.delete({ where: { upstream_id: 1 } })
+    jest.restoreAllMocks()
+  })
+
+  it("updates correctly", async () => {
+    const res = await ctx.client.request(updateReseachConsentMutation, {
+      value: true,
     })
 
-    it("updates correctly", async () => {
-      const res = await ctx.client.request(updateReseachConsentMutation, {
-        value: true,
-      })
-
-      expect(res.updateResearchConsent).toMatchInlineSnapshot(
-        { id: expect.any(String) },
-        `
+    expect(res.updateResearchConsent).toMatchInlineSnapshot(
+      { id: expect.any(String) },
+      `
         Object {
           "id": Any<String>,
         }
       `,
-      )
-    })
+    )
+  })
 
-    it("won't update research consent without auth", async () => {
-      ctx.client.setHeader("Authorization", "")
+  it("won't update research consent without auth", async () => {
+    ctx.client.setHeader("Authorization", "")
 
-      await expect(async () => {
-        await ctx.client.request(updateReseachConsentMutation, { value: true })
-      }).rejects.toThrow()
-    })
+    await expect(async () => {
+      await ctx.client.request(updateReseachConsentMutation, { value: true })
+    }).rejects.toThrow()
   })
 })
