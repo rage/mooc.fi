@@ -45,6 +45,7 @@ export const UserCourseServiceProgressQueries = extendType({
         course_id: idArg(),
         service_id: idArg(),
       },
+      nullable: true,
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
