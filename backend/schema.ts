@@ -22,48 +22,51 @@ import { sentryPlugin } from "./middlewares/sentry"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
 
-const plugins = [
-  nexusPrisma({
-    experimentalCRUD: true,
-    paginationStrategy: "prisma",
-    outputs: {
-      typegen: path.join(
-        __dirname,
-        "./node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts",
-      ),
-    },
-    shouldGenerateArtifacts: true,
-    scalars: {
-      DateTime: DateTimeResolver,
-      Json: new GraphQLScalarType({
-        ...JSONObjectResolver,
-        name: "Json",
-        description:
-          "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
-      }),
-    },
-  }),
-  connectionPlugin({
-    nexusFieldName: "connection",
-    includeNodesField: true,
-  }),
-  loggerPlugin,
-  cachePlugin,
-  moocfiAuthPlugin,
-  fieldAuthorizePlugin(),
-  sentryPlugin,
-]
+const createPlugins = () => {
+  const plugins = [
+    nexusPrisma({
+      experimentalCRUD: true,
+      paginationStrategy: "prisma",
+      outputs: {
+        typegen: path.join(
+          __dirname,
+          "./node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts",
+        ),
+      },
+      shouldGenerateArtifacts: true,
+      scalars: {
+        DateTime: DateTimeResolver,
+        Json: new GraphQLScalarType({
+          ...JSONObjectResolver,
+          name: "Json",
+          description:
+            "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
+        }),
+      },
+    }),
+    connectionPlugin({
+      nexusFieldName: "connection",
+      includeNodesField: true,
+    }),
+    loggerPlugin(),
+    cachePlugin(),
+    moocfiAuthPlugin(),
+    fieldAuthorizePlugin(),
+    sentryPlugin(),
+  ]
 
-if (
-  PRODUCTION &&
-  !process.env.NEXUS_REFLECTION &&
-  process.env.NEW_RELIC_LICENSE_KEY
-) {
-  const { newRelicPlugin } = require("./middlewares/newrelic")
-  plugins.push(newRelicPlugin)
+  if (
+    PRODUCTION &&
+    !process.env.NEXUS_REFLECTION &&
+    process.env.NEW_RELIC_LICENSE_KEY
+  ) {
+    const { newRelicPlugin } = require("./middlewares/newrelic")
+    plugins.push(newRelicPlugin())
+  }
+  return plugins
 }
 
-export const schema = makeSchema({
+export default makeSchema({
   types,
   typegenAutoConfig: {
     sources: [
@@ -78,7 +81,7 @@ export const schema = makeSchema({
     ],
     contextType: "Context.Context",
   },
-  plugins,
+  plugins: createPlugins(),
   outputs: {
     typegen: path.join(
       __dirname,

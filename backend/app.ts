@@ -13,10 +13,8 @@ if (PRODUCTION && !process.env.NEXUS_REFLECTION) {
 }
 
 import { wsListen } from "./wsServer"
-import { ApolloServer } from "apollo-server-express"
-import express from "./server"
+import server from "./server"
 import { PrismaClient } from "@prisma/client"
-import { schema } from "./schema"
 import * as winston from "winston"
 
 const logger = winston.createLogger({
@@ -38,7 +36,12 @@ const prismaClient = new PrismaClient({
   ],
 })
 
-const apollo = new ApolloServer({
+const { express } = server({
+  prisma: prismaClient,
+  logger,
+})
+
+/*const apollo = new ApolloServer({
   schema,
   context: (ctx) => ({
     ...ctx,

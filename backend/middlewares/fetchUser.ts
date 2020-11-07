@@ -4,41 +4,39 @@ import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
 import { PrismaClient } from "@prisma/client"
-// import { IncomingMessage } from "http"
 import { Context } from "../context"
 import { plugin } from "@nexus/schema"
 import { convertUpdate } from "../util/db-functions"
 
-export const moocfiAuthPlugin = plugin({
-  name: "moocfiAuthPlugin",
-  onCreateFieldResolver(_config: any) {
-    return async (
-      root: any,
-      args: Record<string, any>,
-      ctx: Context,
-      info: any,
-      next: Function,
-    ) => {
-      if (ctx.userDetails || ctx.organization) {
+export const moocfiAuthPlugin = () =>
+  plugin({
+    name: "moocfiAuthPlugin",
+    onCreateFieldResolver(_config: any) {
+      return async (
+        root: any,
+        args: Record<string, any>,
+        ctx: Context,
+        info: any,
+        next: Function,
+      ) => {
+        if (ctx.userDetails || ctx.organization) {
+          return await next(root, args, ctx, info)
+        }
+
+        const rawToken = ctx.req?.headers?.authorization // connection?
+
+        if (!rawToken) {
+          ctx.role = Role.VISITOR
+        } else if (rawToken.startsWith("Basic")) {
+          await getOrganization(ctx, rawToken)
+        } else {
+          await getUser(ctx, rawToken)
+        }
+
         return await next(root, args, ctx, info)
       }
-
-      const rawToken = ctx.req?.headers?.authorization // connection?
-
-      console.log("Hello, I am in moocfi plugin with rawToken", rawToken)
-      // console.log("ctx is ", ctx)
-      if (!rawToken) {
-        ctx.role = Role.VISITOR
-      } else if (rawToken.startsWith("Basic")) {
-        await getOrganization(ctx, rawToken)
-      } else {
-        await getUser(ctx, rawToken)
-      }
-
-      return await next(root, args, ctx, info)
-    }
-  },
-})
+    },
+  })
 
 const getOrganization = async (ctx: Context, rawToken: string | null) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""

@@ -6,23 +6,45 @@ import { GraphQLClient } from "graphql-request"
 import { nanoid } from "nanoid"
 import { join } from "path"
 import knex from "knex"
-import express from "../server"
-import { ApolloServer } from "apollo-server-express"
-import { schema } from "../schema"
+import server from "../server"
+import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
 
 const logger = {
-  info: jest.fn(),
-  debug: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  format: {
+    printf: jest.fn(),
+    timestamp: jest.fn(),
+    simple: jest.fn(),
+    colorize: jest.fn(),
+    combine: jest.fn(),
+  },
+  transports: {
+    Console: jest.fn(),
+    File: jest.fn(),
+  },
+  createLogger: jest.fn().mockImplementation(function (_creationOpts) {
+    return {
+      info: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+    }
+  }),
 }
 
-type TestContext = {
+export type TestContext = {
   client: GraphQLClient
   prisma: PrismaClient
   logger: winston.Logger
+  version: number
 }
+
+export type TestContextContainer = {
+  ctx: TestContext
+  setup: () => Promise<void>
+  teardown: () => Promise<void>
+}
+
+let version = 1
 
 export function getTestContext(): TestContext {
   let testContext = {
@@ -30,24 +52,19 @@ export function getTestContext(): TestContext {
   } as TestContext
 
   const ctx = createTestContext()
-  // @ts-ignore: not used
-  let knexClient: knex | null = null
 
   beforeEach(async () => {
-    console.log("Running beforeEach test")
-    const { prisma, client, knexClient: _knexClient } = await ctx.before()
+    const { prisma, client } = await ctx.before()
 
     Object.assign(testContext, {
       prisma,
       client,
     })
-
-    knexClient = _knexClient
   })
   afterEach(async () => {
-    console.log("Running afterEach test")
     await ctx.after()
   })
+
   return testContext
 }
 
@@ -59,48 +76,50 @@ function createTestContext() {
 
   return {
     async before() {
-      console.log("Running before testContext")
       const port = await getPort({ port: makeRange(4001, 6000) })
-      const { knexClient, prisma } = await prismaCtx.before()
+      const { prisma } = await prismaCtx.before()
 
-      apolloInstance = new ApolloServer({
-        schema,
-        context: (ctx) => ({
-          ...ctx,
-          prisma,
-          logger,
-        }),
+      const { apollo, express } = server({
+        prisma,
+        logger: logger.createLogger(),
+        extraContext: {
+          version: version++,
+        },
       })
-      apolloInstance.applyMiddleware({ app: express, path: "/" })
+      apolloInstance = apollo
       serverInstance = express.listen(port)
 
       return {
-        client: new GraphQLClient(`http://localhost:${port}`, {
-          /*headers: {
-            authorization:
-              "Bearer a19e04d586d0085ceaaa39b62e18be724e3799a1fe1721d600f8703efc58f753",
-          },*/
-        }),
+        client: new GraphQLClient(`http://localhost:${port}`),
         prisma,
-        knexClient,
       }
     },
     async after() {
-      console.log("Running after testContext")
       await prismaCtx.after()
       serverInstance?.close()
-      apolloInstance?.stop()
+      await apolloInstance?.stop()
     },
   }
 }
 
+function systemSync(cmd: string, options: any = {}) {
+  try {
+    return execSync(cmd, options)
+  } catch (e) {
+    e.status
+    e.message
+    e.stderr
+    e.stdout
+    process.exit(1)
+  }
+}
+
 function prismaTestContext() {
-  // const prismaBinary = join(__dirname, "..", "node_modules", ".bin", "prisma")
   const knexBinary = join(__dirname, "..", "node_modules", ".bin", "knex")
 
   let schemaName = ""
   let databaseUrl = ""
-  let prismaClient: null | PrismaClient = null
+  let prisma: null | PrismaClient = null
   let knexClient: knex | null = null
 
   return {
@@ -118,13 +137,16 @@ function prismaTestContext() {
         connection: databaseUrl,
         // debug: true,
       })
-      console.log("Creating schema ", schemaName)
-      await knexClient.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
-      await knexClient.raw(`SET SEARCH_PATH TO "${schemaName}";`)
-      await knexClient.raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+      await knexClient.transaction(async (trx: knex.Transaction) => {
+        await trx.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
+        await trx.raw(`SET SEARCH_PATH TO "${schemaName}";`)
+        await trx.raw(
+          `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${schemaName}";`,
+        )
+      })
 
       // Run the migrations to ensure our schema has the required structure
-      execSync(`${knexBinary} migrate:latest`, {
+      systemSync(`${knexBinary} migrate:latest`, {
         env: {
           ...process.env,
           DATABASE_URL: databaseUrl,
@@ -133,21 +155,20 @@ function prismaTestContext() {
         stdio: "inherit",
       })
       // Construct a new Prisma Client connected to the generated Postgres schema
-      prismaClient = new PrismaClient({
+      prisma = new PrismaClient({
         datasources: { db: { url: databaseUrl } },
       })
       return {
         knexClient,
-        prisma: prismaClient,
+        prisma,
       }
     },
     async after() {
-      console.log("Dropping schema ", schemaName)
       // Drop the schema after the tests have completed
       await knexClient?.raw(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE;`)
       await knexClient?.destroy()
       // Release the Prisma Client connection
-      await prismaClient?.$disconnect()
+      await prisma?.$disconnect()
     },
   }
 }
