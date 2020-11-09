@@ -30,6 +30,7 @@ export interface TierProgress {
   n_points: number
   max_points: number
   progress: number
+  custom_id?: string
 }
 
 export interface ExerciseCompletionPart {
