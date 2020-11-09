@@ -15,6 +15,9 @@ import * as winston from "winston"
 
 const JSONStream = require("JSONStream")
 
+const DEBUG = Boolean(process.env.DEBUG)
+const TEST = process.env.NODE_ENV === "test"
+
 type UserCourseSettingsCountResult =
   | {
       course: string
@@ -43,8 +46,9 @@ const _express = () => {
   const express = createExpress()
 
   express.use(cors())
-  express.use(morgan("combined"))
-
+  if (!TEST) {
+    express.use(morgan("combined"))
+  }
   express.get("/api/completions/:course", async function (req: any, res: any) {
     const rawToken = req.get("Authorization")
     const secret: string = rawToken?.split(" ")[1] ?? ""
@@ -418,6 +422,7 @@ export default ({ prisma, logger, extraContext = {} }: ServerParams) => {
     },
     introspection: true,
     logger,
+    debug: DEBUG,
   })
   const express = _express()
 
