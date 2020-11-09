@@ -25,22 +25,127 @@ const updateReseachConsentMutation = gql`
     }
   }
 `
-/*describe("user queries", () => {
-  it("shows current user", async () => {
-    const res = await ctx.client.request(`
+
+const ctx = getTestContext()
+
+describe.only("user queries", () => {
+  describe("currentUser", () => {
+    beforeEach(async () => {
+      await ctx.prisma.user.deleteMany({ where: {} })
+      await ctx.prisma.user.create({
+        data: {
+          upstream_id: 1,
+          administrator: false,
+          email: "e@mail.com",
+          first_name: "first",
+          last_name: "last",
+          username: "user",
+        },
+      })
+    })
+
+    it("shows current user when logged in", async () => {
+      const userDetails: UserInfo = {
+        id: 1,
+        administrator: false,
+        email: "e@mail.com",
+        user_field: {
+          first_name: "first",
+          last_name: "last",
+          course_announcements: false,
+          html1: "",
+          organizational_id: "",
+        },
+        username: "user",
+        extra_fields: {},
+      }
+
+      jest
+        .spyOn(TmcClient.prototype, "getCurrentUserDetails")
+        .mockImplementation(async () => userDetails)
+
+      ctx!.client.setHeader("Authorization", "Bearer 12345")
+
+      const res = await ctx.client.request(`
       query {
         currentUser {
           id
+          administrator
+          email
+          first_name
+          last_name
+          username
+          upstream_id
         }
       }
     `)
 
-    expect(res).toMatchSnapshot()
+      expect(res).toMatchInlineSnapshot(
+        {
+          currentUser: {
+            id: expect.any(String),
+            administrator: false,
+            email: "e@mail.com",
+            first_name: "first",
+            last_name: "last",
+            username: "user",
+            upstream_id: 1,
+          },
+        },
+        `
+              Object {
+                "currentUser": Object {
+                  "administrator": false,
+                  "email": "e@mail.com",
+                  "first_name": "first",
+                  "id": Any<String>,
+                  "last_name": "last",
+                  "upstream_id": 1,
+                  "username": "user",
+                },
+              }
+          `,
+      )
+
+      jest.clearAllMocks()
+    })
+
+    it("shows null when not logged in", async () => {
+      ctx!.client.setHeader("Authorization", "")
+
+      const res = await ctx.client.request(`
+      query {
+        currentUser {
+          id
+          administrator
+          email
+          first_name
+          last_name
+          username
+          upstream_id
+        }
+      }
+    `)
+
+      expect(res).toMatchInlineSnapshot(
+        {
+          currentUser: null,
+        },
+        `
+        Object {
+          "currentUser": null,
+        }
+      `,
+      )
+    })
   })
-})*/
-const ctx = getTestContext()
+})
 
 describe("user mutations", () => {
+  beforeEach(async () => {
+    await ctx.prisma.user.deleteMany({ where: {} })
+  })
+
   describe("addUser", () => {
     it("creates user correctly", async () => {
       const res = await ctx.client.request(addUserMutation, {

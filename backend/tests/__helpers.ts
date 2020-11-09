@@ -9,6 +9,9 @@ import knex from "knex"
 import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
+import Knex from "knex"
+
+const DEBUG = Boolean(process.env.DEBUG)
 
 const logger = {
   format: {
@@ -35,6 +38,7 @@ export type TestContext = {
   client: GraphQLClient
   prisma: PrismaClient
   logger: winston.Logger
+  knexClient: knex
   version: number
 }
 
@@ -54,11 +58,12 @@ export function getTestContext(): TestContext {
   const ctx = createTestContext()
 
   beforeEach(async () => {
-    const { prisma, client } = await ctx.before()
+    const { prisma, client, knexClient } = await ctx.before()
 
     Object.assign(testContext, {
       prisma,
       client,
+      knexClient,
     })
   })
   afterEach(async () => {
@@ -77,7 +82,7 @@ function createTestContext() {
   return {
     async before() {
       const port = await getPort({ port: makeRange(4001, 6000) })
-      const { prisma } = await prismaCtx.before()
+      const { prisma, knexClient } = await prismaCtx.before()
 
       const { apollo, express } = server({
         prisma,
@@ -92,6 +97,7 @@ function createTestContext() {
       return {
         client: new GraphQLClient(`http://localhost:${port}`),
         prisma,
+        knexClient,
       }
     },
     async after() {
@@ -135,7 +141,7 @@ function prismaTestContext() {
       knexClient = knex({
         client: "pg",
         connection: databaseUrl,
-        // debug: true,
+        debug: DEBUG,
       })
       await knexClient.transaction(async (trx: knex.Transaction) => {
         await trx.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
@@ -152,7 +158,7 @@ function prismaTestContext() {
           DATABASE_URL: databaseUrl,
           SEARCH_PATH: schemaName,
         },
-        stdio: "inherit",
+        ...(DEBUG ? { stdio: "inherit" } : {}),
       })
       // Construct a new Prisma Client connected to the generated Postgres schema
       prisma = new PrismaClient({
