@@ -14,6 +14,7 @@ import Knex from "../../../../services/knex"
 import * as winston from "winston"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
+import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
 
 const prisma = prismaClient()
 
@@ -214,6 +215,7 @@ export const createCompletion = async ({
             ? false
             : handlerCourse.automatic_completions_eligible_for_ects,
         completion_date: new Date(),
+        tier: isNullOrUndefined(tier) ? tier : undefined,
       },
     })
     // TODO: this only sends the completion email for the first tier completed
@@ -228,11 +230,7 @@ export const createCompletion = async ({
     if (template) {
       await sendEmailTemplateToUser(user, template)
     }
-  } else if (
-    tier !== null &&
-    tier !== undefined &&
-    tier > (completions[0]!.tier ?? 0)
-  ) {
+  } else if (!isNullOrUndefined(tier) && tier > (completions[0]!.tier ?? 0)) {
     logger?.info("Existing completion found, updating tier...")
     await prisma.completion.update({
       where: {
