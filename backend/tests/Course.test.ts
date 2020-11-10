@@ -1,13 +1,13 @@
 import { gql } from "graphql-request"
-import TmcClient from "../services/tmc"
 import { getTestContext } from "./__helpers"
 import {
   course,
-  normalUser,
+  //normalUser,
   normalUserDetails,
-  adminUser,
+  //adminUser,
   adminUserDetails,
 } from "./data"
+import nock from "nock"
 
 const ctx = getTestContext()
 
@@ -23,15 +23,28 @@ const courseQuery = gql`
   }
 `
 
+beforeAll(() => {
+  nock("https://tmc.mooc.fi")
+    .get("/api/v8/users/current?show_user_fields=1&extra_fields=1")
+    .reply(function () {
+      const auth = this.req.headers.authorization
+
+      switch (auth) {
+        case "Bearer normal":
+          return [200, normalUserDetails]
+        case "Bearer admin":
+          return [200, adminUserDetails]
+      }
+    })
+})
+
+afterAll(() => nock.cleanAll())
+
 describe("course queries", () => {
   describe("course", () => {
     let courseId: string | null = null
 
     beforeEach(async () => {
-      console.log("course beforeEach", ctx.version)
-      /*while (!ctx.prisma || !ctx.client) {
-        await new Promise((resolve) => setTimeout(resolve, 100))
-      }*/
       const newCourse = await ctx.prisma.course.create({
         data: course,
       })
@@ -39,10 +52,7 @@ describe("course queries", () => {
     })
 
     it("returns course on id", async () => {
-      jest
-        .spyOn(TmcClient.prototype, "getCurrentUserDetails")
-        .mockImplementation(async () => normalUserDetails)
-      ctx!.client.setHeader("Authorization", "Bearer 12345")
+      ctx!.client.setHeader("Authorization", "Bearer normal")
 
       const res = await ctx.client.request(courseQuery, {
         id: courseId,
