@@ -45,6 +45,7 @@ const ListItemContainer = styled.div`
 interface ListItemProps {
   listItem: CompletionsData
 }
+
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
   const isRegistered = (listItem?.completions_registered ?? []).length > 0
@@ -70,6 +71,15 @@ const CompletionListItem = (props: ListItemProps) => {
             listItem.completion_language
           }`}
         </CardSubtitle>
+        {listItem.tier !== null && listItem.tier !== undefined ? (
+          <CardSubtitle>
+            {t("completionTier")}
+            {
+              // @ts-ignore: tier thingy
+              t(`completionTier-${listItem.tier}`)
+            }
+          </CardSubtitle>
+        ) : null}
       </div>
       {isRegistered && listItem.completions_registered ? (
         listItem.completions_registered.map((r) => (
@@ -84,7 +94,7 @@ const CompletionListItem = (props: ListItemProps) => {
             <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
           </div>
         ))
-      ) : (
+      ) : listItem.eligible_for_ects ? (
         <Link
           href="/register-completion/[slug]"
           as={`/register-completion/${listItem.course?.slug}`}
@@ -95,6 +105,8 @@ const CompletionListItem = (props: ListItemProps) => {
             </StyledButton>
           </StyledA>
         </Link>
+      ) : (
+        <div style={{ margin: "auto" }}>&nbsp;</div>
       )}
       {hasCertificate && listItem?.course ? (
         <CertificateButton course={listItem.course} />

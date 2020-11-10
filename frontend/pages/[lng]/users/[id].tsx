@@ -42,7 +42,8 @@ const UserPage = () => {
     )
   }
 
-  data?.userCourseSettings?.edges?.push(...more)
+  // TODO: this doesn't work
+  // data?.userCourseSettings?.edges?.push(...more)
 
   return (
     <>

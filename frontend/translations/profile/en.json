@@ -15,5 +15,9 @@
     "tabPoints": "Points",
     "tabCompletions": "Completions",
     "tabSettings": "Settings",
-    "registerCompletion": "Register Completion"
+    "registerCompletion": "Register Completion",
+    "completionTier": "completion tier: ",
+    "completionTier-1": "beginner",
+    "completionTier-2": "intermediate",
+    "completionTier-3": "advanced"
 }
