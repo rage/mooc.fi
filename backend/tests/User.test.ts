@@ -1,7 +1,7 @@
 import { gql } from "graphql-request"
 import { getTestContext /*TestContext*/ } from "./__helpers"
 import TmcClient from "../services/tmc"
-import { UserInfo } from "/domain/UserInfo"
+import { normalUser, normalUserDetails } from "./data"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
@@ -31,38 +31,15 @@ const ctx = getTestContext()
 describe("user queries", () => {
   describe("currentUser", () => {
     beforeEach(async () => {
-      await ctx.prisma.user.deleteMany({ where: {} })
       await ctx.prisma.user.create({
-        data: {
-          upstream_id: 1,
-          administrator: false,
-          email: "e@mail.com",
-          first_name: "first",
-          last_name: "last",
-          username: "user",
-        },
+        data: normalUser
       })
     })
 
     it("shows current user when logged in", async () => {
-      const userDetails: UserInfo = {
-        id: 1,
-        administrator: false,
-        email: "e@mail.com",
-        user_field: {
-          first_name: "first",
-          last_name: "last",
-          course_announcements: false,
-          html1: "",
-          organizational_id: "",
-        },
-        username: "user",
-        extra_fields: {},
-      }
-
       jest
         .spyOn(TmcClient.prototype, "getCurrentUserDetails")
-        .mockImplementation(async () => userDetails)
+        .mockImplementation(async () => normalUserDetails)
 
       ctx!.client.setHeader("Authorization", "Bearer 12345")
 
@@ -168,14 +145,7 @@ describe("user mutations", () => {
 
     it("won't create user with same id", async () => {
       await ctx.prisma.user.create({
-        data: {
-          upstream_id: 1,
-          administrator: false,
-          email: "e@mail.com",
-          first_name: "first",
-          last_name: "last",
-          username: "user",
-        },
+        data: normalUser
       })
 
       await expect(async () => {
@@ -196,35 +166,12 @@ describe("user mutations", () => {
   describe("updateResearchConsent", () => {
     beforeEach(async () => {
       await ctx!.prisma.user.create({
-        data: {
-          upstream_id: 1,
-          administrator: false,
-          email: "e@mail.com",
-          first_name: "first",
-          last_name: "last",
-          username: "user",
-          research_consent: false,
-        },
+        data: normalUser
       })
-
-      const userDetails: UserInfo = {
-        id: 1,
-        administrator: false,
-        email: "e@mail.com",
-        user_field: {
-          first_name: "first",
-          last_name: "last",
-          course_announcements: false,
-          html1: "",
-          organizational_id: "",
-        },
-        username: "user",
-        extra_fields: {},
-      }
 
       jest
         .spyOn(TmcClient.prototype, "getCurrentUserDetails")
-        .mockImplementation(async () => userDetails)
+        .mockImplementation(async () => normalUserDetails)
 
       ctx!.client.setHeader("Authorization", "Bearer 12345")
     })
