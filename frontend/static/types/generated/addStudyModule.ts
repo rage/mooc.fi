@@ -28,7 +28,7 @@ export interface addStudyModule_addStudyModule {
 }
 
 export interface addStudyModule {
-  addStudyModule: addStudyModule_addStudyModule | null
+  addStudyModule: addStudyModule_addStudyModule
 }
 
 export interface addStudyModuleVariables {

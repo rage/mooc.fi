@@ -66,6 +66,6 @@ export interface AllEditorCourses_currentUser {
 }
 
 export interface AllEditorCourses {
-  courses: AllEditorCourses_courses[] | null
+  courses: AllEditorCourses_courses[]
   currentUser: AllEditorCourses_currentUser | null
 }

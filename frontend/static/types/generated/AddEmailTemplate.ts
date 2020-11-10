@@ -17,7 +17,7 @@ export interface AddEmailTemplate_addEmailTemplate {
 }
 
 export interface AddEmailTemplate {
-  addEmailTemplate: AddEmailTemplate_addEmailTemplate | null
+  addEmailTemplate: AddEmailTemplate_addEmailTemplate
 }
 
 export interface AddEmailTemplateVariables {

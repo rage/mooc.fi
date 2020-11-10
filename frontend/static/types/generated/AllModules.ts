@@ -12,13 +12,13 @@ export interface AllModules_study_modules {
   id: string
   slug: string
   name: string
-  description: string | null
+  description: string
   image: string | null
   order: number | null
 }
 
 export interface AllModules {
-  study_modules: AllModules_study_modules[] | null
+  study_modules: AllModules_study_modules[]
 }
 
 export interface AllModulesVariables {

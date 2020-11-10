@@ -17,7 +17,7 @@ export interface DeleteEmailTemplate_deleteEmailTemplate {
 }
 
 export interface DeleteEmailTemplate {
-  deleteEmailTemplate: DeleteEmailTemplate_deleteEmailTemplate | null
+  deleteEmailTemplate: DeleteEmailTemplate_deleteEmailTemplate
 }
 
 export interface DeleteEmailTemplateVariables {

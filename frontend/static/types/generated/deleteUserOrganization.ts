@@ -13,7 +13,7 @@ export interface deleteUserOrganization_deleteUserOrganization {
 }
 
 export interface deleteUserOrganization {
-  deleteUserOrganization: deleteUserOrganization_deleteUserOrganization | null
+  deleteUserOrganization: deleteUserOrganization_deleteUserOrganization
 }
 
 export interface deleteUserOrganizationVariables {

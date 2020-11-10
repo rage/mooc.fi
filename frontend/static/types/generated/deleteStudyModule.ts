@@ -14,7 +14,7 @@ export interface deleteStudyModule_deleteStudyModule {
 }
 
 export interface deleteStudyModule {
-  deleteStudyModule: deleteStudyModule_deleteStudyModule | null
+  deleteStudyModule: deleteStudyModule_deleteStudyModule
 }
 
 export interface deleteStudyModuleVariables {

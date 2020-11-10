@@ -90,7 +90,7 @@ export interface updateCourse_updateCourse {
 }
 
 export interface updateCourse {
-  updateCourse: updateCourse_updateCourse | null
+  updateCourse: updateCourse_updateCourse
 }
 
 export interface updateCourseVariables {

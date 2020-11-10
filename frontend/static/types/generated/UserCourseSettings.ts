@@ -27,8 +27,8 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_exercise_progress {
   __typename: "ExerciseProgress"
-  total: number | null
-  exercises: number | null
+  total: number
+  exercises: number
 }
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_user {
@@ -42,8 +42,8 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress {
   __typename: "UserCourseProgress"
-  progress: any[] | null
-  exercise_progress: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_exercise_progress | null
+  progress: any[]
+  exercise_progress: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_exercise_progress
   user: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_user | null
 }
 
@@ -55,7 +55,7 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses {
   __typename: "UserCourseServiceProgress"
-  progress: any[] | null
+  progress: any[]
   service: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses_service | null
 }
 
@@ -63,9 +63,7 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress 
   __typename: "Progress"
   course: UserCourseSettings_userCourseSettings_edges_node_user_progress_course | null
   user_course_progress: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress | null
-  user_course_service_progresses:
-    | UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses[]
-    | null
+  user_course_service_progresses: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses[]
 }
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user {
@@ -90,7 +88,7 @@ export interface UserCourseSettings_userCourseSettings_edges {
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Node
    */
-  node: UserCourseSettings_userCourseSettings_edges_node | null
+  node: UserCourseSettings_userCourseSettings_edges_node
 }
 
 export interface UserCourseSettings_userCourseSettings {
@@ -103,11 +101,11 @@ export interface UserCourseSettings_userCourseSettings {
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
    */
   edges: (UserCourseSettings_userCourseSettings_edges | null)[] | null
-  count: number | null
+  count: number
 }
 
 export interface UserCourseSettings {
-  userCourseSettings: UserCourseSettings_userCourseSettings | null
+  userCourseSettings: UserCourseSettings_userCourseSettings
 }
 
 export interface UserCourseSettingsVariables {

@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface checkSlug {
-  course_exists: boolean | null
+  course_exists: boolean
 }
 
 export interface checkSlugVariables {

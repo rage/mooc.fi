@@ -45,6 +45,7 @@ const ListItemContainer = styled.div`
 interface ListItemProps {
   listItem: CompletionsData
 }
+
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
   const isRegistered = (listItem?.completions_registered ?? []).length > 0
@@ -93,9 +94,7 @@ const CompletionListItem = (props: ListItemProps) => {
             <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
           </div>
         ))
-      ) : listItem.tier === null ||
-        listItem.tier === undefined ||
-        listItem.tier > 1 ? (
+      ) : listItem.eligible_for_ects ? (
         <Link
           href="/register-completion/[slug]"
           as={`/register-completion/${listItem.course?.slug}`}
@@ -107,7 +106,7 @@ const CompletionListItem = (props: ListItemProps) => {
           </StyledA>
         </Link>
       ) : (
-        <StyledA>&nbsp;</StyledA>
+        <div style={{ margin: "auto" }}>&nbsp;</div>
       )}
       {hasCertificate && listItem?.course ? (
         <CertificateButton course={listItem.course} />

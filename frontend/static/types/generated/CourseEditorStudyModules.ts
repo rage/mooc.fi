@@ -15,5 +15,5 @@ export interface CourseEditorStudyModules_study_modules {
 }
 
 export interface CourseEditorStudyModules {
-  study_modules: CourseEditorStudyModules_study_modules[] | null
+  study_modules: CourseEditorStudyModules_study_modules[]
 }

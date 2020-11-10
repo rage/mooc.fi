@@ -28,7 +28,7 @@ export interface updateStudyModule_updateStudyModule {
 }
 
 export interface updateStudyModule {
-  updateStudyModule: updateStudyModule_updateStudyModule | null
+  updateStudyModule: updateStudyModule_updateStudyModule
 }
 
 export interface updateStudyModuleVariables {

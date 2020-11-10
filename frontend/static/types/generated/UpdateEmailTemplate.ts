@@ -17,7 +17,7 @@ export interface UpdateEmailTemplate_updateEmailTemplate {
 }
 
 export interface UpdateEmailTemplate {
-  updateEmailTemplate: UpdateEmailTemplate_updateEmailTemplate | null
+  updateEmailTemplate: UpdateEmailTemplate_updateEmailTemplate
 }
 
 export interface UpdateEmailTemplateVariables {
