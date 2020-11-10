@@ -15,7 +15,7 @@ export interface updateUserName_updateUserName {
 }
 
 export interface updateUserName {
-  updateUserName: updateUserName_updateUserName | null
+  updateUserName: updateUserName_updateUserName
 }
 
 export interface updateUserNameVariables {

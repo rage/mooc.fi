@@ -23,5 +23,5 @@ export interface Organizations_organizations {
 }
 
 export interface Organizations {
-  organizations: Organizations_organizations[] | null
+  organizations: Organizations_organizations[]
 }

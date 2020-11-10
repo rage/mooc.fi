@@ -13,7 +13,7 @@ export interface updateCreateAccountResearchConsent_updateResearchConsent {
 }
 
 export interface updateCreateAccountResearchConsent {
-  updateResearchConsent: updateCreateAccountResearchConsent_updateResearchConsent | null
+  updateResearchConsent: updateCreateAccountResearchConsent_updateResearchConsent
 }
 
 export interface updateCreateAccountResearchConsentVariables {

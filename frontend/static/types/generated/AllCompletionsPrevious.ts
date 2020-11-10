@@ -69,7 +69,7 @@ export interface AllCompletionsPrevious_completionsPaginated_edges {
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Node
    */
-  node: AllCompletionsPrevious_completionsPaginated_edges_node | null
+  node: AllCompletionsPrevious_completionsPaginated_edges_node
 }
 
 export interface AllCompletionsPrevious_completionsPaginated {
@@ -85,7 +85,7 @@ export interface AllCompletionsPrevious_completionsPaginated {
 }
 
 export interface AllCompletionsPrevious {
-  completionsPaginated: AllCompletionsPrevious_completionsPaginated | null
+  completionsPaginated: AllCompletionsPrevious_completionsPaginated
 }
 
 export interface AllCompletionsPreviousVariables {

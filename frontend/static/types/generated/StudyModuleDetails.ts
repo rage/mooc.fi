@@ -29,7 +29,7 @@ export interface StudyModuleDetails_study_module {
   name: string
   image: string | null
   order: number | null
-  courses: StudyModuleDetails_study_module_courses[] | null
+  courses: StudyModuleDetails_study_module_courses[]
   study_module_translations: StudyModuleDetails_study_module_study_module_translations[]
 }
 

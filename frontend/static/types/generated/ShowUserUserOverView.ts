@@ -56,7 +56,7 @@ export interface ShowUserUserOverView_user {
 }
 
 export interface ShowUserUserOverView {
-  user: ShowUserUserOverView_user | null
+  user: ShowUserUserOverView_user
 }
 
 export interface ShowUserUserOverViewVariables {

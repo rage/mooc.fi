@@ -14,7 +14,7 @@ export interface deleteCourse_deleteCourse {
 }
 
 export interface deleteCourse {
-  deleteCourse: deleteCourse_deleteCourse | null
+  deleteCourse: deleteCourse_deleteCourse
 }
 
 export interface deleteCourseVariables {

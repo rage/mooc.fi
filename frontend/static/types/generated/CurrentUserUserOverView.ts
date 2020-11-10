@@ -43,7 +43,7 @@ export interface CurrentUserUserOverView_currentUser_completions {
   tier: number | null
   course: CurrentUserUserOverView_currentUser_completions_course | null
   completion_date: any | null
-  registered: boolean | null
+  registered: boolean
   completions_registered: CurrentUserUserOverView_currentUser_completions_completions_registered[]
 }
 

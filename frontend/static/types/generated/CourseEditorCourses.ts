@@ -36,5 +36,5 @@ export interface CourseEditorCourses_courses {
 }
 
 export interface CourseEditorCourses {
-  courses: CourseEditorCourses_courses[] | null
+  courses: CourseEditorCourses_courses[]
 }

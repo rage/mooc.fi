@@ -15,7 +15,7 @@ export interface updateUserOrganization_updateUserOrganization {
 }
 
 export interface updateUserOrganization {
-  updateUserOrganization: updateUserOrganization_updateUserOrganization | null
+  updateUserOrganization: updateUserOrganization_updateUserOrganization
 }
 
 export interface updateUserOrganizationVariables {

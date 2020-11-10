@@ -48,8 +48,8 @@ export interface AllCourses_courses {
   start_point: boolean | null
   study_module_start_point: boolean | null
   hidden: boolean | null
-  description: string | null
-  link: string | null
+  description: string
+  link: string
   upcoming_active_link: boolean | null
   study_modules: AllCourses_courses_study_modules[]
   course_translations: AllCourses_courses_course_translations[]
@@ -57,7 +57,7 @@ export interface AllCourses_courses {
 }
 
 export interface AllCourses {
-  courses: AllCourses_courses[] | null
+  courses: AllCourses_courses[]
 }
 
 export interface AllCoursesVariables {

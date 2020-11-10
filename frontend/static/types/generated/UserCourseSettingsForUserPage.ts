@@ -29,7 +29,7 @@ export interface UserCourseSettingsForUserPage_userCourseSettings_edges {
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Node
    */
-  node: UserCourseSettingsForUserPage_userCourseSettings_edges_node | null
+  node: UserCourseSettingsForUserPage_userCourseSettings_edges_node
 }
 
 export interface UserCourseSettingsForUserPage_userCourseSettings_pageInfo {
@@ -59,7 +59,7 @@ export interface UserCourseSettingsForUserPage_userCourseSettings {
 }
 
 export interface UserCourseSettingsForUserPage {
-  userCourseSettings: UserCourseSettingsForUserPage_userCourseSettings | null
+  userCourseSettings: UserCourseSettingsForUserPage_userCourseSettings
 }
 
 export interface UserCourseSettingsForUserPageVariables {

@@ -43,7 +43,7 @@ export interface UserDetailsContains_userDetailsContains_edges {
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Node
    */
-  node: UserDetailsContains_userDetailsContains_edges_node | null
+  node: UserDetailsContains_userDetailsContains_edges_node
 }
 
 export interface UserDetailsContains_userDetailsContains {
@@ -56,11 +56,11 @@ export interface UserDetailsContains_userDetailsContains {
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
    */
   edges: (UserDetailsContains_userDetailsContains_edges | null)[] | null
-  count: number | null
+  count: number
 }
 
 export interface UserDetailsContains {
-  userDetailsContains: UserDetailsContains_userDetailsContains | null
+  userDetailsContains: UserDetailsContains_userDetailsContains
 }
 
 export interface UserDetailsContainsVariables {

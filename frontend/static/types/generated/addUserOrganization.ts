@@ -13,7 +13,7 @@ export interface addUserOrganization_addUserOrganization {
 }
 
 export interface addUserOrganization {
-  addUserOrganization: addUserOrganization_addUserOrganization | null
+  addUserOrganization: addUserOrganization_addUserOrganization
 }
 
 export interface addUserOrganizationVariables {

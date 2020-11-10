@@ -80,7 +80,7 @@ export interface addCourse_addCourse {
 }
 
 export interface addCourse {
-  addCourse: addCourse_addCourse | null
+  addCourse: addCourse_addCourse
 }
 
 export interface addCourseVariables {
