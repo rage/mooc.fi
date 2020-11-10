@@ -14,6 +14,7 @@ export const UserOverViewQuery = gql`
         student_number
         created_at
         tier
+        eligible_for_ects
         course {
           id
           slug
