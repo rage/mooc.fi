@@ -28,7 +28,7 @@ const updateReseachConsentMutation = gql`
 
 const ctx = getTestContext()
 
-describe.only("user queries", () => {
+describe("user queries", () => {
   describe("currentUser", () => {
     beforeEach(async () => {
       await ctx.prisma.user.deleteMany({ where: {} })

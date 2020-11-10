@@ -108,21 +108,7 @@ function createTestContext() {
   }
 }
 
-function systemSync(cmd: string, options: any = {}) {
-  try {
-    return execSync(cmd, options)
-  } catch (e) {
-    e.status
-    e.message
-    e.stderr
-    e.stdout
-    process.exit(1)
-  }
-}
-
 function prismaTestContext() {
-  const knexBinary = join(__dirname, "..", "node_modules", ".bin", "knex")
-
   let schemaName = ""
   let databaseUrl = ""
   let prisma: null | PrismaClient = null
@@ -143,23 +129,16 @@ function prismaTestContext() {
         connection: databaseUrl,
         debug: DEBUG,
       })
-      await knexClient.transaction(async (trx: knex.Transaction) => {
-        await trx.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
-        await trx.raw(`SET SEARCH_PATH TO "${schemaName}";`)
-        await trx.raw(
-          `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${schemaName}";`,
-        )
+      // Run the migrations to ensure our schema has the required structure
+      await knexClient.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`)
+      await knexClient.raw(`SET SEARCH_PATH TO "${schemaName}";`)
+      await knexClient.raw(
+        `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${schemaName}";`,
+      )
+      await knexClient.migrate.latest({
+        schemaName
       })
 
-      // Run the migrations to ensure our schema has the required structure
-      systemSync(`${knexBinary} migrate:latest`, {
-        env: {
-          ...process.env,
-          DATABASE_URL: databaseUrl,
-          SEARCH_PATH: schemaName,
-        },
-        ...(DEBUG ? { stdio: "inherit" } : {}),
-      })
       // Construct a new Prisma Client connected to the generated Postgres schema
       prisma = new PrismaClient({
         datasources: { db: { url: databaseUrl } },
