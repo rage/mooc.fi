@@ -2,7 +2,6 @@ import { gql } from "graphql-request"
 import { getTestContext } from "./__helpers"
 import { adminUserDetails, normalUser, normalUserDetails } from "./data"
 import nock from "nock"
-import { AuthenticationError } from "apollo-server-express"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
