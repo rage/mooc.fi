@@ -1,7 +1,8 @@
 import { gql } from "graphql-request"
-import { getTestContext /*TestContext*/ } from "./__helpers"
-import TmcClient from "../services/tmc"
-import { normalUser, normalUserDetails } from "./data"
+import { getTestContext } from "./__helpers"
+import { adminUserDetails, normalUser, normalUserDetails } from "./data"
+import nock from "nock"
+import { AuthenticationError } from "apollo-server-express"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
@@ -28,20 +29,33 @@ const updateReseachConsentMutation = gql`
 
 const ctx = getTestContext()
 
+beforeAll(() => {
+  nock("https://tmc.mooc.fi")
+    .get("/api/v8/users/current?show_user_fields=1&extra_fields=1")
+    .reply(function () {
+      const auth = this.req.headers.authorization
+
+      switch (auth) {
+        case "Bearer normal":
+          return [200, normalUserDetails]
+        case "Bearer admin":
+          return [200, adminUserDetails]
+      }
+    })
+})
+
+afterAll(() => nock.cleanAll())
+
 describe("user queries", () => {
   describe("currentUser", () => {
     beforeEach(async () => {
       await ctx.prisma.user.create({
-        data: normalUser
+        data: normalUser,
       })
     })
 
     it("shows current user when logged in", async () => {
-      jest
-        .spyOn(TmcClient.prototype, "getCurrentUserDetails")
-        .mockImplementation(async () => normalUserDetails)
-
-      ctx!.client.setHeader("Authorization", "Bearer 12345")
+      ctx!.client.setHeader("Authorization", "Bearer normal")
 
       const res = await ctx.client.request(`
       query {
@@ -124,6 +138,8 @@ describe("user mutations", () => {
   })
 
   describe("addUser", () => {
+    beforeAll(() => ctx!.client.setHeader("Authorization", ""))
+
     it("creates user correctly", async () => {
       const res = await ctx.client.request(addUserMutation, {
         user: {
@@ -145,7 +161,7 @@ describe("user mutations", () => {
 
     it("won't create user with same id", async () => {
       await ctx.prisma.user.create({
-        data: normalUser
+        data: normalUser,
       })
 
       await expect(async () => {
@@ -163,25 +179,21 @@ describe("user mutations", () => {
     })
   })
 
-  describe("updateResearchConsent", () => {
+  describe.skip("updateResearchConsent", () => {
     beforeEach(async () => {
       await ctx!.prisma.user.create({
-        data: normalUser
+        data: normalUser,
       })
-
-      jest
-        .spyOn(TmcClient.prototype, "getCurrentUserDetails")
-        .mockImplementation(async () => normalUserDetails)
-
-      ctx!.client.setHeader("Authorization", "Bearer 12345")
     })
 
     afterEach(async () => {
       await ctx!.prisma.user.delete({ where: { upstream_id: 1 } })
-      jest.restoreAllMocks()
+      ctx.user = undefined
     })
 
     it("updates correctly", async () => {
+      ctx!.client.setHeader("Authorization", "Bearer normal")
+
       const res = await ctx!.client.request(updateReseachConsentMutation, {
         value: true,
       })
@@ -194,14 +206,21 @@ describe("user mutations", () => {
         }
       `,
       )
+      const updatedConsent = await ctx!.prisma.user.findFirst({
+        where: { upstream_id: 1 },
+        select: { research_consent: true },
+      })
+
+      expect(updatedConsent).toMatchObject({ research_consent: true })
     })
 
     it("won't update research consent without auth", async () => {
       ctx!.client.setHeader("Authorization", "")
 
-      await expect(async () => {
+      try {
         await ctx!.client.request(updateReseachConsentMutation, { value: true })
-      }).rejects.toThrow()
+        fail()
+      } catch {}
     })
   })
 })

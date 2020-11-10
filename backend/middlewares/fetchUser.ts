@@ -67,7 +67,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
       },
     )
   } catch (e) {
-    console.log("error", e)
+    // console.log("error", e)
   }
 
   ctx.tmcClient = client

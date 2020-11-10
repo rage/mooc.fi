@@ -6,8 +6,8 @@ export const normalUser = {
   email: "e@mail.com",
   first_name: "first",
   last_name: "last",
-  username: "user"
-} 
+  username: "user",
+}
 
 export const normalUserDetails: UserInfo = {
   id: 1,
@@ -30,7 +30,7 @@ export const adminUser = {
   email: "e@mail.com",
   first_name: "first",
   last_name: "last",
-  username: "admin"
+  username: "admin",
 }
 
 export const adminUserDetails = {
@@ -55,11 +55,13 @@ export const course = {
   teacher_in_charge_email: "e@mail.com",
   teacher_in_charge_name: "teacher",
   course_translations: {
-    create: [{
-      description: "description",
-      language: "en_US",
-      name: "test",
-      link: "http://link.com"
-    }]
-  }
+    create: [
+      {
+        description: "description",
+        language: "en_US",
+        name: "test",
+        link: "http://link.com",
+      },
+    ],
+  },
 }
