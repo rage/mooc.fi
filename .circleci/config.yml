@@ -7,9 +7,18 @@ jobs:
       - image: circleci/node:11
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-root-{{ .Branch }}
+            - node-root
       - run:
           name: "Install dependencies"
           command: "npm ci"
+      - save_cache:
+          key: node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
@@ -49,8 +58,13 @@ jobs:
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
+      - restore_cache:
+          keys:
+            - node-backend-{{ .Branch }}-{{ checksum "/backend/package-lock.json" }}
+            - node-backend-{{ .Branch }}
+            - node-backend
       - run:
-          name: Build
+          name: Install dependencies
           environment:
             NEW_RELIC_NO_CONFIG_FILE: "true"
             NEW_RELIC_LICENSE_KEY: ""
@@ -58,6 +72,14 @@ jobs:
             cd backend
             cp .env.example .env
             npm i
+      - save_cache:
+          key: node-backend-{{ .Branch }}-{{ checksum "/backend/package-lock.json" }}
+          paths:
+            - /backend/node_modules
+      - run:
+          name: Build
+          command: |
+            cd backend
             npm run generate
             npm run build
             npm run create-test-db

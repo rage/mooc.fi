@@ -19,6 +19,7 @@ const createDb = async () => {
   }
 }
 
-createDb()
-  .then(() => process.exit(0))
-  .catch(() => process.exit(1))
+createDb().then(async () => {
+  knex.destroy()
+  process.exit(0)
+})

@@ -86,8 +86,6 @@ function createTestContext() {
 
   return {
     async before() {
-      // await wait(100 + version * 100)
-
       const { prisma, knexClient } = await prismaCtx.before()
 
       const { apollo, express } = server({
@@ -134,6 +132,7 @@ function prismaTestContext() {
 
   return {
     async before() {
+      await wait((version - 1) * 200)
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
