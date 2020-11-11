@@ -60,7 +60,7 @@ jobs:
           command: "bin/build-docker-backend.sh"
       - restore_cache:
           keys:
-            - node-backend-{{ .Branch }}-{{ checksum "/backend/package-lock.json" }}
+            - node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
             - node-backend-{{ .Branch }}
             - node-backend
       - run:
@@ -73,9 +73,9 @@ jobs:
             cp .env.example .env
             npm i
       - save_cache:
-          key: node-backend-{{ .Branch }}-{{ checksum "/backend/package-lock.json" }}
+          key: node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
           paths:
-            - /backend/node_modules
+            - ~/project/backend/node_modules
       - run:
           name: Build
           command: |
