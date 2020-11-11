@@ -308,4 +308,10 @@ const languageCodeMapping: Record<string, string> = {
   no: "nb_NO",
   "fr-be": "fr_BE",
   "nl-be": "nl_BE",
+  "en-ie": "en_IE",
+  pl: "pl_PL",
+  "de-at": "de_AT",
+  es: "es_ES",
+  "el-cy": "el_CY",
+  "en-lu": "en_LU",
 }
