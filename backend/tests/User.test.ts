@@ -1,5 +1,5 @@
 import { gql } from "graphql-request"
-import { getTestContext } from "./__helpers"
+import { getTestContext, fakeTMC } from "./__helpers"
 import { adminUserDetails, normalUser, normalUserDetails } from "./data"
 import nock from "nock"
 
@@ -27,25 +27,18 @@ const updateReseachConsentMutation = gql`
 `
 
 const ctx = getTestContext()
-
-beforeAll(() => {
-  nock("https://tmc.mooc.fi")
-    .get("/api/v8/users/current?show_user_fields=1&extra_fields=1")
-    .reply(function () {
-      const auth = this.req.headers.authorization
-
-      switch (auth) {
-        case "Bearer normal":
-          return [200, normalUserDetails]
-        case "Bearer admin":
-          return [200, adminUserDetails]
-      }
-    })
+const tmc = fakeTMC({
+  "Bearer normal": [200, normalUserDetails],
+  "Bearer admin": [200, adminUserDetails],
 })
 
-afterAll(() => nock.cleanAll())
-
 describe("user queries", () => {
+  beforeAll(() => {
+    tmc.setup()
+  })
+
+  afterAll(() => tmc.teardown())
+
   describe("currentUser", () => {
     beforeEach(async () => {
       await ctx.prisma.user.create({
@@ -132,6 +125,12 @@ describe("user queries", () => {
 })
 
 describe("user mutations", () => {
+  beforeAll(() => {
+    tmc.setup()
+  })
+
+  afterAll(() => tmc.teardown())
+
   beforeEach(async () => {
     await ctx.prisma.user.deleteMany({ where: {} })
   })
@@ -178,7 +177,7 @@ describe("user mutations", () => {
     })
   })
 
-  describe.skip("updateResearchConsent", () => {
+  describe("updateResearchConsent", () => {
     beforeEach(async () => {
       await ctx!.prisma.user.create({
         data: normalUser,

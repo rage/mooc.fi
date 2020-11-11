@@ -7,6 +7,8 @@ import type knex from "knex"
 import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
+import nock from "nock"
+import { create } from "lodash"
 
 const DEBUG = Boolean(process.env.DEBUG)
 
@@ -73,6 +75,9 @@ export function getTestContext(): TestContext {
   return testContext
 }
 
+const wait = async (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time))
+
 function createTestContext() {
   let apolloInstance: ApolloServer | null = null
   let serverInstance: Server | null = null
@@ -82,6 +87,8 @@ function createTestContext() {
 
   return {
     async before() {
+      // await wait(100 + version * 100)
+
       const { prisma, knexClient } = await prismaCtx.before()
 
       const { apollo, express } = server({
@@ -98,17 +105,16 @@ function createTestContext() {
           port = await getPort({ port: makeRange(4001, 6000) })
           serverInstance = express.listen(port)
           DEBUG && console.log(`got port ${port}`)
-          break
+
+          return {
+            client: new GraphQLClient(`http://localhost:${port}`),
+            prisma,
+            knexClient,
+          }
         } catch {
           DEBUG && console.log("race condition on ports, waiting...")
-          await new Promise((resolve) => setTimeout(resolve, 500))
+          await wait(50)
         }
-      }
-
-      return {
-        client: new GraphQLClient(`http://localhost:${port}`),
-        prisma,
-        knexClient,
       }
     },
     async after() {
@@ -173,6 +179,25 @@ function prismaTestContext() {
       await knexClient?.destroy()
       // Release the Prisma Client connection
       await prisma?.$disconnect()
+    },
+  }
+}
+
+type FakeTMCRecord = Record<string, [number, object]>
+
+export function fakeTMC(users: FakeTMCRecord) {
+  return {
+    setup() {
+      nock("https://tmc.mooc.fi")
+        .get("/api/v8/users/current?show_user_fields=1&extra_fields=1")
+        .reply(function () {
+          const auth = this.req.headers.authorization
+
+          return users[auth]
+        })
+    },
+    teardown() {
+      nock.cleanAll()
     },
   }
 }

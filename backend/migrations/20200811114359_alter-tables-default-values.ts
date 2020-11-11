@@ -82,7 +82,15 @@ export async function up(knex: Knex): Promise<void> {
   )
 
   // id
-  await knex.raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+  try {
+    await knex.raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+  } catch {
+    Boolean(process.env.DEBUG) &&
+      console.warn(
+        "Error creating uuid-ossp extension. Ignore if this didn't fall on next hurdle",
+      )
+  }
+
   await knex.raw(
     `ALTER TABLE "completion" ALTER COLUMN "id" SET DEFAULT uuid_generate_v4();`,
   )
