@@ -47,6 +47,21 @@ jobs:
   build_backend:
     docker:
       - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
+      # - image: circleci/postgres:9.6.5-alpine-ram
+      #   environment:
+      #     POSTGRES_USER: prisma
+      #     POSTGRES_PASSWORD: prisma
+      #     POSTGRES_DB: testing
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: "Build backend image"
+          command: "bin/build-docker-backend.sh"
+
+  backend_tests:
+    docker:
+      - image: eu.gcr.io/moocfi/moocfi-backend:latest
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           POSTGRES_USER: prisma
@@ -55,27 +70,24 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run:
-          name: "Build backend image"
-          command: "bin/build-docker-backend.sh"
-      - restore_cache:
-          keys:
-            - node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
-            - node-backend-{{ .Branch }}
-            - node-backend
-      - run:
-          name: Install dependencies
-          environment:
-            NEW_RELIC_NO_CONFIG_FILE: "true"
-            NEW_RELIC_LICENSE_KEY: ""
-          command: |
-            cd backend
-            cp .env.example .env
-            npm i
-      - save_cache:
-          key: node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
-          paths:
-            - ~/project/backend/node_modules
+      #- restore_cache:
+      #    keys:
+      #      - node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
+      #      - node-backend-{{ .Branch }}
+      #      - node-backend
+      #- run:
+      #    name: Install dependencies
+      #    environment:
+      #      NEW_RELIC_NO_CONFIG_FILE: "true"
+      #      NEW_RELIC_LICENSE_KEY: ""
+      #    command: |
+      #      cd backend
+      #      cp .env.example .env
+      #      npm i
+      #- save_cache:
+      #    key: node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
+      #    paths:
+      #      - ~/project/backend/node_modules
       - run:
           name: Build
           command: |
@@ -115,10 +127,15 @@ workflows:
       - build_frontend
       - build_backend
       - code_style
+      - backend_tests:
+          requires:
+            - build_backend
+            - code_style
       - deploy_to_production:
           requires:
             - build_frontend
             - build_backend
+            - backend_tests
             - code_style
           filters:
             branches:
