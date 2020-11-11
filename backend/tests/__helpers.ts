@@ -8,7 +8,6 @@ import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
 import nock from "nock"
-import { create } from "lodash"
 
 const DEBUG = Boolean(process.env.DEBUG)
 
