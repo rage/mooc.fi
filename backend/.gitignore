@@ -5,3 +5,4 @@ bin/tmp/
 .nexus
 newrelic.js
 env.json
+.watchmanconfig
