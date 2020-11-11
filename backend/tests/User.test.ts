@@ -1,7 +1,6 @@
 import { gql } from "graphql-request"
 import { getTestContext, fakeTMC } from "./__helpers"
 import { adminUserDetails, normalUser, normalUserDetails } from "./data"
-import nock from "nock"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
