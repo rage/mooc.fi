@@ -13,11 +13,11 @@ fi
 
 TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
 
-if [ -n "$CIRCLE_SHA1" ]; then
-  echo "Trying to setup google cloud"
-  CURRENT_DIR="$(dirname "$0")"
-  source "$CURRENT_DIR/ci-setup-google-cloud.sh"
-fi
+# if [ -n "$CIRCLE_SHA1" ]; then
+#   echo "Trying to setup google cloud"
+#   CURRENT_DIR="$(dirname "$0")"
+#   source "$CURRENT_DIR/ci-setup-google-cloud.sh"
+# fi
 
 cd backend
 
@@ -31,7 +31,6 @@ docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile
 
 echo "Successfully built image: $TAG"
 
-export MOOCFI_LATEST_BUILD_TAG=$TAG
 # echo "Copying source map from container to host"
 # docker create -ti --name tmpcontainer "$TAG" sh
 # docker cp tmpcontainer:/app/sourcemap sourcemap

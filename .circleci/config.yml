@@ -60,11 +60,8 @@ jobs:
           command: "bin/build-docker-backend.sh"
       - run:
           name: "Tests"
-          environment:
-            MOOCFI_LATEST_BUILD_TAG: $MOOCFI_LATEST_BUILD_TAG
           command: |
-            env
-            docker run --env NODE_ENV=test --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --net host --rm ${MOOCFI_LATEST_BUILD_TAG} npm run create-test-db && npm run test -- --ci --runInBand
+            docker run --env NODE_ENV=test --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --net host --rm "eu.gcr.io/moocfi/moocfi-backend:build-$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)" /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci"
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
