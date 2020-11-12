@@ -1,0 +1,515 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`course queries course admin returns full course on id and slug 1`] = `
+Object {
+  "course": Object {
+    "automatic_completions": false,
+    "automatic_completions_eligible_for_ects": true,
+    "completions_handled_by": null,
+    "course_aliases": Array [],
+    "course_translations": Array [
+      Object {
+        "description": "course1_description_en_US",
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "link": "http://link.com",
+        "name": "course1_en_US",
+      },
+      Object {
+        "description": "course1_description_fi_FI",
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "link": "http:/link.fi.com",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "course_variants": Array [],
+    "ects": null,
+    "end_date": "12/31/2100",
+    "exercise_completions_needed": null,
+    "has_certificate": false,
+    "hidden": null,
+    "id": Any<String>,
+    "inherit_settings_from": null,
+    "name": "course1",
+    "open_university_registration_links": Array [],
+    "order": null,
+    "photo": null,
+    "points_needed": null,
+    "promote": null,
+    "slug": "course1",
+    "start_date": "01/01/1900",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000101",
+      },
+      Object {
+        "id": "00000000-0000-0000-0000-000000000102",
+      },
+    ],
+    "support_email": null,
+    "teacher_in_charge_email": "e@mail.com",
+    "teacher_in_charge_name": "teacher",
+    "tier": null,
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+}
+`;
+
+exports[`course queries course admin returns full course on id and slug 2`] = `
+Object {
+  "course": Object {
+    "automatic_completions": false,
+    "automatic_completions_eligible_for_ects": true,
+    "completions_handled_by": null,
+    "course_aliases": Array [],
+    "course_translations": Array [
+      Object {
+        "description": "course1_description_en_US",
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "link": "http://link.com",
+        "name": "course1_en_US",
+      },
+      Object {
+        "description": "course1_description_fi_FI",
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "link": "http:/link.fi.com",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "course_variants": Array [],
+    "ects": null,
+    "end_date": "12/31/2100",
+    "exercise_completions_needed": null,
+    "has_certificate": false,
+    "hidden": null,
+    "id": Any<String>,
+    "inherit_settings_from": null,
+    "name": "course1",
+    "open_university_registration_links": Array [],
+    "order": null,
+    "photo": null,
+    "points_needed": null,
+    "promote": null,
+    "slug": "course1",
+    "start_date": "01/01/1900",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000101",
+      },
+      Object {
+        "id": "00000000-0000-0000-0000-000000000102",
+      },
+    ],
+    "support_email": null,
+    "teacher_in_charge_email": "e@mail.com",
+    "teacher_in_charge_name": "teacher",
+    "tier": null,
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+}
+`;
+
+exports[`course queries course normal user returns correct language 1`] = `
+Object {
+  "course": Object {
+    "description": "course1_description_en_US",
+    "id": Any<String>,
+    "link": "http://link.com",
+    "name": "course1_en_US",
+    "slug": "course1",
+  },
+}
+`;
+
+exports[`course queries course normal user returns course on id and slug 1`] = `
+Object {
+  "course": Object {
+    "description": "",
+    "id": Any<String>,
+    "link": "",
+    "name": "course1",
+    "slug": "course1",
+  },
+}
+`;
+
+exports[`course queries course normal user returns course on id and slug 2`] = `
+Object {
+  "course": Object {
+    "description": "",
+    "id": Any<String>,
+    "link": "",
+    "name": "course1",
+    "slug": "course1",
+  },
+}
+`;
+
+exports[`course queries courses returns courses 1`] = `
+Object {
+  "courses": Array [
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000011",
+          "language": "en_US",
+          "name": "course1_en_US",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000012",
+          "language": "fi_FI",
+          "name": "course1_fi_FI",
+        },
+      ],
+      "description": "",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000001",
+      "link": "",
+      "name": "course1",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course1",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000101",
+          "slug": "module1",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000022",
+          "language": "fi_FI",
+          "name": "course2_fi_FI",
+        },
+      ],
+      "description": "",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000002",
+      "link": "",
+      "name": "course2",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course2",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+  ],
+}
+`;
+
+exports[`course queries courses returns courses filtered by language 1`] = `
+Object {
+  "courses": Array [],
+}
+`;
+
+exports[`course queries courses returns courses filtered by language 2`] = `
+Object {
+  "courses": Array [
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000011",
+          "language": "en_US",
+          "name": "course1_en_US",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000012",
+          "language": "fi_FI",
+          "name": "course1_fi_FI",
+        },
+      ],
+      "description": "course1_description_fi_FI",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000001",
+      "link": "http:/link.fi.com",
+      "name": "course1_fi_FI",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course1",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000101",
+          "slug": "module1",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000022",
+          "language": "fi_FI",
+          "name": "course2_fi_FI",
+        },
+      ],
+      "description": "course2_description_fi_FI",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000002",
+      "link": "",
+      "name": "course2_fi_FI",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course2",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+  ],
+}
+`;
+
+exports[`course queries courses returns courses filtered by language 3`] = `
+Object {
+  "courses": Array [
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000011",
+          "language": "en_US",
+          "name": "course1_en_US",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000012",
+          "language": "fi_FI",
+          "name": "course1_fi_FI",
+        },
+      ],
+      "description": "course1_description_en_US",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000001",
+      "link": "http://link.com",
+      "name": "course1_en_US",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course1",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000101",
+          "slug": "module1",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+  ],
+}
+`;
+
+exports[`course queries courses returns courses ordered 1`] = `
+Object {
+  "courses": Array [
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000011",
+          "language": "en_US",
+          "name": "course1_en_US",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000012",
+          "language": "fi_FI",
+          "name": "course1_fi_FI",
+        },
+      ],
+      "description": "",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000001",
+      "link": "",
+      "name": "course1",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course1",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000101",
+          "slug": "module1",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000022",
+          "language": "fi_FI",
+          "name": "course2_fi_FI",
+        },
+      ],
+      "description": "",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000002",
+      "link": "",
+      "name": "course2",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course2",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+  ],
+}
+`;
+
+exports[`course queries courses returns courses ordered 2`] = `
+Object {
+  "courses": Array [
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000022",
+          "language": "fi_FI",
+          "name": "course2_fi_FI",
+        },
+      ],
+      "description": "",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000002",
+      "link": "",
+      "name": "course2",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course2",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+    Object {
+      "course_translations": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000011",
+          "language": "en_US",
+          "name": "course1_en_US",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000012",
+          "language": "fi_FI",
+          "name": "course1_fi_FI",
+        },
+      ],
+      "description": "",
+      "hidden": null,
+      "id": "00000000-0000-0000-0000-000000000001",
+      "link": "",
+      "name": "course1",
+      "order": null,
+      "photo": null,
+      "promote": null,
+      "slug": "course1",
+      "start_point": null,
+      "status": "Upcoming",
+      "study_module_order": null,
+      "study_module_start_point": null,
+      "study_modules": Array [
+        Object {
+          "id": "00000000-0000-0000-0000-000000000101",
+          "slug": "module1",
+        },
+        Object {
+          "id": "00000000-0000-0000-0000-000000000102",
+          "slug": "module2",
+        },
+      ],
+      "upcoming_active_link": false,
+      "user_course_settings_visibilities": Array [],
+    },
+  ],
+}
+`;

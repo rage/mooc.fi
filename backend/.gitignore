@@ -6,3 +6,4 @@ bin/tmp/
 newrelic.js
 env.json
 .watchmanconfig
+coverage/

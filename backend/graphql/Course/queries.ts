@@ -106,22 +106,20 @@ export const CourseQueries = extendType({
                   )
 
                   if (!course_translation) {
-                    return Promise.resolve(null)
+                    return null
                   }
 
-                  const { name, description, link = "" } = course_translation
+                  const { name, description, link } = course_translation
 
-                  return { ...course, name, description, link }
+                  return { ...course, name, description, link: link ?? "" }
                 }),
               )
             ).filter((v) => !!v)
-          : await Promise.all(
-              courses.map((course: Course) => ({
-                ...course,
-                description: "",
-                link: "",
-              })),
-            )
+          : courses.map((course: Course) => ({
+              ...course,
+              description: "",
+              link: "",
+            }))
 
         // TODO: (?) provide proper typing
         return filtered as (Course & { description: string; link: string })[]

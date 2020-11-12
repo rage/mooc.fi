@@ -1,3 +1,5 @@
+require("sharp") // ensure correct zlib thingy
+
 import { PrismaClient, User } from "@prisma/client"
 import { Server } from "http"
 import getPort, { makeRange } from "get-port"
@@ -187,6 +189,7 @@ export function fakeTMC(users: FakeTMCRecord) {
   return {
     setup() {
       nock("https://tmc.mooc.fi")
+        .persist()
         .get("/api/v8/users/current?show_user_fields=1&extra_fields=1")
         .reply(function () {
           const auth = this.req.headers.authorization
