@@ -32,7 +32,7 @@ const tmc = fakeTMC({
 })
 
 describe("user queries", () => {
-  beforeAll(() => {
+  beforeEach(() => {
     tmc.setup()
   })
 

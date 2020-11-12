@@ -6,6 +6,7 @@
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "test": "jest",
+    "test:create-db": "npm run create-test-db && npm run test",
     "upgrade-interactive": "npm-check --update",
     "fetch-ai-completions": "node ./dist/bin/fetchAiCompletions.js",
     "fetch-organizations": "node ./dist/bin/importOrganizations.js",
