@@ -61,8 +61,7 @@ jobs:
       - run:
           name: "Tests"
           command: |
-            env
-            docker run --env NODE_ENV=test --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --net host --rm eu.gcr.io/moocfi/moocfi-backend:latest npm run test:create-db
+            docker run --env NODE_ENV=test --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --net host --rm eu.gcr.io/moocfi/moocfi-backend:latest npm run create-test-db && npm run test
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
