@@ -5,11 +5,10 @@ import {
   normalUserDetails,
   //adminUser,
   adminUserDetails,
-  courseModules,
 } from "./data"
 import { seed } from "./data/seed"
 
-import { Course, StudyModule } from "@prisma/client"
+import { Course } from "@prisma/client"
 
 const ctx = getTestContext()
 const tmc = fakeTMC({
