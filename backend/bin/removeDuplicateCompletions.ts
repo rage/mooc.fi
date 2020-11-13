@@ -5,6 +5,7 @@ import sentryLogger from "./lib/logger"
 const logger = sentryLogger({ service: "remove-duplicate-completions" })
 
 const removeDuplicateCompletions = async () => {
+  logger.info("Removing duplicate completions")
   try {
     await Knex.raw(`
     DELETE
@@ -34,7 +35,10 @@ const removeDuplicateCompletions = async () => {
         e,
       ),
     )
+    process.exit(-1)
   }
+  logger.info("Done")
+  process.exit(0)
 }
 
 removeDuplicateCompletions()

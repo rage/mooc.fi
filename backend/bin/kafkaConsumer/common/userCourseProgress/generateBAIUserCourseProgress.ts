@@ -162,6 +162,7 @@ export const getTierProgress = (
         max_points,
         n_points,
         progress: n_points / (max_points || 1),
+        custom_id: curr.custom_id,
       },
     }
   }, {} as TierProgressMap)

@@ -40,6 +40,8 @@ export interface CurrentUserUserOverView_currentUser_completions {
   completion_language: string | null
   student_number: string | null
   created_at: any | null
+  tier: number | null
+  eligible_for_ects: boolean | null
   course: CurrentUserUserOverView_currentUser_completions_course | null
   completion_date: any | null
   registered: boolean | null

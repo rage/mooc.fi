@@ -72,6 +72,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
 }
 
 const fetch = async () => {
+  logger.info("Getting open university links from db...")
   const avoinObjects = await prisma.openUniversityRegistrationLink.findMany({})
 
   for (const p of avoinObjects) {
@@ -88,6 +89,8 @@ const fetch = async () => {
       )
     }
   }
+  logger.info("Done")
+  process.exit(0)
 }
 
 const getInfoWithCourseCode = async (
