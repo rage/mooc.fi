@@ -148,6 +148,7 @@ export interface CourseVariantUpsertInput {
 export interface ManualCompletionArg {
   completion_date?: any | null
   grade?: string | null
+  tier?: number | null
   user_id: string
 }
 

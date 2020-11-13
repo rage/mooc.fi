@@ -14,6 +14,13 @@ import Knex from "../../../../services/knex"
 import * as winston from "winston"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
+// import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
+
+function isNullOrUndefined<T>(
+  obj: T | null | undefined,
+): obj is null | undefined {
+  return typeof obj === "undefined" || obj === null
+}
 
 export const getCombinedUserCourseProgress = async (
   user: User,
@@ -208,8 +215,11 @@ export const createCompletion = async ({
           ? languageCodeMapping[userCourseSettings.language]
           : "unknown",
         eligible_for_ects:
-          handlerCourse.automatic_completions_eligible_for_ects,
+          tier === 1
+            ? false
+            : handlerCourse.automatic_completions_eligible_for_ects,
         completion_date: new Date(),
+        tier: isNullOrUndefined(tier) ? tier : undefined,
       },
     })
     // TODO: this only sends the completion email for the first tier completed
@@ -224,11 +234,7 @@ export const createCompletion = async ({
     if (template) {
       await sendEmailTemplateToUser(user, template)
     }
-  } else if (
-    tier !== null &&
-    tier !== undefined &&
-    tier > (completions[0]!.tier ?? 0)
-  ) {
+  } else if (!isNullOrUndefined(tier) && tier > (completions[0]!.tier ?? 0)) {
     logger?.info("Existing completion found, updating tier...")
     await prisma.completion.update({
       where: {
@@ -236,6 +242,10 @@ export const createCompletion = async ({
       },
       data: {
         tier,
+        eligible_for_ects:
+          tier === 1
+            ? false
+            : handlerCourse.automatic_completions_eligible_for_ects,
       },
     })
   }
@@ -302,4 +312,10 @@ const languageCodeMapping: Record<string, string> = {
   no: "nb_NO",
   "fr-be": "fr_BE",
   "nl-be": "nl_BE",
+  "en-ie": "en_IE",
+  pl: "pl_PL",
+  "de-at": "de_AT",
+  es: "es_ES",
+  "el-cy": "el_CY",
+  "en-lu": "en_LU",
 }

@@ -51,7 +51,6 @@ const updateBAICompletionTiers = async () => {
     ),
   )
   logger.info("Done")
-
   process.exit(0)
 }
 
