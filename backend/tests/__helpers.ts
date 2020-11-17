@@ -10,6 +10,7 @@ import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
 import nock from "nock"
+import binPrisma from "../bin/lib/prisma"
 
 const DEBUG = Boolean(process.env.DEBUG)
 
@@ -58,7 +59,7 @@ export function getTestContext(): TestContext {
 
   const ctx = createTestContext()
 
-  beforeEach(async (done) => {
+  beforeEach(async () => {
     const { prisma, client, knexClient } = await ctx.before()
 
     Object.assign(testContext, {
@@ -67,12 +68,14 @@ export function getTestContext(): TestContext {
       knexClient,
       version,
     })
-    done()
   })
   afterEach(async () => {
     await ctx.after()
   })
 
+  afterAll(async () => {
+    await binPrisma.$disconnect()
+  })
   return testContext
 }
 
@@ -134,7 +137,6 @@ function prismaTestContext() {
 
   return {
     async before() {
-      await wait((version - 1) * 200)
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
