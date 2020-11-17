@@ -26,9 +26,11 @@ export default {
   // coverageDirectory: undefined,
 
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/generated/",
+    "/migrations/"
+  ],
 
   // Indicates which provider should be used to instrument code for coverage
   // coverageProvider: "babel",
@@ -71,14 +73,14 @@ export default {
   // ],
 
   // An array of file extensions your modules use
-  // moduleFileExtensions: [
-  //   "js",
-  //   "json",
-  //   "jsx",
-  //   "ts",
-  //   "tsx",
-  //   "node"
-  // ],
+  moduleFileExtensions: [
+     "ts",
+     "tsx",
+     "js",
+     "json",
+     "jsx",
+     "node"
+  ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
@@ -138,7 +140,7 @@ export default {
 
   // The test environment that will be used for testing
   testEnvironment: "node",
-  testPathIgnorePatterns: [".d.ts", ".js"],
+  testPathIgnorePatterns: [".d.ts", ".js", "!**/generated/**"],
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
