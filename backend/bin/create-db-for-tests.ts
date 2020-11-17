@@ -15,11 +15,11 @@ const createDb = async () => {
   try {
     await knex.raw("CREATE DATABASE testing;")
   } catch (e) {
-    console.error(`Error creating test db: ${e}`)
+    console.error(`Error creating test db: ${e.stack || e}`)
   }
 }
 
-createDb().finally(async () => {
+createDb().then(async () => {
   await knex.destroy()
   process.exit(0)
 })
