@@ -7,7 +7,6 @@ import knex from "knex"
 import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
-import { convertUpdate } from "../../../../util/db-functions"
 
 const Knex = knex({
   client: "pg",
@@ -146,10 +145,12 @@ export const saveToDatabase = async (
     }
     savedExerciseCompletion = await prisma.exerciseCompletion.update({
       where: { id: exerciseCompleted.id },
-      data: convertUpdate({
+      data: {
         n_points: Number(message.n_points),
-        completed: message.completed,
-        attempted: message.attempted !== null ? message.attempted : undefined,
+        completed: { set: message.completed },
+        attempted: {
+          set: message.attempted !== null ? message.attempted : undefined,
+        },
         exercise_completion_required_actions: {
           create: message.required_actions.map((ra) => {
             return {
@@ -157,8 +158,8 @@ export const saveToDatabase = async (
             }
           }),
         },
-        timestamp: timestamp.toJSDate(),
-      }),
+        timestamp: { set: timestamp.toJSDate() },
+      },
     })
   }
   await checkCompletion({ user, course, logger })
