@@ -51,7 +51,7 @@ export const adminUserDetails = {
 
 export const study_modules: StudyModuleCreateInput[] = [
   {
-    id: "00000000000000000000000000000101",
+    id: "00000000000000000000000000000102",
     name: "module1",
     slug: "module1",
     study_module_translations: {
@@ -72,7 +72,7 @@ export const study_modules: StudyModuleCreateInput[] = [
     },
   },
   {
-    id: "00000000000000000000000000000102",
+    id: "00000000000000000000000000000101",
     name: "module2",
     slug: "module2",
     study_module_translations: {
@@ -90,7 +90,7 @@ export const study_modules: StudyModuleCreateInput[] = [
 
 export const courses: CourseCreateInput[] = [
   {
-    id: "00000000000000000000000000000001",
+    id: "00000000000000000000000000000002",
     name: "course1",
     slug: "course1",
     start_date: "01/01/1900",
@@ -123,7 +123,7 @@ export const courses: CourseCreateInput[] = [
     },
   },
   {
-    id: "00000000000000000000000000000002",
+    id: "00000000000000000000000000000001",
     name: "course2",
     slug: "course2",
     start_date: "01/01/1900",

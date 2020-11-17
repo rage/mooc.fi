@@ -8,7 +8,8 @@ import {
 } from "./data"
 import { seed } from "./data/seed"
 
-import { Course, StudyModule } from "@prisma/client"
+import { Course } from "@prisma/client"
+import { orderBy } from "lodash"
 
 const ctx = getTestContext()
 const tmc = fakeTMC({
@@ -216,6 +217,18 @@ const createCourseMutation = gql`
   }
 `
 
+// study_modules may be returned in any order, let's just sort them so snapshots are equal
+const sortStudyModules = (course: any) => {
+  if (!course.study_modules) {
+    return course
+  }
+
+  return {
+    ...course,
+    study_modules: orderBy(course.study_modules, ["id"], ["asc"]),
+  }
+}
+
 describe("course queries", () => {
   beforeAll(() => tmc.setup())
   afterAll(() => tmc.teardown())
@@ -248,10 +261,8 @@ describe("course queries", () => {
         })
 
         ;[resId, resSlug].map((res) =>
-          expect(res).toMatchSnapshot({
-            course: {
-              id: expect.any(String),
-            },
+          expect(sortStudyModules(res.course)).toMatchSnapshot({
+            id: expect.any(String),
           }),
         )
       })
@@ -262,10 +273,8 @@ describe("course queries", () => {
           language: "en_US",
         })
 
-        expect(res).toMatchSnapshot({
-          course: {
-            id: expect.any(String),
-          },
+        expect(sortStudyModules(res.course)).toMatchSnapshot({
+          id: expect.any(String),
         })
       })
 
@@ -306,10 +315,8 @@ describe("course queries", () => {
         })
 
         ;[resId, resSlug].map((res) =>
-          expect(res).toMatchSnapshot({
-            course: {
-              id: expect.any(String),
-            },
+          expect(sortStudyModules(res.course)).toMatchSnapshot({
+            id: expect.any(String),
           }),
         )
       })
@@ -321,24 +328,12 @@ describe("course queries", () => {
       await seed(ctx.prisma)
     })
 
-    // study_modules may be returned in any order, let's just sort them so snapshots are equal
-    const sortStudyModules = (course: any) => {
-      if (!course.study_modules) {
-        fail()
-      }
-
-      return {
-        ...course,
-        study_modules: course.study_modules?.sort(
-          (a: StudyModule, b: StudyModule) => a.id > b.id,
-        ),
-      }
-    }
-
     it("returns courses", async () => {
       const res = await ctx.client.request(coursesQuery)
 
-      expect(res.courses.map(sortStudyModules)).toMatchSnapshot()
+      expect(
+        orderBy(res.courses.map(sortStudyModules), ["id"]),
+      ).toMatchSnapshot()
     })
 
     it("returns courses ordered", async () => {
@@ -348,7 +343,9 @@ describe("course queries", () => {
             orderBy: { name: order },
           })
 
-          expect(res.courses.map(sortStudyModules)).toMatchSnapshot()
+          expect(res.courses.map(sortStudyModules)).toMatchSnapshot(
+            `courses-${order}`,
+          )
 
           return null
         }),
@@ -359,10 +356,12 @@ describe("course queries", () => {
       await Promise.all(
         ["fi_FI", "en_US", "bogus"].map(async (language: string) => {
           const res = await ctx.client.request(coursesQuery, {
-            language: language,
+            language,
           })
 
-          expect(res.courses.map(sortStudyModules)).toMatchSnapshot()
+          expect(
+            orderBy(res.courses?.map(sortStudyModules), ["id"]),
+          ).toMatchSnapshot(`courses-${language}`)
 
           return null
         }),
