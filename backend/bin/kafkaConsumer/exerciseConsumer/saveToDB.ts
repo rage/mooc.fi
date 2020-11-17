@@ -45,9 +45,9 @@ export const saveToDatabase = async (
         custom_id: { not: { in: message.data.map((p) => p.id.toString()) } },
       },
     },
-    data: convertUpdate({
-      deleted: true,
-    }),
+    data: {
+      deleted: { set: true },
+    },
   })
 
   return ok("Saved to DB successfully")

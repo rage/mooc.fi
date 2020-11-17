@@ -160,9 +160,9 @@ const saveLanguage = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: convertUpdate({
-      language: p.value,
-    }),
+    data: {
+      language: { set: p.value },
+    },
   })
 }
 const saveCountry = async (p: any) => {
@@ -170,9 +170,9 @@ const saveCountry = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: convertUpdate({
-      country: p.value,
-    }),
+    data: {
+      country: { set: p.value },
+    },
   })
 }
 const saveResearch = async (p: any) => {
@@ -181,9 +181,9 @@ const saveResearch = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: convertUpdate({
-      research: value,
-    }),
+    data: {
+      research: { set: value },
+    },
   })
 }
 const saveMarketing = async (p: any) => {
@@ -192,9 +192,9 @@ const saveMarketing = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: convertUpdate({
-      marketing: value,
-    }),
+    data: {
+      marketing: { set: value },
+    },
   })
 }
 const saveCourseVariant = async (p: any) => {
@@ -202,9 +202,9 @@ const saveCourseVariant = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: convertUpdate({
-      course_variant: p.value,
-    }),
+    data: {
+      course_variant: { set: p.value },
+    },
   })
 }
 
@@ -221,9 +221,9 @@ const saveOther = async (p: any) => {
     where: {
       id: old.id,
     },
-    data: convertUpdate({
-      other: other,
-    }),
+    data: {
+      other: { set: other },
+    },
   })
 }
 
@@ -295,7 +295,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
       timestamp: dateToDB,
     },
     update: {
-      timestamp: convertUpdate(dateToDB),
+      timestamp: { set: dateToDB },
     },
   })
 }

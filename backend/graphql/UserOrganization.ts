@@ -3,7 +3,6 @@ import { Context } from "../context"
 import { Role, or, isVisitor, isAdmin } from "../accessControl"
 import { OrganizationRole } from "@prisma/client"
 import { objectType, extendType, idArg, arg } from "@nexus/schema"
-import { convertUpdate } from "../util/db-functions"
 
 export const UserOrganization = objectType({
   name: "UserOrganization",
@@ -122,9 +121,9 @@ export const UserOrganizationMutations = extendType({
         checkUser(ctx, id)
 
         return ctx.prisma.userOrganization.update({
-          data: convertUpdate({
-            role: role ? role : OrganizationRole.Student,
-          }),
+          data: {
+            role: { set: role ?? OrganizationRole.Student },
+          },
           where: {
             id,
           },

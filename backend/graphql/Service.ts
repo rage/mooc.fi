@@ -1,6 +1,5 @@
 import { objectType, extendType, idArg, stringArg } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
-import { convertUpdate } from "../util/db-functions"
 
 export const Service = objectType({
   name: "Service",
@@ -81,10 +80,10 @@ export const ServiceMutations = extendType({
 
         return ctx.prisma.service.update({
           where: { id },
-          data: convertUpdate({
+          data: {
             url: url ?? "",
             name: name ?? "",
-          }),
+          },
         })
       },
     })

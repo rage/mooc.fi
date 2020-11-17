@@ -6,7 +6,6 @@ import {
   stringArg,
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
-import { convertUpdate } from "../util/db-functions"
 
 export const OpenUniversityRegistrationLink = objectType({
   name: "OpenUniversityRegistrationLink",
@@ -126,14 +125,14 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
             id,
           },
           // TODO/FIXME: this deletes the old values?
-          data: convertUpdate({
+          data: {
             course: {
               connect: { id: course },
             },
             course_code: course_code ?? "",
             language: language ?? "",
             link,
-          }),
+          },
         })
       },
     })

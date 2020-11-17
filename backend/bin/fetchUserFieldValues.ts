@@ -84,9 +84,9 @@ const fetcUserFieldValues = async () => {
     ) {
       await prisma.user.update({
         where: { upstream_id: p.user_id },
-        data: convertUpdate({
-          student_number: p.value.trim(),
-        }),
+        data: {
+          student_number: { set: p.value.trim() },
+        },
       })
     }
 
@@ -170,7 +170,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
       timestamp: dateToDB,
     },
     update: {
-      timestamp: convertUpdate(dateToDB),
+      timestamp: { set: dateToDB },
     },
   })
 }
