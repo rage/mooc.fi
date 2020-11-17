@@ -72,6 +72,7 @@ jobs:
           name: "DB for tests"
           command: |
             cd backend
+            docker-compose down
             docker-compose up -d
       - run:
           name: "Tests"

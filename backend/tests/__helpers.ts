@@ -148,7 +148,7 @@ function prismaTestContext() {
         client: "pg",
         connection: databaseUrl,
         debug: DEBUG,
-      }) as knex
+      })
 
       DEBUG && console.log(`running migrations ${schemaName}`)
       // Run the migrations to ensure our schema has the required structure
