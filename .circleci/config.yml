@@ -87,6 +87,7 @@ jobs:
           name: "Tests"
           command: |
             docker run --env NODE_ENV=test --env PGPASSWORD=prisma --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --network host --rm "eu.gcr.io/moocfi/moocfi-backend:build-$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)" /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci"
+            cd backend
             docker-compose down
       # - restore_cache:
       #     keys:
