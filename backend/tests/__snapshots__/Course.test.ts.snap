@@ -131,10 +131,10 @@ Object {
     "study_module_start_point": null,
     "study_modules": Array [
       Object {
-        "id": "00000000-0000-0000-0000-000000000101",
+        "id": "00000000-0000-0000-0000-000000000102",
       },
       Object {
-        "id": "00000000-0000-0000-0000-000000000102",
+        "id": "00000000-0000-0000-0000-000000000101",
       },
     ],
     "support_email": null,
@@ -192,10 +192,10 @@ Object {
     "study_module_start_point": null,
     "study_modules": Array [
       Object {
-        "id": "00000000-0000-0000-0000-000000000101",
+        "id": "00000000-0000-0000-0000-000000000102",
       },
       Object {
-        "id": "00000000-0000-0000-0000-000000000102",
+        "id": "00000000-0000-0000-0000-000000000101",
       },
     ],
     "support_email": null,
@@ -274,12 +274,12 @@ Array [
     "study_module_start_point": null,
     "study_modules": Array [
       Object {
-        "id": "00000000-0000-0000-0000-000000000101",
-        "slug": "module1",
-      },
-      Object {
         "id": "00000000-0000-0000-0000-000000000102",
         "slug": "module2",
+      },
+      Object {
+        "id": "00000000-0000-0000-0000-000000000101",
+        "slug": "module1",
       },
     ],
     "upcoming_active_link": false,

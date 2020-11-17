@@ -75,10 +75,8 @@ jobs:
             docker-compose up -d
       - run:
           name: "Tests"
-          environment:
-            PGPASSWORD: "prisma"
           command: |
-            docker run --env NODE_ENV=test --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --net host --rm "eu.gcr.io/moocfi/moocfi-backend:build-$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)" /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci"
+            docker run --env NODE_ENV=test --env PGPASSWORD=prisma --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --net host --rm "eu.gcr.io/moocfi/moocfi-backend:build-$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)" /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci"
       #      dockerize -wait tcp://localhost:5678 -timeout 1m 
       # - restore_cache:
       #     keys:
