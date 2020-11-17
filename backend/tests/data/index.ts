@@ -115,6 +115,12 @@ export const courses: CourseCreateInput[] = [
         },
       ],
     },
+    study_modules: {
+      connect: [
+        { id: "00000000000000000000000000000101" },
+        { id: "00000000000000000000000000000102" },
+      ],
+    },
   },
   {
     id: "00000000000000000000000000000002",
@@ -134,10 +140,8 @@ export const courses: CourseCreateInput[] = [
         },
       ],
     },
+    study_modules: {
+      connect: { id: "00000000000000000000000000000102" },
+    },
   },
 ]
-
-export const courseModules: Record<string, string[]> = {
-  course1: ["module1", "module2"],
-  course2: ["module2"],
-}

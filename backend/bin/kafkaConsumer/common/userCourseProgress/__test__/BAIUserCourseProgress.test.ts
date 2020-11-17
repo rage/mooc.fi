@@ -37,6 +37,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 2,
         n_points: 1,
         progress: 0.5,
+        custom_id: env.EX_ONE_BEGINNER,
       },
     })
     expect(tierProgress).toEqual([
@@ -46,6 +47,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 2,
         n_points: 1,
         progress: 0.5,
+        custom_id: env.EX_ONE_BEGINNER,
       },
     ])
     expect(progress).toEqual({
@@ -95,6 +97,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 2,
         n_points: 2,
         progress: 1,
+        custom_id: env.EX_ONE_INTERMEDIATE_ID,
       },
       {
         group: "2",
@@ -102,6 +105,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 4,
         n_points: 2,
         progress: 0.5,
+        custom_id: env.EX_TWO_ADVANCED_ID,
       },
     ])
     expect(progress).toEqual({
@@ -136,12 +140,14 @@ describe("calculates tier progress correctly", () => {
         max_points: 0,
         n_points: 0,
         progress: 0,
+        custom_id: env.EX_ONE_BEGINNER,
       },
       2: {
         tier: 1,
         max_points: 1,
         n_points: 1,
         progress: 1,
+        custom_id: env.EX_TWO_BEGINNER,
       },
     })
 

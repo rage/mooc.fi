@@ -138,7 +138,7 @@ function prismaTestContext() {
       // Generate a unique schema identifier for this test context
       schemaName = `test_${nanoid()}`
       // Generate the pg connection string for the test schema
-      databaseUrl = `postgres://postgres:postgres@localhost:5432/testing?schema=${schemaName}`
+      databaseUrl = `postgres://prisma:prisma@localhost:5678/testing?schema=${schemaName}`
       // Set the required environment variable to contain the connection string
       // to our database test schema
       // process.env.DATABASE_URL = databaseUrl

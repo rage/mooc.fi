@@ -275,4 +275,4 @@ const seedPointsData = async () => {
   course && (await addUserCourseSettingses({ courseId: course.id }))
 }
 
-seedPointsData()
+seedPointsData().finally(() => process.exit(0))

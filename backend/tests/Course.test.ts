@@ -8,7 +8,7 @@ import {
 } from "./data"
 import { seed } from "./data/seed"
 
-import { Course } from "@prisma/client"
+import { Course, StudyModule } from "@prisma/client"
 
 const ctx = getTestContext()
 const tmc = fakeTMC({
@@ -138,6 +138,84 @@ const coursesQuery = gql`
   }
 `
 
+const courseExistsQuery = gql`
+  query courseExists($slug: String!) {
+    course_exists(slug: $slug)
+  }
+`
+
+const createCourseMutation = gql`
+  mutation createCourse($course: CourseCreateArg!) {
+    addCourse(course: $course) {
+      id
+      name
+      slug
+      ects
+      order
+      study_module_order
+      teacher_in_charge_name
+      teacher_in_charge_email
+      support_email
+      start_date
+      end_date
+      tier
+      photo {
+        id
+        compressed
+        compressed_mimetype
+        uncompressed
+        uncompressed_mimetype
+      }
+      promote
+      start_point
+      hidden
+      study_module_start_point
+      status
+      course_translations {
+        id
+        name
+        language
+        description
+        link
+      }
+      open_university_registration_links {
+        id
+        course_code
+        language
+        link
+      }
+      study_modules {
+        id
+      }
+      course_variants {
+        id
+        slug
+        description
+      }
+      course_aliases {
+        id
+        course_code
+      }
+      inherit_settings_from {
+        id
+      }
+      completions_handled_by {
+        id
+      }
+      has_certificate
+      user_course_settings_visibilities {
+        id
+        language
+      }
+      upcoming_active_link
+      automatic_completions
+      automatic_completions_eligible_for_ects
+      exercise_completions_needed
+      points_needed
+    }
+  }
+`
+
 describe("course queries", () => {
   beforeAll(() => tmc.setup())
   afterAll(() => tmc.teardown())
@@ -239,19 +317,28 @@ describe("course queries", () => {
   })
 
   describe("courses", () => {
-    // @ts-ignore: not used
-    let createdCourses: Course[] | null = null
-
     beforeEach(async () => {
-      createdCourses = (await seed(ctx.prisma)).courses
+      await seed(ctx.prisma)
     })
 
-    afterEach(() => (createdCourses = null))
+    // study_modules may be returned in any order, let's just sort them so snapshots are equal
+    const sortStudyModules = (course: any) => {
+      if (!course.study_modules) {
+        fail()
+      }
+
+      return {
+        ...course,
+        study_modules: course.study_modules?.sort(
+          (a: StudyModule, b: StudyModule) => a.id > b.id,
+        ),
+      }
+    }
 
     it("returns courses", async () => {
       const res = await ctx.client.request(coursesQuery)
 
-      expect(res).toMatchSnapshot()
+      expect(res.courses.map(sortStudyModules)).toMatchSnapshot()
     })
 
     it("returns courses ordered", async () => {
@@ -261,7 +348,9 @@ describe("course queries", () => {
             orderBy: { name: order },
           })
 
-          expect(res).toMatchSnapshot()
+          expect(res.courses.map(sortStudyModules)).toMatchSnapshot()
+
+          return null
         }),
       )
     })
@@ -273,9 +362,91 @@ describe("course queries", () => {
             language: language,
           })
 
-          expect(res).toMatchSnapshot()
+          expect(res.courses.map(sortStudyModules)).toMatchSnapshot()
+
+          return null
         }),
       )
+    })
+  })
+
+  describe("course_exists", () => {
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      ctx!.client.setHeader("Authorization", "Bearer normal")
+    })
+
+    it("returns true on existing course", async () => {
+      const res = await ctx.client.request(courseExistsQuery, {
+        slug: "course1",
+      })
+
+      expect(res).toEqual({ course_exists: true })
+    })
+
+    it("returns false on non-existing course", async () => {
+      const res = await ctx.client.request(courseExistsQuery, {
+        slug: "bogus",
+      })
+
+      expect(res).toEqual({ course_exists: false })
+    })
+  })
+})
+
+describe("course mutations", () => {
+  beforeAll(() => tmc.setup())
+  afterAll(() => tmc.teardown())
+
+  const newCourse = {
+    name: "new1",
+    slug: "new1",
+    start_date: "01/01/1900",
+    teacher_in_charge_email: "e@mail.com",
+    teacher_in_charge_name: "teacher",
+    study_modules: [{ id: "00000000000000000000000000000101" }],
+    course_translations: [
+      {
+        description: "description_en_US",
+        language: "en_US",
+        name: "name_en_US",
+      },
+    ],
+  }
+
+  describe("addCourse", () => {
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      ctx!.client.setHeader("Authorization", "Bearer admin")
+    })
+
+    it("creates a course ", async () => {
+      const res = await ctx!.client.request(createCourseMutation, {
+        course: newCourse,
+      })
+
+      expect(res).toMatchSnapshot({
+        addCourse: {
+          id: expect.any(String),
+          course_translations: [
+            {
+              id: expect.any(String),
+            },
+          ],
+        },
+      })
+
+      const createdCourse = await ctx.prisma.course.findFirst({
+        where: { slug: "new1" },
+      })
+
+      expect(createdCourse).not.toEqual(null)
+      expect(createdCourse!.id).toEqual(res.addCourse.id)
+      expect(createdCourse).toMatchSnapshot({
+        created_at: expect.any(Date),
+        updated_at: expect.any(Date),
+        id: expect.any(String),
+      })
     })
   })
 })
