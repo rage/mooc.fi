@@ -5,7 +5,7 @@ import { Server } from "http"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { nanoid } from "nanoid"
-import type knex from "knex"
+import knex from "knex"
 import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
@@ -144,7 +144,7 @@ function prismaTestContext() {
       // process.env.DATABASE_URL = databaseUrl
 
       DEBUG && console.log(`creating knex ${databaseUrl}`)
-      knexClient = require("knex")({
+      knexClient = knex({
         client: "pg",
         connection: databaseUrl,
         debug: DEBUG,
