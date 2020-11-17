@@ -76,7 +76,7 @@ jobs:
       - run:
           name: "Tests"
           command: |
-            dockerize -wait tcp://testing:5678 -timeout 1m 
+            dockerize -wait tcp://localhost:5678 -timeout 1m 
             docker run --env NODE_ENV=test --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --net host --rm "eu.gcr.io/moocfi/moocfi-backend:build-$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)" /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci"
       #      dockerize -wait http://localhost:5678 -timeout 1m 
       # - restore_cache:
