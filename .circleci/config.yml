@@ -69,26 +69,16 @@ jobs:
 #             chmod +x ~/docker-compose
 #             mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
-          name: "Launch DB for tests"
-          command: |
-            cd backend
-            docker-compose up -d
-            attempt=0
-            until docker-compose exec postgres pg_isready; do
-              printf '.'
-              sleep 2
-              attempt=$(( $attempt + 1 ))
-              if [ $attempt -gt 15 ]; then
-                echo Too many attempts
-                exit 1
-              fi
-            done
+          name: "Preparing DB for tests"
+          command: "bin/prepare-db-for-tests.sh"
       - run:
           name: "Tests"
-          command: |
-            docker run --env NODE_ENV=test --env PGPASSWORD=prisma --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so --network host --rm "eu.gcr.io/moocfi/moocfi-backend:build-$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)" /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci"
-            cd backend
-            docker-compose down
+          command: "bin/run-backend-tests.sh"
+      - store_artifacts:
+          path: coverage
+      
+      #       cd backend
+      #       docker-compose down
       # - restore_cache:
       #     keys:
       #       - node-backend-{{ .Branch }}-{{ checksum "~/project/backend/package-lock.json" }}
