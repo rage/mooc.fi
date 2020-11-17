@@ -1,6 +1,5 @@
 import { CourseStatus, CourseTranslation } from "@prisma/client"
 import prisma from "./lib/prisma"
-import { convertUpdate } from "../util/db-functions"
 
 const Modules = [
   {
@@ -431,13 +430,13 @@ const seed = async () => {
           where: {
             id: newCourse.id,
           },
-          data: convertUpdate({
+          data: {
             study_modules: {
               connect: course.study_modules.map((id) => ({
                 id,
               })),
             },
-          }),
+          },
         })
       }
 
@@ -446,4 +445,4 @@ const seed = async () => {
   )
 }
 
-seed()
+seed().finally(() => process.exit(0))

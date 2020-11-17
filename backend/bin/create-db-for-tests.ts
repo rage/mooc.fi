@@ -1,8 +1,8 @@
 const connection = {
   host: "localhost",
-  port: 5432,
-  user: "postgres",
-  password: "postgres",
+  port: 5678,
+  user: "prisma",
+  password: "prisma",
   // database: "testing",
 }
 
@@ -19,7 +19,7 @@ const createDb = async () => {
   }
 }
 
-createDb().then(async () => {
-  knex.destroy()
+createDb().finally(async () => {
+  await knex.destroy()
   process.exit(0)
 })
