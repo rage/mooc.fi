@@ -9,6 +9,12 @@ const connection = {
 const knex = require("knex")({
   client: "pg",
   connection,
+  pool: {
+    min: 0,
+    max: 5,
+    acquireTimeoutMillis: 60000,
+    idleTimeoutMillis: 600000,
+  },
 })
 
 const createDb = async () => {
