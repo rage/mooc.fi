@@ -1,4 +1,5 @@
-import { objectType } from "@nexus/schema"
+import { objectType, stringArg, intArg } from "@nexus/schema"
+import { isAdmin } from "../../accessControl"
 
 export const Course = objectType({
   name: "Course",
@@ -36,17 +37,17 @@ export const Course = objectType({
     t.model.teacher_in_charge_email()
     t.model.teacher_in_charge_name()
     t.model.updated_at()
-    t.model.completions()
-    t.model.completions_registered()
+    // t.model.completions()
+    // t.model.completions_registered()
     t.model.course_aliases()
     t.model.course_organizations()
     t.model.course_variants()
     t.model.exercises()
     t.model.open_university_registration_links()
-    t.model.user_course_progresses()
-    t.model.user_course_service_progresses()
-    t.model.user_course_settings()
-    t.model.user_course_settings_visibilities()
+    // t.model.user_course_progresses()
+    // t.model.user_course_service_progresses()
+    // t.model.user_course_settings()
+    // t.model.user_course_settings_visibilities()
     t.model.services()
     t.model.study_modules()
     t.model.automatic_completions_eligible_for_ects()
@@ -58,5 +59,32 @@ export const Course = objectType({
     t.string("description")
     // @ts-ignore: false error
     t.string("link")
+
+    t.field("completions", {
+      type: "Completion",
+      list: true,
+      args: {
+        user_id: stringArg({ required: false }),
+        user_upstream_id: intArg({ required: false }),
+      },
+      authorize: isAdmin,
+      resolve: async (parent, args, ctx) => {
+        const { user_id, user_upstream_id } = args
+
+        if (!user_id && !user_upstream_id) {
+          throw new Error("needs user_id or user_upstream_id")
+        }
+
+        return ctx.db.completion.findMany({
+          where: {
+            user: {
+              id: user_id ?? undefined,
+              upstream_id: user_upstream_id ?? undefined,
+            },
+            course_id: parent.id,
+          },
+        })
+      },
+    })
   },
 })
