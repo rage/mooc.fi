@@ -47,7 +47,7 @@ export const Course = objectType({
     // t.model.user_course_progresses()
     // t.model.user_course_service_progresses()
     // t.model.user_course_settings()
-    // t.model.user_course_settings_visibilities()
+    t.model.user_course_settings_visibilities()
     t.model.services()
     t.model.study_modules()
     t.model.automatic_completions_eligible_for_ects()
