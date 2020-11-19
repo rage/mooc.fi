@@ -10,6 +10,7 @@ import { ExerciseCompletionOrderByInput } from "@prisma/client"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"
 import { Context } from "/context"
+import { AuthenticationError } from "apollo-server-core"
 
 export const Exercise = objectType({
   name: "Exercise",
@@ -44,6 +45,9 @@ export const Exercise = objectType({
       resolve: async (parent, args, ctx: Context) => {
         const { orderBy } = args
 
+        if (!ctx?.user?.id) {
+          throw new AuthenticationError("not logged in")
+        }
         return ctx.prisma.exercise
           .findOne({ where: { id: parent.id } })
           .exercise_completions({

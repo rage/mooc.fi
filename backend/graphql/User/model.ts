@@ -15,7 +15,7 @@ export const User = objectType({
     t.model.upstream_id()
     t.model.username()
     // t.model.completions()
-    t.model.completions_registered()
+    // t.model.completions_registered()
     t.model.email_deliveries()
     t.model.exercise_completions()
     t.model.organizations()
@@ -54,6 +54,45 @@ export const User = objectType({
         return ctx.prisma.completion.findMany({
           where: {
             user_id: parent.id,
+            course:
+              course_id || course_slug
+                ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
+                : undefined,
+          },
+        })
+      },
+    })
+
+    t.field("completions_registered", {
+      type: "CompletionRegistered",
+      list: true,
+      nullable: false,
+      args: {
+        course_id: stringArg({ required: false }),
+        course_slug: stringArg({ required: false }),
+        organization_id: stringArg({ required: false }),
+      },
+      resolve: async (parent, args, ctx) => {
+        let { course_id, course_slug, organization_id } = args
+
+        if (course_id || course_slug) {
+          const handlerCourse = await ctx.db.course
+            .findOne({
+              where: {
+                id: args.course_id ?? undefined,
+                slug: args.course_slug ?? undefined,
+              },
+            })
+            .completions_handled_by()
+          if (handlerCourse) {
+            course_id = handlerCourse.id
+            course_slug = undefined
+          }
+        }
+        return ctx.db.completionRegistered.findMany({
+          where: {
+            user_id: parent.id,
+            organization_id: organization_id ?? undefined,
             course:
               course_id || course_slug
                 ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
