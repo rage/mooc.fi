@@ -1,6 +1,7 @@
 import { schema } from "nexus"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"
+import { AuthenticationError } from "apollo-server-core"
 
 schema.objectType({
   name: "Exercise",
@@ -34,6 +35,10 @@ schema.objectType({
       },
       resolve: async (parent, args, ctx: NexusContext) => {
         const { orderBy } = args
+
+        if (!ctx?.user?.id) {
+          throw new AuthenticationError("not logged in")
+        }
 
         return ctx.db.exercise
           .findOne({ where: { id: parent.id } })
