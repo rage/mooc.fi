@@ -31,7 +31,9 @@ schema.objectType({
     t.model.website()
     t.model.creator_id()
     t.model.creator()
-    t.model.completions_registered()
+    t.model.completions_registered({
+      authorize: isAdmin, // TODO: should this be something else?
+    })
     t.model.courses()
     t.model.course_organizations()
     t.model.organization_translations()
@@ -48,7 +50,7 @@ const organizationPermission = (
 ) => {
   if (args.hidden) return ctx.role === Role.ADMIN
 
-  return true
+  return true // TODO: should this check if organization?
 }
 
 schema.extendType({
