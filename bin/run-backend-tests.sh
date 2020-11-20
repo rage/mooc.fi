@@ -12,7 +12,7 @@ else
 fi
 
 TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-TEST_NAME="test-$REV"
+TEST_NAME="test-$REV-$DATE"
 
 cd backend
 
@@ -20,6 +20,7 @@ echo "Running tests"
 
 docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
+  --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
   --network host \
   --name "$TEST_NAME" "$TAG" \
   /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci --coverage --reporters=default --reporters=jest-junit" 
