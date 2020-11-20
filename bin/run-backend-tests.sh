@@ -12,7 +12,7 @@ else
 fi
 
 TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-
+TEST_NAME="test-$REV"
 
 cd backend
 
@@ -21,12 +21,12 @@ echo "Running tests"
 docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --network host \
-  --name test "$TAG" \
-  /bin/bash -c "npm run create-test-db; npm i jest-junit; npm run test -- --runInBand --ci --coverage --reporters=default --reporters=jest-junit" 
+  --name "$TEST_NAME" "$TAG" \
+  /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
 
-docker cp test:/app/coverage coverage
-docker rm test
+docker cp "$TEST_NAME":/app/coverage coverage
+docker rm "$TEST_NAME"
 
 cd ..
