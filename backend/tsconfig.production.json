@@ -24,4 +24,5 @@
     "sourceRoot": "/"
   },
   "include": [".", "types.d.ts"],
+  "exclude": ["__mocks__"]
 }

@@ -41,22 +41,6 @@ const { express } = server({
   logger,
 })
 
-/*const apollo = new ApolloServer({
-  schema,
-  context: (ctx) => ({
-    ...ctx,
-    prisma: prismaClient,
-    logger,
-  }),
-  playground: {
-    endpoint: PRODUCTION ? "/api" : "/",
-  },
-  introspection: true,
-  logger,
-})
-
-apollo.applyMiddleware({ app: express, path: PRODUCTION ? "/api" : "/" })
-
 /*prismaClient.on("query", (e) => {
   e.timestamp
   e.query
