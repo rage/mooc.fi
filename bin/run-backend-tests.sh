@@ -22,7 +22,7 @@ docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --network host \
   --name test "$TAG" \
-  /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci --coverage --reporters=default --reporters=jest-junit" 
+  /bin/bash -c "npm run create-test-db; npm i jest-junit; npm run test -- --runInBand --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
 
