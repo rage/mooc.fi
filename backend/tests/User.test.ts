@@ -31,24 +31,25 @@ const tmc = fakeTMC({
   "Bearer admin": [200, adminUserDetails],
 })
 
-describe("user queries", () => {
-  beforeEach(() => {
-    tmc.setup()
-  })
-
-  afterAll(() => tmc.teardown())
-
-  describe("currentUser", () => {
-    beforeEach(async () => {
-      await ctx.prisma.user.create({
-        data: normalUser,
-      })
+describe("User", () => {
+  describe("queries", () => {
+    beforeEach(() => {
+      tmc.setup()
     })
 
-    it("shows current user when logged in", async () => {
-      ctx!.client.setHeader("Authorization", "Bearer normal")
+    afterAll(() => tmc.teardown())
 
-      const res = await ctx.client.request(`
+    describe("currentUser", () => {
+      beforeEach(async () => {
+        await ctx.prisma.user.create({
+          data: normalUser,
+        })
+      })
+
+      it("shows current user when logged in", async () => {
+        ctx!.client.setHeader("Authorization", "Bearer normal")
+
+        const res = await ctx.client.request(`
       query {
         currentUser {
           id
@@ -62,19 +63,19 @@ describe("user queries", () => {
       }
     `)
 
-      expect(res).toMatchInlineSnapshot(
-        {
-          currentUser: {
-            id: expect.any(String),
-            administrator: false,
-            email: "e@mail.com",
-            first_name: "first",
-            last_name: "last",
-            username: "user",
-            upstream_id: 1,
+        expect(res).toMatchInlineSnapshot(
+          {
+            currentUser: {
+              id: expect.any(String),
+              administrator: false,
+              email: "e@mail.com",
+              first_name: "first",
+              last_name: "last",
+              username: "user",
+              upstream_id: 1,
+            },
           },
-        },
-        `
+          `
               Object {
                 "currentUser": Object {
                   "administrator": false,
@@ -87,15 +88,15 @@ describe("user queries", () => {
                 },
               }
           `,
-      )
+        )
 
-      jest.clearAllMocks()
-    })
+        jest.clearAllMocks()
+      })
 
-    it("shows null when not logged in", async () => {
-      ctx!.client.setHeader("Authorization", "")
+      it("shows null when not logged in", async () => {
+        ctx!.client.setHeader("Authorization", "")
 
-      const res = await ctx.client.request(`
+        const res = await ctx.client.request(`
       query {
         currentUser {
           id
@@ -109,60 +110,36 @@ describe("user queries", () => {
       }
     `)
 
-      expect(res).toMatchInlineSnapshot(
-        {
-          currentUser: null,
-        },
-        `
+        expect(res).toMatchInlineSnapshot(
+          {
+            currentUser: null,
+          },
+          `
         Object {
           "currentUser": null,
         }
       `,
-      )
-    })
-  })
-})
-
-describe("user mutations", () => {
-  beforeAll(() => {
-    tmc.setup()
-  })
-
-  afterAll(() => tmc.teardown())
-
-  beforeEach(async () => {
-    await ctx.prisma.user.deleteMany({ where: {} })
-  })
-
-  describe("addUser", () => {
-    beforeAll(() => ctx!.client.setHeader("Authorization", ""))
-
-    it("creates user correctly", async () => {
-      const res = await ctx.client.request(addUserMutation, {
-        user: {
-          email: "e@mail.com",
-          first_name: "first",
-          last_name: "last",
-          username: "username",
-          research_consent: false,
-          upstream_id: 1,
-        },
-      })
-
-      expect(res).toMatchSnapshot({
-        addUser: {
-          id: expect.any(String),
-        },
+        )
       })
     })
+  })
 
-    it("won't create user with same id", async () => {
-      await ctx.prisma.user.create({
-        data: normalUser,
-      })
+  describe("mutations", () => {
+    beforeAll(() => {
+      tmc.setup()
+    })
 
-      await expect(async () => {
-        await ctx.client.request(addUserMutation, {
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await ctx.prisma.user.deleteMany({ where: {} })
+    })
+
+    describe("addUser", () => {
+      beforeAll(() => ctx!.client.setHeader("Authorization", ""))
+
+      it("creates user correctly", async () => {
+        const res = await ctx.client.request(addUserMutation, {
           user: {
             email: "e@mail.com",
             first_name: "first",
@@ -172,52 +149,79 @@ describe("user mutations", () => {
             upstream_id: 1,
           },
         })
-      }).rejects.toThrow()
-    })
-  })
 
-  describe("updateResearchConsent", () => {
-    beforeEach(async () => {
-      await ctx!.prisma.user.create({
-        data: normalUser,
+        expect(res).toMatchSnapshot({
+          addUser: {
+            id: expect.any(String),
+          },
+        })
+      })
+
+      it("won't create user with same id", async () => {
+        await ctx.prisma.user.create({
+          data: normalUser,
+        })
+
+        await expect(async () => {
+          await ctx.client.request(addUserMutation, {
+            user: {
+              email: "e@mail.com",
+              first_name: "first",
+              last_name: "last",
+              username: "username",
+              research_consent: false,
+              upstream_id: 1,
+            },
+          })
+        }).rejects.toThrow()
       })
     })
 
-    afterEach(async () => {
-      await ctx!.prisma.user.delete({ where: { upstream_id: 1 } })
-      ctx.user = undefined
-    })
-
-    it("updates correctly", async () => {
-      ctx!.client.setHeader("Authorization", "Bearer normal")
-
-      const res = await ctx!.client.request(updateReseachConsentMutation, {
-        value: true,
+    describe("updateResearchConsent", () => {
+      beforeEach(async () => {
+        await ctx!.prisma.user.create({
+          data: normalUser,
+        })
       })
 
-      expect(res.updateResearchConsent).toMatchInlineSnapshot(
-        { id: expect.any(String) },
-        `
+      afterEach(async () => {
+        await ctx!.prisma.user.delete({ where: { upstream_id: 1 } })
+        ctx.user = undefined
+      })
+
+      it("updates correctly", async () => {
+        ctx!.client.setHeader("Authorization", "Bearer normal")
+
+        const res = await ctx!.client.request(updateReseachConsentMutation, {
+          value: true,
+        })
+
+        expect(res.updateResearchConsent).toMatchInlineSnapshot(
+          { id: expect.any(String) },
+          `
         Object {
           "id": Any<String>,
         }
       `,
-      )
-      const updatedConsent = await ctx!.prisma.user.findFirst({
-        where: { upstream_id: 1 },
-        select: { research_consent: true },
+        )
+        const updatedConsent = await ctx!.prisma.user.findFirst({
+          where: { upstream_id: 1 },
+          select: { research_consent: true },
+        })
+
+        expect(updatedConsent).toMatchObject({ research_consent: true })
       })
 
-      expect(updatedConsent).toMatchObject({ research_consent: true })
-    })
+      it("won't update research consent without auth", async () => {
+        ctx!.client.setHeader("Authorization", "")
 
-    it("won't update research consent without auth", async () => {
-      ctx!.client.setHeader("Authorization", "")
-
-      try {
-        await ctx!.client.request(updateReseachConsentMutation, { value: true })
-        fail()
-      } catch {}
+        try {
+          await ctx!.client.request(updateReseachConsentMutation, {
+            value: true,
+          })
+          fail()
+        } catch {}
+      })
     })
   })
 })

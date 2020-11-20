@@ -84,6 +84,17 @@ export async function up(knex: Knex): Promise<void> {
   // id
   try {
     await knex.raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+    // commented: hack (?) for parallel
+    /*await knex.raw(`CREATE SCHEMA IF NOT EXISTS "extensions";`)
+    const schema = (await knex.select(knex.raw("current_schema()")))[0]
+      ?.current_schema
+    await knex.raw(`SET SEARCH_PATH TO extensions,"${schema}";`)
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${schema}";`,
+    )
+    await knex.raw(
+      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "extensions";`,
+    )*/
   } catch {
     Boolean(process.env.DEBUG) &&
       console.warn(

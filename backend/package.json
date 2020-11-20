@@ -40,7 +40,7 @@
     "copy-env": "cp ./bin/kafkaConsumer/common/userCourseProgress/env.json ./dist/bin/kafkaConsumer/common/userCourseProgress/env.json",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
-    "create-test-db": "createdb -h localhost -p 5678 -U prisma -w testing || true"
+    "create-test-db": "env PGPASSWORD=prisma createdb -h localhost -p 5678 -U prisma -w testing || true"
   },
   "keywords": [],
   "author": "",

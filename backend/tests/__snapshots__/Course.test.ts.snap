@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`course mutations addCourse creates a course  1`] = `
+exports[`Course mutations addCourse creates a course 1`] = `
 Object {
   "addCourse": Object {
     "automatic_completions": false,
@@ -51,7 +51,7 @@ Object {
 }
 `;
 
-exports[`course mutations addCourse creates a course  2`] = `
+exports[`Course mutations addCourse creates a course 2`] = `
 Object {
   "automatic_completions": false,
   "automatic_completions_eligible_for_ects": true,
@@ -86,7 +86,7 @@ Object {
 }
 `;
 
-exports[`course queries course admin returns full course on id and slug 1`] = `
+exports[`Course queries course admin returns full course on id and slug 1`] = `
 Object {
   "automatic_completions": false,
   "automatic_completions_eligible_for_ects": true,
@@ -145,7 +145,7 @@ Object {
 }
 `;
 
-exports[`course queries course admin returns full course on id and slug 2`] = `
+exports[`Course queries course admin returns full course on id and slug 2`] = `
 Object {
   "automatic_completions": false,
   "automatic_completions_eligible_for_ects": true,
@@ -204,7 +204,7 @@ Object {
 }
 `;
 
-exports[`course queries course normal user returns correct language 1`] = `
+exports[`Course queries course normal user returns correct language 1`] = `
 Object {
   "description": "course1_description_en_US",
   "id": Any<String>,
@@ -214,7 +214,7 @@ Object {
 }
 `;
 
-exports[`course queries course normal user returns course on id and slug 1`] = `
+exports[`Course queries course normal user returns course on id and slug 1`] = `
 Object {
   "description": "",
   "id": Any<String>,
@@ -224,7 +224,7 @@ Object {
 }
 `;
 
-exports[`course queries course normal user returns course on id and slug 2`] = `
+exports[`Course queries course normal user returns course on id and slug 2`] = `
 Object {
   "description": "",
   "id": Any<String>,
@@ -234,7 +234,7 @@ Object {
 }
 `;
 
-exports[`course queries courses returns courses 1`] = `
+exports[`Course queries courses returns courses 1`] = `
 Array [
   Object {
     "course_translations": Array [
@@ -308,9 +308,9 @@ Array [
 ]
 `;
 
-exports[`course queries courses returns courses filtered by language: courses-bogus 1`] = `Array []`;
+exports[`Course queries courses returns courses filtered by language: courses-bogus 1`] = `Array []`;
 
-exports[`course queries courses returns courses filtered by language: courses-en_US 1`] = `
+exports[`Course queries courses returns courses filtered by language: courses-en_US 1`] = `
 Array [
   Object {
     "course_translations": Array [
@@ -354,7 +354,7 @@ Array [
 ]
 `;
 
-exports[`course queries courses returns courses filtered by language: courses-fi_FI 1`] = `
+exports[`Course queries courses returns courses filtered by language: courses-fi_FI 1`] = `
 Array [
   Object {
     "course_translations": Array [
@@ -428,7 +428,7 @@ Array [
 ]
 `;
 
-exports[`course queries courses returns courses ordered: courses-asc 1`] = `
+exports[`Course queries courses returns courses ordered: courses-asc 1`] = `
 Array [
   Object {
     "course_translations": Array [
@@ -502,7 +502,7 @@ Array [
 ]
 `;
 
-exports[`course queries courses returns courses ordered: courses-desc 1`] = `
+exports[`Course queries courses returns courses ordered: courses-desc 1`] = `
 Array [
   Object {
     "course_translations": Array [
