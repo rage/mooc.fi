@@ -75,7 +75,7 @@ export const Course = objectType({
           throw new Error("needs user_id or user_upstream_id")
         }
 
-        return ctx.db.completion.findMany({
+        return ctx.prisma.completion.findMany({
           where: {
             user: {
               id: user_id ?? undefined,
