@@ -73,10 +73,13 @@ jobs:
           command: "bin/prepare-db-for-tests.sh"
       - run:
           name: "Tests"
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./coverage/
           command: "bin/run-backend-tests.sh"
+      - store_test_results:
+          path: ~/project/backend/coverage/
       - store_artifacts:
           path: ~/project/backend/coverage
-          destination: backend-coverage
       
       #       cd backend
       #       docker-compose down
