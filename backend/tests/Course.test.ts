@@ -10,6 +10,10 @@ import { seed } from "./data/seed"
 
 import { Course } from "@prisma/client"
 import { orderBy } from "lodash"
+import { mocked } from "ts-jest/utils"
+
+jest.mock("../services/kafkaProducer")
+import KafkaProducer from "../services/kafkaProducer"
 
 const ctx = getTestContext()
 const tmc = fakeTMC({
@@ -229,222 +233,236 @@ const sortStudyModules = (course: any) => {
   }
 }
 
-describe("course queries", () => {
-  beforeAll(() => tmc.setup())
-  afterAll(() => tmc.teardown())
+describe("Course", () => {
+  afterAll(() => jest.clearAllMocks())
 
-  describe("course", () => {
-    let createdCourses: Course[] | null = null
+  describe("queries", () => {
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
 
-    beforeEach(async () => {
-      createdCourses = (await seed(ctx.prisma)).courses
-    })
+    describe("course", () => {
+      let createdCourses: Course[] | null = null
 
-    afterEach(() => (createdCourses = null))
-
-    describe("normal user", () => {
-      beforeEach(() => ctx!.client.setHeader("Authorization", "Bearer normal"))
-
-      it("should error on no parameters", async () => {
-        try {
-          await ctx.client.request(courseQuery)
-          fail()
-        } catch {}
+      beforeEach(async () => {
+        createdCourses = (await seed(ctx.prisma)).courses
       })
 
-      it("returns course on id and slug", async () => {
-        const resId = await ctx.client.request(courseQuery, {
-          id: createdCourses![0].id,
-        })
-        const resSlug = await ctx.client.request(courseQuery, {
-          slug: "course1",
-        })
+      afterEach(() => (createdCourses = null))
 
-        ;[resId, resSlug].map((res) =>
-          expect(sortStudyModules(res.course)).toMatchSnapshot({
-            id: expect.any(String),
-          }),
+      describe("normal user", () => {
+        beforeEach(() =>
+          ctx!.client.setHeader("Authorization", "Bearer normal"),
         )
-      })
 
-      it("returns correct language", async () => {
-        const res = await ctx.client.request(courseQuery, {
-          slug: "course1",
-          language: "en_US",
+        it("should error on no parameters", async () => {
+          try {
+            await ctx.client.request(courseQuery)
+            fail()
+          } catch {}
         })
 
-        expect(sortStudyModules(res.course)).toMatchSnapshot({
-          id: expect.any(String),
-        })
-      })
-
-      it("should return null on non-existent language", async () => {
-        const res = await ctx.client.request(courseQuery, {
-          slug: "course1",
-          language: "sv_SE",
-        })
-
-        expect(res).toEqual({ course: null })
-      })
-
-      it("should error on invalid id and slug", async () => {
-        try {
-          await ctx.client.request(courseQuery, {
-            id: new Array(33).join("1"),
+        it("returns course on id and slug", async () => {
+          const resId = await ctx.client.request(courseQuery, {
+            id: createdCourses![0].id,
           })
-          fail()
-        } catch {}
-        try {
-          await ctx.client.request(courseQuery, {
-            slug: "invalid",
-          })
-          fail()
-        } catch {}
-      })
-    })
-
-    describe("admin", () => {
-      beforeEach(() => ctx!.client.setHeader("Authorization", "Bearer admin"))
-
-      it("returns full course on id and slug", async () => {
-        const resId = await ctx.client.request(fullCourseQuery, {
-          id: createdCourses![0].id,
-        })
-        const resSlug = await ctx.client.request(fullCourseQuery, {
-          slug: "course1",
-        })
-
-        ;[resId, resSlug].map((res) =>
-          expect(sortStudyModules(res.course)).toMatchSnapshot({
-            id: expect.any(String),
-          }),
-        )
-      })
-    })
-  })
-
-  describe("courses", () => {
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
-
-    it("returns courses", async () => {
-      const res = await ctx.client.request(coursesQuery)
-
-      expect(
-        orderBy(res.courses.map(sortStudyModules), ["id"]),
-      ).toMatchSnapshot()
-    })
-
-    it("returns courses ordered", async () => {
-      await Promise.all(
-        ["asc", "desc"].map(async (order: string) => {
-          const res = await ctx.client.request(coursesQuery, {
-            orderBy: { name: order },
+          const resSlug = await ctx.client.request(courseQuery, {
+            slug: "course1",
           })
 
-          expect(res.courses.map(sortStudyModules)).toMatchSnapshot(
-            `courses-${order}`,
-          )
-
-          return null
-        }),
-      )
-    })
-
-    it("returns courses filtered by language", async () => {
-      await Promise.all(
-        ["fi_FI", "en_US", "bogus"].map(async (language: string) => {
-          const res = await ctx.client.request(coursesQuery, {
-            language,
-          })
-
-          expect(
-            orderBy(res.courses?.map(sortStudyModules), ["id"]),
-          ).toMatchSnapshot(`courses-${language}`)
-
-          return null
-        }),
-      )
-    })
-  })
-
-  describe("course_exists", () => {
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-      ctx!.client.setHeader("Authorization", "Bearer normal")
-    })
-
-    it("returns true on existing course", async () => {
-      const res = await ctx.client.request(courseExistsQuery, {
-        slug: "course1",
-      })
-
-      expect(res).toEqual({ course_exists: true })
-    })
-
-    it("returns false on non-existing course", async () => {
-      const res = await ctx.client.request(courseExistsQuery, {
-        slug: "bogus",
-      })
-
-      expect(res).toEqual({ course_exists: false })
-    })
-  })
-})
-
-describe("course mutations", () => {
-  beforeAll(() => tmc.setup())
-  afterAll(() => tmc.teardown())
-
-  const newCourse = {
-    name: "new1",
-    slug: "new1",
-    start_date: "01/01/1900",
-    teacher_in_charge_email: "e@mail.com",
-    teacher_in_charge_name: "teacher",
-    study_modules: [{ id: "00000000000000000000000000000101" }],
-    course_translations: [
-      {
-        description: "description_en_US",
-        language: "en_US",
-        name: "name_en_US",
-      },
-    ],
-  }
-
-  describe("addCourse", () => {
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-      ctx!.client.setHeader("Authorization", "Bearer admin")
-    })
-
-    it("creates a course ", async () => {
-      const res = await ctx!.client.request(createCourseMutation, {
-        course: newCourse,
-      })
-
-      expect(res).toMatchSnapshot({
-        addCourse: {
-          id: expect.any(String),
-          course_translations: [
-            {
+          ;[resId, resSlug].map((res) =>
+            expect(sortStudyModules(res.course)).toMatchSnapshot({
               id: expect.any(String),
-            },
-          ],
+            }),
+          )
+        })
+
+        it("returns correct language", async () => {
+          const res = await ctx.client.request(courseQuery, {
+            slug: "course1",
+            language: "en_US",
+          })
+
+          expect(sortStudyModules(res.course)).toMatchSnapshot({
+            id: expect.any(String),
+          })
+        })
+
+        it("should return null on non-existent language", async () => {
+          const res = await ctx.client.request(courseQuery, {
+            slug: "course1",
+            language: "sv_SE",
+          })
+
+          expect(res).toEqual({ course: null })
+        })
+
+        it("should error on invalid id and slug", async () => {
+          try {
+            await ctx.client.request(courseQuery, {
+              id: new Array(33).join("1"),
+            })
+            fail()
+          } catch {}
+          try {
+            await ctx.client.request(courseQuery, {
+              slug: "invalid",
+            })
+            fail()
+          } catch {}
+        })
+      })
+
+      describe("admin", () => {
+        beforeEach(() => ctx!.client.setHeader("Authorization", "Bearer admin"))
+
+        it("returns full course on id and slug", async () => {
+          const resId = await ctx.client.request(fullCourseQuery, {
+            id: createdCourses![0].id,
+          })
+          const resSlug = await ctx.client.request(fullCourseQuery, {
+            slug: "course1",
+          })
+
+          ;[resId, resSlug].map((res) =>
+            expect(sortStudyModules(res.course)).toMatchSnapshot({
+              id: expect.any(String),
+            }),
+          )
+        })
+      })
+    })
+
+    describe("courses", () => {
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+      })
+
+      it("returns courses", async () => {
+        const res = await ctx.client.request(coursesQuery)
+
+        expect(
+          orderBy(res.courses.map(sortStudyModules), ["id"]),
+        ).toMatchSnapshot()
+      })
+
+      it("returns courses ordered", async () => {
+        await Promise.all(
+          ["asc", "desc"].map(async (order: string) => {
+            const res = await ctx.client.request(coursesQuery, {
+              orderBy: { name: order },
+            })
+
+            expect(res.courses.map(sortStudyModules)).toMatchSnapshot(
+              `courses-${order}`,
+            )
+          }),
+        )
+      })
+
+      it("returns courses filtered by language", async () => {
+        await Promise.all(
+          ["fi_FI", "en_US", "bogus"].map(async (language: string) => {
+            const res = await ctx.client.request(coursesQuery, {
+              language,
+            })
+
+            expect(
+              orderBy(res.courses?.map(sortStudyModules), ["id"]),
+            ).toMatchSnapshot(`courses-${language}`)
+
+            return null
+          }),
+        )
+      })
+    })
+
+    describe("course_exists", () => {
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+        ctx!.client.setHeader("Authorization", "Bearer normal")
+      })
+
+      it("returns true on existing course", async () => {
+        const res = await ctx.client.request(courseExistsQuery, {
+          slug: "course1",
+        })
+
+        expect(res).toEqual({ course_exists: true })
+      })
+
+      it("returns false on non-existing course", async () => {
+        const res = await ctx.client.request(courseExistsQuery, {
+          slug: "bogus",
+        })
+
+        expect(res).toEqual({ course_exists: false })
+      })
+    })
+  })
+
+  describe("mutations", () => {
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    const newCourse = {
+      name: "new1",
+      slug: "new1",
+      start_date: "01/01/1900",
+      teacher_in_charge_email: "e@mail.com",
+      teacher_in_charge_name: "teacher",
+      study_modules: [{ id: "00000000000000000000000000000101" }],
+      course_translations: [
+        {
+          description: "description_en_US",
+          language: "en_US",
+          name: "name_en_US",
         },
+      ],
+    }
+
+    describe("addCourse", () => {
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+        ctx!.client.setHeader("Authorization", "Bearer admin")
+        mocked(KafkaProducer).mockClear()
       })
 
-      const createdCourse = await ctx.prisma.course.findFirst({
-        where: { slug: "new1" },
-      })
+      it("creates a course", async () => {
+        const res = await ctx!.client.request(createCourseMutation, {
+          course: newCourse,
+        })
 
-      expect(createdCourse).not.toEqual(null)
-      expect(createdCourse!.id).toEqual(res.addCourse.id)
-      expect(createdCourse).toMatchSnapshot({
-        created_at: expect.any(Date),
-        updated_at: expect.any(Date),
-        id: expect.any(String),
+        expect(res).toMatchSnapshot({
+          addCourse: {
+            id: expect.any(String),
+            course_translations: [
+              {
+                id: expect.any(String),
+              },
+            ],
+          },
+        })
+
+        expect(KafkaProducer).toHaveBeenCalledTimes(1)
+
+        const createdCourse = await ctx.prisma.course.findFirst({
+          where: { slug: "new1" },
+        })
+        expect(
+          mocked(KafkaProducer).mock.instances[0].queueProducerMessage,
+        ).toHaveBeenCalledWith({
+          message: JSON.stringify(createdCourse),
+          partition: null,
+          topic: "new-course",
+        })
+
+        expect(createdCourse).not.toEqual(null)
+        expect(createdCourse!.id).toEqual(res.addCourse.id)
+        expect(createdCourse).toMatchSnapshot({
+          created_at: expect.any(Date),
+          updated_at: expect.any(Date),
+          id: expect.any(String),
+        })
       })
     })
   })

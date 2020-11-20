@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`user mutations addUser creates user correctly 1`] = `
+exports[`User mutations addUser creates user correctly 1`] = `
 Object {
   "addUser": Object {
     "administrator": false,
