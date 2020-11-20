@@ -76,7 +76,7 @@ export const User = objectType({
         let { course_id, course_slug, organization_id } = args
 
         if (course_id || course_slug) {
-          const handlerCourse = await ctx.db.course
+          const handlerCourse = await ctx.prisma.course
             .findOne({
               where: {
                 id: args.course_id ?? undefined,
@@ -89,7 +89,7 @@ export const User = objectType({
             course_slug = undefined
           }
         }
-        return ctx.db.completionRegistered.findMany({
+        return ctx.prisma.completionRegistered.findMany({
           where: {
             user_id: parent.id,
             organization_id: organization_id ?? undefined,
