@@ -74,8 +74,15 @@ jobs:
       - run:
           name: "Tests"
           command: "bin/run-backend-tests.sh"
+      - run:
+          command: |
+            ls ~
+            ls ~/project
+            ls ~/project/backend
+            ls ~/project/backend/coverage
       - store_artifacts:
-          path: coverage
+          path: ~/project/backend/coverage
+          destination: backend-coverage
       
       #       cd backend
       #       docker-compose down
