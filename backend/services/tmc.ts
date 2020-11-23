@@ -102,3 +102,37 @@ export const getCurrentUserDetails = async (
   const userInfo = res.data
   return userInfo
 }
+
+export const createUser = async (username: string, password: string): Promise<any> => {
+  return await axios({
+    method: 'POST',
+    url: `${BASE_URL}/api/v8/users`,
+    data: JSON.stringify({ username, password}),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(res => res.data)
+  .then(json => {
+    if(json.success) {
+      return authenticateUser(username, password)
+    }
+  })
+  .catch(error => {
+    return false
+  })
+}
+
+export const authenticateUser = async (username: string, password: string): Promise<any> => {
+  return await axios({
+    method: 'POST',
+    url: `${BASE_URL}/api/v8/token`,
+    data: JSON.stringify({ username, password }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(response => response.data)
+  .then(json => {
+    return json.access_token
+  })
+  .catch(error => {
+    return false
+  })
+}

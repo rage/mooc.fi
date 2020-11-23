@@ -14,6 +14,7 @@ import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
 
 const JSONStream = require("JSONStream")
+const argon2 = require('argon2')
 const helmet = require("helmet")
 
 const DEBUG = Boolean(process.env.DEBUG)
@@ -327,6 +328,129 @@ const _express = () => {
       },
     })
   })
+
+  server.express.get("/signUp", async (req: any, res: any) => {
+    let email = req.body.email.trim()
+    let password = req.body.password.trim()
+    let username = req.body.username.trim()
+
+    if(email.length > 64 || !validateEmail(email)) {
+      return res.status(400).json({
+        error: 'Email is invalid or too long.'
+      })
+    }
+
+    if(!validatePassword(password)) {
+      return res.status(400).json({
+        error: 'Password is invalid.'
+      })
+    }
+
+    const checkEmail = await Knex.select("email")
+      .from("user")
+      .where("email", email)
+
+    if(checkEmail.length > 0) {
+      return res.status(400).json({
+        error: 'Email is already in use.'
+      })
+    }
+
+    const checkUsername = await Knex.select("username")
+      .from("user")
+      .where("username", username)
+      
+    if(checkUsername.length > 0) {
+      return res.status(400).json({
+        error: 'Username is already in use.'
+      })
+    }
+
+    const accessToken = await createUser(email, password)
+    if(!accessToken) {
+      return err(res.status(500).json({ message: "Error creating user" }))
+    }
+
+    const userDetails = await getCurrentUserDetails(accessToken)
+
+    const hashPassword = await argon2.hash(password, {
+      type: argon2.argon2id,
+      memoryCost: 4 ** 15,
+      hashLength: 64,
+    })
+
+    let user = (
+      await Knex.select<any, User[]>("id").from("user").where("upstream_id", userDetails.id)
+    )?.[0]
+
+    if(!user) {
+      try {
+        user = (
+          await Knex("user").insert({
+            upstream_id: userDetails.id,
+            email,
+            username,
+            password: hashPassword,
+            administrator: userDetails.administrator
+          })
+          .returning("*")
+        )?.[0]
+      } catch {
+        return err(res.status(500).json({ message: "Error creating user" }))
+      }  
+    }
+   
+    return ok({
+      user,
+      userDetails
+    })
+  })
+
+  server.express.get("/signIn", async (req: any, res: any) => {
+    let email = req.body.email.trim()
+    let password = req.body.password.trim()
+
+    let user = (
+      await Knex.select<any, User[]>("id", "password").from("user").where("email", email)
+    )?.[0]
+
+    if(!user) {
+      return err(res.status(404).json({ message: "User not found" }))
+    }
+
+    if (await argon2.verify(user.password, password)) {
+      const accessToken = await authenticateUser(email, password)
+
+      server.express.use(session({
+        secret: accessToken,
+        cookie: {
+          maxAge: 365 * 24 * 60 * 60 * 1000,
+          secure: true
+        },
+        saveUninitialized: false,
+        resave: false,
+        unset: 'destroy'
+      }));
+
+    } else {
+      return err(res.status(403).json({ message: "Password does not match", err }))
+    }
+  })
+  
+}
+
+
+
+interface GetUserReturn {
+  user: User
+  details: UserInfo
+}
+
+async function getUser(
+  req: any,
+  res: any,
+): Promise<Result<GetUserReturn, any>> {
+  const rawToken = req.get("Authorization")
 
   interface GetUserReturn {
     user: User
