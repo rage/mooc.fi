@@ -86,6 +86,7 @@ const getUser = async (ctx: Context, rawToken: string) => {
     last_name: details.user_field.last_name.trim(),
     username: details.username,
   }
+
   ctx.user = await ctx.prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,

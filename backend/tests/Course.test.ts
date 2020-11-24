@@ -360,19 +360,15 @@ describe("Course", () => {
       })
 
       it("returns courses filtered by language", async () => {
-        await Promise.all(
-          ["fi_FI", "en_US", "bogus"].map(async (language: string) => {
-            const res = await ctx.client.request(coursesQuery, {
-              language,
-            })
+        for (const language of ["fi_FI", "en_US", "bogus"]) {
+          const res = await ctx.client.request(coursesQuery, {
+            language,
+          })
 
-            expect(
-              orderBy(res.courses?.map(sortStudyModules), ["id"]),
-            ).toMatchSnapshot(`courses-${language}`)
-
-            return null
-          }),
-        )
+          expect(
+            orderBy(res.courses?.map(sortStudyModules), ["id"]),
+          ).toMatchSnapshot(`courses-${language}`)
+        }
       })
     })
 
