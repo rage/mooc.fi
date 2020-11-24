@@ -209,7 +209,7 @@ const getGlobalStatsBAI = async (): Promise<string> => {
     now.getMonth() + 1
   }.${now.getFullYear()}:
       1) ${totalUsers} registered students in all versions
-      2) of these ${totalCompletions} have completed the course.\`\`\` `
+      2) of these ${totalCompletions} have completed Building AI.\`\`\` `
 }
 
 const post = async () => {
