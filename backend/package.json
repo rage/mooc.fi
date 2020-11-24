@@ -67,6 +67,7 @@
     "express": "^4.17.1",
     "graphql-middleware": "^4.0.2",
     "graphql-upload": "^11.0.0",
+    "helmet": "^4.2.0",
     "knex": "^0.21.6",
     "lodash": "^4.17.20",
     "luxon": "^1.25.0",

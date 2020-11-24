@@ -9,6 +9,7 @@ import morgan from "morgan"
 import { ok, err, Result } from "./util/result"
 
 const JSONStream = require("JSONStream")
+const helmet = require("helmet")
 
 type UserCourseSettingsCountResult =
   | {
@@ -35,6 +36,7 @@ interface ExerciseCompletionResult {
 
 export function setupServer(server: typeof nexusServer) {
   server.express.use(cors())
+  server.express.use(helmet.frameguard())
   server.express.use(morgan("combined"))
 
   server.express.get("/api/completions/:course", async function (
