@@ -204,15 +204,24 @@ const getGlobalStatsBAI = async (): Promise<string> => {
   )[0].count
 
   const beginnerCompletions = (
-    await Knex.count().from("completion").where({ course_id: course[0].id }).andWhere({ tier: 1 })
+    await Knex.count()
+      .from("completion")
+      .where({ course_id: course[0].id })
+      .andWhere({ tier: 1 })
   )[0].count
 
   const intermediateCompletions = (
-    await Knex.count().from("completion").where({ course_id: course[0].id }).andWhere({ tier: 2 })
+    await Knex.count()
+      .from("completion")
+      .where({ course_id: course[0].id })
+      .andWhere({ tier: 2 })
   )[0].count
 
   const advancedCompletions = (
-    await Knex.count().from("completion").where({ course_id: course[0].id }).andWhere({ tier: 3 })
+    await Knex.count()
+      .from("completion")
+      .where({ course_id: course[0].id })
+      .andWhere({ tier: 3 })
   )[0].count
 
   const now = new Date()
