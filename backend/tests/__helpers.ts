@@ -9,7 +9,7 @@ import knex from "knex"
 import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
-import nock, { cleanAll } from "nock"
+import nock from "nock"
 import binPrisma from "../bin/lib/prisma"
 
 const DEBUG = Boolean(process.env.DEBUG)
