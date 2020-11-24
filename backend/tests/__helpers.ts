@@ -9,7 +9,7 @@ import knex from "knex"
 import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
-import nock from "nock"
+import nock, { cleanAll } from "nock"
 import binPrisma from "../bin/lib/prisma"
 
 const DEBUG = Boolean(process.env.DEBUG)
@@ -59,7 +59,8 @@ export function getTestContext(): TestContext {
 
   const ctx = createTestContext()
 
-  beforeEach(async (done) => {
+  // beforeEach
+  beforeAll(async (done) => {
     const { prisma, client, knexClient } = await ctx.before()
 
     Object.assign(testContext, {
@@ -71,11 +72,12 @@ export function getTestContext(): TestContext {
     done()
   })
   afterEach(async (done) => {
-    await ctx.after()
+    await ctx.clean()
     done()
   })
 
   afterAll(async (done) => {
+    await ctx.after()
     await binPrisma.$disconnect()
     done()
   })
@@ -121,6 +123,9 @@ function createTestContext() {
           await wait(50)
         }
       }
+    },
+    async clean() {
+      await prismaCtx.clean()
     },
     async after() {
       await prismaCtx.after()
@@ -176,6 +181,19 @@ function prismaTestContext() {
         knexClient,
         prisma,
       }
+    },
+    async clean() {
+      await knexClient?.raw(`DO $$ BEGIN 
+        EXECUTE(
+          SELECT 'TRUNCATE TABLE ' 
+            || string_agg(format('%I.%I', schemaname, tablename), ', ') 
+            || ' CASCADE' 
+          FROM pg_tables 
+          WHERE schemaname = '${schemaName}'
+          AND tableowner = 'prisma'
+        ); 
+      END $$;
+      `)
     },
     async after() {
       // Drop the schema after the tests have completed
