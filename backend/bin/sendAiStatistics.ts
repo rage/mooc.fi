@@ -104,6 +104,18 @@ const langArr: langProps[] = [
     country: "Poland",
     langName: "Polish",
   },
+  {
+    language: "hr",
+    completion_language: "hr_HR",
+    country: "Croatia",
+    langName: "Croatian",
+  },
+  {
+    language: "it",
+    completion_language: "it_IT",
+    country: "Italy",
+    langName: "Italian",
+  },
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
