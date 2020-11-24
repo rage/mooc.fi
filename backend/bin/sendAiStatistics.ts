@@ -188,13 +188,42 @@ const getGlobalStats = async (): Promise<string> => {
     2) of these ${totalCompletions} have completed the course.\`\`\` `
 }
 
+const getGlobalStatsBAI = async (): Promise<string> => {
+  const course = await Knex.select("id")
+    .from("course")
+    .where({ slug: "building-ai" })
+
+  const totalUsers = (
+    await Knex.count()
+      .from("user_course_setting")
+      .where({ course_id: course[0].id })
+  )[0].count
+
+  const totalCompletions = (
+    await Knex.count().from("completion").where({ course_id: course[0].id })
+  )[0].count
+
+  const now = new Date()
+
+  return `\`\`\`Stats ${now.getDate()}.${
+    now.getMonth() + 1
+  }.${now.getFullYear()}:
+      1) ${totalUsers} registered students in all versions
+      2) of these ${totalCompletions} have completed the course.\`\`\` `
+}
+
 const post = async () => {
-  logger.info("getting global stats")
+  logger.info("getting global intro stats")
   data.text = data.text.concat(await getGlobalStats())
 
   logger.info("getting data by language")
   for (let i = 0; i < langArr.length; i++) {
     data.text = data.text.concat(await getDataByLanguage(langArr[i]))
+  }
+
+  logger.info("getting global Building AI stats")
+  for (let i = 0; i < langArr.length; i++) {
+    data.text = data.text.concat(await getGlobalStatsBAI())
   }
 
   await slackPoster.post(url, data)
