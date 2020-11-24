@@ -187,7 +187,7 @@ const getGlobalStats = async (): Promise<string> => {
     1) ${totalUsers} registered students in all versions
     2) of these ${totalCompletions} have completed the course.\`\`\` `
 }
-  
+
 const getGlobalStatsBAI = async (): Promise<string> => {
   const course = await Knex.select("id")
     .from("course")
@@ -195,21 +195,19 @@ const getGlobalStatsBAI = async (): Promise<string> => {
 
   const totalUsers = (
     await Knex.count()
-    .from("user_course_setting")
-    .where({ course_id: course[0].id })
-  )[0].count
-    
-  const totalCompletions = (
-      await Knex.count()
-      .from("completion")
+      .from("user_course_setting")
       .where({ course_id: course[0].id })
   )[0].count
-      
+
+  const totalCompletions = (
+    await Knex.count().from("completion").where({ course_id: course[0].id })
+  )[0].count
+
   const now = new Date()
 
   return `\`\`\`Stats ${now.getDate()}.${
-      now.getMonth() + 1
-    }.${now.getFullYear()}:
+    now.getMonth() + 1
+  }.${now.getFullYear()}:
       1) ${totalUsers} registered students in all versions
       2) of these ${totalCompletions} have completed the course.\`\`\` `
 }
