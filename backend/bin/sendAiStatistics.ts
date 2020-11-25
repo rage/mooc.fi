@@ -258,9 +258,7 @@ const post = async () => {
   }
 
   logger.info("getting global Building AI stats")
-  for (let i = 0; i < langArr.length; i++) {
-    data.text = data.text.concat(await getGlobalStatsBAI())
-  }
+  data.text = data.text.concat(await getGlobalStatsBAI())
 
   await slackPoster.post(url, data)
   Knex.destroy()
