@@ -94,6 +94,7 @@ export const uploadImage = async ({
     filename: string
   } = await file
 
+  console.log("hey, I got", file)
   const image: Buffer = await readFS(createReadStream())
   const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)?.[1]
 

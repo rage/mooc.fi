@@ -17,7 +17,6 @@ import { isAdmin } from "../../accessControl"
 import { Prisma__CourseClient, Course } from "@prisma/client"
 
 import { extendType, arg, idArg, stringArg } from "@nexus/schema"
-import { convertUpdate } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
@@ -55,6 +54,7 @@ export const CourseMutations = extendType({
         let photo = null
 
         if (new_photo) {
+          console.log("mutation got", new_photo)
           const newImage = await uploadImage({
             ctx,
             file: new_photo,
@@ -158,6 +158,7 @@ export const CourseMutations = extendType({
         let photo = course.photo
 
         if (new_photo) {
+          console.log("mutation got", new_photo)
           const newImage = await uploadImage({
             ctx,
             file: new_photo,
@@ -293,12 +294,13 @@ export const CourseMutations = extendType({
             }
           : undefined
 
+        console.log("translationMutation", JSON.stringify(translationMutation))
         const updatedCourse = await ctx.prisma.course.update({
           where: {
             id: id ?? undefined,
             slug,
           },
-          data: convertUpdate({
+          data: {
             ...omit(course, [
               "id",
               "photo",
@@ -322,7 +324,7 @@ export const CourseMutations = extendType({
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
             user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
-          }),
+          },
         })
 
         return updatedCourse
@@ -416,7 +418,7 @@ const createMutation = async <T extends { id?: string | null }>({
     .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
       where: { id: t.id } as { id: string },
-      data: convertUpdate({ ...t, id: undefined }),
+      data: { ...t, id: undefined },
     }))
   const removed = filterNotIncluded(existing!, data)
 

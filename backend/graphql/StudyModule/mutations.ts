@@ -3,7 +3,6 @@ import { StudyModuleTranslationCreateWithoutStudy_moduleInput } from "@prisma/cl
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
-import { convertUpdate } from "../../util/db-functions"
 
 export const StudyModuleMutations = extendType({
   type: "Mutation",
@@ -80,7 +79,7 @@ export const StudyModuleMutations = extendType({
         const translationMutation = {
           create: newTranslations.length ? newTranslations : undefined,
           updateMany: updatedTranslations.length
-            ? updatedTranslations.map(convertUpdate)
+            ? updatedTranslations
             : undefined,
           deleteMany: removedTranslationIds.length
             ? removedTranslationIds
@@ -92,7 +91,7 @@ export const StudyModuleMutations = extendType({
             id: id ?? undefined,
             slug,
           },
-          data: convertUpdate({
+          data: {
             ...omit(study_module, ["new_slug"]),
             slug: new_slug ? new_slug : slug,
             // FIXME/TODO: implement something like notEmpty for id field to fix typing
@@ -100,7 +99,7 @@ export const StudyModuleMutations = extendType({
             study_module_translations: Object.keys(translationMutation).length
               ? translationMutation
               : undefined,
-          }),
+          },
         })
 
         return updatedModule
