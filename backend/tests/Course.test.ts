@@ -1,3 +1,5 @@
+import fs from "fs"
+import path from "path"
 import { gql } from "graphql-request"
 import { getTestContext, fakeTMC } from "./__helpers"
 import {
@@ -8,7 +10,7 @@ import {
 } from "./data"
 import { seed } from "./data/seed"
 
-import { Course } from "@prisma/client"
+import { Course, CourseCreateInput } from "@prisma/client"
 import { orderBy } from "lodash"
 import { mocked } from "ts-jest/utils"
 
@@ -400,6 +402,8 @@ describe("Course", () => {
     beforeAll(() => tmc.setup())
     afterAll(() => tmc.teardown())
 
+    const fakeImage = fs.createReadStream(path.resolve(__dirname + "/data/image"))
+
     const newCourse = {
       name: "new1",
       slug: "new1",
@@ -414,9 +418,25 @@ describe("Course", () => {
           name: "name_en_US",
         },
       ],
+      course_variants: [{
+        slug: "variant1",
+        description: "variant1" 
+      }],
+      course_aliases: [{
+        course_code: "alias1",
+      }],
+      inherit_settings_from: "00000000000000000000000000000002",
+      completions_handled_by: "00000000000000000000000000000002",
+      user_course_settings_visibilities: [{ language: "en_US" }],
+      new_photo: new Promise((resolve) => resolve({
+        createReadStream: () => fakeImage,
+        stream: fakeImage,
+        filename: "./data/image",
+        mimetype: "image/gif"
+      }))
     }
 
-    describe("addCourse", () => {
+    describe.only("addCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
         ctx!.client.setHeader("Authorization", "Bearer admin")
