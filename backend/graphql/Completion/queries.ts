@@ -1,8 +1,9 @@
 import { schema } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
-import { convertPagination } from "../../util/db-functions"
+// import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
 schema.extendType({
   type: "Query",
@@ -64,17 +65,20 @@ schema.extendType({
       },
     })
 
-    t.connection("completionsPaginated", {
-      type: "Completion",
-      additionalArgs: {
+    t.field("completionsPaginated", {
+      type: "CompletionConnection",
+      args: {
         course: schema.stringArg({ required: true }),
         completion_language: schema.stringArg(),
         skip: schema.intArg({ default: 0 }),
+        first: schema.intArg(),
+        last: schema.intArg(),
+        before: schema.stringArg(),
+        after: schema.stringArg(),
       },
       authorize: or(isOrganization, isAdmin),
-      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
-      nodes: async (_, args, ctx, __) => {
-        const { completion_language, first, last, before, after, skip } = args
+      resolve: async (_, args, ctx, __) => {
+        const { completion_language, first, last, before, after } = args
         let { course } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
@@ -95,13 +99,39 @@ schema.extendType({
           course = courseFromAvoinCourse.slug
         }
 
-        return ctx.db.completion.findMany({
-          ...convertPagination({ first, last, before, after, skip }),
+        const baseArgs = {
           where: {
             course: { slug: course },
             completion_language,
           },
-        })
+        }
+
+        return findManyCursorConnection(
+          (args) => ctx.db.completion.findMany({ ...args, ...baseArgs }),
+          () => ctx.db.completion.count(baseArgs),
+          { first, last, before, after },
+          {
+            getCursor: (node) => ({ id: node.id }),
+            encodeCursor: (node) => `cursor:${node.id}`,
+            decodeCursor: (connectionCursor) => ({
+              id: connectionCursor?.split(":")?.[1],
+            }),
+          },
+        )
+      },
+    })
+
+    t.connection("deprecatedCompletionsPaginated", {
+      // hack to generate connection type
+      type: "Completion",
+      additionalArgs: {
+        course: schema.stringArg({ required: true }),
+        completion_language: schema.stringArg(),
+        skip: schema.intArg({ default: 0 }),
+      },
+      authorize: () => false,
+      nodes: async (_, _args, _ctx, __) => {
+        return []
       },
     })
   },

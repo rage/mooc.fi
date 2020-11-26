@@ -1,9 +1,11 @@
 import { schema } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 
-import { buildSearch, convertPagination } from "../util/db-functions"
+import { buildSearch /*, convertPagination*/ } from "../util/db-functions"
 import { UserWhereInput } from "@prisma/client"
 import { isAdmin } from "../accessControl"
+
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
 schema.objectType({
   name: "UserCourseSetting",
@@ -78,17 +80,21 @@ schema.extendType({
       },
     })
 
-    t.connection("userCourseSettings", {
-      type: "UserCourseSetting",
-      additionalArgs: {
+    t.field("userCourseSettings", {
+      type: "QueryUserCourseSettings_type_Connection",
+      args: {
         user_id: schema.idArg(),
         user_upstream_id: schema.intArg(),
         course_id: schema.idArg(),
         search: schema.stringArg(),
         skip: schema.intArg({ default: 0 }),
+        first: schema.intArg(),
+        last: schema.intArg(),
+        before: schema.stringArg(),
+        after: schema.stringArg(),
       },
       authorize: isAdmin,
-      nodes: async (_, args, ctx) => {
+      resolve: async (_, args, ctx, __) => {
         const {
           first,
           last,
@@ -97,7 +103,6 @@ schema.extendType({
           user_id,
           user_upstream_id,
           search,
-          skip,
         } = args
 
         let { course_id } = args
@@ -124,64 +129,44 @@ schema.extendType({
           },
         ]
 
-        if (user_id) orCondition.concat({ id: user_id })
+        if (user_id) orCondition.push({ id: user_id })
         if (user_upstream_id)
-          orCondition.concat({ upstream_id: user_upstream_id })
+          orCondition.push({ upstream_id: user_upstream_id })
 
-        return ctx.db.userCourseSetting.findMany({
-          ...convertPagination({ first, last, before, after, skip }),
+        const baseArgs = {
           where: {
             user: {
               OR: orCondition,
             },
             course_id,
           },
-        })
+        }
+
+        return findManyCursorConnection(
+          async (args) =>
+            ctx.db.userCourseSetting.findMany({ ...args, ...baseArgs }),
+          () => ctx.db.userCourseSetting.count(baseArgs),
+          { first, last, before, after },
+        )
+      },
+    })
+
+    t.connection("userCourseSettings_type", {
+      // hack to generate connection type
+      type: "UserCourseSetting",
+      additionalArgs: {
+        user_id: schema.idArg(),
+        user_upstream_id: schema.intArg(),
+        course_id: schema.idArg(),
+        search: schema.stringArg(),
+        skip: schema.intArg({ default: 0 }),
+      },
+      authorize: () => false,
+      nodes: async (_, _args, _ctx, __) => {
+        return []
       },
       extendConnection(t) {
-        t.int("count", {
-          args: {
-            user_id: schema.idArg(),
-            user_upstream_id: schema.intArg(),
-            course_id: schema.idArg({ required: true }),
-            search: schema.stringArg(),
-          },
-          resolve: async (_, args, ctx) => {
-            const { user_id, user_upstream_id, search } = args
-            let { course_id } = args
-            const inheritSettingsCourse = await ctx.db.course
-              .findOne({ where: { id: course_id } })
-              .inherit_settings_from()
-
-            if (inheritSettingsCourse) {
-              course_id = inheritSettingsCourse.id
-            }
-
-            const orCondition: UserWhereInput[] = [
-              {
-                OR: buildSearch(
-                  ["first_name", "last_name", "username", "email"],
-                  search ?? "",
-                ),
-              },
-            ]
-
-            if (user_id) orCondition.concat({ id: user_id })
-            if (user_upstream_id)
-              orCondition.concat({ upstream_id: user_upstream_id })
-
-            const count = await ctx.db.userCourseSetting.count({
-              where: {
-                user: {
-                  OR: orCondition,
-                },
-                course_id,
-              },
-            })
-
-            return count
-          },
-        })
+        t.int("totalCount")
       },
     })
   },
