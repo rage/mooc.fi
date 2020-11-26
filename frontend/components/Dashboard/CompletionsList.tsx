@@ -19,7 +19,7 @@ export const AllCompletionsQuery = gql`
     completionsPaginated(
       course: $course
       completion_language: $completionLanguage
-      first: 15
+      first: 50
       after: $cursor
     ) {
       pageInfo {
@@ -65,7 +65,7 @@ export const PreviousPageCompletionsQuery = gql`
     completionsPaginated(
       course: $course
       completion_language: $completionLanguage
-      last: 15
+      last: 50
       before: $cursor
     ) {
       pageInfo {

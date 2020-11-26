@@ -48,7 +48,7 @@ export const convertPagination = (
 
   return {
     skip: notEmpty(before) ? skipValue + 1 : skipValue,
-    take: notEmpty(last) ? -(last ?? 0) : notEmpty(first) ? first : 0,
+    take: notEmpty(last) ? last ?? 0 : notEmpty(first) ? first : 0,
     cursor: notEmpty(before)
       ? { [field]: before }
       : notEmpty(after)
