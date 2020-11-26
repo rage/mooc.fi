@@ -94,7 +94,7 @@ export interface UserCourseSettings_userCourseSettings_edges {
 }
 
 export interface UserCourseSettings_userCourseSettings {
-  __typename: "QueryUserCourseSettings_Connection"
+  __typename: "QueryUserCourseSettings_type_Connection"
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
    */
@@ -103,7 +103,7 @@ export interface UserCourseSettings_userCourseSettings {
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
    */
   edges: (UserCourseSettings_userCourseSettings_edges | null)[] | null
-  count: number | null
+  totalCount: number | null
 }
 
 export interface UserCourseSettings {
