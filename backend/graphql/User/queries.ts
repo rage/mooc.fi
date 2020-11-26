@@ -94,9 +94,8 @@ export const UserQueries = extendType({
       },
     })
 
-    t.field("currentUser", {
+    t.nullable.field("currentUser", {
       type: "User",
-      nullable: true,
       args: { search: stringArg() }, // was: email
       resolve: (_, __, ctx) => {
         // FIXME: why don't we search anything? where's this come from?

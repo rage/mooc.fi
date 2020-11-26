@@ -24,7 +24,7 @@ async function getCompletionDataFromDB(
   { course, first, after, last, before, skip }: CompletionOptionTypes,
   ctx: Context,
 ) {
-  const courseObject = await ctx.prisma.course.findOne({
+  const courseObject = await ctx.prisma.course.findUnique({
     where: { slug: course },
   })
 

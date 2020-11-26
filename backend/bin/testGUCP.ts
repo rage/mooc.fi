@@ -19,7 +19,7 @@ const test = async () => {
     advanced: f2114c22-c151-4588-9f2b-7cc80a8c384d
     handler: 3d896243-5a86-4bb8-8f1e-33f157a4b1d5
   */
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: {
       id: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
     },

@@ -75,7 +75,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
     organization: { connect: { id: organization.id } },
   }
   const organizationTranslations = await prisma.organization
-    .findOne({ where: { id: organization.id } })
+    .findUnique({ where: { id: organization.id } })
     .organization_translations({
       where: { language: translationDetails.language },
     })

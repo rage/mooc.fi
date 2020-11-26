@@ -4,60 +4,49 @@ export const CourseCreateArg = inputObjectType({
   name: "CourseCreateArg",
   definition(t) {
     t.string("name")
-    t.string("slug", { required: true })
+    t.nonNull.string("slug")
     t.string("ects")
-    t.id("photo", { required: false })
-    t.field("new_photo", { type: "Upload", required: false })
+    t.nullable.id("photo")
+    t.nullable.field("new_photo", { type: "Upload" })
     t.boolean("base64")
     t.boolean("start_point")
     t.boolean("promote")
     t.boolean("hidden")
     t.boolean("study_module_start_point")
     t.field("status", { type: "CourseStatus" })
-    t.string("teacher_in_charge_name", { required: true })
-    t.string("teacher_in_charge_email", { required: true })
+    t.nonNull.string("teacher_in_charge_name")
+    t.nonNull.string("teacher_in_charge_email")
     t.string("support_email")
-    t.string("start_date", { required: true })
+    t.nonNull.string("start_date")
     t.string("end_date")
-    t.field("study_modules", {
-      list: true,
+    t.list.field("study_modules", {
       type: "StudyModuleWhereUniqueInput",
     })
-    t.field("course_translations", {
-      list: true,
+    t.list.nullable.field("course_translations", {
       type: "CourseTranslationCreateInput",
-      required: false,
     })
-    t.field("open_university_registration_links", {
-      list: true,
+    t.list.nullable.field("open_university_registration_links", {
       type: "OpenUniversityRegistrationLinkCreateInput",
-      required: false,
     })
-    t.field("course_variants", {
-      list: true,
+    t.list.nullable.field("course_variants", {
       type: "CourseVariantCreateInput",
-      required: false,
     })
-    t.field("course_aliases", {
-      list: true,
+    t.list.nullable.field("course_aliases", {
       type: "CourseAliasCreateInput",
-      required: false,
     })
     t.int("order")
     t.int("study_module_order")
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.id("completion_email", { required: false })
-    t.id("inherit_settings_from", { required: false })
-    t.id("completions_handled_by", { required: false })
-    t.boolean("has_certificate", { required: false })
-    t.field("user_course_settings_visibilities", {
-      list: true,
+    t.nullable.id("completion_email")
+    t.nullable.id("inherit_settings_from")
+    t.nullable.id("completions_handled_by")
+    t.nullable.boolean("has_certificate")
+    t.list.nullable.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityCreateInput",
-      required: false,
     })
-    t.boolean("upcoming_active_link", { required: false })
+    t.nullable.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
@@ -67,64 +56,53 @@ export const CourseCreateArg = inputObjectType({
 export const CourseUpsertArg = inputObjectType({
   name: "CourseUpsertArg",
   definition(t) {
-    t.id("id", { required: false })
-    t.string("name", { required: true })
-    t.string("slug", { required: true })
-    t.string("new_slug", { required: false })
+    t.nullable.id("id")
+    t.nonNull.string("name")
+    t.nonNull.string("slug")
+    t.nullable.string("new_slug")
     t.string("ects")
-    t.id("photo", { required: false })
-    t.field("new_photo", { type: "Upload", required: false })
-    t.boolean("delete_photo", { required: false })
+    t.nullable.id("photo")
+    t.nullable.field("new_photo", { type: "Upload" })
+    t.nullable.boolean("delete_photo")
     t.boolean("base64")
     t.boolean("start_point")
     t.boolean("promote")
     t.boolean("hidden")
     t.boolean("study_module_start_point")
     t.field("status", { type: "CourseStatus" })
-    t.string("teacher_in_charge_name", { required: true })
-    t.string("teacher_in_charge_email", { required: true })
+    t.nonNull.string("teacher_in_charge_name")
+    t.nonNull.string("teacher_in_charge_email")
     t.string("support_email")
-    t.string("start_date", { required: true })
+    t.nonNull.string("start_date")
     t.string("end_date")
-    t.field("study_modules", {
-      list: true,
+    t.list.field("study_modules", {
       type: "StudyModuleWhereUniqueInput",
     })
-    t.field("course_translations", {
-      list: true,
+    t.list.nullable.field("course_translations", {
       type: "CourseTranslationUpsertInput",
-      required: false,
     })
-    t.field("open_university_registration_links", {
-      list: true,
+    t.list.nullable.field("open_university_registration_links", {
       type: "OpenUniversityRegistrationLinkUpsertInput",
-      required: false,
     })
-    t.field("course_variants", {
-      list: true,
+    t.list.nullable.field("course_variants", {
       type: "CourseVariantUpsertInput",
-      required: false,
     })
-    t.field("course_aliases", {
-      list: true,
+    t.list.nullable.field("course_aliases", {
       type: "CourseAliasUpsertInput",
-      required: false,
     })
     t.int("order")
     t.int("study_module_order")
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.id("completion_email", { required: false })
-    t.id("inherit_settings_from", { required: false })
-    t.id("completions_handled_by", { required: false })
-    t.boolean("has_certificate", { required: false })
-    t.field("user_course_settings_visibilities", {
-      list: true,
+    t.nullable.id("completion_email")
+    t.nullable.id("inherit_settings_from")
+    t.nullable.id("completions_handled_by")
+    t.nullable.boolean("has_certificate")
+    t.list.nullable.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityUpsertInput",
-      required: false,
     })
-    t.boolean("upcoming_active_link", { required: false })
+    t.nullable.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")

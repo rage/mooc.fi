@@ -1,8 +1,15 @@
-import { objectType, extendType, stringArg, intArg, arg } from "@nexus/schema"
+import {
+  objectType,
+  extendType,
+  stringArg,
+  intArg,
+  arg,
+  list,
+} from "@nexus/schema"
 import { chunk } from "lodash"
 import { or, isOrganization, isAdmin } from "../accessControl"
 import { ForbiddenError, UserInputError } from "apollo-server-core"
-import { CompletionRegisteredWhereUniqueInput } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { Context } from "/context"
 
 export const CompletionRegistered = objectType({
@@ -67,23 +74,23 @@ const withCourse = async (
   course: string,
   skip: number | undefined,
   take: number | undefined,
-  cursor: CompletionRegisteredWhereUniqueInput | undefined,
+  cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
-  let courseReference = await ctx.prisma.course.findOne({
+  let courseReference = await ctx.prisma.course.findUnique({
     where: { slug: course },
   })
 
   if (!courseReference) {
     const courseFromAvoinCourse = await ctx.prisma.courseAlias
-      .findOne({ where: { course_code: course } })
+      .findUnique({ where: { course_code: course } })
       .course()
     if (!courseFromAvoinCourse) {
       throw new UserInputError("Invalid course identifier")
     }
 
     // TODO: isn't this the same as courseFromAvoinCourse?
-    courseReference = await ctx.prisma.course.findOne({
+    courseReference = await ctx.prisma.course.findUnique({
       where: { slug: courseFromAvoinCourse.slug },
     })
   }
@@ -101,7 +108,7 @@ const withCourse = async (
 const all = async (
   skip: number | undefined,
   take: number | undefined,
-  cursor: CompletionRegisteredWhereUniqueInput | undefined,
+  cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
   ctx: Context,
 ) => {
   return await ctx.prisma.completionRegistered.findMany({
@@ -118,7 +125,7 @@ export const CompletionRegisteredMutations = extendType({
     t.field("registerCompletion", {
       type: "String",
       args: {
-        completions: arg({ type: "CompletionArg", list: true }),
+        completions: list(arg({ type: "CompletionArg" })),
       },
       authorize: isOrganization,
       resolve: async (_, args, ctx: Context) => {
@@ -137,10 +144,10 @@ export const CompletionRegisteredMutations = extendType({
 const buildPromises = (array: any[], ctx: Context) => {
   return array.map(async (entry) => {
     const course = await ctx.prisma.completion
-      .findOne({ where: { id: entry.completion_id } })
+      .findUnique({ where: { id: entry.completion_id } })
       .course()
     const user = await ctx.prisma.completion
-      .findOne({ where: { id: entry.completion_id } })
+      .findUnique({ where: { id: entry.completion_id } })
       .user()
 
     if (!course || !user) {

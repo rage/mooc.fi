@@ -15,16 +15,16 @@ export const UserCourseSettingsVisibility = objectType({
 export const UserCourseSettingVisibilityCreateInput = inputObjectType({
   name: "UserCourseSettingsVisibilityCreateInput",
   definition(t) {
-    t.string("language", { required: true })
-    t.id("course", { required: false })
+    t.nonNull.string("language")
+    t.nullable.id("course")
   },
 })
 
 export const UserCourseSettingVisibilityUpsertInput = inputObjectType({
   name: "UserCourseSettingsVisibilityUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.string("language", { required: true })
-    t.id("course", { required: false })
+    t.nullable.id("id")
+    t.nonNull.string("language")
+    t.nullable.id("course")
   },
 })

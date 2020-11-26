@@ -6,6 +6,8 @@ import {
   intArg,
   arg,
   floatArg,
+  nonNull,
+  list,
 } from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 
@@ -31,7 +33,7 @@ export const UserCourseProgress = objectType({
     t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
-        const res = await ctx.prisma.userCourseProgress.findOne({
+        const res = await ctx.prisma.userCourseProgress.findUnique({
           where: { id: parent.id },
           select: { progress: true },
         })
@@ -41,12 +43,11 @@ export const UserCourseProgress = objectType({
 
     // t.prismaFields(["*"])
 
-    t.field("user_course_settings", {
+    t.nullable.field("user_course_settings", {
       type: "UserCourseSetting",
-      nullable: true,
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id } =
-          (await ctx.prisma.userCourseProgress.findOne({
+          (await ctx.prisma.userCourseProgress.findUnique({
             where: { id: parent.id },
             select: {
               course_id: true,
@@ -77,7 +78,7 @@ export const UserCourseProgress = objectType({
       type: "ExerciseProgress",
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id } =
-          (await ctx.prisma.userCourseProgress.findOne({
+          (await ctx.prisma.userCourseProgress.findUnique({
             where: { id: parent.id },
             select: {
               course_id: true,
@@ -100,7 +101,7 @@ export const UserCourseProgress = objectType({
         // TODO/FIXME: proper typing
         const courseProgress: any = courseProgresses?.[0].progress ?? []
         const exercises = await ctx.prisma.course
-          .findOne({ where: { id: course_id } })
+          .findUnique({ where: { id: course_id } })
           .exercises()
         const completedExercises = await ctx.prisma.exerciseCompletion.findMany(
           {
@@ -134,8 +135,8 @@ export const UserCourseProgressQueries = extendType({
     t.field("userCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: idArg({ required: true }),
-        course_id: idArg({ required: true }),
+        user_id: nonNull(idArg()),
+        course_id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -210,13 +211,15 @@ export const UserCourseProgressMutations = extendType({
     t.field("addUserCourseProgress", {
       type: "UserCourseProgress",
       args: {
-        user_id: idArg({ required: true }),
-        course_id: idArg({ required: true }),
-        progress: arg({
-          type: "PointsByGroup",
-          list: true,
-          required: true,
-        }),
+        user_id: nonNull(idArg()),
+        course_id: nonNull(idArg()),
+        progress: list(
+          nonNull(
+            arg({
+              type: "PointsByGroup",
+            }),
+          ),
+        ),
         extra: arg({
           type: "Json",
         }),

@@ -1,4 +1,4 @@
-import { objectType, stringArg, idArg } from "@nexus/schema"
+import { objectType, stringArg, idArg, nonNull, nullable } from "@nexus/schema"
 
 export const User = objectType({
   name: "User",
@@ -26,20 +26,18 @@ export const User = objectType({
     t.model.verified_users()
     t.model.research_consent()
 
-    t.field("completions", {
+    t.list.nonNull.field("completions", {
       type: "Completion",
-      list: true,
-      nullable: false,
       args: {
-        course_id: stringArg({ required: false }),
-        course_slug: stringArg({ required: false }),
+        course_id: nullable(stringArg()),
+        course_slug: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug } = args
 
         if (course_id || course_slug) {
           const handlerCourse = await ctx.prisma.course
-            .findOne({
+            .findUnique({
               where: {
                 id: args.course_id ?? undefined,
                 slug: args.course_slug ?? undefined,
@@ -63,21 +61,19 @@ export const User = objectType({
       },
     })
 
-    t.field("completions_registered", {
+    t.list.nonNull.field("completions_registered", {
       type: "CompletionRegistered",
-      list: true,
-      nullable: false,
       args: {
-        course_id: stringArg({ required: false }),
-        course_slug: stringArg({ required: false }),
-        organization_id: stringArg({ required: false }),
+        course_id: nullable(stringArg()),
+        course_slug: nullable(stringArg()),
+        organization_id: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug, organization_id } = args
 
         if (course_id || course_slug) {
           const handlerCourse = await ctx.prisma.course
-            .findOne({
+            .findUnique({
               where: {
                 id: args.course_id ?? undefined,
                 slug: args.course_slug ?? undefined,
@@ -105,8 +101,8 @@ export const User = objectType({
     t.field("project_completion", {
       type: "Boolean",
       args: {
-        course_id: idArg({ required: false }),
-        course_slug: stringArg({ required: false }),
+        course_id: nullable(idArg()),
+        course_slug: nullable(stringArg()),
       },
       resolve: async (parent, { course_id, course_slug }, ctx) => {
         if (!course_id && !course_slug) {
@@ -114,7 +110,7 @@ export const User = objectType({
         }
 
         const handlerCourse = await ctx.prisma.course
-          .findOne({
+          .findUnique({
             where: {
               id: course_id ?? undefined,
               slug: course_slug ?? undefined,
@@ -138,14 +134,13 @@ export const User = objectType({
       },
     })
 
-    t.field("progress", {
+    t.nonNull.field("progress", {
       type: "Progress",
-      nullable: false,
       args: {
-        course_id: idArg({ required: true }),
+        course_id: nonNull(idArg()),
       },
       resolve: async (parent, args, ctx) => {
-        const course = await ctx.prisma.course.findOne({
+        const course = await ctx.prisma.course.findUnique({
           where: { id: args.course_id },
         })
         return {
@@ -155,9 +150,8 @@ export const User = objectType({
       },
     })
 
-    t.list.field("progresses", {
+    t.list.nonNull.field("progresses", {
       type: "Progress",
-      nullable: false,
       resolve: async (parent, _, ctx) => {
         const user_course_progressess = await ctx.prisma.userCourseProgress.findMany(
           {
@@ -167,7 +161,7 @@ export const User = objectType({
         const progresses = await Promise.all(
           user_course_progressess.map(async (p) => {
             const course = await ctx.prisma.userCourseProgress
-              .findOne({ where: { id: p.id } })
+              .findUnique({ where: { id: p.id } })
               .course()
             return {
               course,
@@ -181,9 +175,8 @@ export const User = objectType({
     })
 
     // TODO/FIXME: is this used anywhere? if is, find better name
-    t.field("user_course_progressess", {
+    t.nullable.field("user_course_progressess", {
       type: "UserCourseProgress",
-      nullable: true,
       args: {
         course_id: idArg(),
       },
@@ -199,9 +192,8 @@ export const User = objectType({
       },
     })
 
-    t.field("exercise_completions", {
+    t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
-      list: true,
       resolve: async (parent, _, ctx) => {
         return ctx.prisma.exerciseCompletion.findMany({
           where: {

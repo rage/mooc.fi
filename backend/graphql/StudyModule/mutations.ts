@@ -1,5 +1,12 @@
-import { extendType, arg, idArg, stringArg } from "@nexus/schema"
-import { StudyModuleTranslationCreateWithoutStudy_moduleInput } from "@prisma/client"
+import {
+  extendType,
+  arg,
+  idArg,
+  stringArg,
+  nonNull,
+  nullable,
+} from "@nexus/schema"
+import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
@@ -10,10 +17,11 @@ export const StudyModuleMutations = extendType({
     t.field("addStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: arg({
-          type: "StudyModuleCreateArg",
-          required: true,
-        }),
+        study_module: nonNull(
+          arg({
+            type: "StudyModuleCreateArg",
+          }),
+        ),
       },
       authorize: isAdmin,
       resolve: async (_, { study_module }, ctx) => {
@@ -29,7 +37,7 @@ export const StudyModuleMutations = extendType({
                     ...s,
                     name: s?.name ?? "",
                     id: s?.id ?? undefined,
-                  })) as StudyModuleTranslationCreateWithoutStudy_moduleInput[],
+                  })) as Prisma.StudyModuleTranslationCreateWithoutStudy_moduleInput[],
                 }
               : undefined,
           },
@@ -40,10 +48,11 @@ export const StudyModuleMutations = extendType({
     t.field("updateStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: arg({
-          type: "StudyModuleUpsertArg",
-          required: true,
-        }),
+        study_module: nonNull(
+          arg({
+            type: "StudyModuleUpsertArg",
+          }),
+        ),
       },
       authorize: isAdmin,
       resolve: async (_, { study_module }, ctx) => {
@@ -54,7 +63,7 @@ export const StudyModuleMutations = extendType({
         }
 
         const existingTranslations = await ctx.prisma.studyModule
-          .findOne({ where: { slug } })
+          .findUnique({ where: { slug } })
           .study_module_translations()
         const newTranslations = (study_module_translations || [])
           .filter((t) => !t?.id)
@@ -109,7 +118,7 @@ export const StudyModuleMutations = extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: idArg({ required: false }),
+        id: nullable(idArg()),
         slug: stringArg(),
       },
       authorize: isAdmin,

@@ -2,7 +2,7 @@ import { ForbiddenError } from "apollo-server-core"
 import { Context } from "../context"
 import { Role, or, isVisitor, isAdmin } from "../accessControl"
 import { OrganizationRole } from "@prisma/client"
-import { objectType, extendType, idArg, arg } from "@nexus/schema"
+import { objectType, extendType, idArg, arg, nonNull } from "@nexus/schema"
 
 export const UserOrganization = objectType({
   name: "UserOrganization",
@@ -52,7 +52,7 @@ const checkUser = async (ctx: Context, id: any) => {
 
   try {
     existingUser = await ctx.prisma.userOrganization
-      .findOne({ where: { id } })
+      .findUnique({ where: { id } })
       .user()
   } catch {
     throw new Error("no such user/organization relation")
@@ -73,8 +73,8 @@ export const UserOrganizationMutations = extendType({
     t.field("addUserOrganization", {
       type: "UserOrganization",
       args: {
-        user_id: idArg({ required: true }),
-        organization_id: idArg({ required: true }),
+        user_id: nonNull(idArg()),
+        organization_id: nonNull(idArg()),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -109,7 +109,7 @@ export const UserOrganizationMutations = extendType({
     t.field("updateUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
         /*       userId: schema.idArg(),
         organizationId: schema.idArg(), */
         role: arg({ type: "OrganizationRole" }),
@@ -134,7 +134,7 @@ export const UserOrganizationMutations = extendType({
     t.field("deleteUserOrganization", {
       type: "UserOrganization",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx: Context) => {

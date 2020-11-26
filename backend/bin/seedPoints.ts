@@ -1,8 +1,5 @@
 import * as faker from "faker"
-import {
-  UserCourseProgressCreateInput,
-  UserCourseSettingCreateInput,
-} from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import prisma from "./lib/prisma"
 
 //Generate integer id which is not already taken
@@ -187,7 +184,7 @@ const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.user.findMany({ take: 100 })
   return await Promise.all(
     UsersInDb.map(async (user) => {
-      const ucp: UserCourseProgressCreateInput = {
+      const ucp: Prisma.UserCourseProgressCreateInput = {
         user: {
           connect: {
             id: user.id,
@@ -241,7 +238,7 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.user.findMany({ take: 100 })
   return await Promise.all(
     UsersInDb.map(async (user) => {
-      const ucs: UserCourseSettingCreateInput = {
+      const ucs: Prisma.UserCourseSettingCreateInput = {
         user: {
           connect: {
             id: user.id,
@@ -265,7 +262,7 @@ const addUserCourseSettingses = async ({ courseId }: { courseId: string }) => {
 }
 
 const seedPointsData = async () => {
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: { slug: "elements-of-ai" },
   })
   console.log("course", course)

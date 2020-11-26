@@ -3,14 +3,12 @@ import { inputObjectType } from "@nexus/schema"
 export const StudyModuleCreateArg = inputObjectType({
   name: "StudyModuleCreateArg",
   definition(t) {
-    t.string("slug", { required: true })
-    t.string("name", { required: false })
-    t.string("image", { required: false })
-    t.int("order", { required: false })
-    t.field("study_module_translations", {
-      list: true,
+    t.nonNull.string("slug")
+    t.nullable.string("name")
+    t.nullable.string("image")
+    t.nullable.int("order")
+    t.list.nullable.field("study_module_translations", {
       type: "StudyModuleTranslationUpsertInput",
-      required: false,
     })
   },
 })
@@ -18,16 +16,14 @@ export const StudyModuleCreateArg = inputObjectType({
 export const StudyModuleUpsertArg = inputObjectType({
   name: "StudyModuleUpsertArg",
   definition(t) {
-    t.id("id", { required: false })
-    t.string("slug", { required: true })
-    t.string("new_slug", { required: false })
-    t.string("name", { required: false })
-    t.string("image", { required: false })
-    t.int("order", { required: false })
-    t.field("study_module_translations", {
-      list: true,
+    t.nullable.id("id")
+    t.nonNull.string("slug")
+    t.nullable.string("new_slug")
+    t.nullable.string("name")
+    t.nullable.string("image")
+    t.nullable.int("order")
+    t.list.nullable.field("study_module_translations", {
       type: "StudyModuleTranslationUpsertInput",
-      required: false,
     })
   },
 })

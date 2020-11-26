@@ -4,6 +4,7 @@ import {
   extendType,
   idArg,
   stringArg,
+  nonNull,
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
@@ -22,17 +23,17 @@ export const CourseAlias = objectType({
 export const CourseAliasCreateInput = inputObjectType({
   name: "CourseAliasCreateInput",
   definition(t) {
-    t.id("course", { required: false })
-    t.string("course_code", { required: true })
+    t.nullable.id("course")
+    t.nonNull.string("course_code")
   },
 })
 
 export const CourseAliasUpsertInput = inputObjectType({
   name: "CourseAliasUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.id("course", { required: false })
-    t.string("course_code", { required: true })
+    t.nullable.id("id")
+    t.nullable.id("course")
+    t.nonNull.string("course_code")
   },
 })
 
@@ -58,8 +59,8 @@ export const CourseAliasMutations = extendType({
     t.field("addCourseAlias", {
       type: "CourseAlias",
       args: {
-        course_code: stringArg({ required: true }),
-        course: idArg({ required: true }),
+        course_code: nonNull(stringArg()),
+        course: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

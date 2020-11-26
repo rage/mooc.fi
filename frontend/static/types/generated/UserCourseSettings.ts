@@ -42,7 +42,7 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress {
   __typename: "UserCourseProgress"
-  progress: any[] | null
+  progress: (any | null)[] | null
   exercise_progress: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_exercise_progress | null
   user: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_user | null
 }
@@ -55,7 +55,7 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses {
   __typename: "UserCourseServiceProgress"
-  progress: any[] | null
+  progress: (any | null)[] | null
   service: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses_service | null
 }
 
@@ -64,7 +64,7 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress 
   course: UserCourseSettings_userCourseSettings_edges_node_user_progress_course | null
   user_course_progress: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress | null
   user_course_service_progresses:
-    | UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses[]
+    | (UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses | null)[]
     | null
 }
 

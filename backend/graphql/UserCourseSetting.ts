@@ -1,9 +1,16 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 
 import { buildSearch, convertPagination } from "../util/db-functions"
-import { UserWhereInput } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { isAdmin } from "../accessControl"
-import { objectType, extendType, idArg, intArg, stringArg } from "@nexus/schema"
+import {
+  objectType,
+  extendType,
+  idArg,
+  intArg,
+  stringArg,
+  nonNull,
+} from "@nexus/schema"
 
 export const UserCourseSetting = objectType({
   name: "UserCourseSetting",
@@ -30,8 +37,8 @@ export const UserCourseSettingQueries = extendType({
     t.field("userCourseSetting", {
       type: "UserCourseSetting",
       args: {
-        user_id: idArg({ required: true }),
-        course_id: idArg({ required: true }),
+        user_id: nonNull(idArg()),
+        course_id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -39,7 +46,7 @@ export const UserCourseSettingQueries = extendType({
         let { course_id } = args
 
         const inheritSettingsCourse = await ctx.prisma.course
-          .findOne({ where: { id: course_id } })
+          .findUnique({ where: { id: course_id } })
           .inherit_settings_from()
 
         if (inheritSettingsCourse) {
@@ -107,7 +114,7 @@ export const UserCourseSettingQueries = extendType({
 
         if (course_id) {
           const inheritSettingsCourse = await ctx.prisma.course
-            .findOne({ where: { id: course_id } })
+            .findUnique({ where: { id: course_id } })
             .inherit_settings_from()
 
           if (inheritSettingsCourse) {
@@ -115,7 +122,7 @@ export const UserCourseSettingQueries = extendType({
           }
         }
 
-        const orCondition: UserWhereInput[] = []
+        const orCondition: Prisma.UserWhereInput[] = []
 
         if (search)
           orCondition.push({
@@ -144,21 +151,21 @@ export const UserCourseSettingQueries = extendType({
           args: {
             user_id: idArg(),
             user_upstream_id: intArg(),
-            course_id: idArg({ required: true }),
+            course_id: nonNull(idArg()),
             search: stringArg(),
           },
           resolve: async (_, args, ctx) => {
             const { user_id, user_upstream_id, search } = args
             let { course_id } = args
             const inheritSettingsCourse = await ctx.prisma.course
-              .findOne({ where: { id: course_id } })
+              .findUnique({ where: { id: course_id } })
               .inherit_settings_from()
 
             if (inheritSettingsCourse) {
               course_id = inheritSettingsCourse.id
             }
 
-            const orCondition: UserWhereInput[] = []
+            const orCondition: Prisma.UserWhereInput[] = []
 
             if (search)
               orCondition.push({

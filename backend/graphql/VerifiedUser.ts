@@ -1,4 +1,10 @@
-import { objectType, inputObjectType, extendType, arg } from "@nexus/schema"
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  arg,
+  nonNull,
+} from "@nexus/schema"
 import { ForbiddenError, AuthenticationError } from "apollo-server-core"
 import { Context } from "../context"
 
@@ -21,9 +27,9 @@ export const VerifiedUserArg = inputObjectType({
   name: "VerifiedUserArg",
   definition(t) {
     t.string("display_name")
-    t.string("personal_unique_code", { required: true })
-    t.id("organization_id", { required: true })
-    t.string("organization_secret", { required: true })
+    t.nonNull.string("personal_unique_code")
+    t.nonNull.id("organization_id")
+    t.nonNull.string("organization_secret")
   },
 })
 
@@ -33,10 +39,11 @@ export const VerifiedUserMutations = extendType({
     t.field("addVerifiedUser", {
       type: "VerifiedUser",
       args: {
-        verified_user: arg({
-          type: "VerifiedUserArg",
-          required: true,
-        }),
+        verified_user: nonNull(
+          arg({
+            type: "VerifiedUserArg",
+          }),
+        ),
       },
       resolve: async (_, { verified_user }, ctx: Context) => {
         const {
@@ -51,7 +58,7 @@ export const VerifiedUserMutations = extendType({
           throw new AuthenticationError("not logged in")
         }
 
-        const organization = await ctx.prisma.organization.findOne({
+        const organization = await ctx.prisma.organization.findUnique({
           where: { id: organization_id },
         })
 

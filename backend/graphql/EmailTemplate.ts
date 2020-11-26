@@ -1,4 +1,10 @@
-import { objectType, extendType, idArg, stringArg } from "@nexus/schema"
+import {
+  objectType,
+  extendType,
+  idArg,
+  stringArg,
+  nonNull,
+} from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin } from "../accessControl"
 
@@ -20,15 +26,14 @@ export const EmailTemplate = objectType({
 export const EmailTemplateQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("email_template", {
+    t.nullable.field("email_template", {
       type: "EmailTemplate",
-      nullable: true,
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>
-        ctx.prisma.emailTemplate.findOne({
+        ctx.prisma.emailTemplate.findUnique({
           where: {
             id,
           },
@@ -49,7 +54,7 @@ export const EmailTemplateMutations = extendType({
     t.field("addEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        name: stringArg({ required: true }),
+        name: nonNull(stringArg()),
         html_body: stringArg(),
         txt_body: stringArg(),
         title: stringArg(),
@@ -74,7 +79,7 @@ export const EmailTemplateMutations = extendType({
     t.field("updateEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
         name: stringArg(),
         html_body: stringArg(),
         txt_body: stringArg(),
@@ -101,7 +106,7 @@ export const EmailTemplateMutations = extendType({
     t.field("deleteEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {

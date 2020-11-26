@@ -1,4 +1,4 @@
-import { CourseCreateInput, StudyModuleCreateInput } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { UserInfo } from "../../domain/UserInfo"
 
 export const normalUser = {
@@ -49,7 +49,7 @@ export const adminUserDetails = {
   extra_fields: {},
 }
 
-export const study_modules: StudyModuleCreateInput[] = [
+export const study_modules: Prisma.StudyModuleCreateInput[] = [
   {
     id: "00000000000000000000000000000102",
     name: "module1",
@@ -88,7 +88,7 @@ export const study_modules: StudyModuleCreateInput[] = [
   },
 ]
 
-export const courses: CourseCreateInput[] = [
+export const courses: Prisma.CourseCreateInput[] = [
   {
     id: "00000000000000000000000000000002",
     name: "course1",

@@ -98,7 +98,7 @@ const fetchUserAppDatum = async () => {
       })
     }
 
-    course = await prisma.course.findOne({ where: { slug: p.namespace } })
+    course = await prisma.course.findUnique({ where: { slug: p.namespace } })
 
     if (!course) {
       process.exit(1)

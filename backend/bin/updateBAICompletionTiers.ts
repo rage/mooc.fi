@@ -12,7 +12,7 @@ const logger = sentryLogger({ service: "update-bai-completion-tiers" })
 const PARENT_COURSE_ID = "49cbadd8-be32-454f-9b7d-e84d52100b74"
 
 const updateBAICompletionTiers = async () => {
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: { id: PARENT_COURSE_ID },
   })
 

@@ -25,7 +25,7 @@ export const Completion = objectType({
     /*     t.field("course", {
       type: "Course",
       args: {
-        language: schema.stringArg({ required: false }),
+        language: schema.nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
         const { language } = args
@@ -51,9 +51,8 @@ export const Completion = objectType({
       },
     })
  */
-    t.field("user", {
+    t.nullable.field("user", {
       type: "User",
-      nullable: true,
       resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
           throw new ForbiddenError(
@@ -61,19 +60,18 @@ export const Completion = objectType({
           )
         }
         const user = await ctx.prisma.completion
-          .findOne({ where: { id: parent.id } })
+          .findUnique({ where: { id: parent.id } })
           .user()
 
         return user
       },
     })
 
-    t.field("completion_link", {
+    t.nullable.field("completion_link", {
       type: "String",
-      nullable: true,
       resolve: async (parent, _, ctx) => {
         const course = await ctx.prisma.completion
-          .findOne({ where: { id: parent.id } })
+          .findUnique({ where: { id: parent.id } })
           .course()
 
         if (!course) {
@@ -123,7 +121,7 @@ export const Completion = objectType({
         }
 
         const handlerCourse = await ctx.prisma.course
-          .findOne({
+          .findUnique({
             where: { id: parent.course_id },
           })
           .completions_handled_by()

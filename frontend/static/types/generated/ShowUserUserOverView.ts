@@ -53,7 +53,7 @@ export interface ShowUserUserOverView_user {
   first_name: string | null
   last_name: string | null
   email: string
-  completions: ShowUserUserOverView_user_completions[]
+  completions: ShowUserUserOverView_user_completions[] | null
 }
 
 export interface ShowUserUserOverView {

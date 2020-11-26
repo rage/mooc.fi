@@ -1,12 +1,4 @@
-import {
-  CourseTranslationUpdateManyWithoutCourseInput,
-  OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput,
-  StudyModuleUpdateManyWithoutCoursesInput,
-  CourseVariantUpdateManyWithoutCourseInput,
-  CourseAliasUpdateManyWithoutCourseInput,
-  UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
-  CourseUpdateInput,
-} from "@prisma/client"
+import { Prisma } from "@prisma/client"
 
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "../Image"
@@ -15,9 +7,9 @@ import { invalidate } from "../../services/redis"
 import { UserInputError } from "apollo-server-core"
 import { Context } from "../../context"
 import { isAdmin } from "../../accessControl"
-import { Prisma__CourseClient, Course } from "@prisma/client"
+import { Course } from "@prisma/client"
 
-import { extendType, arg, idArg, stringArg } from "@nexus/schema"
+import { extendType, arg, idArg, stringArg, nonNull } from "@nexus/schema"
 import { convertUpdate } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
@@ -25,16 +17,20 @@ import { convertUpdate } from "../../util/db-functions"
     key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
   ) */
 
+const filterNull = <T>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined
+
 export const CourseMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourse", {
       type: "Course",
       args: {
-        course: arg({
-          type: "CourseCreateArg",
-          required: true,
-        }),
+        course: nonNull(
+          arg({
+            type: "CourseCreateArg",
+          }),
+        ),
       },
       authorize: isAdmin,
       resolve: async (_, { course }, ctx: Context) => {
@@ -75,9 +71,9 @@ export const CourseMutations = extendType({
             ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : undefined,
-            course_translations: !!course_translations
-              ? { create: course_translations }
-              : undefined,
+            course_translations: {
+              create: course_translations?.filter(filterNull),
+            },
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
@@ -85,24 +81,20 @@ export const CourseMutations = extendType({
                   })),
                 }
               : undefined,
-            open_university_registration_links: !!open_university_registration_links
-              ? { create: open_university_registration_links }
-              : undefined,
-            course_variants: !!course_variants
-              ? { create: course_variants }
-              : undefined,
-            course_aliases: !!course_aliases
-              ? { create: course_aliases }
-              : undefined,
+            open_university_registration_links: {
+              create: open_university_registration_links?.filter(filterNull),
+            },
+            course_variants: { create: course_variants?.filter(filterNull) },
+            course_aliases: { create: course_aliases?.filter(filterNull) },
             inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : undefined,
             completions_handled_by: !!completions_handled_by
               ? { connect: { id: completions_handled_by } }
               : undefined,
-            user_course_settings_visibilities: !!user_course_settings_visibilities
-              ? { create: user_course_settings_visibilities }
-              : undefined,
+            user_course_settings_visibilities: {
+              create: user_course_settings_visibilities?.filter(filterNull),
+            },
             // don't think this will be passed by parameter, but let's be sure
             completion_email: !!completion_email
               ? { connect: { id: completion_email } }
@@ -126,10 +118,11 @@ export const CourseMutations = extendType({
     t.field("updateCourse", {
       type: "Course",
       args: {
-        course: arg({
-          type: "CourseUpsertArg",
-          required: true,
-        }),
+        course: nonNull(
+          arg({
+            type: "CourseUpsertArg",
+          }),
+        ),
       },
       authorize: isAdmin,
       resolve: async (_, { course }, ctx: Context) => {
@@ -173,7 +166,7 @@ export const CourseMutations = extendType({
           photo = newImage.id
         }
 
-        const existingCourse = await ctx.prisma.course.findOne({
+        const existingCourse = await ctx.prisma.course.findUnique({
           where: { slug },
         })
         if (
@@ -191,7 +184,7 @@ export const CourseMutations = extendType({
 
         // FIXME: I know there's probably a better way to do this
         const translationMutation:
-          | CourseTranslationUpdateManyWithoutCourseInput
+          | Prisma.CourseTranslationUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -200,7 +193,7 @@ export const CourseMutations = extendType({
         })
 
         const registrationLinkMutation:
-          | OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput
+          | Prisma.OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -209,7 +202,7 @@ export const CourseMutations = extendType({
         })
 
         const courseVariantMutation:
-          | CourseVariantUpdateManyWithoutCourseInput
+          | Prisma.CourseVariantUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -218,7 +211,7 @@ export const CourseMutations = extendType({
         })
 
         const courseAliasMutation:
-          | CourseAliasUpdateManyWithoutCourseInput
+          | Prisma.CourseAliasUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -227,7 +220,7 @@ export const CourseMutations = extendType({
         })
 
         const userCourseSettingsVisibilityMutation:
-          | UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
+          | Prisma.UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -236,7 +229,7 @@ export const CourseMutations = extendType({
         })
 
         const existingVisibilities = await ctx.prisma.course
-          .findOne({ where: { slug } })
+          .findUnique({ where: { slug } })
           .user_course_settings_visibilities()
         existingVisibilities?.forEach((visibility) =>
           invalidate(
@@ -247,7 +240,7 @@ export const CourseMutations = extendType({
 
         // this had different logic so it's not done with the same helper
         const existingStudyModules = await ctx.prisma.course
-          .findOne({ where: { slug } })
+          .findUnique({ where: { slug } })
           .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
         const removedModuleIds = (existingStudyModules || [])
@@ -261,7 +254,7 @@ export const CourseMutations = extendType({
           })) ?? []
 
         const studyModuleMutation:
-          | StudyModuleUpdateManyWithoutCoursesInput
+          | Prisma.StudyModuleUpdateManyWithoutCoursesInput
           | undefined = study_modules
           ? {
               connect: connectModules.length ? connectModules : undefined,
@@ -272,7 +265,7 @@ export const CourseMutations = extendType({
           : undefined
 
         const existingInherit = await ctx.prisma.course
-          .findOne({ where: { slug } })
+          .findUnique({ where: { slug } })
           .inherit_settings_from()
         const inheritMutation = inherit_settings_from
           ? {
@@ -284,7 +277,7 @@ export const CourseMutations = extendType({
             }
           : undefined
         const existingHandled = await ctx.prisma.course
-          .findOne({ where: { slug } })
+          .findUnique({ where: { slug } })
           .completions_handled_by()
         const handledMutation = completions_handled_by
           ? {
@@ -347,7 +340,7 @@ export const CourseMutations = extendType({
         }
 
         const photo = await ctx.prisma.course
-          .findOne({
+          .findUnique({
             where: {
               id: id ?? undefined,
               slug: slug ?? undefined,
@@ -390,10 +383,10 @@ interface ICreateMutation<T> {
   ctx: Context
   slug: string
   data?: T[] | null
-  field: keyof Prisma__CourseClient<Course>
+  field: keyof Prisma.Prisma__CourseClient<Course>
 }
 
-const createMutation = async <T extends { id?: string | null }>({
+const createMutation = async <T extends { id?: string | null } | null>({
   ctx,
   slug,
   data,
@@ -407,7 +400,7 @@ const createMutation = async <T extends { id?: string | null }>({
 
   try {
     // @ts-ignore: can't be arsed to do the typing, works
-    existing = await ctx.prisma.course.findOne({ where: { slug } })[field]()
+    existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
   } catch (e) {
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }

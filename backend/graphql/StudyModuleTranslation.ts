@@ -4,6 +4,7 @@ import {
   extendType,
   idArg,
   stringArg,
+  nonNull,
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
@@ -24,21 +25,21 @@ export const StudyModuleTranslation = objectType({
 export const StudyModuleTranslationCreateInput = inputObjectType({
   name: "StudyModuleTranslationCreateInput",
   definition(t) {
-    t.string("name", { required: true })
-    t.string("language", { required: true })
-    t.string("description", { required: true })
-    t.id("study_module", { required: false })
+    t.nonNull.string("name")
+    t.nonNull.string("language")
+    t.nonNull.string("description")
+    t.nullable.id("study_module")
   },
 })
 
 export const StudyModuleTranslationUpsertInput = inputObjectType({
   name: "StudyModuleTranslationUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.string("name", { required: true })
-    t.string("language", { required: true })
-    t.string("description", { required: true })
-    t.id("study_module", { required: false })
+    t.nullable.id("id")
+    t.nonNull.string("name")
+    t.nonNull.string("language")
+    t.nonNull.string("description")
+    t.nullable.id("study_module")
   },
 })
 
@@ -65,10 +66,10 @@ export const StudyModuleTranslationMutations = extendType({
     t.field("addStudyModuleTranslation", {
       type: "StudyModuleTranslation",
       args: {
-        language: stringArg({ required: true }),
+        language: nonNull(stringArg()),
         name: stringArg(),
         description: stringArg(),
-        study_module: idArg({ required: true }),
+        study_module: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -93,11 +94,11 @@ export const StudyModuleTranslationMutations = extendType({
     t.field("updateStudyModuletranslation", {
       type: "StudyModuleTranslation",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
         language: stringArg(),
         name: stringArg(),
         description: stringArg(),
-        study_module: idArg({ required: true }),
+        study_module: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -120,7 +121,7 @@ export const StudyModuleTranslationMutations = extendType({
     t.field("deleteStudyModuleTranslation", {
       type: "StudyModuleTranslation",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>

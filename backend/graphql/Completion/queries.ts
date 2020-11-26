@@ -1,4 +1,4 @@
-import { extendType, stringArg, intArg, idArg } from "@nexus/schema"
+import { extendType, stringArg, intArg, idArg, nonNull } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
 import { convertPagination } from "../../util/db-functions"
@@ -10,7 +10,7 @@ export const CompletionQueries = extendType({
     t.list.field("completions", {
       type: "Completion",
       args: {
-        course: stringArg({ required: true }),
+        course: nonNull(stringArg()),
         completion_language: stringArg(),
         first: intArg(),
         after: idArg(),
@@ -25,7 +25,7 @@ export const CompletionQueries = extendType({
           ctx.disableRelations = true
         }
 
-        const courseWithSlug = await ctx.prisma.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findUnique({
           where: {
             slug: course,
           },
@@ -33,7 +33,7 @@ export const CompletionQueries = extendType({
 
         if (!courseWithSlug) {
           const courseFromAvoinCourse = await ctx.prisma.courseAlias
-            .findOne({
+            .findUnique({
               where: {
                 course_code: course,
               },
@@ -45,7 +45,7 @@ export const CompletionQueries = extendType({
           }
           course = courseFromAvoinCourse.slug
         }
-        const courseObject = await ctx.prisma.course.findOne({
+        const courseObject = await ctx.prisma.course.findUnique({
           where: {
             slug: course,
           },
@@ -67,7 +67,7 @@ export const CompletionQueries = extendType({
     t.connection("completionsPaginated", {
       type: "Completion",
       additionalArgs: {
-        course: stringArg({ required: true }),
+        course: nonNull(stringArg()),
         completion_language: stringArg(),
         skip: intArg({ default: 0 }),
       },
@@ -81,13 +81,13 @@ export const CompletionQueries = extendType({
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        const courseWithSlug = await ctx.prisma.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findUnique({
           where: { slug: course },
         })
 
         if (!courseWithSlug) {
           const courseFromAvoinCourse = await ctx.prisma.courseAlias
-            .findOne({ where: { course_code: course } })
+            .findUnique({ where: { course_code: course } })
             .course()
           if (!courseFromAvoinCourse) {
             throw new UserInputError("Invalid course identifier")

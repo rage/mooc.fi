@@ -3,9 +3,9 @@ import { inputObjectType } from "@nexus/schema"
 export const PointsByGroup = inputObjectType({
   name: "PointsByGroup",
   definition(t) {
-    t.string("group", { required: true })
-    t.int("max_points", { required: true })
-    t.int("n_points", { required: true })
-    t.float("progress", { required: true })
+    t.nonNull.string("group")
+    t.nonNull.int("max_points")
+    t.nonNull.int("n_points")
+    t.nonNull.float("progress")
   },
 })

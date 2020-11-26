@@ -1,13 +1,14 @@
-import { arg, extendType, idArg, stringArg } from "@nexus/schema"
-import { StudyModuleOrderByInput } from "@prisma/client"
+import { arg, extendType, idArg, nonNull, stringArg } from "@nexus/schema"
+import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, or, isUser, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
+import { omit } from "lodash"
 
 export const StudyModuleQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("study_module", {
+    t.nullable.field("study_module", {
       type: "StudyModule",
       args: {
         id: idArg(),
@@ -15,7 +16,6 @@ export const StudyModuleQueries = extendType({
         language: stringArg(),
       },
       authorize: or(isAdmin, isUser),
-      nullable: true,
       resolve: async (_, args, ctx) => {
         const { id, slug, language } = args
 
@@ -23,7 +23,11 @@ export const StudyModuleQueries = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const study_module = await ctx.prisma.studyModule.findOne({
+        const study_module:
+          | (StudyModule & {
+              study_module_translations?: StudyModuleTranslation[]
+            })
+          | null = await ctx.prisma.studyModule.findUnique({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
@@ -37,6 +41,17 @@ export const StudyModuleQueries = extendType({
                 },
               }
             : {}),
+          ...(language
+            ? {
+                include: {
+                  study_module_translations: {
+                    where: {
+                      language: { equals: language },
+                    },
+                  },
+                },
+              }
+            : {}),
         })
 
         if (!study_module) {
@@ -44,14 +59,7 @@ export const StudyModuleQueries = extendType({
         }
 
         if (language) {
-          const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
-            {
-              where: {
-                study_module_id: study_module.id,
-                language,
-              },
-            },
-          )
+          const module_translation = study_module.study_module_translations?.[0]
 
           if (!module_translation) {
             return Promise.resolve(null)
@@ -86,44 +94,45 @@ export const StudyModuleQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { orderBy, language } = args
 
-        const modules = await ctx.prisma.studyModule.findMany({
+        const modules: (StudyModule & {
+          study_module_translations?: StudyModuleTranslation[]
+        })[] = await ctx.prisma.studyModule.findMany({
           orderBy:
-            (filterNull(orderBy) as StudyModuleOrderByInput) ?? undefined,
+            (filterNull(orderBy) as Prisma.StudyModuleOrderByInput) ??
+            undefined,
+          ...(language
+            ? {
+                include: {
+                  study_module_translations: {
+                    where: {
+                      language: { equals: language },
+                    },
+                  },
+                },
+              }
+            : {}),
         })
 
-        const filtered = language
-          ? (
-              await Promise.all(
-                modules.map(async (module: any) => {
-                  const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
-                    {
-                      where: { study_module_id: module.id, language },
-                    },
-                  )
+        const filtered = modules.map((study_module) => ({
+          ...omit(study_module, "study_module_translations"),
+          name:
+            study_module?.study_module_translations?.[0]?.name ??
+            study_module?.name,
+          description:
+            study_module?.study_module_translations?.[0]?.description ?? "",
+        }))
 
-                  if (!module_translation) {
-                    return Promise.resolve(null)
-                  }
-
-                  const { name, description = "" } = module_translation
-
-                  return { ...module, name, description }
-                }),
-              )
-            ).filter((v) => !!v)
-          : modules.map((module: any) => ({
-              ...module,
-              description: "",
-            }))
-
-        return filtered
+        return filtered as (StudyModule & {
+          name: string
+          description: string
+        })[]
       },
     })
 
     t.field("study_module_exists", {
       type: "Boolean",
       args: {
-        slug: stringArg({ required: true }),
+        slug: nonNull(stringArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { slug }, ctx) => {

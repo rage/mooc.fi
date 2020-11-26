@@ -53,7 +53,7 @@ export interface ProfileUserOverView_currentUser {
   last_name: string | null
   student_number: string | null
   email: string
-  completions: ProfileUserOverView_currentUser_completions[]
+  completions: ProfileUserOverView_currentUser_completions[] | null
   research_consent: boolean | null
 }
 

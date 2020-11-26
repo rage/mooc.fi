@@ -46,7 +46,7 @@ export const checkBAICompletion = async ({
   const handlerCourse = isHandler
     ? course
     : await prisma.course
-        .findOne({ where: { id: course.id } })
+        .findUnique({ where: { id: course.id } })
         .completions_handled_by()
 
   if (!handlerCourse) {

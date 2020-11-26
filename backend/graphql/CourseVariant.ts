@@ -4,6 +4,7 @@ import {
   extendType,
   idArg,
   stringArg,
+  nonNull,
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
@@ -23,33 +24,32 @@ export const CourseVariant = objectType({
 export const CourseVariantCreateInput = inputObjectType({
   name: "CourseVariantCreateInput",
   definition(t) {
-    t.id("course", { required: false })
-    t.string("slug", { required: true })
-    t.string("description", { required: false })
+    t.nullable.id("course")
+    t.nonNull.string("slug")
+    t.nullable.string("description")
   },
 })
 
 export const CourseVariantUpsertInput = inputObjectType({
   name: "CourseVariantUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.id("course", { required: false })
-    t.string("slug", { required: true })
-    t.string("description", { required: false })
+    t.nullable.id("id")
+    t.nullable.id("course")
+    t.nonNull.string("slug")
+    t.nullable.string("description")
   },
 })
 
 export const CourseVariantQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("courseVariant", {
+    t.nullable.field("courseVariant", {
       type: "CourseVariant",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
-      nullable: true,
       resolve: (_, { id }, ctx) =>
-        ctx.prisma.courseVariant.findOne({ where: { id: id ?? undefined } }),
+        ctx.prisma.courseVariant.findUnique({ where: { id: id ?? undefined } }),
     })
 
     t.list.field("courseVariants", {
@@ -59,7 +59,7 @@ export const CourseVariantQueries = extendType({
       },
       resolve: (_, { course_id }, ctx) =>
         ctx.prisma.course
-          .findOne({ where: { id: course_id ?? undefined } })
+          .findUnique({ where: { id: course_id ?? undefined } })
           .course_variants(),
     })
   },
@@ -71,8 +71,8 @@ export const CourseVariantMutations = extendType({
     t.field("addCourseVariant", {
       type: "CourseVariant",
       args: {
-        course_id: idArg({ required: true }),
-        slug: stringArg({ required: true }),
+        course_id: nonNull(idArg()),
+        slug: nonNull(stringArg()),
         description: stringArg(),
       },
       authorize: isAdmin,
@@ -92,7 +92,7 @@ export const CourseVariantMutations = extendType({
     t.field("updateCourseVariant", {
       type: "CourseVariant",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
         slug: stringArg(),
         description: stringArg(),
       },
@@ -113,7 +113,7 @@ export const CourseVariantMutations = extendType({
     t.field("deleteCourseVariant", {
       type: "CourseVariant",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {

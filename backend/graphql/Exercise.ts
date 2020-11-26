@@ -5,8 +5,10 @@ import {
   idArg,
   intArg,
   stringArg,
+  nonNull,
+  nullable,
 } from "@nexus/schema"
-import { ExerciseCompletionOrderByInput } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"
 import { Context } from "/context"
@@ -32,15 +34,15 @@ export const Exercise = objectType({
 
     // t.prismaFields({ filter: ["exercise_completions"] })
 
-    t.field("exercise_completions", {
+    t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
-      list: true,
       args: {
-        orderBy: arg({
-          // FIXME?
-          type: "ExerciseCompletionOrderByInput",
-          required: false,
-        }),
+        orderBy: nullable(
+          arg({
+            // FIXME?
+            type: "ExerciseCompletionOrderByInput",
+          }),
+        ),
       },
       resolve: async (parent, args, ctx: Context) => {
         const { orderBy } = args
@@ -49,14 +51,14 @@ export const Exercise = objectType({
           throw new AuthenticationError("not logged in")
         }
         return ctx.prisma.exercise
-          .findOne({ where: { id: parent.id } })
+          .findUnique({ where: { id: parent.id } })
           .exercise_completions({
             where: {
               // @ts-ignore: context typing problem, FIXME
               user_id: ctx?.user?.id, // { id: ctx?.user?.id },
             },
             orderBy:
-              (filterNull(orderBy) as ExerciseCompletionOrderByInput) ??
+              (filterNull(orderBy) as Prisma.ExerciseCompletionOrderByInput) ??
               undefined,
           })
       },
@@ -67,15 +69,14 @@ export const Exercise = objectType({
 export const ExerciseQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("exercise", {
+    t.nullable.field("exercise", {
       type: "Exercise",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
-      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.exercise.findOne({
+        await ctx.prisma.exercise.findUnique({
           where: { id },
         }),
     })
