@@ -213,8 +213,8 @@ function PaginatedPointsList(props: Props) {
                         __typename: "PageInfo",
                       },
                       edges: [...previousData, ...newData],
-                      __typename: "QueryUserCourseSettings_Connection",
-                      count:
+                      __typename: "QueryUserCourseSettings_type_Connection",
+                      totalCount:
                         fetchMoreResult!.userCourseSettings?.totalCount ?? null,
                     },
                   }
