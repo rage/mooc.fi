@@ -57,7 +57,7 @@ export interface AllCourses_courses {
 }
 
 export interface AllCourses {
-  courses: AllCourses_courses[] | null
+  courses: (AllCourses_courses | null)[] | null
 }
 
 export interface AllCoursesVariables {

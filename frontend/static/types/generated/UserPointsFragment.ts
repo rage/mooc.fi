@@ -30,7 +30,7 @@ export interface UserPointsFragment_progresses_user_course_progress_user {
 
 export interface UserPointsFragment_progresses_user_course_progress {
   __typename: "UserCourseProgress"
-  progress: any[] | null
+  progress: (any | null)[] | null
   exercise_progress: UserPointsFragment_progresses_user_course_progress_exercise_progress | null
   user: UserPointsFragment_progresses_user_course_progress_user | null
 }
@@ -43,7 +43,7 @@ export interface UserPointsFragment_progresses_user_course_service_progresses_se
 
 export interface UserPointsFragment_progresses_user_course_service_progresses {
   __typename: "UserCourseServiceProgress"
-  progress: any[] | null
+  progress: (any | null)[] | null
   service: UserPointsFragment_progresses_user_course_service_progresses_service | null
 }
 
@@ -52,7 +52,7 @@ export interface UserPointsFragment_progresses {
   course: UserPointsFragment_progresses_course | null
   user_course_progress: UserPointsFragment_progresses_user_course_progress | null
   user_course_service_progresses:
-    | UserPointsFragment_progresses_user_course_service_progresses[]
+    | (UserPointsFragment_progresses_user_course_service_progresses | null)[]
     | null
 }
 
@@ -63,5 +63,5 @@ export interface UserPointsFragment {
   last_name: string | null
   email: string
   student_number: string | null
-  progresses: UserPointsFragment_progresses[]
+  progresses: UserPointsFragment_progresses[] | null
 }

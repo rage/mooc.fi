@@ -13,6 +13,7 @@ import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
 import LangLink from "/components/LangLink"
 import withAdmin from "/lib/with-admin"
+import notEmpty from "/util/notEmpty"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -48,7 +49,7 @@ const EmailTemplates = (admin: Boolean) => {
         <br></br>
         <br></br>
         <ul>
-          {data?.email_templates?.map((p) => {
+          {data?.email_templates?.filter(notEmpty).map((p) => {
             return (
               <li style={{ listStyleType: "none" }} key={p.id}>
                 <LangLink

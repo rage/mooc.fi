@@ -1,4 +1,10 @@
-import { objectType, extendType, idArg, booleanArg } from "@nexus/schema"
+import {
+  objectType,
+  extendType,
+  idArg,
+  booleanArg,
+  nonNull,
+} from "@nexus/schema"
 import { or, isVisitor, isAdmin } from "../accessControl"
 
 export const CourseOrganization = objectType({
@@ -44,8 +50,8 @@ export const CourseOrganizationMutations = extendType({
     t.field("addCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        course_id: idArg({ required: true }),
-        organization_id: idArg({ required: true }),
+        course_id: nonNull(idArg()),
+        organization_id: nonNull(idArg()),
         creator: booleanArg(),
       },
       authorize: or(isVisitor, isAdmin),
@@ -78,7 +84,7 @@ export const CourseOrganizationMutations = extendType({
     t.field("deleteCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {

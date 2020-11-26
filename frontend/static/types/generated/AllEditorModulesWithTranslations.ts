@@ -26,5 +26,7 @@ export interface AllEditorModulesWithTranslations_study_modules {
 }
 
 export interface AllEditorModulesWithTranslations {
-  study_modules: AllEditorModulesWithTranslations_study_modules[] | null
+  study_modules:
+    | (AllEditorModulesWithTranslations_study_modules | null)[]
+    | null
 }

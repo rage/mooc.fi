@@ -1,4 +1,11 @@
-import { objectType, extendType, idArg, arg, intArg } from "@nexus/schema"
+import {
+  objectType,
+  extendType,
+  idArg,
+  arg,
+  intArg,
+  nonNull,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
 export const ExerciseCompletion = objectType({
@@ -22,15 +29,14 @@ export const ExerciseCompletion = objectType({
 export const ExerciseCompletionQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("exerciseCompletion", {
+    t.nullable.field("exerciseCompletion", {
       type: "ExerciseCompletion",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
-      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.exerciseCompletion.findOne({
+        await ctx.prisma.exerciseCompletion.findUnique({
           where: { id },
         }),
     })

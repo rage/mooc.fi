@@ -9,6 +9,7 @@ import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 import withAdmin from "/lib/with-admin"
 import getStudyModulesTranslator from "/translations/study-modules"
 import LanguageContext from "/contexes/LanguageContext"
+import notEmpty from "/util/notEmpty"
 
 function StudyModules() {
   const { language } = useContext(LanguageContext)
@@ -29,7 +30,7 @@ function StudyModules() {
           {t("allStudyModules")}
         </H1NoBackground>
         <ModuleGrid
-          modules={data?.study_modules ?? undefined}
+          modules={data?.study_modules?.filter(notEmpty)}
           loading={loading}
         />
       </WideContainer>

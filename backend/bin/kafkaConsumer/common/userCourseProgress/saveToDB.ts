@@ -56,7 +56,7 @@ export const saveToDatabase = async (
     }
   }
 
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: { id: message.course_id },
   })
 

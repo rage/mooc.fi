@@ -1,4 +1,13 @@
-import { arg, extendType, idArg, intArg, stringArg } from "@nexus/schema"
+import {
+  arg,
+  extendType,
+  idArg,
+  intArg,
+  list,
+  nonNull,
+  nullable,
+  stringArg,
+} from "@nexus/schema"
 
 import Knex from "../../services/knex"
 import { isAdmin } from "../../accessControl"
@@ -14,10 +23,10 @@ export const CompletionMutations = extendType({
         user_upstream_id: intArg(),
         email: stringArg(),
         student_number: stringArg(),
-        user: idArg({ required: true }),
-        course: idArg({ required: true }),
+        user: nonNull(idArg()),
+        course: nonNull(idArg()),
         completion_language: stringArg(),
-        tier: intArg({ required: false }),
+        tier: nullable(intArg()),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -48,8 +57,8 @@ export const CompletionMutations = extendType({
     t.list.field("addManualCompletion", {
       type: "Completion",
       args: {
-        completions: arg({ type: "ManualCompletionArg", list: true }),
-        course_id: stringArg({ required: true }),
+        completions: list(arg({ type: "ManualCompletionArg" })),
+        course_id: nonNull(stringArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, _ctx) => {

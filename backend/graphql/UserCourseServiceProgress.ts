@@ -1,4 +1,4 @@
-import { objectType, extendType, idArg, arg } from "@nexus/schema"
+import { objectType, extendType, idArg, arg, nonNull } from "@nexus/schema"
 
 import { isAdmin } from "../accessControl"
 
@@ -22,7 +22,7 @@ export const UserCourseServiceProgress = objectType({
     t.list.field("progress", {
       type: "Json",
       resolve: async (parent, _args, ctx) => {
-        const res = await ctx.prisma.userCourseServiceProgress.findOne({
+        const res = await ctx.prisma.userCourseServiceProgress.findUnique({
           where: { id: parent.id },
           select: { progress: true },
         })
@@ -38,14 +38,13 @@ export const UserCourseServiceProgress = objectType({
 export const UserCourseServiceProgressQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("userCourseServiceProgress", {
+    t.nullable.field("userCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
         user_id: idArg(),
         course_id: idArg(),
         service_id: idArg(),
       },
-      nullable: true,
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
@@ -114,19 +113,19 @@ export const UserCourseServiceProgressMutations = extendType({
     t.field("addUserCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        progress: arg({ type: "PointsByGroup", required: true }),
-        service_id: idArg({ required: true }),
-        user_course_progress_id: idArg({ required: true }),
+        progress: nonNull(arg({ type: "PointsByGroup" })),
+        service_id: nonNull(idArg()),
+        user_course_progress_id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { service_id, progress, user_course_progress_id } = args
 
         const course = await ctx.prisma.userCourseProgress
-          .findOne({ where: { id: user_course_progress_id } })
+          .findUnique({ where: { id: user_course_progress_id } })
           .course()
         const user = await ctx.prisma.userCourseProgress
-          .findOne({ where: { id: user_course_progress_id } })
+          .findUnique({ where: { id: user_course_progress_id } })
           .user()
 
         if (!course || !user) {

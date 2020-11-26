@@ -11,6 +11,7 @@ import getProfileTranslator from "/translations/profile"
 import LanguageContext from "/contexes/LanguageContext"
 import Warning from "@material-ui/icons/Warning"
 import styled from "styled-components"
+import notEmpty from "/util/notEmpty"
 
 const ConsentNotification = styled.div`
   display: flex;
@@ -91,7 +92,9 @@ const StudentDataDisplay = ({ data }: StudentDataDisplayProps) => {
         <ProfilePointsDisplay />
       </TabPanel>
       <TabPanel index={1} value={tabOpen}>
-        <ProfileCompletionsDisplay completions={completions} />
+        <ProfileCompletionsDisplay
+          completions={completions?.filter(notEmpty) ?? []}
+        />
       </TabPanel>
       <TabPanel index={2} value={tabOpen}>
         <ProfileSettings data={data} />

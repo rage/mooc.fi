@@ -6,6 +6,7 @@ import {
   booleanArg,
   idArg,
   intArg,
+  nonNull,
 } from "@nexus/schema"
 
 import { UserInputError } from "apollo-server-core"
@@ -14,7 +15,7 @@ import { Context } from "../context"
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 import { filterNull } from "../util/db-functions"
-import { OrganizationOrderByInput } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 
 export const Organization = objectType({
   name: "Organization",
@@ -65,14 +66,13 @@ const organizationPermission = (
 export const OrganizationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("organization", {
+    t.nullable.field("organization", {
       type: "Organization",
       args: {
         id: idArg(),
         hidden: booleanArg(),
       },
       authorize: organizationPermission,
-      nullable: true,
       resolve: async (_, args, ctx) => {
         const { id, hidden } = args
 
@@ -132,7 +132,8 @@ export const OrganizationQueries = extendType({
           after: after ? { id: after } : undefined,
           before: before ? { id: before } : undefined,*/
           orderBy:
-            (filterNull(orderBy) as OrganizationOrderByInput) ?? undefined,
+            (filterNull(orderBy) as Prisma.OrganizationOrderByInput) ??
+            undefined,
           where: {
             hidden,
           },
@@ -151,7 +152,7 @@ export const OrganizationMutations = extendType({
       type: "Organization",
       args: {
         name: stringArg(),
-        slug: stringArg({ required: true }),
+        slug: nonNull(stringArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {

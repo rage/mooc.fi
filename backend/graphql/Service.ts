@@ -1,4 +1,10 @@
-import { objectType, extendType, idArg, stringArg } from "@nexus/schema"
+import {
+  objectType,
+  extendType,
+  idArg,
+  stringArg,
+  nonNull,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
 export const Service = objectType({
@@ -18,15 +24,14 @@ export const Service = objectType({
 export const ServiceQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("service", {
+    t.nullable.field("service", {
       type: "Service",
       args: {
-        service_id: idArg({ required: true }),
+        service_id: nonNull(idArg()),
       },
-      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { service_id }, ctx) =>
-        await ctx.prisma.service.findOne({ where: { id: service_id } }),
+        await ctx.prisma.service.findUnique({ where: { id: service_id } }),
     })
 
     t.crud.services({
@@ -51,8 +56,8 @@ export const ServiceMutations = extendType({
     t.field("addService", {
       type: "Service",
       args: {
-        url: stringArg({ required: true }),
-        name: stringArg({ required: true }),
+        url: nonNull(stringArg()),
+        name: nonNull(stringArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -70,7 +75,7 @@ export const ServiceMutations = extendType({
     t.field("updateService", {
       type: "Service",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
         url: stringArg(),
         name: stringArg(),
       },

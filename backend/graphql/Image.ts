@@ -1,4 +1,11 @@
-import { objectType, extendType, arg, booleanArg, idArg } from "@nexus/schema"
+import {
+  objectType,
+  extendType,
+  arg,
+  booleanArg,
+  idArg,
+  nonNull,
+} from "@nexus/schema"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,
@@ -33,7 +40,7 @@ export const ImageMutations = extendType({
     t.field("addImage", {
       type: "Image",
       args: {
-        file: arg({ type: "Upload", required: true }),
+        file: nonNull(arg({ type: "Upload" })),
         base64: booleanArg(),
       },
       authorize: isAdmin,
@@ -47,7 +54,7 @@ export const ImageMutations = extendType({
     t.field("deleteImage", {
       type: "Boolean",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx: Context) => {
@@ -159,7 +166,7 @@ export const deleteImage = async ({
   ctx: Context
   id: string
 }): Promise<boolean> => {
-  const image = await ctx.prisma.image.findOne({ where: { id } })
+  const image = await ctx.prisma.image.findUnique({ where: { id } })
 
   if (!image) {
     return false

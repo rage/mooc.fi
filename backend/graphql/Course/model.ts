@@ -1,4 +1,4 @@
-import { objectType, stringArg, intArg } from "@nexus/schema"
+import { objectType, stringArg, intArg, nullable } from "@nexus/schema"
 import { isAdmin } from "../../accessControl"
 
 export const Course = objectType({
@@ -60,12 +60,11 @@ export const Course = objectType({
     // @ts-ignore: false error
     t.string("link")
 
-    t.field("completions", {
+    t.list.field("completions", {
       type: "Completion",
-      list: true,
       args: {
-        user_id: stringArg({ required: false }),
-        user_upstream_id: intArg({ required: false }),
+        user_id: nullable(stringArg()),
+        user_upstream_id: nullable(intArg()),
       },
       authorize: isAdmin,
       resolve: async (parent, args, ctx) => {

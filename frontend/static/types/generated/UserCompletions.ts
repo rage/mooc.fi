@@ -48,5 +48,5 @@ export interface UserCompletions_completions {
 
 export interface UserCompletions {
   __typename: "User"
-  completions: UserCompletions_completions[]
+  completions: UserCompletions_completions[] | null
 }

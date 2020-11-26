@@ -14,7 +14,7 @@ export const saveToDatabase = async (
   if (!message.course_id) {
     return err(new DatabaseInputError("no course specified", message))
   }
-  const existingCourse = await prisma.course.findOne({
+  const existingCourse = await prisma.course.findUnique({
     where: { id: message.course_id },
   })
   if (!existingCourse) {

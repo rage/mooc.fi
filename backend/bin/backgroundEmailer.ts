@@ -10,7 +10,7 @@ const logger = sentryLogger({ service: "background-emailer" })
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {
   const { user, email_template } =
-    (await prisma.emailDelivery.findOne({
+    (await prisma.emailDelivery.findUnique({
       where: { id: emailDelivery.id },
       select: {
         user: true,

@@ -117,7 +117,7 @@ export const contextUser = async (
   }
 
   if (rawToken.startsWith("Basic")) {
-    const organization = await prisma.organization.findOne({
+    const organization = await prisma.organization.findUnique({
       where: {
         secret_key: rawToken.split(" ")?.[1] ?? "",
       },

@@ -1,6 +1,6 @@
 import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
-import { extendType, stringArg, booleanArg, arg } from "@nexus/schema"
+import { extendType, stringArg, booleanArg, arg, nonNull } from "@nexus/schema"
 import { Context } from "../../context"
 import hashUser from "../../util/hashUser"
 
@@ -38,7 +38,7 @@ export const UserMutations = extendType({
     t.field("updateResearchConsent", {
       type: "User",
       args: {
-        value: booleanArg({ required: true }),
+        value: nonNull(booleanArg()),
       },
       resolve: (_, { value }, ctx: Context) => {
         const { user: currentUser } = ctx
@@ -65,10 +65,11 @@ export const UserMutations = extendType({
     t.field("addUser", {
       type: "User",
       args: {
-        user: arg({
-          type: "UserArg",
-          required: true,
-        }),
+        user: nonNull(
+          arg({
+            type: "UserArg",
+          }),
+        ),
       },
       resolve: async (_, { user }, ctx) => {
         const exists = await ctx.prisma.user.findFirst({

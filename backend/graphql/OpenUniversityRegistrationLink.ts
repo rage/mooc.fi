@@ -4,6 +4,7 @@ import {
   extendType,
   idArg,
   stringArg,
+  nonNull,
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
@@ -26,9 +27,9 @@ export const OpenUniversityRegistrationLink = objectType({
 export const OpenUniversityRegistrationLinkCreateInput = inputObjectType({
   name: "OpenUniversityRegistrationLinkCreateInput",
   definition(t) {
-    t.string("course_code", { required: true })
-    t.string("language", { required: true })
-    t.string("link", { required: false })
+    t.nonNull.string("course_code")
+    t.nonNull.string("language")
+    t.nullable.string("link")
     t.field("start_date", { type: "DateTime" })
     t.field("stop_date", { type: "DateTime" })
   },
@@ -37,10 +38,10 @@ export const OpenUniversityRegistrationLinkCreateInput = inputObjectType({
 export const OpenUniversityRegistrationLinkUpsertInput = inputObjectType({
   name: "OpenUniversityRegistrationLinkUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.string("course_code", { required: true })
-    t.string("language", { required: true })
-    t.string("link", { required: false })
+    t.nullable.id("id")
+    t.nonNull.string("course_code")
+    t.nonNull.string("language")
+    t.nullable.string("link")
     t.field("start_date", { type: "DateTime" })
     t.field("stop_date", { type: "DateTime" })
   },
@@ -49,15 +50,14 @@ export const OpenUniversityRegistrationLinkUpsertInput = inputObjectType({
 export const OpenUniversityRegistrationLinkQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("openUniversityRegistrationLink", {
+    t.nullable.field("openUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
-      nullable: true,
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        await ctx.prisma.openUniversityRegistrationLink.findOne({
+        await ctx.prisma.openUniversityRegistrationLink.findUnique({
           where: { id },
         }),
     })
@@ -81,8 +81,8 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
     t.field("addOpenUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        course_code: stringArg({ required: true }),
-        course: idArg({ required: true }),
+        course_code: nonNull(stringArg()),
+        course: nonNull(idArg()),
         language: stringArg(),
         link: stringArg(),
       },
@@ -110,9 +110,9 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
     t.field("updateOpenUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
         course_code: stringArg(),
-        course: idArg({ required: true }),
+        course: nonNull(idArg()),
         language: stringArg(),
         link: stringArg(),
       },

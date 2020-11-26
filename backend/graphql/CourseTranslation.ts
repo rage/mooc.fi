@@ -4,6 +4,7 @@ import {
   extendType,
   stringArg,
   idArg,
+  nonNull,
 } from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 import { convertUpdate } from "../util/db-functions"
@@ -26,23 +27,23 @@ export const CourseTranslation = objectType({
 export const CourseTranslationCreateInput = inputObjectType({
   name: "CourseTranslationCreateInput",
   definition(t) {
-    t.string("name", { required: true })
-    t.string("language", { required: true })
-    t.string("description", { required: true })
-    t.string("link", { required: false })
-    t.id("course", { required: false })
+    t.nonNull.string("name")
+    t.nonNull.string("language")
+    t.nonNull.string("description")
+    t.nullable.string("link")
+    t.nullable.id("course")
   },
 })
 
 export const CourseTranslationUpsertInput = inputObjectType({
   name: "CourseTranslationUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.string("name", { required: true })
-    t.string("language", { required: true })
-    t.string("description", { required: true })
-    t.string("link", { required: false })
-    t.id("course", { required: false })
+    t.nullable.id("id")
+    t.nonNull.string("name")
+    t.nonNull.string("language")
+    t.nonNull.string("description")
+    t.nullable.string("link")
+    t.nullable.id("course")
   },
 })
 
@@ -69,7 +70,7 @@ export const CourseTranslationMutations = extendType({
     t.field("addCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        language: stringArg({ required: true }),
+        language: nonNull(stringArg()),
         name: stringArg(),
         description: stringArg(),
         link: stringArg(),
@@ -95,8 +96,8 @@ export const CourseTranslationMutations = extendType({
     t.field("updateCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        id: idArg({ required: true }),
-        language: stringArg({ required: true }),
+        id: nonNull(idArg()),
+        language: nonNull(stringArg()),
         name: stringArg(),
         description: stringArg(),
         link: stringArg(),
@@ -122,7 +123,7 @@ export const CourseTranslationMutations = extendType({
     t.field("deleteCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        id: idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
