@@ -5,6 +5,7 @@ import {
   CourseVariantUpdateManyWithoutCourseInput,
   CourseAliasUpdateManyWithoutCourseInput,
   UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
+  CourseUpdateInput,
 } from "@prisma/client"
 
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
@@ -17,6 +18,7 @@ import { isAdmin } from "../../accessControl"
 import { Prisma__CourseClient, Course } from "@prisma/client"
 
 import { extendType, arg, idArg, stringArg } from "@nexus/schema"
+import { convertUpdate } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
@@ -294,13 +296,12 @@ export const CourseMutations = extendType({
             }
           : undefined
 
-        console.log("translationMutation", JSON.stringify(translationMutation))
         const updatedCourse = await ctx.prisma.course.update({
           where: {
             id: id ?? undefined,
             slug,
           },
-          data: {
+          data: convertUpdate({
             ...omit(course, [
               "id",
               "photo",
@@ -324,7 +325,7 @@ export const CourseMutations = extendType({
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
             user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
-          },
+          }),
         })
 
         return updatedCourse
