@@ -23,60 +23,57 @@ export const CourseQueries = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const course:
-          | (Course & { course_translations?: CourseTranslation[] })
-          | null = await ctx.prisma.course.findUnique({
+        const courseQuery: Prisma.FindUniqueCourseArgs = {
           where: {
             slug: slug ?? undefined,
             id: id ?? undefined,
           },
-          ...(ctx.role !== Role.ADMIN
-            ? {
-                select: {
-                  id: true,
-                  slug: true,
-                  name: true,
-                },
-              }
-            : {}),
-          ...(language
-            ? {
-                include: {
-                  course_translations: {
-                    where: {
-                      language: { equals: language },
-                    },
-                  },
-                },
-              }
-            : {}),
-        })
+        }
+
+        if (ctx.role !== Role.ADMIN) {
+          courseQuery.select = {
+            id: true,
+            slug: true,
+            name: true,
+          }
+        }
+
+        const course: Course | null = await ctx.prisma.course.findUnique(
+          courseQuery,
+        )
 
         if (!course) {
           throw new Error("course not found")
         }
 
+        let description = ""
+        let link = ""
+        let name = course.name
+
         if (language) {
-          const course_translation = course.course_translations?.[0]
+          const course_translation = await ctx.prisma.courseTranslation.findFirst(
+            {
+              where: {
+                course_id: course.id,
+                language,
+              },
+            },
+          )
 
           if (!course_translation) {
             return Promise.resolve(null)
           }
 
-          // TODO/FIXME: provide language instead of getting the first one
-          const { name, description, link = "" } = course_translation
-          return {
-            ...course,
-            name,
-            description,
-            link,
-          }
+          description = course_translation.description ?? ""
+          link = course_translation.link ?? ""
+          name = course_translation.name
         }
 
         return {
           ...course,
-          description: "",
-          link: "",
+          name,
+          description,
+          link,
         }
       },
     })

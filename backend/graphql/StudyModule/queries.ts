@@ -41,17 +41,6 @@ export const StudyModuleQueries = extendType({
                 },
               }
             : {}),
-          ...(language
-            ? {
-                include: {
-                  study_module_translations: {
-                    where: {
-                      language: { equals: language },
-                    },
-                  },
-                },
-              }
-            : {}),
         })
 
         if (!study_module) {
@@ -59,7 +48,14 @@ export const StudyModuleQueries = extendType({
         }
 
         if (language) {
-          const module_translation = study_module.study_module_translations?.[0]
+          const module_translation = await ctx.prisma.studyModuleTranslation.findFirst(
+            {
+              where: {
+                study_module_id: study_module.id,
+                language,
+              },
+            },
+          )
 
           if (!module_translation) {
             return Promise.resolve(null)

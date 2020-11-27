@@ -121,6 +121,17 @@ export const courses: Prisma.CourseCreateInput[] = [
         { id: "00000000000000000000000000000102" },
       ],
     },
+    photo: {
+      create: {
+        id: "00000000000000000000000000001101",
+        original: "original.gif",
+        original_mimetype: "image/gif",
+        compressed: "webp",
+        compressed_mimetype: "image/webp",
+        uncompressed: "jpeg",
+        uncompressed_mimetype: "image/jpeg",
+      },
+    },
   },
   {
     id: "00000000000000000000000000000001",

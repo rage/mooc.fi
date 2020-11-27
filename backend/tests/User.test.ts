@@ -25,6 +25,16 @@ const updateReseachConsentMutation = gql`
   }
 `
 
+const updateUserNameMutation = gql`
+  mutation updateUserName($first_name: String, $last_name: String) {
+    updateUserName(first_name: $first_name, last_name: $last_name) {
+      id
+      first_name
+      last_name
+    }
+  }
+`
+
 const ctx = getTestContext()
 const tmc = fakeTMC({
   "Bearer normal": [200, normalUserDetails],
@@ -219,6 +229,36 @@ describe("User", () => {
           await ctx!.client.request(updateReseachConsentMutation, {
             value: true,
           })
+          fail()
+        } catch {}
+      })
+    })
+
+    describe("updateUserName", () => {
+      beforeEach(async () => {
+        await ctx!.prisma.user.create({
+          data: normalUser,
+        })
+      })
+
+      it("updates correctly", async () => {
+        ctx!.client.setHeader("Authorization", "Bearer normal")
+
+        const res = await ctx!.client.request(updateUserNameMutation, {
+          first_name: "updated first",
+          last_name: "updated last",
+        })
+
+        expect(res.updateUserName).toMatchObject({
+          first_name: "updated first",
+          last_name: "updated last",
+        })
+      })
+
+      it("errors without auth", async () => {
+        ctx!.client.setHeader("Authorization", "")
+        try {
+          await ctx!.client.request(updateUserNameMutation, {})
           fail()
         } catch {}
       })

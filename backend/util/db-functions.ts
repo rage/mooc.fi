@@ -77,7 +77,7 @@ export const convertUpdate = <T extends object>(input: {
         ? value.map(convertUpdate)
         : typeof value === "object"
         ? convertUpdate(value)
-        : ["string", "number", "boolean"].includes(typeof value)
+        : ["number", "boolean"].includes(typeof value)
         ? { set: value }
         : value,
     }),
