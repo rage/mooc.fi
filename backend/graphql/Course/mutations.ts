@@ -52,7 +52,6 @@ export const CourseMutations = extendType({
         let photo = null
 
         if (new_photo) {
-          console.log("mutation got", new_photo)
           const newImage = await uploadImage({
             ctx,
             file: new_photo,
@@ -153,7 +152,6 @@ export const CourseMutations = extendType({
         let photo = course.photo
 
         if (new_photo) {
-          console.log("mutation got", new_photo)
           const newImage = await uploadImage({
             ctx,
             file: new_photo,
