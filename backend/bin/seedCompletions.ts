@@ -1,10 +1,8 @@
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import { sample } from "lodash"
 
-const prisma = prismaClient()
-
 const addCompletions = async () => {
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: {
       slug: "elements-of-ai",
     },
