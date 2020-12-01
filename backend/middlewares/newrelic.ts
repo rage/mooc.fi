@@ -1,11 +1,10 @@
 import { plugin } from "@nexus/schema"
-
 const newrelic = require("newrelic")
 
-function newrelicPlugin() {
-  return plugin({
-    name: "New Relic Plugin",
-    onCreateFieldResolver(config) {
+export const newRelicPlugin = () =>
+  plugin({
+    name: "NewRelicPlugin",
+    onCreateFieldResolver(config: any) {
       return async (root, args, ctx, info, next) => {
         try {
           if (!root) {
@@ -25,6 +24,3 @@ function newrelicPlugin() {
       }
     },
   })
-}
-
-export { newrelicPlugin }

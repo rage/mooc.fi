@@ -4,60 +4,70 @@ import { Role } from "../accessControl"
 import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
 import { PrismaClient } from "@prisma/client"
-// import { IncomingMessage } from "http"
-import { NexusContext } from "../context"
+import { Context } from "../context"
+import { plugin } from "@nexus/schema"
+import { convertUpdate } from "../util/db-functions"
 
-// this is the version suitable for middleware, not used for now
-const fetchUser = (_config: any) => async (
-  root: any,
-  args: Record<string, any>,
-  ctx: NexusContext,
-  info: any,
-  next: Function,
-) => {
-  if (ctx.userDetails || ctx.organization) {
-    return await next(root, args, ctx, info)
-  }
+export const moocfiAuthPlugin = () =>
+  plugin({
+    name: "moocfiAuthPlugin",
+    onCreateFieldResolver(_config: any) {
+      return async (
+        root: any,
+        args: Record<string, any>,
+        ctx: Context,
+        info: any,
+        next: Function,
+      ) => {
+        if (ctx.userDetails || ctx.organization) {
+          return await next(root, args, ctx, info)
+        }
 
-  const rawToken = ctx.headers?.authorization // connection?
+        const rawToken = ctx.req?.headers?.authorization // connection?
 
-  if (!rawToken) {
-    ctx.role = Role.VISITOR
-  } else if (rawToken.startsWith("Basic")) {
-    await getOrganization(ctx, rawToken)
-  } else {
-    await getUser(ctx, rawToken)
-  }
+        if (!rawToken) {
+          ctx.role = Role.VISITOR
+        } else if (rawToken.startsWith("Basic")) {
+          await getOrganization(ctx, rawToken)
+        } else {
+          await getUser(ctx, rawToken)
+        }
 
-  return await next(root, args, ctx, info)
-}
+        return await next(root, args, ctx, info)
+      }
+    },
+  })
 
-const getOrganization = async (ctx: NexusContext, rawToken: string | null) => {
+const getOrganization = async (ctx: Context, rawToken: string | null) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""
 
-  const org = await ctx.db.organization.findMany({
+  const org = await ctx.prisma.organization.findFirst({
     where: { secret_key: secret },
   })
-  if (org.length < 1) {
+  if (!org) {
     throw new AuthenticationError("Please log in.")
   }
 
-  ctx.organization = org[0]
+  ctx.organization = org
   ctx.role = Role.ORGANIZATION
 }
 
-const getUser = async (ctx: NexusContext, rawToken: string) => {
+const getUser = async (ctx: Context, rawToken: string) => {
   const client = new TmcClient(rawToken)
   // TODO: Does this always make a request?
   let details: UserInfo | null = null
+
   try {
-    details = await redisify<UserInfo>(client.getCurrentUserDetails(), {
-      prefix: "userdetails",
-      expireTime: 3600,
-      key: rawToken,
-    })
+    details = await redisify<UserInfo>(
+      async () => await client.getCurrentUserDetails(),
+      {
+        prefix: "userdetails",
+        expireTime: 3600,
+        key: rawToken,
+      },
+    )
   } catch (e) {
-    console.log("error", e)
+    // console.log("error", e)
   }
 
   ctx.tmcClient = client
@@ -76,10 +86,11 @@ const getUser = async (ctx: NexusContext, rawToken: string) => {
     last_name: details.user_field.last_name.trim(),
     username: details.username,
   }
-  ctx.user = await ctx.db.user.upsert({
+
+  ctx.user = await ctx.prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,
-    update: prismaDetails,
+    update: convertUpdate(prismaDetails),
   })
   if (ctx.user.administrator) {
     ctx.role = Role.ADMIN
@@ -88,9 +99,7 @@ const getUser = async (ctx: NexusContext, rawToken: string) => {
   }
 }
 
-export default fetchUser
-
-// this is the one suitable for context, not use for now
+// this is the one suitable for context, not used for now
 export const contextUser = async (
   req: any, // was: IncomingMessage, but somehow it's wrapped in req
   prisma: PrismaClient,
@@ -108,7 +117,7 @@ export const contextUser = async (
   }
 
   if (rawToken.startsWith("Basic")) {
-    const organization = await prisma.organization.findOne({
+    const organization = await prisma.organization.findUnique({
       where: {
         secret_key: rawToken.split(" ")?.[1] ?? "",
       },
@@ -158,7 +167,7 @@ export const contextUser = async (
   const user = await prisma.user.upsert({
     where: { upstream_id: id },
     create: prismaDetails,
-    update: prismaDetails,
+    update: convertUpdate(prismaDetails),
   })
 
   return {

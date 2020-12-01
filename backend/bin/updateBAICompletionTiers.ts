@@ -2,18 +2,17 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import { Completion, User } from "@prisma/client"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import Knex from "../services/knex"
 import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/generateBAIUserCourseProgress"
 
-const prisma = prismaClient()
 const logger = sentryLogger({ service: "update-bai-completion-tiers" })
 
 const PARENT_COURSE_ID = "49cbadd8-be32-454f-9b7d-e84d52100b74"
 
 const updateBAICompletionTiers = async () => {
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: { id: PARENT_COURSE_ID },
   })
 

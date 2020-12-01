@@ -1,8 +1,7 @@
-// import { prismaObjectType } from "nexus-prisma"
-import { schema } from "nexus"
+import { objectType, stringArg, intArg, nullable } from "@nexus/schema"
 import { isAdmin } from "../../accessControl"
 
-schema.objectType({
+export const Course = objectType({
   name: "Course",
   definition(t) {
     t.model.id()
@@ -59,12 +58,11 @@ schema.objectType({
     t.string("description")
     t.string("link")
 
-    t.field("completions", {
+    t.list.field("completions", {
       type: "Completion",
-      list: true,
       args: {
-        user_id: schema.stringArg({ required: false }),
-        user_upstream_id: schema.intArg({ required: false }),
+        user_id: nullable(stringArg()),
+        user_upstream_id: nullable(intArg()),
       },
       authorize: isAdmin,
       resolve: async (parent, args, ctx) => {
@@ -74,7 +72,7 @@ schema.objectType({
           throw new Error("needs user_id or user_upstream_id")
         }
 
-        return ctx.db.completion.findMany({
+        return ctx.prisma.completion.findMany({
           where: {
             user: {
               id: user_id ?? undefined,

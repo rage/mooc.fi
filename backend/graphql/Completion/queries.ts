@@ -1,22 +1,23 @@
-import { schema } from "nexus"
+import { extendType, stringArg, intArg, idArg, nonNull } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
 // import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import { Prisma } from "@prisma/client"
 
-schema.extendType({
+export const CompletionQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("completions", {
       type: "Completion",
       args: {
-        course: schema.stringArg({ required: true }),
-        completion_language: schema.stringArg(),
-        first: schema.intArg(),
-        after: schema.idArg(),
-        last: schema.intArg(),
-        before: schema.idArg(),
+        course: nonNull(stringArg()),
+        completion_language: stringArg(),
+        first: intArg(),
+        after: idArg(),
+        last: intArg(),
+        before: idArg(),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -26,15 +27,15 @@ schema.extendType({
           ctx.disableRelations = true
         }
 
-        const courseWithSlug = await ctx.db.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findUnique({
           where: {
             slug: course,
           },
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.courseAlias
-            .findOne({
+          const courseFromAvoinCourse = await ctx.prisma.courseAlias
+            .findUnique({
               where: {
                 course_code: course,
               },
@@ -46,7 +47,7 @@ schema.extendType({
           }
           course = courseFromAvoinCourse.slug
         }
-        const courseObject = await ctx.db.course.findOne({
+        const courseObject = await ctx.prisma.course.findUnique({
           where: {
             slug: course,
           },
@@ -68,30 +69,31 @@ schema.extendType({
     t.field("completionsPaginated", {
       type: "CompletionConnection",
       args: {
-        course: schema.stringArg({ required: true }),
-        completion_language: schema.stringArg(),
-        skip: schema.intArg({ default: 0 }),
-        first: schema.intArg(),
-        last: schema.intArg(),
-        before: schema.stringArg(),
-        after: schema.stringArg(),
+        course: nonNull(stringArg()),
+        completion_language: stringArg(),
+        search: stringArg(),
+        skip: intArg({ default: 0 }),
+        first: intArg(),
+        last: intArg(),
+        before: stringArg(),
+        after: stringArg(),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx, __) => {
-        const { completion_language, first, last, before, after } = args
+        const { completion_language, first, last, before, after, search } = args
         let { course } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           throw new ForbiddenError("Cannot query more than 50 objects")
         }
 
-        const courseWithSlug = await ctx.db.course.findOne({
+        const courseWithSlug = await ctx.prisma.course.findUnique({
           where: { slug: course },
         })
 
         if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.db.courseAlias
-            .findOne({ where: { course_code: course } })
+          const courseFromAvoinCourse = await ctx.prisma.courseAlias
+            .findUnique({ where: { course_code: course } })
             .course()
           if (!courseFromAvoinCourse) {
             throw new UserInputError("Invalid course identifier")
@@ -99,16 +101,42 @@ schema.extendType({
           course = courseFromAvoinCourse.slug
         }
 
-        const baseArgs = {
+        const baseArgs: Prisma.FindManyCompletionArgs = {
           where: {
             course: { slug: course },
             completion_language,
+            ...(search
+              ? {
+                  user: {
+                    OR: [
+                      {
+                        first_name: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        last_name: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        username: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        email: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        student_number: { contains: search },
+                      },
+                      {
+                        real_student_number: { contains: search },
+                      },
+                    ],
+                  },
+                }
+              : {}),
           },
         }
 
         return findManyCursorConnection(
-          (args) => ctx.db.completion.findMany({ ...args, ...baseArgs }),
-          () => ctx.db.completion.count(baseArgs),
+          (args) => ctx.prisma.completion.findMany({ ...args, ...baseArgs }),
+          () => ctx.prisma.completion.count(baseArgs),
           { first, last, before, after },
           {
             getCursor: (node) => ({ id: node.id }),
@@ -125,9 +153,14 @@ schema.extendType({
       // hack to generate connection type
       type: "Completion",
       additionalArgs: {
-        course: schema.stringArg({ required: true }),
-        completion_language: schema.stringArg(),
-        skip: schema.intArg({ default: 0 }),
+        course: nonNull(stringArg()),
+        completion_language: stringArg(),
+        search: stringArg(),
+        skip: intArg({ default: 0 }),
+        first: intArg(),
+        last: intArg(),
+        before: stringArg(),
+        after: stringArg(),
       },
       authorize: () => false,
       nodes: async (_, _args, _ctx, __) => {

@@ -19,7 +19,7 @@ export interface UserOrganizations_userOrganizations {
 }
 
 export interface UserOrganizations {
-  userOrganizations: UserOrganizations_userOrganizations[] | null
+  userOrganizations: (UserOrganizations_userOrganizations | null)[] | null
 }
 
 export interface UserOrganizationsVariables {

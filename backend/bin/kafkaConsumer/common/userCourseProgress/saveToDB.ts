@@ -56,7 +56,7 @@ export const saveToDatabase = async (
     }
   }
 
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: { id: message.course_id },
   })
 
@@ -113,8 +113,8 @@ export const saveToDatabase = async (
         id: userCourseServiceProgress.id,
       },
       data: {
-        progress: message.progress as any, // type error without any
-        timestamp: timestamp.toJSDate(),
+        progress: { set: message.progress as any }, // type error without any
+        timestamp: { set: timestamp.toJSDate() },
       },
     })
   } else {

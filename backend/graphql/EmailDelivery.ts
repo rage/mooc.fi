@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { objectType } from "@nexus/schema"
 
-schema.objectType({
+export const EmailDelivery = objectType({
   name: "EmailDelivery",
   definition(t) {
     t.model.id()

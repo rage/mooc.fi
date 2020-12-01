@@ -23,6 +23,7 @@ import {
   CourseEditorStudyModuleQuery,
   CourseEditorCoursesQuery,
 } from "/graphql/queries/courses"
+import notEmpty from "/util/notEmpty"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -166,8 +167,8 @@ const EditCourse = ({ router }: EditCourseProps) => {
         ) : courseData?.course ? (
           <CourseEdit
             course={courseData.course}
-            modules={studyModulesData?.study_modules ?? []}
-            courses={coursesData?.courses ?? []}
+            modules={studyModulesData?.study_modules?.filter(notEmpty) ?? []}
+            courses={coursesData?.courses?.filter(notEmpty) ?? []}
           />
         ) : (
           <ErrorContainer elevation={2}>

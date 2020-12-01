@@ -1,13 +1,13 @@
-import { schema } from "nexus"
+import { inputObjectType } from "@nexus/schema"
 
-schema.inputObjectType({
+export const UserArg = inputObjectType({
   name: "UserArg",
   definition(t) {
-    t.int("upstream_id", { required: true })
-    t.string("first_name", { required: true })
-    t.string("last_name", { required: true })
-    t.string("username", { required: true })
-    t.string("email", { required: true })
-    t.boolean("research_consent", { required: true })
+    t.nonNull.int("upstream_id")
+    t.nonNull.string("first_name")
+    t.nonNull.string("last_name")
+    t.nonNull.string("username")
+    t.nonNull.string("email")
+    t.nonNull.boolean("research_consent")
   },
 })

@@ -1,24 +1,33 @@
-import { schema } from "nexus"
+import {
+  extendType,
+  arg,
+  idArg,
+  stringArg,
+  nonNull,
+  nullable,
+} from "@nexus/schema"
+import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"
 import { isAdmin } from "../../accessControl"
 
-schema.extendType({
+export const StudyModuleMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: schema.arg({
-          type: "StudyModuleCreateArg",
-          required: true,
-        }),
+        study_module: nonNull(
+          arg({
+            type: "StudyModuleCreateArg",
+          }),
+        ),
       },
       authorize: isAdmin,
       resolve: async (_, { study_module }, ctx) => {
         const { study_module_translations } = study_module
 
-        return ctx.db.studyModule.create({
+        return ctx.prisma.studyModule.create({
           data: {
             ...study_module,
             name: study_module.name ?? "",
@@ -26,9 +35,9 @@ schema.extendType({
               ? {
                   create: study_module_translations.map((s) => ({
                     ...s,
-                    name: s.name ?? "",
-                    id: s.id ?? undefined,
-                  })),
+                    name: s?.name ?? "",
+                    id: s?.id ?? undefined,
+                  })) as Prisma.StudyModuleTranslationCreateWithoutStudy_moduleInput[],
                 }
               : undefined,
           },
@@ -39,10 +48,11 @@ schema.extendType({
     t.field("updateStudyModule", {
       type: "StudyModule",
       args: {
-        study_module: schema.arg({
-          type: "StudyModuleUpsertArg",
-          required: true,
-        }),
+        study_module: nonNull(
+          arg({
+            type: "StudyModuleUpsertArg",
+          }),
+        ),
       },
       authorize: isAdmin,
       resolve: async (_, { study_module }, ctx) => {
@@ -52,20 +62,20 @@ schema.extendType({
           throw new UserInputError("must provide slug")
         }
 
-        const existingTranslations = await ctx.db.studyModule
-          .findOne({ where: { slug } })
+        const existingTranslations = await ctx.prisma.studyModule
+          .findUnique({ where: { slug } })
           .study_module_translations()
         const newTranslations = (study_module_translations || [])
-          .filter((t) => !t.id)
+          .filter((t) => !t?.id)
           .map((t) => ({ ...t, id: undefined }))
         const updatedTranslations = (study_module_translations || [])
-          .filter((t) => !!t.id)
-          .map((t) => ({ where: { id: t.id }, data: { ...t, id: undefined } }))
+          .filter((t) => !!t?.id)
+          .map((t) => ({ where: { id: t?.id }, data: { ...t, id: undefined } }))
         const existingTranslationIds = (existingTranslations || []).map(
           (t) => t.id,
         )
         const moduleTranslationIds = (study_module_translations || []).map(
-          (t) => t.id,
+          (t) => t?.id,
         )
         const removedTranslationIds = existingTranslationIds
           .filter((id) => !moduleTranslationIds.includes(id))
@@ -85,7 +95,7 @@ schema.extendType({
             : undefined,
         }
 
-        const updatedModule = await ctx.db.studyModule.update({
+        const updatedModule = await ctx.prisma.studyModule.update({
           where: {
             id: id ?? undefined,
             slug,
@@ -108,8 +118,8 @@ schema.extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: schema.idArg({ required: false }),
-        slug: schema.stringArg(),
+        id: nullable(idArg()),
+        slug: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -119,7 +129,7 @@ schema.extendType({
           throw "must have at least id or slug"
         }
 
-        const deletedModule = await ctx.db.studyModule.delete({
+        const deletedModule = await ctx.prisma.studyModule.delete({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,

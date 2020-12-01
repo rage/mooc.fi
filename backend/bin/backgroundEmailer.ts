@@ -1,17 +1,16 @@
 import { EmailDelivery } from "@prisma/client"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { EmailTemplaterError } from "./lib/errors"
 
 const BATCH_SIZE = 100
 
-const prisma = prismaClient()
 const logger = sentryLogger({ service: "background-emailer" })
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {
   const { user, email_template } =
-    (await prisma.emailDelivery.findOne({
+    (await prisma.emailDelivery.findUnique({
       where: { id: emailDelivery.id },
       select: {
         user: true,
@@ -39,13 +38,19 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
     logger.info("Marking email as delivered")
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
-      data: { sent: true, error: false },
+      data: {
+        sent: { set: true },
+        error: { set: false },
+      },
     })
   } catch (e) {
     logger.error(new EmailTemplaterError("Sending failed", e))
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
-      data: { error: true, error_message: e.message },
+      data: {
+        error: { set: true },
+        error_message: e.message,
+      },
     })
   }
 }

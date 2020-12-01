@@ -57,10 +57,29 @@ export const convertPagination = (
   }
 }
 
-export const filterNull = (o: any) =>
+export const filterNull = <T>(o: any): T | undefined =>
   o
     ? Object.entries(o).reduce(
         (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
-        {},
+        {} as T,
       )
     : undefined
+
+// helper function to convert to atomicNumberOperations
+// https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
+export const convertUpdate = <T extends object>(input: {
+  [key: string]: any
+}): T =>
+  Object.entries(input).reduce(
+    (acc: any, [key, value]: [string, any]) => ({
+      ...acc,
+      [key]: Array.isArray(value)
+        ? value.map(convertUpdate)
+        : typeof value === "object"
+        ? convertUpdate(value)
+        : ["number", "boolean"].includes(typeof value)
+        ? { set: value }
+        : value,
+    }),
+    {},
+  )

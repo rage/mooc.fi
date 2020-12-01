@@ -17,6 +17,8 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslations from "/translations/courses"
 import styled from "styled-components"
+import { TextField } from "@material-ui/core"
+// import useDebounce from "/util/useDebounce"
 
 const ContentArea = styled.div`
   max-width: 39em;
@@ -37,6 +39,8 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
   const t = getCoursesTranslations(language)
 
   const [lng, changeLng] = useState("")
+  const [searchString, setSearchString] = useState("")
+  const [search, setSearch] = useState("")
 
   const slug = useQueryParameter("id")
 
@@ -88,7 +92,18 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
             handleLanguageChange={handleLanguageChange}
             languageValue={lng}
           />
-          <CompletionsList />
+          <TextField
+            id="searchString"
+            label="Search"
+            value={searchString}
+            autoComplete="off"
+            variant="outlined"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setSearchString(e.target.value)
+            }
+            onKeyDown={(e) => e.key === "Enter" && setSearch(searchString)}
+          />
+          <CompletionsList search={search} />
         </ContentArea>
       </WideContainer>
     </CourseLanguageContext.Provider>

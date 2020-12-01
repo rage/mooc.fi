@@ -8,7 +8,7 @@ import { handleMessage } from "../common/handleMessage"
 import { Message } from "../common/userPoints/interfaces"
 import { MessageYupSchema } from "../common/userPoints/validate"
 import { saveToDatabase } from "../common/userPoints/saveToDB"
-import prismaClient from "../../lib/prisma"
+import prisma from "../../lib/prisma"
 import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { LibrdKafkaError } from "node-rdkafka"
@@ -17,7 +17,6 @@ import { KafkaError } from "../../lib/errors"
 const TOPIC_NAME = [config.user_points_realtime_consumer.topic_name]
 
 const mutex = new Mutex()
-const prisma = prismaClient()
 
 const logger = sentryLogger({ service: "kafka-consumer-user-points-realtime" })
 const consumer = createKafkaConsumer(logger)

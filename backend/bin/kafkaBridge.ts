@@ -61,9 +61,11 @@ producer.on("delivery-report", function (err, report) {
 })
 
 let app = express()
+
 app.use(compression())
 app.use(bodyParser.json())
 app.use(morgan("combined"))
+
 const port = parseInt(process.env.KAFKA_BRIDGE_SERVER_PORT || "3003")
 const host = process.env.KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 
@@ -88,7 +90,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
 
   try {
     producer.produce(topic, null, Buffer.from(JSON.stringify(payload)))
-    flushProducer(1000, undefined)
+    flushProducer(1000)
   } catch (e) {
     logger.error(new KafkaError("Producing to kafka failed", e))
     return res.status(500).json({ error: e.toString() }).send()

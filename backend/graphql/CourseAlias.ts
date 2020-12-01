@@ -1,7 +1,14 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  idArg,
+  stringArg,
+  nonNull,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const CourseAlias = objectType({
   name: "CourseAlias",
   definition(t) {
     t.model.id()
@@ -13,24 +20,24 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const CourseAliasCreateInput = inputObjectType({
   name: "CourseAliasCreateInput",
   definition(t) {
-    t.id("course", { required: false })
-    t.string("course_code", { required: true })
+    t.nullable.id("course")
+    t.nonNull.string("course_code")
   },
 })
 
-schema.inputObjectType({
+export const CourseAliasUpsertInput = inputObjectType({
   name: "CourseAliasUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.id("course", { required: false })
-    t.string("course_code", { required: true })
+    t.nullable.id("id")
+    t.nullable.id("course")
+    t.nonNull.string("course_code")
   },
 })
 
-schema.extendType({
+export const CourseAliasQueries = extendType({
   type: "Query",
   definition(t) {
     t.crud.courseAliases({
@@ -40,20 +47,20 @@ schema.extendType({
       type: "course_alias",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.course_alias.findMany()
+        return ctx.prisma.course_alias.findMany()
       },
     })*/
   },
 })
 
-schema.extendType({
+export const CourseAliasMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourseAlias", {
       type: "CourseAlias",
       args: {
-        course_code: schema.stringArg({ required: true }),
-        course: schema.idArg({ required: true }),
+        course_code: nonNull(stringArg()),
+        course: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -61,7 +68,7 @@ schema.extendType({
 
         // FIXME: what to do on empty course_code?
 
-        const newCourseAlias = await ctx.db.courseAlias.create({
+        const newCourseAlias = await ctx.prisma.courseAlias.create({
           data: {
             course_code: course_code ?? "",
             course: { connect: { id: course } },

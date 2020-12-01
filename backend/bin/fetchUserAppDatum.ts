@@ -5,13 +5,13 @@ import TmcClient from "../services/tmc"
 import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
+import { convertUpdate } from "../util/db-functions"
 
 const CONFIG_NAME = "userAppDatum"
 
-const prisma = prismaClient()
 let course
 let old: UserCourseSetting
 
@@ -23,13 +23,10 @@ const fetchUserAppDatum = async () => {
 
   // const prisma: Prisma = new Prisma()
 
-  const existingConfigs = await prisma.userAppDatumConfig.findMany({
+  const existingConfig = await prisma.userAppDatumConfig.findFirst({
     where: { name: CONFIG_NAME },
   })
-  const latestTimeStamp =
-    existingConfigs.length > 0
-      ? existingConfigs[0].timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
-      : null
+  const latestTimeStamp = existingConfig?.timestamp // ((await prisma.userAppDatumConfig.findOne({ name: CONFIG_NAME })) ?? {}).timestamp
 
   logger.info(latestTimeStamp)
 
@@ -101,19 +98,19 @@ const fetchUserAppDatum = async () => {
       })
     }
 
-    course = await prisma.course.findOne({ where: { slug: p.namespace } })
+    course = await prisma.course.findUnique({ where: { slug: p.namespace } })
 
     if (!course) {
       process.exit(1)
     }
 
-    const existingUserCourseSettings = await prisma.userCourseSetting.findMany({
+    const existingUserCourseSetting = await prisma.userCourseSetting.findFirst({
       where: {
         user: { upstream_id: p.user_id },
         course_id: course.id,
       },
     })
-    if (existingUserCourseSettings.length < 1) {
+    if (!existingUserCourseSetting) {
       old = await prisma.userCourseSetting.create({
         data: {
           user: {
@@ -123,7 +120,7 @@ const fetchUserAppDatum = async () => {
         },
       })
     } else {
-      old = existingUserCourseSettings[0]
+      old = existingUserCourseSetting
     }
 
     switch (p.field_name) {
@@ -164,7 +161,7 @@ const saveLanguage = async (p: any) => {
       id: old.id,
     },
     data: {
-      language: p.value,
+      language: { set: p.value },
     },
   })
 }
@@ -174,7 +171,7 @@ const saveCountry = async (p: any) => {
       id: old.id,
     },
     data: {
-      country: p.value,
+      country: { set: p.value },
     },
   })
 }
@@ -185,7 +182,7 @@ const saveResearch = async (p: any) => {
       id: old.id,
     },
     data: {
-      research: value,
+      research: { set: value },
     },
   })
 }
@@ -196,7 +193,7 @@ const saveMarketing = async (p: any) => {
       id: old.id,
     },
     data: {
-      marketing: value,
+      marketing: { set: value },
     },
   })
 }
@@ -206,7 +203,7 @@ const saveCourseVariant = async (p: any) => {
       id: old.id,
     },
     data: {
-      course_variant: p.value,
+      course_variant: { set: p.value },
     },
   })
 }
@@ -225,7 +222,7 @@ const saveOther = async (p: any) => {
       id: old.id,
     },
     data: {
-      other: other,
+      other: { set: other },
     },
   })
 }
@@ -252,7 +249,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
-      update: prismaDetails,
+      update: convertUpdate(prismaDetails),
     })
 
     return result
@@ -298,7 +295,7 @@ async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
       timestamp: dateToDB,
     },
     update: {
-      timestamp: dateToDB,
+      timestamp: { set: dateToDB },
     },
   })
 }

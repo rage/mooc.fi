@@ -1,21 +1,19 @@
-import { schema } from "nexus"
+import { objectType } from "@nexus/schema"
 
-schema.objectType({
+export const Progress = objectType({
   name: "Progress",
   definition(t) {
-    t.field("course", { type: "Course" })
+    t.nullable.field("course", { type: "Course" })
     t.field("user", { type: "User" })
 
-    t.field("user_course_progress", {
+    t.nullable.field("user_course_progress", {
       type: "UserCourseProgress",
-      nullable: true,
       resolve: async (parent, _, ctx) => {
         const course_id = parent.course?.id
         const user_id = parent.user?.id
-        const userCourseProgresses = await ctx.db.userCourseProgress.findMany({
+        return await ctx.prisma.userCourseProgress.findFirst({
           where: { course_id, user_id },
         })
-        return userCourseProgresses[0]
       },
     })
     t.list.field("user_course_service_progresses", {
@@ -23,7 +21,7 @@ schema.objectType({
       resolve: async (parent, _, ctx) => {
         const course_id = parent.course?.id
         const user_id = parent.user?.id
-        return ctx.db.userCourseServiceProgress.findMany({
+        return ctx.prisma.userCourseServiceProgress.findMany({
           where: { user_id, course_id },
         })
       },
