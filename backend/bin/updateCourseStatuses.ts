@@ -1,11 +1,9 @@
 import KafkaProducer, { ProducerMessage } from "../services/kafkaProducer"
 import { DateTime } from "luxon"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "update-course-statuses" })
-
-const prisma = prismaClient()
 
 const updateCourseStatuses = async () => {
   logger.info("Fetching list of courses")
@@ -52,7 +50,7 @@ const updateCourseStatuses = async () => {
         id: course.id,
       },
       data: {
-        status: newStatus,
+        status: { set: newStatus },
       },
     })
     logger.info(`Updated course ${course.name} from ${status} to ${newStatus}`)

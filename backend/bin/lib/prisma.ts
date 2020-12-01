@@ -10,4 +10,4 @@ const prismaClient = () => {
   return _prisma
 }
 
-export default prismaClient
+export default prismaClient()

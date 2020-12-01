@@ -92,4 +92,5 @@ export interface AllCompletionsPreviousVariables {
   course: string
   cursor?: string | null
   completionLanguage?: string | null
+  search?: string | null
 }

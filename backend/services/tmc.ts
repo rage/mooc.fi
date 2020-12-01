@@ -29,6 +29,7 @@ export default class TmcClient {
     )
 
     const userInfo = res.data
+
     return userInfo
   }
 

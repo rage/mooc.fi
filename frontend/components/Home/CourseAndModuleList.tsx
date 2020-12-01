@@ -16,6 +16,7 @@ const highlightsBanner = "/static/images/backgroundPattern.svg"
 import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import notEmpty from "/util/notEmpty"
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
@@ -34,19 +35,22 @@ const CourseAndModuleList = () => {
   } = useQuery<AllModulesData>(AllModulesQuery, { variables: { language } })
 
   const courses = coursesData?.courses
-  let study_modules = modulesData?.study_modules
+  let study_modules = modulesData?.study_modules?.filter(notEmpty)
 
   const modulesWithCourses = useMemo(
     (): AllModules_study_modules_with_courses[] =>
-      study_modules
-        ?.map((module) => {
+      (study_modules || [])
+        .filter(notEmpty)
+        .map((module) => {
           const moduleCourses =
-            courses?.filter(
-              (course) =>
-                course?.study_modules?.some(
-                  (courseModule) => courseModule.id === module.id,
-                ) && course?.status !== CourseStatus.Ended,
-            ) ?? []
+            courses
+              ?.filter(notEmpty)
+              .filter(
+                (course) =>
+                  course?.study_modules?.some(
+                    (courseModule) => courseModule.id === module.id,
+                  ) && course?.status !== CourseStatus.Ended,
+              ) ?? []
 
           return { ...module, courses: moduleCourses }
         })
@@ -61,13 +65,15 @@ const CourseAndModuleList = () => {
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
       ["Active", "Upcoming", "Ended"].map((status) =>
-        (courses || []).filter((c) => !c.hidden && c.status === status),
+        (courses || [])
+          .filter(notEmpty)
+          .filter((c) => !c.hidden && c.status === status),
       ),
     [courses],
   )
 
   const promotedCourses = useMemo(
-    () => activeCourses?.filter((c) => c.promote) ?? [],
+    () => activeCourses?.filter(notEmpty).filter((c) => c.promote) ?? [],
     [activeCourses],
   )
 

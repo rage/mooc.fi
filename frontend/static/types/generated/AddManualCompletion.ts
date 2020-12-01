@@ -27,7 +27,7 @@ export interface AddManualCompletion_addManualCompletion {
 }
 
 export interface AddManualCompletion {
-  addManualCompletion: AddManualCompletion_addManualCompletion[] | null
+  addManualCompletion: (AddManualCompletion_addManualCompletion | null)[] | null
 }
 
 export interface AddManualCompletionVariables {

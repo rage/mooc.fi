@@ -18,7 +18,7 @@ export interface AllModules_study_modules {
 }
 
 export interface AllModules {
-  study_modules: AllModules_study_modules[] | null
+  study_modules: (AllModules_study_modules | null)[] | null
 }
 
 export interface AllModulesVariables {

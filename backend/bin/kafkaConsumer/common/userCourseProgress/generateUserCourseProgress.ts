@@ -2,12 +2,12 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import { User, Course, UserCourseProgress } from "@prisma/client"
-import prismaClient from "../../../lib/prisma"
+import prisma from "../../../lib/prisma"
 import { BAItiers } from "./courseConfig"
 import * as winston from "winston"
 import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
 import { checkBAICompletion } from "./generateBAIUserCourseProgress"
-const prisma = prismaClient()
+
 let logger: winston.Logger | null = null
 
 interface Props {
@@ -35,9 +35,9 @@ export const generateUserCourseProgress = async ({
   await prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
-      progress: combined.progress as any, // errors unless typed as any
-      max_points: combined.total_max_points,
-      n_points: combined.total_n_points,
+      progress: { set: combined.progress as any }, // errors unless typed as any
+      max_points: { set: combined.total_max_points },
+      n_points: { set: combined.total_n_points },
     },
   })
 }

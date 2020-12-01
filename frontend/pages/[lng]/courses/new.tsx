@@ -14,6 +14,7 @@ import {
   CourseEditorCoursesQuery,
 } from "/graphql/queries/courses"
 import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
+import notEmpty from "/util/notEmpty"
 
 const NewCourse = () => {
   const { language } = useContext(LanguageContext)
@@ -48,8 +49,8 @@ const NewCourse = () => {
           <FormSkeleton />
         ) : (
           <CourseEdit
-            modules={studyModulesData?.study_modules ?? undefined}
-            courses={coursesData?.courses ?? undefined}
+            modules={studyModulesData?.study_modules?.filter(notEmpty)}
+            courses={coursesData?.courses?.filter(notEmpty)}
           />
         )}
       </WideContainer>
