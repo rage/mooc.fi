@@ -1,9 +1,14 @@
-import { schema } from "nexus"
-
+import {
+  objectType,
+  extendType,
+  idArg,
+  stringArg,
+  nonNull,
+} from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const EmailTemplate = objectType({
   name: "EmailTemplate",
   definition(t) {
     t.model.id()
@@ -18,18 +23,17 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const EmailTemplateQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("email_template", {
+    t.nullable.field("email_template", {
       type: "EmailTemplate",
-      nullable: true,
       args: {
-        id: schema.idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) =>
-        ctx.db.emailTemplate.findOne({
+        ctx.prisma.emailTemplate.findUnique({
           where: {
             id,
           },
@@ -39,21 +43,21 @@ schema.extendType({
     t.list.field("email_templates", {
       type: "EmailTemplate",
       authorize: isAdmin,
-      resolve: (_, __, ctx) => ctx.db.emailTemplate.findMany(),
+      resolve: (_, __, ctx) => ctx.prisma.emailTemplate.findMany(),
     })
   },
 })
 
-schema.extendType({
+export const EmailTemplateMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        name: schema.stringArg({ required: true }),
-        html_body: schema.stringArg(),
-        txt_body: schema.stringArg(),
-        title: schema.stringArg(),
+        name: nonNull(stringArg()),
+        html_body: stringArg(),
+        txt_body: stringArg(),
+        title: stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -61,7 +65,7 @@ schema.extendType({
 
         if (name == "") throw new UserInputError("Name is empty!")
 
-        return ctx.db.emailTemplate.create({
+        return ctx.prisma.emailTemplate.create({
           data: {
             name,
             html_body,
@@ -75,17 +79,17 @@ schema.extendType({
     t.field("updateEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: schema.idArg({ required: true }),
-        name: schema.stringArg(),
-        html_body: schema.stringArg(),
-        txt_body: schema.stringArg(),
-        title: schema.stringArg(),
+        id: nonNull(idArg()),
+        name: stringArg(),
+        html_body: stringArg(),
+        txt_body: stringArg(),
+        title: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { id, name, html_body, txt_body, title } = args
 
-        return ctx.db.emailTemplate.update({
+        return ctx.prisma.emailTemplate.update({
           where: {
             id,
           },
@@ -102,11 +106,11 @@ schema.extendType({
     t.field("deleteEmailTemplate", {
       type: "EmailTemplate",
       args: {
-        id: schema.idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
-        return ctx.db.emailTemplate.delete({ where: { id } })
+        return ctx.prisma.emailTemplate.delete({ where: { id } })
       },
     })
   },

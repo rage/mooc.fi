@@ -197,7 +197,7 @@ const Register = () => {
 
     const mIds =
       userOrganizationsData.userOrganizations
-        ?.map((uo) => uo.organization?.id)
+        ?.map((uo) => uo?.organization?.id)
         .filter(notEmpty) ?? []
 
     setMemberships(mIds)
@@ -218,7 +218,7 @@ const Register = () => {
           ),
         ) ?? []
 
-    const orgs = sortedOrganizations.reduce(
+    const orgs = sortedOrganizations.filter(notEmpty).reduce(
       (acc, curr) => ({
         ...acc,
         [curr.id]: curr,
@@ -261,9 +261,12 @@ const Register = () => {
 
   const toggleMembership = (id: string) => async () => {
     if (memberships.includes(id)) {
-      const existing = userOrganizationsData?.userOrganizations?.find(
-        (uo: UserOrganizations_userOrganizations) => uo.organization?.id === id,
-      )
+      const existing = userOrganizationsData?.userOrganizations
+        ?.filter(notEmpty)
+        .find(
+          (uo: UserOrganizations_userOrganizations) =>
+            uo?.organization?.id === id,
+        )
 
       if (existing) {
         await deleteUserOrganization({

@@ -1,8 +1,13 @@
-import { schema } from "nexus"
-
+import {
+  objectType,
+  extendType,
+  idArg,
+  booleanArg,
+  nonNull,
+} from "@nexus/schema"
 import { or, isVisitor, isAdmin } from "../accessControl"
 
-schema.objectType({
+export const CourseOrganization = objectType({
   name: "CourseOrganization",
   definition(t) {
     t.model.id()
@@ -16,19 +21,19 @@ schema.objectType({
   },
 })
 
-schema.extendType({
+export const CourseOrganizationQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("courseOrganizations", {
       type: "CourseOrganization",
       args: {
-        course_id: schema.idArg(),
-        organization_id: schema.idArg(),
+        course_id: idArg(),
+        organization_id: idArg(),
       },
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id } = args
 
-        return ctx.db.courseOrganization.findMany({
+        return ctx.prisma.courseOrganization.findMany({
           where: {
             course_id: course_id ?? undefined,
             organization_id: organization_id ?? undefined,
@@ -39,21 +44,21 @@ schema.extendType({
   },
 })
 
-schema.extendType({
+export const CourseOrganizationMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        course_id: schema.idArg({ required: true }),
-        organization_id: schema.idArg({ required: true }),
-        creator: schema.booleanArg(),
+        course_id: nonNull(idArg()),
+        organization_id: nonNull(idArg()),
+        creator: booleanArg(),
       },
       authorize: or(isVisitor, isAdmin),
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id, creator } = args
 
-        const exists = await ctx.db.courseOrganization.findMany({
+        const exists = await ctx.prisma.courseOrganization.findMany({
           where: {
             course_id: course_id,
             organization_id: organization_id,
@@ -64,7 +69,7 @@ schema.extendType({
           throw new Error("this course/organization relation already exists")
         }
 
-        return ctx.db.courseOrganization.create({
+        return ctx.prisma.courseOrganization.create({
           data: {
             course: { connect: { id: course_id } },
             organization: {
@@ -79,11 +84,11 @@ schema.extendType({
     t.field("deleteCourseOrganization", {
       type: "CourseOrganization",
       args: {
-        id: schema.idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {
-        return ctx.db.courseOrganization.delete({ where: { id } })
+        return ctx.prisma.courseOrganization.delete({ where: { id } })
       },
     })
   },

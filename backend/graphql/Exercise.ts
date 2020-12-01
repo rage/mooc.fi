@@ -1,9 +1,20 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  extendType,
+  arg,
+  idArg,
+  intArg,
+  stringArg,
+  nonNull,
+  nullable,
+} from "@nexus/schema"
+import { Prisma } from "@prisma/client"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"
+import { Context } from "/context"
 import { AuthenticationError } from "apollo-server-core"
 
-schema.objectType({
+export const Exercise = objectType({
   name: "Exercise",
   definition(t) {
     t.model.id()
@@ -23,48 +34,49 @@ schema.objectType({
 
     // t.prismaFields({ filter: ["exercise_completions"] })
 
-    t.field("exercise_completions", {
+    t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
-      list: true,
       args: {
-        orderBy: schema.arg({
-          // FIXME?
-          type: "ExerciseCompletionOrderByInput",
-          required: false,
-        }),
+        orderBy: nullable(
+          arg({
+            // FIXME?
+            type: "ExerciseCompletionOrderByInput",
+          }),
+        ),
       },
-      resolve: async (parent, args, ctx: NexusContext) => {
+      resolve: async (parent, args, ctx: Context) => {
         const { orderBy } = args
 
         if (!ctx?.user?.id) {
           throw new AuthenticationError("not logged in")
         }
-
-        return ctx.db.exercise
-          .findOne({ where: { id: parent.id } })
+        return ctx.prisma.exercise
+          .findUnique({ where: { id: parent.id } })
           .exercise_completions({
             where: {
               // @ts-ignore: context typing problem, FIXME
               user_id: ctx?.user?.id, // { id: ctx?.user?.id },
             },
-            orderBy: filterNull(orderBy) ?? undefined,
+            orderBy:
+              (filterNull(orderBy) as Prisma.ExerciseCompletionOrderByInput) ??
+              undefined,
           })
       },
     })
   },
 })
 
-schema.extendType({
+export const ExerciseQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("exercise", {
+    t.nullable.field("exercise", {
       type: "Exercise",
       args: {
-        id: schema.idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) =>
-        ctx.db.exercise.findOne({
+        await ctx.prisma.exercise.findUnique({
           where: { id },
         }),
     })
@@ -77,25 +89,25 @@ schema.extendType({
       type: "exercise",
       resolve: (_, __, ctx) => {
         checkAccess(ctx)
-        return ctx.db.exercise.findMany()
+        return ctx.prisma.exercise.findMany()
       },
     })*/
   },
 })
 
-schema.extendType({
+export const ExerciseMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addExercise", {
       type: "Exercise",
       args: {
-        custom_id: schema.stringArg(),
-        name: schema.stringArg(),
-        part: schema.intArg(),
-        section: schema.intArg(),
-        max_points: schema.intArg(),
-        course: schema.idArg(),
-        service: schema.idArg(),
+        custom_id: stringArg(),
+        name: stringArg(),
+        part: intArg(),
+        section: intArg(),
+        max_points: intArg(),
+        course: idArg(),
+        service: idArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -109,8 +121,8 @@ schema.extendType({
           service,
         } = args
 
-        ctx.db
-        return ctx.db.exercise.create({
+        ctx.prisma
+        return ctx.prisma.exercise.create({
           data: {
             course: course ? { connect: { id: course } } : undefined,
             service: service ? { connect: { id: service } } : undefined,

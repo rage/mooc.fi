@@ -1,10 +1,18 @@
-import { schema } from "nexus"
+import {
+  objectType,
+  extendType,
+  stringArg,
+  intArg,
+  arg,
+  list,
+} from "@nexus/schema"
 import { chunk } from "lodash"
 import { or, isOrganization, isAdmin } from "../accessControl"
 import { ForbiddenError, UserInputError } from "apollo-server-core"
-import { CompletionRegisteredWhereUniqueInput } from "@prisma/client"
+import { Prisma } from "@prisma/client"
+import { Context } from "/context"
 
-schema.objectType({
+export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
   definition(t) {
     t.model.id()
@@ -24,16 +32,16 @@ schema.objectType({
 
 /************************* QUERIES **********************/
 
-schema.extendType({
+export const CompletionRegisteredQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("registeredCompletions", {
       type: "CompletionRegistered",
       args: {
-        course: schema.stringArg(),
-        skip: schema.intArg(),
-        take: schema.intArg(),
-        cursor: schema.arg({ type: "CompletionRegisteredWhereUniqueInput" }),
+        course: stringArg(),
+        skip: intArg(),
+        take: intArg(),
+        cursor: arg({ type: "CompletionRegisteredWhereUniqueInput" }),
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
@@ -66,28 +74,28 @@ const withCourse = async (
   course: string,
   skip: number | undefined,
   take: number | undefined,
-  cursor: CompletionRegisteredWhereUniqueInput | undefined,
-  ctx: NexusContext,
+  cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
+  ctx: Context,
 ) => {
-  let courseReference = await ctx.db.course.findOne({
+  let courseReference = await ctx.prisma.course.findUnique({
     where: { slug: course },
   })
 
   if (!courseReference) {
-    const courseFromAvoinCourse = await ctx.db.courseAlias
-      .findOne({ where: { course_code: course } })
+    const courseFromAvoinCourse = await ctx.prisma.courseAlias
+      .findUnique({ where: { course_code: course } })
       .course()
     if (!courseFromAvoinCourse) {
       throw new UserInputError("Invalid course identifier")
     }
 
     // TODO: isn't this the same as courseFromAvoinCourse?
-    courseReference = await ctx.db.course.findOne({
+    courseReference = await ctx.prisma.course.findUnique({
       where: { slug: courseFromAvoinCourse.slug },
     })
   }
 
-  return await ctx.db.completionRegistered.findMany({
+  return await ctx.prisma.completionRegistered.findMany({
     where: {
       course_id: courseReference!.id,
     },
@@ -100,10 +108,10 @@ const withCourse = async (
 const all = async (
   skip: number | undefined,
   take: number | undefined,
-  cursor: CompletionRegisteredWhereUniqueInput | undefined,
-  ctx: NexusContext,
+  cursor: Prisma.CompletionRegisteredWhereUniqueInput | undefined,
+  ctx: Context,
 ) => {
-  return await ctx.db.completionRegistered.findMany({
+  return await ctx.prisma.completionRegistered.findMany({
     skip,
     take,
     cursor,
@@ -111,16 +119,16 @@ const all = async (
 }
 
 /************************ MUTATIONS *********************/
-schema.extendType({
+export const CompletionRegisteredMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("registerCompletion", {
       type: "String",
       args: {
-        completions: schema.arg({ type: "CompletionArg", list: true }),
+        completions: list(arg({ type: "CompletionArg" })),
       },
       authorize: isOrganization,
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         let queue = chunk(args.completions, 500)
 
         for (let i = 0; i < queue.length; i++) {
@@ -133,13 +141,13 @@ schema.extendType({
   },
 })
 
-const buildPromises = (array: any[], ctx: NexusContext) => {
+const buildPromises = (array: any[], ctx: Context) => {
   return array.map(async (entry) => {
-    const course = await ctx.db.completion
-      .findOne({ where: { id: entry.completion_id } })
+    const course = await ctx.prisma.completion
+      .findUnique({ where: { id: entry.completion_id } })
       .course()
-    const user = await ctx.db.completion
-      .findOne({ where: { id: entry.completion_id } })
+    const user = await ctx.prisma.completion
+      .findUnique({ where: { id: entry.completion_id } })
       .user()
 
     if (!course || !user) {
@@ -147,7 +155,7 @@ const buildPromises = (array: any[], ctx: NexusContext) => {
       return Promise.resolve()
     }
 
-    return ctx.db.completionRegistered.create({
+    return ctx.prisma.completionRegistered.create({
       data: {
         completion: {
           connect: { id: entry.completion_id },

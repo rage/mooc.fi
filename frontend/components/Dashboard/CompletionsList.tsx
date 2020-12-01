@@ -15,10 +15,12 @@ export const AllCompletionsQuery = gql`
     $course: String!
     $cursor: String
     $completionLanguage: String
+    $search: String
   ) {
     completionsPaginated(
       course: $course
       completion_language: $completionLanguage
+      search: $search
       first: 50
       after: $cursor
     ) {
@@ -61,10 +63,12 @@ export const PreviousPageCompletionsQuery = gql`
     $course: String!
     $cursor: String
     $completionLanguage: String
+    $search: String
   ) {
     completionsPaginated(
       course: $course
       completion_language: $completionLanguage
+      search: $search
       last: 50
       before: $cursor
     ) {
@@ -102,7 +106,12 @@ export const PreviousPageCompletionsQuery = gql`
     }
   }
 `
-const CompletionsList = () => {
+
+interface CompletionsListProps {
+  search?: string
+}
+
+const CompletionsList = ({ search }: CompletionsListProps) => {
   const completionLanguage = useContext(CourseLanguageContext)
   const course = useQueryParameter("id")
 
@@ -130,6 +139,7 @@ const CompletionsList = () => {
     cursor?: string | null
     course: string | string[]
     completionLanguage?: string
+    search?: string
   }
 
   const variables: Variables = {
@@ -137,6 +147,7 @@ const CompletionsList = () => {
     course,
     completionLanguage:
       completionLanguage !== "" ? completionLanguage : undefined,
+    search: search !== "" ? search : undefined,
   }
 
   const { data, loading, error } = useQuery<

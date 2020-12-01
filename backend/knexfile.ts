@@ -10,10 +10,14 @@ if (url && url?.lastIndexOf("?") !== -1) {
 module.exports = {
   development: {
     client: "pg",
-    searchPath: [process.env.SEARCH_PATH ?? "default$prisma2"],
+    searchPath: [process.env.SEARCH_PATH ?? "default$default"],
     connection: url, // "postgres://prisma:prisma@localhost:5678/prisma?schema=default$prisma2",
   },
-
+  test: {
+    client: "pg",
+    connection: url,
+    /*searchPath: [process.env.SEARCH_PATH],*/
+  },
   production: {
     client: "pg",
     connection: url,

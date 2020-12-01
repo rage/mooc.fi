@@ -1,8 +1,15 @@
-import { schema } from "nexus"
-
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  stringArg,
+  idArg,
+  nonNull,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
+import { convertUpdate } from "../util/db-functions"
 
-schema.objectType({
+export const CourseTranslation = objectType({
   name: "CourseTranslation",
   definition(t) {
     t.model.id()
@@ -17,63 +24,63 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const CourseTranslationCreateInput = inputObjectType({
   name: "CourseTranslationCreateInput",
   definition(t) {
-    t.string("name", { required: true })
-    t.string("language", { required: true })
-    t.string("description", { required: true })
-    t.string("link", { required: false })
-    t.id("course", { required: false })
+    t.nonNull.string("name")
+    t.nonNull.string("language")
+    t.nonNull.string("description")
+    t.nullable.string("link")
+    t.nullable.id("course")
   },
 })
 
-schema.inputObjectType({
+export const CourseTranslationUpsertInput = inputObjectType({
   name: "CourseTranslationUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.string("name", { required: true })
-    t.string("language", { required: true })
-    t.string("description", { required: true })
-    t.string("link", { required: false })
-    t.id("course", { required: false })
+    t.nullable.id("id")
+    t.nonNull.string("name")
+    t.nonNull.string("language")
+    t.nonNull.string("description")
+    t.nullable.string("link")
+    t.nullable.id("course")
   },
 })
 
-schema.extendType({
+export const CourseTranslationQueries = extendType({
   type: "Query",
   definition(t) {
     t.list.field("CourseTranslations", {
       type: "CourseTranslation",
       args: {
-        language: schema.stringArg(),
+        language: stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, { language }, ctx) =>
-        ctx.db.courseTranslation.findMany({
+        ctx.prisma.courseTranslation.findMany({
           where: { language: language ?? undefined },
         }),
     })
   },
 })
 
-schema.extendType({
+export const CourseTranslationMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        language: schema.stringArg({ required: true }),
-        name: schema.stringArg(),
-        description: schema.stringArg(),
-        link: schema.stringArg(),
-        course: schema.idArg(),
+        language: nonNull(stringArg()),
+        name: stringArg(),
+        description: stringArg(),
+        link: stringArg(),
+        course: idArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { language, name, description, link, course } = args
 
-        const newCourseTranslation = await ctx.db.courseTranslation.create({
+        const newCourseTranslation = await ctx.prisma.courseTranslation.create({
           data: {
             language: language,
             name: name ?? "",
@@ -89,26 +96,26 @@ schema.extendType({
     t.field("updateCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        id: schema.idArg({ required: true }),
-        language: schema.stringArg({ required: true }),
-        name: schema.stringArg(),
-        description: schema.stringArg(),
-        link: schema.stringArg(),
-        course: schema.idArg(),
+        id: nonNull(idArg()),
+        language: nonNull(stringArg()),
+        name: stringArg(),
+        description: stringArg(),
+        link: stringArg(),
+        course: idArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
         const { id, language, name, description, link, course } = args
 
-        return ctx.db.courseTranslation.update({
+        return ctx.prisma.courseTranslation.update({
           where: { id },
-          data: {
+          data: convertUpdate({
             language: language,
             name: name ?? undefined,
             description: description ?? undefined,
             link: link,
             course: course ? { connect: { id: course } } : undefined,
-          },
+          }),
         })
       },
     })
@@ -116,11 +123,11 @@ schema.extendType({
     t.field("deleteCourseTranslation", {
       type: "CourseTranslation",
       args: {
-        id: schema.idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: (_, { id }, ctx) => {
-        return ctx.db.courseTranslation.delete({
+        return ctx.prisma.courseTranslation.delete({
           where: { id },
         })
       },
