@@ -103,6 +103,12 @@ const langArr: langProps[] = [
     country: "Poland",
     langName: "Polish",
   },
+  {
+    language: "hr",
+    completion_language: "hr_HR",
+    country: "Croatia",
+    langName: "Croatian",
+  },
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
@@ -187,14 +193,65 @@ const getGlobalStats = async (): Promise<string> => {
     2) of these ${totalCompletions} have completed the course.\`\`\` `
 }
 
+const getGlobalStatsBAI = async (): Promise<string> => {
+  const course = await Knex.select("id")
+    .from("course")
+    .where({ slug: "building-ai" })
+
+  const totalUsers = (
+    await Knex.count()
+      .from("user_course_setting")
+      .where({ course_id: course[0].id })
+  )[0].count
+
+  const totalCompletions = (
+    await Knex.count().from("completion").where({ course_id: course[0].id })
+  )[0].count
+
+  const beginnerCompletions = (
+    await Knex.count()
+      .from("completion")
+      .where({ course_id: course[0].id })
+      .andWhere({ tier: 1 })
+  )[0].count
+
+  const intermediateCompletions = (
+    await Knex.count()
+      .from("completion")
+      .where({ course_id: course[0].id })
+      .andWhere({ tier: 2 })
+  )[0].count
+
+  const advancedCompletions = (
+    await Knex.count()
+      .from("completion")
+      .where({ course_id: course[0].id })
+      .andWhere({ tier: 3 })
+  )[0].count
+
+  const now = new Date()
+
+  return `\`\`\`Stats ${now.getDate()}.${
+    now.getMonth() + 1
+  }.${now.getFullYear()}:
+      1) ${totalUsers} registered students
+      2) ${beginnerCompletions} have completed the Beginner Tier
+      3) ${intermediateCompletions} have completed the Intermediate Tier
+      4) ${advancedCompletions} have completed the Advanced Tier
+      5) ${totalCompletions} have completed Building AI.\`\`\` `
+}
+
 const post = async () => {
-  logger.info("getting global stats")
+  logger.info("getting global intro stats")
   data.text = data.text.concat(await getGlobalStats())
 
   logger.info("getting data by language")
   for (let i = 0; i < langArr.length; i++) {
     data.text = data.text.concat(await getDataByLanguage(langArr[i]))
   }
+
+  logger.info("getting global Building AI stats")
+  data.text = data.text.concat(await getGlobalStatsBAI())
 
   await slackPoster.post(url, data)
   Knex.destroy()

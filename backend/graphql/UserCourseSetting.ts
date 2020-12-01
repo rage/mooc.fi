@@ -1,7 +1,5 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-
-import { buildSearch, convertPagination } from "../util/db-functions"
-import { Prisma } from "@prisma/client"
+import { buildSearch /*, convertPagination*/ } from "../util/db-functions"
 import { isAdmin } from "../accessControl"
 import {
   objectType,
@@ -11,6 +9,8 @@ import {
   stringArg,
   nonNull,
 } from "@nexus/schema"
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import { Prisma } from "@prisma/client"
 
 export const UserCourseSetting = objectType({
   name: "UserCourseSetting",
@@ -85,17 +85,21 @@ export const UserCourseSettingQueries = extendType({
       },
     })
 
-    t.connection("userCourseSettings", {
-      type: "UserCourseSetting",
-      additionalArgs: {
+    t.field("userCourseSettings", {
+      type: "QueryUserCourseSettings_type_Connection",
+      args: {
         user_id: idArg(),
         user_upstream_id: intArg(),
         course_id: idArg(),
         search: stringArg(),
         skip: intArg({ default: 0 }),
+        first: intArg(),
+        last: intArg(),
+        before: stringArg(),
+        after: stringArg(),
       },
       authorize: isAdmin,
-      nodes: async (_, args, ctx) => {
+      resolve: async (_, args, ctx, __) => {
         const {
           first,
           last,
@@ -104,7 +108,6 @@ export const UserCourseSettingQueries = extendType({
           user_id,
           user_upstream_id,
           search,
-          skip,
         } = args
 
         let { course_id } = args
@@ -136,61 +139,40 @@ export const UserCourseSettingQueries = extendType({
         if (user_upstream_id)
           orCondition.push({ upstream_id: user_upstream_id })
 
-        return ctx.prisma.userCourseSetting.findMany({
-          ...convertPagination({ first, last, before, after, skip }),
+        const baseArgs = {
           where: {
             user: {
               OR: orCondition,
             },
             course_id,
           },
-        })
+        }
+
+        return findManyCursorConnection(
+          async (args) =>
+            ctx.prisma.userCourseSetting.findMany({ ...args, ...baseArgs }),
+          () => ctx.prisma.userCourseSetting.count(baseArgs),
+          { first, last, before, after },
+        )
+      },
+    })
+
+    t.connection("userCourseSettings_type", {
+      // hack to generate connection type
+      type: "UserCourseSetting",
+      additionalArgs: {
+        user_id: idArg(),
+        user_upstream_id: intArg(),
+        course_id: idArg(),
+        search: stringArg(),
+        skip: intArg({ default: 0 }),
+      },
+      authorize: () => false,
+      nodes: async (_, _args, _ctx, __) => {
+        return []
       },
       extendConnection(t) {
-        t.int("count", {
-          args: {
-            user_id: idArg(),
-            user_upstream_id: intArg(),
-            course_id: nonNull(idArg()),
-            search: stringArg(),
-          },
-          resolve: async (_, args, ctx) => {
-            const { user_id, user_upstream_id, search } = args
-            let { course_id } = args
-            const inheritSettingsCourse = await ctx.prisma.course
-              .findUnique({ where: { id: course_id } })
-              .inherit_settings_from()
-
-            if (inheritSettingsCourse) {
-              course_id = inheritSettingsCourse.id
-            }
-
-            const orCondition: Prisma.UserWhereInput[] = []
-
-            if (search)
-              orCondition.push({
-                OR: buildSearch(
-                  ["first_name", "last_name", "username", "email"],
-                  search ?? "",
-                ),
-              })
-
-            if (user_id) orCondition.push({ id: user_id })
-            if (user_upstream_id)
-              orCondition.push({ upstream_id: user_upstream_id })
-
-            const count = await ctx.prisma.userCourseSetting.count({
-              where: {
-                user: {
-                  OR: orCondition,
-                },
-                course_id,
-              },
-            })
-
-            return count
-          },
-        })
+        t.int("totalCount")
       },
     })
   },

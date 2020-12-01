@@ -1,8 +1,10 @@
 import { extendType, stringArg, intArg, idArg, nonNull } from "@nexus/schema"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
-import { convertPagination } from "../../util/db-functions"
+// import { convertPagination } from "../../util/db-functions"
 import { or, isOrganization, isAdmin } from "../../accessControl"
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import { Prisma } from "@prisma/client"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -64,17 +66,21 @@ export const CompletionQueries = extendType({
       },
     })
 
-    t.connection("completionsPaginated", {
-      type: "Completion",
-      additionalArgs: {
+    t.field("completionsPaginated", {
+      type: "CompletionConnection",
+      args: {
         course: nonNull(stringArg()),
         completion_language: stringArg(),
+        search: stringArg(),
         skip: intArg({ default: 0 }),
+        first: intArg(),
+        last: intArg(),
+        before: stringArg(),
+        after: stringArg(),
       },
       authorize: or(isOrganization, isAdmin),
-      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
-      nodes: async (_, args, ctx, __) => {
-        const { completion_language, first, last, before, after, skip } = args
+      resolve: async (_, args, ctx, __) => {
+        const { completion_language, first, last, before, after, search } = args
         let { course } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
@@ -95,13 +101,70 @@ export const CompletionQueries = extendType({
           course = courseFromAvoinCourse.slug
         }
 
-        return ctx.prisma.completion.findMany({
-          ...convertPagination({ first, last, before, after, skip }),
+        const baseArgs: Prisma.FindManyCompletionArgs = {
           where: {
             course: { slug: course },
             completion_language,
+            ...(search
+              ? {
+                  user: {
+                    OR: [
+                      {
+                        first_name: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        last_name: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        username: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        email: { contains: search, mode: "insensitive" },
+                      },
+                      {
+                        student_number: { contains: search },
+                      },
+                      {
+                        real_student_number: { contains: search },
+                      },
+                    ],
+                  },
+                }
+              : {}),
           },
-        })
+        }
+
+        return findManyCursorConnection(
+          (args) => ctx.prisma.completion.findMany({ ...args, ...baseArgs }),
+          () => ctx.prisma.completion.count(baseArgs),
+          { first, last, before, after },
+          {
+            getCursor: (node) => ({ id: node.id }),
+            encodeCursor: (node) => `cursor:${node.id}`,
+            decodeCursor: (connectionCursor) => ({
+              id: connectionCursor?.split(":")?.[1],
+            }),
+          },
+        )
+      },
+    })
+
+    t.connection("deprecatedCompletionsPaginated", {
+      // hack to generate connection type
+      type: "Completion",
+      additionalArgs: {
+        course: nonNull(stringArg()),
+        completion_language: stringArg(),
+        search: stringArg(),
+        skip: intArg({ default: 0 }),
+        first: intArg(),
+        last: intArg(),
+        before: stringArg(),
+        after: stringArg(),
+      },
+      authorize: () => false,
+      nodes: async (_, _args, _ctx, __) => {
+        return []
       },
     })
   },

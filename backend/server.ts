@@ -14,6 +14,7 @@ import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
 
 const JSONStream = require("JSONStream")
+const helmet = require("helmet")
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -46,9 +47,11 @@ const _express = () => {
   const express = createExpress()
 
   express.use(cors())
+  express.use(helmet.frameguard())
   if (!TEST) {
     express.use(morgan("combined"))
   }
+
   express.get("/api/completions/:course", async function (req: any, res: any) {
     const rawToken = req.get("Authorization")
     const secret: string = rawToken?.split(" ")[1] ?? ""
