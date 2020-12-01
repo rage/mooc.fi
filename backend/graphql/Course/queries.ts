@@ -112,7 +112,7 @@ export const CourseQueries = extendType({
 
         const filtered = courses
           .map((course) => {
-            if (!course.course_translations?.length) {
+            if (language && !course.course_translations?.length) {
               return null
             }
             return {
