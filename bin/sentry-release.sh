@@ -15,7 +15,7 @@ SENTRY_ORG="moocfi"
 cd backend
 
 sentry-cli releases --org $SENTRY_ORG new $SENTRY_RELEASE --project $SENTRY_PROJECT
-sentry-cli releases --org $SENTRY_ORG -p $SENTRY_PROJECT files $SENTRY_RELEASE upload-sourcemaps ./dist
+sentry-cli releases --org $SENTRY_ORG -p $SENTRY_PROJECT files $SENTRY_RELEASE upload-sourcemaps ./sourcemap
 sentry-cli releases --org $SENTRY_ORG finalize $SENTRY_RELEASE
 
 cd ..

@@ -7,3 +7,4 @@ newrelic.js
 env.json
 .watchmanconfig
 coverage/
+sourcemap/
