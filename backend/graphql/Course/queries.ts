@@ -4,6 +4,7 @@ import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 import { omit } from "lodash"
+import { notEmpty } from "../../util/notEmpty"
 
 export const CourseQueries = extendType({
   type: "Query",
@@ -109,11 +110,18 @@ export const CourseQueries = extendType({
             : {}),
         })
 
-        const filtered = courses.map((course) => ({
-          ...omit(course, "course_translations"),
-          description: course?.course_translations?.[0]?.description ?? "",
-          link: course?.course_translations?.[0]?.link ?? "",
-        }))
+        const filtered = courses
+          .map((course) => {
+            if (!course.course_translations?.length) {
+              return null
+            }
+            return {
+              ...omit(course, "course_translations"),
+              description: course?.course_translations?.[0]?.description ?? "",
+              link: course?.course_translations?.[0]?.link ?? "",
+            }
+          })
+          .filter(notEmpty)
 
         // TODO: (?) provide proper typing
         return filtered as (Course & { description: string; link: string })[]

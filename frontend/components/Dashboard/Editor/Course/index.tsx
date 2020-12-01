@@ -83,7 +83,6 @@ const CourseEdit = ({
       try {
         setStatus({ message: t("statusSaving") })
 
-        console.log("mutating with", JSON.stringify(mutationVariables))
         // TODO/FIXME: return value?
         await courseMutation({
           variables: { course: mutationVariables },
