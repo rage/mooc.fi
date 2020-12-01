@@ -1,8 +1,14 @@
-import { schema } from "nexus"
-
+import {
+  objectType,
+  inputObjectType,
+  extendType,
+  idArg,
+  stringArg,
+  nonNull,
+} from "@nexus/schema"
 import { isAdmin } from "../accessControl"
 
-schema.objectType({
+export const CourseVariant = objectType({
   name: "CourseVariant",
   definition(t) {
     t.model.id()
@@ -15,66 +21,65 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const CourseVariantCreateInput = inputObjectType({
   name: "CourseVariantCreateInput",
   definition(t) {
-    t.id("course", { required: false })
-    t.string("slug", { required: true })
-    t.string("description", { required: false })
+    t.nullable.id("course")
+    t.nonNull.string("slug")
+    t.nullable.string("description")
   },
 })
 
-schema.inputObjectType({
+export const CourseVariantUpsertInput = inputObjectType({
   name: "CourseVariantUpsertInput",
   definition(t) {
-    t.id("id", { required: false })
-    t.id("course", { required: false })
-    t.string("slug", { required: true })
-    t.string("description", { required: false })
+    t.nullable.id("id")
+    t.nullable.id("course")
+    t.nonNull.string("slug")
+    t.nullable.string("description")
   },
 })
 
-schema.extendType({
+export const CourseVariantQueries = extendType({
   type: "Query",
   definition(t) {
-    t.field("courseVariant", {
+    t.nullable.field("courseVariant", {
       type: "CourseVariant",
       args: {
-        id: schema.idArg({ required: true }),
+        id: nonNull(idArg()),
       },
-      nullable: true,
       resolve: (_, { id }, ctx) =>
-        ctx.db.courseVariant.findOne({ where: { id: id ?? undefined } }),
+        ctx.prisma.courseVariant.findUnique({ where: { id: id ?? undefined } }),
     })
 
     t.list.field("courseVariants", {
       type: "CourseVariant",
       args: {
-        course_id: schema.idArg(),
+        course_id: idArg(),
       },
       resolve: (_, { course_id }, ctx) =>
-        ctx.db.course
-          .findOne({ where: { id: course_id ?? undefined } })
+        ctx.prisma.course
+          .findUnique({ where: { id: course_id ?? undefined } })
           .course_variants(),
     })
   },
 })
 
-schema.extendType({
+export const CourseVariantMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourseVariant", {
       type: "CourseVariant",
       args: {
-        course_id: schema.idArg({ required: true }),
-        slug: schema.stringArg({ required: true }),
-        description: schema.stringArg(),
+        course_id: nonNull(idArg()),
+        slug: nonNull(stringArg()),
+        description: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { course_id, slug, description } = args
 
-        return ctx.db.courseVariant.create({
+        return ctx.prisma.courseVariant.create({
           data: {
             slug,
             description,
@@ -87,18 +92,18 @@ schema.extendType({
     t.field("updateCourseVariant", {
       type: "CourseVariant",
       args: {
-        id: schema.idArg({ required: true }),
-        slug: schema.stringArg(),
-        description: schema.stringArg(),
+        id: nonNull(idArg()),
+        slug: stringArg(),
+        description: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { id, slug, description } = args
 
-        return ctx.db.courseVariant.update({
+        return ctx.prisma.courseVariant.update({
           where: { id },
           data: {
-            slug: slug ?? undefined,
+            slug: { set: slug ?? undefined },
             description,
           },
         })
@@ -108,11 +113,11 @@ schema.extendType({
     t.field("deleteCourseVariant", {
       type: "CourseVariant",
       args: {
-        id: schema.idArg({ required: true }),
+        id: nonNull(idArg()),
       },
       authorize: isAdmin,
       resolve: async (_, { id }, ctx) => {
-        return ctx.db.courseVariant.delete({ where: { id } })
+        return ctx.prisma.courseVariant.delete({ where: { id } })
       },
     })
   },

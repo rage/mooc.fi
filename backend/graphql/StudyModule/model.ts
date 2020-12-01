@@ -1,8 +1,9 @@
-import { schema } from "nexus"
-import { notEmpty } from "../../util/notEmpty"
+import { objectType, arg, stringArg } from "@nexus/schema"
 import { filterNull } from "../../util/db-functions"
+import { Course, CourseTranslation, Prisma } from "@prisma/client"
+import { omit } from "lodash"
 
-schema.objectType({
+export const StudyModule = objectType({
   name: "StudyModule",
   definition(t) {
     t.model.id()
@@ -14,51 +15,42 @@ schema.objectType({
     t.model.updated_at()
     t.model.study_module_translations()
 
-    // t.prismaFields(["*"])
-    t.field("description", { type: "String" })
+    // @ts-ignore: false error
+    t.string("description")
+
     t.list.field("courses", {
       type: "Course",
       args: {
-        orderBy: schema.arg({ type: "CourseOrderByInput" }),
-        language: schema.stringArg(),
+        orderBy: arg({ type: "CourseOrderByInput" }),
+        language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { language, orderBy } = args
 
-        const courses = await ctx.db.course.findMany({
-          orderBy: filterNull(orderBy) ?? undefined,
+        const courses: (Course & {
+          course_translations?: CourseTranslation[]
+        })[] = await ctx.prisma.course.findMany({
+          orderBy:
+            (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
           where: { study_modules: { some: { id: parent.id } } },
+          ...(language
+            ? {
+                include: {
+                  course_translations: {
+                    where: {
+                      language: { equals: language },
+                    },
+                  },
+                },
+              }
+            : {}),
         })
 
-        const values = language
-          ? (
-              await Promise.all(
-                courses.map(async (course) => {
-                  const course_translations = await ctx.db.courseTranslation.findMany(
-                    {
-                      where: { course_id: course.id, language },
-                    },
-                  )
-
-                  if (!course_translations.length) {
-                    return Promise.resolve(null)
-                  }
-
-                  const {
-                    name,
-                    description,
-                    link = "",
-                  } = course_translations[0]
-
-                  return { ...course, name, description, link }
-                }),
-              )
-            ).filter(notEmpty)
-          : courses.map((course) => ({
-              ...course,
-              description: "",
-              link: "",
-            }))
+        const values = courses.map((course) => ({
+          ...omit(course, "course_translations"),
+          description: course?.course_translations?.[0]?.description ?? "",
+          link: course?.course_translations?.[0]?.link ?? "",
+        }))
 
         return values
       },

@@ -1,7 +1,7 @@
-import { NexusContext } from "/context"
+import { Context } from "/context"
 import { convertPagination } from "/util/db-functions"
 
-export default async function fetchCompletions(args: any, ctx: NexusContext) {
+export default async function fetchCompletions(args: any, ctx: Context) {
   const { course } = args
   const startTime = new Date().getTime()
   const data = await getCompletionDataFromDB(args, ctx)
@@ -22,11 +22,13 @@ interface CompletionOptionTypes {
 
 async function getCompletionDataFromDB(
   { course, first, after, last, before, skip }: CompletionOptionTypes,
-  ctx: NexusContext,
+  ctx: Context,
 ) {
-  const courseObject = await ctx.db.course.findOne({ where: { slug: course } })
+  const courseObject = await ctx.prisma.course.findUnique({
+    where: { slug: course },
+  })
 
-  return ctx.db.completion.findMany({
+  return ctx.prisma.completion.findMany({
     ...convertPagination({ first, after, last, before, skip }),
     where: { course: { id: courseObject?.id } },
   })

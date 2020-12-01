@@ -9,7 +9,7 @@ import {
   ServiceProgressPartType,
   ExerciseCompletionPart,
 } from "./interfaces"
-import prismaClient from "../../../lib/prisma"
+import prisma from "../../../lib/prisma"
 import Knex from "../../../../services/knex"
 import * as winston from "winston"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
@@ -21,8 +21,6 @@ function isNullOrUndefined<T>(
 ): obj is null | undefined {
   return typeof obj === "undefined" || obj === null
 }
-
-const prisma = prismaClient()
 
 export const getCombinedUserCourseProgress = async (
   user: User,
@@ -118,7 +116,7 @@ export const getUserCourseSettings = async (
 
   if (!userCourseSetting) {
     const inheritCourse = await prisma.course
-      .findOne({ where: { id: course_id } })
+      .findUnique({ where: { id: course_id } })
       .inherit_settings_from()
     if (inheritCourse) {
       userCourseSetting =
@@ -166,7 +164,7 @@ export const checkCompletion = async ({
     let handlerCourse = course
 
     const otherHandlerCourse = await prisma.course
-      .findOne({ where: { id: course.id } })
+      .findUnique({ where: { id: course.id } })
       .completions_handled_by()
 
     if (otherHandlerCourse) {
@@ -231,7 +229,7 @@ export const createCompletion = async ({
       MessageType.COURSE_CONFIRMED,
     )
     const template = await prisma.course
-      .findOne({ where: { id: course_id } })
+      .findUnique({ where: { id: course_id } })
       .completion_email()
     if (template) {
       await sendEmailTemplateToUser(user, template)

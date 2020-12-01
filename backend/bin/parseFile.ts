@@ -3,10 +3,9 @@ require("dotenv-safe").config({
 })
 import { uniqBy } from "lodash"
 import TmcClient from "../services/tmc"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 
 const tmc = new TmcClient()
-const prisma = prismaClient()
 
 const doIt = async () => {
   const data = await tmc.getUserAppDatum(null)

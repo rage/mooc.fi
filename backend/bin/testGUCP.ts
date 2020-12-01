@@ -1,19 +1,16 @@
 import {
   generateUserCourseProgress /*checkBAICompletion*/,
 } from "./kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import prismaClient from "./lib/prisma"
+import prisma from "./lib/prisma"
 import * as winston from "winston"
 
-const prisma = prismaClient()
-
 const test = async () => {
-  const user = (
-    await prisma.user.findMany({
-      where: {
-        username: "mikko_ai",
-      },
-    })
-  )[0]
+  const user = await prisma.user.findFirst({
+    where: {
+      username: "mikko_ai",
+    },
+  })
+
   /*
     testing:
 
@@ -22,22 +19,20 @@ const test = async () => {
     advanced: f2114c22-c151-4588-9f2b-7cc80a8c384d
     handler: 3d896243-5a86-4bb8-8f1e-33f157a4b1d5
   */
-  const course = await prisma.course.findOne({
+  const course = await prisma.course.findUnique({
     where: {
       id: "f2114c22-c151-4588-9f2b-7cc80a8c384d",
     },
   })
-  const progress = (
-    await prisma.userCourseProgress.findMany({
-      where: {
-        user_id: user.id,
-        course_id: course!.id,
-      },
-    })
-  )?.[0]
+  const progress = await prisma.userCourseProgress.findFirst({
+    where: {
+      user_id: user!.id,
+      course_id: course!.id,
+    },
+  })
 
   await generateUserCourseProgress({
-    user,
+    user: user!,
     course: course!,
     userCourseProgress: progress!,
     logger: (null as unknown) as winston.Logger,

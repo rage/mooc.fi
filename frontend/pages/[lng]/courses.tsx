@@ -10,6 +10,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslator from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
+import notEmpty from "/util/notEmpty"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -37,7 +38,10 @@ function Courses() {
         <H1Background component="h1" variant="h1" align="center">
           {t("allCourses")}
         </H1Background>
-        <CourseGrid courses={data?.courses ?? undefined} loading={loading} />
+        <CourseGrid
+          courses={data?.courses?.filter(notEmpty)}
+          loading={loading}
+        />
       </WideContainer>
     </Background>
   )

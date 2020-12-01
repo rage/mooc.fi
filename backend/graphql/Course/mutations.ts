@@ -1,41 +1,39 @@
-import {
-  CourseTranslationUpdateManyWithoutCourseInput,
-  OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput,
-  StudyModuleUpdateManyWithoutCoursesInput,
-  CourseVariantUpdateManyWithoutCourseInput,
-  CourseAliasUpdateManyWithoutCourseInput,
-  UserCourseSettingsVisibilityUpdateManyWithoutCourseInput,
-} from "@prisma/client"
+import { Prisma } from "@prisma/client"
 
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { uploadImage, deleteImage } from "../Image"
 import { omit } from "lodash"
 import { invalidate } from "../../services/redis"
-import { schema } from "nexus"
 import { UserInputError } from "apollo-server-core"
-import { NexusContext } from "../../context"
+import { Context } from "../../context"
 import { isAdmin } from "../../accessControl"
-import { Prisma__CourseClient, Course } from "nexus-plugin-prisma/client"
-// for debug
+import { Course } from "@prisma/client"
+
+import { extendType, arg, idArg, stringArg, nonNull } from "@nexus/schema"
+import { convertUpdate } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(
     key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
   ) */
 
-schema.extendType({
+const filterNull = <T>(value: T | null | undefined): value is T =>
+  value !== null && value !== undefined
+
+export const CourseMutations = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addCourse", {
       type: "Course",
       args: {
-        course: schema.arg({
-          type: "CourseCreateArg",
-          required: true,
-        }),
+        course: nonNull(
+          arg({
+            type: "CourseCreateArg",
+          }),
+        ),
       },
       authorize: isAdmin,
-      resolve: async (_, { course }, ctx: NexusContext) => {
+      resolve: async (_, { course }, ctx: Context) => {
         const {
           // slug,
           new_photo,
@@ -63,43 +61,39 @@ schema.extendType({
           photo = newImage.id
         }
 
-        if (study_modules?.some((s) => !s.id && !s.slug)) {
+        if (study_modules?.some((s) => !s?.id && !s?.slug)) {
           throw new UserInputError("study modules must have id or slug")
         }
 
-        const newCourse = await ctx.db.course.create({
+        const newCourse = await ctx.prisma.course.create({
           data: {
             ...omit(course, ["base64", "new_photo"]),
             name: course.name ?? "",
             photo: !!photo ? { connect: { id: photo } } : undefined,
-            course_translations: !!course_translations
-              ? { create: course_translations }
-              : undefined,
+            course_translations: {
+              create: course_translations?.filter(filterNull),
+            },
             study_modules: !!study_modules
               ? {
                   connect: study_modules.map((s) => ({
-                    id: s.id ?? undefined,
+                    id: s?.id ?? undefined,
                   })),
                 }
               : undefined,
-            open_university_registration_links: !!open_university_registration_links
-              ? { create: open_university_registration_links }
-              : undefined,
-            course_variants: !!course_variants
-              ? { create: course_variants }
-              : undefined,
-            course_aliases: !!course_aliases
-              ? { create: course_aliases }
-              : undefined,
+            open_university_registration_links: {
+              create: open_university_registration_links?.filter(filterNull),
+            },
+            course_variants: { create: course_variants?.filter(filterNull) },
+            course_aliases: { create: course_aliases?.filter(filterNull) },
             inherit_settings_from: !!inherit_settings_from
               ? { connect: { id: inherit_settings_from } }
               : undefined,
             completions_handled_by: !!completions_handled_by
               ? { connect: { id: completions_handled_by } }
               : undefined,
-            user_course_settings_visibilities: !!user_course_settings_visibilities
-              ? { create: user_course_settings_visibilities }
-              : undefined,
+            user_course_settings_visibilities: {
+              create: user_course_settings_visibilities?.filter(filterNull),
+            },
             // don't think this will be passed by parameter, but let's be sure
             completion_email: !!completion_email
               ? { connect: { id: completion_email } }
@@ -123,13 +117,14 @@ schema.extendType({
     t.field("updateCourse", {
       type: "Course",
       args: {
-        course: schema.arg({
-          type: "CourseUpsertArg",
-          required: true,
-        }),
+        course: nonNull(
+          arg({
+            type: "CourseUpsertArg",
+          }),
+        ),
       },
       authorize: isAdmin,
-      resolve: async (_, { course }, ctx: NexusContext) => {
+      resolve: async (_, { course }, ctx: Context) => {
         const {
           id,
           new_photo,
@@ -169,7 +164,9 @@ schema.extendType({
           photo = newImage.id
         }
 
-        const existingCourse = await ctx.db.course.findOne({ where: { slug } })
+        const existingCourse = await ctx.prisma.course.findUnique({
+          where: { slug },
+        })
         if (
           existingCourse?.status != status &&
           status === "Ended" &&
@@ -185,7 +182,7 @@ schema.extendType({
 
         // FIXME: I know there's probably a better way to do this
         const translationMutation:
-          | CourseTranslationUpdateManyWithoutCourseInput
+          | Prisma.CourseTranslationUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -194,7 +191,7 @@ schema.extendType({
         })
 
         const registrationLinkMutation:
-          | OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput
+          | Prisma.OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -203,7 +200,7 @@ schema.extendType({
         })
 
         const courseVariantMutation:
-          | CourseVariantUpdateManyWithoutCourseInput
+          | Prisma.CourseVariantUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -212,7 +209,7 @@ schema.extendType({
         })
 
         const courseAliasMutation:
-          | CourseAliasUpdateManyWithoutCourseInput
+          | Prisma.CourseAliasUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -221,7 +218,7 @@ schema.extendType({
         })
 
         const userCourseSettingsVisibilityMutation:
-          | UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
+          | Prisma.UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
           | undefined = await createMutation({
           ctx,
           slug,
@@ -229,8 +226,8 @@ schema.extendType({
           field: "user_course_settings_visibilities",
         })
 
-        const existingVisibilities = await ctx.db.course
-          .findOne({ where: { slug } })
+        const existingVisibilities = await ctx.prisma.course
+          .findUnique({ where: { slug } })
           .user_course_settings_visibilities()
         existingVisibilities?.forEach((visibility) =>
           invalidate(
@@ -240,8 +237,8 @@ schema.extendType({
         )
 
         // this had different logic so it's not done with the same helper
-        const existingStudyModules = await ctx.db.course
-          .findOne({ where: { slug } })
+        const existingStudyModules = await ctx.prisma.course
+          .findUnique({ where: { slug } })
           .study_modules()
         //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
         const removedModuleIds = (existingStudyModules || [])
@@ -250,12 +247,12 @@ schema.extendType({
         const connectModules =
           study_modules?.map((s) => ({
             ...s,
-            id: s.id ?? undefined,
-            slug: s.slug ?? undefined,
+            id: s?.id ?? undefined,
+            slug: s?.slug ?? undefined,
           })) ?? []
 
         const studyModuleMutation:
-          | StudyModuleUpdateManyWithoutCoursesInput
+          | Prisma.StudyModuleUpdateManyWithoutCoursesInput
           | undefined = study_modules
           ? {
               connect: connectModules.length ? connectModules : undefined,
@@ -265,8 +262,8 @@ schema.extendType({
             }
           : undefined
 
-        const existingInherit = await ctx.db.course
-          .findOne({ where: { slug } })
+        const existingInherit = await ctx.prisma.course
+          .findUnique({ where: { slug } })
           .inherit_settings_from()
         const inheritMutation = inherit_settings_from
           ? {
@@ -277,8 +274,8 @@ schema.extendType({
               disconnect: true, // { id: existingInherit.id },
             }
           : undefined
-        const existingHandled = await ctx.db.course
-          .findOne({ where: { slug } })
+        const existingHandled = await ctx.prisma.course
+          .findUnique({ where: { slug } })
           .completions_handled_by()
         const handledMutation = completions_handled_by
           ? {
@@ -290,12 +287,12 @@ schema.extendType({
             }
           : undefined
 
-        const updatedCourse = await ctx.db.course.update({
+        const updatedCourse = await ctx.prisma.course.update({
           where: {
             id: id ?? undefined,
             slug,
           },
-          data: {
+          data: convertUpdate({
             ...omit(course, [
               "id",
               "photo",
@@ -319,7 +316,7 @@ schema.extendType({
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
             user_course_settings_visibilities: userCourseSettingsVisibilityMutation,
-          },
+          }),
         })
 
         return updatedCourse
@@ -329,19 +326,19 @@ schema.extendType({
     t.field("deleteCourse", {
       type: "Course",
       args: {
-        id: schema.idArg(),
-        slug: schema.stringArg(),
+        id: idArg(),
+        slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx: NexusContext) => {
+      resolve: async (_, args, ctx: Context) => {
         const { id, slug } = args
 
         if (!id && !slug) {
           throw new UserInputError("must provide id or slug")
         }
 
-        const photo = await ctx.db.course
-          .findOne({
+        const photo = await ctx.prisma.course
+          .findUnique({
             where: {
               id: id ?? undefined,
               slug: slug ?? undefined,
@@ -353,7 +350,7 @@ schema.extendType({
           await deleteImage({ ctx, id: photo.id })
         }
 
-        const deletedCourse = await ctx.db.course.delete({
+        const deletedCourse = await ctx.prisma.course.delete({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
@@ -381,13 +378,13 @@ const filterNotIncluded = (arr1: any[], arr2: any[], mapToId = true) => {
 }
 
 interface ICreateMutation<T> {
-  ctx: NexusContext
+  ctx: Context
   slug: string
   data?: T[] | null
-  field: keyof Prisma__CourseClient<Course>
+  field: keyof Prisma.Prisma__CourseClient<Course>
 }
 
-const createMutation = async <T extends { id?: string | null }>({
+const createMutation = async <T extends { id?: string | null } | null>({
   ctx,
   slug,
   data,
@@ -401,16 +398,16 @@ const createMutation = async <T extends { id?: string | null }>({
 
   try {
     // @ts-ignore: can't be arsed to do the typing, works
-    existing = await ctx.db.course.findOne({ where: { slug } })[field]()
+    existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
   } catch (e) {
     throw new Error(`error creating mutation ${field} for course ${slug}: ${e}`)
   }
 
   const newOnes = (data || [])
-    .filter((t) => !t.id)
+    .filter(hasNotId) // (t) => !t.id
     .map((t) => ({ ...t, id: undefined }))
   const updated = (data || [])
-    .filter((t) => !!t.id)
+    .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
       where: { id: t.id } as { id: string },
       data: { ...t, id: undefined },
@@ -423,3 +420,6 @@ const createMutation = async <T extends { id?: string | null }>({
     deleteMany: removed.length ? removed : undefined,
   }
 }
+
+const hasId = (data: any): data is any & { id: string | null } => !!data?.id
+const hasNotId = (data: any) => !hasId(data)

@@ -1,6 +1,6 @@
-import { schema } from "nexus"
+import { objectType, stringArg, idArg, nonNull, nullable } from "@nexus/schema"
 
-schema.objectType({
+export const User = objectType({
   name: "User",
   definition(t) {
     t.model.id()
@@ -25,22 +25,19 @@ schema.objectType({
     t.model.user_organizations()
     t.model.verified_users()
     t.model.research_consent()
-    // t.prismaFields({ filter: ["completions"] })
 
-    t.field("completions", {
+    t.list.nonNull.field("completions", {
       type: "Completion",
-      list: true,
-      nullable: false,
       args: {
-        course_id: schema.stringArg({ required: false }),
-        course_slug: schema.stringArg({ required: false }),
+        course_id: nullable(stringArg()),
+        course_slug: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug } = args
 
         if (course_id || course_slug) {
-          const handlerCourse = await ctx.db.course
-            .findOne({
+          const handlerCourse = await ctx.prisma.course
+            .findUnique({
               where: {
                 id: args.course_id ?? undefined,
                 slug: args.course_slug ?? undefined,
@@ -52,7 +49,7 @@ schema.objectType({
             course_slug = undefined
           }
         }
-        return ctx.db.completion.findMany({
+        return ctx.prisma.completion.findMany({
           where: {
             user_id: parent.id,
             course:
@@ -64,21 +61,19 @@ schema.objectType({
       },
     })
 
-    t.field("completions_registered", {
+    t.list.nonNull.field("completions_registered", {
       type: "CompletionRegistered",
-      list: true,
-      nullable: false,
       args: {
-        course_id: schema.stringArg({ required: false }),
-        course_slug: schema.stringArg({ required: false }),
-        organization_id: schema.stringArg({ required: false }),
+        course_id: nullable(stringArg()),
+        course_slug: nullable(stringArg()),
+        organization_id: nullable(stringArg()),
       },
       resolve: async (parent, args, ctx) => {
         let { course_id, course_slug, organization_id } = args
 
         if (course_id || course_slug) {
-          const handlerCourse = await ctx.db.course
-            .findOne({
+          const handlerCourse = await ctx.prisma.course
+            .findUnique({
               where: {
                 id: args.course_id ?? undefined,
                 slug: args.course_slug ?? undefined,
@@ -90,7 +85,7 @@ schema.objectType({
             course_slug = undefined
           }
         }
-        return ctx.db.completionRegistered.findMany({
+        return ctx.prisma.completionRegistered.findMany({
           where: {
             user_id: parent.id,
             organization_id: organization_id ?? undefined,
@@ -106,16 +101,16 @@ schema.objectType({
     t.field("project_completion", {
       type: "Boolean",
       args: {
-        course_id: schema.idArg({ required: false }),
-        course_slug: schema.stringArg({ required: false }),
+        course_id: nullable(idArg()),
+        course_slug: nullable(stringArg()),
       },
       resolve: async (parent, { course_id, course_slug }, ctx) => {
         if (!course_id && !course_slug) {
           throw new Error("need course_id or course_slug")
         }
 
-        const handlerCourse = await ctx.db.course
-          .findOne({
+        const handlerCourse = await ctx.prisma.course
+          .findUnique({
             where: {
               id: course_id ?? undefined,
               slug: course_slug ?? undefined,
@@ -123,7 +118,7 @@ schema.objectType({
           })
           .completions_handled_by()
 
-        const progresses = await ctx.db.userCourseProgress.findMany({
+        const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
             course: {
               id: handlerCourse?.id ?? course_id ?? undefined,
@@ -139,76 +134,68 @@ schema.objectType({
       },
     })
 
-    t.field("progress", {
+    t.nonNull.field("progress", {
       type: "Progress",
-      nullable: false,
       args: {
-        course_id: schema.idArg({ required: true }),
+        course_id: nonNull(idArg()),
       },
       resolve: async (parent, args, ctx) => {
-        const course = await ctx.db.course.findOne({
+        const course = await ctx.prisma.course.findUnique({
           where: { id: args.course_id },
         })
         return {
           course,
           user: parent,
-        }
+        } as any
       },
     })
 
-    t.field("progresses", {
+    t.list.nonNull.field("progresses", {
       type: "Progress",
-      list: true,
-      nullable: false,
       resolve: async (parent, _, ctx) => {
-        const user_course_progressess = await ctx.db.userCourseProgress.findMany(
+        const user_course_progressess = await ctx.prisma.userCourseProgress.findMany(
           {
             where: { user_id: parent.id },
           },
         )
-        const progresses = user_course_progressess.map(async (p) => {
-          const course = await ctx.db.userCourseProgress
-            .findOne({ where: { id: p.id } })
-            .course()
-          return {
-            course,
-            user: parent,
-          }
-        })
-        return progresses
+        const progresses = await Promise.all(
+          user_course_progressess.map(async (p) => {
+            const course = await ctx.prisma.userCourseProgress
+              .findUnique({ where: { id: p.id } })
+              .course()
+            return {
+              course,
+              user: parent,
+            }
+          }),
+        )
+
+        return progresses as any
       },
     })
 
     // TODO/FIXME: is this used anywhere? if is, find better name
-    t.field("user_course_progressess", {
+    t.nullable.field("user_course_progressess", {
       type: "UserCourseProgress",
-      nullable: true,
       args: {
-        course_id: schema.idArg(),
+        course_id: idArg(),
       },
       resolve: async (parent, args, ctx) => {
         const { course_id } = args
 
-        const progresses = await ctx.db.userCourseProgress.findMany({
+        return await ctx.prisma.userCourseProgress.findFirst({
           where: {
             user_id: parent.id,
             course_id,
           },
         })
-
-        if (progresses.length > 0) {
-          return progresses[0]
-        } else {
-          return null
-        }
       },
     })
 
-    t.field("exercise_completions", {
+    t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
-      list: true,
       resolve: async (parent, _, ctx) => {
-        return ctx.db.exerciseCompletion.findMany({
+        return ctx.prisma.exerciseCompletion.findMany({
           where: {
             user_id: parent.id,
           },

@@ -1,15 +1,23 @@
-import { server as nexusServer } from "nexus"
+const PRODUCTION = process.env.NODE_ENV === "production"
+
 import { UserInfo } from "./domain/UserInfo"
 import Knex from "./services/knex"
 import { redisify } from "./services/redis"
 import TmcClient from "./services/tmc"
-import { User, Completion } from "@prisma/client"
+import { User, Completion, PrismaClient } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
 import { ok, err, Result } from "./util/result"
+import createExpress from "express"
+import schema from "./schema"
+import { ApolloServer } from "apollo-server-express"
+import * as winston from "winston"
 
 const JSONStream = require("JSONStream")
 const helmet = require("helmet")
+
+const DEBUG = Boolean(process.env.DEBUG)
+const TEST = process.env.NODE_ENV === "test"
 
 type UserCourseSettingsCountResult =
   | {
@@ -34,15 +42,17 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
-export function setupServer(server: typeof nexusServer) {
-  server.express.use(cors())
-  server.express.use(helmet.frameguard())
-  server.express.use(morgan("combined"))
+// wrapped so that the context isn't cached between test instances
+const _express = () => {
+  const express = createExpress()
 
-  server.express.get("/api/completions/:course", async function (
-    req: any,
-    res: any,
-  ) {
+  express.use(cors())
+  express.use(helmet.frameguard())
+  if (!TEST) {
+    express.use(morgan("combined"))
+  }
+
+  express.get("/api/completions/:course", async function (req: any, res: any) {
     const rawToken = req.get("Authorization")
     const secret: string = rawToken?.split(" ")[1] ?? ""
 
@@ -84,7 +94,7 @@ export function setupServer(server: typeof nexusServer) {
     req.on("close", stream.end.bind(stream))
   })
 
-  server.express.get(
+  express.get(
     "/api/usercoursesettingscount/:course/:language",
     async (req: any, res: any) => {
       const {
@@ -176,7 +186,7 @@ export function setupServer(server: typeof nexusServer) {
   "0e9d1a22-0e19-4320-8c8c-84115bb26452": "advanced",
 }*/
 
-  server.express.get("/api/progress/:id", async (req: any, res: any) => {
+  express.get("/api/progress/:id", async (req: any, res: any) => {
     const { id }: { id: string } = req.params
 
     if (!id) {
@@ -225,7 +235,7 @@ export function setupServer(server: typeof nexusServer) {
     })
   })
 
-  server.express.get("/api/progressv2/:id", async (req: any, res: any) => {
+  express.get("/api/progressv2/:id", async (req: any, res: any) => {
     const { id }: { id: string } = req.params
 
     if (!id) {
@@ -290,7 +300,7 @@ export function setupServer(server: typeof nexusServer) {
     })
   })
 
-  server.express.get("/api/tierprogress/:id", async (req: any, res: any) => {
+  express.get("/api/tierprogress/:id", async (req: any, res: any) => {
     const { id }: { id: string } = req.params
 
     if (!id) {
@@ -317,78 +327,114 @@ export function setupServer(server: typeof nexusServer) {
       },
     })
   })
-}
 
-interface GetUserReturn {
-  user: User
-  details: UserInfo
-}
-
-async function getUser(
-  req: any,
-  res: any,
-): Promise<Result<GetUserReturn, any>> {
-  const rawToken = req.get("Authorization")
-
-  if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
-    return err(res.status(400).json({ message: "not logged in" }))
+  interface GetUserReturn {
+    user: User
+    details: UserInfo
   }
 
-  let details: UserInfo | null = null
-  try {
-    const client = new TmcClient(rawToken)
-    details = await redisify<UserInfo>(
-      async () => await client.getCurrentUserDetails(),
-      {
-        prefix: "userdetails",
-        expireTime: 3600,
-        key: rawToken,
-      },
-    )
-  } catch (e) {
-    console.log("error", e)
-  }
+  async function getUser(
+    req: any,
+    res: any,
+  ): Promise<Result<GetUserReturn, any>> {
+    const rawToken = req.get("Authorization")
 
-  if (!details) {
-    return err(res.status(400).json({ message: "invalid credentials" }))
-  }
+    if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
+      return err(res.status(400).json({ message: "not logged in" }))
+    }
 
-  let user = (
-    await Knex.select<any, User[]>("id")
-      .from("user")
-      .where("upstream_id", details.id)
-  )?.[0]
-
-  if (!user) {
+    let details: UserInfo | null = null
     try {
-      user = (
-        await Knex("user")
-          .insert({
-            upstream_id: details.id,
-            administrator: details.administrator,
-            email: details.email.trim(),
-            first_name: details.user_field.first_name.trim(),
-            last_name: details.user_field.last_name.trim(),
-            username: details.username,
-          })
-          .returning("*")
-      )?.[0]
-    } catch {
-      // race condition or something
-      user = (
-        await Knex.select<any, User[]>("id")
-          .from("user")
-          .where("upstream_id", details.id)
-      )?.[0]
+      const client = new TmcClient(rawToken)
+      details = await redisify<UserInfo>(
+        async () => await client.getCurrentUserDetails(),
+        {
+          prefix: "userdetails",
+          expireTime: 3600,
+          key: rawToken,
+        },
+      )
+    } catch (e) {
+      console.log("error", e)
+    }
 
-      if (!user) {
-        return err(res.status(500).json({ message: "error creating user" }))
+    if (!details) {
+      return err(res.status(400).json({ message: "invalid credentials" }))
+    }
+
+    let user = (
+      await Knex.select<any, User[]>("id")
+        .from("user")
+        .where("upstream_id", details.id)
+    )?.[0]
+
+    if (!user) {
+      try {
+        user = (
+          await Knex("user")
+            .insert({
+              upstream_id: details.id,
+              administrator: details.administrator,
+              email: details.email.trim(),
+              first_name: details.user_field.first_name.trim(),
+              last_name: details.user_field.last_name.trim(),
+              username: details.username,
+            })
+            .returning("*")
+        )?.[0]
+      } catch {
+        // race condition or something
+        user = (
+          await Knex.select<any, User[]>("id")
+            .from("user")
+            .where("upstream_id", details.id)
+        )?.[0]
+
+        if (!user) {
+          return err(res.status(500).json({ message: "error creating user" }))
+        }
       }
     }
+
+    return ok({
+      user,
+      details,
+    })
   }
 
-  return ok({
-    user,
-    details,
-  })
+  return express
 }
+
+interface ServerParams {
+  prisma: PrismaClient
+  logger: winston.Logger
+  extraContext?: Record<string, any>
+}
+
+export default ({ prisma, logger, extraContext = {} }: ServerParams) => {
+  const apollo = new ApolloServer({
+    context: (ctx) => ({
+      ...ctx,
+      prisma,
+      logger,
+      ...extraContext,
+    }),
+    schema,
+    playground: {
+      endpoint: PRODUCTION ? "/api" : "/",
+    },
+    introspection: true,
+    logger,
+    debug: DEBUG,
+  })
+  const express = _express()
+
+  apollo.applyMiddleware({ app: express, path: PRODUCTION ? "/api" : "/" })
+
+  return {
+    apollo,
+    express,
+  }
+}
+
+// export default express

@@ -1,19 +1,14 @@
 import * as fs from "fs"
 import * as path from "path"
 
-const data = {
-  "resolvers/Completion": "%name%",
-  "resolvers/Mutation": "add%name%Mutations",
-  "resolvers/Query": "add%name%Queries",
-  types: "%name%",
-}
-
-const IGNORED_FILES = ["index.ts", "mimetypes.d.ts"]
+const DIRECTORY = "graphql"
+const IGNORED_FILES: string[] = []
 const OUTPUT_FILE = "index.ts"
 
+// @ts-ignore: not used for now
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
-const createExports = (dir: string, pattern: string) => {
+const createExports = (dir: string): string[] => {
   const files = fs.readdirSync(dir)
 
   return files
@@ -22,25 +17,26 @@ const createExports = (dir: string, pattern: string) => {
         !IGNORED_FILES.includes(filename) && filename !== OUTPUT_FILE,
     )
     .map((filename) => {
-      const basename = path.parse(filename).name
-      const exportName = pattern.replace(
-        "%name%",
-        pattern[0] !== "%" ? capitalize(basename) : basename,
-      )
+      const fullname = `${dir ? dir + "/" : ""}${filename}`
 
-      return `export { default as ${exportName} } from "./${basename}"`
+      if (fs.statSync(fullname).isDirectory()) {
+        const exports = createExports(fullname)
+        outputExports(exports, fullname)
+      }
+
+      const basename = path.parse(filename).name
+      return `export * from "./${basename}"`
     })
 }
-;(() => {
-  Object.entries(data).map(([dir, pattern]) => {
-    const exports = createExports(dir, pattern)
 
-    const exportFile = `${dir}/${OUTPUT_FILE}`
-    const exportFileContents = `// generated ${new Date()}\n\n${exports.join(
-      "\n",
-    )}`
+const outputExports = (exports: string[], dir: string) => {
+  const exportFileContents = `// generated ${new Date()}\n\n${exports.join(
+    "\n",
+  )}`
+  const exportFile = `${dir ? dir + "/" : ""}${OUTPUT_FILE}`
+  fs.writeFileSync(exportFile, exportFileContents)
+  console.log("wrote", exportFile)
+}
 
-    fs.writeFileSync(exportFile, exportFileContents)
-    console.log("wrote", exportFile)
-  })
-})()
+const rootExports = createExports(DIRECTORY)
+outputExports(rootExports, DIRECTORY)
