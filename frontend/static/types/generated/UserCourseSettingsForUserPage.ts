@@ -45,7 +45,7 @@ export interface UserCourseSettingsForUserPage_userCourseSettings_pageInfo {
 }
 
 export interface UserCourseSettingsForUserPage_userCourseSettings {
-  __typename: "QueryUserCourseSettings_Connection"
+  __typename: "QueryUserCourseSettings_type_Connection"
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
    */

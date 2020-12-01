@@ -71,10 +71,11 @@ export const StudentProgresses = gql`
           }
         }
       }
-      count(course_id: $course_id, search: $search)
+      totalCount
     }
   }
 `
+//       count(course_id: $course_id, search: $search)
 
 const LoadingPointCardSkeleton = styled(Skeleton)`
   width: 100%;
@@ -173,7 +174,7 @@ function PaginatedPointsList(props: Props) {
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {data?.userCourseSettings?.count || 0} results
+            {data?.userCourseSettings?.totalCount || 0} results
           </div>
           <PointsList pointsForUser={edges} cutterValue={cutterValue} />
           <Button
@@ -212,8 +213,9 @@ function PaginatedPointsList(props: Props) {
                         __typename: "PageInfo",
                       },
                       edges: [...previousData, ...newData],
-                      __typename: "QueryUserCourseSettings_Connection",
-                      count: fetchMoreResult!.userCourseSettings?.count ?? null,
+                      __typename: "QueryUserCourseSettings_type_Connection",
+                      totalCount:
+                        fetchMoreResult!.userCourseSettings?.totalCount ?? null,
                     },
                   }
                 },
