@@ -16,6 +16,10 @@ import * as winston from "winston"
 const JSONStream = require("JSONStream")
 const argon2 = require('argon2')
 const helmet = require("helmet")
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const crypto = require('crypto')
+const bodyParser = require('body-parser')
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -329,7 +333,7 @@ const _express = () => {
     })
   })
 
-  server.express.get("/signUp", async (req: any, res: any) => {
+  server.express.get("/api/signUp", async (req: any, res: any) => {
     let email = req.body.email.trim()
     let password = req.body.password.trim()
     let username = req.body.username.trim()
@@ -375,7 +379,8 @@ const _express = () => {
 
     const hashPassword = await argon2.hash(password, {
       type: argon2.argon2id,
-      memoryCost: 4 ** 15,
+      timeCost: 4,
+      memoryCost: 15360,
       hashLength: 64,
     })
 
@@ -406,7 +411,7 @@ const _express = () => {
     })
   })
 
-  server.express.get("/signIn", async (req: any, res: any) => {
+  server.express.get("/api/signIn", async (req: any, res: any) => {
     let email = req.body.email.trim()
     let password = req.body.password.trim()
 
@@ -432,13 +437,104 @@ const _express = () => {
         unset: 'destroy'
       }));
 
+      return res.status(200).json({
+        success: true
+      })
+
     } else {
       return err(res.status(403).json({ message: "Password does not match", err }))
     }
   })
-  
-}
 
+  server.express.get("/api/signOut", async (req: any, res: any) => {
+    req.session = null
+
+    return res.status(200).json({
+      sucess: true
+    })
+  })
+
+  
+  server.express.get("/api/passwordReset", async (req: any, res: any) => {
+    let email = req.body.email.trim()
+
+    if(!email || email === "") {
+      return err(res.status(400).json({
+        success: false,
+        message: "No email address provided"
+      }))
+    }
+
+    let user = (
+      await Knex.select<any, User[]>("email").from("user").where("email", email)
+    )?.[0]
+
+    if(!user) {
+      return err(res.status(404).json({ 
+        success: false,
+        message: "No such email address registered" 
+      }))
+    }
+
+    const key = crypto.randomBytes(20).toString('hex')
+    await Knex("user").where({ email }).update({ password_reset: key })
+
+    //Email Password Link to User
+    //Create Password Reset Form as Renderable Page
+    //Figure out how to make this work with TMC
+  })
+
+  server.express.get("/api/storePasswordReset", async (req: any, res: any) => {
+    let password = req.body.password.trim()
+    let confirmPassword = req.body.confirmPassword.trim()
+    let token = req.query.token
+
+    if(!token || token === null || token === "") {
+      return err(res.status(400).json({
+        success: false,
+        message: "Token is invalid."
+      }))
+    }
+
+    if(!validatePassword(password)) {
+      return err(res.status(400).json({
+        success: false,
+        message: "Password is invalid."
+      }))
+    }
+
+    if(password !== confirmPassword) {
+      return err(res.status(400).json({
+        success: false,
+        message: "Confirmation password must match new password"
+      }))
+    }
+
+    let user = (
+      await Knex.select<any, User[]>("password_reset").from("user").where("password_reset", token)
+    )?.[0]
+
+    if(!user) {
+      return err(res.status(404).json({
+        success: false,
+        message: "Token is invalid or expired"
+      }))
+    }
+
+    const hashPassword = await argon2.hash(password, {
+      type: argon2.argon2id,
+      timeCost: 4,
+      memoryCost: 15360,
+      hashLength: 64,
+    })
+
+    await Knex("user").where("password_reset", token).update({ password: hashPassword, password_reset: null })
+
+    return res.status(200).json({
+      success: true
+    })
+  })
+}
 
 
 interface GetUserReturn {
