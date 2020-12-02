@@ -47,7 +47,9 @@ export const getCombinedUserCourseProgress = async (
 
   let combined = new CombinedUserCourseProgress()
   progresses.forEach((entry) => {
-    entry.forEach((p: ServiceProgressPartType) => {
+    const entries = Array.isArray(entry) ? entry : [entry]
+
+    entries.forEach((p: ServiceProgressPartType) => {
       combined.addProgress(p)
     })
   })
