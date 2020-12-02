@@ -335,7 +335,7 @@ const _express = () => {
     })
   })
 
-  express.get("/api/signUp", async (req: any, res: any) => {
+  express.post("/api/signUp", async (req: any, res: any) => {
     let email = req.body.email.trim()
     let password = req.body.password.trim()
     let username = req.body.username.trim()
@@ -413,7 +413,7 @@ const _express = () => {
     })
   })
 
-  express.get("/api/signIn", async (req: any, res: any) => {
+  express.post("/api/signIn", async (req: any, res: any) => {
     let email = req.body.email.trim()
     let password = req.body.password.trim()
 
@@ -448,7 +448,7 @@ const _express = () => {
     }
   })
 
-  express.get("/api/signOut", async (req: any, res: any) => {
+  express.post("/api/signOut", async (req: any, res: any) => {
     req.session = null
 
     return res.status(200).json({
@@ -456,7 +456,7 @@ const _express = () => {
     })
   })
 
-  express.get("/api/passwordReset", async (req: any, res: any) => {
+  express.post("/api/passwordReset", async (req: any, res: any) => {
     let email = req.body.email.trim()
 
     if(!email || email === "") {
@@ -485,7 +485,7 @@ const _express = () => {
     //Figure out how to make this work with TMC
   })
 
-  express.get("/api/storePasswordReset", async (req: any, res: any) => {
+  express.post("/api/storePasswordReset", async (req: any, res: any) => {
     let password = req.body.password.trim()
     let confirmPassword = req.body.confirmPassword.trim()
     let token = req.query.token
