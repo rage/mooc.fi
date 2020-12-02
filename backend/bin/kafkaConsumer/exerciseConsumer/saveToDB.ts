@@ -4,7 +4,6 @@ import { DateTime } from "luxon"
 import winston = require("winston")
 import { ok, err, Result } from "../../../util/result"
 import { DatabaseInputError } from "../../lib/errors"
-import { convertUpdate } from "../../../util/db-functions"
 
 export const saveToDatabase = async (
   message: Message,
@@ -83,15 +82,15 @@ const handleExercise = async (
     }
     await prisma.exercise.update({
       where: { id: existingExercise.id },
-      data: convertUpdate({
+      data: {
         name: exercise.name,
         custom_id: exercise.id,
-        part: Number(exercise.part),
-        section: Number(exercise.section),
-        max_points: Number(exercise.max_points),
+        part: { set: Number(exercise.part) },
+        section: { set: Number(exercise.section) },
+        max_points: { set: Number(exercise.max_points) },
         timestamp: timestamp.toJSDate(),
-        deleted: false,
-      }),
+        deleted: { set: false },
+      },
     })
   } else {
     await prisma.exercise.create({
