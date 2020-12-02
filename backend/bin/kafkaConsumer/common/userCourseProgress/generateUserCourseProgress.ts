@@ -35,7 +35,7 @@ export const generateUserCourseProgress = async ({
   await prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
-      progress: { set: combined.progress as any }, // errors unless typed as any
+      progress: combined.progress as any, // errors unless typed as any
       max_points: { set: combined.total_max_points },
       n_points: { set: combined.total_n_points },
     },
