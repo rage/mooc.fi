@@ -113,7 +113,7 @@ export const saveToDatabase = async (
         id: userCourseServiceProgress.id,
       },
       data: {
-        progress: { set: message.progress as any }, // type error without any
+        progress: message.progress as any, // type error without any
         timestamp: { set: timestamp.toJSDate() },
       },
     })

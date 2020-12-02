@@ -60,7 +60,7 @@ const upsertOrganization = async (org: OrganizationInfo) => {
       where: {
         slug: org.slug,
       },
-      data: convertUpdate(details),
+      data: convertUpdate(details), // TODO: remove convertUpdate
     })
   } else {
     organization = await prisma.organization.create(
