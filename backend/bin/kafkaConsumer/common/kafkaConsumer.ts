@@ -13,10 +13,12 @@ const logCommit = (logger: winston.Logger) => (
   }
 }
 
-export const createKafkaConsumer = (logger: winston.Logger) =>
-  new Kafka.KafkaConsumer(
+export const createKafkaConsumer = (logger: winston.Logger) => {
+  const consumerGroup = process.env.KAFKA_CONSUMER_GROUP ?? "kafka"
+  logger.info(`Joining consumer group ${consumerGroup}.`)
+  return new Kafka.KafkaConsumer(
     {
-      "group.id": "kafka",
+      "group.id": consumerGroup,
       "metadata.broker.list": process.env.KAFKA_HOST,
       offset_commit_cb: logCommit(logger),
       "enable.auto.commit": false,
@@ -24,3 +26,4 @@ export const createKafkaConsumer = (logger: winston.Logger) =>
     },
     { "auto.offset.reset": "earliest" },
   )
+}
