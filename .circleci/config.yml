@@ -58,10 +58,13 @@ jobs:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
       - run:
-          name: "Preparing DB for tests"
-          command: "bin/prepare-db-for-tests.sh"
+          name: "Setting up tests"
+          command: "bin/setup-tests.sh"
       - run:
           name: "Tests"
+          environment:
+            KAFKA_BRIDGE_SECRET: secret
+            KAFKA_HOST: 0.0.0.0:9002
           command: "bin/run-backend-tests.sh"
       - store_test_results:
           path: ~/project/backend/coverage/junit/

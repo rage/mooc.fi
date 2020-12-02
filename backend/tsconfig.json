@@ -20,4 +20,5 @@
     // "typeRoots": ["node_modules/@types", "types"]
   },
   "include": [".", "./bin/**/*", "types.d.ts"],
+  "exclude": ["__mocks__"]
 }

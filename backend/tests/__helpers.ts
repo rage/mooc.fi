@@ -11,6 +11,8 @@ import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
 import nock from "nock"
 import binPrisma from "../bin/lib/prisma"
+import http from "http"
+import * as Kafka from "node-rdkafka"
 
 const DEBUG = Boolean(process.env.DEBUG)
 
@@ -59,8 +61,8 @@ export function getTestContext(): TestContext {
 
   const ctx = createTestContext()
 
-  // beforeEach
   beforeAll(async (done) => {
+    // beforeEach
     const { prisma, client, knexClient } = await ctx.before()
 
     Object.assign(testContext, {
@@ -84,6 +86,37 @@ export function getTestContext(): TestContext {
   return testContext
 }
 
+interface KafkaContext {
+  kafkaServer: http.Server
+  producer: Kafka.Producer
+  port: number
+}
+
+export function getKafkaContext() {
+  let kafkaContext = {} as KafkaContext
+
+  beforeAll(async (done) => {
+    const port = await getPort({ port: makeRange(3003, 3999) })
+    process.env.KAFKA_BRIDGE_SERVER_PORT = `${port}`
+
+    const { server: kafkaServer, producer } = require("../bin/kafkaBridge")
+
+    Object.assign(kafkaContext, {
+      kafkaServer,
+      producer,
+      port,
+    })
+    done()
+  })
+
+  afterAll(async (done) => {
+    kafkaContext.producer.disconnect()
+    kafkaContext.kafkaServer.close()
+    done()
+  })
+
+  return kafkaContext
+}
 const wait = async (time: number) =>
   new Promise((resolve) => setTimeout(resolve, time))
 

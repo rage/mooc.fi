@@ -97,6 +97,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
   }
   res.json({ msg: "Thanks!" }).send()
 })
+
 app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
   if (!producerReady) {
     return res.status(500).json({ error: "Kafka producer not ready" }).send()
@@ -111,10 +112,11 @@ app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
   res.json({ status: "ok" })
 })
 
-app.listen(port, host, () =>
+const server = app.listen(port, host, () =>
   console.log(`Kafka bridge listening on ${host}:${port}!`),
 )
 
+export { server, producer }
 // FIXME: (?) not used anywhere
 /* const logCommit = (err: any, topicPartitions: any) => {
   if (err) {
