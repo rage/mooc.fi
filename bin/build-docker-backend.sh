@@ -32,9 +32,11 @@ docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile
 echo "Successfully built image: $TAG"
 
 echo "Copying sourcemap from container to host"
-docker create -ti --name tmpcontainer "$TAG" sh
-docker cp tmpcontainer:/app/sourcemap sourcemap
-docker rm -f tmpcontainer
+
+TEMP="tmpcontainer-$REV"
+docker create -ti --name "$TEMP" "$TAG" sh
+docker cp "$TEMP":/app/sourcemap sourcemap
+docker rm -f "$TEMP"
 echo "Sourcemap copied from container!"
 
 cd ..

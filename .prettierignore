@@ -3,3 +3,4 @@ backend/dist
 __generated__
 node_modules
 .next
+backend/coverage

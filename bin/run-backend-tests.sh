@@ -21,9 +21,11 @@ echo "Running tests"
 docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
+  --env KAFKA_BRIDGE_SECRET=$KAFKA_BRIDGE_SECRET \
+  --env KAFKA_HOST=$KAFKA_HOST \
   --network host \
   --name "$TEST_NAME" "$TAG" \
-  /bin/bash -c "npm run create-test-db; npm run test -- --runInBand --ci --coverage --reporters=default --reporters=jest-junit" 
+  /bin/bash -c "npm run create-test-db; npm run test -- --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
 
