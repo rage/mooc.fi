@@ -3,7 +3,7 @@ const PRODUCTION = process.env.NODE_ENV === "production"
 import { UserInfo } from "./domain/UserInfo"
 import Knex from "./services/knex"
 import { redisify } from "./services/redis"
-import TmcClient from "./services/tmc"
+import TmcClient, { authenticateUser, createUser, getCurrentUserDetails } from "./services/tmc"
 import { User, Completion, PrismaClient } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
@@ -12,9 +12,9 @@ import createExpress from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
+import { validateEmail, validatePassword } from "./util/validateAuth"
 
 const JSONStream = require("JSONStream")
-const argon2 = require('argon2')
 const helmet = require("helmet")
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
@@ -53,6 +53,8 @@ const _express = () => {
 
   express.use(cors())
   express.use(helmet.frameguard())
+  express.use(cookieParser())
+  express.use(bodyParser.json())
   if (!TEST) {
     express.use(morgan("combined"))
   }
@@ -333,7 +335,7 @@ const _express = () => {
     })
   })
 
-  server.express.get("/api/signUp", async (req: any, res: any) => {
+  express.get("/api/signUp", async (req: any, res: any) => {
     let email = req.body.email.trim()
     let password = req.body.password.trim()
     let username = req.body.username.trim()
@@ -411,7 +413,7 @@ const _express = () => {
     })
   })
 
-  server.express.get("/api/signIn", async (req: any, res: any) => {
+  express.get("/api/signIn", async (req: any, res: any) => {
     let email = req.body.email.trim()
     let password = req.body.password.trim()
 
@@ -426,7 +428,7 @@ const _express = () => {
     if (await argon2.verify(user.password, password)) {
       const accessToken = await authenticateUser(email, password)
 
-      server.express.use(session({
+      express.use(session({
         secret: accessToken,
         cookie: {
           maxAge: 365 * 24 * 60 * 60 * 1000,
@@ -446,7 +448,7 @@ const _express = () => {
     }
   })
 
-  server.express.get("/api/signOut", async (req: any, res: any) => {
+  express.get("/api/signOut", async (req: any, res: any) => {
     req.session = null
 
     return res.status(200).json({
@@ -454,8 +456,7 @@ const _express = () => {
     })
   })
 
-  
-  server.express.get("/api/passwordReset", async (req: any, res: any) => {
+  express.get("/api/passwordReset", async (req: any, res: any) => {
     let email = req.body.email.trim()
 
     if(!email || email === "") {
@@ -484,7 +485,7 @@ const _express = () => {
     //Figure out how to make this work with TMC
   })
 
-  server.express.get("/api/storePasswordReset", async (req: any, res: any) => {
+  express.get("/api/storePasswordReset", async (req: any, res: any) => {
     let password = req.body.password.trim()
     let confirmPassword = req.body.confirmPassword.trim()
     let token = req.query.token
@@ -534,19 +535,6 @@ const _express = () => {
       success: true
     })
   })
-}
-
-
-interface GetUserReturn {
-  user: User
-  details: UserInfo
-}
-
-async function getUser(
-  req: any,
-  res: any,
-): Promise<Result<GetUserReturn, any>> {
-  const rawToken = req.get("Authorization")
 
   interface GetUserReturn {
     user: User
