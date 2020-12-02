@@ -249,7 +249,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
-      update: convertUpdate(prismaDetails),
+      update: convertUpdate(prismaDetails), // TODO: remove convertUpdate
     })
 
     return result
