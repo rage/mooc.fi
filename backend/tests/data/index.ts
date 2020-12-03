@@ -49,6 +49,14 @@ export const adminUserDetails = {
   extra_fields: {},
 }
 
+export const organizations: Prisma.OrganizationCreateInput[] = [
+  {
+    id: "10000000000000000000000000000102",
+    secret_key: "kissa",
+    slug: "test",
+  },
+]
+
 export const study_modules: Prisma.StudyModuleCreateInput[] = [
   {
     id: "00000000000000000000000000000102",
@@ -154,5 +162,30 @@ export const courses: Prisma.CourseCreateInput[] = [
     study_modules: {
       connect: { id: "00000000000000000000000000000102" },
     },
+  },
+]
+
+export const users: Prisma.UserCreateInput[] = [
+  {
+    id: "20000000000000000000000000000102",
+    administrator: false,
+    email: "e@mail.com",
+    upstream_id: 1,
+    username: "existing_user",
+  },
+]
+
+export const completions: Prisma.CompletionCreateInput[] = [
+  {
+    id: "30000000-0000-0000-0000-000000000102",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    email: "e@mail.com",
+  },
+  {
+    id: "30000000-0000-0000-0000-000000000103",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    email: "e@mail.com",
   },
 ]
