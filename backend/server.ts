@@ -392,7 +392,6 @@ const _express = ({ prisma, knex }: ExpressParams) => {
           })) ?? {}
 
         if (!course_id || !user_id) {
-          console.log("didn't find", course_id, user_id, entry)
           // TODO/FIXME: we now fail silently if course/user not found
           return Promise.resolve()
         }
