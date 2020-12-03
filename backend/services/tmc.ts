@@ -103,36 +103,38 @@ export const getCurrentUserDetails = async (
   return userInfo
 }
 
-export const createUser = async (username: string, password: string): Promise<any> => {
+export const createUser = async (email: string, username: string, password: string, password_confirmation: string): Promise<any> => {
   return await axios({
     method: 'POST',
     url: `${BASE_URL}/api/v8/users`,
-    data: JSON.stringify({ username, password}),
+    data: JSON.stringify({user:{ email, username, password, password_confirmation}}),
     headers: { 'Content-Type': 'application/json' }
   })
   .then(res => res.data)
   .then(json => {
     if(json.success) {
-      return authenticateUser(username, password)
+      return authenticateUser(email, password)
+    } else {
+      return { success: false, token: null, error: json.errors }
     }
   })
   .catch(error => {
-    return false
+    return { success: false, token: null, error }
   })
 }
 
 export const authenticateUser = async (username: string, password: string): Promise<any> => {
   return await axios({
     method: 'POST',
-    url: `${BASE_URL}/api/v8/token`,
-    data: JSON.stringify({ username, password }),
+    url: `${BASE_URL}/oauth/token`,
+    data: JSON.stringify({ username, password, grant_type: "password" }),
     headers: { 'Content-Type': 'application/json' }
   })
   .then(response => response.data)
   .then(json => {
-    return json.access_token
+    return {success: false, token: null, error: json }
   })
   .catch(error => {
-    return false
+    return {success: false, token: null, error }
   })
 }

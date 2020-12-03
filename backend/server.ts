@@ -20,6 +20,7 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const crypto = require('crypto')
 const bodyParser = require('body-parser')
+const argon2 = require('argon2')
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -338,6 +339,7 @@ const _express = () => {
   express.post("/api/signUp", async (req: any, res: any) => {
     let email = req.body.email.trim()
     let password = req.body.password.trim()
+    let confirmPassword = req.body.confirmPassword.trim()
     let username = req.body.username.trim()
 
     if(email.length > 64 || !validateEmail(email)) {
@@ -348,33 +350,43 @@ const _express = () => {
 
     if(!validatePassword(password)) {
       return res.status(400).json({
-        error: 'Password is invalid.'
+        success: false,
+        message: 'Password is invalid.'
       })
     }
 
+    if(password !== confirmPassword) {
+      return err(res.status(400).json({
+        success: false,
+        message: "Confirmation password must match new password"
+      }))
+    }
+
     const checkEmail = await Knex.select("email")
-      .from("user")
+      .from("prisma2.user")
       .where("email", email)
 
     if(checkEmail.length > 0) {
       return res.status(400).json({
-        error: 'Email is already in use.'
+        success:false,
+        message: 'Email is already in use.'
       })
     }
 
     const checkUsername = await Knex.select("username")
-      .from("user")
+      .from("prisma2.user")
       .where("username", username)
       
     if(checkUsername.length > 0) {
       return res.status(400).json({
-        error: 'Username is already in use.'
+        success:false,
+        message: 'Username is already in use.'
       })
     }
-
-    const accessToken = await createUser(email, password)
-    if(!accessToken) {
-      return err(res.status(500).json({ message: "Error creating user" }))
+    
+    const accessToken = await createUser(email, username, password, confirmPassword)
+    if(!accessToken.success) {
+      return err(res.status(500).json({ success: false, message: "Error creating user", error: accessToken.error }))
     }
 
     const userDetails = await getCurrentUserDetails(accessToken)
@@ -387,13 +399,13 @@ const _express = () => {
     })
 
     let user = (
-      await Knex.select<any, User[]>("id").from("user").where("upstream_id", userDetails.id)
+      await Knex.select<any, User[]>("id").from("prisma2.user").where("upstream_id", userDetails.id)
     )?.[0]
 
     if(!user) {
       try {
         user = (
-          await Knex("user").insert({
+          await Knex("prisma2.user").insert({
             upstream_id: userDetails.id,
             email,
             username,
@@ -407,7 +419,8 @@ const _express = () => {
       }  
     }
    
-    return ok({
+    return res.status(200).json({
+      success: true,
       user,
       userDetails
     })
@@ -418,7 +431,7 @@ const _express = () => {
     let password = req.body.password.trim()
 
     let user = (
-      await Knex.select<any, User[]>("id", "password").from("user").where("email", email)
+      await Knex.select<any, User[]>("id", "password").from("prisma2.user").where("email", email)
     )?.[0]
 
     if(!user) {
@@ -467,7 +480,7 @@ const _express = () => {
     }
 
     let user = (
-      await Knex.select<any, User[]>("email").from("user").where("email", email)
+      await Knex.select<any, User[]>("email").from("prisma2.user").where("email", email)
     )?.[0]
 
     if(!user) {
@@ -478,7 +491,7 @@ const _express = () => {
     }
 
     const key = crypto.randomBytes(20).toString('hex')
-    await Knex("user").where({ email }).update({ password_reset: key })
+    await Knex("prisma2.user").where({ email }).update({ password_reset: key })
 
     //Email Password Link to User
     //Create Password Reset Form as Renderable Page
@@ -512,7 +525,7 @@ const _express = () => {
     }
 
     let user = (
-      await Knex.select<any, User[]>("password_reset").from("user").where("password_reset", token)
+      await Knex.select<any, User[]>("password_reset").from("prisma2.user").where("password_reset", token)
     )?.[0]
 
     if(!user) {
@@ -529,7 +542,7 @@ const _express = () => {
       hashLength: 64,
     })
 
-    await Knex("user").where("password_reset", token).update({ password: hashPassword, password_reset: null })
+    await Knex("prisma2.user").where("password_reset", token).update({ password: hashPassword, password_reset: null })
 
     return res.status(200).json({
       success: true
