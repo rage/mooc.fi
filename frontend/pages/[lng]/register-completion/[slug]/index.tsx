@@ -95,9 +95,11 @@ const RegisterCompletion = () => {
       slug: courseSlug,
     },
   })
-  const { loading: userLoading, error: userError, data: userData } = useQuery<
-    UserOverViewData
-  >(UserOverViewQuery)
+  const {
+    loading: userLoading,
+    error: userError,
+    data: userData,
+  } = useQuery<UserOverViewData>(UserOverViewQuery)
 
   if (courseLoading || userLoading) {
     return <Spinner />
