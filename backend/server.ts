@@ -371,8 +371,6 @@ const _express = ({ prisma, knex }: ExpressParams) => {
         .shape({
           completion_id: yup.string().min(32).max(36).required(),
           student_number: yup.string().required(),
-          eligible_for_ects: yup.boolean().nullable(),
-          tier: yup.number().nullable(),
         })
         .required(),
     )

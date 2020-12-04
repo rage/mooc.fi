@@ -69,8 +69,6 @@ describe("server", () => {
           {
             completion_id: "30000000-0000-0000-0000-000000000103",
             student_number: "12345",
-            tier: 2,
-            eligible_for_ects: true,
           },
         ],
       })
