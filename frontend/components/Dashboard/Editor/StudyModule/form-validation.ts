@@ -67,39 +67,40 @@ const studyModuleEditSchema = ({
             languages(t).map((l) => l.value),
             t("validationValidLanguageCode"),
           )
-          .test("unique", t("validationOneTranslation"), function (
-            this: Yup.TestContext,
-            value?: any,
-          ): boolean {
-            const {
-              context,
-              path,
-            }: { context?: any; path?: string | undefined } = this.options
-            if (!context) {
-              return true
-            }
+          .test(
+            "unique",
+            t("validationOneTranslation"),
+            function (this: Yup.TestContext, value?: any): boolean {
+              const {
+                context,
+                path,
+              }: { context?: any; path?: string | undefined } = this.options
+              if (!context) {
+                return true
+              }
 
-            const {
-              values: { study_module_translations },
-            } = context
+              const {
+                values: { study_module_translations },
+              } = context
 
-            if (!value || value === "") {
-              return true // previous should have caught the empty
-            }
+              if (!value || value === "") {
+                return true // previous should have caught the empty
+              }
 
-            const currentIndexMatch =
-              (path || "").match(/^.*\[(\d+)\].*$/) || []
-            const currentIndex =
-              currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-            const otherTranslationLanguages = study_module_translations
-              .filter(
-                (c: StudyModuleTranslationFormValues, index: number) =>
-                  c.language !== "" && index !== currentIndex,
-              )
-              .map((c: StudyModuleTranslationFormValues) => c.language)
+              const currentIndexMatch =
+                (path || "").match(/^.*\[(\d+)\].*$/) || []
+              const currentIndex =
+                currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+              const otherTranslationLanguages = study_module_translations
+                .filter(
+                  (c: StudyModuleTranslationFormValues, index: number) =>
+                    c.language !== "" && index !== currentIndex,
+                )
+                .map((c: StudyModuleTranslationFormValues) => c.language)
 
-            return otherTranslationLanguages.indexOf(value) === -1
-          }),
+              return otherTranslationLanguages.indexOf(value) === -1
+            },
+          ),
         description: Yup.string().required(t("validationRequired")),
       }),
     ),
