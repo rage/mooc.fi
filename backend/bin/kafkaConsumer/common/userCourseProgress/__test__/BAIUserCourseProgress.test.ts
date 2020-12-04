@@ -8,7 +8,7 @@ import {
 } from "../generateBAIUserCourseProgress"
 import { ExerciseCompletionPart } from "../interfaces"
 
-const env = require("../env.json")
+const env = require(__dirname + "/../../../../../config/env.json")
 
 describe("calculates tier progress correctly", () => {
   test("skips exercises not found", () => {
