@@ -100,7 +100,7 @@
     "websocket": "^1.0.32",
     "winston": "^3.3.3",
     "winston-sentry-log": "^1.0.19",
-    "yup": "^0.32.0"
+    "yup": "0.31.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
