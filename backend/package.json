@@ -48,11 +48,11 @@
   "license": "ISC",
   "dependencies": {
     "@devoxa/prisma-relay-cursor-connection": "^1.1.0",
-    "@google-cloud/storage": "^5.5.0",
+    "@google-cloud/storage": "^5.6.0",
     "@nexus/schema": "^0.19.1",
     "@prisma/client": "^2.12.1",
-    "@sentry/integrations": "^5.27.3",
-    "@sentry/node": "^5.27.3",
+    "@sentry/integrations": "^5.28.0",
+    "@sentry/node": "^5.28.0",
     "@types/compression": "^1.7.0",
     "@types/graphql-upload": "^8.0.4",
     "@types/lodash": "^4.14.165",
@@ -75,7 +75,7 @@
     "express": "^4.17.1",
     "graphql": "^15.4.0",
     "graphql-middleware": "^4.0.2",
-    "graphql-scalars": "^1.4.1",
+    "graphql-scalars": "^1.5.0",
     "graphql-upload": "^11.0.0",
     "helmet": "^4.2.0",
     "jest-junit": "^12.0.0",
@@ -123,9 +123,9 @@
     "nock": "^13.0.5",
     "tmc-client-js": "0.0.9",
     "ts-jest": "^26.4.4",
-    "ts-node": "^9.0.0",
+    "ts-node": "^9.1.0",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^4.0.5"
+    "typescript": "^4.1.2"
   },
   "resolutions": {
     "graphql-upload": "11.0.0"
