@@ -3,7 +3,7 @@ require("dotenv-safe").config({
 })
 import { User, Course, UserCourseProgress } from "@prisma/client"
 import prisma from "../../../lib/prisma"
-import { BAItiers } from "./courseConfig"
+import { BAItiers } from "../../../../config/courseConfig"
 import * as winston from "winston"
 import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
 import { checkBAICompletion } from "./generateBAIUserCourseProgress"
