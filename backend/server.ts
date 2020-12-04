@@ -389,7 +389,7 @@ const _express = () => {
       return err(res.status(500).json({ success: false, message: "Error creating user", error: accessToken.error }))
     }
 
-    const userDetails = await getCurrentUserDetails(accessToken)
+    const userDetails = await getCurrentUserDetails(accessToken.token)
 
     const hashPassword = await argon2.hash(password, {
       type: argon2.argon2id,
@@ -397,7 +397,7 @@ const _express = () => {
       memoryCost: 15360,
       hashLength: 64,
     })
-
+    
     let user = (
       await Knex.select<any, User[]>("id").from("prisma2.user").where("upstream_id", userDetails.id)
     )?.[0]
@@ -414,14 +414,13 @@ const _express = () => {
           })
           .returning("*")
         )?.[0]
-      } catch {
-        return err(res.status(500).json({ message: "Error creating user" }))
+      } catch(error) {
+        return err(res.status(500).json({ message: "Error creating user", error }))
       }  
     }
    
     return res.status(200).json({
       success: true,
-      user,
       userDetails
     })
   })
@@ -442,18 +441,30 @@ const _express = () => {
       const accessToken = await authenticateUser(email, password)
 
       express.use(session({
-        secret: accessToken,
+        secret: accessToken.token,
         cookie: {
           maxAge: 365 * 24 * 60 * 60 * 1000,
           secure: true
         },
         saveUninitialized: false,
         resave: false,
-        unset: 'destroy'
+        unset: 'keep'
       }));
 
+
+      //Temp for Dev
+      return res.status(200).cookie(
+        'access_token', accessToken.token, {
+          expires: new Date(Date.now() + 8 * 3600000)
+        }).json({
+          success: true,
+          access_token: accessToken.token
+        })
+      ////
+
       return res.status(200).json({
-        success: true
+        success: true,
+        access_token: accessToken.token
       })
 
     } else {

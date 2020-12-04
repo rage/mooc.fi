@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<any> {
     return knex.schema.hasColumn("user", "password").then((exists) => {
         if (!exists) {
             return knex.schema.alterTable("user", function (table) {
-                table.string("password", 128).notNullable()
+                table.string("password", 255).notNullable()
             })
         }
     })

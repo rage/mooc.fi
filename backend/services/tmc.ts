@@ -132,7 +132,11 @@ export const authenticateUser = async (username: string, password: string): Prom
   })
   .then(response => response.data)
   .then(json => {
-    return {success: false, token: null, error: json }
+    if(json.access_token) {
+      return {success: true, token: json.access_token, error: null }
+    } else {
+      return {success: false, token: null, error: json }
+    }
   })
   .catch(error => {
     return {success: false, token: null, error }
