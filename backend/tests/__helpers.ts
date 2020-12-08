@@ -42,6 +42,7 @@ export type TestContext = {
   knexClient: knex
   user?: User
   version: number
+  port: number
 }
 
 export type TestContextContainer = {
@@ -61,9 +62,10 @@ export function getTestContext(): TestContext {
 
   // beforeEach
   beforeAll(async (done) => {
-    const { prisma, client, knexClient } = await ctx.before()
+    const { port, prisma, client, knexClient } = await ctx.before()
 
     Object.assign(testContext, {
+      port,
       prisma,
       client,
       knexClient,
@@ -100,6 +102,7 @@ function createTestContext() {
 
       const { apollo, express } = server({
         prisma,
+        knexClient,
         logger: logger.createLogger(),
         extraContext: {
           version: version++,
@@ -114,6 +117,7 @@ function createTestContext() {
           DEBUG && console.log(`got port ${port}`)
 
           return {
+            port,
             client: new GraphQLClient(`http://localhost:${port}`),
             prisma,
             knexClient,
