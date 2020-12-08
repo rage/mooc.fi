@@ -1,17 +1,21 @@
 const PRODUCTION = process.env.NODE_ENV === "production"
 
-import { UserInfo } from "./domain/UserInfo"
-import Knex from "./services/knex"
+import type knexType from "knex"
 import { redisify } from "./services/redis"
-import TmcClient from "./services/tmc"
-import { User, Completion, PrismaClient } from "@prisma/client"
+import { Completion, PrismaClient } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
-import { ok, err, Result } from "./util/result"
 import createExpress from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
+import {
+  getUser as _getUser,
+  getOrganization as _getOrganization,
+} from "./util/server-functions"
+import * as yup from "yup"
+import { chunk } from "lodash"
+import bodyParser from "body-parser"
 
 const JSONStream = require("JSONStream")
 const helmet = require("helmet")
@@ -42,8 +46,16 @@ interface ExerciseCompletionResult {
   quizzes_id: string
 }
 
+interface ExpressParams {
+  prisma: PrismaClient
+  knex: knexType
+}
+
 // wrapped so that the context isn't cached between test instances
-const _express = () => {
+const _express = ({ prisma, knex }: ExpressParams) => {
+  const getUser = _getUser(knex)
+  const getOrganization = _getOrganization(knex)
+
   const express = createExpress()
 
   express.use(cors())
@@ -51,30 +63,30 @@ const _express = () => {
   if (!TEST) {
     express.use(morgan("combined"))
   }
+  express.use(bodyParser.json())
 
   express.get("/api/completions/:course", async function (req: any, res: any) {
-    const rawToken = req.get("Authorization")
-    const secret: string = rawToken?.split(" ")[1] ?? ""
+    const organizationResult = await getOrganization(req, res)
+
+    if (organizationResult.isErr()) {
+      return organizationResult.error
+    }
+
+    // TODO/FIXME? organization value not used
 
     let course_id: string
-    const org = (
-      await Knex.select("*")
-        .from("organization")
-        .where({ secret_key: secret })
-        .limit(1)
-    )[0]
-    if (!org) {
-      return res.status(401).json({ message: "Access denied." })
-    }
+
     const course = (
-      await Knex.select("id")
+      await knex
+        .select("id")
         .from("course")
         .where({ slug: req.params.course })
         .limit(1)
     )[0]
     if (!course) {
       const course_alias = (
-        await Knex.select("course_id")
+        await knex
+          .select("course_id")
           .from("course_alias")
           .where({ course_code: req.params.course })
       )[0]
@@ -85,7 +97,7 @@ const _express = () => {
     } else {
       course_id = course.id
     }
-    const sql = Knex.select("*").from("completion").where({
+    const sql = knex.select("*").from("completion").where({
       course_id,
       eligible_for_ects: true,
     })
@@ -114,7 +126,8 @@ const _express = () => {
 
           const { id } =
             (
-              await Knex.select("course.id")
+              await knex
+                .select("course.id")
                 .from("course")
                 .join("user_course_settings_visibility", {
                   "course.id": "user_course_settings_visibility.course_id",
@@ -128,7 +141,8 @@ const _express = () => {
 
           if (!id) {
             const courseAlias = (
-              await Knex.select("course_alias.course_id")
+              await knex
+                .select("course_alias.course_id")
                 .from("course_alias")
                 .join("course", { "course_alias.course_id": "course.id" })
                 .join("user_course_settings_visibility", {
@@ -149,7 +163,8 @@ const _express = () => {
           }
 
           let { count } = (
-            await Knex.countDistinct("id as count")
+            await knex
+              .countDistinct("id as count")
               .from("user_course_setting")
               .where({ course_id, language: language })
           )?.[0]
@@ -201,19 +216,17 @@ const _express = () => {
 
     const { user } = getUserResult.value
 
-    const exercise_completions = await Knex.select<
-      any,
-      ExerciseCompletionResult[]
-    >(
-      "user_id",
-      "exercise_id",
-      "n_points",
-      "part",
-      "section",
-      "max_points",
-      "completed",
-      "custom_id as quizzes_id",
-    )
+    const exercise_completions = await knex
+      .select<any, ExerciseCompletionResult[]>(
+        "user_id",
+        "exercise_id",
+        "n_points",
+        "part",
+        "section",
+        "max_points",
+        "completed",
+        "custom_id as quizzes_id",
+      )
       .from("exercise_completion")
       .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
       .where("exercise.course_id", id)
@@ -250,31 +263,31 @@ const _express = () => {
 
     const { user } = getUserResult.value
 
-    const exercise_completions = await Knex.select<
-      any,
-      ExerciseCompletionResult[]
-    >(
-      "user_id",
-      "exercise_id",
-      "n_points",
-      "part",
-      "section",
-      "max_points",
-      "completed",
-      "custom_id as quizzes_id",
-    )
+    const exercise_completions = await knex
+      .select<any, ExerciseCompletionResult[]>(
+        "user_id",
+        "exercise_id",
+        "n_points",
+        "part",
+        "section",
+        "max_points",
+        "completed",
+        "custom_id as quizzes_id",
+      )
       .from("exercise_completion")
       .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
       .where("exercise.course_id", id)
       .andWhere("exercise_completion.user_id", user.id)
     const { completions_handled_by_id = id } =
       (
-        await Knex.select("completions_handled_by_id")
+        await knex
+          .select("completions_handled_by_id")
           .from("course")
           .where("id", id)
       )[0] ?? {}
 
-    const completions = await Knex.select<any, Completion[]>("*")
+    const completions = await knex
+      .select<any, Completion[]>("*")
       .from("completion")
       .where("course_id", completions_handled_by_id)
       .andWhere("user_id", user.id)
@@ -315,7 +328,8 @@ const _express = () => {
 
     const { user } = getUserResult.value
 
-    const data = await Knex.select<any, any>("course_id", "extra")
+    const data = await knex
+      .select<any, any>("course_id", "extra")
       .from("user_course_progress")
       .where("user_course_progress.course_id", id)
       .andWhere("user_course_progress.user_id", user.id)
@@ -328,90 +342,99 @@ const _express = () => {
     })
   })
 
-  interface GetUserReturn {
-    user: User
-    details: UserInfo
+  interface RegisterCompletion {
+    completion_id: string
+    student_number: string
+    eligible_for_ects?: boolean
+    tier?: number
   }
 
-  async function getUser(
-    req: any,
-    res: any,
-  ): Promise<Result<GetUserReturn, any>> {
-    const rawToken = req.get("Authorization")
+  express.post("/api/register-completions", async (req: any, res: any) => {
+    const organizationResult = await getOrganization(req, res)
 
-    if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
-      return err(res.status(400).json({ message: "not logged in" }))
+    if (organizationResult.isErr()) {
+      return organizationResult.error
     }
 
-    let details: UserInfo | null = null
+    const org = organizationResult.value
+
+    const { completions }: { completions: RegisterCompletion[] } =
+      req.body ?? {}
+
+    if (!completions) {
+      return res.status(400).json({ message: "must provide completions" })
+    }
+
+    const registerCompletionSchema = yup.array().of(
+      yup
+        .object()
+        .shape({
+          completion_id: yup.string().min(32).max(36).required(),
+          student_number: yup.string().required(),
+        })
+        .required(),
+    )
+
     try {
-      const client = new TmcClient(rawToken)
-      details = await redisify<UserInfo>(
-        async () => await client.getCurrentUserDetails(),
-        {
-          prefix: "userdetails",
-          expireTime: 3600,
-          key: rawToken,
-        },
-      )
-    } catch (e) {
-      console.log("error", e)
+      await registerCompletionSchema.validate(completions)
+    } catch (error) {
+      return res.status(403).json({ message: "malformed data", error })
     }
 
-    if (!details) {
-      return err(res.status(400).json({ message: "invalid credentials" }))
-    }
+    const buildPromises = (data: RegisterCompletion[]) => {
+      return data.map(async (entry) => {
+        const { course_id, user_id } =
+          (await prisma.completion.findUnique({
+            where: { id: entry.completion_id },
+            select: { course_id: true, user_id: true },
+          })) ?? {}
 
-    let user = (
-      await Knex.select<any, User[]>("id")
-        .from("user")
-        .where("upstream_id", details.id)
-    )?.[0]
-
-    if (!user) {
-      try {
-        user = (
-          await Knex("user")
-            .insert({
-              upstream_id: details.id,
-              administrator: details.administrator,
-              email: details.email.trim(),
-              first_name: details.user_field.first_name.trim(),
-              last_name: details.user_field.last_name.trim(),
-              username: details.username,
-            })
-            .returning("*")
-        )?.[0]
-      } catch {
-        // race condition or something
-        user = (
-          await Knex.select<any, User[]>("id")
-            .from("user")
-            .where("upstream_id", details.id)
-        )?.[0]
-
-        if (!user) {
-          return err(res.status(500).json({ message: "error creating user" }))
+        if (!course_id || !user_id) {
+          // TODO/FIXME: we now fail silently if course/user not found
+          return Promise.resolve()
         }
-      }
+
+        return prisma.completionRegistered.create({
+          data: {
+            completion: {
+              connect: { id: entry.completion_id },
+            },
+            organization: {
+              connect: { id: org?.id },
+            },
+            course: { connect: { id: course_id } },
+            real_student_number: entry.student_number,
+            user: { connect: { id: user_id } },
+          },
+        })
+      })
     }
 
-    return ok({
-      user,
-      details,
-    })
-  }
+    const queue = chunk(completions, 500)
+    for (const completionChunk of queue) {
+      const promises = buildPromises(completionChunk)
+      await Promise.all(promises)
+    }
+
+    return res.status(200).json({ message: "success" })
+  })
 
   return express
 }
 
 interface ServerParams {
   prisma: PrismaClient
+  knexClient: knexType
   logger: winston.Logger
   extraContext?: Record<string, any>
 }
 
-export default ({ prisma, logger, extraContext = {} }: ServerParams) => {
+export default ({
+  prisma,
+  knexClient,
+  logger,
+  extraContext = {},
+}: ServerParams) => {
   const apollo = new ApolloServer({
     context: (ctx) => ({
       ...ctx,
@@ -427,7 +450,7 @@ export default ({ prisma, logger, extraContext = {} }: ServerParams) => {
     logger,
     debug: DEBUG,
   })
-  const express = _express()
+  const express = _express({ prisma, knex: knexClient })
 
   apollo.applyMiddleware({ app: express, path: PRODUCTION ? "/api" : "/" })
 
