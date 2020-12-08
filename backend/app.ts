@@ -16,6 +16,7 @@ import { wsListen } from "./wsServer"
 import server from "./server"
 import { PrismaClient } from "@prisma/client"
 import * as winston from "winston"
+import knex from "./services/knex"
 
 const logger = winston.createLogger({
   level: "info",
@@ -39,6 +40,7 @@ const prismaClient = new PrismaClient({
 const { express } = server({
   prisma: prismaClient,
   logger,
+  knexClient: knex,
 })
 
 /*prismaClient.on("query", (e) => {

@@ -1,27 +1,29 @@
 import type { PrismaClient } from "@prisma/client"
-import { courses, study_modules } from "."
+import { courses, study_modules, organizations, users, completions } from "."
 
 export const seed = async (prisma: PrismaClient) => {
-  const seededModules = await Promise.all(
-    study_modules.map(
-      async (module) =>
-        await prisma.studyModule.create({
-          data: module,
-        }),
-    ),
-  )
+  const create = async <T>(key: keyof PrismaClient, data: T[]) =>
+    Promise.all(
+      data.map(
+        async (datum) =>
+          // @ts-ignore: key
+          await prisma[key].create({
+            data: datum,
+          }),
+      ),
+    )
 
-  const seededCourses = await Promise.all(
-    courses.map(
-      async (course) =>
-        await prisma.course.create({
-          data: course,
-        }),
-    ),
-  )
+  const seededModules = await create("studyModule", study_modules)
+  const seededCourses = await create("course", courses)
+  const seededOrganizations = await create("organization", organizations)
+  const seededUsers = await create("user", users)
+  const seededCompletions = await create("completion", completions)
 
   return {
     courses: seededCourses,
     study_modules: seededModules,
+    organizations: seededOrganizations,
+    users: seededUsers,
+    completions: seededCompletions,
   }
 }
