@@ -12,7 +12,10 @@ import {
 import Knex from "../../services/knex"
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
-import { groupBy } from "lodash"
+import { chunk, difference, groupBy } from "lodash"
+import { notEmpty } from "../../util/notEmpty"
+import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { User } from "@prisma/client"
 
 export const CompletionMutations = extendType({
   type: "Mutation",
@@ -136,6 +139,82 @@ export const CompletionMutations = extendType({
         })
 
         return res
+      },
+    })
+
+    t.field("recheckCompletions", {
+      type: "String",
+      args: {
+        course_id: idArg(),
+        slug: stringArg(),
+      },
+      authorize: isAdmin,
+      resolve: async (_, { course_id, slug }, ctx) => {
+        if ((!course_id && !slug) || (course_id && slug)) {
+          throw new Error("must provide course_id or slug!")
+        }
+
+        const course = await ctx.prisma.course.findUnique({
+          where: {
+            id: course_id ?? undefined,
+            slug: slug ?? undefined,
+          },
+        })
+
+        if (!course) {
+          throw new Error("course not found")
+        }
+
+        // find users on course with points
+        const progresses = await ctx.prisma.userCourseProgress.findMany({
+          where: {
+            course_id,
+            ...(slug ? { course: { slug } } : {}),
+            n_points: { gt: 0 },
+          },
+        })
+
+        const progressByUser = groupBy(progresses, "user_id")
+        const userIds = Object.keys(progressByUser)
+
+        // find users with completions
+        const completions = await ctx.prisma.completion.findMany({
+          where: {
+            course_id,
+            user_id: { in: userIds },
+          },
+        })
+
+        // filter users without completions
+        const userIdsWithoutCompletions = difference(
+          userIds,
+          completions.map((c) => c.user_id),
+        ).filter(notEmpty)
+
+        const users = await ctx.prisma.user.findMany({
+          where: {
+            id: { in: userIdsWithoutCompletions },
+          },
+        })
+
+        const userChunks = chunk(users, 100)
+
+        const buildPromises = (array: User[]) =>
+          array.map(async (user) => {
+            generateUserCourseProgress({
+              user,
+              course,
+              userCourseProgress: progressByUser[user.id][0],
+              logger: ctx.logger,
+            })
+          })
+
+        for (const userChunk of userChunks) {
+          const promises = buildPromises(userChunk)
+          await Promise.all(promises)
+        }
+
+        return `${users.length} users rechecked`
       },
     })
   },
