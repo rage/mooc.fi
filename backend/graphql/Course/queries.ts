@@ -1,4 +1,12 @@
-import { arg, extendType, idArg, nonNull, stringArg } from "@nexus/schema"
+import {
+  arg,
+  booleanArg,
+  extendType,
+  idArg,
+  nonNull,
+  nullable,
+  stringArg,
+} from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
@@ -88,15 +96,51 @@ export const CourseQueries = extendType({
       args: {
         orderBy: arg({ type: "CourseOrderByInput" }),
         language: stringArg(),
+        search: nullable(stringArg()),
+        hidden: nullable(booleanArg()),
+        handledBy: nullable(idArg()),
       },
       resolve: async (_, args, ctx) => {
-        const { orderBy, language } = args
+        const { orderBy, language, search, hidden, handledBy } = args
+
+        const searchQuery = {
+          ...(search
+            ? {
+                OR: [
+                  ...[
+                    "name",
+                    "slug",
+                    "teacher_in_charge_name",
+                    "teacher_in_charge_email",
+                    "support_email",
+                  ].map((field) => ({
+                    [field]: { contains: search, mode: "insensitive" },
+                  })),
+                  /*{
+                    course_translations: {
+                      name: {
+                        contains: search,
+                        mode: "insensitive",
+                      },
+                    },
+                  },*/
+                ],
+              }
+            : {}),
+          ...(hidden ? { hidden } : {}),
+          ...(handledBy
+            ? {
+                completions_handled_by_id: handledBy,
+              }
+            : {}),
+        }
 
         const courses: (Course & {
           course_translations?: CourseTranslation[]
         })[] = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+          where: searchQuery,
           ...(language
             ? {
                 include: {
