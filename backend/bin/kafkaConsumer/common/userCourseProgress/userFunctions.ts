@@ -14,13 +14,7 @@ import Knex from "../../../../services/knex"
 import * as winston from "winston"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
-// import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
-
-function isNullOrUndefined<T>(
-  obj: T | null | undefined,
-): obj is null | undefined {
-  return typeof obj === "undefined" || obj === null
-}
+import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
 
 export const getCombinedUserCourseProgress = async (
   user: User,

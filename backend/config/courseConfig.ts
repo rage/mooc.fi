@@ -5,7 +5,7 @@ interface ExerciseInfo {
   course_id: string
 }
 
-const env = require("./env.json")
+const env = require(__dirname + "/env.json")
 
 export const BAIexercises: Record<string, ExerciseInfo> = {
   [env.EX_ONE_BEGINNER]: {

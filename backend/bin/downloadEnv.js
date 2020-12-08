@@ -15,6 +15,6 @@ function download(filename, url) {
 
 console.log("Downloading BAI course env")
 download(
-  path.join(__dirname, "/kafkaConsumer/common/userCourseProgress/env.json"),
+  path.join(__dirname, "../config/env.json"),
   "https://gist.githubusercontent.com/Technopathic/2443135b588895ff2b21631393eacdb6/raw/49e796efd23a8bc1f72b24d5f3b8b3f90667c64f/env.json",
 )
