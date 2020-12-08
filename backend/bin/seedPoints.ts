@@ -184,6 +184,39 @@ const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
   const UsersInDb = await prisma.user.findMany({ take: 100 })
   return await Promise.all(
     UsersInDb.map(async (user) => {
+      const progress = [
+        {
+          group: "week1",
+          max_points: 10,
+          n_points: Math.floor(Math.random() * 10),
+          progress: Math.random(),
+        },
+        {
+          group: "week2",
+          max_points: 8,
+          n_points: Math.floor(Math.random() * 8),
+          progress: Math.random(),
+        },
+        {
+          group: "week3",
+          max_points: 12,
+          n_points: Math.floor(Math.random() * 12),
+          progress: Math.random(),
+        },
+        {
+          group: "week4",
+          max_points: 20,
+          n_points: Math.floor(Math.random() * 20),
+          progress: Math.random(),
+        },
+        {
+          group: "week5",
+          max_points: 18,
+          n_points: Math.floor(Math.random() * 18),
+          progress: Math.random(),
+        },
+      ]
+
       const ucp: Prisma.UserCourseProgressCreateInput = {
         user: {
           connect: {
@@ -195,38 +228,9 @@ const addUserCourseProgressess = async ({ courseId }: { courseId: string }) => {
             id: courseId,
           },
         },
-        progress: [
-          {
-            group: "week1",
-            max_points: 10,
-            n_points: Math.floor(Math.random() * 10),
-            progress: Math.random(),
-          },
-          {
-            group: "week2",
-            max_points: 8,
-            n_points: Math.floor(Math.random() * 8),
-            progress: Math.random(),
-          },
-          {
-            group: "week3",
-            max_points: 12,
-            n_points: Math.floor(Math.random() * 12),
-            progress: Math.random(),
-          },
-          {
-            group: "week4",
-            max_points: 20,
-            n_points: Math.floor(Math.random() * 20),
-            progress: Math.random(),
-          },
-          {
-            group: "week5",
-            max_points: 18,
-            n_points: Math.floor(Math.random() * 18),
-            progress: Math.random(),
-          },
-        ],
+        progress,
+        n_points: progress.reduce((acc, curr) => acc + curr.n_points, 0),
+        max_points: progress.reduce((acc, curr) => acc + curr.max_points, 0),
       }
 
       return await prisma.userCourseProgress.create({ data: ucp })

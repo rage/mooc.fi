@@ -7,7 +7,7 @@ import {
   BAIbadge,
   pointsNeeded,
   exerciseCompletionsNeeded,
-} from "./courseConfig"
+} from "../../../../config/courseConfig"
 import { DatabaseInputError } from "../../../lib/errors"
 import Knex from "../../../../services/knex"
 import prisma from "../../../lib/prisma"

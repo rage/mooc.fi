@@ -1,13 +1,13 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import { WideContainer } from "/components/Container"
-import { useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { gql } from "@apollo/client"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
-import { Card, Typography } from "@material-ui/core"
+import { Card, Typography, Button } from "@material-ui/core"
 import LanguageContext from "/contexes/LanguageContext"
 import LangLink from "/components/LangLink"
 import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
@@ -16,6 +16,10 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import getCoursesTranslator from "/translations/courses"
 import styled from "styled-components"
+import {
+  AllCompletionsQuery,
+  PreviousPageCompletionsQuery,
+} from "/components/Dashboard/CompletionsList"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -38,10 +42,19 @@ export const CourseDetailsFromSlugQuery = gql`
   }
 `
 
+const recheckCompletionsMutation = gql`
+  mutation RecheckCompletionMutation($slug: String) {
+    recheckCompletions(slug: $slug)
+  }
+`
+
 const Course = () => {
   const { language } = useContext(LanguageContext)
   const slug = useQueryParameter("id")
   const t = getCoursesTranslator(language)
+
+  const [checking, setChecking] = useState(false)
+  const [checkMessage, setCheckMessage] = useState("")
 
   const { data, loading, error } = useQuery<CourseDetailsData>(
     CourseDetailsFromSlugQuery,
@@ -49,6 +62,28 @@ const Course = () => {
       variables: { slug },
     },
   )
+
+  const [recheckCompletions] = useMutation(recheckCompletionsMutation, {
+    variables: {
+      slug,
+    },
+    refetchQueries: [
+      { query: AllCompletionsQuery, variables: { course: slug } },
+      { query: PreviousPageCompletionsQuery, variables: { course: slug } }, // TODO: add more?
+    ],
+  })
+
+  const handleRecheck = async () => {
+    setChecking(true)
+    try {
+      const res = await recheckCompletions()
+      setCheckMessage(res?.data?.recheckCompletions ?? "")
+    } catch {
+      setCheckMessage("Error while re-checking")
+    } finally {
+      setChecking(false)
+    }
+  }
 
   if (loading || !data) {
     return <Spinner />
@@ -101,6 +136,10 @@ const Course = () => {
             course={data.course}
           />
         )}
+        <Button color="primary" onClick={handleRecheck} disabled={checking}>
+          Re-check completions
+        </Button>
+        {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
         <CourseDashboard />
       </WideContainer>
     </section>
