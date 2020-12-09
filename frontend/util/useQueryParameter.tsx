@@ -33,7 +33,7 @@ export function useQueryParameter(parameter: string, check: boolean = true) {
     return ""
   }
   if (typeof checkingParameter === "string") {
-    return checkingParameter
+    return decodeURI(checkingParameter)
   }
-  return checkingParameter[checkingParameter.length - 1]
+  return decodeURI(checkingParameter[checkingParameter.length - 1])
 }

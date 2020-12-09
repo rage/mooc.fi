@@ -139,24 +139,26 @@ const CourseCard = memo(({ course, loading }: CourseCardProps) => (
             </CourseInfoField>
             <CourseInfoField>
               <table>
-                <tr>
-                  <td>
-                    <b>Teacher in charge:</b>
-                  </td>
-                  <td>{course?.teacher_in_charge_name || "-"}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>Teacher in charge email:</b>
-                  </td>
-                  <td>{course?.teacher_in_charge_email || "-"}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>Support email:</b>
-                  </td>
-                  <td>{course?.support_email || "-"}</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>
+                      <b>Teacher in charge:</b>
+                    </td>
+                    <td>{course?.teacher_in_charge_name || "-"}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Teacher in charge email:</b>
+                    </td>
+                    <td>{course?.teacher_in_charge_email || "-"}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Support email:</b>
+                    </td>
+                    <td>{course?.support_email || "-"}</td>
+                  </tr>
+                </tbody>
               </table>
             </CourseInfoField>
           </CourseInfo>

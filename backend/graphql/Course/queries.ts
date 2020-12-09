@@ -103,36 +103,49 @@ export const CourseQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { orderBy, language, search, hidden, handledBy } = args
 
-        const searchQuery = {
-          ...(search
-            ? {
-                OR: [
-                  ...[
-                    "name",
-                    "slug",
-                    "teacher_in_charge_name",
-                    "teacher_in_charge_email",
-                    "support_email",
-                  ].map((field) => ({
-                    [field]: { contains: search, mode: "insensitive" },
-                  })),
-                  /*{
-                    course_translations: {
-                      name: {
-                        contains: search,
-                        mode: "insensitive",
-                      },
+        const searchQuery = []
+
+        if (search) {
+          searchQuery.push({
+            OR: [
+              ...[
+                "name",
+                "slug",
+                "teacher_in_charge_name",
+                "teacher_in_charge_email",
+                "support_email",
+              ].map((field) => ({
+                [field]: { contains: search, mode: "insensitive" },
+              })),
+              {
+                course_translations: {
+                  some: {
+                    name: {
+                      contains: search,
+                      mode: "insensitive",
                     },
-                  },*/
-                ],
-              }
-            : {}),
-          ...(hidden ? { hidden } : {}),
-          ...(handledBy
-            ? {
-                completions_handled_by_id: handledBy,
-              }
-            : {}),
+                  },
+                },
+              },
+            ],
+          })
+        }
+        if (!hidden) {
+          searchQuery.push({
+            OR: [
+              {
+                hidden: false,
+              },
+              {
+                hidden: null,
+              },
+            ],
+          })
+        }
+        if (handledBy) {
+          searchQuery.push({
+            completions_handled_by: { slug: handledBy },
+          })
         }
 
         const courses: (Course & {
@@ -140,7 +153,7 @@ export const CourseQueries = extendType({
         })[] = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
-          where: searchQuery,
+          where: { AND: searchQuery },
           ...(language
             ? {
                 include: {
@@ -169,6 +182,20 @@ export const CourseQueries = extendType({
 
         // TODO: (?) provide proper typing
         return filtered as (Course & { description: string; link: string })[]
+      },
+    })
+
+    t.list.field("handlerCourses", {
+      type: "Course",
+      authorize: isAdmin,
+      resolve: async (_, __, ctx) => {
+        return ctx.prisma.course.findMany({
+          where: {
+            handles_completions_for: {
+              some: {},
+            },
+          },
+        })
       },
     })
 

@@ -132,3 +132,13 @@ export const CourseEditorCoursesQuery = gql`
     }
   }
 `
+
+export const HandlerCoursesQuery = gql`
+  query HandlerCourses {
+    handlerCourses {
+      id
+      slug
+      name
+    }
+  }
+`
