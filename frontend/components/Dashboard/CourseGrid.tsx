@@ -1,4 +1,3 @@
-import { Grid } from "@material-ui/core"
 import CourseCard from "./CourseCard"
 import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import { range } from "lodash"
