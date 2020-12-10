@@ -109,6 +109,18 @@ const langArr: langProps[] = [
     country: "Croatia",
     langName: "Croatian",
   },
+  {
+    language: "ro",
+    completion_language: "ro_RO",
+    country: "Romania",
+    langName: "Romanian",
+  },
+  {
+    language: "da",
+    completion_language: "da_DK",
+    country: "Denmark",
+    langName: "Danish",
+  },
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
@@ -131,21 +143,17 @@ const getDataByLanguage = async (langProps: langProps) => {
     },
   })
   const now = new Date()
-  return `\`\`\`Stats ${now.getDate()}.${
-    now.getMonth() + 1
-  }.${now.getFullYear()}:
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() + 1
+    }.${now.getFullYear()}:
 
-  1) ${totalByLang.length} registered students in the ${
-    langProps.langName
-  } version
+  1) ${totalByLang.length} registered students in the ${langProps.langName
+    } version
   2) of these ${completionsByLang.length} have completed the course.
-  3) ${
-    englishInLang.length
-  } people registered for the English course residing in ${langProps.country}.
+  3) ${englishInLang.length
+    } people registered for the English course residing in ${langProps.country}.
 
-  In total: ${totalByLang.length} + ${englishInLang.length} = ${
-    totalByLang.length + englishInLang.length
-  }\`\`\` `
+  In total: ${totalByLang.length} + ${englishInLang.length} = ${totalByLang.length + englishInLang.length
+    }\`\`\` `
 }
 
 // const getGlobalStats = async () => {
@@ -186,9 +194,8 @@ const getGlobalStats = async (): Promise<string> => {
   )[0].count
   const now = new Date()
 
-  return `\`\`\`Stats ${now.getDate()}.${
-    now.getMonth() + 1
-  }.${now.getFullYear()}:
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() + 1
+    }.${now.getFullYear()}:
     1) ${totalUsers} registered students in all versions
     2) of these ${totalCompletions} have completed the course.\`\`\` `
 }
@@ -231,9 +238,8 @@ const getGlobalStatsBAI = async (): Promise<string> => {
 
   const now = new Date()
 
-  return `\`\`\`Stats ${now.getDate()}.${
-    now.getMonth() + 1
-  }.${now.getFullYear()}:
+  return `\`\`\`Stats ${now.getDate()}.${now.getMonth() + 1
+    }.${now.getFullYear()}:
       1) ${totalUsers} registered students
       2) ${beginnerCompletions} have completed the Beginner Tier
       3) ${intermediateCompletions} have completed the Intermediate Tier
