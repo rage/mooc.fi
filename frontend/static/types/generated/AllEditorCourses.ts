@@ -85,4 +85,5 @@ export interface AllEditorCoursesVariables {
   search?: string | null
   hidden?: boolean | null
   handledBy?: string | null
+  status?: CourseStatus[] | null
 }

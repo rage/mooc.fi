@@ -3,6 +3,7 @@ import {
   booleanArg,
   extendType,
   idArg,
+  list,
   nonNull,
   nullable,
   stringArg,
@@ -97,11 +98,12 @@ export const CourseQueries = extendType({
         orderBy: arg({ type: "CourseOrderByInput" }),
         language: stringArg(),
         search: nullable(stringArg()),
-        hidden: nullable(booleanArg()),
-        handledBy: nullable(idArg()),
+        hidden: nullable(booleanArg({ default: true })),
+        handledBy: nullable(stringArg()),
+        status: nullable(list(nonNull(arg({ type: "CourseStatus" })))),
       },
       resolve: async (_, args, ctx) => {
-        const { orderBy, language, search, hidden, handledBy } = args
+        const { orderBy, language, search, hidden, handledBy, status } = args
 
         const searchQuery = []
 
@@ -145,6 +147,11 @@ export const CourseQueries = extendType({
         if (handledBy) {
           searchQuery.push({
             completions_handled_by: { slug: handledBy },
+          })
+        }
+        if (status?.length) {
+          searchQuery.push({
+            status: { in: status },
           })
         }
 

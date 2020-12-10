@@ -18,6 +18,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"
 import FilterMenu from "/components/FilterMenu"
 import { HandlerCourses } from "/static/types/generated/HandlerCourses"
+import { CourseStatus } from "/static/types/generated/globalTypes"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -27,6 +28,7 @@ interface SearchVariables {
   search?: string
   hidden?: boolean | null
   handledBy?: string | null
+  status?: string[] | null
 }
 
 const notEmptyOrEmptyString = (value: any) =>
@@ -39,13 +41,17 @@ function Courses() {
 
   const searchParam = useQueryParameter("search", false)
   const hiddenParam =
-    (useQueryParameter("hidden", false) ?? "").toLowerCase() === "true" || null
+    (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" || null
   const handledByParam = useQueryParameter("handledBy", false) || null
+  const statusParam = useQueryParameter("status", false)
+    ?.split(",")
+    .filter(notEmptyOrEmptyString) || ["Active", "Upcoming"]
 
   const initialSearchVariables: SearchVariables = {
     search: searchParam || "",
-    hidden: hiddenParam || null,
+    hidden: hiddenParam || true,
     handledBy: handledByParam || null,
+    status: statusParam || null,
   }
 
   const [searchVariables, setSearchVariables] = useState<SearchVariables>(
@@ -65,15 +71,21 @@ function Courses() {
   } = useQuery<HandlerCourses>(HandlerCoursesQuery)
 
   useEffect(() => {
-    const params = (Object.keys(searchVariables) as Array<
-      keyof typeof searchVariables
-    >)
-      .map((field) =>
+    const params = [
+      ...(["search", "handledBy"] as Array<
+        keyof typeof searchVariables
+      >).map((field) =>
         notEmptyOrEmptyString(searchVariables[field])
           ? `${field}=${encodeURI(searchVariables[field]?.toString() ?? "")}`
           : "",
-      )
-      .filter(Boolean)
+      ),
+      !searchVariables.hidden ? `hidden=false` : "",
+      searchVariables.status?.length &&
+      JSON.stringify(searchVariables.status.sort()) !==
+        JSON.stringify(["Active", "Upcoming"])
+        ? `status=${searchVariables.status.join(",")}`
+        : "",
+    ].filter(Boolean)
 
     const query = params.length ? `?${params.join("&")}` : ""
     const as = `/${language}/courses/${query}`
@@ -102,8 +114,9 @@ function Courses() {
           initialSearchString={searchParam}
           initialHidden={hiddenParam}
           initialHandledBy={handledByParam}
+          initialStatus={statusParam}
           handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
-          disabled={loading || handlersLoading}
+          loading={loading || handlersLoading}
         />
         <CourseGrid
           courses={data?.courses?.filter(notEmpty)}

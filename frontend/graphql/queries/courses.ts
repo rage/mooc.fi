@@ -39,12 +39,18 @@ export const AllCoursesQuery = gql`
 `
 
 export const AllEditorCoursesQuery = gql`
-  query AllEditorCourses($search: String, $hidden: Boolean, $handledBy: ID) {
+  query AllEditorCourses(
+    $search: String
+    $hidden: Boolean
+    $handledBy: String
+    $status: [CourseStatus!]
+  ) {
     courses(
       orderBy: { name: asc }
       search: $search
       hidden: $hidden
       handledBy: $handledBy
+      status: $status
     ) {
       id
       name
