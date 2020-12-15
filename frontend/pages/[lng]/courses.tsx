@@ -39,23 +39,24 @@ function Courses() {
   const t = getCoursesTranslator(language)
   const router = useRouter()
 
-  const searchParam = useQueryParameter("search", false)
-  const hiddenParam =
-    (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" || null
-  const handledByParam = useQueryParameter("handledBy", false) || null
-  const statusParam = useQueryParameter("status", false)
+  const statusParam = decodeURIComponent(useQueryParameter("status", false))
     ?.split(",")
-    .filter(notEmptyOrEmptyString) || ["Active", "Upcoming"]
+    .filter(notEmptyOrEmptyString)
 
   const initialSearchVariables: SearchVariables = {
-    search: searchParam || "",
-    hidden: hiddenParam || true,
-    handledBy: handledByParam || null,
-    status: statusParam || null,
+    search: useQueryParameter("search", false) || "",
+    hidden:
+      (useQueryParameter("hidden", false) ?? "").toLowerCase() !== "false" ||
+      true,
+    handledBy: useQueryParameter("handledBy", false) || null,
+    status: statusParam.length ? statusParam : ["Active", "Upcoming"],
   }
 
   const [searchVariables, setSearchVariables] = useState<SearchVariables>(
     initialSearchVariables,
+  )
+  const [status, setStatus] = useState<string[]>(
+    initialSearchVariables.status ?? [],
   )
 
   const { loading, error, data } = useQuery<AllEditorCourses>(
@@ -102,6 +103,14 @@ function Courses() {
     )
   }
 
+  const onClickStatus = (value: CourseStatus | null) => (_: any) => {
+    setStatus(value ? [value] : [])
+    setSearchVariables({
+      ...searchVariables,
+      status: value ? [value] : [],
+    })
+  }
+
   return (
     <Background>
       <WideContainer>
@@ -111,15 +120,14 @@ function Courses() {
         <FilterMenu
           searchVariables={searchVariables}
           setSearchVariables={setSearchVariables}
-          initialSearchString={searchParam}
-          initialHidden={hiddenParam}
-          initialHandledBy={handledByParam}
-          initialStatus={statusParam}
+          status={status}
+          setStatus={setStatus}
           handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
           loading={loading || handlersLoading}
         />
         <CourseGrid
           courses={data?.courses?.filter(notEmpty)}
+          onClickStatus={onClickStatus}
           loading={loading}
         />
       </WideContainer>
