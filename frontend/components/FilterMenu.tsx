@@ -44,10 +44,6 @@ const Row = styled.section`
   }
 `
 
-interface ScalingFormControlProps {
-  sizes: Array<[string, number] | [string, number, number]>
-}
-
 interface SearchVariables {
   search?: string
   hidden?: boolean | null
@@ -58,28 +54,31 @@ interface SearchVariables {
 interface FilterProps {
   searchVariables: SearchVariables
   setSearchVariables: React.Dispatch<SearchVariables>
-  initialSearchString?: string
-  initialHidden?: boolean | null
-  initialHandledBy?: string | null
-  initialStatus?: string[] | null
   handlerCourses: HandlerCourses_handlerCourses[]
+  status: string[]
+  setStatus: React.Dispatch<React.SetStateAction<string[]>>
   loading: boolean
 }
 
 export default function FilterMenu({
   searchVariables,
   setSearchVariables,
-  initialSearchString = "",
-  initialHidden,
-  initialHandledBy,
-  initialStatus,
   loading,
   handlerCourses,
+  status,
+  setStatus,
 }: FilterProps) {
-  const [searchString, setSearchString] = useState<string>(initialSearchString)
-  const [hideHidden, setHideHidden] = useState(initialHidden ?? true)
+  const {
+    search: initialSearch,
+    hidden: initialHidden,
+    handledBy: initialHandledBy,
+  } = searchVariables
+
+  const [searchString, setSearchString] = useState<string>(initialSearch ?? "")
+  const [hidden, setHidden] = useState(
+    initialHidden === null ? true : initialHidden,
+  )
   const [handledBy, setHandledBy] = useState(initialHandledBy ?? "")
-  const [status, setStatus] = useState<string[]>(initialStatus ?? [])
 
   const inputLabel = useRef<any>(null)
   const [labelWidth, setLabelWidth] = useState(0)
@@ -90,24 +89,17 @@ export default function FilterMenu({
     setSearchVariables({
       ...searchVariables,
       search: searchString,
-      hidden: !hideHidden,
+      hidden,
       handledBy,
     })
   }
 
-  const handleStatusChange = (
-    e: React.ChangeEvent<{ name?: string; value: any }>,
+  const handleStatusChange = (value: string) => (
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const newStatus = e.target.value as string[]
-    setStatus(newStatus)
-    setSearchVariables({
-      ...searchVariables,
-      status: newStatus,
-    })
-  }
-
-  const handleStatusDelete = (value: string) => () => {
-    const newStatus = status?.filter((s) => s !== value)
+    const newStatus = e.target.checked
+      ? [...(searchVariables?.status || []), value]
+      : searchVariables?.status?.filter((v) => v !== value) || []
 
     setStatus(newStatus)
     setSearchVariables({
@@ -117,7 +109,7 @@ export default function FilterMenu({
   }
 
   const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHideHidden(e.target.checked)
+    setHidden(e.target.checked)
     setSearchVariables({
       ...searchVariables,
       hidden: !e.target.checked,
@@ -166,13 +158,13 @@ export default function FilterMenu({
         />
       </Row>
       <Row>
-        <FormControl disabled={loading}>
+        <FormControl disabled={loading} style={{ gridColumn: "span 2" }}>
           <FormControlLabel
-            label="Hide hidden"
+            label="Show hidden"
             control={
               <Checkbox
                 id="hidden"
-                checked={hideHidden}
+                checked={hidden}
                 onChange={handleHiddenChange}
               />
             }
@@ -184,34 +176,23 @@ export default function FilterMenu({
             gridColumn: "span 2",
           }}
         >
-          <Select
-            multiple
-            value={status}
-            onChange={handleStatusChange}
-            input={<Input />}
-            renderValue={(selected: any) => (
-              <>
-                {selected.map((value: string) => (
-                  <Chip
-                    key={value}
-                    label={value}
-                    clickable
-                    size="small"
-                    onDelete={handleStatusDelete(value)}
-                    onMouseDown={(e) => e.stopPropagation()}
-                  />
-                ))}
-              </>
-            )}
-          >
+          <div style={{ display: "flex" }}>
             {["Active", "Upcoming", "Ended"].map((value) => (
-              <MenuItem key={`item-${value}`} value={value}>
-                {value}
-              </MenuItem>
+              <FormControlLabel
+                label={value}
+                key={value}
+                control={
+                  <Checkbox
+                    id={value}
+                    checked={status.includes(value)}
+                    onChange={handleStatusChange(value)}
+                  />
+                }
+              />
             ))}
-          </Select>
+          </div>
         </FormControl>
-        <FormControl disabled={loading} style={{ gridColumn: "span 3" }}>
+        <FormControl disabled={loading} style={{ gridColumn: "span 2" }}>
           <InputLabel
             id="handledBy"
             shrink={Boolean(handledBy)}
@@ -259,7 +240,7 @@ export default function FilterMenu({
           color="secondary"
           variant="contained"
           onClick={() => {
-            setHideHidden(true)
+            setHidden(true)
             setHandledBy("")
             setStatus(["Active", "Upcoming"])
             setSearchVariables({
