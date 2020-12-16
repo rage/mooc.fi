@@ -96,9 +96,10 @@ function PaginatedPointsList(props: Props) {
   const [search, setSearch] = useDebounce(searchString, 1000)
 
   // use lazy query to prevent running query on each render
-  const [getData, { data, loading, error, fetchMore }] = useLazyQuery<
-    StudentProgressData
-  >(StudentProgresses, {
+  const [
+    getData,
+    { data, loading, error, fetchMore },
+  ] = useLazyQuery<StudentProgressData>(StudentProgresses, {
     fetchPolicy: "cache-first",
   })
 
