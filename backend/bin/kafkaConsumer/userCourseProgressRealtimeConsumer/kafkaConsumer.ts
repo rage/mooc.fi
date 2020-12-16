@@ -27,6 +27,13 @@ const consumer = createKafkaConsumer(logger)
 
 consumer.connect()
 
+const context = {
+  prisma,
+  logger,
+  mutex,
+  consumer,
+}
+
 consumer.on("ready", () => {
   consumer.subscribe(TOPIC_NAME)
   const consumerImpl = async (
@@ -40,11 +47,8 @@ consumer.on("ready", () => {
     if (messages.length > 0) {
       const message = handleNullProgress(messages[0])
       await handleMessage<Message>({
+        context,
         kafkaMessage: message,
-        mutex,
-        logger,
-        consumer,
-        prisma,
         MessageYupSchema,
         saveToDatabase,
       })

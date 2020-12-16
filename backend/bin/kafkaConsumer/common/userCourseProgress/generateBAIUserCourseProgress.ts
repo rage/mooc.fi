@@ -85,14 +85,15 @@ export const checkBAICompletion = async ({
     exerciseCompletionsForCourses,
   )
 
-  const existingProgress = await prisma.userCourseProgress.findMany({
+  const existingProgresses = await prisma.userCourseProgress.findMany({
     where: {
       course_id: handlerCourse.id,
       user_id: user.id,
     },
+    orderBy: { created_at: "asc" },
   })
 
-  if (existingProgress.length < 1) {
+  if (existingProgresses.length < 1) {
     logger?.info("No existing progress found, creating new...")
     await prisma.userCourseProgress.create({
       data: {
@@ -107,10 +108,18 @@ export const checkBAICompletion = async ({
     logger?.info("Updating existing progress")
     await prisma.userCourseProgress.update({
       where: {
-        id: existingProgress[0].id,
+        id: existingProgresses[0].id,
       },
       data: newProgress,
     })
+    if (existingProgresses.length > 1) {
+      logger?.info("Pruning duplicate progresses")
+      await prisma.userCourseProgress.deleteMany({
+        where: {
+          id: { in: existingProgresses.slice(1).map((ucp) => ucp.id) },
+        },
+      })
+    }
   }
 
   if (highestTier < 1) {

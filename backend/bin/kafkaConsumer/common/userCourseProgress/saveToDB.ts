@@ -1,19 +1,18 @@
 import { Message } from "./interfaces"
 import { DateTime } from "luxon"
 import {
-  PrismaClient,
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
 } from "@prisma/client"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
-import { Logger } from "winston"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 
 import _KnexConstructor from "knex"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { KafkaContext } from "../../common/interfaces"
 
 const Knex = _KnexConstructor({
   client: "pg",
@@ -31,9 +30,8 @@ const Knex = _KnexConstructor({
 })
 
 export const saveToDatabase = async (
+  { prisma, logger }: KafkaContext,
   message: Message,
-  prisma: PrismaClient,
-  logger: Logger,
 ): Promise<Result<string, Error>> => {
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
@@ -69,14 +67,16 @@ export const saveToDatabase = async (
     )
   }
 
-  let userCourseProgress = (
-    await Knex<unknown, UserCourseProgress[]>("user_course_progress")
-      .where("user_id", user?.id)
-      .where("course_id", message.course_id)
-      .limit(1)
-  )[0]
+  const userCourseProgresses = await Knex<unknown, UserCourseProgress[]>(
+    "user_course_progress",
+  )
+    .where("user_id", user?.id)
+    .where("course_id", message.course_id)
+    .orderBy("created_at", "asc")
 
-  if (!userCourseProgress) {
+  let userCourseProgress = userCourseProgresses[0]
+
+  if (!userCourseProgresses) {
     userCourseProgress = await prisma.userCourseProgress.create({
       data: {
         course: {
@@ -86,26 +86,41 @@ export const saveToDatabase = async (
         progress: message.progress as any, // type error without any
       },
     })
+  } else if (userCourseProgresses.length > 1) {
+    // prune extra userCourseProgresses
+    await prisma.userCourseProgress.deleteMany({
+      where: { id: { in: userCourseProgresses.slice(1).map((ucp) => ucp.id) } },
+    })
   }
 
-  const userCourseServiceProgress = (
-    await Knex<unknown, UserCourseServiceProgress[]>(
-      "user_course_service_progress",
-    )
-      .where("user_id", user?.id)
-      .where("course_id", message.course_id)
-      .where("service_id", message.service_id)
-      .limit(1)
-  )[0]
+  const userCourseServiceProgresses = await Knex<
+    unknown,
+    UserCourseServiceProgress[]
+  >("user_course_service_progress")
+    .where("user_id", user?.id)
+    .where("course_id", message.course_id)
+    .where("service_id", message.service_id)
+    .orderBy("created_at", "asc")
+
+  let userCourseServiceProgress = userCourseServiceProgresses[0]
 
   if (userCourseServiceProgress) {
+    if (userCourseServiceProgresses.length > 1) {
+      // prune extra userCourseServiceProgresses
+      await prisma.userCourseServiceProgress.deleteMany({
+        where: {
+          id: {
+            in: userCourseServiceProgresses.slice(1).map((ucsp) => ucsp.id),
+          },
+        },
+      })
+    }
     // FIXME: weird
     const oldTimestamp = DateTime.fromISO(
       userCourseServiceProgress?.timestamp?.toISOString() ?? "",
     )
 
     if (timestamp < oldTimestamp) {
-      // logger.info()
       return ok("Timestamp older than in DB, aborting")
     }
     await prisma.userCourseServiceProgress.update({

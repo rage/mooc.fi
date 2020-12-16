@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client"
-import { Mutex } from "../../lib/await-semaphore"
 import { Logger } from "winston"
 import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
@@ -10,34 +8,29 @@ import {
   ValidationError,
 } from "../../lib/errors"
 import { Result } from "../../../util/result"
+import { KafkaContext } from "../common/interfaces"
 
 let commitCounter = 0
 
 const commitInterval = config.commit_interval
 
 interface HandleMessageConfig<Message extends { timestamp: string }> {
+  context: KafkaContext
   kafkaMessage: KafkaMessage
-  mutex: Mutex
-  logger: Logger
-  consumer: KafkaConsumer
-  prisma: PrismaClient
   MessageYupSchema: yup.ObjectSchema<any>
   saveToDatabase: (
+    context: KafkaContext,
     message: Message,
-    prisma: PrismaClient,
-    logger: Logger,
   ) => Promise<Result<string, Error>>
 }
 
 export const handleMessage = async <Message extends { timestamp: string }>({
   kafkaMessage,
-  mutex,
-  logger,
-  consumer,
-  prisma,
+  context,
   MessageYupSchema,
   saveToDatabase,
 }: HandleMessageConfig<Message>) => {
+  const { mutex, logger, consumer } = context
   //Going to mutex
   const release = await mutex.acquire()
   logger.info("Handling a message.", {
@@ -68,7 +61,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   try {
     logger.info("Saving message", { message: JSON.stringify(message) })
 
-    const saveResult = await saveToDatabase(message, prisma, logger)
+    const saveResult = await saveToDatabase(context, message)
 
     if (saveResult.isOk()) {
       if (saveResult.hasValue()) logger.info(saveResult.value)
