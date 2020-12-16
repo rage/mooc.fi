@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  Chip,
   InputLabel,
   OutlinedInput,
   MenuItem,
@@ -11,7 +10,6 @@ import {
   Select,
   TextField,
   Button,
-  Input,
 } from "@material-ui/core"
 import { useEffect, useRef, useState } from "react"
 import { Clear, Search } from "@material-ui/icons"
@@ -24,23 +22,29 @@ const Container = styled.div`
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
+  min-width: 300px;
 `
 
 const Row = styled.section`
   display: grid;
   grid-gap: 0.5rem;
   margin: 0.5rem;
-  @media (max-width: 432px) {
-    grid-template-columns: repeat(1, 1fr);
+  @media (max-width: 460px) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "hidden"
+      "status"
+      "handled-by";
   }
-  @media (min-width: 432px; max-width: 600px) {
-    grid-template-columns: repeat(2, 1fr);
+  @media (min-width: 460px) and (max-width: 810px) {
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas:
+      "hidden status"
+      "handled-by handled-by";
   }
-  @media (min-width: 600px, max-width: 800px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  @media (min-width: 800px) {
-    grid-template-columns: repeat(6, 1fr);
+  @media (min-width: 810px) {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-areas: "hidden status status handled-by handled-by";
   }
 `
 
@@ -112,7 +116,7 @@ export default function FilterMenu({
     setHidden(e.target.checked)
     setSearchVariables({
       ...searchVariables,
-      hidden: !e.target.checked,
+      hidden: e.target.checked,
     })
   }
 
@@ -154,11 +158,11 @@ export default function FilterMenu({
               </InputAdornment>
             ),
           }}
-          style={{ gridColumn: "span 8" }}
+          style={{ gridColumn: "span 6" }}
         />
       </Row>
       <Row>
-        <FormControl disabled={loading} style={{ gridColumn: "span 2" }}>
+        <FormControl disabled={loading} style={{ gridArea: "hidden" }}>
           <FormControlLabel
             label="Show hidden"
             control={
@@ -170,12 +174,7 @@ export default function FilterMenu({
             }
           />
         </FormControl>
-        <FormControl
-          disabled={loading}
-          style={{
-            gridColumn: "span 2",
-          }}
-        >
+        <FormControl disabled={loading} style={{ gridArea: "status" }}>
           <div style={{ display: "flex" }}>
             {["Active", "Upcoming", "Ended"].map((value) => (
               <FormControlLabel
@@ -192,7 +191,7 @@ export default function FilterMenu({
             ))}
           </div>
         </FormControl>
-        <FormControl disabled={loading} style={{ gridColumn: "span 2" }}>
+        <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
           <InputLabel
             id="handledBy"
             shrink={Boolean(handledBy)}
