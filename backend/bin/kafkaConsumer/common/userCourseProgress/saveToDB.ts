@@ -76,7 +76,7 @@ export const saveToDatabase = async (
 
   let userCourseProgress = userCourseProgresses[0]
 
-  if (!userCourseProgresses) {
+  if (!userCourseProgress) {
     userCourseProgress = await prisma.userCourseProgress.create({
       data: {
         course: {
