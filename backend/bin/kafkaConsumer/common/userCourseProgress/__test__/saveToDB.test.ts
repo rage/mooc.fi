@@ -1,15 +1,10 @@
-// import { saveToDatabase } from "../saveToDB"
-import { getTestContext /*, fakeTMC*/ } from "../../../../../tests/__helpers"
-// import { adminUserDetails } from "../../../../../tests/data"
+import { getTestContext } from "../../../../../tests/__helpers"
 import { seed } from "../../../../../tests/data/seed"
 import { Message } from "../interfaces"
 import { KafkaContext } from "../../kafkaContext"
 import { saveToDatabase } from "../saveToDB"
 
 const ctx = getTestContext()
-/*const tmc = fakeTMC({
-  "Bearer admin": [200, adminUserDetails]
-})*/
 
 describe("userCourseProgress/saveToDatabase", () => {
   const message: Message = {
