@@ -26,6 +26,13 @@ const consumer = createKafkaConsumer(logger)
 
 consumer.connect()
 
+const context = {
+  prisma,
+  logger,
+  consumer,
+  mutex,
+}
+
 consumer.on("ready", () => {
   consumer.subscribe(TOPIC_NAME)
   const consumerImpl = async (error: LibrdKafkaError, messages: any) => {
@@ -35,11 +42,8 @@ consumer.on("ready", () => {
     }
     if (messages.length > 0) {
       await handleMessage<Message>({
+        context,
         kafkaMessage: messages[0],
-        mutex,
-        logger,
-        consumer,
-        prisma,
         MessageYupSchema,
         saveToDatabase,
       })

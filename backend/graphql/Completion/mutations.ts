@@ -172,6 +172,7 @@ export const CompletionMutations = extendType({
             ...(slug ? { course: { slug } } : {}),
             n_points: { gt: 0 },
           },
+          orderBy: { created_at: "asc" },
         })
 
         const progressByUser = groupBy(progresses, "user_id")

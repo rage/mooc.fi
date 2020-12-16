@@ -1,12 +1,12 @@
 import { Message } from "./interfaces"
-import { PrismaClient, ExerciseCompletion, User } from "@prisma/client"
+import { ExerciseCompletion, User } from "@prisma/client"
 import { DateTime } from "luxon"
-import winston = require("winston")
 import { checkCompletion } from "../userCourseProgress/userFunctions"
 import knex from "knex"
 import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { KafkaContext } from "../../common/interfaces"
 
 const Knex = knex({
   client: "pg",
@@ -30,9 +30,8 @@ const isUserInDB = async (user_id: number) => {
 }
 
 export const saveToDatabase = async (
+  { logger, prisma }: KafkaContext,
   message: Message,
-  prisma: PrismaClient,
-  logger: winston.Logger,
 ): Promise<Result<string, Error>> => {
   logger.info("Handling message: " + JSON.stringify(message))
   logger.info("Parsing timestamp")

@@ -16,12 +16,20 @@ import config from "../kafkaConfig"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
+import { KafkaContext } from "../common/interfaces"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
 
 const logger = sentryLogger({ service: "kafka-consumer-UserCourseProgress" })
 const consumer = createKafkaConsumer(logger)
+
+const context: KafkaContext = {
+  prisma,
+  logger,
+  mutex,
+  consumer,
+}
 
 consumer.connect()
 
@@ -38,11 +46,8 @@ consumer.on("ready", () => {
     if (messages.length > 0) {
       const message = handleNullProgress(messages[0])
       await handleMessage<Message>({
+        context,
         kafkaMessage: message,
-        mutex,
-        logger,
-        consumer,
-        prisma,
         MessageYupSchema,
         saveToDatabase,
       })

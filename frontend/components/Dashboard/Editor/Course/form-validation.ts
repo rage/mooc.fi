@@ -241,16 +241,15 @@ const courseEditSchema = ({
             (datetime instanceof DateTime ? datetime.toISO() : datetime) ?? "",
           ),
       )
-      .test(
-        "start_before_end",
-        t("courseStartDateLaterThanEndDate"),
-        function (this: Yup.TestContext, value?: Date | null) {
-          const start = value
-          const end = this.parent.end_date
+      .test("start_before_end", t("courseStartDateLaterThanEndDate"), function (
+        this: Yup.TestContext,
+        value?: Date | null,
+      ) {
+        const start = value
+        const end = this.parent.end_date
 
-          return start && end ? start <= end : true
-        },
-      ),
+        return start && end ? start <= end : true
+      }),
     teacher_in_charge_name: Yup.string().required(
       t("courseTeacherNameRequired"),
     ),

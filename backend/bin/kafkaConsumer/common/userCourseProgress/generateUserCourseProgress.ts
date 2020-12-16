@@ -8,8 +8,6 @@ import * as winston from "winston"
 import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
 import { checkBAICompletion } from "./generateBAIUserCourseProgress"
 
-let logger: winston.Logger | null = null
-
 interface Props {
   user: User
   course: Course
@@ -21,9 +19,8 @@ export const generateUserCourseProgress = async ({
   user,
   course,
   userCourseProgress,
-  logger: _logger,
+  logger,
 }: Props) => {
-  logger = _logger
   const combined = await getCombinedUserCourseProgress(user, course)
 
   if (Object.values(BAItiers).includes(course.id)) {
