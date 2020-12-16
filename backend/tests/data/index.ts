@@ -189,3 +189,14 @@ export const completions: Prisma.CompletionCreateInput[] = [
     email: "e@mail.com",
   },
 ]
+
+export const services: Prisma.ServiceCreateInput[] = [
+  {
+    id: "40000000-0000-0000-0000-000000000102",
+    name: "service",
+    url: "http://service.com",
+    courses: {
+      connect: { id: "00000000000000000000000000000001" },
+    },
+  },
+]

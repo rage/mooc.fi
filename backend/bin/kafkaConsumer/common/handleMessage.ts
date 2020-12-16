@@ -1,5 +1,4 @@
-import { Logger } from "winston"
-import { KafkaConsumer, Message as KafkaMessage } from "node-rdkafka"
+import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 import config from "../kafkaConfig"
 import {
@@ -8,7 +7,7 @@ import {
   ValidationError,
 } from "../../lib/errors"
 import { Result } from "../../../util/result"
-import { KafkaContext } from "../common/interfaces"
+import { KafkaContext } from "./kafkaContext"
 
 let commitCounter = 0
 
@@ -30,7 +29,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   MessageYupSchema,
   saveToDatabase,
 }: HandleMessageConfig<Message>) => {
-  const { mutex, logger, consumer } = context
+  const { mutex, logger } = context
   //Going to mutex
   const release = await mutex.acquire()
   logger.info("Handling a message.", {
@@ -44,7 +43,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
   } catch (error) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
-    await commit(kafkaMessage, consumer, logger)
+    await commit(context, kafkaMessage)
     release()
     return
   }
@@ -53,7 +52,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     await MessageYupSchema.validate(message)
   } catch (error) {
     logger.error(new ValidationError("JSON validation failed", message, error))
-    await commit(kafkaMessage, consumer, logger)
+    await commit(context, kafkaMessage)
     release()
     return
   }
@@ -77,16 +76,12 @@ export const handleMessage = async <Message extends { timestamp: string }>({
       ),
     )
   }
-  await commit(kafkaMessage, consumer, logger)
+  await commit(context, kafkaMessage)
   //Releasing mutex
   release()
 }
 
-const commit = async (
-  message: any,
-  consumer: KafkaConsumer,
-  logger: Logger,
-) => {
+const commit = async ({ consumer, logger }: KafkaContext, message: any) => {
   if (commitCounter >= commitInterval) {
     logger.info("Committing...")
     await consumer.commitMessage(message)

@@ -1,6 +1,5 @@
 const PRODUCTION = process.env.NODE_ENV === "production"
 
-import type knexType from "knex"
 import { redisify } from "./services/redis"
 import { Completion, PrismaClient } from "@prisma/client"
 import cors from "cors"
@@ -16,6 +15,7 @@ import {
 import * as yup from "yup"
 import { chunk } from "lodash"
 import bodyParser from "body-parser"
+import type Knex from "knex"
 
 const JSONStream = require("JSONStream")
 const helmet = require("helmet")
@@ -48,7 +48,7 @@ interface ExerciseCompletionResult {
 
 interface ExpressParams {
   prisma: PrismaClient
-  knex: knexType
+  knex: Knex
 }
 
 // wrapped so that the context isn't cached between test instances
@@ -424,22 +424,18 @@ const _express = ({ prisma, knex }: ExpressParams) => {
 
 interface ServerParams {
   prisma: PrismaClient
-  knexClient: knexType
   logger: winston.Logger
+  knex: Knex
   extraContext?: Record<string, any>
 }
 
-export default ({
-  prisma,
-  knexClient,
-  logger,
-  extraContext = {},
-}: ServerParams) => {
+export default ({ prisma, logger, knex, extraContext = {} }: ServerParams) => {
   const apollo = new ApolloServer({
     context: (ctx) => ({
       ...ctx,
       prisma,
       logger,
+      knex,
       ...extraContext,
     }),
     schema,
@@ -450,7 +446,7 @@ export default ({
     logger,
     debug: DEBUG,
   })
-  const express = _express({ prisma, knex: knexClient })
+  const express = _express({ prisma, knex })
 
   apollo.applyMiddleware({ app: express, path: PRODUCTION ? "/api" : "/" })
 

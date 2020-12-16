@@ -15,6 +15,7 @@ import config from "../kafkaConfig"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError } from "node-rdkafka"
+import knex from "../../../services/knex"
 
 const TOPIC_NAME = [config.exercise_consumer.topic_name]
 
@@ -31,6 +32,7 @@ const context = {
   logger,
   consumer,
   mutex,
+  knex,
 }
 
 consumer.on("ready", () => {

@@ -2,34 +2,37 @@ require("dotenv-safe").config({
   allowEmptyValues: process.env.NODE_ENV === "production",
 })
 import { User, Course, UserCourseProgress } from "@prisma/client"
-import prisma from "../../../lib/prisma"
 import { BAItiers } from "../../../../config/courseConfig"
-import * as winston from "winston"
 import { getCombinedUserCourseProgress, checkCompletion } from "./userFunctions"
 import { checkBAICompletion } from "./generateBAIUserCourseProgress"
+import { KafkaContext } from "../kafkaContext"
 
 interface Props {
   user: User
   course: Course
   userCourseProgress: UserCourseProgress
-  logger: winston.Logger
+  context: KafkaContext
 }
 
 export const generateUserCourseProgress = async ({
   user,
   course,
   userCourseProgress,
-  logger,
+  context,
 }: Props) => {
-  const combined = await getCombinedUserCourseProgress(user, course)
+  const combined = await getCombinedUserCourseProgress({
+    user,
+    course,
+    context,
+  })
 
   if (Object.values(BAItiers).includes(course.id)) {
-    await checkBAICompletion({ user, course, logger })
+    await checkBAICompletion({ user, course, context })
   } else {
-    await checkCompletion({ user, course, combinedProgress: combined, logger })
+    await checkCompletion({ user, course, combinedProgress: combined, context })
   }
 
-  await prisma.userCourseProgress.update({
+  await context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
       progress: combined.progress as any, // errors unless typed as any

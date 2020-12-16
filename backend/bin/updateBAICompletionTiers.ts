@@ -4,7 +4,7 @@ require("dotenv-safe").config({
 import { Completion, User } from "@prisma/client"
 import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
-import Knex from "../services/knex"
+import knex from "../services/knex"
 import { checkBAICompletion } from "./kafkaConsumer/common/userCourseProgress/generateBAIUserCourseProgress"
 
 const logger = sentryLogger({ service: "update-bai-completion-tiers" })
@@ -23,7 +23,7 @@ const updateBAICompletionTiers = async () => {
 
   logger.info("Getting completions")
 
-  const userIdsWithoutTiers = await Knex<any, Pick<Completion, "user_id">[]>(
+  const userIdsWithoutTiers = await knex<any, Pick<Completion, "user_id">[]>(
     "completion",
   )
     .select("user_id")
@@ -31,7 +31,7 @@ const updateBAICompletionTiers = async () => {
     .andWhere("tier", "is", null)
 
   logger.info("Getting users")
-  const usersWithoutTiers = await Knex<any, User[]>("user")
+  const usersWithoutTiers = await knex<any, User[]>("user")
     .select("*")
     .whereIn(
       "id",
@@ -45,7 +45,13 @@ const updateBAICompletionTiers = async () => {
       checkBAICompletion({
         user,
         course,
-        logger,
+        context: {
+          logger,
+          prisma,
+          knex,
+          consumer: null as any,
+          mutex: null as any,
+        },
         isHandler: true,
       }),
     ),
