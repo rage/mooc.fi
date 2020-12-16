@@ -16,7 +16,8 @@ import config from "../kafkaConfig"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
-import { KafkaContext } from "../common/interfaces"
+import { KafkaContext } from "../common/kafkaContext"
+import knex from "../../../services/knex"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
@@ -29,6 +30,7 @@ const context: KafkaContext = {
   logger,
   mutex,
   consumer,
+  knex,
 }
 
 consumer.connect()

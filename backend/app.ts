@@ -40,7 +40,7 @@ const prismaClient = new PrismaClient({
 const { express } = server({
   prisma: prismaClient,
   logger,
-  knexClient: knex,
+  knex,
 })
 
 /*prismaClient.on("query", (e) => {

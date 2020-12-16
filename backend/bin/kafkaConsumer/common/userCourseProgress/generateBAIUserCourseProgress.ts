@@ -9,18 +9,21 @@ import {
   exerciseCompletionsNeeded,
 } from "../../../../config/courseConfig"
 import { DatabaseInputError } from "../../../lib/errors"
-import Knex from "../../../../services/knex"
 import prisma from "../../../lib/prisma"
-import * as winston from "winston"
 import {
   getExerciseCompletionsForCourses,
   createCompletion,
 } from "./userFunctions"
 import { ExerciseCompletionPart, TierProgress } from "./interfaces"
 import { range } from "lodash"
+import { KafkaContext } from "../kafkaContext"
+import type Knex from "knex"
 
-const checkBAIProjectCompletion = async (user: User) => {
-  const completions = await Knex("exercise_completion")
+const checkBAIProjectCompletion = async (
+  user: User,
+  { knex }: KafkaContext & { knex: Knex },
+) => {
+  const completions = await knex!("exercise_completion")
     .select("exercise_completion.completed")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
     .whereIn("exercise.custom_id", Object.keys(BAIbadge))
@@ -33,16 +36,17 @@ const checkBAIProjectCompletion = async (user: User) => {
 interface CheckBAICompletion {
   user: User
   course: Course
-  logger: winston.Logger
   isHandler?: boolean
+  context: KafkaContext
 }
 
 export const checkBAICompletion = async ({
   user,
   course,
-  logger,
   isHandler = false,
+  context,
 }: CheckBAICompletion) => {
+  const { logger } = context
   const handlerCourse = isHandler
     ? course
     : await prisma.course
@@ -68,16 +72,17 @@ export const checkBAICompletion = async ({
     .map(c => c.id)
   */
   logger?.info("Getting exercise completions")
-  const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses(
+  const exerciseCompletionsForCourses = await getExerciseCompletionsForCourses({
     user,
-    Object.values(BAItiers), // tierCourses
-  )
+    courseIds: Object.values(BAItiers), // tierCourses,
+    context,
+  })
   /*
     [{ course_id, exercise_id, n_points }...] for all the tiers
   */
 
   logger?.info("Getting project completion")
-  const projectCompletion = await checkBAIProjectCompletion(user)
+  const projectCompletion = await checkBAIProjectCompletion(user, context)
 
   logger?.info("Getting BAI course progress")
   const { progress: newProgress, highestTier } = getBAIProgress(
@@ -133,7 +138,7 @@ export const checkBAICompletion = async ({
     user,
     course_id: highestTierCourseId,
     handlerCourse,
-    logger,
+    context,
     tier: highestTier,
   })
 }

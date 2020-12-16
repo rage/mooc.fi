@@ -2,37 +2,23 @@ import { Message } from "./interfaces"
 import { ExerciseCompletion, User } from "@prisma/client"
 import { DateTime } from "luxon"
 import { checkCompletion } from "../userCourseProgress/userFunctions"
-import knex from "knex"
 import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
-import { KafkaContext } from "../../common/interfaces"
-
-const Knex = knex({
-  client: "pg",
-  connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  },
-  searchPath:
-    // TODO: should this use the env search path?
-    process.env.NODE_ENV === "production"
-      ? ["moocfi$production"]
-      : ["default$default"],
-})
+import { KafkaContext } from "../kafkaContext"
+import type Knex from "knex"
 
 // @ts-ignore: not used
-const isUserInDB = async (user_id: number) => {
-  return await Knex("user").where("upstream_id", "=", user_id)
+const isUserInDB = async (user_id: number, knex: Knex) => {
+  return await knex("user").where("upstream_id", "=", user_id)
 }
 
 export const saveToDatabase = async (
-  { logger, prisma }: KafkaContext,
+  context: KafkaContext,
   message: Message,
 ): Promise<Result<string, Error>> => {
+  const { logger, prisma } = context
+
   logger.info("Handling message: " + JSON.stringify(message))
   logger.info("Parsing timestamp")
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
@@ -41,14 +27,14 @@ export const saveToDatabase = async (
 
   let user: User | null
 
-  user = (await Knex("user").where("upstream_id", message.user_id).limit(1))[0]
+  user = (await knex("user").where("upstream_id", message.user_id).limit(1))[0]
 
   if (!user) {
     try {
       user = await getUserFromTMC(prisma, message.user_id)
     } catch (e) {
       user = (
-        await Knex("user").where("upstream_id", message.user_id).limit(1)
+        await knex("user").where("upstream_id", message.user_id).limit(1)
       )[0]
       if (!user) {
         logger.error(new TMCError(`couldn't find user ${message.user_id}`, e))
@@ -161,7 +147,7 @@ export const saveToDatabase = async (
       },
     })
   }
-  await checkCompletion({ user, course, logger })
+  await checkCompletion({ user, course, context })
 
   return ok("Saved to DB successfully")
 }

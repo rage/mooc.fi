@@ -12,39 +12,26 @@ import { ok, err, Result } from "../../../../util/result"
 
 import _KnexConstructor from "knex"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
-import { KafkaContext } from "../../common/interfaces"
-
-const Knex = _KnexConstructor({
-  client: "pg",
-  connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  },
-  searchPath:
-    process.env.NODE_ENV === "production"
-      ? ["moocfi$production"]
-      : ["default$default"],
-})
+import { KafkaContext } from "../kafkaContext"
 
 export const saveToDatabase = async (
-  { prisma, logger }: KafkaContext,
+  context: KafkaContext,
   message: Message,
 ): Promise<Result<string, Error>> => {
+  const { prisma, knex, logger } = context
+
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
   let user: User | null
 
-  user = (await Knex("user").where("upstream_id", message.user_id).limit(1))[0]
+  user = (await knex("user").where("upstream_id", message.user_id).limit(1))[0]
 
   if (!user) {
     try {
       user = await getUserFromTMC(prisma, message.user_id)
     } catch (e) {
       user = (
-        await Knex("user").where("upstream_id", message.user_id).limit(1)
+        await knex("user").where("upstream_id", message.user_id).limit(1)
       )[0]
       if (!user) {
         logger.error(new TMCError(`couldn't find user ${message.user_id}`, e))
@@ -67,7 +54,7 @@ export const saveToDatabase = async (
     )
   }
 
-  const userCourseProgresses = await Knex<unknown, UserCourseProgress[]>(
+  const userCourseProgresses = await knex<unknown, UserCourseProgress[]>(
     "user_course_progress",
   )
     .where("user_id", user?.id)
@@ -93,7 +80,7 @@ export const saveToDatabase = async (
     })
   }
 
-  const userCourseServiceProgresses = await Knex<
+  const userCourseServiceProgresses = await knex<
     unknown,
     UserCourseServiceProgress[]
   >("user_course_service_progress")
@@ -155,7 +142,7 @@ export const saveToDatabase = async (
     user,
     course,
     userCourseProgress,
-    logger,
+    context,
   })
 
   pushMessageToClient(

@@ -13,6 +13,7 @@ import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { LibrdKafkaError } from "node-rdkafka"
 import { KafkaError } from "../../lib/errors"
+import knex from "../../../services/knex"
 
 const TOPIC_NAME = [config.user_points_consumer.topic_name]
 
@@ -28,6 +29,7 @@ const context = {
   logger,
   mutex,
   consumer,
+  knex,
 }
 
 consumer.on("ready", () => {
