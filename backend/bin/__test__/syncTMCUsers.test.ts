@@ -6,7 +6,8 @@ import { TMCError } from "../lib/errors"
 
 const ctx = getTestContext()
 
-const TMC_HOST = process.env.TMC_HOST || "https://fake.tmc.fi"
+const TMC_HOST = process.env.TMC_HOST || ""
+
 const fakeGetAccessToken = (reply: [number, string]) =>
   nock(TMC_HOST)
     .post("/oauth/token")

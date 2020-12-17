@@ -218,7 +218,7 @@ export function fakeTMC(
 ) {
   return {
     setup() {
-      nock("https://tmc.mooc.fi")
+      nock(process.env.TMC_HOST || "")
         .persist()
         .get(url)
         .reply(function () {
