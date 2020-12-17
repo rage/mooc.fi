@@ -6,7 +6,9 @@ import sentryLogger from "./lib/logger"
 import type { PrismaClient } from "@prisma/client"
 import { TMCError } from "./lib/errors"
 
-const URL = "https://tmc.mooc.fi/api/v8/users/recently_changed_user_details"
+const URL = `${
+  process.env.TMC_HOST || ""
+}/api/v8/users/recently_changed_user_details`
 
 export interface Change {
   id: number

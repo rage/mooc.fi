@@ -2,7 +2,7 @@ import axios from "axios"
 import { UserInfo, OrganizationInfo } from "../domain/UserInfo"
 import { getAccessToken } from "./tmc_completion_script"
 
-const BASE_URL = "https://tmc.mooc.fi"
+const BASE_URL = process.env.TMC_HOST || ""
 
 export interface UserFieldValue {
   id: number
