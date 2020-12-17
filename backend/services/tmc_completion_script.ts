@@ -1,5 +1,4 @@
 import axios from "axios"
-//const axios = require("axios");
 
 let _accessToken: string | null = null
 
@@ -21,6 +20,7 @@ async function fetchAccessToken(): Promise<string> {
         },
       },
     )
+
     return response.data.access_token
   } catch (error) {
     console.log(error)

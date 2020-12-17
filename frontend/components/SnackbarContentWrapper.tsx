@@ -25,9 +25,9 @@ interface SnackbarContentExtraProps {
   type: keyof typeof typeIcon
 }
 
-const StyledSnackbarContent = styled(
-  SnackbarContent,
-)<SnackbarContentExtraProps>`
+const StyledSnackbarContent = styled(SnackbarContent)<
+  SnackbarContentExtraProps
+>`
   background-color: ${(props) => bgColor[props.type]};
 `
 
