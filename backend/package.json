@@ -12,6 +12,7 @@
     "fetch-user-app-datum": "node ./dist/bin/fetchUserAppDatum.js",
     "fetch-user-field-values": "node ./dist/bin/fetchUserFieldValues.js",
     "fetch-avoin-links": "node ./dist/bin/fetchAvoinLinks.js",
+    "sync-tmc-users": "node ./dist/bin/syncTMCUsers.js",
     "send-ai-statistics": "node ./dist/bin/sendAiStatistics.js",
     "import-organizations": "node ./dist/bin/importOrganizations.js",
     "parse-file": "node ./dist/bin/parseFile.js",

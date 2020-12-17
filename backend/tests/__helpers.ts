@@ -212,12 +212,15 @@ function prismaTestContext() {
 
 type FakeTMCRecord = Record<string, [number, object]>
 
-export function fakeTMC(users: FakeTMCRecord) {
+export function fakeTMC(
+  users: FakeTMCRecord,
+  url = "/api/v8/users/current?show_user_fields=1&extra_fields=1",
+) {
   return {
     setup() {
       nock("https://tmc.mooc.fi")
         .persist()
-        .get("/api/v8/users/current?show_user_fields=1&extra_fields=1")
+        .get(url)
         .reply(function () {
           const auth = this.req.headers.authorization
 
