@@ -9,6 +9,7 @@ import prisma from "./lib/prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import { convertUpdate } from "../util/db-functions"
+import { notEmpty } from "../util/notEmpty"
 
 const CONFIG_NAME = "userAppDatum"
 
@@ -21,8 +22,6 @@ const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
 
-  // const prisma: Prisma = new Prisma()
-
   const existingConfig = await prisma.userAppDatumConfig.findFirst({
     where: { name: CONFIG_NAME },
   })
@@ -31,30 +30,114 @@ const fetchUserAppDatum = async () => {
   logger.info(latestTimeStamp)
 
   // weird
-  const data_from_tmc = await tmc.getUserAppDatum(
+  const tmcData = await tmc.getUserAppDatum(
     latestTimeStamp?.toISOString() ?? null,
   )
   logger.info("Got data from tmc")
-  logger.info(`data length ${data_from_tmc.length}`)
+  logger.info(`data length ${tmcData.length}`)
   logger.info("sorting")
 
-  const data = data_from_tmc.sort(
-    (a, b) =>
-      DateTime.fromISO(a.updated_at).toMillis() -
-      DateTime.fromISO(b.updated_at).toMillis(),
-  )
+  const data = tmcData
+    .sort(
+      (a, b) =>
+        DateTime.fromISO(a.updated_at).toMillis() -
+        DateTime.fromISO(b.updated_at).toMillis(),
+    )
+    .filter(notEmpty)
+    .filter((e) => e.user_id !== null)
 
   //  logger.info(data)
   // logger.info("sorted")
   const saveInterval = 10000
-  let saveCounter = 0
+  let index = 0
 
-  for (let i = 0; i < data.length; i++) {
-    saveCounter++
-    let p = data[i]
-    if (p.user_id == null) continue
-    if (i % 1000 == 0) logger.info(`${i}/${data.length}`)
-    if (!p || p == "undefined" || p == null) {
+  for (const e of data) {
+    index++
+    if (index % 1000 == 0) logger.info(`${index}/${data.length}`)
+
+    const existingUsers = await prisma.user.findMany({
+      where: { upstream_id: e.user_id },
+    })
+
+    if (existingUsers.length < 1) {
+      try {
+        await getUserFromTmcAndSaveToDB(e.user_id, tmc)
+      } catch (error) {
+        logger.error(
+          new TMCError(
+            "error in getting user data from tmc, trying again in 30s...",
+            error,
+          ),
+        )
+        await delay(30 * 1000)
+        await getUserFromTmcAndSaveToDB(e.user_id, tmc)
+      }
+    }
+
+    const existingCourses = await prisma.course.findMany({
+      where: { slug: e.namespace },
+    })
+    if (existingCourses.length < 1) {
+      await prisma.course.create({
+        data: {
+          slug: e.namespace,
+          name: e.namespace,
+          hidden: true,
+          teacher_in_charge_name: "",
+          teacher_in_charge_email: "",
+          start_date: "",
+        },
+      })
+    }
+
+    course = await prisma.course.findUnique({ where: { slug: e.namespace } })
+
+    if (!course) {
+      process.exit(1)
+    }
+
+    const existingUserCourseSetting = await prisma.userCourseSetting.findFirst({
+      where: {
+        user: { upstream_id: e.user_id },
+        course_id: course.id,
+      },
+    })
+    if (!existingUserCourseSetting) {
+      old = await prisma.userCourseSetting.create({
+        data: {
+          user: {
+            connect: { upstream_id: e.user_id },
+          },
+          course: { connect: { id: course.id } },
+        },
+      })
+    } else {
+      old = existingUserCourseSetting
+    }
+
+    switch (e.field_name) {
+      case "language":
+        saveLanguage(e)
+        break
+      case "country":
+        saveCountry(e)
+        break
+      case "research":
+        saveResearch(e)
+        break
+      case "marketing":
+        saveMarketing(e)
+        break
+      case "course_variant": //course_variant and deadline are functionally the same (deadline is used in elements-of-ai)
+      case "deadline": // deadline does not tell when the deadline is but what is the course variant
+        saveCourseVariant(e)
+        break
+      default:
+        saveOther(e)
+    }
+    if (index % saveInterval == 0) saveProgress(prisma, new Date(e.updated_at))
+  }
+  /*if (!p || p == "undefined" || p == null) {
       logger.warning(
         "not p:",
         p,
@@ -64,88 +147,7 @@ const fetchUserAppDatum = async () => {
         data.length,
       )
       continue
-    }
-    const existingUsers = await prisma.user.findMany({
-      where: { upstream_id: p.user_id },
-    })
-    if (existingUsers.length < 1) {
-      try {
-        await getUserFromTmcAndSaveToDB(p.user_id, tmc)
-      } catch (error) {
-        logger.error(
-          new TMCError(
-            "error in getting user data from tmc, trying again in 30s...",
-            error,
-          ),
-        )
-        await delay(30 * 1000)
-        await getUserFromTmcAndSaveToDB(p.user_id, tmc)
-      }
-    }
-    const existingCourses = await prisma.course.findMany({
-      where: { slug: p.namespace },
-    })
-    if (existingCourses.length < 1) {
-      await prisma.course.create({
-        data: {
-          slug: p.namespace,
-          name: p.namespace,
-          hidden: true,
-          teacher_in_charge_name: "",
-          teacher_in_charge_email: "",
-          start_date: "",
-        },
-      })
-    }
-
-    course = await prisma.course.findUnique({ where: { slug: p.namespace } })
-
-    if (!course) {
-      process.exit(1)
-    }
-
-    const existingUserCourseSetting = await prisma.userCourseSetting.findFirst({
-      where: {
-        user: { upstream_id: p.user_id },
-        course_id: course.id,
-      },
-    })
-    if (!existingUserCourseSetting) {
-      old = await prisma.userCourseSetting.create({
-        data: {
-          user: {
-            connect: { upstream_id: p.user_id },
-          },
-          course: { connect: { id: course.id } },
-        },
-      })
-    } else {
-      old = existingUserCourseSetting
-    }
-
-    switch (p.field_name) {
-      case "language":
-        saveLanguage(p)
-        break
-      case "country":
-        saveCountry(p)
-        break
-      case "research":
-        saveResearch(p)
-        break
-      case "marketing":
-        saveMarketing(p)
-        break
-      case "course_variant": //course_variant and deadline are functionally the same (deadline is used in elements-of-ai)
-      case "deadline": // deadline does not tell when the deadline is but what is the course variant
-        saveCourseVariant(p)
-        break
-      default:
-        saveOther(p)
-    }
-    if (saveCounter % saveInterval == 0)
-      saveProgress(prisma, new Date(p.updated_at))
-  }
+    }*/
 
   await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
 
@@ -222,7 +224,7 @@ const saveOther = async (p: any) => {
       id: old.id,
     },
     data: {
-      other: { set: other },
+      other,
     },
   })
 }
