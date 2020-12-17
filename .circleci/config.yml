@@ -13,7 +13,6 @@ jobs:
           keys:
             - node-root-{{ .Branch }}-{{ checksum "package-lock.json" }}
             - node-root-{{ .Branch }}
-            - node-root
       - run:
           name: "Install dependencies"
           command: "npm ci"
