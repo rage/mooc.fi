@@ -157,6 +157,7 @@ export interface Message {
   exercise_id: string
   n_points: Number
   completed: boolean
+  attempted: boolean
   user_id: Number
   course_id: string
   service_id: string
