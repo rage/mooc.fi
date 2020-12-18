@@ -97,6 +97,7 @@ export const UserCourseProgress = objectType({
         }
         const courseProgresses = await ctx.prisma.userCourseProgress.findMany({
           where: { course_id, user_id },
+          orderBy: { created_at: "asc" },
         })
         // TODO/FIXME: proper typing
         const courseProgress: any = courseProgresses?.[0].progress ?? []
@@ -146,6 +147,7 @@ export const UserCourseProgressQueries = extendType({
             user_id,
             course_id,
           },
+          orderBy: { created_at: "asc" },
         })
 
         if (!result) throw new UserInputError("Not found")

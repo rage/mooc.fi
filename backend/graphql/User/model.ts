@@ -188,6 +188,7 @@ export const User = objectType({
             user_id: parent.id,
             course_id,
           },
+          orderBy: { created_at: "asc" },
         })
       },
     })
