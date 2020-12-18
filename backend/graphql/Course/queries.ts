@@ -1,4 +1,13 @@
-import { arg, extendType, idArg, nonNull, stringArg } from "@nexus/schema"
+import {
+  arg,
+  booleanArg,
+  extendType,
+  idArg,
+  list,
+  nonNull,
+  nullable,
+  stringArg,
+} from "@nexus/schema"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
@@ -88,15 +97,70 @@ export const CourseQueries = extendType({
       args: {
         orderBy: arg({ type: "CourseOrderByInput" }),
         language: stringArg(),
+        search: nullable(stringArg()),
+        hidden: nullable(booleanArg({ default: true })),
+        handledBy: nullable(stringArg()),
+        status: nullable(list(nonNull(arg({ type: "CourseStatus" })))),
       },
       resolve: async (_, args, ctx) => {
-        const { orderBy, language } = args
+        const { orderBy, language, search, hidden, handledBy, status } = args
+
+        const searchQuery = []
+
+        if (search) {
+          searchQuery.push({
+            OR: [
+              ...[
+                "name",
+                "slug",
+                "teacher_in_charge_name",
+                "teacher_in_charge_email",
+                "support_email",
+              ].map((field) => ({
+                [field]: { contains: search, mode: "insensitive" },
+              })),
+              {
+                course_translations: {
+                  some: {
+                    name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            ],
+          })
+        }
+        if (!hidden) {
+          searchQuery.push({
+            OR: [
+              {
+                hidden: false,
+              },
+              {
+                hidden: null,
+              },
+            ],
+          })
+        }
+        if (handledBy) {
+          searchQuery.push({
+            completions_handled_by: { slug: handledBy },
+          })
+        }
+        if (status?.length) {
+          searchQuery.push({
+            status: { in: status },
+          })
+        }
 
         const courses: (Course & {
           course_translations?: CourseTranslation[]
         })[] = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+          where: { AND: searchQuery },
           ...(language
             ? {
                 include: {
@@ -125,6 +189,20 @@ export const CourseQueries = extendType({
 
         // TODO: (?) provide proper typing
         return filtered as (Course & { description: string; link: string })[]
+      },
+    })
+
+    t.list.field("handlerCourses", {
+      type: "Course",
+      authorize: isAdmin,
+      resolve: async (_, __, ctx) => {
+        return ctx.prisma.course.findMany({
+          where: {
+            handles_completions_for: {
+              some: {},
+            },
+          },
+        })
       },
     })
 

@@ -13,6 +13,7 @@ import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { LibrdKafkaError } from "node-rdkafka"
 import { KafkaError } from "../../lib/errors"
+import knex from "../../../services/knex"
 
 const TOPIC_NAME = [config.user_points_consumer.topic_name]
 
@@ -23,6 +24,14 @@ const consumer = createKafkaConsumer(logger)
 
 consumer.connect()
 
+const context = {
+  prisma,
+  logger,
+  mutex,
+  consumer,
+  knex,
+}
+
 consumer.on("ready", () => {
   consumer.subscribe(TOPIC_NAME)
   const consumerImpl = async (error: LibrdKafkaError, messages: any) => {
@@ -32,11 +41,8 @@ consumer.on("ready", () => {
     }
     if (messages.length > 0) {
       await handleMessage<Message>({
+        context,
         kafkaMessage: messages[0],
-        mutex,
-        logger,
-        consumer,
-        prisma,
         MessageYupSchema,
         saveToDatabase,
       })

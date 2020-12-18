@@ -96,5 +96,6 @@
   "courseAutomaticCompletions": "Automatic completions",
   "courseAutomaticCompletionsEligibleForEcts": "Automatic completions eligible for ECTS",
   "coursePointsNeeded": "Points needed",
-  "courseExerciseCompletionsNeeded": "Exercise completions needed"
+  "courseExerciseCompletionsNeeded": "Exercise completions needed",
+  "courseNewCourse": "New course"
 }

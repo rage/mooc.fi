@@ -13,6 +13,7 @@ export const Progress = objectType({
         const user_id = parent.user?.id
         return await ctx.prisma.userCourseProgress.findFirst({
           where: { course_id, user_id },
+          orderBy: { created_at: "asc" },
         })
       },
     })
