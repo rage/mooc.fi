@@ -803,7 +803,7 @@ Object {
   ],
   "support_email": null,
   "teacher_in_charge_email": "e@mail.com",
-  "teacher_in_charge_name": "teacher",
+  "teacher_in_charge_name": "teacher1",
   "tier": null,
   "upcoming_active_link": false,
   "user_course_settings_visibilities": Array [],
@@ -868,7 +868,7 @@ Object {
   ],
   "support_email": null,
   "teacher_in_charge_email": "e@mail.com",
-  "teacher_in_charge_name": "teacher",
+  "teacher_in_charge_name": "teacher1",
   "tier": null,
   "upcoming_active_link": false,
   "user_course_settings_visibilities": Array [],
@@ -903,6 +903,39 @@ Object {
   "name": "course1",
   "slug": "course1",
 }
+`;
+
+exports[`Course queries courses filters handledBy: courses-hidden-foo 1`] = `Array []`;
+
+exports[`Course queries courses filters handledBy: courses-hidden-handler 1`] = `
+Array [
+  "00000000-0000-0000-0000-000000000667",
+]
+`;
+
+exports[`Course queries courses filters hidden: courses-hidden-null 1`] = `
+Array [
+  "00000000-0000-0000-0000-000000000001",
+  "00000000-0000-0000-0000-000000000002",
+  "00000000-0000-0000-0000-000000000666",
+]
+`;
+
+exports[`Course queries courses filters hidden: courses-hidden-null 2`] = `
+Array [
+  "00000000-0000-0000-0000-000000000001",
+  "00000000-0000-0000-0000-000000000002",
+  "00000000-0000-0000-0000-000000000666",
+]
+`;
+
+exports[`Course queries courses filters hidden: courses-hidden-true 1`] = `
+Array [
+  "00000000-0000-0000-0000-000000000001",
+  "00000000-0000-0000-0000-000000000002",
+  "00000000-0000-0000-0000-000000000666",
+  "00000000-0000-0000-0000-000000000667",
+]
 `;
 
 exports[`Course queries courses returns courses 1`] = `
@@ -980,12 +1013,50 @@ Array [
     "upcoming_active_link": false,
     "user_course_settings_visibilities": Array [],
   },
+  Object {
+    "course_translations": Array [],
+    "description": "",
+    "hidden": false,
+    "id": "00000000-0000-0000-0000-000000000666",
+    "link": "",
+    "name": "handler",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handler",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000667",
+    "link": "",
+    "name": "handled",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handled",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
 ]
 `;
 
-exports[`Course queries courses returns courses filtered by language: courses-bogus 1`] = `Array []`;
+exports[`Course queries courses returns courses filtered by language: courses-language-bogus 1`] = `Array []`;
 
-exports[`Course queries courses returns courses filtered by language: courses-en_US 1`] = `
+exports[`Course queries courses returns courses filtered by language: courses-language-en_US 1`] = `
 Array [
   Object {
     "course_translations": Array [
@@ -1033,7 +1104,7 @@ Array [
 ]
 `;
 
-exports[`Course queries courses returns courses filtered by language: courses-fi_FI 1`] = `
+exports[`Course queries courses returns courses filtered by language: courses-language-fi_FI 1`] = `
 Array [
   Object {
     "course_translations": Array [
@@ -1111,7 +1182,7 @@ Array [
 ]
 `;
 
-exports[`Course queries courses returns courses ordered: courses-asc 1`] = `
+exports[`Course queries courses returns courses ordered: courses-order-asc 1`] = `
 Array [
   Object {
     "course_translations": Array [
@@ -1178,6 +1249,160 @@ Array [
     "study_module_order": null,
     "study_module_start_point": null,
     "study_modules": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "slug": "module1",
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000667",
+    "link": "",
+    "name": "handled",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handled",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [],
+    "description": "",
+    "hidden": false,
+    "id": "00000000-0000-0000-0000-000000000666",
+    "link": "",
+    "name": "handler",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handler",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+]
+`;
+
+exports[`Course queries courses returns courses ordered: courses-order-desc 1`] = `
+Array [
+  Object {
+    "course_translations": Array [],
+    "description": "",
+    "hidden": false,
+    "id": "00000000-0000-0000-0000-000000000666",
+    "link": "",
+    "name": "handler",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handler",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000667",
+    "link": "",
+    "name": "handled",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handled",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "slug": "module1",
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": Array [],
+  },
+  Object {
+    "course_translations": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "name": "course1_en_US",
+      },
+      Object {
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000002",
+    "link": "",
+    "name": "course1",
+    "order": null,
+    "photo": Object {
+      "compressed": "webp",
+      "id": "00000000-0000-0000-0000-000000001101",
+      "uncompressed": "jpeg",
+    },
+    "promote": null,
+    "slug": "course1",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": Array [
+      Object {
+        "id": "00000000-0000-0000-0000-000000000101",
+        "slug": "module2",
+      },
       Object {
         "id": "00000000-0000-0000-0000-000000000102",
         "slug": "module1",
@@ -1189,80 +1414,15 @@ Array [
 ]
 `;
 
-exports[`Course queries courses returns courses ordered: courses-desc 1`] = `
+exports[`Course queries handlerCourses returns correctly 1`] = `
 Array [
   Object {
-    "course_translations": Array [
+    "handles_completions_for": Array [
       Object {
-        "id": "00000000-0000-0000-0000-000000000022",
-        "language": "fi_FI",
-        "name": "course2_fi_FI",
+        "id": "00000000-0000-0000-0000-000000000667",
       },
     ],
-    "description": "",
-    "hidden": null,
-    "id": "00000000-0000-0000-0000-000000000001",
-    "link": "",
-    "name": "course2",
-    "order": null,
-    "photo": null,
-    "promote": null,
-    "slug": "course2",
-    "start_point": null,
-    "status": "Upcoming",
-    "study_module_order": null,
-    "study_module_start_point": null,
-    "study_modules": Array [
-      Object {
-        "id": "00000000-0000-0000-0000-000000000102",
-        "slug": "module1",
-      },
-    ],
-    "upcoming_active_link": false,
-    "user_course_settings_visibilities": Array [],
-  },
-  Object {
-    "course_translations": Array [
-      Object {
-        "id": "00000000-0000-0000-0000-000000000011",
-        "language": "en_US",
-        "name": "course1_en_US",
-      },
-      Object {
-        "id": "00000000-0000-0000-0000-000000000012",
-        "language": "fi_FI",
-        "name": "course1_fi_FI",
-      },
-    ],
-    "description": "",
-    "hidden": null,
-    "id": "00000000-0000-0000-0000-000000000002",
-    "link": "",
-    "name": "course1",
-    "order": null,
-    "photo": Object {
-      "compressed": "webp",
-      "id": "00000000-0000-0000-0000-000000001101",
-      "uncompressed": "jpeg",
-    },
-    "promote": null,
-    "slug": "course1",
-    "start_point": null,
-    "status": "Upcoming",
-    "study_module_order": null,
-    "study_module_start_point": null,
-    "study_modules": Array [
-      Object {
-        "id": "00000000-0000-0000-0000-000000000101",
-        "slug": "module2",
-      },
-      Object {
-        "id": "00000000-0000-0000-0000-000000000102",
-        "slug": "module1",
-      },
-    ],
-    "upcoming_active_link": false,
-    "user_course_settings_visibilities": Array [],
+    "id": "00000000-0000-0000-0000-000000000666",
   },
 ]
 `;
