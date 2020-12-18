@@ -75,6 +75,8 @@ export const handleMessage = async <Message extends { timestamp: string }>({
         error,
       ),
     )
+    console.log("Reason: ", error.message)
+    console.log(error.stack)
   }
   await commit(context, kafkaMessage)
   //Releasing mutex
