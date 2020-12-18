@@ -92,16 +92,22 @@ export const updateEmails = async (changes: Change[], prisma: PrismaClient) => {
     } unique users with changed email`,
   )
 
+  const existing = groupBy(
+    await prisma.user.findMany({
+      where: { username: { in: Object.keys(changedEmailUsers) } },
+    }),
+    "username",
+  )
+
   let counter = 0
   for (const [username, changes] of Object.entries(changedEmailUsers)) {
     const newestChange = changes[0]
 
     try {
-      const existing = await prisma.user.findFirst({
-        where: { username },
-      })
-
-      if (!!existing && existing.email !== newestChange.new_value) {
+      if (
+        existing[username]?.length &&
+        existing[username][0].email !== newestChange.new_value
+      ) {
         await prisma!.user.update({
           where: {
             username,
