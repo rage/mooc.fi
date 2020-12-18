@@ -39,8 +39,19 @@ export const AllCoursesQuery = gql`
 `
 
 export const AllEditorCoursesQuery = gql`
-  query AllEditorCourses {
-    courses(orderBy: { name: asc }) {
+  query AllEditorCourses(
+    $search: String
+    $hidden: Boolean
+    $handledBy: String
+    $status: [CourseStatus!]
+  ) {
+    courses(
+      orderBy: { name: asc }
+      search: $search
+      hidden: $hidden
+      handledBy: $handledBy
+      status: $status
+    ) {
       id
       name
       slug
@@ -48,6 +59,14 @@ export const AllEditorCoursesQuery = gql`
       status
       hidden
       tier
+      completions_handled_by {
+        id
+      }
+      start_date
+      end_date
+      support_email
+      teacher_in_charge_email
+      teacher_in_charge_name
       photo {
         id
         compressed
@@ -116,6 +135,16 @@ export const CourseEditorCoursesQuery = gql`
         uncompressed
         uncompressed_mimetype
       }
+    }
+  }
+`
+
+export const HandlerCoursesQuery = gql`
+  query HandlerCourses {
+    handlerCourses {
+      id
+      slug
+      name
     }
   }
 `

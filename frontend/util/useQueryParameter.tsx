@@ -32,8 +32,9 @@ export function useQueryParameter(parameter: string, check: boolean = true) {
     }
     return ""
   }
+
   if (typeof checkingParameter === "string") {
-    return checkingParameter
+    return decodeURIComponent(checkingParameter)
   }
-  return checkingParameter[checkingParameter.length - 1]
+  return decodeURIComponent(checkingParameter[checkingParameter.length - 1])
 }

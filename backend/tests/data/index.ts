@@ -104,7 +104,7 @@ export const courses: Prisma.CourseCreateInput[] = [
     start_date: "01/01/1900",
     end_date: "12/31/2100",
     teacher_in_charge_email: "e@mail.com",
-    teacher_in_charge_name: "teacher",
+    teacher_in_charge_name: "teacher1",
     course_translations: {
       create: [
         {
@@ -148,7 +148,7 @@ export const courses: Prisma.CourseCreateInput[] = [
     start_date: "01/01/1900",
     end_date: "12/31/2100",
     teacher_in_charge_email: "e@mail.com",
-    teacher_in_charge_name: "teacher",
+    teacher_in_charge_name: "teacher2",
     course_translations: {
       create: [
         {
@@ -161,6 +161,29 @@ export const courses: Prisma.CourseCreateInput[] = [
     },
     study_modules: {
       connect: { id: "00000000000000000000000000000102" },
+    },
+  },
+  {
+    id: "00000000000000000000000000000666",
+    name: "handler",
+    slug: "handler",
+    start_date: "01/01/1900",
+    end_date: "12/31/2100",
+    teacher_in_charge_email: "t@mail.com",
+    teacher_in_charge_name: "foo",
+    hidden: false,
+  },
+  {
+    id: "00000000000000000000000000000667",
+    name: "handled",
+    slug: "handled",
+    start_date: "01/01/1900",
+    end_date: "12/31/2100",
+    teacher_in_charge_email: "t@mail.com",
+    teacher_in_charge_name: "foo",
+    hidden: true,
+    completions_handled_by: {
+      connect: { id: "00000000000000000000000000000666" },
     },
   },
 ]
