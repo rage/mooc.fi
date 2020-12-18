@@ -17,7 +17,7 @@ export const saveToDatabase = async (
   context: KafkaContext,
   message: Message,
 ): Promise<Result<string, Error>> => {
-  const { logger, prisma } = context
+  const { logger, prisma, knex } = context
 
   logger.info("Handling message: " + JSON.stringify(message))
   logger.info("Parsing timestamp")
