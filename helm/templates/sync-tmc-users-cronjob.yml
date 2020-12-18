@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sync-tmc-users
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  schedule: "30 4 * * *"
+  startingDeadlineSeconds: 900
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      activeDeadlineSeconds: 1800
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: sync-tmc-users
+              image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              command: ["sh", "-c", "npm run sync-tmc-users"]
+              envFrom:
+              - secretRef:
+                  name: backend-secret
+              env:
+                - name: REDIS_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: redis
+                      key: redis-password
