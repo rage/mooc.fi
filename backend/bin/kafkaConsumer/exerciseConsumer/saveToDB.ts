@@ -1,15 +1,15 @@
 import { Message, ExerciseData } from "./interfaces"
-import { PrismaClient } from "@prisma/client"
 import { DateTime } from "luxon"
-import winston = require("winston")
 import { ok, err, Result } from "../../../util/result"
 import { DatabaseInputError } from "../../lib/errors"
+import { KafkaContext } from "../common/kafkaContext"
 
 export const saveToDatabase = async (
+  context: KafkaContext,
   message: Message,
-  prisma: PrismaClient,
-  logger: winston.Logger,
 ): Promise<Result<string, Error>> => {
+  const { prisma } = context
+
   if (!message.course_id) {
     return err(new DatabaseInputError("no course specified", message))
   }
@@ -26,14 +26,13 @@ export const saveToDatabase = async (
   }
 
   message.data.forEach((exercise) => {
-    handleExercise(
+    handleExercise({
+      context,
       exercise,
-      message.course_id,
-      DateTime.fromISO(message.timestamp),
-      message.service_id,
-      logger,
-      prisma,
-    )
+      course_id: message.course_id,
+      timestamp: DateTime.fromISO(message.timestamp),
+      service_id: message.service_id,
+    })
   })
 
   await prisma.exercise.updateMany({
@@ -52,14 +51,20 @@ export const saveToDatabase = async (
   return ok("Saved to DB successfully")
 }
 
-const handleExercise = async (
-  exercise: ExerciseData,
-  course_id: string,
-  timestamp: DateTime,
-  service_id: string,
-  logger: winston.Logger,
-  prisma: PrismaClient,
-) => {
+interface HandleExerciseConfig {
+  context: KafkaContext
+  exercise: ExerciseData
+  course_id: string
+  timestamp: DateTime
+  service_id: string
+}
+const handleExercise = async ({
+  context: { prisma, logger },
+  exercise,
+  course_id,
+  timestamp,
+  service_id,
+}: HandleExerciseConfig) => {
   const existingExercise = await prisma.exercise.findFirst({
     where: {
       course_id: course_id,

@@ -16,6 +16,7 @@ import config from "../kafkaConfig"
 import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
+import knex from "../../../services/knex"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]
@@ -26,6 +27,14 @@ const logger = sentryLogger({
 const consumer = createKafkaConsumer(logger)
 
 consumer.connect()
+
+const context = {
+  prisma,
+  logger,
+  mutex,
+  consumer,
+  knex,
+}
 
 consumer.on("ready", () => {
   consumer.subscribe(TOPIC_NAME)
@@ -40,11 +49,8 @@ consumer.on("ready", () => {
     if (messages.length > 0) {
       const message = handleNullProgress(messages[0])
       await handleMessage<Message>({
+        context,
         kafkaMessage: message,
-        mutex,
-        logger,
-        consumer,
-        prisma,
         MessageYupSchema,
         saveToDatabase,
       })

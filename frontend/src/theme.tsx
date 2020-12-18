@@ -83,6 +83,14 @@ const theme = {
         fontSize: 20,
       },
     },
+    h4: {
+      ...rawTheme.typography.h4,
+      fontFamily: "Open Sans Condensed",
+      fontSize: 14,
+      "@media (min-width: 600px)": {
+        fontSize: 16,
+      },
+    },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
       fontFamily: "Open Sans Condensed",

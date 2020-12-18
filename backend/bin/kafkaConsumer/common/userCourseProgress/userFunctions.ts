@@ -9,17 +9,20 @@ import {
   ServiceProgressPartType,
   ExerciseCompletionPart,
 } from "./interfaces"
-import prisma from "../../../lib/prisma"
-import Knex from "../../../../services/knex"
-import * as winston from "winston"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
 import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
+import { KafkaContext } from "../kafkaContext"
 
-export const getCombinedUserCourseProgress = async (
-  user: User,
-  course: Course,
-): Promise<CombinedUserCourseProgress> => {
+export const getCombinedUserCourseProgress = async ({
+  user,
+  course,
+  context: { prisma },
+}: {
+  user: User
+  course: Course
+  context: KafkaContext
+}): Promise<CombinedUserCourseProgress> => {
   /* Get UserCourseServiceProgresses */
   const userCourseServiceProgresses = await prisma.userCourseServiceProgress.findMany(
     {
@@ -51,12 +54,17 @@ export const getCombinedUserCourseProgress = async (
   return combined
 }
 
-export const checkRequiredExerciseCompletions = async (
-  user: User,
-  course: Course,
-): Promise<boolean> => {
+export const checkRequiredExerciseCompletions = async ({
+  user,
+  course,
+  context: { knex },
+}: {
+  user: User
+  course: Course
+  context: KafkaContext
+}): Promise<boolean> => {
   if (course.exercise_completions_needed) {
-    const exercise_completions = await Knex("exercise_completion")
+    const exercise_completions = await knex("exercise_completion")
       .countDistinct("exercise_completion.exercise_id")
       .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
       .where("exercise.course_id", course.id)
@@ -69,11 +77,16 @@ export const checkRequiredExerciseCompletions = async (
   return true
 }
 
-export const getExerciseCompletionsForCourses = async (
-  user: User,
-  courseIds: string[],
-) => {
-  const exercise_completions: ExerciseCompletionPart[] = await Knex<
+export const getExerciseCompletionsForCourses = async ({
+  user,
+  courseIds,
+  context: { knex },
+}: {
+  user: User
+  courseIds: string[]
+  context: KafkaContext
+}) => {
+  const exercise_completions: ExerciseCompletionPart[] = await knex<
     any,
     ExerciseCompletionPart[]
   >("exercise_completion")
@@ -96,10 +109,15 @@ export const getExerciseCompletionsForCourses = async (
   return exercise_completions
 }
 
-export const getUserCourseSettings = async (
-  user: User,
-  course_id: string,
-): Promise<UserCourseSetting> => {
+export const getUserCourseSettings = async ({
+  user,
+  course_id,
+  context: { prisma },
+}: {
+  user: User
+  course_id: string
+  context: KafkaContext
+}): Promise<UserCourseSetting> => {
   let userCourseSetting: UserCourseSetting =
     (
       await prisma.userCourseSetting.findMany({
@@ -133,25 +151,28 @@ interface CheckCompletion {
   user: User
   course: Course
   combinedProgress?: CombinedUserCourseProgress
-  logger: winston.Logger
+  context: KafkaContext
 }
 
 export const checkCompletion = async ({
   user,
   course,
   combinedProgress,
-  logger,
+  context,
 }: CheckCompletion) => {
+  const { prisma } = context
+
   let combined = combinedProgress
 
   if (!combined) {
-    combined = await getCombinedUserCourseProgress(user, course)
+    combined = await getCombinedUserCourseProgress({ user, course, context })
   }
 
-  const requiredExerciseCompletions = await checkRequiredExerciseCompletions(
+  const requiredExerciseCompletions = await checkRequiredExerciseCompletions({
     user,
     course,
-  )
+    context,
+  })
   if (
     course.automatic_completions &&
     combined.total_n_points >= (course.points_needed ?? 9999999) &&
@@ -171,7 +192,7 @@ export const checkCompletion = async ({
       user,
       course_id: course.id,
       handlerCourse,
-      logger: logger!,
+      context,
     })
   }
 }
@@ -180,18 +201,24 @@ interface CreateCompletion {
   user: User
   course_id: string
   handlerCourse: Course
-  logger: winston.Logger
   tier?: number
+  context: KafkaContext
 }
 
 export const createCompletion = async ({
   user,
   course_id,
   handlerCourse,
-  logger,
+  context,
   tier,
 }: CreateCompletion) => {
-  const userCourseSettings = await getUserCourseSettings(user, course_id)
+  const { logger, prisma } = context
+
+  const userCourseSettings = await getUserCourseSettings({
+    user,
+    course_id,
+    context,
+  })
   const completions = await prisma.completion.findMany({
     where: {
       user_id: user.id,

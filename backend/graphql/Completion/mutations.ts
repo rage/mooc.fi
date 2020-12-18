@@ -9,7 +9,6 @@ import {
   stringArg,
 } from "@nexus/schema"
 
-import Knex from "../../services/knex"
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
 import { chunk, difference, groupBy } from "lodash"
@@ -64,11 +63,12 @@ export const CompletionMutations = extendType({
         course_id: nonNull(stringArg()),
       },
       authorize: isAdmin,
-      resolve: async (_, args, _ctx) => {
+      resolve: async (_, args, { knex }) => {
         const { course_id } = args
 
         const course = (
-          await Knex.select(["id", "completion_email_id"])
+          await knex
+            .select(["id", "completion_email_id"])
             .from("course")
             .where("id", course_id)
             .limit(1)
@@ -77,13 +77,14 @@ export const CompletionMutations = extendType({
           throw new Error("Course not found")
         }
         const completions: any[] = args.completions || []
-        const foundUsers = await Knex.select([
-          "id",
-          "email",
-          "upstream_id",
-          "student_number",
-          "real_student_number",
-        ])
+        const foundUsers = await knex
+          .select([
+            "id",
+            "email",
+            "upstream_id",
+            "student_number",
+            "real_student_number",
+          ])
           .from("user")
           .whereIn(
             "upstream_id",
@@ -126,7 +127,7 @@ export const CompletionMutations = extendType({
           }
         })
 
-        const res = await Knex.transaction(async (trx) => {
+        const res = await knex.transaction(async (trx) => {
           const inserted = await trx
             .batchInsert("completion", newCompletions)
             .returning("*")
@@ -172,6 +173,7 @@ export const CompletionMutations = extendType({
             ...(slug ? { course: { slug } } : {}),
             n_points: { gt: 0 },
           },
+          orderBy: { created_at: "asc" },
         })
 
         const progressByUser = groupBy(progresses, "user_id")
@@ -205,7 +207,14 @@ export const CompletionMutations = extendType({
               user,
               course,
               userCourseProgress: progressByUser[user.id][0],
-              logger: ctx.logger,
+              context: {
+                // not very optimal, but
+                logger: ctx.logger,
+                prisma: ctx.prisma,
+                consumer: undefined as any,
+                mutex: undefined as any,
+                knex: ctx.knex,
+              },
             })
           })
 

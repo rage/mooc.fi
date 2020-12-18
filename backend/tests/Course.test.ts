@@ -108,8 +108,20 @@ const fullCourseQuery = gql`
 `
 
 const coursesQuery = gql`
-  query AllCourses($language: String, $orderBy: CourseOrderByInput) {
-    courses(orderBy: $orderBy, language: $language) {
+  query AllCourses(
+    $language: String
+    $orderBy: CourseOrderByInput
+    $search: String
+    $hidden: Boolean
+    $handledBy: String
+  ) {
+    courses(
+      orderBy: $orderBy
+      language: $language
+      search: $search
+      hidden: $hidden
+      handledBy: $handledBy
+    ) {
       id
       slug
       name
@@ -305,6 +317,17 @@ const deleteCourseMutation = gql`
   }
 `
 
+const handlerCoursesQuery = gql`
+  query handlerCourses {
+    handlerCourses {
+      id
+      handles_completions_for {
+        id
+      }
+    }
+  }
+`
+
 // study_modules may be returned in any order, let's just sort them so snapshots are equal
 const sortStudyModules = (course: any) => {
   if (!course?.study_modules) {
@@ -432,17 +455,15 @@ describe("Course", () => {
       })
 
       it("returns courses ordered", async () => {
-        await Promise.all(
-          ["asc", "desc"].map(async (order: string) => {
-            const res = await ctx.client.request(coursesQuery, {
-              orderBy: { name: order },
-            })
+        for (const order of ["asc", "desc"]) {
+          const res = await ctx.client.request(coursesQuery, {
+            orderBy: { name: order },
+          })
 
-            expect(res.courses.map(sortStudyModules)).toMatchSnapshot(
-              `courses-${order}`,
-            )
-          }),
-        )
+          expect(res.courses.map(sortStudyModules)).toMatchSnapshot(
+            `courses-order-${order}`,
+          )
+        }
       })
 
       it("returns courses filtered by language", async () => {
@@ -453,7 +474,54 @@ describe("Course", () => {
 
           expect(
             orderBy(res.courses?.map(sortStudyModules), ["id"]),
-          ).toMatchSnapshot(`courses-${language}`)
+          ).toMatchSnapshot(`courses-language-${language}`)
+        }
+      })
+
+      const searchTest: Array<[string, string[]]> = [
+        ["course1", ["course1"]],
+        ["teacher", ["course1", "course2"]],
+        ["teacher1", ["course1"]],
+        ["teacher2", ["course2"]],
+        ["teacher3", []],
+        ["e@mail", ["course1", "course2"]],
+        ["en_US", ["course1"]],
+        ["se_SE", []],
+      ]
+
+      it("returns search results", async () => {
+        for (const [search, expected] of searchTest) {
+          const res = await ctx.client.request(coursesQuery, {
+            search,
+          })
+
+          const resultSlugs = res.courses?.map((c: Course) => c.slug).sort()
+
+          expect(resultSlugs).toEqual(expected.sort())
+        }
+      })
+
+      it("filters hidden", async () => {
+        for (const hidden of [true, false, null]) {
+          const res = await ctx.client.request(coursesQuery, {
+            hidden,
+          })
+
+          expect(res.courses?.map((c: Course) => c.id).sort()).toMatchSnapshot(
+            `courses-hidden-${hidden || "null"}`,
+          )
+        }
+      })
+
+      it("filters handledBy", async () => {
+        for (const handledBy of ["handler", "foo"]) {
+          const res = await ctx.client.request(coursesQuery, {
+            handledBy,
+          })
+
+          expect(res.courses?.map((c: Course) => c.id).sort()).toMatchSnapshot(
+            `courses-hidden-${handledBy}`,
+          )
         }
       })
     })
@@ -478,6 +546,27 @@ describe("Course", () => {
         })
 
         expect(res).toEqual({ course_exists: false })
+      })
+    })
+
+    describe("handlerCourses", () => {
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+        ctx!.client.setHeader("Authorization", "Bearer admin")
+      })
+
+      it("returns correctly", async () => {
+        const res = await ctx.client.request(handlerCoursesQuery)
+
+        expect(res.handlerCourses).toMatchSnapshot()
+      })
+
+      it("errors with non-admin", async () => {
+        ctx!.client.setHeader("Authorization", "Bearer normal")
+        try {
+          await ctx!.client.request(handlerCoursesQuery)
+          fail()
+        } catch {}
       })
     })
   })

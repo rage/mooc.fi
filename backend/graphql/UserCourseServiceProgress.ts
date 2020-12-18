@@ -54,6 +54,7 @@ export const UserCourseServiceProgressQueries = extendType({
             course_id: course_id,
             service_id: service_id,
           },
+          orderBy: { created_at: "asc" },
         })
       },
     })
