@@ -1,4 +1,4 @@
-import { getTestContext, logger } from "../../tests/__helpers"
+import { getTestContext } from "../../tests/__helpers"
 import { seed } from "../../tests/data/seed"
 import nock from "nock"
 import {
@@ -8,13 +8,6 @@ import {
   updateEmails,
 } from "../syncTMCUsers"
 import { TMCError } from "../lib/errors"
-
-const mockLogger = logger.createLogger()
-jest.mock("../lib/logger.ts", () =>
-  jest.fn().mockImplementation(jest.fn(() => mockLogger)),
-)
-// @ts-ignore: mockety mock
-import sentryLogger from "../lib/logger"
 
 const ctx = getTestContext()
 
