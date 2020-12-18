@@ -1,5 +1,12 @@
 import type { PrismaClient } from "@prisma/client"
-import { courses, study_modules, organizations, users, completions } from "."
+import {
+  courses,
+  study_modules,
+  organizations,
+  users,
+  completions,
+  services,
+} from "."
 
 export const seed = async (prisma: PrismaClient) => {
   const create = async <T>(key: keyof PrismaClient, data: T[]) =>
@@ -18,6 +25,7 @@ export const seed = async (prisma: PrismaClient) => {
   const seededOrganizations = await create("organization", organizations)
   const seededUsers = await create("user", users)
   const seededCompletions = await create("completion", completions)
+  const seededServices = await create("service", services)
 
   return {
     courses: seededCourses,
@@ -25,5 +33,6 @@ export const seed = async (prisma: PrismaClient) => {
     organizations: seededOrganizations,
     users: seededUsers,
     completions: seededCompletions,
+    services: seededServices,
   }
 }

@@ -35,7 +35,13 @@ const test = async () => {
     user: user!,
     course: course!,
     userCourseProgress: progress!,
-    logger: (null as unknown) as winston.Logger,
+    context: {
+      prisma,
+      logger: (null as unknown) as winston.Logger,
+      knex: null as any,
+      consumer: null as any,
+      mutex: null as any,
+    },
   })
   process.exit(0)
 }

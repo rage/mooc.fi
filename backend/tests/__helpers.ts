@@ -39,16 +39,10 @@ export type TestContext = {
   client: GraphQLClient
   prisma: PrismaClient
   logger: winston.Logger
-  knexClient: knex
+  knex: knex
   user?: User
   version: number
   port: number
-}
-
-export type TestContextContainer = {
-  ctx: TestContext
-  setup: () => Promise<void>
-  teardown: () => Promise<void>
 }
 
 let version = 1
@@ -68,7 +62,7 @@ export function getTestContext(): TestContext {
       port,
       prisma,
       client,
-      knexClient,
+      knex: knexClient,
       version,
     })
     done()
@@ -102,7 +96,7 @@ function createTestContext() {
 
       const { apollo, express } = server({
         prisma,
-        knexClient,
+        knex: knexClient,
         logger: logger.createLogger(),
         extraContext: {
           version: version++,
