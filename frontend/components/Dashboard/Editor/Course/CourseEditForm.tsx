@@ -128,6 +128,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
   return (
     <LocalizationProvider dateAdapter={LuxonUtils}>
       <Form style={{ backgroundColor: "white", padding: "2rem" }}>
+        {}
         <CourseLanguageSelector
           selectedLanguage={selectedLanguage}
           setSelectedLanguage={setSelectedLanguage}
@@ -188,7 +189,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
               as={DatePickerField}
               required
               InputLabelProps={inputLabelProps}
-              emptyLabel={t("courseDatePlaceholder")}
+              placeholder={t("courseDatePlaceholder")}
             />
             <StyledFieldWithAnchor
               id="end-date"
@@ -196,7 +197,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
               label={t("courseEndDate")}
               as={DatePickerField}
               InputLabelProps={inputLabelProps}
-              emptyLabel={t("courseDatePlaceholder")}
+              placeholder={t("courseDatePlaceholder")}
             />
           </FormFieldGroup>
 
