@@ -17,13 +17,12 @@ import {
 import { ExerciseCompletionPart, TierProgress } from "./interfaces"
 import { range } from "lodash"
 import { KafkaContext } from "../kafkaContext"
-import type Knex from "knex"
 
 const checkBAIProjectCompletion = async (
   user: User,
-  { knex }: KafkaContext & { knex: Knex },
+  { knex }: KafkaContext,
 ) => {
-  const completions = await knex!("exercise_completion")
+  const completions = await knex("exercise_completion")
     .select("exercise_completion.completed")
     .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
     .whereIn("exercise.custom_id", Object.keys(BAIbadge))

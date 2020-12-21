@@ -132,8 +132,12 @@ export const TabSection = ({
   currentTab,
   tab,
   children,
+  ...props
 }: PropsWithChildren<TabSectionProps>) => (
-  <section style={{ display: currentTab !== tab ? "none" : "initial" }}>
+  <section
+    style={{ display: currentTab !== tab ? "none" : "initial" }}
+    {...props}
+  >
     {children}
   </section>
 )

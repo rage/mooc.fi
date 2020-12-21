@@ -1,5 +1,10 @@
-import { memo, PropsWithChildren } from "react"
-import { CardActions, Typography, TypographyProps } from "@material-ui/core"
+import { memo, PropsWithChildren, useState } from "react"
+import {
+  CardActions,
+  Dialog,
+  Typography,
+  TypographyProps,
+} from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
@@ -25,7 +30,7 @@ const CardBase = styled.div<{ ishidden?: number }>`
   background-color: ${(props) => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
-  min-width: 235px;
+  min-width: 340px;
   display: grid;
   @media (max-width: 700px) {
     grid-template-columns: repeat(1, 1fr);
@@ -52,6 +57,7 @@ const ImageContainer = styled.div`
 
 const StyledLink = styled.a`
   text-decoration: none;
+  margin-left: 0px;
 `
 const CourseCardItem = styled.li`
   display: flex;
@@ -94,6 +100,7 @@ const CourseInfo = styled.ul`
   margin: 0;
   padding: 0;
 `
+
 const CourseInfoField = styled.li`
   display: grid;
   @media (max-width: 600px) {
@@ -231,6 +238,17 @@ const CourseCard = memo(
                   >
                     <StyledButton variant="text" startIcon={<DashboardIcon />}>
                       Dashboard
+                    </StyledButton>
+                  </StyledLink>
+                </LangLink>
+                <LangLink href={`/courses/new?clone=${course.slug}`}>
+                  <StyledLink>
+                    <StyledButton
+                      variant="text"
+                      color="secondary"
+                      startIcon={<AddIcon />}
+                    >
+                      Clone...
                     </StyledButton>
                   </StyledLink>
                 </LangLink>
