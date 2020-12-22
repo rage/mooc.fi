@@ -166,7 +166,10 @@ const EditCourse = ({ router }: EditCourseProps) => {
         {courseLoading || studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
         ) : courseData?.course ? (
-          <CourseEdit2 course={courseData.course} />
+          <CourseEdit2 
+            course={courseData.course}
+            studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+          />
         ) : (
           /*<CourseEdit
             course={courseData.course}
