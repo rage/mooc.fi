@@ -39,7 +39,7 @@ const TabPanel = ({
     id={`user-profile-${index}`}
     aria-labelledby={`user-profile-tab-${index}`}
   >
-    <Box p={3}>{children}</Box>
+    <Box sx={{ p: 3 }}>{children}</Box>
   </Typography>
 )
 

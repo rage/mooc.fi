@@ -1,5 +1,4 @@
-import { Typography } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
+import { Typography, Skeleton } from "@material-ui/core"
 import styled from "styled-components"
 import { range } from "lodash"
 import dynamic from "next/dynamic"

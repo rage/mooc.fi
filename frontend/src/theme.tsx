@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core/styles"
-import amber from "@material-ui/core/colors/amber"
+import { amber } from "@material-ui/core/colors"
 
 const rawTheme = createMuiTheme({
   palette: {
@@ -13,30 +13,33 @@ const rawTheme = createMuiTheme({
   typography: {
     fontFamily: "roboto",
   },
-  props: {
+  components: {
     MuiTextField: {
-      variant: "outlined",
-      fullWidth: true,
+      defaultProps: {
+        variant: "outlined",
+        fullWidth: true,
+      },
     },
     MuiFormControl: {
-      variant: "outlined",
-      fullWidth: true,
+      defaultProps: {
+        variant: "outlined",
+        fullWidth: true,
+      }
     },
     MuiButton: {
-      variant: "contained",
-      color: "primary",
-    },
-  },
-  overrides: {
-    MuiButton: {
-      label: {
-        textTransform: "none",
-
-        fontFamily: "Open Sans Condensed",
+      defaultProps: {
+        variant: "contained",
+        color: "primary",
       },
-      root: {
-        textTransform: "none",
-      },
+      styleOverrides: {
+        label: {
+          textTransform: "none",
+          fontFamily: "Open Sans Condensed",
+        },
+        root: {
+          textTransform: "none",
+        },
+      }
     },
   },
 })

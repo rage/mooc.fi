@@ -12,8 +12,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Skeleton
 } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
 import {
   UserDetailsContains_userDetailsContains_edges,
