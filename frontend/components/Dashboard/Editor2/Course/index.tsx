@@ -40,16 +40,15 @@ import {
   CircularProgress,
   Radio,
   RadioGroup,
-  Tooltip
+  Tooltip,
 } from "@material-ui/core"
 import styled from "styled-components"
 import { omit } from "lodash"
 import { ErrorMessage } from "@hookform/error-message"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor/common"
-import {
-  DatePicker,
-  LocalizationProvider,
-} from "@material-ui/pickers"
+import DatePicker from "@material-ui/lab/DatePicker"
+import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
+import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
 import LuxonUtils from "@date-io/luxon"
 import { DateTime } from "luxon"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -57,7 +56,6 @@ import { useConfirm } from "material-ui-confirm"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import HelpIcon from "@material-ui/icons/Help"
-import CalendarIcon from "@material-ui/icons/CalendarToday"
 import DisableAutoComplete from "/components/DisableAutoComplete"
 
 interface TabSectionProps {
@@ -170,11 +168,10 @@ const ControlledTextField = (props: ControlledFieldProps) => {
           required={required}
           variant="outlined"
           error={Boolean(errors[name as keyof typeof errors])}
-          ref={ref}
           InputProps={{
             autoComplete: "none",
             endAdornment: tip ?
-              <Tooltip title={tip} style={{ cursor: "pointer" }}>
+              <Tooltip title={tip}>
                 <HelpIcon />
               </Tooltip>
               : null
@@ -202,15 +199,14 @@ const ControlledDatePicker = (props: ControlledFieldProps) => {
           onClose={() => trigger([name, ...validateOtherFields])}
           label={label}
           ref={ref}
-          variant="outlined"
           allowKeyboardControl={true}
-          TextFieldComponent={TextField}
-          InputProps={{
+          renderInput={(params) => <TextField {...params} variant="outlined" />}
+/*          InputProps={{
             endAdornment:
               <IconButton style={{ padding: 0 }}>
                 <CalendarIcon />
               </IconButton>
-          }}
+          }}*/
         />
       )}
     />
@@ -278,7 +274,7 @@ export default function CourseEditor({ course, studyModules }: CourseEditorProps
   return (
     <Container maxWidth="md">
       <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
-        <LocalizationProvider dateAdapter={LuxonUtils}>
+        <LocalizationProvider dateAdapter={AdapterLuxon}>
           <FormProvider {...methods}>
             <form
               onSubmit={handleSubmit(onSubmit, onError)}

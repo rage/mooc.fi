@@ -11,6 +11,7 @@ import {
   Typography,
   TextField,
   CardContent,
+  Skeleton
 } from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
 import ErrorMessage from "/components/ErrorMessage"
@@ -27,7 +28,6 @@ import styled from "styled-components"
 import LanguageContext from "/contexes/LanguageContext"
 import getRegistrationTranslator from "/translations/register"
 import { WideContainer } from "/components/Container"
-import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"

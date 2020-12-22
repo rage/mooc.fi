@@ -169,8 +169,8 @@ const Pagination: React.FC<any> = () => {
           ? `${from}-${to === -1 ? count : to}${t("displayedRowsOf")}${count}`
           : ""
       }
-      onChangePage={() => null}
-      onChangeRowsPerPage={(
+      onPageChange={() => null}
+      onRowsPerPageChange={(
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       ) => handleChangeRowsPerPage({ eventValue: event.target.value })}
       ActionsComponent={() => <TablePaginationActions />}

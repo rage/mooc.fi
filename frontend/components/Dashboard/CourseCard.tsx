@@ -2,6 +2,7 @@ import { memo, PropsWithChildren, useState } from "react"
 import {
   CardActions,
   Dialog,
+  Skeleton,
   Typography,
   TypographyProps,
 } from "@material-ui/core"
@@ -14,7 +15,6 @@ import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import { CardTitle } from "/components/Text/headers"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import Skeleton from "@material-ui/lab/Skeleton"
 import CourseStatusBadge from "./CourseStatusBadge"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 
@@ -152,7 +152,7 @@ const CourseCard = memo(
       >
         <CourseCardImageContainer>
           {loading ? (
-            <Skeleton variant="rect" height="100%" />
+            <Skeleton variant="rectangular" height="100%" />
           ) : course ? (
             <CourseImage photo={course.photo} alt={course.name} />
           ) : (
@@ -228,7 +228,7 @@ const CourseCard = memo(
           <CourseCardActionArea>
             {loading ? (
               <>
-                <Skeleton variant="rect" width="100%" />
+                <Skeleton variant="rectangular" width="100%" />
               </>
             ) : course ? (
               <>

@@ -1,9 +1,8 @@
 import { useContext } from "react"
 import styled from "styled-components"
-import { Grid, Chip } from "@material-ui/core"
+import { Grid, Chip, Skeleton } from "@material-ui/core"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"
-import Skeleton from "@material-ui/lab/Skeleton"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
@@ -99,7 +98,7 @@ export default function CourseCard({ course }: CourseCardProps) {
                   style={{ opacity: course.status === "Upcoming" ? 0.6 : 1 }}
                 />
               ) : (
-                <Skeleton variant="rect" height="100%" />
+                <Skeleton variant="rectangular" height="100%" />
               )}
               {course?.link &&
                 course?.status === "Upcoming" &&

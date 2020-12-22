@@ -1,7 +1,6 @@
 import { FC } from "react"
 import styled from "styled-components"
-import { Container, Paper } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
+import { Container, Paper, Skeleton } from "@material-ui/core"
 import { range } from "lodash"
 
 const FormContainer = styled(Container)`

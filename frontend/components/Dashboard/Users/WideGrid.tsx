@@ -8,8 +8,8 @@ import {
   TableFooter,
   TableRow,
   TableHead,
+  Skeleton
 } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
 import styled from "styled-components"
 import range from "lodash/range"
 import LangLink from "/components/LangLink"
