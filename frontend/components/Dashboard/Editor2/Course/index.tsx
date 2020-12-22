@@ -8,7 +8,7 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useApolloClient } from "@apollo/client"
 import { CheckSlugQuery } from "/graphql/queries/courses"
-import { CourseDetails_course } from "/static/types/generated/CourseDetails"
+import { CourseDetails_course, CourseDetails_course_study_modules } from "/static/types/generated/CourseDetails"
 import courseEditSchema from "/components/Dashboard/Editor/Course/form-validation"
 import {
   useContext,
@@ -28,21 +28,26 @@ import {
   TextField,
   Tabs,
   Tab,
+  IconButton,
+  Checkbox,
+  List,
+  ListItem,
   FormControl,
   FormControlLabel,
   FormLabel,
   FormHelperText,
+  FormGroup,
   CircularProgress,
   Radio,
   RadioGroup,
+  Tooltip
 } from "@material-ui/core"
 import styled from "styled-components"
-import { omit, values } from "lodash"
+import { omit } from "lodash"
 import { ErrorMessage } from "@hookform/error-message"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor/common"
 import {
   DatePicker,
-  DatePickerProps,
   LocalizationProvider,
 } from "@material-ui/pickers"
 import LuxonUtils from "@date-io/luxon"
@@ -50,6 +55,10 @@ import { DateTime } from "luxon"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { useConfirm } from "material-ui-confirm"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import HelpIcon from "@material-ui/icons/Help"
+import CalendarIcon from "@material-ui/icons/CalendarToday"
+import DisableAutoComplete from "/components/DisableAutoComplete"
 
 interface TabSectionProps {
   currentTab: number
@@ -75,18 +84,30 @@ const TabSection = ({
 const FormBackground = styled(Paper)`
   padding: 2em;
 `
+const ModuleList = styled(List)`
+  padding: 0px;
+  max-height: 400px;
+  overflow: auto;
+`
 
+const ModuleListItem = styled(ListItem) <any>`
+  padding: 0px;
+`
 interface CourseEditorProps {
   course: CourseDetails_course
+  studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-interface FieldControllerProps {
+interface FieldProps {
   name: string
   label: string
   required?: boolean
   tab?: number
+}
+interface FieldControllerProps extends FieldProps {
   renderComponent: (props: ControllerRenderProps) => JSX.Element
 }
+
 const FieldController = ({
   name,
   label,
@@ -106,6 +127,7 @@ const FieldController = ({
     <Controller
       name={name}
       control={control}
+      autoComplete="disabled"
       render={(renderProps) => (
         <div style={{ marginBottom: "1.5rem" }}>
           <EnumeratingAnchor id={name} tab={tab} />
@@ -125,17 +147,14 @@ const FieldController = ({
   )
 }
 
-interface FieldProps {
-  name: string
-  label: string
-  required?: boolean
-  tab?: number
+interface ControlledFieldProps extends FieldProps {
+  tip?: string
   validateOtherFields?: Array<string>
 }
 
-const ControlledTextField = (props: FieldProps) => {
+const ControlledTextField = (props: ControlledFieldProps) => {
   const { errors, setValue } = useFormContext()
-  const { label, required, name } = props
+  const { label, required, name, tip } = props
 
   return (
     <FieldController
@@ -152,13 +171,21 @@ const ControlledTextField = (props: FieldProps) => {
           variant="outlined"
           error={Boolean(errors[name as keyof typeof errors])}
           ref={ref}
+          InputProps={{
+            autoComplete: "none",
+            endAdornment: tip ?
+              <Tooltip title={tip} style={{ cursor: "pointer" }}>
+                <HelpIcon />
+              </Tooltip>
+              : null
+          }}
         />
       )}
     />
   )
 }
 
-const ControlledDatePicker = (props: FieldProps) => {
+const ControlledDatePicker = (props: ControlledFieldProps) => {
   const { watch, setValue, trigger } = useFormContext()
   const { name, label, validateOtherFields = [] } = props
 
@@ -174,8 +201,16 @@ const ControlledDatePicker = (props: FieldProps) => {
           }}
           onClose={() => trigger([name, ...validateOtherFields])}
           label={label}
-          variant="outlined"
           ref={ref}
+          variant="outlined"
+          allowKeyboardControl={true}
+          TextFieldComponent={TextField}
+          InputProps={{
+            endAdornment:
+              <IconButton style={{ padding: 0 }}>
+                <CalendarIcon />
+              </IconButton>
+          }}
         />
       )}
     />
@@ -197,7 +232,7 @@ export const statusesT = (t: Function) => [
   },
 ]
 
-export default function CourseEditor({ course }: CourseEditorProps) {
+export default function CourseEditor({ course, studyModules }: CourseEditorProps) {
   const { language } = useContext(LanguageContext)
   const t = getCoursesTranslator(language)
   const t2 = getCommonTranslator(language)
@@ -248,6 +283,7 @@ export default function CourseEditor({ course }: CourseEditorProps) {
             <form
               onSubmit={handleSubmit(onSubmit, onError)}
               style={{ backgroundColor: "white", padding: "2rem" }}
+              autoComplete="none"
             >
               <Tabs value={tab} onChange={(_, newTab) => setTab(newTab)}>
                 <Tab label="Course info" value={0} />
@@ -257,6 +293,7 @@ export default function CourseEditor({ course }: CourseEditorProps) {
                 tab={0}
                 style={{ paddingTop: "0.5rem" }}
               >
+                <DisableAutoComplete />
                 <ControlledTextField
                   name="name"
                   label={t("courseName")}
@@ -266,6 +303,7 @@ export default function CourseEditor({ course }: CourseEditorProps) {
                   name="new_slug"
                   label={t("courseSlug")}
                   required={true}
+                  tip="A helpful text"
                 />
                 <ControlledTextField name="ects" label={t("courseECTS")} />
                 <ControlledDatePicker
@@ -328,6 +366,44 @@ export default function CourseEditor({ course }: CourseEditorProps) {
                     )}
                   />
                 </FormControl>
+                <FormControl>
+                  <FormLabel>{t("courseModules")}</FormLabel>
+                  <FormGroup>
+                    <ModuleList>
+                      <EnumeratingAnchor id="study_modules" />
+                      <FieldController
+                        name="study_modules"
+                        label={t("courseModules")}
+                        renderComponent={({ value }: { value: CourseDetails_course_study_modules[] }) => (
+                          <>
+                            {studyModules?.map(
+                              (module: CourseEditorStudyModules_study_modules) => (
+                                <ModuleListItem key={module.id}>
+                                  <FormControlLabel
+                                    key={`study-module-${module.id}`}
+                                    checked={value.filter((s) => s.id === module.id).length > 0}
+                                    onChange={(
+                                      _,
+                                      checked
+                                    ) =>
+                                      setValue(
+                                        "study_modules",
+                                        checked ? value.concat({ __typename: "StudyModule", id: module.id }) : value.filter(s => s.id !== module.id),
+                                        { shouldDirty: true }
+                                      )
+                                    }
+                                    control={<Checkbox />}
+                                    label={module.name}
+                                  />
+                                </ModuleListItem>
+                              ),
+                            )}
+                          </>
+                        )}
+                      />
+                    </ModuleList>
+                  </FormGroup>
+                </FormControl>
               </TabSection>
             </form>
           </FormProvider>
@@ -352,13 +428,13 @@ export default function CourseEditor({ course }: CourseEditorProps) {
               onClick={() =>
                 isDirty
                   ? confirm({
-                      title: t2("confirmationUnsavedChanges"),
-                      description: t2("confirmationLeaveWithoutSaving"),
-                      confirmationText: t2("confirmationYes"),
-                      cancellationText: t2("confirmationNo"),
-                    })
-                      .then(onCancel)
-                      .catch(() => {})
+                    title: t2("confirmationUnsavedChanges"),
+                    description: t2("confirmationLeaveWithoutSaving"),
+                    confirmationText: t2("confirmationYes"),
+                    cancellationText: t2("confirmationNo"),
+                  })
+                    .then(onCancel)
+                    .catch(() => { })
                   : onCancel()
               }
             >
@@ -367,6 +443,6 @@ export default function CourseEditor({ course }: CourseEditorProps) {
           </Grid>
         </Grid>
       </FormBackground>
-    </Container>
+    </Container >
   )
 }
