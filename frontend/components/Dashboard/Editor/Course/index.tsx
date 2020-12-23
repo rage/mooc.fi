@@ -21,9 +21,10 @@ import { PureQueryOptions } from "@apollo/client"
 import { toCourseForm, fromCourseForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import { useTranslator } from "/translations"
 
 const CourseEdit = ({
   course,
@@ -35,7 +36,7 @@ const CourseEdit = ({
   courses?: CourseEditorCourses_courses[]
 }) => {
   const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
 
   const [addCourse] = useMutation(AddCourseMutation)
   const [updateCourse] = useMutation(UpdateCourseMutation)

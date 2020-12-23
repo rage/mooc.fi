@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import styled from "styled-components"
 import { Grid, Chip, Skeleton } from "@material-ui/core"
 import ReactGA from "react-ga"
@@ -8,8 +7,8 @@ import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
-import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/translations"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;
@@ -70,8 +69,7 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
-  const { language } = useContext(LanguageContext)
-  const t = getHomeTranslator(language)
+  const t = useTranslator(HomeTranslations)
 
   return (
     <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>

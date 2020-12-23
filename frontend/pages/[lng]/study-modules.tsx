@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import { useQuery } from "@apollo/client"
 import { WideContainer } from "/components/Container"
 import { AllEditorModulesWithTranslations } from "/static/types/generated/AllEditorModulesWithTranslations"
@@ -7,13 +6,12 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 import withAdmin from "/lib/with-admin"
-import getStudyModulesTranslator from "/translations/study-modules"
-import LanguageContext from "/contexes/LanguageContext"
+import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/translations"
 
 function StudyModules() {
-  const { language } = useContext(LanguageContext)
-  const t = getStudyModulesTranslator(language)
+  const t = useTranslator(StudyModulesTranslations)
 
   const { loading, error, data } = useQuery<AllEditorModulesWithTranslations>(
     AllEditorModulesQuery,

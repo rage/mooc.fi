@@ -1,11 +1,11 @@
-import { useState, useContext } from "react"
+import { useState } from "react"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { Grid, Button } from "@material-ui/core"
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import styled from "styled-components"
-import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
+import HomeTranslations from "/translations/home"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import { useTranslator } from "/translations"
 
 interface CourseListProps {
   courses: CourseData[]
@@ -38,8 +38,7 @@ const ShowMoreButton = styled(Button)`
 const ModuleCoursesListing = (props: CourseListProps) => {
   const { courses } = props
   const [showAll, setShowAll] = useState(false)
-  const lngCtx = useContext(LanguageContext)
-  const t = getHomeTranslator(lngCtx.language)
+  const t = useTranslator(HomeTranslations)
 
   const activeCourses = courses.filter((c) => c.status == CourseStatus.Active)
   return (

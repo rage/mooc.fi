@@ -1,7 +1,6 @@
 import styled from "styled-components"
-import { useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
-import getSignUpTranslator from "/translations/sign-up"
+import SignUpTranslations from "/translations/sign-up"
+import { useTranslator } from "/translations"
 
 const InfoBox = styled.div`
   margin-bottom: 2rem;
@@ -18,8 +17,7 @@ export interface ConfirmEmailProps {
 
 // @ts-ignore: onComplete function not used at the moment
 const ConfirmEmail = (props: ConfirmEmailProps) => {
-  const { language } = useContext(LanguageContext)
-  const t = getSignUpTranslator(language)
+  const t = useTranslator(SignUpTranslations)
 
   return (
     <FormContainer>

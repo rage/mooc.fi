@@ -1,6 +1,5 @@
 import en from "./en.json"
 import fi from "./fi.json"
-import getTranslator from "/translations"
 
-type NaviTranslations = typeof en | typeof fi
-export default getTranslator<NaviTranslations>({ en, fi })
+const NaviTranslations = { en, fi }
+export default NaviTranslations

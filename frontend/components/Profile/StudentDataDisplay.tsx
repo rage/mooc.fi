@@ -1,4 +1,4 @@
-import { useState, useContext, PropsWithChildren, ChangeEvent } from "react"
+import { useState, PropsWithChildren, ChangeEvent } from "react"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
 import Typography from "@material-ui/core/Typography"
@@ -7,11 +7,11 @@ import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ProfileSettings from "/components/Profile/ProfileSettings"
-import getProfileTranslator from "/translations/profile"
-import LanguageContext from "/contexes/LanguageContext"
+import ProfileTranslations from "/translations/profile"
 import Warning from "@material-ui/icons/Warning"
 import styled from "styled-components"
 import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/translations"
 
 const ConsentNotification = styled.div`
   display: flex;
@@ -48,8 +48,7 @@ interface StudentDataDisplayProps {
 }
 
 const StudentDataDisplay = ({ data }: StudentDataDisplayProps) => {
-  const { language } = useContext(LanguageContext)
-  const t = getProfileTranslator(language)
+  const t = useTranslator(ProfileTranslations)
 
   const { completions = [], research_consent } = data || {}
   const [tabOpen, setTabOpen] = useState(0)

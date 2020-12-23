@@ -1,4 +1,4 @@
-import { FC, useState, useCallback, useEffect, useContext, memo } from "react"
+import { FC, useState, useCallback, useEffect, memo } from "react"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import { gql, useApolloClient } from "@apollo/client"
@@ -6,8 +6,8 @@ import { Skeleton } from "@material-ui/core"
 import LangLink from "/components/LangLink"
 import { memoize } from "lodash"
 import { DocumentNode } from "graphql"
-import getPageTranslator from "/translations/pages"
-import LanguageContext from "/contexes/LanguageContext"
+import PageTranslations from "/translations/pages"
+import { useTranslator } from "/translations"
 
 const BreadcrumbCourseQuery = gql`
   query BreadcrumbCourse($slug: String) {
@@ -175,7 +175,6 @@ const DashboardBreadCrumbs = memo((props: Props) => {
   const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
   const client = useApolloClient()
   const { router } = props
-  const { language } = useContext(LanguageContext)
 
   //if router prop exists, take the current URL
   let currentUrl: string = ""
@@ -192,7 +191,7 @@ const DashboardBreadCrumbs = memo((props: Props) => {
     homeLink = "/en/"
   }
 
-  const t = getPageTranslator(language, router)
+  const t = useTranslator(PageTranslations)
 
   let urlRouteComponents = urlWithQueryAndAnchorRemoved.split("/")
   urlRouteComponents = urlRouteComponents.slice(

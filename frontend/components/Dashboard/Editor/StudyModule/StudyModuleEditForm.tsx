@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useContext, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { StudyModuleFormValues } from "./types"
 import {
   Formik,
@@ -34,10 +34,10 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
-import getModulesTranslator from "/translations/study-modules"
-import LanguageContext from "/contexes/LanguageContext"
+import ModulesTranslations from "/translations/study-modules"
 import { useConfirm } from "material-ui-confirm"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
+import { useTranslator } from "/translations"
 
 const FormContainer = styled.div`
   background-color: white;
@@ -64,8 +64,7 @@ const RenderForm = () => {
     isSubmitting,
   } = useFormikContext<StudyModuleFormValues>()
 
-  const { language } = useContext(LanguageContext)
-  const t = getModulesTranslator(language)
+  const t = useTranslator(ModulesTranslations)
   const confirm = useConfirm()
 
   const [imageError, setImageError] = useState("")

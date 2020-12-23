@@ -5,8 +5,7 @@ import {
   ChangeEvent,
 } from "react"
 import { TablePagination } from "@material-ui/core"
-import getUsersTranslator from "/translations/users"
-import LanguageContext from "/contexes/LanguageContext"
+import UsersTranslations from "/translations/users"
 import UserSearchContext from "/contexes/UserSearchContext"
 import styled from "styled-components"
 import FirstPageIcon from "@material-ui/icons/FirstPage"
@@ -15,6 +14,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
 import LastPageIcon from "@material-ui/icons/LastPage"
 import { useTheme } from "@material-ui/core/styles"
 import { IconButton } from "@material-ui/core"
+import { useTranslator } from "/translations"
 
 const StyledFooter = styled.footer`
   flex-shrink: 0;
@@ -126,8 +126,7 @@ const TablePaginationActions: React.FC<any> = () => {
 }
 
 const Pagination: React.FC<any> = () => {
-  const { language } = useContext(LanguageContext)
-  const t = getUsersTranslator(language)
+  const t = useTranslator(UsersTranslations)
   const {
     data,
     rowsPerPage,

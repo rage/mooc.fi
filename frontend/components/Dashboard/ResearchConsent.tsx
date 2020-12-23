@@ -1,8 +1,8 @@
-import { useContext, ChangeEvent } from "react"
-import getCommonTranslator from "/translations/common"
-import LanguageContext from "/contexes/LanguageContext"
+import { ChangeEvent } from "react"
+import CommonTranslations from "/translations/common"
 import { Link, RadioGroup, FormControlLabel, Radio } from "@material-ui/core"
 import styled from "styled-components"
+import { useTranslator } from "/translations"
 
 const Row = styled.div`
   margin-bottom: 1.5rem;
@@ -19,8 +19,7 @@ const ResearchConsent = ({
   handleInput,
   disabled,
 }: ResearchConsentProps) => {
-  const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
 
   return (
     <>

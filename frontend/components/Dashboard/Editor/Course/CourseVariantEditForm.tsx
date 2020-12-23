@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { FieldArray, getIn, useFormikContext } from "formik"
 import { Grid, FormControl, FormGroup, Typography } from "@material-ui/core"
@@ -13,9 +12,9 @@ import {
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import styled from "styled-components"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
 import { useConfirm } from "material-ui-confirm"
+import { useTranslator } from "/translations"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
@@ -28,8 +27,7 @@ const CourseVariantEditForm = () => {
     isSubmitting,
   } = useFormikContext<CourseFormValues>()
 
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   const confirm = useConfirm()
 
   return (

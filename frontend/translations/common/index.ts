@@ -1,8 +1,7 @@
 import en from "./en.json"
 import fi from "./fi.json"
 import se from "./se.json"
-import getTranslator from "/translations"
+import { Translation } from ".."
 
-type CommonTranslations = typeof en & typeof fi & typeof se
-
-export default getTranslator<CommonTranslations>({ en, fi, se })
+const CommonTranslations: Record<string, Translation> = { en, fi, se }
+export default CommonTranslations

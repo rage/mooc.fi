@@ -15,9 +15,10 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getCoursesTranslations from "/translations/courses"
 import styled from "styled-components"
 import { TextField } from "@material-ui/core"
+import { useTranslator } from "/translations"
+import CoursesTranslations from "/translations/courses"
 // import useDebounce from "/util/useDebounce"
 
 const ContentArea = styled.div`
@@ -36,7 +37,7 @@ export const CourseDetailsFromSlugQuery = gql`
 
 const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslations(language)
+  const t = useTranslator(CoursesTranslations)
 
   const [lng, changeLng] = useState("")
   const [searchString, setSearchString] = useState("")

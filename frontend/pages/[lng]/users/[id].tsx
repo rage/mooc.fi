@@ -7,15 +7,14 @@ import { CircularProgress } from "@material-ui/core"
 import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getCommonTranslator from "/translations/common"
-import { useContext, useState } from "react"
-import LanguageContext from "/contexes/LanguageContext"
+import CommonTranslations from "/translations/common"
+import { useState } from "react"
+import { useTranslator } from "/translations"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
   const client = useApolloClient()
-  const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
 
   const [more, setMore]: any[] = useState([])
 

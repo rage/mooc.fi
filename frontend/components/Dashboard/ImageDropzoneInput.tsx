@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect } from "react"
 import { useField, FieldInputProps } from "formik"
 import { useDropzone, FileRejection } from "react-dropzone"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
-import getCommonTranslator from "/translations/common"
-import LanguageContext from "/contexes/LanguageContext"
+import CommonTranslations from "/translations/common"
 import { FormValues } from "/components/Dashboard/Editor/types"
+import { useTranslator } from "/translations"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
 const isChrome = process.browser
@@ -55,8 +55,7 @@ const ImageDropzoneInput = ({
   ...props
 }: DropzoneProps) => {
   const [, , { setValue }] = useField(props.name)
-  const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
   const [status, setStatus] = useState<MessageProps>({
     message: t("imageDropMessage"),
   })

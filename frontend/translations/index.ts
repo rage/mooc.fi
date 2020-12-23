@@ -1,4 +1,6 @@
-import { NextRouter } from "next/router"
+import { NextRouter, useRouter } from "next/router"
+import { useContext } from "react"
+import LanguageContext from "/contexes/LanguageContext"
 
 const defaultLanguage = "en"
 
@@ -7,12 +9,16 @@ export type Translation =
   | Record<string, Array<Record<string, string>>>
   | Record<string, Record<string, string>>
 
+export type Translator = <T extends Translation>(
+  key: keyof T,
+  variables?: Record<string, any>,
+) => any
+
 const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
   router?: NextRouter,
 ) => (key: keyof T, variables?: Record<string, any>) => {
-  const translation: T[keyof T] | undefined =
-    dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
+  const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
 
   if (!translation) {
     console.warn(`WARNING: no translation for ${lng}:${key}`)
@@ -21,9 +27,9 @@ const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
 
   return Array.isArray(translation)
     ? (translation as T[keyof T][]).map((t) =>
-        substitute<T>({ translation: t, variables, router }),
+        substitute({ translation: t, variables, router }),
       )
-    : substitute<T>({ translation, variables, router })
+    : substitute({ translation, variables, router })
 }
 
 interface Substitute<T> {
@@ -32,7 +38,7 @@ interface Substitute<T> {
   router?: NextRouter
 }
 
-const substitute = <T>({
+const substitute = <T extends Translation>({
   translation,
   variables,
   router,
@@ -41,13 +47,13 @@ const substitute = <T>({
     return Object.keys(translation).reduce(
       (obj, key) => ({
         ...obj,
-        [key]: substitute<T>({
+        [key]: substitute({
           translation: (translation as any)[key],
           variables,
           router,
         }),
       }),
-      {},
+      {} as T,
     )
   }
 
@@ -114,6 +120,23 @@ const substitute = <T>({
   })
 
   return ret
+}
+
+export const useTranslator = <T extends Translation, T2 extends Translation>(
+  dict: Record<string, T>,
+  dict2?: Record<string, T2>,
+  /*
+  translator: <T>(
+    lng: string,
+    router?: NextRouter,
+  ) => (key: keyof T, variables?: Record<string, any>) => any 
+*/
+) => {
+  const { language } = useContext(LanguageContext)
+  const router = useRouter()
+
+  const combinedDict = Object.assign({}, dict, dict2 ?? {})
+  return getTranslator<T & T2>(combinedDict)(language, router)
 }
 
 export default getTranslator

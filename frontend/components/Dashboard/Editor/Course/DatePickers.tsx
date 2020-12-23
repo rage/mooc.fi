@@ -1,4 +1,4 @@
-import { DatePicker } from "@material-ui/pickers"
+import DatePicker from "@material-ui/lab/DatePicker"
 import { ErrorMessage, useField } from "formik"
 import styled from "styled-components"
 

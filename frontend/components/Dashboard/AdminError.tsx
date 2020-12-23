@@ -1,11 +1,9 @@
-import { useContext } from "react"
 import { Typography } from "@material-ui/core"
-import getCommonTranslator from "/translations/common"
-import LanguageContext from "/contexes/LanguageContext"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/translations"
 
 function AdminError() {
-  const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
 
   return (
     <section>

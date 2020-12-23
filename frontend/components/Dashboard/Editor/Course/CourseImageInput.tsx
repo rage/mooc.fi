@@ -7,7 +7,7 @@ import {
 import { FormFieldGroup } from "./CourseEditForm"
 import { FormControl, Button } from "@material-ui/core"
 import { Field, useFormikContext, FieldInputProps } from "formik"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import { CourseFormValues } from "./types"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
@@ -16,6 +16,7 @@ import { addDomain } from "/util/imageUtils"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import { useTranslator } from "/translations"
 
 interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
@@ -28,7 +29,7 @@ const CourseImageInput = (props: ImageInputProps) => {
   } = useFormikContext<CourseFormValues>()
   const { courses } = props
   const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const coursesWithPhotos =

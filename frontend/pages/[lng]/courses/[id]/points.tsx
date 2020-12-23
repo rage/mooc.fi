@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import Container from "/components/Container"
 import CourseLanguageContext from "/contexes/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -12,8 +11,8 @@ import { CourseDetailsFromSlug as CourseDetailsData } from "/static/types/genera
 import Spinner from "/components/Spinner"
 import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/translations"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -25,8 +24,7 @@ export const CourseDetailsFromSlugQuery = gql`
 `
 
 const Points = () => {
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
 
   const slug = useQueryParameter("id")
   const lng = useQueryParameter("lng")

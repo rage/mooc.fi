@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import styled from "styled-components"
 import { ProfileUserOverView_currentUser_completions as CompletionsData } from "/static/types/generated/ProfileUserOverView"
 import Button from "@material-ui/core/Button"
@@ -6,14 +5,14 @@ import {
   formatDateTime,
   mapLangToLanguage,
 } from "/components/DataFormatFunctions"
-import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/profile"
+import ProfileTranslations from "/translations/profile"
 import DoneIcon from "@material-ui/icons/Done"
 import Avatar from "@material-ui/core/Avatar"
 import { CardTitle, CardSubtitle } from "components/Text/headers"
 import { addDomain } from "/util/imageUtils"
 import Link from "next/link"
 import CertificateButton from "components/CertificateButton"
+import { useTranslator } from "/translations"
 
 const StyledButton = styled(Button)`
   height: 50%;
@@ -49,8 +48,7 @@ interface ListItemProps {
 const CompletionListItem = (props: ListItemProps) => {
   const { listItem } = props
   const isRegistered = (listItem?.completions_registered ?? []).length > 0
-  const lng = useContext(LanguageContext)
-  const t = getProfileTranslator(lng.language)
+  const t = useTranslator(ProfileTranslations)
   //Checks from the course whether it has a certificate or not
 
   const hasCertificate = listItem?.course?.has_certificate
