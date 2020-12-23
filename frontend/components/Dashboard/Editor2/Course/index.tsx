@@ -1,4 +1,4 @@
-import { useForm, FormProvider } from "react-hook-form"
+import { useForm, FormProvider, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useApolloClient } from "@apollo/client"
 import { CheckSlugQuery } from "/graphql/queries/courses"
@@ -34,6 +34,7 @@ import {
   FieldController,
   ControlledTextField,
   ControlledDatePicker,
+  ControlledImageInput,
 } from "/components/Dashboard/Editor2/FormFields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/translations"
@@ -104,7 +105,6 @@ export default function CourseEditor({
     t,
   })
 
-  console.log(course)
   const methods = useForm({
     defaultValues: {
       ...course,
@@ -113,22 +113,24 @@ export default function CourseEditor({
       end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
       ects: course.ects ?? "",
       status: CourseStatus[course.status ?? "Upcoming"],
+      thumbnail: course.photo?.compressed,
+      delete_photo: false,
+      new_photo: null
     },
     resolver: yupResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
 
-  const { handleSubmit, setValue } = methods
+  console.log(course)
+  const { handleSubmit, control, setValue, formState } = methods
+  console.log(formState)
   const [tab, setTab] = useState(0)
 
   const onSubmit = (data: Object, e?: any) => console.log(data, e)
   const onError = (errors: Object, e?: any) => console.log(errors, e)
   const onCancel = () => console.log("cancelled")
-
-  //console.log(errors)
-  //console.log("dirty:", dirtyFields)
-  //console.log("touched:", touched)
+  const onDelete = (id: string) => console.log("deleted", id)
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -137,6 +139,7 @@ export default function CourseEditor({
           onSubmit={onSubmit}
           onError={onError}
           onCancel={onCancel}
+          onDelete={onDelete}
         >
           <form
             onSubmit={handleSubmit(onSubmit, onError)}
@@ -152,6 +155,11 @@ export default function CourseEditor({
               style={{ paddingTop: "0.5rem" }}
             >
               <DisableAutoComplete />
+              <Controller
+                name="id"
+                control={control}
+                as={<input type="hidden" />}
+              />
               <ControlledTextField
                 name="name"
                 label={t("courseName")}
@@ -273,6 +281,11 @@ export default function CourseEditor({
                   </ModuleList>
                 </FormGroup>
               </FormControl>
+              <ControlledImageInput
+                name="new_photo"
+                defaultValue={course.photo}
+                label={t("courseNewPhoto")}
+              />
             </TabSection>
           </form>
         </FormContainer>
