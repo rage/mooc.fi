@@ -75,6 +75,7 @@ const CourseImageInput = (props: ImageInputProps) => {
             <ImageDropzoneInput
               {...props}
               onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
+              onImageAccepted={(value) => setFieldValue("new_photo", value)}
             >
               <ImagePreview
                 file={addDomain(values.thumbnail)}

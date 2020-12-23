@@ -3,7 +3,7 @@ export default function DisableAutoComplete() {
     <input
       name="disableAutocomplete"
       autoComplete="on"
-      value=""
+      readOnly
       style={{
         display: "hidden",
         opacity: 0,

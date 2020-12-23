@@ -9,6 +9,10 @@ import { EnumeratingAnchor } from "/components/Dashboard/Editor/common"
 import { FormHelperText, TextField, Tooltip } from "@material-ui/core"
 import DatePicker from "@material-ui/lab/DatePicker"
 import HelpIcon from "@material-ui/icons/Help"
+import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
+import ImagePreview from "/components/Dashboard/ImagePreview"
+import { addDomain } from "/util/imageUtils"
+import { CourseDetails_course_photo } from "/static/types/generated/CourseDetails"
 
 interface FieldProps {
   name: string
@@ -115,13 +119,66 @@ export const ControlledDatePicker = (props: ControlledFieldProps) => {
           ref={ref}
           allowKeyboardControl={true}
           renderInput={(params) => <TextField {...params} variant="outlined" />}
-          /*          InputProps={{
-            endAdornment:
-              <IconButton style={{ padding: 0 }}>
-                <CalendarIcon />
-              </IconButton>
-          }}*/
+        /*          InputProps={{
+          endAdornment:
+            <IconButton style={{ padding: 0 }}>
+              <CalendarIcon />
+            </IconButton>
+        }}*/
         />
+      )}
+    />
+  )
+}
+
+interface ControlledImageInputProps extends ControlledFieldProps {
+  defaultValue: CourseDetails_course_photo | null
+}
+
+export const ControlledImageInput = (props: ControlledImageInputProps) => {
+  const { watch, setValue, control } = useFormContext()
+  const { name, label, defaultValue } = props
+
+  return (
+    <FieldController
+      {...props}
+      renderComponent={() => (
+        <>
+          <Controller
+            name="thumbnail"
+            control={control}
+            as={<input type="hidden" />}
+          />
+          <Controller
+            name={name}
+            type="file"
+            label={label}
+            as={(props) => (
+              <ImageDropzoneInput
+                {...props}
+                onImageLoad={(value) => setValue("thumbnail", value)}
+                onImageAccepted={(value) => setValue(name, value, { shouldDirty: true })}
+              >
+              <ImagePreview
+                file={addDomain(watch("thumbnail"))}
+                onClose={(
+                  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                ): void => {
+                  e.stopPropagation()
+                  e.nativeEvent.stopImmediatePropagation()
+                  setValue("thumbnail", "")
+                  setValue(name, null)
+
+                  if (defaultValue) {
+                    // TODO: not dirtying the form
+                    setValue("delete_photo", true, { shouldValidate: true, shouldDirty: true })
+                  }
+                }}
+              />
+              </ImageDropzoneInput>
+            )}
+          />
+        </>
       )}
     />
   )

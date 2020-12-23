@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, PropsWithChildren } from "react"
 import { useField, FieldInputProps } from "formik"
 import { useDropzone, FileRejection } from "react-dropzone"
 import { Typography } from "@material-ui/core"
@@ -46,15 +46,15 @@ interface MessageProps {
 
 interface DropzoneProps extends FieldInputProps<FormValues> {
   onImageLoad: (result: string | ArrayBuffer | null) => void
-  children: any
+  onImageAccepted: (field: File) => void
 }
 
 const ImageDropzoneInput = ({
   onImageLoad,
   children,
+  onImageAccepted,
   ...props
-}: DropzoneProps) => {
-  const [, , { setValue }] = useField(props.name)
+}: PropsWithChildren<DropzoneProps>) => {
   const t = useTranslator(CommonTranslations)
   const [status, setStatus] = useState<MessageProps>({
     message: t("imageDropMessage"),
@@ -66,7 +66,7 @@ const ImageDropzoneInput = ({
     reader.onload = () => onImageLoad(reader.result)
 
     if (accepted.length) {
-      setValue(accepted[0])
+      onImageAccepted(accepted[0])
       reader.readAsDataURL(accepted[0])
     }
 
