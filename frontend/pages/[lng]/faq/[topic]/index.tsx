@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import LanguageContext from "/contexes/LanguageContext"
-import getFAQTranslator from "/translations/faq"
+import FAQTranslations from "/translations/faq"
 import { useQueryParameter } from "/util/useQueryParameter"
 import {
   ContentBox,
@@ -8,10 +8,11 @@ import {
   FAQPage,
   SectionBox,
 } from "/components/Home/FAQ/Common"
+import { useTranslator } from "/translations"
 
 export default function FAQTopic() {
   const { language } = useContext(LanguageContext)
-  const t = getFAQTranslator(language)
+  const t = useTranslator(FAQTranslations)
 
   const [render, setRender] = useState(false)
   const [error, setError] = useState(false)

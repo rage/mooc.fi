@@ -16,7 +16,7 @@ import { H1Background } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useQueryParameter } from "/util/useQueryParameter"
 import withAdmin from "/lib/with-admin"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
 import {
@@ -25,6 +25,7 @@ import {
 } from "/graphql/queries/courses"
 import notEmpty from "/util/notEmpty"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
+import { useTranslator } from "/translations"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -108,7 +109,7 @@ interface EditCourseProps {
 
 const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("id") ?? ""
 
   let redirectTimeout: number | null = null
@@ -166,7 +167,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
         {courseLoading || studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
         ) : courseData?.course ? (
-          <CourseEdit2 
+          <CourseEdit2
             course={courseData.course}
             studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
           />

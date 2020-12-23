@@ -7,14 +7,15 @@ import Spinner from "/components/Spinner"
 import { studentHasPoints } from "/components/User/Points/PointsList"
 import PointsListGrid from "/components/User/Points/PointsListGrid"
 import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/profile"
+import ProfileTranslations from "/translations/profile"
 import LangLink from "../LangLink"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import { useTranslator } from "/translations"
 
 const ProfilePointsDisplay = () => {
   const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)
   const lng = useContext(LanguageContext)
-  const t = getProfileTranslator(lng.language)
+  const t = useTranslator(ProfileTranslations)
 
   if (loading) {
     return <Spinner />

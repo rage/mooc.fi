@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 import { H2Background } from "/components/Text/headers"
@@ -6,9 +5,9 @@ import styled from "styled-components"
 import ModuleCoursesListing, {
   ThreeOrLessCoursesListing,
 } from "/components/Home/ModuleDisplay/ModuleCourseCardList"
-import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
+import HomeTranslations from "/translations/home"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import { useTranslator } from "/translations"
 
 const CoursesListContainer = styled(ContentContainer)`
   margin-top: 2rem;
@@ -30,8 +29,7 @@ const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {
   const dontLimitShownCourses =
     courses.length <= 3 ||
     courses.every((c) => c.status === CourseStatus.Active)
-  const lngCtx = useContext(LanguageContext)
-  const t = getHomeTranslator(lngCtx.language)
+  const t = useTranslator(HomeTranslations)
 
   return (
     <CoursesListContainer>

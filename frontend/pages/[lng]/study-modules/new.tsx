@@ -1,14 +1,12 @@
-import { useContext } from "react"
 import { WideContainer } from "/components/Container"
 import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import { H1NoBackground } from "/components/Text/headers"
 import withAdmin from "/lib/with-admin"
-import getStudyModuleTranslator from "/translations/study-modules"
-import LanguageContext from "/contexes/LanguageContext"
+import StudyModuleTranslations from "/translations/study-modules"
+import { useTranslator } from "/translations"
 
 const NewStudyModule = () => {
-  const { language } = useContext(LanguageContext)
-  const t = getStudyModuleTranslator(language)
+  const t = useTranslator(StudyModuleTranslations)
   return (
     <section>
       <WideContainer>

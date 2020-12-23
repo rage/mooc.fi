@@ -1,11 +1,10 @@
-import { useContext } from "react"
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
-import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
+import HomeTranslations from "/translations/home"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import { H2Background } from "/components/Text/headers"
 import styled from "styled-components"
+import { useTranslator } from "/translations"
 
 const NaviArea = styled.section`
   margin-bottom: 5em;
@@ -55,8 +54,7 @@ const ModuleNavi = ({
   modules?: AllModules_study_modules[]
   loading: boolean
 }) => {
-  const lng = useContext(LanguageContext)
-  const t = getHomeTranslator(lng.language)
+  const t = useTranslator(HomeTranslations)
 
   return (
     <NaviArea>

@@ -1,9 +1,7 @@
-import { useContext } from "react"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { FieldArray, getIn, useFormikContext } from "formik"
-import LanguageContext from "/contexes/LanguageContext"
 import { useConfirm } from "material-ui-confirm"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import {
   StyledFieldWithAnchor,
   StyledTextField,
@@ -15,6 +13,7 @@ import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
 import styled from "styled-components"
 import { initialAlias } from "./form-validation"
+import { useTranslator } from "/translations"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;
@@ -26,8 +25,7 @@ const CourseAliasEditForm = () => {
     values: { course_aliases: values },
     isSubmitting,
   } = useFormikContext<CourseFormValues>()
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   const confirm = useConfirm()
 
   return (

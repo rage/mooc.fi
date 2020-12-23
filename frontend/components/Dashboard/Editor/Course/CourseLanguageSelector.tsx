@@ -1,11 +1,10 @@
-import { useContext } from "react"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import { FieldArray } from "formik"
 import styled from "styled-components"
 import { Button, ButtonGroup } from "@material-ui/core"
 import { initialTranslation } from "./form-validation"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/translations"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;
@@ -46,8 +45,7 @@ interface LanguageSelectorProps {
 }
 const CourseLanguageSelector = (props: LanguageSelectorProps) => {
   const { selectedLanguage, setSelectedLanguage } = props
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   return (
     <>
       <FormSubtitle variant="h6" component="h3" align="center">

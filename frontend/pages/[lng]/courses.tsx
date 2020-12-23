@@ -11,7 +11,7 @@ import {
 } from "/graphql/queries/courses"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import LanguageContext from "/contexes/LanguageContext"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -19,6 +19,7 @@ import { useRouter } from "next/router"
 import FilterMenu from "/components/FilterMenu"
 import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
+import { useTranslator } from "/translations"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -36,7 +37,7 @@ const notEmptyOrEmptyString = (value: any) =>
 
 function Courses() {
   const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   const router = useRouter()
 
   const statusParam = decodeURIComponent(useQueryParameter("status", false))

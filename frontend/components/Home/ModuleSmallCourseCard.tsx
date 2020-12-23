@@ -1,14 +1,13 @@
-import { useContext } from "react"
 import { Grid, Typography, Skeleton } from "@material-ui/core"
 import styled from "styled-components"
 import { CourseStatus } from "/static/types/generated/globalTypes"
-import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
+import HomeTranslations from "/translations/home"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import ReactGA from "react-ga"
 import { CardTitle } from "components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
+import { useTranslator } from "/translations"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -101,8 +100,7 @@ function ModuleSmallCourseCard({
   course,
   showHeader,
 }: ModuleSmallCourseCardProps) {
-  const lng = useContext(LanguageContext)
-  const t = getHomeTranslator(lng.language)
+  const t = useTranslator(HomeTranslations)
 
   return (
     <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>

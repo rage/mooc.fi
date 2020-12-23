@@ -1,4 +1,4 @@
-import { useState, createRef, useContext } from "react"
+import { useState, createRef } from "react"
 import styled from "styled-components"
 import Send from "@material-ui/icons/Send"
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied"
@@ -8,8 +8,8 @@ import Typography from "@material-ui/core/Typography"
 import FormControl from "@material-ui/core/FormControl"
 import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
-import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
+import HomeTranslations from "/translations/home"
+import { useTranslator } from "/translations"
 
 const MailingList = styled.div`
   height: 20rem;
@@ -57,8 +57,7 @@ const StyledButton = styled(Button)`
 function EmailSubscribe() {
   const [sent, setSent] = useState(false)
   const formRef = createRef<HTMLFormElement>()
-  const lng = useContext(LanguageContext)
-  const t = getHomeTranslator(lng.language)
+  const t = useTranslator(HomeTranslations)
 
   function handleSubmit() {
     setSent(true)

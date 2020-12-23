@@ -24,7 +24,7 @@ const rawTheme = createMuiTheme({
       defaultProps: {
         variant: "outlined",
         fullWidth: true,
-      }
+      },
     },
     MuiButton: {
       defaultProps: {
@@ -39,7 +39,7 @@ const rawTheme = createMuiTheme({
         root: {
           textTransform: "none",
         },
-      }
+      },
     },
   },
 })

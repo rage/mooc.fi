@@ -7,7 +7,7 @@ import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses
 import ModuleNavi from "./ModuleNavi"
 import ModuleList from "./ModuleList"
 import LanguageContext from "/contexes/LanguageContext"
-import getHomeTranslator from "/translations/home"
+import HomeTranslations from "/translations/home"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 
@@ -17,10 +17,11 @@ import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/translations"
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)
-  const t = getHomeTranslator(lngCtx.language)
+  const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(lngCtx.language)
 
   const {

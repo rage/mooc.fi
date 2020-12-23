@@ -6,13 +6,14 @@ import { RegularContainer } from "/components/Container"
 import withSignedOut from "/lib/with-signed-out"
 import AlertContext from "/contexes/AlertContext"
 import LanguageContext from "/contexes/LanguageContext"
-import getSignUpTranslator from "/translations/sign-up"
+import SignUpTranslations from "/translations/sign-up"
 import LoginStateContext from "/contexes/LoginStateContext"
 import Router from "next/router"
+import { useTranslator } from "/translations"
 
 const SignUpPage = () => {
   const { language } = useContext(LanguageContext)
-  const t = getSignUpTranslator(language)
+  const t = useTranslator(SignUpTranslations)
 
   const { addAlert } = useContext(AlertContext)
   const { logInOrOut } = useContext(LoginStateContext)

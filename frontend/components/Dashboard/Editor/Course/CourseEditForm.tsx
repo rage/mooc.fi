@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState, useMemo, memo } from "react"
+import { useCallback, useState, useMemo, memo } from "react"
 import {
   InputLabel,
   FormControl,
@@ -41,16 +41,16 @@ import {
   CheckboxField,
   TabSection,
 } from "/components/Dashboard/Editor/common"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
 import DatePickerField from "./DatePickers"
-import LuxonUtils from "@date-io/luxon"
-import { LocalizationProvider } from "@material-ui/pickers"
+import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
+import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import { useQueryParameter } from "/util/useQueryParameter"
 import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
+import { useTranslator } from "/translations"
 
 interface CoverProps {
   covered: boolean
@@ -102,8 +102,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
 }: RenderProps) => {
   const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
   const secret = useQueryParameter("secret", false)
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   const statuses = statusesT(t)
   const [selectedLanguage, setSelectedLanguage] = useState(
     values?.course_translations.length === 0
@@ -126,7 +125,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
   )
 
   return (
-    <LocalizationProvider dateAdapter={LuxonUtils}>
+    <LocalizationProvider dateAdapter={AdapterLuxon}>
       <Form style={{ backgroundColor: "white", padding: "2rem" }}>
         {}
         <CourseLanguageSelector

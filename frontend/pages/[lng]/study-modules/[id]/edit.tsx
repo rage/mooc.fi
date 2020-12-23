@@ -15,7 +15,8 @@ import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getStudyModulesTranslator from "/translations/study-modules"
+import StudyModulesTranslations from "/translations/study-modules"
+import { useTranslator } from "/translations"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -51,7 +52,7 @@ interface EditStudyModuleProps {
 const EditStudyModule = (props: EditStudyModuleProps) => {
   const { router } = props
   const { language } = useContext(LanguageContext)
-  const t = getStudyModulesTranslator(language)
+  const t = useTranslator(StudyModulesTranslations)
 
   const id = useQueryParameter("id")
 

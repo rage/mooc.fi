@@ -13,8 +13,9 @@ import {
   faComments,
 } from "@fortawesome/free-solid-svg-icons"
 import LanguageContext from "/contexes/LanguageContext"
-import getTeachersTranslator from "/translations/teachers"
+import TeachersTranslations from "/translations/teachers"
 import { H1NoBackground } from "/components/Text/headers"
+import { useTranslator } from "/translations"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;
@@ -42,7 +43,7 @@ const StyledButton = styled(Button)`
 
 const ForTeachers = () => {
   const lng = useContext(LanguageContext)
-  const t = getTeachersTranslator(lng.language)
+  const t = useTranslator(TeachersTranslations)
 
   return (
     <section>

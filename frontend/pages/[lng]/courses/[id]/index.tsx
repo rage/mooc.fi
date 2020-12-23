@@ -14,12 +14,13 @@ import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/g
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import styled from "styled-components"
 import {
   AllCompletionsQuery,
   PreviousPageCompletionsQuery,
 } from "/components/Dashboard/CompletionsList"
+import { useTranslator } from "/translations"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -51,7 +52,7 @@ const recheckCompletionsMutation = gql`
 const Course = () => {
   const { language } = useContext(LanguageContext)
   const slug = useQueryParameter("id")
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
 
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")

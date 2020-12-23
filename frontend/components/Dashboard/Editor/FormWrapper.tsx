@@ -18,12 +18,12 @@ import { FormikErrors, FormikTouched, useFormikContext } from "formik"
 import { FormValues } from "./types"
 import styled from "styled-components"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import getCommonTranslator from "/translations/common"
-import LanguageContext from "/contexes/LanguageContext"
+import CommonTranslations from "/translations/common"
 import AnchorContext from "/contexes/AnchorContext"
 import { useConfirm } from "material-ui-confirm"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import flattenKeys from "/util/flattenKeys"
+import { useTranslator } from "/translations"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
@@ -55,8 +55,7 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     setTouched,
   } = useFormikContext<T>()
   const { onCancel, onDelete, renderForm, setTab = (_) => {} } = props
-  const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
   const { anchors } = useContext(AnchorContext)
   const confirm = useConfirm()
 

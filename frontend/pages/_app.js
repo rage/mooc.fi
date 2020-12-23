@@ -16,12 +16,14 @@ import theme from "../src/theme"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { CssBaseline } from "@material-ui/core"
-import getPageTranslator from "/translations/pages"
+import PageTranslations from "/translations/pages"
 import { ConfirmProvider } from "material-ui-confirm"
 import AlertContext from "../contexes/AlertContext"
+import getTranslator from "/translations"
 
 fontAwesomeConfig.autoAddCss = false
 
+const getPageTranslator = getTranslator(PageTranslations)
 class MyApp extends App {
   constructor(props) {
     super(props)

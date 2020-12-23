@@ -5,8 +5,7 @@ import { Typography, Paper, SvgIcon } from "@material-ui/core"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import ImportantNotice from "/components/ImportantNotice"
 import Container from "/components/Container"
-import LanguageContext from "/contexes/LanguageContext"
-import getRegisterCompletionTranslator from "/translations/register-completion"
+import RegisterCompletionTranslations from "/translations/register-completion"
 import { useContext } from "react"
 import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -16,6 +15,7 @@ import styled from "styled-components"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"
 import { CheckSlugQuery } from "/graphql/queries/courses"
+import { useTranslator } from "/translations"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -80,12 +80,11 @@ export const UserOverViewQuery = gql`
 `
 
 const RegisterCompletion = () => {
-  const { language } = useContext(LanguageContext)
   const { currentUser } = useContext(LoginStateContext)
 
   const courseSlug = useQueryParameter("slug")
 
-  const t = getRegisterCompletionTranslator(language)
+  const t = useTranslator(RegisterCompletionTranslations)
   const {
     loading: courseLoading,
     error: courseError,

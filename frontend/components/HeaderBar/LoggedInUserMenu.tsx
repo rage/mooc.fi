@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography"
 import LangLink from "../LangLink"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
-import getCommonTranslator from "/translations/common"
+import CommonTranslations from "/translations/common"
 
 import {
   faChalkboardTeacher,
@@ -15,6 +15,7 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import LoginStateContext from "/contexes/LoginStateContext"
+import { useTranslator } from "/translations"
 
 interface ButtonProps {
   active: any
@@ -54,7 +55,7 @@ interface UserMenuprops {
 const UserMenu = (props: UserMenuprops) => {
   const { admin } = useContext(LoginStateContext)
   const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
 
   const { active } = props
 

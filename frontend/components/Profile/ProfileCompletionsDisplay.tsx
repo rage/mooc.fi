@@ -1,16 +1,17 @@
 import { useContext } from "react"
 import CompletionListItem from "/components/CompletionListItem"
 import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/profile"
+import ProfileTranslations from "/translations/profile"
 import LangLink from "/components/LangLink"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
+import { useTranslator } from "/translations"
 interface CompletionsProps {
   completions: any[]
 }
 const ProfileCompletionsDisplay = (props: CompletionsProps) => {
   const { completions } = props
   const lng = useContext(LanguageContext)
-  const t = getProfileTranslator(lng.language)
+  const t = useTranslator(ProfileTranslations)
 
   return (
     <>

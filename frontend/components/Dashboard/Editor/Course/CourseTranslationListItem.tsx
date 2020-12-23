@@ -1,15 +1,14 @@
-import { useContext } from "react"
 import { getIn, useFormikContext } from "formik"
 import {
   StyledTextField,
   StyledFieldWithAnchor,
 } from "/components/Dashboard/Editor/common"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
 import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { useTranslator } from "/translations"
 
 const LanguageVersionContainer = styled.div`
   padding-top: 1rem;
@@ -42,8 +41,7 @@ const CourseTranslationListItem = (props: Props) => {
 
   const { index, translationLanguage } = props
 
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
 
   return (
     <LanguageVersionContainer>

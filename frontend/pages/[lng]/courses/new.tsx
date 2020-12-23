@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { WideContainer } from "/components/Container"
 import { useQuery } from "@apollo/client"
 import CourseEdit from "/components/Dashboard/Editor/Course"
@@ -6,8 +6,7 @@ import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
 import { CourseEditorStudyModules } from "/static/types/generated/CourseEditorStudyModules"
 import {
   CourseEditorStudyModuleQuery,
@@ -21,6 +20,7 @@ import {
   CourseDetails,
   CourseDetails_course,
 } from "/static/types/generated/CourseDetails"
+import { useTranslator } from "/translations"
 
 function stripId<T>(data: T): T {
   if (data === null || data === undefined) return data
@@ -38,8 +38,7 @@ function stripId<T>(data: T): T {
 }
 
 const NewCourse = () => {
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
 
   const [clonedCourse, setClonedCourse] = useState<
     CourseDetails_course | undefined
