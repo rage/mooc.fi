@@ -78,7 +78,7 @@ jobs:
       - checkout
       - setup_remote_docker      
       - helm/install-helm-client:
-          version: v3.2.4
+          version: v3.4.2
       - run:
           name: install envsubst
           command: apt-get install -qq -y gettext
