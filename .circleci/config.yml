@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  helm: circleci/helm@1.0.0
+  helm: circleci/helm@1.1.2
   docker: circleci/docker@1.5.0
   jq: circleci/jq@2.2.0
 jobs:
@@ -27,7 +27,7 @@ jobs:
           name: "ESLint"
           command: "bin/eslint.sh"
       - helm/install-helm-client:
-          version: v3.2.4
+          version: v3.4.2
       - run:
           name: "Helm"
           command: "bin/helm.sh"
