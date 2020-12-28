@@ -15,7 +15,7 @@ import styled from "styled-components"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"
 import { CheckSlugQuery } from "/graphql/queries/courses"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;

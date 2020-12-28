@@ -7,7 +7,12 @@ import {
   CourseDetails_course_study_modules,
 } from "/static/types/generated/CourseDetails"
 import courseEditSchema from "/components/Dashboard/Editor/Course/form-validation"
-import { useState, PropsWithChildren, DetailedHTMLProps } from "react"
+import {
+  useState,
+  PropsWithChildren,
+  DetailedHTMLProps,
+  useCallback,
+} from "react"
 import {
   Tabs,
   Tab,
@@ -37,8 +42,9 @@ import {
   ControlledImageInput,
 } from "/components/Dashboard/Editor2/FormFields"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 import FormContainer from "/components/Dashboard/Editor2/FormContainer"
+import CourseTranslationForm from "./CourseTranslationForm"
 interface TabSectionProps {
   currentTab: number
   tab: number
@@ -115,7 +121,7 @@ export default function CourseEditor({
       status: CourseStatus[course.status ?? "Upcoming"],
       thumbnail: course.photo?.compressed,
       delete_photo: false,
-      new_photo: null
+      new_photo: null,
     },
     resolver: yupResolver(validationSchema),
     mode: "onBlur",
@@ -131,6 +137,24 @@ export default function CourseEditor({
   const onError = (errors: Object, e?: any) => console.log(errors, e)
   const onCancel = () => console.log("cancelled")
   const onDelete = (id: string) => console.log("deleted", id)
+
+  const setCourseModule = useCallback(
+    (value: CourseDetails_course_study_modules[]) => (
+      _: any,
+      checked: boolean,
+    ) =>
+      setValue(
+        "study_modules",
+        checked
+          ? value.concat({
+              __typename: "StudyModule",
+              id: module.id,
+            })
+          : value.filter((s) => s.id !== module.id),
+        { shouldDirty: true },
+      ),
+    [],
+  )
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -165,6 +189,7 @@ export default function CourseEditor({
                 label={t("courseName")}
                 required={true}
               />
+              <CourseTranslationForm />
               <ControlledTextField
                 name="new_slug"
                 label={t("courseSlug")}
@@ -255,20 +280,7 @@ export default function CourseEditor({
                                     value.filter((s) => s.id === module.id)
                                       .length > 0
                                   }
-                                  onChange={(_, checked) =>
-                                    setValue(
-                                      "study_modules",
-                                      checked
-                                        ? value.concat({
-                                            __typename: "StudyModule",
-                                            id: module.id,
-                                          })
-                                        : value.filter(
-                                            (s) => s.id !== module.id,
-                                          ),
-                                      { shouldDirty: true },
-                                    )
-                                  }
+                                  onChange={setCourseModule(value)}
                                   control={<Checkbox />}
                                   label={module.name}
                                 />

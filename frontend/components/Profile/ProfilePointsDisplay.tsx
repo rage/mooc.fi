@@ -10,7 +10,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import ProfileTranslations from "/translations/profile"
 import LangLink from "../LangLink"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ProfilePointsDisplay = () => {
   const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)

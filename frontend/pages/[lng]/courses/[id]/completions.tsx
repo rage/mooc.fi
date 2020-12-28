@@ -17,7 +17,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import styled from "styled-components"
 import { TextField } from "@material-ui/core"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 // import useDebounce from "/util/useDebounce"
 

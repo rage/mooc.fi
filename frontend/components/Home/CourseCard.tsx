@@ -8,7 +8,7 @@ import { CardText } from "/components/Text/paragraphs"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { CourseImageBase } from "/components/Images/CardBackgroundFullCover"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const Background = styled(ClickableButtonBase)<{ component: any }>`
   display: flex;

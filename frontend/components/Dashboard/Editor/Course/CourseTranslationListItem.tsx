@@ -8,7 +8,7 @@ import styled from "styled-components"
 import Typography from "@material-ui/core/Typography"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const LanguageVersionContainer = styled.div`
   padding-top: 1rem;

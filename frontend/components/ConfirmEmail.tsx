@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import SignUpTranslations from "/translations/sign-up"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const InfoBox = styled.div`
   margin-bottom: 2rem;

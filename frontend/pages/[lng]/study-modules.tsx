@@ -8,7 +8,7 @@ import { AllEditorModulesQuery } from "/graphql/queries/study-modules"
 import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)

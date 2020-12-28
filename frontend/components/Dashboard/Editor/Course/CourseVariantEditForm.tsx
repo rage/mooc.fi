@@ -14,7 +14,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import styled from "styled-components"
 import CoursesTranslations from "/translations/courses"
 import { useConfirm } from "material-ui-confirm"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;

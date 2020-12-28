@@ -5,7 +5,7 @@ import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import CommonTranslations from "/translations/common"
 import { FormValues } from "/components/Dashboard/Editor/types"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
 const isChrome = process.browser

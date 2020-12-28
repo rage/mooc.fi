@@ -1,18 +1,31 @@
-import { NextRouter, useRouter } from "next/router"
-import { useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
+import { NextRouter } from "next/router"
+import { memoize } from "lodash"
 
 const defaultLanguage = "en"
 
-export type Translation =
-  | Record<string, string>
-  | Record<string, Array<Record<string, string>>>
-  | Record<string, Record<string, string>>
+type ArrayTranslation = Array<Translation>
+type ObjectTranslation = Record<string, string>
+type BaseTranslation = string
+type TranslationEntry = BaseTranslation | ArrayTranslation | ObjectTranslation
 
-export type Translator = <T extends Translation>(
+export type Translation = Record<string, TranslationEntry>
+
+export type TranslationDictionary<T extends Translation> = Record<string, T>
+
+export type Translator<T extends Translation> = (
   key: keyof T,
   variables?: Record<string, any>,
 ) => any
+
+const isArrayTranslation = <T extends Translation>(
+  translation: T[keyof T] | T[keyof T][],
+): translation is T[keyof T][] => Array.isArray(translation)
+const isObjectTranslation = (
+  translation: TranslationEntry,
+): translation is ObjectTranslation => typeof translation === "object"
+const isStringTranslation = (
+  translation: TranslationEntry,
+): translation is BaseTranslation => typeof translation === "string"
 
 const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
@@ -25,10 +38,8 @@ const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
     return key
   }
 
-  return Array.isArray(translation)
-    ? (translation as T[keyof T][]).map((t) =>
-        substitute({ translation: t, variables, router }),
-      )
+  return isArrayTranslation(translation)
+    ? translation.map((t) => substitute({ translation: t, variables, router }))
     : substitute({ translation, variables, router })
 }
 
@@ -43,12 +54,12 @@ const substitute = <T extends Translation>({
   variables,
   router,
 }: Substitute<T>): any => {
-  if (typeof translation === "object") {
+  if (isObjectTranslation(translation)) {
     return Object.keys(translation).reduce(
       (obj, key) => ({
         ...obj,
         [key]: substitute({
-          translation: (translation as any)[key],
+          translation: translation[key],
           variables,
           router,
         }),
@@ -57,13 +68,16 @@ const substitute = <T extends Translation>({
     )
   }
 
-  if (typeof translation !== "string") {
+  if (!isStringTranslation(translation)) {
     console.warn(
       `WARNING: translation only supports strings or objects - got ${translation} of type ${typeof translation}`,
     )
 
     return translation
   }
+
+  // {{key}} is replaced by variable key given as parameter
+  // [[key]] is replaced by query parameter named "key"
 
   const replaceGroups = translation.match(/{{(.*?)}}/gm)
   const keyGroups = translation.match(/\[\[(.*?)\]\]/gm)
@@ -122,21 +136,43 @@ const substitute = <T extends Translation>({
   return ret
 }
 
-export const useTranslator = <T extends Translation, T2 extends Translation>(
-  dict: Record<string, T>,
-  dict2?: Record<string, T2>,
-  /*
-  translator: <T>(
-    lng: string,
-    router?: NextRouter,
-  ) => (key: keyof T, variables?: Record<string, any>) => any 
-*/
-) => {
-  const { language } = useContext(LanguageContext)
-  const router = useRouter()
+const _combineDictionaries = <
+  T extends Translation,
+  U extends Translation = {},
+  V extends Translation = {}
+>(
+  dicts: [
+    TranslationDictionary<T>,
+    TranslationDictionary<U>,
+    TranslationDictionary<V>,
+  ],
+): TranslationDictionary<T & U & V> => {
+  const combined: TranslationDictionary<T & U & V> = {}
 
-  const combinedDict = Object.assign({}, dict, dict2 ?? {})
-  return getTranslator<T & T2>(combinedDict)(language, router)
+  // TODO: not very good now
+  /*
+    const languages = Array.from(new Set(...dicts.map(dict => Object.keys(dict))))
+    const common = intersection(
+    dicts.map((dict) => Object.keys(dict[languages[0]] ?? [])),
+  )
+
+  if (common.length) {
+    console.warn(
+      `WARNING: translation dictionary key clash - following key(s) have duplicates: ${common.join(
+        ", ",
+      )}`,
+    )
+  }*/
+
+  for (const dict of dicts) {
+    for (const lang of Object.keys(dict)) {
+      combined[lang] = Object.assign(combined[lang] ?? {}, dict[lang] ?? {})
+    }
+  }
+
+  return combined
 }
+
+export const combineDictionaries = memoize(_combineDictionaries)
 
 export default getTranslator

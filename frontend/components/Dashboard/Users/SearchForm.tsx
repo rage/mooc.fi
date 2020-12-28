@@ -7,7 +7,7 @@ import UsersTranslations from "/translations/users"
 import styled from "styled-components"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled.form`
   display: flex;

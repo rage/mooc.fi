@@ -13,7 +13,7 @@ import CommonTranslations from "/translations/common"
 import { useContext } from "react"
 import styled from "styled-components"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled.form`
   padding: 1em;

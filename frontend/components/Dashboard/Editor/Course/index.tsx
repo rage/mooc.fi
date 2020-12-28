@@ -24,7 +24,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import CoursesTranslations from "/translations/courses"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const CourseEdit = ({
   course,

@@ -15,7 +15,7 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import LoginStateContext from "/contexes/LoginStateContext"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {
   active: any

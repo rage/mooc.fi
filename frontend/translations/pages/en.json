@@ -29,6 +29,8 @@
     "/[lng]/research-consent": "Research consent",
     "/[lng]/register-completion": "Register completion",
     "/[lng]/faq": "Frequently asked questions",
+    "/fi/faq/suoritusten_rekisterointi": "",
+    "/fi/faq/registering_completion": "",
     "/en/faq/registering_completion": "Frequenty asked questions: Registering completions",
     "/en/faq/suoritusten_rekisterointi": "Frequenty asked questions: Registering completions",
     "/register-completion": "Register completion",
@@ -51,7 +53,11 @@
     "/[lng]/installation": "Installation",
     "/en/installation/vscode": "VSCode",
     "/en/installation/netbeans": "Netbeans",
+    "/fi/installation/vscode": "",
+    "/fi/installation/netbeans": "",
     "/en/faq/registering_completion": "Registering completions",
-    "/en/faq/suoritusten_rekisterointi": "Registering completions"
+    "/en/faq/suoritusten_rekisterointi": "Registering completions",
+    "/fi/faq/suoritusten_rekisterointi": "",
+    "/fi/faq/registering_completion": ""
   }
 }

@@ -23,7 +23,7 @@ import AnchorContext from "/contexes/AnchorContext"
 import { useConfirm } from "material-ui-confirm"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import flattenKeys from "/util/flattenKeys"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"

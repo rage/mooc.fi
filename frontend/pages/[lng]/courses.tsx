@@ -19,7 +19,7 @@ import { useRouter } from "next/router"
 import FilterMenu from "/components/FilterMenu"
 import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -96,20 +96,20 @@ function Courses() {
     }
   }, [searchVariables])
 
-  if (error || handlersError) {
-    return (
-      <ModifiableErrorMessage
-        errorMessage={JSON.stringify(error || handlersError, undefined, 2)}
-      />
-    )
-  }
-
   const onClickStatus = (value: CourseStatus | null) => (_: any) => {
     setStatus(value ? [value] : [])
     setSearchVariables({
       ...searchVariables,
       status: value ? [value] : [],
     })
+  }
+
+  if (error || handlersError) {
+    return (
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(error || handlersError, undefined, 2)}
+      />
+    )
   }
 
   return (

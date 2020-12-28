@@ -21,7 +21,7 @@ import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import ModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StudyModuleEdit = ({
   module,

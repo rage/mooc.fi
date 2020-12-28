@@ -16,7 +16,7 @@ import { addDomain } from "/util/imageUtils"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined

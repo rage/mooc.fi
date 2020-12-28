@@ -5,7 +5,7 @@ import Container from "/components/Container"
 import SignInTranslations from "/translations/common"
 import styled from "styled-components"
 import withSignedOut from "/lib/with-signed-out"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledPaper = styled(Paper)`
   display: flex;

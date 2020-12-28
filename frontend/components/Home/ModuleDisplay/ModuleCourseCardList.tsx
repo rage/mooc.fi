@@ -5,7 +5,7 @@ import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import styled from "styled-components"
 import HomeTranslations from "/translations/home"
 import { CourseStatus } from "/static/types/generated/globalTypes"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 interface CourseListProps {
   courses: CourseData[]

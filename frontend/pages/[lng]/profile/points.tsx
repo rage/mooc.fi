@@ -3,7 +3,7 @@ import PointsList from "/components/User/Points/PointsList"
 import { H1NoBackground } from "/components/Text/headers"
 import withSignedIn from "/lib/with-signed-in"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 function Points() {
   const t = useTranslator(CoursesTranslations)

@@ -15,7 +15,7 @@ import NoOsMessage from "/components/Installation/NoOsMessage"
 import LanguageContext from "/contexes/LanguageContext"
 import InstallationTranslations from "/translations/installation"
 import Spinner from "/components/Spinner"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const Background = styled.section`
   padding-top: 2em;

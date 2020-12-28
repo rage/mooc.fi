@@ -3,7 +3,7 @@ import NaviCard from "./NaviCard"
 
 import Container from "/components/Container"
 import NaviTranslations from "/translations/navi"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 type NaviItem = {
   title: string

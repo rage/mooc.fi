@@ -12,7 +12,7 @@ import { CardTitle, CardSubtitle } from "components/Text/headers"
 import { addDomain } from "/util/imageUtils"
 import Link from "next/link"
 import CertificateButton from "components/CertificateButton"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledButton = styled(Button)`
   height: 50%;

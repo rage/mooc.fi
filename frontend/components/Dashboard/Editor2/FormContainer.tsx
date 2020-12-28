@@ -1,7 +1,14 @@
-import { Container, Grid, Paper, CircularProgress, Checkbox, Tooltip } from "@material-ui/core"
+import {
+  Container,
+  Grid,
+  Paper,
+  CircularProgress,
+  Checkbox,
+  Tooltip,
+} from "@material-ui/core"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 import styled from "styled-components"
 import { PropsWithChildren, useState } from "react"
@@ -65,13 +72,13 @@ export default function FormContainer({
               onClick={() =>
                 isDirty
                   ? confirm({
-                    title: t("confirmationUnsavedChanges"),
-                    description: t("confirmationLeaveWithoutSaving"),
-                    confirmationText: t("confirmationYes"),
-                    cancellationText: t("confirmationNo"),
-                  })
-                    .then(onCancel)
-                    .catch(() => { })
+                      title: t("confirmationUnsavedChanges"),
+                      description: t("confirmationLeaveWithoutSaving"),
+                      confirmationText: t("confirmationYes"),
+                      cancellationText: t("confirmationNo"),
+                    })
+                      .then(onCancel)
+                      .catch(() => {})
                   : onCancel()
               }
             >

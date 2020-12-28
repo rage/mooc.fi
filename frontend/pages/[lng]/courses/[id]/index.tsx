@@ -20,7 +20,7 @@ import {
   AllCompletionsQuery,
   PreviousPageCompletionsQuery,
 } from "/components/Dashboard/CompletionsList"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;

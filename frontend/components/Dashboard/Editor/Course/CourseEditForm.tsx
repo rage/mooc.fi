@@ -50,7 +50,7 @@ import { CourseEditorStudyModules_study_modules } from "/static/types/generated/
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import { useQueryParameter } from "/util/useQueryParameter"
 import UserCourseSettingsVisibilityEditForm from "/components/Dashboard/Editor/Course/UserCourseSettingsVisibilityEditForm"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 interface CoverProps {
   covered: boolean

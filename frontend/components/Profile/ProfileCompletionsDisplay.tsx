@@ -4,7 +4,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import ProfileTranslations from "/translations/profile"
 import LangLink from "/components/LangLink"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 interface CompletionsProps {
   completions: any[]
 }

@@ -8,7 +8,7 @@ import {
   FAQPage,
   SectionBox,
 } from "/components/Home/FAQ/Common"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 export default function FAQTopic() {
   const { language } = useContext(LanguageContext)
