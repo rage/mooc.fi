@@ -1,7 +1,7 @@
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const useStyles = makeStyles(() =>
   createStyles({

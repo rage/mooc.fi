@@ -8,7 +8,7 @@ import CoursesTranslations from "/translations/courses"
 
 import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
 import styled from "styled-components"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const AddTranslationNotice = styled(EntryContainer)`
   margin-bottom: 1rem;

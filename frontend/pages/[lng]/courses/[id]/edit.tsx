@@ -25,7 +25,7 @@ import {
 } from "/graphql/queries/courses"
 import notEmpty from "/util/notEmpty"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {

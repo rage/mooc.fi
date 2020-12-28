@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import HomeTranslations from "/translations/home"
 import { H1NoBackground } from "/components/Text/headers"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ExplanationRoot = styled.div`
   max-width: 80%;

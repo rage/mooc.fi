@@ -7,7 +7,7 @@ import ReactGA from "react-ga"
 import { CardTitle } from "components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;

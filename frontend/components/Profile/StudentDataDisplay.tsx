@@ -11,7 +11,7 @@ import ProfileTranslations from "/translations/profile"
 import Warning from "@material-ui/icons/Warning"
 import styled from "styled-components"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ConsentNotification = styled.div`
   display: flex;

@@ -24,7 +24,7 @@ import styled from "styled-components"
 import range from "lodash/range"
 import UsersTranslations from "/translations/users"
 import UserSearchContext from "/contexes/UserSearchContext"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;

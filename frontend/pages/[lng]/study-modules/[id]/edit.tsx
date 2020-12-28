@@ -16,7 +16,7 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {

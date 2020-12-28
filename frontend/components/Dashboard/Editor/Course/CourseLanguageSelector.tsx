@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { Button, ButtonGroup } from "@material-ui/core"
 import { initialTranslation } from "./form-validation"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;

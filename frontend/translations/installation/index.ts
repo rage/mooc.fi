@@ -1,5 +1,10 @@
+// generated Mon Dec 28 2020 22:02:16 GMT+0200 (Eastern European Standard Time)
+
 import en from "./en.json"
 import fi from "./fi.json"
+import { TranslationDictionary } from "/translations"
 
-const InstallationTranslations = { en, fi }
+export type InstallationTranslations = typeof en & typeof fi
+const InstallationTranslations: TranslationDictionary<InstallationTranslations> = { en, fi }
+
 export default InstallationTranslations

@@ -14,7 +14,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight"
 import LastPageIcon from "@material-ui/icons/LastPage"
 import { useTheme } from "@material-ui/core/styles"
 import { IconButton } from "@material-ui/core"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledFooter = styled.footer`
   flex-shrink: 0;

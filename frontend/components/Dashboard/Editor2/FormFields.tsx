@@ -107,7 +107,7 @@ export const ControlledDatePicker = (props: ControlledFieldProps) => {
   return (
     <FieldController
       {...props}
-      renderComponent={({ ref }) => (
+      renderComponent={() => (
         <DatePicker
           value={watch(name)}
           onChange={(date: any) => {
@@ -116,10 +116,9 @@ export const ControlledDatePicker = (props: ControlledFieldProps) => {
           }}
           onClose={() => trigger([name, ...validateOtherFields])}
           label={label}
-          ref={ref}
           allowKeyboardControl={true}
           renderInput={(params) => <TextField {...params} variant="outlined" />}
-        /*          InputProps={{
+          /*          InputProps={{
           endAdornment:
             <IconButton style={{ padding: 0 }}>
               <CalendarIcon />
@@ -157,24 +156,29 @@ export const ControlledImageInput = (props: ControlledImageInputProps) => {
               <ImageDropzoneInput
                 {...props}
                 onImageLoad={(value) => setValue("thumbnail", value)}
-                onImageAccepted={(value) => setValue(name, value, { shouldDirty: true })}
+                onImageAccepted={(value) =>
+                  setValue(name, value, { shouldDirty: true })
+                }
               >
-              <ImagePreview
-                file={addDomain(watch("thumbnail"))}
-                onClose={(
-                  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                ): void => {
-                  e.stopPropagation()
-                  e.nativeEvent.stopImmediatePropagation()
-                  setValue("thumbnail", "")
-                  setValue(name, null)
+                <ImagePreview
+                  file={addDomain(watch("thumbnail"))}
+                  onClose={(
+                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                  ): void => {
+                    e.stopPropagation()
+                    e.nativeEvent.stopImmediatePropagation()
+                    setValue("thumbnail", "")
+                    setValue(name, null)
 
-                  if (defaultValue) {
-                    // TODO: not dirtying the form
-                    setValue("delete_photo", true, { shouldValidate: true, shouldDirty: true })
-                  }
-                }}
-              />
+                    if (defaultValue) {
+                      // TODO: not dirtying the form
+                      setValue("delete_photo", true, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                  }}
+                />
               </ImageDropzoneInput>
             )}
           />

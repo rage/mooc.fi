@@ -1,6 +1,6 @@
 import { Typography, Paper, Button, Tooltip } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 const useStyles = makeStyles((theme: Theme) =>

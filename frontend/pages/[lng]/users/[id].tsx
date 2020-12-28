@@ -9,7 +9,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import CommonTranslations from "/translations/common"
 import { useState } from "react"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const UserPage = () => {
   const id = useQueryParameter("id")

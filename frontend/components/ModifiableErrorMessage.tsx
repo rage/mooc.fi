@@ -8,7 +8,7 @@ import styled from "styled-components"
 import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
 import Refresh from "@material-ui/icons/Refresh"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledIcon = styled(Report)`
   height: 35%;

@@ -18,7 +18,7 @@ import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { addDomain } from "/util/imageUtils"
 import CoursesTranslations from "/translations/courses"
 import styled from "styled-components"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ImageContainer = styled.div`
   display: flex;

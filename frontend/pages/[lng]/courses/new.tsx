@@ -20,7 +20,7 @@ import {
   CourseDetails,
   CourseDetails_course,
 } from "/static/types/generated/CourseDetails"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 function stripId<T>(data: T): T {
   if (data === null || data === undefined) return data

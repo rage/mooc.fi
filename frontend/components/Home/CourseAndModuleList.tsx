@@ -17,7 +17,7 @@ import { AllCoursesQuery } from "/graphql/queries/courses"
 import { AllModulesQuery } from "/graphql/queries/study-modules"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const CourseAndModuleList = () => {
   const lngCtx = useContext(LanguageContext)

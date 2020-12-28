@@ -37,7 +37,7 @@ import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import ModulesTranslations from "/translations/study-modules"
 import { useConfirm } from "material-ui-confirm"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const FormContainer = styled.div`
   background-color: white;

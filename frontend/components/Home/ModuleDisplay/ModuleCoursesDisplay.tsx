@@ -7,7 +7,7 @@ import ModuleCoursesListing, {
 } from "/components/Home/ModuleDisplay/ModuleCourseCardList"
 import HomeTranslations from "/translations/home"
 import { CourseStatus } from "/static/types/generated/globalTypes"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const CoursesListContainer = styled(ContentContainer)`
   margin-top: 2rem;

@@ -13,7 +13,7 @@ import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
 import styled from "styled-components"
 import { initialAlias } from "./form-validation"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ButtonWithWhiteText = styled(StyledButton)`
   color: white;

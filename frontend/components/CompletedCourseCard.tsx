@@ -6,8 +6,9 @@ import DoneIcon from "@material-ui/icons/Done"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 import CompletionsTranslations from "/translations/completions"
+import ProfileTranslations from "/translations/profile"
 
 const Background = styled(ClickableDiv)`
   display: flex;
@@ -50,7 +51,7 @@ function CompletedCourseCard(props: CourseCardProps) {
   const registeredCompletions = completion?.completions_registered ?? []
   const isRegistered = registeredCompletions.length > 0
 
-  const t = useTranslator(CompletionsTranslations)
+  const t = useTranslator(CompletionsTranslations, ProfileTranslations)
 
   const humanReadableLanguage =
     mapLangToLanguage[completion?.completion_language ?? ""] ||

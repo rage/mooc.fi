@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { gql } from "@apollo/client"
 import ProfileTranslations from "/translations/profile"
 import CompletionListItem from "/components/CompletionListItem"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const completionsFragment = gql`
   fragment UserCompletions on User {

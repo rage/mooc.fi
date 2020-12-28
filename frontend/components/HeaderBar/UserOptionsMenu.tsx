@@ -7,7 +7,7 @@ import LangLink from "/components/LangLink"
 import nookies from "nookies"
 import ProfileButton from "./ProfileButton"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 interface Props {
   isSignedIn: boolean

@@ -3,7 +3,7 @@ import StudyModuleEdit from "/components/Dashboard/Editor/StudyModule"
 import { H1NoBackground } from "/components/Text/headers"
 import withAdmin from "/lib/with-admin"
 import StudyModuleTranslations from "/translations/study-modules"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const NewStudyModule = () => {
   const t = useTranslator(StudyModuleTranslations)

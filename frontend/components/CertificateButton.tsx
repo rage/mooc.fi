@@ -22,7 +22,7 @@ import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/quer
 import LoginStateContext from "/contexes/LoginStateContext"
 import AlertContext from "/contexes/AlertContext"
 import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledButton = styled(Button)`
   height: 50%;

@@ -31,7 +31,7 @@ import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 export const OrganizationsQuery = gql`
   query Organizations {

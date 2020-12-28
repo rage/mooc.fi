@@ -16,7 +16,7 @@ import LangLink from "/components/LangLink"
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UsersTranslations from "/translations/users"
 import UserSearchContext from "/contexes/UserSearchContext"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 import notEmpty from "/util/notEmpty"
 
 const TableWrapper = styled.div`

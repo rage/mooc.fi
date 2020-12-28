@@ -7,7 +7,7 @@ import LangLink from "/components/LangLink"
 import { memoize } from "lodash"
 import { DocumentNode } from "graphql"
 import PageTranslations from "/translations/pages"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const BreadcrumbCourseQuery = gql`
   query BreadcrumbCourse($slug: String) {

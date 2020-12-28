@@ -15,7 +15,7 @@ import {
 import LanguageContext from "/contexes/LanguageContext"
 import TeachersTranslations from "/translations/teachers"
 import { H1NoBackground } from "/components/Text/headers"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;

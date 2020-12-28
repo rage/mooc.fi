@@ -9,7 +9,7 @@ import LanguageContext from "/contexes/LanguageContext"
 import SignUpTranslations from "/translations/sign-up"
 import LoginStateContext from "/contexes/LoginStateContext"
 import Router from "next/router"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const SignUpPage = () => {
   const { language } = useContext(LanguageContext)

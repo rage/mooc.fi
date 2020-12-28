@@ -2,7 +2,7 @@ import { ChangeEvent } from "react"
 import CommonTranslations from "/translations/common"
 import { Link, RadioGroup, FormControlLabel, Radio } from "@material-ui/core"
 import styled from "styled-components"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const Row = styled.div`
   margin-bottom: 1.5rem;

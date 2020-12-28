@@ -9,7 +9,7 @@ import FormControl from "@material-ui/core/FormControl"
 import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const MailingList = styled.div`
   height: 20rem;

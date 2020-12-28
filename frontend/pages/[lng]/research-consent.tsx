@@ -9,7 +9,7 @@ import { gql } from "@apollo/client"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import withSignedIn from "/lib/with-signed-in"
 import Router from "next/router"
-import { useTranslator } from "/translations"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledPaper = styled(Paper)`
   display: flex;
