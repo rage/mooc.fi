@@ -5,6 +5,9 @@ import fi from "./fi.json"
 import { TranslationDictionary } from "/translations"
 
 export type TeachersTranslations = typeof en & typeof fi
-const TeachersTranslations: TranslationDictionary<TeachersTranslations> = { en, fi }
+const TeachersTranslations: TranslationDictionary<TeachersTranslations> = {
+  en,
+  fi,
+}
 
 export default TeachersTranslations

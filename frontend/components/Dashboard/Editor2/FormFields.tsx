@@ -19,6 +19,7 @@ interface FieldProps {
   label: string
   required?: boolean
   tab?: number
+  defaultValue?: any
 }
 interface FieldControllerProps extends FieldProps {
   renderComponent: (props: ControllerRenderProps) => JSX.Element
@@ -29,6 +30,7 @@ export const FieldController = ({
   label,
   required = false,
   tab = 0,
+  defaultValue = "",
   renderComponent,
 }: FieldControllerProps) => {
   const { control, errors, setValue } = useFormContext()
@@ -44,6 +46,7 @@ export const FieldController = ({
       name={name}
       control={control}
       autoComplete="disabled"
+      defaultValue={defaultValue}
       render={(renderProps) => (
         <div style={{ marginBottom: "1.5rem" }}>
           <EnumeratingAnchor id={name} tab={tab} />
@@ -64,18 +67,19 @@ export const FieldController = ({
 }
 
 interface ControlledFieldProps extends FieldProps {
+  defaultValue?: any
   tip?: string
   validateOtherFields?: Array<string>
 }
 
 export const ControlledTextField = (props: ControlledFieldProps) => {
   const { errors, setValue } = useFormContext()
-  const { label, required, name, tip } = props
+  const { label, required, name, tip, defaultValue } = props
 
   return (
     <FieldController
       {...props}
-      renderComponent={({ onBlur, value, ref }) => (
+      renderComponent={({ onBlur, value }) => (
         <TextField
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setValue(name, e.target.value, { shouldDirty: true })
@@ -119,19 +123,38 @@ export const ControlledDatePicker = (props: ControlledFieldProps) => {
           allowKeyboardControl={true}
           renderInput={(params) => <TextField {...params} variant="outlined" />}
           /*          InputProps={{
-          endAdornment:
-            <IconButton style={{ padding: 0 }}>
-              <CalendarIcon />
-            </IconButton>
-        }}*/
+        endAdornment:
+          <IconButton style={{ padding: 0 }}>
+            <CalendarIcon />
+          </IconButton>
+      }}*/
         />
       )}
     />
   )
 }
 
+export const ControlledHiddenField = ({
+  name,
+  defaultValue = "",
+}: {
+  name: string
+  defaultValue: any
+}) => {
+  const { control } = useFormContext()
+
+  return (
+    <Controller
+      name={name}
+      control={control}
+      defaultValue={defaultValue}
+      render={(props) => <input type="hidden" {...props} />}
+    />
+  )
+}
+
 interface ControlledImageInputProps extends ControlledFieldProps {
-  defaultValue: CourseDetails_course_photo | null
+  defaultValue?: CourseDetails_course_photo | null
 }
 
 export const ControlledImageInput = (props: ControlledImageInputProps) => {
@@ -139,51 +162,45 @@ export const ControlledImageInput = (props: ControlledImageInputProps) => {
   const { name, label, defaultValue } = props
 
   return (
-    <FieldController
-      {...props}
-      renderComponent={() => (
-        <>
-          <Controller
-            name="thumbnail"
-            control={control}
-            as={<input type="hidden" />}
-          />
-          <Controller
-            name={name}
-            type="file"
-            label={label}
-            as={(props) => (
-              <ImageDropzoneInput
-                {...props}
-                onImageLoad={(value) => setValue("thumbnail", value)}
-                onImageAccepted={(value) =>
-                  setValue(name, value, { shouldDirty: true })
-                }
-              >
-                <ImagePreview
-                  file={addDomain(watch("thumbnail"))}
-                  onClose={(
-                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                  ): void => {
-                    e.stopPropagation()
-                    e.nativeEvent.stopImmediatePropagation()
-                    setValue("thumbnail", "")
-                    setValue(name, null)
+    <>
+      <ControlledHiddenField
+        name="thumbnail"
+        defaultValue={watch("thumbnail")}
+      />
+      <Controller
+        name={name}
+        type="file"
+        label={label}
+        control={control}
+        render={() => (
+          <ImageDropzoneInput
+            onImageLoad={(value) => setValue("thumbnail", value)}
+            onImageAccepted={(value) =>
+              setValue(name, value, { shouldDirty: true })
+            }
+          >
+            <ImagePreview
+              file={addDomain(watch("thumbnail"))}
+              onClose={(
+                e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+              ): void => {
+                e.stopPropagation()
+                e.nativeEvent.stopImmediatePropagation()
+                setValue("thumbnail", "")
+                setValue(name, null)
 
-                    if (defaultValue) {
-                      // TODO: not dirtying the form
-                      setValue("delete_photo", true, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      })
-                    }
-                  }}
-                />
-              </ImageDropzoneInput>
-            )}
-          />
-        </>
-      )}
-    />
+                if (defaultValue) {
+                  // TODO: not dirtying the form
+                  setValue("delete_photo", true, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
+                }
+              }}
+            />
+          </ImageDropzoneInput>
+        )}
+      />
+    </>
   )
 }
