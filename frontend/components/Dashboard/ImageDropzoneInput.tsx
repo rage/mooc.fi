@@ -1,10 +1,8 @@
 import { useState, useEffect, PropsWithChildren } from "react"
-import { useField, FieldInputProps } from "formik"
 import { useDropzone, FileRejection } from "react-dropzone"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import CommonTranslations from "/translations/common"
-import { FormValues } from "/components/Dashboard/Editor/types"
 import { useTranslator } from "/util/useTranslator"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
@@ -44,7 +42,7 @@ interface MessageProps {
   error?: boolean
 }
 
-interface DropzoneProps extends FieldInputProps<FormValues> {
+interface DropzoneProps {
   onImageLoad: (result: string | ArrayBuffer | null) => void
   onImageAccepted: (field: File) => void
 }
@@ -53,7 +51,6 @@ const ImageDropzoneInput = ({
   onImageLoad,
   children,
   onImageAccepted,
-  ...props
 }: PropsWithChildren<DropzoneProps>) => {
   const t = useTranslator(CommonTranslations)
   const [status, setStatus] = useState<MessageProps>({

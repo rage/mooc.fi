@@ -16,10 +16,10 @@ export const useTranslator = <
     | [TranslationDictionary<T>]
     | [TranslationDictionary<T>, TranslationDictionary<U>]
     | [
-      TranslationDictionary<T>,
-      TranslationDictionary<U>,
-      TranslationDictionary<V>,
-    ]
+        TranslationDictionary<T>,
+        TranslationDictionary<U>,
+        TranslationDictionary<V>,
+      ]
 ) => {
   const { language } = useContext(LanguageContext)
   const router = useRouter()
@@ -29,9 +29,9 @@ export const useTranslator = <
     dicts[1] ?? {},
     dicts[2] ?? {},
   ])
-  const translator = useMemo(() =>
-    getTranslator(combinedDict)(language, router),
-    [dicts, language]
+  const translator = useMemo(
+    () => getTranslator(combinedDict)(language, router),
+    [dicts, language],
   )
 
   return translator

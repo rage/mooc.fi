@@ -1,7 +1,12 @@
 import { useForm, FormProvider, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useApolloClient } from "@apollo/client"
-import { CheckSlugQuery } from "/graphql/queries/courses"
+import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
+import {
+  AllCoursesQuery,
+  AllEditorCoursesQuery,
+  CheckSlugQuery,
+  CourseEditorCoursesQuery,
+} from "/graphql/queries/courses"
 import {
   CourseDetails_course,
   CourseDetails_course_study_modules,
@@ -12,6 +17,7 @@ import {
   PropsWithChildren,
   DetailedHTMLProps,
   useCallback,
+  useContext,
 } from "react"
 import {
   Tabs,
@@ -31,7 +37,6 @@ import { omit } from "lodash"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor/common"
 import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
 import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
-import { DateTime } from "luxon"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import DisableAutoComplete from "/components/DisableAutoComplete"
@@ -40,11 +45,22 @@ import {
   ControlledTextField,
   ControlledDatePicker,
   ControlledImageInput,
+  ControlledHiddenField,
 } from "/components/Dashboard/Editor2/FormFields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import FormContainer from "/components/Dashboard/Editor2/FormContainer"
 import CourseTranslationForm from "./CourseTranslationForm"
+import {
+  AddCourseMutation,
+  UpdateCourseMutation,
+  DeleteCourseMutation,
+} from "/graphql/mutations/courses"
+import { CourseFormValues } from "./types"
+import { fromCourseForm, toCourseForm } from "./serialization"
+import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
+import notEmpty from "/util/notEmpty"
+import FormContext from "/components/Dashboard/Editor2/FormContext"
 interface TabSectionProps {
   currentTab: number
   tab: number
@@ -100,9 +116,20 @@ export default function CourseEditor({
   studyModules,
 }: CourseEditorProps) {
   const t = useTranslator(CoursesTranslations)
+  const { setStatus } = useContext(FormContext)
 
   const statuses = statusesT(t)
   const client = useApolloClient()
+
+  const [addCourse] = useMutation(AddCourseMutation)
+  const [updateCourse] = useMutation(UpdateCourseMutation)
+  const [deleteCourse] = useMutation(DeleteCourseMutation, {
+    refetchQueries: [
+      { query: AllCoursesQuery },
+      { query: AllEditorCoursesQuery },
+      { query: CourseEditorCoursesQuery },
+    ],
+  })
 
   const validationSchema = courseEditSchema({
     client,
@@ -111,32 +138,67 @@ export default function CourseEditor({
     t,
   })
 
-  const methods = useForm({
-    defaultValues: {
-      ...course,
-      new_slug: course.slug,
-      start_date: course.start_date ? DateTime.fromISO(course.start_date) : "",
-      end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
-      ects: course.ects ?? "",
-      status: CourseStatus[course.status ?? "Upcoming"],
-      thumbnail: course.photo?.compressed,
-      delete_photo: false,
-      new_photo: null,
-    },
+  const defaultValues = toCourseForm({
+    course,
+    modules: studyModules,
+  })
+
+  console.log("default", defaultValues)
+  const methods = useForm<CourseFormValues>({
+    defaultValues,
     resolver: yupResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
 
   console.log(course)
-  const { handleSubmit, control, setValue, formState } = methods
+  const { handleSubmit, watch, control, setValue, formState } = methods
   console.log(formState)
   const [tab, setTab] = useState(0)
 
-  const onSubmit = (data: Object, e?: any) => console.log(data, e)
-  const onError = (errors: Object, e?: any) => console.log(errors, e)
+  const onSubmit = useCallback(async (data: CourseFormValues, e?: any) => {
+    const newCourse = !data.id
+    const mutationVariables = fromCourseForm({
+      values: data,
+      initialValues: defaultValues,
+    })
+    // - if we create a new course, we refetch all courses so the new one is on the list
+    // - if we update, we also need to refetch that course with a potentially updated slug
+    const refetchQueries = [
+      { query: AllCoursesQuery },
+      { query: AllEditorCoursesQuery },
+      { query: CourseEditorCoursesQuery },
+      !newCourse
+        ? { query: CourseQuery, variables: { slug: data.new_slug } }
+        : undefined,
+    ].filter(notEmpty) as PureQueryOptions[]
+
+    const courseMutation = newCourse ? addCourse : updateCourse
+
+    console.log("would mutate", mutationVariables)
+    try {
+      setStatus({ message: t("statusSaving") })
+
+      console.log("trying to save")
+      await courseMutation({
+        variables: { course: mutationVariables },
+        refetchQueries: () => refetchQueries,
+      })
+      setStatus({ message: null })
+    } catch (err) {
+      console.log("whoops?", err)
+      setStatus({ message: err.message, error: true })
+    }
+  }, [])
+
+  //const onSubmit = (data: Object, e?: any) => console.log(data, e)
+  const onError = (errors: Record<string, any>, e?: any) =>
+    console.log(errors, e)
   const onCancel = () => console.log("cancelled")
-  const onDelete = (id: string) => console.log("deleted", id)
+  const onDelete = useCallback(async (id: string) => {
+    console.log("would delete", id)
+    //await deleteCourse({ variables: { id }})
+  }, [])
 
   const setCourseModule = useCallback(
     (value: CourseDetails_course_study_modules[]) => (
@@ -159,7 +221,7 @@ export default function CourseEditor({
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <FormProvider {...methods}>
-        <FormContainer
+        <FormContainer<CourseFormValues>
           onSubmit={onSubmit}
           onError={onError}
           onCancel={onCancel}
@@ -179,11 +241,8 @@ export default function CourseEditor({
               style={{ paddingTop: "0.5rem" }}
             >
               <DisableAutoComplete />
-              <Controller
-                name="id"
-                control={control}
-                as={<input type="hidden" />}
-              />
+              <ControlledHiddenField name="id" defaultValue={watch("id")} />
+              <ControlledHiddenField name="slug" defaultValue={watch("slug")} />
               <ControlledTextField
                 name="name"
                 label={t("courseName")}
@@ -277,8 +336,9 @@ export default function CourseEditor({
                                 <FormControlLabel
                                   key={`study-module-${module.id}`}
                                   checked={
-                                    value.filter((s) => s.id === module.id)
-                                      .length > 0
+                                    false
+                                    /*value?.filter((s) => s.id === module.id)
+                                      .length > 0*/
                                   }
                                   onChange={setCourseModule(value)}
                                   control={<Checkbox />}
@@ -295,7 +355,6 @@ export default function CourseEditor({
               </FormControl>
               <ControlledImageInput
                 name="new_photo"
-                defaultValue={course.photo}
                 label={t("courseNewPhoto")}
               />
             </TabSection>

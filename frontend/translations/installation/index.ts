@@ -5,6 +5,9 @@ import fi from "./fi.json"
 import { TranslationDictionary } from "/translations"
 
 export type InstallationTranslations = typeof en & typeof fi
-const InstallationTranslations: TranslationDictionary<InstallationTranslations> = { en, fi }
+const InstallationTranslations: TranslationDictionary<InstallationTranslations> = {
+  en,
+  fi,
+}
 
 export default InstallationTranslations

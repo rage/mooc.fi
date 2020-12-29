@@ -36,7 +36,9 @@ import { TranslationDictionary } from "/translations"\n
 export type ${typename} = ${languages
           .map((lang) => `typeof ${lang}`)
           .join(" & ")}
-const ${typename}: TranslationDictionary<${typename}> = { ${languages.join(", ")} }\n
+const ${typename}: TranslationDictionary<${typename}> = { ${languages.join(
+          ", ",
+        )} }\n
 export default ${typename}`
 
         outputExports(exports, fullname)
