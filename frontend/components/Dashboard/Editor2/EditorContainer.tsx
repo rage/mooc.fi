@@ -19,7 +19,7 @@ import {
   useFormContext,
 } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
-import EditorContext from "./EditorContext"
+import { useEditorContext } from "./EditorContext"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -38,7 +38,9 @@ interface FormContainerProps<T extends Record<string, any>> {
   onCancel: () => void | Promise<void>
 }
 
-export default function FormContainer<T extends Record<string, any>>({
+
+
+export default function EditorContainer<T extends Record<string, any>>({
   onSubmit,
   onError,
   onCancel,
@@ -48,92 +50,85 @@ export default function FormContainer<T extends Record<string, any>>({
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
-  const [status, setStatus] = useState<FormStatus>({ message: null })
-
+  const { status } = useEditorContext()
   const { handleSubmit, formState, watch } = useFormContext()
   const id = watch("id")
 
   const { isSubmitting, isSubmitted, isSubmitSuccessful, isDirty } = formState
 
+
   return (
-    <EditorContext.Provider
-      value={{
-        status,
-        setStatus,
-      }}
-    >
-      <Container maxWidth="md">
-        <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
-          {children}
-          <Grid container direction="row" spacing={2}>
-            <Grid item xs={4}>
-              <StyledButton
-                color="primary"
-                disabled={!isDirty || isSubmitting || isSubmitSuccessful}
-                onClick={() => handleSubmit<T>(onSubmit, onError)()}
-                style={{ width: "100%" }}
-              >
-                {isSubmitting ? <CircularProgress size={20} /> : t("save")}
-              </StyledButton>
-            </Grid>
-            <Grid item xs={4}>
-              <StyledButton
-                color="secondary"
-                style={{ width: "100%" }}
-                disabled={isSubmitting || isSubmitted}
-                variant="contained"
-                onClick={() =>
-                  isDirty
-                    ? confirm({
-                        title: t("confirmationUnsavedChanges"),
-                        description: t("confirmationLeaveWithoutSaving"),
-                        confirmationText: t("confirmationYes"),
-                        cancellationText: t("confirmationNo"),
-                      })
-                        .then(onCancel)
-                        .catch(() => {})
-                    : onCancel()
-                }
-              >
-                {t("cancel")}
-              </StyledButton>
-            </Grid>
+    <Container maxWidth="md">
+      <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
+        {children}
+        <Grid container direction="row" spacing={2}>
+          <Grid item xs={4}>
+            <StyledButton
+              color="primary"
+              disabled={!isDirty || isSubmitting || isSubmitSuccessful}
+              onClick={() => handleSubmit<T>(onSubmit, onError)()}
+              style={{ width: "100%" }}
+            >
+              {isSubmitting ? <CircularProgress size={20} /> : t("save")}
+            </StyledButton>
           </Grid>
-          <Grid item xs={2}>
-            {!isProduction && id ? (
-              <Tooltip title={t("showDelete")}>
-                <Checkbox
-                  checked={deleteVisible}
-                  onChange={() => setDeleteVisible(!deleteVisible)}
-                />
-              </Tooltip>
-            ) : null}
-            {deleteVisible && id ? (
-              <StyledButton
-                variant="contained"
-                color="secondary"
-                disabled={isSubmitting || isSubmitted}
-                onClick={() =>
-                  confirm({
-                    title: t("confirmationAboutToDelete"),
-                    description: t("confirmationDelete"),
+          <Grid item xs={4}>
+            <StyledButton
+              color="secondary"
+              style={{ width: "100%" }}
+              disabled={isSubmitting || isSubmitted}
+              variant="contained"
+              onClick={() =>
+                isDirty
+                  ? confirm({
+                    title: t("confirmationUnsavedChanges"),
+                    description: t("confirmationLeaveWithoutSaving"),
                     confirmationText: t("confirmationYes"),
                     cancellationText: t("confirmationNo"),
-                  }).then(() => onDelete(id))
-                }
-              >
-                {t("delete")}
-              </StyledButton>
-            ) : null}
+                  })
+                    .then(onCancel)
+                    .catch(() => { })
+                  : onCancel()
+              }
+            >
+              {t("cancel")}
+            </StyledButton>
           </Grid>
-          {status?.message ? (
-            <Status error={status.error}>
-              {status.error ? t("submittingError") : null}
-              <b>{status.message}</b>
-            </Status>
+        </Grid>
+        <Grid item xs={2}>
+          {!isProduction && id ? (
+            <Tooltip title={t("showDelete")}>
+              <Checkbox
+                checked={deleteVisible}
+                onChange={() => setDeleteVisible(!deleteVisible)}
+              />
+            </Tooltip>
           ) : null}
-        </FormBackground>
-      </Container>
-    </EditorContext.Provider>
+          {deleteVisible && id ? (
+            <StyledButton
+              variant="contained"
+              color="secondary"
+              disabled={isSubmitting || isSubmitted}
+              onClick={() =>
+                confirm({
+                  title: t("confirmationAboutToDelete"),
+                  description: t("confirmationDelete"),
+                  confirmationText: t("confirmationYes"),
+                  cancellationText: t("confirmationNo"),
+                }).then(() => onDelete(id))
+              }
+            >
+              {t("delete")}
+            </StyledButton>
+          ) : null}
+        </Grid>
+        {status?.message ? (
+          <Status error={status.error}>
+            {status.error ? t("submittingError") : null}
+            <b>{status.message}</b>
+          </Status>
+        ) : null}
+      </FormBackground>
+    </Container>
   )
 }

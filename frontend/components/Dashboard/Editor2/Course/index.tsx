@@ -38,6 +38,7 @@ import {
   FormGroup,
   Radio,
   RadioGroup,
+  Button
 } from "@material-ui/core"
 import styled from "styled-components"
 import { omit } from "lodash"
@@ -69,10 +70,11 @@ import { CourseFormValues } from "./types"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
 import notEmpty from "/util/notEmpty"
-import { useEditorContext } from "../EditorContext"
+import { useEditorContext, EditorContextProvider } from "../EditorContext"
 import CourseLanguageSelector from "./CourseLanguageSelector"
 import flattenKeys from "/util/flattenKeys"
 import { useAnchorContext } from "/contexes/AnchorContext"
+import useDebounce from "/util/useDebounce"
 
 export const FormFieldGroup = styled.fieldset`
   display: flex;
@@ -128,12 +130,12 @@ export const statusesT = (t: Function) => [
   },
 ]
 
-export default function CourseEditor({
+function CourseEditorForm({
   course,
   studyModules,
 }: CourseEditorProps) {
   const t = useTranslator(CoursesTranslations)
-  const { setStatus } = useEditorContext()
+  const { setStatus, undo, redo, push, history } = useEditorContext<CourseFormValues>()
 
   const statuses = statusesT(t)
   const client = useApolloClient()
@@ -165,18 +167,17 @@ export default function CourseEditor({
     defaultValues?.course_translations.length === 0
       ? ""
       : defaultValues?.course_translations.length == 2
-      ? "both"
-      : defaultValues?.course_translations[0].language,
+        ? "both"
+        : defaultValues?.course_translations[0].language,
   )
 
-  console.log("default", defaultValues)
   const methods = useForm<CourseFormValues>({
     defaultValues,
     resolver: yupResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
-  console.log(course)
+  // console.log(course)
   const {
     handleSubmit,
     watch,
@@ -185,15 +186,30 @@ export default function CourseEditor({
     formState,
     errors,
     trigger,
+    reset
   } = methods
 
   useEffect(() => {
     // validate on load
     trigger()
+    /*push({
+      values: defaultValues,
+      tab: 0
+    })*/
   }, [])
 
-  console.log(formState)
-  console.log("errors", errors)
+  // const formValues = getValues()
+  const [debouncedValues, cancel] = useDebounce(watch(), 1000, true)
+  useEffect(() => {
+    console.log("would push", debouncedValues)
+    push({
+      values: debouncedValues,
+      tab
+    })
+  }, [debouncedValues])
+
+  // console.log(formState)
+  // console.log("errors", errors)
   const [tab, setTab] = useState(0)
 
   const onSubmit = useCallback(async (data: CourseFormValues, _?: any) => {
@@ -231,8 +247,7 @@ export default function CourseEditor({
     }
   }, [])
 
-  //const onSubmit = (data: Object, e?: any) => console.log(data, e)
-  const onError: SubmitErrorHandler<CourseFormValues> = (
+  const onError: SubmitErrorHandler<CourseFormValues> = useCallback((
     errors: Record<string, any>,
     _?: any,
   ) => {
@@ -254,8 +269,9 @@ export default function CourseEditor({
       const element = document.getElementById(anchorLink)
       element?.scrollIntoView()
     }, 100)
-  }
-  const onCancel = () => console.log("cancelled")
+  }, [])
+
+  const onCancel = useCallback(() => console.log("cancelled"), [])
   const onDelete = useCallback(async (id: string) => {
     console.log("would delete", id)
     //await deleteCourse({ variables: { id }})
@@ -284,10 +300,18 @@ export default function CourseEditor({
           onDelete={onDelete}
         >
           <form
+            // onChange={() => push({ values: debouncedValues, tab })}
             onSubmit={handleSubmit(onSubmit, onError)}
             style={{ backgroundColor: "white", padding: "2rem" }}
             autoComplete="none"
           >
+            <Button onClick={() => {
+              undo()
+              for (const [key, value] of Object.entries(history.states[history.index - 1].values)) {
+                setValue(key, value)
+              }
+            }}>Undo</Button>
+            <Button onClick={redo}>Redo</Button>
             <Tabs value={tab} onChange={(_, newTab) => setTab(newTab)}>
               <Tab label="Course info" value={0} />
             </Tabs>
@@ -406,5 +430,19 @@ export default function CourseEditor({
         </EditorContainer>
       </FormProvider>
     </LocalizationProvider>
+  )
+}
+
+export default function CourseEditor({
+  course,
+  studyModules,
+}: CourseEditorProps) {
+  return (
+    <EditorContextProvider<CourseFormValues>>
+      <CourseEditorForm
+        course={course}
+        studyModules={studyModules}
+      />
+    </EditorContextProvider>
   )
 }
