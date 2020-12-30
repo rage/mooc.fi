@@ -1,14 +1,9 @@
-import {
-  useContext,
-  useState,
-  useCallback,
-  MouseEvent as ReactMouseEvent,
-} from "react"
+import { useState, useCallback, MouseEvent as ReactMouseEvent } from "react"
 import { FormFieldGroup } from "./CourseEditForm"
 import { FormControl, Button } from "@material-ui/core"
 import { Field, useFormikContext, FieldInputProps } from "formik"
 import CoursesTranslations from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import { useLanguageContext } from "/contexes/LanguageContext"
 import { CourseFormValues } from "./types"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
@@ -28,7 +23,7 @@ const CourseImageInput = (props: ImageInputProps) => {
     initialValues,
   } = useFormikContext<CourseFormValues>()
   const { courses } = props
-  const { language } = useContext(LanguageContext)
+  const { language } = useLanguageContext()
   const t = useTranslator(CoursesTranslations)
   const [dialogOpen, setDialogOpen] = useState(false)
 

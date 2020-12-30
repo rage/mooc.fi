@@ -1,4 +1,9 @@
-import { useForm, FormProvider, Controller } from "react-hook-form"
+import {
+  useForm,
+  FormProvider,
+  Controller,
+  SubmitErrorHandler,
+} from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
 import {
@@ -18,6 +23,8 @@ import {
   DetailedHTMLProps,
   useCallback,
   useContext,
+  SyntheticEvent,
+  useEffect,
 } from "react"
 import {
   Tabs,
@@ -46,10 +53,12 @@ import {
   ControlledDatePicker,
   ControlledImageInput,
   ControlledHiddenField,
+  ControlledModuleList,
+  ControlledCheckbox,
 } from "/components/Dashboard/Editor2/FormFields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
-import FormContainer from "/components/Dashboard/Editor2/FormContainer"
+import EditorContainer from "../EditorContainer"
 import CourseTranslationForm from "./CourseTranslationForm"
 import {
   AddCourseMutation,
@@ -60,7 +69,23 @@ import { CourseFormValues } from "./types"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
 import notEmpty from "/util/notEmpty"
-import FormContext from "/components/Dashboard/Editor2/FormContext"
+import { useEditorContext } from "../EditorContext"
+import CourseLanguageSelector from "./CourseLanguageSelector"
+import flattenKeys from "/util/flattenKeys"
+import { useAnchorContext } from "/contexes/AnchorContext"
+
+export const FormFieldGroup = styled.fieldset`
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  width: 90%;
+  margin: 1rem auto 3rem auto;
+  border-width: 0px;
+  border-bottom: 4px dotted #98b0a9;
+`
+const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
+  ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
+`
 interface TabSectionProps {
   currentTab: number
   tab: number
@@ -82,15 +107,7 @@ const TabSection = ({
     {children}
   </section>
 )
-const ModuleList = styled(List)`
-  padding: 0px;
-  max-height: 400px;
-  overflow: auto;
-`
 
-const ModuleListItem = styled(ListItem)<any>`
-  padding: 0px;
-`
 interface CourseEditorProps {
   course: CourseDetails_course
   studyModules?: CourseEditorStudyModules_study_modules[]
@@ -116,10 +133,11 @@ export default function CourseEditor({
   studyModules,
 }: CourseEditorProps) {
   const t = useTranslator(CoursesTranslations)
-  const { setStatus } = useContext(FormContext)
+  const { setStatus } = useEditorContext()
 
   const statuses = statusesT(t)
   const client = useApolloClient()
+  const { anchors } = useAnchorContext()
 
   const [addCourse] = useMutation(AddCourseMutation)
   const [updateCourse] = useMutation(UpdateCourseMutation)
@@ -143,6 +161,14 @@ export default function CourseEditor({
     modules: studyModules,
   })
 
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    defaultValues?.course_translations.length === 0
+      ? ""
+      : defaultValues?.course_translations.length == 2
+      ? "both"
+      : defaultValues?.course_translations[0].language,
+  )
+
   console.log("default", defaultValues)
   const methods = useForm<CourseFormValues>({
     defaultValues,
@@ -150,13 +176,27 @@ export default function CourseEditor({
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
-
   console.log(course)
-  const { handleSubmit, watch, control, setValue, formState } = methods
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    getValues,
+    formState,
+    errors,
+    trigger,
+  } = methods
+
+  useEffect(() => {
+    // validate on load
+    trigger()
+  }, [])
+
   console.log(formState)
+  console.log("errors", errors)
   const [tab, setTab] = useState(0)
 
-  const onSubmit = useCallback(async (data: CourseFormValues, e?: any) => {
+  const onSubmit = useCallback(async (data: CourseFormValues, _?: any) => {
     const newCourse = !data.id
     const mutationVariables = fromCourseForm({
       values: data,
@@ -192,8 +232,29 @@ export default function CourseEditor({
   }, [])
 
   //const onSubmit = (data: Object, e?: any) => console.log(data, e)
-  const onError = (errors: Record<string, any>, e?: any) =>
-    console.log(errors, e)
+  const onError: SubmitErrorHandler<CourseFormValues> = (
+    errors: Record<string, any>,
+    _?: any,
+  ) => {
+    const flattenedErrors = flattenKeys(errors)
+
+    const [key, value] = Object.entries(flattenedErrors).sort(
+      (a, b) => anchors[a[0]]?.id - anchors[b[0]]?.id,
+    )[0]
+    const anchor = anchors[key]
+
+    let anchorLink = key
+    if (Array.isArray(value)) {
+      const firstIndex = parseInt(Object.keys(value)[0])
+      anchorLink = `${key}[${firstIndex}].${Object.keys(value[firstIndex])[0]}`
+    }
+    setTab(anchor?.tab ?? 0)
+
+    setTimeout(() => {
+      const element = document.getElementById(anchorLink)
+      element?.scrollIntoView()
+    }, 100)
+  }
   const onCancel = () => console.log("cancelled")
   const onDelete = useCallback(async (id: string) => {
     console.log("would delete", id)
@@ -201,18 +262,13 @@ export default function CourseEditor({
   }, [])
 
   const setCourseModule = useCallback(
-    (value: CourseDetails_course_study_modules[]) => (
-      _: any,
-      checked: boolean,
-    ) =>
+    (event: SyntheticEvent<Element, Event>, checked: boolean) =>
       setValue(
         "study_modules",
-        checked
-          ? value.concat({
-              __typename: "StudyModule",
-              id: module.id,
-            })
-          : value.filter((s) => s.id !== module.id),
+        {
+          ...getValues("study_modules"),
+          [(event.target as HTMLInputElement).id]: checked,
+        },
         { shouldDirty: true },
       ),
     [],
@@ -221,7 +277,7 @@ export default function CourseEditor({
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <FormProvider {...methods}>
-        <FormContainer<CourseFormValues>
+        <EditorContainer
           onSubmit={onSubmit}
           onError={onError}
           onCancel={onCancel}
@@ -243,123 +299,111 @@ export default function CourseEditor({
               <DisableAutoComplete />
               <ControlledHiddenField name="id" defaultValue={watch("id")} />
               <ControlledHiddenField name="slug" defaultValue={watch("slug")} />
-              <ControlledTextField
-                name="name"
-                label={t("courseName")}
-                required={true}
+              <CourseLanguageSelector
+                selectedLanguage={selectedLanguage}
+                setSelectedLanguage={setSelectedLanguage}
               />
               <CourseTranslationForm />
-              <ControlledTextField
-                name="new_slug"
-                label={t("courseSlug")}
-                required={true}
-                tip="A helpful text"
-              />
-              <ControlledTextField name="ects" label={t("courseECTS")} />
-              <ControlledDatePicker
-                name="start_date"
-                label={t("courseStartDate")}
-                required={true}
-              />
-              <ControlledDatePicker
-                name="end_date"
-                label={t("courseEndDate")}
-                validateOtherFields={["start_date"]}
-              />
-              <ControlledTextField
-                name="teacher_in_charge_name"
-                label={t("courseTeacherInChargeName")}
-                required={true}
-              />
-              <ControlledTextField
-                name="teacher_in_charge_email"
-                label={t("courseTeacherInChargeEmail")}
-                required={true}
-              />
-              <ControlledTextField
-                name="support_email"
-                label={t("courseSupportEmail")}
-              />
-              <FormControl component="fieldset">
-                <FormLabel component="legend" style={{ color: "#DF7A46" }}>
-                  {t("courseStatus")}*
-                </FormLabel>
-                <EnumeratingAnchor id="status" />
-                <FieldController
-                  name="status"
-                  label={t("courseStatus")}
-                  renderComponent={({ value }) => (
-                    <RadioGroup
-                      aria-label="course status"
-                      value={value}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setValue(
-                          "status",
-                          (event.target as HTMLInputElement).value,
-                          { shouldDirty: true },
-                        )
-                      }
-                    >
-                      {statuses.map(
-                        (option: { value: string; label: string }) => (
-                          <FormControlLabel
-                            key={`status-${option.value}`}
-                            value={option.value}
-                            control={<Radio />}
-                            label={option.label}
-                          />
-                        ),
-                      )}
-                    </RadioGroup>
-                  )}
+              <SelectLanguageFirstCover covered={selectedLanguage === ""}>
+                <ControlledTextField
+                  name="name"
+                  label={t("courseName")}
+                  required={true}
                 />
-              </FormControl>
-              <FormControl>
-                <FormLabel>{t("courseModules")}</FormLabel>
-                <FormGroup>
-                  <ModuleList>
-                    <EnumeratingAnchor id="study_modules" />
-                    <FieldController
-                      name="study_modules"
-                      label={t("courseModules")}
-                      renderComponent={({
-                        value,
-                      }: {
-                        value: CourseDetails_course_study_modules[]
-                      }) => (
-                        <>
-                          {studyModules?.map(
-                            (
-                              module: CourseEditorStudyModules_study_modules,
-                            ) => (
-                              <ModuleListItem key={module.id}>
-                                <FormControlLabel
-                                  key={`study-module-${module.id}`}
-                                  checked={
-                                    false
-                                    /*value?.filter((s) => s.id === module.id)
-                                      .length > 0*/
-                                  }
-                                  onChange={setCourseModule(value)}
-                                  control={<Checkbox />}
-                                  label={module.name}
-                                />
-                              </ModuleListItem>
-                            ),
-                          )}
-                        </>
-                      )}
+                <ControlledTextField
+                  name="new_slug"
+                  label={t("courseSlug")}
+                  required={true}
+                  tip="A helpful text"
+                />
+                <ControlledTextField name="ects" label={t("courseECTS")} />
+                <ControlledDatePicker
+                  name="start_date"
+                  label={t("courseStartDate")}
+                  required={true}
+                />
+                <ControlledDatePicker
+                  name="end_date"
+                  label={t("courseEndDate")}
+                  validateOtherFields={["start_date"]}
+                />
+                <ControlledTextField
+                  name="teacher_in_charge_name"
+                  label={t("courseTeacherInChargeName")}
+                  required={true}
+                />
+                <ControlledTextField
+                  name="teacher_in_charge_email"
+                  label={t("courseTeacherInChargeEmail")}
+                  required={true}
+                />
+                <ControlledTextField
+                  name="support_email"
+                  label={t("courseSupportEmail")}
+                />
+                <FormControl component="fieldset">
+                  <FormLabel component="legend" style={{ color: "#DF7A46" }}>
+                    {t("courseStatus")}*
+                  </FormLabel>
+                  <EnumeratingAnchor id="status" />
+                  <FieldController
+                    name="status"
+                    label={t("courseStatus")}
+                    renderComponent={({ value }) => (
+                      <RadioGroup
+                        aria-label="course status"
+                        value={value}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>,
+                        ) =>
+                          setValue(
+                            "status",
+                            (event.target as HTMLInputElement).value,
+                            { shouldDirty: true },
+                          )
+                        }
+                      >
+                        {statuses.map(
+                          (option: { value: string; label: string }) => (
+                            <FormControlLabel
+                              key={`status-${option.value}`}
+                              value={option.value}
+                              control={<Radio />}
+                              label={option.label}
+                            />
+                          ),
+                        )}
+                      </RadioGroup>
+                    )}
+                  />
+                </FormControl>
+                <ControlledModuleList
+                  name="study_modules"
+                  label={t("courseModules")}
+                  onChange={setCourseModule}
+                  modules={studyModules}
+                />
+                <ControlledImageInput
+                  name="new_photo"
+                  label={t("courseNewPhoto")}
+                />
+                <FormFieldGroup>
+                  <FormControl>
+                    <FormLabel>{t("courseProperties")}</FormLabel>
+                    <ControlledCheckbox
+                      name="promote"
+                      label={t("coursePromote")}
                     />
-                  </ModuleList>
-                </FormGroup>
-              </FormControl>
-              <ControlledImageInput
-                name="new_photo"
-                label={t("courseNewPhoto")}
-              />
+                    <ControlledCheckbox
+                      name="start_point"
+                      label={t("courseStartPoint")}
+                    />
+                  </FormControl>
+                </FormFieldGroup>
+              </SelectLanguageFirstCover>
             </TabSection>
           </form>
-        </FormContainer>
+        </EditorContainer>
       </FormProvider>
     </LocalizationProvider>
   )

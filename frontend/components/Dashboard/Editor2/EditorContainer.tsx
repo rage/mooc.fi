@@ -19,7 +19,7 @@ import {
   useFormContext,
 } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
-import FormContext from "./FormContext"
+import EditorContext from "./EditorContext"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -56,7 +56,7 @@ export default function FormContainer<T extends Record<string, any>>({
   const { isSubmitting, isSubmitted, isSubmitSuccessful, isDirty } = formState
 
   return (
-    <FormContext.Provider
+    <EditorContext.Provider
       value={{
         status,
         setStatus,
@@ -134,6 +134,6 @@ export default function FormContainer<T extends Record<string, any>>({
           ) : null}
         </FormBackground>
       </Container>
-    </FormContext.Provider>
+    </EditorContext.Provider>
   )
 }
