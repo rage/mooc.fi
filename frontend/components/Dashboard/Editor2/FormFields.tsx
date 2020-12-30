@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   Controller,
   useFormContext,
@@ -6,14 +6,30 @@ import {
 } from "react-hook-form"
 import { ErrorMessage } from "@hookform/error-message"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor/common"
-import { FormHelperText, TextField, Tooltip } from "@material-ui/core"
+import {
+  FormHelperText,
+  TextField,
+  Tooltip,
+  FormControl,
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  List,
+  ListItem,
+} from "@material-ui/core"
 import DatePicker from "@material-ui/lab/DatePicker"
 import HelpIcon from "@material-ui/icons/Help"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
 import { addDomain } from "/util/imageUtils"
-import { CourseDetails_course_photo } from "/static/types/generated/CourseDetails"
-
+import {
+  CourseDetails_course_photo,
+  CourseDetails_course_study_modules,
+} from "/static/types/generated/CourseDetails"
+import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
+import styled from "styled-components"
+import flattenKeys from "/util/flattenKeys"
 interface FieldProps {
   name: string
   label: string
@@ -25,14 +41,15 @@ interface FieldControllerProps extends FieldProps {
   renderComponent: (props: ControllerRenderProps) => JSX.Element
 }
 
-export const FieldController = ({
+export function FieldController({
   name,
   label,
   required = false,
   tab = 0,
   defaultValue = "",
   renderComponent,
-}: FieldControllerProps) => {
+  ...props
+}: FieldControllerProps & React.HTMLProps<HTMLDivElement>) {
   const { control, errors, setValue } = useFormContext()
 
   const onChange = useCallback(
@@ -48,7 +65,8 @@ export const FieldController = ({
       autoComplete="disabled"
       defaultValue={defaultValue}
       render={(renderProps) => (
-        <div style={{ marginBottom: "1.5rem" }}>
+        // marginBottom: 1.5rem
+        <div {...props}>
           <EnumeratingAnchor id={name} tab={tab} />
           {renderComponent({ ...renderProps, onChange })}
           <ErrorMessage
@@ -72,24 +90,32 @@ interface ControlledFieldProps extends FieldProps {
   validateOtherFields?: Array<string>
 }
 
-export const ControlledTextField = (props: ControlledFieldProps) => {
+export function ControlledTextField(props: ControlledFieldProps) {
   const { errors, setValue } = useFormContext()
-  const { label, required, name, tip, defaultValue } = props
+  const { label, required, name, tip } = props
+
+  const [error, setError] = useState(Boolean(flattenKeys(errors)[name]))
+  useEffect(() => {
+    setError(Boolean(flattenKeys(errors)[name]))
+  }, [errors])
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(name, e.target.value, { shouldDirty: true })
+  }
 
   return (
     <FieldController
       {...props}
       renderComponent={({ onBlur, value }) => (
         <TextField
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setValue(name, e.target.value, { shouldDirty: true })
-          }}
+          onChange={onChange}
           onBlur={onBlur}
           value={value}
           label={label}
           required={required}
           variant="outlined"
-          error={Boolean(errors[name as keyof typeof errors])}
+          error={error}
+          style={{ marginBottom: "1.5rem" }}
           InputProps={{
             autoComplete: "none",
             endAdornment: tip ? (
@@ -104,30 +130,27 @@ export const ControlledTextField = (props: ControlledFieldProps) => {
   )
 }
 
-export const ControlledDatePicker = (props: ControlledFieldProps) => {
+export function ControlledDatePicker(props: ControlledFieldProps) {
   const { watch, setValue, trigger } = useFormContext()
   const { name, label, validateOtherFields = [] } = props
+
+  const onChange = (date: any) => {
+    setValue(name, date, { shouldValidate: true, shouldDirty: true })
+    return { value: date }
+  }
 
   return (
     <FieldController
       {...props}
+      style={{ marginBottom: "1.5rem" }}
       renderComponent={() => (
         <DatePicker
           value={watch(name)}
-          onChange={(date: any) => {
-            setValue(name, date, { shouldValidate: true, shouldDirty: true })
-            return { value: date }
-          }}
+          onChange={onChange}
           onClose={() => trigger([name, ...validateOtherFields])}
           label={label}
           allowKeyboardControl={true}
           renderInput={(params) => <TextField {...params} variant="outlined" />}
-          /*          InputProps={{
-        endAdornment:
-          <IconButton style={{ padding: 0 }}>
-            <CalendarIcon />
-          </IconButton>
-      }}*/
         />
       )}
     />
@@ -157,9 +180,31 @@ interface ControlledImageInputProps extends ControlledFieldProps {
   defaultValue?: CourseDetails_course_photo | null
 }
 
-export const ControlledImageInput = (props: ControlledImageInputProps) => {
+export function ControlledImageInput(props: ControlledImageInputProps) {
   const { watch, setValue, control } = useFormContext()
   const { name, label, defaultValue } = props
+
+  const onImageLoad = (value: string | ArrayBuffer | null) =>
+    setValue("thumbnail", value)
+  const onImageAccepted = (value: File) =>
+    setValue(name, value, { shouldDirty: true })
+
+  const onClose = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): void => {
+    e.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
+    setValue("thumbnail", "")
+    setValue(name, null)
+
+    if (defaultValue) {
+      // TODO: not dirtying the form
+      setValue("delete_photo", true, {
+        shouldValidate: true,
+        shouldDirty: true,
+      })
+    }
+  }
 
   return (
     <>
@@ -174,33 +219,95 @@ export const ControlledImageInput = (props: ControlledImageInputProps) => {
         control={control}
         render={() => (
           <ImageDropzoneInput
-            onImageLoad={(value) => setValue("thumbnail", value)}
-            onImageAccepted={(value) =>
-              setValue(name, value, { shouldDirty: true })
-            }
+            onImageLoad={onImageLoad}
+            onImageAccepted={onImageAccepted}
           >
             <ImagePreview
               file={addDomain(watch("thumbnail"))}
-              onClose={(
-                e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-              ): void => {
-                e.stopPropagation()
-                e.nativeEvent.stopImmediatePropagation()
-                setValue("thumbnail", "")
-                setValue(name, null)
-
-                if (defaultValue) {
-                  // TODO: not dirtying the form
-                  setValue("delete_photo", true, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  })
-                }
-              }}
+              onClose={onClose}
             />
           </ImageDropzoneInput>
         )}
       />
     </>
+  )
+}
+
+const ModuleList = styled(List)`
+  padding: 0px;
+  max-height: 400px;
+  overflow: auto;
+`
+
+const ModuleListItem = styled(ListItem)<any>`
+  padding: 0px;
+`
+
+interface ControlledModuleListProps extends ControlledFieldProps {
+  modules?: CourseEditorStudyModules_study_modules[]
+  onChange: (
+    event: React.SyntheticEvent<Element, Event>,
+    checked: boolean,
+  ) => void
+}
+
+export function ControlledModuleList(props: ControlledModuleListProps) {
+  const { modules, label, name, onChange } = props
+
+  return (
+    <FormControl>
+      {label && <FormLabel>{label}</FormLabel>}
+      <FormGroup>
+        <ModuleList>
+          <EnumeratingAnchor id={name} />
+          <FieldController
+            name={name}
+            label={label}
+            renderComponent={({
+              value,
+            }: {
+              value: Record<string, boolean>
+            }) => (
+              <>
+                {modules?.map((module) => (
+                  <ModuleListItem key={module.id}>
+                    <FormControlLabel
+                      key={`module-${module.id}`}
+                      checked={value[module.id] ?? false}
+                      onChange={onChange}
+                      control={<Checkbox id={module.id} />}
+                      label={module.name}
+                    />
+                  </ModuleListItem>
+                ))}
+              </>
+            )}
+          />
+        </ModuleList>
+      </FormGroup>
+    </FormControl>
+  )
+}
+
+export function ControlledCheckbox(props: ControlledFieldProps) {
+  const { name, label } = props
+  const { setValue } = useFormContext()
+
+  const onChange = (_: any, checked: boolean) => setValue(name, checked)
+
+  return (
+    <FieldController
+      name={name}
+      label={label}
+      renderComponent={({ value }) => (
+        <FormControlLabel
+          key={name}
+          label={label}
+          checked={Boolean(value)}
+          onChange={onChange}
+          control={<Checkbox />}
+        />
+      )}
+    />
   )
 }

@@ -30,18 +30,21 @@ const isStringTranslation = (
 const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
   router?: NextRouter,
-) => (key: keyof T, variables?: Record<string, any>) => {
-  const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
+) =>
+  memoize((key: keyof T, variables?: Record<string, any>) => {
+    const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
 
-  if (!translation) {
-    console.warn(`WARNING: no translation for ${lng}:${key}`)
-    return key
-  }
+    if (!translation) {
+      console.warn(`WARNING: no translation for ${lng}:${key}`)
+      return key
+    }
 
-  return isArrayTranslation(translation)
-    ? translation.map((t) => substitute({ translation: t, variables, router }))
-    : substitute({ translation, variables, router })
-}
+    return isArrayTranslation(translation)
+      ? translation.map((t) =>
+          substitute({ translation: t, variables, router }),
+        )
+      : substitute({ translation, variables, router })
+  })
 
 interface Substitute<T> {
   translation: T[keyof T]

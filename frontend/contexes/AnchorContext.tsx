@@ -1,4 +1,4 @@
-import { createContext } from "react"
+import { createContext, useContext } from "react"
 
 export type Anchor = {
   id: number
@@ -10,7 +10,13 @@ interface AnchorContext {
   addAnchor: (anchor: string, tab: number) => void
 }
 
-export default createContext<AnchorContext>({
+const AnchorContext = createContext<AnchorContext>({
   anchors: {} as Record<string, Anchor>,
   addAnchor: (_: string, __: number) => {},
 })
+
+export default AnchorContext
+
+export function useAnchorContext() {
+  return useContext(AnchorContext)
+}
