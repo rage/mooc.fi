@@ -56,7 +56,6 @@ const CourseLanguageSelector = (props: LanguageSelectorProps) => {
     },
   )
 
-  console.log(selectedLanguage)
   const t = useTranslator(CoursesTranslations)
 
   return (
