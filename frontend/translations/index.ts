@@ -30,7 +30,7 @@ const isStringTranslation = (
 const getTranslator = <T extends Translation>(dicts: Record<string, T>) => (
   lng: string,
   router?: NextRouter,
-) =>
+): Translator<T> =>
   memoize((key: keyof T, variables?: Record<string, any>) => {
     const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
 
