@@ -65,7 +65,6 @@ export function FieldController({
       autoComplete="disabled"
       defaultValue={defaultValue}
       render={(renderProps) => (
-        // marginBottom: 1.5rem
         <div {...props}>
           <EnumeratingAnchor id={name} tab={tab} />
           {renderComponent({ ...renderProps, onChange })}
@@ -106,6 +105,7 @@ export function ControlledTextField(props: ControlledFieldProps) {
   return (
     <FieldController
       {...props}
+      style={{ marginBottom: "1.5rem" }}
       renderComponent={({ onBlur, value }) => (
         <TextField
           onChange={onChange}
@@ -115,7 +115,6 @@ export function ControlledTextField(props: ControlledFieldProps) {
           required={required}
           variant="outlined"
           error={error}
-          style={{ marginBottom: "1.5rem" }}
           InputProps={{
             autoComplete: "none",
             endAdornment: tip ? (
@@ -245,15 +244,25 @@ const ModuleListItem = styled(ListItem)<any>`
 
 interface ControlledModuleListProps extends ControlledFieldProps {
   modules?: CourseEditorStudyModules_study_modules[]
-  onChange: (
-    event: React.SyntheticEvent<Element, Event>,
-    checked: boolean,
-  ) => void
 }
 
 export function ControlledModuleList(props: ControlledModuleListProps) {
-  const { modules, label, name, onChange } = props
+  const { modules, label, name } = props
+  const { setValue, getValues } = useFormContext()
 
+  const setCourseModule = useCallback(
+    (event: React.SyntheticEvent<Element, Event>, checked: boolean) =>
+      setValue(
+        name,
+        {
+          ...getValues(name),
+          [(event.target as HTMLInputElement).id]: checked,
+        },
+        { shouldDirty: true },
+      ),
+    [],
+  )
+  
   return (
     <FormControl>
       {label && <FormLabel>{label}</FormLabel>}
@@ -274,7 +283,7 @@ export function ControlledModuleList(props: ControlledModuleListProps) {
                     <FormControlLabel
                       key={`module-${module.id}`}
                       checked={value[module.id] ?? false}
-                      onChange={onChange}
+                      onChange={setCourseModule}
                       control={<Checkbox id={module.id} />}
                       label={module.name}
                     />
@@ -311,3 +320,13 @@ export function ControlledCheckbox(props: ControlledFieldProps) {
     />
   )
 }
+
+export const FormFieldGroup = styled.fieldset`
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  width: 90%;
+  margin: 1rem auto 3rem auto;
+  border-width: 0px;
+  border-bottom: 4px dotted #98b0a9;
+`

@@ -14,8 +14,6 @@ import styled from "styled-components"
 import { PropsWithChildren, useState } from "react"
 import { useConfirm } from "material-ui-confirm"
 import {
-  SubmitErrorHandler,
-  SubmitHandler,
   useFormContext,
 } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
@@ -31,26 +29,13 @@ const Status = styled.p<any>`
   color: ${(props: FormStatus) => (props.error ? "#FF0000" : "default")};
 `
 
-interface FormContainerProps<T extends Record<string, any>> {
-  onSubmit: SubmitHandler<T>
-  onError: SubmitErrorHandler<Record<keyof T & string, any>>
-  onDelete: Function
-  onCancel: () => void | Promise<void>
-}
-
-
-
 export default function EditorContainer<T extends Record<string, any>>({
-  onSubmit,
-  onError,
-  onCancel,
-  onDelete,
   children,
-}: PropsWithChildren<FormContainerProps<T>>) {
+}: PropsWithChildren<{}>) {
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
-  const { status } = useEditorContext()
+  const { status, onSubmit, onError, onCancel, onDelete } = useEditorContext<T>()
   const { handleSubmit, formState, watch } = useFormContext()
   const id = watch("id")
 
