@@ -1,6 +1,5 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
-import { once } from "lodash"
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form"
 
 export interface FormHistoryState<T extends Record<string, any>> {
@@ -15,7 +14,7 @@ export interface FormHistory<T extends Record<string, any>> {
 export interface EditorContext<T extends Record<string, any>> {
   status: FormStatus
   setStatus: Dispatch<SetStateAction<FormStatus>>
-  tab: number,
+  tab: number
   setTab: Dispatch<SetStateAction<number>>
   /*history: FormHistory<T>
   undo: () => void
@@ -24,13 +23,13 @@ export interface EditorContext<T extends Record<string, any>> {
   onSubmit: SubmitHandler<T>
   onError: SubmitErrorHandler<Record<string, any>>
   onCancel: () => void
-  onDelete: (id: string) => void,
+  onDelete: (id: string) => void
   initialValues: T
 }
 
 export const EditorContext = createContext<EditorContext<any>>({
   status: { message: null },
-  setStatus: (_: any) => { },
+  setStatus: (_: any) => {},
   tab: 0,
   setTab: (_: any) => {},
   /*history: { states: [], index: -1 } as FormHistory<T>,
@@ -41,7 +40,7 @@ export const EditorContext = createContext<EditorContext<any>>({
   onError: () => {},
   onCancel: () => {},
   onDelete: () => {},
-  initialValues: {}
+  initialValues: {},
 })
 
 /*export const createEditorContext = once(<T,>() => createContext<EditorContext<T>>({
@@ -66,26 +65,33 @@ enum HistoryActionType {
   Redo = "Redo",
   AppendState = "AppendState",
   SetIndex = "SetIndex",
-  SetState = "SetState"
+  SetState = "SetState",
 }
 
-type HistoryAction<T> = {
-  type: HistoryActionType.Undo | HistoryActionType.Redo,
-} | {
-  type: HistoryActionType.AppendState,
-  payload: FormHistoryState<T>
-} | {
-  type: HistoryActionType.SetIndex,
-  payload: number
-} | {
-  type: HistoryActionType.SetState,
-  payload: FormHistory<T>
-}
+type HistoryAction<T> =
+  | {
+      type: HistoryActionType.Undo | HistoryActionType.Redo
+    }
+  | {
+      type: HistoryActionType.AppendState
+      payload: FormHistoryState<T>
+    }
+  | {
+      type: HistoryActionType.SetIndex
+      payload: number
+    }
+  | {
+      type: HistoryActionType.SetState
+      payload: FormHistory<T>
+    }
 
 let lastAction: HistoryAction<any>
 
 // @ts-ignore: disabled for now
-function historyReducer<T extends Record<string, any> = Record<string, any>>(state: FormHistory<T>, action: HistoryAction<T>): FormHistory<T> {
+function historyReducer<T extends Record<string, any> = Record<string, any>>(
+  state: FormHistory<T>,
+  action: HistoryAction<T>,
+): FormHistory<T> {
   // React calls reducers twice just to be sure
   if (lastAction === action) {
     return state
@@ -96,7 +102,7 @@ function historyReducer<T extends Record<string, any> = Record<string, any>>(sta
     if (state.index >= 0) {
       return {
         ...state,
-        index: state.index - 1
+        index: state.index - 1,
       }
     }
   }
@@ -104,7 +110,7 @@ function historyReducer<T extends Record<string, any> = Record<string, any>>(sta
     if (state.index < state.states.length) {
       return {
         ...state,
-        index: state.index + 1
+        index: state.index + 1,
       }
     }
   }
@@ -117,7 +123,7 @@ function historyReducer<T extends Record<string, any> = Record<string, any>>(sta
     // can't redo after adding new state, so chop off after current index
     return {
       states: state.states.slice(0, state.index + 1).concat(action.payload),
-      index: state.index + 1
+      index: state.index + 1,
     }
   }
 

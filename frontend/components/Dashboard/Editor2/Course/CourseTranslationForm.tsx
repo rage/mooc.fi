@@ -32,7 +32,12 @@ const CourseTranslationList = styled.ul`
   padding-inline-start: 0;
 `
 
-const CourseTranslationItem = styled.li``
+const CourseTranslationItem = styled.li`
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+  width: 90%;
+  margin: auto;
+`
 
 export default function CourseTranslationForm() {
   const t = useTranslator(CoursesTranslations)

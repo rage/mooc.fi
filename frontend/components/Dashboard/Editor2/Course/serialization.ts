@@ -26,6 +26,7 @@ export const toCourseForm = ({
   const courseStudyModules =
     course?.study_modules?.map((module) => module.id) ?? []
 
+  console.log(course)
   return course
     ? {
         ...omit(course, ["__typename"]),
@@ -60,10 +61,15 @@ export const toCourseForm = ({
         ),
         course_variants:
           course?.course_variants?.map((c) => ({
-            ...c,
+            ...omit(c, ["__typename", "id"]),
+            _id: c.id ?? undefined,
             description: c.description || undefined,
           })) ?? [],
-        course_aliases: course?.course_aliases ?? [],
+        course_aliases:
+          course?.course_aliases?.map((c) => ({
+            ...omit(c, ["__typename", "id"]),
+            _id: c.id ?? undefined,
+          })) ?? [],
         new_slug: course.slug,
         thumbnail: (course?.photo as CourseDetails_course_photo)?.compressed,
         ects: course.ects ?? undefined,
@@ -72,7 +78,10 @@ export const toCourseForm = ({
         completions_handled_by: course.completions_handled_by?.id,
         has_certificate: course?.has_certificate ?? false,
         user_course_settings_visibilities:
-          course?.user_course_settings_visibilities || [],
+          course?.user_course_settings_visibilities?.map((c) => ({
+            ...omit(c, ["__typename", "id"]),
+            _id: c.id ?? undefined,
+          })) || [],
         upcoming_active_link: course?.upcoming_active_link ?? false,
         tier: course?.tier ?? undefined,
         automatic_completions: course?.automatic_completions ?? false,
@@ -81,7 +90,8 @@ export const toCourseForm = ({
         exercise_completions_needed:
           course?.exercise_completions_needed ?? undefined,
         points_needed: course?.points_needed ?? undefined,
-        new_photo: course?.photo ?? null,
+        // TODO: fix
+        new_photo: null, // course?.photo ?? null,
       }
     : initialValues
 }
@@ -95,6 +105,7 @@ export const fromCourseForm = ({
 }): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
+  console.log(values)
   const course_translations =
     values?.course_translations?.map((c: CourseTranslationFormValues) => ({
       ...omit(c, ["open_university_course_link", "_id"]),
@@ -102,18 +113,23 @@ export const fromCourseForm = ({
       id: !c._id || c._id === "" ? undefined : c._id,
     })) ?? []
 
-  const course_variants = (values?.course_variants ?? []).map((v) =>
-    omit(v, ["__typename"]),
-  )
+  const course_variants = (values?.course_variants ?? []).map((v) => ({
+    ...omit(v, ["__typename", "_id"]),
+    id: !v._id || v._id === "" ? undefined : v._id,
+  }))
 
   const course_aliases = (values?.course_aliases ?? []).map((a) => ({
-    ...omit(a, ["__typename"]),
+    ...omit(a, ["__typename", "_id"]),
+    id: !a._id || a._id === "" ? undefined : a._id,
     course_code: a.course_code ?? undefined,
   }))
 
   const user_course_settings_visibilities = (
     values?.user_course_settings_visibilities ?? []
-  ).map((v) => omit(v, ["__typename"]))
+  ).map((v) => ({
+    ...omit(v, ["__typename", "_id"]),
+    id: !v._id || v._id === "" ? undefined : v._id,
+  }))
 
   const open_university_registration_links = values?.course_translations
     ?.map((c: CourseTranslationFormValues) => {
@@ -139,7 +155,8 @@ export const fromCourseForm = ({
       }
 
       return {
-        ...omit(prevLink, ["__typename"]),
+        ...omit(prevLink, ["__typename", "_id"]),
+        id: !c._id || c._id === "" ? undefined : c._id,
         link: c.open_university_course_link.link?.trim(),
         course_code: c.open_university_course_link.course_code.trim(),
       }

@@ -25,13 +25,13 @@ export const initialTranslation: CourseTranslationFormValues = {
 }
 
 export const initialVariant: CourseVariantFormValues = {
-  id: undefined,
+  _id: undefined,
   slug: "",
   description: "",
 }
 
 export const initialAlias: CourseAliasFormValues = {
-  id: undefined,
+  _id: undefined,
   course_code: "",
 }
 
@@ -74,7 +74,7 @@ export const initialValues: CourseFormValues = {
 }
 
 export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
-  id: undefined,
+  _id: undefined,
   language: "",
   course: undefined,
 }

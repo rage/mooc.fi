@@ -1,7 +1,15 @@
 import { useFormContext } from "react-hook-form"
 import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import { Tabs, Tab, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@material-ui/core"
+import {
+  Tabs,
+  Tab,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+} from "@material-ui/core"
 import {
   ControlledHiddenField,
   ControlledTextField,
@@ -10,7 +18,7 @@ import {
   ControlledModuleList,
   ControlledCheckbox,
   FormFieldGroup,
-  FieldController
+  FieldController,
 } from "/components/Dashboard/Editor2/FormFields"
 import CourseTranslationForm from "./CourseTranslationForm"
 import DisableAutoComplete from "/components/DisableAutoComplete"
@@ -29,7 +37,9 @@ import { CourseEditorStudyModules_study_modules } from "/static/types/generated/
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { Translator } from "/translations"
 import CommonTranslations from "/translations/common"
-
+import { FormSubtitle } from "../common"
+import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
+import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
 interface TabSectionProps {
   currentTab: number
   tab: number
@@ -44,7 +54,7 @@ const TabSection = ({
   React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) => (
   <section
     style={{
-      ...(currentTab !== tab ? { display: "none" } : {}),
+      ...(currentTab === tab ? {} : { display: "none" }),
       ...(props as any)?.style,
     }}
     {...omit(props, "style")}
@@ -52,7 +62,6 @@ const TabSection = ({
     {children}
   </section>
 )
-
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
@@ -62,7 +71,6 @@ interface CourseEditFormProps {
   course: CourseDetails_course
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
-
 
 export const statusesT = (t: Translator<any>) => [
   {
@@ -81,10 +89,16 @@ export const statusesT = (t: Translator<any>) => [
 
 export default function CourseEditForm({
   course,
-  studyModules
+  studyModules,
 }: CourseEditFormProps) {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
-  const { onSubmit, onError, tab, setTab, initialValues } = useEditorContext<CourseFormValues>()
+  const {
+    onSubmit,
+    onError,
+    tab,
+    setTab,
+    initialValues,
+  } = useEditorContext<CourseFormValues>()
   const { handleSubmit, watch, setValue } = useFormContext()
   const statuses = statusesT(t)
 
@@ -92,13 +106,12 @@ export default function CourseEditForm({
     initialValues?.course_translations.length === 0
       ? ""
       : initialValues?.course_translations.length == 2
-        ? "both"
-        : initialValues?.course_translations[0].language,
+      ? "both"
+      : initialValues?.course_translations[0].language,
   )
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
-
       <EditorContainer<CourseFormValues>>
         <form
           onSubmit={handleSubmit(onSubmit, onError)}
@@ -107,12 +120,10 @@ export default function CourseEditForm({
         >
           <Tabs value={tab} onChange={(_, newTab) => setTab(newTab)}>
             <Tab label="Course info" value={0} />
+            <Tab label="Course status" value={1} />
+            <Tab label="Advanced" value={2} />
           </Tabs>
-          <TabSection
-            currentTab={tab}
-            tab={0}
-            style={{ paddingTop: "0.5rem" }}
-          >
+          <TabSection currentTab={tab} tab={0} style={{ paddingTop: "0.5rem" }}>
             <DisableAutoComplete />
             <ControlledHiddenField name="id" defaultValue={watch("id")} />
             <ControlledHiddenField name="slug" defaultValue={watch("slug")} />
@@ -122,104 +133,179 @@ export default function CourseEditForm({
             />
             <CourseTranslationForm />
             <SelectLanguageFirstCover covered={selectedLanguage === ""}>
-              <ControlledTextField
-                name="name"
-                label={t("courseName")}
-                required={true}
-              />
-              <ControlledTextField
-                name="new_slug"
-                label={t("courseSlug")}
-                required={true}
-                tip="A helpful text"
-              />
-              <ControlledTextField name="ects" label={t("courseECTS")} />
-              <ControlledDatePicker
-                name="start_date"
-                label={t("courseStartDate")}
-                required={true}
-              />
-              <ControlledDatePicker
-                name="end_date"
-                label={t("courseEndDate")}
-                validateOtherFields={["start_date"]}
-              />
-              <ControlledTextField
-                name="teacher_in_charge_name"
-                label={t("courseTeacherInChargeName")}
-                required={true}
-              />
-              <ControlledTextField
-                name="teacher_in_charge_email"
-                label={t("courseTeacherInChargeEmail")}
-                required={true}
-              />
-              <ControlledTextField
-                name="support_email"
-                label={t("courseSupportEmail")}
-              />
-              <FormControl component="fieldset">
-                <FormLabel component="legend" style={{ color: "#DF7A46" }}>
-                  {t("courseStatus")}*
-            </FormLabel>
-                <EnumeratingAnchor id="status" />
-                <FieldController
-                  name="status"
-                  label={t("courseStatus")}
-                  renderComponent={({ value }) => (
-                    <RadioGroup
-                      aria-label="course status"
-                      value={value}
-                      onChange={(
-                        event: React.ChangeEvent<HTMLInputElement>,
-                      ) =>
-                        setValue(
-                          "status",
-                          (event.target as HTMLInputElement).value,
-                          { shouldDirty: true },
-                        )
-                      }
-                    >
-                      {statuses.map(
-                        (option: { value: string; label: string }) => (
-                          <FormControlLabel
-                            key={`status-${option.value}`}
-                            value={option.value}
-                            control={<Radio />}
-                            label={option.label}
-                          />
-                        ),
-                      )}
-                    </RadioGroup>
-                  )}
-                />
-              </FormControl>
-              <ControlledModuleList
-                name="study_modules"
-                label={t("courseModules")}
-                modules={studyModules}
-              />
               <ControlledImageInput
                 name="new_photo"
                 label={t("courseNewPhoto")}
               />
+
+              <FormSubtitle variant="h6" component="h3" align="center">
+                {t("courseDetails")}
+              </FormSubtitle>
+
               <FormFieldGroup>
-                <FormControl>
-                  <FormLabel>{t("courseProperties")}</FormLabel>
-                  <ControlledCheckbox
-                    name="promote"
-                    label={t("coursePromote")}
-                  />
-                  <ControlledCheckbox
-                    name="start_point"
-                    label={t("courseStartPoint")}
-                  />
-                </FormControl>
+                <ControlledTextField
+                  name="name"
+                  label={t("courseName")}
+                  required={true}
+                />
+                <ControlledTextField
+                  name="new_slug"
+                  label={t("courseSlug")}
+                  required={true}
+                  tip="A helpful text"
+                />
+                <ControlledTextField name="ects" label={t("courseECTS")} />
+              </FormFieldGroup>
+
+              <FormFieldGroup>
+                <ControlledDatePicker
+                  name="start_date"
+                  label={t("courseStartDate")}
+                  required={true}
+                />
+                <ControlledDatePicker
+                  name="end_date"
+                  label={t("courseEndDate")}
+                  validateOtherFields={["start_date"]}
+                />
+              </FormFieldGroup>
+
+              <FormFieldGroup>
+                <ControlledTextField
+                  name="teacher_in_charge_name"
+                  label={t("courseTeacherInChargeName")}
+                  required={true}
+                />
+                <ControlledTextField
+                  name="teacher_in_charge_email"
+                  label={t("courseTeacherInChargeEmail")}
+                  required={true}
+                />
+                <ControlledTextField
+                  name="support_email"
+                  label={t("courseSupportEmail")}
+                />
               </FormFieldGroup>
             </SelectLanguageFirstCover>
+          </TabSection>
+
+          <TabSection currentTab={tab} tab={1} style={{ paddingTop: "0.5rem" }}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend" style={{ color: "#DF7A46" }}>
+                {t("courseStatus")}*
+              </FormLabel>
+              <EnumeratingAnchor id="status" />
+              <FieldController
+                name="status"
+                label={t("courseStatus")}
+                renderComponent={({ value }) => (
+                  <RadioGroup
+                    aria-label="course status"
+                    value={value}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setValue(
+                        "status",
+                        (event.target as HTMLInputElement).value,
+                        { shouldDirty: true },
+                      )
+                    }
+                  >
+                    {statuses.map(
+                      (option: { value: string; label: string }) => (
+                        <FormControlLabel
+                          key={`status-${option.value}`}
+                          value={option.value}
+                          control={<Radio />}
+                          label={option.label}
+                        />
+                      ),
+                    )}
+                  </RadioGroup>
+                )}
+              />
+            </FormControl>
+            <ControlledModuleList
+              name="study_modules"
+              label={t("courseModules")}
+              modules={studyModules}
+            />
+
+            <FormFieldGroup>
+              <FormControl>
+                <FormLabel>{t("courseProperties")}</FormLabel>
+                <ControlledCheckbox name="promote" label={t("coursePromote")} />
+                <ControlledCheckbox
+                  name="start_point"
+                  label={t("courseStartPoint")}
+                />
+                <ControlledCheckbox name="hidden" label={t("courseHidden")} />
+                <ControlledCheckbox
+                  name="has_certificate"
+                  label={t("courseHasCertificate")}
+                />
+                <ControlledCheckbox
+                  name="upcoming_active_link"
+                  label={t("courseUpcomingActiveLink")}
+                />
+              </FormControl>
+            </FormFieldGroup>
+
+            <FormFieldGroup>
+              <ControlledTextField
+                name="order"
+                label={t("courseOrder")}
+                type="number"
+              />
+              <ControlledTextField
+                name="study_module_order"
+                label={t("courseModuleOrder")}
+                type="number"
+              />
+            </FormFieldGroup>
+          </TabSection>
+
+          <TabSection currentTab={tab} tab={2}>
+            <FormFieldGroup>
+              <ControlledTextField
+                name="exercise_completions_needed"
+                label={t("courseExerciseCompletionsNeeded")}
+                type="number"
+              />
+              <ControlledTextField
+                name="points_needed"
+                label={t("coursePointsNeeded")}
+                type="number"
+              />
+              <ControlledCheckbox
+                name="automatic_completions"
+                label={t("courseAutomaticCompletions")}
+              />
+              <ControlledCheckbox
+                name="automatic_completions_eligible_for_ects"
+                label={t("courseAutomaticCompletionsEligibleForEcts")}
+              />
+            </FormFieldGroup>
+            <FormSubtitle
+              variant="h6"
+              component="h3"
+              align="center"
+              style={{ marginTop: "3rem" }}
+            >
+              {t("courseVariantsTitle")}
+            </FormSubtitle>
+            <CourseVariantForm />
+            <FormSubtitle
+              variant="h6"
+              component="h3"
+              align="center"
+              style={{ marginTop: "3rem" }}
+            >
+              {t("courseAliasesTitle")}
+            </FormSubtitle>
+            <CourseAliasForm />
           </TabSection>
         </form>
       </EditorContainer>
     </LocalizationProvider>
   )
-} 
+}
