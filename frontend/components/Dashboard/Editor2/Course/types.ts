@@ -63,7 +63,7 @@ export interface CourseTranslationFormValues extends FormValues {
 }
 
 export interface OpenUniversityRegistrationValues extends FormValues {
-  id?: string
+  _id?: string
   course_code: string
   language: string
   course: string | undefined
@@ -71,19 +71,19 @@ export interface OpenUniversityRegistrationValues extends FormValues {
 }
 
 export interface CourseVariantFormValues extends FormValues {
-  id?: string
+  _id?: string
   slug: string
   description?: string
   course?: string
 }
 
 export interface CourseAliasFormValues extends FormValues {
-  id?: string
+  _id?: string
   course_code: string
 }
 
 export interface UserCourseSettingsVisibilityFormValues extends FormValues {
-  id?: string
+  _id?: string
   language: string
   course?: string
 }

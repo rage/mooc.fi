@@ -13,9 +13,7 @@ import { useTranslator } from "/util/useTranslator"
 import styled from "styled-components"
 import { PropsWithChildren, useState } from "react"
 import { useConfirm } from "material-ui-confirm"
-import {
-  useFormContext,
-} from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useEditorContext } from "./EditorContext"
 
@@ -35,12 +33,17 @@ export default function EditorContainer<T extends Record<string, any>>({
   const t = useTranslator(CommonTranslations)
   const confirm = useConfirm()
   const [deleteVisible, setDeleteVisible] = useState(false)
-  const { status, onSubmit, onError, onCancel, onDelete } = useEditorContext<T>()
+  const {
+    status,
+    onSubmit,
+    onError,
+    onCancel,
+    onDelete,
+  } = useEditorContext<T>()
   const { handleSubmit, formState, watch } = useFormContext()
   const id = watch("id")
 
   const { isSubmitting, isSubmitted, isSubmitSuccessful, isDirty } = formState
-
 
   return (
     <Container maxWidth="md">
@@ -66,13 +69,13 @@ export default function EditorContainer<T extends Record<string, any>>({
               onClick={() =>
                 isDirty
                   ? confirm({
-                    title: t("confirmationUnsavedChanges"),
-                    description: t("confirmationLeaveWithoutSaving"),
-                    confirmationText: t("confirmationYes"),
-                    cancellationText: t("confirmationNo"),
-                  })
-                    .then(onCancel)
-                    .catch(() => { })
+                      title: t("confirmationUnsavedChanges"),
+                      description: t("confirmationLeaveWithoutSaving"),
+                      confirmationText: t("confirmationYes"),
+                      cancellationText: t("confirmationNo"),
+                    })
+                      .then(onCancel)
+                      .catch(() => {})
                   : onCancel()
               }
             >
