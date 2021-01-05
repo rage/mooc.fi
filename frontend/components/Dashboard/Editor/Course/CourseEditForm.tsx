@@ -413,7 +413,7 @@ const renderForm = ({ courses, studyModules }: RenderFormProps) => ({
                 variant="h6"
                 component="h3"
                 align="center"
-                stlyle={{ marginTop: "3rem " }}
+                style={{ marginTop: "3rem " }}
               >
                 Super secret values
               </FormSubtitle>

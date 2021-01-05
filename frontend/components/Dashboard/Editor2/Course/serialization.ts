@@ -26,7 +26,6 @@ export const toCourseForm = ({
   const courseStudyModules =
     course?.study_modules?.map((module) => module.id) ?? []
 
-  console.log(course)
   return course
     ? {
         ...omit(course, ["__typename"]),
@@ -81,7 +80,7 @@ export const toCourseForm = ({
           course?.user_course_settings_visibilities?.map((c) => ({
             ...omit(c, ["__typename", "id"]),
             _id: c.id ?? undefined,
-          })) || [],
+          })) ?? [],
         upcoming_active_link: course?.upcoming_active_link ?? false,
         tier: course?.tier ?? undefined,
         automatic_completions: course?.automatic_completions ?? false,

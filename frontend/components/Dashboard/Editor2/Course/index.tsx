@@ -27,13 +27,16 @@ import flattenKeys from "/util/flattenKeys"
 import { useAnchorContext } from "/contexes/AnchorContext"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import CourseEditForm from "./CourseEditForm"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 interface CourseEditorProps {
   course: CourseDetails_course
+  courses?: CourseEditorCourses_courses[]
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
 export default function CourseEditor({
   course,
+  courses,
   studyModules,
 }: CourseEditorProps) {
   const t = useTranslator(CoursesTranslations)
@@ -58,7 +61,7 @@ export default function CourseEditor({
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
-  const { trigger } = methods
+  const { trigger, watch } = methods
 
   useEffect(() => {
     // validate on load
@@ -157,7 +160,11 @@ export default function CourseEditor({
           initialValues: defaultValues,
         }}
       >
-        <CourseEditForm course={course} studyModules={studyModules} />
+        <CourseEditForm
+          course={course}
+          courses={courses}
+          studyModules={studyModules}
+        />
       </EditorContext.Provider>
     </FormProvider>
   )
