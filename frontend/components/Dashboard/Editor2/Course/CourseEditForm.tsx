@@ -9,6 +9,7 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
+  FormGroup,
 } from "@material-ui/core"
 import {
   ControlledHiddenField,
@@ -17,13 +18,15 @@ import {
   ControlledImageInput,
   ControlledModuleList,
   ControlledCheckbox,
+  ControlledSelect,
+  ControlledChipInput,
   FormFieldGroup,
   FieldController,
 } from "/components/Dashboard/Editor2/FormFields"
 import CourseTranslationForm from "./CourseTranslationForm"
 import DisableAutoComplete from "/components/DisableAutoComplete"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor/common"
-import { PropsWithChildren, useState } from "react"
+import { PropsWithChildren, useMemo, useState } from "react"
 import { omit } from "lodash"
 import EditorContainer from "/components/Dashboard/Editor2/EditorContainer"
 import CourseLanguageSelector from "./CourseLanguageSelector"
@@ -40,6 +43,13 @@ import CommonTranslations from "/translations/common"
 import { FormSubtitle } from "../common"
 import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
 import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
+import { useQueryParameter } from "/util/useQueryParameter"
+import {
+  CourseEditorCourses,
+  CourseEditorCourses_courses,
+} from "/static/types/generated/CourseEditorCourses"
+import { UserCourseSettingsVisibilityFormValues } from "/components/Dashboard/Editor/Course/types"
+import { UserCourseSettingsVisibilityForm } from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
 interface TabSectionProps {
   currentTab: number
   tab: number
@@ -69,6 +79,7 @@ const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
 
 interface CourseEditFormProps {
   course: CourseDetails_course
+  courses?: CourseEditorCourses_courses[]
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
@@ -89,6 +100,7 @@ export const statusesT = (t: Translator<any>) => [
 
 export default function CourseEditForm({
   course,
+  courses,
   studyModules,
 }: CourseEditFormProps) {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
@@ -101,6 +113,7 @@ export default function CourseEditForm({
   } = useEditorContext<CourseFormValues>()
   const { handleSubmit, watch, setValue } = useFormContext()
   const statuses = statusesT(t)
+  const enableSuperSecret = useQueryParameter("secret", false)
 
   const [selectedLanguage, setSelectedLanguage] = useState(
     initialValues?.course_translations.length === 0
@@ -108,6 +121,16 @@ export default function CourseEditForm({
       : initialValues?.course_translations.length == 2
       ? "both"
       : initialValues?.course_translations[0].language,
+  )
+  const sortedCourses = useMemo(
+    () =>
+      courses
+        ?.filter((c: CourseEditorCourses_courses) => c.id !== course?.id)
+        .sort(
+          (a: CourseEditorCourses_courses, b: CourseEditorCourses_courses) =>
+            a?.name < b?.name ? -1 : 1,
+        ),
+    [courses],
   )
 
   return (
@@ -285,6 +308,37 @@ export default function CourseEditForm({
                 label={t("courseAutomaticCompletionsEligibleForEcts")}
               />
             </FormFieldGroup>
+            {enableSuperSecret ? (
+              <>
+                <FormSubtitle
+                  variant="h6"
+                  component="h3"
+                  align="center"
+                  style={{ marginTop: "3rem" }}
+                >
+                  Super secret values
+                </FormSubtitle>
+                <FormFieldGroup>
+                  <FormGroup>
+                    <ControlledSelect
+                      name="completions_handled_by"
+                      label="completions handled by"
+                      items={sortedCourses ?? []}
+                    />
+                    <ControlledTextField
+                      name="tier"
+                      label="tier"
+                      type="number"
+                    />
+                    <ControlledSelect
+                      name="inherit_settings_from"
+                      label="inherit settings from"
+                      items={sortedCourses ?? []}
+                    />
+                  </FormGroup>
+                </FormFieldGroup>
+              </>
+            ) : null}
             <FormSubtitle
               variant="h6"
               component="h3"
@@ -303,6 +357,7 @@ export default function CourseEditForm({
               {t("courseAliasesTitle")}
             </FormSubtitle>
             <CourseAliasForm />
+            <UserCourseSettingsVisibilityForm />
           </TabSection>
         </form>
       </EditorContainer>

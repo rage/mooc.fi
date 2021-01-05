@@ -20,6 +20,9 @@ import {
   List,
   ListItem,
   Typography,
+  Chip,
+  MenuItem,
+  Autocomplete,
 } from "@material-ui/core"
 import DatePicker from "@material-ui/lab/DatePicker"
 import HelpIcon from "@material-ui/icons/Help"
@@ -36,6 +39,9 @@ import { useConfirm } from "material-ui-confirm"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
+import { omit } from "lodash"
+import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
+import { setNestedObjectValues } from "formik"
 
 interface FieldProps {
   name: string
@@ -116,7 +122,7 @@ export function ControlledTextField(props: ControlledTextFieldProps) {
   return (
     <FieldController
       {...props}
-      style={{ marginBottom: "1.5rem" }}
+      style={{ marginTop: "1.5rem" }}
       renderComponent={({ onBlur, value }) => (
         <TextField
           onChange={onChange}
@@ -152,8 +158,8 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
 
   return (
     <FieldController
-      {...props}
-      style={{ marginBottom: "1.5rem" }}
+      {...omit(props, "validateOtherFields")}
+      style={{ marginTop: "1.5rem" }}
       renderComponent={() => (
         <DatePicker
           value={watch(name)}
@@ -224,12 +230,11 @@ export function ControlledImageInput(props: ControlledImageInputProps) {
         name="thumbnail"
         defaultValue={watch("thumbnail")}
       />
-      <Controller
+      <FieldController
         name={name}
         type="file"
         label={label}
-        control={control}
-        render={() => (
+        renderComponent={() => (
           <ImageDropzoneInput
             onImageLoad={onImageLoad}
             onImageAccepted={onImageAccepted}
@@ -447,5 +452,45 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
         )}
       </ArrayList>
     </FormGroup>
+  )
+}
+
+interface ControlledSelectProps<T> extends ControlledFieldProps {
+  items: T[]
+  nameField?: keyof T
+}
+export function ControlledSelect<T extends { id: string }>(
+  props: ControlledSelectProps<T>,
+) {
+  const { name, label, items, nameField = "name" as keyof T } = props
+  const { control, watch, setValue } = useFormContext()
+
+  return (
+    <Controller
+      name={name}
+      control={control}
+      defaultValue={watch(name) ?? "_empty"}
+      render={({ value }) => (
+        <TextField
+          select
+          variant="outlined"
+          label={label}
+          value={value !== "" ? value : "_empty"}
+          onChange={(e) =>
+            setValue(name, e.target.value !== "_empty" ? e.target.value : "")
+          }
+          style={{ marginTop: "1.5rem" }}
+        >
+          <MenuItem key={`${name}-empty`} value="_empty">
+            (no choice)
+          </MenuItem>
+          {items.map((item) => (
+            <MenuItem key={`${name}-${item.id}`} value={item.id}>
+              {item[nameField]}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+    />
   )
 }
