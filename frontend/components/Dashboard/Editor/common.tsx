@@ -124,8 +124,8 @@ export const StyledFieldWithAnchor: React.FC<any> = ({
 }
 
 interface TabSectionProps {
-  currentTab: TabState
-  tab: TabState
+  currentTab: number
+  tab: number
 }
 
 export const TabSection = ({
@@ -136,10 +136,7 @@ export const TabSection = ({
 }: PropsWithChildren<TabSectionProps>) => (
   <section
     style={{
-      display:
-        currentTab.main === tab.main && currentTab.sub === tab.sub
-          ? "initial"
-          : "none",
+      display: currentTab === tab ? "initial" : "none",
     }}
     {...props}
   >

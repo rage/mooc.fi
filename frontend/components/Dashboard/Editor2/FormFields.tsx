@@ -7,7 +7,7 @@ import {
   ArrayField,
 } from "react-hook-form"
 import { ErrorMessage } from "@hookform/error-message"
-import { EnumeratingAnchor } from "/components/Dashboard/Editor/common"
+import { EnumeratingAnchor } from "/components/Dashboard/Editor2/common"
 import {
   FormHelperText,
   TextField,
@@ -20,9 +20,9 @@ import {
   List,
   ListItem,
   Typography,
-  Chip,
   MenuItem,
-  Autocomplete,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core"
 import DatePicker from "@material-ui/lab/DatePicker"
 import HelpIcon from "@material-ui/icons/Help"
@@ -40,25 +40,23 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
 import { omit } from "lodash"
-import { CourseFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { setNestedObjectValues } from "formik"
+import { useTabContext } from "/components/Dashboard/Editor2/common"
 
 interface FieldProps {
   name: string
   label: string
   required?: boolean
-  tab?: number
   defaultValue?: any
 }
 interface FieldControllerProps extends FieldProps {
   renderComponent: (props: ControllerRenderProps) => JSX.Element
+  onChange?: (e: any, newValue: any) => {}
 }
 
 export function FieldController({
   name,
   label,
   required = false,
-  tab = 0,
   defaultValue = "",
   renderComponent,
   ...props
@@ -79,7 +77,7 @@ export function FieldController({
       defaultValue={defaultValue}
       render={(renderProps) => (
         <div {...props}>
-          <EnumeratingAnchor id={name} tab={tab} />
+          <EnumeratingAnchor id={name} />
           {renderComponent({ ...renderProps, onChange })}
           <ErrorMessage
             errors={errors}
@@ -104,11 +102,12 @@ interface ControlledFieldProps extends FieldProps {
 
 interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string
+  disabled?: boolean
 }
 
 export function ControlledTextField(props: ControlledTextFieldProps) {
   const { errors, setValue } = useFormContext()
-  const { label, required, name, tip, type } = props
+  const { label, required, name, tip, type, disabled } = props
 
   const [error, setError] = useState(Boolean(flattenKeys(errors)[name]))
   useEffect(() => {
@@ -133,6 +132,7 @@ export function ControlledTextField(props: ControlledTextFieldProps) {
           variant="outlined"
           error={error}
           type={type}
+          disabled={disabled}
           InputProps={{
             autoComplete: "none",
             endAdornment: tip ? (
@@ -203,9 +203,8 @@ export function ControlledImageInput(props: ControlledImageInputProps) {
 
   const onImageLoad = (value: string | ArrayBuffer | null) =>
     setValue("thumbnail", value)
-  const onImageAccepted = (value: File) => (
-    console.log(value), setValue(name, value, { shouldDirty: true })
-  )
+  const onImageAccepted = (value: File) =>
+    setValue(name, value, { shouldDirty: true })
 
   const onClose = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -377,6 +376,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
   const t = useTranslator(CoursesTranslations)
   const {
     name,
+    label,
     render,
     initialValues,
     removeConfirmationDescription,
@@ -384,7 +384,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
     noFieldsDescription,
     addCondition,
   } = props
-  const { control, formState } = useFormContext()
+  const { control, formState, watch } = useFormContext()
   const { fields, append, remove } = useFieldArray<T>({
     name,
     control,
@@ -392,12 +392,14 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
   const { isSubmitting } = formState
   const confirm = useConfirm()
 
+  const watchedFields = watch(name)
+
   return (
     <FormGroup>
       <ArrayList>
         {fields.length ? (
           fields.map((item, index) => (
-            <ArrayItem key={`${name}-${item._id}`}>
+            <ArrayItem key={`${name}-${item.id}`}>
               {render(item, index)}
               <StyledButton
                 style={{ margin: "auto" }}
@@ -437,19 +439,23 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
             {noFieldsDescription}
           </Typography>
         )}
-        {(fields!.length == 0 ||
-          (fields!.length && addCondition(fields![fields!.length - 1]))) && (
+        {watchedFields.length === 0 ||
+        (watchedFields.length &&
+          addCondition(watchedFields[watchedFields.length - 1])) ? (
           <ButtonWithWhiteText
             variant="contained"
             color="primary"
             disabled={isSubmitting}
-            onClick={() => append({ ...initialValues })}
+            onClick={(e) => {
+              e.preventDefault()
+              append({ ...initialValues })
+            }}
             endIcon={<AddIcon>{t("courseAdd")}</AddIcon>}
             style={{ width: "45%" }}
           >
             {t("courseAdd")}
           </ButtonWithWhiteText>
-        )}
+        ) : null}
       </ArrayList>
     </FormGroup>
   )
@@ -490,6 +496,38 @@ export function ControlledSelect<T extends { id: string }>(
             </MenuItem>
           ))}
         </TextField>
+      )}
+    />
+  )
+}
+
+interface ControlledRadioGroupProps extends ControlledFieldProps {
+  options: Array<{ value: string; label: string }>
+}
+export function ControlledRadioGroup(props: ControlledRadioGroupProps) {
+  const { name, label, options } = props
+  const { setValue } = useFormContext()
+  return (
+    <FieldController
+      name={name}
+      label={label}
+      renderComponent={({ value }) => (
+        <RadioGroup
+          aria-label={label}
+          value={value}
+          onChange={(_, newValue) =>
+            setValue(name, newValue, { shouldDirty: true })
+          }
+        >
+          {options.map((option) => (
+            <FormControlLabel
+              key={`${name}-${option.value}`}
+              value={option.value}
+              control={<Radio />}
+              label={option.label}
+            />
+          ))}
+        </RadioGroup>
       )}
     />
   )

@@ -6,7 +6,7 @@ const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,
 ): value is string => typeof value === "string"
 
-export function UserCourseSettingsVisibilityForm() {
+export default function UserCourseSettingsVisibilityForm() {
   const { control, setValue, getValues } = useFormContext()
 
   return (

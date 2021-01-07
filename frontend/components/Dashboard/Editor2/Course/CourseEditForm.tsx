@@ -14,14 +14,13 @@ import {
 import {
   ControlledHiddenField,
   ControlledTextField,
-  ControlledDatePicker,
   ControlledImageInput,
   ControlledModuleList,
   ControlledCheckbox,
   ControlledSelect,
-  ControlledChipInput,
   FormFieldGroup,
   FieldController,
+  ControlledRadioGroup,
 } from "/components/Dashboard/Editor2/FormFields"
 import CourseTranslationForm from "./CourseTranslationForm"
 import DisableAutoComplete from "/components/DisableAutoComplete"
@@ -41,37 +40,14 @@ import { CourseStatus } from "/static/types/generated/globalTypes"
 import { Translator } from "/translations"
 import CommonTranslations from "/translations/common"
 import { FormSubtitle } from "../common"
+import { useQueryParameter } from "/util/useQueryParameter"
+import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import { TabSection } from "../common"
+
 import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVariantForm"
 import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
-import { useQueryParameter } from "/util/useQueryParameter"
-import {
-  CourseEditorCourses,
-  CourseEditorCourses_courses,
-} from "/static/types/generated/CourseEditorCourses"
-import { UserCourseSettingsVisibilityFormValues } from "/components/Dashboard/Editor/Course/types"
-import { UserCourseSettingsVisibilityForm } from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
-interface TabSectionProps {
-  currentTab: number
-  tab: number
-}
-
-const TabSection = ({
-  currentTab,
-  tab,
-  children,
-  ...props
-}: PropsWithChildren<TabSectionProps> &
-  React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) => (
-  <section
-    style={{
-      ...(currentTab === tab ? {} : { display: "none" }),
-      ...(props as any)?.style,
-    }}
-    {...omit(props, "style")}
-  >
-    {children}
-  </section>
-)
+import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
+import CourseInfoForm from "./CourseInfoForm"
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
@@ -141,7 +117,11 @@ export default function CourseEditForm({
           style={{ backgroundColor: "white", padding: "2rem" }}
           autoComplete="none"
         >
-          <Tabs value={tab} onChange={(_, newTab) => setTab(newTab)}>
+          <Tabs
+            variant="fullWidth"
+            value={tab}
+            onChange={(_, newTab) => setTab(newTab)}
+          >
             <Tab label="Course info" value={0} />
             <Tab label="Course status" value={1} />
             <Tab label="Advanced" value={2} />
@@ -160,99 +140,34 @@ export default function CourseEditForm({
                 name="new_photo"
                 label={t("courseNewPhoto")}
               />
-
-              <FormSubtitle variant="h6" component="h3" align="center">
-                {t("courseDetails")}
-              </FormSubtitle>
-
-              <FormFieldGroup>
-                <ControlledTextField
-                  name="name"
-                  label={t("courseName")}
-                  required={true}
-                />
-                <ControlledTextField
-                  name="new_slug"
-                  label={t("courseSlug")}
-                  required={true}
-                  tip="A helpful text"
-                />
-                <ControlledTextField name="ects" label={t("courseECTS")} />
-              </FormFieldGroup>
-
-              <FormFieldGroup>
-                <ControlledDatePicker
-                  name="start_date"
-                  label={t("courseStartDate")}
-                  required={true}
-                />
-                <ControlledDatePicker
-                  name="end_date"
-                  label={t("courseEndDate")}
-                  validateOtherFields={["start_date"]}
-                />
-              </FormFieldGroup>
-
-              <FormFieldGroup>
-                <ControlledTextField
-                  name="teacher_in_charge_name"
-                  label={t("courseTeacherInChargeName")}
-                  required={true}
-                />
-                <ControlledTextField
-                  name="teacher_in_charge_email"
-                  label={t("courseTeacherInChargeEmail")}
-                  required={true}
-                />
-                <ControlledTextField
-                  name="support_email"
-                  label={t("courseSupportEmail")}
-                />
-              </FormFieldGroup>
+              <CourseInfoForm />
             </SelectLanguageFirstCover>
           </TabSection>
 
           <TabSection currentTab={tab} tab={1} style={{ paddingTop: "0.5rem" }}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend" style={{ color: "#DF7A46" }}>
-                {t("courseStatus")}*
-              </FormLabel>
-              <EnumeratingAnchor id="status" />
-              <FieldController
-                name="status"
-                label={t("courseStatus")}
-                renderComponent={({ value }) => (
-                  <RadioGroup
-                    aria-label="course status"
-                    value={value}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setValue(
-                        "status",
-                        (event.target as HTMLInputElement).value,
-                        { shouldDirty: true },
-                      )
-                    }
-                  >
-                    {statuses.map(
-                      (option: { value: string; label: string }) => (
-                        <FormControlLabel
-                          key={`status-${option.value}`}
-                          value={option.value}
-                          control={<Radio />}
-                          label={option.label}
-                        />
-                      ),
-                    )}
-                  </RadioGroup>
-                )}
+            <FormFieldGroup>
+              <FormControl component="fieldset">
+                <FormLabel
+                  component="legend"
+                  style={{ color: watch("status") ? "default" : "#f44336" }}
+                >
+                  {t("courseStatus")}
+                  {watch("status") ? "" : "*"}
+                </FormLabel>
+                <ControlledRadioGroup
+                  name="status"
+                  label={t("courseStatus")}
+                  options={statuses}
+                />
+              </FormControl>
+            </FormFieldGroup>
+            <FormFieldGroup>
+              <ControlledModuleList
+                name="study_modules"
+                label={t("courseModules")}
+                modules={studyModules}
               />
-            </FormControl>
-            <ControlledModuleList
-              name="study_modules"
-              label={t("courseModules")}
-              modules={studyModules}
-            />
-
+            </FormFieldGroup>
             <FormFieldGroup>
               <FormControl>
                 <FormLabel>{t("courseProperties")}</FormLabel>
