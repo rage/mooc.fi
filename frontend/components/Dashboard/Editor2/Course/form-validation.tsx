@@ -113,34 +113,35 @@ export const study_modules: { value: any; label: any }[] = []
 
 const testUnique = <T extends FormValues>(
   valueField: keyof CourseFormValues,
-  field: string,
-) =>
-  function (this: Yup.TestContext, value?: any): boolean {
+  getter: (values: T) => any
+  // field: keyof T
+) => function (this: Yup.TestContext, value?: any): boolean {
     const {
       context,
       path,
-    }: { context?: any; path?: string | undefined } = this.options
-    if (!context) {
+    }: { parent?: any; path?: string | undefined } = this.options
+
+    console.log(parent, this)
+    
+    if (!parent) {
       return true
     }
 
-    const fieldValues = context.values[valueField]
+    const fieldValues = context?.values[valueField)
 
-    if (!value || value === "") {
+    if (!value || value === "" || !Array.isArray(fieldValues)) {
       return true // previous should have caught the empty
     }
 
     const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
     const currentIndex =
       currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-    const otherValues = fieldValues
+    const otherValues = ((fieldValues as unknown) as T[])
       .filter(
         (c: T, index: number) =>
-          // @ts-ignore: we don't know the fields before use
-          c[field] !== "" && index !== currentIndex,
+          getter(c) !== "" && index !== currentIndex,
       )
-      // @ts-ignore: ditto
-      .map((c: T) => c[field])
+      .map((c: T) => getter(c))
 
     return otherValues.indexOf(value) === -1
   }
@@ -155,8 +156,9 @@ const courseEditSchema = ({
   checkSlug: DocumentNode
   initialSlug: string | null
   t: (key: any) => string
-}) =>
-  Yup.object().shape({
+}) => {
+
+  return Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
       .required(t("validationRequired"))
@@ -184,7 +186,7 @@ const courseEditSchema = ({
             t("validationOneTranslation"),
             testUnique<CourseTranslationFormValues>(
               "course_translations",
-              "language",
+              (value) => value.language
             ),
           ),
         description: Yup.string(),
@@ -204,7 +206,7 @@ const courseEditSchema = ({
           .test(
             "unique",
             t("validationTwoVariants"),
-            testUnique<CourseVariantFormValues>("course_variants", "slug"),
+            testUnique<CourseVariantFormValues>("course_variants", (v) => v.slug),
           ),
         description: Yup.string(),
       }),
@@ -218,7 +220,7 @@ const courseEditSchema = ({
           .test(
             "unique",
             t("validationTwoAliases"),
-            testUnique<CourseAliasFormValues>("course_aliases", "course_code"),
+            testUnique<CourseAliasFormValues>("course_aliases", (v) => v.course_code),
           ),
       }),
     ),
@@ -265,7 +267,7 @@ const courseEditSchema = ({
       .transform((value) => (isNaN(value) ? undefined : Number(value)))
       .positive(),
   })
-
+}
 const validateSlug = ({
   checkSlug,
   client,

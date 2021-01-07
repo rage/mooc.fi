@@ -31,12 +31,10 @@ export default function CourseVariantForm() {
           <ControlledTextField
             name={`course_variants[${index}].slug`}
             label={t("courseSlug")}
-            defaultValue={item.slug}
           />
           <ControlledTextField
             name={`course_variants[${index}].description`}
             label={t("courseDescription")}
-            defaultValue={item.description}
           />
         </>
       )}
