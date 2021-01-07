@@ -21,6 +21,7 @@ export function getFirstErrorAnchor(
   anchors: Record<string, Anchor>,
   errors: Record<string, any>,
 ) {
+  console.log(anchors, errors)
   const flattenedErrors = flattenKeys(errors)
 
   const [key, value] = Object.entries(flattenedErrors).sort(

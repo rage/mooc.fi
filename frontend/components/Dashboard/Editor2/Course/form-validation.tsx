@@ -116,35 +116,33 @@ const testUnique = <T extends FormValues>(
   getter: (values: T) => any
   // field: keyof T
 ) => function (this: Yup.TestContext, value?: any): boolean {
-    const {
-      context,
-      path,
-    }: { parent?: any; path?: string | undefined } = this.options
+  const {
+    context,
+    path,
+  }: { context?: any; path?: string | undefined } = this.options
 
-    console.log(parent, this)
-    
-    if (!parent) {
-      return true
-    }
-
-    const fieldValues = context?.values[valueField)
-
-    if (!value || value === "" || !Array.isArray(fieldValues)) {
-      return true // previous should have caught the empty
-    }
-
-    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
-    const currentIndex =
-      currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-    const otherValues = ((fieldValues as unknown) as T[])
-      .filter(
-        (c: T, index: number) =>
-          getter(c) !== "" && index !== currentIndex,
-      )
-      .map((c: T) => getter(c))
-
-    return otherValues.indexOf(value) === -1
+  if (!context) {
+    return true
   }
+
+  const fieldValues = (context.values as CourseFormValues)[valueField]
+
+  if (!value || value === "" || !Array.isArray(fieldValues)) {
+    return true // previous should have caught the empty
+  }
+
+  const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+  const currentIndex =
+    currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+  const otherValues = ((fieldValues as unknown) as T[])
+    .filter(
+      (c: T, index: number) =>
+        getter(c) !== "" && index !== currentIndex,
+    )
+    .map((c: T) => getter(c))
+
+  return otherValues.indexOf(value) === -1
+}
 
 const courseEditSchema = ({
   client,

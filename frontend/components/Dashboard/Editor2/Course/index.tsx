@@ -1,4 +1,4 @@
-import { useForm, FormProvider, SubmitErrorHandler } from "react-hook-form"
+import { useForm, FormProvider, SubmitErrorHandler, useFormContext, Resolver } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
 import {
@@ -23,17 +23,18 @@ import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
 import notEmpty from "/util/notEmpty"
 import { EditorContext } from "../EditorContext"
-import flattenKeys from "/util/flattenKeys"
 import { useAnchorContext } from "/contexes/AnchorContext"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import CourseEditForm from "./CourseEditForm"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
+import * as Yup from "yup"
 interface CourseEditorProps {
   course: CourseDetails_course
   courses?: CourseEditorCourses_courses[]
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
+
 
 export default function CourseEditor({
   course,
@@ -46,6 +47,18 @@ export default function CourseEditor({
   const { anchors } = useAnchorContext()
   const client = useApolloClient()
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const customValidationResolver = (schema: Yup.AnyObjectSchema) => useCallback(
+    async (
+      values,
+      context,
+      validateAllFieldCriteria = false
+    ) => {
+      return await yupResolver<CourseFormValues>(schema)(values, { ...context, values }, validateAllFieldCriteria)
+    },
+    [schema]
+  )
+
   const defaultValues = toCourseForm({
     course,
     modules: studyModules,
@@ -56,9 +69,10 @@ export default function CourseEditor({
     initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
     t,
   })
+  const validationResolver = customValidationResolver(validationSchema)
   const methods = useForm<CourseFormValues>({
     defaultValues,
-    resolver: yupResolver(validationSchema),
+    resolver: validationResolver,
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
