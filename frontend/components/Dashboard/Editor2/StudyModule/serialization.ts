@@ -21,7 +21,11 @@ export const toStudyModuleForm = ({
         image: module.image || "",
         new_slug: module.slug,
         order: module.order ?? undefined,
-        study_module_translations: module?.study_module_translations ?? [],
+        study_module_translations:
+          module?.study_module_translations?.map((t) => ({
+            ...omit(t, "id"),
+            _id: t.id ?? undefined,
+          })) ?? [],
       }
     : initialValues
 
@@ -32,8 +36,11 @@ export const fromStudyModuleForm = ({
 }): StudyModuleCreateArg | StudyModuleUpsertArg => {
   const study_module_translations = values?.study_module_translations?.map(
     (c: StudyModuleTranslationFormValues) => ({
-      ...omit(c, "__typename"),
-      id: !c.id || c.id === "" ? null : c.id,
+      ...omit(c, ["__typename", "_id"]),
+      id: !c._id || c._id === "" ? null : c._id,
+      name: c.name ?? undefined,
+      language: c.language ?? undefined,
+      description: c.description ?? undefined,
     }),
   )
 

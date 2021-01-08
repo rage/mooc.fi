@@ -1,8 +1,16 @@
+import { yupResolver } from "@hookform/resolvers/yup"
 import { Typography } from "@material-ui/core"
 import { omit } from "lodash"
-import { createContext, PropsWithChildren, useContext } from "react"
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+} from "react"
 import styled from "styled-components"
 import { useAnchorContext } from "/contexes/AnchorContext"
+import * as Yup from "yup"
+import { FormValues } from "/components/Dashboard/Editor2/types"
 
 export const FormSubtitle = styled(Typography)<any>`
   padding: 20px 0px 20px 0px;
@@ -77,3 +85,53 @@ export const TabSection = ({
 export const useTabContext = () => {
   return useContext(TabContext)
 }
+
+export function customValidationResolver<T>(schema: Yup.AnyObjectSchema) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useCallback(
+    async (values, context, validateAllFieldCriteria = false) =>
+      await yupResolver<T>(schema)(
+        values,
+        { ...context, values },
+        validateAllFieldCriteria,
+      ),
+    [schema],
+  )
+}
+
+export const testUnique = <Root extends FormValues, Child extends FormValues>(
+  valueField: keyof Root,
+  getter: (values: Child) => any,
+  // field: keyof T
+) =>
+  function (this: Yup.TestContext, value?: any): boolean {
+    const {
+      context,
+      path,
+    }: { context?: any; path?: string | undefined } = this.options
+
+    console.log("validating", valueField)
+    console.log("context", context)
+    if (!context) {
+      return true
+    }
+
+    const fieldValues = (context.values as Root)[valueField]
+
+    if (!value || value === "" || !Array.isArray(fieldValues)) {
+      return true // previous should have caught the empty
+    }
+
+    console.log("fieldValues", fieldValues)
+    const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
+    const currentIndex =
+      currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
+    const otherValues = ((fieldValues as unknown) as Child[])
+      .filter(
+        (c: Child, index: number) => getter(c) !== "" && index !== currentIndex,
+      )
+      .map((c: Child) => getter(c))
+
+    console.log("value", value, "otherValues", otherValues)
+    return otherValues.indexOf(value) === -1
+  }

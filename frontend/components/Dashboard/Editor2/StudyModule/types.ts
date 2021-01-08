@@ -12,7 +12,7 @@ export interface StudyModuleFormValues extends FormValues {
 }
 
 export interface StudyModuleTranslationFormValues extends FormValues {
-  id?: string | null
+  _id?: string
   name: string
   language: string
   description: string

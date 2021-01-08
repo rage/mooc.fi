@@ -4,9 +4,10 @@ import {
   StudyModuleTranslationFormValues,
 } from "./types"
 import { ApolloClient, DocumentNode } from "@apollo/client"
+import { testUnique } from "/components/Dashboard/Editor2/common"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
-  id: undefined,
+  _id: undefined,
   language: "",
   name: "",
   description: "",
@@ -37,15 +38,12 @@ export const languages = (t: Function) => [
 ]
 
 function validateImage(this: Yup.TestContext, _value?: any): boolean {
-  const { newSlug, image } = this.parent
+  const { image } = this.parent
 
-  let filename = `/static/images/${image}`
-  if (image === "") {
-    filename = `/static/images/${newSlug}.jpg`
-  }
+  if (image === "") return true
 
   try {
-    require(filename)
+    require(`../../../../static/images/${image}`)
   } catch (e) {
     return false
   }
@@ -75,22 +73,12 @@ const studyModuleEditSchema = ({
         validateSlug({ client, checkSlug, initialSlug }),
       ),
     image: Yup.string().test("exists", t("moduleImageError"), validateImage),
-    /*.when("new_slug", {
-        is: () => true,
-        then: Yup.string().test("exists", t("moduleImageError"), 
-          function(this: Yup.TestContext, _value?: any) {
-            console.log("in when branch")
-            // @ts-ignore: asdf
-            return validateImage(this)
-          }
-        )
-      })*/ name: Yup.string().required(
-      t("validationRequired"),
-    ),
+    name: Yup.string().required(t("validationRequired")),
     study_module_translations: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
+          .matches(/^((?!_empty).*)/, t("validationRequired"))
           .required(t("validationRequired"))
           .oneOf(
             languages(t).map((l) => l.value),
@@ -99,36 +87,10 @@ const studyModuleEditSchema = ({
           .test(
             "unique",
             t("validationOneTranslation"),
-            function (this: Yup.TestContext, value?: any): boolean {
-              const {
-                context,
-                path,
-              }: { context?: any; path?: string | undefined } = this.options
-              if (!context) {
-                return true
-              }
-
-              const {
-                values: { study_module_translations },
-              } = context
-
-              if (!value || value === "") {
-                return true // previous should have caught the empty
-              }
-
-              const currentIndexMatch =
-                (path || "").match(/^.*\[(\d+)\].*$/) || []
-              const currentIndex =
-                currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-              const otherTranslationLanguages = study_module_translations
-                .filter(
-                  (c: StudyModuleTranslationFormValues, index: number) =>
-                    c.language !== "" && index !== currentIndex,
-                )
-                .map((c: StudyModuleTranslationFormValues) => c.language)
-
-              return otherTranslationLanguages.indexOf(value) === -1
-            },
+            testUnique<StudyModuleFormValues, StudyModuleTranslationFormValues>(
+              "study_module_translations",
+              (v) => v.language,
+            ),
           ),
         description: Yup.string().required(t("validationRequired")),
       }),

@@ -23,6 +23,7 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
+  IconButton,
 } from "@material-ui/core"
 import DatePicker from "@material-ui/lab/DatePicker"
 import HelpIcon from "@material-ui/icons/Help"
@@ -40,7 +41,9 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
 import { omit } from "lodash"
-import { useTabContext } from "/components/Dashboard/Editor2/common"
+import HistoryIcon from "@material-ui/icons/History"
+import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+import CommonTranslations from "/translations/common"
 
 interface FieldProps {
   name: string
@@ -98,16 +101,20 @@ interface ControlledFieldProps extends FieldProps {
   defaultValue?: any
   tip?: string
   validateOtherFields?: Array<string>
+  revertable?: boolean
 }
 
 interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string
   disabled?: boolean
+  rows?: number
 }
 
 export function ControlledTextField(props: ControlledTextFieldProps) {
-  const { errors, setValue } = useFormContext()
-  const { label, required, name, tip, type, disabled } = props
+  const t = useTranslator(CommonTranslations)
+  const { errors, reset, setValue, getValues } = useFormContext()
+  const { initialValues } = useEditorContext()
+  const { label, required, name, tip, type, disabled, revertable, rows } = props
 
   const [error, setError] = useState(Boolean(flattenKeys(errors)[name]))
   useEffect(() => {
@@ -120,28 +127,51 @@ export function ControlledTextField(props: ControlledTextFieldProps) {
 
   return (
     <FieldController
-      {...props}
+      {...omit(props, ["revertable", "validateOtherFields"])}
       style={{ marginTop: "1.5rem" }}
       renderComponent={({ onBlur, value }) => (
-        <TextField
-          onChange={onChange}
-          onBlur={onBlur}
-          value={value}
-          label={label}
-          required={required}
-          variant="outlined"
-          error={error}
-          type={type}
-          disabled={disabled}
-          InputProps={{
-            autoComplete: "none",
-            endAdornment: tip ? (
-              <Tooltip title={tip}>
-                <HelpIcon />
-              </Tooltip>
-            ) : null,
-          }}
-        />
+        <>
+          <TextField
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+            label={label}
+            required={required}
+            variant="outlined"
+            error={error}
+            type={type}
+            disabled={disabled}
+            rows={rows}
+            multiline={(rows && rows > 0) || false}
+            InputProps={{
+              autoComplete: "none",
+              endAdornment: (
+                <>
+                  {revertable ? (
+                    <Tooltip title={t("editorRevert")}>
+                      <IconButton
+                        aria-label={t("editorRevert")}
+                        onClick={() =>
+                          reset({
+                            ...getValues(),
+                            [name]: (initialValues as any)[name],
+                          })
+                        }
+                      >
+                        <HistoryIcon />
+                      </IconButton>
+                    </Tooltip>
+                  ) : null}
+                  {tip ? (
+                    <Tooltip title={tip}>
+                      <HelpIcon />
+                    </Tooltip>
+                  ) : null}
+                </>
+              ),
+            }}
+          />
+        </>
       )}
     />
   )
@@ -365,7 +395,7 @@ interface ControlledFieldArrayListProps<T> extends ControlledFieldProps {
   removeWithoutConfirmationCondition: (
     item: Partial<ArrayField<T, "id">>,
   ) => boolean
-  addCondition: (item: Partial<ArrayField<T, "id">>) => boolean
+  addCondition: (item: Array<ArrayField<T, "id">>) => boolean
   removeConfirmationDescription: string
   noFieldsDescription: string
 }
@@ -384,7 +414,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
     noFieldsDescription,
     addCondition,
   } = props
-  const { control, formState, watch } = useFormContext()
+  const { control, formState, watch, trigger } = useFormContext()
   const { fields, append, remove } = useFieldArray<T>({
     name,
     control,
@@ -440,8 +470,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
           </Typography>
         )}
         {watchedFields.length === 0 ||
-        (watchedFields.length &&
-          addCondition(watchedFields[watchedFields.length - 1])) ? (
+        (watchedFields.length && addCondition(watchedFields)) ? (
           <ButtonWithWhiteText
             variant="contained"
             color="primary"
@@ -449,6 +478,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
             onClick={(e) => {
               e.preventDefault()
               append({ ...initialValues })
+              trigger(name)
             }}
             endIcon={<AddIcon>{t("courseAdd")}</AddIcon>}
             style={{ width: "45%" }}
@@ -463,35 +493,52 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
 
 interface ControlledSelectProps<T> extends ControlledFieldProps {
   items: T[]
+  keyField?: keyof T
   nameField?: keyof T
 }
-export function ControlledSelect<T extends { id: string }>(
+export function ControlledSelect<T extends { [key: string]: any }>(
   props: ControlledSelectProps<T>,
 ) {
-  const { name, label, items, nameField = "name" as keyof T } = props
-  const { control, watch, setValue } = useFormContext()
-
+  const t = useTranslator(CommonTranslations)
+  const {
+    name,
+    label,
+    items,
+    keyField = "id" as keyof T,
+    nameField = "name" as keyof T,
+  } = props
+  const { watch, setValue, trigger, formState } = useFormContext()
+  const { errors } = formState
   return (
-    <Controller
+    <FieldController
       name={name}
-      control={control}
+      label={label}
       defaultValue={watch(name) ?? "_empty"}
-      render={({ value }) => (
+      renderComponent={({ value }) => (
         <TextField
           select
           variant="outlined"
           label={label}
           value={value !== "" ? value : "_empty"}
-          onChange={(e) =>
-            setValue(name, e.target.value !== "_empty" ? e.target.value : "")
-          }
+          error={Boolean(flattenKeys(errors)[name])}
+          onChange={(e) => {
+            console.log("changed value", e)
+            setValue(name, e.target.value !== "_empty" ? e.target.value : "", {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+            trigger(name)
+          }}
           style={{ marginTop: "1.5rem" }}
         >
           <MenuItem key={`${name}-empty`} value="_empty">
-            (no choice)
+            {t("selectNoChoice")}
           </MenuItem>
           {items.map((item) => (
-            <MenuItem key={`${name}-${item.id}`} value={item.id}>
+            <MenuItem
+              key={`${name}-${item[keyField]}`}
+              value={`${item[keyField]}`}
+            >
               {item[nameField]}
             </MenuItem>
           ))}

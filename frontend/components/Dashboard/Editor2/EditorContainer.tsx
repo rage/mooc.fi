@@ -48,74 +48,85 @@ export default function EditorContainer<T extends Record<string, any>>({
   return (
     <Container maxWidth="md">
       <FormBackground elevation={1} style={{ backgroundColor: "#8C64AC" }}>
-        {children}
-        <Grid container direction="row" spacing={2}>
-          <Grid item xs={4}>
-            <StyledButton
-              color="primary"
-              disabled={!isDirty || isSubmitting || isSubmitSuccessful}
-              onClick={() => handleSubmit<T>(onSubmit, onError)()}
-              style={{ width: "100%" }}
-            >
-              {isSubmitting ? <CircularProgress size={20} /> : t("save")}
-            </StyledButton>
+        <form
+          onSubmit={handleSubmit(onSubmit, onError)}
+          style={{ backgroundColor: "white", padding: "2rem" }}
+          autoComplete="none"
+        >
+          {children}
+          <Grid container direction="row" spacing={2}>
+            <Grid item xs={4}>
+              <StyledButton
+                color="primary"
+                disabled={!isDirty || isSubmitting || isSubmitSuccessful}
+                onClick={() => handleSubmit<T>(onSubmit, onError)()}
+                style={{ width: "100%" }}
+              >
+                {isSubmitting ? <CircularProgress size={20} /> : t("save")}
+              </StyledButton>
+            </Grid>
+            <Grid item xs={4}>
+              <StyledButton
+                color="secondary"
+                style={{ width: "100%" }}
+                disabled={isSubmitting || isSubmitted}
+                variant="contained"
+                onClick={(e) => {
+                  e.preventDefault()
+                  return isDirty
+                    ? confirm({
+                        title: t("confirmationUnsavedChanges"),
+                        description: t("confirmationLeaveWithoutSaving"),
+                        confirmationText: t("confirmationYes"),
+                        cancellationText: t("confirmationNo"),
+                      })
+                        .then(onCancel)
+                        .catch(() => {})
+                    : onCancel()
+                }}
+              >
+                {t("cancel")}
+              </StyledButton>
+            </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <StyledButton
-              color="secondary"
-              style={{ width: "100%" }}
-              disabled={isSubmitting || isSubmitted}
-              variant="contained"
-              onClick={() =>
-                isDirty
-                  ? confirm({
-                      title: t("confirmationUnsavedChanges"),
-                      description: t("confirmationLeaveWithoutSaving"),
-                      confirmationText: t("confirmationYes"),
-                      cancellationText: t("confirmationNo"),
-                    })
-                      .then(onCancel)
-                      .catch(() => {})
-                  : onCancel()
-              }
-            >
-              {t("cancel")}
-            </StyledButton>
+          <Grid item xs={2}>
+            {!isProduction && id ? (
+              <Tooltip title={t("showDelete")}>
+                <Checkbox
+                  checked={deleteVisible}
+                  onChange={() => setDeleteVisible(!deleteVisible)}
+                />
+              </Tooltip>
+            ) : null}
+            {deleteVisible && id ? (
+              <StyledButton
+                variant="contained"
+                color="secondary"
+                disabled={isSubmitting || isSubmitted}
+                onClick={(e) => {
+                  e.preventDefault()
+
+                  return confirm({
+                    title: t("confirmationAboutToDelete"),
+                    description: t("confirmationDelete"),
+                    confirmationText: t("confirmationYes"),
+                    cancellationText: t("confirmationNo"),
+                  })
+                    .then(() => onDelete(id))
+                    .catch(() => {})
+                }}
+              >
+                {t("delete")}
+              </StyledButton>
+            ) : null}
           </Grid>
-        </Grid>
-        <Grid item xs={2}>
-          {!isProduction && id ? (
-            <Tooltip title={t("showDelete")}>
-              <Checkbox
-                checked={deleteVisible}
-                onChange={() => setDeleteVisible(!deleteVisible)}
-              />
-            </Tooltip>
+          {status?.message ? (
+            <Status error={status.error}>
+              {status.error ? t("submittingError") : null}
+              <b>{status.message}</b>
+            </Status>
           ) : null}
-          {deleteVisible && id ? (
-            <StyledButton
-              variant="contained"
-              color="secondary"
-              disabled={isSubmitting || isSubmitted}
-              onClick={() =>
-                confirm({
-                  title: t("confirmationAboutToDelete"),
-                  description: t("confirmationDelete"),
-                  confirmationText: t("confirmationYes"),
-                  cancellationText: t("confirmationNo"),
-                }).then(() => onDelete(id))
-              }
-            >
-              {t("delete")}
-            </StyledButton>
-          ) : null}
-        </Grid>
-        {status?.message ? (
-          <Status error={status.error}>
-            {status.error ? t("submittingError") : null}
-            <b>{status.message}</b>
-          </Status>
-        ) : null}
+        </form>
       </FormBackground>
     </Container>
   )

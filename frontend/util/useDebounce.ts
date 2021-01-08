@@ -19,7 +19,6 @@ export default function useDebounce<T>(
         !compare ||
         (compare && JSON.stringify(debouncedValue) !== JSON.stringify(_value))
       ) {
-        console.log("debouncedValue", debouncedValue, "value", _value)
         setDebouncedValue(_value)
       }
     }, delay)
@@ -32,7 +31,7 @@ export default function useDebounce<T>(
       clearTimeout(handler)
     }
 
-    setDebouncedValue(cancelValue !== undefined ? cancelValue : value)
+    setDebouncedValue(cancelValue !== undefined ? cancelValue : _value)
   }
 
   return [debouncedValue, cancelTimeout]
