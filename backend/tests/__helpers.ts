@@ -14,7 +14,7 @@ import binPrisma from "../bin/lib/prisma"
 
 const DEBUG = Boolean(process.env.DEBUG)
 
-const logger = {
+export const logger = {
   format: {
     printf: jest.fn(),
     timestamp: jest.fn(),
