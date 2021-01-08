@@ -177,7 +177,6 @@ const getDataByLanguage = async (langProps: langProps) => {
 //       course: { slug: "elements-of-ai" },
 //     },
 //   })
-
 //   const now = new Date()
 //   return `\`\`\`Stats ${now.getDate()}.${now.getMonth() +
 //     1}.${now.getFullYear()}:
