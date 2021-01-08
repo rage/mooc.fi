@@ -249,14 +249,14 @@ const getGlobalStatsBAI = async (): Promise<string> => {
 
   const now = new Date()
 
-  return `\`\`\`Stats ${now.getDate()}.${
-    now.getMonth() + 1
-  }.${now.getFullYear()}:
+  return `
+  \`\`\`Stats ${now.getDate()}.${now.getMonth() + 1}.${now.getFullYear()}:
       1) ${totalUsers} registered students
       2) ${beginnerCompletions} have completed the Beginner Tier
       3) ${intermediateCompletions} have completed the Intermediate Tier
       4) ${advancedCompletions} have completed the Advanced Tier
-      5) ${totalCompletions} have completed Building AI.\`\`\` `
+      5) ${totalCompletions} have completed Building AI.\`\`\`
+      `
 }
 
 const post = async () => {
