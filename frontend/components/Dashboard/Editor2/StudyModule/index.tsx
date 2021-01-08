@@ -21,12 +21,12 @@ import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
 import ModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
-import { yupResolver } from "@hookform/resolvers/yup"
 import { SubmitErrorHandler, useForm, FormProvider } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexes/AnchorContext"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { EditorContext } from "../EditorContext"
+import { customValidationResolver } from "/components/Dashboard/Editor2/common"
 
 const StudyModuleEdit = ({
   module,
@@ -50,11 +50,12 @@ const StudyModuleEdit = ({
   })
   const methods = useForm<StudyModuleFormValues>({
     defaultValues,
-    resolver: yupResolver(validationSchema),
+    resolver: customValidationResolver<StudyModuleFormValues>(validationSchema),
     mode: "onBlur",
   })
-  const { trigger } = methods
+  const { trigger, formState } = methods
 
+  console.log(formState)
   useEffect(() => {
     trigger()
   }, [])
@@ -106,7 +107,6 @@ const StudyModuleEdit = ({
 
   const onError: SubmitErrorHandler<StudyModuleFormValues> = useCallback(
     (errors: Record<string, any>, _?: any) => {
-      console.log("onError?", errors)
       const { anchorLink } = getFirstErrorAnchor(anchors, errors)
 
       setTimeout(() => {
@@ -118,12 +118,10 @@ const StudyModuleEdit = ({
   )
 
   const onDelete = useCallback(async (id: string) => {
-    /*    if (values.id) {
-      await deleteStudyModule({ variables: { id: values.id } })
-      Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
-        shallow: true,
-      })
-    }*/
+    await deleteStudyModule({ variables: { id } })
+    Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
+      shallow: true,
+    })
   }, [])
 
   const onCancel = useCallback(
@@ -149,7 +147,7 @@ const StudyModuleEdit = ({
           initialValues: defaultValues,
         }}
       >
-        <StudyModuleEditForm module={module} />
+        <StudyModuleEditForm />
       </EditorContext.Provider>
     </FormProvider>
   )

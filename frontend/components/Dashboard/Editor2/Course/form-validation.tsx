@@ -8,9 +8,9 @@ import {
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { ApolloClient, DocumentNode } from "@apollo/client"
-import { FormValues } from "/components/Dashboard/Editor/types"
 import { DateTime } from "luxon"
 import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
+import { testUnique } from "/components/Dashboard/Editor2/common"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,
@@ -79,70 +79,7 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
   course: undefined,
 }
 
-export const statuses = (t: Function) => [
-  {
-    value: CourseStatus.Upcoming,
-    label: t("courseUpcoming"),
-  },
-  {
-    value: CourseStatus.Active,
-    label: t("courseActive"),
-  },
-  {
-    value: CourseStatus.Ended,
-    label: t("courseEnded"),
-  },
-]
-
-export const languages = (t: Function) => [
-  {
-    value: "fi_FI",
-    label: t("courseFinnish"),
-  },
-  {
-    value: "en_US",
-    label: t("courseEnglish"),
-  },
-  {
-    value: "sv_SE",
-    label: t("courseSwedish"),
-  },
-]
-
 export const study_modules: { value: any; label: any }[] = []
-
-const testUnique = <T extends FormValues>(
-  valueField: keyof CourseFormValues,
-  getter: (values: T) => any
-  // field: keyof T
-) => function (this: Yup.TestContext, value?: any): boolean {
-  const {
-    context,
-    path,
-  }: { context?: any; path?: string | undefined } = this.options
-
-  if (!context) {
-    return true
-  }
-
-  const fieldValues = (context.values as CourseFormValues)[valueField]
-
-  if (!value || value === "" || !Array.isArray(fieldValues)) {
-    return true // previous should have caught the empty
-  }
-
-  const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
-  const currentIndex =
-    currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-  const otherValues = ((fieldValues as unknown) as T[])
-    .filter(
-      (c: T, index: number) =>
-        getter(c) !== "" && index !== currentIndex,
-    )
-    .map((c: T) => getter(c))
-
-  return otherValues.indexOf(value) === -1
-}
 
 const courseEditSchema = ({
   client,
@@ -155,7 +92,6 @@ const courseEditSchema = ({
   initialSlug: string | null
   t: (key: any) => string
 }) => {
-
   return Yup.object().shape({
     name: Yup.string().required(t("validationRequired")),
     new_slug: Yup.string()
@@ -168,23 +104,20 @@ const courseEditSchema = ({
         validateSlug({ client, checkSlug, initialSlug }),
       ),
     status: Yup.mixed()
-      .oneOf(statuses(t).map((s) => s.value))
+      .oneOf(Object.keys(CourseStatus))
       .required(t("validationRequired")),
     course_translations: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
           .required(t("validationRequired"))
-          .oneOf(
-            languages(t).map((l) => l.value),
-            t("validationValidLanguageCode"),
-          )
+          .oneOf(["fi_FI", "en_US", "sv_SE"], t("validationValidLanguageCode"))
           .test(
             "unique",
             t("validationOneTranslation"),
-            testUnique<CourseTranslationFormValues>(
+            testUnique<CourseFormValues, CourseTranslationFormValues>(
               "course_translations",
-              (value) => value.language
+              (value) => value.language,
             ),
           ),
         description: Yup.string(),
@@ -204,7 +137,10 @@ const courseEditSchema = ({
           .test(
             "unique",
             t("validationTwoVariants"),
-            testUnique<CourseVariantFormValues>("course_variants", (v) => v.slug),
+            testUnique<CourseFormValues, CourseVariantFormValues>(
+              "course_variants",
+              (v) => v.slug,
+            ),
           ),
         description: Yup.string(),
       }),
@@ -218,7 +154,10 @@ const courseEditSchema = ({
           .test(
             "unique",
             t("validationTwoAliases"),
-            testUnique<CourseAliasFormValues>("course_aliases", (v) => v.course_code),
+            testUnique<CourseFormValues, CourseAliasFormValues>(
+              "course_aliases",
+              (v) => v.course_code,
+            ),
           ),
       }),
     ),
@@ -266,6 +205,7 @@ const courseEditSchema = ({
       .positive(),
   })
 }
+
 const validateSlug = ({
   checkSlug,
   client,

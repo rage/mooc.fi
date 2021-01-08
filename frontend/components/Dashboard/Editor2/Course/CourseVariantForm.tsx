@@ -18,7 +18,7 @@ export default function CourseVariantForm() {
       initialValues={initialVariant}
       removeConfirmationDescription={t("confirmationRemoveVariant")}
       noFieldsDescription={t("courseNoVariants")}
-      addCondition={(item) => item.slug !== ""}
+      addCondition={(values) => values[values.length - 1].slug !== ""}
       removeWithoutConfirmationCondition={(item) =>
         !item._id && item.slug === ""
       }

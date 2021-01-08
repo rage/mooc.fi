@@ -18,7 +18,7 @@ export default function CourseAliasForm() {
       initialValues={initialAlias}
       removeConfirmationDescription={t("confirmationRemoveAlias")}
       noFieldsDescription={t("courseNoAliases")}
-      addCondition={(item) => item.course_code !== ""}
+      addCondition={(values) => values[values.length - 1].course_code !== ""}
       removeWithoutConfirmationCondition={(item) =>
         !item._id && item.course_code === ""
       }
