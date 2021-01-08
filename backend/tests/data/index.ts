@@ -196,6 +196,22 @@ export const users: Prisma.UserCreateInput[] = [
     upstream_id: 1,
     username: "existing_user",
   },
+  {
+    id: "20000000000000000000000000000103",
+    administrator: false,
+    email: "f@mail.com",
+    upstream_id: 2,
+    username: "second_user",
+  },
+  {
+    id: "20000000000000000000000000000104",
+    administrator: false,
+    email: "g@mail.com",
+    upstream_id: 3,
+    username: "third_user",
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
 ]
 
 export const completions: Prisma.CompletionCreateInput[] = [
