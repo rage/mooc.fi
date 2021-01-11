@@ -11,6 +11,7 @@ import styled from "styled-components"
 import { useAnchorContext } from "/contexes/AnchorContext"
 import * as Yup from "yup"
 import { FormValues } from "/components/Dashboard/Editor2/types"
+import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
 export const FormSubtitle = styled(Typography)<any>`
   padding: 20px 0px 20px 0px;
@@ -32,6 +33,10 @@ export const AdjustingAnchorLink = styled.a<{ id: string }>`
   position: relative;
   top: -120px;
   visibliity: hidden;
+`
+
+export const ButtonWithWhiteText = styled(StyledButton)`
+  color: white;
 `
 
 interface EnumeratingAnchorProps {

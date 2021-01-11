@@ -5,14 +5,15 @@ import {
   languages,
   initialTranslation,
 } from "/components/Dashboard/Editor2/StudyModule/form-validation"
+import { EntryContainer } from "/components/Surfaces/EntryContainer"
+import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+import React from "react"
 import {
   ControlledFieldArrayList,
   ControlledHiddenField,
   ControlledSelect,
   ControlledTextField,
-} from "../FormFields"
-import { EntryContainer } from "/components/Surfaces/EntryContainer"
-import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
+} from "/components/Dashboard/Editor2/Common/Fields"
 
 export default function StudyModuleTranslationsForm() {
   const t = useTranslator(StudyModuleTranslations)
@@ -24,12 +25,16 @@ export default function StudyModuleTranslationsForm() {
         name="study_module_translations"
         label={""}
         initialValues={initialTranslation}
-        removeConfirmationDescription={t("moduleConfirmationContent")}
-        noFieldsDescription={t("moduleAtLeastOneTranslation")}
-        addCondition={(values) => values.length < _languages.length}
-        removeWithoutConfirmationCondition={() => true}
+        texts={{
+          description: t("moduleConfirmationContent"),
+          noFields: t("moduleAtLeastOneTranslation"),
+        }}
+        conditions={{
+          add: (values) => values.length < _languages.length,
+          remove: () => true,
+        }}
         render={(item, index) => (
-          <LanguageEntry item key={`translation-${index}`}>
+          <LanguageEntry item>
             <EntryContainer elevation={2}>
               <ControlledHiddenField name="_id" defaultValue={item._id} />
               <ControlledSelect

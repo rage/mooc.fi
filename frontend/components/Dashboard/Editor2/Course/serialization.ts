@@ -43,14 +43,23 @@ export const toCourseForm = ({
         order: course.order ?? undefined,
         study_module_order: course.study_module_order ?? undefined,
         status: course.status ?? CourseStatus.Upcoming,
-        course_translations: (course.course_translations || []).map((c) => ({
-          ...omit(c, ["__typename", "id"]),
-          _id: c.id ?? undefined,
-          link: c.link || "",
-          open_university_course_link: course?.open_university_registration_links?.find(
+        course_translations: (course.course_translations || []).map((c) => {
+          const open_university_course_link = course?.open_university_registration_links?.find(
             (l) => l.language === c.language,
-          ),
-        })),
+          )
+
+          return {
+            ...omit(c, ["__typename", "id"]),
+            _id: c.id ?? undefined,
+            link: c.link ?? "",
+            open_university_course_link: {
+              _id: open_university_course_link?.id ?? undefined,
+              language: open_university_course_link?.language ?? undefined,
+              link: open_university_course_link?.link ?? "",
+              course_code: open_university_course_link?.course_code ?? "",
+            },
+          }
+        }),
         study_modules: modules?.reduce(
           (acc, module) => ({
             ...acc,
@@ -91,6 +100,7 @@ export const toCourseForm = ({
         points_needed: course?.points_needed ?? undefined,
         // TODO: fix
         new_photo: null, // course?.photo ?? null,
+        photo: course?.photo ?? "",
       }
     : initialValues
 }
@@ -109,6 +119,7 @@ export const fromCourseForm = ({
     values?.course_translations?.map((c: CourseTranslationFormValues) => ({
       ...omit(c, ["open_university_course_link", "_id"]),
       link: c.link || "",
+      description: c.description || "",
       id: !c._id || c._id === "" ? undefined : c._id,
     })) ?? []
 
@@ -149,7 +160,7 @@ export const fromCourseForm = ({
           language: c.language ?? "",
           id: undefined,
           link: c.open_university_course_link.link?.trim(),
-          course_code: c.open_university_course_link.course_code?.trim(),
+          course_code: c.open_university_course_link.course_code?.trim() ?? "",
         }
       }
 
@@ -157,7 +168,7 @@ export const fromCourseForm = ({
         ...omit(prevLink, ["__typename", "_id"]),
         id: !c._id || c._id === "" ? undefined : c._id,
         link: c.open_university_course_link.link?.trim(),
-        course_code: c.open_university_course_link.course_code.trim(),
+        course_code: c.open_university_course_link.course_code.trim() ?? "",
       }
     })
     .filter((v) => !!v)
@@ -194,7 +205,7 @@ export const fromCourseForm = ({
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,
     base64: !isProduction,
-    photo: getIn(values, "photo.id"),
+    photo: typeof values?.photo === "string" ? values.photo : values?.photo?.id,
     // despite orders being numbers in the field typings,
     // these come back as an empty string without TS yelling at you
     order: (values.order as unknown) === "" ? null : values.order,

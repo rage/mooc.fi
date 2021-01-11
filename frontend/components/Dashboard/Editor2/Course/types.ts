@@ -25,9 +25,7 @@ export interface CourseFormValues extends FormValues {
   study_module_start_point: boolean
   status: CourseStatus
   course_translations: CourseTranslationFormValues[]
-  open_university_registration_links?:
-    | CourseDetails_course_open_university_registration_links[]
-    | null
+  open_university_registration_links?: OpenUniversityRegistrationValues[] | null
   study_modules?: { [key: string]: boolean } | null
   course_variants: CourseVariantFormValues[]
   course_aliases: CourseAliasFormValues[]
@@ -59,15 +57,15 @@ export interface CourseTranslationFormValues extends FormValues {
   link?: string | null
   course?: string
   // open_university_course_code?: string
-  open_university_course_link?: CourseDetails_course_open_university_registration_links
+  open_university_course_link?: OpenUniversityRegistrationValues
 }
 
 export interface OpenUniversityRegistrationValues extends FormValues {
   _id?: string
   course_code: string
-  language: string
-  course: string | undefined
-  link?: string | undefined
+  language?: string
+  //  course: string | undefined
+  link?: string | null
 }
 
 export interface CourseVariantFormValues extends FormValues {

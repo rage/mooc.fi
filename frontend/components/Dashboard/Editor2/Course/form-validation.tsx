@@ -10,7 +10,7 @@ import {
 import { ApolloClient, DocumentNode } from "@apollo/client"
 import { DateTime } from "luxon"
 import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
-import { testUnique } from "/components/Dashboard/Editor2/common"
+import { testUnique } from "/components/Dashboard/Editor2/Common"
 
 export const initialTranslation: CourseTranslationFormValues = {
   _id: undefined,
@@ -19,9 +19,10 @@ export const initialTranslation: CourseTranslationFormValues = {
   description: "",
   link: "",
   open_university_course_link: {
+    _id: undefined,
     course_code: "",
     link: "",
-  } as CourseDetails_course_open_university_registration_links,
+  },
 }
 
 export const initialVariant: CourseVariantFormValues = {
@@ -36,7 +37,7 @@ export const initialAlias: CourseAliasFormValues = {
 }
 
 export const initialValues: CourseFormValues = {
-  id: null,
+  id: undefined,
   name: "",
   slug: "",
   new_slug: "",

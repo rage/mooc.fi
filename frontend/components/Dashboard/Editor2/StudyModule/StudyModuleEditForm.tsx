@@ -1,12 +1,14 @@
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
 import { StudyModuleFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import StudyModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 import EditorContainer from "../EditorContainer"
 import { useFormContext } from "react-hook-form"
-import { FormSubtitle } from "../common"
-import { ControlledHiddenField, ControlledTextField } from "../FormFields"
+import { FormSubtitle } from "/components/Dashboard/Editor2/Common"
+import {
+  ControlledTextField,
+  ControlledHiddenField,
+} from "/components/Dashboard/Editor2/Common/Fields"
 import styled from "styled-components"
 import { useEffect, useState } from "react"
 import { Typography } from "@material-ui/core"
@@ -30,12 +32,7 @@ const pixel =
 
 export default function StudyModuleEditForm() {
   const t = useTranslator(StudyModulesTranslations)
-  const {
-    onSubmit,
-    onError,
-    initialValues,
-  } = useEditorContext<StudyModuleFormValues>()
-  const { handleSubmit, watch, formState } = useFormContext()
+  const { watch } = useFormContext()
 
   const [imageFilename, setImageFilename] = useState(pixel)
   const [imageError, setImageError] = useState("")

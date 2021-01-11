@@ -2,10 +2,10 @@ import { CourseVariantFormValues } from "/components/Dashboard/Editor2/Course/ty
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import {
+  ControlledTextField,
   ControlledFieldArrayList,
   ControlledHiddenField,
-  ControlledTextField,
-} from "/components/Dashboard/Editor2/FormFields"
+} from "/components/Dashboard/Editor2/Common/Fields"
 import { initialVariant } from "/components/Dashboard/Editor2/Course/form-validation"
 
 export default function CourseVariantForm() {
@@ -16,12 +16,14 @@ export default function CourseVariantForm() {
       name="course_variants"
       label={t("courseVariants")}
       initialValues={initialVariant}
-      removeConfirmationDescription={t("confirmationRemoveVariant")}
-      noFieldsDescription={t("courseNoVariants")}
-      addCondition={(values) => values[values.length - 1].slug !== ""}
-      removeWithoutConfirmationCondition={(item) =>
-        !item._id && item.slug === ""
-      }
+      texts={{
+        description: t("confirmationRemoveVariant"),
+        noFields: t("courseNoVariants"),
+      }}
+      conditions={{
+        add: (values) => values[values.length - 1].slug !== "",
+        remove: (item) => !item._id && item.slug === "",
+      }}
       render={(item, index) => (
         <>
           <ControlledHiddenField

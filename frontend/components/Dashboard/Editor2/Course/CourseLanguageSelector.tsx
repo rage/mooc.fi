@@ -1,12 +1,14 @@
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
-import { FieldArray } from "formik"
 import styled from "styled-components"
-import { Button, ButtonGroup } from "@material-ui/core"
+import { Button, ButtonGroup, useMediaQuery } from "@material-ui/core"
 import { initialTranslation } from "./form-validation"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import { useFieldArray, useFormContext } from "react-hook-form"
 import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
+import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
+import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
+import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;
@@ -14,6 +16,7 @@ const ButtonGroupContainer = styled(ButtonGroup)`
   display: flex;
   margin-bottom: 1rem;
   margin-top: 1 rem;
+  justify-content: space-around;
 `
 interface ButtonProps {
   selected: boolean
@@ -22,9 +25,15 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
   width: 33%;
   background-color: #378170;
   margin: 0.5rem;
-  padding: 3rem;
   color: white;
-  font-size: 21px;
+  @media (max-width: 600px) {
+    font-size: 16px;
+    padding: 2rem;
+  }
+  @media (min-width: 600px) {
+    font-size: 21px;
+    padding: 3rem;
+  }
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5),
     inset 0px 0px 2px rgba(154, 147, 113, 0.95);
   border: 1px solid #378170;
@@ -49,13 +58,13 @@ const CourseLanguageSelector = (props: LanguageSelectorProps) => {
   const { selectedLanguage, setSelectedLanguage } = props
 
   const { control } = useFormContext()
+
   const { fields, append, remove } = useFieldArray<CourseTranslationFormValues>(
     {
       control,
       name: "course_translations",
     },
   )
-
   const t = useTranslator(CoursesTranslations)
 
   return (

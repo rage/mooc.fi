@@ -2,10 +2,10 @@ import { CourseAliasFormValues } from "/components/Dashboard/Editor2/Course/type
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import {
+  ControlledTextField,
   ControlledFieldArrayList,
   ControlledHiddenField,
-  ControlledTextField,
-} from "/components/Dashboard/Editor2/FormFields"
+} from "/components/Dashboard/Editor2/Common/Fields"
 import { initialAlias } from "/components/Dashboard/Editor2/Course/form-validation"
 
 export default function CourseAliasForm() {
@@ -16,12 +16,14 @@ export default function CourseAliasForm() {
       name="course_aliases"
       label={t("courseAliases")}
       initialValues={initialAlias}
-      removeConfirmationDescription={t("confirmationRemoveAlias")}
-      noFieldsDescription={t("courseNoAliases")}
-      addCondition={(values) => values[values.length - 1].course_code !== ""}
-      removeWithoutConfirmationCondition={(item) =>
-        !item._id && item.course_code === ""
-      }
+      texts={{
+        description: t("confirmationRemoveAlias"),
+        noFields: t("courseNoAliases"),
+      }}
+      conditions={{
+        add: (values) => values[values.length - 1].course_code !== "",
+        remove: (item) => !item._id && item.course_code === "",
+      }}
       render={(item, index) => (
         <>
           <ControlledHiddenField

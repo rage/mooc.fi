@@ -26,7 +26,7 @@ import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useAnchorContext } from "/contexes/AnchorContext"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { EditorContext } from "../EditorContext"
-import { customValidationResolver } from "/components/Dashboard/Editor2/common"
+import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
 
 const StudyModuleEdit = ({
   module,

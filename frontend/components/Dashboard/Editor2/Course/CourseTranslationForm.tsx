@@ -1,16 +1,15 @@
-import { useFormContext, useFieldArray } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import { Typography } from "@material-ui/core"
 import {
   ControlledTextField,
   ControlledHiddenField,
-} from "/components/Dashboard/Editor2/FormFields"
+} from "/components/Dashboard/Editor2/Common/Fields"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import styled from "styled-components"
 import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { EntryContainer } from "/components/Surfaces/EntryContainer"
-import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
+import { EntryContainer } from "/components/Surfaces/EntryContainer"
 
 const LanguageVersionTitle = styled(Typography)<any>`
   margin-bottom: 1.5rem;
@@ -50,7 +49,9 @@ export default function CourseTranslationForm() {
       <CourseTranslationList>
         {fields.length ? (
           fields.map((item, index) => (
-            <CourseTranslationItem key={`translation-${item._id}`}>
+            <CourseTranslationItem
+              key={`translation-${item.language ?? index}`}
+            >
               <LanguageVersionTitle component="h2" variant="h3" align="left">
                 {`${t("courseLanguageVersion")}: ${
                   mapLangToLanguage[item.language ?? ""]
@@ -67,8 +68,8 @@ export default function CourseTranslationForm() {
               <ControlledTextField
                 name={`course_translations[${index}].name`}
                 label={t("courseName")}
-                defaultValue={item.name}
                 required={true}
+                defaultValue={item.name}
               />
               <ControlledTextField
                 name={`course_translations[${index}].description`}
@@ -79,6 +80,10 @@ export default function CourseTranslationForm() {
                 name={`course_translations[${index}].link`}
                 label={t("courseLink")}
                 defaultValue={item.link}
+              />
+              <ControlledHiddenField
+                name={`course_translations[${index}].open_university_course_link._id`}
+                defaultValue={item.open_university_course_link?._id ?? ""}
               />
               <ControlledTextField
                 name={`course_translations[${index}].open_university_course_link.course_code`}
