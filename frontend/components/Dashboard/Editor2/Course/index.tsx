@@ -27,10 +27,10 @@ import { FormStatus } from "/components/Dashboard/Editor2/types"
 import CourseEditForm from "./CourseEditForm"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
-import { customValidationResolver } from "/components/Dashboard/Editor2/common"
+import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
 
 interface CourseEditorProps {
-  course: CourseDetails_course
+  course?: CourseDetails_course
   courses?: CourseEditorCourses_courses[]
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
@@ -79,6 +79,7 @@ export default function CourseEditor({
     ],
   })
 
+  console.log("would use default", defaultValues)
   const onSubmit = useCallback(async (values: CourseFormValues, _?: any) => {
     const newCourse = !values.id
     const mutationVariables = fromCourseForm({

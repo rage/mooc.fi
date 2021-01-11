@@ -1,10 +1,12 @@
 import React from "react"
-import { FormSubtitle } from "/components/Dashboard/Editor2/common"
+import {
+  FormSubtitle,
+  FormFieldGroup,
+} from "/components/Dashboard/Editor2/Common"
 import {
   ControlledDatePicker,
   ControlledTextField,
-  FormFieldGroup,
-} from "/components/Dashboard/Editor2/FormFields"
+} from "/components/Dashboard/Editor2/Common/Fields"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 

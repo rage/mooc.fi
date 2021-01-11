@@ -4,7 +4,7 @@ import {
   StudyModuleTranslationFormValues,
 } from "./types"
 import { ApolloClient, DocumentNode } from "@apollo/client"
-import { testUnique } from "/components/Dashboard/Editor2/common"
+import { testUnique } from "/components/Dashboard/Editor2/Common"
 
 export const initialTranslation: StudyModuleTranslationFormValues = {
   _id: undefined,

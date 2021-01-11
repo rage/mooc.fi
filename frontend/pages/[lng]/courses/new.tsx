@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { WideContainer } from "/components/Container"
 import { useQuery } from "@apollo/client"
-import CourseEdit from "/components/Dashboard/Editor/Course"
+// import CourseEdit from "/components/Dashboard/Editor/Course"
+import CourseEdit2 from "/components/Dashboard/Editor2/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
@@ -93,9 +94,14 @@ const NewCourse = () => {
         {studyModulesLoading || coursesLoading || courseLoading ? (
           <FormSkeleton />
         ) : (
-          <CourseEdit
+          /*<CourseEdit
+              {...(clone ? { course: clonedCourse } : {})}
+              modules={studyModulesData?.study_modules?.filter(notEmpty)}
+              courses={coursesData?.courses?.filter(notEmpty)}
+            />*/
+          <CourseEdit2
             {...(clone ? { course: clonedCourse } : {})}
-            modules={studyModulesData?.study_modules?.filter(notEmpty)}
+            studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
             courses={coursesData?.courses?.filter(notEmpty)}
           />
         )}
