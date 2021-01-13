@@ -6,7 +6,7 @@ export default function useDebounce<T>(
 ): [T, (cancelValue?: T) => void] {
   const [debouncedValue, setDebouncedValue] = useState(value)
 
-  let handler: number
+  let handler: NodeJS.Timeout
 
   useEffect(() => {
     handler = setTimeout(() => setDebouncedValue(value), delay)
