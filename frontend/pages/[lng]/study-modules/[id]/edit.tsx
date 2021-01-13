@@ -55,7 +55,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
   const id = useQueryParameter("id")
 
-  let redirectTimeout: number | null = null
+  let redirectTimeout: NodeJS.Timeout | null = null
 
   const { data, loading, error } = useQuery<StudyModuleDetails>(
     StudyModuleQuery,
