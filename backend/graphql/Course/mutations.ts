@@ -9,7 +9,7 @@ import { Context } from "../../context"
 import { isAdmin } from "../../accessControl"
 import { Course } from "@prisma/client"
 
-import { extendType, arg, idArg, stringArg, nonNull } from "@nexus/schema"
+import { extendType, arg, idArg, stringArg, nonNull } from "nexus"
 import { convertUpdate } from "../../util/db-functions"
 /* const shallowCompare = (obj1: object, obj2: object) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&

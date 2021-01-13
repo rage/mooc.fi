@@ -1,6 +1,6 @@
 import { GraphQLUpload } from "apollo-server-core"
 import type { FileUpload } from "graphql-upload"
-import { scalarType } from "@nexus/schema"
+import { scalarType } from "nexus"
 
 export type UploadRoot = Promise<FileUpload>
 

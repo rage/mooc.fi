@@ -1,11 +1,4 @@
-import {
-  objectType,
-  extendType,
-  idArg,
-  arg,
-  intArg,
-  nonNull,
-} from "@nexus/schema"
+import { objectType, extendType, idArg, arg, intArg, nonNull } from "nexus"
 import { isAdmin } from "../accessControl"
 
 export const ExerciseCompletion = objectType({

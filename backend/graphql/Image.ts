@@ -1,11 +1,4 @@
-import {
-  objectType,
-  extendType,
-  arg,
-  booleanArg,
-  idArg,
-  nonNull,
-} from "@nexus/schema"
+import { objectType, extendType, arg, booleanArg, idArg, nonNull } from "nexus"
 import {
   uploadImage as uploadStorageImage,
   deleteImage as deleteStorageImage,

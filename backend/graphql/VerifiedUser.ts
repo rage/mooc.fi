@@ -1,10 +1,4 @@
-import {
-  objectType,
-  inputObjectType,
-  extendType,
-  arg,
-  nonNull,
-} from "@nexus/schema"
+import { objectType, inputObjectType, extendType, arg, nonNull } from "nexus"
 import { ForbiddenError, AuthenticationError } from "apollo-server-core"
 import { Context } from "../context"
 
