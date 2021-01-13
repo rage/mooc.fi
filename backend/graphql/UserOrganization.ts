@@ -2,7 +2,7 @@ import { ForbiddenError } from "apollo-server-core"
 import { Context } from "../context"
 import { Role, or, isVisitor, isAdmin } from "../accessControl"
 import { OrganizationRole } from "@prisma/client"
-import { objectType, extendType, idArg, arg, nonNull } from "@nexus/schema"
+import { objectType, extendType, idArg, arg, nonNull } from "nexus"
 
 export const UserOrganization = objectType({
   name: "UserOrganization",

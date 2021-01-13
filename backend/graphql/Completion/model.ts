@@ -1,5 +1,5 @@
 import { ForbiddenError } from "apollo-server-core"
-import { objectType } from "@nexus/schema"
+import { objectType } from "nexus"
 import { UserCourseProgress } from "@prisma/client"
 
 export const Completion = objectType({

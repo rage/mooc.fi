@@ -8,7 +8,7 @@ import {
   floatArg,
   nonNull,
   list,
-} from "@nexus/schema"
+} from "nexus"
 import { UserInputError } from "apollo-server-core"
 
 import { isAdmin } from "../accessControl"

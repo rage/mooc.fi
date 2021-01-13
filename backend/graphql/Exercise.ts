@@ -7,7 +7,7 @@ import {
   stringArg,
   nonNull,
   nullable,
-} from "@nexus/schema"
+} from "nexus"
 import { Prisma } from "@prisma/client"
 import { isAdmin } from "../accessControl"
 import { filterNull } from "../util/db-functions"

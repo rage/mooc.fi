@@ -1,4 +1,4 @@
-import { objectType, stringArg, intArg, nullable } from "@nexus/schema"
+import { objectType, stringArg, intArg, nullable } from "nexus"
 import { isAdmin } from "../../accessControl"
 
 export const Course = objectType({

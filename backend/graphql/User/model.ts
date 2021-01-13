@@ -5,7 +5,7 @@ import {
   nonNull,
   nullable,
   booleanArg,
-} from "@nexus/schema"
+} from "nexus"
 
 export const User = objectType({
   name: "User",

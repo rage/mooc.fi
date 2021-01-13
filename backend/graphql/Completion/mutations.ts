@@ -7,7 +7,7 @@ import {
   nonNull,
   nullable,
   stringArg,
-} from "@nexus/schema"
+} from "nexus"
 
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
