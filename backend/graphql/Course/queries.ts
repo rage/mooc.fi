@@ -134,7 +134,14 @@ export const CourseQueries = extendType({
         }
         if (!hidden) {
           searchQuery.push({
-            hidden: { not: true },
+            OR: [
+              {
+                hidden: false,
+              },
+              {
+                hidden: null,
+              },
+            ],
           })
         }
         if (handledBy) {
