@@ -113,7 +113,7 @@ export const CompletionMutations = extendType({
             completion_date: o.completion_date,
             certificate_id: null,
             eligible_for_ects: null,
-            tier: o.tier ?? null
+            tier: o.tier ?? null,
           }
         })
 
