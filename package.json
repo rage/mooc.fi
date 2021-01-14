@@ -13,7 +13,6 @@
     "@typescript-eslint/parser": "^4.13.0",
     "eslint": "^7.17.0",
     "eslint-plugin-eslint-custom-rules": "file:eslint-custom-rules",
-    "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^4.3.7",
     "jest-junit": "^12.0.0",
