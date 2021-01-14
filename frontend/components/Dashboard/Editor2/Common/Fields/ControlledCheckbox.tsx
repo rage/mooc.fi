@@ -1,12 +1,13 @@
 import { useFormContext } from "react-hook-form"
-import { FormControlLabel, Checkbox } from "@material-ui/core"
+import { FormControlLabel, Checkbox, Tooltip } from "@material-ui/core"
 import {
   ControlledFieldProps,
   FieldController,
 } from "/components/Dashboard/Editor2/Common/Fields"
+import HelpIcon from "@material-ui/icons/Help"
 
 export function ControlledCheckbox(props: ControlledFieldProps) {
-  const { name, label } = props
+  const { name, label, tip } = props
   const { setValue } = useFormContext()
 
   const onChange = (_: any, checked: boolean) => setValue(name, checked)
@@ -16,14 +17,21 @@ export function ControlledCheckbox(props: ControlledFieldProps) {
       name={name}
       label={label}
       renderComponent={({ value }) => (
-        <FormControlLabel
-          key={name}
-          label={label}
-          value={value}
-          checked={Boolean(value)}
-          onChange={onChange}
-          control={<Checkbox />}
-        />
+        <div>
+          <FormControlLabel
+            key={name}
+            label={label}
+            value={value}
+            checked={Boolean(value)}
+            onChange={onChange}
+            control={<Checkbox />}
+          />
+          {tip ? (
+            <Tooltip title={tip} style={{ verticalAlign: "middle" }}>
+              <HelpIcon />
+            </Tooltip>
+          ) : null}
+        </div>
       )}
     />
   )

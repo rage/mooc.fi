@@ -12,7 +12,7 @@ import { useTranslator } from "/util/useTranslator"
 import { TextField, Tooltip, IconButton } from "@material-ui/core"
 import HistoryIcon from "@material-ui/icons/History"
 import HelpIcon from "@material-ui/icons/Help"
-
+import { get } from "lodash"
 export interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string
   disabled?: boolean
@@ -34,10 +34,12 @@ export function ControlledTextField(props: ControlledTextFieldProps) {
     setValue(name, e.target.value, { shouldDirty: true })
   }
 
+  const initialValue = get(initialValues, name)
+
   return (
     <FieldController
       {...omit(props, ["revertable", "validateOtherFields"])}
-      style={{ marginTop: "1.5rem" }}
+      style={{ marginBottom: "1.5rem" }}
       renderComponent={({ onBlur, value }) => (
         <>
           <TextField
@@ -58,17 +60,20 @@ export function ControlledTextField(props: ControlledTextFieldProps) {
                 <>
                   {revertable ? (
                     <Tooltip title={t("editorRevert")}>
-                      <IconButton
-                        aria-label={t("editorRevert")}
-                        onClick={() =>
-                          reset({
-                            ...getValues(),
-                            [name]: (initialValues as any)[name],
-                          })
-                        }
-                      >
-                        <HistoryIcon />
-                      </IconButton>
+                      <span>
+                        <IconButton
+                          aria-label={t("editorRevert")}
+                          disabled={getValues(name) === initialValue}
+                          onClick={() =>
+                            reset({
+                              ...getValues(),
+                              [name]: initialValue,
+                            })
+                          }
+                        >
+                          <HistoryIcon />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   ) : null}
                   {tip ? (

@@ -22,13 +22,15 @@ export default function CourseInfoForm() {
         <ControlledTextField
           name="name"
           label={t("courseName")}
-          required={true}
+          required
+          revertable
         />
         <ControlledTextField
           name="new_slug"
           label={t("courseSlug")}
-          required={true}
-          tip="A helpful text"
+          required
+          revertable
+          tip={t("helpSlug")}
         />
         <ControlledTextField name="ects" label={t("courseECTS")} />
       </FormFieldGroup>

@@ -68,18 +68,23 @@ export default function CourseTranslationForm() {
               <ControlledTextField
                 name={`course_translations[${index}].name`}
                 label={t("courseName")}
-                required={true}
+                required
                 defaultValue={item.name}
+                revertable
               />
               <ControlledTextField
                 name={`course_translations[${index}].description`}
                 label={t("courseDescription")}
                 defaultValue={item.description}
+                type="textarea"
+                rows={5}
+                revertable
               />
               <ControlledTextField
                 name={`course_translations[${index}].link`}
                 label={t("courseLink")}
                 defaultValue={item.link}
+                revertable
               />
               <ControlledHiddenField
                 name={`course_translations[${index}].open_university_course_link._id`}
@@ -91,11 +96,13 @@ export default function CourseTranslationForm() {
                 defaultValue={
                   item.open_university_course_link?.course_code ?? ""
                 }
+                revertable
               />
               <ControlledTextField
                 name={`course_translations[${index}].open_university_course_link.link`}
                 label={t("courseOpenLink")}
                 defaultValue={item.open_university_course_link?.link ?? ""}
+                revertable
               />
             </CourseTranslationItem>
           ))

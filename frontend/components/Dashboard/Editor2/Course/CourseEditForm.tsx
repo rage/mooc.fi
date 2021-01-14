@@ -137,15 +137,18 @@ export default function CourseEditForm({
             <ControlledCheckbox
               name="start_point"
               label={t("courseStartPoint")}
+              tip={t("helpStartPoint")}
             />
             <ControlledCheckbox name="hidden" label={t("courseHidden")} />
             <ControlledCheckbox
               name="has_certificate"
               label={t("courseHasCertificate")}
+              tip={t("helpHasCertificate")}
             />
             <ControlledCheckbox
               name="upcoming_active_link"
               label={t("courseUpcomingActiveLink")}
+              tip={t("helpUpcomingActiveLink")}
             />
           </FormControl>
         </FormFieldGroup>
@@ -156,12 +159,14 @@ export default function CourseEditForm({
             label={t("courseOrder")}
             type="number"
             defaultValue=""
+            tip={t("helpOrder")}
           />
           <ControlledTextField
             name="study_module_order"
             label={t("courseModuleOrder")}
             type="number"
             defaultValue=""
+            tip={t("helpModuleOrder")}
           />
         </FormFieldGroup>
       </TabSection>
@@ -173,20 +178,24 @@ export default function CourseEditForm({
             label={t("courseExerciseCompletionsNeeded")}
             type="number"
             defaultValue=""
+            tip={t("helpExerciseCompletionsNeeded")}
           />
           <ControlledTextField
             name="points_needed"
             label={t("coursePointsNeeded")}
             type="number"
             defaultValue=""
+            tip={t("helpPointsNeeded")}
           />
           <ControlledCheckbox
             name="automatic_completions"
             label={t("courseAutomaticCompletions")}
+            tip={t("helpAutomaticCompletions")}
           />
           <ControlledCheckbox
             name="automatic_completions_eligible_for_ects"
             label={t("courseAutomaticCompletionsEligibleForEcts")}
+            tip={t("helpCourseAutomaticCompletionsEligibleForEcts")}
           />
         </FormFieldGroup>
         {enableSuperSecret ? (
