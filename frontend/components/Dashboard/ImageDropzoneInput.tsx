@@ -35,6 +35,7 @@ const DropzoneContainer = styled.div<any>`
     cursor: pointer;
     border-color: #00a000;
   }
+  justify-content: center;
 `
 
 interface MessageProps {

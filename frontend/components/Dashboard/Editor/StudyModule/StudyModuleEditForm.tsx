@@ -293,7 +293,7 @@ const StudyModuleEditForm = ({
   onDelete,
 }: {
   module: StudyModuleFormValues
-  validationSchema: Yup.ObjectSchema
+  validationSchema: Yup.ObjectSchema<any>
   onSubmit: (
     values: StudyModuleFormValues,
     FormikHelpers: FormikHelpers<StudyModuleFormValues>,
