@@ -13,6 +13,10 @@ import { CourseEditorCourses_courses } from "/static/types/generated/CourseEdito
 import { useState } from "react"
 import ImportPhotoDialog from "./ImportPhotoDialog"
 import { useLanguageContext } from "/contexes/LanguageContext"
+import {
+  FormSubtitle,
+  FormFieldGroup,
+} from "/components/Dashboard/Editor2/Common"
 
 interface CourseImageFormProps {
   courses?: CourseEditorCourses_courses[]
@@ -64,7 +68,10 @@ export default function CourseImageForm({ courses }: CourseImageFormProps) {
       .sort((a, b) => (a.name < b.name ? -1 : 1)) ?? []
 
   return (
-    <>
+    <FormFieldGroup>
+      <FormSubtitle variant="h6" component="h3" align="center">
+        {t("coursePhoto")}
+      </FormSubtitle>
       <ControlledHiddenField
         name="thumbnail"
         defaultValue={watch("thumbnail") ?? ""}
@@ -94,6 +101,6 @@ export default function CourseImageForm({ courses }: CourseImageFormProps) {
         onClose={() => setDialogOpen(false)}
         courses={coursesWithPhotos}
       />
-    </>
+    </FormFieldGroup>
   )
 }

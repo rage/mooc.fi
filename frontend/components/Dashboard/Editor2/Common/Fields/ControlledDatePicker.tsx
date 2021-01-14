@@ -22,7 +22,7 @@ export function ControlledDatePicker(props: ControlledFieldProps) {
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <FieldController
         {...omit(props, "validateOtherFields")}
-        style={{ marginTop: "1.5rem" }}
+        style={{ marginBottom: "1.5rem" }}
         renderComponent={() => (
           <DatePicker
             value={watch(name)}
