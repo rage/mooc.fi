@@ -42,7 +42,6 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
   const t = useTranslator(CoursesTranslations)
   const {
     name,
-    label,
     render,
     initialValues,
     conditions,

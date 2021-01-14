@@ -35,6 +35,7 @@ import CourseVariantForm from "/components/Dashboard/Editor2/Course/CourseVarian
 import CourseAliasForm from "/components/Dashboard/Editor2/Course/CourseAliasForm"
 import UserCourseSettingsVisibilityForm from "/components/Dashboard/Editor2/Course/UserCourseSettingsVisibllityForm"
 import CourseInfoForm from "./CourseInfoForm"
+import CourseImageForm from "./CourseImageForm"
 
 const SelectLanguageFirstCover = styled.div<{ covered: boolean }>`
   ${(props) => `opacity: ${props.covered ? `0.2` : `1`}`}
@@ -100,11 +101,7 @@ export default function CourseEditForm({
         />
         <CourseTranslationForm />
         <SelectLanguageFirstCover covered={selectedLanguage === ""}>
-          <ControlledImageInput
-            name="new_photo"
-            label={t("courseNewPhoto")}
-            defaultValue={initialValues.photo ?? undefined}
-          />
+          <CourseImageForm courses={courses} />
           <CourseInfoForm />
         </SelectLanguageFirstCover>
       </TabSection>

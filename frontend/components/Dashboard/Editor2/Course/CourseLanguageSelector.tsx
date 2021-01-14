@@ -1,14 +1,11 @@
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import styled from "styled-components"
-import { Button, ButtonGroup, useMediaQuery } from "@material-ui/core"
+import { Button, ButtonGroup } from "@material-ui/core"
 import { initialTranslation } from "./form-validation"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import { useFieldArray, useFormContext } from "react-hook-form"
 import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
-import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;
@@ -59,12 +56,10 @@ const CourseLanguageSelector = (props: LanguageSelectorProps) => {
 
   const { control } = useFormContext()
 
-  const { fields, append, remove } = useFieldArray<CourseTranslationFormValues>(
-    {
-      control,
-      name: "course_translations",
-    },
-  )
+  const { append } = useFieldArray<CourseTranslationFormValues>({
+    control,
+    name: "course_translations",
+  })
   const t = useTranslator(CoursesTranslations)
 
   return (

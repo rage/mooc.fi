@@ -9,7 +9,6 @@ import {
 } from "./types"
 import { ApolloClient, DocumentNode } from "@apollo/client"
 import { DateTime } from "luxon"
-import { CourseDetails_course_open_university_registration_links } from "/static/types/generated/CourseDetails"
 import { testUnique } from "/components/Dashboard/Editor2/Common"
 
 export const initialTranslation: CourseTranslationFormValues = {
