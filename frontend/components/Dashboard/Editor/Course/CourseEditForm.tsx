@@ -530,7 +530,7 @@ const CourseEditForm = memo(
     course: CourseFormValues
     studyModules?: CourseEditorStudyModules_study_modules[]
     courses?: CourseEditorCourses_courses[]
-    validationSchema: Yup.ObjectSchema
+    validationSchema: Yup.ObjectSchema<any>
     onSubmit: (
       values: CourseFormValues,
       FormikHelpers: FormikHelpers<CourseFormValues>,
