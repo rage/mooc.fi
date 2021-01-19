@@ -21,5 +21,8 @@
     "course_completion_already_registered": "Kurssisuorituksesi on rekisteröity jo aiemmin.",
     "see_completion_link":"Kun opintosuorituksesi on rekisteröity, pääset tarkastelemaan opintosuorituksesi tietoja Koski-palvelusta:",
     "see_completion_NB":"HUOM! Opintosuoritus siirtyy Koski-palveluun viiveellä sen kirjautumisesta Helsingin yliopiston opintorekisteriin.",
-    "open_university_registration_not_open": "Avoimen yliopiston rekisteröityminen ei ole tällä hetkellä auki kurssille"
+    "open_university_registration_not_open": "Avoimen yliopiston rekisteröityminen ei ole tällä hetkellä auki kurssille",
+    "registrationClosed": "Avoimen yliopiston rekisteröityminen on suljettu välillä 27.2.-14.3.2021.",
+    "error": "Virhe",
+    "notLoggedIn": "Et ole kirjautunut sisään. Ole hyvä ja kirjaudu sisään."
 }
