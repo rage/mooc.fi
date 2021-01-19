@@ -1,10 +1,4 @@
-import {
-  objectType,
-  extendType,
-  idArg,
-  stringArg,
-  nonNull,
-} from "@nexus/schema"
+import { objectType, extendType, idArg, stringArg, nonNull } from "nexus"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin } from "../accessControl"
 

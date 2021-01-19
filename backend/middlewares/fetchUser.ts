@@ -5,7 +5,7 @@ import { redisify } from "../services/redis"
 import { UserInfo } from "/domain/UserInfo"
 import { PrismaClient } from "@prisma/client"
 import { Context } from "../context"
-import { plugin } from "@nexus/schema"
+import { plugin } from "nexus"
 import { convertUpdate } from "../util/db-functions"
 
 export const moocfiAuthPlugin = () =>

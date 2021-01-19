@@ -5,7 +5,7 @@ import {
   stringArg,
   idArg,
   nonNull,
-} from "@nexus/schema"
+} from "nexus"
 import { isAdmin } from "../accessControl"
 
 export const CourseTranslation = objectType({

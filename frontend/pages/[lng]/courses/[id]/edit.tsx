@@ -110,7 +110,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
   const t = getCoursesTranslator(language)
   const slug = useQueryParameter("id") ?? ""
 
-  let redirectTimeout: number | null = null
+  let redirectTimeout: NodeJS.Timeout | null = null
 
   const {
     data: courseData,

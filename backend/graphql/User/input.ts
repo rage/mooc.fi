@@ -1,4 +1,4 @@
-import { inputObjectType } from "@nexus/schema"
+import { inputObjectType } from "nexus"
 
 export const UserArg = inputObjectType({
   name: "UserArg",

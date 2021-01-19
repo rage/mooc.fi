@@ -1,6 +1,6 @@
 import { AuthenticationError } from "apollo-server-core"
 import { invalidate } from "../../services/redis"
-import { extendType, stringArg, booleanArg, arg, nonNull } from "@nexus/schema"
+import { extendType, stringArg, booleanArg, arg, nonNull } from "nexus"
 import { Context } from "../../context"
 import hashUser from "../../util/hashUser"
 

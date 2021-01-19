@@ -1,4 +1,4 @@
-import { plugin } from "@nexus/schema"
+import { plugin } from "nexus"
 import { Context } from "../context"
 
 export const loggerPlugin = () =>

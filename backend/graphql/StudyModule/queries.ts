@@ -1,4 +1,4 @@
-import { arg, extendType, idArg, nonNull, stringArg } from "@nexus/schema"
+import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, or, isUser, Role } from "../../accessControl"

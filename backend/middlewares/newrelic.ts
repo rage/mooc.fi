@@ -1,4 +1,4 @@
-import { plugin } from "@nexus/schema"
+import { plugin } from "nexus"
 const newrelic = require("newrelic")
 
 export const newRelicPlugin = () =>

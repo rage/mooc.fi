@@ -1,7 +1,7 @@
 // import { log } from "nexus"
 import { Sentry } from "../services/sentry"
 import { Context } from "../context"
-import { plugin } from "@nexus/schema"
+import { plugin } from "nexus"
 
 export const sentryPlugin = () =>
   plugin({
