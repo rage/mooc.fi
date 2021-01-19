@@ -1,4 +1,4 @@
-import { memo, PropsWithChildren } from "react"
+import { PropsWithChildren, memo } from "react"
 import { CardActions, Typography, TypographyProps } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
@@ -89,12 +89,12 @@ const CourseCardActionArea = styled(CardActions)`
   margin-top: auto;
 `
 
-const CourseInfo = styled.ul`
+const CourseInfoList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
 `
-const CourseInfoField = styled.li`
+const CourseInfoLine = styled.li`
   display: grid;
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -105,7 +105,7 @@ const CourseInfoField = styled.li`
   flex-direction: row;
 `
 
-const CourseInfoKey = ({
+const CourseInfoField = ({
   variant = "h4",
   children,
   ...props
@@ -127,6 +127,23 @@ const CourseInfoValue = styled.div`
   justify-content: flex-end;
 `
 
+interface CourseInfoProps {
+  field?: string | JSX.Element
+  value?: string | JSX.Element
+}
+const CourseInfo = ({
+  field,
+  value,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLLIElement> &
+  PropsWithChildren<CourseInfoProps>) => (
+  <CourseInfoLine {...props}>
+    {field && <CourseInfoField>{field}</CourseInfoField>}
+    {value && <CourseInfoValue>{value}</CourseInfoValue>}
+    {children}
+  </CourseInfoLine>
+)
 const formatDate = (date?: string | null) =>
   date ? new Date(date).toLocaleDateString() : "-"
 
@@ -192,31 +209,26 @@ const CourseCard = memo(
             )}
           </CardTitle>
           {course ? (
-            <CourseInfo>
-              <CourseInfoField style={{ marginBottom: "1rem" }}>
+            <CourseInfoList>
+              <CourseInfo style={{ marginBottom: "1rem" }}>
                 {formatDate(course?.start_date)} to{" "}
                 {formatDate(course?.end_date)}
-              </CourseInfoField>
+              </CourseInfo>
 
-              <CourseInfoField>
-                <CourseInfoKey>Teacher in charge:</CourseInfoKey>
-                <CourseInfoValue>
-                  {course?.teacher_in_charge_name || "-"}
-                </CourseInfoValue>
-              </CourseInfoField>
-              <CourseInfoField>
-                <CourseInfoKey>Teacher in charge email:</CourseInfoKey>
-                <CourseInfoValue>
-                  {course?.teacher_in_charge_email || "-"}
-                </CourseInfoValue>
-              </CourseInfoField>
-              <CourseInfoField>
-                <CourseInfoKey>Support email:</CourseInfoKey>
-                <CourseInfoValue>
-                  {course?.support_email || "-"}
-                </CourseInfoValue>
-              </CourseInfoField>
-            </CourseInfo>
+              <CourseInfo
+                field="Teacher in charge:"
+                value={course?.teacher_in_charge_name || "-"}
+              />
+              <CourseInfo
+                field="Teacher in charge email:"
+                value={course?.teacher_in_charge_email || "-"}
+              />
+              <CourseInfo
+                field="Support email:"
+                value={course?.support_email || "-"}
+              />
+              <CourseInfo field="Slug:" value={course?.slug || "-"} />
+            </CourseInfoList>
           ) : null}
           <CourseCardActionArea>
             {loading ? (
