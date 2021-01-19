@@ -170,6 +170,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
           <CourseEdit2
             course={courseData.course}
             courses={coursesData?.courses?.filter(notEmpty)}
+            //modules={studyModulesData?.study_modules?.filter(notEmpty) ?? []}
             studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
           />
         ) : (

@@ -16,6 +16,7 @@ import { useConfirm } from "material-ui-confirm"
 import { useFormContext } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useEditorContext } from "./EditorContext"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -27,7 +28,7 @@ const Status = styled.p<any>`
   color: ${(props: FormStatus) => (props.error ? "#FF0000" : "default")};
 `
 
-export default function EditorContainer<T extends Record<string, any>>({
+function EditorContainer<T extends Record<string, any>>({
   children,
 }: PropsWithChildren<{}>) {
   const t = useTranslator(CommonTranslations)
@@ -58,7 +59,7 @@ export default function EditorContainer<T extends Record<string, any>>({
             <Grid item xs={4}>
               <StyledButton
                 color="primary"
-                disabled={!isDirty || isSubmitting || isSubmitSuccessful}
+                disabled={!isDirty || isSubmitting}
                 onClick={() => handleSubmit<T>(onSubmit, onError)()}
                 style={{ width: "100%" }}
               >
@@ -131,3 +132,5 @@ export default function EditorContainer<T extends Record<string, any>>({
     </Container>
   )
 }
+
+export default EditorContainer

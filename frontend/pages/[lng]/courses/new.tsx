@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { WideContainer } from "/components/Container"
 import { useQuery } from "@apollo/client"
-// import CourseEdit from "/components/Dashboard/Editor/Course"
+import CourseEdit from "/components/Dashboard/Editor/Course"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
@@ -99,9 +99,10 @@ const NewCourse = () => {
               modules={studyModulesData?.study_modules?.filter(notEmpty)}
               courses={coursesData?.courses?.filter(notEmpty)}
             />*/
-          <CourseEdit2
+          <CourseEdit
             {...(clone ? { course: clonedCourse } : {})}
-            studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+            modules={studyModulesData?.study_modules?.filter(notEmpty)}
+            //studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
             courses={coursesData?.courses?.filter(notEmpty)}
           />
         )}

@@ -28,6 +28,7 @@ import CourseEditForm from "./CourseEditForm"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 
 interface CourseEditorProps {
   course?: CourseDetails_course
@@ -35,7 +36,7 @@ interface CourseEditorProps {
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-export default function CourseEditor({
+function CourseEditor({
   course,
   courses,
   studyModules,
@@ -110,7 +111,6 @@ export default function CourseEditor({
       })
       setStatus({ message: null })
     } catch (err) {
-      console.log("whoops?", err)
       setStatus({ message: err.message, error: true })
     }
   }, [])
@@ -131,8 +131,7 @@ export default function CourseEditor({
 
   const onCancel = useCallback(() => console.log("cancelled"), [])
   const onDelete = useCallback(async (id: string) => {
-    console.log("would delete", id)
-    //await deleteCourse({ variables: { id }})
+    await deleteCourse({ variables: { id }})
   }, [])
 
   return (
@@ -159,3 +158,5 @@ export default function CourseEditor({
     </FormProvider>
   )
 }
+
+export default withEnumeratingAnchors(CourseEditor)
