@@ -122,7 +122,7 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
               trigger(name)
             }}
             endIcon={<AddIcon>{addText}</AddIcon>}
-            style={{ width: "45%" }}
+            fullWidth
           >
             {addText}
           </ButtonWithWhiteText>

@@ -11,7 +11,7 @@ interface AnchorContext {
 }
 
 const AnchorContext = createContext<AnchorContext>({
-  anchors: {} as Record<string, Anchor>,
+  anchors: {},
   addAnchor: (_: string, __: number) => {},
 })
 

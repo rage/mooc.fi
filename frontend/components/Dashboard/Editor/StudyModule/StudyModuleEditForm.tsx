@@ -235,7 +235,7 @@ const RenderForm = () => {
                           component={StyledTextField}
                         />
                         <br />
-                        <Grid container justifyContent="flex-end">
+                        <Grid container justify="flex-end">
                           <StyledButton
                             variant="contained"
                             disabled={isSubmitting}

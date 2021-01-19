@@ -2,7 +2,7 @@ import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
 import { FieldArray, useFormikContext } from "formik"
 import { StyledFieldWithAnchor } from "/components/Dashboard/Editor/common"
 import { FormControl, FormGroup } from "@material-ui/core"
-import ChipInput from "material-ui-chip-input"
+//import ChipInput from "material-ui-chip-input"
 
 const UserCourseSettingsVisibilityEditForm = () => {
   const {
@@ -24,7 +24,8 @@ const UserCourseSettingsVisibilityEditForm = () => {
                     name={`user_course_settings_visibilities`}
                     type="text"
                     component={() => (
-                      <ChipInput
+                      <div />
+  /*                    <ChipInput
                         label="languages where user count is visible"
                         value={values.map((v) => v.language)}
                         variant="outlined"
@@ -36,7 +37,7 @@ const UserCourseSettingsVisibilityEditForm = () => {
                             values.findIndex((t) => t.language === v),
                           )
                         }
-                      />
+                      />*/
                     )}
                   />
                 </section>

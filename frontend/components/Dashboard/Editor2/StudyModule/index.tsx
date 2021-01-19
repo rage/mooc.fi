@@ -27,6 +27,7 @@ import { useAnchorContext } from "/contexes/AnchorContext"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { EditorContext } from "../EditorContext"
 import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
+import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 
 const StudyModuleEdit = ({
   module,
@@ -153,4 +154,4 @@ const StudyModuleEdit = ({
   )
 }
 
-export default StudyModuleEdit
+export default withEnumeratingAnchors(StudyModuleEdit)

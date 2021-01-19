@@ -91,6 +91,9 @@ export default function StudyModuleEditForm() {
           {imageError}
         </Typography>
       ) : null}
+      <FormSubtitle variant="h6" component="h3" align="center">
+        {t("moduleTranslationsTitle")}
+      </FormSubtitle>
       <StudyModuleTranslationsForm />
     </EditorContainer>
   )
