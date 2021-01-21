@@ -6,18 +6,23 @@ import {
   users,
   completions,
   services,
+  userCourseSettings,
 } from "."
 
+type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
+
 export const seed = async (prisma: PrismaClient) => {
-  const create = async <T>(key: keyof PrismaClient, data: T[]) =>
+  const create = async <K extends ExcludeInternalKeys<keyof PrismaClient>, T>(
+    key: K,
+    data: T[],
+  ) =>
     Promise.all(
-      data.map(
-        async (datum) =>
-          // @ts-ignore: key
-          await prisma[key].create({
-            data: datum,
-          }),
-      ),
+      data.map(async (datum) => {
+        // @ts-ignore: key
+        return await prisma[key].create({
+          data: datum,
+        })
+      }),
     )
 
   const seededModules = await create("studyModule", study_modules)
@@ -26,6 +31,10 @@ export const seed = async (prisma: PrismaClient) => {
   const seededUsers = await create("user", users)
   const seededCompletions = await create("completion", completions)
   const seededServices = await create("service", services)
+  const seededUserCourseSettings = await create(
+    "userCourseSetting",
+    userCourseSettings,
+  )
 
   return {
     courses: seededCourses,
@@ -34,5 +43,6 @@ export const seed = async (prisma: PrismaClient) => {
     users: seededUsers,
     completions: seededCompletions,
     services: seededServices,
+    userCourseSettings: seededUserCourseSettings,
   }
 }

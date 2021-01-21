@@ -220,12 +220,28 @@ export const completions: Prisma.CompletionCreateInput[] = [
     course: { connect: { id: "00000000000000000000000000000002" } },
     user: { connect: { id: "20000000000000000000000000000102" } },
     email: "e@mail.com",
+    user_upstream_id: 1,
+    tier: 2,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
   },
   {
     id: "30000000-0000-0000-0000-000000000103",
     course: { connect: { id: "00000000000000000000000000000001" } },
     user: { connect: { id: "20000000000000000000000000000102" } },
     email: "e@mail.com",
+    user_upstream_id: 1,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+]
+
+export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
+  {
+    id: "40000000-0000-0000-0000-000000000102",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    language: "en",
   },
 ]
 
