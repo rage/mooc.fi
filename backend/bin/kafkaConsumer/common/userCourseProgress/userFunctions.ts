@@ -257,7 +257,7 @@ export const createCompletion = async ({
     if (template) {
       await sendEmailTemplateToUser(user, template)
     }
-  } else {
+  } else if (!isNullOrUndefined(tier)) {
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     const updated = await prisma.$queryRaw`
