@@ -49,7 +49,7 @@ let version = 1
 
 export function getTestContext(): TestContext {
   let testContext = {
-    logger: logger as any,
+    logger: logger.createLogger() as winston.Logger,
   } as TestContext
 
   const ctx = createTestContext()

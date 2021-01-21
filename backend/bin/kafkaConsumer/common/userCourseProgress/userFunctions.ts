@@ -242,7 +242,7 @@ export const createCompletion = async ({
             ? false
             : handlerCourse.automatic_completions_eligible_for_ects,
         completion_date: new Date(),
-        tier: isNullOrUndefined(tier) ? tier : undefined,
+        tier: !isNullOrUndefined(tier) ? tier : undefined,
       },
     })
     // TODO: this only sends the completion email for the first tier completed
@@ -257,9 +257,19 @@ export const createCompletion = async ({
     if (template) {
       await sendEmailTemplateToUser(user, template)
     }
-  } else if (!isNullOrUndefined(tier) && tier > (completions[0]!.tier ?? 0)) {
-    logger?.info("Existing completion found, updating tier...")
-    await prisma.completion.update({
+  } else {
+    const eligible_for_ects =
+      tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
+    const updated = await prisma.$queryRaw`
+      UPDATE 
+        completion 
+      SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
+      WHERE id=${completions[0]!.id} AND COALESCE(tier, 0) < ${tier}
+      RETURNING tier;`
+    if (updated.length > 0) {
+      logger?.info("Existing completion found, updated tier")
+    }
+    /*await prisma.completion.update({
       where: {
         id: completions[0]!.id,
       },
@@ -270,7 +280,7 @@ export const createCompletion = async ({
             ? false
             : handlerCourse.automatic_completions_eligible_for_ects,
       },
-    })
+    })*/
   }
 }
 
