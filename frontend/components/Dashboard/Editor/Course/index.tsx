@@ -16,7 +16,7 @@ import {
   DeleteCourseMutation,
 } from "/graphql/mutations/courses"
 import { CourseDetails_course } from "/static/types/generated/CourseDetails"
-import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
+import { CourseQuery } from "/pages/[lng]/courses/[slug]/edit"
 import { PureQueryOptions } from "@apollo/client"
 import { toCourseForm, fromCourseForm } from "./serialization"
 import Router from "next/router"

@@ -110,7 +110,7 @@ interface EditCourseProps {
 const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(CoursesTranslations)
-  const slug = useQueryParameter("id") ?? ""
+  const slug = useQueryParameter("slug") ?? ""
 
   let redirectTimeout: number | null = null
 

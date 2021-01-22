@@ -231,7 +231,7 @@ const CourseCard = memo(
               </>
             ) : course ? (
               <>
-                <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
+                <LangLink as={`/courses/${course.slug}`} href="/courses/[slug]">
                   <StyledLink
                     aria-label={`To the homepage of course ${course.name}`}
                   >
@@ -252,7 +252,7 @@ const CourseCard = memo(
                   </StyledLink>
                 </LangLink>
                 <LangLink
-                  href="/courses/[id]/edit"
+                  href="/courses/[slug]/edit"
                   as={`/courses/${course.slug}/edit`}
                   prefetch={false}
                 >

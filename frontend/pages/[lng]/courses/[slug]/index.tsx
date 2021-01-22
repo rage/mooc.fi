@@ -51,7 +51,7 @@ const recheckCompletionsMutation = gql`
 
 const Course = () => {
   const { language } = useContext(LanguageContext)
-  const slug = useQueryParameter("id")
+  const slug = useQueryParameter("slug")
   const t = useTranslator(CoursesTranslations)
 
   const [checking, setChecking] = useState(false)

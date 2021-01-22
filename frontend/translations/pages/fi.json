@@ -1,10 +1,10 @@
 {
   "title": {
     "/[lng]/courses": "Kurssit",
-    "/[lng]/courses/[id]": "Kurssin ohjausnäkymä - {{title}}", 
-    "/[lng]/courses/[id]/edit": "Muokkaa kurssia - {{title}}", 
-    "/[lng]/courses/[id]/completions": "Suoritukset - {{title}}", 
-    "/[lng]/courses/[id]/points": "Pisteet - {{title}}", 
+    "/[lng]/courses/[slug]": "Kurssin ohjausnäkymä - {{title}}", 
+    "/[lng]/courses/[slug]/edit": "Muokkaa kurssia - {{title}}", 
+    "/[lng]/courses/[slug]/completions": "Suoritukset - {{title}}", 
+    "/[lng]/courses/[slug]/points": "Pisteet - {{title}}", 
     "/[lng]/courses/new": "Uusi kurssi",
     "/[lng]/installation/netbeans": "NetBeansin asennus",
     "/[lng]/installation/vscode": "VSCoden asennus",
@@ -37,10 +37,10 @@
     "/": "Etusivu"
   },
   "breadcrumb": {
-    "/[lng]/courses/[id]": "Kurssin ohjausnäkymä", 
-    "/[lng]/courses/[id]/edit": "Muokkaa", 
-    "/[lng]/courses/[id]/completions": "Suoritukset", 
-    "/[lng]/courses/[id]/points": "Pisteet", 
+    "/[lng]/courses/[slug]": "Kurssin ohjausnäkymä", 
+    "/[lng]/courses/[slug]/edit": "Muokkaa", 
+    "/[lng]/courses/[slug]/completions": "Suoritukset", 
+    "/[lng]/courses/[slug]/points": "Pisteet", 
     "/[lng]/courses/new": "Uusi",
     "/[lng]/study-modules/[id]/edit": "Muokkaa", 
     "/[lng]/study-modules/new": "Uusi",
