@@ -25,7 +25,7 @@ const UserCourseSettingsVisibilityEditForm = () => {
                     type="text"
                     component={() => (
                       <div />
-  /*                    <ChipInput
+                      /*                    <ChipInput
                         label="languages where user count is visible"
                         value={values.map((v) => v.language)}
                         variant="outlined"

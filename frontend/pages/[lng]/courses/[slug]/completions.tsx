@@ -43,7 +43,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
   const [searchString, setSearchString] = useState("")
   const [search, setSearch] = useState("")
 
-  const slug = useQueryParameter("id")
+  const slug = useQueryParameter("slug")
 
   const handleLanguageChange = (event: ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes

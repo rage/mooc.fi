@@ -1,4 +1,4 @@
-import { objectType, inputObjectType } from "@nexus/schema"
+import { objectType, inputObjectType } from "nexus"
 
 export const UserCourseSettingsVisibility = objectType({
   name: "UserCourseSettingsVisibility",

@@ -66,8 +66,8 @@ export default function CourseEditForm({
     initialValues?.course_translations.length === 0
       ? ""
       : initialValues?.course_translations.length == 2
-        ? "both"
-        : initialValues?.course_translations[0].language,
+      ? "both"
+      : initialValues?.course_translations[0].language,
   )
   const sortedCourses = useMemo(
     () =>

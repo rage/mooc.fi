@@ -14,7 +14,7 @@ import binPrisma from "../bin/lib/prisma"
 
 const DEBUG = Boolean(process.env.DEBUG)
 
-const logger = {
+export const logger = {
   format: {
     printf: jest.fn(),
     timestamp: jest.fn(),
@@ -49,7 +49,7 @@ let version = 1
 
 export function getTestContext(): TestContext {
   let testContext = {
-    logger: logger as any,
+    logger: logger.createLogger() as winston.Logger,
   } as TestContext
 
   const ctx = createTestContext()

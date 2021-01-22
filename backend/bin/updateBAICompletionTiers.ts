@@ -40,22 +40,21 @@ const updateBAICompletionTiers = async () => {
 
   logger.info(`Updating ${usersWithoutTiers.length} users...`)
 
-  await Promise.all(
-    usersWithoutTiers.map((user) =>
-      checkBAICompletion({
-        user,
-        course,
-        context: {
-          logger,
-          prisma,
-          knex,
-          consumer: null as any,
-          mutex: null as any,
-        },
-        isHandler: true,
-      }),
-    ),
-  )
+  for (const user of usersWithoutTiers) {
+    await checkBAICompletion({
+      user,
+      course,
+      context: {
+        logger,
+        prisma,
+        knex,
+        consumer: null as any,
+        mutex: null as any,
+      },
+      isHandler: true,
+    })
+  }
+
   logger.info("Done")
   process.exit(0)
 }

@@ -112,7 +112,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug") ?? ""
 
-  let redirectTimeout: number | null = null
+  let redirectTimeout: NodeJS.Timeout | null = null
 
   const {
     data: courseData,
@@ -174,11 +174,6 @@ const EditCourse = ({ router }: EditCourseProps) => {
             studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
           />
         ) : (
-          /*<CourseEdit
-            course={courseData.course}
-            modules={studyModulesData?.study_modules?.filter(notEmpty) ?? []}
-            courses={coursesData?.courses?.filter(notEmpty) ?? []}
-          />*/
           <ErrorContainer elevation={2}>
             <Typography
               variant="body1"

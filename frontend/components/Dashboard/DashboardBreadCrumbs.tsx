@@ -115,7 +115,7 @@ const BreadCrumbSkeleton = styled(Skeleton)`
 `
 
 const asToHref = {
-  "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[id]$3", // matches /(courses|study-modules)/[id]*, doesn't match new
+  "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[slug]$3", // matches /(courses|study-modules)/[slug]*, doesn't match new
   "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
   "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
   "/users/search/(.+)": "/users/search/[text]",

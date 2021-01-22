@@ -5,6 +5,7 @@ import { notEmpty } from "../util/notEmpty"
 import sentryLogger from "./lib/logger"
 import type { PrismaClient } from "@prisma/client"
 import { TMCError } from "./lib/errors"
+import { groupBy, orderBy } from "lodash"
 
 const URL = `${
   process.env.TMC_HOST || ""
@@ -24,9 +25,15 @@ export interface Change {
 const logger = sentryLogger({ service: "sync-tmc-users" })
 
 export const syncTMCUsers = async (_prisma?: PrismaClient) => {
-  let prisma: PrismaClient | undefined = _prisma
+  let prisma: PrismaClient | undefined
+
   if (!_prisma) {
     prisma = (await import("./lib/prisma")).default
+  } else {
+    prisma = _prisma
+  }
+  if (!prisma) {
+    throw new Error("couldn't get a Prisma instance")
   }
 
   const startTime = new Date().getTime()
@@ -41,19 +48,82 @@ export const syncTMCUsers = async (_prisma?: PrismaClient) => {
       throw new TMCError("Error syncing TMC users", response.data.error)
     })
 
-  const deletedUsers = res
+  const deletedUsers = await deleteUsers(res, prisma)
+  const updatedUsers = await updateEmails(res, prisma)
+
+  const stopTime = new Date().getTime()
+  logger.info(`used ${stopTime - startTime} milliseconds`)
+
+  return {
+    deletedUsers,
+    updatedUsers,
+  }
+}
+
+export const deleteUsers = async (changes: Change[], prisma: PrismaClient) => {
+  const deletedUsers = changes
     .filter((user) => user.change_type === "deleted" && user.new_value === "t")
     .map((user) => user.username)
     .filter(notEmpty)
 
   logger.info(`found ${deletedUsers.length} deleted users in TMC`)
-  const deleted = await prisma!.user.deleteMany({
+  const deleted = await prisma.user.deleteMany({
     where: { username: { in: deletedUsers } },
   })
 
   logger.info(`deleted ${deleted.count} users from database`)
-  const stopTime = new Date().getTime()
-  logger.info(`used ${stopTime - startTime} milliseconds`)
+
+  return deleted.count
+}
+
+export const updateEmails = async (changes: Change[], prisma: PrismaClient) => {
+  const emailChanges = changes.filter(
+    (user) => user.change_type === "email_changed" && user.username !== null,
+  )
+
+  const changedEmailUsers = groupBy(
+    orderBy(emailChanges, "updated_at", "desc"),
+    "username",
+  )
+
+  logger.info(
+    `found ${emailChanges.length} email updates and ${
+      Object.keys(changedEmailUsers).length
+    } unique users with changed email`,
+  )
+
+  const existing = groupBy(
+    await prisma.user.findMany({
+      where: { username: { in: Object.keys(changedEmailUsers) } },
+    }),
+    "username",
+  )
+
+  let counter = 0
+  for (const [username, changes] of Object.entries(changedEmailUsers)) {
+    const newestChange = changes[0]
+
+    try {
+      if (
+        existing[username]?.length &&
+        existing[username][0].email !== newestChange.new_value
+      ) {
+        await prisma!.user.update({
+          where: {
+            username,
+          },
+          data: {
+            email: { set: newestChange.new_value },
+          },
+        })
+        counter++
+      }
+    } catch {}
+  }
+
+  logger.info(`updated ${counter} user emails`)
+
+  return counter
 }
 
 if (process.env.NODE_ENV !== "test") {

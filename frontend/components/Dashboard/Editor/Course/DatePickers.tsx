@@ -26,10 +26,12 @@ const DatePickerField = ({ ...props }: any) => {
         onChange={setValue}
         onClose={setTouched}
         renderInput={(params) => (
-          <TextField {...params} style={{
-            marginBottom: error ? "0rem" : "1.5rem",
-            width: "70%",
-          }}
+          <TextField
+            {...params}
+            style={{
+              marginBottom: error ? "0rem" : "1.5rem",
+              width: "70%",
+            }}
           />
         )}
       />

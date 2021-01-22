@@ -47,5 +47,3 @@ export const EditorContext = createContext<EditorContext<any>>({
 export function useEditorContext<T>() {
   return useContext<EditorContext<T>>(EditorContext)
 }
-
-

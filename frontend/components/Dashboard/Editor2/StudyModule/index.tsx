@@ -14,7 +14,7 @@ import {
 } from "/graphql/queries/study-modules"
 import studyModuleEditSchema from "./form-validation"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
-import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
+import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
 import { PureQueryOptions } from "@apollo/client"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 import Router from "next/router"

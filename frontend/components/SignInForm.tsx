@@ -30,7 +30,7 @@ function SignIn() {
   const emailFieldRef = useRef<HTMLInputElement>(null)
   const passwordFieldRef = useRef<HTMLInputElement>(null)
 
-  let errorTimeout: number | null = null
+  let errorTimeout: NodeJS.Timeout | null = null
 
   useEffect(() => {
     const inputFieldSetter = () => {

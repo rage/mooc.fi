@@ -1,6 +1,6 @@
 import getApollo, { initNewApollo } from "./get-apollo"
 import Head from "next/head"
-import { getDataFromTree } from "@apollo/client/react/ssr"
+import { getMarkupFromTree } from "@apollo/client/react/ssr"
 import { renderToString } from "react-dom/server"
 import { AppContext } from "next/app"
 import { getAccessToken } from "/lib/authentication"
@@ -60,7 +60,7 @@ const withApolloClient = (App: any) => {
 
     try {
       // getDataFromTree is using getMarkupFromTree anyway?
-      await getDataFromTree({
+      await getMarkupFromTree({
         renderFunction: renderToString,
         tree: (
           <AppTree

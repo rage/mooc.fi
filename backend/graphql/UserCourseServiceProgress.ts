@@ -1,4 +1,4 @@
-import { objectType, extendType, idArg, arg, nonNull } from "@nexus/schema"
+import { objectType, extendType, idArg, arg, nonNull } from "nexus"
 
 import { isAdmin } from "../accessControl"
 

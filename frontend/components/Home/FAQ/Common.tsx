@@ -115,10 +115,12 @@ export function FAQComponent({
 }: FAQComponentProps) {
   return dynamic(
     async () => {
-      return mdxImport().then(onSuccess).catch((error: any) => {
-        console.log("error", error)
-        onError()
-      })
+      return mdxImport()
+        .then(onSuccess)
+        .catch((error: any) => {
+          console.log("error", error)
+          onError()
+        })
     },
     { loading: () => <Loader /> },
   )
