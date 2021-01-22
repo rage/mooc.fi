@@ -8,6 +8,7 @@ import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import LanguageContext from "/contexes/LanguageContext"
+import { useRouter } from "next/router"
 
 const TabBarContainer = styled.div`
   flex-grow: 1;
@@ -31,38 +32,50 @@ const TabContainer = styled.div`
   margin 0 auto;
 `
 
-const A = styled.a`
-  color: unset;
-`
-
-interface LinkTabProps {
-  label?: string
-  href: string
-  as: string
-  icon: any
-}
-
-function LinkTab(props: LinkTabProps) {
-  return (
-    // TODO: using LangLink here does not work with the points tab in production.
-    <A href={props.as}>
-      <Tab style={{ marginTop: "1rem" }} component="div" {...props} />
-    </A>
-  )
-}
-
 interface DashboardTabsProps {
   slug: string
   selectedValue: number
 }
 
+interface Route {
+  label: string
+  icon: JSX.Element
+  path: string
+}
+
+const routes: Route[] = [
+  {
+    label: "Course Home",
+    icon: <DashboardIcon />,
+    path: "",
+  },
+  {
+    label: "Completions",
+    icon: <ViewListIcon />,
+    path: "completions",
+  },
+  {
+    label: "Points",
+    icon: <ScatterplotIcon />,
+    path: "points",
+  },
+  {
+    label: "Edit",
+    icon: <EditIcon />,
+    path: "edit",
+  },
+]
+
 export default function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
   const { language } = useContext(LanguageContext)
   const [value, setValue] = useState(selectedValue)
+  const router = useRouter()
 
   function handleChange(_: ChangeEvent<{}>, newValue: number) {
     setValue(newValue)
+    const { path } = routes[newValue]
+    router.push(`/${language}/courses/${slug}${path ? "/" : ""}${path}`)
   }
 
   return (
@@ -75,34 +88,16 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
             onChange={handleChange}
             aria-label="course dashboard navi"
           >
-            <LinkTab
-              label="Course Home"
-              icon={<DashboardIcon />}
-              as={`/${language}/courses/${slug}`}
-              href={"/[lng]/courses/[slug]"}
-              {...a11yProps(0)}
-            />
-            <LinkTab
-              label="Completions"
-              icon={<ViewListIcon />}
-              as={`/${language}/courses/${slug}/completions`}
-              href={"/[lng]/courses/[slug]/completions"}
-              {...a11yProps(1)}
-            />
-            <LinkTab
-              label="Points"
-              icon={<ScatterplotIcon />}
-              as={`/${language}/courses/${slug}/points`}
-              href={"/[lng]/courses/[slug]/points"}
-              {...a11yProps(2)}
-            />
-            <LinkTab
-              label="Edit"
-              icon={<EditIcon />}
-              as={`/${language}/courses/${slug}/edit`}
-              href={" /[lng]/courses/[slug]/edit"}
-              {...a11yProps(3)}
-            />
+            {routes.map(({ label, icon }, index) => (
+              <Tab
+                key={index}
+                value={index}
+                label={label}
+                icon={icon}
+                style={{ marginTop: "1rem" }}
+                {...a11yProps(index)}
+              />
+            ))}
           </StyledTabs>
         </TabContainer>
       </AppBar>

@@ -1,11 +1,4 @@
-import {
-  objectType,
-  extendType,
-  stringArg,
-  intArg,
-  arg,
-  list,
-} from "@nexus/schema"
+import { objectType, extendType, stringArg, intArg, arg, list } from "nexus"
 import { chunk } from "lodash"
 import { or, isOrganization, isAdmin } from "../accessControl"
 import { ForbiddenError, UserInputError } from "apollo-server-core"

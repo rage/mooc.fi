@@ -55,14 +55,14 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(StudyModulesTranslations)
 
-  const id = useQueryParameter("id")
+  const slug = useQueryParameter("slug")
 
-  let redirectTimeout: number | null = null
+  let redirectTimeout: NodeJS.Timeout | null = null
 
   const { data, loading, error } = useQuery<StudyModuleDetails>(
     StudyModuleQuery,
     {
-      variables: { slug: id },
+      variables: { slug },
     },
   )
 
@@ -95,7 +95,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             <Typography
               variant="body1"
               dangerouslySetInnerHTML={{
-                __html: t("moduleWithIdNotFound", { slug: id }),
+                __html: t("moduleWithIdNotFound", { slug }),
               }}
             />
             <Typography variant="body2">

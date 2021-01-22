@@ -7,11 +7,7 @@ if (process.env.NEXUS_REFLECTION) {
   require("sharp")
 }
 
-import {
-  makeSchema,
-  connectionPlugin,
-  fieldAuthorizePlugin,
-} from "@nexus/schema"
+import { makeSchema, connectionPlugin, fieldAuthorizePlugin } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
 import * as types from "./graphql"
 import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
@@ -21,6 +17,7 @@ import { loggerPlugin } from "./middlewares/logger"
 import { sentryPlugin } from "./middlewares/sentry"
 import { cachePlugin } from "./middlewares/cache"
 import { moocfiAuthPlugin } from "./middlewares/fetchUser"
+import { join } from "path"
 
 const createPlugins = () => {
   const plugins = [
@@ -68,18 +65,17 @@ const createPlugins = () => {
 
 export default makeSchema({
   types,
-  typegenAutoConfig: {
-    sources: [
+  contextType: {
+    module: join(__dirname, "context.ts"),
+    export: "Context",
+  },
+  sourceTypes: {
+    modules: [
       {
-        source: require.resolve("./context"),
-        alias: "Context",
-      },
-      {
-        source: require.resolve(".prisma/client/index.d.ts"),
+        module: require.resolve(".prisma/client/index.d.ts"),
         alias: "prisma",
       },
     ],
-    contextType: "Context.Context",
   },
   plugins: createPlugins(),
   outputs: {

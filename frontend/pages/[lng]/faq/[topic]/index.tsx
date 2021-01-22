@@ -25,9 +25,8 @@ export default function FAQTopic() {
   const sanitizedTopic = topic.replace(/[./\\]/g, "").trim()
 
   const Component = FAQComponent({
-    mdxImport: () => import(
-      `../../../../static/md_pages/${sanitizedTopic}_${language}.mdx`
-    ),
+    mdxImport: () =>
+      import(`../../../../static/md_pages/${sanitizedTopic}_${language}.mdx`),
     onSuccess: (mdx: any) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")

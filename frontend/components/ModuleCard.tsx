@@ -136,7 +136,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </ButtonWithPaddingAndMargin>
           ) : module ? (
             <LangLink
-              href="/study-modules/[id]/edit"
+              href="/study-modules/[slug]/edit"
               as={`/study-modules/${module.slug}/edit`}
             >
               <a>

@@ -4,7 +4,7 @@ import { redisify } from "./services/redis"
 import { Completion, PrismaClient } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
-import createExpress from "express"
+import createExpress, { Request } from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
@@ -248,70 +248,82 @@ const _express = ({ prisma, knex }: ExpressParams) => {
     })
   })
 
-  express.get("/api/progressv2/:id", async (req: any, res: any) => {
-    const { id }: { id: string } = req.params
+  express.get(
+    "/api/progressv2/:id",
+    async (req: Request<{ id: string }>, res: any) => {
+      const { id }: { id: string } = req.params
+      const { deleted = "" } = req.query
 
-    if (!id) {
-      return res.status(400).json({ message: "must provide id" })
-    }
+      const includeDeleted = (deleted as string).toLowerCase().trim() === "true"
 
-    const getUserResult = await getUser(req, res)
+      if (!id) {
+        return res.status(400).json({ message: "must provide id" })
+      }
 
-    if (getUserResult.isErr()) {
-      return getUserResult.error
-    }
+      const getUserResult = await getUser(req, res)
 
-    const { user } = getUserResult.value
+      if (getUserResult.isErr()) {
+        return getUserResult.error
+      }
 
-    const exercise_completions = await knex
-      .select<any, ExerciseCompletionResult[]>(
-        "user_id",
-        "exercise_id",
-        "n_points",
-        "part",
-        "section",
-        "max_points",
-        "completed",
-        "custom_id as quizzes_id",
+      const { user } = getUserResult.value
+
+      const exerciseCompletionsPromise = knex
+        .select<any, ExerciseCompletionResult[]>(
+          "user_id",
+          "exercise_id",
+          "n_points",
+          "part",
+          "section",
+          "max_points",
+          "completed",
+          "custom_id as quizzes_id",
+        )
+        .from("exercise_completion")
+        .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
+        .where("exercise.course_id", id)
+        .andWhere("exercise_completion.user_id", user.id)
+
+      if (!includeDeleted) {
+        exerciseCompletionsPromise.andWhereNot("exercise.deleted", true)
+      }
+
+      const exercise_completions = await exerciseCompletionsPromise
+      const { completions_handled_by_id = id } =
+        (
+          await knex
+            .select("completions_handled_by_id")
+            .from("course")
+            .where("id", id)
+        )[0] ?? {}
+
+      const completions = await knex
+        .select<any, Completion[]>("*")
+        .from("completion")
+        .where("course_id", completions_handled_by_id)
+        .andWhere("user_id", user.id)
+
+      const exercise_completions_map = (exercise_completions ?? []).reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr.exercise_id]: {
+            ...curr,
+            // tier: baiCourseTiers[curr.quizzes_id],
+          },
+        }),
+        {},
       )
-      .from("exercise_completion")
-      .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
-      .where("exercise.course_id", id)
-      .andWhere("exercise_completion.user_id", user.id)
-    const { completions_handled_by_id = id } =
-      (
-        await knex
-          .select("completions_handled_by_id")
-          .from("course")
-          .where("id", id)
-      )[0] ?? {}
 
-    const completions = await knex
-      .select<any, Completion[]>("*")
-      .from("completion")
-      .where("course_id", completions_handled_by_id)
-      .andWhere("user_id", user.id)
-
-    const exercise_completions_map = (exercise_completions ?? []).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.exercise_id]: {
-          ...curr,
-          // tier: baiCourseTiers[curr.quizzes_id],
+      res.json({
+        data: {
+          course_id: id,
+          user_id: user.id,
+          exercise_completions: exercise_completions_map,
+          completion: completions[0] ?? {},
         },
-      }),
-      {},
-    )
-
-    res.json({
-      data: {
-        course_id: id,
-        user_id: user.id,
-        exercise_completions: exercise_completions_map,
-        completion: completions[0] ?? {},
-      },
-    })
-  })
+      })
+    },
+  )
 
   express.get("/api/tierprogress/:id", async (req: any, res: any) => {
     const { id }: { id: string } = req.params

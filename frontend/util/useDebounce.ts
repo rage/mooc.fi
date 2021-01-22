@@ -11,7 +11,7 @@ export default function useDebounce<T>(
   const _value = isFunction(value) ? value() : value
   const [debouncedValue, setDebouncedValue] = useState(_value)
 
-  let handler: number
+  let handler: NodeJS.Timeout
 
   useEffect(() => {
     handler = setTimeout(() => {

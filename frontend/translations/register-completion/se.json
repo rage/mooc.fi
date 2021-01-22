@@ -21,5 +21,8 @@
     "course_completion_already_registered": "Din prestation har registrerats förr.",
     "see_completion_link":"När din studieprestation registrerats har du möjligheten att granska information gällande prestationen i Koski-tjänsten: ",
     "see_completion_NB":"OBS! Studieprestationen överförs till Koski-tjänsten med fördröjning efter att den skrivits in i Helsingfors universitets studieregister.",
-    "open_university_registration_not_open": "Registreringen till Öppna universitetet är för tillfället inte öppen för kursen"
+    "open_university_registration_not_open": "Registreringen till Öppna universitetet är för tillfället inte öppen för kursen",
+    "registrationClosed": "Registreringen till Öppna universitetet är stängd 27.2.-14.3.2021.",
+    "error": "Det har skett ett fel",
+    "notLoggedIn": "Du är inte inloggad. Var så god och logga in."
 }

@@ -7,7 +7,7 @@ import {
   nonNull,
   nullable,
   stringArg,
-} from "@nexus/schema"
+} from "nexus"
 
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
@@ -76,7 +76,7 @@ export const CompletionMutations = extendType({
         if (!course) {
           throw new Error("Course not found")
         }
-        const completions: any[] = args.completions || []
+        const completions = (args.completions ?? []).filter(notEmpty)
         const foundUsers = await knex
           .select([
             "id",
@@ -102,15 +102,18 @@ export const CompletionMutations = extendType({
             id: uuidv4(),
             created_at: new Date(),
             updated_at: new Date(),
-            user_upstream_id: o.user_id,
+            user_upstream_id: o.user_id ? parseInt(o.user_id) : null,
             email: databaseUser.email,
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: "unknown",
             course_id: course_id,
             user_id: databaseUser.id,
-            grade: o.grade,
+            grade: o.grade ?? null,
             completion_date: o.completion_date,
+            certificate_id: null,
+            eligible_for_ects: null,
+            tier: o.tier ?? null,
           }
         })
 

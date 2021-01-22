@@ -36,11 +36,7 @@ interface CourseEditorProps {
   studyModules?: CourseEditorStudyModules_study_modules[]
 }
 
-function CourseEditor({
-  course,
-  courses,
-  studyModules,
-}: CourseEditorProps) {
+function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
   const t = useTranslator(CoursesTranslations)
   const [status, setStatus] = useState<FormStatus>({ message: null })
   const [tab, setTab] = useState(0)
@@ -131,7 +127,7 @@ function CourseEditor({
 
   const onCancel = useCallback(() => console.log("cancelled"), [])
   const onDelete = useCallback(async (id: string) => {
-    await deleteCourse({ variables: { id }})
+    await deleteCourse({ variables: { id } })
   }, [])
 
   return (
