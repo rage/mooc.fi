@@ -1,10 +1,10 @@
 {
   "title": {
     "/[lng]/courses": "Courses",
-    "/[lng]/courses/[id]": "Course dashboard - {{title}}", 
-    "/[lng]/courses/[id]/edit": "Edit course - {{title}}", 
-    "/[lng]/courses/[id]/completions": "Completions - {{title}}", 
-    "/[lng]/courses/[id]/points": "Points - {{title}}", 
+    "/[lng]/courses/[slug]": "Course dashboard - {{title}}", 
+    "/[lng]/courses/[slug]/edit": "Edit course - {{title}}", 
+    "/[lng]/courses/[slug]/completions": "Completions - {{title}}", 
+    "/[lng]/courses/[slug]/points": "Points - {{title}}", 
     "/[lng]/courses/new": "New course",
     "/[lng]/installation/netbeans": "NetBeans installation",
     "/[lng]/installation/vscode": "VSCode installation",
@@ -37,10 +37,10 @@
     "/": "Home"
   },
   "breadcrumb": {
-    "/[lng]/courses/[id]": "Course dashboard",
-    "/[lng]/courses/[id]/edit": "Edit", 
-    "/[lng]/courses/[id]/completions": "Completions",
-    "/[lng]/courses/[id]/points": "Points",
+    "/[lng]/courses/[slug]": "Course dashboard",
+    "/[lng]/courses/[slug]/edit": "Edit", 
+    "/[lng]/courses/[slug]/completions": "Completions",
+    "/[lng]/courses/[slug]/points": "Points",
     "/[lng]/courses/new": "New",
     "/[lng]/study-modules/[id]/edit": "Edit",
     "/[lng]/users/[id]": "User", 

@@ -103,19 +103,19 @@ export const Loader = () => (
 )
 
 interface FAQComponentProps {
-  mdxImport?: Promise<any>
+  mdxImport?: () => Promise<any>
   onSuccess: (mdx: any) => any
   onError: () => void
 }
 
 export function FAQComponent({
-  mdxImport = Promise.resolve(),
+  mdxImport = () => Promise.resolve(),
   onSuccess,
   onError,
 }: FAQComponentProps) {
   return dynamic(
     async () => {
-      return mdxImport.then(onSuccess).catch((error: any) => {
+      return mdxImport().then(onSuccess).catch((error: any) => {
         console.log("error", error)
         onError()
       })

@@ -16,7 +16,7 @@ import {
 import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
+import { CourseQuery } from "/pages/[lng]/courses/[slug]/edit"
 import {
   CourseDetails,
   CourseDetails_course,

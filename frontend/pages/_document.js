@@ -1,11 +1,12 @@
 import { Fragment } from "react"
-import Document, { Html, Head, Main, NextScript } from "next/document"
+import Document, { Html, Head, Main, NextScript, DocumentContext } from "next/document"
 import flush from "styled-jsx/server"
 import { ServerStyleSheets } from "@material-ui/styles"
 import theme from "../src/theme"
 import { ServerStyleSheet } from "styled-components"
 
 import { fontCss } from "/src/fonts"
+
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const sheets = new ServerStyleSheets()

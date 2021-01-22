@@ -67,7 +67,7 @@ const ManualCompletions = () => {
       setMessageSeverity("success")
     },
   })
-  const slug = useQueryParameter("id") ?? ""
+  const slug = useQueryParameter("slug") ?? ""
   const {
     data: courseData,
     loading: courseLoading,

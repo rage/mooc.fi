@@ -26,7 +26,7 @@ export const CourseDetailsFromSlugQuery = gql`
 const Points = () => {
   const t = useTranslator(CoursesTranslations)
 
-  const slug = useQueryParameter("id")
+  const slug = useQueryParameter("slug")
   const lng = useQueryParameter("lng")
 
   const { data, loading, error } = useQuery<CourseDetailsData>(

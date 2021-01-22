@@ -79,28 +79,28 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
               label="Course Home"
               icon={<DashboardIcon />}
               as={`/${language}/courses/${slug}`}
-              href={"/[lng]/courses/[id]"}
+              href={"/[lng]/courses/[slug]"}
               {...a11yProps(0)}
             />
             <LinkTab
               label="Completions"
               icon={<ViewListIcon />}
               as={`/${language}/courses/${slug}/completions`}
-              href={"/[lng]/courses/[id]/completions"}
+              href={"/[lng]/courses/[slug]/completions"}
               {...a11yProps(1)}
             />
             <LinkTab
               label="Points"
               icon={<ScatterplotIcon />}
               as={`/${language}/courses/${slug}/points`}
-              href={"/[lng]/courses/[id]/points"}
+              href={"/[lng]/courses/[slug]/points"}
               {...a11yProps(2)}
             />
             <LinkTab
               label="Edit"
               icon={<EditIcon />}
               as={`/${language}/courses/${slug}/edit`}
-              href={" /[lng]/courses/[id]/edit"}
+              href={" /[lng]/courses/[slug]/edit"}
               {...a11yProps(3)}
             />
           </StyledTabs>

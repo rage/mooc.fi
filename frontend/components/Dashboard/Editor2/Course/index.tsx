@@ -19,7 +19,7 @@ import {
 } from "/graphql/mutations/courses"
 import { CourseFormValues } from "./types"
 import { fromCourseForm, toCourseForm } from "./serialization"
-import { CourseQuery } from "/pages/[lng]/courses/[id]/edit"
+import { CourseQuery } from "/pages/[lng]/courses/[slug]/edit"
 import notEmpty from "/util/notEmpty"
 import { EditorContext } from "../EditorContext"
 import { useAnchorContext } from "/contexes/AnchorContext"
