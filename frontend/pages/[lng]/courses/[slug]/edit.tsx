@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect, useRef } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { WideContainer } from "/components/Container"
@@ -111,6 +111,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug") ?? ""
+  const beta = useQueryParameter("beta", false)
 
   let redirectTimeout: NodeJS.Timeout | null = null
 
@@ -132,6 +133,14 @@ const EditCourse = ({ router }: EditCourseProps) => {
     loading: coursesLoading,
     error: coursesError,
   } = useQuery<CourseEditorCourses>(CourseEditorCoursesQuery)
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout)
+      }
+    }
+  }, [])
 
   if (courseError || studyModulesError || coursesError) {
     return (
@@ -167,12 +176,19 @@ const EditCourse = ({ router }: EditCourseProps) => {
         {courseLoading || studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
         ) : courseData?.course ? (
-          <CourseEdit2
-            course={courseData.course}
-            courses={coursesData?.courses?.filter(notEmpty)}
-            //modules={studyModulesData?.study_modules?.filter(notEmpty) ?? []}
-            studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
-          />
+          beta ? (
+            <CourseEdit2
+              course={courseData.course}
+              courses={coursesData?.courses?.filter(notEmpty)}
+              studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+            />
+          ) : (
+            <CourseEdit
+              course={courseData.course}
+              courses={coursesData?.courses?.filter(notEmpty)}
+              modules={studyModulesData?.study_modules?.filter(notEmpty) ?? []}
+            />
+          )
         ) : (
           <ErrorContainer elevation={2}>
             <Typography

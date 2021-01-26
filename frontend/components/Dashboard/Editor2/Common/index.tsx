@@ -104,39 +104,39 @@ export function customValidationResolver<T>(schema: Yup.AnyObjectSchema) {
   )
 }
 
-export const testUnique = <Root extends FormValues, Child extends FormValues>(
+function isArray<T>(value: T[keyof T] | T[keyof T][]): value is T[keyof T][] {
+  return Array.isArray(value)
+}
+
+export const testUnique = <
+  Root extends FormValues,
+  Child extends Root[keyof Root]
+>(
   valueField: keyof Root,
   getter: (values: Child) => any,
   // field: keyof T
 ) =>
   function (this: Yup.TestContext, value?: any): boolean {
-    const {
-      context,
-      path,
-    }: { context?: any; path?: string | undefined } = this.options
+    const { context, path }: { context?: any; path?: string } = this.options
 
-    console.log("validating", valueField)
-    console.log("context", context)
     if (!context) {
       return true
     }
 
-    const fieldValues = (context.values as Root)[valueField]
+    const fieldValues = context.values[valueField]
 
-    if (!value || value === "" || !Array.isArray(fieldValues)) {
+    if (!value || value === "" || !isArray(fieldValues)) {
       return true // previous should have caught the empty
     }
 
-    console.log("fieldValues", fieldValues)
     const currentIndexMatch = (path || "").match(/^.*\[(\d+)\].*$/) || []
     const currentIndex =
       currentIndexMatch.length > 1 ? Number(currentIndexMatch[1]) : -1
-    const otherValues = ((fieldValues as unknown) as Child[])
+    const otherValues = fieldValues
       .filter(
         (c: Child, index: number) => getter(c) !== "" && index !== currentIndex,
       )
       .map((c: Child) => getter(c))
 
-    console.log("value", value, "otherValues", otherValues)
     return otherValues.indexOf(value) === -1
   }

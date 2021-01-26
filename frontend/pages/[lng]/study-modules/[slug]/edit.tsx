@@ -56,6 +56,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   const t = useTranslator(StudyModulesTranslations)
 
   const slug = useQueryParameter("slug")
+  const beta = useQueryParameter("beta", false)
 
   let redirectTimeout: NodeJS.Timeout | null = null
 
@@ -78,7 +79,6 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
       5000,
     )
   }
-  /*<StudyModuleEdit module={data.study_module} />*/
 
   return (
     <section>
@@ -89,7 +89,11 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
         {loading ? (
           <FormSkeleton />
         ) : data?.study_module ? (
-          <StudyModuleEdit2 module={data.study_module} />
+          beta ? (
+            <StudyModuleEdit2 module={data.study_module} />
+          ) : (
+            <StudyModuleEdit module={data.study_module} />
+          )
         ) : (
           <ErrorContainer elevation={2}>
             <Typography

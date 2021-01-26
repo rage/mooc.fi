@@ -45,8 +45,8 @@ const NewCourse = () => {
     CourseDetails_course | undefined
   >(undefined)
   const clone = useQueryParameter("clone", false)
+  const beta = useQueryParameter("beta", false)
 
-  console.log("clone?", clone)
   const {
     data: studyModulesData,
     loading: studyModulesLoading,
@@ -93,16 +93,16 @@ const NewCourse = () => {
         </H1NoBackground>
         {studyModulesLoading || coursesLoading || courseLoading ? (
           <FormSkeleton />
+        ) : beta ? (
+          <CourseEdit2
+            {...(clone ? { course: clonedCourse } : {})}
+            courses={coursesData?.courses?.filter(notEmpty)}
+            studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+          />
         ) : (
-          /*<CourseEdit
-              {...(clone ? { course: clonedCourse } : {})}
-              modules={studyModulesData?.study_modules?.filter(notEmpty)}
-              courses={coursesData?.courses?.filter(notEmpty)}
-            />*/
           <CourseEdit
             {...(clone ? { course: clonedCourse } : {})}
             modules={studyModulesData?.study_modules?.filter(notEmpty)}
-            //studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
             courses={coursesData?.courses?.filter(notEmpty)}
           />
         )}
