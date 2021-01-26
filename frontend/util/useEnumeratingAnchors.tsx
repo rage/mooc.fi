@@ -1,3 +1,4 @@
+import { useRef } from "react"
 import { Anchor } from "/contexes/AnchorContext"
 import flattenKeys from "/util/flattenKeys"
 
@@ -5,16 +6,15 @@ export function useEnumeratingAnchors(): [
   Record<string, Anchor>,
   (_: string, __: number) => void,
 ] {
-  let anchorId = 0
-
-  const anchors: Record<string, Anchor> = {}
+  const anchorId = useRef(0)
+  const anchors = useRef<Record<string, Anchor>>({})
   const addAnchor = (anchor: string, tab: number) =>
-    (anchors[anchor] = {
-      id: anchorId++,
+    (anchors.current[anchor] = {
+      id: anchorId.current++,
       tab,
     })
 
-  return [anchors, addAnchor]
+  return [anchors.current, addAnchor]
 }
 
 export function getFirstErrorAnchor(

@@ -47,22 +47,22 @@ const routes: Route[] = [
   {
     label: "Course Home",
     icon: <DashboardIcon />,
-    path: "",
+    path: "/",
   },
   {
     label: "Completions",
     icon: <ViewListIcon />,
-    path: "completions",
+    path: "/completions",
   },
   {
     label: "Points",
     icon: <ScatterplotIcon />,
-    path: "points",
+    path: "/points",
   },
   {
     label: "Edit",
     icon: <EditIcon />,
-    path: "edit",
+    path: "/edit",
   },
 ]
 
@@ -74,8 +74,7 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
 
   function handleChange(_: ChangeEvent<{}>, newValue: number) {
     setValue(newValue)
-    const { path } = routes[newValue]
-    router.push(`/${language}/courses/${slug}${path ? "/" : ""}${path}`)
+    router.push(`/${language}/courses/${slug}${routes[newValue].path}`)
   }
 
   return (

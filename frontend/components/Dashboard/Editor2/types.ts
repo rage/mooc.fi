@@ -5,4 +5,5 @@ export interface FormStatus {
 
 export interface FormValues {
   id?: string | null
+  [key: string]: any
 }
