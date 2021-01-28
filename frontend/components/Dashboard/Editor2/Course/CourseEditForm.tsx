@@ -7,7 +7,6 @@ import {
   ControlledSelect,
   ControlledCheckbox,
   ControlledModuleList,
-  ControlledImageInput,
   ControlledHiddenField,
   ControlledRadioGroup,
 } from "/components/Dashboard/Editor2/Common/Fields"

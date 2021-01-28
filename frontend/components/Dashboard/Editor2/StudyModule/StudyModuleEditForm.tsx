@@ -1,5 +1,4 @@
 import { StudyModuleFormValues } from "/components/Dashboard/Editor2/StudyModule/types"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
 import StudyModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 import EditorContainer from "../EditorContainer"
@@ -14,10 +13,6 @@ import { useEffect, useState } from "react"
 import { Typography } from "@material-ui/core"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"
 import useDebounce from "/util/useDebounce"
-
-interface StudyModuleEditFormProps {
-  module?: StudyModuleDetails_study_module
-}
 
 const ModuleImage = styled.img<{ error?: boolean }>`
   object-fit: cover;

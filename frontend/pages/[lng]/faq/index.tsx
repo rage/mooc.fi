@@ -18,7 +18,7 @@ export default function FAQ() {
   useEffect(() => setRender(true), [])
 
   const Component = FAQComponent({
-    mdxImport: import(`../../../static/md_pages/toc_faq_${language}.mdx`),
+    mdxImport: () => import(`../../../static/md_pages/toc_faq_${language}.mdx`),
     onSuccess: (mdx: any) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")

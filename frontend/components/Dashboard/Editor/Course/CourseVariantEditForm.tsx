@@ -71,7 +71,7 @@ const CourseVariantEditForm = () => {
                         <Grid item xs={2}>
                           <Grid
                             container
-                            justify="flex-end"
+                            justifyItems="flex-end"
                             alignItems="center"
                           >
                             <StyledButton
@@ -116,7 +116,7 @@ const CourseVariantEditForm = () => {
                   {(values!.length == 0 ||
                     (values!.length &&
                       values![values!.length - 1].slug !== "")) && (
-                    <Grid container justify="center">
+                    <Grid container justifyItems="center">
                       <ButtonWithWhiteText
                         variant="contained"
                         color="primary"

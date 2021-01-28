@@ -16,7 +16,6 @@ import { useConfirm } from "material-ui-confirm"
 import { useFormContext } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
 import { useEditorContext } from "./EditorContext"
-import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -44,7 +43,7 @@ function EditorContainer<T extends Record<string, any>>({
   const { handleSubmit, formState, watch } = useFormContext()
   const id = watch("id")
 
-  const { isSubmitting, isSubmitted, isSubmitSuccessful, isDirty } = formState
+  const { isSubmitting, isSubmitted, isDirty } = formState
 
   return (
     <Container maxWidth="md">
