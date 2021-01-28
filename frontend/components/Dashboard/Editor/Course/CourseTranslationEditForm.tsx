@@ -16,6 +16,7 @@ const AddTranslationNotice = styled(EntryContainer)`
   background-color: #88732d;
   color: white;
 `
+
 const CourseTranslationEditForm = () => {
   const {
     values: { course_translations: values },

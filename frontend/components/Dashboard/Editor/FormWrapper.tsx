@@ -24,6 +24,7 @@ import { useConfirm } from "material-ui-confirm"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
+import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 
 // TODO: show delete to course owner
 const isProduction = process.env.NODE_ENV === "production"
@@ -75,24 +76,14 @@ const FormWrapper = <T extends FormValues>(props: FormWrapperProps<T>) => {
     if (Object.keys(errors).length) {
       setTouched(errorsToTouched(errors) as FormikTouched<T>)
 
-      const [key, value] = Object.entries(flattenKeys(errors)).sort(
-        (a, b) => anchors[a[0]]?.id - anchors[b[0]]?.id,
-      )[0]
-      const anchor = anchors[key]
+      const { anchor, anchorLink } = getFirstErrorAnchor(anchors, errors)
 
-      let anchorLink = key
-      if (Array.isArray(value)) {
-        const firstIndex = parseInt(Object.keys(value)[0])
-        anchorLink = `${key}[${firstIndex}].${
-          Object.keys(value[firstIndex])[0]
-        }`
-      }
       setTab(anchor?.tab ?? 0)
 
-      setTimeout(() => {
+      setImmediate(() => {
         const element = document.getElementById(anchorLink)
         element?.scrollIntoView()
-      }, 100)
+      })
     } else {
       setSubmitted(true)
       submitForm()

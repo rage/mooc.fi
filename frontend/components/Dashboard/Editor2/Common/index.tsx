@@ -108,10 +108,7 @@ function isArray<T>(value: T[keyof T] | T[keyof T][]): value is T[keyof T][] {
   return Array.isArray(value)
 }
 
-export const testUnique = <
-  Root extends FormValues,
-  Child extends Root[keyof Root]
->(
+export const testUnique = <Root extends FormValues, Child extends FormValues>(
   valueField: keyof Root,
   getter: (values: Child) => any,
   // field: keyof T

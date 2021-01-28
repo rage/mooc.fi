@@ -1,5 +1,4 @@
 import { initialValues } from "./form-validation"
-import { getIn } from "formik"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import { omit } from "lodash"
 import {

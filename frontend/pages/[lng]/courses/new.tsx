@@ -73,7 +73,7 @@ const NewCourse = () => {
 
     console.log(courseData)
     // TODO: needs the photo import logic
-    setClonedCourse(stripId(courseData.course))
+    setClonedCourse({ ...stripId(courseData.course), slug: "" })
   }, [courseData])
 
   console.log("clonedCourse", clonedCourse)

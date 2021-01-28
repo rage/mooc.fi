@@ -2,10 +2,8 @@ import App from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
 import Head from "next/head"
-import {
-  StylesProvider,
-  ThemeProvider as MuiThemeProvider,
-} from "@material-ui/styles"
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/styles"
+import StyledEngineProvider from "@material-ui/core/StyledEngineProvider"
 import { ApolloProvider } from "@apollo/client"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
@@ -109,7 +107,7 @@ class MyApp extends App {
           />
           <title>{title}</title>
         </Head>
-        <StylesProvider injectFirst>
+        <StyledEngineProvider injectFirst>
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
             <ApolloProvider client={apollo}>
@@ -134,7 +132,7 @@ class MyApp extends App {
               </LoginStateContext.Provider>
             </ApolloProvider>
           </MuiThemeProvider>
-        </StylesProvider>
+        </StyledEngineProvider>
       </>
     )
   }

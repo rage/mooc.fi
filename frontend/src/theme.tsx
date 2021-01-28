@@ -25,6 +25,11 @@ const rawTheme = createMuiTheme({
         variant: "outlined",
         fullWidth: true,
       },
+      styleOverrides: {
+        root: {
+          margin: "", // invalid style actually, but anything else would override the text field in forms
+        },
+      },
     },
     MuiButton: {
       defaultProps: {
