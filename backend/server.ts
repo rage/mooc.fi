@@ -522,7 +522,6 @@ const _express = ({ prisma, knex }: ExpressParams) => {
 
       const updatedSetting = Object.entries(body).reduce<Record<string, any>>(
         (acc, [key, value]) => {
-          console.log("key", key, "value", value)
           if (permittedFields.includes(key)) {
             return { ...acc, [key]: value }
           }
