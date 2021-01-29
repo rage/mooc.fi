@@ -1,7 +1,7 @@
 const PRODUCTION = process.env.NODE_ENV === "production"
 
 import { redisify } from "./services/redis"
-import { Completion, PrismaClient, UserCourseSetting } from "@prisma/client"
+import { Completion, PrismaClient } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
 import createExpress, { Request, Response } from "express"
