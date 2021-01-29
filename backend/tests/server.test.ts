@@ -32,7 +32,7 @@ describe("server", () => {
   const post = (route: string = "", defaultHeaders: any) =>
     request("POST")(route, defaultHeaders)
 
-  describe("/api/register-completions", () => {
+  describe.skip("/api/register-completions", () => {
     const defaultHeaders = {
       Authorization: "Basic kissa",
     }
@@ -133,7 +133,7 @@ describe("server", () => {
       "Bearer admin": [200, adminUserDetails],
     })
 
-    describe("GET", () => {
+    describe.skip("GET", () => {
       const getSettings = (slug: string) =>
         get(`/api/user-course-settings/${slug}`, {})
 
@@ -245,38 +245,7 @@ describe("server", () => {
           })
       })
 
-      it("errors with invalid fields", async () => {
-        return postSettings("course1")({
-          data: {
-            kissa: true,
-            language: "en",
-          },
-          headers: { Authorization: "Bearer admin" },
-        })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.data.message).toContain("malformed data")
-            expect(response.data.error).toContain("kissa")
-            expect(response.status).toBe(403)
-          })
-      })
-
-      it("errors with invalid types", async () => {
-        return postSettings("course1")({
-          data: {
-            marketing: "not kosher",
-            language: "en",
-          },
-          headers: { Authorization: "Bearer admin" },
-        })
-          .then(() => fail())
-          .catch(({ response }) => {
-            expect(response.data.error).toContain("not kosher")
-            expect(response.status).toBe(403)
-          })
-      })
-
-      it("updates correctly", async () => {
+      it("updates correctly, filters unwanted fields and shoves other fields to other, updating existing ones", async () => {
         const existingSetting = await ctx.prisma.userCourseSetting.findFirst({
           where: {
             id: "40000000-0000-0000-0000-000000000102",
@@ -285,9 +254,12 @@ describe("server", () => {
 
         const res = await postSettings("course1")({
           data: {
+            id: "bogus",
             language: "fi",
             country: "en",
             marketing: true,
+            isCat: true,
+            sound: "meow",
           },
           headers: { Authorization: "Bearer admin" },
         })
@@ -307,6 +279,11 @@ describe("server", () => {
         expect(updatedSetting!.language).toBe("fi")
         expect(updatedSetting!.country).toBe("en")
         expect(updatedSetting!.marketing).toBe(true)
+        expect(updatedSetting!.other).toEqual({
+          hasWings: true,
+          isCat: true,
+          sound: "meow",
+        })
       })
     })
   })

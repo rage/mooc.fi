@@ -1,7 +1,7 @@
 const PRODUCTION = process.env.NODE_ENV === "production"
 
 import { redisify } from "./services/redis"
-import { Completion, PrismaClient } from "@prisma/client"
+import { Completion, PrismaClient, UserCourseSetting } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
 import createExpress, { Request, Response } from "express"
@@ -16,6 +16,7 @@ import * as yup from "yup"
 import { chunk } from "lodash"
 import bodyParser from "body-parser"
 import type Knex from "knex"
+import { omit } from "lodash"
 
 const JSONStream = require("JSONStream")
 const helmet = require("helmet")
@@ -496,49 +497,48 @@ const _express = ({ prisma, knex }: ExpressParams) => {
           .json({ message: "no existing user course setting" })
       }
 
-      const settingsSchema = yup
-        .object()
-        .shape({
-          language: yup.string().optional(),
-          country: yup.string().optional(),
-          marketing: yup.boolean().optional(),
-          research: yup.boolean().optional(),
-        })
-        .test("no-unknown", "unknown keys", function (value) {
-          const provided = Object.keys(value)
-          const known = Object.keys(this.schema.fields)
-          const unknown = provided.filter((k) => !known.includes(k))
-
-          if (unknown.length) {
-            throw new Error(
-              `unknown key${unknown.length > 1 ? "s" : ""}: ${unknown.join(
-                ", ",
-              )}`,
-            )
-          }
-
-          return true
-        })
-
-      try {
-        await settingsSchema.validate(body)
-      } catch (error) {
-        return res
-          .status(403)
-          .json({ message: "malformed data", error: error.message })
-      }
-
       if (Object.keys(body).length === 0) {
         return res
           .status(400)
           .json({ message: "must provide at least one value" })
       }
 
+      const permittedFields = [
+        "country",
+        "course_variant",
+        "language",
+        "marketing",
+        "research",
+        "other",
+      ]
+      const strippedFields = [
+        "id",
+        "course_id",
+        "user_id",
+        "created_at",
+        "updated_at",
+      ]
+      const strippedExistingSetting = omit(existingSetting, strippedFields)
+
+      const updatedSetting = Object.entries(body).reduce<Record<string, any>>(
+        (acc, [key, value]) => {
+          console.log("key", key, "value", value)
+          if (permittedFields.includes(key)) {
+            return { ...acc, [key]: value }
+          }
+          if (!strippedFields.includes(key)) {
+            return { ...acc, other: { ...(acc.other as object), [key]: value } }
+          }
+          return acc
+        },
+        strippedExistingSetting,
+      )
+
       await prisma.userCourseSetting.update({
         where: {
           id: existingSetting.id,
         },
-        data: body,
+        data: updatedSetting,
       })
 
       return res.status(200).json({ message: "settings updated" })
