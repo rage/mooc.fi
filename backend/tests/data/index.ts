@@ -247,6 +247,7 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
     research: true,
     other: {
       hasWings: true,
+      isCat: false,
     },
   },
 ]
