@@ -132,58 +132,181 @@ describe("server", () => {
       "Bearer normal": [200, normalUserDetails],
       "Bearer admin": [200, adminUserDetails],
     })
-    const getSettings = (slug: string) =>
-      get(`/api/user-course-settings/${slug}`, {})
 
-    beforeAll(() => tmc.setup())
-    afterAll(() => tmc.teardown())
+    describe("GET", () => {
+      const getSettings = (slug: string) =>
+        get(`/api/user-course-settings/${slug}`, {})
 
-    beforeEach(async () => {
-      await seed(ctx.prisma)
-    })
+      beforeAll(() => tmc.setup())
+      afterAll(() => tmc.teardown())
 
-    it("errors without slug", async () => {
-      return getSettings("")({})
-        .then(() => fail())
-        .catch(({ response }) => {
-          expect(response.status).toBe(400)
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+      })
+
+      it("errors without slug", async () => {
+        return getSettings("")({})
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(400)
+          })
+      })
+
+      it("errors without auth", async () => {
+        return getSettings("course1")({})
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(401)
+          })
+      })
+
+      it("returns null with user with no settings", async () => {
+        return getSettings("course1")({
+          headers: { Authorization: "Bearer normal" },
+        }).then((res) => {
+          expect(res.data).toBeNull()
         })
-    })
+      })
 
-    it("errors without auth", async () => {
-      return getSettings("course1")({})
-        .then(() => fail())
-        .catch(({ response }) => {
-          expect(response.status).toBe(401)
+      it("returns null with course with no settings", async () => {
+        return getSettings("course2")({
+          headers: { Authorization: "Bearer normal" },
+        }).then((res) => {
+          expect(res.data).toBeNull()
         })
-    })
+      })
 
-    it("returns null with user with no settings", async () => {
-      return getSettings("course1")({
-        headers: { Authorization: "Bearer normal" },
-      }).then((res) => {
-        expect(res.data).toBeNull()
+      it("returns settings correctly", async () => {
+        return getSettings("course1")({
+          headers: { Authorization: "Bearer admin" },
+        }).then(async (res) => {
+          const expected = await ctx.prisma.userCourseSetting.findFirst({
+            where: {
+              id: "40000000-0000-0000-0000-000000000102",
+            },
+          })
+          expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
+        })
       })
     })
 
-    it("returns null with course with no settings", async () => {
-      return getSettings("course2")({
-        headers: { Authorization: "Bearer normal" },
-      }).then((res) => {
-        expect(res.data).toBeNull()
-      })
-    })
+    describe("POST", () => {
+      const postSettings = (slug: string) =>
+        post(`/api/user-course-settings/${slug}`, {})
 
-    it("returns settings correctly", async () => {
-      return getSettings("course1")({
-        headers: { Authorization: "Bearer admin" },
-      }).then(async (res) => {
-        const expected = await ctx.prisma.userCourseSetting.findFirst({
+      beforeAll(() => tmc.setup())
+      afterAll(() => tmc.teardown())
+
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+      })
+
+      it("errors without slug", async () => {
+        return postSettings("")({
+          data: { foo: 1 },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(400)
+          })
+      })
+
+      it("errors without auth", async () => {
+        return postSettings("course1")({
+          data: { foo: 1 },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(401)
+          })
+      })
+
+      it("errors without existing setting", async () => {
+        return postSettings("course1")({
+          data: { foo: 1 },
+          headers: { Authorization: "Bearer normal" },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.data.message).toContain("no existing")
+            expect(response.status).toBe(400)
+          })
+      })
+
+      it("errors without given values", async () => {
+        return postSettings("course1")({
+          data: {},
+          headers: { Authorization: "Bearer admin" },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.data.message).toContain("must provide")
+            expect(response.status).toBe(400)
+          })
+      })
+
+      it("errors with invalid fields", async () => {
+        return postSettings("course1")({
+          data: {
+            kissa: true,
+            language: "en",
+          },
+          headers: { Authorization: "Bearer admin" },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.data.message).toContain("malformed data")
+            expect(response.data.error).toContain("kissa")
+            expect(response.status).toBe(403)
+          })
+      })
+
+      it("errors with invalid types", async () => {
+        return postSettings("course1")({
+          data: {
+            marketing: "not kosher",
+            language: "en",
+          },
+          headers: { Authorization: "Bearer admin" },
+        })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.data.error).toContain("not kosher")
+            expect(response.status).toBe(403)
+          })
+      })
+
+      it("updates correctly", async () => {
+        const existingSetting = await ctx.prisma.userCourseSetting.findFirst({
           where: {
             id: "40000000-0000-0000-0000-000000000102",
           },
         })
-        expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
+
+        const res = await postSettings("course1")({
+          data: {
+            language: "fi",
+            country: "en",
+            marketing: true,
+          },
+          headers: { Authorization: "Bearer admin" },
+        })
+
+        expect(res.data.message).toContain("settings updated")
+        expect(res.status).toBe(200)
+
+        const updatedSetting = await ctx.prisma.userCourseSetting.findFirst({
+          where: {
+            id: "40000000-0000-0000-0000-000000000102",
+          },
+        })
+
+        expect(updatedSetting!.updated_at! > existingSetting!.updated_at!).toBe(
+          true,
+        )
+        expect(updatedSetting!.language).toBe("fi")
+        expect(updatedSetting!.country).toBe("en")
+        expect(updatedSetting!.marketing).toBe(true)
       })
     })
   })
