@@ -4,13 +4,14 @@ import { redisify } from "./services/redis"
 import { Completion, PrismaClient } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
-import createExpress, { Request } from "express"
+import createExpress, { Request, Response } from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
 import {
   getUser as _getUser,
   getOrganization as _getOrganization,
+  requireAdmin,
 } from "./util/server-functions"
 import * as yup from "yup"
 import { chunk } from "lodash"
@@ -430,6 +431,36 @@ const _express = ({ prisma, knex }: ExpressParams) => {
 
     return res.status(200).json({ message: "success" })
   })
+
+  express.get(
+    "/api/user-course-settings/:slug",
+    async (req: Request<{ slug: string }>, res: Response) => {
+      const { slug } = req.params
+
+      if (!slug) {
+        return res.status(400).json({ message: "must provide slug" })
+      }
+
+      const getUserResult = await getUser(req, res)
+
+      if (getUserResult.isErr()) {
+        return getUserResult.error
+      }
+
+      const { user } = getUserResult.value
+
+      const settings = await prisma.userCourseSetting.findFirst({
+        where: {
+          course: {
+            slug,
+          },
+          user_id: user.id,
+        },
+      })
+
+      res.json(settings)
+    },
+  )
 
   return express
 }

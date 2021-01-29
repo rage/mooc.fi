@@ -198,10 +198,10 @@ export const users: Prisma.UserCreateInput[] = [
   },
   {
     id: "20000000000000000000000000000103",
-    administrator: false,
+    administrator: true,
     email: "f@mail.com",
     upstream_id: 2,
-    username: "second_user",
+    username: "second_user_admin",
   },
   {
     id: "20000000000000000000000000000104",
@@ -242,6 +242,12 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
     course: { connect: { id: "00000000000000000000000000000002" } },
     user: { connect: { id: "20000000000000000000000000000103" } },
     language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      hasWings: true,
+    },
   },
 ]
 
