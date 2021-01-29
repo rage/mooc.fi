@@ -61,7 +61,6 @@
     "lodash": "^4.17.20",
     "lqip-loader": "^2.2.1",
     "luxon": "^1.25.0",
-    "material-ui-chip-input": "^1.1.0",
     "material-ui-confirm": "^2.1.1",
     "module-resolver": "^1.0.0",
     "morgan": "^1.10.0",

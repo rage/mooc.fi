@@ -10,7 +10,6 @@ import {
   TextField,
   FormGroup,
 } from "@material-ui/core"
-//import ChipInput from "material-ui-chip-input"
 
 const isString = (
   value: UserCourseSettingsVisibilityFormValues | string,
