@@ -1,15 +1,36 @@
-import { getTestContext } from "./__helpers"
+import { fakeTMC, getTestContext } from "./__helpers"
+import { normalUserDetails, adminUserDetails } from "./data"
 import { seed } from "./data/seed"
-import axios from "axios"
+import axios, { Method } from "axios"
 
 const ctx = getTestContext()
 
 describe("server", () => {
-  const post = (route: string = "", defaultHeaders: any) => async (
-    data: any,
-    headers: any = defaultHeaders,
-  ) =>
-    await axios.post(`http://localhost:${ctx.port}${route}`, data, { headers })
+  interface RequestParams {
+    data?: any
+    headers?: any
+    params?: Record<string, any>
+  }
+  const request = (method: Method) => (
+    route: string = "",
+    defaultHeaders: any,
+  ) => async ({
+    data = null,
+    headers = defaultHeaders,
+    params = {},
+  }: RequestParams) =>
+    await axios({
+      method,
+      url: `http://localhost:${ctx.port}${route}`,
+      data,
+      headers,
+      params,
+    })
+
+  const get = (route: string = "", defaultHeaders: any) =>
+    request("GET")(route, defaultHeaders)
+  const post = (route: string = "", defaultHeaders: any) =>
+    request("POST")(route, defaultHeaders)
 
   describe("/api/register-completions", () => {
     const defaultHeaders = {
@@ -22,7 +43,10 @@ describe("server", () => {
     })
 
     it("errors on wrong authorization", async () => {
-      return postCompletions({ foo: 1 }, { Authorization: "foo" })
+      return postCompletions({
+        data: { foo: 1 },
+        headers: { Authorization: "foo" },
+      })
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(401)
@@ -30,7 +54,10 @@ describe("server", () => {
     })
 
     it("errors on non-existent secret", async () => {
-      return postCompletions({ foo: 1 }, { Authorization: "Basic koira" })
+      return postCompletions({
+        data: { foo: 1 },
+        headers: { Authorization: "Basic koira" },
+      })
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(401)
@@ -38,7 +65,7 @@ describe("server", () => {
     })
 
     it("errors on no completions", async () => {
-      return postCompletions({ foo: 1 })
+      return postCompletions({ data: { foo: 1 } })
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(400)
@@ -47,11 +74,13 @@ describe("server", () => {
 
     it("errors on malformed completion", async () => {
       return postCompletions({
-        completions: [
-          {
-            foo: 1,
-          },
-        ],
+        data: {
+          completions: [
+            {
+              foo: 1,
+            },
+          ],
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -61,16 +90,18 @@ describe("server", () => {
 
     it("creates registered completions", async () => {
       const res = await postCompletions({
-        completions: [
-          {
-            completion_id: "30000000-0000-0000-0000-000000000102",
-            student_number: "12345",
-          },
-          {
-            completion_id: "30000000-0000-0000-0000-000000000103",
-            student_number: "12345",
-          },
-        ],
+        data: {
+          completions: [
+            {
+              completion_id: "30000000-0000-0000-0000-000000000102",
+              student_number: "12345",
+            },
+            {
+              completion_id: "30000000-0000-0000-0000-000000000103",
+              student_number: "12345",
+            },
+          ],
+        },
       })
 
       expect(res.status).toBe(200)
@@ -93,6 +124,67 @@ describe("server", () => {
           updated_at: expect.any(Date),
         },
       ])
+    })
+  })
+
+  describe("/api/user-course-settings", () => {
+    const tmc = fakeTMC({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer admin": [200, adminUserDetails],
+    })
+    const getSettings = (slug: string) =>
+      get(`/api/user-course-settings/${slug}`, {})
+
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    it("errors without slug", async () => {
+      return getSettings("")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(400)
+        })
+    })
+
+    it("errors without auth", async () => {
+      return getSettings("course1")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("returns null with user with no settings", async () => {
+      return getSettings("course1")({
+        headers: { Authorization: "Bearer normal" },
+      }).then((res) => {
+        expect(res.data).toBeNull()
+      })
+    })
+
+    it("returns null with course with no settings", async () => {
+      return getSettings("course2")({
+        headers: { Authorization: "Bearer normal" },
+      }).then((res) => {
+        expect(res.data).toBeNull()
+      })
+    })
+
+    it("returns settings correctly", async () => {
+      return getSettings("course1")({
+        headers: { Authorization: "Bearer admin" },
+      }).then(async (res) => {
+        const expected = await ctx.prisma.userCourseSetting.findFirst({
+          where: {
+            id: "40000000-0000-0000-0000-000000000102",
+          },
+        })
+        expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
+      })
     })
   })
 })
