@@ -11,7 +11,6 @@ import * as winston from "winston"
 import {
   getUser as _getUser,
   getOrganization as _getOrganization,
-  requireAdmin,
 } from "./util/server-functions"
 import * as yup from "yup"
 import { chunk } from "lodash"
@@ -456,12 +455,95 @@ const _express = ({ prisma, knex }: ExpressParams) => {
           },
           user_id: user.id,
         },
+        orderBy: { created_at: "asc" },
       })
 
-      res.json(settings)
+      res.status(200).json(settings)
     },
   )
 
+  express.post(
+    "/api/user-course-settings/:slug",
+    async (req: Request<{ slug: string }>, res: Response) => {
+      const { slug } = req.params
+
+      if (!slug) {
+        return res.status(400).json({ message: "must provide slug" })
+      }
+      const { body } = req
+
+      const getUserResult = await getUser(req, res)
+
+      if (getUserResult.isErr()) {
+        return getUserResult.error
+      }
+
+      const { user } = getUserResult.value
+
+      const existingSetting = await prisma.userCourseSetting.findFirst({
+        where: {
+          course: {
+            slug,
+          },
+          user_id: user.id,
+        },
+        orderBy: { created_at: "asc" },
+      })
+
+      if (!existingSetting) {
+        return res
+          .status(400)
+          .json({ message: "no existing user course setting" })
+      }
+
+      const settingsSchema = yup
+        .object()
+        .shape({
+          language: yup.string().optional(),
+          country: yup.string().optional(),
+          marketing: yup.boolean().optional(),
+          research: yup.boolean().optional(),
+        })
+        .test("no-unknown", "unknown keys", function (value) {
+          const provided = Object.keys(value)
+          const known = Object.keys(this.schema.fields)
+          const unknown = provided.filter((k) => !known.includes(k))
+
+          if (unknown.length) {
+            throw new Error(
+              `unknown key${unknown.length > 1 ? "s" : ""}: ${unknown.join(
+                ", ",
+              )}`,
+            )
+          }
+
+          return true
+        })
+
+      try {
+        await settingsSchema.validate(body)
+      } catch (error) {
+        return res
+          .status(403)
+          .json({ message: "malformed data", error: error.message })
+      }
+
+      if (Object.keys(body).length === 0) {
+        return res
+          .status(400)
+          .json({ message: "must provide at least one value" })
+      }
+
+      await prisma.userCourseSetting.update({
+        where: {
+          id: existingSetting.id,
+        },
+        data: body,
+      })
+
+      return res.status(200).json({ message: "settings updated" })
+    },
+  )
   return express
 }
 
