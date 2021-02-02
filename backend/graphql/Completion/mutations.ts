@@ -112,7 +112,7 @@ export const CompletionMutations = extendType({
             grade: o.grade ?? null,
             completion_date: o.completion_date,
             certificate_id: null,
-            eligible_for_ects: null,
+            eligible_for_ects: true,
             tier: o.tier ?? null,
           }
         })
