@@ -1,24 +1,13 @@
+// generated Mon Dec 28 2020 22:02:16 GMT+0200 (Eastern European Standard Time)
+
 import en from "./en.json"
 import fi from "./fi.json"
-import getTranslator from "/translations"
+import { TranslationDictionary } from "/translations"
 
-type ProfileTranslations = typeof en | typeof fi
-
-export default getTranslator<ProfileTranslations>({ en, fi })
-/* type Keys = keyof ProfileTranslations
-
-const dicts: { [lng: string]: ProfileTranslations } = { en, fi }
-
-function getProfileTranslator(lng: string) {
-  const dictionary = dicts[lng] || {}
-  const getTranslation = (key: string): string => {
-    const value = dictionary[key as Keys]
-    if (!value) {
-      return dicts.en[key as Keys] || key
-    }
-    return value
-  }
-  return getTranslation
+export type ProfileTranslations = typeof en & typeof fi
+const ProfileTranslations: TranslationDictionary<ProfileTranslations> = {
+  en,
+  fi,
 }
 
-export default getProfileTranslator */
+export default ProfileTranslations

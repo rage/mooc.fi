@@ -2,11 +2,12 @@ import { signOut } from "/lib/authentication"
 import { useApolloClient } from "@apollo/client"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"
-import getCommonTranslator from "/translations/common"
+import CommonTranslations from "/translations/common"
 import LangLink from "/components/LangLink"
 import nookies from "nookies"
 import ProfileButton from "./ProfileButton"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
+import { useTranslator } from "/util/useTranslator"
 
 interface Props {
   isSignedIn: boolean
@@ -16,7 +17,7 @@ const UserOptionsMenu = (props: Props) => {
   const client = useApolloClient()
   const { isSignedIn, logInOrOut } = props
   const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
 
   if (isSignedIn) {
     return (

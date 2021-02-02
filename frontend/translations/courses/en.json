@@ -97,5 +97,15 @@
   "courseAutomaticCompletionsEligibleForEcts": "Automatic completions eligible for ECTS",
   "coursePointsNeeded": "Points needed",
   "courseExerciseCompletionsNeeded": "Exercise completions needed",
-  "courseNewCourse": "New course"
+  "courseNewCourse": "New course",
+  "helpSlug": "A slug is a unique identifier for a course, ie. elements-of-ai, ohpe.",
+  "helpStartPoint": "\"Start with these\" tag for course in front page.",
+  "helpHasCertificate": "Does the course have a certificate?",
+  "helpUpcomingActiveLink": "By default, the upcoming courses in the front page have a disabled link to course page. Check this to enable.",
+  "helpOrder": "This determines the order of the courses in front page lists outside of study modules. Better not to use small values, as it's not easy to insert new ones -- 100, 200, 300 etc. are good.",
+  "helpModuleOrder": "This determines the order of the courses in front page study module lists.",
+  "helpExerciseCompletionsNeeded": "How many exercise completions are needed to pass the course?",
+  "helpPointsNeeded": "How many points are needed to pass the course?",
+  "helpAutomaticCompletions": "Does the course have automatic completions?",
+  "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?"
 }

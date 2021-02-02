@@ -113,7 +113,7 @@ interface CompletionsListProps {
 
 const CompletionsList = ({ search }: CompletionsListProps) => {
   const completionLanguage = useContext(CourseLanguageContext)
-  const course = useQueryParameter("id")
+  const course = useQueryParameter("slug")
 
   interface queryDetailsInterface {
     start?: string | null

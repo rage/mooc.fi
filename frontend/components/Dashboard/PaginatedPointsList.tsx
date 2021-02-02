@@ -8,8 +8,7 @@ import PointsList from "./DashboardPointsList"
 import Button from "@material-ui/core/Button"
 import useDebounce from "/util/useDebounce"
 
-import { TextField, Grid, Slider } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
+import { TextField, Grid, Slider, Skeleton } from "@material-ui/core"
 
 import { range } from "lodash"
 import styled from "styled-components"
@@ -168,9 +167,9 @@ function PaginatedPointsList(props: Props) {
       </Grid>
       {loading ? (
         <>
-          <LoadingPointCardSkeleton variant="rect" />
-          <LoadingPointCardSkeleton variant="rect" />
-          <LoadingPointCardSkeleton variant="rect" />
+          <LoadingPointCardSkeleton variant="rectangular" />
+          <LoadingPointCardSkeleton variant="rectangular" />
+          <LoadingPointCardSkeleton variant="rectangular" />
         </>
       ) : (
         <>

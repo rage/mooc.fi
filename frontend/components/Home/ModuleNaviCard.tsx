@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import LangLink from "/components/LangLink"
-import Skeleton from "@material-ui/lab/Skeleton"
+import { Skeleton } from "@material-ui/core"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 
 import ModuleImage from "/components/Home/ModuleImage"

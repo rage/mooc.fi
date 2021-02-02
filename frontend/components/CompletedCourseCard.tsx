@@ -1,14 +1,14 @@
-import { useContext } from "react"
 import styled from "styled-components"
 import Grid from "@material-ui/core/Grid"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import DoneIcon from "@material-ui/icons/Done"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
-import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/profile"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
+import { useTranslator } from "/util/useTranslator"
+import CompletionsTranslations from "/translations/completions"
+import ProfileTranslations from "/translations/profile"
 
 const Background = styled(ClickableDiv)`
   display: flex;
@@ -51,8 +51,7 @@ function CompletedCourseCard(props: CourseCardProps) {
   const registeredCompletions = completion?.completions_registered ?? []
   const isRegistered = registeredCompletions.length > 0
 
-  const lng = useContext(LanguageContext)
-  const t = getProfileTranslator(lng.language)
+  const t = useTranslator(CompletionsTranslations, ProfileTranslations)
 
   const humanReadableLanguage =
     mapLangToLanguage[completion?.completion_language ?? ""] ||

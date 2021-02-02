@@ -43,5 +43,7 @@
     "research7":"Data from the learning process is used in this research. The data includes information about learning material usage, course assignment progress and completion, and exam performance. Individual students cannot be identified from the results. Participation is voluntary, and if you do not wish to participate in the research, there are no consequences to you.",
     "researchAgree": "Taking part on the research",
     "researchYes": "I want to participate in the educational research. By choosing this, you help both current and future students.",
-    "researchNo": "I do not want to participate in the educational research."    
+    "researchNo": "I do not want to participate in the educational research.",
+    "editorRevert": "Revert changes",
+    "selectNoChoice": "(no choice)"  
 }

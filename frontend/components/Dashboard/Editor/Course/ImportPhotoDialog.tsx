@@ -1,10 +1,9 @@
-import { useContext, useCallback } from "react"
+import { useCallback } from "react"
 import {
   CourseEditorCourses_courses,
   CourseEditorCourses_courses_photo,
 } from "/static/types/generated/CourseEditorCourses"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import LanguageContext from "/contexes/LanguageContext"
 import {
   Dialog,
   DialogTitle,
@@ -17,8 +16,9 @@ import {
 import { Field, useFormikContext } from "formik"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { addDomain } from "/util/imageUtils"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import styled from "styled-components"
+import { useTranslator } from "/util/useTranslator"
 
 const ImageContainer = styled.div`
   display: flex;
@@ -50,8 +50,7 @@ const ImportPhotoDialog = ({
 }: ImportPhotoDialogProps) => {
   const { values, setFieldValue } = useFormikContext<CourseFormValues>()
 
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
 
   const selectedCourse = useCallback(
     () =>

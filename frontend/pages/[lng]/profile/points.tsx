@@ -1,14 +1,12 @@
-import { useContext } from "react"
 import Container from "/components/Container"
 import PointsList from "/components/User/Points/PointsList"
 import { H1NoBackground } from "/components/Text/headers"
 import withSignedIn from "/lib/with-signed-in"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/util/useTranslator"
 
 function Points() {
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
   return (
     <section>
       <Container>

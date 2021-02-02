@@ -1,5 +1,10 @@
-import { PropsWithChildren, memo } from "react"
-import { CardActions, Typography, TypographyProps } from "@material-ui/core"
+import { memo, PropsWithChildren } from "react"
+import {
+  CardActions,
+  Skeleton,
+  Typography,
+  TypographyProps,
+} from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
@@ -9,7 +14,6 @@ import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import { CardTitle } from "/components/Text/headers"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import Skeleton from "@material-ui/lab/Skeleton"
 import CourseStatusBadge from "./CourseStatusBadge"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 
@@ -25,7 +29,7 @@ const CardBase = styled.div<{ ishidden?: number }>`
   background-color: ${(props) => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
-  min-width: 235px;
+  min-width: 340px;
   display: grid;
   @media (max-width: 700px) {
     grid-template-columns: repeat(1, 1fr);
@@ -52,6 +56,7 @@ const ImageContainer = styled.div`
 
 const StyledLink = styled.a`
   text-decoration: none;
+  margin-left: 0px;
 `
 const CourseCardItem = styled.li`
   display: flex;
@@ -162,7 +167,7 @@ const CourseCard = memo(
       >
         <CourseCardImageContainer>
           {loading ? (
-            <Skeleton variant="rect" height="100%" />
+            <Skeleton variant="rectangular" height="100%" />
           ) : course ? (
             <CourseImage photo={course.photo} alt={course.name} />
           ) : (
@@ -233,11 +238,11 @@ const CourseCard = memo(
           <CourseCardActionArea>
             {loading ? (
               <>
-                <Skeleton variant="rect" width="100%" />
+                <Skeleton variant="rectangular" width="100%" />
               </>
             ) : course ? (
               <>
-                <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
+                <LangLink as={`/courses/${course.slug}`} href="/courses/[slug]">
                   <StyledLink
                     aria-label={`To the homepage of course ${course.name}`}
                   >
@@ -246,8 +251,19 @@ const CourseCard = memo(
                     </StyledButton>
                   </StyledLink>
                 </LangLink>
+                <LangLink href={`/courses/new?clone=${course.slug}`}>
+                  <StyledLink>
+                    <StyledButton
+                      variant="text"
+                      color="secondary"
+                      startIcon={<AddIcon />}
+                    >
+                      Clone...
+                    </StyledButton>
+                  </StyledLink>
+                </LangLink>
                 <LangLink
-                  href="/courses/[id]/edit"
+                  href="/courses/[slug]/edit"
                   as={`/courses/${course.slug}/edit`}
                   prefetch={false}
                 >

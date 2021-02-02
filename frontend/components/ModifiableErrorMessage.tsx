@@ -7,9 +7,8 @@ import Typography from "@material-ui/core/Typography"
 import styled from "styled-components"
 import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
 import Refresh from "@material-ui/icons/Refresh"
-import getCommonTranslator from "/translations/common"
-import LanguageContext from "/contexes/LanguageContext"
-import { useContext } from "react"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledIcon = styled(Report)`
   height: 35%;
@@ -24,8 +23,7 @@ interface Props {
   errorMessage: string
 }
 function ModifiableErrorMessage(props: Props) {
-  const lng = useContext(LanguageContext)
-  const t = getCommonTranslator(lng.language)
+  const t = useTranslator(CommonTranslations)
   const { errorMessage } = props
 
   return (

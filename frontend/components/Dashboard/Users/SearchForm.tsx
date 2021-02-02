@@ -2,12 +2,12 @@ import { useCallback, useContext, useState } from "react"
 import UserSearchContext from "/contexes/UserSearchContext"
 import { H1NoBackground } from "/components/Text/headers"
 import { TextField, useMediaQuery } from "@material-ui/core"
-import LanguageContext from "/contexes/LanguageContext"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import getUsersTranslator from "/translations/users"
+import UsersTranslations from "/translations/users"
 import styled from "styled-components"
 import MobileGrid from "/components/Dashboard/Users/MobileGrid"
 import WideGrid from "/components/Dashboard/Users/WideGrid"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled.form`
   display: flex;
@@ -26,8 +26,7 @@ const SearchForm = () => {
     setPage,
     setSearchVariables,
   } = useContext(UserSearchContext)
-  const { language } = useContext(LanguageContext)
-  const t = getUsersTranslator(language)
+  const t = useTranslator(UsersTranslations)
 
   const [searchFormText, setSearchFormText] = useState(searchVariables.search)
 

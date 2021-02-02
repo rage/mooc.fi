@@ -1,5 +1,4 @@
-import { Typography } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
+import { Typography, Skeleton } from "@material-ui/core"
 import styled from "styled-components"
 import { range } from "lodash"
 import dynamic from "next/dynamic"
@@ -104,22 +103,24 @@ export const Loader = () => (
 )
 
 interface FAQComponentProps {
-  mdxImport?: Promise<any>
+  mdxImport?: () => Promise<any>
   onSuccess: (mdx: any) => any
   onError: () => void
 }
 
 export function FAQComponent({
-  mdxImport = Promise.resolve(),
+  mdxImport = () => Promise.resolve(),
   onSuccess,
   onError,
 }: FAQComponentProps) {
   return dynamic(
     async () => {
-      return mdxImport.then(onSuccess).catch((error: any) => {
-        console.log("error", error)
-        onError()
-      })
+      return mdxImport()
+        .then(onSuccess)
+        .catch((error: any) => {
+          console.log("error", error)
+          onError()
+        })
     },
     { loading: () => <Loader /> },
   )

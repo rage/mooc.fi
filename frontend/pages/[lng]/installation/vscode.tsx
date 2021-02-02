@@ -13,8 +13,9 @@ import UserOSContext from "/contexes/UserOSContext"
 import { userOsType } from "/util/getUserOS"
 import NoOsMessage from "/components/Installation/NoOsMessage"
 import LanguageContext from "/contexes/LanguageContext"
-import getInstallationTranslator from "/translations/installation"
+import InstallationTranslations from "/translations/installation"
 import Spinner from "/components/Spinner"
+import { useTranslator } from "/util/useTranslator"
 
 const Background = styled.section`
   padding-top: 2em;
@@ -89,7 +90,7 @@ const VSCode = () => {
   const [userOS, setUserOs] = useState<userOsType>(getUserOS())
   const [render, setRender] = useState(false)
   const { language } = useContext(LanguageContext)
-  const t = getInstallationTranslator(language)
+  const t = useTranslator(InstallationTranslations)
 
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)
