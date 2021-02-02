@@ -2,6 +2,7 @@ import { fakeTMC, getTestContext } from "./__helpers"
 import { normalUserDetails, adminUserDetails } from "./data"
 import { seed } from "./data/seed"
 import axios, { Method } from "axios"
+import { omit } from "lodash"
 
 const ctx = getTestContext()
 
@@ -32,7 +33,7 @@ describe("server", () => {
   const post = (route: string = "", defaultHeaders: any) =>
     request("POST")(route, defaultHeaders)
 
-  describe.skip("/api/register-completions", () => {
+  describe("/api/register-completions", () => {
     const defaultHeaders = {
       Authorization: "Basic kissa",
     }
@@ -133,7 +134,7 @@ describe("server", () => {
       "Bearer admin": [200, adminUserDetails],
     })
 
-    describe.skip("GET", () => {
+    describe("GET", () => {
       const getSettings = (slug: string) =>
         get(`/api/user-course-settings/${slug}`, {})
 
@@ -176,15 +177,33 @@ describe("server", () => {
         })
       })
 
+      it("warns on key clashes", async () => {
+        return getSettings("course2")({
+          headers: { Authorization: "Bearer admin" },
+        }).then(async (_) => {
+          // @ts-ignore: mock
+          expect(ctx.logger.warn.mock.calls.length).toBeGreaterThan(0)
+          // @ts-ignore: mock
+          expect(ctx.logger.warn.mock.calls[0][0]).toContain("country")
+          // @ts-ignore: mock
+          expect(ctx.logger.warn.mock.calls[0][0]).toContain("research")
+        })
+      })
+
       it("returns settings correctly", async () => {
         return getSettings("course1")({
           headers: { Authorization: "Bearer admin" },
         }).then(async (res) => {
-          const expected = await ctx.prisma.userCourseSetting.findFirst({
+          const settings = await ctx.prisma.userCourseSetting.findFirst({
             where: {
               id: "40000000-0000-0000-0000-000000000102",
             },
           })
+          const expected = {
+            ...omit(settings, "other"),
+            ...((settings!.other as object) ?? {}),
+          }
+
           expect(res.data).toEqual(JSON.parse(JSON.stringify(expected)))
         })
       })
