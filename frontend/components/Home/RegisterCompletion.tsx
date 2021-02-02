@@ -1,7 +1,7 @@
 import Container from "/components/Container"
 import { H1NoBackground } from "/components/Text/headers"
 import { PropsWithChildren } from "react"
-import Alert from "@material-ui/lab/Alert"
+import { Alert } from "@material-ui/core"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { useTranslator } from "/util/useTranslator"
 
