@@ -250,6 +250,20 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
       isCat: false,
     },
   },
+  {
+    id: "40000000-0000-0000-0000-000000000999",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      research: false,
+      country: "fi",
+      okField: true,
+    },
+  },
 ]
 
 export const services: Prisma.ServiceCreateInput[] = [

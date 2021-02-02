@@ -16,7 +16,7 @@ import * as yup from "yup"
 import { chunk } from "lodash"
 import bodyParser from "body-parser"
 import type Knex from "knex"
-import { omit } from "lodash"
+import { omit, intersection } from "lodash"
 
 const JSONStream = require("JSONStream")
 const helmet = require("helmet")
@@ -50,10 +50,11 @@ interface ExerciseCompletionResult {
 interface ExpressParams {
   prisma: PrismaClient
   knex: Knex
+  logger: winston.Logger
 }
 
 // wrapped so that the context isn't cached between test instances
-const _express = ({ prisma, knex }: ExpressParams) => {
+const _express = ({ prisma, knex, logger }: ExpressParams) => {
   const getUser = _getUser(knex)
   const getOrganization = _getOrganization(knex)
 
@@ -459,7 +460,27 @@ const _express = ({ prisma, knex }: ExpressParams) => {
         orderBy: { created_at: "asc" },
       })
 
-      res.status(200).json(settings)
+      const overwrittenKeys = intersection(
+        Object.keys(omit(settings, "other") ?? {}),
+        Object.keys(settings?.other ?? {}),
+      )
+
+      if (overwrittenKeys.length > 0) {
+        logger.warn(
+          `settings has keys in 'other' field that will overwrite keys: ${overwrittenKeys.join(
+            ", ",
+          )}`,
+        )
+      }
+
+      res.status(200).json(
+        settings
+          ? {
+              ...omit(settings, "other"),
+              ...((settings?.other as object) ?? {}),
+            }
+          : null,
+      )
     },
   )
 
@@ -570,7 +591,7 @@ export default ({ prisma, logger, knex, extraContext = {} }: ServerParams) => {
     logger,
     debug: DEBUG,
   })
-  const express = _express({ prisma, knex })
+  const express = _express({ prisma, knex, logger })
 
   apollo.applyMiddleware({ app: express, path: PRODUCTION ? "/api" : "/" })
 
