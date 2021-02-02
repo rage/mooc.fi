@@ -18,8 +18,12 @@ import PageTranslations from "/translations/pages"
 import { ConfirmProvider } from "material-ui-confirm"
 import AlertContext from "../contexes/AlertContext"
 import getTranslator from "/translations"
+import { CacheProvider } from "@emotion/react"
+import createCache from "@emotion/cache"
 
 fontAwesomeConfig.autoAddCss = false
+
+export const cache = createCache({ key: "css", prepend: true })
 
 const getPageTranslator = getTranslator(PageTranslations)
 class MyApp extends App {
@@ -107,32 +111,34 @@ class MyApp extends App {
           />
           <title>{title}</title>
         </Head>
-        <StyledEngineProvider injectFirst>
+        <CacheProvider value={cache}>
           <MuiThemeProvider theme={theme}>
-            <CssBaseline />
-            <ApolloProvider client={apollo}>
-              <LoginStateContext.Provider value={this.state}>
-                <LanguageContext.Provider
-                  value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
-                >
-                  <ConfirmProvider>
-                    <AlertContext.Provider
-                      value={{
-                        alerts: this.state.alerts,
-                        addAlert: this.addAlert,
-                        removeAlert: this.removeAlert,
-                      }}
-                    >
-                      <Layout>
-                        <Component {...pageProps} />
-                      </Layout>
-                    </AlertContext.Provider>
-                  </ConfirmProvider>
-                </LanguageContext.Provider>
-              </LoginStateContext.Provider>
-            </ApolloProvider>
+            <StyledEngineProvider injectFirst>
+              <CssBaseline />
+              <ApolloProvider client={apollo}>
+                <LoginStateContext.Provider value={this.state}>
+                  <LanguageContext.Provider
+                    value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
+                  >
+                    <ConfirmProvider>
+                      <AlertContext.Provider
+                        value={{
+                          alerts: this.state.alerts,
+                          addAlert: this.addAlert,
+                          removeAlert: this.removeAlert,
+                        }}
+                      >
+                        <Layout>
+                          <Component {...pageProps} />
+                        </Layout>
+                      </AlertContext.Provider>
+                    </ConfirmProvider>
+                  </LanguageContext.Provider>
+                </LoginStateContext.Provider>
+              </ApolloProvider>
+            </StyledEngineProvider>
           </MuiThemeProvider>
-        </StyledEngineProvider>
+        </CacheProvider>
       </>
     )
   }
