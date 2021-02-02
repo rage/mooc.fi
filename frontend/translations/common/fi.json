@@ -43,6 +43,8 @@
     "research7":"Työskentelystä kerättyä tietoa käytetään tutkimuksessa. Kerätty tieto sisältää tietoa oppimateriaalien käytöstä, kurssitehtävien tekemisestä sekä kokeissa pärjäämisestä. Tutkimustuloksista ei pystytä tunnistamaan yksittäisiä opiskelijoita. Osallistuminen on vapaaehtoista, ja jos et osallistu tutkimukseen, siitä ei tule minkäänlaisia seuraamuksia.",
     "researchAgree": "Tutkimukseen osallistuminen",
     "researchYes": "Osallistun oppimiseen liittyvään tutkimukseen. Valitsemalla tämän autat sekä nykyisiä että tulevia opiskelijoita.",
-    "researchNo": "En osallistu oppimiseen liittyvään tutkimukseen."    
+    "researchNo": "En osallistu oppimiseen liittyvään tutkimukseen.",
+    "editorRevert": "Peru muutokset",
+    "selectNoChoice": "(ei valintaa)"  
 }
 

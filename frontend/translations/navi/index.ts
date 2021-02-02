@@ -1,6 +1,10 @@
+// generated Mon Dec 28 2020 22:02:16 GMT+0200 (Eastern European Standard Time)
+
 import en from "./en.json"
 import fi from "./fi.json"
-import getTranslator from "/translations"
+import { TranslationDictionary } from "/translations"
 
-type NaviTranslations = typeof en | typeof fi
-export default getTranslator<NaviTranslations>({ en, fi })
+export type NaviTranslations = typeof en & typeof fi
+const NaviTranslations: TranslationDictionary<NaviTranslations> = { en, fi }
+
+export default NaviTranslations

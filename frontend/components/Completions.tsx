@@ -3,10 +3,9 @@ import { RegularContainer as Container } from "/components/Container"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
 import { gql } from "@apollo/client"
-import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/profile"
-import { useContext } from "react"
+import ProfileTranslations from "/translations/profile"
 import CompletionListItem from "/components/CompletionListItem"
+import { useTranslator } from "/util/useTranslator"
 
 const completionsFragment = gql`
   fragment UserCompletions on User {
@@ -59,8 +58,7 @@ const Title = styled(Typography)<any>`
 `
 
 const Completions = (props: CompletionsProps) => {
-  const lng = useContext(LanguageContext)
-  const t = getProfileTranslator(lng.language)
+  const t = useTranslator(ProfileTranslations)
   const completions = props.completions || []
 
   return (

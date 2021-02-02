@@ -1,6 +1,7 @@
-import { DatePicker } from "@material-ui/pickers"
+import DatePicker from "@material-ui/lab/DatePicker"
 import { ErrorMessage, useField } from "formik"
 import styled from "styled-components"
+import { TextField } from "@material-ui/core"
 
 const StyledErrorMessage = styled.p`
   color: #f44336;
@@ -22,12 +23,17 @@ const DatePickerField = ({ ...props }: any) => {
         {...props}
         format="yyyy-MM-dd"
         mask="____-__-__"
-        style={{
-          marginBottom: error ? "0rem" : "1.5rem",
-          width: "70%",
-        }}
         onChange={setValue}
         onClose={setTouched}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            style={{
+              marginBottom: error ? "0rem" : "1.5rem",
+              width: "70%",
+            }}
+          />
+        )}
       />
       <ErrorMessage component={StyledErrorMessage} name={field.name} />
     </>

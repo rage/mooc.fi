@@ -1,14 +1,9 @@
-import {
-  useContext,
-  useState,
-  useCallback,
-  MouseEvent as ReactMouseEvent,
-} from "react"
+import { useState, useCallback, MouseEvent as ReactMouseEvent } from "react"
 import { FormFieldGroup } from "./CourseEditForm"
 import { FormControl, Button } from "@material-ui/core"
 import { Field, useFormikContext, FieldInputProps } from "formik"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
+import { useLanguageContext } from "/contexes/LanguageContext"
 import { CourseFormValues } from "./types"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
@@ -16,6 +11,7 @@ import { addDomain } from "/util/imageUtils"
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import ImportPhotoDialog from "/components/Dashboard/Editor/Course/ImportPhotoDialog"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
+import { useTranslator } from "/util/useTranslator"
 
 interface ImageInputProps {
   courses: CourseEditorCourses_courses[] | undefined
@@ -27,8 +23,8 @@ const CourseImageInput = (props: ImageInputProps) => {
     initialValues,
   } = useFormikContext<CourseFormValues>()
   const { courses } = props
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const { language } = useLanguageContext()
+  const t = useTranslator(CoursesTranslations)
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const coursesWithPhotos =
@@ -74,6 +70,7 @@ const CourseImageInput = (props: ImageInputProps) => {
             <ImageDropzoneInput
               {...props}
               onImageLoad={(value: any) => setFieldValue("thumbnail", value)}
+              onImageAccepted={(value) => setFieldValue("new_photo", value)}
             >
               <ImagePreview
                 file={addDomain(values.thumbnail)}

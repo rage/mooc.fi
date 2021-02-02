@@ -103,7 +103,7 @@ const EmailTemplateView = () => {
               label="txt_body"
               multiline
               rows="4"
-              rowsMax="40"
+              maxRows="40"
               value={txtBody ?? ""}
               variant="outlined"
               onChange={(e) => {
@@ -118,7 +118,7 @@ const EmailTemplateView = () => {
               label="html_body (disabled)"
               multiline
               rows="4"
-              rowsMax="40"
+              maxRows="40"
               disabled={true}
               value={htmlBody ?? ""}
               variant="outlined"

@@ -1,8 +1,7 @@
-import { useContext } from "react"
 import { Typography, Paper, Button, Tooltip } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
-import LanguageContext from "/contexes/LanguageContext"
-import getRegisterCompletionTranslator from "/translations/register-completion"
+import { useTranslator } from "/util/useTranslator"
+import RegisterCompletionTranslations from "/translations/register-completion"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,8 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function LinkButton(props: any) {
   const classes = useStyles()
-  const lng = useContext(LanguageContext)
-  const t = getRegisterCompletionTranslator(lng.language)
+  const t = useTranslator(RegisterCompletionTranslations)
   return (
     <Tooltip
       title={t("linkAria")}
@@ -58,8 +56,7 @@ type RegProps = {
 }
 function RegisterCompletionText(props: RegProps) {
   const classes = useStyles()
-  const lng = useContext(LanguageContext)
-  const t = getRegisterCompletionTranslator(lng.language)
+  const t = useTranslator(RegisterCompletionTranslations)
   return (
     <Paper className={classes.paper}>
       <Typography

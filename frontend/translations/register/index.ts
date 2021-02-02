@@ -1,7 +1,13 @@
+// generated Mon Dec 28 2020 22:02:16 GMT+0200 (Eastern European Standard Time)
+
 import en from "./en.json"
 import fi from "./fi.json"
-import getTranslator from "/translations"
+import { TranslationDictionary } from "/translations"
 
-type OrganizationRegisterTranslations = typeof en | typeof fi
+export type RegisterTranslations = typeof en & typeof fi
+const RegisterTranslations: TranslationDictionary<RegisterTranslations> = {
+  en,
+  fi,
+}
 
-export default getTranslator<OrganizationRegisterTranslations>({ en, fi })
+export default RegisterTranslations

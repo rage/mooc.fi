@@ -8,10 +8,11 @@ import {
 import { createAccount } from "../lib/account"
 import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
-import getSignUpTranslator from "/translations/sign-up"
+import SignUpTranslations from "/translations/sign-up"
 import LangLink from "/components/LangLink"
 import styled from "styled-components"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import getTranslator from "/translations"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -63,8 +64,11 @@ export interface CreateAccountFormProps {
   onComplete: Function
 }
 
+const getSignUpTranslator = getTranslator(SignUpTranslations)
+
 class CreateAccountForm extends Component<CreateAccountFormProps> {
   static contextType = LanguageContext
+
   constructor(props: CreateAccountFormProps) {
     super(props)
   }
@@ -86,7 +90,9 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
 
   onClick = async (e: any) => {
     e.preventDefault()
+
     const t = getSignUpTranslator(this.context.language)
+
     this.setState({ submitting: true, triedSubmitting: true })
 
     if (!this.validate()) {

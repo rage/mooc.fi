@@ -1,10 +1,10 @@
 {
   "title": {
     "/[lng]/courses": "Courses",
-    "/[lng]/courses/[id]": "Course dashboard - {{title}}", 
-    "/[lng]/courses/[id]/edit": "Edit course - {{title}}", 
-    "/[lng]/courses/[id]/completions": "Completions - {{title}}", 
-    "/[lng]/courses/[id]/points": "Points - {{title}}", 
+    "/[lng]/courses/[slug]": "Course dashboard - {{title}}", 
+    "/[lng]/courses/[slug]/edit": "Edit course - {{title}}", 
+    "/[lng]/courses/[slug]/completions": "Completions - {{title}}", 
+    "/[lng]/courses/[slug]/points": "Points - {{title}}", 
     "/[lng]/courses/new": "New course",
     "/[lng]/installation/netbeans": "NetBeans installation",
     "/[lng]/installation/vscode": "VSCode installation",
@@ -12,7 +12,7 @@
     "/[lng]/profile/completions": "My completions",
     "/[lng]/profile/points": "My points",
     "/[lng]/study-modules": "Study modules",
-    "/[lng]/study-modules/[id]/edit": "Edit study module",
+    "/[lng]/study-modules/[slug]/edit": "Edit study module",
     "/[lng]/study-modules/new": "New study module",
     "/[lng]/users/[id]": "User - {{title}}",
     "/[lng]/users/[id]/completions": "Completions - {{title}}",
@@ -29,18 +29,20 @@
     "/[lng]/research-consent": "Research consent",
     "/[lng]/register-completion": "Register completion",
     "/[lng]/faq": "Frequently asked questions",
+    "/fi/faq/suoritusten_rekisterointi": "",
+    "/fi/faq/registering_completion": "",
     "/en/faq/registering_completion": "Frequenty asked questions: Registering completions",
     "/en/faq/suoritusten_rekisterointi": "Frequenty asked questions: Registering completions",
     "/register-completion": "Register completion",
     "/": "Home"
   },
   "breadcrumb": {
-    "/[lng]/courses/[id]": "Course dashboard",
-    "/[lng]/courses/[id]/edit": "Edit", 
-    "/[lng]/courses/[id]/completions": "Completions",
-    "/[lng]/courses/[id]/points": "Points",
+    "/[lng]/courses/[slug]": "Course dashboard",
+    "/[lng]/courses/[slug]/edit": "Edit", 
+    "/[lng]/courses/[slug]/completions": "Completions",
+    "/[lng]/courses/[slug]/points": "Points",
     "/[lng]/courses/new": "New",
-    "/[lng]/study-modules/[id]/edit": "Edit",
+    "/[lng]/study-modules/[slug]/edit": "Edit",
     "/[lng]/users/[id]": "User", 
     "/[lng]/users/[id]/completions": "Completions",
     "/[lng]/register-completion/[slug]": "Register completion",
@@ -51,7 +53,11 @@
     "/[lng]/installation": "Installation",
     "/en/installation/vscode": "VSCode",
     "/en/installation/netbeans": "Netbeans",
+    "/fi/installation/vscode": "",
+    "/fi/installation/netbeans": "",
     "/en/faq/registering_completion": "Registering completions",
-    "/en/faq/suoritusten_rekisterointi": "Registering completions"
+    "/en/faq/suoritusten_rekisterointi": "Registering completions",
+    "/fi/faq/suoritusten_rekisterointi": "",
+    "/fi/faq/registering_completion": ""
   }
 }

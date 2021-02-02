@@ -1,9 +1,9 @@
 import Container from "/components/Container"
 import { H1NoBackground } from "/components/Text/headers"
-import { PropsWithChildren, useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
-import getRegisterCompletionTranslator from "/translations/register-completion"
+import { PropsWithChildren } from "react"
 import Alert from "@material-ui/lab/Alert"
+import RegisterCompletionTranslations from "/translations/register-completion"
+import { useTranslator } from "/util/useTranslator"
 
 interface RegisterCompletionProps {
   title: string
@@ -13,8 +13,7 @@ export default function RegisterCompletion({
   title,
   children,
 }: PropsWithChildren<RegisterCompletionProps>) {
-  const { language } = useContext(LanguageContext)
-  const t = getRegisterCompletionTranslator(language)
+  const t = useTranslator(RegisterCompletionTranslations)
 
   return (
     <Container>

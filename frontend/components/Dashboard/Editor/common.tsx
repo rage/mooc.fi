@@ -110,15 +110,17 @@ export const EnumeratingAnchor: React.FC<any> = ({
 export const StyledFieldWithAnchor: React.FC<any> = ({
   name,
   tab = 0,
+  error,
   ...props
 }: {
   name: string
   tab: number
+  error?: any
 }) => {
   return (
     <>
       <EnumeratingAnchor id={name} tab={tab} />
-      <StyledField name={name} {...props} />
+      <StyledField name={name} {...props} error={Boolean(error)} />
     </>
   )
 }
@@ -132,8 +134,14 @@ export const TabSection = ({
   currentTab,
   tab,
   children,
+  ...props
 }: PropsWithChildren<TabSectionProps>) => (
-  <section style={{ display: currentTab !== tab ? "none" : "initial" }}>
+  <section
+    style={{
+      display: currentTab === tab ? "initial" : "none",
+    }}
+    {...props}
+  >
     {children}
   </section>
 )

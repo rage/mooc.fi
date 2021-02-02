@@ -1,4 +1,4 @@
-import { useCallback, useContext, FC } from "react"
+import { useCallback, FC, useContext } from "react"
 import {
   Grid,
   Card,
@@ -12,8 +12,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Skeleton,
 } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
 import LangLink from "/components/LangLink"
 import {
   UserDetailsContains_userDetailsContains_edges,
@@ -22,9 +22,9 @@ import {
 import Pagination from "/components/Dashboard/Users/Pagination"
 import styled from "styled-components"
 import range from "lodash/range"
-import getUsersTranslator from "/translations/users"
-import LanguageContext from "/contexes/LanguageContext"
+import UsersTranslations from "/translations/users"
 import UserSearchContext from "/contexes/UserSearchContext"
+import { useTranslator } from "/util/useTranslator"
 
 const UserCard = styled(Card)`
   margin-top: 0.5rem;
@@ -32,9 +32,8 @@ const UserCard = styled(Card)`
 `
 
 const MobileGrid: FC<any> = () => {
-  const { language } = useContext(LanguageContext)
   const { data, page, rowsPerPage, loading } = useContext(UserSearchContext)
-  const t = getUsersTranslator(language)
+  const t = useTranslator(UsersTranslations)
 
   const PaginationComponent = useCallback(
     () => (
@@ -100,8 +99,7 @@ const DataCard = ({
 }: {
   row?: UserDetailsContains_userDetailsContains_edges
 }) => {
-  const { language } = useContext(LanguageContext)
-  const t = getUsersTranslator(language)
+  const t = useTranslator(UsersTranslations)
 
   const { email, upstream_id, first_name, last_name, student_number } =
     row?.node ?? ({} as UserDetailsContains_userDetailsContains_edges_node)

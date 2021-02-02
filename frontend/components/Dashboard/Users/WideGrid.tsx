@@ -8,15 +8,16 @@ import {
   TableFooter,
   TableRow,
   TableHead,
+  Skeleton,
 } from "@material-ui/core"
-import Skeleton from "@material-ui/lab/Skeleton"
 import styled from "styled-components"
 import range from "lodash/range"
 import LangLink from "/components/LangLink"
 import Pagination from "/components/Dashboard/Users/Pagination"
-import getUsersTranslator from "/translations/users"
-import LanguageContext from "/contexes/LanguageContext"
+import UsersTranslations from "/translations/users"
 import UserSearchContext from "/contexes/UserSearchContext"
+import { useTranslator } from "/util/useTranslator"
+import notEmpty from "/util/notEmpty"
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -33,8 +34,7 @@ const StyledPaper = styled(Paper)`
 `
 
 const WideGrid = () => {
-  const { language } = useContext(LanguageContext)
-  const t = getUsersTranslator(language)
+  const t = useTranslator(UsersTranslations)
   const { data, rowsPerPage, page, loading } = useContext(UserSearchContext)
 
   const PaginationComponent = useCallback(
@@ -90,11 +90,10 @@ const WideGrid = () => {
 }
 
 const RenderResults = () => {
-  const { language } = useContext(LanguageContext)
-  const t = getUsersTranslator(language)
+  const t = useTranslator(UsersTranslations)
   const { data, loading } = useContext(UserSearchContext)
 
-  const results = data?.userDetailsContains?.edges ?? []
+  const results = data?.userDetailsContains?.edges?.filter(notEmpty) ?? []
 
   if (loading) {
     return (
