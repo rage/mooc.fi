@@ -81,7 +81,7 @@ export const UserOverViewQuery = gql`
 function RegisterCompletionPage() {
   const { currentUser } = useContext(LoginStateContext)
 
-  const courseSlug = useQueryParameter("slug")
+  const courseSlug = (useQueryParameter("slug") ?? "").replace(/\./g, "")
 
   const t = useTranslator(RegisterCompletionTranslations)
   const {
