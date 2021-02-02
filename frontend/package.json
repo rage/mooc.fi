@@ -24,6 +24,7 @@
     "@date-io/core": "^2.9.0",
     "@date-io/luxon": "^2.9.0",
     "@emotion/react": "^11.1.4",
+    "@emotion/server": "^11.0.0",
     "@emotion/styled": "^11.0.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
