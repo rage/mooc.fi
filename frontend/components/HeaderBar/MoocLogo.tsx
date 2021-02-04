@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Typography from "@material-ui/core/Typography"
 import Avatar from "@material-ui/core/Avatar"
 import LangLink from "/components/LangLink"

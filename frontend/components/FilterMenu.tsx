@@ -14,7 +14,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { Clear, Search } from "@material-ui/icons"
 
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
 
 const Container = styled.div`

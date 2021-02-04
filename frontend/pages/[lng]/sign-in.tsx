@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography"
 import SignInForm from "/components/SignInForm"
 import Container from "/components/Container"
 import SignInTranslations from "/translations/common"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import withSignedOut from "/lib/with-signed-out"
 import { useTranslator } from "/util/useTranslator"
 

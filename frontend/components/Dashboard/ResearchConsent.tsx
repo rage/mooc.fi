@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react"
 import CommonTranslations from "/translations/common"
 import { Link, RadioGroup, FormControlLabel, Radio } from "@material-ui/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useTranslator } from "/util/useTranslator"
 
 const Row = styled.div`

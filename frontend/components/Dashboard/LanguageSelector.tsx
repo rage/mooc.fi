@@ -1,6 +1,6 @@
 import Typography from "@material-ui/core/Typography"
 import LanguageSelectorForm from "./LanguageSelectorForm"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 const StyledCard = styled.div`
   margin: 5px;

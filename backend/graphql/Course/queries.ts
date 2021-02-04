@@ -29,6 +29,7 @@ export const CourseQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { slug, id, language } = args
 
+        console.log("I got args", args)
         if (!slug && !id) {
           throw new UserInputError("must provide id or slug")
         }

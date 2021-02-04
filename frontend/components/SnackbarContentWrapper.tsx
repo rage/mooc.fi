@@ -5,7 +5,7 @@ import CloseIcon from "@material-ui/icons/Close"
 import IconButton from "@material-ui/core/IconButton"
 import SnackbarContent from "@material-ui/core/SnackbarContent"
 import WarningIcon from "@material-ui/icons/Warning"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 const typeIcon = {
   success: CheckCircleIcon,

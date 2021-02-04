@@ -14,7 +14,7 @@ import {
   DialogActions,
   Button,
 } from "@material-ui/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { ControlledSelect } from "/components/Dashboard/Editor2/Common/Fields"
 import { useEffect, useState } from "react"
 

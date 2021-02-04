@@ -8,7 +8,7 @@ import {
   ControlledTextField,
   ControlledHiddenField,
 } from "/components/Dashboard/Editor2/Common/Fields"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useEffect, useState } from "react"
 import { Typography } from "@material-ui/core"
 import StudyModuleTranslationsForm from "./StudyModuleTranslationsForm"

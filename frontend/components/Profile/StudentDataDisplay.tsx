@@ -9,7 +9,7 @@ import { ProfileUserOverView_currentUser } from "/static/types/generated/Profile
 import ProfileSettings from "/components/Profile/ProfileSettings"
 import ProfileTranslations from "/translations/profile"
 import Warning from "@material-ui/icons/Warning"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
