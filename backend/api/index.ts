@@ -1,4 +1,3 @@
-import { Express } from "express"
 import type { PrismaClient } from "@prisma/client"
 import type Knex from "knex"
 import { Router } from "express"
