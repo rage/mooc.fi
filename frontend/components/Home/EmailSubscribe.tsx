@@ -1,5 +1,5 @@
 import { useState, createRef } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Send from "@material-ui/icons/Send"
 import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied"
 import Card from "@material-ui/core/Card"

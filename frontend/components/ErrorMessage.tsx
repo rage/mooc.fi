@@ -1,6 +1,6 @@
 import CardActions from "@material-ui/core/CardActions"
 import Typography from "@material-ui/core/Typography"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Report from "@material-ui/icons/Report"
 import Refresh from "@material-ui/icons/Refresh"
 import {

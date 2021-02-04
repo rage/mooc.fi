@@ -1,9 +1,10 @@
+import React from "react"
 import App from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
 import Head from "next/head"
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/styles"
-import StyledEngineProvider from "@material-ui/core/StyledEngineProvider"
+// import StyledEngineProvider from "@material-ui/core/StyledEngineProvider"
 import { ApolloProvider } from "@apollo/client"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
@@ -20,6 +21,8 @@ import AlertContext from "../contexes/AlertContext"
 import getTranslator from "/translations"
 import { CacheProvider } from "@emotion/react"
 import createCache from "@emotion/cache"
+import { fontCss } from "/src/fonts"
+import { Global } from "@emotion/react"
 
 fontAwesomeConfig.autoAddCss = false
 
@@ -67,8 +70,8 @@ class MyApp extends App {
     Router.router.events.on("routeChangeComplete", logPageView)
 
     const jssStyles = document.querySelector("#jss-server-side")
-    if (jssStyles?.parentNode) {
-      jssStyles.parentNode.removeChild(jssStyles)
+    if (jssStyles?.parentElement) {
+      jssStyles.parentElement.removeChild(jssStyles)
     }
   }
 
@@ -104,39 +107,38 @@ class MyApp extends App {
 
     return (
       <>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-          />
-          <title>{title}</title>
-        </Head>
         <CacheProvider value={cache}>
+          <Head>
+            <meta
+              name="viewport"
+              content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+            />
+            <title>{title}</title>
+          </Head>
           <MuiThemeProvider theme={theme}>
-            <StyledEngineProvider injectFirst>
-              <CssBaseline />
-              <ApolloProvider client={apollo}>
-                <LoginStateContext.Provider value={this.state}>
-                  <LanguageContext.Provider
-                    value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
-                  >
-                    <ConfirmProvider>
-                      <AlertContext.Provider
-                        value={{
-                          alerts: this.state.alerts,
-                          addAlert: this.addAlert,
-                          removeAlert: this.removeAlert,
-                        }}
-                      >
-                        <Layout>
-                          <Component {...pageProps} />
-                        </Layout>
-                      </AlertContext.Provider>
-                    </ConfirmProvider>
-                  </LanguageContext.Provider>
-                </LoginStateContext.Provider>
-              </ApolloProvider>
-            </StyledEngineProvider>
+            <CssBaseline />
+            <ApolloProvider client={apollo}>
+              <LoginStateContext.Provider value={this.state}>
+                <LanguageContext.Provider
+                  value={{ language: lng, url: languageSwitchUrl, hrefUrl }}
+                >
+                  <ConfirmProvider>
+                    <AlertContext.Provider
+                      value={{
+                        alerts: this.state.alerts,
+                        addAlert: this.addAlert,
+                        removeAlert: this.removeAlert,
+                      }}
+                    >
+                      <Layout>
+                        <Global styles={fontCss} />
+                        <Component {...pageProps} />
+                      </Layout>
+                    </AlertContext.Provider>
+                  </ConfirmProvider>
+                </LanguageContext.Provider>
+              </LoginStateContext.Provider>
+            </ApolloProvider>
           </MuiThemeProvider>
         </CacheProvider>
       </>

@@ -1,6 +1,6 @@
 import { FC, useState, useCallback, useEffect, memo } from "react"
 import { withRouter, SingletonRouter } from "next/router"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { gql, useApolloClient } from "@apollo/client"
 import { Skeleton } from "@material-ui/core"
 import LangLink from "/components/LangLink"
@@ -8,33 +8,25 @@ import { memoize } from "lodash"
 import { DocumentNode } from "graphql"
 import PageTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
+import { useLanguageContext } from "/contexes/LanguageContext"
+import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 const BreadcrumbCourseQuery = gql`
-  query BreadcrumbCourse($slug: String) {
-    course(slug: $slug) {
+  query BreadcrumbCourse($slug: String, $language: String) {
+    course(slug: $slug, language: $language) {
       id
       slug
       name
-      course_translations {
-        id
-        language
-        name
-      }
     }
   }
 `
 
 const BreadcrumbModuleQuery = gql`
-  query BreadcrumbModule($slug: String) {
-    study_module(slug: $slug) {
+  query BreadcrumbModule($slug: String, $language: String) {
+    study_module(slug: $slug, language: $language) {
       id
       slug
       name
-      study_module_translations {
-        id
-        language
-        name
-      }
     }
   }
 `
@@ -49,7 +41,7 @@ const BreadCrumbs = styled.ul`
 const BreadCrumb = styled.li`
   float: left;
   cursor: pointer;
-  &:first-child a {
+  &:first-of-type a {
     padding-left: 2em;
   }
 
@@ -175,7 +167,7 @@ const DashboardBreadCrumbs = memo((props: Props) => {
   const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
   const client = useApolloClient()
   const { router } = props
-
+  const { language } = useLanguageContext()
   //if router prop exists, take the current URL
   let currentUrl: string = ""
   if (router) {
@@ -210,20 +202,30 @@ const DashboardBreadCrumbs = memo((props: Props) => {
 
     const [query, path] = params[type]
 
+    const variables = {
+      slug,
+      language: mapNextLanguageToLocaleCode(language),
+    }
+
+    let crumb = slug
+
     try {
       const data = await client.readQuery({
         query,
-        variables: { slug },
+        variables,
       })
-      setAwaitedCrumb(data?.[path]?.name ?? slug)
+      // somehow this isn't throwing anymore when there's nothing found, so let's do that ourselves
+      if (!data) throw new Error()
+      crumb = data?.[path]?.name ?? crumb
     } catch {
       const { data } = await client.query({
         query,
-        variables: { slug },
+        variables,
         fetchPolicy: "cache-first",
       })
-      setAwaitedCrumb(data?.[path]?.name ?? slug)
+      crumb = data?.[path]?.name ?? crumb
     }
+    setAwaitedCrumb(crumb)
   }, [])
 
   useEffect(() => {

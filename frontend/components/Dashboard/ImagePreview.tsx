@@ -1,6 +1,6 @@
 import { MouseEvent as ReactMouseEvent } from "react"
 import { ButtonBase, Tooltip } from "@material-ui/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 const CloseButton = styled(ButtonBase)`
   position: relative;

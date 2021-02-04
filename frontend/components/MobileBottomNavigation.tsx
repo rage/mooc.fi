@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import LoggedInUserMenu from "./HeaderBar/LoggedInUserMenu"

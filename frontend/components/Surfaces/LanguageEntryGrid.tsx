@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Grid from "@material-ui/core/Grid"
 
 export const LanguageEntry = styled(Grid)`

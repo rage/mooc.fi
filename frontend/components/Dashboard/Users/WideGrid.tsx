@@ -10,7 +10,7 @@ import {
   TableHead,
   Skeleton,
 } from "@material-ui/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import range from "lodash/range"
 import LangLink from "/components/LangLink"
 import Pagination from "/components/Dashboard/Users/Pagination"

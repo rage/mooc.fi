@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { gql, ApolloConsumer } from "@apollo/client"
 import XLSX from "xlsx"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import {
   ExportUserCourseProgesses,
   ExportUserCourseProgesses_userCourseProgresses,

@@ -1,7 +1,7 @@
 import CourseCard from "./CourseCard"
 import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import { range } from "lodash"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 
 interface CourseGridProps {
