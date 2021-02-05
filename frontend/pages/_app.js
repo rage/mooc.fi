@@ -3,8 +3,8 @@ import App from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
 import Head from "next/head"
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/styles"
-// import StyledEngineProvider from "@material-ui/core/StyledEngineProvider"
+import { ThemeProvider } from "@material-ui/core/styles"
+// import { StyledEngineProvider } from "@material-ui/styled-engine"
 import { ApolloProvider } from "@apollo/client"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
@@ -21,7 +21,7 @@ import AlertContext from "../contexes/AlertContext"
 import getTranslator from "/translations"
 import { CacheProvider } from "@emotion/react"
 import createCache from "@emotion/cache"
-import { fontCss } from "/src/fonts"
+import { fontCss } from "../src/fonts"
 import { Global } from "@emotion/react"
 
 fontAwesomeConfig.autoAddCss = false
@@ -115,7 +115,7 @@ class MyApp extends App {
             />
             <title>{title}</title>
           </Head>
-          <MuiThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
@@ -139,7 +139,7 @@ class MyApp extends App {
                 </LanguageContext.Provider>
               </LoginStateContext.Provider>
             </ApolloProvider>
-          </MuiThemeProvider>
+          </ThemeProvider>
         </CacheProvider>
       </>
     )

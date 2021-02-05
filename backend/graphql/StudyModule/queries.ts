@@ -1,4 +1,4 @@
-import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
+import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { Prisma, StudyModule, StudyModuleTranslation } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, or, isUser, Role } from "../../accessControl"
@@ -14,10 +14,11 @@ export const StudyModuleQueries = extendType({
         id: idArg(),
         slug: stringArg(),
         language: stringArg(),
+        translationFallback: booleanArg({ default: false }),
       },
       authorize: or(isAdmin, isUser),
       resolve: async (_, args, ctx) => {
-        const { id, slug, language } = args
+        const { id, slug, language, translationFallback } = args
 
         if (!id && !slug) {
           throw new UserInputError("must provide id or slug")
@@ -58,14 +59,16 @@ export const StudyModuleQueries = extendType({
           )
 
           if (!module_translation) {
-            return Promise.resolve(null)
-          }
-
-          const { name, description = "" } = module_translation
-          return {
-            ...study_module,
-            name,
-            description,
+            if (!translationFallback) {
+              return Promise.resolve(null)
+            }
+          } else {
+            const { name, description = "" } = module_translation
+            return {
+              ...study_module,
+              name,
+              description,
+            }
           }
         }
 

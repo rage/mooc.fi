@@ -12,8 +12,16 @@ import { useLanguageContext } from "/contexes/LanguageContext"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 const BreadcrumbCourseQuery = gql`
-  query BreadcrumbCourse($slug: String, $language: String) {
-    course(slug: $slug, language: $language) {
+  query BreadcrumbCourse(
+    $slug: String
+    $language: String
+    $translationFallback: Boolean
+  ) {
+    course(
+      slug: $slug
+      language: $language
+      translationFallback: $translationFallback
+    ) {
       id
       slug
       name
@@ -22,8 +30,16 @@ const BreadcrumbCourseQuery = gql`
 `
 
 const BreadcrumbModuleQuery = gql`
-  query BreadcrumbModule($slug: String, $language: String) {
-    study_module(slug: $slug, language: $language) {
+  query BreadcrumbModule(
+    $slug: String
+    $language: String
+    $translationFallback: Boolean
+  ) {
+    study_module(
+      slug: $slug
+      language: $language
+      translationFallback: $translationFallback
+    ) {
       id
       slug
       name
@@ -101,9 +117,8 @@ const BreadCrumbLink = styled.a`
   ${BreadcrumbArrowStyle}
 `
 
-const BreadCrumbSkeleton = styled(Skeleton)`
+const BreadCrumbSkeletonWrapper = styled.div`
   ${BreadcrumbArrowStyle}
-  background: #e6e5e5;
 `
 
 const asToHref = {
@@ -139,17 +154,14 @@ const BreadcrumbComponent: FC<{ target?: string }> = memo(
             <BreadCrumbLink>{children}</BreadCrumbLink>
           </LangLink>
         ) : (
-          <BreadCrumbSkeleton
-            width={100}
-            height={5}
-            style={{ marginLeft: "3em", marginBottom: "0px" }}
-          />
+          <BreadCrumbSkeletonWrapper>
+            <Skeleton width="100px" />
+          </BreadCrumbSkeletonWrapper>
         )}
       </BreadCrumb>
     )
   },
 )
-
 interface Props {
   router: SingletonRouter
 }
@@ -205,6 +217,7 @@ const DashboardBreadCrumbs = memo((props: Props) => {
     const variables = {
       slug,
       language: mapNextLanguageToLocaleCode(language),
+      translationFallback: true,
     }
 
     let crumb = slug
@@ -214,6 +227,7 @@ const DashboardBreadCrumbs = memo((props: Props) => {
         query,
         variables,
       })
+      console.log("data", data)
       // somehow this isn't throwing anymore when there's nothing found, so let's do that ourselves
       if (!data) throw new Error()
       crumb = data?.[path]?.name ?? crumb
@@ -223,6 +237,7 @@ const DashboardBreadCrumbs = memo((props: Props) => {
         variables,
         fetchPolicy: "cache-first",
       })
+      console.log("data2", data)
       crumb = data?.[path]?.name ?? crumb
     }
     setAwaitedCrumb(crumb)
