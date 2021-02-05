@@ -4,7 +4,7 @@ import { ServerStyleSheets } from "@material-ui/core/styles"
 import theme from "../src/theme"
 import { cache } from "./_app"
 import createEmotionServer from "@emotion/server/create-instance"
-import flush from "styled-jsx/server"
+// import flush from "styled-jsx/server"
 
 const { extractCritical } = createEmotionServer(cache)
 
@@ -34,16 +34,8 @@ class MyDocument extends Document {
           data-emotion={`css ${styles.ids.join(" ")}`}
           dangerouslySetInnerHTML={{ __html: styles.css }}
         />,
-        flush(),
+        //flush(),
       ],
-      /*        styles: (
-          <Fragment>
-            {initialProps.styles}
-            {sheets.getStyleElement()}
-            {sheet.getStyleElement()}
-            {flush() || null}
-          </Fragment>
-        ),*/
     }
   }
 
@@ -58,7 +50,6 @@ class MyDocument extends Document {
             type="image/x-icon"
             href="/static/favicon.ico"
           />
-          {/*<style dangerouslySetInnerHTML={{ __html: fontCss }} />*/}
         </Head>
         <body>
           <Main />
