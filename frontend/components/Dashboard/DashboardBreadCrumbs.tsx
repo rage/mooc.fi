@@ -1,13 +1,13 @@
-import { FC, useState, useCallback, useEffect, useContext, memo } from "react"
+import { FC, useState, useCallback, useEffect, memo } from "react"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "styled-components"
 import { gql, useApolloClient } from "@apollo/client"
-import Skeleton from "@material-ui/lab/Skeleton"
+import { Skeleton } from "@material-ui/core"
 import LangLink from "/components/LangLink"
 import { memoize } from "lodash"
 import { DocumentNode } from "graphql"
-import getPageTranslator from "/translations/pages"
-import LanguageContext from "/contexes/LanguageContext"
+import PageTranslations from "/translations/pages"
+import { useTranslator } from "/util/useTranslator"
 
 const BreadcrumbCourseQuery = gql`
   query BreadcrumbCourse($slug: String) {
@@ -115,7 +115,7 @@ const BreadCrumbSkeleton = styled(Skeleton)`
 `
 
 const asToHref = {
-  "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[id]$3", // matches /(courses|study-modules)/[id]*, doesn't match new
+  "/(courses|study-modules)/(?!new)([^/]+)(/.+)?": "/$1/[slug]$3", // matches /(courses|study-modules)/[slug]*, doesn't match new
   "/users/(.+)(/+)(.+)": "/users/[id]$2$3", // matches /users/[id]/*, doesn't match /users/[id] or search
   "/users/(?!search)([^/]+)$": "/users/[id]", // matches /users/[id], doesn't match /users/[id]/* or search
   "/users/search/(.+)": "/users/search/[text]",
@@ -175,7 +175,6 @@ const DashboardBreadCrumbs = memo((props: Props) => {
   const [awaitedCrumb, setAwaitedCrumb] = useState<string | null>(null)
   const client = useApolloClient()
   const { router } = props
-  const { language } = useContext(LanguageContext)
 
   //if router prop exists, take the current URL
   let currentUrl: string = ""
@@ -192,7 +191,7 @@ const DashboardBreadCrumbs = memo((props: Props) => {
     homeLink = "/en/"
   }
 
-  const t = getPageTranslator(language, router)
+  const t = useTranslator(PageTranslations)
 
   let urlRouteComponents = urlWithQueryAndAnchorRemoved.split("/")
   urlRouteComponents = urlRouteComponents.slice(

@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@material-ui/core"
+import { Grid, Typography, Skeleton } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 import AddIcon from "@material-ui/icons/Add"
 import AddCircleIcon from "@material-ui/icons/AddCircle"
@@ -8,7 +8,6 @@ import LangLink from "/components/LangLink"
 import { AllEditorModulesWithTranslations_study_modules } from "/static/types/generated/AllEditorModulesWithTranslations"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import Skeleton from "@material-ui/lab/Skeleton"
 
 const Base = styled(ClickableDiv)`
   width: 100%;
@@ -96,7 +95,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
       <Base>
         {loading ? (
           <ImageBackground>
-            <Skeleton variant="rect" height="100%" />
+            <Skeleton variant="rectangular" height="100%" />
           </ImageBackground>
         ) : module ? (
           <picture>
@@ -137,7 +136,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
             </ButtonWithPaddingAndMargin>
           ) : module ? (
             <LangLink
-              href="/study-modules/[id]/edit"
+              href="/study-modules/[slug]/edit"
               as={`/study-modules/${module.slug}/edit`}
             >
               <a>

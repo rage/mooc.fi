@@ -1,11 +1,4 @@
-import {
-  extendType,
-  arg,
-  idArg,
-  stringArg,
-  nonNull,
-  nullable,
-} from "@nexus/schema"
+import { extendType, arg, idArg, stringArg, nonNull, nullable } from "nexus"
 import { Prisma } from "@prisma/client"
 import { UserInputError } from "apollo-server-core"
 import { omit } from "lodash"

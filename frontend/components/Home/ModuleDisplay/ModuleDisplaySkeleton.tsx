@@ -1,4 +1,4 @@
-import Skeleton from "@material-ui/lab/Skeleton"
+import { Skeleton } from "@material-ui/core"
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 

@@ -1,11 +1,9 @@
-import { useState, useEffect, useContext } from "react"
-import { useField, FieldInputProps } from "formik"
+import { useState, useEffect, PropsWithChildren } from "react"
 import { useDropzone, FileRejection } from "react-dropzone"
 import { Typography } from "@material-ui/core"
 import styled from "styled-components"
-import getCommonTranslator from "/translations/common"
-import LanguageContext from "/contexes/LanguageContext"
-import { FormValues } from "/components/Dashboard/Editor/types"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 // Chrome only gives dragged file mimetype on drop, so all filetypes would appear rejected on drag
 const isChrome = process.browser
@@ -37,6 +35,7 @@ const DropzoneContainer = styled.div<any>`
     cursor: pointer;
     border-color: #00a000;
   }
+  justify-content: center;
 `
 
 interface MessageProps {
@@ -44,19 +43,17 @@ interface MessageProps {
   error?: boolean
 }
 
-interface DropzoneProps extends FieldInputProps<FormValues> {
+interface DropzoneProps {
   onImageLoad: (result: string | ArrayBuffer | null) => void
-  children: any
+  onImageAccepted: (field: File) => void
 }
 
 const ImageDropzoneInput = ({
   onImageLoad,
   children,
-  ...props
-}: DropzoneProps) => {
-  const [, , { setValue }] = useField(props.name)
-  const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  onImageAccepted,
+}: PropsWithChildren<DropzoneProps>) => {
+  const t = useTranslator(CommonTranslations)
   const [status, setStatus] = useState<MessageProps>({
     message: t("imageDropMessage"),
   })
@@ -67,7 +64,7 @@ const ImageDropzoneInput = ({
     reader.onload = () => onImageLoad(reader.result)
 
     if (accepted.length) {
-      setValue(accepted[0])
+      onImageAccepted(accepted[0])
       reader.readAsDataURL(accepted[0])
     }
 

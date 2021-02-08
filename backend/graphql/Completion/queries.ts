@@ -1,4 +1,4 @@
-import { extendType, stringArg, intArg, idArg, nonNull } from "@nexus/schema"
+import { extendType, stringArg, intArg, idArg, nonNull } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import Knex from "../../services/knex"
 // import { convertPagination } from "../../util/db-functions"

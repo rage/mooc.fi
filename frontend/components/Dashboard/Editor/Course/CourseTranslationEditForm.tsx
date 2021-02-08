@@ -1,16 +1,14 @@
-import { useContext } from "react"
-
 import { Grid, Typography } from "@material-ui/core"
 import { FieldArray, useFormikContext } from "formik"
 import { CourseTranslationFormValues, CourseFormValues } from "./types"
 
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
-import getCoursesTranslator from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import CoursesTranslations from "/translations/courses"
 
 import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
 import styled from "styled-components"
+import { useTranslator } from "/util/useTranslator"
 
 const AddTranslationNotice = styled(EntryContainer)`
   margin-bottom: 1rem;
@@ -18,12 +16,12 @@ const AddTranslationNotice = styled(EntryContainer)`
   background-color: #88732d;
   color: white;
 `
+
 const CourseTranslationEditForm = () => {
   const {
     values: { course_translations: values },
   } = useFormikContext<CourseFormValues>()
-  const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
+  const t = useTranslator(CoursesTranslations)
 
   return (
     <section>

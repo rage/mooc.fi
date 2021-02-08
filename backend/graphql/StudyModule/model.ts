@@ -1,4 +1,4 @@
-import { objectType, arg, stringArg } from "@nexus/schema"
+import { objectType, arg, stringArg } from "nexus"
 import { filterNull } from "../../util/db-functions"
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 import { omit } from "lodash"

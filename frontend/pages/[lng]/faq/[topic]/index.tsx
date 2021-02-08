@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import LanguageContext from "/contexes/LanguageContext"
-import getFAQTranslator from "/translations/faq"
+import FAQTranslations from "/translations/faq"
 import { useQueryParameter } from "/util/useQueryParameter"
 import {
   ContentBox,
@@ -8,10 +8,11 @@ import {
   FAQPage,
   SectionBox,
 } from "/components/Home/FAQ/Common"
+import { useTranslator } from "/util/useTranslator"
 
 export default function FAQTopic() {
   const { language } = useContext(LanguageContext)
-  const t = getFAQTranslator(language)
+  const t = useTranslator(FAQTranslations)
 
   const [render, setRender] = useState(false)
   const [error, setError] = useState(false)
@@ -24,9 +25,8 @@ export default function FAQTopic() {
   const sanitizedTopic = topic.replace(/[./\\]/g, "").trim()
 
   const Component = FAQComponent({
-    mdxImport: import(
-      `../../../../static/md_pages/${sanitizedTopic}_${language}.mdx`
-    ),
+    mdxImport: () =>
+      import(`../../../../static/md_pages/${sanitizedTopic}_${language}.mdx`),
     onSuccess: (mdx: any) => {
       setTitle(mdx?.meta?.title ?? "")
       setIngress(mdx?.meta?.ingress ?? "")

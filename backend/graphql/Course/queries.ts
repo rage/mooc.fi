@@ -7,7 +7,7 @@ import {
   nonNull,
   nullable,
   stringArg,
-} from "@nexus/schema"
+} from "nexus"
 import { UserInputError } from "apollo-server-core"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { filterNull } from "../../util/db-functions"
@@ -105,7 +105,7 @@ export const CourseQueries = extendType({
       resolve: async (_, args, ctx) => {
         const { orderBy, language, search, hidden, handledBy, status } = args
 
-        const searchQuery = []
+        const searchQuery: Prisma.Enumerable<Prisma.CourseWhereInput> = []
 
         if (search) {
           searchQuery.push({
@@ -160,7 +160,9 @@ export const CourseQueries = extendType({
         })[] = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
-          where: { AND: searchQuery },
+          where: {
+            AND: searchQuery,
+          },
           ...(language
             ? {
                 include: {

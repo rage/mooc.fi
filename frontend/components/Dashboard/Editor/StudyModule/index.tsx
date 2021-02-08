@@ -15,12 +15,13 @@ import {
 import studyModuleEditSchema from "./form-validation"
 import { FormikHelpers } from "formik"
 import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
-import { StudyModuleQuery } from "/pages/[lng]/study-modules/[id]/edit"
+import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
 import { PureQueryOptions } from "@apollo/client"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 import Router from "next/router"
 import LanguageContext from "/contexes/LanguageContext"
-import getModulesTranslator from "/translations/study-modules"
+import ModulesTranslations from "/translations/study-modules"
+import { useTranslator } from "/util/useTranslator"
 
 const StudyModuleEdit = ({
   module,
@@ -28,7 +29,7 @@ const StudyModuleEdit = ({
   module?: StudyModuleDetails_study_module
 }) => {
   const { language } = useContext(LanguageContext)
-  const t = getModulesTranslator(language)
+  const t = useTranslator(ModulesTranslations)
 
   const [addStudyModule] = useMutation(AddStudyModuleMutation)
   const [updateStudyModule] = useMutation(UpdateStudyModuleMutation)

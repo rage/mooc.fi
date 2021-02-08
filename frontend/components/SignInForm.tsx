@@ -8,21 +8,20 @@ import {
 } from "@material-ui/core"
 
 import { signIn, isSignedIn } from "../lib/authentication"
-import LanguageContext from "/contexes/LanguageContext"
 import LoginStateContext from "/contexes/LoginStateContext"
-import getCommonTranslator from "/translations/common"
+import CommonTranslations from "/translations/common"
 import { useContext } from "react"
 import styled from "styled-components"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledForm = styled.form`
   padding: 1em;
 `
 
 function SignIn() {
-  const { language } = useContext(LanguageContext)
   const { logInOrOut } = useContext(LoginStateContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
 
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
@@ -31,7 +30,7 @@ function SignIn() {
   const emailFieldRef = useRef<HTMLInputElement>(null)
   const passwordFieldRef = useRef<HTMLInputElement>(null)
 
-  let errorTimeout: number | null = null
+  let errorTimeout: NodeJS.Timeout | null = null
 
   useEffect(() => {
     const inputFieldSetter = () => {

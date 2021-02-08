@@ -7,15 +7,14 @@ import { CircularProgress } from "@material-ui/core"
 import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getCommonTranslator from "/translations/common"
-import { useContext, useState } from "react"
-import LanguageContext from "/contexes/LanguageContext"
+import CommonTranslations from "/translations/common"
+import { useState } from "react"
+import { useTranslator } from "/util/useTranslator"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
   const client = useApolloClient()
-  const { language } = useContext(LanguageContext)
-  const t = getCommonTranslator(language)
+  const t = useTranslator(CommonTranslations)
 
   const [more, setMore]: any[] = useState([])
 
@@ -35,7 +34,7 @@ const UserPage = () => {
   if (loading || !data) {
     return (
       <Container style={{ display: "flex", height: "600px" }}>
-        <Grid item container justify="center" alignItems="center">
+        <Grid item container justifyContent="center" alignItems="center">
           <CircularProgress color="primary" size={60} />
         </Grid>
       </Container>

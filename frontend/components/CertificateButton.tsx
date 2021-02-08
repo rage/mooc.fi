@@ -10,8 +10,7 @@ import {
   DialogContentText,
   CircularProgress,
 } from "@material-ui/core"
-import LanguageContext from "/contexes/LanguageContext"
-import getCompletionsTranslator from "/translations/completions"
+import CompletionsTranslations from "/translations/completions"
 import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
 import { checkCertificate, createCertificate } from "/lib/certificates"
 import { updateAccount } from "/lib/account"
@@ -23,6 +22,7 @@ import { UserOverViewQuery as CompletionsUserOverViewQuery } from "/graphql/quer
 import LoginStateContext from "/contexes/LoginStateContext"
 import AlertContext from "/contexes/AlertContext"
 import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledButton = styled(Button)`
   height: 50%;
@@ -138,8 +138,7 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
 }
 
 const CertificateButton = ({ course }: CertificateProps) => {
-  const lng = useContext(LanguageContext)
-  const t = getCompletionsTranslator(lng.language)
+  const t = useTranslator(CompletionsTranslations)
   const { currentUser, updateUser } = useContext(LoginStateContext)
   const { addAlert } = useContext(AlertContext)
 
