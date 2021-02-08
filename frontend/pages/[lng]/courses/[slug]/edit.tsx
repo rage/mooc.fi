@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import Typography from "@material-ui/core/Typography"
 import Paper from "@material-ui/core/Paper"
 import { WideContainer } from "/components/Container"
@@ -16,7 +16,7 @@ import { H1Background } from "/components/Text/headers"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useQueryParameter } from "/util/useQueryParameter"
 import withAdmin from "/lib/with-admin"
-import getCoursesTranslator from "/translations/courses"
+import CoursesTranslations from "/translations/courses"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import { CourseEditorCourses } from "/static/types/generated/CourseEditorCourses"
 import {
@@ -24,6 +24,8 @@ import {
   CourseEditorCoursesQuery,
 } from "/graphql/queries/courses"
 import notEmpty from "/util/notEmpty"
+import CourseEdit2 from "/components/Dashboard/Editor2/Course"
+import { useTranslator } from "/util/useTranslator"
 
 export const CourseQuery = gql`
   query CourseDetails($slug: String) {
@@ -107,10 +109,11 @@ interface EditCourseProps {
 
 const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
-  const t = getCoursesTranslator(language)
-  const slug = useQueryParameter("id") ?? ""
+  const t = useTranslator(CoursesTranslations)
+  const slug = useQueryParameter("slug") ?? ""
+  const beta = useQueryParameter("beta", false)
 
-  let redirectTimeout: number | null = null
+  let redirectTimeout: NodeJS.Timeout | null = null
 
   const {
     data: courseData,
@@ -130,6 +133,14 @@ const EditCourse = ({ router }: EditCourseProps) => {
     loading: coursesLoading,
     error: coursesError,
   } = useQuery<CourseEditorCourses>(CourseEditorCoursesQuery)
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout)
+      }
+    }
+  }, [])
 
   if (courseError || studyModulesError || coursesError) {
     return (
@@ -165,11 +176,19 @@ const EditCourse = ({ router }: EditCourseProps) => {
         {courseLoading || studyModulesLoading || coursesLoading ? (
           <FormSkeleton />
         ) : courseData?.course ? (
-          <CourseEdit
-            course={courseData.course}
-            modules={studyModulesData?.study_modules?.filter(notEmpty) ?? []}
-            courses={coursesData?.courses?.filter(notEmpty) ?? []}
-          />
+          beta ? (
+            <CourseEdit2
+              course={courseData.course}
+              courses={coursesData?.courses?.filter(notEmpty)}
+              studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
+            />
+          ) : (
+            <CourseEdit
+              course={courseData.course}
+              courses={coursesData?.courses?.filter(notEmpty)}
+              modules={studyModulesData?.study_modules?.filter(notEmpty) ?? []}
+            />
+          )
         ) : (
           <ErrorContainer elevation={2}>
             <Typography

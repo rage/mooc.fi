@@ -21,6 +21,8 @@
     "course_completion_already_registered": "Course completion has already been registered.",
     "see_completion_link": "After your completion has been registered, you can view your completed credits at Koski: ",
     "see_completion_NB":"NB! There is some delay on registering a completion and the credits being visible at Koski.",
-    "open_university_registration_not_open": "Open University registration is not open at the moment for the course"
-
+    "open_university_registration_not_open": "Open University registration is not open at the moment for the course",
+    "registrationClosed": "Open University Registration will be closed from May 15th through May 30th 2021.",
+    "error": "Error",
+    "notLoggedIn": "You are not logged in. Please log in to the site."
 }

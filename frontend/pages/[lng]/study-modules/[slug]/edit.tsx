@@ -15,7 +15,9 @@ import { H1NoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
-import getStudyModulesTranslator from "/translations/study-modules"
+import StudyModulesTranslations from "/translations/study-modules"
+import { useTranslator } from "/util/useTranslator"
+import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -51,16 +53,17 @@ interface EditStudyModuleProps {
 const EditStudyModule = (props: EditStudyModuleProps) => {
   const { router } = props
   const { language } = useContext(LanguageContext)
-  const t = getStudyModulesTranslator(language)
+  const t = useTranslator(StudyModulesTranslations)
 
-  const id = useQueryParameter("id")
+  const slug = useQueryParameter("slug")
+  const beta = useQueryParameter("beta", false)
 
-  let redirectTimeout: number | null = null
+  let redirectTimeout: NodeJS.Timeout | null = null
 
   const { data, loading, error } = useQuery<StudyModuleDetails>(
     StudyModuleQuery,
     {
-      variables: { slug: id },
+      variables: { slug },
     },
   )
 
@@ -86,13 +89,17 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
         {loading ? (
           <FormSkeleton />
         ) : data?.study_module ? (
-          <StudyModuleEdit module={data.study_module} />
+          beta ? (
+            <StudyModuleEdit2 module={data.study_module} />
+          ) : (
+            <StudyModuleEdit module={data.study_module} />
+          )
         ) : (
           <ErrorContainer elevation={2}>
             <Typography
               variant="body1"
               dangerouslySetInnerHTML={{
-                __html: t("moduleWithIdNotFound", { slug: id }),
+                __html: t("moduleWithIdNotFound", { slug }),
               }}
             />
             <Typography variant="body2">

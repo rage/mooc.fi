@@ -22,12 +22,12 @@
  * @param output intermediate value, should be left empty on call
  * @param prefix intermediate prefix, should usually be left empty unless same prefix explicitly wanted
  */
-const flattenKeys = <T extends Record<any, any>>(
+const flattenKeys = <
+  T extends Record<string, any>,
+  TOut extends Record<keyof T | keyof T[keyof T], any>
+>(
   object: T,
-  output: Record<keyof T | keyof T[keyof T], any> = {} as Record<
-    keyof T | keyof T[keyof T],
-    any
-  >,
+  output: TOut = {} as TOut,
   prefix = "",
 ) => {
   Object.keys(object).forEach((key) => {
@@ -40,7 +40,12 @@ const flattenKeys = <T extends Record<any, any>>(
           ...flattenKeys(path[key2], {}, `${key}[${key2}].`),
         })),
       )
-    } else if (typeof path === "object" && !!path) {
+    } else if (
+      // TODO/FIXME: hack for react-hook-form errors - if we had fields named message and type in same form, this would break
+      typeof path === "object" &&
+      !!path &&
+      !(path.message && path.type)
+    ) {
       // is object, build path obj.key.next
       const outkey = Array.isArray(key) ? `[${key}]` : key
       Object.assign(

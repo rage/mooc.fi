@@ -1,9 +1,8 @@
-import { useContext } from "react"
 import { Typography, Paper, SvgIcon } from "@material-ui/core"
-import LanguageContext from "/contexes/LanguageContext"
-import getRegisterCompletionTranslator from "/translations/register-completion"
+import RegisterCompletionTranslations from "/translations/register-completion"
 
 import { createStyles, makeStyles } from "@material-ui/core/styles"
+import { useTranslator } from "/util/useTranslator"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,8 +37,8 @@ type RegProps = {
 }
 function ImportantNotice(props: RegProps) {
   const classes = useStyles()
-  const lng = useContext(LanguageContext)
-  const t = getRegisterCompletionTranslator(lng.language)
+  const t = useTranslator(RegisterCompletionTranslations)
+
   return (
     <Paper className={classes.paper}>
       <AlertIcon className={classes.icon} />

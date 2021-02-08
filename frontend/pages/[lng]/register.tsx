@@ -11,6 +11,7 @@ import {
   Typography,
   TextField,
   CardContent,
+  Skeleton,
 } from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
 import ErrorMessage from "/components/ErrorMessage"
@@ -24,14 +25,13 @@ import {
 } from "/static/types/generated/UserOrganizations"
 import useDebounce from "/util/useDebounce"
 import styled from "styled-components"
-import LanguageContext from "/contexes/LanguageContext"
-import getRegistrationTranslator from "/translations/register"
+import RegistrationTranslations from "/translations/register"
 import { WideContainer } from "/components/Container"
-import Skeleton from "@material-ui/lab/Skeleton"
 import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexes/LoginStateContext"
 import notEmpty from "/util/notEmpty"
+import { useTranslator } from "/util/useTranslator"
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -102,8 +102,7 @@ const OrganizationCard = ({
   isMember,
   onToggle,
 }: OrganizationCardProps) => {
-  const { language } = useContext(LanguageContext)
-  const t = getRegistrationTranslator(language)
+  const t = useTranslator(RegistrationTranslations)
   const [disabled, setDisabled] = useState(false)
 
   return (
@@ -141,8 +140,7 @@ const SkeletonCard = () => (
 )
 
 const Register = () => {
-  const { language } = useContext(LanguageContext)
-  const t = getRegistrationTranslator(language)
+  const t = useTranslator(RegistrationTranslations)
   const { currentUser } = useContext(LoginStateContext)
 
   const [memberships, setMemberships] = useState<Array<string>>([])

@@ -97,5 +97,16 @@
   "courseAutomaticCompletionsEligibleForEcts": "Automatic completions eligible for ECTS",
   "coursePointsNeeded": "Points needed",
   "courseExerciseCompletionsNeeded": "Exercise completions needed",
-  "courseNewCourse": "Uusi kurssi"
+  "courseNewCourse": "Uusi kurssi",
+  "helpSlug": "Slug on kurssin uniikki tunniste, esim. elements-of-ai, ohpe.",
+  "helpStartPoint": "\"Aloita tästä\"-merkki etusivun kurssikortissa.",
+  "helpHasCertificate": "Myönnetäänkö kurssilta sertifikaatti?",
+  "helpUpcomingActiveLink": "Oletuksena etusivun tulevien kurssien linkki materiaaliin ei toimi. Valitse tämä halutessasi linkin toimivaksi.",
+  "helpOrder": "Määrää kurssien järjestyksen etusivun listauksessa kurssimodulien ulkopuolella. Käytä mieluummin arvoja tyyliin 100, 200, 300... että väliin on helpompi lisätä uusia.",
+  "helpModuleOrder": "Määrää kurssien järjestyksen etusivun kurssimodulilistauksessa.",
+  "helpExerciseCompletionsNeeded": "Kuinka monta tehtävää pitää olla suoritettuna läpipääsyyn?",
+  "helpPointsNeeded": "Kuinka paljon pisteitä tarvitaan läpipääsyyn?",
+  "helpAutomaticCompletions": "Merkitäänkö kurssisuoritus automaattisesti?",
+  "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?"
+
 }

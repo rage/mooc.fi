@@ -1,48 +1,68 @@
-import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
-import { FieldArray, useFormikContext } from "formik"
-import { StyledFieldWithAnchor } from "/components/Dashboard/Editor/common"
-import { FormControl, FormGroup } from "@material-ui/core"
-import ChipInput from "material-ui-chip-input"
+import {
+  CourseFormValues,
+  UserCourseSettingsVisibilityFormValues,
+} from "/components/Dashboard/Editor/Course/types"
+import { useFormikContext } from "formik"
+import {
+  Autocomplete,
+  Chip,
+  FormControl,
+  TextField,
+  FormGroup,
+} from "@material-ui/core"
+
+const isString = (
+  value: UserCourseSettingsVisibilityFormValues | string,
+): value is string => typeof value === "string"
 
 const UserCourseSettingsVisibilityEditForm = () => {
   const {
     errors: { user_course_settings_visibilities: errors },
     values: { user_course_settings_visibilities: values },
     isSubmitting,
+    setFieldValue,
   } = useFormikContext<CourseFormValues>()
 
   return (
     <section>
       <FormControl>
         <FormGroup>
-          <FieldArray name="user_course_settings_visibilities">
-            {(helpers) => (
-              <>
-                <section style={{ display: "inline-block" }}>
-                  <StyledFieldWithAnchor
-                    id={`user_course_settings_visibilities`}
-                    name={`user_course_settings_visibilities`}
-                    type="text"
-                    component={() => (
-                      <ChipInput
-                        label="languages where user count is visible"
-                        value={values.map((v) => v.language)}
-                        variant="outlined"
-                        error={(errors && errors.length > 0) || false}
-                        disabled={isSubmitting}
-                        onAdd={(v: string) => helpers.push({ language: v })}
-                        onDelete={(v: string) =>
-                          helpers.remove(
-                            values.findIndex((t) => t.language === v),
-                          )
-                        }
-                      />
-                    )}
+          <section style={{ display: "inline-block" }}>
+            <Autocomplete
+              multiple
+              freeSolo
+              disabled={isSubmitting}
+              disableClearable
+              options={[]}
+              value={values as any}
+              onChange={(_, newValue: any) =>
+                setFieldValue(
+                  "user_course_settings_visibilities",
+                  newValue.map((v: any) => (isString(v) ? { language: v } : v)),
+                )
+              }
+              renderTags={(_, getTagProps) => {
+                return values.map((field, index) => (
+                  <Chip
+                    {...getTagProps({ index })}
+                    variant="outlined"
+                    label={field.language}
+                    onDelete={() =>
+                      setFieldValue(
+                        "user_course_settings_visibilities",
+                        values.filter(
+                          (_: any, _index: number) => index !== _index,
+                        ),
+                      )
+                    }
                   />
-                </section>
-              </>
-            )}
-          </FieldArray>
+                ))
+              }}
+              renderInput={(params) => (
+                <TextField {...params} error={Boolean(errors)} />
+              )}
+            />
+          </section>
         </FormGroup>
       </FormControl>
     </section>

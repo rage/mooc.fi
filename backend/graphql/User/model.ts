@@ -1,4 +1,11 @@
-import { objectType, stringArg, idArg, nonNull, nullable } from "@nexus/schema"
+import {
+  objectType,
+  stringArg,
+  idArg,
+  nonNull,
+  nullable,
+  booleanArg,
+} from "nexus"
 
 export const User = objectType({
   name: "User",
@@ -195,10 +202,16 @@ export const User = objectType({
 
     t.list.field("exercise_completions", {
       type: "ExerciseCompletion",
-      resolve: async (parent, _, ctx) => {
+      args: {
+        includeDeleted: nullable(booleanArg()),
+      },
+      resolve: async (parent, { includeDeleted = false }, ctx) => {
         return ctx.prisma.exerciseCompletion.findMany({
           where: {
             user_id: parent.id,
+            ...(!includeDeleted
+              ? { exercise: { deleted: { not: true } } }
+              : {}),
           },
         })
       },

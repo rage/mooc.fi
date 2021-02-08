@@ -1,4 +1,4 @@
-import { createContext } from "react"
+import { createContext, useContext } from "react"
 
 interface PageLanguageDetails {
   language: string
@@ -13,3 +13,7 @@ const LanguageContext = createContext<PageLanguageDetails>({
 })
 
 export default LanguageContext
+
+export function useLanguageContext() {
+  return useContext(LanguageContext)
+}

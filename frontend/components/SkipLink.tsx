@@ -1,8 +1,7 @@
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { Typography } from "@material-ui/core"
-import LanguageContext from "/contexes/LanguageContext"
-import getCommonTranslator from "/translations/common"
-import { useContext } from "react"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -50,8 +49,7 @@ const useStyles = makeStyles(() =>
 
 function SkipLink() {
   const classes = useStyles()
-  const lng = useContext(LanguageContext)
-  const t = getCommonTranslator(lng.language)
+  const t = useTranslator(CommonTranslations)
 
   return (
     <a href="#main" className={classes.link}>

@@ -1,12 +1,12 @@
-import { useState, useContext, ChangeEvent } from "react"
+import { useState, ChangeEvent } from "react"
 import { ProfileUserOverView_currentUser } from "/static/types/generated/ProfileUserOverView"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { gql } from "@apollo/client"
 import { useMutation } from "@apollo/client"
 import CustomSnackbar from "/components/CustomSnackbar"
 import { UserOverViewQuery } from "/pages/[lng]/profile"
-import LanguageContext from "/contexes/LanguageContext"
-import getProfileTranslator from "/translations/profile"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 const updateResearchConsentMutation = gql`
   mutation updateUpdateAccountResearchConsent($value: Boolean!) {
@@ -26,8 +26,7 @@ interface SnackbarProps {
 }
 
 const ProfileSettings = ({ data }: ProfileSettingsProps) => {
-  const { language } = useContext(LanguageContext)
-  const t = getProfileTranslator(language)
+  const t = useTranslator(ProfileTranslations)
 
   const initialSnackbarState: SnackbarProps = {
     type: "success",

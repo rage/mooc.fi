@@ -57,7 +57,7 @@ export const convertPagination = (
   }
 }
 
-export const filterNull = <T>(o: any): T | undefined =>
+export const filterNull = <T>(o: T): T | undefined =>
   o
     ? Object.entries(o).reduce(
         (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),

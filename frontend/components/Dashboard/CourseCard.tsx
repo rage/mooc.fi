@@ -1,5 +1,10 @@
 import { memo, PropsWithChildren } from "react"
-import { CardActions, Typography, TypographyProps } from "@material-ui/core"
+import {
+  CardActions,
+  Skeleton,
+  Typography,
+  TypographyProps,
+} from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
@@ -9,7 +14,6 @@ import styled from "styled-components"
 import LangLink from "/components/LangLink"
 import { CardTitle } from "/components/Text/headers"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import Skeleton from "@material-ui/lab/Skeleton"
 import CourseStatusBadge from "./CourseStatusBadge"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 
@@ -25,7 +29,7 @@ const CardBase = styled.div<{ ishidden?: number }>`
   background-color: ${(props) => (props.ishidden ? "#E0E0E0" : "#FFFFFF")};
   height: 100%;
   width: 100%;
-  min-width: 235px;
+  min-width: 340px;
   display: grid;
   @media (max-width: 700px) {
     grid-template-columns: repeat(1, 1fr);
@@ -52,6 +56,7 @@ const ImageContainer = styled.div`
 
 const StyledLink = styled.a`
   text-decoration: none;
+  margin-left: 0px;
 `
 const CourseCardItem = styled.li`
   display: flex;
@@ -89,12 +94,12 @@ const CourseCardActionArea = styled(CardActions)`
   margin-top: auto;
 `
 
-const CourseInfo = styled.ul`
+const CourseInfoList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
 `
-const CourseInfoField = styled.li`
+const CourseInfoLine = styled.li`
   display: grid;
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -105,7 +110,7 @@ const CourseInfoField = styled.li`
   flex-direction: row;
 `
 
-const CourseInfoKey = ({
+const CourseInfoField = ({
   variant = "h4",
   children,
   ...props
@@ -127,6 +132,23 @@ const CourseInfoValue = styled.div`
   justify-content: flex-end;
 `
 
+interface CourseInfoProps {
+  field?: string | JSX.Element
+  value?: string | JSX.Element
+}
+const CourseInfo = ({
+  field,
+  value,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLLIElement> &
+  PropsWithChildren<CourseInfoProps>) => (
+  <CourseInfoLine {...props}>
+    {field && <CourseInfoField>{field}</CourseInfoField>}
+    {value && <CourseInfoValue>{value}</CourseInfoValue>}
+    {children}
+  </CourseInfoLine>
+)
 const formatDate = (date?: string | null) =>
   date ? new Date(date).toLocaleDateString() : "-"
 
@@ -145,7 +167,7 @@ const CourseCard = memo(
       >
         <CourseCardImageContainer>
           {loading ? (
-            <Skeleton variant="rect" height="100%" />
+            <Skeleton variant="rectangular" height="100%" />
           ) : course ? (
             <CourseImage photo={course.photo} alt={course.name} />
           ) : (
@@ -192,40 +214,35 @@ const CourseCard = memo(
             )}
           </CardTitle>
           {course ? (
-            <CourseInfo>
-              <CourseInfoField style={{ marginBottom: "1rem" }}>
+            <CourseInfoList>
+              <CourseInfo style={{ marginBottom: "1rem" }}>
                 {formatDate(course?.start_date)} to{" "}
                 {formatDate(course?.end_date)}
-              </CourseInfoField>
+              </CourseInfo>
 
-              <CourseInfoField>
-                <CourseInfoKey>Teacher in charge:</CourseInfoKey>
-                <CourseInfoValue>
-                  {course?.teacher_in_charge_name || "-"}
-                </CourseInfoValue>
-              </CourseInfoField>
-              <CourseInfoField>
-                <CourseInfoKey>Teacher in charge email:</CourseInfoKey>
-                <CourseInfoValue>
-                  {course?.teacher_in_charge_email || "-"}
-                </CourseInfoValue>
-              </CourseInfoField>
-              <CourseInfoField>
-                <CourseInfoKey>Support email:</CourseInfoKey>
-                <CourseInfoValue>
-                  {course?.support_email || "-"}
-                </CourseInfoValue>
-              </CourseInfoField>
-            </CourseInfo>
+              <CourseInfo
+                field="Teacher in charge:"
+                value={course?.teacher_in_charge_name || "-"}
+              />
+              <CourseInfo
+                field="Teacher in charge email:"
+                value={course?.teacher_in_charge_email || "-"}
+              />
+              <CourseInfo
+                field="Support email:"
+                value={course?.support_email || "-"}
+              />
+              <CourseInfo field="Slug:" value={course?.slug || "-"} />
+            </CourseInfoList>
           ) : null}
           <CourseCardActionArea>
             {loading ? (
               <>
-                <Skeleton variant="rect" width="100%" />
+                <Skeleton variant="rectangular" width="100%" />
               </>
             ) : course ? (
               <>
-                <LangLink as={`/courses/${course.slug}`} href="/courses/[id]">
+                <LangLink as={`/courses/${course.slug}`} href="/courses/[slug]">
                   <StyledLink
                     aria-label={`To the homepage of course ${course.name}`}
                   >
@@ -234,8 +251,19 @@ const CourseCard = memo(
                     </StyledButton>
                   </StyledLink>
                 </LangLink>
+                <LangLink href={`/courses/new?clone=${course.slug}`}>
+                  <StyledLink>
+                    <StyledButton
+                      variant="text"
+                      color="secondary"
+                      startIcon={<AddIcon />}
+                    >
+                      Clone...
+                    </StyledButton>
+                  </StyledLink>
+                </LangLink>
                 <LangLink
-                  href="/courses/[id]/edit"
+                  href="/courses/[slug]/edit"
                   as={`/courses/${course.slug}/edit`}
                   prefetch={false}
                 >

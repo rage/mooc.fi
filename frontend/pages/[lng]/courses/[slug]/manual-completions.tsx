@@ -9,8 +9,9 @@ import Alert from "@material-ui/lab/Alert"
 import AlertTitle from "@material-ui/lab/AlertTitle"
 import { gql, useMutation, useQuery } from "@apollo/client"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { DatePicker, LocalizationProvider } from "@material-ui/pickers"
-import LuxonUtils from "@date-io/luxon"
+import DatePicker from "@material-ui/lab/DatePicker"
+import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
+import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
 import { DateTime } from "luxon"
 
 const StyledTextField = styled(TextField)`
@@ -66,7 +67,7 @@ const ManualCompletions = () => {
       setMessageSeverity("success")
     },
   })
-  const slug = useQueryParameter("id") ?? ""
+  const slug = useQueryParameter("slug") ?? ""
   const {
     data: courseData,
     loading: courseLoading,
@@ -103,12 +104,12 @@ const ManualCompletions = () => {
         Completion date (optional) - if provided, will be default for every
         completion with no date set
       </Typography>
-      <LocalizationProvider dateAdapter={LuxonUtils}>
+      <LocalizationProvider dateAdapter={AdapterLuxon}>
         <DatePicker
           inputFormat="yyyy-MM-dd"
-          placeholder="yyyy-MM-dd"
           onChange={setCompletionDate}
           value={completionDate}
+          renderInput={(props) => <TextField {...props} variant="outlined" />}
         />
       </LocalizationProvider>
       <Typography>
@@ -122,7 +123,7 @@ const ManualCompletions = () => {
         label="csv"
         fullWidth
         rows={20}
-        rowsMax={5000}
+        maxRows={5000}
         multiline
       />
       <Button

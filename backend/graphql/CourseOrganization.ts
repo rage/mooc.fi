@@ -1,10 +1,4 @@
-import {
-  objectType,
-  extendType,
-  idArg,
-  booleanArg,
-  nonNull,
-} from "@nexus/schema"
+import { objectType, extendType, idArg, booleanArg, nonNull } from "nexus"
 import { or, isVisitor, isAdmin } from "../accessControl"
 
 export const CourseOrganization = objectType({

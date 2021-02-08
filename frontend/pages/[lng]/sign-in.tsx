@@ -2,11 +2,10 @@ import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import SignInForm from "/components/SignInForm"
 import Container from "/components/Container"
-import LanguageContext from "/contexes/LanguageContext"
-import getSignInTranslator from "/translations/common"
-import { useContext } from "react"
+import SignInTranslations from "/translations/common"
 import styled from "styled-components"
 import withSignedOut from "/lib/with-signed-out"
+import { useTranslator } from "/util/useTranslator"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -22,8 +21,7 @@ const Header = styled(Typography)<any>`
 `
 
 const SignInPage = () => {
-  const lng = useContext(LanguageContext)
-  const t = getSignInTranslator(lng.language)
+  const t = useTranslator(SignInTranslations)
 
   return (
     <>

@@ -8,7 +8,7 @@ import {
   intArg,
   stringArg,
   nonNull,
-} from "@nexus/schema"
+} from "nexus"
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 
