@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Typography from "@material-ui/core/Typography"
 
 export const CardText = styled(Typography)<any>`

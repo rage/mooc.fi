@@ -1,7 +1,7 @@
 import { useState, useEffect, PropsWithChildren } from "react"
 import { useDropzone, FileRejection } from "react-dropzone"
 import { Typography } from "@material-ui/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 

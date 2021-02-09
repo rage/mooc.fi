@@ -17,7 +17,7 @@ import { Field, useFormikContext } from "formik"
 import { StyledTextField } from "/components/Dashboard/Editor/common"
 import { addDomain } from "/util/imageUtils"
 import CoursesTranslations from "/translations/courses"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useTranslator } from "/util/useTranslator"
 
 const ImageContainer = styled.div`

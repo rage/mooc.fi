@@ -11,7 +11,7 @@ import {
   ListItem,
 } from "@material-ui/core"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import {
   ControlledFieldProps,
   FieldController,

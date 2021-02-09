@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import LinearProgress from "@material-ui/core/LinearProgress"
 import { formattedGroupPoints } from "/util/formatPointsData"
 import { CardSubtitle } from "components/Text/headers"

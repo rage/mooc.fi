@@ -8,7 +8,7 @@ import LoggedInUserMenu from "./LoggedInUserMenu"
 import MoocLogo from "./MoocLogo"
 import LoginStateContext from "/contexes/LoginStateContext"
 import UserOptionsMenu from "./UserOptionsMenu"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import LanguageContext from "/contexes/LanguageContext"
 import { useContext } from "react"
 

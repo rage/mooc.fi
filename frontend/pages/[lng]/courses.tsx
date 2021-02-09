@@ -3,7 +3,7 @@ import { AllEditorCourses } from "/static/types/generated/AllEditorCourses"
 import { useQuery } from "@apollo/client"
 import CourseGrid from "/components/Dashboard/CourseGrid"
 import { WideContainer } from "/components/Container"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { H1Background } from "/components/Text/headers"
 import {
   AllEditorCoursesQuery,

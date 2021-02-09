@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Grid, Chip, Skeleton } from "@material-ui/core"
 import ReactGA from "react-ga"
 import CourseImage from "/components/CourseImage"

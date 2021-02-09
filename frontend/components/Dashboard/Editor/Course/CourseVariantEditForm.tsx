@@ -11,7 +11,7 @@ import {
 } from "/components/Dashboard/Editor/common"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import CoursesTranslations from "/translations/courses"
 import { useConfirm } from "material-ui-confirm"
 import { useTranslator } from "/util/useTranslator"

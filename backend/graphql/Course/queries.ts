@@ -24,10 +24,11 @@ export const CourseQueries = extendType({
         slug: stringArg(),
         id: idArg(),
         language: stringArg(),
+        translationFallback: booleanArg({ default: false }),
       },
       authorize: or(isAdmin, isUser),
       resolve: async (_, args, ctx) => {
-        const { slug, id, language } = args
+        const { slug, id, language, translationFallback } = args
 
         if (!slug && !id) {
           throw new UserInputError("must provide id or slug")
@@ -71,12 +72,14 @@ export const CourseQueries = extendType({
           )
 
           if (!course_translation) {
-            return Promise.resolve(null)
+            if (!translationFallback) {
+              return Promise.resolve(null)
+            }
+          } else {
+            description = course_translation.description ?? ""
+            link = course_translation.link ?? ""
+            name = course_translation.name
           }
-
-          description = course_translation.description ?? ""
-          link = course_translation.link ?? ""
-          name = course_translation.name
         }
 
         return {

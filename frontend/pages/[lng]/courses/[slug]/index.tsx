@@ -15,7 +15,7 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import {
   AllCompletionsQuery,
   PreviousPageCompletionsQuery,

@@ -24,7 +24,7 @@ import {
   UserOrganizations_userOrganizations,
 } from "/static/types/generated/UserOrganizations"
 import useDebounce from "/util/useDebounce"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import RegistrationTranslations from "/translations/register"
 import { WideContainer } from "/components/Container"
 import { range } from "lodash"

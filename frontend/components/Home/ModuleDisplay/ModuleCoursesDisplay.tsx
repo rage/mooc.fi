@@ -1,7 +1,7 @@
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 import { ContentContainer } from "/components/Home/ModuleDisplay/ModuleDescription"
 import { H2Background } from "/components/Text/headers"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import ModuleCoursesListing, {
   ThreeOrLessCoursesListing,
 } from "/components/Home/ModuleDisplay/ModuleCourseCardList"

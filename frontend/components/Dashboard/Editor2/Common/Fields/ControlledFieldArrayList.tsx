@@ -7,7 +7,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
 import { ControlledFieldProps } from "/components/Dashboard/Editor2/Common/Fields"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { ButtonWithWhiteText } from "/components/Dashboard/Editor2/Common"
 
 export const ArrayList = styled.ul`
