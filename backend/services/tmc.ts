@@ -132,6 +132,7 @@ export const authenticateUser = async (username: string, password: string): Prom
   })
   .then(response => response.data)
   .then(json => {
+    console.log(json)
     if(json.access_token) {
       return {success: true, token: json.access_token, error: null }
     } else {
@@ -139,6 +140,7 @@ export const authenticateUser = async (username: string, password: string): Prom
     }
   })
   .catch(error => {
+    console.log(error)
     return {success: false, token: null, error }
   })
 }
