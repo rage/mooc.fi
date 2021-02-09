@@ -7,7 +7,7 @@ import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import CoursesTranslations from "/translations/courses"
 
 import CourseTranslationListItem from "/components/Dashboard/Editor/Course/CourseTranslationListItem"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useTranslator } from "/util/useTranslator"
 
 const AddTranslationNotice = styled(EntryContainer)`

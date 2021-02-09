@@ -7,19 +7,11 @@
 // GraphQL query operation: BreadcrumbModule
 // ====================================================
 
-export interface BreadcrumbModule_study_module_study_module_translations {
-  __typename: "StudyModuleTranslation"
-  id: string
-  language: string
-  name: string
-}
-
 export interface BreadcrumbModule_study_module {
   __typename: "StudyModule"
   id: string
   slug: string
   name: string
-  study_module_translations: BreadcrumbModule_study_module_study_module_translations[]
 }
 
 export interface BreadcrumbModule {
@@ -28,4 +20,6 @@ export interface BreadcrumbModule {
 
 export interface BreadcrumbModuleVariables {
   slug?: string | null
+  language?: string | null
+  translationFallback?: boolean | null
 }

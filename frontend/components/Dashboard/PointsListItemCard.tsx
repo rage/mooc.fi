@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Grid } from "@material-ui/core"
 import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
 import PointsItemTable from "./PointsItemTable"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { gql } from "@apollo/client"
 import formatPointsData, {
   formattedGroupPointsDictionary,

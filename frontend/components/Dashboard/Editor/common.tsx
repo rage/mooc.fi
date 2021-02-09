@@ -6,7 +6,7 @@ import {
 } from "@material-ui/core"
 import { Field } from "formik"
 import { TextField } from "formik-material-ui"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { PropsWithChildren, useContext } from "react"
 import AnchorContext from "/contexes/AnchorContext"
 import { CheckboxWithLabel } from "formik-material-ui"

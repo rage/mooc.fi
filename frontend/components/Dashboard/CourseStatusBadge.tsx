@@ -4,7 +4,7 @@ import Schedule from "@material-ui/icons/Schedule"
 import AlarmOff from "@material-ui/icons/AlarmOff"
 import Error from "@material-ui/icons/Error"
 import { CourseStatus } from "/static/types/generated/globalTypes"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 const StatusBadge = styled(Chip)<{ status?: CourseStatus | null }>`
   background-color: ${({ status }) =>

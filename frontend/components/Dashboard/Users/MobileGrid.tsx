@@ -20,7 +20,7 @@ import {
   UserDetailsContains_userDetailsContains_edges_node,
 } from "/static/types/generated/UserDetailsContains"
 import Pagination from "/components/Dashboard/Users/Pagination"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import range from "lodash/range"
 import UsersTranslations from "/translations/users"
 import UserSearchContext from "/contexes/UserSearchContext"

@@ -1,5 +1,5 @@
 import { Typography, Skeleton } from "@material-ui/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { range } from "lodash"
 import dynamic from "next/dynamic"
 

@@ -1,6 +1,6 @@
 import ModuleDescription from "/components/Home/ModuleDisplay/ModuleDescription"
 import ModuleCoursesDisplay from "/components/Home/ModuleDisplay/ModuleCoursesDisplay"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { AllCourses_courses as CourseData } from "/static/types/generated/AllCourses"
 
 const CenteredContent = styled.div`

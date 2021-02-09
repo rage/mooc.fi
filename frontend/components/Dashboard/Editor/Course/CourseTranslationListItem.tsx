@@ -4,7 +4,7 @@ import {
   StyledFieldWithAnchor,
 } from "/components/Dashboard/Editor/common"
 import CoursesTranslations from "/translations/courses"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Typography from "@material-ui/core/Typography"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { CourseFormValues } from "/components/Dashboard/Editor/Course/types"
