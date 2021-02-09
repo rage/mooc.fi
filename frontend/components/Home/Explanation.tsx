@@ -1,6 +1,6 @@
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import HomeTranslations from "/translations/home"
 import { H1NoBackground } from "/components/Text/headers"
 import { useTranslator } from "/util/useTranslator"

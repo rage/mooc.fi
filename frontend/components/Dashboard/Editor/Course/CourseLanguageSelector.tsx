@@ -1,6 +1,6 @@
 import { FormSubtitle } from "/components/Dashboard/Editor/common"
 import { FieldArray } from "formik"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Button, ButtonGroup } from "@material-ui/core"
 import { initialTranslation } from "./form-validation"
 import CoursesTranslations from "/translations/courses"

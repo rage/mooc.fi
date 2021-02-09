@@ -65,18 +65,6 @@ function create(initialState: any, originalAccessToken?: string) {
 
   // these cache settings are mainly for the breadcrumbs
   const cache: InMemoryCache = new InMemoryCache({
-    /*cacheRedirects: {
-      Query: {
-        course: (_, args, { getCacheKey }) =>
-          getCacheKey({ __typename: "Course", slug: args.slug, id: args.id }),
-        study_module: (_, args, { getCacheKey }) =>
-          getCacheKey({
-            __typename: "StudyModule",
-            slug: args.slug,
-            id: args.id,
-          }),
-      },
-    },*/
     dataIdFromObject: (object: any) => {
       switch (object.__typename) {
         case "Course":

@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import LangLink from "/components/LangLink"
 import { useContext } from "react"
 import LanguageContext from "/contexes/LanguageContext"

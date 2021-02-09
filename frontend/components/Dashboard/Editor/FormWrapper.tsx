@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core"
 import { FormikErrors, FormikTouched, useFormikContext } from "formik"
 import { FormValues } from "./types"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CommonTranslations from "/translations/common"
 import AnchorContext from "/contexes/AnchorContext"

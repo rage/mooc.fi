@@ -4,7 +4,7 @@ import {
 } from "/components/Surfaces/ErrorMessageBackground"
 import Report from "@material-ui/icons/Report"
 import Typography from "@material-ui/core/Typography"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { ReloadButton as StyledRefreshButton } from "/components/Buttons/ReloadButton"
 import Refresh from "@material-ui/icons/Refresh"
 import CommonTranslations from "/translations/common"

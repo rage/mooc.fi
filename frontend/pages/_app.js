@@ -1,9 +1,10 @@
+import React from "react"
 import App from "next/app"
 import Router from "next/router"
 import { initGA, logPageView } from "../lib/gtag"
 import Head from "next/head"
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/styles"
-import StyledEngineProvider from "@material-ui/core/StyledEngineProvider"
+import { ThemeProvider } from "@material-ui/core/styles"
+// import { StyledEngineProvider } from "@material-ui/styled-engine"
 import { ApolloProvider } from "@apollo/client"
 import Layout from "./_layout"
 import { isSignedIn, isAdmin } from "../lib/authentication"
@@ -18,8 +19,14 @@ import PageTranslations from "/translations/pages"
 import { ConfirmProvider } from "material-ui-confirm"
 import AlertContext from "../contexes/AlertContext"
 import getTranslator from "/translations"
+import { CacheProvider } from "@emotion/react"
+import createCache from "@emotion/cache"
+import { fontCss } from "../src/fonts"
+import { Global } from "@emotion/react"
 
 fontAwesomeConfig.autoAddCss = false
+
+export const cache = createCache({ key: "css", prepend: true })
 
 const getPageTranslator = getTranslator(PageTranslations)
 class MyApp extends App {
@@ -63,8 +70,8 @@ class MyApp extends App {
     Router.router.events.on("routeChangeComplete", logPageView)
 
     const jssStyles = document.querySelector("#jss-server-side")
-    if (jssStyles?.parentNode) {
-      jssStyles.parentNode.removeChild(jssStyles)
+    if (jssStyles?.parentElement) {
+      jssStyles.parentElement.removeChild(jssStyles)
     }
   }
 
@@ -100,15 +107,15 @@ class MyApp extends App {
 
     return (
       <>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-          />
-          <title>{title}</title>
-        </Head>
-        <StyledEngineProvider injectFirst>
-          <MuiThemeProvider theme={theme}>
+        <CacheProvider value={cache}>
+          <Head>
+            <meta
+              name="viewport"
+              content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+            />
+            <title>{title}</title>
+          </Head>
+          <ThemeProvider theme={theme}>
             <CssBaseline />
             <ApolloProvider client={apollo}>
               <LoginStateContext.Provider value={this.state}>
@@ -124,6 +131,7 @@ class MyApp extends App {
                       }}
                     >
                       <Layout>
+                        <Global styles={fontCss} />
                         <Component {...pageProps} />
                       </Layout>
                     </AlertContext.Provider>
@@ -131,8 +139,8 @@ class MyApp extends App {
                 </LanguageContext.Provider>
               </LoginStateContext.Provider>
             </ApolloProvider>
-          </MuiThemeProvider>
-        </StyledEngineProvider>
+          </ThemeProvider>
+        </CacheProvider>
       </>
     )
   }

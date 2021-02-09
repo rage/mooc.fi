@@ -71,12 +71,10 @@ const NewCourse = () => {
       return
     }
 
-    console.log(courseData)
     // TODO: needs the photo import logic
     setClonedCourse({ ...stripId(courseData.course), slug: "" })
   }, [courseData])
 
-  console.log("clonedCourse", clonedCourse)
   if (studyModulesError || coursesError) {
     return (
       <ModifiableErrorMessage

@@ -11,7 +11,7 @@ import { signIn, isSignedIn } from "../lib/authentication"
 import LoginStateContext from "/contexes/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useContext } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { useTranslator } from "/util/useTranslator"
 

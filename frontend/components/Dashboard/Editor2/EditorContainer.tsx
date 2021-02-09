@@ -10,7 +10,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import CommonTranslations from "/translations/common"
 import { useTranslator } from "/util/useTranslator"
 
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { PropsWithChildren, useState } from "react"
 import { useConfirm } from "material-ui-confirm"
 import { useFormContext } from "react-hook-form"

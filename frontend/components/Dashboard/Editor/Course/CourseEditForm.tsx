@@ -31,7 +31,7 @@ import CourseLanguageSelector from "./CourseLanguageSelector"
 import CourseImageInput from "./CourseImageInput"
 import { statuses as statusesT } from "./form-validation"
 import { CourseFormValues } from "./types"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import FormWrapper from "/components/Dashboard/Editor/FormWrapper"
 import {
   StyledTextField,

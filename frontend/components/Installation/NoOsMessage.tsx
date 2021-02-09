@@ -1,5 +1,5 @@
 import Card from "@material-ui/core/Card"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 
 const RedBackground = styled(Card)`

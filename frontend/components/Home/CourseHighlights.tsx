@@ -1,7 +1,7 @@
 import Grid from "@material-ui/core/Grid"
 import CourseCard from "./CourseCard"
 import Container from "/components/Container"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { AllCourses_courses } from "/static/types/generated/AllCourses"
 import { H2Background, SubtitleBackground } from "/components/Text/headers"
 import { BackgroundImage } from "/components/Images/GraphicBackground"

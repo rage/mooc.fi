@@ -1,16 +1,16 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Typography from "@material-ui/core/Typography"
 import Avatar from "@material-ui/core/Avatar"
 import LangLink from "/components/LangLink"
 
 const MoocLogoText = styled(Typography)<any>`
   font-family: "Open Sans Condensed Light", sans-serif;
-  font-size: 1.75rem;
+  font-size: 1.75rem !important;
   @media (max-width: 425px) {
-    font-size: 1.5rem;
+    font-size: 1.5rem !important;
   }
   @media (max-width: 375px) {
-    display: none;
+    display: none !important;
   }
 
   margin-top: 1rem;
