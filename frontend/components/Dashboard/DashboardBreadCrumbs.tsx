@@ -227,7 +227,6 @@ const DashboardBreadCrumbs = memo((props: Props) => {
         query,
         variables,
       })
-      console.log("data", data)
       // somehow this isn't throwing anymore when there's nothing found, so let's do that ourselves
       if (!data) throw new Error()
       crumb = data?.[path]?.name ?? crumb
@@ -237,7 +236,6 @@ const DashboardBreadCrumbs = memo((props: Props) => {
         variables,
         fetchPolicy: "cache-first",
       })
-      console.log("data2", data)
       crumb = data?.[path]?.name ?? crumb
     }
     setAwaitedCrumb(crumb)
