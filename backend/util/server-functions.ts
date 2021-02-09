@@ -4,10 +4,26 @@ import { Organization, User } from "@prisma/client"
 import { ok, err, Result } from "../util/result"
 import type knexType from "knex"
 import { redisify } from "../services/redis"
+import { Request, Response } from "express"
 
 interface GetUserReturn {
   user: User
   details: UserInfo
+}
+
+export function requireAdmin(knex: knexType) {
+  return async function (
+    req: Request,
+    res: Response,
+  ): Promise<Response<any> | boolean> {
+    const getUserResult = await getUser(knex)(req, res)
+
+    if (getUserResult.isOk() && getUserResult.value.user.administrator) {
+      return true
+    }
+
+    return res.status(401).json({ message: "unauthorized" })
+  }
 }
 
 export function getUser(knex: knexType) {
@@ -18,7 +34,7 @@ export function getUser(knex: knexType) {
     const rawToken = req.get("Authorization")
 
     if (!rawToken || !(rawToken ?? "").startsWith("Bearer")) {
-      return err(res.status(400).json({ message: "not logged in" }))
+      return err(res.status(401).json({ message: "not logged in" }))
     }
 
     let details: UserInfo | null = null
@@ -37,7 +53,7 @@ export function getUser(knex: knexType) {
     }
 
     if (!details) {
-      return err(res.status(400).json({ message: "invalid credentials" }))
+      return err(res.status(401).json({ message: "invalid credentials" }))
     }
 
     let user = (
@@ -65,7 +81,7 @@ export function getUser(knex: knexType) {
         // race condition or something
         user = (
           await knex
-            .select<any, User[]>("id")
+            .select<any, User[]>("*")
             .from("user")
             .where("upstream_id", details.id)
         )?.[0]
