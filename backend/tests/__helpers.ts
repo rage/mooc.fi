@@ -52,7 +52,7 @@ export function getTestContext(): TestContext {
     logger: logger.createLogger() as winston.Logger,
   } as TestContext
 
-  const ctx = createTestContext()
+  const ctx = createTestContext(testContext)
 
   // beforeEach
   beforeAll(async (done) => {
@@ -83,7 +83,7 @@ export function getTestContext(): TestContext {
 const wait = async (time: number) =>
   new Promise((resolve) => setTimeout(resolve, time))
 
-function createTestContext() {
+function createTestContext(testContext: TestContext) {
   let apolloInstance: ApolloServer | null = null
   let serverInstance: Server | null = null
   let port: number | null = null
@@ -97,7 +97,7 @@ function createTestContext() {
       const { apollo, express } = server({
         prisma,
         knex: knexClient,
-        logger: logger.createLogger(),
+        logger: testContext.logger,
         extraContext: {
           version: version++,
         },

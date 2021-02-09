@@ -7,13 +7,10 @@ import createExpress from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
-import {
-  getUser as _getUser,
-  getOrganization as _getOrganization,
-} from "./util/server-functions"
 import bodyParser from "body-parser"
 import type Knex from "knex"
 import { apiRouter } from "./api"
+
 const helmet = require("helmet")
 
 const DEBUG = Boolean(process.env.DEBUG)
@@ -27,7 +24,7 @@ interface ServerContext {
 }
 
 // wrapped so that the context isn't cached between test instances
-const createExpressWithContext = ({ prisma, knex }: ServerContext) => {
+const createExpressWithContext = ({ prisma, knex, logger }: ServerContext) => {
   const express = createExpress()
 
   express.use(cors())
@@ -37,7 +34,7 @@ const createExpressWithContext = ({ prisma, knex }: ServerContext) => {
   }
   express.use(bodyParser.json())
 
-  express.use("/api", apiRouter({ prisma, knex }))
+  express.use("/api", apiRouter({ prisma, knex, logger }))
 
   return express
 }
