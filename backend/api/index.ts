@@ -7,10 +7,16 @@ import { userCourseSettingsCount } from "./userCourseSettingsCount"
 import { progress, progressV2 } from "./progress"
 import { tierProgress } from "./tierProgress"
 import { registerCompletions } from "./registerCompletions"
+import {
+  userCourseSettingsGet,
+  userCourseSettingsPost,
+} from "./userCourseSettings"
+import * as winston from "winston"
 
 export interface ApiContext {
   prisma: PrismaClient
   knex: Knex
+  logger: winston.Logger
 }
 
 export function apiRouter(ctx: ApiContext) {
@@ -24,4 +30,6 @@ export function apiRouter(ctx: ApiContext) {
       "/usercoursesettingscount/:course/:language",
       userCourseSettingsCount(ctx),
     )
+    .get("/user-course-settings/:slug", userCourseSettingsGet(ctx))
+    .post("/user-course-settings/:slug", userCourseSettingsPost(ctx))
 }
