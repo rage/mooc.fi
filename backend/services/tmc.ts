@@ -132,7 +132,6 @@ export const authenticateUser = async (username: string, password: string): Prom
   })
   .then(response => response.data)
   .then(json => {
-    console.log(json)
     if(json.access_token) {
       return {success: true, token: json.access_token, error: null }
     } else {
@@ -140,7 +139,18 @@ export const authenticateUser = async (username: string, password: string): Prom
     }
   })
   .catch(error => {
-    console.log(error)
     return {success: false, token: null, error }
   })
+}
+
+export const resetUserPassword = async (email: string ): Promise<any> => {
+  return await axios({
+    method: 'POST',
+    url: `${BASE_URL}/api/v8/users/password_reset`,
+    data: JSON.stringify({email}),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(response => response.data)
+  .then(json => json)
+  .catch(error => error)
 }
