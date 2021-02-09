@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Container, Paper, Skeleton } from "@material-ui/core"
 import { range } from "lodash"
 

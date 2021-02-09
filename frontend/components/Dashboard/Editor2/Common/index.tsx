@@ -7,7 +7,7 @@ import {
   useCallback,
   useContext,
 } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useAnchorContext } from "/contexes/AnchorContext"
 import * as Yup from "yup"
 import { FormValues } from "/components/Dashboard/Editor2/types"

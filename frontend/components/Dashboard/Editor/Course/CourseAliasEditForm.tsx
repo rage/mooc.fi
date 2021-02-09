@@ -11,7 +11,7 @@ import { FormControl, FormGroup, Typography } from "@material-ui/core"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { initialAlias } from "./form-validation"
 import { useTranslator } from "/util/useTranslator"
 

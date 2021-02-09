@@ -6,7 +6,7 @@ import {
 } from "/components/Dashboard/Editor2/Common/Fields"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
 import { mapLangToLanguage } from "/components/DataFormatFunctions"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"

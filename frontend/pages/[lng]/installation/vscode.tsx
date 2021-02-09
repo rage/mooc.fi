@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Typography from "@material-ui/core/Typography"
 import getUserOS from "/util/getUserOS"
 import OSSelector from "/components/Installation/OSSelector"

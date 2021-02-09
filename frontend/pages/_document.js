@@ -1,54 +1,41 @@
-import { Fragment } from "react"
-import Document, {
-  Html,
-  Head,
-  Main,
-  NextScript,
-  DocumentContext,
-} from "next/document"
-import flush from "styled-jsx/server"
-import { ServerStyleSheets } from "@material-ui/styles"
+import React from "react"
+import Document, { Html, Head, Main, NextScript } from "next/document"
+import { ServerStyleSheets } from "@material-ui/core/styles"
 import theme from "../src/theme"
-import { ServerStyleSheet } from "styled-components"
+import { cache } from "./_app"
+import createEmotionServer from "@emotion/server/create-instance"
+// import flush from "styled-jsx/server"
 
-import { fontCss } from "/src/fonts"
+const { extractCritical } = createEmotionServer(cache)
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const sheets = new ServerStyleSheets()
-    const sheet = new ServerStyleSheet()
 
     const originalRenderPage = ctx.renderPage
 
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: (App) => (props) => {
-            const MuiStylesDataWrapper = sheets.collect(<App {...props} />)
+    ctx.renderPage = () =>
+      originalRenderPage({
+        enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+      })
 
-            const styledComponentsDataWrapper = sheet.collectStyles(
-              MuiStylesDataWrapper,
-            )
-            return styledComponentsDataWrapper
-          },
-        })
+    const initialProps = await Document.getInitialProps(ctx)
+    const styles = extractCritical(initialProps.html)
 
-      const initialProps = await Document.getInitialProps(ctx)
-      return {
-        ...initialProps,
+    return {
+      ...initialProps,
 
-        // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
-        styles: (
-          <Fragment>
-            {initialProps.styles}
-            {sheets.getStyleElement()}
-            {sheet.getStyleElement()}
-            {flush() || null}
-          </Fragment>
-        ),
-      }
-    } finally {
-      sheet.seal()
+      // if we were to use GlobalStyles, we'd insert them here - or _app before <Head> ?
+      styles: [
+        ...React.Children.toArray(initialProps.styles),
+        sheets.getStyleElement(),
+        <style
+          key="emotion-style-tag"
+          data-emotion={`css ${styles.ids.join(" ")}`}
+          dangerouslySetInnerHTML={{ __html: styles.css }}
+        />,
+        //flush(),
+      ],
     }
   }
 
@@ -65,7 +52,6 @@ class MyDocument extends Document {
           />
         </Head>
         <body>
-          <style dangerouslySetInnerHTML={{ __html: fontCss }} />
           <Main />
           <NextScript />
         </body>

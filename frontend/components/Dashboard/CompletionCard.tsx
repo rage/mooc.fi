@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core"
 import DoneIcon from "@material-ui/icons/Done"
 import CloseIcon from "@material-ui/icons/Close"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 //map language code stored to database to human readable language
 const MapLangToLanguage: Record<string, string> = {

@@ -3,7 +3,7 @@ import Container from "/components/Container"
 import HomeTranslations from "/translations/home"
 import { AllModules_study_modules } from "/static/types/generated/AllModules"
 import { H2Background } from "/components/Text/headers"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useTranslator } from "/util/useTranslator"
 
 const NaviArea = styled.section`

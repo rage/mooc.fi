@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useReducer } from "react"
 import Button from "@material-ui/core/Button"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Dialog from "@material-ui/core/Dialog"
 import DialogContent from "@material-ui/core/DialogContent"

@@ -10,7 +10,7 @@ import { signIn as authenticate } from "../lib/authentication"
 import LanguageContext from "/contexes/LanguageContext"
 import SignUpTranslations from "/translations/sign-up"
 import LangLink from "/components/LangLink"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import getTranslator from "/translations"
 

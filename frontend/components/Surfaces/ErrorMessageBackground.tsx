@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Card from "@material-ui/core/Card"
 import CardContent from "@material-ui/core/CardContent"
 

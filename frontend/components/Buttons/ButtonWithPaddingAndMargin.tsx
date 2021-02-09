@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import Button from "@material-ui/core/Button"
 
 export const ButtonWithPaddingAndMargin = styled(Button)<{ color?: string }>`
