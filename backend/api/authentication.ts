@@ -1,9 +1,8 @@
 import { ApiContext } from "."
-import { ok, err, Result } from "./util/result
+import { ok, err } from "../util/result
 import TmcClient, { authenticateUser, createUser, getCurrentUserDetails, resetUserPassword } from "../services/tmc"
 import { validateEmail, validatePassword } from "../util/validateAuth"
 import { User } from "@prisma/client"
-import Knex from "./services/knex"
 
 const crypto = require('crypto')
 const argon2 = require('argon2')
@@ -37,7 +36,7 @@ export function signUp({ knex }: ApiContext) {
 			}))
 		}
 
-		const checkEmail = await Knex.select("email")
+		const checkEmail = await knex.select("email")
 			.from("prisma2.user")
 			.where("email", email)
 
@@ -48,7 +47,7 @@ export function signUp({ knex }: ApiContext) {
 			})
 		}
 
-		const checkUsername = await Knex.select("username")
+		const checkUsername = await knex.select("username")
 			.from("prisma2.user")
 			.where("username", username)
 			
@@ -74,13 +73,13 @@ export function signUp({ knex }: ApiContext) {
 		})
 		
 		let user = (
-			await Knex.select<any, User[]>("id").from("prisma2.user").where("upstream_id", userDetails.id)
+			await knex.select<any, User[]>("id").from("prisma2.user").where("upstream_id", userDetails.id)
 		)?.[0]
 
 		if(!user) {
 			try {
 				user = (
-					await Knex("prisma2.user").insert({
+					await knex("prisma2.user").insert({
 						upstream_id: userDetails.id,
 						email,
 						username,
@@ -107,7 +106,7 @@ export function signIn({ knex }: ApiContext) {
 		let password = req.body.password.trim()
 
 		let user = (
-			await Knex.select<any, User[]>("id", "password", "passwordThrottle").from("prisma2.user").where("email", email)
+			await knex.select<any, User[]>("id", "password", "passwordThrottle").from("prisma2.user").where("email", email)
 		)?.[0]
 		const accessToken = await authenticateUser(email, password) 
 
@@ -120,7 +119,7 @@ export function signIn({ knex }: ApiContext) {
 					passwordThrottle.currentRate = 0
 					passwordThrottle.limitStamp = null
 
-					await Knex("prisma2.user").update({ passwordThrottle }).where("email", email)
+					await knex("prisma2.user").update({ passwordThrottle }).where("email", email)
 
 				} else {
 					return err(res.status(403).json({ message: "You have made too many sign in attempts. Please try again in 24 hours." }))
@@ -158,7 +157,7 @@ export function signIn({ knex }: ApiContext) {
 				hashLength: 64,
 			})
 
-			await Knex("prisma2.user")
+			await knex("prisma2.user")
 			.update({ password: hashPassword })
 			.where("email", email)
 
@@ -193,12 +192,12 @@ export function signIn({ knex }: ApiContext) {
 				updateThrottle.currentRate++
 				if(updateThrottle.currentRate >= RATE_LIMIT) {
 					updateThrottle.limitStamp = new Date()
-					await Knex("prisma2.user").update({ passwordThrottle: updateThrottle }).where("email", email)
+					await knex("prisma2.user").update({ passwordThrottle: updateThrottle }).where("email", email)
 
 
 					return err(res.status(404).json({ message: "You have made too many sign in attempts. Please try again in 24 hours." }))
 				}
-				await Knex("prisma2.user").update({ passwordThrottle: updateThrottle }).where("email", email)
+				await knex("prisma2.user").update({ passwordThrottle: updateThrottle }).where("email", email)
 
 				return err(res.status(404).json({ message: `Incorrect password. You have ${RATE_LIMIT - updateThrottle.currentRate} attempts left.` }))
 
@@ -232,7 +231,7 @@ export function passwordReset() {
 		
 		/*
 		let user = (
-			await Knex.select<any, User[]>("email").from("prisma2.user").where("email", email)
+			await knex.select<any, User[]>("email").from("prisma2.user").where("email", email)
 		)?.[0]
 
 		if(!user) {
@@ -255,7 +254,7 @@ export function passwordReset() {
 		the user signs in, their password on mooc.fi should be auto-updated as well */
 
 		//const key = crypto.randomBytes(20).toString('hex')
-		//await Knex("prisma2.user").where({ email }).update({ password_reset: key })
+		//await knex("prisma2.user").where({ email }).update({ password_reset: key })
 	}
 }
 
@@ -288,7 +287,7 @@ function storePasswordReset({ knex }: ApiContext) {
 		}
 
 		let user = (
-			await Knex.select<any, User[]>("password_reset").from("prisma2.user").where("password_reset", token)
+			await knex.select<any, User[]>("password_reset").from("prisma2.user").where("password_reset", token)
 		)?.[0]
 
 		if(!user) {
@@ -305,7 +304,7 @@ function storePasswordReset({ knex }: ApiContext) {
 			hashLength: 64,
 		})
 
-		await Knex("prisma2.user").where("password_reset", token).update({ password: hashPassword, password_reset: null })
+		await knex("prisma2.user").where("password_reset", token).update({ password: hashPassword, password_reset: null })
 
 		return res.status(200).json({
 			success: true
