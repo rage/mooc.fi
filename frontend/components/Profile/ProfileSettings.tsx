@@ -53,9 +53,10 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
   )
 
   const handleResearchConsentInput = async (
-    _event: ChangeEvent<{}>,
+    event: ChangeEvent<{}>,
     value: string,
   ) => {
+    event.preventDefault()
     setResearchConsent(value)
     try {
       await updateResearchConsent({ variables: { value: value === "1" } })
