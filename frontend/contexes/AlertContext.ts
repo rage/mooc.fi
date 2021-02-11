@@ -1,4 +1,4 @@
-import { createContext } from "react"
+import { createContext, useContext } from "react"
 
 export interface Alert {
   title?: string
@@ -14,8 +14,14 @@ export interface AlertState {
   removeAlert: (alert: Alert) => void
 }
 
-export default createContext<AlertState>({
+const AlertContext = createContext<AlertState>({
   alerts: [],
   addAlert: (_: Alert) => {},
   removeAlert: (_: Alert) => {},
 })
+
+export default AlertContext
+
+export function useAlertContext() {
+  return useContext(AlertContext)
+}
