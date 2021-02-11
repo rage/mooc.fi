@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client"
+import withAdmin from "/lib/with-admin"
 
+// @ts-ignore: nothing here yet
 const UserPointsQuery = gql`
   query UserPointsList($id: ID!) {
     user(id: $id) {
@@ -30,3 +32,11 @@ const UserPointsQuery = gql`
     }
   }
 `
+
+function UserPoints() {
+  return (
+    <div>nothing</div>
+  )
+}
+
+export default withAdmin(UserPoints)
