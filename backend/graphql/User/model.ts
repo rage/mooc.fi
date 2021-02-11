@@ -5,7 +5,6 @@ import {
   nonNull,
   nullable,
   booleanArg,
-  arg,
 } from "nexus"
 
 export const User = objectType({
