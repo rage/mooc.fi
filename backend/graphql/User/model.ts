@@ -24,7 +24,7 @@ export const User = objectType({
     // t.model.completions()
     // t.model.completions_registered()
     t.model.email_deliveries()
-    // t.model.exercise_completions()
+    t.model.exercise_completions()
     t.model.organizations()
     t.model.user_course_progresses()
     t.model.user_course_service_progresses()
