@@ -1,5 +1,5 @@
 import { ApiContext } from "."
-import { ok, err } from "../util/result
+import { ok, err } from "../util/result"
 import TmcClient, { authenticateUser, createUser, getCurrentUserDetails, resetUserPassword } from "../services/tmc"
 import { validateEmail, validatePassword } from "../util/validateAuth"
 import { User } from "@prisma/client"
@@ -127,16 +127,6 @@ export function signIn({ knex }: ApiContext) {
 			}
 
 			if (await argon2.verify(user.password, password) && accessToken.success) {
-				express.use(session({
-					secret: accessToken.token,
-					cookie: {
-						maxAge: 365 * 24 * 60 * 60 * 1000,
-						secure: true
-					},
-					saveUninitialized: false,
-					resave: false,
-					unset: 'keep'
-				}));
 
 				return res.status(200).cookie(
 					'access_token', accessToken.token, {
@@ -160,17 +150,6 @@ export function signIn({ knex }: ApiContext) {
 			await knex("prisma2.user")
 			.update({ password: hashPassword })
 			.where("email", email)
-
-			express.use(session({
-				secret: accessToken.token,
-				cookie: {
-					maxAge: 365 * 24 * 60 * 60 * 1000,
-					secure: true
-				},
-				saveUninitialized: false,
-				resave: false,
-				unset: 'keep'
-			}));
 
 			return res.status(200).cookie(
 				'access_token', accessToken.token, {
