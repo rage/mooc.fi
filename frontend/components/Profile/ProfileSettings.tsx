@@ -7,6 +7,7 @@ import CustomSnackbar from "/components/CustomSnackbar"
 import { UserOverViewQuery } from "/pages/[lng]/profile"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
+import { useAlertContext } from "/contexes/AlertContext"
 
 const updateResearchConsentMutation = gql`
   mutation updateUpdateAccountResearchConsent($value: Boolean!) {
@@ -53,9 +54,10 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
   )
 
   const handleResearchConsentInput = async (
-    _event: ChangeEvent<{}>,
+    event: ChangeEvent<{}>,
     value: string,
   ) => {
+    event.preventDefault()
     setResearchConsent(value)
     try {
       await updateResearchConsent({ variables: { value: value === "1" } })
