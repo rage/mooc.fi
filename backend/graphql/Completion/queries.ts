@@ -101,7 +101,7 @@ export const CompletionQueries = extendType({
           course = courseFromAvoinCourse.slug
         }
 
-        const baseArgs: Prisma.FindManyCompletionArgs = {
+        const baseArgs: Prisma.CompletionFindManyArgs = {
           where: {
             course: { slug: course },
             completion_language,
@@ -136,7 +136,7 @@ export const CompletionQueries = extendType({
 
         return findManyCursorConnection(
           (args) => ctx.prisma.completion.findMany({ ...args, ...baseArgs }),
-          () => ctx.prisma.completion.count(baseArgs),
+          () => ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
           { first, last, before, after },
           {
             getCursor: (node) => ({ id: node.id }),

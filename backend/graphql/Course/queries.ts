@@ -34,7 +34,7 @@ export const CourseQueries = extendType({
           throw new UserInputError("must provide id or slug")
         }
 
-        const courseQuery: Prisma.FindUniqueCourseArgs = {
+        const courseQuery: Prisma.CourseFindUniqueArgs = {
           where: {
             slug: slug ?? undefined,
             id: id ?? undefined,
