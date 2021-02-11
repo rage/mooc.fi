@@ -7,7 +7,6 @@ import CustomSnackbar from "/components/CustomSnackbar"
 import { UserOverViewQuery } from "/pages/[lng]/profile"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
-import { useAlertContext } from "/contexes/AlertContext"
 
 const updateResearchConsentMutation = gql`
   mutation updateUpdateAccountResearchConsent($value: Boolean!) {

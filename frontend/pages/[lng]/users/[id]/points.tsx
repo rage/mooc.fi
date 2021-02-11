@@ -34,9 +34,7 @@ const UserPointsQuery = gql`
 `
 
 function UserPoints() {
-  return (
-    <div>nothing</div>
-  )
+  return <div>nothing</div>
 }
 
 export default withAdmin(UserPoints)
