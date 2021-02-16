@@ -1,5 +1,6 @@
 import { Card, CardContent, Typography } from "@material-ui/core"
 import {
+  UserPointsList_user_completions,
   UserPointsList_user_exercise_completions,
   UserPointsList_user_user_course_progresses,
 } from "/static/types/generated/UserPointsList"
@@ -8,6 +9,7 @@ import styled from "@emotion/styled"
 
 interface CourseEntryProps {
   data: {
+    completions?: UserPointsList_user_completions
     progress?: UserPointsList_user_user_course_progresses
     exerciseCompletions: UserPointsList_user_exercise_completions[]
   }
@@ -36,6 +38,8 @@ function CourseEntry({ data }: CourseEntryProps) {
         {data?.exerciseCompletions?.[0].exercise?.course?.name}
       </CardTitle>
       <CardContent>
+        {data.completions ? <p>{JSON.stringify(data.completions)}</p> : null}
+        {data.progress ? <p>{JSON.stringify(data.progress)}</p> : null}
         {data.exerciseCompletions.map(
           (exerciseCompletion: UserPointsList_user_exercise_completions) => (
             <Exercise key={exerciseCompletion.id}>

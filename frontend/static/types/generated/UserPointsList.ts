@@ -7,10 +7,27 @@
 // GraphQL query operation: UserPointsList
 // ====================================================
 
+export interface UserPointsList_user_completions {
+  __typename: "Completion"
+  id: string
+  course_id: string | null
+  created_at: any | null
+  updated_at: any | null
+  tier: number | null
+  grade: string | null
+  project_completion: boolean | null
+  completion_language: string | null
+  completion_date: any | null
+  registered: boolean | null
+  eligible_for_ects: boolean | null
+}
+
 export interface UserPointsList_user_user_course_progresses {
   __typename: "UserCourseProgress"
   id: string
   course_id: string | null
+  max_points: number | null
+  n_points: number | null
   progress: (any | null)[] | null
   extra: any | null
 }
@@ -55,6 +72,7 @@ export interface UserPointsList_user {
   __typename: "User"
   id: string
   username: string
+  completions: UserPointsList_user_completions[] | null
   user_course_progresses: UserPointsList_user_user_course_progresses[]
   exercise_completions:
     | (UserPointsList_user_exercise_completions | null)[]
