@@ -23,6 +23,7 @@ export const createKafkaConsumer = (logger: winston.Logger) => {
       offset_commit_cb: logCommit(logger),
       "enable.auto.commit": false,
       "partition.assignment.strategy": "roundrobin",
+      "api.version.request.timeout.ms": 30000,
     },
     { "auto.offset.reset": "earliest" },
   )
