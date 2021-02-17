@@ -66,7 +66,7 @@ const createPlugins = () => {
 export default makeSchema({
   types,
   contextType: {
-    module: join(__dirname, "context.ts"),
+    module: join(process.cwd(), "context.ts"),
     export: "Context",
   },
   sourceTypes: {

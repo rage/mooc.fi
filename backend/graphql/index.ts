@@ -1,4 +1,4 @@
-// generated Thu Dec 17 2020 14:08:21 GMT+0200 (Eastern European Standard Time)
+// generated Wed Feb 17 2021 19:08:35 GMT+0200 (GMT+02:00)
 
 export * from "./Completion"
 export * from "./CompletionRegistered"
