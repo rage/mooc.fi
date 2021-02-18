@@ -11,7 +11,8 @@ import { userCourseSettingsCount } from "./userCourseSettingsCount"
 import { progress, progressV2 } from "./progress"
 import { tierProgress } from "./tierProgress"
 import { registerCompletions } from "./registerCompletions"
-import { signUp, signIn, signOut, passwordReset } from "./authentication"
+import { signUp, signIn, signOut, passwordReset, createClient, requireAuthTest } from "./authentication"
+
 import {
   userCourseSettingsGet,
   userCourseSettingsPost,
@@ -19,6 +20,8 @@ import {
 import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
 
 import * as winston from "winston"
+
+const { token } = require('./oauth2')
 
 export interface ApiContext {
   prisma: PrismaClient

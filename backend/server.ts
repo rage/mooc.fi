@@ -15,6 +15,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const crypto = require('crypto')
+const passport = require('passport')
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -47,6 +48,9 @@ const createExpressAppWithContext = ({
     resave: false,
     unset: 'keep'
   }));
+  app.use(passport.initialize())
+  app.use(passport.session())
+
   if (!TEST) {
     app.use(morgan("combined"))
   }
