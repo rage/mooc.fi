@@ -8,18 +8,18 @@
 // ====================================================
 
 export interface BreadcrumbModule_study_module {
-  __typename: "StudyModule"
-  id: string
-  slug: string
-  name: string
+  __typename: "StudyModule";
+  id: string;
+  slug: string;
+  name: string;
 }
 
 export interface BreadcrumbModule {
-  study_module: BreadcrumbModule_study_module | null
+  study_module: BreadcrumbModule_study_module | null;
 }
 
 export interface BreadcrumbModuleVariables {
-  slug?: string | null
-  language?: string | null
-  translationFallback?: boolean | null
+  slug?: string | null;
+  language?: string | null;
+  translationFallback?: boolean | null;
 }

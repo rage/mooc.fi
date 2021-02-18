@@ -8,9 +8,9 @@
 // ====================================================
 
 export interface checkSlug {
-  course_exists: boolean | null
+  course_exists: boolean | null;
 }
 
 export interface checkSlugVariables {
-  slug: string
+  slug: string;
 }

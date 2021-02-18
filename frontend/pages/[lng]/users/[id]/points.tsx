@@ -1,140 +1,94 @@
 import { gql, useQuery } from "@apollo/client"
 import withAdmin from "/lib/with-admin"
-import {
-  UserPointsList,
-  UserPointsList_user_completions,
-  UserPointsList_user_exercise_completions,
-  UserPointsList_user_user_course_progresses,
-} from "/static/types/generated/UserPointsList"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { useEffect, useState } from "react"
 import { CircularProgress } from "@material-ui/core"
-import { sortBy } from "lodash"
-import CourseEntry from "/components/Dashboard/Users/Points/CourseEntry"
+import UserPointsList from "/components/Dashboard/Users/Points/UserPointsList"
 import Container from "/components/Container"
+import { CourseStatistics } from "/static/types/generated/CourseStatistics"
+import notEmpty from "/util/notEmpty"
 
-// TODO: might as well query completions (and registered)
-const UserPointsQuery = gql`
-  query UserPointsList($upstream_id: Int) {
+const CourseStatisticsQuery = gql`
+  query CourseStatistics($upstream_id: Int) {
     user(upstream_id: $upstream_id) {
       id
       username
-      completions {
-        id
-        course_id
-        created_at
-        updated_at
-        tier
-        grade
-        project_completion
-        completion_language
-        completion_date
-        registered
-        eligible_for_ects
-      }
-      user_course_progresses {
-        id
-        course_id
-        max_points
-        n_points
-        progress
-        extra
-      }
-      exercise_completions {
-        id
-        created_at
-        updated_at
-        n_points
-        attempted
-        completed
-        timestamp
-        n_points
-        exercise_completion_required_actions {
-          id
-          value
-        }
-        exercise {
+      course_statistics {
+        course {
           id
           name
-          custom_id
-          course {
+        }
+        exercise_completions {
+          id
+          created_at
+          updated_at
+          n_points
+          attempted
+          completed
+          timestamp
+          n_points
+          exercise_completion_required_actions {
+            id
+            value
+          }
+          exercise {
             id
             name
+            custom_id
+            course {
+              id
+              name
+            }
+            part
+            section
+            max_points
           }
-          part
-          section
+        }
+        user_course_progresses {
+          id
+          course_id
           max_points
+          n_points
+          progress
+          extra
+        }
+        completion {
+          id
+          course_id
+          created_at
+          updated_at
+          tier
+          grade
+          project_completion
+          completion_language
+          completion_date
+          registered
+          eligible_for_ects
         }
       }
     }
   }
 `
 
-interface DataPerCourse {
-  completion?: UserPointsList_user_completions
-  progress?: UserPointsList_user_user_course_progresses
-  exerciseCompletions: UserPointsList_user_exercise_completions[]
-}
-
 function UserPoints() {
   const id = useQueryParameter("id")
-  const [groupedData, setGroupedData] = useState<
-    [string, DataPerCourse][] | null
-  >(null)
-  const { loading, /* error, */ data } = useQuery<UserPointsList>(
-    UserPointsQuery,
+  const { loading, /* error, */ data } = useQuery<CourseStatistics>(
+    CourseStatisticsQuery,
     { variables: { upstream_id: Number(id) } },
   )
 
-  useEffect(() => {
-    console.log("data", data)
-    // TODO: probably a more readable solution if it gets complicated
-    const dataPerCourse =
-      data?.user?.exercise_completions?.reduce<Record<string, DataPerCourse>>(
-        (acc, curr) => ({
-          ...acc,
-          ...(curr?.exercise?.course?.id
-            ? {
-                [curr.exercise.course.id]: {
-                  completion:
-                    acc[curr.exercise.course.id]?.completion ??
-                    data?.user?.completions?.find(
-                      (p) => p.course_id === curr?.exercise?.course?.id,
-                    ),
-                  progress:
-                    acc[curr.exercise.course.id]?.progress ??
-                    data?.user?.user_course_progresses?.find(
-                      (p) => p.course_id === curr?.exercise?.course?.id,
-                    ),
-                  exerciseCompletions: sortBy(
-                    (
-                      acc[curr.exercise.course.id]?.exerciseCompletions ?? []
-                    ).concat(curr),
-                    ["exercise.part", "exercise.section", "exercise.name"],
-                  ),
-                },
-              }
-            : {}),
-        }),
-        {},
-      ) ?? {}
-    setGroupedData(
-      sortBy(
-        Object.entries(dataPerCourse),
-        ([_, value]) =>
-          value?.exerciseCompletions?.[0].exercise?.course?.name ?? "",
-      ),
-    )
-    console.log("dataPerCourse", dataPerCourse)
-  }, [data])
-
+  console.log("data", data)
+  console.log("notEmpty", notEmpty)
   return (
     <Container>
-      {loading || !groupedData ? (
+      {loading ? (
         <CircularProgress />
-      ) : (
-        groupedData.map(([id, data]) => <CourseEntry key={id} data={data} />)
-      )}
+      ) : data ? (
+          <UserPointsList
+            data={data?.user?.course_statistics?.filter(notEmpty) ?? []}
+          />
+        ) : (
+          <div>No data!</div>
+        )}
     </Container>
   )
 }
