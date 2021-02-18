@@ -77,7 +77,6 @@ function UserPoints() {
   )
 
   console.log("data", data)
-  console.log("notEmpty", notEmpty)
   return (
     <Container>
       {loading ? (
