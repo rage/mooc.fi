@@ -1,8 +1,12 @@
-import { Card, CardContent, Typography } from "@material-ui/core"
+import { Card, CardContent, Paper, TableContainer, Typography } from "@material-ui/core"
 import { CardTitle } from "/components/Text/headers"
 import styled from "@emotion/styled"
 import { CourseStatistics_user_course_statistics } from "/static/types/generated/CourseStatistics"
 import { sortBy } from "lodash"
+import React from "react"
+import ExerciseList from "/components/Dashboard/Users/Points/ExerciseList"
+import notEmpty from "/util/notEmpty"
+import { UserPointsList_user_exercise_completions } from "/static/types/generated/UserPointsList"
 interface CourseEntryProps {
   data: CourseStatistics_user_course_statistics
 }
@@ -23,7 +27,19 @@ const Exercise = styled(Card)`
 `
 
 function CourseEntry({ data }: CourseEntryProps) {
-  console.log(data)
+  const exercisesPerPart = data.exercise_completions
+    ?.filter(notEmpty)
+    .reduce<Record<number, UserPointsList_user_exercise_completions[]>>((acc, curr) => ({
+    ...acc,
+    [curr.exercise?.part ?? 0]: 
+      sortBy(
+        (acc[curr.exercise?.part ?? 0] ?? []).concat(curr),
+        ec => ec.exercise?.section
+      )
+  }), {}) 
+
+  // TODO: subheaders for parts, collapsible stuff
+  console.log(exercisesPerPart)
   return (
     <CourseEntryCard>
       <CardTitle variant="h3">
@@ -32,6 +48,14 @@ function CourseEntry({ data }: CourseEntryProps) {
       <CardContent>
         {data.completion ? <p>{JSON.stringify(data.completion)}</p> : null}
         {data.user_course_progresses ? <p>{JSON.stringify(data.user_course_progresses)}</p> : null}
+        <ExerciseList
+          exerciseCompletions={
+            sortBy(
+              (data.exercise_completions ?? []).filter(notEmpty),
+              ["exercise.part", "exercise.section", "exercise.name"]
+            ) 
+          }
+        />
         {sortBy(
           data.exercise_completions ?? [],
           ["exercise.part", "exercise.section", "exercise.name"]
