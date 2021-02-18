@@ -8,18 +8,18 @@
 // ====================================================
 
 export interface BreadcrumbCourse_course {
-  __typename: "Course"
-  id: string
-  slug: string
-  name: string
+  __typename: "Course";
+  id: string;
+  slug: string;
+  name: string;
 }
 
 export interface BreadcrumbCourse {
-  course: BreadcrumbCourse_course | null
+  course: BreadcrumbCourse_course | null;
 }
 
 export interface BreadcrumbCourseVariables {
-  slug?: string | null
-  language?: string | null
-  translationFallback?: boolean | null
+  slug?: string | null;
+  language?: string | null;
+  translationFallback?: boolean | null;
 }

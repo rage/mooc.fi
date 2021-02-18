@@ -6,6 +6,8 @@ import {
   nullable,
   booleanArg,
 } from "nexus"
+import { groupBy } from "lodash"
+import { notEmpty } from "../../util/notEmpty"
 
 export const User = objectType({
   name: "User",
@@ -214,6 +216,59 @@ export const User = objectType({
               : {}),
           },
         })
+      },
+    })
+
+    t.list.field("course_statistics", {
+      type: "CourseStatistics",
+      resolve: async (parent, _, ctx) => {
+        const exerciseCompletions = groupBy(
+          await ctx.prisma.exerciseCompletion.findMany({
+            where: {
+              user_id: parent.id,
+            },
+            include: {
+              exercise: true,
+              exercise_completion_required_actions: true,
+            },
+          }),
+          (exerciseCompletion) => exerciseCompletion.exercise?.course_id,
+        )
+        const courses = await ctx.prisma.course.findMany({
+          where: {
+            id: { in: Object.keys(exerciseCompletions) ?? [] },
+          },
+        })
+        const progresses = await ctx.prisma.userCourseProgress.findMany({
+          where: {
+            user_id: parent.id,
+          },
+        })
+        const serviceProgresses = await ctx.prisma.userCourseServiceProgress.findMany(
+          {
+            where: {
+              user_id: parent.id,
+            },
+          },
+        )
+        const completions = await ctx.prisma.completion.findMany({
+          where: {
+            user_id: parent.id,
+          },
+        })
+
+        return courses.map((course) => ({
+          course_id: course.id,
+          course,
+          completion: completions.find((c) => c.course_id === course.id),
+          user_course_progresses: progresses.filter(
+            (p) => p.course_id === course.id,
+          ),
+          user_course_service_progresses: serviceProgresses.filter(
+            (p) => p.course_id === course.id,
+          ),
+          exercise_completions: exerciseCompletions[course.id] ?? [],
+        })).filter(notEmpty)
       },
     })
   },
