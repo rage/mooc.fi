@@ -14,6 +14,7 @@ import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { LibrdKafkaError } from "node-rdkafka"
 import { KafkaError } from "../../lib/errors"
 import knex from "../../../services/knex"
+import checkConnectionInInterval from "../common/connectedChecker"
 
 const TOPIC_NAME = [config.user_points_consumer.topic_name]
 
@@ -72,3 +73,5 @@ consumer.on("connection.failure", (err, metrics) => {
   logger.info("Metrics: " + JSON.stringify(metrics))
   consumer.connect()
 })
+
+checkConnectionInInterval(consumer)
