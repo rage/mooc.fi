@@ -17,6 +17,7 @@ import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 import knex from "../../../services/knex"
+import checkConnectionInInterval from "../common/connectedChecker"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]
@@ -80,3 +81,5 @@ consumer.on("connection.failure", (err, metrics) => {
   logger.info("Metrics: " + JSON.stringify(metrics))
   consumer.connect()
 })
+
+checkConnectionInInterval(consumer)
