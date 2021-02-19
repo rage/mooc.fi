@@ -71,7 +71,7 @@ consumer.on("event.log", function (log) {
 })
 
 consumer.on("connection.failure", (err, metrics) => {
-  logger.info("Connection failed with err " + err)
-  logger.info("Metrics: " + metrics)
+  logger.info("Connection failed with " + err)
+  logger.info("Metrics: " + JSON.stringify(metrics))
   consumer.connect()
 })
