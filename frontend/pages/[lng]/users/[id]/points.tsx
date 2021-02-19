@@ -6,6 +6,9 @@ import UserPointsList from "/components/Dashboard/Users/Points/UserPointsList"
 import Container from "/components/Container"
 import { CourseStatistics } from "/static/types/generated/CourseStatistics"
 import notEmpty from "/util/notEmpty"
+import { produce } from "immer"
+import { useEffect, useReducer, useState } from "react"
+import CollapseContext, { ActionType, CollapseAction, CollapseState, ExerciseState } from "/contexes/CollapseContext"
 
 const CourseStatisticsQuery = gql`
   query CourseStatistics($upstream_id: Int) {
@@ -34,6 +37,7 @@ const CourseStatisticsQuery = gql`
             id
             name
             custom_id
+            course_id
             course {
               id
               name
@@ -69,25 +73,99 @@ const CourseStatisticsQuery = gql`
   }
 `
 
+
+const reducer = (state: CollapseState, action: CollapseAction): CollapseState => {
+  switch (action.type) {
+    case ActionType.OPEN_EXERCISE:
+      return produce(state, draft => {
+        draft[action.course].exercises[action.exercise] = true
+      })
+    case ActionType.CLOSE_EXERCISE:
+      return produce(state, draft => {
+        draft[action.course].exercises[action.exercise] = false
+      })
+    case ActionType.TOGGLE_EXERCISE:
+      return produce(state, draft => {
+        draft[action.course].exercises[action.exercise] = !draft[action.course].exercises[action.exercise]
+      })
+    case ActionType.OPEN_ALL_EXERCISES:
+      return produce(state, draft =>
+        draft[action.course].exercises = Object.keys(state[action.course].exercises).reduce((acc, curr) => ({ ...acc, [curr]: true }), {})
+      )
+    case ActionType.CLOSE_ALL_EXERCISES:
+      return produce(state, draft =>
+        draft[action.course].exercises = Object.keys(state[action.course].exercises).reduce((acc, curr) => ({ ...acc, [curr]: false }), {})
+      )
+    case ActionType.OPEN_COURSE:
+      return produce(state, draft => {
+        draft[action.course].open = true
+      })
+    case ActionType.CLOSE_COURSE:
+      return produce(state, draft => {
+        draft[action.course].open = false
+      })
+    case ActionType.TOGGLE_COURSE:
+      return produce(state, draft => {
+        draft[action.course].open = !draft[action.course]?.open
+      })
+    case ActionType.OPEN_ALL_COURSES:
+      return produce(state, draft => {
+        Object.keys(state).forEach((c) =>
+          draft[c].open = true
+        )
+      })
+    case ActionType.CLOSE_ALL_COURSES:
+      return produce(state, draft => {
+        Object.keys(state).forEach((c) =>
+          draft[c].open = false
+        )
+      })
+    case ActionType.INIT_STATE:
+      return action.state
+  }
+}
+
 function UserPoints() {
   const id = useQueryParameter("id")
   const { loading, /* error, */ data } = useQuery<CourseStatistics>(
     CourseStatisticsQuery,
     { variables: { upstream_id: Number(id) } },
   )
+  const [state, dispatch] = useReducer(reducer, {})
+  useEffect(() => {
+    const s = data?.user?.course_statistics
+      ?.reduce<CollapseState>((collapseState, courseEntry) => ({
+        ...collapseState,
+        [courseEntry?.course?.id ?? "_"]: {
+          open: true,
+          exercises: courseEntry?.exercise_completions
+            ?.reduce<ExerciseState>((exerciseState, exerciseCompletion) => ({
+              ...exerciseState,
+              [exerciseCompletion?.exercise?.id ?? "_"]: false
+            }), {}) ?? {}
+        }
+      }), {}) ?? {}
+    dispatch({ type: ActionType.INIT_STATE, state: s })
+  }, [data])
 
-  console.log("data", data)
   return (
     <Container>
       {loading ? (
         <CircularProgress />
       ) : data ? (
+        <CollapseContext.Provider
+          value={{
+            state,
+            dispatch
+          }}
+        >
           <UserPointsList
             data={data?.user?.course_statistics?.filter(notEmpty) ?? []}
           />
-        ) : (
-          <div>No data!</div>
-        )}
+        </CollapseContext.Provider>
+      ) : (
+            <div>No data!</div>
+          )}
     </Container>
   )
 }
