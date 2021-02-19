@@ -4,8 +4,8 @@ RUN apt-get update \
   && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
   && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/edenhill/librdkafka/archive/v1.4.0.tar.gz  -O - | tar -xz \
-  && cd librdkafka-1.4.0 \
+RUN wget https://github.com/edenhill/librdkafka/archive/v1.5.2.tar.gz  -O - | tar -xz \
+  && cd librdkafka-1.5.2 \
   && ./configure --prefix=/usr \
   && make && make install \
   && cd ..
