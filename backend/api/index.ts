@@ -11,7 +11,7 @@ import { userCourseSettingsCount } from "./userCourseSettingsCount"
 import { progress, progressV2 } from "./progress"
 import { tierProgress } from "./tierProgress"
 import { registerCompletions } from "./registerCompletions"
-import { signUp, signIn, signOut, passwordReset, createClient, requireAuthTest, token } from "./authentication"
+import { signUp, signOut, passwordReset, createClient, requireAuthTest, token } from "./authentication"
 
 import {
   userCourseSettingsGet,

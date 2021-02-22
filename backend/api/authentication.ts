@@ -46,12 +46,6 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
       success: false,
       message: "Email is invalid or too long"
     }
-
-    /*
-    return res.status(400).json({
-      error: "Email is invalid or too long.",
-    })
-    */
   }
 
   if (!validatePassword(password)) {
@@ -60,13 +54,6 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
       success: false,
       message: "Password is invalid"
     }
-
-    /*
-    return res.status(400).json({
-      success: false,
-      message: "Password is invalid.",
-    })
-    */
   }
 
   if (password !== confirmPassword) {
@@ -76,15 +63,6 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
       success: false,
       message: "Confirmation password must match new password"
     }
-
-    /*
-    return err(
-      res.status(400).json({
-        success: false,
-        message: "Confirmation password must match new password",
-      }),
-    )
-    */
   }
 
   const checkEmail = await knex
@@ -98,12 +76,6 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
       success: false,
       message: "Email is already in use."
     }
-
-    /*
-    return res.status(400).json({
-      success: false,
-      message: "Email is already in use.",
-    })*/
   }
 
   const checkUsername = await knex
@@ -117,11 +89,6 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
       success: false,
       message: "Username is already in use."
     }
-    /*
-    return res.status(400).json({
-      success: false,
-      message: "Username is already in use.",
-    })*/
   }
 
   const accessToken = await createUser(
@@ -136,16 +103,6 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
       success: false,
       message: `Error creating user: ${accessToken.error}`
     }
-
-    /*return err(
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: "Error creating user",
-          error: accessToken.error,
-        }),
-    )*/
   }
 
   const userDetails = await getCurrentUserDetails(accessToken.token)
@@ -183,11 +140,6 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
         success: false,
         message: `Error creating user: ${error}`
       }
-      /*
-      return err(
-        res.status(500).json({ message: "Error creating user", error }),
-      )
-      */
     }
   }
 
@@ -196,195 +148,126 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
     success: true,
     data: userDetails
   }
-  /*
-  return res.status(200).json({
-    success: true,
-    userDetails,
-  })*/
 }
 
-export function signIn() {
-  return async (req: any, res: any) => {
-    let email = req.body.email.trim()
-    let password = req.body.password.trim()
+async function signIn(email, password) {
+  let email = email.trim()
+  let password = password.trim()
 
-    let user = (
-      await Knex
-        .select<any, User[]>("id", "password", "passwordThrottle", "administrator")
-        .from("prisma2.user")
-        .where("email", email)
-    )?.[0]
-    const accessToken = await authenticateUser(email, password)
+  let user = (
+    await Knex
+      .select<any, User[]>("id", "email", "password", "passwordThrottle", "administrator")
+      .from("prisma2.user")
+      .where("email", email)
+  )?.[0]
+  const tmcToken = await authenticateUser(email, password)
 
-    if (user) {
-      if(user.client !== "native") {
-        return res.status(403).json({
-          error: 'Unauthorized: Please use the correct sign in method.'
-        })
-      }
-
-      if (user.passwordThrottle?.currentRate >= RATE_LIMIT) {
-        let renewStamp = new Date()
-        let diffTime = Math.ceil(
-          Math.abs(renewStamp - user.passwordThrottle?.limitStamp) /
-            (1000 * 60 * 60 * 24),
-        )
-        if (diffTime >= 1) {
-          let passwordThrottle = user.passwordThrottle
-          passwordThrottle.currentRate = 0
-          passwordThrottle.limitStamp = null
-
-          await knex("prisma2.user")
-            .update({ passwordThrottle })
-            .where("email", email)
-        } else {
-          return err(
-            res
-              .status(403)
-              .json({
-                message:
-                  "You have made too many sign in attempts. Please try again in 24 hours.",
-              }),
-          )
-        }
-      }
-
-      if (
-        (await argon2.verify(user.password, password)) &&
-        accessToken.success
-      ) {
-        let userData = {
-          id: user.id,
-          tmc_token: accessToken.token
-        }
-        //return done(null, userData )
-
-        let moocToken = await jwt.sign({ 
-          exp: Math.floor(Date.now() / 1000) + (60 * 60),
-          maxAge: 365 * 24 * 60 * 60 * 1000, 
-          id: user.id, 
-          admin: user.administrator,
-          nonce: crypto.randomBytes(16).toString('hex') 
-        }, 
-        privateKey, 
-        { 
-          algorithm: 'RS256', 
-          issuer: AUTH_ISSUER, 
-          subject: new Buffer.from(email).toString('base64'), 
-          audience:'mooc'
-        })
-
-        return res
-          .status(200)
-          .cookie("access_token", accessToken.token, {
-            expires: new Date(Date.now() + 8 * 3600000),
-          })
-          .json({
-            success: true,
-            tmc_token: accessToken.token,
-            mooc_token: moocToken
-        })
+  if (user) {
+    if(user.client !== "native") {
+      return {
+        status: 403,
+        success: false,
+        message: 'Unauthorized: Please use the correct sign in method.'
       }
     }
 
-    if (accessToken.success) {
-      const hashPassword = await argon2.hash(password, {
-        type: argon2.argon2id,
-        timeCost: 4,
-        memoryCost: 15360,
-        hashLength: 64,
-      })
+    if (user.passwordThrottle?.currentRate >= RATE_LIMIT) {
+      let renewStamp = new Date()
+      let diffTime = Math.ceil(
+        Math.abs(renewStamp - user.passwordThrottle?.limitStamp) /
+          (1000 * 60 * 60 * 24),
+      )
+      if (diffTime >= 1) {
+        let passwordThrottle = user.passwordThrottle
+        passwordThrottle.currentRate = 0
+        passwordThrottle.limitStamp = null
 
-      await knex("prisma2.user")
-        .update({ password: hashPassword })
-        .where("email", email)
+        await knex("prisma2.user")
+          .update({ passwordThrottle })
+          .where("email", email)
+      } else {
 
-      
-      /*let userData = {
-        id: user.id,
-        tmc_token: accessToken.token
-      }*/
-      //return done(null, userData )
-
-      let moocToken = await jwt.sign({ 
-        exp: Math.floor(Date.now() / 1000) + (60 * 60),
-        maxAge: 365 * 24 * 60 * 60 * 1000, 
-        id: user.id,
-        admin: user.administrator,
-        nonce: crypto.randomBytes(16).toString('hex') 
-      }, 
-      privateKey, 
-      { 
-        algorithm: 'RS256', 
-        issuer: AUTH_ISSUER, 
-        subject: new Buffer.from(email).toString('base64'), 
-        audience:'mooc',
-      })
-      
-      
-      return res
-        .status(200)
-        .cookie("access_token", accessToken.token, {
-          expires: new Date(Date.now() + 8 * 3600000),
-        })
-        .json({
-          success: true,
-          tmc_token: accessToken.token,
-          mooc_token: moocToken
-        })
-    } else {
-      if (user) {
-        let updateThrottle = user.passwordThrottle
-        if (updateThrottle === null) {
-          updateThrottle = { currentRate: 0, limitStamp: null }
+        return {
+          status: 403,
+          success: false,
+          message: "You have made too many sign in attempts. Please try again in 24 hours."
         }
+      }
+    }
 
-        updateThrottle.currentRate++
-        if (updateThrottle.currentRate >= RATE_LIMIT) {
-          updateThrottle.limitStamp = new Date()
-          await knex("prisma2.user")
-            .update({ passwordThrottle: updateThrottle })
-            .where("email", email)
+    if (
+      (await argon2.verify(user.password, password)) &&
+      tmcToken.success
+    ) {
 
-          return err(
-            res
-              .status(404)
-              .json({
-                message:
-                  "You have made too many sign in attempts. Please try again in 24 hours.",
-              }),
-          )
-        }
+      let accessToken = await issueToken(user, client)
+
+      return {
+        status: 200,
+        success: true,
+        tmc_token: tmcToken.token,
+        access_token: accessToken
+      }
+    }
+  }
+
+  if (tmcToken.success) {
+    const hashPassword = await argon2.hash(password, {
+      type: argon2.argon2id,
+      timeCost: 4,
+      memoryCost: 15360,
+      hashLength: 64,
+    })
+
+    await knex("prisma2.user")
+      .update({ password: hashPassword })
+      .where("email", email)
+    
+    
+    let accessToken = await issueToken(user, client)
+
+    return {
+      status: 200,
+      success: true,
+      tmc_token: tmcToken.token,
+      access_token: accessToken
+    }
+  } else {
+    if (user) {
+      let updateThrottle = user.passwordThrottle
+      if (updateThrottle === null) {
+        updateThrottle = { currentRate: 0, limitStamp: null }
+      }
+
+      updateThrottle.currentRate++
+      if (updateThrottle.currentRate >= RATE_LIMIT) {
+        updateThrottle.limitStamp = new Date()
         await knex("prisma2.user")
           .update({ passwordThrottle: updateThrottle })
           .where("email", email)
 
-        let error = {
+        return {
           status: 403,
-          message: `Incorrect password. You have ${RATE_LIMIT - updateThrottle.currentRate} attempts left.`
+          success: false,
+          message: "You have made too many sign in attempts. Please try again in 24 hours."
         }
-
-        //return done(error)
-
-        return err(
-          res
-            .status(404)
-            .json({
-              message: `Incorrect password. You have ${
-                RATE_LIMIT - updateThrottle.currentRate
-              } attempts left.`,
-            }),
-        )
       }
 
-      
-      let error = {
+      await knex("prisma2.user")
+        .update({ passwordThrottle: updateThrottle })
+        .where("email", email)
+
+      return {
         status: 403,
-        message: "User not found"
+        success: false,
+        message: `Incorrect password. You have ${ RATE_LIMIT - updateThrottle.currentRate } attempts left.`,
       }
+    }
 
-      //return done(error)
-      return err(res.status(404).json({ message: "User not found" }))
+    return {
+      status: 404,
+      success: false,
+      message: "User not found."
     }
   }
 }
@@ -547,15 +430,142 @@ export function createClient({ knex }: ApiContext) {
   }
 }
 
-export function authorization({ knex }: ApiContext) {
-  return async (req: any, res: any) => {
+async function issueToken(user: any, client: any) {
+  let userData = null
+  if(user) {
+    userData = (await knex.select("id", "administrator", "email").from("prisma2.users").where("email", user.email).where('client', client.id))?.[0]
+  }
 
+  let token = await jwt.sign({
+    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    maxAge: 365 * 24 * 60 * 60 * 1000,
+    id: userData.id,
+    admin: userData.administrator,
+    nonce
+  },
+  privateKey,
+  {
+    algorithm: 'RS256',
+    issuer: AUTH_ISSUER,
+    subject: new Buffer.from(userData.email).toString('base64'),
+    audience: client.name
+  }) 
+
+  return token
+}
+
+async function grantAuthorizationCode(client: any, redirectUri: any, user: any) {
+  const code = crypto.randomBytes(16).toString('hex')
+  await Knex("prisma2.authorizationCodes").insert({ code, clientid: client.id, redirecturi, userid: user.id })
+  return code
+}
+
+async function exchangePassword(email: any, password: any, scope?: any) {
+  return signIn(email, password)
+}
+
+async function exchangeAuthorizationCode(client:any, code: any, redirectUri: any) {
+  let authCode = (await Knex.select("*").from("prisma2.authorizationCodes").where("code", code))?.[0]
+
+  if(!authCode) {
+    return {
+      status: 403,
+      success: false,
+      message: "Invalid authorization code"
+    }
+  }
+
+  if(client.id !== authCode.clientid) {
+    return {
+      status: 403,
+      success: false,
+      message: 'Invalid client id'
+    }
+  }
+
+  if(redirectUri !== authCode.redirecturi) {
+    return {
+      status: 403,
+      success: false,
+      message: 'Invalid redirect URI'
+    }
+  }
+  
+  let accessToken = await issueToken(authCode.userid, client)
+
+  return {
+    status: 200,
+    success: true,
+    access_token: accessToken
+  }
+}
+
+
+async function exchangeClientCredentials(client: any, scope: any) {
+  let localClient = (await Knex.select("*").from("prisma2.clients").where("clientid", client.clientid))?.[0]
+
+  if(!localClient) {
+    return {
+      status: 403,
+      success: false,
+      message: 'Invalid client id'
+    }
+  }
+  if(localClient.clientsecret !== client.clientsecret) {
+    return {
+      status: 403,
+      success: false,
+      message: 'Invalid client secret'
+    }
+  }
+
+  let accessToken = issueToken(null, client.clientid)
+
+  return {
+    status: 200,
+    success: true,
+    access_token: accessToken
   }
 }
 
 
 export function token({ knex }: ApiContext) {
   return async (req: any, res: any) => {
+    const grantType = req.body.grant_type
+    let result = {}
+
+    switch(grantType) {
+      case "password":
+        result = await exchangePassword(req.body.email, req.body.password, req.body.scope)
+        
+      case "authorization_code":
+        result = await exchangeAuthorizationCode(req.body.client, req.body.code, req.body.redirectUri)
+
+      case "client_credentials":
+        result = await exchangeClientCredentials(req.body.client, req.body.scope)
+
+      default:
+        result = {
+          status: 401,
+          success: false,
+          message: 'Invalid grant_type'
+        }
+
+      if(!result.success) {
+        return res.status(result.status).json({
+          result
+        })
+      }
+      
+      return res.status(result.status)
+      .cookie("access_token", result.access_token, {
+        expires: new Date(Date.now() + 8 * 3600000)
+      })
+      .json(result)
+    }
+  }
+}
+    /*
     const iss = req.query.iss
     const loginHint = req.query.login_hint
     const targetLink = req.query.target_link_uri
@@ -563,14 +573,14 @@ export function token({ knex }: ApiContext) {
     const ltiDeployment = req.query.lti_deployment
     const clientID = req.query.client_id
 
-    let client = (await knex.select("*").from("prisma2.clients").where("issuer", iss).where("id", clientID))?.[0]
+    let client = (await knex.select("*").from("prisma2.clients").where("issuer", iss).where("clientid", clientID))?.[0]
     if(!client) { return res.status(403).json({ error: 'Unauthorized' })}
 
     let email = loginHint.trim()
     let password = email + client.secretKey
     let nonce = crypto.randomBytes(16).toString('hex')
 
-    let user = (await knex.select("id, administrator").from("prisma2.users").where("email", email).where('clientID', client.id))?.[0]
+    let user = (await knex.select("id", "administrator").from("prisma2.users").where("email", email).where('clientID', client.id))?.[0]
     if(!user) {
       let signUp = await _signUp(email, password, password, null, client.id)
 
@@ -610,4 +620,4 @@ export function token({ knex }: ApiContext) {
     })
 
   }
-}
+}*/
