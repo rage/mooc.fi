@@ -17,7 +17,6 @@ import { createKafkaConsumer } from "../common/kafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 import knex from "../../../services/knex"
-import checkConnectionInInterval from "../common/connectedChecker"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]
@@ -38,6 +37,7 @@ const context = {
 }
 
 consumer.on("ready", () => {
+  logger.info("Ready to consume")
   consumer.subscribe(TOPIC_NAME)
   const consumerImpl = async (
     error: LibrdKafkaError,
@@ -66,20 +66,3 @@ consumer.on("ready", () => {
   }
   consumer.consume(1, consumerImpl)
 })
-
-consumer.on("event.error", (error) => {
-  logger.error(new KafkaError("Error", error))
-  process.exit(-1)
-})
-
-consumer.on("event.log", function (log) {
-  console.log(log)
-})
-
-consumer.on("connection.failure", (err, metrics) => {
-  logger.info("Connection failed with " + err)
-  logger.info("Metrics: " + JSON.stringify(metrics))
-  consumer.connect()
-})
-
-checkConnectionInInterval(consumer)
