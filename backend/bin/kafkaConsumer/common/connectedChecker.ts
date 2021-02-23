@@ -13,5 +13,5 @@ export default function checkConnectionInInterval(consumer: KafkaConsumer) {
       process.exit(-1)
     }
     minutesDisconnected += 1
-  }, 1000)
+  }, 60000)
 }
