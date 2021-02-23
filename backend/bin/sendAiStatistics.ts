@@ -139,6 +139,12 @@ const langArr: langProps[] = [
     country: "Bulgaria",
     langName: "Bulgarian",
   },
+  {
+    language: "en-lu",
+    completion_language: "en_LU",
+    country: "Luxembourg",
+    langName: "English (Luxembourg)",
+  },
 ]
 
 const getDataByLanguage = async (langProps: langProps) => {
@@ -161,9 +167,8 @@ const getDataByLanguage = async (langProps: langProps) => {
     },
   })
   const now = new Date()
-  return `\`\`\`Stats ${now.getDate()}.${
-    now.getMonth() + 1
-  }.${now.getFullYear()}:
+  return `
+  \`\`\`Stats ${now.getDate()}.${now.getMonth() + 1}.${now.getFullYear()}:
 
   1) ${totalByLang.length} registered students in the ${
     langProps.langName
@@ -175,7 +180,8 @@ const getDataByLanguage = async (langProps: langProps) => {
 
   In total: ${totalByLang.length} + ${englishInLang.length} = ${
     totalByLang.length + englishInLang.length
-  }\`\`\` `
+  }\`\`\`
+    `
 }
 
 // const getGlobalStats = async () => {
