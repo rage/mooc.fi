@@ -1,4 +1,5 @@
 import * as Kafka from "node-rdkafka"
+import { ConsumerGlobalConfig } from "node-rdkafka"
 import winston from "winston"
 import { KafkaError } from "../../lib/errors"
 
@@ -16,15 +17,17 @@ const logCommit = (logger: winston.Logger) => (
 export const createKafkaConsumer = (logger: winston.Logger) => {
   const consumerGroup = process.env.KAFKA_CONSUMER_GROUP ?? "kafka"
   logger.info(`Joining consumer group ${consumerGroup}.`)
-  return new Kafka.KafkaConsumer(
-    {
-      "group.id": consumerGroup,
-      "metadata.broker.list": process.env.KAFKA_HOST,
-      offset_commit_cb: logCommit(logger),
-      "enable.auto.commit": false,
-      "partition.assignment.strategy": "roundrobin",
-      debug: process.env.KAFKA_DEBUG_CONTEXTS ?? undefined,
-    },
-    { "auto.offset.reset": "earliest" },
-  )
+  const globalConfig: ConsumerGlobalConfig = {
+    "group.id": consumerGroup,
+    "metadata.broker.list": process.env.KAFKA_HOST,
+    offset_commit_cb: logCommit(logger),
+    "enable.auto.commit": false,
+    "partition.assignment.strategy": "roundrobin",
+  }
+  if (process.env.KAFKA_DEBUG_CONTEXTS) {
+    globalConfig["debug"] = process.env.KAFKA_DEBUG_CONTEXTS
+  }
+  return new Kafka.KafkaConsumer(globalConfig, {
+    "auto.offset.reset": "earliest",
+  })
 }
