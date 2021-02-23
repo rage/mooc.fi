@@ -1,6 +1,6 @@
 export default {
   exercise_consumer: {
-    topic_name: "exercise",
+    topic_name: "exercises-realtime",
   },
   user_points_consumer: {
     topic_name: "user-points-batch",
