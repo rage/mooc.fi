@@ -18,7 +18,11 @@ spec:
             - name: kubectl
               image: bitnami/kubectl
               command:
-                - 'kubectl'
-                - 'rollout'
-                - 'restart'
-                - '"deployment/kafka-consumer-exercises" "deployment/kafka-consumer-user-course-progress-batch" "deployment/kafka-consumer-user-course-progress-realtime" "deployment/kafka-consumer-user-points-batch" "deployment/kafka-consumer-user-points-realtime"'
+                - /bin/sh
+                - -c
+                - |
+                  kubectl rollout restart deployment/kafka-consumer-exercises
+                  kubectl rollout restart deployment/kafka-consumer-user-course-progress-batch
+                  kubectl rollout restart deployment/kafka-consumer-user-course-progress-realtime
+                  kubectl rollout restart deployment/kafka-consumer-user-points-batch
+                  kubectl rollout restart deployment/kafka-consumer-user-points-realtime
