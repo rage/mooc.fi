@@ -21,5 +21,4 @@ spec:
                 - 'kubectl'
                 - 'rollout'
                 - 'restart'
-                - 'deployment'
-                - '"kafka-consumer-exercises" "kafka-consumer-user-course-progress-batch" "kafka-consumer-user-course-progress-realtime" "kafka-consumer-user-points-batch" "kafka-consumer-user-points-realtime"'
+                - '"deployment/kafka-consumer-exercises" "deployment/kafka-consumer-user-course-progress-batch" "deployment/kafka-consumer-user-course-progress-realtime" "deployment/kafka-consumer-user-points-batch" "deployment/kafka-consumer-user-points-realtime"'
