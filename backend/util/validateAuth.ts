@@ -37,7 +37,13 @@ function getRandomInt(min: Number, max: Number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function requireAuth(auth) {
+export function requireAuth(auth: string) {
+    if(!auth) {
+			return {
+				message: 'Missing token'
+			}
+    }
+		
     let token = auth.replace("Bearer ", "")
     if(!token) {
       return {

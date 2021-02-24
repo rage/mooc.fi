@@ -26,6 +26,7 @@ passport.deserializeUser(async(id, done) => {
 
 passport.use(new LocalStrategy((username, password, done) => signIn(username, password, done) ))
 //passport.use(new BasicStrategy((username, password, done) => done(null, username)))
+passport.use(new ClientPasswordStrategy(verifyClient));
 
 server.serializeClient((client: any) => client.id)
 

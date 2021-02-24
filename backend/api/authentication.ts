@@ -18,7 +18,8 @@ const crypto = require("crypto")
 const argon2 = require("argon2")
 
 const RATE_LIMIT = 5
-const AUTH_ISSUER = "http://localhost:4000/api/signIn"
+const AUTH_ISSUER = "http://localhost:4000/api/token"
+const NATIVE_ID = "7g5Llw"
 
 export function signUp({ knex }: ApiContext) {
   return async (req: any, res: any) => {
@@ -34,7 +35,7 @@ export function signUp({ knex }: ApiContext) {
   }
 }
 
-const _signUp = (email, password, confirmPassword, username = null, client = "native") => {
+async function _signUp(email, password, confirmPassword, username = null, client = "native") {
   let email = email.trim()
   let password = password.trim()
   let confirmPassword = confirmPassword.trim()
@@ -150,9 +151,9 @@ const _signUp = (email, password, confirmPassword, username = null, client = "na
   }
 }
 
-async function signIn(email, password) {
-  let email = email.trim()
-  let password = password.trim()
+async function signIn(emailRaw: string, passwordRaw: string) {
+  let email = emailRaw.trim()
+  let password = passwordRaw.trim()
 
   let user = (
     await Knex
@@ -162,14 +163,16 @@ async function signIn(email, password) {
   )?.[0]
   const tmcToken = await authenticateUser(email, password)
 
+  const client = (await Knex.select("id", "clientid", "name").from("prisma2.clients").where("clientid", NATIVE_ID))?.[0]
+
   if (user) {
-    if(user.client !== "native") {
+    /*if(user.client !== "native") {
       return {
         status: 403,
         success: false,
         message: 'Unauthorized: Please use the correct sign in method.'
       }
-    }
+    }*/
 
     if (user.passwordThrottle?.currentRate >= RATE_LIMIT) {
       let renewStamp = new Date()
@@ -182,7 +185,7 @@ async function signIn(email, password) {
         passwordThrottle.currentRate = 0
         passwordThrottle.limitStamp = null
 
-        await knex("prisma2.user")
+        await Knex("prisma2.user")
           .update({ passwordThrottle })
           .where("email", email)
       } else {
@@ -219,7 +222,7 @@ async function signIn(email, password) {
       hashLength: 64,
     })
 
-    await knex("prisma2.user")
+    await Knex("prisma2.user")
       .update({ password: hashPassword })
       .where("email", email)
     
@@ -242,7 +245,7 @@ async function signIn(email, password) {
       updateThrottle.currentRate++
       if (updateThrottle.currentRate >= RATE_LIMIT) {
         updateThrottle.limitStamp = new Date()
-        await knex("prisma2.user")
+        await Knex("prisma2.user")
           .update({ passwordThrottle: updateThrottle })
           .where("email", email)
 
@@ -253,7 +256,7 @@ async function signIn(email, password) {
         }
       }
 
-      await knex("prisma2.user")
+      await Knex("prisma2.user")
         .update({ passwordThrottle: updateThrottle })
         .where("email", email)
 
@@ -411,7 +414,7 @@ export function createClient({ knex }: ApiContext) {
     let auth = await requireAuth(req.headers.authorization)
     if(auth.error) { return res.status(403).json({ error: auth })}
     
-    let name = req.body.name
+    /*let name = req.body.name
     let clientid = getUid(6)
     let clientsecret = getUid(128)
 
@@ -426,28 +429,30 @@ export function createClient({ knex }: ApiContext) {
     return res.status(200).json({
       success: true,
       client
-    })
+    })*/
   }
 }
 
 async function issueToken(user: any, client: any) {
   let userData = null
-  if(user) {
-    userData = (await knex.select("id", "administrator", "email").from("prisma2.users").where("email", user.email).where('client', client.id))?.[0]
-  }
+  /*if(user) {
+    userData = (await Knex.select("id", "administrator", "email").from("prisma2.users").where("email", user.email).where('client', client.id))?.[0]
+  }*/
+
+  let nonce = crypto.randomBytes(16).toString('hex')
 
   let token = await jwt.sign({
     exp: Math.floor(Date.now() / 1000) + (60 * 60),
     maxAge: 365 * 24 * 60 * 60 * 1000,
-    id: userData.id,
-    admin: userData.administrator,
+    id: user.id,
+    admin: user.administrator,
     nonce
   },
   privateKey,
   {
     algorithm: 'RS256',
     issuer: AUTH_ISSUER,
-    subject: new Buffer.from(userData.email).toString('base64'),
+    subject: new Buffer.from(user.email).toString('base64'),
     audience: client.name
   }) 
 
@@ -461,7 +466,7 @@ async function grantAuthorizationCode(client: any, redirectUri: any, user: any) 
 }
 
 async function exchangePassword(email: any, password: any, scope?: any) {
-  return signIn(email, password)
+  return await signIn(email, password)
 }
 
 async function exchangeAuthorizationCode(client:any, code: any, redirectUri: any) {
@@ -528,21 +533,23 @@ async function exchangeClientCredentials(client: any, scope: any) {
   }
 }
 
-
 export function token({ knex }: ApiContext) {
   return async (req: any, res: any) => {
     const grantType = req.body.grant_type
     let result = {}
-
+    
     switch(grantType) {
       case "password":
         result = await exchangePassword(req.body.email, req.body.password, req.body.scope)
+        break
         
       case "authorization_code":
-        result = await exchangeAuthorizationCode(req.body.client, req.body.code, req.body.redirectUri)
+        //result = await exchangeAuthorizationCode(req.body.client, req.body.code, req.body.redirectUri)
+        break
 
       case "client_credentials":
-        result = await exchangeClientCredentials(req.body.client, req.body.scope)
+        //result = await exchangeClientCredentials(req.body.client, req.body.scope)
+        break
 
       default:
         result = {
@@ -550,21 +557,23 @@ export function token({ knex }: ApiContext) {
           success: false,
           message: 'Invalid grant_type'
         }
-
-      if(!result.success) {
-        return res.status(result.status).json({
-          result
-        })
-      }
-      
-      return res.status(result.status)
-      .cookie("access_token", result.access_token, {
-        expires: new Date(Date.now() + 8 * 3600000)
-      })
-      .json(result)
     }
+      
+    if(!result.success) {
+      return res.status(result.status).json({
+        result
+      })
+    }
+    
+    return res.status(result.status)
+    .cookie("access_token", result.access_token, {
+      expires: new Date(Date.now() + 8 * 3600000)
+    })
+    .json(result)
   }
 }
+
+
     /*
     const iss = req.query.iss
     const loginHint = req.query.login_hint
