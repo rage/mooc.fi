@@ -1,13 +1,13 @@
 `Feel free to edit this documentation for better language`
 # Kafka
 https://kafka.apache.org/intro
->Apache Kafka® is a distributed streaming platform.
->
+>Apache Kafka® is a distributed streaming platform. 
+> 
 >A streaming platform has three key capabilities:
 >
 >   * Publish and subscribe to streams of records, similar to a message queue or enterprise messaging system.
 >   * Store streams of records in a fault-tolerant durable way.
->   * Process streams of records as they occur.
+>   * Process streams of records as they occur. 
 
 Kafka is a excellent tool for building data pipelines because it minimizes data loss and is fault-tolerant. When a producers submits data to Kafka, Kafka stores the data and keeps it as long as it is set to keep it. Now if a consumer is offline when the data is submitted, the data will not be lost and can be consumed when the consumer comes online. **Kafka does not know nor care if the data is consumed by some consumer.** Consumers have to store this information themselves (but this data can be submitted to server or just store locally). This can be done with `committing offsets`.
 
@@ -38,7 +38,7 @@ Some libraries allow to use autocommit feature. Autocommit with commit every mes
 
 
 ---
->From a certain point onward there is no longer any turning back. That is the point that must be reached.
+>From a certain point onward there is no longer any turning back. That is the point that must be reached.  
 > ~ Franz Kafka
 ---
 ## In Points.mooc.fi
@@ -56,9 +56,9 @@ First sive are meant to be consumed by us and the last is produced by us. The to
 
 ---
 ### user-course-progress-realtime / user-course-progress-batch
-`Current message format version is: 1`
+`Current message format version is: 1`  
 
-This is for submitting users progress in a specific course from a specific service. In typescript the message format looks like this:
+This is for submitting users progress in a specific course from a specific service. In typescript the message format looks like this: 
 ```Typescript
 export interface Message {
   timestamp: string
@@ -77,7 +77,7 @@ export interface PointsByGroup {
 }
 ```
 
-Description of message format version `1`:
+Description of message format version `1`:  
 
 Message  :
 | varibale | description | more info |
@@ -89,7 +89,7 @@ Message  :
 | progress | Array of PointsByGroup | see below
 | message_format_version | which version of message format is used | messages with wrong number are not processed
 
-PointsByGroup:
+PointsByGroup:  
 | variable | description | more info |
 | -------- | ----------- | --------- |
 | group |
@@ -98,12 +98,12 @@ PointsByGroup:
 | progress | users progress | `(n_points/max_points)` usually
 
 ---
-### exercises-realtime
-`Current message format version is: 1`
+### exercise
+`Current message format version is: 1`  
 
 This is for submitting services exercise data to points. (What exerices are in a course). You provide us a list
 of exercises and we add them to our db. We will delete existing exercies if they are not included in newest exercise update.
-In typescript the message format is:
+In typescript the message format is: 
 ```Typescript
 export interface Message {
   timestamp: string
@@ -168,13 +168,13 @@ export interface Message {
 
 Description of message format version `1`:
 
-Message:
+Message: 
 
 | variable | description | more info |
 | -------- | ----------- | --------- |
 | timestamp | when the message was sent |
 | exercise_id | string for identifying the exercise | see exercise topic ExerciseData.id
-| n_points | how much points user has currently
+| n_points | how much points user has currently 
 | completed | is the exercise completed or not
 | user_id | user id from tmc | can be queryed from tmc api with email
 | course_id | course id from points db | this is broadcasted in kafka topic courses when a course is created
