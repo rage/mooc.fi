@@ -16,7 +16,11 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
   return (
     <>
       {completions.slice(0, 10).map((c) => (
-        <CompletionListItem listItem={c} key={c.id} />
+        <CompletionListItem
+          course={c.course}
+          completion={c.completion}
+          key={c.id}
+        />
       ))}
       <LangLink
         href="/[lng]/profile/completions"

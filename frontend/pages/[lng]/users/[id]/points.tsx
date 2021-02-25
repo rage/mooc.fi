@@ -8,7 +8,12 @@ import { CourseStatistics } from "/static/types/generated/CourseStatistics"
 import notEmpty from "/util/notEmpty"
 import { produce } from "immer"
 import { useEffect, useReducer, useState } from "react"
-import CollapseContext, { ActionType, CollapseAction, CollapseState, ExerciseState } from "/contexes/CollapseContext"
+import CollapseContext, {
+  ActionType,
+  CollapseAction,
+  CollapseState,
+  ExerciseState,
+} from "/contexes/CollapseContext"
 
 const CourseStatisticsQuery = gql`
   query CourseStatistics($upstream_id: Int) {
@@ -19,6 +24,7 @@ const CourseStatisticsQuery = gql`
         course {
           id
           name
+          has_certificate
         }
         exercise_completions {
           id
@@ -67,58 +73,85 @@ const CourseStatisticsQuery = gql`
           completion_date
           registered
           eligible_for_ects
+          student_number
+          email
+          course {
+            id
+            slug
+            name
+            has_certificate
+            photo {
+              id
+              uncompressed
+            }
+          }
+          completions_registered {
+            id
+            created_at
+            organization {
+              id
+              slug
+            }
+          }
         }
       }
     }
   }
 `
 
-
-const reducer = (state: CollapseState, action: CollapseAction): CollapseState => {
+const reducer = (
+  state: CollapseState,
+  action: CollapseAction,
+): CollapseState => {
   switch (action.type) {
     case ActionType.OPEN_EXERCISE:
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft[action.course].exercises[action.exercise] = true
       })
     case ActionType.CLOSE_EXERCISE:
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft[action.course].exercises[action.exercise] = false
       })
     case ActionType.TOGGLE_EXERCISE:
-      return produce(state, draft => {
-        draft[action.course].exercises[action.exercise] = !draft[action.course].exercises[action.exercise]
+      return produce(state, (draft) => {
+        draft[action.course].exercises[action.exercise] = !draft[action.course]
+          .exercises[action.exercise]
       })
     case ActionType.OPEN_ALL_EXERCISES:
-      return produce(state, draft =>
-        draft[action.course].exercises = Object.keys(state[action.course].exercises).reduce((acc, curr) => ({ ...acc, [curr]: true }), {})
+      return produce(
+        state,
+        (draft) =>
+          (draft[action.course].exercises = Object.keys(
+            state[action.course].exercises,
+          ).reduce((acc, curr) => ({ ...acc, [curr]: true }), {})),
       )
     case ActionType.CLOSE_ALL_EXERCISES:
-      return produce(state, draft =>
-        draft[action.course].exercises = Object.keys(state[action.course].exercises).reduce((acc, curr) => ({ ...acc, [curr]: false }), {})
+      return produce(
+        state,
+        (draft) =>
+          (draft[action.course].exercises = Object.keys(
+            state[action.course].exercises,
+          ).reduce((acc, curr) => ({ ...acc, [curr]: false }), {})),
       )
     case ActionType.OPEN_COURSE:
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft[action.course].open = true
       })
     case ActionType.CLOSE_COURSE:
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft[action.course].open = false
       })
     case ActionType.TOGGLE_COURSE:
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft[action.course].open = !draft[action.course]?.open
       })
     case ActionType.OPEN_ALL_COURSES:
-      return produce(state, draft => {
-        Object.keys(state).forEach((c) =>
-          draft[c].open = true
-        )
+      return produce(state, (draft) => {
+        Object.keys(state).forEach((c) => (draft[c].open = true))
       })
     case ActionType.CLOSE_ALL_COURSES:
-      return produce(state, draft => {
-        Object.keys(state).forEach((c) =>
-          draft[c].open = false
-        )
+      return produce(state, (draft) => {
+        Object.keys(state).forEach((c) => (draft[c].open = false))
       })
     case ActionType.INIT_STATE:
       return action.state
@@ -133,18 +166,24 @@ function UserPoints() {
   )
   const [state, dispatch] = useReducer(reducer, {})
   useEffect(() => {
-    const s = data?.user?.course_statistics
-      ?.reduce<CollapseState>((collapseState, courseEntry) => ({
-        ...collapseState,
-        [courseEntry?.course?.id ?? "_"]: {
-          open: true,
-          exercises: courseEntry?.exercise_completions
-            ?.reduce<ExerciseState>((exerciseState, exerciseCompletion) => ({
-              ...exerciseState,
-              [exerciseCompletion?.exercise?.id ?? "_"]: false
-            }), {}) ?? {}
-        }
-      }), {}) ?? {}
+    const s =
+      data?.user?.course_statistics?.reduce<CollapseState>(
+        (collapseState, courseEntry) => ({
+          ...collapseState,
+          [courseEntry?.course?.id ?? "_"]: {
+            open: true,
+            exercises:
+              courseEntry?.exercise_completions?.reduce<ExerciseState>(
+                (exerciseState, exerciseCompletion) => ({
+                  ...exerciseState,
+                  [exerciseCompletion?.exercise?.id ?? "_"]: false,
+                }),
+                {},
+              ) ?? {},
+          },
+        }),
+        {},
+      ) ?? {}
     dispatch({ type: ActionType.INIT_STATE, state: s })
   }, [data])
 
@@ -156,7 +195,7 @@ function UserPoints() {
         <CollapseContext.Provider
           value={{
             state,
-            dispatch
+            dispatch,
           }}
         >
           <UserPointsList
@@ -164,8 +203,8 @@ function UserPoints() {
           />
         </CollapseContext.Provider>
       ) : (
-            <div>No data!</div>
-          )}
+        <div>No data!</div>
+      )}
     </Container>
   )
 }

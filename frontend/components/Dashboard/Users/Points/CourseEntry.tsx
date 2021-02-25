@@ -9,6 +9,7 @@ import notEmpty from "/util/notEmpty"
 import { UserPointsList_user_exercise_completions } from "/static/types/generated/UserPointsList"
 import { useCollapseContext, ActionType } from "/contexes/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
+import CompletionListItem from "/components/CompletionListItem"
 interface CourseEntryProps {
   data: CourseStatistics_user_course_statistics
 }
@@ -28,21 +29,23 @@ const Exercise = styled(Card)`
   padding: 0.5rem;
 `
 
-
 function CourseEntry({ data }: CourseEntryProps) {
   const { state, dispatch } = useCollapseContext()
 
-  // @ts-ignore: not used 
-  const exercisesPerPart = data.exercise_completions
-    ?.filter(notEmpty)
-    .reduce<Record<number, UserPointsList_user_exercise_completions[]>>((acc, curr) => ({
-      ...acc,
-      [curr.exercise?.part ?? 0]:
-        sortBy(
-          (acc[curr.exercise?.part ?? 0] ?? []).concat(curr),
-          ec => ec.exercise?.section
-        )
-    }), {}) ?? {}
+  // @ts-ignore: not used
+  const exercisesPerPart =
+    data.exercise_completions
+      ?.filter(notEmpty)
+      .reduce<Record<number, UserPointsList_user_exercise_completions[]>>(
+        (acc, curr) => ({
+          ...acc,
+          [curr.exercise?.part ?? 0]: sortBy(
+            (acc[curr.exercise?.part ?? 0] ?? []).concat(curr),
+            (ec) => ec.exercise?.section,
+          ),
+        }),
+        {},
+      ) ?? {}
 
   // TODO: subheaders for parts
   return (
@@ -51,22 +54,31 @@ function CourseEntry({ data }: CourseEntryProps) {
         {data?.course?.name}
         <CollapseButton
           open={state[data?.course?.id ?? "_"]?.open ?? false}
-          onClick={() => dispatch({ type: ActionType.TOGGLE_COURSE, course: data?.course?.id ?? "_" })}
+          onClick={() =>
+            dispatch({
+              type: ActionType.TOGGLE_COURSE,
+              course: data?.course?.id ?? "_",
+            })
+          }
         />
       </CardTitle>
-      <Collapse
-        in={state[data?.course?.id ?? "_"]?.open}
-      >
+      <Collapse in={state[data?.course?.id ?? "_"]?.open}>
         <CardContent>
+          {data.completion ? (
+            <CompletionListItem
+              course={data.course}
+              completion={data.completion}
+            />
+          ) : null}
           {data.completion ? <p>{JSON.stringify(data.completion)}</p> : null}
-          {data.user_course_progresses ? <p>{JSON.stringify(data.user_course_progresses)}</p> : null}
+          {data.user_course_progresses ? (
+            <p>{JSON.stringify(data.user_course_progresses)}</p>
+          ) : null}
           <ExerciseList
-            exerciseCompletions={
-              sortBy(
-                (data.exercise_completions ?? []).filter(notEmpty),
-                ["exercise.part", "exercise.section", "exercise.name"]
-              )
-            }
+            exerciseCompletions={sortBy(
+              (data.exercise_completions ?? []).filter(notEmpty),
+              ["exercise.part", "exercise.section", "exercise.name"],
+            )}
           />
         </CardContent>
       </Collapse>
