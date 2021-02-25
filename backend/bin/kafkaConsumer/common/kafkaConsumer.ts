@@ -1,6 +1,8 @@
 import * as Kafka from "node-rdkafka"
+import { ConsumerGlobalConfig } from "node-rdkafka"
 import winston from "winston"
 import { KafkaError } from "../../lib/errors"
+import checkConnectionInInterval from "./connectedChecker"
 
 const logCommit = (logger: winston.Logger) => (
   err: any,
@@ -16,14 +18,38 @@ const logCommit = (logger: winston.Logger) => (
 export const createKafkaConsumer = (logger: winston.Logger) => {
   const consumerGroup = process.env.KAFKA_CONSUMER_GROUP ?? "kafka"
   logger.info(`Joining consumer group ${consumerGroup}.`)
-  return new Kafka.KafkaConsumer(
-    {
-      "group.id": consumerGroup,
-      "metadata.broker.list": process.env.KAFKA_HOST,
-      offset_commit_cb: logCommit(logger),
-      "enable.auto.commit": false,
-      "partition.assignment.strategy": "roundrobin",
-    },
-    { "auto.offset.reset": "earliest" },
-  )
+
+  const globalConfig: ConsumerGlobalConfig = {
+    "group.id": consumerGroup,
+    "metadata.broker.list": process.env.KAFKA_HOST,
+    offset_commit_cb: logCommit(logger),
+    "enable.auto.commit": false,
+    "partition.assignment.strategy": "roundrobin",
+  }
+  if (process.env.KAFKA_DEBUG_CONTEXTS) {
+    globalConfig["debug"] = process.env.KAFKA_DEBUG_CONTEXTS
+  }
+
+  const consumer = new Kafka.KafkaConsumer(globalConfig, {
+    "auto.offset.reset": "earliest",
+  })
+
+  consumer.on("event.error", (error) => {
+    logger.error(new KafkaError("Error", error))
+    process.exit(-1)
+  })
+
+  consumer.on("event.log", function (log) {
+    console.log(log)
+  })
+
+  consumer.on("connection.failure", (err, metrics) => {
+    logger.info("Connection failed with " + err)
+    logger.info("Metrics: " + JSON.stringify(metrics))
+    consumer.connect()
+  })
+
+  checkConnectionInInterval(consumer)
+
+  return consumer
 }

@@ -1,0 +1,28 @@
+# Puppeteer/Headless Chrome needs this
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kafka-consumer-restarter
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "2 * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          serviceAccountName: kafka-consumer-restarter
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  kubectl rollout restart deployment/kafka-consumer-exercises
+                  kubectl rollout restart deployment/kafka-consumer-user-course-progress-batch
+                  kubectl rollout restart deployment/kafka-consumer-user-course-progress-realtime
+                  kubectl rollout restart deployment/kafka-consumer-user-points-batch
+                  kubectl rollout restart deployment/kafka-consumer-user-points-realtime

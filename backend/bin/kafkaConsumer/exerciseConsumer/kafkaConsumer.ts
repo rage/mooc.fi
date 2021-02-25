@@ -36,6 +36,7 @@ const context = {
 }
 
 consumer.on("ready", () => {
+  logger.info("Ready to consume")
   consumer.subscribe(TOPIC_NAME)
   const consumerImpl = async (error: LibrdKafkaError, messages: any) => {
     if (error) {
@@ -59,13 +60,4 @@ consumer.on("ready", () => {
     }
   }
   consumer.consume(1, consumerImpl)
-})
-
-consumer.on("event.error", (error) => {
-  logger.error(new KafkaError("Error", error))
-  throw error
-})
-
-consumer.on("event.log", function (log) {
-  console.log(log)
 })
