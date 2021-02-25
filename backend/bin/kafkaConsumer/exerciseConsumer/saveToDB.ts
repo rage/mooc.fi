@@ -25,15 +25,15 @@ export const saveToDatabase = async (
     )
   }
 
-  message.data.forEach((exercise) => {
-    handleExercise({
+  for (const exercise of message.data) {
+    await handleExercise({
       context,
       exercise,
       course_id: message.course_id,
       timestamp: DateTime.fromISO(message.timestamp),
       service_id: message.service_id,
     })
-  })
+  }
 
   await prisma.exercise.updateMany({
     where: {
