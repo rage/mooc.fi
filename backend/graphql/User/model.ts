@@ -257,18 +257,20 @@ export const User = objectType({
           },
         })
 
-        return courses.map((course) => ({
-          course_id: course.id,
-          course,
-          completion: completions.find((c) => c.course_id === course.id),
-          user_course_progresses: progresses.filter(
-            (p) => p.course_id === course.id,
-          ),
-          user_course_service_progresses: serviceProgresses.filter(
-            (p) => p.course_id === course.id,
-          ),
-          exercise_completions: exerciseCompletions[course.id] ?? [],
-        })).filter(notEmpty)
+        return courses
+          .map((course) => ({
+            course_id: course.id,
+            course,
+            completion: completions.find((c) => c.course_id === course.id),
+            user_course_progresses: progresses.filter(
+              (p) => p.course_id === course.id,
+            ),
+            user_course_service_progresses: serviceProgresses.filter(
+              (p) => p.course_id === course.id,
+            ),
+            exercise_completions: exerciseCompletions[course.id] ?? [],
+          }))
+          .filter(notEmpty)
       },
     })
   },

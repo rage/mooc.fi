@@ -1,6 +1,6 @@
 import { IconButton } from "@material-ui/core"
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown"
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp"
 
 interface CollapseButtonProps {
   open: boolean
@@ -9,10 +9,7 @@ interface CollapseButtonProps {
 
 export default function CollapseButton({ open, onClick }: CollapseButtonProps) {
   return (
-    <IconButton
-      size="small"
-      onClick={onClick}
-    >
+    <IconButton size="small" onClick={onClick}>
       {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
     </IconButton>
   )

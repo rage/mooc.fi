@@ -1,5 +1,4 @@
 import styled from "@emotion/styled"
-import { ProfileUserOverView_currentUser_completions as CompletionsData } from "/static/types/generated/ProfileUserOverView"
 import Button from "@material-ui/core/Button"
 import {
   formatDateTime,
@@ -13,6 +12,12 @@ import { addDomain } from "/util/imageUtils"
 import Link from "next/link"
 import CertificateButton from "components/CertificateButton"
 import { useTranslator } from "/util/useTranslator"
+import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
+import {
+  CourseStatistics_user_course_statistics_completion,
+  CourseStatistics_user_course_statistics_course,
+} from "/static/types/generated/CourseStatistics"
+import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
 
 const StyledButton = styled(Button)`
   height: 50%;
@@ -42,36 +47,39 @@ const ListItemContainer = styled.div`
   margin-bottom: 1rem;
 `
 interface ListItemProps {
-  listItem: CompletionsData
+  completion:
+    | CourseStatistics_user_course_statistics_completion
+    | ProfileUserOverView_currentUser_completions
+  course:
+    | CourseStatistics_user_course_statistics_course
+    | ProfileUserOverView_currentUser_completions_course
 }
 
-const CompletionListItem = (props: ListItemProps) => {
-  const { listItem } = props
-  const isRegistered = (listItem?.completions_registered ?? []).length > 0
+const CompletionListItem = ({ completion, course }: ListItemProps) => {
+  const isRegistered = (completion?.completions_registered ?? []).length > 0
   const t = useTranslator(ProfileTranslations)
-  //Checks from the course whether it has a certificate or not
 
-  const hasCertificate = listItem?.course?.has_certificate
+  const hasCertificate = course?.has_certificate
 
   return (
     <ListItemContainer>
-      <CourseAvatar photo={listItem?.course?.photo} />
+      <CourseAvatar photo={course?.photo} />
       <CardTitle component="h2" variant="h3">
-        {listItem?.course?.name}
+        {course?.name}
       </CardTitle>
       <div style={{ margin: "auto" }}>
         <CardSubtitle>{`${t("completedDate")}${formatDateTime(
-          listItem.created_at,
+          completion.created_at,
         )}`}</CardSubtitle>
         <CardSubtitle>
-          {listItem.completion_language
+          {completion.completion_language
             ? `${t("completionLanguage")} ${
-                mapLangToLanguage[listItem?.completion_language ?? ""] ||
-                listItem.completion_language
+                mapLangToLanguage[completion?.completion_language ?? ""] ||
+                completion.completion_language
               }`
             : null}
         </CardSubtitle>
-        {listItem.tier !== null && listItem.tier !== undefined ? (
+        {completion.tier !== null && completion.tier !== undefined ? (
           <CardSubtitle>
             {t("completionTier")}
             {
@@ -81,8 +89,8 @@ const CompletionListItem = (props: ListItemProps) => {
           </CardSubtitle>
         ) : null}
       </div>
-      {isRegistered && listItem.completions_registered ? (
-        listItem.completions_registered.map((r) => (
+      {isRegistered && completion.completions_registered ? (
+        completion.completions_registered.map((r) => (
           <div style={{ margin: "auto" }} key={`completion-registered-${r.id}`}>
             <CardSubtitle>
               {t("registeredDate")}
@@ -94,10 +102,10 @@ const CompletionListItem = (props: ListItemProps) => {
             <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
           </div>
         ))
-      ) : listItem.eligible_for_ects ? (
+      ) : completion.eligible_for_ects ? (
         <Link
           href="/register-completion/[slug]"
-          as={`/register-completion/${listItem.course?.slug}`}
+          as={`/register-completion/${course?.slug}`}
         >
           <StyledA>
             <StyledButton color="secondary">
@@ -108,9 +116,7 @@ const CompletionListItem = (props: ListItemProps) => {
       ) : (
         <div style={{ margin: "auto" }}>&nbsp;</div>
       )}
-      {hasCertificate && listItem?.course ? (
-        <CertificateButton course={listItem.course} />
-      ) : null}
+      {hasCertificate && course ? <CertificateButton course={course} /> : null}
     </ListItemContainer>
   )
 }

@@ -7,7 +7,9 @@ export const CourseStatistics = objectType({
     t.field("course", { type: "Course" })
     t.field("completion", { type: "Completion" })
     t.list.field("user_course_progresses", { type: "UserCourseProgress" })
-    t.list.field("user_course_service_progresses", { type: "UserCourseServiceProgress" })
+    t.list.field("user_course_service_progresses", {
+      type: "UserCourseServiceProgress",
+    })
     t.list.field("exercise_completions", { type: "ExerciseCompletion" })
-  }
+  },
 })

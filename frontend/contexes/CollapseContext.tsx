@@ -18,22 +18,34 @@ export enum ActionType {
   CLOSE_COURSE,
   TOGGLE_COURSE,
   OPEN_ALL_COURSES,
-  CLOSE_ALL_COURSES
+  CLOSE_ALL_COURSES,
 }
 
-export type CollapseAction = {
-  type: ActionType.OPEN_EXERCISE | ActionType.CLOSE_EXERCISE | ActionType.TOGGLE_EXERCISE
-  course: string
-  exercise: string
-} | {
-  type: ActionType.OPEN_COURSE | ActionType.CLOSE_COURSE | ActionType.TOGGLE_COURSE | ActionType.OPEN_ALL_EXERCISES | ActionType.CLOSE_ALL_EXERCISES
-  course: string
-} | {
-  type: ActionType.OPEN_ALL_COURSES | ActionType.CLOSE_ALL_COURSES 
-} | {
-  type: ActionType.INIT_STATE,
-  state: CollapseState
-}
+export type CollapseAction =
+  | {
+      type:
+        | ActionType.OPEN_EXERCISE
+        | ActionType.CLOSE_EXERCISE
+        | ActionType.TOGGLE_EXERCISE
+      course: string
+      exercise: string
+    }
+  | {
+      type:
+        | ActionType.OPEN_COURSE
+        | ActionType.CLOSE_COURSE
+        | ActionType.TOGGLE_COURSE
+        | ActionType.OPEN_ALL_EXERCISES
+        | ActionType.CLOSE_ALL_EXERCISES
+      course: string
+    }
+  | {
+      type: ActionType.OPEN_ALL_COURSES | ActionType.CLOSE_ALL_COURSES
+    }
+  | {
+      type: ActionType.INIT_STATE
+      state: CollapseState
+    }
 
 interface CollapseContext {
   state: CollapseState
@@ -42,11 +54,11 @@ interface CollapseContext {
 
 const CollapseContext = createContext<CollapseContext>({
   state: {},
-  dispatch: () => {}
+  dispatch: () => {},
 })
 
 export default CollapseContext
 
-export function useCollapseContext() { 
+export function useCollapseContext() {
   return useContext(CollapseContext)
 }
