@@ -50,7 +50,8 @@ function PointsListItemTableChart(props: Props) {
           {title}
         </CardSubtitle>
         <CardSubtitle align="right">
-          {points.courseProgress.n_points} / {points.courseProgress.max_points}
+          {points.courseProgress.n_points.toFixed(2)} /{" "}
+          {points.courseProgress.max_points}
         </CardSubtitle>
         <ColoredProgressBar
           variant="determinate"

@@ -15,13 +15,14 @@ import { useTranslator } from "/util/useTranslator"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import {
   CourseStatistics_user_course_statistics_completion,
+  CourseStatistics_user_course_statistics_completion_course,
   CourseStatistics_user_course_statistics_course,
 } from "/static/types/generated/CourseStatistics"
 import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
+import { CompletionsRegisteredFragment_completions_registered } from "/static/types/generated/CompletionsRegisteredFragment"
 
 const StyledButton = styled(Button)`
   height: 50%;
-
   color: black;
 `
 
@@ -29,23 +30,38 @@ const StyledA = styled.a`
   margin: auto;
 `
 
-const CourseAvatar = ({ photo }: { photo: any }) => {
-  if (photo) {
-    return (
-      <Avatar
-        style={{ margin: "auto", width: 60, height: 60 }}
-        src={addDomain(photo.uncompressed)}
-      />
-    )
-  }
-  return <Avatar style={{ margin: "auto", width: 60, height: 60 }}>M</Avatar>
+interface CourseAvatarProps {
+  course:
+    | CourseStatistics_user_course_statistics_course
+    | ProfileUserOverView_currentUser_completions_course
 }
+const CourseAvatar = ({ course }: CourseAvatarProps) => {
+  return (
+    <Avatar
+      style={{ margin: "10px", width: 60, height: 60, gridArea: "avatar" }}
+      src={course?.photo ? addDomain(course.photo.uncompressed) : undefined}
+    >
+      {!course?.photo ? "M" : undefined}
+    </Avatar>
+  )
+}
+
 const ListItemContainer = styled.div`
   display: flex;
   flex-direction: row;
   background-color: white;
   margin-bottom: 1rem;
+  width: 100%;
+  align-items: center;
+  padding: 0.5rem;
 `
+const CompletionInfoList = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`
+const CompletionInfo = styled.li``
+
 interface ListItemProps {
   completion:
     | CourseStatistics_user_course_statistics_completion
@@ -63,45 +79,62 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
 
   return (
     <ListItemContainer>
-      <CourseAvatar photo={course?.photo} />
-      <CardTitle component="h2" variant="h3">
+      <CourseAvatar course={course} />
+      <CardTitle
+        component="h2"
+        variant="h3"
+        style={{ width: "50%", paddingRight: "0.5rem", gridArea: "name" }}
+      >
         {course?.name}
       </CardTitle>
-      <div style={{ margin: "auto" }}>
-        <CardSubtitle>{`${t("completedDate")}${formatDateTime(
-          completion.created_at,
-        )}`}</CardSubtitle>
-        <CardSubtitle>
-          {completion.completion_language
-            ? `${t("completionLanguage")} ${
+      <CardSubtitle style={{ margin: "auto", width: "30%" }}>
+        <CompletionInfoList>
+          <CompletionInfo>
+            {`${t("completedDate")}${formatDateTime(completion.created_at)}`}
+          </CompletionInfo>
+          {completion.completion_language ? (
+            <CompletionInfo>
+              {`${t("completionLanguage")} ${
                 mapLangToLanguage[completion?.completion_language ?? ""] ||
                 completion.completion_language
-              }`
-            : null}
-        </CardSubtitle>
-        {completion.tier !== null && completion.tier !== undefined ? (
-          <CardSubtitle>
-            {t("completionTier")}
-            {
-              // @ts-ignore: tier thingy
-              t(`completionTier-${listItem.tier}`)
-            }
-          </CardSubtitle>
-        ) : null}
-      </div>
+              }`}
+            </CompletionInfo>
+          ) : null}
+          {completion.tier !== null && completion.tier !== undefined ? (
+            <CompletionInfo>
+              {
+                // @ts-ignore: tier
+                `${t("completionTier")} ${t(
+                  `completionTier-${completion.tier}`,
+                )}`
+              }
+            </CompletionInfo>
+          ) : null}
+        </CompletionInfoList>
+      </CardSubtitle>
       {isRegistered && completion.completions_registered ? (
-        completion.completions_registered.map((r) => (
-          <div style={{ margin: "auto" }} key={`completion-registered-${r.id}`}>
-            <CardSubtitle>
-              {t("registeredDate")}
-              {formatDateTime(r.created_at)}
-            </CardSubtitle>
-            <CardSubtitle>
-              {r.organization ? r.organization.slug : ""}
-            </CardSubtitle>
-            <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
-          </div>
-        ))
+        (completion.completions_registered as CompletionsRegisteredFragment_completions_registered[])?.map(
+          (r) => {
+            return (
+              <div
+                style={{ minWidth: "115px", margin: "auto" }}
+                key={`completion-registered-${r.id}`}
+              >
+                <CardSubtitle>
+                  {t("registeredDate")}
+                  {formatDateTime(r.created_at)}
+                </CardSubtitle>
+                {r.organization ? (
+                  <CardSubtitle>
+                    {t("organization")}
+                    {r.organization.slug}
+                  </CardSubtitle>
+                ) : null}
+                <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
+              </div>
+            )
+          },
+        )
       ) : completion.eligible_for_ects ? (
         <Link
           href="/register-completion/[slug]"
@@ -114,9 +147,13 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
           </StyledA>
         </Link>
       ) : (
-        <div style={{ margin: "auto" }}>&nbsp;</div>
+        <CardSubtitle style={{ width: "115px" }}>&nbsp;</CardSubtitle>
       )}
-      {hasCertificate && course ? <CertificateButton course={course} /> : null}
+      {hasCertificate && course ? (
+        <CardSubtitle>
+          <CertificateButton course={course} />
+        </CardSubtitle>
+      ) : null}
     </ListItemContainer>
   )
 }

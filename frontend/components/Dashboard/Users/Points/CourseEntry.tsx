@@ -10,6 +10,7 @@ import { UserPointsList_user_exercise_completions } from "/static/types/generate
 import { useCollapseContext, ActionType } from "/contexes/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import CompletionListItem from "/components/CompletionListItem"
+import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 interface CourseEntryProps {
   data: CourseStatistics_user_course_statistics
 }
@@ -64,16 +65,16 @@ function CourseEntry({ data }: CourseEntryProps) {
       </CardTitle>
       <Collapse in={state[data?.course?.id ?? "_"]?.open}>
         <CardContent>
-          {data.completion ? (
+          {data.completion && data.course ? (
             <CompletionListItem
               course={data.course}
               completion={data.completion}
             />
           ) : null}
-          {data.completion ? <p>{JSON.stringify(data.completion)}</p> : null}
-          {data.user_course_progresses ? (
-            <p>{JSON.stringify(data.user_course_progresses)}</p>
-          ) : null}
+          {data.user_course_progress ? (
+            <PointsListItemCard pointsAll={data as any} />
+          ) : /*<p>{JSON.stringify(data.user_course_progresses)}</p>*/
+          null}
           <ExerciseList
             exerciseCompletions={sortBy(
               (data.exercise_completions ?? []).filter(notEmpty),

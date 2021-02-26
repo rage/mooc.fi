@@ -221,11 +221,12 @@ export const User = objectType({
 
     t.list.field("course_statistics", {
       type: "CourseStatistics",
-      resolve: async (parent, _, ctx) => {
+      resolve: async ({ id }, _, ctx) => {
+        // TODO: might be better to query UserCourseSettings?
         const exerciseCompletions = groupBy(
           await ctx.prisma.exerciseCompletion.findMany({
             where: {
-              user_id: parent.id,
+              user_id: id,
             },
             include: {
               exercise: true,
@@ -239,35 +240,11 @@ export const User = objectType({
             id: { in: Object.keys(exerciseCompletions) ?? [] },
           },
         })
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
-          where: {
-            user_id: parent.id,
-          },
-        })
-        const serviceProgresses = await ctx.prisma.userCourseServiceProgress.findMany(
-          {
-            where: {
-              user_id: parent.id,
-            },
-          },
-        )
-        const completions = await ctx.prisma.completion.findMany({
-          where: {
-            user_id: parent.id,
-          },
-        })
-
         return courses
           .map((course) => ({
+            user_id: id,
             course_id: course.id,
             course,
-            completion: completions.find((c) => c.course_id === course.id),
-            user_course_progresses: progresses.filter(
-              (p) => p.course_id === course.id,
-            ),
-            user_course_service_progresses: serviceProgresses.filter(
-              (p) => p.course_id === course.id,
-            ),
             exercise_completions: exerciseCompletions[course.id] ?? [],
           }))
           .filter(notEmpty)

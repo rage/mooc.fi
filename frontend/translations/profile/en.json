@@ -19,5 +19,9 @@
     "completionTier": "completion tier: ",
     "completionTier-1": "beginner",
     "completionTier-2": "intermediate",
-    "completionTier-3": "advanced"
+    "completionTier-3": "advanced",
+    "organization": "Organization: ",
+    "REJECTED": "Rejected",
+    "GIVE_PEER_REVIEW": "You have given too few peer reviews",
+    "PENDING_PEER_REVIEW": "Your answer is waiting for peer reviews"
 }

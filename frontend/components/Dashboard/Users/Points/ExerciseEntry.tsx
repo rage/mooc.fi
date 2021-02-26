@@ -1,11 +1,14 @@
 import {
   UserPointsList_user_exercise_completions,
   UserPointsList_user_exercise_completions_exercise,
+  UserPointsList_user_exercise_completions_exercise_completion_required_actions,
 } from "/static/types/generated/UserPointsList"
 import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
 import React from "react"
 import { useCollapseContext, ActionType } from "/contexes/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
+import { useTranslator } from "/util/useTranslator"
+import ProfileTranslations from "/translations/profile"
 
 interface ExerciseEntryProps {
   exerciseCompletion: UserPointsList_user_exercise_completions
@@ -13,6 +16,7 @@ interface ExerciseEntryProps {
 export default function ExerciseEntry({
   exerciseCompletion,
 }: ExerciseEntryProps) {
+  const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
   return (
@@ -26,8 +30,10 @@ export default function ExerciseEntry({
         <TableCell>{exerciseCompletion.completed ? "true" : "false"}</TableCell>
         <TableCell>
           {exerciseCompletion.exercise_completion_required_actions.map(
-            (action) => (
-              <Chip key={action.id} label={action.value} />
+            (
+              action: UserPointsList_user_exercise_completions_exercise_completion_required_actions,
+            ) => (
+              <Chip key={action.id} label={t(action.value) ?? action.value} />
             ),
           )}
         </TableCell>

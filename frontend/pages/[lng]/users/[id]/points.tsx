@@ -7,13 +7,14 @@ import Container from "/components/Container"
 import { CourseStatistics } from "/static/types/generated/CourseStatistics"
 import notEmpty from "/util/notEmpty"
 import { produce } from "immer"
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer } from "react"
 import CollapseContext, {
   ActionType,
   CollapseAction,
   CollapseState,
   ExerciseState,
 } from "/contexes/CollapseContext"
+import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 
 const CourseStatisticsQuery = gql`
   query CourseStatistics($upstream_id: Int) {
@@ -24,7 +25,12 @@ const CourseStatisticsQuery = gql`
         course {
           id
           name
+          slug
           has_certificate
+          photo {
+            id
+            uncompressed
+          }
         }
         exercise_completions {
           id
@@ -53,13 +59,20 @@ const CourseStatisticsQuery = gql`
             max_points
           }
         }
-        user_course_progresses {
+        user_course_progress {
           id
           course_id
           max_points
           n_points
           progress
           extra
+        }
+        user_course_service_progresses {
+          progress
+          service {
+            id
+            name
+          }
         }
         completion {
           id
@@ -75,28 +88,12 @@ const CourseStatisticsQuery = gql`
           eligible_for_ects
           student_number
           email
-          course {
-            id
-            slug
-            name
-            has_certificate
-            photo {
-              id
-              uncompressed
-            }
-          }
-          completions_registered {
-            id
-            created_at
-            organization {
-              id
-              slug
-            }
-          }
+          ...CompletionsRegisteredFragment
         }
       }
     }
   }
+  ${CompletionsRegisteredFragment}
 `
 
 const reducer = (
