@@ -7,11 +7,19 @@
 // GraphQL query operation: CourseStatistics
 // ====================================================
 
+export interface CourseStatistics_user_course_statistics_course_photo {
+  __typename: "Image"
+  id: string
+  uncompressed: string
+}
+
 export interface CourseStatistics_user_course_statistics_course {
   __typename: "Course"
   id: string
   name: string
+  slug: string
   has_certificate: boolean | null
+  photo: CourseStatistics_user_course_statistics_course_photo | null
 }
 
 export interface CourseStatistics_user_course_statistics_exercise_completions_exercise_completion_required_actions {
@@ -51,7 +59,7 @@ export interface CourseStatistics_user_course_statistics_exercise_completions {
   exercise: CourseStatistics_user_course_statistics_exercise_completions_exercise | null
 }
 
-export interface CourseStatistics_user_course_statistics_user_course_progresses {
+export interface CourseStatistics_user_course_statistics_user_course_progress {
   __typename: "UserCourseProgress"
   id: string
   course_id: string | null
@@ -61,24 +69,20 @@ export interface CourseStatistics_user_course_statistics_user_course_progresses 
   extra: any | null
 }
 
-export interface CourseStatistics_user_course_statistics_completion_course_photo {
-  __typename: "Image"
+export interface CourseStatistics_user_course_statistics_user_course_service_progresses_service {
+  __typename: "Service"
   id: string
-  uncompressed: string
+  name: string
 }
 
-export interface CourseStatistics_user_course_statistics_completion_course {
-  __typename: "Course"
-  id: string
-  slug: string
-  name: string
-  has_certificate: boolean | null
-  photo: CourseStatistics_user_course_statistics_completion_course_photo | null
+export interface CourseStatistics_user_course_statistics_user_course_service_progresses {
+  __typename: "UserCourseServiceProgress"
+  progress: (any | null)[] | null
+  service: CourseStatistics_user_course_statistics_user_course_service_progresses_service | null
 }
 
 export interface CourseStatistics_user_course_statistics_completion_completions_registered_organization {
   __typename: "Organization"
-  id: string
   slug: string
 }
 
@@ -104,7 +108,6 @@ export interface CourseStatistics_user_course_statistics_completion {
   eligible_for_ects: boolean | null
   student_number: string | null
   email: string
-  course: CourseStatistics_user_course_statistics_completion_course | null
   completions_registered: CourseStatistics_user_course_statistics_completion_completions_registered[]
 }
 
@@ -114,8 +117,9 @@ export interface CourseStatistics_user_course_statistics {
   exercise_completions:
     | (CourseStatistics_user_course_statistics_exercise_completions | null)[]
     | null
-  user_course_progresses:
-    | (CourseStatistics_user_course_statistics_user_course_progresses | null)[]
+  user_course_progress: CourseStatistics_user_course_statistics_user_course_progress | null
+  user_course_service_progresses:
+    | (CourseStatistics_user_course_statistics_user_course_service_progresses | null)[]
     | null
   completion: CourseStatistics_user_course_statistics_completion | null
 }

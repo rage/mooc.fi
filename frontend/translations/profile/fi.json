@@ -19,5 +19,10 @@
     "completionTier": "suoritustaso: ",
     "completionTier-1": "aloittelija",
     "completionTier-2": "keskitaso",
-    "completionTier-3": "edistynyt"
+    "completionTier-3": "edistynyt",
+    "organization": "Organisaatio: ",
+    "REJECTED": "Hylätty",
+    "GIVE_PEER_REVIEW": "Olet antanut liian vähän vertaisarvioita",
+    "PENDING_PEER_REVIEW": "Vastauksesi odottaa vertaisarvioita"
+
 }
