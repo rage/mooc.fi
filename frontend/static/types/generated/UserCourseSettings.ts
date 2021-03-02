@@ -31,20 +31,15 @@ export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_
   exercises: number | null
 }
 
-export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_user {
-  __typename: "User"
-  first_name: string | null
-  last_name: string | null
-  username: string
-  email: string
-  real_student_number: string | null
-}
-
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress {
   __typename: "UserCourseProgress"
+  id: string
+  course_id: string | null
+  max_points: number | null
+  n_points: number | null
   progress: (any | null)[] | null
+  extra: any | null
   exercise_progress: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_exercise_progress | null
-  user: UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_progress_user | null
 }
 
 export interface UserCourseSettings_userCourseSettings_edges_node_user_progress_user_course_service_progresses_service {

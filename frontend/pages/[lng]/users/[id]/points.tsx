@@ -10,11 +10,14 @@ import { produce } from "immer"
 import { useEffect, useReducer } from "react"
 import CollapseContext, {
   ActionType,
+  CollapsablePart,
   CollapseAction,
   CollapseState,
   ExerciseState,
 } from "/contexes/CollapseContext"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
+import { CourseStatisticsUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
+import { CourseStatisticsUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 
 const CourseStatisticsQuery = gql`
   query CourseStatistics($upstream_id: Int) {
@@ -59,21 +62,8 @@ const CourseStatisticsQuery = gql`
             max_points
           }
         }
-        user_course_progress {
-          id
-          course_id
-          max_points
-          n_points
-          progress
-          extra
-        }
-        user_course_service_progresses {
-          progress
-          service {
-            id
-            name
-          }
-        }
+        ...CourseStatisticsUserCourseProgressFragment
+        ...CourseStatisticsUserCourseServiceProgressFragment
         completion {
           id
           course_id
@@ -94,6 +84,8 @@ const CourseStatisticsQuery = gql`
     }
   }
   ${CompletionsRegisteredFragment}
+  ${CourseStatisticsUserCourseProgressFragment}
+  ${CourseStatisticsUserCourseServiceProgressFragment}
 `
 
 const reducer = (
@@ -101,47 +93,68 @@ const reducer = (
   action: CollapseAction,
 ): CollapseState => {
   switch (action.type) {
-    case ActionType.OPEN_EXERCISE:
-      return produce(state, (draft) => {
-        draft[action.course].exercises[action.exercise] = true
-      })
-    case ActionType.CLOSE_EXERCISE:
-      return produce(state, (draft) => {
-        draft[action.course].exercises[action.exercise] = false
-      })
-    case ActionType.TOGGLE_EXERCISE:
-      return produce(state, (draft) => {
-        draft[action.course].exercises[action.exercise] = !draft[action.course]
-          .exercises[action.exercise]
-      })
-    case ActionType.OPEN_ALL_EXERCISES:
-      return produce(
-        state,
-        (draft) =>
-          (draft[action.course].exercises = Object.keys(
-            state[action.course].exercises,
-          ).reduce((acc, curr) => ({ ...acc, [curr]: true }), {})),
-      )
-    case ActionType.CLOSE_ALL_EXERCISES:
-      return produce(
-        state,
-        (draft) =>
-          (draft[action.course].exercises = Object.keys(
-            state[action.course].exercises,
-          ).reduce((acc, curr) => ({ ...acc, [curr]: false }), {})),
-      )
-    case ActionType.OPEN_COURSE:
-      return produce(state, (draft) => {
-        draft[action.course].open = true
-      })
-    case ActionType.CLOSE_COURSE:
-      return produce(state, (draft) => {
-        draft[action.course].open = false
-      })
-    case ActionType.TOGGLE_COURSE:
-      return produce(state, (draft) => {
-        draft[action.course].open = !draft[action.course]?.open
-      })
+    case ActionType.OPEN: {
+      switch (action.collapsable) {
+        case CollapsablePart.COURSE:
+          return produce(state, (draft) => {
+            draft[action.course].open = true
+          })
+        case CollapsablePart.EXERCISE:
+          return produce(state, (draft) => {
+            draft[action.course].exercises[action.collapsableId] = true
+          })
+        case CollapsablePart.COMPLETION:
+          return produce(state, (draft) => {
+            draft[action.course].completion = true
+          })
+        case CollapsablePart.POINTS:
+          return produce(state, (draft) => {
+            draft[action.course].points = true
+          })
+      }
+    }
+    case ActionType.CLOSE: {
+      switch (action.collapsable) {
+        case CollapsablePart.COURSE:
+          return produce(state, (draft) => {
+            draft[action.course].open = false
+          })
+        case CollapsablePart.EXERCISE:
+          return produce(state, (draft) => {
+            draft[action.course].exercises[action.collapsableId] = false
+          })
+        case CollapsablePart.COMPLETION:
+          return produce(state, (draft) => {
+            draft[action.course].completion = false
+          })
+        case CollapsablePart.POINTS:
+          return produce(state, (draft) => {
+            draft[action.course].points = false
+          })
+      }
+    }
+    case ActionType.TOGGLE: {
+      switch (action.collapsable) {
+        case CollapsablePart.COURSE:
+          return produce(state, (draft) => {
+            draft[action.course].open = !draft[action.course].open
+          })
+        case CollapsablePart.EXERCISE:
+          return produce(state, (draft) => {
+            draft[action.course].exercises[action.collapsableId] = !draft[
+              action.course
+            ].exercises[action.collapsableId]
+          })
+        case CollapsablePart.COMPLETION:
+          return produce(state, (draft) => {
+            draft[action.course].completion = !draft[action.course].completion
+          })
+        case CollapsablePart.POINTS:
+          return produce(state, (draft) => {
+            draft[action.course].points = !draft[action.course].points
+          })
+      }
+    }
     case ActionType.OPEN_ALL_COURSES:
       return produce(state, (draft) => {
         Object.keys(state).forEach((c) => (draft[c].open = true))
@@ -153,6 +166,8 @@ const reducer = (
     case ActionType.INIT_STATE:
       return action.state
   }
+
+  return state
 }
 
 function UserPoints() {
@@ -177,6 +192,8 @@ function UserPoints() {
                 }),
                 {},
               ) ?? {},
+            completion: false,
+            points: false,
           },
         }),
         {},
