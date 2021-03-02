@@ -60,6 +60,7 @@ const Title = styled(Typography)<any>`
 const Completions = ({ completions = [] }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)
 
+  console.log(completions)
   return (
     <section>
       <Title component="h1" variant="h2" align="center">
@@ -70,7 +71,7 @@ const Completions = ({ completions = [] }: CompletionsProps) => {
         {completions?.map((completion) => (
           <CompletionListItem
             key={`completion-${completion.id}`}
-            course={completion.course}
+            course={completion.course!}
             completion={completion}
           />
         )) ?? <Typography>{t("nocompletionsText")}</Typography>}

@@ -1,17 +1,20 @@
-import {
-  UserPointsList_user_exercise_completions,
-  UserPointsList_user_exercise_completions_exercise,
-  UserPointsList_user_exercise_completions_exercise_completion_required_actions,
-} from "/static/types/generated/UserPointsList"
 import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
 import React from "react"
-import { useCollapseContext, ActionType } from "/contexes/CollapseContext"
+import {
+  useCollapseContext,
+  ActionType,
+  CollapsablePart,
+} from "/contexes/CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 import ProfileTranslations from "/translations/profile"
+import {
+  CourseStatistics_user_course_statistics_exercise_completions,
+  CourseStatistics_user_course_statistics_exercise_completions_exercise_completion_required_actions,
+} from "/static/types/generated/CourseStatistics"
 
 interface ExerciseEntryProps {
-  exerciseCompletion: UserPointsList_user_exercise_completions
+  exerciseCompletion: CourseStatistics_user_course_statistics_exercise_completions
 }
 export default function ExerciseEntry({
   exerciseCompletion,
@@ -31,8 +34,9 @@ export default function ExerciseEntry({
         <TableCell>
           {exerciseCompletion.exercise_completion_required_actions.map(
             (
-              action: UserPointsList_user_exercise_completions_exercise_completion_required_actions,
+              action: CourseStatistics_user_course_statistics_exercise_completions_exercise_completion_required_actions,
             ) => (
+              // @ts-ignore: translator key
               <Chip key={action.id} label={t(action.value) ?? action.value} />
             ),
           )}
@@ -46,9 +50,10 @@ export default function ExerciseEntry({
             }
             onClick={() =>
               dispatch({
-                type: ActionType.TOGGLE_EXERCISE,
+                type: ActionType.TOGGLE,
+                collapsable: CollapsablePart.EXERCISE,
                 course: exerciseCompletion.exercise?.course?.id ?? "_",
-                exercise: exerciseCompletion?.exercise?.id ?? "_",
+                collapsableId: exerciseCompletion?.exercise?.id ?? "_",
               })
             }
           />

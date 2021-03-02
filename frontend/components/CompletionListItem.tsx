@@ -15,7 +15,6 @@ import { useTranslator } from "/util/useTranslator"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import {
   CourseStatistics_user_course_statistics_completion,
-  CourseStatistics_user_course_statistics_completion_course,
   CourseStatistics_user_course_statistics_course,
 } from "/static/types/generated/CourseStatistics"
 import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
@@ -87,7 +86,7 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
       >
         {course?.name}
       </CardTitle>
-      <CardSubtitle style={{ margin: "auto", width: "30%" }}>
+      <CardSubtitle component="div" style={{ margin: "auto", width: "30%" }}>
         <CompletionInfoList>
           <CompletionInfo>
             {`${t("completedDate")}${formatDateTime(completion.created_at)}`}
@@ -102,12 +101,10 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
           ) : null}
           {completion.tier !== null && completion.tier !== undefined ? (
             <CompletionInfo>
-              {
+              {`${t("completionTier")} ${t(
                 // @ts-ignore: tier
-                `${t("completionTier")} ${t(
-                  `completionTier-${completion.tier}`,
-                )}`
-              }
+                `completionTier-${completion.tier}`,
+              )}`}
             </CompletionInfo>
           ) : null}
         </CompletionInfoList>

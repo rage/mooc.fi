@@ -59,6 +59,12 @@ export interface CourseStatistics_user_course_statistics_exercise_completions {
   exercise: CourseStatistics_user_course_statistics_exercise_completions_exercise | null
 }
 
+export interface CourseStatistics_user_course_statistics_user_course_progress_exercise_progress {
+  __typename: "ExerciseProgress"
+  total: number | null
+  exercises: number | null
+}
+
 export interface CourseStatistics_user_course_statistics_user_course_progress {
   __typename: "UserCourseProgress"
   id: string
@@ -67,12 +73,13 @@ export interface CourseStatistics_user_course_statistics_user_course_progress {
   n_points: number | null
   progress: (any | null)[] | null
   extra: any | null
+  exercise_progress: CourseStatistics_user_course_statistics_user_course_progress_exercise_progress | null
 }
 
 export interface CourseStatistics_user_course_statistics_user_course_service_progresses_service {
   __typename: "Service"
-  id: string
   name: string
+  id: string
 }
 
 export interface CourseStatistics_user_course_statistics_user_course_service_progresses {

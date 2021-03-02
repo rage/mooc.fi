@@ -4,40 +4,48 @@ export type ExerciseState = Record<string, boolean>
 export type CourseState = {
   open: boolean
   exercises: ExerciseState
+  completion: boolean
+  points: boolean
 }
 export type CollapseState = Record<string, CourseState>
 
 export enum ActionType {
   INIT_STATE,
-  OPEN_EXERCISE,
-  CLOSE_EXERCISE,
-  TOGGLE_EXERCISE,
-  OPEN_ALL_EXERCISES,
-  CLOSE_ALL_EXERCISES,
-  OPEN_COURSE,
-  CLOSE_COURSE,
-  TOGGLE_COURSE,
+  OPEN,
+  CLOSE,
+  TOGGLE,
+  OPEN_ALL,
+  CLOSE_ALL,
   OPEN_ALL_COURSES,
   CLOSE_ALL_COURSES,
 }
 
+export enum CollapsablePart {
+  COURSE = "course",
+  EXERCISE = "exercises",
+  COMPLETION = "completion",
+  POINTS = "points",
+}
+
 export type CollapseAction =
   | {
-      type:
-        | ActionType.OPEN_EXERCISE
-        | ActionType.CLOSE_EXERCISE
-        | ActionType.TOGGLE_EXERCISE
+      type: ActionType.OPEN | ActionType.CLOSE | ActionType.TOGGLE
       course: string
-      exercise: string
+      collapsable: CollapsablePart.EXERCISE
+      collapsableId: string
     }
   | {
-      type:
-        | ActionType.OPEN_COURSE
-        | ActionType.CLOSE_COURSE
-        | ActionType.TOGGLE_COURSE
-        | ActionType.OPEN_ALL_EXERCISES
-        | ActionType.CLOSE_ALL_EXERCISES
+      type: ActionType.OPEN | ActionType.CLOSE | ActionType.TOGGLE
       course: string
+      collapsable:
+        | CollapsablePart.COURSE
+        | CollapsablePart.COMPLETION
+        | CollapsablePart.POINTS
+    }
+  | {
+      type: ActionType.OPEN_ALL | ActionType.CLOSE_ALL
+      course: string
+      collapsable: CollapsablePart
     }
   | {
       type: ActionType.OPEN_ALL_COURSES | ActionType.CLOSE_ALL_COURSES
