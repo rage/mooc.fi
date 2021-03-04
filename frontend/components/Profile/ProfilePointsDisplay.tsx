@@ -25,7 +25,6 @@ const ProfilePointsDisplay = () => {
     return <ErrorMessage />
   }
 
-  console.log("data", data)
   const hasPoints = studentHasPoints({ pointsData: data })
   if (hasPoints) {
     return (

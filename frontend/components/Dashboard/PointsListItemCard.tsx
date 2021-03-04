@@ -65,11 +65,12 @@ interface PersonalDetails {
 
 interface Props {
   course?: UserPoints_currentUser_progresses_course
-  userCourseProgress?: UserCourseProgressFragment
-  userCourseServiceProgresses?: UserCourseServiceProgressFragment[]
+  userCourseProgress?: UserCourseProgressFragment | null
+  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
   cutterValue?: number
   showPersonalDetails?: boolean
   personalDetails?: PersonalDetails
+  showProgress?: boolean
 }
 
 function PointsListItemCard(props: Props) {
@@ -80,6 +81,7 @@ function PointsListItemCard(props: Props) {
     cutterValue = 0,
     showPersonalDetails,
     personalDetails,
+    showProgress = true,
   } = props
   const [showDetails, setShowDetails] = useState(false)
 
@@ -99,15 +101,19 @@ function PointsListItemCard(props: Props) {
       )}
       {Object.keys(formattedPointsData?.groups ?? {}).length ? (
         <>
-          <PointsProgress
-            total={formattedPointsData.total * 100}
-            title="Total progress"
-          />
-          <PointsProgress
-            total={formattedPointsData.exercises * 100}
-            title="Exercises completed"
-          />
-          <hr />
+          {showProgress ? (
+            <>
+              <PointsProgress
+                total={formattedPointsData.total * 100}
+                title="Total progress"
+              />
+              <PointsProgress
+                total={formattedPointsData.exercises * 100}
+                title="Exercises completed"
+              />
+              <hr />
+            </>
+          ) : null}
           <PointsItemTable
             studentPoints={formattedPointsData.groups}
             showDetailedBreakdown={showDetails}

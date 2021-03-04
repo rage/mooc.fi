@@ -1,10 +1,10 @@
-import { Card, CardContent, Collapse, Paper } from "@material-ui/core"
+import { Card, CardContent, Collapse, Paper, Skeleton } from "@material-ui/core"
 import { CardTitle } from "/components/Text/headers"
 import styled from "@emotion/styled"
 import {
-  CourseStatistics_user_course_statistics,
-  CourseStatistics_user_course_statistics_exercise_completions,
-} from "/static/types/generated/CourseStatistics"
+  UserSummary_user_course_statistics,
+  UserSummary_user_course_statistics_exercise_completions,
+} from "/static/types/generated/UserSummary"
 import { sortBy } from "lodash"
 import React from "react"
 import ExerciseList from "/components/Dashboard/Users/Points/ExerciseList"
@@ -17,8 +17,9 @@ import {
 import CollapseButton from "/components/Buttons/CollapseButton"
 import Completion from "/components/Dashboard/Users/Points/Completion"
 import ProgressEntry from "/components/Dashboard/Users/Points/ProgressEntry"
+
 interface CourseEntryProps {
-  data: CourseStatistics_user_course_statistics
+  data?: UserSummary_user_course_statistics
 }
 
 const CourseEntryCard = styled(Card)`
@@ -30,17 +31,34 @@ CourseEntryCard.defaultProps = {
   elevation: 4,
 }
 
+const CourseEntryPartSkeleton = () => (
+  <Paper component="div" style={{ padding: "0.5rem", marginBottom: "1rem" }}>
+    <Skeleton />
+  </Paper>
+)
+
+const CourseEntryCardSkeleton = () => (
+  <CourseEntryCard>
+    <CardTitle>
+      <CardContent>
+        <CourseEntryPartSkeleton />
+        <CourseEntryPartSkeleton />
+        <CourseEntryPartSkeleton />
+      </CardContent>
+    </CardTitle>
+  </CourseEntryCard>
+)
 function CourseEntry({ data }: CourseEntryProps) {
   const { state, dispatch } = useCollapseContext()
 
   // @ts-ignore: not used
   const exercisesPerPart =
-    data.exercise_completions
+    data?.exercise_completions
       ?.filter(notEmpty)
       .reduce<
         Record<
           number,
-          CourseStatistics_user_course_statistics_exercise_completions[]
+          UserSummary_user_course_statistics_exercise_completions[]
         >
       >(
         (acc, curr) => ({
@@ -53,17 +71,23 @@ function CourseEntry({ data }: CourseEntryProps) {
         {},
       ) ?? {}
 
+  if (!data) {
+    return <CourseEntryCardSkeleton />
+  }
+
   if (!data.course) {
     return null
   }
 
-  // TODO: subheaders for parts
+  const isOpen = state[data?.course?.id ?? "_"]?.open
+  // TODO: subheaders for parts?
+
   return (
     <CourseEntryCard>
       <CardTitle variant="h3">
         {data?.course?.name}
         <CollapseButton
-          open={state[data?.course?.id ?? "_"]?.open ?? false}
+          open={isOpen}
           onClick={() =>
             dispatch({
               type: ActionType.TOGGLE,
@@ -73,29 +97,19 @@ function CourseEntry({ data }: CourseEntryProps) {
           }
         />
       </CardTitle>
-      <Collapse in={state[data?.course?.id ?? "_"]?.open}>
+      <Collapse in={isOpen} unmountOnExit>
         <CardContent>
-          <Paper>
-            <Completion
-              course={data.course}
-              completion={data.completion ?? undefined}
-            />
-          </Paper>
-          <ProgressEntry
-            course={data.course ?? undefined}
-            userCourseProgress={data.user_course_progress ?? undefined}
-            userCourseServiceProgresses={
-              data.user_course_service_progresses?.filter(notEmpty) ?? undefined
-            }
+          <Completion
+            course={data.course}
+            completion={data.completion ?? undefined}
           />
-          {/*data.user_course_progress ? (
-            <PointsListItemCard 
-              course={data.course ?? undefined}
-              userCourseProgress={data.user_course_progress ?? undefined}
-              userCourseServiceProgresses={data.user_course_service_progresses?.filter(notEmpty) ?? undefined}
-            />
-          ) : /*<p>{JSON.stringify(data.user_course_progresses)}</p>*/
-          /*null*/}
+          <ProgressEntry
+            course={data.course}
+            userCourseProgress={data.user_course_progress}
+            userCourseServiceProgresses={data.user_course_service_progresses?.filter(
+              notEmpty,
+            )}
+          />
           <ExerciseList
             exerciseCompletions={sortBy(
               (data.exercise_completions ?? []).filter(notEmpty),

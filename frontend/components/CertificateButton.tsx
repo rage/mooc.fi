@@ -177,6 +177,8 @@ const CertificateButton = ({ course }: CertificateProps) => {
       })
   }, [])
 
+  // TODO: when admin is looking at a user, it's checking against the admin's name -- fix
+   
   const nameChanged = () =>
     (currentUser?.first_name ?? "") !== firstName ||
     (currentUser?.last_name ?? "") !== lastName

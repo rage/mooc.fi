@@ -8,10 +8,10 @@ import {
   TableRow,
 } from "@material-ui/core"
 import ExerciseEntry from "/components/Dashboard/Users/Points/ExerciseEntry"
-import { CourseStatistics_user_course_statistics_exercise_completions } from "/static/types/generated/CourseStatistics"
+import { UserSummary_user_course_statistics_exercise_completions } from "/static/types/generated/UserSummary"
 
 interface ExerciseListProps {
-  exerciseCompletions: CourseStatistics_user_course_statistics_exercise_completions[]
+  exerciseCompletions: UserSummary_user_course_statistics_exercise_completions[]
 }
 
 export default function ExerciseList({
@@ -25,6 +25,7 @@ export default function ExerciseList({
             <TableCell>Exercise</TableCell>
             <TableCell>Points</TableCell>
             <TableCell>Completed</TableCell>
+            <TableCell>Attempted</TableCell>
             <TableCell>Required actions</TableCell>
             <TableCell>More...</TableCell>
           </TableRow>

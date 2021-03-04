@@ -1,16 +1,24 @@
 import CourseEntry from "./CourseEntry"
 import { sortBy } from "lodash"
-import { CourseStatistics_user_course_statistics } from "/static/types/generated/CourseStatistics"
+import { UserSummary_user_course_statistics } from "/static/types/generated/UserSummary"
 
 interface UserPointsListProps {
-  data: CourseStatistics_user_course_statistics[]
+  data?: UserSummary_user_course_statistics[]
 }
 
 export default function UserPointsList({ data }: UserPointsListProps) {
-  console.log(data)
-
+  if (!data) {
+    return (
+      <>
+        <CourseEntry key="skeleton-course-1" />
+        <CourseEntry key="skeleton-course-2" />
+        <CourseEntry key="skeleton-course-3" />
+      </>
+    )
+  }
   return (
     <>
+      {data.length === 0 ? <div>No data</div> : null}
       {sortBy(data, (stats) => stats?.course?.name).map((entry) => (
         <CourseEntry
           key={entry.course?.id ?? Math.random() * 9999}
