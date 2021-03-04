@@ -17,13 +17,13 @@ import {
   useCollapseContext,
 } from "/contexes/CollapseContext"
 import {
-  CourseStatistics_user_course_statistics_completion,
-  CourseStatistics_user_course_statistics_course,
-} from "/static/types/generated/CourseStatistics"
+  UserSummary_user_course_statistics_completion,
+  UserSummary_user_course_statistics_course,
+} from "/static/types/generated/UserSummary"
 
 interface CompletionProps {
-  completion?: CourseStatistics_user_course_statistics_completion
-  course: CourseStatistics_user_course_statistics_course
+  completion?: UserSummary_user_course_statistics_completion
+  course: UserSummary_user_course_statistics_course
 }
 
 export default function Completion({ completion, course }: CompletionProps) {
@@ -33,15 +33,17 @@ export default function Completion({ completion, course }: CompletionProps) {
     return null
   }
 
+  const isOpen = state[course?.id ?? "_"]?.completion ?? false
+
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{ marginBottom: "1rem" }}>
       <Table>
         <TableBody>
           <TableRow>
             <TableCell>
               Completed {formatDateTime(completion?.completion_date)}
             </TableCell>
-            <TableCell>
+            <TableCell align="right">
               Registered{" "}
               {completion?.completions_registered
                 ?.map((cr) => formatDateTime(cr.created_at))
@@ -49,7 +51,7 @@ export default function Completion({ completion, course }: CompletionProps) {
             </TableCell>
             <TableCell align="right">
               <CollapseButton
-                open={state[course?.id ?? "_"]?.completion ?? false}
+                open={isOpen}
                 onClick={() =>
                   dispatch({
                     type: ActionType.TOGGLE,
@@ -60,60 +62,11 @@ export default function Completion({ completion, course }: CompletionProps) {
               />
             </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell colSpan={2}>
-              <Collapse in={state[course?.id ?? "_"]?.completion ?? false}>
-                <CompletionListItem course={course} completion={completion} />
-              </Collapse>
-            </TableCell>
-          </TableRow>
         </TableBody>
       </Table>
+      <Collapse in={isOpen} unmountOnExit>
+        <CompletionListItem course={course} completion={completion} />
+      </Collapse>
     </TableContainer>
   )
-  /*return (
-    <TableContainer component={Paper}>
-      <Table stickyHeader>
-        <TableHead>
-          <TableRow>
-            <TableCell>{completion ? "Completed" : "Not completed"}</TableCell>
-            <TableCell align="right">
-              {completion ?
-                <CollapseButton
-                  open={
-                    state[course?.id ?? "_"]?.completion ?? false
-                  }
-                  onClick={() =>
-                    dispatch({
-                      type: ActionType.TOGGLE,
-                      collapsable: CollapsablePart.COMPLETION,
-                      course: course?.id ?? "_"
-                    })
-                  }
-                /> : null}
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        {completion ? (
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={2}>
-                <Collapse
-                  in={
-                    state[course?.id ?? "_"]?.completion ?? false
-                  }
-                >
-                  <CompletionListItem
-                    course={course}
-                    completion={completion}
-                  />
-
-                </Collapse>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        ) : null}
-      </Table>
-    </TableContainer>
-  )*/
 }

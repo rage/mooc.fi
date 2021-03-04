@@ -1,10 +1,9 @@
 import { gql, useQuery } from "@apollo/client"
 import withAdmin from "/lib/with-admin"
 import { useQueryParameter } from "/util/useQueryParameter"
-import { CircularProgress } from "@material-ui/core"
 import UserPointsList from "/components/Dashboard/Users/Points/UserPointsList"
 import Container from "/components/Container"
-import { CourseStatistics } from "/static/types/generated/CourseStatistics"
+import { UserSummary } from "/static/types/generated/UserSummary"
 import notEmpty from "/util/notEmpty"
 import { produce } from "immer"
 import { useEffect, useReducer } from "react"
@@ -18,9 +17,10 @@ import CollapseContext, {
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { CourseStatisticsUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { CourseStatisticsUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
+import ErrorMessage from "/components/ErrorMessage"
 
-const CourseStatisticsQuery = gql`
-  query CourseStatistics($upstream_id: Int) {
+const UserSummaryQuery = gql`
+  query UserSummary($upstream_id: Int) {
     user(upstream_id: $upstream_id) {
       id
       username
@@ -170,12 +170,11 @@ const reducer = (
   return state
 }
 
-function UserPoints() {
+function UserSummaryView() {
   const id = useQueryParameter("id")
-  const { loading, /* error, */ data } = useQuery<CourseStatistics>(
-    CourseStatisticsQuery,
-    { variables: { upstream_id: Number(id) } },
-  )
+  const { error, data } = useQuery<UserSummary>(UserSummaryQuery, {
+    variables: { upstream_id: Number(id) },
+  })
   const [state, dispatch] = useReducer(reducer, {})
   useEffect(() => {
     const s =
@@ -201,26 +200,27 @@ function UserPoints() {
     dispatch({ type: ActionType.INIT_STATE, state: s })
   }, [data])
 
+  if (error) {
+    return (
+      <Container>
+        <ErrorMessage />
+      </Container>
+    )
+  }
   return (
     <Container>
-      {loading ? (
-        <CircularProgress />
-      ) : data ? (
-        <CollapseContext.Provider
-          value={{
-            state,
-            dispatch,
-          }}
-        >
-          <UserPointsList
-            data={data?.user?.course_statistics?.filter(notEmpty) ?? []}
-          />
-        </CollapseContext.Provider>
-      ) : (
-        <div>No data!</div>
-      )}
+      <CollapseContext.Provider
+        value={{
+          state,
+          dispatch,
+        }}
+      >
+        <UserPointsList
+          data={data?.user?.course_statistics?.filter(notEmpty)}
+        />
+      </CollapseContext.Provider>
     </Container>
   )
 }
 
-export default withAdmin(UserPoints)
+export default withAdmin(UserSummaryView)

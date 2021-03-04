@@ -7,6 +7,7 @@
   "userLastName": "Last name",
   "userStudentNumber": "Student number",
   "completions": "Completions",
+  "summary": "Summary",
   "rowsPerPage": "Rows per page:",
   "displayedRowsOf": " of ",
   "nextPage": "Next page",

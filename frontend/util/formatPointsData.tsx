@@ -24,8 +24,8 @@ interface ServiceGroupPoints extends GroupPoints {
 }
 
 interface FormatPointsDataProps {
-  userCourseProgress?: UserCourseProgressFragment
-  userCourseServiceProgresses?: UserCourseServiceProgressFragment[]
+  userCourseProgress?: UserCourseProgressFragment | null
+  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
 }
 
 function formatPointsData({

@@ -14,9 +14,9 @@ import CertificateButton from "components/CertificateButton"
 import { useTranslator } from "/util/useTranslator"
 import { ProfileUserOverView_currentUser_completions } from "/static/types/generated/ProfileUserOverView"
 import {
-  CourseStatistics_user_course_statistics_completion,
-  CourseStatistics_user_course_statistics_course,
-} from "/static/types/generated/CourseStatistics"
+  UserSummary_user_course_statistics_completion,
+  UserSummary_user_course_statistics_course,
+} from "/static/types/generated/UserSummary"
 import { ProfileUserOverView_currentUser_completions_course } from "/static/types/generated/ProfileUserOverView"
 import { CompletionsRegisteredFragment_completions_registered } from "/static/types/generated/CompletionsRegisteredFragment"
 
@@ -31,7 +31,7 @@ const StyledA = styled.a`
 
 interface CourseAvatarProps {
   course:
-    | CourseStatistics_user_course_statistics_course
+    | UserSummary_user_course_statistics_course
     | ProfileUserOverView_currentUser_completions_course
 }
 const CourseAvatar = ({ course }: CourseAvatarProps) => {
@@ -63,10 +63,10 @@ const CompletionInfo = styled.li``
 
 interface ListItemProps {
   completion:
-    | CourseStatistics_user_course_statistics_completion
+    | UserSummary_user_course_statistics_completion
     | ProfileUserOverView_currentUser_completions
   course:
-    | CourseStatistics_user_course_statistics_course
+    | UserSummary_user_course_statistics_course
     | ProfileUserOverView_currentUser_completions_course
 }
 
