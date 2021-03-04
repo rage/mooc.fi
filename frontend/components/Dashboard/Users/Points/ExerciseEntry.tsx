@@ -24,7 +24,7 @@ export default function ExerciseEntry({
 
   const isOpen =
     state[exerciseCompletion.exercise?.course?.id ?? "_"]?.exercises[
-      exerciseCompletion?.exercise?.id ?? "_"
+      exerciseCompletion?.id ?? "_"
     ] ?? false
 
   return (
@@ -55,7 +55,7 @@ export default function ExerciseEntry({
                 type: ActionType.TOGGLE,
                 collapsable: CollapsablePart.EXERCISE,
                 course: exerciseCompletion.exercise?.course?.id ?? "_",
-                collapsableId: exerciseCompletion?.exercise?.id ?? "_",
+                collapsableId: exerciseCompletion?.id ?? "_",
               })
             }
           />
