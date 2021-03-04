@@ -187,7 +187,7 @@ function UserSummaryView() {
               courseEntry?.exercise_completions?.reduce<ExerciseState>(
                 (exerciseState, exerciseCompletion) => ({
                   ...exerciseState,
-                  [exerciseCompletion?.exercise?.id ?? "_"]: false,
+                  [exerciseCompletion?.id ?? "_"]: false,
                 }),
                 {},
               ) ?? {},
