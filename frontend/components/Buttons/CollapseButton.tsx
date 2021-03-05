@@ -15,7 +15,12 @@ export default function CollapseButton({
 }: CollapseButtonProps) {
   return (
     <div
-      style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-end",
+      }}
     >
       {label ? <Typography variant="h4">{label}</Typography> : null}
       <IconButton size="small" onClick={onClick}>

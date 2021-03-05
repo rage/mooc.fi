@@ -7,16 +7,16 @@ import {
 } from "/static/types/generated/UserSummary"
 import { sortBy } from "lodash"
 import React from "react"
-import ExerciseList from "/components/Dashboard/Users/Points/ExerciseList"
+import ExerciseList from "./ExerciseList"
 import notEmpty from "/util/notEmpty"
 import {
   useCollapseContext,
   ActionType,
   CollapsablePart,
-} from "/contexes/CollapseContext"
+} from "./CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
-import Completion from "/components/Dashboard/Users/Points/Completion"
-import ProgressEntry from "/components/Dashboard/Users/Points/ProgressEntry"
+import Completion from "./Completion"
+import ProgressEntry from "./ProgressEntry"
 
 interface CourseEntryProps {
   data?: UserSummary_user_course_statistics
@@ -40,12 +40,13 @@ const CourseEntryPartSkeleton = () => (
 const CourseEntryCardSkeleton = () => (
   <CourseEntryCard>
     <CardTitle>
-      <CardContent>
-        <CourseEntryPartSkeleton />
-        <CourseEntryPartSkeleton />
-        <CourseEntryPartSkeleton />
-      </CardContent>
+      <Skeleton />
     </CardTitle>
+    <CardContent>
+      <CourseEntryPartSkeleton />
+      <CourseEntryPartSkeleton />
+      <CourseEntryPartSkeleton />
+    </CardContent>
   </CourseEntryCard>
 )
 function CourseEntry({ data }: CourseEntryProps) {
@@ -84,7 +85,10 @@ function CourseEntry({ data }: CourseEntryProps) {
 
   return (
     <CourseEntryCard>
-      <CardTitle variant="h3">
+      <CardTitle
+        variant="h3"
+        style={{ display: "flex", justifyContent: "space-between" }}
+      >
         {data?.course?.name}
         <CollapseButton
           open={isOpen}

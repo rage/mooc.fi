@@ -15,7 +15,7 @@ import {
   ActionType,
   CollapsablePart,
   useCollapseContext,
-} from "/contexes/CollapseContext"
+} from "./CollapseContext"
 import {
   UserSummary_user_course_statistics_completion,
   UserSummary_user_course_statistics_course,

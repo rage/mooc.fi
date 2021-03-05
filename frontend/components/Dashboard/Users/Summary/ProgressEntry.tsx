@@ -15,7 +15,7 @@ import {
   ActionType,
   CollapsablePart,
   useCollapseContext,
-} from "/contexes/CollapseContext"
+} from "./CollapseContext"
 import { UserSummary_user_course_statistics_course } from "/static/types/generated/UserSummary"
 import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
 import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
