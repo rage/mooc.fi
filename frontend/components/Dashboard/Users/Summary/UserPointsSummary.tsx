@@ -6,7 +6,6 @@ import {
   CollapsablePart,
   useCollapseContext,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
-import React, { useState } from "react"
 import { Paper } from "@material-ui/core"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
