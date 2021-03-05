@@ -16,6 +16,7 @@ export enum ActionType {
   TOGGLE,
   OPEN_ALL,
   CLOSE_ALL,
+  TOGGLE_ALL,
   OPEN_ALL_COURSES,
   CLOSE_ALL_COURSES,
 }
@@ -43,9 +44,16 @@ export type CollapseAction =
         | CollapsablePart.POINTS
     }
   | {
-      type: ActionType.OPEN_ALL | ActionType.CLOSE_ALL
+      type: ActionType.OPEN_ALL | ActionType.CLOSE_ALL | ActionType.TOGGLE_ALL
+      collapsable: CollapsablePart.COURSE
+    }
+  | {
+      type: ActionType.OPEN_ALL | ActionType.CLOSE_ALL | ActionType.TOGGLE_ALL
       course: string
-      collapsable: CollapsablePart
+      collapsable:
+        | CollapsablePart.EXERCISE
+        | CollapsablePart.COMPLETION
+        | CollapsablePart.POINTS
     }
   | {
       type: ActionType.OPEN_ALL_COURSES | ActionType.CLOSE_ALL_COURSES

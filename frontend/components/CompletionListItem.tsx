@@ -21,7 +21,7 @@ import { ProfileUserOverView_currentUser_completions_course } from "/static/type
 import { CompletionsRegisteredFragment_completions_registered } from "/static/types/generated/CompletionsRegisteredFragment"
 
 const StyledButton = styled(Button)`
-  height: 50%;
+  //height: 50%;
   color: black;
 `
 
@@ -45,6 +45,11 @@ const CourseAvatar = ({ course }: CourseAvatarProps) => {
   )
 }
 
+const BaseList = `
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`
 const ListItemContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -55,12 +60,69 @@ const ListItemContainer = styled.div`
   padding: 0.5rem;
 `
 const CompletionInfoList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  ${BaseList}
 `
 const CompletionInfo = styled.li``
+const RegistrationList = styled.ul`
+  ${BaseList}
+  grid-area: "registration";
+  display: flex;
+  flex-direction: row;
+`
+const Registration = styled.li`
+  min-width: 115px;
+  margin: auto;
+`
+const ButtonList = styled.ul`
+  ${BaseList}
+  grid-area: "buttons";
+  display: flex;
+  align-items: center;
+  @media (max-width: 640px) {
+    flex-direction: row;
+  }
+  @media (min-width: 640px) and (max-width: 900px) {
+    flex-direction: column;
+  }
+  @media (min-width: 900px) {
+    flex-direction: row;
+  }
+  justify-content: space-between;
+  gap: 0.5rem;
+`
+const ButtonWrapper = styled.li``
 
+const Row = styled.section`
+  display: grid;
+  grid-gap: 0.5rem;
+  margin: 0.5rem;
+  @media (max-width: 500px) {
+    width: 100%;
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas:
+      "avatar title"
+      "completion registration"
+      "empty buttons";
+  }
+  @media (min-width: 500px) and (max-width: 640px) {
+    width: 100%;
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas:
+      "avatar title"
+      "completion registration"
+      "empty buttons";
+  }
+  @media (min-width: 640px) and (max-width: 800px) {
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-areas:
+      "avatar title completion"
+      "empty registration buttons";
+  }
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-areas: "avatar title completion registration buttons";
+  }
+`
 interface ListItemProps {
   completion:
     | UserSummary_user_course_statistics_completion
@@ -78,79 +140,93 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
 
   return (
     <ListItemContainer>
-      <CourseAvatar course={course} />
-      <CardTitle
-        component="h2"
-        variant="h3"
-        style={{ width: "50%", paddingRight: "0.5rem", gridArea: "name" }}
-      >
-        {course?.name}
-      </CardTitle>
-      <CardSubtitle component="div" style={{ margin: "auto", width: "30%" }}>
-        <CompletionInfoList>
-          <CompletionInfo>
-            {`${t("completedDate")}${formatDateTime(completion.created_at)}`}
-          </CompletionInfo>
-          {completion.completion_language ? (
-            <CompletionInfo>
-              {`${t("completionLanguage")} ${
-                mapLangToLanguage[completion?.completion_language ?? ""] ||
-                completion.completion_language
-              }`}
-            </CompletionInfo>
-          ) : null}
-          {completion.tier !== null && completion.tier !== undefined ? (
-            <CompletionInfo>
-              {`${t("completionTier")} ${t(
-                // @ts-ignore: tier
-                `completionTier-${completion.tier}`,
-              )}`}
-            </CompletionInfo>
-          ) : null}
-        </CompletionInfoList>
-      </CardSubtitle>
-      {isRegistered && completion.completions_registered ? (
-        (completion.completions_registered as CompletionsRegisteredFragment_completions_registered[])?.map(
-          (r) => {
-            return (
-              <div
-                style={{ minWidth: "115px", margin: "auto" }}
-                key={`completion-registered-${r.id}`}
-              >
-                <CardSubtitle>
-                  {t("registeredDate")}
-                  {formatDateTime(r.created_at)}
-                </CardSubtitle>
-                {r.organization ? (
-                  <CardSubtitle>
-                    {t("organization")}
-                    {r.organization.slug}
-                  </CardSubtitle>
-                ) : null}
-                <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
-              </div>
-            )
-          },
-        )
-      ) : completion.eligible_for_ects ? (
-        <Link
-          href="/register-completion/[slug]"
-          as={`/register-completion/${course?.slug}`}
+      <Row>
+        <CourseAvatar course={course} />
+        <CardTitle
+          component="h2"
+          variant="h3"
+          style={{ paddingRight: "0.5rem", gridArea: "title" }}
         >
-          <StyledA>
-            <StyledButton color="secondary">
-              {t("registerCompletion")}
-            </StyledButton>
-          </StyledA>
-        </Link>
-      ) : (
-        <CardSubtitle style={{ width: "115px" }}>&nbsp;</CardSubtitle>
-      )}
-      {hasCertificate && course ? (
-        <CardSubtitle>
-          <CertificateButton course={course} />
+          {course?.name}
+        </CardTitle>
+        <div style={{ gridArea: "empty " }}></div>
+        <CardSubtitle
+          component="div"
+          style={{ margin: "auto", gridArea: "completion" }}
+        >
+          <CompletionInfoList>
+            <CompletionInfo>
+              {`${t("completedDate")}${formatDateTime(completion.created_at)}`}
+            </CompletionInfo>
+            {completion.completion_language ? (
+              <CompletionInfo>
+                {`${t("completionLanguage")} ${
+                  mapLangToLanguage[completion?.completion_language ?? ""] ||
+                  completion.completion_language
+                }`}
+              </CompletionInfo>
+            ) : null}
+            {completion.tier !== null && completion.tier !== undefined ? (
+              <CompletionInfo>
+                {`${t("completionTier")} ${t(
+                  // @ts-ignore: tier
+                  `completionTier-${completion.tier}`,
+                )}`}
+              </CompletionInfo>
+            ) : null}
+          </CompletionInfoList>
         </CardSubtitle>
-      ) : null}
+        <RegistrationList>
+          {isRegistered && completion.completions_registered
+            ? (completion.completions_registered as CompletionsRegisteredFragment_completions_registered[])?.map(
+                (r) => {
+                  return (
+                    <Registration key={`completion-registered-${r.id}`}>
+                      <CardSubtitle>
+                        {t("registeredDate")}
+                        {formatDateTime(r.created_at)}
+                      </CardSubtitle>
+                      {r.organization ? (
+                        <CardSubtitle>
+                          {t("organization")}
+                          {r.organization.slug}
+                        </CardSubtitle>
+                      ) : null}
+                      <DoneIcon
+                        style={{ color: "green", marginTop: "0.5rem" }}
+                      />
+                    </Registration>
+                  )
+                },
+              )
+            : null}
+        </RegistrationList>
+        <ButtonList>
+          {!completion.completions_registered &&
+          completion.eligible_for_ects ? (
+            <ButtonWrapper>
+              <Link
+                href="/register-completion/[slug]"
+                as={`/register-completion/${course?.slug}`}
+              >
+                <StyledA>
+                  <StyledButton color="secondary">
+                    {t("registerCompletion")}
+                  </StyledButton>
+                </StyledA>
+              </Link>
+            </ButtonWrapper>
+          ) : (
+            <CardSubtitle style={{ width: "115px" }}>&nbsp;</CardSubtitle>
+          )}
+
+          {hasCertificate && course ? (
+            <ButtonWrapper>
+              <CertificateButton course={course} />
+            </ButtonWrapper>
+          ) : null}
+        </ButtonList>
+      </Row>
     </ListItemContainer>
   )
 }

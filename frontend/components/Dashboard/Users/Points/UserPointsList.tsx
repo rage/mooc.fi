@@ -4,9 +4,10 @@ import { UserSummary_user_course_statistics } from "/static/types/generated/User
 
 interface UserPointsListProps {
   data?: UserSummary_user_course_statistics[]
+  search?: string
 }
 
-export default function UserPointsList({ data }: UserPointsListProps) {
+export default function UserPointsList({ data, search }: UserPointsListProps) {
   if (!data) {
     return (
       <>
@@ -16,10 +17,22 @@ export default function UserPointsList({ data }: UserPointsListProps) {
       </>
     )
   }
+
+  // TODO: add search from other fields?
+  const filteredData =
+    search && search !== ""
+      ? data.filter((stats) =>
+          stats?.course?.name
+            .trim()
+            .toLocaleLowerCase()
+            .includes(search.toLocaleLowerCase()),
+        )
+      : data
+
   return (
     <>
-      {data.length === 0 ? <div>No data</div> : null}
-      {sortBy(data, (stats) => stats?.course?.name).map((entry) => (
+      {filteredData.length === 0 ? <div>No data</div> : null}
+      {sortBy(filteredData, (stats) => stats?.course?.name).map((entry) => (
         <CourseEntry
           key={entry.course?.id ?? Math.random() * 9999}
           data={entry}

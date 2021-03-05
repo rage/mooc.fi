@@ -35,8 +35,12 @@ export default function ExerciseEntry({
           {exerciseCompletion.n_points}/
           {exerciseCompletion.exercise?.max_points}
         </TableCell>
-        <TableCell>{exerciseCompletion.completed ? "true" : "false"}</TableCell>
-        <TableCell>{exerciseCompletion.attempted ? "true" : "false"}</TableCell>
+        <TableCell>
+          {exerciseCompletion.completed ? t("yes") : t("no")}
+        </TableCell>
+        <TableCell>
+          {exerciseCompletion.attempted ? t("yes") : t("no")}
+        </TableCell>
         <TableCell>
           {exerciseCompletion.exercise_completion_required_actions.map(
             (

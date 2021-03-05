@@ -9,6 +9,8 @@ import {
 } from "@material-ui/core"
 import ExerciseEntry from "/components/Dashboard/Users/Points/ExerciseEntry"
 import { UserSummary_user_course_statistics_exercise_completions } from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 interface ExerciseListProps {
   exerciseCompletions: UserSummary_user_course_statistics_exercise_completions[]
@@ -17,17 +19,19 @@ interface ExerciseListProps {
 export default function ExerciseList({
   exerciseCompletions,
 }: ExerciseListProps) {
+  const t = useTranslator(ProfileTranslations)
+
   return (
     <TableContainer component={Paper}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell>Exercise</TableCell>
-            <TableCell>Points</TableCell>
-            <TableCell>Completed</TableCell>
-            <TableCell>Attempted</TableCell>
-            <TableCell>Required actions</TableCell>
-            <TableCell>More...</TableCell>
+            <TableCell>{t("exercise")}</TableCell>
+            <TableCell>{t("points")}</TableCell>
+            <TableCell>{t("completed")}</TableCell>
+            <TableCell>{t("attempted")}</TableCell>
+            <TableCell>{t("requiredActions")}</TableCell>
+            <TableCell>{t("more")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
