@@ -20,6 +20,8 @@ import {
   UserSummary_user_course_statistics_completion,
   UserSummary_user_course_statistics_course,
 } from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 interface CompletionProps {
   completion?: UserSummary_user_course_statistics_completion
@@ -27,6 +29,7 @@ interface CompletionProps {
 }
 
 export default function Completion({ completion, course }: CompletionProps) {
+  const t = useTranslator(ProfileTranslations)
   const { state, dispatch } = useCollapseContext()
 
   if (!completion) {
@@ -41,10 +44,11 @@ export default function Completion({ completion, course }: CompletionProps) {
         <TableBody>
           <TableRow>
             <TableCell>
-              Completed {formatDateTime(completion?.completion_date)}
+              {t("completedDate")}
+              {formatDateTime(completion?.completion_date)}
             </TableCell>
             <TableCell align="right">
-              Registered{" "}
+              {t("registeredDate")}
               {completion?.completions_registered
                 ?.map((cr) => formatDateTime(cr.created_at))
                 ?.join(", ")}

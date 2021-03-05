@@ -6,7 +6,7 @@ import Container from "/components/Container"
 import { UserSummary } from "/static/types/generated/UserSummary"
 import notEmpty from "/util/notEmpty"
 import { produce } from "immer"
-import { useEffect, useReducer } from "react"
+import React, { useEffect, useReducer, useState } from "react"
 import CollapseContext, {
   ActionType,
   CollapsablePart,
@@ -18,6 +18,11 @@ import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsReg
 import { CourseStatisticsUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { CourseStatisticsUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 import ErrorMessage from "/components/ErrorMessage"
+import FilterMenu from "/components/FilterMenu"
+import { Paper } from "@material-ui/core"
+import CollapseButton from "/components/Buttons/CollapseButton"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 const UserSummaryQuery = gql`
   query UserSummary($upstream_id: Int) {
@@ -155,14 +160,59 @@ const reducer = (
           })
       }
     }
-    case ActionType.OPEN_ALL_COURSES:
-      return produce(state, (draft) => {
-        Object.keys(state).forEach((c) => (draft[c].open = true))
-      })
-    case ActionType.CLOSE_ALL_COURSES:
-      return produce(state, (draft) => {
-        Object.keys(state).forEach((c) => (draft[c].open = false))
-      })
+    case ActionType.OPEN_ALL: {
+      switch (action.collapsable) {
+        case CollapsablePart.COURSE: {
+          return produce(state, (draft) => {
+            Object.keys(state).forEach((c) => (draft[c].open = true))
+          })
+        }
+        case CollapsablePart.EXERCISE: {
+          return produce(state, (draft) => {
+            Object.keys(draft[action.course].exercises).forEach(
+              (e) => (draft[action.course].exercises[e] = true),
+            )
+          })
+        }
+      }
+      return state
+    }
+    case ActionType.CLOSE_ALL: {
+      switch (action.collapsable) {
+        case CollapsablePart.COURSE: {
+          return produce(state, (draft) => {
+            Object.keys(state).forEach((c) => (draft[c].open = false))
+          })
+        }
+        case CollapsablePart.EXERCISE: {
+          return produce(state, (draft) => {
+            Object.keys(draft[action.course].exercises).forEach(
+              (e) => (draft[action.course].exercises[e] = false),
+            )
+          })
+        }
+      }
+      return state
+    }
+    case ActionType.TOGGLE_ALL: {
+      switch (action.collapsable) {
+        case CollapsablePart.COURSE: {
+          return produce(state, (draft) => {
+            Object.keys(state).forEach((c) => (draft[c].open = !draft[c].open))
+          })
+        }
+        case CollapsablePart.EXERCISE: {
+          return produce(state, (draft) => {
+            Object.keys(draft[action.course].exercises).forEach(
+              (e) =>
+                (draft[action.course].exercises[e] = !draft[action.course]
+                  .exercises[e]),
+            )
+          })
+        }
+      }
+      return state
+    }
     case ActionType.INIT_STATE:
       return action.state
   }
@@ -170,12 +220,23 @@ const reducer = (
   return state
 }
 
+interface SearchVariables {
+  search?: string
+  hidden?: boolean | null
+  handledBy?: string | null
+  status?: string[] | null
+}
+
 function UserSummaryView() {
+  const t = useTranslator(CommonTranslations)
   const id = useQueryParameter("id")
-  const { error, data } = useQuery<UserSummary>(UserSummaryQuery, {
+  const { loading, error, data } = useQuery<UserSummary>(UserSummaryQuery, {
     variables: { upstream_id: Number(id) },
   })
   const [state, dispatch] = useReducer(reducer, {})
+  const [searchVariables, setSearchVariables] = useState<SearchVariables>({
+    search: "",
+  })
   useEffect(() => {
     const s =
       data?.user?.course_statistics?.reduce<CollapseState>(
@@ -207,6 +268,9 @@ function UserSummaryView() {
       </Container>
     )
   }
+
+  const coursesClosed = !Object.values(state).some((s) => s.open)
+
   return (
     <Container>
       <CollapseContext.Provider
@@ -215,8 +279,41 @@ function UserSummaryView() {
           dispatch,
         }}
       >
+        <Paper style={{ marginBottom: "0.5rem" }}>
+          <FilterMenu
+            searchVariables={searchVariables}
+            setSearchVariables={setSearchVariables}
+            loading={loading}
+            fields={{
+              hidden: false,
+              status: false,
+              handler: false,
+            }}
+          />
+        </Paper>
+        <Paper
+          style={{
+            marginBottom: "0.5rem",
+            display: "flex",
+            flexDirection: "row-reverse",
+          }}
+        >
+          <CollapseButton
+            onClick={() =>
+              dispatch({
+                type: coursesClosed
+                  ? ActionType.OPEN_ALL
+                  : ActionType.CLOSE_ALL,
+                collapsable: CollapsablePart.COURSE,
+              })
+            }
+            open={!coursesClosed}
+            label={coursesClosed ? t("showAll") : t("hideAll")}
+          />
+        </Paper>
         <UserPointsList
           data={data?.user?.course_statistics?.filter(notEmpty)}
+          search={searchVariables.search}
         />
       </CollapseContext.Provider>
     </Container>

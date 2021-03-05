@@ -60,7 +60,6 @@ const Title = styled(Typography)<any>`
 const Completions = ({ completions = [] }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)
 
-  console.log(completions)
   return (
     <section>
       <Title component="h1" variant="h2" align="center">
