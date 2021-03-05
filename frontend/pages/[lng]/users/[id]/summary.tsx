@@ -1,19 +1,17 @@
 import { gql, useQuery } from "@apollo/client"
 import withAdmin from "/lib/with-admin"
 import { useQueryParameter } from "/util/useQueryParameter"
-import UserPointsList from "/components/Dashboard/Users/Points/UserPointsList"
+import UserPointsSummary from "/components/Dashboard/Users/Summary/UserPointsSummary"
 import Container from "/components/Container"
 import { UserSummary } from "/static/types/generated/UserSummary"
 import notEmpty from "/util/notEmpty"
-import { produce } from "immer"
 import React, { useEffect, useReducer, useState } from "react"
 import CollapseContext, {
   ActionType,
   CollapsablePart,
-  CollapseAction,
-  CollapseState,
-  ExerciseState,
-} from "/contexes/CollapseContext"
+  collapseReducer,
+  createInitialState,
+} from "/components/Dashboard/Users/Summary/CollapseContext"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
 import { CourseStatisticsUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
 import { CourseStatisticsUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
@@ -93,133 +91,6 @@ const UserSummaryQuery = gql`
   ${CourseStatisticsUserCourseServiceProgressFragment}
 `
 
-const reducer = (
-  state: CollapseState,
-  action: CollapseAction,
-): CollapseState => {
-  switch (action.type) {
-    case ActionType.OPEN: {
-      switch (action.collapsable) {
-        case CollapsablePart.COURSE:
-          return produce(state, (draft) => {
-            draft[action.course].open = true
-          })
-        case CollapsablePart.EXERCISE:
-          return produce(state, (draft) => {
-            draft[action.course].exercises[action.collapsableId] = true
-          })
-        case CollapsablePart.COMPLETION:
-          return produce(state, (draft) => {
-            draft[action.course].completion = true
-          })
-        case CollapsablePart.POINTS:
-          return produce(state, (draft) => {
-            draft[action.course].points = true
-          })
-      }
-    }
-    case ActionType.CLOSE: {
-      switch (action.collapsable) {
-        case CollapsablePart.COURSE:
-          return produce(state, (draft) => {
-            draft[action.course].open = false
-          })
-        case CollapsablePart.EXERCISE:
-          return produce(state, (draft) => {
-            draft[action.course].exercises[action.collapsableId] = false
-          })
-        case CollapsablePart.COMPLETION:
-          return produce(state, (draft) => {
-            draft[action.course].completion = false
-          })
-        case CollapsablePart.POINTS:
-          return produce(state, (draft) => {
-            draft[action.course].points = false
-          })
-      }
-    }
-    case ActionType.TOGGLE: {
-      switch (action.collapsable) {
-        case CollapsablePart.COURSE:
-          return produce(state, (draft) => {
-            draft[action.course].open = !draft[action.course].open
-          })
-        case CollapsablePart.EXERCISE:
-          return produce(state, (draft) => {
-            draft[action.course].exercises[action.collapsableId] = !draft[
-              action.course
-            ].exercises[action.collapsableId]
-          })
-        case CollapsablePart.COMPLETION:
-          return produce(state, (draft) => {
-            draft[action.course].completion = !draft[action.course].completion
-          })
-        case CollapsablePart.POINTS:
-          return produce(state, (draft) => {
-            draft[action.course].points = !draft[action.course].points
-          })
-      }
-    }
-    case ActionType.OPEN_ALL: {
-      switch (action.collapsable) {
-        case CollapsablePart.COURSE: {
-          return produce(state, (draft) => {
-            Object.keys(state).forEach((c) => (draft[c].open = true))
-          })
-        }
-        case CollapsablePart.EXERCISE: {
-          return produce(state, (draft) => {
-            Object.keys(draft[action.course].exercises).forEach(
-              (e) => (draft[action.course].exercises[e] = true),
-            )
-          })
-        }
-      }
-      return state
-    }
-    case ActionType.CLOSE_ALL: {
-      switch (action.collapsable) {
-        case CollapsablePart.COURSE: {
-          return produce(state, (draft) => {
-            Object.keys(state).forEach((c) => (draft[c].open = false))
-          })
-        }
-        case CollapsablePart.EXERCISE: {
-          return produce(state, (draft) => {
-            Object.keys(draft[action.course].exercises).forEach(
-              (e) => (draft[action.course].exercises[e] = false),
-            )
-          })
-        }
-      }
-      return state
-    }
-    case ActionType.TOGGLE_ALL: {
-      switch (action.collapsable) {
-        case CollapsablePart.COURSE: {
-          return produce(state, (draft) => {
-            Object.keys(state).forEach((c) => (draft[c].open = !draft[c].open))
-          })
-        }
-        case CollapsablePart.EXERCISE: {
-          return produce(state, (draft) => {
-            Object.keys(draft[action.course].exercises).forEach(
-              (e) =>
-                (draft[action.course].exercises[e] = !draft[action.course]
-                  .exercises[e]),
-            )
-          })
-        }
-      }
-      return state
-    }
-    case ActionType.INIT_STATE:
-      return action.state
-  }
-
-  return state
-}
-
 interface SearchVariables {
   search?: string
   hidden?: boolean | null
@@ -233,32 +104,17 @@ function UserSummaryView() {
   const { loading, error, data } = useQuery<UserSummary>(UserSummaryQuery, {
     variables: { upstream_id: Number(id) },
   })
-  const [state, dispatch] = useReducer(reducer, {})
+  const [state, dispatch] = useReducer(collapseReducer, {})
   const [searchVariables, setSearchVariables] = useState<SearchVariables>({
     search: "",
   })
   useEffect(() => {
-    const s =
-      data?.user?.course_statistics?.reduce<CollapseState>(
-        (collapseState, courseEntry) => ({
-          ...collapseState,
-          [courseEntry?.course?.id ?? "_"]: {
-            open: true,
-            exercises:
-              courseEntry?.exercise_completions?.reduce<ExerciseState>(
-                (exerciseState, exerciseCompletion) => ({
-                  ...exerciseState,
-                  [exerciseCompletion?.id ?? "_"]: false,
-                }),
-                {},
-              ) ?? {},
-            completion: false,
-            points: false,
-          },
-        }),
-        {},
-      ) ?? {}
-    dispatch({ type: ActionType.INIT_STATE, state: s })
+    dispatch({
+      type: ActionType.INIT_STATE,
+      state: createInitialState(
+        data?.user?.course_statistics?.filter(notEmpty),
+      ),
+    })
   }, [data])
 
   if (error) {
@@ -268,8 +124,6 @@ function UserSummaryView() {
       </Container>
     )
   }
-
-  const coursesClosed = !Object.values(state).some((s) => s.open)
 
   return (
     <Container>
@@ -291,27 +145,7 @@ function UserSummaryView() {
             }}
           />
         </Paper>
-        <Paper
-          style={{
-            marginBottom: "0.5rem",
-            display: "flex",
-            flexDirection: "row-reverse",
-          }}
-        >
-          <CollapseButton
-            onClick={() =>
-              dispatch({
-                type: coursesClosed
-                  ? ActionType.OPEN_ALL
-                  : ActionType.CLOSE_ALL,
-                collapsable: CollapsablePart.COURSE,
-              })
-            }
-            open={!coursesClosed}
-            label={coursesClosed ? t("showAll") : t("hideAll")}
-          />
-        </Paper>
-        <UserPointsList
+        <UserPointsSummary
           data={data?.user?.course_statistics?.filter(notEmpty)}
           search={searchVariables.search}
         />

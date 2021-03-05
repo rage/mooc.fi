@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core"
-import ExerciseEntry from "/components/Dashboard/Users/Points/ExerciseEntry"
+import ExerciseEntry from "./ExerciseEntry"
 import { UserSummary_user_course_statistics_exercise_completions } from "/static/types/generated/UserSummary"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"

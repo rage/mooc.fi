@@ -4,7 +4,7 @@ import {
   useCollapseContext,
   ActionType,
   CollapsablePart,
-} from "/contexes/CollapseContext"
+} from "./CollapseContext"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 import ProfileTranslations from "/translations/profile"

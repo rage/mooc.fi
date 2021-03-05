@@ -64,7 +64,7 @@ interface PersonalDetails {
 }
 
 interface Props {
-  course?: UserPoints_currentUser_progresses_course
+  course?: UserPoints_currentUser_progresses_course | null
   userCourseProgress?: UserCourseProgressFragment | null
   userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
   cutterValue?: number

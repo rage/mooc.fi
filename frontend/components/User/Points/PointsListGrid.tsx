@@ -23,12 +23,11 @@ function PointsListGrid(props: GridProps) {
         (progress: UserPoints_currentUser_progresses, index) => (
           <PointsListItemCard
             key={`${progress.course?.id}-${index}`}
-            course={progress.course ?? undefined}
-            userCourseProgress={progress.user_course_progress ?? undefined}
-            userCourseServiceProgresses={
-              progress.user_course_service_progresses?.filter(notEmpty) ??
-              undefined
-            }
+            course={progress.course}
+            userCourseProgress={progress.user_course_progress}
+            userCourseServiceProgresses={progress.user_course_service_progresses?.filter(
+              notEmpty,
+            )}
           />
         ),
       )}

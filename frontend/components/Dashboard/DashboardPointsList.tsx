@@ -17,15 +17,11 @@ const PointsList = (props: Props) => {
         {pointsForUser.filter(notEmpty).map((p: Points) =>
           p?.node?.user?.progress ? (
             <PointsListItemCard
-              course={p.node.user.progress.course ?? undefined}
-              userCourseProgress={
-                p.node.user.progress.user_course_progress ?? undefined
-              }
-              userCourseServiceProgresses={
-                p.node.user.progress.user_course_service_progresses?.filter(
-                  notEmpty,
-                ) ?? undefined
-              }
+              course={p.node.user.progress.course}
+              userCourseProgress={p.node.user.progress.user_course_progress}
+              userCourseServiceProgresses={p.node.user.progress.user_course_service_progresses?.filter(
+                notEmpty,
+              )}
               cutterValue={cutterValue}
               showPersonalDetails={true}
               personalDetails={{
