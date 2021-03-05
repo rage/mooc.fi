@@ -8,7 +8,6 @@ import notEmpty from "/util/notEmpty"
 import React, { useEffect, useReducer, useState } from "react"
 import CollapseContext, {
   ActionType,
-  CollapsablePart,
   collapseReducer,
   createInitialState,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
@@ -18,9 +17,6 @@ import { CourseStatisticsUserCourseServiceProgressFragment } from "/graphql/frag
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
 import { Paper } from "@material-ui/core"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const UserSummaryQuery = gql`
   query UserSummary($upstream_id: Int) {
@@ -99,7 +95,6 @@ interface SearchVariables {
 }
 
 function UserSummaryView() {
-  const t = useTranslator(CommonTranslations)
   const id = useQueryParameter("id")
   const { loading, error, data } = useQuery<UserSummary>(UserSummaryQuery, {
     variables: { upstream_id: Number(id) },
