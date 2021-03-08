@@ -179,7 +179,7 @@ export const CompletionMutations = extendType({
         })
 
         const progressByUser = groupBy(progresses, "user_id")
-        const userIds = Object.keys(progressByUser)
+        const userIds = Object.keys(progressByUser).filter(notEmpty)
 
         // find users with completions
         const completions = await ctx.prisma.completion.findMany({
