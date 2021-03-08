@@ -53,7 +53,6 @@ export const checkBAICompletion = async ({
         .completions_handled_by()
 
   if (!handlerCourse) {
-    // TODO: error
     logger?.error(
       new DatabaseInputError(
         `No handler course found for ${course.id}`,
@@ -104,7 +103,7 @@ export const checkBAICompletion = async ({
         course: {
           connect: { id: handlerCourse.id },
         },
-        user: { connect: { id: user?.id } },
+        user: { connect: { id: user.id } },
         ...newProgress,
       },
     })
