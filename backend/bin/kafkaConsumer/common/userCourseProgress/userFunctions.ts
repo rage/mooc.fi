@@ -13,6 +13,7 @@ import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import { sendEmailTemplateToUser } from "../EmailTemplater/sendEmailTemplate"
 import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
 import { KafkaContext } from "../kafkaContext"
+import { DatabaseInputError } from "../../../lib/errors"
 
 export const getCombinedUserCourseProgress = async ({
   user,
@@ -64,6 +65,7 @@ export const checkRequiredExerciseCompletions = async ({
   context: KafkaContext
 }): Promise<boolean> => {
   if (course.exercise_completions_needed) {
+    // TODO/FIXME: skip deleted exercises?
     const exercise_completions = await knex("exercise_completion")
       .countDistinct("exercise_completion.exercise_id")
       .join("exercise", { "exercise_completion.exercise_id": "exercise.id" })
@@ -86,6 +88,7 @@ export const getExerciseCompletionsForCourses = async ({
   courseIds: string[]
   context: KafkaContext
 }) => {
+  // TODO/FIXME: skip deleted exercises?
   const exercise_completions: ExerciseCompletionPart[] = await knex<
     any,
     ExerciseCompletionPart[]
@@ -222,7 +225,7 @@ export const createCompletion = async ({
   const completions = await prisma.completion.findMany({
     where: {
       user_id: user.id,
-      course_id: handlerCourse?.id,
+      course_id: handlerCourse.id,
     },
   })
   if (completions.length < 1) {
@@ -260,14 +263,20 @@ export const createCompletion = async ({
   } else if (!isNullOrUndefined(tier)) {
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
-    const updated = await prisma.$queryRaw`
+    try {
+      const updated = await prisma.$queryRaw`
       UPDATE 
         completion 
       SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
       WHERE id=${completions[0]!.id} AND COALESCE(tier, 0) < ${tier}
       RETURNING tier;`
-    if (updated.length > 0) {
-      logger?.info("Existing completion found, updated tier")
+      if (updated.length > 0) {
+        logger?.info("Existing completion found, updated tier")
+      }
+    } catch (error) {
+      logger?.error(
+        new DatabaseInputError("Error updating tier", completions[0], error),
+      )
     }
     /*await prisma.completion.update({
       where: {

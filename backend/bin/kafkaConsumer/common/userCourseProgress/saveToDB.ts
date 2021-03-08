@@ -57,7 +57,7 @@ export const saveToDatabase = async (
   const userCourseProgresses = await knex<unknown, UserCourseProgress[]>(
     "user_course_progress",
   )
-    .where("user_id", user?.id)
+    .where("user_id", user.id)
     .where("course_id", message.course_id)
     .orderBy("created_at", "asc")
 
@@ -69,7 +69,7 @@ export const saveToDatabase = async (
         course: {
           connect: { id: message.course_id },
         },
-        user: { connect: { id: user?.id } },
+        user: { connect: { id: user.id } },
         progress: message.progress as any, // type error without any
       },
     })
@@ -84,7 +84,7 @@ export const saveToDatabase = async (
     unknown,
     UserCourseServiceProgress[]
   >("user_course_service_progress")
-    .where("user_id", user?.id)
+    .where("user_id", user.id)
     .where("course_id", message.course_id)
     .where("service_id", message.service_id)
     .orderBy("created_at", "asc")
@@ -122,7 +122,7 @@ export const saveToDatabase = async (
   } else {
     await prisma.userCourseServiceProgress.create({
       data: {
-        user: { connect: { id: user?.id } },
+        user: { connect: { id: user.id } },
         course: {
           connect: { id: message.course_id },
         },
