@@ -6,11 +6,13 @@ import {
   CollapsablePart,
   useCollapseContext,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
-import { Paper } from "@material-ui/core"
+import { Paper, Button, Dialog } from "@material-ui/core"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 import CommonTranslations from "/translations/common"
-
+import BuildIcon from "@material-ui/icons/Build"
+import RawView from "/components/Dashboard/Users/Summary/RawView"
+import { useState } from "react"
 interface UserPointsSummaryProps {
   data?: UserSummary_user_course_statistics[]
   search?: string
@@ -22,6 +24,7 @@ export default function UserPointsSummary({
 }: UserPointsSummaryProps) {
   const t = useTranslator(CommonTranslations)
   const { state, dispatch } = useCollapseContext()
+  const [rawViewOpen, setRawViewOpen] = useState(false)
 
   if (!data) {
     return (
@@ -51,9 +54,19 @@ export default function UserPointsSummary({
         style={{
           marginBottom: "0.5rem",
           display: "flex",
-          flexDirection: "row-reverse",
+          justifyContent: "flex-end",
+          flexDirection: "row",
+          gap: "0.5rem",
+          padding: "0.5rem",
         }}
       >
+        <Button
+          variant="outlined"
+          startIcon={<BuildIcon />}
+          onClick={() => setRawViewOpen(!rawViewOpen)}
+        >
+          Raw view
+        </Button>
         <CollapseButton
           onClick={() =>
             dispatch({
@@ -72,6 +85,16 @@ export default function UserPointsSummary({
           data={entry}
         />
       ))}
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={rawViewOpen}
+        onClose={() => setRawViewOpen(false)}
+      >
+        <div style={{ overflowY: "hidden" }}>
+          <RawView value={JSON.stringify(data, undefined, 2)} />
+        </div>
+      </Dialog>
     </>
   )
 }

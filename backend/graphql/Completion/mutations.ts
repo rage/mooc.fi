@@ -172,8 +172,7 @@ export const CompletionMutations = extendType({
         // find users on course with points
         const progresses = await ctx.prisma.userCourseProgress.findMany({
           where: {
-            course_id,
-            ...(slug ? { course: { slug } } : {}),
+            course_id: course.id,
             n_points: { gt: 0 },
           },
           orderBy: { created_at: "asc" },
@@ -185,7 +184,7 @@ export const CompletionMutations = extendType({
         // find users with completions
         const completions = await ctx.prisma.completion.findMany({
           where: {
-            course_id,
+            course_id: course.id,
             user_id: { in: userIds },
           },
         })
