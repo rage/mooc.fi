@@ -51,7 +51,7 @@ const sortByExercise = (data: any) => {
   return {
     ...data,
     exercise_completions: orderBy(
-      data.exercise_completions?.exercise,
+      data.exercise_completions.map((ec: any) => ec.exercise),
       ["id"],
       ["asc"],
     ),
