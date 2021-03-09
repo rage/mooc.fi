@@ -2,10 +2,10 @@ import { Chip, Collapse, TableCell, TableRow } from "@material-ui/core"
 import React from "react"
 import {
   useCollapseContext,
-  ActionType,
-  CollapsablePart,
+  // ActionType,
+  // CollapsablePart,
 } from "./CollapseContext"
-import CollapseButton from "/components/Buttons/CollapseButton"
+// import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import {
@@ -20,6 +20,7 @@ export default function ExerciseEntry({
   exerciseCompletion,
 }: ExerciseEntryProps) {
   const t = useTranslator(ProfileTranslations)
+  // @ts-ignore: collapse disabled
   const { state, dispatch } = useCollapseContext()
 
   const isOpen =
@@ -51,7 +52,7 @@ export default function ExerciseEntry({
             ),
           )}
         </TableCell>
-        <TableCell>
+        {/*<TableCell>
           <CollapseButton
             open={isOpen}
             onClick={() =>
@@ -63,7 +64,7 @@ export default function ExerciseEntry({
               })
             }
           />
-        </TableCell>
+          </TableCell>*/}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={6}>

@@ -31,7 +31,7 @@ export default function ExerciseList({
             <TableCell>{t("completed")}</TableCell>
             <TableCell>{t("attempted")}</TableCell>
             <TableCell>{t("requiredActions")}</TableCell>
-            <TableCell>{t("more")}</TableCell>
+            {/*<TableCell>{t("more")}</TableCell>*/}
           </TableRow>
         </TableHead>
         <TableBody>
