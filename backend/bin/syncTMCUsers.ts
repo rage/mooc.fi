@@ -28,7 +28,7 @@ export const syncTMCUsers = async (_prisma?: PrismaClient) => {
   let prisma: PrismaClient | undefined
 
   if (!_prisma) {
-    prisma = (await import("./lib/prisma")).default
+    prisma = (await import("../prisma")).default
   } else {
     prisma = _prisma
   }

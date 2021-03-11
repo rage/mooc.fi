@@ -3,6 +3,8 @@ import { ConsumerGlobalConfig } from "node-rdkafka"
 import winston from "winston"
 import { KafkaError } from "../../lib/errors"
 import checkConnectionInInterval from "./connectedChecker"
+import type { PrismaClient } from "@prisma/client"
+import { attachPrismaEvents } from "../../../util/prismaLogger"
 
 const logCommit = (logger: winston.Logger) => (
   err: any,
@@ -15,7 +17,15 @@ const logCommit = (logger: winston.Logger) => (
   }
 }
 
-export const createKafkaConsumer = (logger: winston.Logger) => {
+interface CreateKafkaConsumer {
+  logger: winston.Logger
+  prisma?: PrismaClient
+}
+
+export const createKafkaConsumer = ({
+  logger,
+  prisma,
+}: CreateKafkaConsumer) => {
   const consumerGroup = process.env.KAFKA_CONSUMER_GROUP ?? "kafka"
   logger.info(`Joining consumer group ${consumerGroup}.`)
 
@@ -51,5 +61,11 @@ export const createKafkaConsumer = (logger: winston.Logger) => {
 
   checkConnectionInInterval(consumer)
 
+  if (prisma) {
+    attachPrismaEvents({
+      logger,
+      prisma,
+    })
+  }
   return consumer
 }
