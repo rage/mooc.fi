@@ -14,9 +14,10 @@ if (PRODUCTION && !process.env.NEXUS_REFLECTION) {
 
 import { wsListen } from "./wsServer"
 import server from "./server"
-import { PrismaClient } from "@prisma/client"
+import prisma from "./prisma"
 import * as winston from "winston"
 import knex from "./services/knex"
+import { attachPrismaEvents } from "./util/prismaLogger"
 
 const logger = winston.createLogger({
   level: "info",
@@ -28,21 +29,17 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-const prismaClient = new PrismaClient({
-  log: [
-    {
-      emit: "event",
-      level: "query",
-    },
-  ],
-})
+/*const prismaClient = new PrismaClient({
+  log: ["query"]
+})*/
 
-const { express } = server({
-  prisma: prismaClient,
+const { app } = server({
+  prisma, //: prismaClient,
   logger,
   knex,
 })
 
+attachPrismaEvents({ prisma, logger })
 /*prismaClient.on("query", (e) => {
   e.timestamp
   e.query
@@ -53,7 +50,7 @@ const { express } = server({
 })*/
 
 if (!process.env.NEXUS_REFLECTION) {
-  express.listen(4000, () => {
+  app.listen(4000, () => {
     console.log("server running on port 4000")
   })
   wsListen()

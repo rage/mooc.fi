@@ -1,5 +1,4 @@
 const express = require("express")
-const bodyParser = require("body-parser")
 const cors = require("cors")
 const fs = require("fs")
 const path = require("path")
@@ -42,7 +41,7 @@ const createMockBackend = async ({ redirectHandler }) => {
   }
 
   const mockBackend = express()
-  mockBackend.use(bodyParser.json())
+  mockBackend.use(express.json())
   mockBackend.use(cors({ origin: "http://localhost:3000" }))
 
   const schemaCode = fs.readFileSync(

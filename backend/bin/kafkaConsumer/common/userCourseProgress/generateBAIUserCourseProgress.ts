@@ -9,7 +9,7 @@ import {
   exerciseCompletionsNeeded,
 } from "../../../../config/courseConfig"
 import { DatabaseInputError } from "../../../lib/errors"
-import prisma from "../../../lib/prisma"
+import prisma from "../../../../prisma"
 import {
   getExerciseCompletionsForCourses,
   createCompletion,
