@@ -1,7 +1,8 @@
 import { ApiContext } from "."
 import { Request, Response } from "express"
-import { omit, intersection } from "lodash"
+import { omit, intersection, update } from "lodash"
 import { getUser } from "../util/server-functions"
+import { courses } from "/tests/data"
 
 export function userCourseSettingsGet({ knex, prisma, logger }: ApiContext) {
   return async (req: Request<{ slug: string }>, res: Response) => {
@@ -81,9 +82,14 @@ export function userCourseSettingsPost({ knex, prisma }: ApiContext) {
     })
 
     if (!existingSetting) {
-      return res
-        .status(400)
-        .json({ message: "no existing user course setting" })
+      const existingCourse = await prisma.course.findFirst({
+        where: {
+          slug,
+        },
+      })
+      if (!existingCourse) {
+        return res.status(400).json({ message: "no course found" })
+      }
     }
 
     if (Object.keys(body).length === 0) {
@@ -107,9 +113,9 @@ export function userCourseSettingsPost({ knex, prisma }: ApiContext) {
       "created_at",
       "updated_at",
     ]
-    const strippedExistingSetting = omit(existingSetting, strippedFields)
+    const strippedExistingSetting = omit(existingSetting ?? {}, strippedFields)
 
-    const updatedSetting = Object.entries(body).reduce<Record<string, any>>(
+    const settingValues = Object.entries(body).reduce<Record<string, any>>(
       (acc, [key, value]) => {
         if (permittedFields.includes(key)) {
           return { ...acc, [key]: value }
@@ -122,13 +128,28 @@ export function userCourseSettingsPost({ knex, prisma }: ApiContext) {
       strippedExistingSetting,
     )
 
+    if (!existingSetting?.id) {
+      await prisma.userCourseSetting.create({
+        data: {
+          ...settingValues,
+          course: { connect: { slug } },
+          user: { connect: { id: user.id } },
+        },
+      })
+      return res.status(200).json({
+        message: "settings created",
+      })
+    }
+
     await prisma.userCourseSetting.update({
       where: {
         id: existingSetting.id,
       },
-      data: updatedSetting,
+      data: settingValues,
     })
 
-    return res.status(200).json({ message: "settings updated" })
+    return res.status(200).json({
+      message: "settings updated",
+    })
   }
 }
