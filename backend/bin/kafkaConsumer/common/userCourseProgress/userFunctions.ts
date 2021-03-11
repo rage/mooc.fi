@@ -120,33 +120,28 @@ export const getUserCourseSettings = async ({
   user: User
   course_id: string
   context: KafkaContext
-}): Promise<UserCourseSetting> => {
-  let userCourseSetting: UserCourseSetting =
-    (
-      await prisma.userCourseSetting.findMany({
-        where: {
-          user_id: user.id,
-          course_id,
-        },
-      })
-    )?.[0] || null
+}): Promise<UserCourseSetting | null> => {
+  let userCourseSetting = await prisma.userCourseSetting.findFirst({
+    where: {
+      user_id: user.id,
+      course_id,
+    },
+  })
 
   if (!userCourseSetting) {
     const inheritCourse = await prisma.course
       .findUnique({ where: { id: course_id } })
       .inherit_settings_from()
     if (inheritCourse) {
-      userCourseSetting =
-        (
-          await prisma.userCourseSetting.findMany({
-            where: {
-              user_id: user.id,
-              course_id: inheritCourse.id,
-            },
-          })
-        )[0] || null
+      userCourseSetting = await prisma.userCourseSetting.findFirst({
+        where: {
+          user_id: user.id,
+          course_id: inheritCourse.id,
+        },
+      })
     }
   }
+
   return userCourseSetting
 }
 
