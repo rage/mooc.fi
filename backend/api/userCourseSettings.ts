@@ -1,8 +1,7 @@
 import { ApiContext } from "."
 import { Request, Response } from "express"
-import { omit, intersection, update } from "lodash"
+import { omit, intersection } from "lodash"
 import { getUser } from "../util/server-functions"
-import { courses } from "/tests/data"
 
 export function userCourseSettingsGet({ knex, prisma, logger }: ApiContext) {
   return async (req: Request<{ slug: string }>, res: Response) => {
