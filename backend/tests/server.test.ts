@@ -288,6 +288,7 @@ describe("server", () => {
         })
 
         expect(createdSetting).not.toBeNull()
+        expect(createdSetting?.id).not.toEqual("bogus")
         expect(createdSetting?.language).toEqual("fi")
         expect(createdSetting?.country).toEqual("en")
         expect(createdSetting?.marketing).toEqual(true)
