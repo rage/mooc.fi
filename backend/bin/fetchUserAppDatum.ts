@@ -135,7 +135,9 @@ const fetchUserAppDatum = async () => {
       default:
         saveOther(e)
     }
-    if (index % saveInterval == 0) saveProgress(prisma, new Date(e.updated_at))
+    if (index % saveInterval == 0) {
+      await saveProgress(prisma, new Date(e.updated_at))
+    }
   }
   /*if (!p || p == "undefined" || p == null) {
       logger.warning(

@@ -113,7 +113,7 @@ const ManualCompletions = () => {
         />
       </LocalizationProvider>
       <Typography>
-        Format: csv with header with fields: user_id,grade[,completion_date] -
+        Format: csv with header with fields: user_id[,grade][,completion_date] -
         optional date in ISO 8601 format
       </Typography>
       <br />
@@ -143,7 +143,7 @@ const ManualCompletions = () => {
 
           const data: {
             user_id: string
-            grade: string
+            grade?: string
             completion_date?: string
           }[] = parsed.data.map((d: any) => ({
             ...d,
@@ -164,8 +164,8 @@ const ManualCompletions = () => {
             setSubmitting(false)
             return
           }
-          if (!data.every((o) => o.user_id && o.grade)) {
-            setMessage("Did not find columns user_id and grade for each row.")
+          if (!data.every((o) => o.user_id)) {
+            setMessage("Did not find column user_id for each row.")
             setMessageSeverity("error")
             setMessageTitle("Invalid csv")
             setSubmitting(false)
