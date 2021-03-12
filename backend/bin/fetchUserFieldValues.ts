@@ -91,7 +91,7 @@ const fetcUserFieldValues = async () => {
     }
 
     if (saveCounter % saveInterval == 0) {
-      saveProgress(prisma, new Date(p.updated_at))
+      await saveProgress(prisma, new Date(p.updated_at))
     }
   }
 
