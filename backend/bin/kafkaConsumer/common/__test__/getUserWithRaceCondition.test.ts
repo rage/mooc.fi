@@ -6,7 +6,6 @@ import {
 import { seed } from "../../../../tests/data/seed"
 import {
   adminUserDetails,
-  normalUser,
   normalUserDetails,
 } from "../../../../tests/data"
 import { KafkaContext } from "../kafkaContext"
