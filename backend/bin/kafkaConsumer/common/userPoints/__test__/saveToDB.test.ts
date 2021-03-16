@@ -4,10 +4,7 @@ import {
   fakeGetAccessToken,
 } from "../../../../../tests/__helpers"
 import { seed } from "../../../../../tests/data/seed"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../../../../tests/data"
+import { adminUserDetails, normalUserDetails } from "../../../../../tests/data"
 import { Message } from "../interfaces"
 import { KafkaContext } from "../../kafkaContext"
 import { saveToDatabase } from "../saveToDB"
