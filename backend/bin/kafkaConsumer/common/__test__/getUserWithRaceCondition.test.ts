@@ -4,10 +4,7 @@ import {
   fakeGetAccessToken,
 } from "../../../../tests/__helpers"
 import { seed } from "../../../../tests/data/seed"
-import {
-  adminUserDetails,
-  normalUserDetails,
-} from "../../../../tests/data"
+import { adminUserDetails, normalUserDetails } from "../../../../tests/data"
 import { KafkaContext } from "../kafkaContext"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 
