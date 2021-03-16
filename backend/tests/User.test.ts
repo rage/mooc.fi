@@ -1,5 +1,5 @@
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMC } from "./__helpers"
+import { getTestContext, fakeTMCCurrent } from "./__helpers"
 import { adminUserDetails, normalUser, normalUserDetails } from "./data"
 
 const addUserMutation = gql`
@@ -36,7 +36,7 @@ const updateUserNameMutation = gql`
 `
 
 const ctx = getTestContext()
-const tmc = fakeTMC({
+const tmc = fakeTMCCurrent({
   "Bearer normal": [200, normalUserDetails],
   "Bearer admin": [200, adminUserDetails],
 })

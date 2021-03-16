@@ -276,3 +276,79 @@ export const services: Prisma.ServiceCreateInput[] = [
     },
   },
 ]
+
+export const exercises: Prisma.ExerciseCreateInput[] = [
+  {
+    id: "50000000-0000-0000-0000-000000000001",
+    name: "exercise 1",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    custom_id: "customid1",
+  },
+  {
+    id: "50000000-0000-0000-0000-000000000002",
+    name: "exercise 2",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    custom_id: "customid2",
+  },
+  {
+    id: "50000000-0000-0000-0000-000000000003",
+    name: "exercise 3",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    custom_id: "customid3",
+  },
+  {
+    id: "50000000-0000-0000-0000-000000000004",
+    name: "exercise 4",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    custom_id: "customid4",
+  },
+]
+
+export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
+  {
+    id: "60000000-0000-0000-0000-000000000001",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "1900-01-01T10:00:00.00+02:00",
+    completed: true,
+    n_points: 6,
+  },
+  {
+    id: "60000000-0000-0000-0000-000000000002",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "1900-01-01T10:00:00.00+02:00",
+    completed: false,
+    n_points: 0,
+  },
+  {
+    id: "60000000-0000-0000-0000-000000000003",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000003" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "1900-01-01T10:00:00.00+02:00",
+    completed: false,
+    attempted: true,
+    exercise_completion_required_actions: {
+      create: {
+        id: "66666666-0000-0000-0000-000000000003",
+        value: "TOO_MANY_DUCKS",
+      },
+    },
+    n_points: 4,
+  },
+  {
+    id: "60000000-0000-0000-0000-000000000004",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000004" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "2000-01-01T10:00:00.00+02:00",
+    completed: false,
+    attempted: true,
+    exercise_completion_required_actions: {
+      create: {
+        id: "66666666-0000-0000-0000-000000000004",
+        value: "existing",
+      },
+    },
+    n_points: 1,
+  },
+]
