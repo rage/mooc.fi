@@ -10,10 +10,10 @@ import {
   handleNullProgress,
 } from "../common/userCourseProgress/validate"
 import { saveToDatabase } from "../common/userCourseProgress/saveToDB"
-import prisma from "../../lib/prisma"
+import prisma from "../../../prisma"
 import sentryLogger from "../../lib/logger"
 import config from "../kafkaConfig"
-import { createKafkaConsumer } from "../common/kafkaConsumer"
+import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 import { KafkaContext } from "../common/kafkaContext"
@@ -23,7 +23,7 @@ const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_consumer.topic_name]
 
 const logger = sentryLogger({ service: "kafka-consumer-UserCourseProgress" })
-const consumer = createKafkaConsumer(logger)
+const consumer = createKafkaConsumer({ logger, prisma })
 
 const context: KafkaContext = {
   prisma,

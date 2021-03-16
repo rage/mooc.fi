@@ -3,11 +3,10 @@ const PRODUCTION = process.env.NODE_ENV === "production"
 import { PrismaClient } from "@prisma/client"
 import cors from "cors"
 import morgan from "morgan"
-import createExpress from "express"
+import express from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
-import bodyParser from "body-parser"
 import type Knex from "knex"
 import { apiRouter } from "./api"
 
@@ -24,19 +23,23 @@ interface ServerContext {
 }
 
 // wrapped so that the context isn't cached between test instances
-const createExpressWithContext = ({ prisma, knex, logger }: ServerContext) => {
-  const express = createExpress()
+const createExpressAppWithContext = ({
+  prisma,
+  knex,
+  logger,
+}: ServerContext) => {
+  const app = express()
 
-  express.use(cors())
-  express.use(helmet.frameguard())
+  app.use(cors())
+  app.use(helmet.frameguard())
   if (!TEST) {
-    express.use(morgan("combined"))
+    app.use(morgan("combined"))
   }
-  express.use(bodyParser.json())
+  app.use(express.json())
 
-  express.use("/api", apiRouter({ prisma, knex, logger }))
+  app.use("/api", apiRouter({ prisma, knex, logger }))
 
-  return express
+  return app
 }
 
 export default (serverContext: ServerContext) => {
@@ -58,13 +61,13 @@ export default (serverContext: ServerContext) => {
     logger,
     debug: DEBUG,
   })
-  const express = createExpressWithContext(serverContext)
+  const app = createExpressAppWithContext(serverContext)
 
-  apollo.applyMiddleware({ app: express, path: PRODUCTION ? "/api" : "/" })
+  apollo.applyMiddleware({ app, path: PRODUCTION ? "/api" : "/" })
 
   return {
     apollo,
-    express,
+    app,
   }
 }
 
