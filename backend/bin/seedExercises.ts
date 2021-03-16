@@ -1,6 +1,6 @@
 import * as faker from "faker"
 import { Exercise } from "@prisma/client"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 
 const createExercise = () => ({
   name: faker.random.words(),
