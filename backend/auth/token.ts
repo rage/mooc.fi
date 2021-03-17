@@ -282,8 +282,6 @@ export async function signIn(emailRaw: string, passwordRaw: string, ipAddress: s
       .update({ password: hashPassword })
       .where("email", email)
 
-    console.log(user)
-
     let accessToken = await issueToken(user, client)
 
     return {
