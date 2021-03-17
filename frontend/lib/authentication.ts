@@ -5,6 +5,8 @@ import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import Router from "next/router"
 
+import { getToken } from "moocfi-auth"
+
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
@@ -20,6 +22,11 @@ export const isAdmin = (ctx: NextContext) => {
   return admin === "true"
 }
 
+const client_id = "7g5Llw"
+const grant_type = "password"
+const response_type = "token"
+const domain = "localhost"
+
 interface SignInProps {
   email: string
   password: string
@@ -33,12 +40,15 @@ export const signIn = async ({
   redirect = true,
   shallow = true,
 }: SignInProps) => {
-  const res = await tmcClient.authenticate({ username: email, password })
-  const details = await userDetails(res.accessToken)
+  console.log("TESTMOO")
+  //const res = await tmcClient.authenticate({ username: email, password })
+  const res = await getToken({ client_id, grant_type, response_type, domain, email, password })
+  console.log(res)
+  const details = await userDetails(res.tmc_token)
 
-  document.cookie = `access_token=${res.accessToken};path=/`
+  //document.cookie = `access_token=${res.accessToken};path=/`
 
-  document.cookie = `admin=${details.administrator};path=/`
+  //document.cookie = `admin=${details.administrator};path=/`
 
   const rawRedirectLocation = nookies.get()["redirect-back"]
 

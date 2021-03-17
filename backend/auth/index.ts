@@ -8,6 +8,7 @@ import { decision } from "./decision"
 import { signUp } from "./signUp"
 import { signOut } from "./signOut"
 import { passwordReset } from "./passwordReset"
+import { getClients, createClient, showClient, deleteClient } from "./clients"
 
 import * as winston from "winston"
 
@@ -25,4 +26,8 @@ export function authRouter(ctx: ApiContext) {
     .post("/token", token())
     .get("/authorize", authorize(ctx))
     .get("/decision", decision(ctx))
+    .get("/clients", getClients(ctx))
+    .post("/clients", createClient(ctx))
+    .get("/client", showClient(ctx))
+    .post("/deleteClient", deleteClient(ctx))
 }

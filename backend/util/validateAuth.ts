@@ -34,7 +34,7 @@ export async function requireAuth(auth: string) {
         }
     }
 
-    const dbToken = (await Knex.select("*").where("access_token", token))?.[0]
+    const dbToken = (await Knex.select("*").from("prisma2.access_tokens").where("access_token", token))?.[0]
     if (dbToken.valid === false) {
         return {
             error: 'Token is no longer valid'
