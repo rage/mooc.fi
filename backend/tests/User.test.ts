@@ -194,13 +194,15 @@ describe("User", () => {
             user_course_summary: [
               ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
                 ...cs,
-                exercise_completions: cs?.exercise_completions?.map(
-                  sortByExercise,
+                exercise_completions: orderBy(
+                  cs?.exercise_completions?.map(sortByExercise),
+                  ["id"],
                 ),
               })),
             ],
           },
         }
+
         expect(sortedRes).toMatchSnapshot()
       })
     })
