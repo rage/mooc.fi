@@ -159,34 +159,34 @@ describe("User", () => {
         ctx!.client.setHeader("Authorization", "Bearer normal")
 
         const res = await ctx.client.request(`
-      query {
-        currentUser {
-          id
-          user_course_summary {
-            user_id
-            course_id
-            course {
+          query {
+            currentUser {
               id
-              name
-            }
-            exercise_completions {
-              id
-              timestamp
-              n_points
-              exercise {
-                id
-                name
-                max_points
-              }
-              exercise_completion_required_actions {
-                id
-                value
+              user_course_summary {
+                user_id
+                course_id
+                course {
+                  id
+                  name
+                }
+                exercise_completions {
+                  id
+                  timestamp
+                  n_points
+                  exercise {
+                    id
+                    name
+                    max_points
+                  }
+                  exercise_completion_required_actions {
+                    id
+                    value
+                  }
+                }
               }
             }
           }
-        }
-      }
-    `)
+        `)
 
         const sortedRes = {
           currentUser: {
