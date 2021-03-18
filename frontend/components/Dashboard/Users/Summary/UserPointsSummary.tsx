@@ -1,6 +1,6 @@
 import CourseEntry from "./CourseEntry"
 import { sortBy } from "lodash"
-import { UserSummary_user_course_statistics } from "/static/types/generated/UserSummary"
+import { UserSummary_user_user_course_summary } from "/static/types/generated/UserSummary"
 import {
   ActionType,
   CollapsablePart,
@@ -14,7 +14,7 @@ import BuildIcon from "@material-ui/icons/Build"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
 import { useState } from "react"
 interface UserPointsSummaryProps {
-  data?: UserSummary_user_course_statistics[]
+  data?: UserSummary_user_user_course_summary[]
   search?: string
 }
 

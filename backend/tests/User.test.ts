@@ -150,7 +150,7 @@ describe("User", () => {
       })
     })
 
-    describe("course_statistics", () => {
+    describe("user_course_summary", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
       })
@@ -162,7 +162,7 @@ describe("User", () => {
       query {
         currentUser {
           id
-          course_statistics {
+          user_course_summary {
             user_id
             course_id
             course {
@@ -191,8 +191,8 @@ describe("User", () => {
         const sortedRes = {
           currentUser: {
             ...res?.currentUser,
-            course_statistics: [
-              ...res?.currentUser?.course_statistics?.map((cs: any) => ({
+            user_course_summary: [
+              ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
                 ...cs,
                 exercise_completions: cs?.exercise_completions?.map(
                   sortByExercise,

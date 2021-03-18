@@ -2,8 +2,8 @@ import { Card, CardContent, Collapse, Paper, Skeleton } from "@material-ui/core"
 import { CardTitle } from "/components/Text/headers"
 import styled from "@emotion/styled"
 import {
-  UserSummary_user_course_statistics,
-  UserSummary_user_course_statistics_exercise_completions,
+  UserSummary_user_user_course_summary,
+  UserSummary_user_user_course_summary_exercise_completions,
 } from "/static/types/generated/UserSummary"
 import { sortBy } from "lodash"
 import React from "react"
@@ -19,7 +19,7 @@ import Completion from "./Completion"
 import ProgressEntry from "./ProgressEntry"
 
 interface CourseEntryProps {
-  data?: UserSummary_user_course_statistics
+  data?: UserSummary_user_user_course_summary
 }
 
 const CourseEntryCard = styled(Card)`
@@ -59,7 +59,7 @@ function CourseEntry({ data }: CourseEntryProps) {
       .reduce<
         Record<
           number,
-          UserSummary_user_course_statistics_exercise_completions[]
+          UserSummary_user_user_course_summary_exercise_completions[]
         >
       >(
         (acc, curr) => ({

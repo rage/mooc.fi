@@ -16,7 +16,7 @@ import {
   CollapsablePart,
   useCollapseContext,
 } from "./CollapseContext"
-import { UserSummary_user_course_statistics_course } from "/static/types/generated/UserSummary"
+import { UserSummary_user_user_course_summary_course } from "/static/types/generated/UserSummary"
 import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
 import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
 import ProfileTranslations from "/translations/profile"
@@ -25,7 +25,7 @@ import { useTranslator } from "/util/useTranslator"
 interface ProgressEntryProps {
   userCourseProgress?: UserCourseProgressFragment | null
   userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
-  course: UserSummary_user_course_statistics_course
+  course: UserSummary_user_user_course_summary_course
 }
 
 export default function ProgressEntry({

@@ -1,8 +1,8 @@
 import { UserInputError } from "apollo-server-express"
 import { objectType } from "nexus"
 
-export const CourseStatistics = objectType({
-  name: "CourseStatistics",
+export const UserCourseSummary = objectType({
+  name: "UserCourseSummary",
   definition(t) {
     t.id("course_id")
     t.id("user_id")

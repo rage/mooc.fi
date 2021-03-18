@@ -17,15 +17,15 @@ import {
   useCollapseContext,
 } from "./CollapseContext"
 import {
-  UserSummary_user_course_statistics_completion,
-  UserSummary_user_course_statistics_course,
+  UserSummary_user_user_course_summary_completion,
+  UserSummary_user_user_course_summary_course,
 } from "/static/types/generated/UserSummary"
 import ProfileTranslations from "/translations/profile"
 import { useTranslator } from "/util/useTranslator"
 
 interface CompletionProps {
-  completion?: UserSummary_user_course_statistics_completion
-  course: UserSummary_user_course_statistics_course
+  completion?: UserSummary_user_user_course_summary_completion
+  course: UserSummary_user_user_course_summary_course
 }
 
 export default function Completion({ completion, course }: CompletionProps) {
