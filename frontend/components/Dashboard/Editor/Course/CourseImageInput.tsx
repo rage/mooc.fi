@@ -90,7 +90,10 @@ const CourseImageInput = (props: ImageInputProps) => {
         <Button
           color="primary"
           style={{ marginTop: "0.5rem" }}
-          onClick={() => setDialogOpen(true)}
+          onClick={(e) => {
+            e.preventDefault()
+            setDialogOpen(true)
+          }}
         >
           {t("importPhotoButton")}
         </Button>
