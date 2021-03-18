@@ -1,4 +1,10 @@
-import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
+import {
+  booleanArg,
+  intArg,
+  nullable,
+  objectType,
+  stringArg,
+} from "nexus"
 
 import { isAdmin } from "../../accessControl"
 
@@ -109,6 +115,12 @@ export const Course = objectType({
             ...(!includeDeleted ? { where: { deleted: { not: true } } } : {}),
           })
       },
+    })
+
+    t.field("course_statistics", {
+      type: "CourseStatistics",
+      authorize: isAdmin,
+      resolve: ({ id }) => ({ course_id: id })
     })
   },
 })
