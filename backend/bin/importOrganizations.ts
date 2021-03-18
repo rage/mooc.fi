@@ -4,7 +4,7 @@ require("dotenv-safe").config({
 import TmcClient from "../services/tmc"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 import { generateSecret } from "../graphql/Organization"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 import sentryLogger from "./lib/logger"
 import { TMCError } from "./lib/errors"
 import { convertUpdate } from "../util/db-functions"

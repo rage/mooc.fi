@@ -5,7 +5,7 @@ import TmcClient from "../services/tmc"
 import { PrismaClient, UserCourseSetting } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import { convertUpdate } from "../util/db-functions"
@@ -135,7 +135,9 @@ const fetchUserAppDatum = async () => {
       default:
         saveOther(e)
     }
-    if (index % saveInterval == 0) saveProgress(prisma, new Date(e.updated_at))
+    if (index % saveInterval == 0) {
+      await saveProgress(prisma, new Date(e.updated_at))
+    }
   }
   /*if (!p || p == "undefined" || p == null) {
       logger.warning(

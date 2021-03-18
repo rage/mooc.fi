@@ -4,7 +4,7 @@ require("dotenv-safe").config({
 
 import { Mutex } from "../../lib/await-semaphore"
 
-import prisma from "../../lib/prisma"
+import prisma from "../../../prisma"
 import sentryLogger from "../../lib/logger"
 
 import { handleMessage } from "../common/handleMessage"
@@ -12,7 +12,7 @@ import { Message } from "./interfaces"
 import { MessageYupSchema } from "./validate"
 import { saveToDatabase } from "./saveToDB"
 import config from "../kafkaConfig"
-import { createKafkaConsumer } from "../common/kafkaConsumer"
+import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError } from "node-rdkafka"
 import knex from "../../../services/knex"
@@ -23,7 +23,7 @@ const mutex = new Mutex()
 
 const logger = sentryLogger({ service: "kafka-consumer-exercise" })
 
-const consumer = createKafkaConsumer(logger)
+const consumer = createKafkaConsumer({ logger, prisma })
 
 consumer.connect()
 

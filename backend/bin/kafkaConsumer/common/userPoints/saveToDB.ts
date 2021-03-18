@@ -7,6 +7,7 @@ import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
 import type Knex from "knex"
+import { UserInputError } from "apollo-server-errors"
 
 // @ts-ignore: not used
 const isUserInDB = async (user_id: number, knex: Knex) => {
@@ -58,9 +59,15 @@ export const saveToDatabase = async (
   }
 
   logger.info("Getting the exercise")
+  if (!message.exercise_id) {
+    return err(
+      new UserInputError("Message doesn't contain an exercise id", message),
+    )
+  }
+
   const exercise = await prisma.exercise.findFirst({
     where: {
-      custom_id: message.exercise_id?.toString(),
+      custom_id: message.exercise_id.toString(),
     },
   })
   if (!exercise) {

@@ -5,7 +5,7 @@ import TmcClient from "../services/tmc"
 import { PrismaClient } from "@prisma/client"
 import { UserInfo } from "../domain/UserInfo"
 import { DateTime } from "luxon"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 import sentryLogger from "./lib/logger"
 import { DatabaseInputError, TMCError } from "./lib/errors"
 import { convertUpdate } from "../util/db-functions"
@@ -91,7 +91,7 @@ const fetcUserFieldValues = async () => {
     }
 
     if (saveCounter % saveInterval == 0) {
-      saveProgress(prisma, new Date(p.updated_at))
+      await saveProgress(prisma, new Date(p.updated_at))
     }
   }
 
