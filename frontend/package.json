@@ -105,7 +105,6 @@
     "apollo": "^2.32.1",
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-lodash": "^3.3.4",
-    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "cypress": "^6.0.1",
     "cypress-image-snapshot": "^4.0.0",

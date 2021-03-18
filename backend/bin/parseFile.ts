@@ -3,7 +3,7 @@ require("dotenv-safe").config({
 })
 import { uniqBy } from "lodash"
 import TmcClient from "../services/tmc"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 
 const tmc = new TmcClient()
 
