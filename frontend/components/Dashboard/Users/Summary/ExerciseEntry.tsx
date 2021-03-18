@@ -9,12 +9,12 @@ import {
 import { useTranslator } from "/util/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import {
-  UserSummary_user_course_statistics_exercise_completions,
-  UserSummary_user_course_statistics_exercise_completions_exercise_completion_required_actions,
+  UserSummary_user_user_course_summary_exercise_completions,
+  UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions,
 } from "/static/types/generated/UserSummary"
 
 interface ExerciseEntryProps {
-  exerciseCompletion: UserSummary_user_course_statistics_exercise_completions
+  exerciseCompletion: UserSummary_user_user_course_summary_exercise_completions
 }
 export default function ExerciseEntry({
   exerciseCompletion,
@@ -45,7 +45,7 @@ export default function ExerciseEntry({
         <TableCell>
           {exerciseCompletion.exercise_completion_required_actions.map(
             (
-              action: UserSummary_user_course_statistics_exercise_completions_exercise_completion_required_actions,
+              action: UserSummary_user_user_course_summary_exercise_completions_exercise_completion_required_actions,
             ) => (
               // @ts-ignore: translator key
               <Chip key={action.id} label={t(action.value) ?? action.value} />
@@ -67,7 +67,7 @@ export default function ExerciseEntry({
           </TableCell>*/}
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={6}>
+        <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={5}>
           <Collapse in={isOpen}>{JSON.stringify(exerciseCompletion)}</Collapse>
         </TableCell>
       </TableRow>

@@ -18,8 +18,8 @@ export const ProgressUserCourseServiceProgressFragment = gql`
   ${UserCourseServiceProgressFragment}
 `
 
-export const CourseStatisticsUserCourseServiceProgressFragment = gql`
-  fragment CourseStatisticsUserCourseServiceProgressFragment on CourseStatistics {
+export const UserCourseSummaryUserCourseServiceProgressFragment = gql`
+  fragment UserCourseSummaryUserCourseServiceProgressFragment on UserCourseSummary {
     user_course_service_progresses {
       ...UserCourseServiceProgressFragment
     }

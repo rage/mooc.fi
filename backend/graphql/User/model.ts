@@ -219,8 +219,8 @@ export const User = objectType({
       },
     })
 
-    t.list.field("course_statistics", {
-      type: "CourseStatistics",
+    t.list.field("user_course_summary", {
+      type: "UserCourseSummary",
       resolve: async ({ id }, _, ctx) => {
         // TODO: might be better to query UserCourseSettings?
         const exerciseCompletions = groupBy(

@@ -12,8 +12,8 @@ import CollapseContext, {
   createInitialState,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
-import { CourseStatisticsUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
-import { CourseStatisticsUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
+import { UserCourseSummaryUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
+import { UserCourseSummaryUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 import ErrorMessage from "/components/ErrorMessage"
 import FilterMenu from "/components/FilterMenu"
 import { Paper } from "@material-ui/core"
@@ -23,7 +23,7 @@ const UserSummaryQuery = gql`
     user(upstream_id: $upstream_id) {
       id
       username
-      course_statistics {
+      user_course_summary {
         course {
           id
           name
@@ -61,8 +61,8 @@ const UserSummaryQuery = gql`
             max_points
           }
         }
-        ...CourseStatisticsUserCourseProgressFragment
-        ...CourseStatisticsUserCourseServiceProgressFragment
+        ...UserCourseSummaryUserCourseProgressFragment
+        ...UserCourseSummaryUserCourseServiceProgressFragment
         completion {
           id
           course_id
@@ -83,8 +83,8 @@ const UserSummaryQuery = gql`
     }
   }
   ${CompletionsRegisteredFragment}
-  ${CourseStatisticsUserCourseProgressFragment}
-  ${CourseStatisticsUserCourseServiceProgressFragment}
+  ${UserCourseSummaryUserCourseProgressFragment}
+  ${UserCourseSummaryUserCourseServiceProgressFragment}
 `
 
 interface SearchVariables {
@@ -107,7 +107,7 @@ function UserSummaryView() {
     dispatch({
       type: ActionType.INIT_STATE,
       state: createInitialState(
-        data?.user?.course_statistics?.filter(notEmpty),
+        data?.user?.user_course_summary?.filter(notEmpty),
       ),
     })
   }, [data])
@@ -141,7 +141,7 @@ function UserSummaryView() {
           />
         </Paper>
         <UserPointsSummary
-          data={data?.user?.course_statistics?.filter(notEmpty)}
+          data={data?.user?.user_course_summary?.filter(notEmpty)}
           search={searchVariables.search}
         />
       </CollapseContext.Provider>
