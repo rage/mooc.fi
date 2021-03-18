@@ -18,6 +18,7 @@ Object {
 exports[`User queries user_course_summary returns courses with completions 1`] = `
 Object {
   "currentUser": Object {
+    "id": "20000000-0000-0000-0000-000000000102",
     "user_course_summary": Array [
       Object {
         "course": Object {
@@ -78,7 +79,6 @@ Object {
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
     ],
-    "id": "20000000-0000-0000-0000-000000000102",
   },
 }
 `;
