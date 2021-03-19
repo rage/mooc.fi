@@ -153,7 +153,7 @@ const Course = () => {
               confirm({
                 title: "Are you sure?",
                 description:
-                  "Don't do this unless you really know what you're doing. This might mess up things!",
+                  "Don't do this unless you really know what you're doing. This might mess things up!",
                 confirmationText: "Yes, I'm sure",
                 cancellationText: "Cancel",
               }).then(handleRecheck)
