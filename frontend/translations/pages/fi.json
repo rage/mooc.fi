@@ -30,8 +30,8 @@
     "/[lng]/register-completion": "Rekisteröi suoritus",
     "/[lng]/faq": "Usein kysytyt kysymykset",
     "/fi/faq/suoritusten_rekisterointi": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
-    "/fi/faq/registering_completion": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
-    "/en/faq/registering_completion": "",
+    "/fi/faq/registering_completions": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
+    "/en/faq/registering_completions": "",
     "/en/faq/suoritusten_rekisterointi": "",
     "/register-completion": "Rekisteröi suoritus",
     "/": "Etusivu"
@@ -55,9 +55,9 @@
     "/en/installation/netbeans": "",
     "/fi/installation/vscode": "VSCode",
     "/fi/installation/netbeans": "Netbeans",
-    "/en/faq/registering_completion": "",
+    "/en/faq/registering_completions": "",
     "/en/faq/suoritusten_rekisterointi": "",
     "/fi/faq/suoritusten_rekisterointi": "Suoritusten rekisteröinti",
-    "/fi/faq/registering_completion": "Suoritusten rekisteröinti"
+    "/fi/faq/registering_completions": "Suoritusten rekisteröinti"
   }
 }
