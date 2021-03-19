@@ -18,7 +18,8 @@ export function requireAdmin(knex: knexType) {
   ): Promise<Response<any> | boolean> {
     const getUserResult = await getUser(knex)(req, res)
 
-    if (getUserResult.isOk() && getUserResult.value.user.administrator) {
+    console.log(getUserResult)
+    if (getUserResult.isOk() && getUserResult.value.details.administrator) {
       return true
     }
 
