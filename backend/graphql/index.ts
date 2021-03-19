@@ -1,5 +1,7 @@
-// generated Wed Feb 17 2021 19:08:35 GMT+0200 (GMT+02:00)
+// generated Fri Mar 19 2021 15:20:33 GMT+0200 (GMT+02:00)
 
+export * from "./ABEnrollment"
+export * from "./ABStudy"
 export * from "./Completion"
 export * from "./CompletionRegistered"
 export * from "./Course"
