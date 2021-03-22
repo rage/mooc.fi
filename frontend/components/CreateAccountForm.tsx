@@ -28,7 +28,7 @@ const Row = styled.div`
 const Form = styled.form`
   width: 100%;
 `
-const Header = styled(Typography)<any>`
+const Header = styled(Typography) <any>`
   margin: 1em;
 `
 
@@ -36,7 +36,7 @@ const InfoBox = styled.div`
   margin-bottom: 2rem;
 `
 
-const StyledTypography = styled(Typography)<any>`
+const StyledTypography = styled(Typography) <any>`
   margin-bottom: 2rem;
 `
 
@@ -138,7 +138,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         }
         this.setState({ error: message, submitting: false, errorObj: error })
       } catch (_error2) {
-        this.setState({ error: JSON.stringify(error), submitting: false })
+        this.setState({ error: JSON.stringify(error.response.data.message), submitting: false })
       }
 
       this.setState({ submitting: false })

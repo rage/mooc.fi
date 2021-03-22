@@ -9,7 +9,8 @@ import { onError } from "@apollo/client/link/error"
 import { createUploadLink } from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context"
 import fetch from "isomorphic-unfetch"
-import nookies from "nookies"
+//import nookies from "nookies"
+import Cookies from "universal-cookie"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
@@ -23,14 +24,16 @@ const cypress = process.env.CYPRESS === "true"
     window.Cypress.env("CYPRESS") === "true") */
 
 function create(initialState: any, originalAccessToken?: string) {
+  const cookies = new Cookies()
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
-    let accessToken: string | undefined = nookies.get()["access_token"]
+    let accessToken: string | undefined = cookies.get("access_token")
     if (!accessToken && !process.browser) {
       accessToken = originalAccessToken
     }
 
     const headersCopy = { ...headers }
+
     if (accessToken) {
       headersCopy.authorization = `Bearer ${accessToken}`
     }
@@ -45,8 +48,8 @@ function create(initialState: any, originalAccessToken?: string) {
     uri: cypress
       ? "http://localhost:4001"
       : production
-      ? "https://www.mooc.fi/api/"
-      : "http://localhost:4000",
+        ? "https://www.mooc.fi/api/"
+        : "http://localhost:4000",
     credentials: "same-origin",
     fetch: fetch,
   })

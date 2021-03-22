@@ -9,8 +9,8 @@ const Cookies = require("universal-cookie")
 const BASE_URL = 'http://localhost:4000'
 
 interface ExtraFields {
-    namespace: string,
-    data: any
+    namespace?: string,
+    data?: any
 }
 
 interface UserFields {
@@ -19,26 +19,51 @@ interface UserFields {
     last_name?: string
 }
 
-export const createUser = async (email: string, password: string, confirmPassword: string, provider: string = "native", extra_fields: ExtraFields, user_fields: UserFields, domain: string = "localhost") => {
+interface CreateFields {
+    email: string,
+    password: string,
+    confirmPassword: string,
+    extra_fields: ExtraFields,
+    user_fields: UserFields,
+    origin?: string,
+    provider?: string,
+    language?: string,
+    domain?: string,
+    priority?: string
+}
+
+export const createUser = async (data: CreateFields) => {
     const cookies = new Cookies()
+    let origin = data.origin || "mooc.fi"
+    let provider = data.provider || "native"
+    let language = data.language || "en"
+    let domain = data.domain || "localhost"
+    let priority = data.priority || null
 
     return await axios({
         method: 'POST',
         url: `${BASE_URL}/auth/signUp`,
         data: {
-            email,
-            password,
-            confirmPassword,
+            email: data.email,
+            password: data.password,
+            confirmPassword: data.confirmPassword,
+            extra_fields: data.extra_fields,
+            user_fields: data.user_fields,
             provider,
-            extra_fields,
-            user_fields
+            origin,
+            language
         },
         headers: { 'Content-Type': 'application/json' }
     })
         .then(response => response.data)
         .then(json => {
-            cookies.set("access_token", JSON.stringify(json.auth.access_token), { domain: domain })
-            cookies.set("tmc_token", JSON.stringify(json.auth.tmc), { domain: domain })
+            if (priority === "tmc") {
+                cookies.set("mooc_token", JSON.stringify(json.auth.access_token), { domain: domain })
+                cookies.set("access_token", JSON.stringify(json.auth.tmc), { domain: domain })
+            } else {
+                cookies.set("access_token", JSON.stringify(json.auth.access_token), { domain: domain })
+                cookies.set("tmc_token", JSON.stringify(json.auth.tmc), { domain: domain })
+            }
 
             return json
         })
@@ -54,6 +79,7 @@ interface Data {
     password?: string,
     code?: string,
     tmc?: string,
+    priority?: string
 }
 
 export const getToken = async (data: Data) => {
@@ -70,15 +96,21 @@ export const getToken = async (data: Data) => {
             if (json.targetUri) {
                 window.location.replace(json.targetUri)
             } else {
-                cookies.set("access_token", JSON.stringify(json.access_token), { domain: data.domain })
-                cookies.set("tmc_token", JSON.stringify(data.tmc), { domain: data.domain })
+                if (data.priority === "tmc") {
+                    cookies.set("mooc_token", JSON.stringify(json.access_token), { domain: data.domain })
+                    cookies.set("access_token", JSON.stringify(json.tmc_token || data.tmc), { domain: data.domain })
+                } else {
+                    cookies.set("access_token", JSON.stringify(json.access_token), { domain: data.domain })
+                    cookies.set("tmc_token", JSON.stringify(json.tmc_token || data.tmc), { domain: data.domain })
+                }
+
 
                 return { access_token: json.access_token, tmc_token: data.tmc || json.tmc_token }
             }
         })
 }
 
-export const removeToken = async () => {
+export const removeToken = async (priority: string) => {
     const cookies = new Cookies()
 
     return await axios({
@@ -87,13 +119,14 @@ export const removeToken = async () => {
         data: {},
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getAccessToken().access_token}`
+            'Authorization': `Bearer ${priority === "tmc" ? getMoocToken() : getAccessToken()}`
         }
     })
         .then(response => response.data)
         .then(json => {
             cookies.remove("access_token")
             cookies.remove("tmc_token")
+            cookies.remove("mooc_token")
             return json
         })
         .catch(error => {
@@ -114,4 +147,11 @@ export const getTMCToken = () => {
     let tmc_token = cookies.get("tmc_token")
 
     return tmc_token
+}
+
+export const getMoocToken = () => {
+    const cookies = new Cookies()
+    let mooc_token = cookies.get("mooc_token")
+
+    return mooc_token
 }
