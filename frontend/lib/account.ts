@@ -1,8 +1,30 @@
-import { v4 as uuidv4 } from "uuid"
+//import { v4 as uuidv4 } from "uuid"
 import { getAccessToken } from "/lib/authentication"
+import { createUser } from "moocfi-auth"
 
 const BASE_URL = "https://tmc.mooc.fi/api/v8"
 
+export async function createAccount(data: any) {
+  return await createUser(
+    {
+      email: data.email,
+      password: data.password,
+      confirmPassword: data.password_confirmation,
+      extra_fields: {},
+      user_fields: {
+        first_name: data.first_name,
+        last_name: data.last_name
+      },
+      origin: "mooc.fi",
+      provider: "native",
+      language: "fi",
+      domain: "mooc.fi",
+      priority: "tmc"
+    }
+  )
+}
+
+/*
 export function createAccount(data: any) {
   data.username = uuidv4()
   const body = {
@@ -32,6 +54,7 @@ export function createAccount(data: any) {
     })
   })
 }
+*/
 
 export async function updateAccount(firstName: string, lastName: string) {
   const accessToken = getAccessToken(undefined)

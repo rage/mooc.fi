@@ -15,6 +15,8 @@ const crypto = require("crypto")
 
 export function signUp() {
   return async (req: any, res: any) => {
+    const ipAddress = req.connection.remoteAddress
+
     let result = <any>await _signUp(
       req.body.email,
       req.body.password,
@@ -34,7 +36,7 @@ export function signUp() {
         }
       }
 
-      const auth = await signIn(req.body.email, req.body.password)
+      const auth = await <any>signIn(req.body.email, req.body.password, ipAddress)
       if (result.data) {
         await updateUser(result.data.id, user, auth.tmc_token)
       }

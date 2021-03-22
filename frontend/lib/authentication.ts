@@ -1,16 +1,18 @@
-import TmcClient from "tmc-client-js"
+//import TmcClient from "tmc-client-js"
 import { NextPageContext as NextContext } from "next"
 import nookies from "nookies"
 import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import Router from "next/router"
 
-import { getToken } from "moocfi-auth"
+import { getToken, removeToken, getAccessToken as _getAccessToken } from "moocfi-auth"
 
+/*
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
 )
+*/
 
 export const isSignedIn = (ctx: NextContext) => {
   const accessToken = nookies.get(ctx)["access_token"]
@@ -26,6 +28,7 @@ const client_id = "7g5Llw"
 const grant_type = "password"
 const response_type = "token"
 const domain = "localhost"
+const priority = "tmc"
 
 interface SignInProps {
   email: string
@@ -40,10 +43,8 @@ export const signIn = async ({
   redirect = true,
   shallow = true,
 }: SignInProps) => {
-  console.log("TESTMOO")
   //const res = await tmcClient.authenticate({ username: email, password })
-  const res = await getToken({ client_id, grant_type, response_type, domain, email, password })
-  console.log(res)
+  const res = await <any>getToken({ client_id, grant_type, response_type, domain, email, password, priority })
   const details = await userDetails(res.tmc_token)
 
   //document.cookie = `access_token=${res.accessToken};path=/`
@@ -79,6 +80,7 @@ export const signIn = async ({
 }
 
 export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
+  await removeToken("tmc")
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
@@ -90,6 +92,7 @@ export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
     }, 100)
   }, 100)
 }
+
 
 const getCookie = (key: string) => {
   if (typeof document === "undefined" || !document || !document?.cookie) {
@@ -116,12 +119,17 @@ const getCookie = (key: string) => {
   return vals[key] || ""
 }
 
-export const getAccessToken = (ctx: NextContext | undefined) => {
+
+
+export const getAccessToken = async (ctx: NextContext | undefined) => {
+  const access_token = await _getAccessToken()
+
   if (!ctx) {
     return getCookie("access_token")
   }
 
-  return nookies.get(ctx)["access_token"]
+  return access_token
+  //return nookies.get(ctx)["access_token"]
 }
 
 export async function userDetails(accessToken: string) {

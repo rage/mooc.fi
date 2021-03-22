@@ -1,6 +1,6 @@
 {
   "name": "moocfi-auth",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Authentication package for MoocFi",
   "main": "dist/index.js",
   "scripts": {
