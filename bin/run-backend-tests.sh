@@ -21,8 +21,8 @@ echo "Running tests"
 docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
-  --env PRIVATE_KEY=foo \
-  --env PUBLIC_KEY=bar \
+  --env PRIVATE_KEY=config/mooc-private.pem \
+  --env PUBLIC_KEY=config/mooc-public.pem \
   --env AUTH_ISSUER=issuer \
   --network host \
   --name "$TEST_NAME" "$TAG" \
