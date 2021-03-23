@@ -48,17 +48,15 @@ export const signIn = async ({
   shallow = true,
 }: SignInProps) => {
   //const res = await tmcClient.authenticate({ username: email, password })
-  const res = await (<any>(
-    getToken({
-      client_id,
-      grant_type,
-      response_type,
-      domain,
-      email,
-      password,
-      priority,
-    })
-  ))
+  const res = await (<any>getToken({
+    client_id,
+    grant_type,
+    response_type,
+    domain,
+    email,
+    password,
+    priority,
+  }))
   const details = await userDetails(res.tmc_token)
 
   //document.cookie = `access_token=${res.accessToken};path=/`

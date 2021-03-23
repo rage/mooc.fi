@@ -1,7 +1,7 @@
-import * as Knex from "knex";
+import * as Knex from "knex"
 
 export async function up(knex: Knex): Promise<any> {
-    await knex.raw(`CREATE TABLE IF NOT EXISTS authorization_codes (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS authorization_codes (
         id serial NOT NULL,
         created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
         updated_at timestamp(3) without time zone,
@@ -10,10 +10,9 @@ export async function up(knex: Knex): Promise<any> {
         user_id text,
         code text NOT NULL,
         trusted boolean DEFAULT false
-    );` )
+    );`)
 }
 
 export async function down(knex: Knex): Promise<any> {
-    await knex.raw('DROP TABLE authorization_codes')
+  await knex.raw("DROP TABLE authorization_codes")
 }
-
