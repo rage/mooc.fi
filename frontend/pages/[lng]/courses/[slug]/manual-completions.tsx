@@ -185,7 +185,7 @@ const ManualCompletions = () => {
           addCompletions({
             variables: {
               course_id: courseData.course.id,
-              completions: filterData,
+              completions: filteredData,
             },
           })
           setSubmitting(false)
