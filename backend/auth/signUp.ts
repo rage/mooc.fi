@@ -17,8 +17,7 @@ export function signUp() {
       await _signUp(
         req.body.email,
         req.body.password,
-        req.body.confirmPassword,
-        "native",
+        req.body.confirmPassword
       )
     )
 
@@ -51,8 +50,7 @@ export function signUp() {
 async function _signUp(
   email: string,
   password: string,
-  confirmPassword: string,
-  client: string = "native",
+  confirmPassword: string
 ) {
   const username = crypto.randomBytes(8).toString("hex")
 
