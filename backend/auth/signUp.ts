@@ -75,7 +75,7 @@ async function _signUp(
   }
 
   const checkEmail = await Knex.select("email")
-    .from("prisma2.user")
+    .from("user")
     .where("email", email)
 
   if (checkEmail.length > 0) {
@@ -111,13 +111,13 @@ async function _signUp(
 
   let user = (
     await Knex.select<any, User[]>("id")
-      .from("prisma2.user")
+      .from("user")
       .where("upstream_id", userDetails.id)
   )?.[0]
   if (!user) {
     try {
       user = (
-        await Knex("prisma2.user")
+        await Knex("user")
           .insert({
             upstream_id: userDetails.id,
             email,

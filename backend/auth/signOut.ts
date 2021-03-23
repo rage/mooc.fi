@@ -12,7 +12,7 @@ export function signOut({ knex }: ApiContext) {
       })
     }
 
-    await knex("prisma2.access_tokens")
+    await knex("access_tokens")
       .update({ valid: false })
       .where("access_token", req.headers.authorization.replace("Bearer ", ""))
     req.session = null

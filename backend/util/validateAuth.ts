@@ -32,7 +32,7 @@ export async function requireAuth(auth: string) {
 
   const dbToken = (
     await Knex.select("*")
-      .from("prisma2.access_tokens")
+      .from("access_tokens")
       .where("access_token", token)
   )?.[0]
   if (dbToken.valid === false) {
@@ -43,7 +43,7 @@ export async function requireAuth(auth: string) {
 
   return jwt.verify(token, publicKey, async (err: any, data: any) => {
     if (err) {
-      await Knex("prisma2.access_tokens")
+      await Knex("access_tokens")
         .update({ valid: false })
         .where("access_token", token)
       return { error: err }

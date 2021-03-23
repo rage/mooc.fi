@@ -1,10 +1,10 @@
 import * as Knex from "knex"
 
 export async function up(knex: Knex): Promise<any> {
-  return knex.schema.hasColumn("user", "passwordThrottle").then((exists) => {
+  return knex.schema.hasColumn("user", "password_throttle").then((exists) => {
     if (!exists) {
       return knex.schema.alterTable("user", function (table) {
-        table.json("passwordThrottle")
+        table.json("password_throttle")
       })
     }
   })
@@ -12,6 +12,6 @@ export async function up(knex: Knex): Promise<any> {
 
 export async function down(knex: Knex): Promise<any> {
   return knex.schema.alterTable("user", function (table) {
-    table.dropColumn("passwordThrottle")
+    table.dropColumn("password_throttle")
   })
 }
