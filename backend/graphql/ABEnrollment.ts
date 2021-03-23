@@ -1,4 +1,6 @@
-import { inputObjectType, objectType } from "nexus"
+import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
+import { isAdmin } from "../accessControl"
+import { Context } from "../context"
 
 export const ABEnrollment = objectType({
   name: "AbEnrollment",
@@ -13,20 +15,62 @@ export const ABEnrollment = objectType({
   },
 })
 
-export const ABEnrollmentCreateInput = inputObjectType({
-  name: "AbEnrollmentCreateInput",
+export const ABEnrollmentCreateOrUpsertInput = inputObjectType({
+  name: "AbEnrollmentCreateOrUpsertInput",
   definition(t) {
     t.nonNull.id("user_id")
     t.nonNull.id("ab_study_id")
-    t.nullable.id("group")
+    t.int("group")
   },
 })
 
-export const ABEnrollmentUpsertInput = inputObjectType({
-  name: "AbEnrollmentUpsertInput",
+/************************ MUTATIONS *********************/
+
+export const ABEnrollmentMutations = extendType({
+  type: "Mutation",
   definition(t) {
-    t.nonNull.id("user_id")
-    t.nonNull.id("ab_study_id")
-    t.nullable.id("group")
-  },
+    t.field("addAbEnrollment", {
+      type: "AbEnrollment",
+      args: {
+        abEnrollment: nonNull(
+          arg({
+            type: "AbEnrollmentCreateOrUpsertInput"
+          })
+        )
+      },
+      authorize: isAdmin,
+      resolve: async (_, { abEnrollment }, ctx: Context) => {
+        const { user_id, ab_study_id, group } = abEnrollment
+
+        return ctx.prisma.abEnrollment.create({
+          data: {
+            user: { connect: { id: user_id } },
+            ab_study: { connect: { id: ab_study_id } },
+            group
+          }
+        })
+      }
+    }),
+    t.field("updateAbEnrollment", {
+      type: "AbEnrollment",
+      args: {
+        abEnrollment: nonNull(
+          arg({
+            type: "AbEnrollmentCreateOrUpsertInput"
+          })
+        )
+      },
+      authorize: isAdmin,
+      resolve: async (_, { abEnrollment}, ctx: Context) => {
+        const { user_id, ab_study_id } = abEnrollment
+
+        return ctx.prisma.abEnrollment.update({
+          where: {
+            user_id_ab_study_id: { user_id, ab_study_id },
+          },
+          data: abEnrollment
+        })
+      }
+    })
+  }
 })
