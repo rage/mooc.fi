@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<any> {
         access_token text NOT NULL,
         client_id text NOT NULL,
         user_id text NOT NULL,
-        valid boolean true
+        valid boolean DEFAULT TRUE
     );`)
 }
 
