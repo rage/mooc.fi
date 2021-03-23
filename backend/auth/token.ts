@@ -74,8 +74,7 @@ async function grantAuthorizationCode(client_id: string, redirect_uri: string) {
 async function exchangePassword(
   email: string,
   password: string,
-  ipAddress: string,
-  scope?: any,
+  ipAddress: string
 ) {
   return await signIn(email, password, ipAddress)
 }
@@ -130,7 +129,7 @@ async function exchangeAuthorizationCode(client_id: string, code: string) {
   }
 }
 
-async function exchangeClientCredentials(client: any, scope: any) {
+async function exchangeClientCredentials(client: any) {
   let localClient = (
     await Knex.select("*")
       .from("prisma2.clients")
@@ -174,8 +173,7 @@ export function token() {
         result = await exchangePassword(
           req.body.email,
           req.body.password,
-          ipAddress,
-          req.body.scope,
+          ipAddress
         )
 
         if (!result.success) {
@@ -229,8 +227,7 @@ export function token() {
 
       case "client_credentials":
         result = await exchangeClientCredentials(
-          req.body.client,
-          req.body.scope,
+          req.body.client
         )
 
         return res.status(result.status).json(result)
@@ -294,7 +291,7 @@ export async function signIn(
             let renewStamp = <any>new Date().getDate()
             let diffTime = Math.ceil(
               Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-                (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
             )
 
             if (diffTime >= 1) {
@@ -382,9 +379,8 @@ export async function signIn(
           throttleData = {
             status: 403,
             success: false,
-            message: `Incorrect password. You have ${
-              RATE_LIMIT - throttle.currentRate
-            } attempts left.`,
+            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
+              } attempts left.`,
           }
           return
         }
