@@ -6,7 +6,6 @@ import * as Kafka from "node-rdkafka"
 // import * as winston from "winston"
 import express from "express"
 import compression from "compression"
-import bodyParser from "body-parser"
 import morgan from "morgan"
 import { promisify } from "util"
 import sentryLogger from "./lib/logger"
@@ -63,7 +62,7 @@ producer.on("delivery-report", function (err, report) {
 let app = express()
 
 app.use(compression())
-app.use(bodyParser.json())
+app.use(express.json())
 app.use(morgan("combined"))
 
 const port = parseInt(process.env.KAFKA_BRIDGE_SERVER_PORT || "3003")

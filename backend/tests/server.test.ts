@@ -240,14 +240,14 @@ describe("server", () => {
           })
       })
 
-      it("errors without existing setting", async () => {
-        return postSettings("course1")({
+      it("errors on non-existing course", async () => {
+        return postSettings("foooo")({
           data: { foo: 1 },
-          headers: { Authorization: "Bearer normal" },
+          headers: { Authorization: "Bearer admin" },
         })
           .then(() => fail())
           .catch(({ response }) => {
-            expect(response.data.message).toContain("no existing")
+            expect(response.data.message).toContain("no course")
             expect(response.status).toBe(400)
           })
       })
@@ -262,6 +262,40 @@ describe("server", () => {
             expect(response.data.message).toContain("must provide")
             expect(response.status).toBe(400)
           })
+      })
+
+      it("creates new setting when no existing found", async () => {
+        const res = await postSettings("course1")({
+          data: {
+            id: "bogus",
+            language: "fi",
+            country: "en",
+            marketing: true,
+            isCat: true,
+            sound: "meow",
+          },
+          headers: { Authorization: "Bearer normal" },
+        })
+
+        expect(res.data.message).toContain("settings created")
+        expect(res.status).toBe(200)
+
+        const createdSetting = await ctx.prisma.userCourseSetting.findFirst({
+          where: {
+            user_id: "20000000-0000-0000-0000-000000000102",
+            course_id: "00000000-0000-0000-0000-000000000002",
+          },
+        })
+
+        expect(createdSetting).not.toBeNull()
+        expect(createdSetting?.id).not.toEqual("bogus")
+        expect(createdSetting?.language).toEqual("fi")
+        expect(createdSetting?.country).toEqual("en")
+        expect(createdSetting?.marketing).toEqual(true)
+        expect(createdSetting?.other).toEqual({
+          isCat: true,
+          sound: "meow",
+        })
       })
 
       it("updates correctly, filters unwanted fields and shoves other fields to other, updating existing ones", async () => {
