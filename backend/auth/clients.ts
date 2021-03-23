@@ -17,7 +17,7 @@ export function createClient({ knex }: ApiContext) {
     let client_secret = crypto.randomBytes(64).toString("hex")
 
     let client = (
-      await knex("prisma2.clients")
+      await knex("clients")
         .insert({
           name,
           client_id,
@@ -44,7 +44,7 @@ export function getClients({ knex }: ApiContext) {
       return res.status(403).json({ error: "You do not have permission." })
     }
 
-    let clients = await knex.select("*").from("prisma2.clients")
+    let clients = await knex.select("*").from("clients")
 
     return res.status(200).json(clients)
   }
@@ -63,7 +63,7 @@ export function showClient({ knex }: ApiContext) {
     const id = req.query.id
 
     let client = (
-      await knex.select("*").from("prisma2.clients").where("client_id", id)
+      await knex.select("*").from("clients").where("client_id", id)
     )?.[0]
     if (!client) {
       return res.status(404).json({
@@ -88,7 +88,7 @@ export function deleteClient({ knex }: ApiContext) {
     const id = req.query.id
 
     let client = (
-      await knex.select("*").from("prisma2.clients").where("client_id", id)
+      await knex.select("*").from("clients").where("client_id", id)
     )?.[0]
     if (!client) {
       return res.status(404).json({
@@ -96,7 +96,7 @@ export function deleteClient({ knex }: ApiContext) {
       })
     }
 
-    await knex.select("*").from("prisma2.clients").where("client_id", id).del()
+    await knex.select("*").from("clients").where("client_id", id).del()
 
     return res.status(200).json({
       success: true,
@@ -117,7 +117,7 @@ export function regenerateClient({ knex }: ApiContext) {
     const id = req.query.id
 
     let client = (
-      await knex.select("*").from("prisma2.clients").where("client_id", id)
+      await knex.select("*").from("clients").where("client_id", id)
     )?.[0]
     if (!client) {
       return res.status(404).json({
@@ -130,7 +130,7 @@ export function regenerateClient({ knex }: ApiContext) {
     let clientData = (
       await knex
         .select("*")
-        .from("prisma2.clients")
+        .from("clients")
         .where("client_id", id)
         .update({ client_secret })
         .returning("*")

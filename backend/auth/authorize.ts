@@ -8,7 +8,7 @@ export function authorize({ knex }: ApiContext) {
     let authorizationCode = (
       await knex
         .select("*")
-        .from("prisma2.authorization_codes")
+        .from("authorization_codes")
         .where("code", code)
     )?.[0]
     if (!authorizationCode) {
@@ -34,7 +34,7 @@ export function authorize({ knex }: ApiContext) {
     let accessToken = (
       await knex
         .select("*")
-        .from("prisma2.access_tokens")
+        .from("access_tokens")
         .where("client_id", authorizationCode.client_id)
         .where("user_id", auth.id)
         .where("access_token", auth.nonce)

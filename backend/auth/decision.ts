@@ -8,7 +8,7 @@ export function decision({ knex }: ApiContext) {
     let authorizationCode = (
       await knex
         .select("*")
-        .from("prisma2.authorization_codes")
+        .from("authorization_codes")
         .where("code", code)
     )?.[0]
     if (!authorizationCode) {
@@ -30,7 +30,7 @@ export function decision({ knex }: ApiContext) {
       })
     }
 
-    await knex("prisma2.authorization_codes")
+    await knex("authorization_codes")
       .where("code", code)
       .update({ user_id: auth.id })
 

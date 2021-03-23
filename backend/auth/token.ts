@@ -34,7 +34,7 @@ async function issueToken(user: any, client: any) {
     },
   )
 
-  await Knex("prisma2.access_tokens").insert({
+  await Knex("access_tokens").insert({
     access_token: token,
     client_id: client.client_id,
     user_id: user?.id,
@@ -47,7 +47,7 @@ async function issueToken(user: any, client: any) {
 async function grantAuthorizationCode(client_id: string, redirect_uri: string) {
   const code = crypto.randomBytes(16).toString("hex")
   const client = (
-    await Knex.select("*").from("prisma2.clients").where("client_id", client_id)
+    await Knex.select("*").from("clients").where("client_id", client_id)
   )?.[0]
   if (!client) {
     return {
@@ -57,7 +57,7 @@ async function grantAuthorizationCode(client_id: string, redirect_uri: string) {
     }
   }
 
-  await Knex("prisma2.authorization_codes").insert({
+  await Knex("authorization_codes").insert({
     code,
     client_id,
     redirect_uri,
@@ -82,11 +82,11 @@ async function exchangePassword(
 async function exchangeAuthorizationCode(client_id: string, code: string) {
   let authorizationCode = (
     await Knex.select("*")
-      .from("prisma2.authorization_codes")
+      .from("authorization_codes")
       .where("code", code)
   )?.[0]
   let client = (
-    await Knex.select("*").from("prisma2.clients").where("client_id", client_id)
+    await Knex.select("*").from("clients").where("client_id", client_id)
   )?.[0]
 
   if (!authorizationCode || !authorizationCode?.user_id) {
@@ -108,7 +108,7 @@ async function exchangeAuthorizationCode(client_id: string, code: string) {
   let accessToken =
     (
       await Knex.select("access_token")
-        .from("prisma2.access_tokens")
+        .from("access_tokens")
         .where("client_id", client_id)
         .where("user_id", authorizationCode?.user_id)
         .where("valid", true)
@@ -116,7 +116,7 @@ async function exchangeAuthorizationCode(client_id: string, code: string) {
   if (!accessToken) {
     let user = (
       await Knex.select("id", "email", "administrator")
-        .from("prisma2.user")
+        .from("user")
         .where("id", authorizationCode?.user_id)
     )?.[0]
     accessToken = await issueToken(user, client)
@@ -132,7 +132,7 @@ async function exchangeAuthorizationCode(client_id: string, code: string) {
 async function exchangeClientCredentials(client: any) {
   let localClient = (
     await Knex.select("*")
-      .from("prisma2.clients")
+      .from("clients")
       .where("client_id", client.client_id)
   )?.[0]
 
@@ -257,15 +257,15 @@ export async function signIn(
       "id",
       "email",
       "password",
-      "passwordThrottle",
+      "password_throttle",
       "administrator",
     )
-      .from("prisma2.user")
+      .from("user")
       .where("email", email)
   )?.[0]
   const client = (
     await Knex.select("id", "client_id", "name")
-      .from("prisma2.clients")
+      .from("clients")
       .where("client_id", NATIVE_ID)
   )?.[0]
 
@@ -281,15 +281,15 @@ export async function signIn(
         message: 'Unauthorized: Please use the correct sign in method.'
       }
     }*/
-    if (user.passwordThrottle) {
-      let passwordThrottle = user.passwordThrottle || <any>[]
+    if (user.password_throttle) {
+      let passwordThrottle = user.password_throttle || <any>[]
       passwordThrottle.forEach((throttle: any) => {
         if (throttle.ip === ipAddress) {
           if (throttle.currentRate >= RATE_LIMIT) {
             let renewStamp = <any>new Date().getDate()
             let diffTime = Math.ceil(
               Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-                (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
             )
 
             if (diffTime >= 1) {
@@ -297,7 +297,7 @@ export async function signIn(
               throttle.limitStamp = null
 
               Knex("prisma.user")
-                .update({ passwordThrottle: JSON.stringify(passwordThrottle) })
+                .update({ password_throttle: JSON.stringify(passwordThrottle) })
                 .where("email", email)
             } else {
               throttleBreak = true
@@ -338,7 +338,7 @@ export async function signIn(
       hashLength: 64,
     })
 
-    await Knex("prisma2.user")
+    await Knex("user")
       .update({ password: hashPassword })
       .where("email", email)
 
@@ -352,7 +352,7 @@ export async function signIn(
     }
   } else {
     if (user) {
-      let updateThrottle = user.passwordThrottle
+      let updateThrottle = user.password_throttle
       if (updateThrottle === null) {
         updateThrottle = [{ currentRate: 0, limitStamp: null, ip: ipAddress }]
       }
@@ -377,16 +377,15 @@ export async function signIn(
           throttleData = {
             status: 403,
             success: false,
-            message: `Incorrect password. You have ${
-              RATE_LIMIT - throttle.currentRate
-            } attempts left.`,
+            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
+              } attempts left.`,
           }
           return
         }
       })
 
-      await Knex("prisma2.user")
-        .update({ passwordThrottle: JSON.stringify(updateThrottle) })
+      await Knex("user")
+        .update({ password_throttle: JSON.stringify(updateThrottle) })
         .where("email", email)
 
       if (throttleBreak === true) {
