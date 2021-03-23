@@ -31,9 +31,7 @@ export async function requireAuth(auth: string) {
   }
 
   const dbToken = (
-    await Knex.select("*")
-      .from("access_tokens")
-      .where("access_token", token)
+    await Knex.select("*").from("access_tokens").where("access_token", token)
   )?.[0]
   if (dbToken.valid === false) {
     return {
