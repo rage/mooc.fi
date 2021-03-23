@@ -1,8 +1,7 @@
-import * as Knex from "knex";
-
+import * as Knex from "knex"
 
 export async function up(knex: Knex): Promise<any> {
-    await knex.raw(`CREATE TABLE IF NOT EXISTS clients (
+  await knex.raw(`CREATE TABLE IF NOT EXISTS clients (
         id serial NOT NULL,
         created_at timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
         updated_at timestamp(3) without time zone,
@@ -12,11 +11,9 @@ export async function up(knex: Knex): Promise<any> {
         redirect_uri text,
         scopes text,
         is_trusted boolean DEFAULT true
-    );` )
+    );`)
 }
-
 
 export async function down(knex: Knex): Promise<any> {
-    await knex.raw('DROP TABLE clients')
+  await knex.raw("DROP TABLE clients")
 }
-

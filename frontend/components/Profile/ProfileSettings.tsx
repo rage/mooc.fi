@@ -41,8 +41,8 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
     research_consent === null || typeof research_consent === "undefined"
       ? undefined
       : research_consent
-        ? "1"
-        : "0",
+      ? "1"
+      : "0",
   )
   const [updateResearchConsent, { loading }] = useMutation(
     updateResearchConsentMutation,

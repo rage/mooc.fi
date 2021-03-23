@@ -14,11 +14,7 @@ export function signUp() {
     const ipAddress = req.connection.remoteAddress
 
     let result = <any>(
-      await _signUp(
-        req.body.email,
-        req.body.password,
-        req.body.confirmPassword
-      )
+      await _signUp(req.body.email, req.body.password, req.body.confirmPassword)
     )
 
     if (result.success) {
@@ -50,7 +46,7 @@ export function signUp() {
 async function _signUp(
   email: string,
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
 ) {
   const username = crypto.randomBytes(8).toString("hex")
 
