@@ -1,7 +1,7 @@
 import axios from "axios"
 import { DateTime } from "luxon"
 import { maxBy } from "lodash"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 import sentryLogger from "./lib/logger"
 import { OpenUniversityRegistrationLink } from "@prisma/client"
 import { AvoinError } from "./lib/errors"

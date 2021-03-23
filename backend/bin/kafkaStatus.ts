@@ -3,13 +3,13 @@ require("dotenv-safe").config({
 })
 
 import sentryLogger from "./lib/logger"
-import { createKafkaConsumer } from "./kafkaConsumer//common/kafkaConsumer"
+import { createKafkaConsumer } from "./kafkaConsumer/common/createKafkaConsumer"
 import { KafkaError } from "./lib/errors"
 
 const logger = sentryLogger({
   service: "kafka-status",
 })
-const consumer = createKafkaConsumer(logger)
+const consumer = createKafkaConsumer({ logger })
 
 consumer.connect()
 

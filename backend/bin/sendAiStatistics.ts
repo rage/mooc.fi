@@ -3,7 +3,7 @@ require("dotenv-safe").config({
 })
 import SlackPoster from "./lib/slackPoster"
 import Knex from "../services/knex"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "send-ai-statistics" })
