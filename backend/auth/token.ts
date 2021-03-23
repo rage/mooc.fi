@@ -22,7 +22,7 @@ async function issueToken(user: any, client: any) {
 
   let token = await jwt.sign(
     {
-      exp: Math.floor(Date.now() / 1000) + (60 * 60),
+      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 365),
       maxAge: 365 * 24 * 60 * 60 * 1000,
       id: user?.id || client.client_id,
       admin: user?.administrator || false,
