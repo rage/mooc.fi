@@ -5,23 +5,21 @@ import { createUser } from "moocfi-auth"
 const BASE_URL = "https://tmc.mooc.fi/api/v8"
 
 export async function createAccount(data: any) {
-  return await createUser(
-    {
-      email: data.email,
-      password: data.password,
-      confirmPassword: data.password_confirmation,
-      extra_fields: {},
-      user_fields: {
-        first_name: data.first_name,
-        last_name: data.last_name
-      },
-      origin: "mooc.fi",
-      provider: "native",
-      language: "fi",
-      domain: "mooc.fi",
-      priority: "tmc"
-    }
-  )
+  return await createUser({
+    email: data.email,
+    password: data.password,
+    confirmPassword: data.password_confirmation,
+    extra_fields: {},
+    user_fields: {
+      first_name: data.first_name,
+      last_name: data.last_name,
+    },
+    origin: "mooc.fi",
+    provider: "native",
+    language: "fi",
+    domain: "mooc.fi",
+    priority: "tmc",
+  })
 }
 
 /*

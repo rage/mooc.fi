@@ -12,10 +12,10 @@ import { apiRouter } from "./api"
 import { authRouter } from "./auth"
 
 const helmet = require("helmet")
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const crypto = require('crypto')
+const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
+const session = require("express-session")
+const crypto = require("crypto")
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -38,16 +38,18 @@ const createExpressAppWithContext = ({
   app.use(helmet.frameguard())
   app.use(cookieParser())
   app.use(bodyParser.json())
-  app.use(session({
-    secret: crypto.randomBytes(20).toString('hex'),
-    cookie: {
-      maxAge: 365 * 24 * 60 * 60 * 1000,
-      secure: true
-    },
-    saveUninitialized: false,
-    resave: false,
-    unset: 'keep'
-  }));
+  app.use(
+    session({
+      secret: crypto.randomBytes(20).toString("hex"),
+      cookie: {
+        maxAge: 365 * 24 * 60 * 60 * 1000,
+        secure: true,
+      },
+      saveUninitialized: false,
+      resave: false,
+      unset: "keep",
+    }),
+  )
 
   if (!TEST) {
     app.use(morgan("combined"))
@@ -55,8 +57,6 @@ const createExpressAppWithContext = ({
   app.use(express.json())
   app.use("/api", apiRouter({ prisma, knex, logger }))
   app.use("/auth", authRouter({ prisma, knex, logger }))
-
-
 
   return app
 }

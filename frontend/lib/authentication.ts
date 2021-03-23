@@ -5,7 +5,11 @@ import { ApolloClient } from "@apollo/client"
 import axios from "axios"
 import Router from "next/router"
 
-import { getToken, removeToken, getAccessToken as _getAccessToken } from "moocfi-auth"
+import {
+  getToken,
+  removeToken,
+  getAccessToken as _getAccessToken,
+} from "moocfi-auth"
 
 /*
 const tmcClient = new TmcClient(
@@ -44,7 +48,17 @@ export const signIn = async ({
   shallow = true,
 }: SignInProps) => {
   //const res = await tmcClient.authenticate({ username: email, password })
-  const res = await <any>getToken({ client_id, grant_type, response_type, domain, email, password, priority })
+  const res = await (<any>(
+    getToken({
+      client_id,
+      grant_type,
+      response_type,
+      domain,
+      email,
+      password,
+      priority,
+    })
+  ))
   const details = await userDetails(res.tmc_token)
 
   //document.cookie = `access_token=${res.accessToken};path=/`
@@ -93,7 +107,6 @@ export const signOut = async (apollo: ApolloClient<any>, cb: any) => {
   }, 100)
 }
 
-
 const getCookie = (key: string) => {
   if (typeof document === "undefined" || !document || !document?.cookie) {
     return
@@ -118,8 +131,6 @@ const getCookie = (key: string) => {
 
   return vals[key] || ""
 }
-
-
 
 export const getAccessToken = async (ctx: NextContext | undefined) => {
   const access_token = await _getAccessToken()
