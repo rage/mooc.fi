@@ -8,15 +8,17 @@ export function signOut({ knex }: ApiContext) {
       return res.status(403).json({
         status: 403,
         success: false,
-        message: "Not logged in."
+        message: "Not logged in.",
       })
     }
 
-    await knex("prisma2.access_tokens").update({ valid: false }).where("access_token", req.headers.authorization.replace("Bearer ", ""))
+    await knex("prisma2.access_tokens")
+      .update({ valid: false })
+      .where("access_token", req.headers.authorization.replace("Bearer ", ""))
     req.session = null
 
     return res.status(200).json({
-      sucess: true
+      sucess: true,
     })
   }
 }

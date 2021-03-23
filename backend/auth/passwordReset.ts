@@ -19,7 +19,7 @@ export function passwordReset() {
       return res.status(404).json(sendResetEmail.response.data)
     }
 
-    //Password resetting can be handled by TMC. If the password is updated via TMC, then the next time 
+    //Password resetting can be handled by TMC. If the password is updated via TMC, then the next time
     //the user signs in, their password on mooc.fi should be auto-updated as well
   }
 }

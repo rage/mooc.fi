@@ -1,10 +1,6 @@
-import {
-  createUser,
-  getCurrentUserDetails,
-  updateUser
-} from "../services/tmc"
+import { createUser, getCurrentUserDetails, updateUser } from "../services/tmc"
 
-import { signIn } from './token'
+import { signIn } from "./token"
 
 import { validateEmail, validatePassword } from "../util/validateAuth"
 import { User } from "@prisma/client"
@@ -17,11 +13,13 @@ export function signUp() {
   return async (req: any, res: any) => {
     const ipAddress = req.connection.remoteAddress
 
-    let result = <any>await _signUp(
-      req.body.email,
-      req.body.password,
-      req.body.confirmPassword,
-      "native"
+    let result = <any>(
+      await _signUp(
+        req.body.email,
+        req.body.password,
+        req.body.confirmPassword,
+        "native",
+      )
     )
 
     if (result.success) {
@@ -32,11 +30,13 @@ export function signUp() {
         },
         user_field: {
           email: req.body.email,
-          ...req.body.user_fields
-        }
+          ...req.body.user_fields,
+        },
       }
 
-      const auth = await <any>signIn(req.body.email, req.body.password, ipAddress)
+      const auth = await (<any>(
+        signIn(req.body.email, req.body.password, ipAddress)
+      ))
       if (result.data) {
         await updateUser(result.data.id, user, auth.tmc_token)
       }
@@ -48,14 +48,19 @@ export function signUp() {
   }
 }
 
-async function _signUp(email: string, password: string, confirmPassword: string, client: string = "native") {
-  const username = crypto.randomBytes(8).toString('hex')
+async function _signUp(
+  email: string,
+  password: string,
+  confirmPassword: string,
+  client: string = "native",
+) {
+  const username = crypto.randomBytes(8).toString("hex")
 
   if (email.length > 64 || !validateEmail(email)) {
     return {
       status: 400,
       success: false,
-      message: "Email is invalid or too long"
+      message: "Email is invalid or too long",
     }
   }
 
@@ -63,21 +68,19 @@ async function _signUp(email: string, password: string, confirmPassword: string,
     return {
       status: 400,
       success: false,
-      message: "Password is invalid"
+      message: "Password is invalid",
     }
   }
 
   if (password !== confirmPassword) {
-
     return {
       status: 400,
       success: false,
-      message: "Confirmation password must match new password"
+      message: "Confirmation password must match new password",
     }
   }
 
-  const checkEmail = await Knex
-    .select("email")
+  const checkEmail = await Knex.select("email")
     .from("prisma2.user")
     .where("email", email)
 
@@ -85,7 +88,7 @@ async function _signUp(email: string, password: string, confirmPassword: string,
     return {
       status: 400,
       success: false,
-      message: "Email is already in use."
+      message: "Email is already in use.",
     }
   }
 
@@ -100,7 +103,7 @@ async function _signUp(email: string, password: string, confirmPassword: string,
     return {
       status: 500,
       success: false,
-      message: `Error creating user.`
+      message: `Error creating user.`,
     }
   }
   const userDetails = await getCurrentUserDetails(accessToken.token)
@@ -113,8 +116,7 @@ async function _signUp(email: string, password: string, confirmPassword: string,
   })
 
   let user = (
-    await Knex
-      .select<any, User[]>("id")
+    await Knex.select<any, User[]>("id")
       .from("prisma2.user")
       .where("upstream_id", userDetails.id)
   )?.[0]
@@ -135,7 +137,7 @@ async function _signUp(email: string, password: string, confirmPassword: string,
       return {
         status: 500,
         success: false,
-        message: `Error creating user: ${error}`
+        message: `Error creating user: ${error}`,
       }
     }
   }
@@ -143,6 +145,6 @@ async function _signUp(email: string, password: string, confirmPassword: string,
   return {
     status: 200,
     success: true,
-    data: userDetails
+    data: userDetails,
   }
 }
