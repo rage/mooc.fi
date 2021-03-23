@@ -81,9 +81,7 @@ async function exchangePassword(
 
 async function exchangeAuthorizationCode(client_id: string, code: string) {
   let authorizationCode = (
-    await Knex.select("*")
-      .from("authorization_codes")
-      .where("code", code)
+    await Knex.select("*").from("authorization_codes").where("code", code)
   )?.[0]
   let client = (
     await Knex.select("*").from("clients").where("client_id", client_id)
@@ -131,9 +129,7 @@ async function exchangeAuthorizationCode(client_id: string, code: string) {
 
 async function exchangeClientCredentials(client: any) {
   let localClient = (
-    await Knex.select("*")
-      .from("clients")
-      .where("client_id", client.client_id)
+    await Knex.select("*").from("clients").where("client_id", client.client_id)
   )?.[0]
 
   if (!localClient) {
@@ -289,7 +285,7 @@ export async function signIn(
             let renewStamp = <any>new Date().getDate()
             let diffTime = Math.ceil(
               Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-              (1000 * 60 * 60 * 24),
+                (1000 * 60 * 60 * 24),
             )
 
             if (diffTime >= 1) {
@@ -338,9 +334,7 @@ export async function signIn(
       hashLength: 64,
     })
 
-    await Knex("user")
-      .update({ password: hashPassword })
-      .where("email", email)
+    await Knex("user").update({ password: hashPassword }).where("email", email)
 
     let accessToken = await issueToken(user, client)
 
@@ -377,8 +371,9 @@ export async function signIn(
           throttleData = {
             status: 403,
             success: false,
-            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
-              } attempts left.`,
+            message: `Incorrect password. You have ${
+              RATE_LIMIT - throttle.currentRate
+            } attempts left.`,
           }
           return
         }

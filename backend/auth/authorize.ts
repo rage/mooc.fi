@@ -6,10 +6,7 @@ export function authorize({ knex }: ApiContext) {
     const code = req.query.code
 
     let authorizationCode = (
-      await knex
-        .select("*")
-        .from("authorization_codes")
-        .where("code", code)
+      await knex.select("*").from("authorization_codes").where("code", code)
     )?.[0]
     if (!authorizationCode) {
       return res.status(404).json({
