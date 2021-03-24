@@ -5,6 +5,8 @@ export interface UserInfo {
   user_field: UserField
   extra_fields: ExtraFields
   administrator: boolean
+  password: string
+  password_throttle: string
 }
 
 export interface ExtraFields {}

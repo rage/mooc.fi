@@ -8,6 +8,8 @@ export const normalUser = {
   first_name: "first",
   last_name: "last",
   username: "user",
+  password: "password",
+  password_throttle: "[]",
 }
 
 export const normalUserDetails: UserInfo = {
@@ -23,6 +25,8 @@ export const normalUserDetails: UserInfo = {
   },
   username: "user",
   extra_fields: {},
+  password: "password",
+  password_throttle: "[]",
 }
 
 export const adminUser = {
@@ -32,6 +36,8 @@ export const adminUser = {
   first_name: "first",
   last_name: "last",
   username: "admin",
+  password: "password",
+  password_throttle: "[]",
 }
 
 export const adminUserDetails = {
@@ -47,6 +53,8 @@ export const adminUserDetails = {
   },
   username: "admin",
   extra_fields: {},
+  password: "password",
+  password_throttle: "[]",
 }
 
 export const organizations: Prisma.OrganizationCreateInput[] = [
