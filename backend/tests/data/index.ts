@@ -209,6 +209,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "e@mail.com",
     upstream_id: 1,
     username: "existing_user",
+    password: "password",
+    password_throttle: "[]",
   },
   {
     id: "20000000000000000000000000000103",
@@ -216,6 +218,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "f@mail.com",
     upstream_id: 2,
     username: "second_user_admin",
+    password: "password",
+    password_throttle: "[]",
   },
   {
     id: "20000000000000000000000000000104",
@@ -225,6 +229,8 @@ export const users: Prisma.UserCreateInput[] = [
     username: "third_user",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
+    password: "password",
+    password_throttle: "[]",
   },
   {
     id: "20000000000000000000000000000105",

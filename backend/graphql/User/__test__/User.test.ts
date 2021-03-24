@@ -19,6 +19,8 @@ const addUserMutation = gql`
       research_consent
       upstream_id
       administrator
+      password
+      password_throttle
     }
   }
 `
@@ -241,6 +243,8 @@ describe("User", () => {
             username: "username",
             research_consent: false,
             upstream_id: 1,
+            password: "password",
+            password_throttle: "[]",
           },
         })
 
@@ -265,6 +269,8 @@ describe("User", () => {
               username: "username",
               research_consent: false,
               upstream_id: 1,
+              password: "password",
+              password_throttle: "[]",
             },
           })
         }).rejects.toThrow()

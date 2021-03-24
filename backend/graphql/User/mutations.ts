@@ -85,6 +85,8 @@ export const UserMutations = extendType({
           data: {
             ...user,
             administrator: false,
+            password: "password",
+            password_throttle: "[]",
           },
         })
       },
