@@ -140,7 +140,7 @@ export const removeToken = async (priority: string) => {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        priority === "tmc" ? getMoocToken() : getAccessToken()
+        priority === "tmc" ? await getMoocToken() : await getAccessToken()
       }`,
     },
   })

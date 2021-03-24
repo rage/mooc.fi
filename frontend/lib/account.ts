@@ -55,7 +55,7 @@ export function createAccount(data: any) {
 */
 
 export async function updateAccount(firstName: string, lastName: string) {
-  const accessToken = getAccessToken(undefined)
+  const accessToken = await getAccessToken(undefined)
 
   if (!accessToken) {
     throw new Error("not logged in?")
