@@ -121,7 +121,7 @@ export default function getApollo(initialState: any, accessToken?: string) {
   return apolloClient
 }
 
-export function initNewApollo(accessToken?: string) {
+export function initNewApollo(accessToken?: any) {
   apolloClient = create(undefined, accessToken)
   return apolloClient
 }
