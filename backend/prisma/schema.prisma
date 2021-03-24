@@ -404,6 +404,8 @@ model User {
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
   ab_enrollments                 AbEnrollment[]
+  password                       String
+  password_throttle              String
 
   @@map("user")
 }

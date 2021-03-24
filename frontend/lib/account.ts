@@ -1,6 +1,6 @@
 //import { v4 as uuidv4 } from "uuid"
 import { getAccessToken } from "/lib/authentication"
-import { createUser } from "moocfi-auth"
+import { createUser } from "../packages/moocfi-auth"
 
 const BASE_URL = "https://tmc.mooc.fi/api/v8"
 

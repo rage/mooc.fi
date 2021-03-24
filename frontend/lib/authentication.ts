@@ -9,7 +9,7 @@ import {
   getToken,
   removeToken,
   getAccessToken as _getAccessToken,
-} from "moocfi-auth"
+} from "../packages/moocfi-auth"
 
 /*
 const tmcClient = new TmcClient(
