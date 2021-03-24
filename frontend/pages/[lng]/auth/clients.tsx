@@ -143,13 +143,13 @@ const Clients = () => {
     getClients()
   }, [])
 
-  const getClients = () => {
+  const getClients = async () => {
     axios({
       method: "GET",
       url: `http://localhost:4000/auth/clients`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getAccessToken(undefined)}`,
+        Authorization: `Bearer ${await getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)
@@ -157,7 +157,7 @@ const Clients = () => {
       .catch((json) => console.log(json))
   }
 
-  const createClient = () => {
+  const createClient = async () => {
     setShowCreateComplete(false)
     setShowCreateError(false)
     setCreateError("")
@@ -170,7 +170,7 @@ const Clients = () => {
       },
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getAccessToken(undefined)}`,
+        Authorization: `Bearer ${await getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)

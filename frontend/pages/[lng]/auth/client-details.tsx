@@ -119,13 +119,13 @@ const ClientDetails = () => {
     regenerateClient()
   }
 
-  const showClient = () => {
+  const showClient = async () => {
     axios({
       method: "GET",
       url: `http://localhost:4000/auth/client?id=${router.query.id}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getAccessToken(undefined)}`,
+        Authorization: `Bearer ${await getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)
@@ -133,13 +133,13 @@ const ClientDetails = () => {
       .catch((json) => console.log(json))
   }
 
-  const updateClient = () => {
+  const updateClient = async () => {
     axios({
       method: "PUT",
       url: `http://localhost:4000/auth/client?id=${router.query.id}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getAccessToken(undefined)}`,
+        Authorization: `Bearer ${await getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)
@@ -147,14 +147,14 @@ const ClientDetails = () => {
       .catch((json) => console.log(json))
   }
 
-  const regenerateClient = () => {
+  const regenerateClient = async () => {
     axios({
       method: "POST",
       url: `http://localhost:4000/auth/regenerateSecret?id=${router.query.id}`,
       data: {},
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getAccessToken(undefined)}`,
+        Authorization: `Bearer ${await getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)
@@ -162,14 +162,14 @@ const ClientDetails = () => {
       .catch((json) => console.log(json))
   }
 
-  const deleteClient = () => {
+  const deleteClient = async () => {
     axios({
       method: "POST",
       url: `http://localhost:4000/auth/deleteClient?id=${router.query.id}`,
       data: {},
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getAccessToken(undefined)}`,
+        Authorization: `Bearer ${await getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)
