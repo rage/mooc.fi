@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 import styled from "@emotion/styled"
-import Cookies from "universal-cookie"
+import { getAccessToken } from "../../../lib/authentication"
 
 const Container = styled.section`
   width: 100%;
@@ -121,11 +121,6 @@ const CreateError = styled.div`
 `
 
 const Clients = () => {
-  const cookies = new Cookies()
-  //const token = cookies.get("token")
-  const token =
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTU5MDI5NzMsIm1heEFnZSI6MzE1MzYwMDAwMDAsImlkIjoiZTgwZWRkOTctZDg4MC00MWE4LWE5ZGYtNjIwODk3YTdiZjUxIiwiYWRtaW4iOmZhbHNlLCJub25jZSI6IjczMzZhYTFkN2FhYzFiZDdiOGQ4NTQ2MDc0YjgzN2VlIiwiand0aWQiOiJhODA4YmU1YzA1Mzg1N2Y0Y2FmNWI2Y2Q5NDhmNDQyNmM5MjVlMjJiOWU3NDdlYzA1NzlmOTU3MzFkYTBlZGZlZDQ2ZWZhN2VmODBhNWNlMTYwYWU2MWRiMDM2ZTRjYmY3ZGI4YWUzN2M0ZmQzNTZlMWYwM2UwOGQwMDkyNzhmOSIsImlhdCI6MTYxNTg5OTM3MywiYXVkIjoiVGVzdCBOYW1lIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwL2F1dGgvdG9rZW4iLCJzdWIiOiJibk52YUdGeVlXSXJNekF5UUdkdFlXbHNMbU52YlE9PSJ9.Wr3n-Y9iCO_l1h0pA0IFP5_EMZiPRm1QGomOFXVw1PuoUnRFRC0wVeGBFDvG-Rs0hMLeiEw0EJWvdjPyUpi-4Uv5XARQv3dePVLVRJAbIv5AU0N7HV4gvPI-g_VwiDElucIOJzulP5ulJpkk_L4ippEY5-lq9tcO2SBJgRpXCoKyz68gyNj7js6Q9cHO0qdgyKhUZ9eDbmBJDxPF-SZxzJ4GwONJYbDgcP8u5wJIO2HfQX2rrqOgknwbl6Z5f1A0B4uo8rY50M9RSziAuGZI3crLtYmEY1MLn-thfvoenAmne9HWvc1T7Kka9kMlsGjZz1OI9nSMKRj1G_XAxL-ipw"
-
   const [clients, setClients] = useState<any>([])
   const [showCreate, setShowCreate] = useState(false)
   const [showCreateComplete, setShowCreateComplete] = useState(false)
@@ -141,7 +136,6 @@ const Clients = () => {
   })
   const [showCreateError, setShowCreateError] = useState(false)
   const [createError, setCreateError] = useState("")
-  const [showDetails, setShowDetails] = useState(false)
   const [clientName, setClientName] = useState("")
   const [clientRedirect, setClientRedirect] = useState("")
 
@@ -155,7 +149,7 @@ const Clients = () => {
       url: `http://localhost:4000/auth/clients`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)
@@ -176,7 +170,7 @@ const Clients = () => {
       },
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${getAccessToken(undefined)}`,
       },
     })
       .then((response) => response.data)
@@ -258,7 +252,7 @@ const Clients = () => {
             <th>Redirect_URI</th>
             <th>Actions</th>
           </tr>
-          {clients.map((client, i) => (
+          {clients.map((client: any) => (
             <tr key={client.client_id}>
               <td>{client.name}</td>
               <td>{client.client_id}</td>
