@@ -10,7 +10,6 @@ import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 
-import _KnexConstructor from "knex"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
 
