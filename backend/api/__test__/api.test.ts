@@ -1,12 +1,12 @@
-import { fakeTMC, getTestContext } from "./__helpers"
-import { normalUserDetails, adminUserDetails } from "./data"
-import { seed } from "./data/seed"
+import { fakeTMC, getTestContext } from "../../tests/__helpers"
+import { normalUserDetails, adminUserDetails } from "../../tests/data"
+import { seed } from "../../tests/data/seed"
 import axios, { Method } from "axios"
 import { omit } from "lodash"
 
 const ctx = getTestContext()
 
-describe("server", () => {
+describe("/api", () => {
   interface RequestParams {
     data?: any
     headers?: any
@@ -33,7 +33,7 @@ describe("server", () => {
   const post = (route: string = "", defaultHeaders: any) =>
     request("POST")(route, defaultHeaders)
 
-  describe("/api/register-completions", () => {
+  describe("/register-completions", () => {
     const defaultHeaders = {
       Authorization: "Basic kissa",
     }
@@ -128,7 +128,7 @@ describe("server", () => {
     })
   })
 
-  describe("/api/user-course-settings", () => {
+  describe("/user-course-settings", () => {
     const tmc = fakeTMC({
       "Bearer normal": [200, normalUserDetails],
       "Bearer admin": [200, adminUserDetails],
@@ -338,6 +338,84 @@ describe("server", () => {
           sound: "meow",
         })
       })
+    })
+  })
+
+  describe("/ab-enrollments", () => {
+    const tmc = fakeTMC({
+      "Bearer normal": [200, normalUserDetails],
+      "Bearer admin": [200, adminUserDetails],
+    })
+
+    beforeAll(() => tmc.setup())
+    afterAll(() => tmc.teardown())
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    const getEnrollment = (id: string) => get(`/api/ab-enrollment/${id}`, {})
+
+    const okEnrollmentId = "99000000-0000-0000-0000-000000000001"
+    const okEnrollmentId2 = "99000000-0000-0000-0000-000000000002"
+    const fakeEnrollmentId = "99000000-0000-0000-0000-000000000003"
+
+    it("errors on no auth", async () => {
+      return getEnrollment(okEnrollmentId)({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on non-existent ab_study_id", async () => {
+      return getEnrollment(fakeEnrollmentId)({
+        headers: {
+          Authorization: "Bearer normal",
+        },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(400)
+          expect(response.data.message).toContain("not found")
+        })
+    })
+
+    it("returns existing enrollment", async () => {
+      const countBefore = await ctx.knex.count("*").from("ab_enrollment")
+
+      const existingEnrollmentResponse = await getEnrollment(okEnrollmentId2)({
+        headers: {
+          Authorization: "Bearer admin",
+        },
+      })
+
+      const countAfter = await ctx.knex.count("*").from("ab_enrollment")
+      expect(countBefore).toEqual(countAfter)
+
+      expect(existingEnrollmentResponse.status).toBe(200)
+      expect(existingEnrollmentResponse.data.group).toBe(2)
+    })
+
+    it("creates enrollment and returns the created one on future calls", async () => {
+      const createdEnrollmentResponse = await getEnrollment(okEnrollmentId)({
+        headers: {
+          Authorization: "Bearer normal",
+        },
+      })
+
+      expect(createdEnrollmentResponse.status).toBe(200)
+      expect(createdEnrollmentResponse.data).not.toBeNull()
+
+      for (let i = 0; i < 10; i++) {
+        const enrollmentResponse = await getEnrollment(okEnrollmentId)({
+          headers: {
+            Authorization: "Bearer normal",
+          },
+        })
+
+        expect(enrollmentResponse.data).toEqual(createdEnrollmentResponse.data)
+      }
     })
   })
 })
