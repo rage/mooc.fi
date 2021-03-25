@@ -6,7 +6,7 @@ import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
-import type Knex from "knex"
+import { Knex } from "knex"
 import { UserInputError } from "apollo-server-errors"
 
 // @ts-ignore: not used

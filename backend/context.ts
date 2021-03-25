@@ -5,7 +5,7 @@ import TmcClient from "./services/tmc"
 import { PrismaClient } from "@prisma/client"
 import { IncomingMessage } from "http"
 import type { Logger } from "winston"
-import type Knex from "knex"
+import { Knex } from "knex"
 
 export type Context = {
   prisma: PrismaClient

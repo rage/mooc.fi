@@ -5,7 +5,7 @@ import { Server } from "http"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { nanoid } from "nanoid"
-import knex from "knex"
+import { knex, Knex } from "knex"
 import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
@@ -39,7 +39,7 @@ export type TestContext = {
   client: GraphQLClient
   prisma: PrismaClient
   logger: winston.Logger
-  knex: knex
+  knex: Knex
   user?: User
   version: number
   port: number
@@ -139,7 +139,7 @@ function prismaTestContext() {
   let schemaName = ""
   let databaseUrl = ""
   let prisma: null | PrismaClient = null
-  let knexClient: knex | null = null
+  let knexClient: Knex | null = null
 
   return {
     async before() {
