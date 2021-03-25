@@ -20,7 +20,7 @@ export const ABEnrollmentCreateOrUpsertInput = inputObjectType({
   definition(t) {
     t.nonNull.id("user_id")
     t.nonNull.id("ab_study_id")
-    t.int("group")
+    t.nonNull.int("group")
   },
 })
 
@@ -34,9 +34,9 @@ export const ABEnrollmentMutations = extendType({
       args: {
         abEnrollment: nonNull(
           arg({
-            type: "AbEnrollmentCreateOrUpsertInput"
-          })
-        )
+            type: "AbEnrollmentCreateOrUpsertInput",
+          }),
+        ),
       },
       authorize: isAdmin,
       resolve: async (_, { abEnrollment }, ctx: Context) => {
@@ -46,31 +46,31 @@ export const ABEnrollmentMutations = extendType({
           data: {
             user: { connect: { id: user_id } },
             ab_study: { connect: { id: ab_study_id } },
-            group
-          }
-        })
-      }
-    }),
-    t.field("updateAbEnrollment", {
-      type: "AbEnrollment",
-      args: {
-        abEnrollment: nonNull(
-          arg({
-            type: "AbEnrollmentCreateOrUpsertInput"
-          })
-        )
-      },
-      authorize: isAdmin,
-      resolve: async (_, { abEnrollment}, ctx: Context) => {
-        const { user_id, ab_study_id } = abEnrollment
-
-        return ctx.prisma.abEnrollment.update({
-          where: {
-            user_id_ab_study_id: { user_id, ab_study_id },
+            group,
           },
-          data: abEnrollment
         })
-      }
-    })
-  }
+      },
+    }),
+      t.field("updateAbEnrollment", {
+        type: "AbEnrollment",
+        args: {
+          abEnrollment: nonNull(
+            arg({
+              type: "AbEnrollmentCreateOrUpsertInput",
+            }),
+          ),
+        },
+        authorize: isAdmin,
+        resolve: async (_, { abEnrollment }, ctx: Context) => {
+          const { user_id, ab_study_id } = abEnrollment
+
+          return ctx.prisma.abEnrollment.update({
+            where: {
+              user_id_ab_study_id: { user_id, ab_study_id },
+            },
+            data: abEnrollment,
+          })
+        },
+      })
+  },
 })

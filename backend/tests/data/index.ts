@@ -276,3 +276,24 @@ export const services: Prisma.ServiceCreateInput[] = [
     },
   },
 ]
+
+export const abStudies: Prisma.AbStudyCreateInput[] = [
+  {
+    id: "99000000-0000-0000-0000-000000000001",
+    group_count: 3,
+    name: "test_study",
+  },
+  {
+    id: "99000000-0000-0000-0000-000000000002",
+    group_count: 2,
+    name: "test_study2",
+  },
+]
+
+export const abEnrollments: Prisma.AbEnrollmentCreateInput[] = [
+  {
+    user: { connect: { id: "20000000000000000000000000000103" } },
+    ab_study: { connect: { id: "99000000-0000-0000-0000-000000000002" } },
+    group: 2,
+  },
+]
