@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core"
 
 import { signIn, isSignedIn } from "../lib/authentication"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "../contexts/LoginStateContext"
 import CommonTranslations from "/translations/common"
 import { useContext } from "react"
 import styled from "@emotion/styled"

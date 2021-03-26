@@ -29,7 +29,7 @@ import RegistrationTranslations from "/translations/register"
 import { WideContainer } from "/components/Container"
 import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "../../contexts/LoginStateContext"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 
@@ -158,8 +158,6 @@ function useRegisterOrganization(searchFilter: string) {
   const [organizations, setOrganizations] = useState<
     Record<string, Organizations_organizations>
   >({})
-  /*const [searchBox, setSearchBox] = useState("")
-  const [searchFilter, cancelFilterDebounce] = useDebounce(searchBox, 1000)*/
   const [filteredOrganizations, setFilteredOrganizations] = useState<
     Record<string, Organizations_organizations>
   >({})

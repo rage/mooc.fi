@@ -3,9 +3,9 @@ import styled from "@emotion/styled"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import LoggedInUserMenu from "./HeaderBar/LoggedInUserMenu"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "../contexts/LoginStateContext"
 import { whichIsActive } from "/components/HeaderBar/Header"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "../contexts/LanguageContext"
 
 const StyledBottomNavigation = styled(AppBar)`
   @media (min-width: 1050px) {

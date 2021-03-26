@@ -6,10 +6,10 @@ import useScrollTrigger from "@material-ui/core/useScrollTrigger"
 import Slide from "@material-ui/core/Slide"
 import LoggedInUserMenu from "./LoggedInUserMenu"
 import MoocLogo from "./MoocLogo"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "../../contexts/LoginStateContext"
 import UserOptionsMenu from "./UserOptionsMenu"
 import styled from "@emotion/styled"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "../../contexts/LanguageContext"
 import { useContext } from "react"
 
 interface Props {

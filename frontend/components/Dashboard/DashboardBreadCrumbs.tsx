@@ -8,7 +8,7 @@ import { memoize } from "lodash"
 import { DocumentNode } from "graphql"
 import PageTranslations from "/translations/pages"
 import { useTranslator } from "/util/useTranslator"
-import { useLanguageContext } from "/contexes/LanguageContext"
+import { useLanguageContext } from "../../contexts/LanguageContext"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 const BreadcrumbCourseQuery = gql`

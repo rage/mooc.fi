@@ -12,7 +12,7 @@ import {
 import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
 import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
 import Router from "next/router"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "../contexts/LanguageContext"
 import CustomSnackbar from "/components/CustomSnackbar"
 import { updateCourse } from "/static/types/generated/updateCourse"
 import { UpdateCourseMutation } from "/graphql/mutations/courses"
