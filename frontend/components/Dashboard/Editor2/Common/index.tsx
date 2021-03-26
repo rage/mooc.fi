@@ -8,7 +8,7 @@ import {
   useContext,
 } from "react"
 import styled from "@emotion/styled"
-import { useAnchorContext } from "../../../../contexts/AnchorContext"
+import { useAnchorContext } from "/contexts/AnchorContext"
 import * as Yup from "yup"
 import { FormValues } from "/components/Dashboard/Editor2/types"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"

@@ -29,7 +29,7 @@ import RegistrationTranslations from "/translations/register"
 import { WideContainer } from "/components/Container"
 import { range } from "lodash"
 import withSignedIn from "/lib/with-signed-in"
-import LoginStateContext from "../../contexts/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
 

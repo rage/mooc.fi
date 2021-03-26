@@ -1,7 +1,7 @@
 import { signOut } from "/lib/authentication"
 import { useApolloClient } from "@apollo/client"
 import { useContext } from "react"
-import LanguageContext from "../../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import CommonTranslations from "/translations/common"
 import LangLink from "/components/LangLink"
 import nookies from "nookies"

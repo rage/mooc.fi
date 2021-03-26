@@ -1,4 +1,4 @@
-import AnchorContext, { Anchor } from "../contexts/AnchorContext"
+import AnchorContext, { Anchor } from "/contexts/AnchorContext"
 
 const withEnumeratingAnchors = <T,>(Component: any) => (props: any) => {
   let anchorId = 0

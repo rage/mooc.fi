@@ -1,6 +1,6 @@
 import { useState, useEffect, ChangeEvent } from "react"
 import { gql } from "@apollo/client"
-import ErrorBoundary from "../ErrorBoundary"
+import ErrorBoundary from "/components/ErrorBoundary"
 import { useLazyQuery } from "@apollo/client"
 
 import PointsList from "./DashboardPointsList"

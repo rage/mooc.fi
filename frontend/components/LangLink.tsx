@@ -1,6 +1,6 @@
 import { useContext, Children, cloneElement, PropsWithChildren } from "react"
 import Link, { LinkProps } from "next/link"
-import LanguageContext from "../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import { parse, format } from "url"
 
 export default function LangLink(props: PropsWithChildren<LinkProps>): any {
