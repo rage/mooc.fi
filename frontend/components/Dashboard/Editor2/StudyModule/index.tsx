@@ -56,7 +56,6 @@ const StudyModuleEdit = ({
   })
   const { trigger, formState } = methods
 
-  console.log(formState)
   useEffect(() => {
     trigger()
   }, [])

@@ -46,7 +46,7 @@ const updateResearchConsentMutation = gql`
   }
 `
 
-const ResearchConsentPage = () => {
+function useResearchConsent() {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(SignupTranslations)
 
@@ -82,6 +82,29 @@ const ResearchConsentPage = () => {
       setFormError(t("errorResearchSubmit"))
     }
   }
+
+  return {
+    data,
+    loading,
+    research,
+    handleInput,
+    formError,
+    submitting,
+    onSubmit,
+  }
+}
+
+const ResearchConsentPage = () => {
+  const t = useTranslator(SignupTranslations)
+
+  const {
+    loading,
+    research,
+    handleInput,
+    onSubmit,
+    formError,
+    submitting,
+  } = useResearchConsent()
 
   return (
     <StyledPaper>
