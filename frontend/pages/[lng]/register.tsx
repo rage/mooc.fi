@@ -139,16 +139,27 @@ const SkeletonCard = () => (
   </Card>
 )
 
-const Register = () => {
-  const t = useTranslator(RegistrationTranslations)
+function useSearchBox() {
+  const [searchBox, setSearchBox] = useState("")
+  const [searchFilter, cancelFilterDebounce] = useDebounce(searchBox, 1000)
+
+  return {
+    searchBox,
+    setSearchBox,
+    searchFilter,
+    cancelFilterDebounce,
+  }
+}
+
+function useRegisterOrganization(searchFilter: string) {
   const { currentUser } = useContext(LoginStateContext)
 
   const [memberships, setMemberships] = useState<Array<string>>([])
   const [organizations, setOrganizations] = useState<
     Record<string, Organizations_organizations>
   >({})
-  const [searchBox, setSearchBox] = useState("")
-  const [searchFilter, cancelFilterDebounce] = useDebounce(searchBox, 1000)
+  /*const [searchBox, setSearchBox] = useState("")
+  const [searchFilter, cancelFilterDebounce] = useDebounce(searchBox, 1000)*/
   const [filteredOrganizations, setFilteredOrganizations] = useState<
     Record<string, Organizations_organizations>
   >({})
@@ -285,7 +296,34 @@ const Register = () => {
     }
   }
 
-  if (organizationsError || userOrganizationsError) {
+  return {
+    error: organizationsError || userOrganizationsError,
+    loading: organizationsLoading,
+    organizations,
+    filteredOrganizations,
+    memberships,
+    toggleMembership,
+  }
+}
+
+const Register = () => {
+  const t = useTranslator(RegistrationTranslations)
+  const {
+    searchFilter,
+    cancelFilterDebounce,
+    searchBox,
+    setSearchBox,
+  } = useSearchBox()
+  const {
+    error,
+    loading,
+    toggleMembership,
+    organizations,
+    filteredOrganizations,
+    memberships,
+  } = useRegisterOrganization(searchFilter)
+
+  if (error /*organizationsError || userOrganizationsError*/) {
     return <ErrorMessage />
   }
 
@@ -321,7 +359,7 @@ const Register = () => {
           }}
         />
         <>
-          {organizationsLoading || !Object.keys(organizations).length ? (
+          {loading || !Object.keys(organizations).length ? (
             range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
           ) : Object.keys(filteredOrganizations).length ? (
             (Object.entries(filteredOrganizations) as Array<
