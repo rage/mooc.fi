@@ -12,7 +12,7 @@ import {
   faBook,
   faComments,
 } from "@fortawesome/free-solid-svg-icons"
-import LanguageContext from "../../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import TeachersTranslations from "/translations/teachers"
 import { H1NoBackground } from "/components/Text/headers"
 import { useTranslator } from "/util/useTranslator"

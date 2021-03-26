@@ -6,7 +6,7 @@ import { AllModules as AllModulesData } from "/static/types/generated/AllModules
 import { AllCourses as AllCoursesData } from "/static/types/generated/AllCourses"
 import ModuleNavi from "./ModuleNavi"
 import ModuleList from "./ModuleList"
-import LanguageContext from "../../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import HomeTranslations from "/translations/home"
 import { AllModules_study_modules_with_courses } from "/static/types/moduleTypes"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"

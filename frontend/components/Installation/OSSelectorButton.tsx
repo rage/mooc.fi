@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography"
 import styled from "@emotion/styled"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { userOsType } from "/util/getUserOS"
-import UserOSContext from "../../contexts/UserOSContext"
+import UserOSContext from "/contexts/UserOSContext"
 
 interface ButtonProps {
   selected: boolean

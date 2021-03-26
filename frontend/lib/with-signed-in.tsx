@@ -2,7 +2,7 @@ import { Component as ReactComponent } from "react"
 import { NextPageContext as NextContext } from "next"
 import { isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
-import LoginStateContext from "../contexts/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 let prevContext: NextContext | null = null
 

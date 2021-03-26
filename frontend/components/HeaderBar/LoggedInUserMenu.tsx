@@ -1,7 +1,7 @@
 import { useContext } from "react"
-import LanguageContext from "../../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import Typography from "@material-ui/core/Typography"
-import LangLink from "../LangLink"
+import LangLink from "components/LangLink"
 import styled from "@emotion/styled"
 import Button from "@material-ui/core/Button"
 import CommonTranslations from "/translations/common"
@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import LoginStateContext from "../../contexts/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {

@@ -8,7 +8,7 @@ import { Field } from "formik"
 import { TextField } from "formik-material-ui"
 import styled from "@emotion/styled"
 import { PropsWithChildren, useContext } from "react"
-import AnchorContext from "../../../contexts/AnchorContext"
+import AnchorContext from "/contexts/AnchorContext"
 import { CheckboxWithLabel } from "formik-material-ui"
 
 export const StyledTextField = styled(TextField)`

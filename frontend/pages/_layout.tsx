@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import Header from "../components/HeaderBar/Header"
+import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import Footer from "/components/Footer"
 import SkipLink from "/components/SkipLink"

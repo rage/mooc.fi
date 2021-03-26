@@ -12,7 +12,7 @@ import {
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import LanguageContext from "../../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"

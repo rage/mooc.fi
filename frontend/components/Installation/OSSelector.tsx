@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons"
 import { faLaptopCode as AnyOS } from "@fortawesome/free-solid-svg-icons"
 
-import userOsContext from "../../contexts/UserOSContext"
+import userOsContext from "/contexts/UserOSContext"
 import { useContext } from "react"
 const Container = styled.div`
   display: flex;

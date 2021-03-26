@@ -4,10 +4,10 @@ import CreateAccountForm from "/components/CreateAccountForm"
 
 import { RegularContainer } from "/components/Container"
 import withSignedOut from "/lib/with-signed-out"
-import AlertContext from "../../contexts/AlertContext"
-import LanguageContext from "../../contexts/LanguageContext"
+import AlertContext from "/contexts/AlertContext"
+import LanguageContext from "/contexts/LanguageContext"
 import SignUpTranslations from "/translations/sign-up"
-import LoginStateContext from "../../contexts/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 import Router from "next/router"
 import { useTranslator } from "/util/useTranslator"
 

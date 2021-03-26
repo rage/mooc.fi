@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { useContext, useMemo } from "react"
-import LanguageContext from "../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import getTranslator, {
   combineDictionaries,
   Translation,

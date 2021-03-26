@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import CompletionListItem from "/components/CompletionListItem"
-import LanguageContext from "../../contexts/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import ProfileTranslations from "/translations/profile"
 import LangLink from "/components/LangLink"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
