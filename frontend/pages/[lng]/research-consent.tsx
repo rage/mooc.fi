@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react"
 import styled from "@emotion/styled"
 import { Paper, CircularProgress } from "@material-ui/core"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "../../contexts/LanguageContext"
 import { useMutation, useQuery } from "@apollo/client"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import SignupTranslations from "/translations/sign-up"

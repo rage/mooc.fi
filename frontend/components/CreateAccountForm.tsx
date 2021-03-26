@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core"
 import { createAccount } from "../lib/account"
 import { signIn as authenticate } from "../lib/authentication"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "../contexts/LanguageContext"
 import SignUpTranslations from "/translations/sign-up"
 import LangLink from "/components/LangLink"
 import styled from "@emotion/styled"

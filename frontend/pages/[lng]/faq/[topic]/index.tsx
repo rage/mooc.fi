@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "../../../../contexts/LanguageContext"
 import FAQTranslations from "/translations/faq"
 import { useQueryParameter } from "/util/useQueryParameter"
 import {

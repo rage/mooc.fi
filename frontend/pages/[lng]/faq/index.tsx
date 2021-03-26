@@ -5,7 +5,7 @@ import {
   SectionBox,
   FAQPage,
 } from "/components/Home/FAQ/Common"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "../../../contexts/LanguageContext"
 
 export default function FAQ() {
   const { language } = useContext(LanguageContext)

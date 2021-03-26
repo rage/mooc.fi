@@ -4,7 +4,7 @@ import { AllCompletions as AllCompletionsData } from "/static/types/generated/Al
 import { AllCompletionsPrevious as AllCompletionsPreviousData } from "/static/types/generated/AllCompletionsPrevious"
 import { CircularProgress } from "@material-ui/core"
 import CompletionsListWithData from "./CompletionsListWithData"
-import CourseLanguageContext from "/contexes/CourseLanguageContext"
+import CourseLanguageContext from "../../contexts/CourseLanguageContext"
 import { useQuery } from "@apollo/client"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import notEmpty from "/util/notEmpty"
