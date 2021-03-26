@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { SingletonRouter, withRouter } from "next/router"
@@ -58,8 +58,6 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
   const slug = useQueryParameter("slug")
   const beta = useQueryParameter("beta", false)
 
-  let redirectTimeout: NodeJS.Timeout | null = null
-
   const { data, loading, error } = useQuery<StudyModuleDetails>(
     StudyModuleQuery,
     {
@@ -67,18 +65,32 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
     },
   )
 
+  useEffect(() => {
+    let redirectTimeout: NodeJS.Timeout | null = null
+
+    if (typeof window === "undefined") {
+      return
+    }
+
+    if (!loading && !data?.study_module) {
+      redirectTimeout = setTimeout(
+        () => router.push("/[lng]/study-modules", listLink, { shallow: true }),
+        5000,
+      )
+    }
+
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout)
+      }
+    }
+  }, [loading, data])
+
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
   const listLink = `${language ? "/" + language : ""}/study-modules`
-
-  if (!loading && !data?.study_module && typeof window !== "undefined") {
-    redirectTimeout = setTimeout(
-      () => router.push("/[lng]/study-modules", listLink, { shallow: true }),
-      5000,
-    )
-  }
 
   return (
     <section>
@@ -104,10 +116,11 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <LangLink href={listLink}>
+              <LangLink as={listLink} href="/[lng]/study-modules">
                 <a
                   onClick={() =>
-                    redirectTimeout && clearTimeout(redirectTimeout)
+                    //redirectTimeout && clearTimeout(redirectTimeout)
+                    {}
                   }
                   href=""
                 >
