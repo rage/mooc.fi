@@ -54,7 +54,7 @@ const StudyModuleEdit = ({
     resolver: customValidationResolver<StudyModuleFormValues>(validationSchema),
     mode: "onBlur",
   })
-  const { trigger, formState } = methods
+  const { trigger } = methods
 
   useEffect(() => {
     trigger()

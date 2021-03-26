@@ -6,7 +6,9 @@ import withAdmin from "/lib/with-admin"
 import LanguageContext from "../../../../contexts/LanguageContext"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"
-import UserSearchContext, { SearchVariables } from "../../../../contexts/UserSearchContext"
+import UserSearchContext, {
+  SearchVariables,
+} from "../../../../contexts/UserSearchContext"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
 
 const UserSearch = () => {
