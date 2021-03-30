@@ -8,5 +8,6 @@ export interface Message {
   service_id: string
   attempted: boolean | null
   required_actions: string[]
+  original_submission_date: string | null
   message_format_version: number
 }
