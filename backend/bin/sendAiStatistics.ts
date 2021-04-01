@@ -147,9 +147,33 @@ const langArr: langProps[] = [
   },
   {
     language: "sk",
-    completion_language: "sk__SK",
+    completion_language: "sk_SK",
     country: "Slovakia",
     langName: "Slovak",
+  },
+  {
+    language: "nl",
+    completion_language: "nl_NL",
+    country: "Netherlands",
+    langName: "Dutch (Netherlands)",
+  },
+  {
+    language: "pt",
+    completion_language: "pt_PT",
+    country: "Portugal",
+    langName: "Portuguese",
+  },
+  {
+    language: "de-at",
+    completion_language: "de_AT",
+    country: "Austria",
+    langName: "German (Austria)",
+  },
+  {
+    language: "el",
+    completion_language: "el_GR",
+    country: "Greece",
+    langName: "Greek",
   },
 ]
 
