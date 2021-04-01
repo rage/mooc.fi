@@ -3,7 +3,7 @@ import { NextPageContext as NextContext } from "next"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import AdminError from "/components/Dashboard/AdminError"
 import redirect from "/lib/redirect"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 let prevContext: NextContext | null = null
 
