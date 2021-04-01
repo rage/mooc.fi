@@ -143,6 +143,15 @@ const ManualCompletions = () => {
         age: -Math.floor(days ?? 0),
       }
     })
+
+    const filteredData = data.map((d) =>
+      Object.entries(d).reduce((acc, [key, value]) => {
+        if (key.trim() === "") return acc
+
+        return { ...acc, [key]: value }
+      }, {}),
+    )
+
     const okDates = !checkedDates.some((c) => Boolean(c.error))
 
     if (!okDates) {
@@ -169,14 +178,20 @@ const ManualCompletions = () => {
       })
         .then(() =>
           addCompletions({
-            variables: { course_id: courseData.course.id, completions: data },
+            variables: {
+              course_id: courseData.course.id,
+              completions: filteredData,
+            },
           }),
         )
         .catch(() => setSubmitting(false))
         .finally(() => setSubmitting(false))
     } else {
       addCompletions({
-        variables: { course_id: courseData.course.id, completions: data },
+        variables: {
+          course_id: courseData.course.id,
+          completions: filteredData,
+        },
       })
       setSubmitting(false)
     }
@@ -223,8 +238,10 @@ const ManualCompletions = () => {
         />
       </LocalizationProvider>
       <Typography>
-        Format: csv with header with fields: user_id[,grade][,completion_date] -
-        optional date in ISO 8601 format
+        Format: csv with header with fields:{" "}
+        <code>user_id[,grade][,completion_date]</code> - optional date in ISO
+        8601 format. At least one comma in header required, so if only user_id
+        is given, please give header as <code>user_id,</code>
       </Typography>
       <br />
       <StyledTextField
