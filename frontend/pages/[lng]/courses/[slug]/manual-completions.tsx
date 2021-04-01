@@ -13,6 +13,7 @@ import DatePicker from "@material-ui/lab/DatePicker"
 import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
 import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
 import { DateTime } from "luxon"
+import { useConfirm } from "material-ui-confirm"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -47,6 +48,8 @@ export const CourseIdBySluq = gql`
 `
 
 const ManualCompletions = () => {
+  const confirm = useConfirm()
+
   const [submitting, setSubmitting] = useState(false)
   const [input, setInput] = useState("")
   const [message, setMessage] = useState<string | null>(null)
@@ -55,7 +58,6 @@ const ManualCompletions = () => {
     "info" | "error" | "success" | "warning" | undefined
   >("info")
   const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
-
   const [
     addCompletions,
     { loading: mutationLoading, error: mutationError },
@@ -75,12 +77,133 @@ const ManualCompletions = () => {
   } = useQuery(CourseIdBySluq, {
     variables: { slug },
   })
+
+  const onSubmit = () => {
+    setSubmitting(true)
+    setMessage(null)
+    setMessageSeverity("info")
+    const parsed = Papa.parse(input, { header: true })
+    if (parsed.errors.length > 0) {
+      setMessage(JSON.stringify(parsed.errors, undefined, 2))
+      setMessageSeverity("error")
+      setMessageTitle("Error while parsing csv")
+      setSubmitting(false)
+      return
+    }
+
+    const data: {
+      user_id: string
+      grade?: string
+      completion_date?: string
+    }[] = parsed.data.map((d: any) => ({
+      ...d,
+      completion_date:
+        d.completion_date === "" || !d.completion_date
+          ? completionDate
+            ? completionDate?.toString()
+            : undefined
+          : DateTime.fromISO(d.completion_date).toString(),
+    }))
+    console.log(data)
+    if (data.length === 0) {
+      setMessage("Parsed 0 rows from csv. Did you only include the header row?")
+      setMessageSeverity("error")
+      setMessageTitle("No rows found")
+      setSubmitting(false)
+      return
+    }
+    if (!data.every((o) => o.user_id)) {
+      setMessage("Did not find column user_id for each row.")
+      setMessageSeverity("error")
+      setMessageTitle("Invalid csv")
+      setSubmitting(false)
+      return
+    }
+
+    const checkedDates = data.map((o, row) => {
+      const { days } = DateTime.fromISO(o.completion_date ?? "")
+        .diff(DateTime.local())
+        .shiftTo("days")
+        .toObject()
+      const error = !days
+        ? `The date is erroneous ((${o.completion_date})`
+        : days > 0
+        ? `The date is ${Math.round(days)} days in the future (${
+            o.completion_date
+          })`
+        : days < -30 * 4
+        ? `The date is ${-Math.round(days)} days in the past (${
+            o.completion_date
+          })`
+        : undefined
+
+      return {
+        row,
+        error,
+        age: -Math.floor(days ?? 0),
+      }
+    })
+
+    const filteredData = data.map((d) =>
+      Object.entries(d).reduce((acc, [key, value]) => {
+        if (key.trim() === "") return acc
+
+        return { ...acc, [key]: value }
+      }, {}),
+    )
+
+    const okDates = !checkedDates.some((c) => Boolean(c.error))
+
+    if (!okDates) {
+      confirm({
+        title: "There are errors",
+        description: (
+          <div
+            style={{
+              maxHeight: "30rem",
+              overflow: "scroll",
+            }}
+          >
+            There were errors in your data:
+            <pre>
+              {checkedDates
+                .filter((c) => Boolean(c.error))
+                .map((c) => `Row ${c.row}: ${c.error}`)
+                .join("\n")}
+            </pre>
+          </div>
+        ),
+        confirmationText: "Continue anyway",
+        cancellationText: "Cancel",
+      })
+        .then(() =>
+          addCompletions({
+            variables: {
+              course_id: courseData.course.id,
+              completions: filteredData,
+            },
+          }),
+        )
+        .catch(() => setSubmitting(false))
+        .finally(() => setSubmitting(false))
+    } else {
+      addCompletions({
+        variables: {
+          course_id: courseData.course.id,
+          completions: filteredData,
+        },
+      })
+      setSubmitting(false)
+    }
+  }
+
   if (courseError) {
     return <div>Could not find course</div>
   }
   if (courseLoading) {
     return <div>Loading</div>
   }
+
   return (
     <Container>
       <Typography variant="h3" component="h1">
@@ -109,7 +232,9 @@ const ManualCompletions = () => {
           inputFormat="yyyy-MM-dd"
           onChange={setCompletionDate}
           value={completionDate}
-          renderInput={(props) => <TextField {...props} variant="outlined" />}
+          renderInput={(props: any) => (
+            <TextField {...props} variant="outlined" />
+          )}
         />
       </LocalizationProvider>
       <Typography>
@@ -128,69 +253,7 @@ const ManualCompletions = () => {
         maxRows={5000}
         multiline
       />
-      <Button
-        disabled={submitting}
-        onClick={() => {
-          setSubmitting(true)
-          setMessage(null)
-          setMessageSeverity("info")
-          const parsed = Papa.parse(input, { header: true })
-          if (parsed.errors.length > 0) {
-            setMessage(JSON.stringify(parsed.errors, undefined, 2))
-            setMessageSeverity("error")
-            setMessageTitle("Error while parsing csv")
-            setSubmitting(false)
-            return
-          }
-
-          const data: {
-            user_id: string
-            grade?: string
-            completion_date?: string
-          }[] = parsed.data.map((d: any) => ({
-            ...d,
-            completion_date:
-              d.completion_date === "" || !d.completion_date
-                ? completionDate
-                  ? completionDate?.toString()
-                  : undefined
-                : DateTime.fromISO(d.completion_date).toString(),
-          }))
-          console.log(data)
-          if (data.length === 0) {
-            setMessage(
-              "Parsed 0 rows from csv. Did you only include the header row?",
-            )
-            setMessageSeverity("error")
-            setMessageTitle("No rows found")
-            setSubmitting(false)
-            return
-          }
-          if (!data.every((o) => o.user_id)) {
-            setMessage("Did not find column user_id for each row.")
-            setMessageSeverity("error")
-            setMessageTitle("Invalid csv")
-            setSubmitting(false)
-            return
-          }
-
-          const filteredData = data.map((d) =>
-            Object.entries(d).reduce((acc, [key, value]) => {
-              if (key.trim() === "") return acc
-
-              return { ...acc, [key]: value }
-            }, {}),
-          )
-
-          addCompletions({
-            variables: {
-              course_id: courseData.course.id,
-              completions: filteredData,
-            },
-          })
-          setSubmitting(false)
-        }}
-      >
+      <Button disabled={submitting} onClick={onSubmit}>
         Add completions
       </Button>
     </Container>
