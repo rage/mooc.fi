@@ -15,7 +15,7 @@ import range from "lodash/range"
 import LangLink from "/components/LangLink"
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexes/UserSearchContext"
+import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/util/useTranslator"
 import notEmpty from "/util/notEmpty"
 

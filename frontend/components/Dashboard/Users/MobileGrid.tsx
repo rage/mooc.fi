@@ -23,7 +23,7 @@ import Pagination from "/components/Dashboard/Users/Pagination"
 import styled from "@emotion/styled"
 import range from "lodash/range"
 import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexes/UserSearchContext"
+import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/util/useTranslator"
 
 const UserCard = styled(Card)`
