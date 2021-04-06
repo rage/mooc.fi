@@ -16,6 +16,10 @@ import {
 interface ExerciseEntryProps {
   exerciseCompletion: UserSummary_user_user_course_summary_exercise_completions
 }
+
+const round = (num: number, precision: number = 100) =>
+  Math.round(num * precision) / precision
+
 export default function ExerciseEntry({
   exerciseCompletion,
 }: ExerciseEntryProps) {
@@ -28,12 +32,13 @@ export default function ExerciseEntry({
       exerciseCompletion?.id ?? "_"
     ] ?? false
 
+  console.log(exerciseCompletion)
   return (
     <>
       <TableRow>
         <TableCell>{exerciseCompletion.exercise?.name}</TableCell>
         <TableCell>
-          {exerciseCompletion.n_points}/
+          {round(exerciseCompletion.n_points ?? 0)}/
           {exerciseCompletion.exercise?.max_points}
         </TableCell>
         <TableCell>
