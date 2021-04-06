@@ -5,7 +5,7 @@ import { checkCompletion } from "../userCourseProgress/userFunctions"
 import { ok, err, Result } from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
-import type Knex from "knex"
+import { Knex } from "knex"
 import { UserInputError } from "apollo-server-errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 

@@ -5,7 +5,6 @@ import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
 import { ok, err, Result } from "../../../../util/result"
 
-import _KnexConstructor from "knex"
 import { DatabaseInputError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"

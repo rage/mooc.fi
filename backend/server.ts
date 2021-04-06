@@ -7,7 +7,7 @@ import express from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
-import type Knex from "knex"
+import { Knex } from "knex"
 import { apiRouter } from "./api"
 
 const helmet = require("helmet")
