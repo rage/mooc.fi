@@ -83,7 +83,10 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   release()
 }
 
-const commit = async ({ consumer, logger }: KafkaContext, message: any) => {
+const commit = async (
+  { consumer, logger }: KafkaContext,
+  message: KafkaMessage,
+) => {
   if (commitCounter >= commitInterval) {
     logger.info("Committing...")
     await consumer.commitMessage(message)
