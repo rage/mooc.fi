@@ -43,6 +43,22 @@ Object {
             "n_points": 4,
             "timestamp": "1900-01-01T08:00:00.000Z",
           },
+          Object {
+            "exercise": Object {
+              "id": "50000000-0000-0000-0000-000000000004",
+              "max_points": null,
+              "name": "deleted exercise 4",
+            },
+            "exercise_completion_required_actions": Array [
+              Object {
+                "id": "66666666-0000-0000-0000-000000000004",
+                "value": "existing",
+              },
+            ],
+            "id": "60000000-0000-0000-0000-000000000004",
+            "n_points": 1,
+            "timestamp": "2000-01-01T08:00:00.000Z",
+          },
         ],
         "user_id": "20000000-0000-0000-0000-000000000102",
       },
@@ -56,7 +72,7 @@ Object {
           Object {
             "exercise": Object {
               "id": "50000000-0000-0000-0000-000000000001",
-              "max_points": null,
+              "max_points": 2,
               "name": "exercise 1",
             },
             "exercise_completion_required_actions": Array [],
@@ -67,29 +83,13 @@ Object {
           Object {
             "exercise": Object {
               "id": "50000000-0000-0000-0000-000000000002",
-              "max_points": null,
+              "max_points": 3,
               "name": "exercise 2",
             },
             "exercise_completion_required_actions": Array [],
             "id": "60000000-0000-0000-0000-000000000002",
             "n_points": 0,
             "timestamp": "1900-01-01T08:00:00.000Z",
-          },
-          Object {
-            "exercise": Object {
-              "id": "50000000-0000-0000-0000-000000000004",
-              "max_points": null,
-              "name": "exercise 4",
-            },
-            "exercise_completion_required_actions": Array [
-              Object {
-                "id": "66666666-0000-0000-0000-000000000004",
-                "value": "existing",
-              },
-            ],
-            "id": "60000000-0000-0000-0000-000000000004",
-            "n_points": 1,
-            "timestamp": "2000-01-01T08:00:00.000Z",
           },
         ],
         "user_id": "20000000-0000-0000-0000-000000000102",
