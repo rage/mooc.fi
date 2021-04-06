@@ -8,7 +8,7 @@ import {
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import { Add as AddIcon, AddCircle as AddCircleIcon } from "@material-ui/icons"
-import CourseImage from "../CourseImage"
+import CourseImage from "/components/CourseImage"
 import { AllEditorCourses_courses } from "/static/types/generated/AllEditorCourses"
 import styled from "@emotion/styled"
 import LangLink from "/components/LangLink"

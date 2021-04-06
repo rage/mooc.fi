@@ -1,6 +1,7 @@
 import { Grid } from "@material-ui/core"
 import PointsListItemCard from "./PointsListItemCard"
 import { UserCourseSettings_userCourseSettings_edges as Points } from "/static/types/generated/UserCourseSettings"
+import notEmpty from "/util/notEmpty"
 
 interface Props {
   pointsForUser: Points[]
@@ -13,10 +14,14 @@ const PointsList = (props: Props) => {
   return (
     <section>
       <Grid container spacing={3}>
-        {pointsForUser.map((p) =>
+        {pointsForUser.filter(notEmpty).map((p: Points) =>
           p?.node?.user?.progress ? (
             <PointsListItemCard
-              pointsAll={p.node.user.progress}
+              course={p.node.user.progress.course}
+              userCourseProgress={p.node.user.progress.user_course_progress}
+              userCourseServiceProgresses={p.node.user.progress.user_course_service_progresses?.filter(
+                notEmpty,
+              )}
               cutterValue={cutterValue}
               showPersonalDetails={true}
               personalDetails={{
