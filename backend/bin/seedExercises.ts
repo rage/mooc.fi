@@ -1,5 +1,6 @@
 import * as faker from "faker"
 import { Exercise } from "@prisma/client"
+import { sample } from "lodash"
 import prisma from "../prisma"
 
 const createExercise = () => ({
@@ -21,38 +22,39 @@ const addExercises = async () => {
   const courses = await prisma.course.findMany()
 
   for (const course of courses) {
-    Array.from({ length: Math.random() * 10 }).forEach(async (_) => {
-      await prisma.exercise.create({
-        data: {
-          ...createExercise(),
-          course: { connect: { id: course.id } },
-        },
-      })
-    })
+    await Promise.all(
+      Array.from({ length: Math.random() * 10 }).map(async (_) => {
+        return prisma.exercise.create({
+          data: {
+            ...createExercise(),
+            course: { connect: { id: course.id } },
+          },
+        })
+      }),
+    )
   }
 }
-
-const choice = <T>(a: T[]): T => a[Math.round(Math.random() * a.length)]
 
 const addExerciseCompletions = async () => {
   const users = await prisma.user.findMany()
   const exercises = await prisma.exercise.findMany()
 
   for (const user of users) {
-    Array.from({ length: Math.random() * 50 }).forEach(async (_) => {
-      const exercise = choice(exercises)
+    await Promise.all(
+      Array.from({ length: Math.random() * 50 }).map(async (_) => {
+        const exercise = sample(exercises)!
 
-      const data = {
-        ...createExerciseCompletion(exercise),
-        user: { connect: { id: user.id } },
-        exercise: { connect: { id: exercise.id } },
-      }
-      console.log("would create", data)
+        const data = {
+          ...createExerciseCompletion(exercise),
+          user: { connect: { id: user.id } },
+          exercise: { connect: { id: exercise.id } },
+        }
 
-      await prisma.exerciseCompletion.create({
-        data,
-      })
-    })
+        return prisma.exerciseCompletion.create({
+          data,
+        })
+      }),
+    )
   }
 }
 

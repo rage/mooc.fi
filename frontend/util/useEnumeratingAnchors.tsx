@@ -1,5 +1,5 @@
 import { useRef } from "react"
-import { Anchor } from "/contexes/AnchorContext"
+import { Anchor } from "../contexts/AnchorContext"
 import flattenKeys from "/util/flattenKeys"
 
 export function useEnumeratingAnchors(): [

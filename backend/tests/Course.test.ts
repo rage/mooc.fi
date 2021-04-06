@@ -1,6 +1,6 @@
 import { createReadStream } from "fs"
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMC } from "./__helpers"
+import { getTestContext, fakeTMCCurrent } from "./__helpers"
 import {
   //normalUser,
   normalUserDetails,
@@ -18,7 +18,7 @@ jest.mock("../services/kafkaProducer")
 import KafkaProducer from "../services/kafkaProducer"
 
 const ctx = getTestContext()
-const tmc = fakeTMC({
+const tmc = fakeTMCCurrent({
   "Bearer normal": [200, normalUserDetails],
   "Bearer admin": [200, adminUserDetails],
 })

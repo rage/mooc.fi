@@ -19,20 +19,15 @@ export interface UserPointsFragment_progresses_user_course_progress_exercise_pro
   exercises: number | null
 }
 
-export interface UserPointsFragment_progresses_user_course_progress_user {
-  __typename: "User"
-  first_name: string | null
-  last_name: string | null
-  username: string
-  email: string
-  real_student_number: string | null
-}
-
 export interface UserPointsFragment_progresses_user_course_progress {
   __typename: "UserCourseProgress"
+  id: string
+  course_id: string | null
+  max_points: number | null
+  n_points: number | null
   progress: (any | null)[] | null
+  extra: any | null
   exercise_progress: UserPointsFragment_progresses_user_course_progress_exercise_progress | null
-  user: UserPointsFragment_progresses_user_course_progress_user | null
 }
 
 export interface UserPointsFragment_progresses_user_course_service_progresses_service {

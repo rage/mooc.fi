@@ -1,13 +1,13 @@
 import { Message } from "./interfaces"
-import { ExerciseCompletion, User } from "@prisma/client"
+import { ExerciseCompletion } from "@prisma/client"
 import { DateTime } from "luxon"
 import { checkCompletion } from "../userCourseProgress/userFunctions"
-import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
-import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { DatabaseInputError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
 import { Knex } from "knex"
 import { UserInputError } from "apollo-server-errors"
+import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 
 // @ts-ignore: not used
 const isUserInDB = async (user_id: number, knex: Knex) => {
@@ -18,7 +18,7 @@ export const saveToDatabase = async (
   context: KafkaContext,
   message: Message,
 ): Promise<Result<string, Error>> => {
-  const { logger, prisma, knex } = context
+  const { logger, prisma } = context
 
   logger.info("Handling message: " + JSON.stringify(message))
   logger.info("Parsing timestamp")
@@ -26,24 +26,7 @@ export const saveToDatabase = async (
 
   logger.info(`Checking if user ${message.user_id} exists.`)
 
-  let user: User | null
-
-  user = (await knex("user").where("upstream_id", message.user_id).limit(1))[0]
-
-  if (!user) {
-    try {
-      user = await getUserFromTMC(prisma, message.user_id)
-    } catch (e) {
-      user = (
-        await knex("user").where("upstream_id", message.user_id).limit(1)
-      )[0]
-      if (!user) {
-        logger.error(new TMCError(`couldn't find user ${message.user_id}`, e))
-        throw e
-      }
-      logger.info("Mitigated race condition with user imports")
-    }
-  }
+  const user = await getUserWithRaceCondition(context, message.user_id)
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },
@@ -89,10 +72,15 @@ export const saveToDatabase = async (
       user: { upstream_id: Number(message.user_id) },
     },
     orderBy: { timestamp: "desc" },
+    include: {
+      exercise_completion_required_actions: true,
+    },
   })
 
   // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion
+
+  const required_actions = message.completed ? [] : message.required_actions
 
   if (!exerciseCompleted) {
     logger.info("No previous completion, creating a new one")
@@ -107,11 +95,7 @@ export const saveToDatabase = async (
       completed: message.completed,
       attempted: message.attempted !== null ? message.attempted : undefined,
       exercise_completion_required_actions: {
-        create: message.required_actions.map((ra) => {
-          return {
-            value: ra,
-          }
-        }),
+        create: required_actions.map((value) => ({ value })),
       },
       timestamp: timestamp.toJSDate(),
     }
@@ -135,6 +119,16 @@ export const saveToDatabase = async (
     if (timestamp <= oldTimestamp) {
       return ok("Timestamp older than in DB, aborting")
     }
+    const existingActions =
+      exerciseCompleted.exercise_completion_required_actions
+    const existingActionValues = existingActions?.map((ea) => ea.value) ?? []
+    const createActions = required_actions
+      .filter((ra) => !existingActionValues.includes(ra))
+      .map((value) => ({ value }))
+    const deletedActions = existingActions.filter(
+      (ea) => !required_actions.includes(ea.value),
+    )
+
     savedExerciseCompletion = await prisma.exerciseCompletion.update({
       where: { id: exerciseCompleted.id },
       data: {
@@ -144,11 +138,8 @@ export const saveToDatabase = async (
           set: message.attempted !== null ? message.attempted : undefined,
         },
         exercise_completion_required_actions: {
-          create: message.required_actions.map((ra) => {
-            return {
-              value: ra,
-            }
-          }),
+          create: createActions,
+          deleteMany: deletedActions.map((da) => ({ id: da.id })),
         },
         timestamp: { set: timestamp.toJSDate() },
       },

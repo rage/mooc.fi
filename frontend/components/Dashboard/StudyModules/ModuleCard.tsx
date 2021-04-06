@@ -86,8 +86,8 @@ interface ModuleCardProps {
 function ModuleCard({ module, loading }: ModuleCardProps) {
   const imageUrl = module
     ? module.image
-      ? `../../static/images/${module.image}`
-      : `../../static/images/${module.slug}.jpg`
+      ? `../../../static/images/${module.image}`
+      : `../../../static/images/${module.slug}.jpg`
     : "" // TODO: placeholder
 
   return (

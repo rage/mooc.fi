@@ -23,7 +23,7 @@ import Pagination from "/components/Dashboard/Users/Pagination"
 import styled from "@emotion/styled"
 import range from "lodash/range"
 import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexes/UserSearchContext"
+import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/util/useTranslator"
 
 const UserCard = styled(Card)`
@@ -164,15 +164,24 @@ const DataCard = ({
           })}
         </CardContent>
       </CardActionArea>
-      <CardActions>
+      <CardActions style={{ justifyContent: "flex-end" }}>
         {row ? (
-          <LangLink
-            as={`/users/${upstream_id}/completions`}
-            href="/users/[id]/completions"
-            passHref
-          >
-            <Button variant="contained">{t("completions")}</Button>
-          </LangLink>
+          <>
+            <LangLink
+              as={`/users/${upstream_id}/summary`}
+              href="/users/[id]/summary"
+              passHref
+            >
+              <Button variant="contained">{t("summary")}</Button>
+            </LangLink>
+            <LangLink
+              as={`/users/${upstream_id}/completions`}
+              href="/users/[id]/completions"
+              passHref
+            >
+              <Button variant="contained">{t("completions")}</Button>
+            </LangLink>
+          </>
         ) : (
           <Skeleton />
         )}

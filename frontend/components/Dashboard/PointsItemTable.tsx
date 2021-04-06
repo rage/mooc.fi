@@ -11,17 +11,19 @@ function PointsItemTable(props: TableProps) {
   const { studentPoints, showDetailedBreakdown, cutterValue } = props
   return (
     <>
-      {Object.keys(studentPoints).map(function (key) {
-        return (
-          <PointsListItemTableChart
-            key={key}
-            title={key}
-            points={studentPoints[key]}
-            cuttervalue={cutterValue}
-            showDetailed={showDetailedBreakdown}
-          />
-        )
-      })}
+      {Object.keys(studentPoints)
+        .sort()
+        .map(function (key) {
+          return (
+            <PointsListItemTableChart
+              key={key}
+              title={key}
+              points={studentPoints[key]}
+              cuttervalue={cutterValue}
+              showDetailed={showDetailedBreakdown}
+            />
+          )
+        })}
     </>
   )
 }
