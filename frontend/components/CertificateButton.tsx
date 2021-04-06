@@ -25,7 +25,6 @@ import { UserOverView_currentUser } from "/static/types/generated/UserOverView"
 import { useTranslator } from "/util/useTranslator"
 
 const StyledButton = styled(Button)`
-  height: 50%;
   margin: auto;
   background-color: #005361;
 `
@@ -176,6 +175,8 @@ const CertificateButton = ({ course }: CertificateProps) => {
         dispatch({ type: "RESET" })
       })
   }, [])
+
+  // TODO: when admin is looking at a user, it's checking against the admin's name -- fix
 
   const nameChanged = () =>
     (currentUser?.first_name ?? "") !== firstName ||

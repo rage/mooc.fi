@@ -63,9 +63,9 @@ const upsertOrganization = async (org: OrganizationInfo) => {
       data: convertUpdate(details), // TODO: remove convertUpdate
     })
   } else {
-    organization = await prisma.organization.create(
-      await detailsWithSecret(details),
-    )
+    organization = await prisma.organization.create({
+      data: await detailsWithSecret(details),
+    })
   }
   const translationDetails = {
     language: "fi_FI", //placholder since there is no language information
@@ -123,6 +123,7 @@ const getUserFromTmc = async (user_id: Number) => {
   })
 }
 
-fetchOrganizations()
-logger.info("Done")
-process.exit(0)
+fetchOrganizations().then(() => {
+  logger.info("Done")
+  process.exit(0)
+})

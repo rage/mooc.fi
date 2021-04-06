@@ -45,5 +45,15 @@
     "researchYes": "I want to participate in the educational research. By choosing this, you help both current and future students.",
     "researchNo": "I do not want to participate in the educational research.",
     "editorRevert": "Revert changes",
-    "selectNoChoice": "(no choice)"  
+    "selectNoChoice": "(no choice)"  ,
+    "showHidden": "Show hidden",
+    "Active": "Active",
+    "Upcoming": "Upcoming",
+    "Ended": "Ended",
+    "handledBy": "Handled by",
+    "search": "Search...",
+    "reset": "Reset",
+    "showAll": "Show all",
+    "hideAll": "Hide all"
+
 }

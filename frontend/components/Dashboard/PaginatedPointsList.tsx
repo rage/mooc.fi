@@ -17,6 +17,8 @@ import {
   UserCourseSettings_userCourseSettings_pageInfo,
 } from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"
+import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
+import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 
 export const StudentProgresses = gql`
   query UserCourseSettings($course_id: ID!, $skip: Int, $search: String) {
@@ -45,27 +47,8 @@ export const StudentProgresses = gql`
                 name
                 id
               }
-              user_course_progress {
-                progress
-                exercise_progress {
-                  total
-                  exercises
-                }
-                user {
-                  first_name
-                  last_name
-                  username
-                  email
-                  real_student_number
-                }
-              }
-              user_course_service_progresses {
-                progress
-                service {
-                  name
-                  id
-                }
-              }
+              ...ProgressUserCourseProgressFragment
+              ...ProgressUserCourseServiceProgressFragment
             }
           }
         }
@@ -73,6 +56,8 @@ export const StudentProgresses = gql`
       totalCount
     }
   }
+  ${ProgressUserCourseProgressFragment}
+  ${ProgressUserCourseServiceProgressFragment}
 `
 //       count(course_id: $course_id, search: $search)
 

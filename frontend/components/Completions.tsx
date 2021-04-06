@@ -57,9 +57,8 @@ const Title = styled(Typography)<any>`
   }
 `
 
-const Completions = (props: CompletionsProps) => {
+const Completions = ({ completions = [] }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)
-  const completions = props.completions || []
 
   return (
     <section>
@@ -68,8 +67,12 @@ const Completions = (props: CompletionsProps) => {
       </Title>
 
       <Container style={{ maxWidth: 900 }}>
-        {completions?.map((c) => (
-          <CompletionListItem key={`completion-${c.id}`} listItem={c} />
+        {completions?.map((completion) => (
+          <CompletionListItem
+            key={`completion-${completion.id}`}
+            course={completion.course!}
+            completion={completion}
+          />
         )) ?? <Typography>{t("nocompletionsText")}</Typography>}
       </Container>
     </section>
