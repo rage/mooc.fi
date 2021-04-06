@@ -1,10 +1,10 @@
 import styled from "@emotion/styled"
 import LangLink from "/components/LangLink"
 import { useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import { whichIsActive } from "/components/HeaderBar/Header"
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 
 interface ButtonProps {
   active: any

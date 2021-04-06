@@ -106,7 +106,7 @@ export const CompletionMutations = extendType({
             email: databaseUser.email,
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
-            completion_language: "unknown",
+            completion_language: null,
             course_id: course_id,
             user_id: databaseUser.id,
             grade: o.grade ?? null,

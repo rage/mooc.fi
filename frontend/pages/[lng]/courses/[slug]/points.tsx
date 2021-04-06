@@ -1,5 +1,5 @@
 import Container from "/components/Container"
-import CourseLanguageContext from "/contexes/CourseLanguageContext"
+import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import PaginatedPointsList from "/components/Dashboard/PaginatedPointsList"
 import { useQuery } from "@apollo/client"
