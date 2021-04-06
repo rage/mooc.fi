@@ -1,4 +1,8 @@
-import { getTestContext } from "../../tests/__helpers"
+import {
+  getTestContext,
+  fakeGetAccessToken,
+  fakeUserDetailReply,
+} from "../../tests/__helpers"
 import { seed } from "../../tests/data/seed"
 import nock from "nock"
 import {
@@ -10,18 +14,6 @@ import {
 import { TMCError } from "../lib/errors"
 
 const ctx = getTestContext()
-
-const TMC_HOST = process.env.TMC_HOST || ""
-
-const fakeGetAccessToken = (reply: [number, string]) =>
-  nock(TMC_HOST)
-    .post("/oauth/token")
-    .reply(() => [reply[0], { access_token: reply[1] }])
-
-const fakeUserDetailReply = (reply: [number, object]) =>
-  nock(TMC_HOST)
-    .get("/api/v8/users/recently_changed_user_details")
-    .reply(reply[0], () => reply[1])
 
 const changes: Array<Change> = [
   {

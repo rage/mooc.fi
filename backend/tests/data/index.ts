@@ -296,6 +296,12 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     course: { connect: { id: "00000000000000000000000000000002" } },
     custom_id: "customid3",
   },
+  {
+    id: "50000000-0000-0000-0000-000000000004",
+    name: "exercise 4",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    custom_id: "customid4",
+  },
 ]
 
 export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
@@ -329,5 +335,20 @@ export const exerciseCompletions: Prisma.ExerciseCompletionCreateInput[] = [
       },
     },
     n_points: 4,
+  },
+  {
+    id: "60000000-0000-0000-0000-000000000004",
+    exercise: { connect: { id: "50000000-0000-0000-0000-000000000004" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    timestamp: "2000-01-01T10:00:00.00+02:00",
+    completed: false,
+    attempted: true,
+    exercise_completion_required_actions: {
+      create: {
+        id: "66666666-0000-0000-0000-000000000004",
+        value: "existing",
+      },
+    },
+    n_points: 1,
   },
 ]
