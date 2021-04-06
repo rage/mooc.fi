@@ -16,6 +16,8 @@ import { Clear, Search } from "@material-ui/icons"
 
 import styled from "@emotion/styled"
 import { HandlerCourses_handlerCourses } from "/static/types/generated/HandlerCourses"
+import CommonTranslations from "/translations/common"
+import { useTranslator } from "/util/useTranslator"
 
 const Container = styled.div`
   background-color: white;
@@ -55,23 +57,36 @@ interface SearchVariables {
   status?: string[] | null
 }
 
+interface FilterFields {
+  hidden: boolean
+  status: boolean
+  handler: boolean
+}
 interface FilterProps {
   searchVariables: SearchVariables
   setSearchVariables: React.Dispatch<SearchVariables>
-  handlerCourses: HandlerCourses_handlerCourses[]
-  status: string[]
-  setStatus: React.Dispatch<React.SetStateAction<string[]>>
+  handlerCourses?: HandlerCourses_handlerCourses[]
+  status?: string[]
+  setStatus?: React.Dispatch<React.SetStateAction<string[]>>
   loading: boolean
+  fields?: FilterFields
 }
 
 export default function FilterMenu({
   searchVariables,
   setSearchVariables,
   loading,
-  handlerCourses,
-  status,
-  setStatus,
+  handlerCourses = [],
+  status = [],
+  setStatus = () => {},
+  fields,
 }: FilterProps) {
+  const t = useTranslator(CommonTranslations)
+  const {
+    hidden: showHidden = true,
+    status: showStatus = true,
+    handler: showHandler = true,
+  } = fields || {}
   const {
     search: initialSearch,
     hidden: initialHidden,
@@ -135,7 +150,7 @@ export default function FilterMenu({
       <Row>
         <TextField
           id="searchString"
-          label="Search"
+          label={t("search")}
           value={searchString}
           autoComplete="off"
           variant="outlined"
@@ -161,68 +176,76 @@ export default function FilterMenu({
           style={{ gridColumn: "span 6" }}
         />
       </Row>
-      <Row>
-        <FormControl disabled={loading} style={{ gridArea: "hidden" }}>
-          <FormControlLabel
-            label="Show hidden"
-            control={
-              <Checkbox
-                id="hidden"
-                checked={hidden}
-                onChange={handleHiddenChange}
-              />
-            }
-          />
-        </FormControl>
-        <FormControl disabled={loading} style={{ gridArea: "status" }}>
-          <div style={{ display: "flex" }}>
-            {["Active", "Upcoming", "Ended"].map((value) => (
+      {showHidden || showHandler || showStatus ? (
+        <Row>
+          {showHidden ? (
+            <FormControl disabled={loading} style={{ gridArea: "hidden" }}>
               <FormControlLabel
-                label={value}
-                key={value}
+                label={t("showHidden")}
                 control={
                   <Checkbox
-                    id={value}
-                    checked={status.includes(value)}
-                    onChange={handleStatusChange(value)}
+                    id="hidden"
+                    checked={hidden}
+                    onChange={handleHiddenChange}
                   />
                 }
               />
-            ))}
-          </div>
-        </FormControl>
-        <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
-          <InputLabel
-            id="handledBy"
-            shrink={Boolean(handledBy)}
-            ref={inputLabel}
-          >
-            Handled by
-          </InputLabel>
-          <Select
-            value={loading ? "" : handledBy}
-            variant="outlined"
-            onChange={handleHandledByChange}
-            input={
-              <OutlinedInput
-                notched={Boolean(handledBy)}
-                labelWidth={labelWidth}
-                name="handledBy"
+            </FormControl>
+          ) : null}
+          {showStatus ? (
+            <FormControl disabled={loading} style={{ gridArea: "status" }}>
+              <div style={{ display: "flex" }}>
+                {["Active", "Upcoming", "Ended"].map((value) => (
+                  <FormControlLabel
+                    label={t(value as any)}
+                    key={value}
+                    control={
+                      <Checkbox
+                        id={value}
+                        checked={status.includes(value)}
+                        onChange={handleStatusChange(value)}
+                      />
+                    }
+                  />
+                ))}
+              </div>
+            </FormControl>
+          ) : null}
+          {showHandler ? (
+            <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
+              <InputLabel
                 id="handledBy"
-              />
-            }
-          >
-            <MenuItem value="" key="handleempty">
-              &nbsp;
-            </MenuItem>
-            {handlerCourses?.map((course) => (
-              <MenuItem key={`handled-${course.id}`} value={course.slug}>
-                {course.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Row>
+                shrink={Boolean(handledBy)}
+                ref={inputLabel}
+              >
+                {t("handledBy")}
+              </InputLabel>
+              <Select
+                value={loading ? "" : handledBy}
+                variant="outlined"
+                onChange={handleHandledByChange}
+                input={
+                  <OutlinedInput
+                    notched={Boolean(handledBy)}
+                    labelWidth={labelWidth}
+                    name="handledBy"
+                    id="handledBy"
+                  />
+                }
+              >
+                <MenuItem value="" key="handleempty">
+                  &nbsp;
+                </MenuItem>
+                {handlerCourses?.map((course) => (
+                  <MenuItem key={`handled-${course.id}`} value={course.slug}>
+                    {course.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          ) : null}
+        </Row>
+      ) : null}
       <Row style={{ display: "flex", flexDirection: "row-reverse" }}>
         <Button
           disabled={loading}
@@ -232,7 +255,7 @@ export default function FilterMenu({
           style={{ marginLeft: "0.5rem" }}
           startIcon={<Search />}
         >
-          Search
+          {t("search")}
         </Button>
         <Button
           disabled={loading}
@@ -251,7 +274,7 @@ export default function FilterMenu({
           }}
           style={{ marginLeft: "0.5rem" }}
         >
-          Reset
+          {t("reset")}
         </Button>
       </Row>
     </Container>

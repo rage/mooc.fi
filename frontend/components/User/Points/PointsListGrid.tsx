@@ -1,6 +1,10 @@
-import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
+import {
+  UserPoints as UserPointsData,
+  UserPoints_currentUser_progresses,
+} from "/static/types/generated/UserPoints"
 import Grid from "@material-ui/core/Grid"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
+import notEmpty from "/util/notEmpty"
 
 interface GridProps {
   data: UserPointsData
@@ -15,12 +19,18 @@ function PointsListGrid(props: GridProps) {
 
   return (
     <Grid container spacing={3}>
-      {progressesToShow.map((progress, index) => (
-        <PointsListItemCard
-          key={`${progress.course?.id}-${index}`}
-          pointsAll={progress}
-        />
-      ))}
+      {progressesToShow.map(
+        (progress: UserPoints_currentUser_progresses, index) => (
+          <PointsListItemCard
+            key={`${progress.course?.id}-${index}`}
+            course={progress.course}
+            userCourseProgress={progress.user_course_progress}
+            userCourseServiceProgresses={progress.user_course_service_progresses?.filter(
+              notEmpty,
+            )}
+          />
+        ),
+      )}
     </Grid>
   )
 }
