@@ -68,6 +68,9 @@ jobs:
           path: ~/project/backend/coverage/jest
           destination: backend-tests
       - run:
+          name: "Upload coverage"
+          command: "cd ~/project/backend && bash <(curl -s https://codecov.io/bash)"
+      - run:
           name: "Push image if on master"
           command: "bin/push-docker-backend-image.sh"
 
