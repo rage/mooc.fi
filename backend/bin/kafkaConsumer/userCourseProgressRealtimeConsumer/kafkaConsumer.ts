@@ -10,10 +10,10 @@ import {
   handleNullProgress,
 } from "../common/userCourseProgress/validate"
 import { saveToDatabase } from "../common/userCourseProgress/saveToDB"
-import prisma from "../../lib/prisma"
+import prisma from "../../../prisma"
 import sentryLogger from "../../lib/logger"
 import config from "../kafkaConfig"
-import { createKafkaConsumer } from "../common/kafkaConsumer"
+import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 import knex from "../../../services/knex"
@@ -24,7 +24,7 @@ const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]
 const logger = sentryLogger({
   service: "kafka-consumer-UserCourseProgress-realtime",
 })
-const consumer = createKafkaConsumer(logger)
+const consumer = createKafkaConsumer({ logger, prisma })
 
 consumer.connect()
 

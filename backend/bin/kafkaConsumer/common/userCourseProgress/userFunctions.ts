@@ -234,7 +234,7 @@ export const createCompletion = async ({
         student_number: user.student_number,
         completion_language: userCourseSettings?.language
           ? languageCodeMapping[userCourseSettings.language]
-          : "unknown",
+          : null,
         eligible_for_ects:
           tier === 1
             ? false

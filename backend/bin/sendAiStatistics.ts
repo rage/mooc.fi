@@ -3,7 +3,7 @@ require("dotenv-safe").config({
 })
 import SlackPoster from "./lib/slackPoster"
 import Knex from "../services/knex"
-import prisma from "./lib/prisma"
+import prisma from "../prisma"
 import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "send-ai-statistics" })
@@ -147,9 +147,33 @@ const langArr: langProps[] = [
   },
   {
     language: "sk",
-    completion_language: "sk__SK",
+    completion_language: "sk_SK",
     country: "Slovakia",
     langName: "Slovak",
+  },
+  {
+    language: "nl",
+    completion_language: "nl_NL",
+    country: "Netherlands",
+    langName: "Dutch (Netherlands)",
+  },
+  {
+    language: "pt",
+    completion_language: "pt_PT",
+    country: "Portugal",
+    langName: "Portuguese",
+  },
+  {
+    language: "de-at",
+    completion_language: "de_AT",
+    country: "Austria",
+    langName: "German (Austria)",
+  },
+  {
+    language: "el",
+    completion_language: "el_GR",
+    country: "Greece",
+    langName: "Greek",
   },
 ]
 

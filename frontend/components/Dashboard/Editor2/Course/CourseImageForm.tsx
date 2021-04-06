@@ -12,7 +12,7 @@ import { Button } from "@material-ui/core"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { useState } from "react"
 import ImportPhotoDialog from "./ImportPhotoDialog"
-import { useLanguageContext } from "/contexes/LanguageContext"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import {
   FormSubtitle,
   FormFieldGroup,

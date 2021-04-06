@@ -10,7 +10,7 @@ import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
 import nock from "nock"
-import binPrisma from "../bin/lib/prisma"
+import binPrisma from "../prisma"
 
 const DEBUG = Boolean(process.env.DEBUG)
 
@@ -94,7 +94,7 @@ function createTestContext(testContext: TestContext) {
     async before() {
       const { prisma, knexClient } = await prismaCtx.before()
 
-      const { apollo, express } = server({
+      const { apollo, app } = server({
         prisma,
         knex: knexClient,
         logger: testContext.logger,
@@ -107,7 +107,7 @@ function createTestContext(testContext: TestContext) {
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 6000) })
-          serverInstance = express.listen(port)
+          serverInstance = app.listen(port)
           DEBUG && console.log(`got port ${port}`)
 
           return {

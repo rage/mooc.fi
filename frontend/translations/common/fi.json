@@ -45,6 +45,15 @@
     "researchYes": "Osallistun oppimiseen liittyvään tutkimukseen. Valitsemalla tämän autat sekä nykyisiä että tulevia opiskelijoita.",
     "researchNo": "En osallistu oppimiseen liittyvään tutkimukseen.",
     "editorRevert": "Peru muutokset",
-    "selectNoChoice": "(ei valintaa)"  
+    "selectNoChoice": "(ei valintaa)",
+    "showHidden": "Näytä piilotetut",
+    "Active": "Käynnissä",
+    "Upcoming": "Tulossa",
+    "Ended": "Loppunut",
+    "handledBy": "Handled by",
+    "search": "Etsi...",
+    "reset": "Tyhjennä",
+    "showAll": "Näytä kaikki",
+    "hideAll": "Piilota kaikki"
 }
 

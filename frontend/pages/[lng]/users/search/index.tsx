@@ -3,10 +3,10 @@ import { UserDetailsContains } from "/static/types/generated/UserDetailsContains
 import Container from "/components/Container"
 import { gql, useLazyQuery } from "@apollo/client"
 import withAdmin from "/lib/with-admin"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"
-import UserSearchContext, { SearchVariables } from "/contexes/UserSearchContext"
+import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
 
 const UserSearch = () => {
