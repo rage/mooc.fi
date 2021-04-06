@@ -1,6 +1,8 @@
 import { gql } from "graphql-request"
 import { getTestContext, fakeTMC } from "./__helpers"
 import { adminUserDetails, normalUser, normalUserDetails } from "./data"
+import { seed } from "./data/seed"
+import { orderBy } from "lodash"
 
 const addUserMutation = gql`
   mutation AddUser($user: UserArg!) {
@@ -40,6 +42,21 @@ const tmc = fakeTMC({
   "Bearer normal": [200, normalUserDetails],
   "Bearer admin": [200, adminUserDetails],
 })
+
+const sortByExercise = (data: any) => {
+  if (!data?.exercise_completions) {
+    return data
+  }
+
+  return {
+    ...data,
+    exercise_completions: orderBy(
+      data.exercise_completions.map((ec: any) => ec.exercise),
+      ["id"],
+      ["asc"],
+    ),
+  }
+}
 
 describe("User", () => {
   describe("queries", () => {
@@ -130,6 +147,63 @@ describe("User", () => {
         }
       `,
         )
+      })
+    })
+
+    describe("user_course_summary", () => {
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+      })
+
+      it("returns courses with completions", async () => {
+        ctx!.client.setHeader("Authorization", "Bearer normal")
+
+        const res = await ctx.client.request(`
+          query {
+            currentUser {
+              id
+              user_course_summary {
+                user_id
+                course_id
+                course {
+                  id
+                  name
+                }
+                exercise_completions {
+                  id
+                  timestamp
+                  n_points
+                  exercise {
+                    id
+                    name
+                    max_points
+                  }
+                  exercise_completion_required_actions {
+                    id
+                    value
+                  }
+                }
+              }
+            }
+          }
+        `)
+
+        const sortedRes = {
+          currentUser: {
+            ...res?.currentUser,
+            user_course_summary: [
+              ...res?.currentUser?.user_course_summary?.map((cs: any) => ({
+                ...cs,
+                exercise_completions: orderBy(
+                  cs?.exercise_completions?.map(sortByExercise),
+                  ["id"],
+                ),
+              })),
+            ],
+          },
+        }
+
+        expect(sortedRes).toMatchSnapshot()
       })
     })
   })

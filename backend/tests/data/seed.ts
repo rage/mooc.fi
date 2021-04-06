@@ -7,6 +7,8 @@ import {
   completions,
   services,
   userCourseSettings,
+  exercises,
+  exerciseCompletions,
 } from "."
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
@@ -35,6 +37,11 @@ export const seed = async (prisma: PrismaClient) => {
     "userCourseSetting",
     userCourseSettings,
   )
+  const seededExercises = await create("exercise", exercises)
+  const seededExerciseCompletions = await create(
+    "exerciseCompletion",
+    exerciseCompletions,
+  )
 
   return {
     courses: seededCourses,
@@ -44,5 +51,7 @@ export const seed = async (prisma: PrismaClient) => {
     completions: seededCompletions,
     services: seededServices,
     userCourseSettings: seededUserCourseSettings,
+    exercises: seededExercises,
+    exerciseCompletions: seededExerciseCompletions,
   }
 }
