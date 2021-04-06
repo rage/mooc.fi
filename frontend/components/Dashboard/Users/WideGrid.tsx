@@ -75,7 +75,8 @@ const WideGrid = () => {
                 {t("userStudentNumber")}
               </StyledTableCell>
               <StyledTableCell align="right">
-                {t("completions")}
+                {/*t("summary")*/}
+                {/*t("completions")*/}
               </StyledTableCell>
             </TableRow>
           </TableHead>
@@ -134,11 +135,20 @@ const RenderResults = () => {
             <TableCell align="right">{student_number}</TableCell>
             <TableCell align="right">
               <LangLink
+                as={`/users/${upstream_id}/summary`}
+                href="/users/[id]/summary"
+                passHref
+              >
+                <Button variant="contained" style={{ marginRight: "0.5rem" }}>
+                  {t("summary")}
+                </Button>
+              </LangLink>
+              <LangLink
                 as={`/users/${upstream_id}/completions`}
                 href="/users/[id]/completions"
                 passHref
               >
-                <Button variant="contained">Completions</Button>
+                <Button variant="contained">{t("completions")}</Button>
               </LangLink>
             </TableCell>
           </TableRow>

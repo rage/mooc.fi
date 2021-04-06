@@ -94,4 +94,5 @@ export const CardSubtitle = styled(Typography)<any>`
   margin-left: 0.1rem;
   margin-right: 0.1rem;
   color: gray;
+  font-family: "Open Sans Condensed", sans-serif !important;
 `
