@@ -156,13 +156,13 @@ function createPath(originalUrl) {
   /*   if (originalUrl === "/") {
     url = "/en/"
   } else  */
-  if (originalUrl.match(/^\/en\/?$/)) {
+  if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
-  } else if (originalUrl.startsWith("/en")) {
+  } else if (originalUrl?.startsWith("/en")) {
     url = originalUrl.replace("/en/", "/fi/")
-  } else if (originalUrl.startsWith("/se")) {
+  } else if (originalUrl?.startsWith("/se")) {
     url = originalUrl.replace("/se/", "/fi/")
-  } else if (originalUrl.startsWith("/fi")) {
+  } else if (originalUrl?.startsWith("/fi")) {
     url = originalUrl.replace("/fi/", "/en/")
   } else {
     url = "/en" + originalUrl

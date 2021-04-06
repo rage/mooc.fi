@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client"
-import type Knex from "knex"
+import { Knex } from "knex"
 import { Router } from "express"
 
 import { completions } from "./completions"
