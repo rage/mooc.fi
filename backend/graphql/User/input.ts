@@ -10,6 +10,5 @@ export const UserArg = inputObjectType({
     t.nonNull.string("email")
     t.nonNull.boolean("research_consent")
     t.nonNull.string("password")
-    t.nonNull.string("password_throttle")
   },
 })

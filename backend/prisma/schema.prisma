@@ -405,7 +405,7 @@ model User {
   verified_users                 VerifiedUser[]
   ab_enrollments                 AbEnrollment[]
   password                       String
-  password_throttle              String
+  password_throttle              Json?
 
   @@map("user")
 }
