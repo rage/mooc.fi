@@ -9,7 +9,7 @@ export interface UserInfo {
   password_throttle: [] | null
 }
 
-export interface ExtraFields { }
+export interface ExtraFields {}
 
 export interface UserField {
   first_name: string
