@@ -43,7 +43,7 @@ export class KafkaMessageError extends CustomError {
 export class KafkaCommitError extends CustomError {
   name = "KafkaCommitError"
 
-  constructor(message: string, error?: Error) {
+  constructor(message: string, readonly error?: Error) {
     super(message)
   }
 }
