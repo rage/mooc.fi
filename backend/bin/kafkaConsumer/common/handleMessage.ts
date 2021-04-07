@@ -3,13 +3,11 @@ import * as yup from "yup"
 import config from "../kafkaConfig"
 import {
   DatabaseInputError,
-  KafkaError,
   KafkaMessageError,
   ValidationError,
 } from "../../lib/errors"
 import { Result } from "../../../util/result"
 import { KafkaContext } from "./kafkaContext"
-import { promisify } from "util"
 
 // Each partition has their own commit counter
 let commitCounterMap = new Map<number, number>()
