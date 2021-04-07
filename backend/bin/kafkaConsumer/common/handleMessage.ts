@@ -11,7 +11,8 @@ import { Result } from "../../../util/result"
 import { KafkaContext } from "./kafkaContext"
 import { promisify } from "util"
 
-let commitCounter = 0
+// Each partition has their own commit counter
+let commitCounterMap = new Map<number, number>()
 
 const commitInterval = config.commit_interval
 
@@ -87,25 +88,30 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 
 const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
   const { logger, consumer } = kafkaContext
-  const commitMessage = promisify(consumer.commitMessage.bind(this))
+  const commitMessage = promisify(consumer.commitMessage.bind(consumer))
+
+  const commitCounter = commitCounterMap.get(message.partition) || 0
 
   if (commitCounter >= commitInterval) {
     logger.info(
       `Committing partition ${message.partition} offset ${message.offset}`,
     )
-    commitCounter = 0
+    commitCounterMap.set(message.partition, 0)
     try {
       await commitMessage(message)
     } catch (error) {
       logger.error(
-        new KafkaError(`Could commit partition ${message.partition}`, error),
+        new KafkaError(
+          `Could not commit partition ${message.partition}`,
+          error,
+        ),
       )
       console.log("Reason: ", error.message)
       console.log(error.stack)
     }
     reportQueueLength(kafkaContext, message.partition, message.offset)
   }
-  commitCounter++
+  commitCounterMap.set(message.partition, commitCounter + 1)
 }
 
 const reportQueueLength = (
@@ -131,7 +137,7 @@ const reportQueueLength = (
       const totalNumberOfMessages = offsets.highOffset - offsets.lowOffset
       const relativePosition = committedOffset - offsets.lowOffset
       const positionPercentage =
-        Number((relativePosition / totalNumberOfMessages).toFixed(2)) * 100
+        Number((relativePosition / totalNumberOfMessages).toFixed(4)) * 100
       ctx.logger.info(
         `Status for partition ${partition_id}: ${relativePosition}/${totalNumberOfMessages} (${positionPercentage}%})`,
       )
