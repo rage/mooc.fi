@@ -41,7 +41,7 @@ spec:
                   name: redis
                   key: redis-password
             - name: KAFKA_TOP_OF_THE_QUEUE
-              value: 1
+              value: "1"
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"
