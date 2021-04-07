@@ -248,8 +248,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
     first_name: details.user_field.first_name.trim(),
     last_name: details.user_field.last_name.trim(),
     username: details.username,
-    password: "password",
-    password_throttle: "[]",
+    password: "password"
   }
   try {
     const result = await prisma.user.upsert({
@@ -262,8 +261,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   } catch (e) {
     logger.error(
       new DatabaseInputError(
-        `Failed to upsert user with upstream id ${
-          details.id
+        `Failed to upsert user with upstream id ${details.id
         }. Values we tried to upsert: ${JSON.stringify(prismaDetails)}`,
         details,
         e,

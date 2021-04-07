@@ -84,9 +84,7 @@ export const UserMutations = extendType({
         return ctx.prisma.user.create({
           data: {
             ...user,
-            administrator: false,
-            password: "password",
-            password_throttle: "[]",
+            administrator: false
           },
         })
       },

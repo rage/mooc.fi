@@ -20,7 +20,6 @@ const addUserMutation = gql`
       upstream_id
       administrator
       password
-      password_throttle
     }
   }
 `
@@ -243,8 +242,7 @@ describe("User", () => {
             username: "username",
             research_consent: false,
             upstream_id: 1,
-            password: "password",
-            password_throttle: "[]",
+            password: "password"
           },
         })
 
@@ -269,8 +267,7 @@ describe("User", () => {
               username: "username",
               research_consent: false,
               upstream_id: 1,
-              password: "password",
-              password_throttle: "[]",
+              password: "password"
             },
           })
         }).rejects.toThrow()
@@ -320,7 +317,7 @@ describe("User", () => {
             value: true,
           })
           fail()
-        } catch {}
+        } catch { }
       })
     })
 
@@ -350,7 +347,7 @@ describe("User", () => {
         try {
           await ctx!.client.request(updateUserNameMutation, {})
           fail()
-        } catch {}
+        } catch { }
       })
     })
   })

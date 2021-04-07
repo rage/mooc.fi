@@ -9,7 +9,6 @@ Object {
     "id": Any<String>,
     "last_name": "last",
     "password": "password",
-    "password_throttle": "[]",
     "research_consent": false,
     "upstream_id": 1,
     "username": "username",
