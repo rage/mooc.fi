@@ -88,7 +88,6 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 
 const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
   const { logger, consumer } = kafkaContext
-  const commitMessage = promisify(consumer.commitMessage.bind(consumer))
 
   const commitCounter = commitCounterMap.get(message.partition) || 0
 
@@ -97,18 +96,8 @@ const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
       `Committing partition ${message.partition} offset ${message.offset}`,
     )
     commitCounterMap.set(message.partition, 0)
-    try {
-      await commitMessage(message)
-    } catch (error) {
-      logger.error(
-        new KafkaError(
-          `Could not commit partition ${message.partition}`,
-          error,
-        ),
-      )
-      console.log("Reason: ", error.message)
-      console.log(error.stack)
-    }
+
+    consumer.commitMessage(message)
     reportQueueLength(kafkaContext, message.partition, message.offset)
   }
   commitCounterMap.set(message.partition, commitCounter + 1)
