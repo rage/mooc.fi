@@ -88,6 +88,7 @@ const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
   const { logger, consumer } = kafkaContext
 
   const commitCounter = commitCounterMap.get(message.partition) || 0
+  commitCounterMap.set(message.partition, commitCounter + 1)
 
   if (commitCounter >= commitInterval) {
     logger.info(
@@ -98,7 +99,6 @@ const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
     consumer.commitMessage(message)
     reportQueueLength(kafkaContext, message.partition, message.offset)
   }
-  commitCounterMap.set(message.partition, commitCounter + 1)
 }
 
 const reportQueueLength = (
@@ -117,22 +117,15 @@ const reportQueueLength = (
         )
         return
       }
+      const messagesInQueue = offsets.highOffset - committedOffset
+
       ctx.logger.info(
-        `Got topic ${ctx.topic_name} partition ${partition_id} offsets`,
+        `Status for partition ${partition_id}: ${messagesInQueue} messages in queue.`,
         {
-          offsets: {
-            lowOffset: offsets.lowOffset,
-            highOffSet: offsets.highOffset,
-          },
-          committedOffset,
+          lowOffset: offsets.lowOffset,
+          highoffSet: offsets.highOffset,
+          messageOffset: committedOffset,
         },
-      )
-      const totalNumberOfMessages = offsets.highOffset - offsets.lowOffset
-      const relativePosition = committedOffset - offsets.lowOffset
-      const positionPercentage =
-        Number((relativePosition / totalNumberOfMessages).toFixed(4)) * 100
-      ctx.logger.info(
-        `Status for partition ${partition_id}: ${relativePosition}/${totalNumberOfMessages} (${positionPercentage}%)`,
       )
     },
   )
