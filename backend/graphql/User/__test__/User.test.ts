@@ -242,7 +242,7 @@ describe("User", () => {
             username: "username",
             research_consent: false,
             upstream_id: 1,
-            password: "password"
+            password: "password",
           },
         })
 
@@ -267,7 +267,7 @@ describe("User", () => {
               username: "username",
               research_consent: false,
               upstream_id: 1,
-              password: "password"
+              password: "password",
             },
           })
         }).rejects.toThrow()
@@ -317,7 +317,7 @@ describe("User", () => {
             value: true,
           })
           fail()
-        } catch { }
+        } catch {}
       })
     })
 
@@ -347,7 +347,7 @@ describe("User", () => {
         try {
           await ctx!.client.request(updateUserNameMutation, {})
           fail()
-        } catch { }
+        } catch {}
       })
     })
   })

@@ -8,7 +8,7 @@ export const normalUser = {
   first_name: "first",
   last_name: "last",
   username: "user",
-  password: "password"
+  password: "password",
 }
 
 export const normalUserDetails: UserInfo = {
@@ -24,7 +24,7 @@ export const normalUserDetails: UserInfo = {
   },
   username: "user",
   extra_fields: {},
-  password: "password"
+  password: "password",
 }
 
 export const adminUser = {
@@ -34,7 +34,7 @@ export const adminUser = {
   first_name: "first",
   last_name: "last",
   username: "admin",
-  password: "password"
+  password: "password",
 }
 
 export const adminUserDetails = {
@@ -50,7 +50,7 @@ export const adminUserDetails = {
   },
   username: "admin",
   extra_fields: {},
-  password: "password"
+  password: "password",
 }
 
 export const organizations: Prisma.OrganizationCreateInput[] = [
@@ -205,7 +205,7 @@ export const users: Prisma.UserCreateInput[] = [
     email: "e@mail.com",
     upstream_id: 1,
     username: "existing_user",
-    password: "password"
+    password: "password",
   },
   {
     id: "20000000000000000000000000000103",
@@ -213,7 +213,7 @@ export const users: Prisma.UserCreateInput[] = [
     email: "f@mail.com",
     upstream_id: 2,
     username: "second_user_admin",
-    password: "password"
+    password: "password",
   },
   {
     id: "20000000000000000000000000000104",
@@ -223,7 +223,7 @@ export const users: Prisma.UserCreateInput[] = [
     username: "third_user",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
-    password: "password"
+    password: "password",
   },
   {
     id: "20000000000000000000000000000105",
