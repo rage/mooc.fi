@@ -12,7 +12,8 @@
     "generate-graphql-types-safe": "rm -rf /tmp/static-types-generated/ && mkdir -p /tmp/static-types-generated/ && apollo codegen:generate  --outputFlat --tagName=gql --target=typescript /tmp/static-types-generated/ && rm -rf ./static/types/generated && mkdir -p ./static/types/generated && mv /tmp/static-types-generated/* ./static/types/generated",
     "generate-graphql-types": "rm -rf ./static/types/generated/ && mkdir -p ./static/types/generated/  && apollo codegen:generate  --outputFlat --tagName=gql --target=typescript ./static/types/generated/",
     "generate-page-stubs": "node util/createStubs.js",
-    "cypress:open": "./node_modules/.bin/cypress open"
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
