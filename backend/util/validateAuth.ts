@@ -1,5 +1,6 @@
+import Knex from "../services/knex"
+
 const fs = require('fs')
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY)
 const publicKey = fs.readFileSync(process.env.PUBLIC_KEY)
 const jwt = require('jsonwebtoken')
 
@@ -19,43 +20,33 @@ export function validatePassword(
     return passwordRegex.test(value)
 }
 
-export function getUid(
-    length: Number
-) {
-    let uid = ''
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    const charsLength = chars.length
-
-    for (let i = 0; i < length; ++i) {
-        uid += chars[getRandomInt(0, charsLength - 1)]
+export async function requireAuth(auth: string) {
+    if (!auth) {
+        return {
+            error: 'Missing token'
+        }
     }
 
-    return uid
-}
-
-function getRandomInt(min: Number, max: Number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-export function requireAuth(auth: string) {
-    if(!auth) {
-			return {
-				message: 'Missing token'
-			}
-    }
-		
     let token = auth.replace("Bearer ", "")
-    if(!token) {
-      return {
-        message: 'Missing token'
-      }
+    if (!token || token === "") {
+        return {
+            error: 'Missing token'
+        }
     }
-    
-    return jwt.verify(token, publicKey, (err, data) => {
-      if(err) {
-        return { error: err }
-      }
 
-      return { ...data }
+    const dbToken = (await Knex.select("*").where("access_token", token))?.[0]
+    if (dbToken.valid === false) {
+        return {
+            error: 'Token is no longer valid'
+        }
+    }
+
+    return jwt.verify(token, publicKey, async (err: any, data: any) => {
+        if (err) {
+            await Knex("prisma2.access_tokens").update({ valid: false }).where("access_token", token)
+            return { error: err }
+        }
+
+        return { ...data }
     })
 }

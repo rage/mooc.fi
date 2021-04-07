@@ -45,6 +45,7 @@
     "researchYes": "I want to participate in the educational research. By choosing this, you help both current and future students.",
     "researchNo": "I do not want to participate in the educational research.",
     "editorRevert": "Revert changes",
+<<<<<<< HEAD
     "selectNoChoice": "(no choice)"  ,
     "showHidden": "Show hidden",
     "Active": "Active",
@@ -56,4 +57,10 @@
     "showAll": "Show all",
     "hideAll": "Hide all"
 
+=======
+    "selectNoChoice": "(no choice)",
+    "authConsent": "Allow this application to login with your MOOC account?",
+    "allow": "Allow",
+    "deny": "Deny"
+>>>>>>> 80f6e26d... Styled authorization page and adjusted authorization backend
 }

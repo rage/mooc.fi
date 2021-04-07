@@ -9,13 +9,13 @@ import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
 import { Knex } from "knex"
 import { apiRouter } from "./api"
+import { authRouter } from "./auth"
 
 const helmet = require("helmet")
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const crypto = require('crypto')
-const passport = require('passport')
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
@@ -48,14 +48,16 @@ const createExpressAppWithContext = ({
     resave: false,
     unset: 'keep'
   }));
-  app.use(passport.initialize())
-  app.use(passport.session())
 
   if (!TEST) {
     app.use(morgan("combined"))
   }
   app.use(express.json())
   app.use("/api", apiRouter({ prisma, knex, logger }))
+  app.use("/auth", authRouter({ prisma, knex, logger }))
+
+
+
   return app
 }
 

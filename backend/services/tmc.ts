@@ -154,3 +154,18 @@ export const resetUserPassword = async (email: string ): Promise<any> => {
   .then(json => json)
   .catch(error => error)
 }
+
+export const updateUser = async (id: Number, user: any, token: string): Promise<any> => {
+  return await axios({
+    method: 'PUT',
+    url:`${BASE_URL}/api/v8/users/${id}`,
+    data: JSON.stringify(user),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    }
+  })
+  .then(response => response.data)
+  .then(json => json)
+  .catch(error => error)
+}

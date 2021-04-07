@@ -8,3 +8,6 @@ env.json
 .watchmanconfig
 coverage/
 sourcemap/
+
+backend/config/mooc-private.pem
+backend/config/mooc-public.pem
