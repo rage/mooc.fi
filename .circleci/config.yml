@@ -26,9 +26,6 @@ jobs:
       - run:
           name: "ESLint"
           command: "bin/eslint.sh"
-      - run:
-          name: "Typescript"
-          command: "bin/typecheck.sh"
       - helm/install-helm-client:
           version: v3.4.2
       - run:
