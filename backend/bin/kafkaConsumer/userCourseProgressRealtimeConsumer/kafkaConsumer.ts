@@ -34,6 +34,7 @@ const context = {
   mutex,
   consumer,
   knex,
+  topic_name: TOPIC_NAME[0],
 }
 
 consumer.on("ready", () => {

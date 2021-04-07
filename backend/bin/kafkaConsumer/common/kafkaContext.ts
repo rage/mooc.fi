@@ -10,4 +10,5 @@ export interface KafkaContext {
   consumer: KafkaConsumer
   mutex: Mutex
   knex: Knex
+  topic_name: string
 }
