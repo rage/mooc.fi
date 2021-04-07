@@ -132,14 +132,20 @@ const reportQueueLength = (
       }
       ctx.logger.info(
         `Got topic ${ctx.topic_name} partition ${partition_id} offsets`,
-        { offsets: JSON.stringify(offsets), committedOffset },
+        {
+          offsets: {
+            lowOffset: offsets.lowOffset,
+            highOffSet: offsets.highOffset,
+          },
+          committedOffset,
+        },
       )
       const totalNumberOfMessages = offsets.highOffset - offsets.lowOffset
       const relativePosition = committedOffset - offsets.lowOffset
       const positionPercentage =
         Number((relativePosition / totalNumberOfMessages).toFixed(4)) * 100
       ctx.logger.info(
-        `Status for partition ${partition_id}: ${relativePosition}/${totalNumberOfMessages} (${positionPercentage}%})`,
+        `Status for partition ${partition_id}: ${relativePosition}/${totalNumberOfMessages} (${positionPercentage}%)`,
       )
     },
   )
