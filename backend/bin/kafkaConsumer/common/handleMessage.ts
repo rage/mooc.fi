@@ -3,11 +3,13 @@ import * as yup from "yup"
 import config from "../kafkaConfig"
 import {
   DatabaseInputError,
+  KafkaError,
   KafkaMessageError,
   ValidationError,
 } from "../../lib/errors"
 import { Result } from "../../../util/result"
 import { KafkaContext } from "./kafkaContext"
+import { promisify } from "util"
 
 let commitCounter = 0
 
@@ -83,11 +85,56 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   release()
 }
 
-const commit = async ({ consumer, logger }: KafkaContext, message: any) => {
+const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
+  const { logger, consumer } = kafkaContext
+  const commitMessage = promisify(consumer.commitMessage.bind(this))
+
   if (commitCounter >= commitInterval) {
-    logger.info("Committing...")
-    await consumer.commitMessage(message)
+    logger.info(
+      `Committing partition ${message.partition} offset ${message.offset}`,
+    )
     commitCounter = 0
+    try {
+      await commitMessage(message)
+    } catch (error) {
+      logger.error(
+        new KafkaError(`Could commit partition ${message.partition}`, error),
+      )
+      console.log("Reason: ", error.message)
+      console.log(error.stack)
+    }
+    reportQueueLength(kafkaContext, message.partition, message.offset)
   }
   commitCounter++
+}
+
+const reportQueueLength = (
+  ctx: KafkaContext,
+  partition_id: number,
+  committedOffset: number,
+) => {
+  ctx.consumer.queryWatermarkOffsets(
+    ctx.topic_name,
+    partition_id,
+    5000,
+    (err, offsets) => {
+      if (err) {
+        ctx.logger.error(
+          `Could not get offsets for topic ${ctx.topic_name} partition ${partition_id}`,
+        )
+        return
+      }
+      ctx.logger.info(
+        `Got topic ${ctx.topic_name} partition ${partition_id} offsets`,
+        { offsets: JSON.stringify(offsets), committedOffset },
+      )
+      const totalNumberOfMessages = offsets.highOffset - offsets.lowOffset
+      const relativePosition = committedOffset - offsets.lowOffset
+      const positionPercentage =
+        Number((relativePosition / totalNumberOfMessages).toFixed(2)) * 100
+      ctx.logger.info(
+        `Status for partition ${partition_id}: ${relativePosition}/${totalNumberOfMessages} (${positionPercentage}%})`,
+      )
+    },
+  )
 }

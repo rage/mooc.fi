@@ -216,6 +216,7 @@ export const CompletionMutations = extendType({
                 consumer: undefined as any,
                 mutex: undefined as any,
                 knex: ctx.knex,
+                topic_name: "",
               },
             })
           })
