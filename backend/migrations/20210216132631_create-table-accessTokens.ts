@@ -1,4 +1,4 @@
-import * as Knex from "knex"
+import { Knex } from "knex"
 
 export async function up(knex: Knex): Promise<any> {
   await knex.raw(`CREATE TABLE IF NOT EXISTS access_tokens (
