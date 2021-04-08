@@ -1,4 +1,9 @@
-import { useFormContext } from "react-hook-form"
+import {
+  Path,
+  PathValue,
+  UnpackNestedValue,
+  useFormContext,
+} from "react-hook-form"
 import { TextField, MenuItem } from "@material-ui/core"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
@@ -22,23 +27,29 @@ export function ControlledSelect<T extends { [key: string]: any }>(
 ) {
   const t = useTranslator(CommonTranslations)
   const {
-    name,
     label,
     items,
     keyField = "id" as keyof T,
     nameField = "name" as keyof T,
     onChange,
   } = props
-  const { watch, setValue, trigger, formState } = useFormContext()
+  const name = props.name as Path<T>
+  const { watch, setValue, trigger, formState } = useFormContext<T>()
   const { errors } = formState
 
   const _onChange = onChange
     ? onChange
     : (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setValue(name, e.target.value !== "_empty" ? e.target.value : "", {
-          shouldDirty: true,
-          shouldValidate: true,
-        })
+        setValue(
+          name,
+          (e.target.value !== "_empty"
+            ? e.target.value
+            : "") as UnpackNestedValue<PathValue<T, Path<T>>>,
+          {
+            shouldDirty: true,
+            shouldValidate: true,
+          },
+        )
         trigger(name)
       }
 

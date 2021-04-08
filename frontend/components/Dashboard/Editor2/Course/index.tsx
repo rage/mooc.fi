@@ -55,7 +55,7 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
   })
   const methods = useForm<CourseFormValues>({
     defaultValues,
-    resolver: customValidationResolver<CourseFormValues>(validationSchema),
+    resolver: customValidationResolver(validationSchema),
     mode: "onBlur",
     //reValidateMode: "onChange"
   })
@@ -76,7 +76,6 @@ function CourseEditor({ course, courses, studyModules }: CourseEditorProps) {
     ],
   })
 
-  console.log("would use default", defaultValues)
   const onSubmit = useCallback(async (values: CourseFormValues, _?: any) => {
     const newCourse = !values.id
     const mutationVariables = fromCourseForm({
