@@ -16,34 +16,43 @@ export default function UserCourseSettingsVisibilityForm() {
       render={(renderProps) => (
         <Autocomplete
           {...renderProps}
-          multiple
-          freeSolo
-          options={[]}
+          multiple={true}
+          freeSolo={true}
+          options={[] as string[]}
+          value={
+            renderProps.field
+              ?.value /*?.map((f: UserCourseSettingsVisibilityFormValues) => f.language)*/ ??
+            []
+          }
           onChange={(
             _,
-            newValue: (UserCourseSettingsVisibilityFormValues | string)[],
+            newValue: (string | UserCourseSettingsVisibilityFormValues)[],
           ) =>
             setValue(
               "user_course_settings_visibilities",
-              newValue.map((v) => (isString(v) ? { language: v } : v)),
+              newValue.map((v: any) => (isString(v) ? { language: v } : v)),
+              { shouldDirty: true },
             )
           }
           renderTags={(value, getTagProps) =>
-            value.map((field, index) => (
-              <Chip
-                {...getTagProps({ index })}
-                variant="outlined"
-                label={field.language}
-                onDelete={() =>
-                  setValue(
-                    "user_course_settings_visibilities",
-                    getValues("user_course_settings_visibilities").filter(
-                      (_: any, _index: number) => index !== _index,
-                    ),
-                  )
-                }
-              />
-            ))
+            value.map(
+              (field: UserCourseSettingsVisibilityFormValues, index) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  variant="outlined"
+                  label={field.language}
+                  onDelete={() =>
+                    setValue(
+                      "user_course_settings_visibilities",
+                      getValues("user_course_settings_visibilities").filter(
+                        (_: any, _index: number) => index !== _index,
+                      ),
+                      { shouldDirty: true },
+                    )
+                  }
+                />
+              ),
+            )
           }
           renderInput={(params) => (
             <TextField

@@ -1,5 +1,10 @@
 import { useCallback } from "react"
-import { useFormContext } from "react-hook-form"
+import {
+  useFormContext,
+  Path,
+  PathValue,
+  UnpackNestedValue,
+} from "react-hook-form"
 import { EnumeratingAnchor } from "/components/Dashboard/Editor2/Common"
 import {
   FormControl,
@@ -30,9 +35,10 @@ interface ControlledModuleListProps extends ControlledFieldProps {
   modules?: CourseEditorStudyModules_study_modules[]
 }
 
-export function ControlledModuleList(props: ControlledModuleListProps) {
-  const { modules, label, name } = props
-  const { setValue, getValues } = useFormContext()
+export function ControlledModuleList<T>(props: ControlledModuleListProps) {
+  const { modules, label } = props
+  const name = props.name as Path<T>
+  const { setValue, getValues } = useFormContext<T>()
 
   const setCourseModule = useCallback(
     (event: React.SyntheticEvent<Element, Event>, checked: boolean) =>
@@ -41,7 +47,7 @@ export function ControlledModuleList(props: ControlledModuleListProps) {
         {
           ...getValues(name),
           [(event.target as HTMLInputElement).id]: checked,
-        },
+        } as UnpackNestedValue<PathValue<T, Path<T>>>,
         { shouldDirty: true },
       ),
     [],
@@ -56,17 +62,15 @@ export function ControlledModuleList(props: ControlledModuleListProps) {
           <FieldController
             name={name}
             label={label}
-            renderComponent={({
-              value,
-            }: {
-              value: Record<string, boolean>
-            }) => (
+            renderComponent={({ value }) => (
               <>
                 {modules?.map((module) => (
                   <ModuleListItem key={module.id}>
                     <FormControlLabel
                       key={`module-${module.id}`}
-                      checked={value[module.id] ?? false}
+                      checked={
+                        (value as Record<string, boolean>)[module.id] ?? false
+                      }
                       onChange={setCourseModule}
                       control={<Checkbox id={module.id} />}
                       label={module.name}

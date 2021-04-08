@@ -32,7 +32,7 @@ export const AdjustingAnchorLink = styled.a<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;
-  visibliity: hidden;
+  visibility: hidden;
 `
 
 export const ButtonWithWhiteText = styled(StyledButton)`
@@ -91,11 +91,11 @@ export const useTabContext = () => {
   return useContext(TabContext)
 }
 
-export function customValidationResolver<T>(schema: Yup.AnyObjectSchema) {
+export function customValidationResolver(schema: Yup.AnyObjectSchema) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useCallback(
     async (values, context, validateAllFieldCriteria = false) =>
-      await yupResolver<T>(schema)(
+      await yupResolver(schema)(
         values,
         { ...context, values },
         validateAllFieldCriteria,

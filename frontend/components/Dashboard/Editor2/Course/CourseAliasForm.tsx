@@ -21,17 +21,18 @@ export default function CourseAliasForm() {
         noFields: t("courseNoAliases"),
       }}
       conditions={{
-        add: (values) => values[values.length - 1].course_code !== "",
+        add: (values: Partial<CourseAliasFormValues>[]) =>
+          values?.[values.length - 1]?.course_code !== "",
         remove: (item) => !item._id && item.course_code === "",
       }}
       render={(item, index) => (
         <>
           <ControlledHiddenField
-            name={`course_aliases[${index}]._id`}
+            name={`course_aliases.${index}._id`}
             defaultValue={item._id}
           />
           <ControlledTextField
-            name={`course_aliases[${index}].course_code`}
+            name={`course_aliases.${index}.course_code`}
             label={t("courseAliasCourseCode")}
             defaultValue={item.course_code}
           />
