@@ -259,12 +259,17 @@ export const createCompletion = async ({
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     try {
-      const updated = await prisma.$queryRaw`
-      UPDATE 
-        completion 
-      SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
-      WHERE id=${completions[0]!.id} AND COALESCE(tier, 0) < ${tier}
-      RETURNING tier;`
+      const updated = await prisma.$queryRaw(
+        `
+        UPDATE
+          completion 
+        SET tier=$1, eligible_for_ects=$2, updated_at=now()
+        WHERE id=$3 AND COALESCE(tier, 0) < $1
+        RETURNING tier;`,
+        tier,
+        eligible_for_ects,
+        completions[0]!.id,
+      )
       if (updated.length > 0) {
         logger?.info("Existing completion found, updated tier")
       }
