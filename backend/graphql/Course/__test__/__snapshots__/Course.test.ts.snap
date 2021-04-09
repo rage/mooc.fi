@@ -452,7 +452,7 @@ Object {
 exports[`Course mutations updateCourse deletes photo 1`] = `
 Object {
   "updateCourse": Object {
-    "automatic_completions": false,
+    "automatic_completions": true,
     "automatic_completions_eligible_for_ects": true,
     "completions_handled_by": Object {
       "id": "00000000-0000-0000-0000-000000000001",
@@ -463,7 +463,22 @@ Object {
         "id": Any<String>,
       },
     ],
-    "course_translations": Array [],
+    "course_translations": Array [
+      Object {
+        "description": "course1_added_description_se_SE",
+        "id": Any<String>,
+        "language": "se_SE",
+        "link": "http:/link.se.com",
+        "name": "course1_se_SE",
+      },
+      Object {
+        "description": "course1_updated_description_en_US",
+        "id": Any<String>,
+        "language": "en_US",
+        "link": "http://link.com",
+        "name": "course1_en_US",
+      },
+    ],
     "course_variants": Array [
       Object {
         "description": "variant1",
@@ -473,7 +488,7 @@ Object {
     ],
     "ects": null,
     "end_date": "12/30/2100",
-    "exercise_completions_needed": null,
+    "exercise_completions_needed": 1,
     "has_certificate": false,
     "hidden": null,
     "id": "00000000-0000-0000-0000-000000000002",
@@ -484,7 +499,7 @@ Object {
     "open_university_registration_links": Array [],
     "order": null,
     "photo": null,
-    "points_needed": null,
+    "points_needed": 3,
     "promote": null,
     "slug": "course1",
     "start_date": "02/01/1900",
@@ -492,7 +507,11 @@ Object {
     "status": "Upcoming",
     "study_module_order": null,
     "study_module_start_point": null,
-    "study_modules": Array [],
+    "study_modules": Array [
+      Object {
+        "id": StringMatching /00000000-0000-0000-0000-000000000101/,
+      },
+    ],
     "support_email": null,
     "teacher_in_charge_email": "updated-e@mail.com",
     "teacher_in_charge_name": "updated teacher",
@@ -510,14 +529,14 @@ Object {
 
 exports[`Course mutations updateCourse deletes photo 2`] = `
 Object {
-  "automatic_completions": false,
+  "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completion_email_id": null,
   "completions_handled_by_id": "00000000-0000-0000-0000-000000000001",
   "created_at": Any<Date>,
   "ects": null,
   "end_date": "12/30/2100",
-  "exercise_completions_needed": null,
+  "exercise_completions_needed": 1,
   "has_certificate": false,
   "hidden": null,
   "id": "00000000-0000-0000-0000-000000000002",
@@ -526,7 +545,7 @@ Object {
   "order": null,
   "owner_organization_id": null,
   "photo_id": null,
-  "points_needed": null,
+  "points_needed": 3,
   "promote": null,
   "slug": "course1",
   "start_date": "02/01/1900",
@@ -546,7 +565,7 @@ Object {
 exports[`Course mutations updateCourse updates course 1`] = `
 Object {
   "updateCourse": Object {
-    "automatic_completions": false,
+    "automatic_completions": true,
     "automatic_completions_eligible_for_ects": true,
     "completions_handled_by": Object {
       "id": "00000000-0000-0000-0000-000000000001",
@@ -557,7 +576,22 @@ Object {
         "id": Any<String>,
       },
     ],
-    "course_translations": Array [],
+    "course_translations": Array [
+      Object {
+        "description": "course1_added_description_se_SE",
+        "id": Any<String>,
+        "language": "se_SE",
+        "link": "http:/link.se.com",
+        "name": "course1_se_SE",
+      },
+      Object {
+        "description": "course1_updated_description_en_US",
+        "id": Any<String>,
+        "language": "en_US",
+        "link": "http://link.com",
+        "name": "course1_en_US",
+      },
+    ],
     "course_variants": Array [
       Object {
         "description": "variant1",
@@ -567,7 +601,7 @@ Object {
     ],
     "ects": null,
     "end_date": "12/30/2100",
-    "exercise_completions_needed": null,
+    "exercise_completions_needed": 1,
     "has_certificate": false,
     "hidden": null,
     "id": "00000000-0000-0000-0000-000000000002",
@@ -585,7 +619,7 @@ Object {
       "uncompressed": StringContaining "jpeg",
       "uncompressed_mimetype": "image/jpeg",
     },
-    "points_needed": null,
+    "points_needed": 3,
     "promote": null,
     "slug": "updated_course1",
     "start_date": "02/01/1900",
@@ -593,7 +627,11 @@ Object {
     "status": "Upcoming",
     "study_module_order": null,
     "study_module_start_point": null,
-    "study_modules": Array [],
+    "study_modules": Array [
+      Object {
+        "id": StringMatching /00000000-0000-0000-0000-000000000101/,
+      },
+    ],
     "support_email": null,
     "teacher_in_charge_email": "updated-e@mail.com",
     "teacher_in_charge_name": "updated teacher",
@@ -611,14 +649,14 @@ Object {
 
 exports[`Course mutations updateCourse updates course 2`] = `
 Object {
-  "automatic_completions": false,
+  "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completion_email_id": null,
   "completions_handled_by_id": "00000000-0000-0000-0000-000000000001",
   "created_at": Any<Date>,
   "ects": null,
   "end_date": "12/30/2100",
-  "exercise_completions_needed": null,
+  "exercise_completions_needed": 1,
   "has_certificate": false,
   "hidden": null,
   "id": "00000000-0000-0000-0000-000000000002",
@@ -627,7 +665,7 @@ Object {
   "order": null,
   "owner_organization_id": null,
   "photo_id": Any<String>,
-  "points_needed": null,
+  "points_needed": 3,
   "promote": null,
   "slug": "updated_course1",
   "start_date": "02/01/1900",
@@ -647,7 +685,7 @@ Object {
 exports[`Course mutations updateCourse updates photo 1`] = `
 Object {
   "updateCourse": Object {
-    "automatic_completions": false,
+    "automatic_completions": true,
     "automatic_completions_eligible_for_ects": true,
     "completions_handled_by": Object {
       "id": "00000000-0000-0000-0000-000000000001",
@@ -658,7 +696,22 @@ Object {
         "id": Any<String>,
       },
     ],
-    "course_translations": Array [],
+    "course_translations": Array [
+      Object {
+        "description": "course1_added_description_se_SE",
+        "id": Any<String>,
+        "language": "se_SE",
+        "link": "http:/link.se.com",
+        "name": "course1_se_SE",
+      },
+      Object {
+        "description": "course1_updated_description_en_US",
+        "id": Any<String>,
+        "language": "en_US",
+        "link": "http://link.com",
+        "name": "course1_en_US",
+      },
+    ],
     "course_variants": Array [
       Object {
         "description": "variant1",
@@ -668,7 +721,7 @@ Object {
     ],
     "ects": null,
     "end_date": "12/30/2100",
-    "exercise_completions_needed": null,
+    "exercise_completions_needed": 1,
     "has_certificate": false,
     "hidden": null,
     "id": "00000000-0000-0000-0000-000000000002",
@@ -686,7 +739,7 @@ Object {
       "uncompressed": StringContaining "jpeg",
       "uncompressed_mimetype": "image/jpeg",
     },
-    "points_needed": null,
+    "points_needed": 3,
     "promote": null,
     "slug": "updated_course1",
     "start_date": "02/01/1900",
@@ -694,7 +747,11 @@ Object {
     "status": "Upcoming",
     "study_module_order": null,
     "study_module_start_point": null,
-    "study_modules": Array [],
+    "study_modules": Array [
+      Object {
+        "id": StringMatching /00000000-0000-0000-0000-000000000101/,
+      },
+    ],
     "support_email": null,
     "teacher_in_charge_email": "updated-e@mail.com",
     "teacher_in_charge_name": "updated teacher",
@@ -712,14 +769,14 @@ Object {
 
 exports[`Course mutations updateCourse updates photo 2`] = `
 Object {
-  "automatic_completions": false,
+  "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completion_email_id": null,
   "completions_handled_by_id": "00000000-0000-0000-0000-000000000001",
   "created_at": Any<Date>,
   "ects": null,
   "end_date": "12/30/2100",
-  "exercise_completions_needed": null,
+  "exercise_completions_needed": 1,
   "has_certificate": false,
   "hidden": null,
   "id": "00000000-0000-0000-0000-000000000002",
@@ -728,7 +785,7 @@ Object {
   "order": null,
   "owner_organization_id": null,
   "photo_id": Any<String>,
-  "points_needed": null,
+  "points_needed": 3,
   "promote": null,
   "slug": "updated_course1",
   "start_date": "02/01/1900",
@@ -747,7 +804,7 @@ Object {
 
 exports[`Course queries course admin returns full course on id and slug 1`] = `
 Object {
-  "automatic_completions": false,
+  "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": null,
   "course_aliases": Array [],
@@ -770,7 +827,7 @@ Object {
   "course_variants": Array [],
   "ects": null,
   "end_date": "12/31/2100",
-  "exercise_completions_needed": null,
+  "exercise_completions_needed": 1,
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
@@ -785,7 +842,7 @@ Object {
     "uncompressed": "jpeg",
     "uncompressed_mimetype": "image/jpeg",
   },
-  "points_needed": null,
+  "points_needed": 3,
   "promote": null,
   "slug": "course1",
   "start_date": "01/01/1900",
@@ -812,7 +869,7 @@ Object {
 
 exports[`Course queries course admin returns full course on id and slug 2`] = `
 Object {
-  "automatic_completions": false,
+  "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": null,
   "course_aliases": Array [],
@@ -835,7 +892,7 @@ Object {
   "course_variants": Array [],
   "ects": null,
   "end_date": "12/31/2100",
-  "exercise_completions_needed": null,
+  "exercise_completions_needed": 1,
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
@@ -850,7 +907,7 @@ Object {
     "uncompressed": "jpeg",
     "uncompressed_mimetype": "image/jpeg",
   },
-  "points_needed": null,
+  "points_needed": 3,
   "promote": null,
   "slug": "course1",
   "start_date": "01/01/1900",
