@@ -32,7 +32,7 @@ export const AdjustingAnchorLink = styled.a<{ id: string }>`
   display: block;
   position: relative;
   top: -120px;
-  visibliity: hidden;
+  visibility: hidden;
 `
 
 export const ButtonWithWhiteText = styled(StyledButton)`

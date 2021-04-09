@@ -30,7 +30,7 @@ Object {
           Object {
             "exercise": Object {
               "id": "50000000-0000-0000-0000-000000000003",
-              "max_points": null,
+              "max_points": 3,
               "name": "exercise 3",
             },
             "exercise_completion_required_actions": Array [

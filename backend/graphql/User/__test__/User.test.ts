@@ -1,7 +1,11 @@
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMCCurrent } from "./__helpers"
-import { adminUserDetails, normalUser, normalUserDetails } from "./data"
-import { seed } from "./data/seed"
+import { getTestContext, fakeTMCCurrent } from "../../../tests/__helpers"
+import {
+  adminUserDetails,
+  normalUser,
+  normalUserDetails,
+} from "../../../tests/data"
+import { seed } from "../../../tests/data/seed"
 import { orderBy } from "lodash"
 
 const addUserMutation = gql`

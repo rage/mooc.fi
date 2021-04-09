@@ -140,6 +140,9 @@ export const courses: Prisma.CourseCreateInput[] = [
         uncompressed_mimetype: "image/jpeg",
       },
     },
+    automatic_completions: true,
+    points_needed: 3,
+    exercise_completions_needed: 1,
   },
   {
     id: "00000000000000000000000000000001",
@@ -310,6 +313,7 @@ export const exercises: Prisma.ExerciseCreateInput[] = [
     custom_id: "customid3",
     timestamp: new Date("2021-01-01 10:00:00.00"),
     deleted: false,
+    max_points: 3,
   },
   {
     id: "50000000-0000-0000-0000-000000000004",
