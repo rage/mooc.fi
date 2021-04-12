@@ -78,14 +78,9 @@ const ButtonList = styled.ul`
   grid-area: "buttons";
   display: flex;
   align-items: center;
-  @media (max-width: 640px) {
-    flex-direction: row;
-  }
+  flex-direction: row;
   @media (min-width: 640px) and (max-width: 900px) {
     flex-direction: column;
-  }
-  @media (min-width: 900px) {
-    flex-direction: row;
   }
   justify-content: space-between;
   gap: 0.5rem;
@@ -149,7 +144,6 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
         >
           {course?.name}
         </CardTitle>
-        <div style={{ gridArea: "empty " }}></div>
         <CardSubtitle
           component="div"
           style={{ margin: "auto", gridArea: "completion" }}
@@ -176,6 +170,7 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
             ) : null}
           </CompletionInfoList>
         </CardSubtitle>
+        <div style={{ gridArea: "empty" }}></div>
         <RegistrationList>
           {isRegistered && completion.completions_registered
             ? (completion.completions_registered as CompletionsRegisteredFragment_completions_registered[])?.map(
