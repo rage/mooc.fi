@@ -202,8 +202,7 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
             : null}
         </RegistrationList>
         <ButtonList>
-          {!completion.completions_registered &&
-          completion.eligible_for_ects ? (
+          {!isRegistered && completion.eligible_for_ects ? (
             <ButtonWrapper>
               <Link
                 href="/register-completion/[slug]"
