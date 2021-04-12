@@ -179,7 +179,9 @@ export const CompletionMutations = extendType({
         })
 
         const progressByUser = groupBy(progresses, "user_id")
-        const userIds = Object.keys(progressByUser).filter(notEmpty)
+        const userIds = Object.keys(progressByUser)
+          .filter(notEmpty)
+          .filter((key) => key !== "null")
 
         // find users with completions
         const completions = await ctx.prisma.completion.findMany({
@@ -204,7 +206,7 @@ export const CompletionMutations = extendType({
         const userChunks = chunk(users, 100)
 
         const buildPromises = (array: User[]) =>
-          array.map(async (user) => {
+          array.map(async (user) =>
             generateUserCourseProgress({
               user,
               course,
@@ -218,8 +220,8 @@ export const CompletionMutations = extendType({
                 knex: ctx.knex,
                 topic_name: "",
               },
-            })
-          })
+            }),
+          )
 
         for (const userChunk of userChunks) {
           const promises = buildPromises(userChunk)

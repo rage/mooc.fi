@@ -107,7 +107,11 @@ function createTestContext(testContext: TestContext) {
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 6000) })
-          serverInstance = app.listen(port)
+          try {
+            serverInstance = app.listen(port)
+          } catch {
+            throw new Error("port in use")
+          }
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -118,7 +122,7 @@ function createTestContext(testContext: TestContext) {
           }
         } catch {
           DEBUG && console.log("race condition on ports, waiting...")
-          await wait(50)
+          await wait(100)
         }
       }
     },
