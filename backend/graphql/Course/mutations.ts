@@ -412,7 +412,7 @@ const createMutation = async <T extends { id?: string | null } | null>({
     .filter(hasId) // (t) => !!t.id)
     .map((t) => ({
       where: { id: t.id } as { id: string },
-      data: { ...t, id: undefined },
+      data: t, //{ ...t, id: undefined },
     }))
   const removed = filterNotIncluded(existing!, data)
 
