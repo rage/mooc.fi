@@ -203,29 +203,21 @@ export const CompletionMutations = extendType({
           },
         })
 
-        const userChunks = chunk(users, 15)
-
-        const buildPromises = (array: User[]) =>
-          array.map(async (user) =>
-            generateUserCourseProgress({
-              user,
-              course,
-              userCourseProgress: progressByUser[user.id][0],
-              context: {
-                // not very optimal, but
-                logger: ctx.logger,
-                prisma: ctx.prisma,
-                consumer: undefined as any,
-                mutex: undefined as any,
-                knex: ctx.knex,
-                topic_name: "",
-              },
-            }),
-          )
-
-        for (const userChunk of userChunks) {
-          const promises = buildPromises(userChunk)
-          await Promise.all(promises)
+        for (const user of users) {
+          await generateUserCourseProgress({
+            user,
+            course,
+            userCourseProgress: progressByUser[user.id][0],
+            context: {
+              // not very optimal, but
+              logger: ctx.logger,
+              prisma: ctx.prisma,
+              consumer: undefined as any,
+              mutex: undefined as any,
+              knex: ctx.knex,
+              topic_name: "",
+            },
+          })
         }
 
         return `${users.length} users rechecked`
