@@ -11,10 +11,9 @@ import {
 
 import { isAdmin } from "../../accessControl"
 import { v4 as uuidv4 } from "uuid"
-import { chunk, difference, groupBy } from "lodash"
+import { difference, groupBy } from "lodash"
 import { notEmpty } from "../../util/notEmpty"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { User } from "@prisma/client"
 
 export const CompletionMutations = extendType({
   type: "Mutation",
