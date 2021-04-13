@@ -9,17 +9,15 @@ import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
-import { useLanguageContext } from "/contexts/LanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)
-  const { language } = useLanguageContext()
 
   useBreadcrumbs([
     {
-      as: `/${language}/study-modules`,
-      href: "/[lng]/study-modules",
+      translation: "studyModules",
+      href: "/study-modules",
     },
   ])
 

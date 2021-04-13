@@ -6,9 +6,21 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withSignedIn from "/lib/with-signed-in"
 import { UserOverViewQuery } from "/graphql/queries/currentUser"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 function CompletionsPage() {
   const { loading, error, data } = useQuery<UserOverViewData>(UserOverViewQuery)
+
+  useBreadcrumbs([
+    {
+      translation: "profile",
+      href: "/profile",
+    },
+    {
+      translation: "profileCompletions",
+      href: `/profile/completions`,
+    },
+  ])
 
   if (error) {
     return (

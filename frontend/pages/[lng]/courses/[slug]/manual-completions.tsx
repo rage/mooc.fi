@@ -14,6 +14,7 @@ import LocalizationProvider from "@material-ui/lab/LocalizationProvider"
 import AdapterLuxon from "@material-ui/lab/AdapterLuxon"
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
@@ -77,6 +78,21 @@ const ManualCompletions = () => {
   } = useQuery(CourseIdBySluq, {
     variables: { slug },
   })
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: courseData?.course?.name,
+      href: `/courses/${slug}`,
+    },
+    {
+      translation: "courseManualCompletions",
+      href: `/courses/${slug}/manual-completions`,
+    },
+  ])
 
   const onSubmit = () => {
     setSubmitting(true)

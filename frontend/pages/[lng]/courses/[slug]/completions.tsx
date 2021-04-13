@@ -20,7 +20,6 @@ import { TextField } from "@material-ui/core"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import BreadcrumbsTranslations from "/translations/breadcrumbs"
 // import useDebounce from "/util/useDebounce"
 
 const ContentArea = styled.div`
@@ -39,7 +38,7 @@ export const CourseDetailsFromSlugQuery = gql`
 
 const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
-  const t = useTranslator(CoursesTranslations, BreadcrumbsTranslations)
+  const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug")
 
   const [lng, changeLng] = useState("")
@@ -65,7 +64,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
 
   useBreadcrumbs([
     {
-      label: t("courses"),
+      translation: "courses",
       href: `/courses`,
     },
     {
@@ -73,7 +72,7 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
       href: `/courses/${slug}`,
     },
     {
-      label: t("courseCompletions"),
+      translation: "courseCompletions",
       href: `/courses/${slug}/completions`,
     },
   ])

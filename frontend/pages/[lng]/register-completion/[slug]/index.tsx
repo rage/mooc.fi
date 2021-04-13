@@ -15,6 +15,7 @@ import LoginStateContext from "/contexts/LoginStateContext"
 import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useTranslator } from "/util/useTranslator"
 import RegisterCompletion from "/components/Home/RegisterCompletion"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -98,6 +99,16 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
+
+  useBreadcrumbs([
+    {
+      translation: "registerCompletion",
+    },
+    {
+      label: courseData?.course.name,
+      href: `/register-completion/${courseSlug}`,
+    },
+  ])
 
   if (courseLoading || userLoading) {
     return <Spinner />

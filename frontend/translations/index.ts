@@ -188,4 +188,8 @@ const _combineDictionaries = <
 
 export const combineDictionaries = memoize(_combineDictionaries)
 
+export const isTranslationKey = <T extends Translation>(
+  key?: keyof T,
+): key is keyof T => key !== null && key !== undefined
+
 export default getTranslator

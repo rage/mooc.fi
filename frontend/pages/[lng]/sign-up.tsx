@@ -18,8 +18,8 @@ const SignUpPage = () => {
 
   useBreadcrumbs([
     {
-      as: `/${language}/sign-up`,
-      href: "/[lng]/sign-up",
+      translation: "signUp",
+      href: "/sign-up",
     },
   ])
 

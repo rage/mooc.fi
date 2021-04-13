@@ -6,7 +6,6 @@ import SignInTranslations from "/translations/common"
 import styled from "@emotion/styled"
 import withSignedOut from "/lib/with-signed-out"
 import { useTranslator } from "/util/useTranslator"
-import { useLanguageContext } from "/contexts/LanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const StyledPaper = styled(Paper)`
@@ -24,12 +23,11 @@ const Header = styled(Typography)<any>`
 
 const SignInPage = () => {
   const t = useTranslator(SignInTranslations)
-  const { language } = useLanguageContext()
 
   useBreadcrumbs([
     {
-      as: `/${language}/sign-in`,
-      href: "/[lng]/sign-in",
+      translation: "signIn",
+      href: "/sign-in",
     },
   ])
 
