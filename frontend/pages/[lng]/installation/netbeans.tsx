@@ -99,7 +99,6 @@ const NetBeans = () => {
   useBreadcrumbs([
     {
       translation: "installation",
-      label: "kissa",
     },
     {
       label: "Netbeans",
