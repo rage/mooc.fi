@@ -203,7 +203,7 @@ export const CompletionMutations = extendType({
           },
         })
 
-        const userChunks = chunk(users, 100)
+        const userChunks = chunk(users, 15)
 
         const buildPromises = (array: User[]) =>
           array.map(async (user) =>
