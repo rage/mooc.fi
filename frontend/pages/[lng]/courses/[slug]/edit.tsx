@@ -19,7 +19,6 @@ import CourseEdit2 from "/components/Dashboard/Editor2/Course"
 import { useTranslator } from "/util/useTranslator"
 import { useEditorCourses } from "/hooks/useEditorCourses"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import BreadcrumbsTranslations from "/translations/breadcrumbs"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
@@ -31,7 +30,7 @@ interface EditCourseProps {
 
 const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
-  const t = useTranslator(CoursesTranslations, BreadcrumbsTranslations)
+  const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug") ?? ""
   const beta = useQueryParameter("beta", false)
 
@@ -68,7 +67,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
   useBreadcrumbs([
     {
-      label: t("courses"),
+      translation: "courses",
       href: `/courses`,
     },
     {
@@ -76,7 +75,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
       href: `/courses/${slug}`,
     },
     {
-      label: t("courseEdit"),
+      translation: "courseEdit",
       href: `/courses/${slug}/edit`,
     },
   ])

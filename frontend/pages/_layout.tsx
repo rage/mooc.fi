@@ -5,7 +5,6 @@ import Footer from "/components/Footer"
 import SkipLink from "/components/SkipLink"
 import styled from "@emotion/styled"
 import { Breadcrumbs } from "/components/Breadcrumbs"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
 import Alerts from "/components/HeaderBar/Alerts"
 import { useRouter } from "next/router"
 
@@ -29,7 +28,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div>
           <Header />
           <main id="main">
-            <Breadcrumbs />
+            {!isHomePage && <Breadcrumbs />}
             <Alerts />
             {children}
           </main>

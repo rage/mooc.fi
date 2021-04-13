@@ -30,7 +30,7 @@ const ProfileButton = () => {
     : "Oma profiili"
 
   return (
-    <LangLink href={`//profile`}>
+    <LangLink href={`/profile`}>
       <StyledButton
         color="inherit"
         variant="text"

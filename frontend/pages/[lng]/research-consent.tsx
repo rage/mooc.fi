@@ -53,8 +53,8 @@ function useResearchConsent() {
 
   useBreadcrumbs([
     {
-      as: `/${language}/research-consent`,
-      href: "/[lng]/research-consent",
+      translation: "researchConsent",
+      href: "/research-consent",
     },
   ])
 

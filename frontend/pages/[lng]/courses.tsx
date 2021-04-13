@@ -42,8 +42,8 @@ function useCourseSearch() {
 
   useBreadcrumbs([
     {
-      href: "/[lng]/courses",
-      as: `/${language}/courses`,
+      translation: "courses",
+      href: "/courses",
     },
   ])
 

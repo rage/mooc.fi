@@ -18,6 +18,7 @@ import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 import StudyModuleEdit2 from "/components/Dashboard/Editor2/StudyModule"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 export const StudyModuleQuery = gql`
   query StudyModuleDetails($slug: String!) {
@@ -64,6 +65,20 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
       variables: { slug },
     },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "studyModules",
+      href: "/study-modules",
+    },
+    {
+      label: data?.study_module?.name,
+    },
+    {
+      translation: "studyModuleEdit",
+      href: `/study-modules/${slug}/edit`,
+    },
+  ])
 
   useEffect(() => {
     let redirectTimeout: NodeJS.Timeout | null = null

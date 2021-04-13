@@ -12,6 +12,7 @@ import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
 import LangLink from "/components/LangLink"
 import withAdmin from "/lib/with-admin"
 import notEmpty from "/util/notEmpty"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -27,6 +28,13 @@ const EmailTemplates = (admin: Boolean) => {
       Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
     </div>
   }
+
+  useBreadcrumbs([
+    {
+      translation: "emailTemplates",
+      href: `/email-templates`,
+    },
+  ])
 
   if (!admin) {
     return <AdminError />

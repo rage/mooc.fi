@@ -4,6 +4,7 @@ import styled from "@emotion/styled"
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { useTranslator } from "/util/useTranslator"
 import BreadcrumbsTranslations from "/translations/breadcrumbs"
+import { isTranslationKey } from "/translations"
 
 const BreadcrumbList = styled.ul`
   list-style: none;
@@ -79,16 +80,26 @@ const BreadcrumbNonLink = styled.div`
   ${BreadcrumbArrowStyle}
 `
 
-function BreadcrumbComponent({ as, href, label }: Breadcrumb) {
+function BreadcrumbComponent({ as, href, label, translation }: Breadcrumb) {
+  const t = useTranslator(BreadcrumbsTranslations)
+
+  const _translation = isTranslationKey<typeof BreadcrumbsTranslations>(
+    translation,
+  )
+    ? t(translation)
+    : translation
+
+  const text = label || _translation || undefined
+
   return (
     <BreadcrumbItem>
-      {!label || !href ? (
+      {!text || !href ? (
         <BreadcrumbNonLink>
-          {label || <Skeleton width="100px" />}
+          {text || <Skeleton width="100px" />}
         </BreadcrumbNonLink>
       ) : (
         <LangLink as={as} href={href}>
-          <BreadcrumbLink>{label}</BreadcrumbLink>
+          <BreadcrumbLink>{text}</BreadcrumbLink>
         </LangLink>
       )}
     </BreadcrumbItem>
@@ -97,11 +108,10 @@ function BreadcrumbComponent({ as, href, label }: Breadcrumb) {
 
 export function Breadcrumbs() {
   const { breadcrumbs } = useBreadcrumbContext()
-  const t = useTranslator(BreadcrumbsTranslations)
 
   return (
     <BreadcrumbList>
-      <BreadcrumbComponent label={t("home")} href="/" key="home" />
+      <BreadcrumbComponent translation="home" href="/" key="home" />
       {breadcrumbs.map((breadcrumb, index) => (
         <BreadcrumbComponent {...breadcrumb} key={`breadcrumb-${index}`} />
       ))}

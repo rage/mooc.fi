@@ -18,6 +18,7 @@ import LanguageContext from "/contexts/LanguageContext"
 import InstallationTranslations from "/translations/installation"
 import Spinner from "/components/Spinner"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   padding-top: 2em;
@@ -94,6 +95,17 @@ const NetBeans = () => {
   const [render, setRender] = useState(false)
   const { language } = useContext(LanguageContext)
   const t = useTranslator(InstallationTranslations)
+
+  useBreadcrumbs([
+    {
+      translation: "installation",
+      label: "kissa",
+    },
+    {
+      label: "Netbeans",
+      href: `/installation/netbeans`,
+    },
+  ])
 
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)

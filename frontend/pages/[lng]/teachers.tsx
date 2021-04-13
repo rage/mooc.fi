@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import styled from "@emotion/styled"
@@ -48,8 +47,8 @@ const ForTeachers = () => {
 
   useBreadcrumbs([
     {
-      as: `/${language}/teachers`,
-      href: "/[lng]/teachers",
+      translation: `teachers`,
+      href: "/teachers",
     },
   ])
 

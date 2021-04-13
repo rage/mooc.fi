@@ -21,6 +21,7 @@ import {
 } from "/components/Dashboard/CompletionsList"
 import { useTranslator } from "/util/useTranslator"
 import { useConfirm } from "material-ui-confirm"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -70,6 +71,17 @@ const Course = () => {
       variables: { slug },
     },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: data?.course?.name,
+      href: `/courses/${slug}`,
+    },
+  ])
 
   const [recheckCompletions] = useMutation(recheckCompletionsMutation, {
     variables: {
