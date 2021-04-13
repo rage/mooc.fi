@@ -32,6 +32,8 @@ import withSignedIn from "/lib/with-signed-in"
 import LoginStateContext from "/contexts/LoginStateContext"
 import notEmpty from "/util/notEmpty"
 import { useTranslator } from "/util/useTranslator"
+import { useLanguageContext } from "/contexts/LanguageContext"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 export const OrganizationsQuery = gql`
   query Organizations {
@@ -104,6 +106,14 @@ const OrganizationCard = ({
 }: OrganizationCardProps) => {
   const t = useTranslator(RegistrationTranslations)
   const [disabled, setDisabled] = useState(false)
+  const { language } = useLanguageContext()
+
+  useBreadcrumbs([
+    {
+      as: `/${language}/register`,
+      href: "/[lng]/register",
+    },
+  ])
 
   return (
     <Card style={{ marginBottom: "0.5rem" }}>

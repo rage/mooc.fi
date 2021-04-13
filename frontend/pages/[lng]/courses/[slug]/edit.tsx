@@ -18,6 +18,8 @@ import notEmpty from "/util/notEmpty"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
 import { useTranslator } from "/util/useTranslator"
 import { useEditorCourses } from "/hooks/useEditorCourses"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import BreadcrumbsTranslations from "/translations/breadcrumbs"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
@@ -29,7 +31,7 @@ interface EditCourseProps {
 
 const EditCourse = ({ router }: EditCourseProps) => {
   const { language } = useContext(LanguageContext)
-  const t = useTranslator(CoursesTranslations)
+  const t = useTranslator(CoursesTranslations, BreadcrumbsTranslations)
   const slug = useQueryParameter("slug") ?? ""
   const beta = useQueryParameter("beta", false)
 
@@ -63,6 +65,21 @@ const EditCourse = ({ router }: EditCourseProps) => {
       }
     }
   }, [loading, courseData])
+
+  useBreadcrumbs([
+    {
+      label: t("courses"),
+      href: `/courses`,
+    },
+    {
+      label: courseData?.course?.name,
+      href: `/courses/${slug}`,
+    },
+    {
+      label: t("courseEdit"),
+      href: `/courses/${slug}/edit`,
+    },
+  ])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />

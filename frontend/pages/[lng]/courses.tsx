@@ -20,6 +20,7 @@ import FilterMenu from "/components/FilterMenu"
 import { HandlerCourses } from "/static/types/generated/HandlerCourses"
 import { CourseStatus } from "/static/types/generated/globalTypes"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -38,6 +39,13 @@ const notEmptyOrEmptyString = (value: any) =>
 function useCourseSearch() {
   const { language } = useContext(LanguageContext)
   const router = useRouter()
+
+  useBreadcrumbs([
+    {
+      href: "/[lng]/courses",
+      as: `/${language}/courses`,
+    },
+  ])
 
   const statusParam = decodeURIComponent(useQueryParameter("status", false))
     ?.split(",")

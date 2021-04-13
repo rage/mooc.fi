@@ -4,7 +4,7 @@ import { Typography } from "@material-ui/core"
 import styled from "@emotion/styled"
 import { gql } from "@apollo/client"
 import ProfileTranslations from "/translations/profile"
-import CompletionListItem from "/components/CompletionListItem"
+import { CompletionListItem } from "/components/Home/Completions"
 import { useTranslator } from "/util/useTranslator"
 
 const completionsFragment = gql`
@@ -57,7 +57,7 @@ const Title = styled(Typography)<any>`
   }
 `
 
-const Completions = ({ completions = [] }: CompletionsProps) => {
+export const Completions = ({ completions = [] }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)
 
   return (
@@ -82,4 +82,3 @@ const Completions = ({ completions = [] }: CompletionsProps) => {
 Completions.fragments = {
   completions: completionsFragment,
 }
-export default Completions

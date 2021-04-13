@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client"
 import { CurrentUserUserOverView as UserOverViewData } from "/static/types/generated/CurrentUserUserOverView"
 import Container from "/components/Container"
-import Completions from "/components/Completions"
+import { Completions } from "/components/Home/Completions"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withSignedIn from "/lib/with-signed-in"

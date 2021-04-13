@@ -135,10 +135,7 @@ function ModuleCard({ module, loading }: ModuleCardProps) {
               <Skeleton variant="text" width="100%" />
             </ButtonWithPaddingAndMargin>
           ) : module ? (
-            <LangLink
-              href="/study-modules/[slug]/edit"
-              as={`/study-modules/${module.slug}/edit`}
-            >
+            <LangLink href={`/study-modules/${module.slug}/edit`}>
               <a>
                 <ButtonWithPaddingAndMargin
                   variant="text"

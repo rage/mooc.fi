@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import { UserPointsQuery } from "/components/User/Points/PointsQuery"
 import { UserPoints as UserPointsData } from "/static/types/generated/UserPoints"
 import { useQuery } from "@apollo/client"
@@ -6,7 +5,6 @@ import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { studentHasPoints } from "/components/User/Points/PointsList"
 import PointsListGrid from "/components/User/Points/PointsListGrid"
-import LanguageContext from "/contexts/LanguageContext"
 import ProfileTranslations from "/translations/profile"
 import LangLink from "/components/LangLink"
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
@@ -14,7 +12,6 @@ import { useTranslator } from "/util/useTranslator"
 
 const ProfilePointsDisplay = () => {
   const { data, error, loading } = useQuery<UserPointsData>(UserPointsQuery)
-  const lng = useContext(LanguageContext)
   const t = useTranslator(ProfileTranslations)
 
   if (loading) {
@@ -25,17 +22,15 @@ const ProfilePointsDisplay = () => {
     return <ErrorMessage />
   }
 
+  // <a href={`/${lng.language}/profile/points`}>
   const hasPoints = studentHasPoints({ pointsData: data })
   if (hasPoints) {
     return (
       <>
         <PointsListGrid data={data} showOnlyTen={true} />
-        <LangLink
-          href="/[lng]/profile/points"
-          as={`/${lng.language}/profile/points`}
-        >
+        <LangLink href={`/profile/points`} passHref>
           <FormSubmitButton variant="text" fullWidth>
-            <a href={`/${lng.language}/profile/points`}>{t("seePoints")}</a>
+            {t("seePoints")}
           </FormSubmitButton>
         </LangLink>
       </>
