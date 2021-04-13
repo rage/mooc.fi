@@ -127,7 +127,7 @@ interface ListItemProps {
     | ProfileUserOverView_currentUser_completions_course
 }
 
-const CompletionListItem = ({ completion, course }: ListItemProps) => {
+export const CompletionListItem = ({ completion, course }: ListItemProps) => {
   const isRegistered = (completion?.completions_registered ?? []).length > 0
   const t = useTranslator(ProfileTranslations)
 
@@ -224,5 +224,3 @@ const CompletionListItem = ({ completion, course }: ListItemProps) => {
     </ListItemContainer>
   )
 }
-
-export default CompletionListItem

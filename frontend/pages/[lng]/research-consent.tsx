@@ -10,6 +10,7 @@ import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmit
 import withSignedIn from "/lib/with-signed-in"
 import Router from "next/router"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -49,6 +50,13 @@ const updateResearchConsentMutation = gql`
 function useResearchConsent() {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(SignupTranslations)
+
+  useBreadcrumbs([
+    {
+      as: `/${language}/research-consent`,
+      href: "/[lng]/research-consent",
+    },
+  ])
 
   const { data, loading } = useQuery(consentQuery)
 

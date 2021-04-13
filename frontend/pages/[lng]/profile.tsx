@@ -8,6 +8,8 @@ import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Container from "/components/Container"
 import withSignedIn from "/lib/with-signed-in"
 import { CompletionsRegisteredFragment } from "/graphql/fragments/completionsRegistered"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useLanguageContext } from "/contexts/LanguageContext"
 
 export const UserOverViewQuery = gql`
   query ProfileUserOverView {
@@ -44,6 +46,14 @@ export const UserOverViewQuery = gql`
 
 function Profile() {
   const { data, error, loading } = useQuery<UserOverViewData>(UserOverViewQuery)
+  const { language } = useLanguageContext()
+
+  useBreadcrumbs([
+    {
+      as: `/${language}/profile`,
+      href: "/[lng]/profile",
+    },
+  ])
 
   if (error) {
     return <ErrorMessage />

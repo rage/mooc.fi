@@ -19,6 +19,8 @@ import styled from "@emotion/styled"
 import { TextField } from "@material-ui/core"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import BreadcrumbsTranslations from "/translations/breadcrumbs"
 // import useDebounce from "/util/useDebounce"
 
 const ContentArea = styled.div`
@@ -37,13 +39,12 @@ export const CourseDetailsFromSlugQuery = gql`
 
 const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
-  const t = useTranslator(CoursesTranslations)
+  const t = useTranslator(CoursesTranslations, BreadcrumbsTranslations)
+  const slug = useQueryParameter("slug")
 
   const [lng, changeLng] = useState("")
   const [searchString, setSearchString] = useState("")
   const [search, setSearch] = useState("")
-
-  const slug = useQueryParameter("slug")
 
   const handleLanguageChange = (event: ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes
@@ -61,6 +62,21 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
       variables: { slug },
     },
   )
+
+  useBreadcrumbs([
+    {
+      label: t("courses"),
+      href: `/courses`,
+    },
+    {
+      label: data?.course?.name,
+      href: `/courses/${slug}`,
+    },
+    {
+      label: t("courseCompletions"),
+      href: `/courses/${slug}/completions`,
+    },
+  ])
 
   if (loading || !data) {
     return <Spinner />

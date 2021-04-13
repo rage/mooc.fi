@@ -116,7 +116,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <LangLink as={listLink} href="/[lng]/study-modules">
+              <LangLink href="/study-modules">
                 <a
                   onClick={() =>
                     //redirectTimeout && clearTimeout(redirectTimeout)
