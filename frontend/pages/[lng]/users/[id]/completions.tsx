@@ -40,7 +40,7 @@ function CompletionsPage() {
     },
     {
       translation: "userCompletions",
-      href: `/uesrs/${id}/completions`,
+      href: `/users/${id}/completions`,
     },
   ])
 

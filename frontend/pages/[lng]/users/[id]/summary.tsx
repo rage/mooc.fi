@@ -110,7 +110,7 @@ function UserSummaryView() {
     },
     {
       translation: "userSummary",
-      href: `/uesrs/${id}/summary`,
+      href: `/users/${id}/summary`,
     },
   ])
 
