@@ -24,11 +24,12 @@ export const useTranslator = <
   const { language } = useContext(LanguageContext)
   const router = useRouter()
 
-  const combinedDict = combineDictionaries([
+  const combinedDict = combineDictionaries(dicts)
+  /*[
     dicts[0],
     dicts[1] ?? {},
     dicts[2] ?? {},
-  ])
+  ])*/
   const translator = useMemo(
     () => getTranslator(combinedDict)(language, router),
     [dicts, language],
