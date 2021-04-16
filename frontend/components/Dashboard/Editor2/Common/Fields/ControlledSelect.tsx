@@ -22,6 +22,7 @@ interface ControlledSelectProps<T> extends ControlledFieldProps {
     value?: any,
   ) => void
 }
+
 export function ControlledSelect<T extends { [key: string]: any }>(
   props: ControlledSelectProps<T>,
 ) {

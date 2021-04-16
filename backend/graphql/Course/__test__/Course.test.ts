@@ -1,21 +1,21 @@
 import { createReadStream } from "fs"
 import { gql } from "graphql-request"
-import { getTestContext, fakeTMCCurrent } from "./__helpers"
+import { getTestContext, fakeTMCCurrent } from "../../../tests/__helpers"
 import {
   //normalUser,
   normalUserDetails,
   //adminUser,
   adminUserDetails,
-} from "./data"
-import { seed } from "./data/seed"
+} from "../../../tests/data"
+import { seed } from "../../../tests/data/seed"
 
 import { Course } from "@prisma/client"
 import { orderBy } from "lodash"
 import { mocked } from "ts-jest/utils"
 import { omit } from "lodash"
 
-jest.mock("../services/kafkaProducer")
-import KafkaProducer from "../services/kafkaProducer"
+jest.mock("../../../services/kafkaProducer")
+import KafkaProducer from "../../../services/kafkaProducer"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
@@ -603,7 +603,7 @@ describe("Course", () => {
       inherit_settings_from: "00000000000000000000000000000002",
       completions_handled_by: "00000000000000000000000000000002",
       user_course_settings_visibilities: [{ language: "en_US" }],
-      new_photo: createReadStream(__dirname + "/data/image.gif"),
+      new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
     })
 
     const getUpdateCourse = () => ({
@@ -617,21 +617,24 @@ describe("Course", () => {
       teacher_in_charge_name: "updated teacher",
       course_translations: [
         {
-          id: "00000000000000000000000000000011",
+          id: "00000000-0000-0000-0000-000000000011",
           description: "course1_updated_description_en_US",
           language: "en_US",
           name: "course1_en_US",
           link: "http://link.com",
         },
         {
-          id: "00000000000000000000000000000013",
           description: "course1_added_description_se_SE",
           language: "se_SE",
           name: "course1_se_SE",
           link: "http:/link.se.com",
         },
       ],
-      study_modules: [{ id: "00000000000000000000000000000101" }],
+      study_modules: [
+        {
+          id: "00000000-0000-0000-0000-000000000101",
+        },
+      ],
       course_variants: [
         {
           slug: "variant1",
@@ -647,7 +650,7 @@ describe("Course", () => {
       completions_handled_by: "00000000000000000000000000000001",
       user_course_settings_visibilities: [{ language: "en_US" }],
       photo: "00000000000000000000000000001101",
-      new_photo: createReadStream(__dirname + "/data/image.gif"),
+      new_photo: createReadStream(__dirname + "/../../../tests/data/image.gif"),
     })
 
     const expectedAddedCourse = {
@@ -682,6 +685,19 @@ describe("Course", () => {
 
     const expectedUpdatedCourse = {
       id: "00000000-0000-0000-0000-000000000002",
+      study_modules: [
+        {
+          id: expect.stringMatching("00000000-0000-0000-0000-000000000101"),
+        },
+      ],
+      course_translations: [
+        {
+          id: expect.any(String),
+        },
+        {
+          id: expect.any(String),
+        },
+      ],
       course_variants: [
         {
           id: expect.any(String),
