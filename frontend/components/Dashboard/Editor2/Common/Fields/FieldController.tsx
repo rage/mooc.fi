@@ -44,7 +44,7 @@ export function FieldController<T>({
           {renderComponent({ ...renderProps.field, onChange })}
           <ErrorMessage
             errors={errors}
-            name={name}
+            name={name as any} // TODO/FIXME: annoying typing here
             render={({ message }: { message: string | React.ReactElement }) => (
               <FormHelperText style={{ color: "#f44336" }}>
                 {message}
