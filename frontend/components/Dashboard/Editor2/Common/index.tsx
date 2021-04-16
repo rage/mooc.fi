@@ -91,11 +91,11 @@ export const useTabContext = () => {
   return useContext(TabContext)
 }
 
-export function customValidationResolver<T>(schema: Yup.AnyObjectSchema) {
+export function customValidationResolver(schema: Yup.AnyObjectSchema) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useCallback(
     async (values, context, validateAllFieldCriteria = false) =>
-      await yupResolver<T>(schema)(
+      await yupResolver(schema)(
         values,
         { ...context, values },
         validateAllFieldCriteria,

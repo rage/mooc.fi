@@ -58,22 +58,22 @@ export default function CourseTranslationForm() {
                 }`}
               </LanguageVersionTitle>
               <ControlledHiddenField
-                name={`course_translations[${index}]._id`}
+                name={`course_translations.${index}._id`}
                 defaultValue={item._id}
               />
               <ControlledHiddenField
-                name={`course_translations[${index}].language`}
+                name={`course_translations.${index}.language`}
                 defaultValue={item.language}
               />
               <ControlledTextField
-                name={`course_translations[${index}].name`}
+                name={`course_translations.${index}.name`}
                 label={t("courseName")}
                 required
                 defaultValue={item.name}
                 revertable
               />
               <ControlledTextField
-                name={`course_translations[${index}].description`}
+                name={`course_translations.${index}.description`}
                 label={t("courseDescription")}
                 defaultValue={item.description}
                 type="textarea"
@@ -81,17 +81,17 @@ export default function CourseTranslationForm() {
                 revertable
               />
               <ControlledTextField
-                name={`course_translations[${index}].link`}
+                name={`course_translations.${index}.link`}
                 label={t("courseLink")}
                 defaultValue={item.link}
                 revertable
               />
               <ControlledHiddenField
-                name={`course_translations[${index}].open_university_course_link._id`}
+                name={`course_translations.${index}.open_university_course_link._id`}
                 defaultValue={item.open_university_course_link?._id ?? ""}
               />
               <ControlledTextField
-                name={`course_translations[${index}].open_university_course_link.course_code`}
+                name={`course_translations.${index}.open_university_course_link.course_code`}
                 label={t("courseOpenCode")}
                 defaultValue={
                   item.open_university_course_link?.course_code ?? ""
@@ -99,7 +99,7 @@ export default function CourseTranslationForm() {
                 revertable
               />
               <ControlledTextField
-                name={`course_translations[${index}].open_university_course_link.link`}
+                name={`course_translations.${index}.open_university_course_link.link`}
                 label={t("courseOpenLink")}
                 defaultValue={item.open_university_course_link?.link ?? ""}
                 revertable

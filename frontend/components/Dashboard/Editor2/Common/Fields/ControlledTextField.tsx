@@ -1,6 +1,12 @@
 import { omit } from "lodash"
 import { useEffect, useState } from "react"
-import { useFormContext } from "react-hook-form"
+import {
+  FieldValues,
+  Path,
+  PathValue,
+  UnpackNestedValue,
+  useFormContext,
+} from "react-hook-form"
 import {
   ControlledFieldProps,
   FieldController,
@@ -12,16 +18,21 @@ import { useTranslator } from "/util/useTranslator"
 import { TextField, Tooltip, IconButton } from "@material-ui/core"
 import HistoryIcon from "@material-ui/icons/History"
 import HelpIcon from "@material-ui/icons/Help"
-import { get } from "lodash"
+import { get, set } from "lodash"
 export interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string
   disabled?: boolean
   rows?: number
 }
 
-export function ControlledTextField(props: ControlledTextFieldProps) {
+export function ControlledTextField<T>(props: ControlledTextFieldProps) {
   const t = useTranslator(CommonTranslations)
-  const { errors, reset, setValue, getValues } = useFormContext()
+  const {
+    formState: { errors },
+    reset,
+    setValue,
+    getValues,
+  } = useFormContext()
   const { initialValues } = useEditorContext()
   const { label, required, name, tip, type, disabled, revertable, rows } = props
 
@@ -31,7 +42,11 @@ export function ControlledTextField(props: ControlledTextFieldProps) {
   }, [errors])
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(name, e.target.value, { shouldDirty: true })
+    setValue(
+      name,
+      e.target.value as UnpackNestedValue<PathValue<FieldValues, Path<T>>>,
+      { shouldDirty: true },
+    )
   }
 
   const initialValue = get(initialValues, name)
@@ -65,10 +80,7 @@ export function ControlledTextField(props: ControlledTextFieldProps) {
                           aria-label={t("editorRevert")}
                           disabled={getValues(name) === initialValue}
                           onClick={() =>
-                            reset({
-                              ...getValues(),
-                              [name]: initialValue,
-                            })
+                            reset(set(getValues(), name, initialValue))
                           }
                         >
                           <HistoryIcon />

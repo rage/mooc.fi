@@ -1,4 +1,10 @@
-import { useFormContext, useFieldArray, ArrayField } from "react-hook-form"
+import {
+  useFormContext,
+  useFieldArray,
+  FieldArray,
+  FieldArrayWithId,
+  Path,
+} from "react-hook-form"
 import { FormGroup, Typography } from "@material-ui/core"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
@@ -19,11 +25,14 @@ export const ArrayList = styled.ul`
 export const ArrayItem = styled.li``
 
 interface ControlledFieldArrayListProps<T> extends ControlledFieldProps {
-  initialValues: T
-  render: (item: Partial<ArrayField<T, "id">>, index: number) => JSX.Element
+  initialValues: Partial<FieldArray<T, any>>
+  render: (
+    item: Partial<FieldArrayWithId<T, any, string>>,
+    index: number,
+  ) => JSX.Element
   conditions: {
-    add: (item: Array<ArrayField<T, "id">>) => boolean
-    remove: (item: Partial<ArrayField<T, "id">>) => boolean
+    add: (item: Partial<T>[]) => boolean
+    remove: (item: Partial<FieldArrayWithId<T, any, string>>) => boolean
   }
   texts: {
     title?: string
@@ -41,7 +50,6 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
 ) {
   const t = useTranslator(CoursesTranslations)
   const {
-    name,
     render,
     initialValues,
     conditions,
@@ -52,18 +60,19 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
       cancellationText = t("confirmationNo"),
       noFields = "no fields",
       addText = t("courseAdd"),
-      removeText = t("courseAdd"),
+      removeText = t("courseRemove"),
     },
   } = props
-  const { control, formState, watch, trigger } = useFormContext()
-  const { fields, append, remove } = useFieldArray<T>({
+  const name = props.name as Path<T>
+  const { control, formState, watch, trigger } = useFormContext<T>()
+  const { fields, append, remove } = useFieldArray<T, any, "_id">({
     name,
     control,
   })
   const { isSubmitting } = formState
   const confirm = useConfirm()
 
-  const watchedFields = watch(name)
+  const watchedFields = watch([name])
 
   return (
     <FormGroup>
@@ -111,7 +120,8 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
           </Typography>
         )}
         {watchedFields.length === 0 ||
-        (watchedFields.length && conditions.add(watchedFields)) ? (
+        (watchedFields.length &&
+          conditions.add(watchedFields as Partial<T>[])) ? (
           <ButtonWithWhiteText
             variant="contained"
             color="primary"
