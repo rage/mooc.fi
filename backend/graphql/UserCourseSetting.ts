@@ -1,5 +1,5 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { buildUserSearch /*, convertPagination*/ } from "../util/db-functions"
+import { buildUserSearch, convertPagination } from "../util/db-functions"
 import { isAdmin } from "../accessControl"
 import {
   objectType,
@@ -9,7 +9,6 @@ import {
   stringArg,
   nonNull,
 } from "nexus"
-import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 
 export const UserCourseSetting = objectType({
@@ -85,26 +84,24 @@ export const UserCourseSettingQueries = extendType({
       },
     })
 
-    t.field("userCourseSettings", {
-      type: "QueryUserCourseSettings_type_Connection",
-      args: {
+    t.connection("userCourseSettings", {
+      type: "UserCourseSetting",
+      additionalArgs: {
         user_id: idArg(),
         user_upstream_id: intArg(),
         course_id: idArg(),
         search: stringArg(),
         skip: intArg({ default: 0 }),
-        first: intArg(),
-        last: intArg(),
-        before: stringArg(),
-        after: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx, __) => {
+      cursorFromNode: (node, _args, _ctx, _info, _) => `cursor:${node?.id}`,
+      nodes: async (_, args, ctx) => {
         const {
           first,
           last,
           before,
           after,
+          skip,
           user_id,
           user_upstream_id,
           search,
@@ -135,25 +132,53 @@ export const UserCourseSettingQueries = extendType({
         if (user_upstream_id)
           orCondition.push({ upstream_id: user_upstream_id })
 
-        const baseArgs = {
+        return ctx.prisma.userCourseSetting.findMany({
+          ...convertPagination({ first, last, before, after, skip }),
           where: {
             user: {
               OR: orCondition,
             },
             course_id,
           },
-        }
+        })
+      },
+      extendConnection(t) {
+        t.int("totalCount", {
+          args: {
+            user_id: idArg(),
+            user_upstream_id: intArg(),
+            course_id: idArg(),
+            search: stringArg(),
+          },
+          resolve: async (
+            _,
+            { user_id, user_upstream_id, course_id, search },
+            ctx,
+          ) => {
+            const orCondition: Prisma.UserWhereInput[] = []
 
-        return findManyCursorConnection(
-          async (args) =>
-            ctx.prisma.userCourseSetting.findMany({ ...args, ...baseArgs }),
-          () => ctx.prisma.userCourseSetting.count(baseArgs),
-          { first, last, before, after },
-        )
+            if (search) {
+              orCondition.push(buildUserSearch(search))
+            }
+
+            if (user_id) orCondition.push({ id: user_id })
+            if (user_upstream_id)
+              orCondition.push({ upstream_id: user_upstream_id })
+
+            return ctx.prisma.userCourseSetting.count({
+              where: {
+                user: {
+                  OR: orCondition,
+                },
+                course_id,
+              },
+            })
+          },
+        })
       },
     })
 
-    t.connection("userCourseSettings_type", {
+    /*t.connection("userCourseSettings_type", {
       // hack to generate connection type
       type: "UserCourseSetting",
       additionalArgs: {
@@ -170,6 +195,6 @@ export const UserCourseSettingQueries = extendType({
       extendConnection(t) {
         t.int("totalCount")
       },
-    })
+    })*/
   },
 })
