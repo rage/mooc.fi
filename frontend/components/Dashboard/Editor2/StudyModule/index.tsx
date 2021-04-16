@@ -51,7 +51,7 @@ const StudyModuleEdit = ({
   })
   const methods = useForm<StudyModuleFormValues>({
     defaultValues,
-    resolver: customValidationResolver<StudyModuleFormValues>(validationSchema),
+    resolver: customValidationResolver(validationSchema),
     mode: "onBlur",
   })
   const { trigger } = methods
