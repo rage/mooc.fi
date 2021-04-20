@@ -48,6 +48,8 @@ export const UserCourseServiceProgressQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { user_id, course_id, service_id } = args
+
+        // TODO: do I need to do a three-part if-thing to query from user, course, or service side?
         return await ctx.prisma.userCourseServiceProgress.findFirst({
           where: {
             user_id: user_id,

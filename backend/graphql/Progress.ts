@@ -18,9 +18,9 @@ export const Progress = objectType({
             user_course_progresses: {
               where: { user_id },
               orderBy: { created_at: "asc" },
-              take: 1
-            }
-          }
+              take: 1,
+            },
+          },
         })
 
         return res?.user_course_progresses?.[0] ?? null
@@ -36,9 +36,9 @@ export const Progress = objectType({
           where: { id: course_id },
           select: {
             user_course_service_progresses: {
-              where: { user_id }
-            }
-          }
+              where: { user_id },
+            },
+          },
         })
 
         return res?.user_course_service_progresses ?? []

@@ -13,13 +13,29 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
-        return ctx.prisma.completion.findFirst({
+
+        return (
+          (
+            await ctx.prisma.course.findUnique({
+              where: {
+                id: course_id,
+              },
+              select: {
+                completions: {
+                  where: { user_id },
+                  orderBy: { created_at: "asc" },
+                },
+              },
+            })
+          )?.completions?.[0] ?? null
+        )
+        /*return ctx.prisma.completion.findFirst({
           where: {
             user_id,
             course_id,
           },
           orderBy: { created_at: "asc" },
-        })
+        })*/
       },
     })
     t.field("user_course_progress", {
@@ -28,13 +44,29 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
-        return ctx.prisma.userCourseProgress.findFirst({
+        return (
+          (
+            await ctx.prisma.course.findUnique({
+              where: {
+                id: course_id,
+              },
+              select: {
+                user_course_progresses: {
+                  where: { user_id },
+                  orderBy: { created_at: "asc" },
+                },
+              },
+            })
+          )?.user_course_progresses?.[0] ?? null
+        )
+
+        /*return ctx.prisma.userCourseProgress.findFirst({
           where: {
             user_id,
             course_id,
           },
           orderBy: { created_at: "asc" },
-        })
+        })*/
       },
     })
     t.list.field("user_course_service_progresses", {
@@ -43,12 +75,29 @@ export const UserCourseSummary = objectType({
         if (!user_id || !course_id) {
           throw new UserInputError("need to specify user_id and course_id")
         }
-        return ctx.prisma.userCourseServiceProgress.findMany({
+
+        return (
+          (
+            await ctx.prisma.course.findUnique({
+              where: {
+                id: course_id,
+              },
+              select: {
+                user_course_service_progresses: {
+                  where: { user_id },
+                  orderBy: { created_at: "asc" },
+                },
+              },
+            })
+          )?.user_course_service_progresses ?? []
+        )
+
+        /*return ctx.prisma.userCourseServiceProgress.findMany({
           where: {
             user_id,
             course_id,
           },
-        })
+        })*/
       },
     })
 

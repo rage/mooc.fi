@@ -12,7 +12,6 @@ import {
 import { UserInputError } from "apollo-server-core"
 
 import { isAdmin } from "../accessControl"
-import { Prisma } from "@prisma/client"
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
@@ -47,7 +46,18 @@ export const UserCourseProgress = objectType({
     t.nullable.field("user_course_settings", {
       type: "UserCourseSetting",
       resolve: async (parent, _, ctx) => {
-        const { course_id, user_id } =
+        return (
+          await ctx.prisma.userCourseProgress
+            .findUnique({
+              where: { id: parent.id },
+            })
+            .user()
+            .user_course_settings({
+              where: { course_id: parent.course_id },
+            })
+        )?.[0]
+
+        /*const { course_id, user_id } =
           (await ctx.prisma.userCourseProgress.findUnique({
             where: { id: parent.id },
             select: {
@@ -55,12 +65,6 @@ export const UserCourseProgress = objectType({
               user_id: true,
             },
           })) || {}
-        /*const course= await ctx.prisma
-          .user_course_progress.findOne({ where: { id: parent.id } })
-          .course_courseTouser_course_progress()
-        const user: User = await ctx.prisma
-          .user_course_progress.findOne({ where: { id: parent.id } })
-          .user_course_service_progress()*/
 
         if (!course_id || !user_id) {
           throw new Error("course or user not found")
@@ -71,7 +75,7 @@ export const UserCourseProgress = objectType({
             course_id,
             user_id,
           },
-        })
+        })*/
       },
     })
 
@@ -93,26 +97,28 @@ export const UserCourseProgress = objectType({
         }
 
         const courseProgress: any = progress || []
-        const exercises = await ctx.prisma.course.findUnique({
-          where: {
-            id: course_id
-          }
-        })
+        const exercises = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id,
+            },
+          })
           .exercises({
             select: {
               id: true,
               exercise_completions: {
                 where: {
-                  user_id
-                }
-              }
-            }
+                  user_id,
+                },
+              },
+            },
           })
 
-        const completedExerciseCount = exercises.reduce((acc, curr) => 
-          acc + (curr.exercise_completions?.length ?? 0), 0)
-          
-          
+        const completedExerciseCount = exercises.reduce(
+          (acc, curr) => acc + (curr.exercise_completions?.length ?? 0),
+          0,
+        )
+
         const totalProgress =
           (courseProgress?.reduce(
             (acc: number, curr: any) => acc + curr.progress,
@@ -180,14 +186,29 @@ export const UserCourseProgressQueries = extendType({
       resolve: (_, args, ctx) => {
         const { skip, take, cursor, user_id, course_id, course_slug } = args
 
-        return ctx.prisma.userCourseProgress.findMany({
+        if (!course_id && !course_slug) {
+          throw new Error("must provide course_id or course_slug")
+        }
+
+        return ctx.prisma.course
+          .findUnique({
+            where: {
+              id: course_id ?? undefined,
+              slug: course_slug ?? undefined,
+            },
+          })
+          .user_course_progresses({
+            skip: skip ?? undefined,
+            take: take ?? undefined,
+            cursor: cursor ? { id: cursor.id ?? undefined } : undefined,
+            where: {
+              user_id,
+            },
+          })
+        /*return ctx.prisma.userCourseProgress.findMany({
           skip: skip ?? undefined,
           take: take ?? undefined,
           cursor: cursor ? { id: cursor.id ?? undefined } : undefined,
-          /*first: first ?? undefined,
-          last: last ?? undefined,
-          before: before ? { id: before } : undefined,
-          after: after ? { id: after } : undefined,*/
           where: {
             user_id,
             course: {
@@ -201,7 +222,7 @@ export const UserCourseProgressQueries = extendType({
               ],
             },
           },
-        })
+        })*/
       },
     })
   },
