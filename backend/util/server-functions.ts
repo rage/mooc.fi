@@ -18,9 +18,11 @@ export function requireAdmin(knex: Knex) {
   ): Promise<Response<any> | boolean> {
     const getUserResult = await getUser(knex)(req, res)
 
-    console.log(getUserResult)
     if (getUserResult.isOk() && getUserResult.value.details.administrator) {
       return true
+    }
+    if (getUserResult.isErr()) {
+      return getUserResult.error
     }
 
     return res.status(401).json({ message: "unauthorized" })
