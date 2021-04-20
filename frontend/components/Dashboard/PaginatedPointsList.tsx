@@ -59,7 +59,6 @@ export const StudentProgresses = gql`
   ${ProgressUserCourseProgressFragment}
   ${ProgressUserCourseServiceProgressFragment}
 `
-//       count(course_id: $course_id, search: $search)
 
 const LoadingPointCardSkeleton = styled(Skeleton)`
   width: 100%;

@@ -12,6 +12,7 @@ import {
 import { UserInputError } from "apollo-server-core"
 
 import { isAdmin } from "../accessControl"
+import { Prisma } from "@prisma/client"
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
@@ -77,49 +78,48 @@ export const UserCourseProgress = objectType({
     t.field("exercise_progress", {
       type: "ExerciseProgress",
       resolve: async (parent, _, ctx) => {
-        const { course_id, user_id } =
-          (await ctx.prisma.userCourseProgress.findUnique({
-            where: { id: parent.id },
-            select: {
-              course_id: true,
-              user_id: true,
-            },
-          })) || {}
-        /*const course: Course = await ctx.prisma
-          .user_course_progress.findOne({ where: { id: parent.id } })
-          .course_courseTouser_course_progress()
-        const user: User = await ctx.prisma
-          .user_course_progress.findOne({ where: { id: parent.id } })
-          .user_course_service_progress()*/
+        const { course_id, user_id, progress } = parent
+        /*const { course_id, user_id, progress } = (await ctx.prisma.userCourseProgress.findUnique({
+          where: { id: parent.id },
+          select: {
+            progress: true,
+            course_id: true,
+            user_id: true
+          }
+        })) ?? {}*/
 
         if (!course_id || !user_id) {
           throw new Error("no course or user found")
         }
-        const courseProgresses = await ctx.prisma.userCourseProgress.findMany({
-          where: { course_id, user_id },
-          orderBy: { created_at: "asc" },
-        })
-        // TODO/FIXME: proper typing
-        const courseProgress: any = courseProgresses?.[0].progress ?? []
-        const exercises = await ctx.prisma.course
-          .findUnique({ where: { id: course_id } })
-          .exercises()
-        const completedExercises = await ctx.prisma.exerciseCompletion.findMany(
-          {
-            where: {
-              exercise: { course_id },
-              user_id,
-            },
-          },
-        )
 
+        const courseProgress: any = progress || []
+        const exercises = await ctx.prisma.course.findUnique({
+          where: {
+            id: course_id
+          }
+        })
+          .exercises({
+            select: {
+              id: true,
+              exercise_completions: {
+                where: {
+                  user_id
+                }
+              }
+            }
+          })
+
+        const completedExerciseCount = exercises.reduce((acc, curr) => 
+          acc + (curr.exercise_completions?.length ?? 0), 0)
+          
+          
         const totalProgress =
           (courseProgress?.reduce(
             (acc: number, curr: any) => acc + curr.progress,
             0,
-          ) ?? 0) / (courseProgress.length || 1)
+          ) ?? 0) / (courseProgress?.length || 1)
         const exerciseProgress =
-          completedExercises.length / (exercises.length || 1)
+          completedExerciseCount / (exercises.length || 1)
 
         return {
           total: totalProgress,
