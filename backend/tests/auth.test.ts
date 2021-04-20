@@ -10,7 +10,13 @@ const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_TEST)
 
 const ctx = getTestContext()
 
-const issueToken = async (client_name: string, email?: string, id?: string, client_id?: string, admin?: boolean) => {
+const issueToken = async (
+  client_name: string,
+  email?: string,
+  id?: string,
+  client_id?: string,
+  admin?: boolean,
+) => {
   let nonce = crypto.randomBytes(16).toString("hex")
   let jwtid = crypto.randomBytes(64).toString("hex")
   let subject = Buffer.from(email || client_name).toString("base64")
@@ -50,19 +56,18 @@ describe("server", () => {
     headers = defaultHeaders,
     params = {},
   }: RequestParams) =>
-      await axios({
-        method,
-        url: `http://localhost:${ctx.port}${route}`,
-        data,
-        headers,
-        params,
-      })
+    await axios({
+      method,
+      url: `http://localhost:${ctx.port}${route}`,
+      data,
+      headers,
+      params,
+    })
 
   const get = (route: string = "", defaultHeaders: any) =>
     request("GET")(route, defaultHeaders)
   const post = (route: string = "", defaultHeaders: any) =>
     request("POST")(route, defaultHeaders)
-
 
   describe("/auth/signUp", () => {
     const defaultHeaders = {}
@@ -78,8 +83,8 @@ describe("server", () => {
         data: {
           email: "invalid-email",
           password: "password",
-          confirmPassword: "password"
-        }
+          confirmPassword: "password",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -92,8 +97,8 @@ describe("server", () => {
         data: {
           email: "email@user.com",
           password: "password failure",
-          confirmPassword: "password"
-        }
+          confirmPassword: "password",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -106,8 +111,8 @@ describe("server", () => {
         data: {
           email: "email@user.com",
           password: "password",
-          confirmPassword: "password-mismatch"
-        }
+          confirmPassword: "password-mismatch",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -120,8 +125,8 @@ describe("server", () => {
         data: {
           email: "e@mail.com",
           password: "password",
-          confirmPassword: "password"
-        }
+          confirmPassword: "password",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -134,8 +139,8 @@ describe("server", () => {
         data: {
           email: `${crypto.randomBytes(4).toString("hex")}@user.com`,
           password: "password",
-          confirmPassword: "password"
-        }
+          confirmPassword: "password",
+        },
       })
 
       expect(res.status).toBe(200)
@@ -155,7 +160,7 @@ describe("server", () => {
       return postPasswordReset({
         data: {
           email: "",
-        }
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -167,7 +172,7 @@ describe("server", () => {
       return postPasswordReset({
         data: {
           email: "nonexistant@user.com",
-        }
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -179,12 +184,11 @@ describe("server", () => {
       const res = await postPasswordReset({
         data: {
           email: "e@mail.com",
-        }
+        },
       })
 
       expect(res.status).toBe(200)
     })
-
   })
 
   describe("token", () => {
@@ -199,8 +203,8 @@ describe("server", () => {
     it("invalid grant_type", async () => {
       return postToken({
         data: {
-          grant_type: "non-grant"
-        }
+          grant_type: "non-grant",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -214,8 +218,8 @@ describe("server", () => {
         data: {
           grant_type: "password",
           email: "incorrect-email@user.com",
-          password: "password"
-        }
+          password: "password",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -229,8 +233,8 @@ describe("server", () => {
         data: {
           grant_type: "password",
           email: "e@mail.com",
-          password: "incorrect-password"
-        }
+          password: "incorrect-password",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -243,8 +247,8 @@ describe("server", () => {
         data: {
           grant_type: "password",
           email: "e@mail.com",
-          password: "password"
-        }
+          password: "password",
+        },
       })
 
       expect(res.status).toBe(200)
@@ -257,8 +261,8 @@ describe("server", () => {
           grant_type: "authorization_code",
           response_type: "code",
           client_id: "invalidID",
-          redirect_uri: "*"
-        }
+          redirect_uri: "*",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -272,8 +276,8 @@ describe("server", () => {
           grant_type: "authorization_code",
           response_type: "code",
           client_id: "native",
-          redirect_uri: "*"
-        }
+          redirect_uri: "*",
+        },
       })
 
       expect(res.status).toBe(200)
@@ -284,8 +288,8 @@ describe("server", () => {
         data: {
           grant_type: "authorization_code",
           client_id: "native",
-          code: "invalid_code"
-        }
+          code: "invalid_code",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -298,8 +302,8 @@ describe("server", () => {
         data: {
           grant_type: "authorization_code",
           client_id: "invalid_client",
-          code: "code"
-        }
+          code: "code",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -312,8 +316,8 @@ describe("server", () => {
         data: {
           grant_type: "authorization_code",
           client_id: "native",
-          code: "code"
-        }
+          code: "code",
+        },
       })
 
       expect(res.status).toBe(200)
@@ -326,9 +330,9 @@ describe("server", () => {
           grant_type: "client_credentials",
           client: {
             client_id: "invalid_client",
-            client_secret: "native"
-          }
-        }
+            client_secret: "native",
+          },
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -342,9 +346,9 @@ describe("server", () => {
           grant_type: "client_credentials",
           client: {
             client_id: "native",
-            client_secret: "invalid_client_secret"
-          }
-        }
+            client_secret: "invalid_client_secret",
+          },
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -358,9 +362,9 @@ describe("server", () => {
           grant_type: "client_credentials",
           client: {
             client_id: "native",
-            client_secret: "native"
-          }
-        }
+            client_secret: "native",
+          },
+        },
       })
 
       expect(res.status).toBe(200)
@@ -373,20 +377,32 @@ describe("server", () => {
 
     beforeAll(async () => {
       await seed(ctx.prisma)
-      token = await issueToken("client", "e@mail.com", "user_id", "native", false)
-      consentToken = await issueToken("client", "f@mail.com", "user_id_consent", "native", false)
+      token = await issueToken(
+        "client",
+        "e@mail.com",
+        "user_id",
+        "native",
+        false,
+      )
+      consentToken = await issueToken(
+        "client",
+        "f@mail.com",
+        "user_id_consent",
+        "native",
+        false,
+      )
     })
 
     const defaultHeaders = {
-      authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     }
 
     const nonUserHeaders = {
-      authorization: "Bearer nontoken"
+      authorization: "Bearer nontoken",
     }
 
     const consentHeaders = {
-      authorization: `Bearer ${consentToken}`
+      authorization: `Bearer ${consentToken}`,
     }
 
     const getAuthorize = get("/auth/authorize", defaultHeaders)
@@ -395,7 +411,7 @@ describe("server", () => {
 
     it("error on invalid code", async () => {
       return getAuthorize({
-        params: { code: "non-code" }
+        params: { code: "non-code" },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -405,7 +421,7 @@ describe("server", () => {
 
     it("error on invalid token", async () => {
       return getAuthorizeNonToken({
-        params: { code: "code" }
+        params: { code: "code" },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -415,7 +431,7 @@ describe("server", () => {
 
     it("authorize access token", async () => {
       const res = await getAuthorize({
-        params: { code: "code" }
+        params: { code: "code" },
       })
 
       expect(res.status).toBe(200)
@@ -423,12 +439,11 @@ describe("server", () => {
 
     it("ask for consent", async () => {
       const res = await getAuthorizeConsent({
-        params: { code: "code2" }
+        params: { code: "code2" },
       })
 
       expect(res.status).toBe(200)
     })
-
   })
 
   describe("decision", () => {
@@ -436,15 +451,21 @@ describe("server", () => {
 
     beforeAll(async () => {
       await seed(ctx.prisma)
-      token = await issueToken("client", "e@mail.com", "user_id", "native", false)
+      token = await issueToken(
+        "client",
+        "e@mail.com",
+        "user_id",
+        "native",
+        false,
+      )
     })
 
     const defaultHeaders = {
-      authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     }
 
     const nonUserHeaders = {
-      authorization: "Bearer nonToken"
+      authorization: "Bearer nonToken",
     }
 
     const getDecision = get("/auth/decision", defaultHeaders)
@@ -452,7 +473,7 @@ describe("server", () => {
 
     it("error on authorization code", async () => {
       return getDecision({
-        params: { code: "non-code" }
+        params: { code: "non-code" },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -462,7 +483,7 @@ describe("server", () => {
 
     it("error on invalid token", async () => {
       return getDecisionNonToken({
-        params: { code: "code" }
+        params: { code: "code" },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -472,7 +493,7 @@ describe("server", () => {
 
     it("authorize user", async () => {
       const res = await getDecision({
-        params: { code: "code" }
+        params: { code: "code" },
       })
 
       expect(res.status).toBe(200)
@@ -484,15 +505,21 @@ describe("server", () => {
 
     beforeAll(async () => {
       await seed(ctx.prisma)
-      token = await issueToken("client", "e@mail.com", "user_id", "native", false)
+      token = await issueToken(
+        "client",
+        "e@mail.com",
+        "user_id",
+        "native",
+        false,
+      )
     })
 
     const defaultHeaders = {
-      authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     }
 
     const nonUserHeaders = {
-      authorization: "Bearer nonToken"
+      authorization: "Bearer nonToken",
     }
 
     const postSignOut = post("/auth/signOut", defaultHeaders)
@@ -519,20 +546,32 @@ describe("server", () => {
 
     beforeAll(async () => {
       await seed(ctx.prisma)
-      token = await issueToken("client", "e@mail.com", "user_id", "native", false)
-      adminToken = await issueToken("client", "e@mail.com", "user_id", "native", true)
+      token = await issueToken(
+        "client",
+        "e@mail.com",
+        "user_id",
+        "native",
+        false,
+      )
+      adminToken = await issueToken(
+        "client",
+        "e@mail.com",
+        "user_id",
+        "native",
+        true,
+      )
     })
 
     const defaultHeaders = {
-      authorization: `Bearer ${adminToken}`
+      authorization: `Bearer ${adminToken}`,
     }
 
     const nonUserHeaders = {
-      authorization: "Bearer nonToken"
+      authorization: "Bearer nonToken",
     }
 
     const nonAdminHeaders = {
-      authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`,
     }
 
     const postClients = post("/auth/clients", defaultHeaders)
@@ -556,8 +595,8 @@ describe("server", () => {
       return postClientsNonToken({
         data: {
           name: "client",
-          redirect_uri: "*"
-        }
+          redirect_uri: "*",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -569,8 +608,8 @@ describe("server", () => {
       return postClientsNonAdmin({
         data: {
           name: "client",
-          redirect_uri: "*"
-        }
+          redirect_uri: "*",
+        },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -582,8 +621,8 @@ describe("server", () => {
       const res = await postClients({
         data: {
           name: "client",
-          redirect_uri: "*"
-        }
+          redirect_uri: "*",
+        },
       })
 
       expect(res.status).toBe(200)
@@ -617,7 +656,7 @@ describe("server", () => {
     //Show client
     it("error show client on invalid token", async () => {
       return showClientNonToken({
-        params: { id: 1 }
+        params: { id: 1 },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -627,7 +666,7 @@ describe("server", () => {
 
     it("error show client on non-admin token", async () => {
       return showClientNonAdmin({
-        params: { id: 1 }
+        params: { id: 1 },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -637,7 +676,7 @@ describe("server", () => {
 
     it("show client", async () => {
       const res = await showClient({
-        params: { id: 1 }
+        params: { id: 1 },
       })
 
       expect(res.status).toBe(200)
@@ -646,7 +685,7 @@ describe("server", () => {
     //Delete client
     it("error delete client on invalid token", async () => {
       return deleteClientNonToken({
-        params: { id: 1 }
+        params: { id: 1 },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -656,7 +695,7 @@ describe("server", () => {
 
     it("error delete client on non-admin token", async () => {
       return deleteClientNonAdmin({
-        params: { id: 1 }
+        params: { id: 1 },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -666,7 +705,7 @@ describe("server", () => {
 
     it("error delete client on invalid client", async () => {
       return deleteClient({
-        params: { id: 0 }
+        params: { id: 0 },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -676,7 +715,7 @@ describe("server", () => {
 
     it("delete client", async () => {
       return deleteClient({
-        params: { id: 1 }
+        params: { id: 1 },
       })
         .then(() => fail())
         .catch(({ response }) => {
@@ -684,5 +723,4 @@ describe("server", () => {
         })
     })
   })
-
 })

@@ -133,7 +133,8 @@ const getUserFromTmcAndSaveToDB = async (user_id: Number, tmc: TmcClient) => {
   } catch (e) {
     logger.error(
       new DatabaseInputError(
-        `Failed to upsert user with upstream id ${details.id
+        `Failed to upsert user with upstream id ${
+          details.id
         }. Values we tried to upsert: ${JSON.stringify(prismaDetails)}`,
         details,
         e,

@@ -23,7 +23,7 @@ export const normalUserDetails: UserInfo = {
     organizational_id: "",
   },
   username: "user",
-  extra_fields: {}
+  extra_fields: {},
 }
 
 export const adminUser = {
@@ -204,7 +204,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "e@mail.com",
     upstream_id: 1,
     username: "existing_user",
-    password: "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
+    password:
+      "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000103",
@@ -212,7 +213,8 @@ export const users: Prisma.UserCreateInput[] = [
     email: "f@mail.com",
     upstream_id: 2,
     username: "second_user_admin",
-    password: "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
+    password:
+      "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000104",
@@ -222,7 +224,8 @@ export const users: Prisma.UserCreateInput[] = [
     username: "third_user",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
-    password: "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
+    password:
+      "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000105",
@@ -627,7 +630,7 @@ export const authorizationCode: Prisma.AuthorizationCodeCreateInput[] = [
     redirect_uri: "*",
     user_id: "20000000000000000000000000000102",
     code: "code",
-    trusted: true
+    trusted: true,
   },
   {
     id: "00000000000000000000000000003103",
@@ -635,8 +638,8 @@ export const authorizationCode: Prisma.AuthorizationCodeCreateInput[] = [
     redirect_uri: "*",
     user_id: null,
     code: "code2",
-    trusted: true
-  }
+    trusted: true,
+  },
 ]
 
 export const client: Prisma.ClientCreateInput[] = [
@@ -647,8 +650,8 @@ export const client: Prisma.ClientCreateInput[] = [
     client_secret: "native",
     redirect_uri: "*",
     scopes: "*",
-    is_trusted: true
-  }
+    is_trusted: true,
+  },
 ]
 
 export const accessToken: Prisma.AccessTokenCreateInput[] = [
@@ -657,7 +660,6 @@ export const accessToken: Prisma.AccessTokenCreateInput[] = [
     client_id: "native",
     user_id: "20000000000000000000000000000102",
     access_token: "access_token",
-    valid: true
-  }
+    valid: true,
+  },
 ]
-

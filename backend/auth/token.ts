@@ -2,7 +2,9 @@ import { authenticateUser } from "../services/tmc"
 import Knex from "../services/knex"
 
 const fs = require("fs")
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY || process.env.PRIVATE_KEY_TEST)
+const privateKey = fs.readFileSync(
+  process.env.PRIVATE_KEY || process.env.PRIVATE_KEY_TEST,
+)
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")
@@ -14,7 +16,9 @@ const NATIVE_ID = "native"
 async function issueToken(user: any, client: any) {
   let nonce = crypto.randomBytes(16).toString("hex")
   let jwtid = crypto.randomBytes(64).toString("hex")
-  let subject = Buffer.from(user?.email || client?.name || "mooc.fi").toString("base64")
+  let subject = Buffer.from(user?.email || client?.name || "mooc.fi").toString(
+    "base64",
+  )
 
   let token = await jwt.sign(
     {
@@ -285,7 +289,7 @@ export async function signIn(
             let renewStamp = <any>new Date().getDate()
             let diffTime = Math.ceil(
               Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-              (1000 * 60 * 60 * 24),
+                (1000 * 60 * 60 * 24),
             )
 
             if (diffTime >= 1) {
@@ -371,8 +375,9 @@ export async function signIn(
           throttleData = {
             status: 403,
             success: false,
-            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
-              } attempts left.`,
+            message: `Incorrect password. You have ${
+              RATE_LIMIT - throttle.currentRate
+            } attempts left.`,
           }
           return
         }

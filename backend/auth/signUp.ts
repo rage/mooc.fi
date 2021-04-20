@@ -97,7 +97,7 @@ async function _signUp(
     return {
       status: 401,
       success: false,
-      message: accessToken.error
+      message: accessToken.error,
     }
   }
 
