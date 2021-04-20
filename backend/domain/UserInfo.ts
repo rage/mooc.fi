@@ -8,7 +8,7 @@ export interface UserInfo {
   //password: string
 }
 
-export interface ExtraFields { }
+export interface ExtraFields {}
 
 export interface UserField {
   first_name: string

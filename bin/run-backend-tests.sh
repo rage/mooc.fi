@@ -23,6 +23,8 @@ docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
   --env PRIVATE_KEY=config/mooc-private.pem \
   --env PUBLIC_KEY=config/mooc-public.pem \
+  --env PRIVATE_KEY_TEST=config/mooc-private-test.pem \
+  --env PUBLIC_KEY_TEST=config/mooc-public-test.pem \
   --env AUTH_ISSUER=issuer \
   --network host \
   --name "$TEST_NAME" "$TAG" \
