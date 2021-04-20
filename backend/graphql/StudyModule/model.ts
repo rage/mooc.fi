@@ -29,6 +29,30 @@ export const StudyModule = objectType({
 
         const courses: (Course & {
           course_translations?: CourseTranslation[]
+        })[] = await ctx.prisma.studyModule
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .courses({
+            orderBy:
+              (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
+            ...(language
+              ? {
+                  include: {
+                    course_translations: {
+                      where: {
+                        language: { equals: language },
+                      },
+                    },
+                  },
+                }
+              : {}),
+          })
+
+        /*const courses: (Course & {
+          course_translations?: CourseTranslation[]
         })[] = await ctx.prisma.course.findMany({
           orderBy:
             (filterNull(orderBy) as Prisma.CourseOrderByInput) ?? undefined,
@@ -44,7 +68,7 @@ export const StudyModule = objectType({
                 },
               }
             : {}),
-        })
+        })*/
 
         const values = courses.map((course) => ({
           ...omit(course, "course_translations"),

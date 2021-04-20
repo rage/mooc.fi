@@ -72,7 +72,21 @@ export const Course = objectType({
           throw new Error("needs user_id or user_upstream_id")
         }
 
-        return ctx.prisma.completion.findMany({
+        return ctx.prisma.course
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .completions({
+            where: {
+              user: {
+                id: user_id ?? undefined,
+                upstream_id: user_upstream_id ?? undefined,
+              },
+            },
+          })
+        /*return ctx.prisma.completion.findMany({
           where: {
             user: {
               id: user_id ?? undefined,
@@ -80,7 +94,7 @@ export const Course = objectType({
             },
             course_id: parent.id,
           },
-        })
+        })*/
       },
     })
   },

@@ -58,7 +58,23 @@ export const User = objectType({
             course_slug = undefined
           }
         }
-        return ctx.prisma.completion.findMany({
+
+        return ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .completions({
+            where: {
+              course:
+                course_id || course_slug
+                  ? {
+                      id: course_id ?? undefined,
+                      slug: course_slug ?? undefined,
+                    }
+                  : undefined,
+            },
+          })
+        /*return ctx.prisma.completion.findMany({
           where: {
             user_id: parent.id,
             course:
@@ -66,7 +82,7 @@ export const User = objectType({
                 ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
                 : undefined,
           },
-        })
+        })*/
       },
     })
 
@@ -94,7 +110,26 @@ export const User = objectType({
             course_slug = undefined
           }
         }
-        return ctx.prisma.completionRegistered.findMany({
+
+        return ctx.prisma.user
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .completions_registered({
+            where: {
+              organization_id,
+              course:
+                course_id || course_slug
+                  ? {
+                      id: course_id ?? undefined,
+                      slug: course_slug ?? undefined,
+                    }
+                  : undefined,
+            },
+          })
+        /*return ctx.prisma.completionRegistered.findMany({
           where: {
             user_id: parent.id,
             organization_id: organization_id ?? undefined,
@@ -103,7 +138,7 @@ export const User = objectType({
                 ? { id: course_id ?? undefined, slug: course_slug ?? undefined }
                 : undefined,
           },
-        })
+        })*/
       },
     })
 
@@ -118,7 +153,34 @@ export const User = objectType({
           throw new Error("need course_id or course_slug")
         }
 
-        const handlerCourse = await ctx.prisma.course
+        const data = await ctx.prisma.course.findUnique({
+          where: {
+            id: course_id ?? undefined,
+            slug: course_slug ?? undefined,
+          },
+          select: {
+            user_course_progresses: {
+              where: {
+                user_id: parent.id,
+              },
+            },
+            completions_handled_by: {
+              select: {
+                user_course_progresses: {
+                  where: {
+                    user_id: parent.id,
+                  },
+                },
+              },
+            },
+          },
+        })
+
+        const progresses =
+          data?.completions_handled_by?.user_course_progresses ||
+          data?.user_course_progresses
+
+        /*const handlerCourse = await ctx.prisma.course
           .findUnique({
             where: {
               id: course_id ?? undefined,
@@ -135,7 +197,7 @@ export const User = objectType({
             },
             user: { id: parent.id },
           },
-        })
+        })*/
 
         return (
           progresses?.some((p) => (p?.extra as any)?.projectCompletion) ?? false
