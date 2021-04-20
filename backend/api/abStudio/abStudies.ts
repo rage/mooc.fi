@@ -4,6 +4,12 @@ import { requireAdmin } from "../../util/server-functions"
 
 export function abStudiesRouter({ knex, prisma }: ApiContext) {
   async function abStudiesGet(req: Request<{ id?: string }>, res: Response) {
+    const adminRes = await requireAdmin(knex)(req, res)
+
+    if (adminRes !== true) {
+      return adminRes
+    }
+
     const { id } = req.params
 
     if (!id) {
@@ -50,8 +56,61 @@ export function abStudiesRouter({ knex, prisma }: ApiContext) {
     }
   }
 
+  async function abStudiesUsersPost(
+    req: Request<{ id: string }>,
+    res: Response,
+  ) {
+    const adminRes = await requireAdmin(knex)(req, res)
+
+    if (adminRes !== true) {
+      return adminRes
+    }
+
+    const { users } = req.body
+
+    if (!users || !Array.isArray(users)) {
+      return res
+        .status(400)
+        .json({ message: "must provide user upstream_ids as array" })
+    }
+
+    const { id } = req.params
+
+    const enrollments = await prisma.abStudy
+      .findUnique({
+        where: {
+          id,
+        },
+      })
+      .ab_enrollments({
+        where: {
+          user: { upstream_id: { in: users } },
+        },
+        include: {
+          user: { select: { upstream_id: true } },
+        },
+      })
+
+    if (!enrollments) {
+      return res
+        .status(400)
+        .json({ message: `ab_study with id ${id} not found` })
+    }
+
+    const groupByUser = enrollments.reduce(
+      (acc, curr) => ({
+        ...acc,
+        [curr.user.upstream_id]: curr.group,
+      }),
+      {},
+    )
+
+    return res.status(400).json({ study_id: id, users: groupByUser })
+  }
+
   return Router()
     .get("/:id", abStudiesGet)
     .get("", abStudiesGet)
+    .post("/:id/user-groups", abStudiesUsersPost)
     .post("", abStudiesPost)
 }
