@@ -9,6 +9,9 @@ export function createClient({ knex }: ApiContext) {
     if (auth.error) {
       return res.status(403).json({ error: auth })
     }
+    if (!auth.administrator) {
+      return res.status(403).json({ error: "You do not have permission." })
+    }
 
     let name = req.body.clientName
     let redirect_uri = req.body.clientRedirect

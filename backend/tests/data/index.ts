@@ -23,8 +23,7 @@ export const normalUserDetails: UserInfo = {
     organizational_id: "",
   },
   username: "user",
-  extra_fields: {},
-  password: "password",
+  extra_fields: {}
 }
 
 export const adminUser = {
@@ -205,7 +204,7 @@ export const users: Prisma.UserCreateInput[] = [
     email: "e@mail.com",
     upstream_id: 1,
     username: "existing_user",
-    password: "password",
+    password: "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000103",
@@ -213,7 +212,7 @@ export const users: Prisma.UserCreateInput[] = [
     email: "f@mail.com",
     upstream_id: 2,
     username: "second_user_admin",
-    password: "password",
+    password: "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000104",
@@ -223,7 +222,7 @@ export const users: Prisma.UserCreateInput[] = [
     username: "third_user",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
-    password: "password",
+    password: "$argon2id$v=19$m=15360,t=4,p=1$2k16ld7ESKJcycYEZziWlg$i/63pfRWuLO2q/7CMYnvdtd3STM4DpUGzoGP3zcqUeTo09wRa7uzpkW45XHJCp3zc2VYMteARJA34sUxrYThlw",
   },
   {
     id: "20000000000000000000000000000105",
@@ -621,3 +620,44 @@ export const openUniversityRegistrationLink: Prisma.OpenUniversityRegistrationLi
     tiers: null,
   },
 ]
+export const authorizationCode: Prisma.AuthorizationCodeCreateInput[] = [
+  {
+    id: "00000000000000000000000000004102",
+    client_id: "native",
+    redirect_uri: "*",
+    user_id: "20000000000000000000000000000102",
+    code: "code",
+    trusted: true
+  },
+  {
+    id: "00000000000000000000000000003103",
+    client_id: "native",
+    redirect_uri: "*",
+    user_id: null,
+    code: "code2",
+    trusted: true
+  }
+]
+
+export const client: Prisma.ClientCreateInput[] = [
+  {
+    id: "00000000000000000000000000050102",
+    name: "native",
+    client_id: "native",
+    client_secret: "native",
+    redirect_uri: "*",
+    scopes: "*",
+    is_trusted: true
+  }
+]
+
+export const accessToken: Prisma.AccessTokenCreateInput[] = [
+  {
+    id: "00000000000000000000000000600102",
+    client_id: "native",
+    user_id: "20000000000000000000000000000102",
+    access_token: "access_token",
+    valid: true
+  }
+]
+

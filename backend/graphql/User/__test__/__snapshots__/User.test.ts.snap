@@ -8,7 +8,6 @@ Object {
     "first_name": "first",
     "id": Any<String>,
     "last_name": "last",
-    "password": "password",
     "research_consent": false,
     "upstream_id": 1,
     "username": "username",
