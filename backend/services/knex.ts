@@ -1,4 +1,4 @@
-import knex from "knex"
+import { knex } from "knex"
 
 const PRODUCTION = process.env.NODE_ENV === "production"
 

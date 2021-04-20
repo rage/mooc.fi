@@ -1,3 +1,4 @@
+import { Completion } from "@prisma/client"
 import { ApiContext } from "."
 import { getOrganization } from "../util/server-functions"
 
@@ -36,12 +37,14 @@ export function completions({ knex }: ApiContext) {
     } else {
       course_id = course.id
     }
-    const sql = knex.select("*").from("completion").where({
+    const sql = knex.select<any, Completion[]>("*").from("completion").where({
       course_id,
       eligible_for_ects: true,
     })
     res.set("Content-Type", "application/json")
-    const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
+
+    // TODO/FIXME: typings broke on Knex update
+    const stream = (sql.stream() as any).pipe(JSONStream.stringify()).pipe(res)
     req.on("close", stream.end.bind(stream))
   }
 }

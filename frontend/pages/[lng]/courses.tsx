@@ -12,7 +12,7 @@ import {
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import notEmpty from "/util/notEmpty"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"
@@ -35,9 +35,8 @@ interface SearchVariables {
 const notEmptyOrEmptyString = (value: any) =>
   notEmpty(value) && value !== "" && value !== false
 
-function Courses() {
+function useCourseSearch() {
   const { language } = useContext(LanguageContext)
-  const t = useTranslator(CoursesTranslations)
   const router = useRouter()
 
   const statusParam = decodeURIComponent(useQueryParameter("status", false))
@@ -60,12 +59,13 @@ function Courses() {
     initialSearchVariables.status ?? [],
   )
 
-  const { loading, error, data } = useQuery<AllEditorCourses>(
-    AllEditorCoursesQuery,
-    {
-      variables: searchVariables || initialSearchVariables,
-    },
-  )
+  const {
+    loading: editorLoading,
+    error: editorError,
+    data: editorData,
+  } = useQuery<AllEditorCourses>(AllEditorCoursesQuery, {
+    variables: searchVariables || initialSearchVariables,
+  })
   const {
     loading: handlersLoading,
     error: handlersError,
@@ -104,10 +104,37 @@ function Courses() {
     })
   }
 
-  if (error || handlersError) {
+  return {
+    loading: editorLoading || handlersLoading,
+    error: editorError || handlersError,
+    handlersData,
+    editorData,
+    status,
+    setStatus,
+    onClickStatus,
+    searchVariables,
+    setSearchVariables,
+  }
+}
+
+function Courses() {
+  const t = useTranslator(CoursesTranslations)
+  const {
+    loading,
+    error,
+    handlersData,
+    editorData,
+    status,
+    setStatus,
+    onClickStatus,
+    searchVariables,
+    setSearchVariables,
+  } = useCourseSearch()
+
+  if (error) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(error || handlersError, undefined, 2)}
+        errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
   }
@@ -124,10 +151,10 @@ function Courses() {
           status={status}
           setStatus={setStatus}
           handlerCourses={handlersData?.handlerCourses?.filter(notEmpty) ?? []}
-          loading={loading || handlersLoading}
+          loading={loading}
         />
         <CourseGrid
-          courses={data?.courses?.filter(notEmpty)}
+          courses={editorData?.courses?.filter(notEmpty)}
           onClickStatus={onClickStatus}
           loading={loading}
         />

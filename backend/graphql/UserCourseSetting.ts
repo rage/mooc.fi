@@ -1,5 +1,5 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { buildSearch /*, convertPagination*/ } from "../util/db-functions"
+import { buildUserSearch /*, convertPagination*/ } from "../util/db-functions"
 import { isAdmin } from "../accessControl"
 import {
   objectType,
@@ -127,13 +127,9 @@ export const UserCourseSettingQueries = extendType({
 
         const orCondition: Prisma.UserWhereInput[] = []
 
-        if (search)
-          orCondition.push({
-            OR: buildSearch(
-              ["first_name", "last_name", "username", "email"],
-              search ?? "",
-            ),
-          })
+        if (search) {
+          orCondition.push(buildUserSearch(search))
+        }
 
         if (user_id) orCondition.push({ id: user_id })
         if (user_upstream_id)

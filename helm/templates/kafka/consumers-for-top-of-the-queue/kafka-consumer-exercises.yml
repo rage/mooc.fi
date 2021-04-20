@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer-exercises-top-of-the-queue
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: kafka-consumer-exercises-top-of-the-queue
+      {{- include "helm.selectorLabels" . | nindent 6 }}
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer-exercises-top-of-the-queue
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: kafka-consumer-exercises-top-of-the-queue
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["sh", "-c", "npm run kafka-consumer-exercises"]
+          imagePullPolicy: Always
+          ports:
+            - name: backend-http
+              containerPort: 4000
+          resources:
+            limits:
+              memory: 500Mi
+              cpu: 50m
+            requests:
+              memory: 256Mi
+              cpu: 10m
+          envFrom:
+          - secretRef:
+              name: backend-secret
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+            - name: KAFKA_TOP_OF_THE_QUEUE
+              value: "1"
+          volumeMounts:
+            - name: google-cloud-storage-serviceaccount
+              mountPath: "/etc/gcs"
+              readOnly: true
+      volumes:
+        - name: google-cloud-storage-serviceaccount
+          secret:
+            secretName: google-cloud-storage-serviceaccount
+            items:
+              - key: account.json
+                path: account.json

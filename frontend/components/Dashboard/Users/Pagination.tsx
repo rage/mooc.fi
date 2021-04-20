@@ -6,7 +6,7 @@ import {
 } from "react"
 import { TablePagination } from "@material-ui/core"
 import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexes/UserSearchContext"
+import UserSearchContext from "/contexts/UserSearchContext"
 import styled from "@emotion/styled"
 import FirstPageIcon from "@material-ui/icons/FirstPage"
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft"

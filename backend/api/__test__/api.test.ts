@@ -1,4 +1,4 @@
-import { fakeTMC, getTestContext } from "../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../tests/__helpers"
 import { normalUserDetails, adminUserDetails } from "../../tests/data"
 import { seed } from "../../tests/data/seed"
 import axios, { Method } from "axios"
@@ -129,7 +129,7 @@ describe("/api", () => {
   })
 
   describe("/user-course-settings", () => {
-    const tmc = fakeTMC({
+    const tmc = fakeTMCCurrent({
       "Bearer normal": [200, normalUserDetails],
       "Bearer admin": [200, adminUserDetails],
     })
@@ -342,7 +342,7 @@ describe("/api", () => {
   })
 
   describe("/ab-enrollments", () => {
-    const tmc = fakeTMC({
+    const tmc = fakeTMCCurrent({
       "Bearer normal": [200, normalUserDetails],
       "Bearer admin": [200, adminUserDetails],
     })

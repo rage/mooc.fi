@@ -5,7 +5,7 @@ import { Server } from "http"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { nanoid } from "nanoid"
-import knex from "knex"
+import { knex, Knex } from "knex"
 import server from "../server"
 import type { ApolloServer } from "apollo-server-express"
 import winston from "winston"
@@ -39,7 +39,7 @@ export type TestContext = {
   client: GraphQLClient
   prisma: PrismaClient
   logger: winston.Logger
-  knex: knex
+  knex: Knex
   user?: User
   version: number
   port: number
@@ -107,7 +107,11 @@ function createTestContext(testContext: TestContext) {
       while (true) {
         try {
           port = await getPort({ port: makeRange(4001, 6000) })
-          serverInstance = app.listen(port)
+          try {
+            serverInstance = app.listen(port)
+          } catch {
+            throw new Error("port in use")
+          }
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -118,7 +122,7 @@ function createTestContext(testContext: TestContext) {
           }
         } catch {
           DEBUG && console.log("race condition on ports, waiting...")
-          await wait(50)
+          await wait(100)
         }
       }
     },
@@ -139,7 +143,7 @@ function prismaTestContext() {
   let schemaName = ""
   let databaseUrl = ""
   let prisma: null | PrismaClient = null
-  let knexClient: knex | null = null
+  let knexClient: Knex | null = null
 
   return {
     async before() {
@@ -206,7 +210,7 @@ function prismaTestContext() {
 
 type FakeTMCRecord = Record<string, [number, object]>
 
-export function fakeTMC(
+export function fakeTMCCurrent(
   users: FakeTMCRecord,
   url = "/api/v8/users/current?show_user_fields=1&extra_fields=1",
 ) {
@@ -226,3 +230,31 @@ export function fakeTMC(
     },
   }
 }
+
+export function fakeTMCSpecific(users: Record<number, [number, object]>) {
+  return {
+    setup() {
+      for (const [user_id, reply] of Object.entries(users)) {
+        nock(process.env.TMC_HOST || "")
+          .persist()
+          .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
+          .reply(function () {
+            return reply
+          })
+      }
+    },
+    teardown() {
+      nock.cleanAll()
+    },
+  }
+}
+
+export const fakeGetAccessToken = (reply: [number, string]) =>
+  nock(process.env.TMC_HOST || "")
+    .post("/oauth/token")
+    .reply(() => [reply[0], { access_token: reply[1] }])
+
+export const fakeUserDetailReply = (reply: [number, object]) =>
+  nock(process.env.TMC_HOST || "")
+    .get("/api/v8/users/recently_changed_user_details")
+    .reply(reply[0], () => reply[1])

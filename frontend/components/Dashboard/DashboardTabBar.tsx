@@ -7,7 +7,7 @@ import ViewListIcon from "@material-ui/icons/ViewList"
 import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import { useRouter } from "next/router"
 
 const TabBarContainer = styled.div`

@@ -3,7 +3,7 @@ import { FormFieldGroup } from "./CourseEditForm"
 import { FormControl, Button } from "@material-ui/core"
 import { Field, useFormikContext, FieldInputProps } from "formik"
 import CoursesTranslations from "/translations/courses"
-import { useLanguageContext } from "/contexes/LanguageContext"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import { CourseFormValues } from "./types"
 import ImageDropzoneInput from "/components/Dashboard/ImageDropzoneInput"
 import ImagePreview from "/components/Dashboard/ImagePreview"
@@ -90,7 +90,10 @@ const CourseImageInput = (props: ImageInputProps) => {
         <Button
           color="primary"
           style={{ marginTop: "0.5rem" }}
-          onClick={() => setDialogOpen(true)}
+          onClick={(e) => {
+            e.preventDefault()
+            setDialogOpen(true)
+          }}
         >
           {t("importPhotoButton")}
         </Button>

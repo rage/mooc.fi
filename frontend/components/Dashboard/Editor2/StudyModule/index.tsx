@@ -18,12 +18,12 @@ import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
 import { PureQueryOptions } from "@apollo/client"
 import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
 import Router from "next/router"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import ModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 import { SubmitErrorHandler, useForm, FormProvider } from "react-hook-form"
 import { FormStatus } from "/components/Dashboard/Editor2/types"
-import { useAnchorContext } from "/contexes/AnchorContext"
+import { useAnchorContext } from "/contexts/AnchorContext"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { EditorContext } from "../EditorContext"
 import { customValidationResolver } from "/components/Dashboard/Editor2/Common"
@@ -51,12 +51,11 @@ const StudyModuleEdit = ({
   })
   const methods = useForm<StudyModuleFormValues>({
     defaultValues,
-    resolver: customValidationResolver<StudyModuleFormValues>(validationSchema),
+    resolver: customValidationResolver(validationSchema),
     mode: "onBlur",
   })
-  const { trigger, formState } = methods
+  const { trigger } = methods
 
-  console.log(formState)
   useEffect(() => {
     trigger()
   }, [])

@@ -17,6 +17,7 @@ import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { KafkaError } from "../../lib/errors"
 import { LibrdKafkaError, Message as KafkaMessage } from "node-rdkafka"
 import knex from "../../../services/knex"
+import { handledRecently, setHandledRecently } from "../common/messageHashCache"
 
 const mutex = new Mutex()
 const TOPIC_NAME = [config.user_course_progress_realtime_consumer.topic_name]
@@ -34,6 +35,7 @@ const context = {
   mutex,
   consumer,
   knex,
+  topic_name: TOPIC_NAME[0],
 }
 
 consumer.on("ready", () => {
@@ -49,12 +51,19 @@ consumer.on("ready", () => {
     }
     if (messages.length > 0) {
       const message = handleNullProgress(messages[0])
-      await handleMessage<Message>({
-        context,
-        kafkaMessage: message,
-        MessageYupSchema,
-        saveToDatabase,
-      })
+      const messageString = message?.value?.toString("utf8") ?? ""
+      if (!handledRecently(messageString)) {
+        await handleMessage<Message>({
+          context,
+          kafkaMessage: message,
+          MessageYupSchema,
+          saveToDatabase,
+        })
+        setHandledRecently(messageString)
+      } else {
+        logger.info("Skipping message because it was already handled recently.")
+      }
+
       setImmediate(() => {
         consumer.consume(1, consumerImpl)
       })

@@ -1,5 +1,6 @@
 import { NextRouter } from "next/router"
 import { memoize } from "lodash"
+import notEmpty from "/util/notEmpty"
 
 const defaultLanguage = "en"
 
@@ -156,8 +157,8 @@ const _combineDictionaries = <
 >(
   dicts: [
     TranslationDictionary<T>,
-    TranslationDictionary<U>,
-    TranslationDictionary<V>,
+    TranslationDictionary<U>?,
+    TranslationDictionary<V>?,
   ],
 ): TranslationDictionary<T & U & V> => {
   const combined: TranslationDictionary<T & U & V> = {}
@@ -177,7 +178,7 @@ const _combineDictionaries = <
     )
   }*/
 
-  for (const dict of dicts) {
+  for (const dict of dicts.filter(notEmpty)) {
     for (const lang of Object.keys(dict)) {
       combined[lang] = Object.assign(combined[lang] ?? {}, dict[lang] ?? {})
     }
@@ -186,6 +187,7 @@ const _combineDictionaries = <
   return combined
 }
 
-export const combineDictionaries = memoize(_combineDictionaries)
+const keyResolver = (...args: any[]) => JSON.stringify(args)
+export const combineDictionaries = memoize(_combineDictionaries, keyResolver)
 
 export default getTranslator
