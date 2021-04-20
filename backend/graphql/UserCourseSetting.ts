@@ -132,7 +132,22 @@ export const UserCourseSettingQueries = extendType({
         if (user_upstream_id)
           orCondition.push({ upstream_id: user_upstream_id })
 
-        return ctx.prisma.userCourseSetting.findMany({
+        const settings = await ctx.prisma.course.findUnique({
+          where: {
+            id: course_id!
+          }
+        })
+          .user_course_settings({
+            ...convertPagination({ first, last, before, after, skip }),
+            where: {
+              user: {
+                OR: orCondition
+              }
+            }
+          })
+
+        return settings
+        /*return ctx.prisma.userCourseSetting.findMany({
           ...convertPagination({ first, last, before, after, skip }),
           where: {
             user: {
@@ -140,7 +155,7 @@ export const UserCourseSettingQueries = extendType({
             },
             course_id,
           },
-        })
+        })*/
       },
       extendConnection(t) {
         t.int("totalCount", {
