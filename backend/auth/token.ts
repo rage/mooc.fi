@@ -2,7 +2,7 @@ import { authenticateUser } from "../services/tmc"
 import Knex from "../services/knex"
 
 const fs = require("fs")
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY)
+const privateKey = fs.readFileSync(process.env.PRIVATE_KEY || process.env.PRIVATE_KEY_TEST)
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")

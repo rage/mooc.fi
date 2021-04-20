@@ -1,7 +1,7 @@
 import Knex from "../services/knex"
 
 const fs = require("fs")
-const publicKey = fs.readFileSync(process.env.PUBLIC_KEY)
+const publicKey = fs.readFileSync(process.env.PUBLIC_KEY || process.env.PUBLIC_KEY_TEST)
 const jwt = require("jsonwebtoken")
 
 export function validateEmail(value: string): value is string {

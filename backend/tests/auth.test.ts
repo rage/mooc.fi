@@ -6,7 +6,7 @@ import knex from "../services/knex"
 const fs = require("fs")
 const crypto = require("crypto")
 const jwt = require("jsonwebtoken")
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY)
+const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_TEST)
 
 const ctx = getTestContext()
 
