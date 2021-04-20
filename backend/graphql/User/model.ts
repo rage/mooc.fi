@@ -35,7 +35,7 @@ export const User = objectType({
     t.model.verified_users()
     t.model.research_consent()
     t.model.ab_enrollments()
-    t.model.password()
+    //t.model.password()
     //t.model.password_throttle()
 
     t.list.nonNull.field("completions", {

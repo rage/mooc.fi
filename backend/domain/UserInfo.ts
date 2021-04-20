@@ -5,10 +5,10 @@ export interface UserInfo {
   user_field: UserField
   extra_fields: ExtraFields
   administrator: boolean
-  password: string
+  //password: string
 }
 
-export interface ExtraFields {}
+export interface ExtraFields { }
 
 export interface UserField {
   first_name: string

@@ -19,7 +19,6 @@ const addUserMutation = gql`
       research_consent
       upstream_id
       administrator
-      password
     }
   }
 `
@@ -241,8 +240,7 @@ describe("User", () => {
             last_name: "last",
             username: "username",
             research_consent: false,
-            upstream_id: 1,
-            password: "password",
+            upstream_id: 1
           },
         })
 
@@ -266,8 +264,7 @@ describe("User", () => {
               last_name: "last",
               username: "username",
               research_consent: false,
-              upstream_id: 1,
-              password: "password",
+              upstream_id: 1
             },
           })
         }).rejects.toThrow()
@@ -317,7 +314,7 @@ describe("User", () => {
             value: true,
           })
           fail()
-        } catch {}
+        } catch { }
       })
     })
 
@@ -347,7 +344,7 @@ describe("User", () => {
         try {
           await ctx!.client.request(updateUserNameMutation, {})
           fail()
-        } catch {}
+        } catch { }
       })
     })
   })

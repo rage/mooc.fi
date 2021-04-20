@@ -9,12 +9,12 @@ const argon2 = require("argon2")
 
 const RATE_LIMIT = 5
 const AUTH_ISSUER = "http://localhost:4000/auth/token"
-const NATIVE_ID = "7g5Llw"
+const NATIVE_ID = "native"
 
 async function issueToken(user: any, client: any) {
   let nonce = crypto.randomBytes(16).toString("hex")
   let jwtid = crypto.randomBytes(64).toString("hex")
-  let subject = Buffer.from(user?.email || client.name).toString("base64")
+  let subject = Buffer.from(user?.email || client?.name || "mooc.fi").toString("base64")
 
   let token = await jwt.sign(
     {
@@ -30,7 +30,7 @@ async function issueToken(user: any, client: any) {
       algorithm: "RS256",
       issuer: AUTH_ISSUER,
       subject,
-      audience: client.name,
+      audience: client?.name || "mooc.fi",
     },
   )
 
@@ -285,14 +285,14 @@ export async function signIn(
             let renewStamp = <any>new Date().getDate()
             let diffTime = Math.ceil(
               Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-                (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
             )
 
             if (diffTime >= 1) {
               throttle.currentRate = 0
               throttle.limitStamp = null
 
-              Knex("prisma.user")
+              Knex("user")
                 .update({ password_throttle: JSON.stringify(passwordThrottle) })
                 .where("email", email)
             } else {
@@ -371,9 +371,8 @@ export async function signIn(
           throttleData = {
             status: 403,
             success: false,
-            message: `Incorrect password. You have ${
-              RATE_LIMIT - throttle.currentRate
-            } attempts left.`,
+            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
+              } attempts left.`,
           }
           return
         }

@@ -404,7 +404,7 @@ model User {
   user_organizations             UserOrganization[]
   verified_users                 VerifiedUser[]
   ab_enrollments                 AbEnrollment[]
-  password                       String
+  password                       String?
   password_throttle              Json?
 
   @@map("user")
@@ -509,6 +509,45 @@ model VerifiedUser {
   user                                     User?         @relation(fields: [user_id], references: [id])
 
   @@map("verified_user")
+}
+
+model AuthorizationCode {
+  created_at                               DateTime?    @default(now())
+  updated_at                               DateTime?    @updatedAt
+  id                                       String       @id @default(uuid())
+  client_id                                String
+  redirect_uri                             String
+  user_id                                  String?
+  code                                     String
+  trusted                                  Boolean
+
+  @@map("authorization_codes")
+}
+
+model Client {
+  created_at                               DateTime?    @default(now())
+  updated_at                               DateTime?    @updatedAt
+  id                                       String       @id @default(uuid())
+  name                                     String
+  client_id                                String
+  client_secret                            String
+  redirect_uri                             String?
+  scopes                                   String?
+  is_trusted                               Boolean      @default(true)
+
+  @@map("clients")
+}
+
+model AccessToken {
+  created_at                               DateTime?    @default(now())
+  updated_at                               DateTime?    @updatedAt
+  id                                       String       @id @default(uuid())
+  access_token                             String
+  client_id                                String
+  user_id                                  String?
+  valid                                    Boolean      @default(true)
+
+  @@map("access_tokens")
 }
 
 enum CourseStatus {

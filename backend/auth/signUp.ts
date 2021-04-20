@@ -80,7 +80,7 @@ async function _signUp(
 
   if (checkEmail.length > 0) {
     return {
-      status: 400,
+      status: 401,
       success: false,
       message: "Email is already in use.",
     }
@@ -95,11 +95,12 @@ async function _signUp(
 
   if (!accessToken.success) {
     return {
-      status: 500,
+      status: 401,
       success: false,
-      message: `Error creating user.`,
+      message: accessToken.error
     }
   }
+
   const userDetails = await getCurrentUserDetails(accessToken.token)
 
   const hashPassword = await argon2.hash(password, {
@@ -115,25 +116,17 @@ async function _signUp(
       .where("upstream_id", userDetails.id)
   )?.[0]
   if (!user) {
-    try {
-      user = (
-        await Knex("user")
-          .insert({
-            upstream_id: userDetails.id,
-            email,
-            username,
-            password: hashPassword,
-            administrator: userDetails.administrator,
-          })
-          .returning("*")
-      )?.[0]
-    } catch (error) {
-      return {
-        status: 500,
-        success: false,
-        message: `Error creating user: ${error}`,
-      }
-    }
+    user = (
+      await Knex("user")
+        .insert({
+          upstream_id: userDetails.id,
+          email,
+          username,
+          password: hashPassword,
+          administrator: userDetails.administrator,
+        })
+        .returning("*")
+    )?.[0]
   }
 
   return {
