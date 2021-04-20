@@ -2,7 +2,7 @@ import * as fs from "fs"
 import * as path from "path"
 
 const DIRECTORY = "graphql"
-const IGNORED_FILES: string[] = []
+const IGNORED_FILES: string[] = ["__test__"]
 const OUTPUT_FILE = "index.ts"
 
 // @ts-ignore: not used for now

@@ -2,7 +2,7 @@ import { UserInfo } from "../domain/UserInfo"
 import TmcClient from "../services/tmc"
 import { Organization, User } from "@prisma/client"
 import { ok, err, Result } from "../util/result"
-import type knexType from "knex"
+import { Knex } from "knex"
 import { redisify } from "../services/redis"
 import { Request, Response } from "express"
 
@@ -11,7 +11,7 @@ interface GetUserReturn {
   details: UserInfo
 }
 
-export function requireAdmin(knex: knexType) {
+export function requireAdmin(knex: Knex) {
   return async function (
     req: Request,
     res: Response,
@@ -27,7 +27,7 @@ export function requireAdmin(knex: knexType) {
   }
 }
 
-export function getUser(knex: knexType) {
+export function getUser(knex: Knex) {
   return async function (
     req: any,
     res: any,
@@ -100,7 +100,7 @@ export function getUser(knex: knexType) {
   }
 }
 
-export function getOrganization(knex: knexType) {
+export function getOrganization(knex: Knex) {
   return async function (
     req: any,
     res: any,

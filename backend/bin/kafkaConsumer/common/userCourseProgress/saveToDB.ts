@@ -1,45 +1,23 @@
 import { Message } from "./interfaces"
 import { DateTime } from "luxon"
-import {
-  User,
-  UserCourseProgress,
-  UserCourseServiceProgress,
-} from "@prisma/client"
+import { UserCourseProgress, UserCourseServiceProgress } from "@prisma/client"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
 import { pushMessageToClient, MessageType } from "../../../../wsServer"
-import getUserFromTMC from "../getUserFromTMC"
 import { ok, err, Result } from "../../../../util/result"
 
-import _KnexConstructor from "knex"
-import { DatabaseInputError, TMCError } from "../../../lib/errors"
+import { DatabaseInputError } from "../../../lib/errors"
 import { KafkaContext } from "../kafkaContext"
+import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 
 export const saveToDatabase = async (
   context: KafkaContext,
   message: Message,
 ): Promise<Result<string, Error>> => {
-  const { prisma, knex, logger } = context
+  const { prisma, knex } = context
 
   const timestamp: DateTime = DateTime.fromISO(message.timestamp)
 
-  let user: User | null
-
-  user = (await knex("user").where("upstream_id", message.user_id).limit(1))[0]
-
-  if (!user) {
-    try {
-      user = await getUserFromTMC(prisma, message.user_id)
-    } catch (e) {
-      user = (
-        await knex("user").where("upstream_id", message.user_id).limit(1)
-      )[0]
-      if (!user) {
-        logger.error(new TMCError(`couldn't find user ${message.user_id}`, e))
-        throw e
-      }
-      logger.info("Mitigated race condition with user imports")
-    }
-  }
+  const user = await getUserWithRaceCondition(context, message.user_id)
 
   const course = await prisma.course.findUnique({
     where: { id: message.course_id },

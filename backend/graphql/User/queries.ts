@@ -1,5 +1,5 @@
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import { buildSearch, convertPagination } from "../../util/db-functions"
+import { convertPagination, buildUserSearch } from "../../util/db-functions"
 import { extendType, idArg, stringArg, intArg } from "nexus"
 import { isAdmin } from "../../accessControl"
 
@@ -37,10 +37,7 @@ export const UserQueries = extendType({
 
         const user = await ctx.prisma.user.findFirst({
           where: {
-            OR: buildSearch(
-              ["first_name", "last_name", "username", "email"],
-              search ?? "",
-            ),
+            ...buildUserSearch(search),
             id: id ?? undefined,
             upstream_id: upstream_id ?? undefined,
           },
@@ -67,12 +64,7 @@ export const UserQueries = extendType({
 
         return ctx.prisma.user.findMany({
           ...convertPagination({ first, last, before, after, skip }),
-          where: {
-            OR: buildSearch(
-              ["first_name", "last_name", "username", "email"],
-              search ?? "",
-            ),
-          },
+          where: buildUserSearch(search),
         })
       },
       extendConnection(t) {
@@ -82,12 +74,7 @@ export const UserQueries = extendType({
           },
           resolve: async (_, { search }, ctx) => {
             return ctx.prisma.user.count({
-              where: {
-                OR: buildSearch(
-                  ["first_name", "last_name", "username", "email"],
-                  search ?? "",
-                ),
-              },
+              where: buildUserSearch(search),
             })
           },
         })

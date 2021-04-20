@@ -40,6 +40,14 @@ export class KafkaMessageError extends CustomError {
   }
 }
 
+export class KafkaCommitError extends CustomError {
+  name = "KafkaCommitError"
+
+  constructor(message: string, readonly error?: Error) {
+    super(message)
+  }
+}
+
 export class KafkaError extends CustomError {
   name = "KafkaError"
 

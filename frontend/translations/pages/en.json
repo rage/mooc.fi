@@ -16,6 +16,7 @@
     "/[lng]/study-modules/new": "New study module",
     "/[lng]/users/[id]": "User - {{title}}",
     "/[lng]/users/[id]/completions": "Completions - {{title}}",
+    "/[lng]/users/[id]/summary": "Summary - {{title}}",
     "/[lng]/users/search": "Search users",
     "/[lng]/users/search/[text]": "Search users - [[text]]",
     "/[lng]/users": "Users",
@@ -30,8 +31,8 @@
     "/[lng]/register-completion": "Register completion",
     "/[lng]/faq": "Frequently asked questions",
     "/fi/faq/suoritusten_rekisterointi": "",
-    "/fi/faq/registering_completion": "",
-    "/en/faq/registering_completion": "Frequenty asked questions: Registering completions",
+    "/fi/faq/registering_completions": "",
+    "/en/faq/registering_completions": "Frequenty asked questions: Registering completions",
     "/en/faq/suoritusten_rekisterointi": "Frequenty asked questions: Registering completions",
     "/register-completion": "Register completion",
     "/": "Home"
@@ -45,6 +46,7 @@
     "/[lng]/study-modules/[slug]/edit": "Edit",
     "/[lng]/users/[id]": "User", 
     "/[lng]/users/[id]/completions": "Completions",
+    "/[lng]/users/[id]/summary": "Summary",
     "/[lng]/register-completion/[slug]": "Register completion",
     "/[lng]/study-modules/new": "New",
     "/[lng]/users/search": "Search",
@@ -55,9 +57,9 @@
     "/en/installation/netbeans": "Netbeans",
     "/fi/installation/vscode": "",
     "/fi/installation/netbeans": "",
-    "/en/faq/registering_completion": "Registering completions",
+    "/en/faq/registering_completions": "Registering completions",
     "/en/faq/suoritusten_rekisterointi": "Registering completions",
     "/fi/faq/suoritusten_rekisterointi": "",
-    "/fi/faq/registering_completion": ""
+    "/fi/faq/registering_completions": ""
   }
 }

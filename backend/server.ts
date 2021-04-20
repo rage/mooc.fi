@@ -7,14 +7,13 @@ import express from "express"
 import schema from "./schema"
 import { ApolloServer } from "apollo-server-express"
 import * as winston from "winston"
-import type Knex from "knex"
+import { Knex } from "knex"
 import { apiRouter } from "./api"
 
 const helmet = require("helmet")
 
 const DEBUG = Boolean(process.env.DEBUG)
 const TEST = process.env.NODE_ENV === "test"
-
 interface ServerContext {
   prisma: PrismaClient
   logger: winston.Logger
@@ -36,9 +35,7 @@ const createExpressAppWithContext = ({
     app.use(morgan("combined"))
   }
   app.use(express.json())
-
   app.use("/api", apiRouter({ prisma, knex, logger }))
-
   return app
 }
 
