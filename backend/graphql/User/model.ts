@@ -6,7 +6,7 @@ import {
   nullable,
   booleanArg,
 } from "nexus"
-import { groupBy } from "lodash"
+import { groupBy, uniq } from "lodash"
 import { notEmpty } from "../../util/notEmpty"
 
 export const User = objectType({
@@ -224,7 +224,20 @@ export const User = objectType({
     t.list.nonNull.field("progresses", {
       type: "Progress",
       resolve: async (parent, _, ctx) => {
-        const user_course_progressess = await ctx.prisma.userCourseProgress.findMany(
+        const progresses = await ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .user_course_progresses()
+
+        const courses = await ctx.prisma.course.findMany({
+          where: {
+            id: { in: progresses.map((p) => p.course_id).filter(notEmpty) },
+          },
+        })
+
+        return courses.map((course) => ({ course, user: parent }))
+        /*const user_course_progressess = await ctx.prisma.userCourseProgress.findMany(
           {
             where: { user_id: parent.id },
           },
@@ -241,7 +254,7 @@ export const User = objectType({
           }),
         )
 
-        return progresses as any
+        return progresses as any*/
       },
     })
 
@@ -254,13 +267,17 @@ export const User = objectType({
       resolve: async (parent, args, ctx) => {
         const { course_id } = args
 
-        return await ctx.prisma.userCourseProgress.findFirst({
-          where: {
-            user_id: parent.id,
-            course_id,
-          },
-          orderBy: { created_at: "asc" },
-        })
+        return (
+          await ctx.prisma.user
+            .findUnique({
+              where: { id: parent.id },
+            })
+            .user_course_progresses({
+              where: { course_id },
+              orderBy: { created_at: "asc" },
+              take: 1,
+            })
+        )?.[0]
       },
     })
 
@@ -270,14 +287,25 @@ export const User = objectType({
         includeDeleted: nullable(booleanArg()),
       },
       resolve: async (parent, { includeDeleted = false }, ctx) => {
-        return ctx.prisma.exerciseCompletion.findMany({
+        return ctx.prisma.user
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .exercise_completions({
+            where: {
+              ...(!includeDeleted
+                ? { exercise: { deleted: { not: true } } }
+                : {}),
+            },
+          })
+        /*return ctx.prisma.exerciseCompletion.findMany({
           where: {
             user_id: parent.id,
             ...(!includeDeleted
               ? { exercise: { deleted: { not: true } } }
               : {}),
           },
-        })
+        })*/
       },
     })
 
@@ -285,6 +313,58 @@ export const User = objectType({
       type: "UserCourseSummary",
       resolve: async ({ id }, _, ctx) => {
         // TODO: might be better to query UserCourseSettings?
+        const settings = await ctx.prisma.user
+          .findUnique({
+            where: { id },
+          })
+          .user_course_settings({
+            orderBy: { created_at: "desc" },
+            /*include: {
+              course: true
+            },*/
+          })
+
+        const courseIds = uniq(settings.map((s) => s.course_id)).filter((key) => key !== null && key !== "null")
+
+        return courseIds
+          .map((course_id) => ({
+            user_id: id,
+            course_id
+        })
+        /*return settings.map((setting) => ({
+          user_id: id,
+          course_id: setting.course_id
+        }))*/
+          /*const settingsGrouped = groupBy(settings, (setting) => setting.course_id)
+        
+        return Object.entries(settingsGrouped).filter(([key]) => key !== null && key !== "null")
+          .map(([course_id, settings]) => ({
+            user_id: id, 
+            course_id,
+            course: settings[0]?.course,
+            // exercise_completions: settings[0]?.course?.exercises.map((e) => e.exercise_completions) ?? []
+          }))
+          .filter(notEmpty)*/
+        /*console.log(JSON.stringify(settingsGrouped))
+
+        const exerciseCompletions2 = groupBy(
+          await ctx.prisma.user
+            .findUnique({
+              where: { id },
+            })
+            .exercise_completions({
+              include: {
+                exercise: {
+                  include: {
+                    course: true
+                  }
+                },
+                exercise_completion_required_actions: true,
+              },
+            }),
+          (exerciseCompletion) => exerciseCompletion.exercise?.course_id,
+        )
+
         const exerciseCompletions = groupBy(
           await ctx.prisma.exerciseCompletion.findMany({
             where: {
@@ -309,7 +389,7 @@ export const User = objectType({
             course,
             exercise_completions: exerciseCompletions[course.id] ?? [],
           }))
-          .filter(notEmpty)
+          .filter(notEmpty)*/
       },
     })
   },
