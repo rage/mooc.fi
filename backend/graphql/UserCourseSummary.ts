@@ -1,12 +1,25 @@
 import { UserInputError } from "apollo-server-express"
 import { objectType } from "nexus"
+import { flatten } from "lodash"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
   definition(t) {
     t.id("course_id")
     t.id("user_id")
-    t.field("course", { type: "Course" })
+    t.field("course", {
+      type: "Course",
+      resolve: async ({ course_id }, _, ctx) => {
+        if (!course_id) {
+          throw new UserInputError("need to specify course_id")
+        }
+
+        return ctx.prisma.course.findUnique({
+          where: { id: course_id },
+        })
+      },
+    })
+
     t.field("completion", {
       type: "Completion",
       resolve: async ({ user_id, course_id }, _, ctx) => {
@@ -16,18 +29,18 @@ export const UserCourseSummary = objectType({
 
         return (
           (
-            await ctx.prisma.course.findUnique({
-              where: {
-                id: course_id,
-              },
-              select: {
-                completions: {
-                  where: { user_id },
-                  orderBy: { created_at: "asc" },
+            await ctx.prisma.course
+              .findUnique({
+                where: {
+                  id: course_id,
                 },
-              },
-            })
-          )?.completions?.[0] ?? null
+              })
+              .completions({
+                where: { user_id },
+                orderBy: { created_at: "asc" },
+                take: 1,
+              })
+          )?.[0] ?? null
         )
         /*return ctx.prisma.completion.findFirst({
           where: {
@@ -46,18 +59,18 @@ export const UserCourseSummary = objectType({
         }
         return (
           (
-            await ctx.prisma.course.findUnique({
-              where: {
-                id: course_id,
-              },
-              select: {
-                user_course_progresses: {
-                  where: { user_id },
-                  orderBy: { created_at: "asc" },
+            await ctx.prisma.course
+              .findUnique({
+                where: {
+                  id: course_id,
                 },
-              },
-            })
-          )?.user_course_progresses?.[0] ?? null
+              })
+              .user_course_progresses({
+                where: { user_id },
+                orderBy: { created_at: "asc" },
+                take: 1,
+              })
+          )?.[0] ?? null
         )
 
         /*return ctx.prisma.userCourseProgress.findFirst({
@@ -77,19 +90,16 @@ export const UserCourseSummary = objectType({
         }
 
         return (
-          (
-            await ctx.prisma.course.findUnique({
+          (await ctx.prisma.course
+            .findUnique({
               where: {
                 id: course_id,
               },
-              select: {
-                user_course_service_progresses: {
-                  where: { user_id },
-                  orderBy: { created_at: "asc" },
-                },
-              },
             })
-          )?.user_course_service_progresses ?? []
+            .user_course_service_progresses({
+              where: { user_id },
+              orderBy: { created_at: "asc" },
+            })) ?? []
         )
 
         /*return ctx.prisma.userCourseServiceProgress.findMany({
@@ -101,6 +111,24 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.list.field("exercise_completions", { type: "ExerciseCompletion" })
+    t.list.field("exercise_completions", {
+      type: "ExerciseCompletion",
+      resolve: async ({ user_id, course_id }, _, ctx) => {
+        if (!user_id || !course_id) {
+          throw new UserInputError("need to specify user_id and course_id")
+        }
+
+        return ctx.prisma.user
+          .findUnique({
+            where: {
+              id: user_id,
+            },
+          })
+          .exercise_completions({
+            where: { exercise: { course_id } },
+            orderBy: { created_at: "asc" },
+          })
+      },
+    })
   },
 })

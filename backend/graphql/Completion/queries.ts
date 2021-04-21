@@ -1,13 +1,11 @@
 import { extendType, stringArg, intArg, idArg, nonNull } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
-import Knex from "../../services/knex"
 import { or, isOrganization, isAdmin } from "../../accessControl"
 import {
   findManyCursorConnection,
-  PrismaFindManyArguments,
 } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
-import { buildUserSearch, convertPagination } from "../../util/db-functions"
+import { buildUserSearch } from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -30,42 +28,36 @@ export const CompletionQueries = extendType({
           ctx.disableRelations = true
         }
 
-        const courseWithSlug = await ctx.prisma.course.findUnique({
+        let completions = await ctx.prisma.course.findUnique({
           where: {
-            slug: course,
-          },
+            slug: course
+          }
         })
+          .completions({
+            where: {
+              completion_language
+            }
+          })
 
-        if (!courseWithSlug) {
-          const courseFromAvoinCourse = await ctx.prisma.courseAlias
-            .findUnique({
-              where: {
-                course_code: course,
-              },
-            })
+        if (!completions) {
+          completions = await ctx.prisma.courseAlias.findUnique({
+            where: {
+              course_code: course
+            }
+          })
             .course()
+            .completions({
+              where: {
+                completion_language
+              }
+            })
 
-          if (!courseFromAvoinCourse) {
+          if (!completions) {
             throw new UserInputError("Invalid course identifier")
           }
-          course = courseFromAvoinCourse.slug
         }
-        const courseObject = await ctx.prisma.course.findUnique({
-          where: {
-            slug: course,
-          },
-        })
 
-        if (completion_language) {
-          return await Knex.select("*").from("completion").where({
-            course_id: courseObject?.id,
-            completion_language: completion_language,
-          })
-        } else {
-          return await Knex.select("*")
-            .from("completion")
-            .where({ course_id: courseObject?.id })
-        }
+        return completions
       },
     })
 

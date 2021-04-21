@@ -33,6 +33,16 @@ const UserSummaryQuery = gql`
             id
             uncompressed
           }
+          exercises {
+            id
+            name
+            custom_id
+            course_id
+            part
+            section
+            max_points
+            deleted
+          }
         }
         exercise_completions {
           id
@@ -46,19 +56,6 @@ const UserSummaryQuery = gql`
           exercise_completion_required_actions {
             id
             value
-          }
-          exercise {
-            id
-            name
-            custom_id
-            course_id
-            course {
-              id
-              name
-            }
-            part
-            section
-            max_points
           }
         }
         ...UserCourseSummaryUserCourseProgressFragment

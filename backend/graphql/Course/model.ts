@@ -14,6 +14,7 @@ export const Course = objectType({
     t.model.created_at()
     t.model.ects()
     t.model.end_date()
+    // t.model.exercises()
     t.model.exercise_completions_needed()
     t.model.has_certificate()
     t.model.hidden()
