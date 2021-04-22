@@ -1,4 +1,4 @@
-import { objectType, stringArg, intArg, nullable } from "nexus"
+import { objectType, stringArg, intArg, nullable, booleanArg } from "nexus"
 import { isAdmin } from "../../accessControl"
 
 export const Course = objectType({
@@ -58,6 +58,24 @@ export const Course = objectType({
 
     t.string("description")
     t.string("link")
+
+    t.list.field("exercises", {
+      type: "Exercise",
+      args: {
+        includeDeleted: booleanArg({ default: false }),
+      },
+      resolve: async (parent, args, ctx) => {
+        const { includeDeleted } = args
+
+        return ctx.prisma.course
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .exercises({
+            ...(!includeDeleted ? { where: { deleted: { not: true } } } : {}),
+          })
+      },
+    })
 
     t.list.field("completions", {
       type: "Completion",

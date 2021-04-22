@@ -807,6 +807,13 @@ Object {
   "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": null,
+  "course": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
   "course_aliases": Array [],
   "course_translations": Array [
     Object {
@@ -828,6 +835,13 @@ Object {
   "ects": null,
   "end_date": "12/31/2100",
   "exercise_completions_needed": 1,
+  "exercises": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
@@ -872,6 +886,13 @@ Object {
   "automatic_completions": true,
   "automatic_completions_eligible_for_ects": true,
   "completions_handled_by": null,
+  "course": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
   "course_aliases": Array [],
   "course_translations": Array [
     Object {
@@ -893,9 +914,105 @@ Object {
   "ects": null,
   "end_date": "12/31/2100",
   "exercise_completions_needed": 1,
+  "exercises": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
   "has_certificate": false,
   "hidden": null,
   "id": Any<String>,
+  "inherit_settings_from": null,
+  "name": "course1",
+  "open_university_registration_links": Array [],
+  "order": null,
+  "photo": Object {
+    "compressed": "webp",
+    "compressed_mimetype": "image/webp",
+    "id": "00000000-0000-0000-0000-000000001101",
+    "uncompressed": "jpeg",
+    "uncompressed_mimetype": "image/jpeg",
+  },
+  "points_needed": 3,
+  "promote": null,
+  "slug": "course1",
+  "start_date": "01/01/1900",
+  "start_point": null,
+  "status": "Upcoming",
+  "study_module_order": null,
+  "study_module_start_point": null,
+  "study_modules": Array [
+    Object {
+      "id": "00000000-0000-0000-0000-000000000101",
+    },
+    Object {
+      "id": "00000000-0000-0000-0000-000000000102",
+    },
+  ],
+  "support_email": null,
+  "teacher_in_charge_email": "e@mail.com",
+  "teacher_in_charge_name": "teacher1",
+  "tier": null,
+  "upcoming_active_link": false,
+  "user_course_settings_visibilities": Array [],
+}
+`;
+
+exports[`Course queries course admin should include deleted exercises if specified 1`] = `
+Object {
+  "automatic_completions": true,
+  "automatic_completions_eligible_for_ects": true,
+  "completions_handled_by": null,
+  "course": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+    Object {
+      "deleted": true,
+      "id": "50000000-0000-0000-0000-000000000004",
+      "name": "deleted exercise 4",
+    },
+  ],
+  "course_aliases": Array [],
+  "course_translations": Array [
+    Object {
+      "description": "course1_description_en_US",
+      "id": "00000000-0000-0000-0000-000000000011",
+      "language": "en_US",
+      "link": "http://link.com",
+      "name": "course1_en_US",
+    },
+    Object {
+      "description": "course1_description_fi_FI",
+      "id": "00000000-0000-0000-0000-000000000012",
+      "language": "fi_FI",
+      "link": "http:/link.fi.com",
+      "name": "course1_fi_FI",
+    },
+  ],
+  "course_variants": Array [],
+  "ects": null,
+  "end_date": "12/31/2100",
+  "exercise_completions_needed": 1,
+  "exercises": Array [
+    Object {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+    Object {
+      "deleted": true,
+      "id": "50000000-0000-0000-0000-000000000004",
+      "name": "deleted exercise 4",
+    },
+  ],
+  "has_certificate": false,
+  "hidden": null,
+  "id": "00000000-0000-0000-0000-000000000002",
   "inherit_settings_from": null,
   "name": "course1",
   "open_university_registration_links": Array [],
