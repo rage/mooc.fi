@@ -46,6 +46,7 @@ const UserSummaryQuery = gql`
         }
         exercise_completions {
           id
+          exercise_id
           created_at
           updated_at
           n_points

@@ -43,7 +43,7 @@ export const Exercise = objectType({
             type: "ExerciseCompletionOrderByInput",
           }),
         ),
-        user_id: nullable(idArg())
+        user_id: nullable(idArg()),
       },
       resolve: async (parent, args, ctx: Context) => {
         const { orderBy, user_id: user_id_arg } = args
@@ -59,7 +59,7 @@ export const Exercise = objectType({
           .exercise_completions({
             where: {
               // @ts-ignore: context typing problem, FIXME
-              user_id, 
+              user_id,
             },
             orderBy:
               (filterNull(orderBy) as Prisma.ExerciseCompletionOrderByInput) ??

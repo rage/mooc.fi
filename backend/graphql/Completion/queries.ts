@@ -1,9 +1,7 @@
 import { extendType, stringArg, intArg, idArg, nonNull } from "nexus"
 import { UserInputError, ForbiddenError } from "apollo-server-core"
 import { or, isOrganization, isAdmin } from "../../accessControl"
-import {
-  findManyCursorConnection,
-} from "@devoxa/prisma-relay-cursor-connection"
+import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 import { buildUserSearch } from "../../util/db-functions"
 
@@ -28,28 +26,30 @@ export const CompletionQueries = extendType({
           ctx.disableRelations = true
         }
 
-        let completions = await ctx.prisma.course.findUnique({
-          where: {
-            slug: course
-          }
-        })
+        let completions = await ctx.prisma.course
+          .findUnique({
+            where: {
+              slug: course,
+            },
+          })
           .completions({
             where: {
-              completion_language
-            }
+              completion_language,
+            },
           })
 
         if (!completions) {
-          completions = await ctx.prisma.courseAlias.findUnique({
-            where: {
-              course_code: course
-            }
-          })
+          completions = await ctx.prisma.courseAlias
+            .findUnique({
+              where: {
+                course_code: course,
+              },
+            })
             .course()
             .completions({
               where: {
-                completion_language
-              }
+                completion_language,
+              },
             })
 
           if (!completions) {
