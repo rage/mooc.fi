@@ -6,7 +6,7 @@ import {
   nullable,
   booleanArg,
 } from "nexus"
-import { groupBy, uniq } from "lodash"
+import { uniq } from "lodash"
 import { notEmpty } from "../../util/notEmpty"
 
 export const User = objectType({
@@ -324,18 +324,19 @@ export const User = objectType({
             },*/
           })
 
-        const courseIds = uniq(settings.map((s) => s.course_id)).filter((key) => key !== null && key !== "null")
+        const courseIds = uniq(settings.map((s) => s.course_id)).filter(
+          (key) => key !== null && key !== "null",
+        )
 
-        return courseIds
-          .map((course_id) => ({
-            user_id: id,
-            course_id
-        })
+        return courseIds.map((course_id) => ({
+          user_id: id,
+          course_id,
+        }))
         /*return settings.map((setting) => ({
           user_id: id,
           course_id: setting.course_id
         }))*/
-          /*const settingsGrouped = groupBy(settings, (setting) => setting.course_id)
+        /*const settingsGrouped = groupBy(settings, (setting) => setting.course_id)
         
         return Object.entries(settingsGrouped).filter(([key]) => key !== null && key !== "null")
           .map(([course_id, settings]) => ({

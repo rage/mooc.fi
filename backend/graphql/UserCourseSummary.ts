@@ -1,6 +1,5 @@
 import { UserInputError } from "apollo-server-express"
 import { objectType } from "nexus"
-import { flatten } from "lodash"
 
 export const UserCourseSummary = objectType({
   name: "UserCourseSummary",
