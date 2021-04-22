@@ -36,7 +36,12 @@ const courseQuery = gql`
 `
 
 const fullCourseQuery = gql`
-  query course($id: ID, $slug: String, $language: String) {
+  query course(
+    $id: ID
+    $slug: String
+    $language: String
+    $includeDeletedExercises: Boolean
+  ) {
     course(id: $id, slug: $slug, language: $language) {
       id
       name
@@ -62,6 +67,11 @@ const fullCourseQuery = gql`
       hidden
       study_module_start_point
       status
+      exercises(includeDeleted: $includeDeletedExercises) {
+        id
+        name
+        deleted
+      }
       course_translations {
         id
         name
@@ -340,6 +350,17 @@ const sortStudyModules = (course: any) => {
   }
 }
 
+const sortExercises = (course: any) => {
+  if (!course?.exercises) {
+    return course
+  }
+
+  return {
+    ...course,
+    course: orderBy(course.exercises, ["id"]),
+  }
+}
+
 describe("Course", () => {
   afterAll(() => jest.clearAllMocks())
 
@@ -433,10 +454,21 @@ describe("Course", () => {
           })
 
           ;[resId, resSlug].map((res) =>
-            expect(sortStudyModules(res.course)).toMatchSnapshot({
-              id: expect.any(String),
-            }),
+            expect(sortExercises(sortStudyModules(res.course))).toMatchSnapshot(
+              {
+                id: expect.any(String),
+              },
+            ),
           )
+        })
+
+        it("should include deleted exercises if specified", async () => {
+          const res = await ctx.client.request(fullCourseQuery, {
+            slug: "course1",
+            includeDeletedExercises: true,
+          })
+
+          expect(sortExercises(sortStudyModules(res.course))).toMatchSnapshot()
         })
       })
     })

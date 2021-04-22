@@ -275,6 +275,32 @@ export const userCourseSettings: Prisma.UserCourseSettingCreateInput[] = [
       okField: true,
     },
   },
+  {
+    id: "40000000-0000-0000-0000-000000000103",
+    course: { connect: { id: "00000000000000000000000000000001" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      research: false,
+      country: "fi",
+    },
+  },
+  {
+    id: "40000000-0000-0000-0000-000000000104",
+    course: { connect: { id: "00000000000000000000000000000002" } },
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    language: "en",
+    country: "en",
+    marketing: false,
+    research: true,
+    other: {
+      research: false,
+      country: "fi",
+    },
+  },
 ]
 
 export const services: Prisma.ServiceCreateInput[] = [
