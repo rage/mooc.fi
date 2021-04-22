@@ -49,6 +49,21 @@ export const adminUserDetails = {
   extra_fields: {},
 }
 
+export const thirdUserDetails: UserInfo = {
+  id: 3,
+  administrator: false,
+  email: "third@mail.com",
+  user_field: {
+    first_name: "first",
+    last_name: "last",
+    course_announcements: false,
+    html1: "",
+    organizational_id: "",
+  },
+  username: "third_user",
+  extra_fields: {},
+}
+
 export const organizations: Prisma.OrganizationCreateInput[] = [
   {
     id: "10000000000000000000000000000102",

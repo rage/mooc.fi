@@ -1,5 +1,5 @@
 import { fakeTMCCurrent, getTestContext } from "./__helpers"
-import { normalUserDetails, adminUserDetails } from "./data"
+import { normalUserDetails, adminUserDetails, thirdUserDetails } from "./data"
 import { seed } from "./data/seed"
 import axios, { Method } from "axios"
 import { omit } from "lodash"
@@ -132,6 +132,7 @@ describe("server", () => {
     const tmc = fakeTMCCurrent({
       "Bearer normal": [200, normalUserDetails],
       "Bearer admin": [200, adminUserDetails],
+      "Bearer third": [200, thirdUserDetails],
     })
 
     describe("GET", () => {
@@ -163,14 +164,14 @@ describe("server", () => {
 
       it("returns null with user with no settings", async () => {
         return getSettings("course1")({
-          headers: { Authorization: "Bearer normal" },
+          headers: { Authorization: "Bearer third" },
         }).then((res) => {
           expect(res.data).toBeNull()
         })
       })
 
       it("returns null with course with no settings", async () => {
-        return getSettings("course2")({
+        return getSettings("handler")({
           headers: { Authorization: "Bearer normal" },
         }).then((res) => {
           expect(res.data).toBeNull()
@@ -265,7 +266,7 @@ describe("server", () => {
       })
 
       it("creates new setting when no existing found", async () => {
-        const res = await postSettings("course1")({
+        const res = await postSettings("handler")({
           data: {
             id: "bogus",
             language: "fi",
@@ -283,7 +284,7 @@ describe("server", () => {
         const createdSetting = await ctx.prisma.userCourseSetting.findFirst({
           where: {
             user_id: "20000000-0000-0000-0000-000000000102",
-            course_id: "00000000-0000-0000-0000-000000000002",
+            course_id: "00000000-0000-0000-0000-000000000666",
           },
         })
 
