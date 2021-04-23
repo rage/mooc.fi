@@ -5,7 +5,7 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "@emotion/styled"
 import CourseEdit from "/components/Dashboard/Editor/Course"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 import LanguageContext from "/contexts/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1Background } from "/components/Text/headers"
@@ -119,16 +119,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <Link as={listLink} href="/[lng]/courses">
-                <a
-                  onClick={() =>
-                    //redirectTimeout && clearTimeout(redirectTimeout)
-                    {}
-                  }
-                >
-                  {t("redirectLinkText")}
-                </a>
-              </Link>
+              <LangLink href="/courses">{t("redirectLinkText")}</LangLink>
               {t("redirectMessagePost")}
             </Typography>
           </ErrorContainer>

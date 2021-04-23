@@ -13,9 +13,6 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
   const { completions } = props
   const t = useTranslator(ProfileTranslations)
 
-  console.log(completions)
-  /*          <a href={`/${lng.language}/profile/completions`}>
-   */
   return (
     <>
       {completions.slice(0, 10).map((c) => (
