@@ -1,4 +1,3 @@
-import { useContext } from "react"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import styled from "@emotion/styled"
@@ -12,10 +11,11 @@ import {
   faBook,
   faComments,
 } from "@fortawesome/free-solid-svg-icons"
-import LanguageContext from "/contexts/LanguageContext"
+import { useLanguageContext } from "/contexts/LanguageContext"
 import TeachersTranslations from "/translations/teachers"
 import { H1NoBackground } from "/components/Text/headers"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const ContentBlock = styled.div`
   padding: 5rem 1rem;
@@ -42,8 +42,15 @@ const StyledButton = styled(Button)`
 `
 
 const ForTeachers = () => {
-  const lng = useContext(LanguageContext)
   const t = useTranslator(TeachersTranslations)
+  const { language } = useLanguageContext()
+
+  useBreadcrumbs([
+    {
+      translation: `teachers`,
+      href: "/teachers",
+    },
+  ])
 
   return (
     <section>
@@ -101,7 +108,7 @@ const ForTeachers = () => {
         </StyledButton>
         <TextBlock />
       </ContentBlock>
-      {lng.language === "fi" ? (
+      {language === "fi" ? (
         <section>
           <ContentBlock>
             <StyledIcon icon={faUserFriends} size="3x" />

@@ -10,6 +10,7 @@ import withAdmin from "/lib/with-admin"
 import CommonTranslations from "/translations/common"
 import { useState } from "react"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const UserPage = () => {
   const id = useQueryParameter("id")
@@ -22,6 +23,16 @@ const UserPage = () => {
     GET_DATA,
     { variables: { upstream_id: Number(id) } },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "users",
+    },
+    {
+      label: id,
+      href: `/users/${id}`,
+    },
+  ])
 
   if (error) {
     return (

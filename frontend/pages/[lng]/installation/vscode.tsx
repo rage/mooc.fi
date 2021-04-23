@@ -16,6 +16,7 @@ import LanguageContext from "/contexts/LanguageContext"
 import InstallationTranslations from "/translations/installation"
 import Spinner from "/components/Spinner"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   padding-top: 2em;
@@ -91,6 +92,16 @@ const VSCode = () => {
   const [render, setRender] = useState(false)
   const { language } = useContext(LanguageContext)
   const t = useTranslator(InstallationTranslations)
+
+  useBreadcrumbs([
+    {
+      translation: "installation",
+    },
+    {
+      label: "VSCode",
+      href: `/installation/vscode`,
+    },
+  ])
 
   const changeOS = (OS: userOsType) => {
     setUserOs(OS)

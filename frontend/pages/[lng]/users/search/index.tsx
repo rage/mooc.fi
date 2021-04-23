@@ -8,6 +8,8 @@ import { useQueryParameter } from "/util/useQueryParameter"
 import { useRouter } from "next/router"
 import UserSearchContext, { SearchVariables } from "/contexts/UserSearchContext"
 import SearchForm from "/components/Dashboard/Users/SearchForm"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { Breadcrumb } from "/contexts/BreadcrumbContext"
 
 const UserSearch = () => {
   const { language } = useContext(LanguageContext)
@@ -31,6 +33,23 @@ const UserSearch = () => {
       ssr: false,
     },
   )
+
+  const crumbs: Breadcrumb[] = [
+    {
+      translation: "users",
+    },
+    {
+      translation: "userSearch",
+      href: "/users/search",
+    },
+  ]
+  if (textParam) {
+    crumbs.push({
+      translation: "userSearchResults",
+      href: `users/search/${textParam}`,
+    })
+  }
+  useBreadcrumbs(crumbs)
 
   useEffect(() => {
     const params = [

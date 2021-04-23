@@ -16,6 +16,7 @@ import CustomSnackbar from "/components/CustomSnackbar"
 import LanguageContext from "/contexts/LanguageContext"
 import Router from "next/router"
 import withAdmin from "/lib/with-admin"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const EmailTemplateView = () => {
   const [emailTemplate, setEmailTemplate] = useState<any>()
@@ -43,6 +44,17 @@ const EmailTemplateView = () => {
   })
 
   const { language } = useContext(LanguageContext)
+
+  useBreadcrumbs([
+    {
+      translation: "emailTemplates",
+      href: `/email-templates`,
+    },
+    {
+      label: data?.email_template?.name ?? undefined,
+      href: `/email-templates/${id}`,
+    },
+  ])
 
   //TODO add circular progress
   if (loading) {
