@@ -53,7 +53,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
     if (!loading && !courseData?.course) {
       redirectTimeout = setTimeout(
-        () => router.push("/[lng]/courses", listLink, { shallow: true }),
+        () => router.push(listLink, undefined, { shallow: true }),
         5000,
       )
     }

@@ -5,6 +5,7 @@ import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { useTranslator } from "/util/useTranslator"
 import BreadcrumbsTranslations from "/translations/breadcrumbs"
 import { isTranslationKey } from "/translations"
+import { memoize } from "lodash"
 
 const BreadcrumbList = styled.ul`
   list-style: none;
@@ -106,6 +107,11 @@ function BreadcrumbComponent({ href, label, translation }: Breadcrumb) {
   )
 }
 
+const createKey = memoize(
+  (href: string, prefix?: string) =>
+    `${prefix ?? ""}${encodeURIComponent(href).replace(/[%#]/g, "-")}`,
+)
+
 export function Breadcrumbs() {
   const { breadcrumbs } = useBreadcrumbContext()
 
@@ -113,7 +119,10 @@ export function Breadcrumbs() {
     <BreadcrumbList>
       <BreadcrumbComponent translation="home" href="/" key="home" />
       {breadcrumbs.map((breadcrumb, index) => (
-        <BreadcrumbComponent {...breadcrumb} key={`breadcrumb-${index}`} />
+        <BreadcrumbComponent
+          {...breadcrumb}
+          key={createKey(breadcrumb.href ?? `${index}`, "breadcrumb")}
+        />
       ))}
     </BreadcrumbList>
   )

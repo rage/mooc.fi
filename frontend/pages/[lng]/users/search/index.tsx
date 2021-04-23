@@ -46,7 +46,7 @@ const UserSearch = () => {
   if (textParam) {
     crumbs.push({
       translation: "userSearchResults",
-      href: `users/search/${textParam}`,
+      href: `/users/search/${encodeURIComponent(textParam)}`,
     })
   }
   useBreadcrumbs(crumbs)
@@ -57,14 +57,12 @@ const UserSearch = () => {
       page > 0 ? `page=${page}` : "",
     ].filter((v) => !!v)
     const query = params.length ? `?${params.join("&")}` : ""
-    const as =
-      searchVariables.search !== ""
-        ? `/${language}/users/search/${searchVariables.search}${query}`
-        : `/${language}/users/search${query}`
     const href =
       searchVariables.search !== ""
-        ? "/[lng]/users/search/[text]"
-        : "/[lng]/users/search"
+        ? `/${language}/users/search/${encodeURIComponent(
+            searchVariables.search,
+          )}${query}`
+        : `/${language}/users/search${query}`
 
     if (router?.pathname !== "/[lng]/users/search") {
       loadData({
@@ -72,9 +70,9 @@ const UserSearch = () => {
       })
     }
 
-    if (router?.asPath !== as) {
+    if (router?.asPath !== href) {
       // the history is still a bit wonky - how should it work?
-      router.push(href, as, { shallow: true })
+      router.push(href, undefined, { shallow: true })
     }
   }, [searchVariables, rowsPerPage, page])
 

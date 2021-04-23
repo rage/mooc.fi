@@ -98,9 +98,9 @@ function useCourseSearch() {
     ].filter(Boolean)
 
     const query = params.length ? `?${params.join("&")}` : ""
-    const as = `/${language}/courses/${query}`
-    if (router?.asPath !== as) {
-      router.push(as, as, { shallow: true })
+    const href = `/${language}/courses/${encodeURIComponent(query)}`
+    if (router?.asPath !== href) {
+      router.push(href, undefined, { shallow: true })
     }
   }, [searchVariables])
 
