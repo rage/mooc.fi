@@ -83,14 +83,6 @@ export const UserCourseProgress = objectType({
       type: "ExerciseProgress",
       resolve: async (parent, _, ctx) => {
         const { course_id, user_id, progress } = parent
-        /*const { course_id, user_id, progress } = (await ctx.prisma.userCourseProgress.findUnique({
-          where: { id: parent.id },
-          select: {
-            progress: true,
-            course_id: true,
-            user_id: true
-          }
-        })) ?? {}*/
 
         if (!course_id || !user_id) {
           throw new Error("no course or user found")
