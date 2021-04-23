@@ -79,7 +79,7 @@ const StudyModuleEdit = ({
         })
 
         setStatus({ message: null })
-        Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
+        Router.push(`/${language}/study-modules`, undefined, {
           shallow: true,
         })
       } catch (err) {
@@ -94,7 +94,7 @@ const StudyModuleEdit = ({
   const onDelete = useCallback(async (values: StudyModuleFormValues) => {
     if (values.id) {
       await deleteStudyModule({ variables: { id: values.id } })
-      Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
+      Router.push(`/${language}/study-modules`, undefined, {
         shallow: true,
       })
     }
@@ -102,7 +102,7 @@ const StudyModuleEdit = ({
 
   const onCancel = useCallback(
     () =>
-      Router.push("/[lng]/study-modules", `/${language}/study-modules`, {
+      Router.push(`/${language}/study-modules`, undefined, {
         shallow: true,
       }),
     [],
