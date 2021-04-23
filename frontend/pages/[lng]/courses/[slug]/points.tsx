@@ -13,6 +13,7 @@ import ModifiableErrorMesage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 export const CourseDetailsFromSlugQuery = gql`
   query CourseDetailsFromSlug($slug: String) {
@@ -35,6 +36,21 @@ const Points = () => {
       variables: { slug: slug },
     },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: data?.course?.name,
+      href: `/courses/${slug}`,
+    },
+    {
+      translation: "coursePoints",
+      href: `/courses/${slug}/points`,
+    },
+  ])
 
   if (loading || !data) {
     return <Spinner />

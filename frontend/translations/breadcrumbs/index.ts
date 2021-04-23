@@ -4,10 +4,10 @@ import en from "./en.json"
 import fi from "./fi.json"
 import { TranslationDictionary } from "/translations"
 
-export type TeachersTranslations = typeof en & typeof fi
-const TeachersTranslations: TranslationDictionary<TeachersTranslations> = {
+export type BreadcrumbsTranslations = typeof en & typeof fi
+const BreadcrumbsTranslations: TranslationDictionary<BreadcrumbsTranslations> = {
   en,
   fi,
 }
 
-export default TeachersTranslations
+export default BreadcrumbsTranslations

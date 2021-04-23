@@ -190,4 +190,8 @@ const _combineDictionaries = <
 const keyResolver = (...args: any[]) => JSON.stringify(args)
 export const combineDictionaries = memoize(_combineDictionaries, keyResolver)
 
+export const isTranslationKey = <T extends Translation>(
+  key?: keyof T,
+): key is keyof T => key !== null && key !== undefined
+
 export default getTranslator

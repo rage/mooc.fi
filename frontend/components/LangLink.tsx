@@ -42,28 +42,17 @@ export default function LangLink(props: PropsWithChildren<LinkProps>): any {
     )
   }
 
-  let as = isOutsideLink
-    ? parsedAs
-    : ["en", "fi", "se", "[lng]"].reduce(
-        (acc, curr) => acc.replace(`\/${curr}\/`, "/"),
-        parsedAs,
-      )
-
-  const { path, hash } = parsedHref
   let { href } = parsedHref
+  const { path } = parsedHref
 
   if (path === "/") {
-    as = isFi ? "/" : `/${language}/`
-    href = isFi ? "/" : "/[lng]/"
-  } else if (!path && hash) {
-    as = href = hash
+    href = isFi ? "/" : `/${language}`
   } else if (!isOutsideLink) {
-    as = `/${language}${as}`.replace(/\/$/, "")
-    href = `/[lng]${href.replace("/[lng]", "")}`.replace(/\/+/g, "/")
+    href = `/${language}${href}`
   }
 
   return (
-    <Link {...props} as={as} href={href}>
+    <Link {...props} href={href}>
       {children}
     </Link>
   )

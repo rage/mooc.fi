@@ -1,4 +1,4 @@
-import { memo, PropsWithChildren } from "react"
+import { PropsWithChildren } from "react"
 import {
   CardActions,
   Skeleton,
@@ -158,8 +158,8 @@ interface CourseCardProps {
   onClickStatus?: (value: CourseStatus | null) => (_: any) => void
 }
 
-const CourseCard = memo(
-  ({ course, loading, onClickStatus }: CourseCardProps) => (
+const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
+  return (
     <CourseCardItem key={`course-card-${course?.id ?? "new"}`}>
       <CardBase
         style={{ gridColumn: "span 1" }}
@@ -242,7 +242,7 @@ const CourseCard = memo(
               </>
             ) : course ? (
               <>
-                <LangLink as={`/courses/${course.slug}`} href="/courses/[slug]">
+                <LangLink href={`/courses/${course.slug}`}>
                   <StyledLink
                     aria-label={`To the homepage of course ${course.name}`}
                   >
@@ -263,8 +263,7 @@ const CourseCard = memo(
                   </StyledLink>
                 </LangLink>
                 <LangLink
-                  href="/courses/[slug]/edit"
-                  as={`/courses/${course.slug}/edit`}
+                  href={`/courses/${course.slug}/edit`}
                   prefetch={false}
                 >
                   <StyledLink>
@@ -288,7 +287,7 @@ const CourseCard = memo(
         </CourseCardContent>
       </CardBase>
     </CourseCardItem>
-  ),
-)
+  )
+}
 
 export default CourseCard
