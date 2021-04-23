@@ -322,11 +322,8 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <LangLink
-            href="/[lng]/sign-in"
-            as={`/${this.context.language}/sign-in`}
-          >
-            <a href="/[lng]/sign-in">{t("signIn")}</a>
+          <LangLink href={`/sign-in`}>
+            <a>{t("signIn")}</a>
           </LangLink>
         </Row>
 

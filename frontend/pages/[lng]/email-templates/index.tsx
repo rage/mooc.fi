@@ -9,11 +9,10 @@ import { AllEmailTemplates } from "/static/types/generated/AllEmailTemplates"
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
-import { useContext } from "react"
-import LanguageContext from "/contexts/LanguageContext"
 import LangLink from "/components/LangLink"
 import withAdmin from "/lib/with-admin"
 import notEmpty from "/util/notEmpty"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Background = styled.section`
   background-color: #61baad;
@@ -23,13 +22,19 @@ const EmailTemplates = (admin: Boolean) => {
   const { loading, error, data } = useQuery<AllEmailTemplates>(
     AllEmailTemplatesQuery,
   )
-  const { language } = useContext(LanguageContext)
 
   if (error) {
     ;<div>
       Error: <pre>{JSON.stringify(error, undefined, 2)}</pre>
     </div>
   }
+
+  useBreadcrumbs([
+    {
+      translation: "emailTemplates",
+      href: `/email-templates`,
+    },
+  ])
 
   if (!admin) {
     return <AdminError />
@@ -53,8 +58,7 @@ const EmailTemplates = (admin: Boolean) => {
             return (
               <li style={{ listStyleType: "none" }} key={p.id}>
                 <LangLink
-                  href="/[lng]/email-templates/[id]"
-                  as={`/${language}/email-templates/${p.id}`}
+                  href={`/email-templates/${p.id}`}
                   prefetch={false}
                   passHref
                 >

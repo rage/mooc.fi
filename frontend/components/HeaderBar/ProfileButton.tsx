@@ -22,15 +22,15 @@ const StyledButton = styled(HeaderMenuButton)<ButtonProps>`
 
 const ProfileButton = () => {
   const { currentUser } = useContext(LoginStateContext)
-  const { language, url } = useContext(LanguageContext)
-  const active = whichIsActive({ url: url })
+  const { url } = useContext(LanguageContext)
+  const active = whichIsActive({ url })
 
   const userDisplayName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name}`
     : "Oma profiili"
 
   return (
-    <LangLink href="/[lng]/profile" as={`/${language}/profile`}>
+    <LangLink href={`/profile`}>
       <StyledButton
         color="inherit"
         variant="text"
