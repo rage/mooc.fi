@@ -89,7 +89,7 @@ const EditStudyModule = (props: EditStudyModuleProps) => {
 
     if (!loading && !data?.study_module) {
       redirectTimeout = setTimeout(
-        () => router.push("/[lng]/study-modules", listLink, { shallow: true }),
+        () => router.push(listLink, undefined, { shallow: true }),
         5000,
       )
     }
