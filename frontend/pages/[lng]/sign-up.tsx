@@ -28,7 +28,7 @@ const SignUpPage = () => {
 
   const onStepComplete = () => {
     logInOrOut()
-    Router.push("/[lng]/research-consent", `/${language}/research-consent`)
+    Router.push(`/${language}/research-consent`)
 
     addAlert({
       title: t("confirmEmailTitle"),

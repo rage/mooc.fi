@@ -79,10 +79,7 @@ function useResearchConsent() {
       setFormError("")
       setSubmitting(true)
       await updateConsent({ variables: { value: research === "1" } })
-      Router.push(
-        language === "fi" ? "/" : `/[lng]`,
-        language === "fi" ? "/" : `/${language}`,
-      )
+      Router.push(language === "fi" ? "/" : `/${language}`)
     } catch (e) {
       setSubmitting(false)
       console.log(e)

@@ -14,7 +14,7 @@ interface BreadcrumbContext {
 }
 
 export const BreadcrumbContext = createContext({
-  breadcrumbs: [],
+  breadcrumbs: [] as Breadcrumb[],
   setBreadcrumbs: (_: Breadcrumb[]) => {},
 })
 
