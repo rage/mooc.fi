@@ -10,17 +10,25 @@ import SignUpTranslations from "/translations/sign-up"
 import LoginStateContext from "/contexts/LoginStateContext"
 import Router from "next/router"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const SignUpPage = () => {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(SignUpTranslations)
+
+  useBreadcrumbs([
+    {
+      translation: "signUp",
+      href: "/sign-up",
+    },
+  ])
 
   const { addAlert } = useContext(AlertContext)
   const { logInOrOut } = useContext(LoginStateContext)
 
   const onStepComplete = () => {
     logInOrOut()
-    Router.push("/[lng]/research-consent", `/${language}/research-consent`)
+    Router.push(`/${language}/research-consent`)
 
     addAlert({
       title: t("confirmEmailTitle"),

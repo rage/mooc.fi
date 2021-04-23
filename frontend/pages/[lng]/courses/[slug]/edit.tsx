@@ -5,7 +5,7 @@ import { WideContainer } from "/components/Container"
 import { withRouter, SingletonRouter } from "next/router"
 import styled from "@emotion/styled"
 import CourseEdit from "/components/Dashboard/Editor/Course"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 import LanguageContext from "/contexts/LanguageContext"
 import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
 import { H1Background } from "/components/Text/headers"
@@ -18,6 +18,7 @@ import notEmpty from "/util/notEmpty"
 import CourseEdit2 from "/components/Dashboard/Editor2/Course"
 import { useTranslator } from "/util/useTranslator"
 import { useEditorCourses } from "/hooks/useEditorCourses"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
@@ -52,7 +53,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
 
     if (!loading && !courseData?.course) {
       redirectTimeout = setTimeout(
-        () => router.push("/[lng]/courses", listLink, { shallow: true }),
+        () => router.push(listLink, undefined, { shallow: true }),
         5000,
       )
     }
@@ -63,6 +64,21 @@ const EditCourse = ({ router }: EditCourseProps) => {
       }
     }
   }, [loading, courseData])
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: courseData?.course?.name,
+      href: `/courses/${slug}`,
+    },
+    {
+      translation: "courseEdit",
+      href: `/courses/${slug}/edit`,
+    },
+  ])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
@@ -103,16 +119,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
             />
             <Typography variant="body2">
               {t("redirectMessagePre")}
-              <Link as={listLink} href="/[lng]/courses">
-                <a
-                  onClick={() =>
-                    //redirectTimeout && clearTimeout(redirectTimeout)
-                    {}
-                  }
-                >
-                  {t("redirectLinkText")}
-                </a>
-              </Link>
+              <LangLink href="/courses">{t("redirectLinkText")}</LangLink>
               {t("redirectMessagePost")}
             </Typography>
           </ErrorContainer>

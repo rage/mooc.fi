@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core"
 import React from "react"
 import CollapseButton from "/components/Buttons/CollapseButton"
-import CompletionListItem from "/components/CompletionListItem"
+import { CompletionListItem } from "/components/Home/Completions"
 import { formatDateTime } from "/components/DataFormatFunctions"
 import {
   ActionType,

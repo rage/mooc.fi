@@ -2,11 +2,12 @@ import { gql } from "@apollo/client"
 import { useQuery } from "@apollo/client"
 import { ShowUserUserOverView as UserOverViewData } from "/static/types/generated/ShowUserUserOverView"
 import Container from "/components/Container"
-import Completions from "/components/Completions"
+import { Completions } from "/components/Home/Completions"
 import { useQueryParameter } from "/util/useQueryParameter"
 import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import withAdmin from "/lib/with-admin"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 export const CompletionsIdUserOverViewQuery = gql`
   query ShowUserUserOverView($upstream_id: Int) {
@@ -29,6 +30,19 @@ function CompletionsPage() {
     CompletionsIdUserOverViewQuery,
     { variables: { upstream_id: Number(id) } },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "users",
+    },
+    {
+      label: id,
+    },
+    {
+      translation: "userCompletions",
+      href: `/users/${id}/completions`,
+    },
+  ])
 
   const completions = data?.user?.completions ?? []
 
