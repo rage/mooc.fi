@@ -12,18 +12,17 @@ export const Progress = objectType({
         const course_id = parent.course?.id
         const user_id = parent.user?.id
 
-        const res = await ctx.prisma.course.findUnique({
-          where: { id: course_id },
-          select: {
-            user_course_progresses: {
-              where: { user_id },
-              orderBy: { created_at: "asc" },
-              take: 1,
-            },
-          },
-        })
+        const user_course_progresses = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .user_course_progresses({
+            where: { user_id },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          })
 
-        return res?.user_course_progresses?.[0] ?? null
+        return user_course_progresses?.[0] ?? null
       },
     })
     t.list.field("user_course_service_progresses", {
@@ -32,16 +31,15 @@ export const Progress = objectType({
         const course_id = parent.course?.id
         const user_id = parent.user?.id
 
-        const res = await ctx.prisma.course.findUnique({
-          where: { id: course_id },
-          select: {
-            user_course_service_progresses: {
-              where: { user_id },
-            },
-          },
-        })
+        const user_course_service_progresses = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .user_course_service_progresses({
+            where: { user_id },
+          })
 
-        return res?.user_course_service_progresses ?? []
+        return user_course_service_progresses ?? []
         /*return ctx.prisma.userCourseServiceProgress.findMany({
           where: { user_id, course_id },
         })*/

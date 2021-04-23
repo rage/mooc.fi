@@ -312,16 +312,12 @@ export const User = objectType({
     t.list.field("user_course_summary", {
       type: "UserCourseSummary",
       resolve: async ({ id }, _, ctx) => {
-        // TODO: might be better to query UserCourseSettings?
         const settings = await ctx.prisma.user
           .findUnique({
             where: { id },
           })
           .user_course_settings({
             orderBy: { created_at: "desc" },
-            /*include: {
-              course: true
-            },*/
           })
 
         const courseIds = uniq(settings.map((s) => s.course_id)).filter(
@@ -332,65 +328,6 @@ export const User = objectType({
           user_id: id,
           course_id,
         }))
-        /*return settings.map((setting) => ({
-          user_id: id,
-          course_id: setting.course_id
-        }))*/
-        /*const settingsGrouped = groupBy(settings, (setting) => setting.course_id)
-        
-        return Object.entries(settingsGrouped).filter(([key]) => key !== null && key !== "null")
-          .map(([course_id, settings]) => ({
-            user_id: id, 
-            course_id,
-            course: settings[0]?.course,
-            // exercise_completions: settings[0]?.course?.exercises.map((e) => e.exercise_completions) ?? []
-          }))
-          .filter(notEmpty)*/
-        /*console.log(JSON.stringify(settingsGrouped))
-
-        const exerciseCompletions2 = groupBy(
-          await ctx.prisma.user
-            .findUnique({
-              where: { id },
-            })
-            .exercise_completions({
-              include: {
-                exercise: {
-                  include: {
-                    course: true
-                  }
-                },
-                exercise_completion_required_actions: true,
-              },
-            }),
-          (exerciseCompletion) => exerciseCompletion.exercise?.course_id,
-        )
-
-        const exerciseCompletions = groupBy(
-          await ctx.prisma.exerciseCompletion.findMany({
-            where: {
-              user_id: id,
-            },
-            include: {
-              exercise: true,
-              exercise_completion_required_actions: true,
-            },
-          }),
-          (exerciseCompletion) => exerciseCompletion.exercise?.course_id,
-        )
-        const courses = await ctx.prisma.course.findMany({
-          where: {
-            id: { in: Object.keys(exerciseCompletions) ?? [] },
-          },
-        })
-        return courses
-          .map((course) => ({
-            user_id: id,
-            course_id: course.id,
-            course,
-            exercise_completions: exerciseCompletions[course.id] ?? [],
-          }))
-          .filter(notEmpty)*/
       },
     })
   },
