@@ -22,7 +22,6 @@ const ProfilePointsDisplay = () => {
     return <ErrorMessage />
   }
 
-  // <a href={`/${lng.language}/profile/points`}>
   const hasPoints = studentHasPoints({ pointsData: data })
   if (hasPoints) {
     return (

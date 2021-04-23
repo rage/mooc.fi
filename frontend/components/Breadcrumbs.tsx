@@ -80,7 +80,7 @@ const BreadcrumbNonLink = styled.div`
   ${BreadcrumbArrowStyle}
 `
 
-function BreadcrumbComponent({ as, href, label, translation }: Breadcrumb) {
+function BreadcrumbComponent({ href, label, translation }: Breadcrumb) {
   const t = useTranslator(BreadcrumbsTranslations)
 
   const _translation = isTranslationKey<typeof BreadcrumbsTranslations>(
@@ -98,7 +98,7 @@ function BreadcrumbComponent({ as, href, label, translation }: Breadcrumb) {
           {text || <Skeleton width="100px" />}
         </BreadcrumbNonLink>
       ) : (
-        <LangLink as={as} href={href}>
+        <LangLink href={href}>
           <BreadcrumbLink>{text}</BreadcrumbLink>
         </LangLink>
       )}
