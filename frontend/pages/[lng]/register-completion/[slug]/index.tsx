@@ -105,7 +105,8 @@ function RegisterCompletionPage() {
       translation: "registerCompletion",
     },
     {
-      label: courseData?.course.name,
+      // label: courseData?.course.name,
+      label: courseSlug,
       href: `/register-completion/${courseSlug}`,
     },
   ])
