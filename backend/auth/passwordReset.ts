@@ -2,7 +2,6 @@ import { resetUserPassword } from "../services/tmc"
 import { ApiContext } from "."
 import { User } from "@prisma/client"
 
-
 export function passwordReset({ knex }: ApiContext) {
   return async (req: any, res: any) => {
     let email = req.body.email.trim()
@@ -16,10 +15,7 @@ export function passwordReset({ knex }: ApiContext) {
 
     let user = (
       await knex
-        .select<any, User[]>(
-          "id",
-          "email"
-        )
+        .select<any, User[]>("id", "email")
         .from("user")
         .where("email", email)
     )?.[0]
@@ -28,10 +24,9 @@ export function passwordReset({ knex }: ApiContext) {
       return res.status(404).json({
         status: 404,
         success: false,
-        errors: "No such email address registered"
+        errors: "No such email address registered",
       })
     }
-
 
     const sendResetEmail = await resetUserPassword(email)
 
