@@ -165,8 +165,8 @@ const Clients = () => {
       method: "POST",
       url: `http://localhost:4000/auth/clients`,
       data: {
-        clientName,
-        clientRedirect,
+        name: clientName,
+        redirect_uri: clientRedirect,
       },
       headers: {
         "Content-Type": "application/json",

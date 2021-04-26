@@ -21,7 +21,8 @@ export function createClient(ctx: ApiContext) {
     let client_secret = crypto.randomBytes(64).toString("hex")
 
     let client = (
-      await ctx.knex("clients")
+      await ctx
+        .knex("clients")
         .insert({
           name,
           client_id,
@@ -67,7 +68,10 @@ export function showClient(ctx: ApiContext) {
     const id = req.query.id
 
     let client = (
-      await ctx.knex.select<any, Client[]>("*").from("clients").where("client_id", id)
+      await ctx.knex
+        .select<any, Client[]>("*")
+        .from("clients")
+        .where("client_id", id)
     )?.[0]
     if (!client) {
       return res.status(404).json({
@@ -92,7 +96,10 @@ export function deleteClient(ctx: ApiContext) {
     const id = req.query.id
 
     let client = (
-      await ctx.knex.select<any, Client[]>("*").from("clients").where("client_id", id)
+      await ctx.knex
+        .select<any, Client[]>("*")
+        .from("clients")
+        .where("client_id", id)
     )?.[0]
     if (!client) {
       return res.status(404).json({
@@ -100,7 +107,11 @@ export function deleteClient(ctx: ApiContext) {
       })
     }
 
-    await ctx.knex.select<any, Client[]>("*").from("clients").where("client_id", id).del()
+    await ctx.knex
+      .select<any, Client[]>("*")
+      .from("clients")
+      .where("client_id", id)
+      .del()
 
     return res.status(200).json({
       success: true,
@@ -121,7 +132,10 @@ export function regenerateClient(ctx: ApiContext) {
     const id = req.query.id
 
     let client = (
-      await ctx.knex.select<any, Client[]>("*").from("clients").where("client_id", id)
+      await ctx.knex
+        .select<any, Client[]>("*")
+        .from("clients")
+        .where("client_id", id)
     )?.[0]
     if (!client) {
       return res.status(404).json({

@@ -49,10 +49,17 @@ async function issueToken(user: any, client: any, { knex }: ApiContext) {
   return token
 }
 
-async function grantAuthorizationCode(client_id: string, redirect_uri: string, { knex }: ApiContext) {
+async function grantAuthorizationCode(
+  client_id: string,
+  redirect_uri: string,
+  { knex }: ApiContext,
+) {
   const code = crypto.randomBytes(16).toString("hex")
   const client = (
-    await knex.select<any, Client[]>("*").from("clients").where("client_id", client_id)
+    await knex
+      .select<any, Client[]>("*")
+      .from("clients")
+      .where("client_id", client_id)
   )?.[0]
   if (!client) {
     return {
@@ -80,17 +87,27 @@ async function exchangePassword(
   email: string,
   password: string,
   ipAddress: string,
-  ctx: ApiContext
+  ctx: ApiContext,
 ) {
   return await signIn(email, password, ipAddress, ctx)
 }
 
-async function exchangeAuthorizationCode(client_id: string, code: string, ctx: ApiContext) {
+async function exchangeAuthorizationCode(
+  client_id: string,
+  code: string,
+  ctx: ApiContext,
+) {
   let authorizationCode = (
-    await ctx.knex.select<any, AuthorizationCode[]>("*").from("authorization_codes").where("code", code)
+    await ctx.knex
+      .select<any, AuthorizationCode[]>("*")
+      .from("authorization_codes")
+      .where("code", code)
   )?.[0]
   let client = (
-    await ctx.knex.select<any, Client[]>("*").from("clients").where("client_id", client_id)
+    await ctx.knex
+      .select<any, Client[]>("*")
+      .from("clients")
+      .where("client_id", client_id)
   )?.[0]
 
   if (!authorizationCode || !authorizationCode?.user_id) {
@@ -111,7 +128,8 @@ async function exchangeAuthorizationCode(client_id: string, code: string, ctx: A
 
   let accessToken =
     (
-      await ctx.knex.select<any, AccessToken[]>("access_token")
+      await ctx.knex
+        .select<any, AccessToken[]>("access_token")
         .from("access_tokens")
         .where("client_id", client_id)
         .where("user_id", authorizationCode?.user_id)
@@ -119,7 +137,8 @@ async function exchangeAuthorizationCode(client_id: string, code: string, ctx: A
     )?.[0] || null
   if (!accessToken) {
     let user = (
-      await ctx.knex.select<any, User[]>("id", "email", "administrator")
+      await ctx.knex
+        .select<any, User[]>("id", "email", "administrator")
         .from("user")
         .where("id", authorizationCode?.user_id)
     )?.[0]
@@ -135,7 +154,10 @@ async function exchangeAuthorizationCode(client_id: string, code: string, ctx: A
 
 async function exchangeClientCredentials(client: any, ctx: ApiContext) {
   let localClient = (
-    await ctx.knex.select<any, Client[]>("*").from("clients").where("client_id", client.client_id)
+    await ctx.knex
+      .select<any, Client[]>("*")
+      .from("clients")
+      .where("client_id", client.client_id)
   )?.[0]
 
   if (!localClient) {
@@ -176,7 +198,7 @@ export function token(ctx: ApiContext) {
           req.body.email,
           req.body.password,
           ipAddress,
-          ctx
+          ctx,
         )
 
         if (!result.success) {
@@ -197,7 +219,7 @@ export function token(ctx: ApiContext) {
           result = await grantAuthorizationCode(
             req.body.client_id,
             req.body.redirect_uri,
-            ctx
+            ctx,
           )
 
           if (!result.success) {
@@ -211,7 +233,7 @@ export function token(ctx: ApiContext) {
           result = await exchangeAuthorizationCode(
             req.body.client_id,
             req.body.code,
-            ctx
+            ctx,
           )
 
           if (!result.success) {
@@ -253,19 +275,20 @@ export async function signIn(
   emailRaw: string,
   passwordRaw: string,
   ipAddress: string,
-  ctx: ApiContext
+  ctx: ApiContext,
 ) {
   let email = emailRaw.trim()
   let password = passwordRaw.trim()
 
   let user = (
-    await ctx.knex.select<any, User[]>(
-      "id",
-      "email",
-      "password",
-      "password_throttle",
-      "administrator",
-    )
+    await ctx.knex
+      .select<any, User[]>(
+        "id",
+        "email",
+        "password",
+        "password_throttle",
+        "administrator",
+      )
       .from("user")
       .where("email", email)
   )?.[0]
@@ -274,7 +297,8 @@ export async function signIn(
   let throttleBreak = <boolean>false
   let throttleData = {}
   let client = (
-    await ctx.knex.select<any, Client[]>("id", "client_id", "name")
+    await ctx.knex
+      .select<any, Client[]>("id", "client_id", "name")
       .from("clients")
       .where("client_id", NATIVE_ID)
   )?.[0]
@@ -283,7 +307,7 @@ export async function signIn(
     return {
       status: 401,
       success: false,
-      message: 'Not allowed'
+      message: "Not allowed",
     }
   }
 
@@ -303,14 +327,15 @@ export async function signIn(
             let renewStamp = <any>new Date().getDate()
             let diffTime = Math.ceil(
               Math.abs(renewStamp - new Date(throttle.limitStamp).getDate()) /
-              (1000 * 60 * 60 * 24),
+                (1000 * 60 * 60 * 24),
             )
 
             if (diffTime >= 1) {
               throttle.currentRate = 0
               throttle.limitStamp = null
 
-              ctx.knex("user")
+              ctx
+                .knex("user")
                 .update({ password_throttle: JSON.stringify(passwordThrottle) })
                 .where("email", email)
             } else {
@@ -352,7 +377,10 @@ export async function signIn(
       hashLength: 64,
     })
 
-    await ctx.knex("user").update({ password: hashPassword }).where("email", email)
+    await ctx
+      .knex("user")
+      .update({ password: hashPassword })
+      .where("email", email)
 
     let accessToken = await issueToken(user, client, ctx)
 
@@ -389,14 +417,16 @@ export async function signIn(
           throttleData = {
             status: 403,
             success: false,
-            message: `Incorrect password. You have ${RATE_LIMIT - throttle.currentRate
-              } attempts left.`,
+            message: `Incorrect password. You have ${
+              RATE_LIMIT - throttle.currentRate
+            } attempts left.`,
           }
           return
         }
       })
 
-      await ctx.knex("user")
+      await ctx
+        .knex("user")
         .update({ password_throttle: JSON.stringify(updateThrottle) })
         .where("email", email)
 
