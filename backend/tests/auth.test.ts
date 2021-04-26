@@ -2,44 +2,9 @@ import { getTestContext } from "./__helpers"
 import { seed } from "./data/seed"
 import axios, { Method } from "axios"
 
-const fs = require("fs")
 const crypto = require("crypto")
-const jwt = require("jsonwebtoken")
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_TEST)
 
 const ctx = getTestContext()
-
-const issueToken = async (
-  client_name: string,
-  email?: string,
-  id?: string,
-  client_id?: string,
-  admin?: boolean,
-) => {
-  let nonce = crypto.randomBytes(16).toString("hex")
-  let jwtid = crypto.randomBytes(64).toString("hex")
-  let subject = Buffer.from(email || client_name).toString("base64")
-
-  let token = await jwt.sign(
-    {
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
-      maxAge: 365 * 24 * 60 * 60 * 1000,
-      id: id || client_id,
-      admin: admin || false,
-      nonce,
-      jwtid,
-    },
-    privateKey,
-    {
-      algorithm: "RS256",
-      issuer: "http://localhost:4000/auth/token",
-      subject,
-      audience: client_name,
-    },
-  )
-
-  return token
-}
 
 describe("server", () => {
   interface RequestParams {
