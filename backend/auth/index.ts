@@ -22,7 +22,7 @@ export function authRouter(ctx: ApiContext) {
   return Router()
     .post("/signUp", signUp(ctx))
     .post("/signOut", signOut(ctx))
-    .post("/passwordReset", passwordReset())
+    .post("/passwordReset", passwordReset(ctx))
     .post("/token", token(ctx))
     .get("/authorize", authorize(ctx))
     .get("/decision", decision(ctx))
