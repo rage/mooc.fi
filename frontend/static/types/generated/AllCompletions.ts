@@ -73,7 +73,7 @@ export interface AllCompletions_completionsPaginated_edges {
 }
 
 export interface AllCompletions_completionsPaginated {
-  __typename: "CompletionConnection"
+  __typename: "QueryCompletionsPaginated_type_Connection"
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
    */
