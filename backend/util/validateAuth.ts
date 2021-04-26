@@ -1,4 +1,5 @@
-import Knex from "../services/knex"
+import { ApiContext } from "../auth"
+import { AccessToken } from "@prisma/client"
 
 const fs = require("fs")
 const publicKey = fs.readFileSync(
@@ -18,7 +19,7 @@ export function validatePassword(value: string): value is string {
   return passwordRegex.test(value)
 }
 
-export async function requireAuth(auth: string) {
+export async function requireAuth(auth: string, { knex }: ApiContext) {
   if (!auth) {
     return {
       error: "Missing token",
@@ -33,9 +34,9 @@ export async function requireAuth(auth: string) {
   }
 
   const dbToken = (
-    await Knex.select("*").from("access_tokens").where("access_token", token)
+    await knex.select<any, AccessToken[]>("*").from("access_tokens").where("access_token", token)
   )?.[0]
-  if (dbToken.valid === false) {
+  if (!dbToken || dbToken.valid === false) {
     return {
       error: "Token is no longer valid",
     }
@@ -43,7 +44,7 @@ export async function requireAuth(auth: string) {
 
   return jwt.verify(token, publicKey, async (err: any, data: any) => {
     if (err) {
-      await Knex("access_tokens")
+      await knex("access_tokens")
         .update({ valid: false })
         .where("access_token", token)
       return { error: err }

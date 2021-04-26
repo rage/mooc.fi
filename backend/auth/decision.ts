@@ -1,12 +1,13 @@
 import { ApiContext } from "."
 import { requireAuth } from "../util/validateAuth"
+import { AuthorizationCode } from "@prisma/client"
 
-export function decision({ knex }: ApiContext) {
+export function decision(ctx: ApiContext) {
   return async (req: any, res: any) => {
     const code = req.query.code
 
     let authorizationCode = (
-      await knex.select("*").from("authorization_codes").where("code", code)
+      await ctx.knex.select<any, AuthorizationCode[]>("*").from("authorization_codes").where("code", code)
     )?.[0]
     if (!authorizationCode) {
       return res.status(404).json({
@@ -17,7 +18,7 @@ export function decision({ knex }: ApiContext) {
       })
     }
 
-    let auth = await requireAuth(req.headers.authorization)
+    let auth = await requireAuth(req.headers.authorization, ctx)
     if (auth.error) {
       return res.status(403).json({
         status: 403,
@@ -27,7 +28,7 @@ export function decision({ knex }: ApiContext) {
       })
     }
 
-    await knex("authorization_codes")
+    await ctx.knex("authorization_codes")
       .where("code", code)
       .update({ user_id: auth.id })
 

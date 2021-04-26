@@ -20,10 +20,10 @@ export interface ApiContext {
 
 export function authRouter(ctx: ApiContext) {
   return Router()
-    .post("/signUp", signUp())
+    .post("/signUp", signUp(ctx))
     .post("/signOut", signOut(ctx))
     .post("/passwordReset", passwordReset())
-    .post("/token", token())
+    .post("/token", token(ctx))
     .get("/authorize", authorize(ctx))
     .get("/decision", decision(ctx))
     .get("/clients", getClients(ctx))
