@@ -233,9 +233,7 @@ const validateSlug = ({
         variables: { slug: value },
       })
 
-      const existing = data.course_exists
-
-      return !existing
+      return !Boolean(data?.course?.id)
     } catch (e) {
       return true
     }

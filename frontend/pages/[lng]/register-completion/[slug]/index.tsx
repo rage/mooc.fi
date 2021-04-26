@@ -16,6 +16,7 @@ import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useTranslator } from "/util/useTranslator"
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { CheckSlug } from "/static/types/generated/CheckSlug"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -89,7 +90,7 @@ function RegisterCompletionPage() {
     loading: courseLoading,
     error: courseError,
     data: courseData,
-  } = useQuery(CheckSlugQuery, {
+  } = useQuery<CheckSlug>(CheckSlugQuery, {
     variables: {
       slug: courseSlug,
     },
@@ -100,13 +101,16 @@ function RegisterCompletionPage() {
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
 
+  const course_exists = Boolean(courseData?.course?.id)
+
   useBreadcrumbs([
     {
       translation: "registerCompletion",
     },
     {
-      // label: courseData?.course.name,
-      label: courseSlug,
+      label:
+        courseData?.course?.name ??
+        (!courseLoading && !course_exists ? courseSlug : undefined),
       href: `/register-completion/${courseSlug}`,
     },
   ])
@@ -136,7 +140,7 @@ function RegisterCompletionPage() {
     )
   }
 
-  if (!(courseData?.course_exists ?? false)) {
+  if (!course_exists) {
     return (
       <RegisterCompletion title={t("course_not_found_title")}>
         <Typography>{t("course_not_found", { course: courseSlug })}</Typography>
