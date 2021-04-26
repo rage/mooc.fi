@@ -1,20 +1,18 @@
+import { ApiContext } from "."
 import { createUser, getCurrentUserDetails, updateUser } from "../services/tmc"
-
 import { signIn } from "./token"
-
 import { validateEmail, validatePassword } from "../util/validateAuth"
 import { User } from "@prisma/client"
-import Knex from "../services/knex"
 
 const argon2 = require("argon2")
 const crypto = require("crypto")
 
-export function signUp() {
+export function signUp(ctx: ApiContext) {
   return async (req: any, res: any) => {
     const ipAddress = req.connection.remoteAddress
 
     let result = <any>(
-      await _signUp(req.body.email, req.body.password, req.body.confirmPassword)
+      await _signUp(req.body.email, req.body.password, req.body.confirmPassword, ctx)
     )
 
     if (result.success) {
@@ -30,7 +28,7 @@ export function signUp() {
       }
 
       const auth = await (<any>(
-        signIn(req.body.email, req.body.password, ipAddress)
+        signIn(req.body.email, req.body.password, ipAddress, ctx)
       ))
       if (result.data) {
         await updateUser(result.data.id, user, auth.tmc_token)
@@ -47,6 +45,7 @@ async function _signUp(
   email: string,
   password: string,
   confirmPassword: string,
+  { knex }: ApiContext
 ) {
   const username = crypto.randomBytes(8).toString("hex")
 
@@ -74,7 +73,7 @@ async function _signUp(
     }
   }
 
-  const checkEmail = await Knex.select("email")
+  const checkEmail = await knex.select<any, User[]>("email")
     .from("user")
     .where("email", email)
 
@@ -111,13 +110,13 @@ async function _signUp(
   })
 
   let user = (
-    await Knex.select<any, User[]>("id")
+    await knex.select<any, User[]>("id")
       .from("user")
       .where("upstream_id", userDetails.id)
   )?.[0]
   if (!user) {
     user = (
-      await Knex("user")
+      await knex("user")
         .insert({
           upstream_id: userDetails.id,
           email,
