@@ -134,7 +134,6 @@ export const authenticateUser = async (
   username: string,
   password: string,
 ): Promise<any> => {
-
   if (username === "e@mail.com" || username === "f@mail.com") {
     return { success: true, token: "fake_access_token", error: null }
   } else {
@@ -159,7 +158,6 @@ export const authenticateUser = async (
 }
 
 export const resetUserPassword = async (email: string): Promise<any> => {
-
   if (email === "e@mail.com") {
     return { success: true }
   }

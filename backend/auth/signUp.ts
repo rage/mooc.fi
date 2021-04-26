@@ -12,7 +12,12 @@ export function signUp(ctx: ApiContext) {
     const ipAddress = req.connection.remoteAddress
 
     let result = <any>(
-      await _signUp(req.body.email, req.body.password, req.body.confirmPassword, ctx)
+      await _signUp(
+        req.body.email,
+        req.body.password,
+        req.body.confirmPassword,
+        ctx,
+      )
     )
 
     if (result.success) {
@@ -45,7 +50,7 @@ async function _signUp(
   email: string,
   password: string,
   confirmPassword: string,
-  { knex }: ApiContext
+  { knex }: ApiContext,
 ) {
   const username = crypto.randomBytes(8).toString("hex")
 
@@ -73,7 +78,8 @@ async function _signUp(
     }
   }
 
-  const checkEmail = await knex.select<any, User[]>("email")
+  const checkEmail = await knex
+    .select<any, User[]>("email")
     .from("user")
     .where("email", email)
 
@@ -110,7 +116,8 @@ async function _signUp(
   })
 
   let user = (
-    await knex.select<any, User[]>("id")
+    await knex
+      .select<any, User[]>("id")
       .from("user")
       .where("upstream_id", userDetails.id)
   )?.[0]

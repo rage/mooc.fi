@@ -7,7 +7,10 @@ export function decision(ctx: ApiContext) {
     const code = req.query.code
 
     let authorizationCode = (
-      await ctx.knex.select<any, AuthorizationCode[]>("*").from("authorization_codes").where("code", code)
+      await ctx.knex
+        .select<any, AuthorizationCode[]>("*")
+        .from("authorization_codes")
+        .where("code", code)
     )?.[0]
     if (!authorizationCode) {
       return res.status(404).json({
@@ -28,7 +31,8 @@ export function decision(ctx: ApiContext) {
       })
     }
 
-    await ctx.knex("authorization_codes")
+    await ctx
+      .knex("authorization_codes")
       .where("code", code)
       .update({ user_id: auth.id })
 

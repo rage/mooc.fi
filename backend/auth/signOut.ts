@@ -12,7 +12,8 @@ export function signOut(ctx: ApiContext) {
       })
     }
 
-    await ctx.knex("access_tokens")
+    await ctx
+      .knex("access_tokens")
       .update({ valid: false })
       .where("access_token", req.headers.authorization.replace("Bearer ", ""))
     req.session = null

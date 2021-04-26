@@ -34,7 +34,10 @@ export async function requireAuth(auth: string, { knex }: ApiContext) {
   }
 
   const dbToken = (
-    await knex.select<any, AccessToken[]>("*").from("access_tokens").where("access_token", token)
+    await knex
+      .select<any, AccessToken[]>("*")
+      .from("access_tokens")
+      .where("access_token", token)
   )?.[0]
   if (!dbToken || dbToken.valid === false) {
     return {
