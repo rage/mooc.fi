@@ -86,7 +86,9 @@ function useCourseSearch() {
         keyof typeof searchVariables
       >).map((field) =>
         notEmptyOrEmptyString(searchVariables[field])
-          ? `${field}=${encodeURI(searchVariables[field]?.toString() ?? "")}`
+          ? `${field}=${encodeURIComponent(
+              searchVariables[field]?.toString() ?? "",
+            )}`
           : "",
       ),
       !searchVariables.hidden ? `hidden=false` : "",
@@ -98,7 +100,7 @@ function useCourseSearch() {
     ].filter(Boolean)
 
     const query = params.length ? `?${params.join("&")}` : ""
-    const href = `/${language}/courses/${encodeURIComponent(query)}`
+    const href = `/${language}/courses/${query}`
     if (router?.asPath !== href) {
       router.push(href, undefined, { shallow: true })
     }
