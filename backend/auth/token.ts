@@ -294,6 +294,7 @@ export async function signIn(
   )?.[0]
 
   const tmcToken = await authenticateUser(email, password)
+
   let throttleBreak = <boolean>false
   let throttleData = {}
   let client = (
@@ -369,7 +370,7 @@ export async function signIn(
     }
   }
 
-  if (tmcToken.success && tmcToken.token !== "fake_access_token") {
+  if (tmcToken.success) {
     const hashPassword = await argon2.hash(password, {
       type: argon2.argon2id,
       timeCost: 4,

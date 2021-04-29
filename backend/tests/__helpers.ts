@@ -255,3 +255,32 @@ export const fakeUserDetailReply = (reply: [number, object]) =>
   nock(process.env.TMC_HOST || "")
     .get("/api/v8/users/recently_changed_user_details")
     .reply(reply[0], () => reply[1])
+
+export const fakeTMCUserCreate = (reply: [number, object]) =>
+  nock(process.env.TMC_HOST || "")
+    .post("/api/v8/users")
+    .reply(() => [reply[0], reply[1]])
+
+export const fakeTMCUserEmailNotFound = (reply: [number, object]) =>
+  nock(process.env.TMC_HOST || "")
+    .post(
+      "/oauth/token",
+      JSON.stringify({
+        username: "incorrect-email@user.com",
+        password: "password",
+        grant_type: "password",
+      }),
+    )
+    .reply(() => [reply[0], reply[1]])
+
+export const fakeTMCUserWrongPassword = (reply: [number, object]) =>
+  nock(process.env.TMC_HOST || "")
+    .post(
+      "/oauth/token",
+      JSON.stringify({
+        username: "e@mail.com",
+        password: "incorrect-password",
+        grant_type: "password",
+      }),
+    )
+    .reply(() => [reply[0], reply[1]])
