@@ -1,5 +1,5 @@
 import { useCallback, useContext, useState } from "react"
-import UserSearchContext from "/contexes/UserSearchContext"
+import UserSearchContext from "/contexts/UserSearchContext"
 import { H1NoBackground } from "/components/Text/headers"
 import { TextField, useMediaQuery } from "@material-ui/core"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"

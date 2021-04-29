@@ -27,8 +27,8 @@ function CourseStatisticsList({ data }: CourseStatisticsListProps) {
       />
       <CourseStatisticsEntry
         field="atLeastOneExercise"
-        value={data.atLeastOneExercise!.value}
-        date={data.atLeastOneExercise!.date}
+        value={data.at_least_one_exercise!.value}
+        date={data.at_least_one_exercise!.date}
       />
     </section>
   )

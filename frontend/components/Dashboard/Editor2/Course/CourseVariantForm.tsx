@@ -27,15 +27,15 @@ export default function CourseVariantForm() {
       render={(item, index) => (
         <>
           <ControlledHiddenField
-            name={`course_variants[${index}]._id`}
+            name={`course_variants.${index}._id`}
             defaultValue={item._id}
           />
           <ControlledTextField
-            name={`course_variants[${index}].slug`}
+            name={`course_variants.${index}.slug`}
             label={t("courseSlug")}
           />
           <ControlledTextField
-            name={`course_variants[${index}].description`}
+            name={`course_variants.${index}.description`}
             label={t("courseDescription")}
           />
         </>

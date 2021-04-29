@@ -25,8 +25,8 @@ spec:
               containerPort: 3021
           resources:
             limits:
-              memory: 500Mi
+              memory: 600Mi
               cpu: 300m
             requests:
-              memory: 150Mi
+              memory: 300Mi
               cpu: 200m

@@ -8,7 +8,7 @@ import ScatterplotIcon from "@material-ui/icons/ScatterPlot"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import EditIcon from "@material-ui/icons/Edit"
 import EqualizerIcon from "@material-ui/icons/Equalizer"
-import LanguageContext from "/contexes/LanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import { useRouter } from "next/router"
 
 const TabBarContainer = styled.div`
@@ -91,6 +91,7 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
             variant="fullWidth"
             value={value}
             onChange={handleChange}
+            indicatorColor="secondary"
             aria-label="course dashboard navi"
           >
             {routes.map(({ label, icon }, index) => (
@@ -99,7 +100,7 @@ export default function DashboardTabBar(props: DashboardTabsProps) {
                 value={index}
                 label={label}
                 icon={icon}
-                style={{ marginTop: "1rem" }}
+                style={{ marginTop: "1rem", color: "unset" }}
                 {...a11yProps(index)}
               />
             ))}

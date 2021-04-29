@@ -9,7 +9,8 @@ import {
 import { Result } from "../../../util/result"
 import { KafkaContext } from "./kafkaContext"
 
-let commitCounter = 0
+// Each partition has their own commit counter
+let commitCounterMap = new Map<number, number>()
 
 const commitInterval = config.commit_interval
 
@@ -83,11 +84,49 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   release()
 }
 
-const commit = async ({ consumer, logger }: KafkaContext, message: any) => {
+const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
+  const { logger, consumer } = kafkaContext
+
+  const commitCounter = commitCounterMap.get(message.partition) || 0
+  commitCounterMap.set(message.partition, commitCounter + 1)
+
   if (commitCounter >= commitInterval) {
-    logger.info("Committing...")
-    await consumer.commitMessage(message)
-    commitCounter = 0
+    logger.info(
+      `Committing partition ${message.partition} offset ${message.offset}`,
+    )
+    commitCounterMap.set(message.partition, 0)
+
+    consumer.commitMessage(message)
+    reportQueueLength(kafkaContext, message.partition, message.offset)
   }
-  commitCounter++
+}
+
+const reportQueueLength = (
+  ctx: KafkaContext,
+  partition_id: number,
+  committedOffset: number,
+) => {
+  ctx.consumer.queryWatermarkOffsets(
+    ctx.topic_name,
+    partition_id,
+    5000,
+    (err, offsets) => {
+      if (err) {
+        ctx.logger.error(
+          `Could not get offsets for topic ${ctx.topic_name} partition ${partition_id}`,
+        )
+        return
+      }
+      const messagesInQueue = offsets.highOffset - committedOffset
+
+      ctx.logger.info(
+        `Status for partition ${partition_id}: ${messagesInQueue} messages in queue.`,
+        {
+          lowOffset: offsets.lowOffset,
+          highoffSet: offsets.highOffset,
+          messageOffset: committedOffset,
+        },
+      )
+    },
+  )
 }

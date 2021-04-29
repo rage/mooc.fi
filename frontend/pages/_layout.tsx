@@ -1,10 +1,10 @@
 import { ReactNode } from "react"
-import Header from "../components/HeaderBar/Header"
+import Header from "/components/HeaderBar/Header"
 import MobileBottomNavigation from "/components/MobileBottomNavigation"
 import Footer from "/components/Footer"
 import SkipLink from "/components/SkipLink"
 import styled from "@emotion/styled"
-import DashboardBreadCrumbs from "/components/Dashboard/DashboardBreadCrumbs"
+import { Breadcrumbs } from "/components/Breadcrumbs"
 import Alerts from "/components/HeaderBar/Alerts"
 import { useRouter } from "next/router"
 
@@ -20,6 +20,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
   const isHomePage = !!router?.asPath?.match(/^\/(\[lng\])?\/?$/)
 
+  // {!isHomePage && <DashboardBreadCrumbs />}
   return (
     <div>
       <SkipLink />
@@ -27,7 +28,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div>
           <Header />
           <main id="main">
-            {!isHomePage && <DashboardBreadCrumbs />}
+            {!isHomePage && <Breadcrumbs />}
             <Alerts />
             {children}
           </main>

@@ -6,6 +6,7 @@ import SignInTranslations from "/translations/common"
 import styled from "@emotion/styled"
 import withSignedOut from "/lib/with-signed-out"
 import { useTranslator } from "/util/useTranslator"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -22,6 +23,13 @@ const Header = styled(Typography)<any>`
 
 const SignInPage = () => {
   const t = useTranslator(SignInTranslations)
+
+  useBreadcrumbs([
+    {
+      translation: "signIn",
+      href: "/sign-in",
+    },
+  ])
 
   return (
     <>

@@ -11,10 +11,12 @@ import Spinner from "/components/Spinner"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import styled from "@emotion/styled"
 import withSignedIn from "/lib/with-signed-in"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 import { CheckSlugQuery } from "/graphql/queries/courses"
 import { useTranslator } from "/util/useTranslator"
 import RegisterCompletion from "/components/Home/RegisterCompletion"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { CheckSlug } from "/static/types/generated/CheckSlug"
 
 const StyledPaper = styled(Paper)`
   padding: 1em;
@@ -88,7 +90,7 @@ function RegisterCompletionPage() {
     loading: courseLoading,
     error: courseError,
     data: courseData,
-  } = useQuery(CheckSlugQuery, {
+  } = useQuery<CheckSlug>(CheckSlugQuery, {
     variables: {
       slug: courseSlug,
     },
@@ -98,6 +100,20 @@ function RegisterCompletionPage() {
     error: userError,
     data: userData,
   } = useQuery<UserOverViewData>(UserOverViewQuery)
+
+  const course_exists = Boolean(courseData?.course?.id)
+
+  useBreadcrumbs([
+    {
+      translation: "registerCompletion",
+    },
+    {
+      label:
+        courseData?.course?.name ??
+        (!courseLoading && !course_exists ? courseSlug : undefined),
+      href: `/register-completion/${courseSlug}`,
+    },
+  ])
 
   if (courseLoading || userLoading) {
     return <Spinner />
@@ -124,7 +140,7 @@ function RegisterCompletionPage() {
     )
   }
 
-  if (!(courseData?.course_exists ?? false)) {
+  if (!course_exists) {
     return (
       <RegisterCompletion title={t("course_not_found_title")}>
         <Typography>{t("course_not_found", { course: courseSlug })}</Typography>
