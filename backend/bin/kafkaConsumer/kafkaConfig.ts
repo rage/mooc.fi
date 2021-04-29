@@ -14,5 +14,5 @@ export default {
   user_course_progress_realtime_consumer: {
     topic_name: "user-course-progress-realtime",
   },
-  commit_interval: 100,
+  commit_interval: 50,
 }

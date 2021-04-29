@@ -1,0 +1,107 @@
+import {ContentBox, SectionBox} from "/pages/[lng]/installation/netbeans"
+
+<ContentBox>
+
+## Installing to Linux
+---
+### Contents
+1. [Install using installer](#using-installer)
+2. [Install manually](#manual-installation)
+3. [Getting started](#getting-started)
+---
+
+</ContentBox>
+
+<ContentBox>
+
+Follow the instructions below to install the Test My Code client
+
+<SectionBox>
+
+### Install using the installer<a name="using-installer"></a>
+
+Download the installer 'tmc-cli-rust.msi' at ... TODO
+
+</SectionBox>
+
+<SectionBox>
+
+### Install manually<a name="manual-installation"></a>
+
+If using the installers is not an option for you, you can download the [latest release](https://github.com/rage/tmc-cli-rust/releases/latest) manually.
+
+After downloading `tmc-cli-rust.exe` you can start using it from the command line by navigating to the directory it resides at. 
+
+To be able to use it from any directory, you can add it to your environmental variables with the following command. (substituting DIRECTORY for the directory where `tmc-cli-rust.exe` resides at)
+
+> `set PATH=%PATH%;DIRECTORY`
+
+</SectionBox>
+
+</ContentBox>
+
+<ContentBox>
+
+<SectionBox>
+
+### Getting started <a name="getting-started"></a>
+
+#### Commands
+
+> `tmc-cli-rust [FLAGS] [SUBCOMMAND]`
+
+FLAG | Description
+:--- | :---
+`-h, --help` | Prints help information
+`-d, --no-update` | Disable auto update temporarily
+`-V, --version` | Prints version information
+
+#### Logging in
+
+You can log in using `tmc-cli-rust login`. This saves your TMC login information to a configuration file in `<linux config path>` - you will only have to log in once.
+
+
+The application will ask you to select an organization afterwards.
+
+#### Logging out
+
+You can log out using 'tmc-cli-rust logout'. This will remove your login token from the configuration file.
+
+> `~ $ tmc-cli-rust logout`
+
+#### Listing courses
+
+Once you have logged in, you can list all the available courses on the server with
+
+> `~ $ tmc-cli-rust courses`
+
+#### Downloading course exercises
+
+Either
+- Navigate to a suitable directory in which you wish to download your exercises. Then, run 
+
+> `tmc-cli-rust download [COURSE_NAME] .` 
+
+- Enter suitable filepath as an argument 
+
+> `tmc-cli-rust download [COURSE_NAME] [FILEPATH]`
+
+This will download all available exercises into it.
+
+#### Running tests
+
+After you've completed an exercise and wish to run tests on it, navigate to the exercise directory and run `tmc-cli-rust test`. If you are in the course root directory, you can also give the name of the exercise as argument: `tmc-cli-rust test exercise1`.
+
+> `~/tmc-courses/test-course/exercise1 $ tmc-cli-rust test`
+
+#### Listing exercises
+
+If you want to see your current progress, you can view the status of all course exercises with `tmc-cli-rust exercises [course]`.
+
+> `~/tmc-courses/test-course/ $ tmc-cli-rust exercises test-course`
+
+
+</SectionBox>
+
+</ContentBox>
+

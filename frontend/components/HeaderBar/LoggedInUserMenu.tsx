@@ -1,7 +1,6 @@
 import { useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
 import Typography from "@material-ui/core/Typography"
-import LangLink from "../LangLink"
+import LangLink from "components/LangLink"
 import styled from "@emotion/styled"
 import Button from "@material-ui/core/Button"
 import CommonTranslations from "/translations/common"
@@ -14,7 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import LoginStateContext from "/contexes/LoginStateContext"
+import LoginStateContext from "/contexts/LoginStateContext"
 import { useTranslator } from "/util/useTranslator"
 
 interface ButtonProps {
@@ -54,7 +53,6 @@ interface UserMenuprops {
 
 const UserMenu = (props: UserMenuprops) => {
   const { admin } = useContext(LoginStateContext)
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(CommonTranslations)
 
   const { active } = props
@@ -63,7 +61,7 @@ const UserMenu = (props: UserMenuprops) => {
     <>
       {admin && (
         <>
-          <LangLink href="/[lng]/courses" as={`/${language}/courses`}>
+          <LangLink href={`/courses`}>
             <StyledButton
               color="inherit"
               variant="text"
@@ -77,10 +75,7 @@ const UserMenu = (props: UserMenuprops) => {
             </StyledButton>
           </LangLink>
 
-          <LangLink
-            href="/[lng]/study-modules"
-            as={`/${language}/study-modules`}
-          >
+          <LangLink href={`/study-modules`}>
             <StyledButton
               color="inherit"
               variant="text"
@@ -92,7 +87,7 @@ const UserMenu = (props: UserMenuprops) => {
               </div>
             </StyledButton>
           </LangLink>
-          <LangLink href="/[lng]/users/search" as={`/${language}/users/search`}>
+          <LangLink href={`/users/search`}>
             <StyledButton
               color="inherit"
               variant="text"
@@ -104,10 +99,7 @@ const UserMenu = (props: UserMenuprops) => {
               </div>
             </StyledButton>
           </LangLink>
-          <LangLink
-            href="/[lng]/email-templates"
-            as={`/${language}/email-templates`}
-          >
+          <LangLink href={`/email-templates`}>
             <StyledButton
               color="inherit"
               variant="text"

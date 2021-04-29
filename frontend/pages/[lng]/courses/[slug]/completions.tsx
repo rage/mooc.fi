@@ -2,8 +2,8 @@ import { useContext, useState } from "react"
 import { ChangeEvent } from "react"
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import { WideContainer } from "/components/Container"
-import CourseLanguageContext from "/contexes/CourseLanguageContext"
-import LanguageContext from "/contexes/LanguageContext"
+import CourseLanguageContext from "/contexts/CourseLanguageContext"
+import LanguageContext from "/contexts/LanguageContext"
 import LanguageSelector from "/components/Dashboard/LanguageSelector"
 import { withRouter, SingletonRouter } from "next/router"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -19,6 +19,7 @@ import styled from "@emotion/styled"
 import { TextField } from "@material-ui/core"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 // import useDebounce from "/util/useDebounce"
 
 const ContentArea = styled.div`
@@ -38,12 +39,11 @@ export const CourseDetailsFromSlugQuery = gql`
 const Completions = ({ router }: { router: SingletonRouter }) => {
   const { language } = useContext(LanguageContext)
   const t = useTranslator(CoursesTranslations)
+  const slug = useQueryParameter("slug")
 
   const [lng, changeLng] = useState("")
   const [searchString, setSearchString] = useState("")
   const [search, setSearch] = useState("")
-
-  const slug = useQueryParameter("slug")
 
   const handleLanguageChange = (event: ChangeEvent<unknown>) => {
     // prevents reloading page, URL changes
@@ -61,6 +61,21 @@ const Completions = ({ router }: { router: SingletonRouter }) => {
       variables: { slug },
     },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: data?.course?.name,
+      href: `/courses/${slug}`,
+    },
+    {
+      translation: "courseCompletions",
+      href: `/courses/${slug}/completions`,
+    },
+  ])
 
   if (loading || !data) {
     return <Spinner />

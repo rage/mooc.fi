@@ -1,7 +1,5 @@
 import { signOut } from "/lib/authentication"
 import { useApolloClient } from "@apollo/client"
-import { useContext } from "react"
-import LanguageContext from "/contexes/LanguageContext"
 import CommonTranslations from "/translations/common"
 import LangLink from "/components/LangLink"
 import nookies from "nookies"
@@ -16,7 +14,6 @@ interface Props {
 const UserOptionsMenu = (props: Props) => {
   const client = useApolloClient()
   const { isSignedIn, logInOrOut } = props
-  const { language } = useContext(LanguageContext)
   const t = useTranslator(CommonTranslations)
 
   if (isSignedIn) {
@@ -35,7 +32,7 @@ const UserOptionsMenu = (props: Props) => {
   }
   return (
     <>
-      <LangLink href="/[lng]/sign-in" as={`/${language}/sign-in`} passHref>
+      <LangLink href={`/sign-in`} passHref>
         <HeaderMenuButton
           color="inherit"
           variant="text"
@@ -44,12 +41,7 @@ const UserOptionsMenu = (props: Props) => {
           {t("loginShort")}
         </HeaderMenuButton>
       </LangLink>
-      <LangLink
-        href="/[lng]/sign-up"
-        as={`/${language}/sign-up`}
-        prefetch={false}
-        passHref
-      >
+      <LangLink href={`/sign-up`} prefetch={false} passHref>
         <HeaderMenuButton color="inherit" variant="text">
           {t("signUp")}
         </HeaderMenuButton>

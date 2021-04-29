@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface CourseIdBySluq_course {
-  __typename: "Course"
-  id: string
+  __typename: "Course";
+  id: string;
 }
 
 export interface CourseIdBySluq {
-  course: CourseIdBySluq_course | null
+  course: CourseIdBySluq_course | null;
 }
 
 export interface CourseIdBySluqVariables {
-  slug?: string | null
+  slug?: string | null;
 }

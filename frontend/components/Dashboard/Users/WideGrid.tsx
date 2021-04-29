@@ -15,7 +15,7 @@ import range from "lodash/range"
 import LangLink from "/components/LangLink"
 import Pagination from "/components/Dashboard/Users/Pagination"
 import UsersTranslations from "/translations/users"
-import UserSearchContext from "/contexes/UserSearchContext"
+import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/util/useTranslator"
 import notEmpty from "/util/notEmpty"
 
@@ -75,7 +75,8 @@ const WideGrid = () => {
                 {t("userStudentNumber")}
               </StyledTableCell>
               <StyledTableCell align="right">
-                {t("completions")}
+                {/*t("summary")*/}
+                {/*t("completions")*/}
               </StyledTableCell>
             </TableRow>
           </TableHead>
@@ -133,12 +134,13 @@ const RenderResults = () => {
             <TableCell align="right">{last_name}</TableCell>
             <TableCell align="right">{student_number}</TableCell>
             <TableCell align="right">
-              <LangLink
-                as={`/users/${upstream_id}/completions`}
-                href="/users/[id]/completions"
-                passHref
-              >
-                <Button variant="contained">Completions</Button>
+              <LangLink href={`/users/${upstream_id}/summary`} passHref>
+                <Button variant="contained" style={{ marginRight: "0.5rem" }}>
+                  {t("summary")}
+                </Button>
+              </LangLink>
+              <LangLink href={`/users/${upstream_id}/completions`} passHref>
+                <Button variant="contained">{t("completions")}</Button>
               </LangLink>
             </TableCell>
           </TableRow>

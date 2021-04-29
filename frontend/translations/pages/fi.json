@@ -16,6 +16,7 @@
     "/[lng]/study-modules/new": "Uusi opintokokonaisuus",
     "/[lng]/users/[id]": "Käyttäjä - {{title}}",
     "/[lng]/users/[id]/completions": "Suoritukset - {{title}}",
+    "/[lng]/users/[id]/summary": "Yhteenveto - {{title}}",
     "/[lng]/users/search": "Hae käyttäjiä",
     "/[lng]/users/search/[text]": "Hae käyttäjiä - [[text]]",
     "/[lng]/users": "Käyttäjät",
@@ -30,8 +31,8 @@
     "/[lng]/register-completion": "Rekisteröi suoritus",
     "/[lng]/faq": "Usein kysytyt kysymykset",
     "/fi/faq/suoritusten_rekisterointi": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
-    "/fi/faq/registering_completion": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
-    "/en/faq/registering_completion": "",
+    "/fi/faq/registering_completions": "Usein kysytyt kysymykset: Suoritusten rekisteröinti",
+    "/en/faq/registering_completions": "",
     "/en/faq/suoritusten_rekisterointi": "",
     "/register-completion": "Rekisteröi suoritus",
     "/": "Etusivu"
@@ -46,6 +47,7 @@
     "/[lng]/study-modules/new": "Uusi",
     "/[lng]/users/[id]": "Käyttäjä",
     "/[lng]/users/[id]/completions": "Suoritukset",
+    "/[lng]/users/[id]/summary": "Yhteenveto",
     "/[lng]/users/search": "Hae",
     "/[lng]/register-completion/[slug]": "Rekisteröi suoritus",
     "/[lng]/email-templates/[id]": "Muokkaa",
@@ -55,9 +57,9 @@
     "/en/installation/netbeans": "",
     "/fi/installation/vscode": "VSCode",
     "/fi/installation/netbeans": "Netbeans",
-    "/en/faq/registering_completion": "",
+    "/en/faq/registering_completions": "",
     "/en/faq/suoritusten_rekisterointi": "",
     "/fi/faq/suoritusten_rekisterointi": "Suoritusten rekisteröinti",
-    "/fi/faq/registering_completion": "Suoritusten rekisteröinti"
+    "/fi/faq/registering_completions": "Suoritusten rekisteröinti"
   }
 }

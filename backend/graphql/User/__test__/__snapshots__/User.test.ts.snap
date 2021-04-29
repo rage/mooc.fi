@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User mutations addUser creates user correctly 1`] = `
+Object {
+  "addUser": Object {
+    "administrator": false,
+    "email": "e@mail.com",
+    "first_name": "first",
+    "id": Any<String>,
+    "last_name": "last",
+    "research_consent": false,
+    "upstream_id": 1,
+    "username": "username",
+  },
+}
+`;
+
+exports[`User queries user_course_summary returns courses with completions 1`] = `
+Object {
+  "currentUser": Object {
+    "id": "20000000-0000-0000-0000-000000000102",
+    "user_course_summary": Array [
+      Object {
+        "course": Object {
+          "id": "00000000-0000-0000-0000-000000000002",
+          "name": "course1",
+        },
+        "course_id": "00000000-0000-0000-0000-000000000002",
+        "exercise_completions": Array [
+          Object {
+            "exercise": Object {
+              "id": "50000000-0000-0000-0000-000000000003",
+              "max_points": 3,
+              "name": "exercise 3",
+            },
+            "exercise_completion_required_actions": Array [
+              Object {
+                "id": "66666666-0000-0000-0000-000000000003",
+                "value": "TOO_MANY_DUCKS",
+              },
+            ],
+            "id": "60000000-0000-0000-0000-000000000003",
+            "n_points": 4,
+            "timestamp": "1900-01-01T08:00:00.000Z",
+          },
+          Object {
+            "exercise": Object {
+              "id": "50000000-0000-0000-0000-000000000004",
+              "max_points": null,
+              "name": "deleted exercise 4",
+            },
+            "exercise_completion_required_actions": Array [
+              Object {
+                "id": "66666666-0000-0000-0000-000000000004",
+                "value": "existing",
+              },
+            ],
+            "id": "60000000-0000-0000-0000-000000000004",
+            "n_points": 1,
+            "timestamp": "2000-01-01T08:00:00.000Z",
+          },
+        ],
+        "user_id": "20000000-0000-0000-0000-000000000102",
+      },
+      Object {
+        "course": Object {
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "course2",
+        },
+        "course_id": "00000000-0000-0000-0000-000000000001",
+        "exercise_completions": Array [
+          Object {
+            "exercise": Object {
+              "id": "50000000-0000-0000-0000-000000000001",
+              "max_points": 2,
+              "name": "exercise 1",
+            },
+            "exercise_completion_required_actions": Array [],
+            "id": "60000000-0000-0000-0000-000000000001",
+            "n_points": 6,
+            "timestamp": "1900-01-01T08:00:00.000Z",
+          },
+          Object {
+            "exercise": Object {
+              "id": "50000000-0000-0000-0000-000000000002",
+              "max_points": 3,
+              "name": "exercise 2",
+            },
+            "exercise_completion_required_actions": Array [],
+            "id": "60000000-0000-0000-0000-000000000002",
+            "n_points": 0,
+            "timestamp": "1900-01-01T08:00:00.000Z",
+          },
+        ],
+        "user_id": "20000000-0000-0000-0000-000000000102",
+      },
+    ],
+  },
+}
+`;

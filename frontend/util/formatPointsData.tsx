@@ -1,5 +1,6 @@
-import { UserPoints_currentUser_progresses as ProgressData } from "/static/types/generated/UserPoints"
 import { groupBy, mapValues, flatten } from "lodash"
+import { UserCourseProgressFragment } from "/static/types/generated/UserCourseProgressFragment"
+import { UserCourseServiceProgressFragment } from "/static/types/generated/UserCourseServiceProgressFragment"
 
 export type formattedGroupPointsDictionary = {
   total: number
@@ -22,12 +23,16 @@ interface ServiceGroupPoints extends GroupPoints {
   service: string
 }
 
+interface FormatPointsDataProps {
+  userCourseProgress?: UserCourseProgressFragment | null
+  userCourseServiceProgresses?: UserCourseServiceProgressFragment[] | null
+}
+
 function formatPointsData({
-  pointsData,
-}: {
-  pointsData: ProgressData
-}): formattedGroupPointsDictionary {
-  if (!pointsData.user_course_progress) {
+  userCourseProgress,
+  userCourseServiceProgresses,
+}: FormatPointsDataProps): formattedGroupPointsDictionary {
+  if (!userCourseProgress) {
     return {
       total: 0,
       exercises: 0,
@@ -36,13 +41,13 @@ function formatPointsData({
   }
 
   const courseProgressesByGroup: _.Dictionary<GroupPoints[]> = groupBy(
-    pointsData.user_course_progress.progress,
+    userCourseProgress.progress,
     "group",
   )
   const courseProgressByGroup = mapValues(courseProgressesByGroup, (o) => o[0])
 
   const serviceProgressesArray = flatten(
-    pointsData?.user_course_service_progresses?.map(
+    userCourseServiceProgresses?.map(
       (o) =>
         o?.progress?.map((o2: GroupPoints) => {
           return {
@@ -59,9 +64,8 @@ function formatPointsData({
   const serviceProgressesByGroup = groupBy(serviceProgressesArray, "group")
 
   return {
-    total: pointsData.user_course_progress.exercise_progress?.total ?? 0,
-    exercises:
-      pointsData.user_course_progress.exercise_progress?.exercises ?? 0,
+    total: userCourseProgress.exercise_progress?.total ?? 0,
+    exercises: userCourseProgress.exercise_progress?.exercises ?? 0,
     groups: mapValues(courseProgressByGroup, (o) => ({
       courseProgress: o,
       service_progresses: serviceProgressesByGroup[o.group],

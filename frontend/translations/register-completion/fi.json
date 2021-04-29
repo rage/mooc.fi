@@ -1,5 +1,5 @@
 {
-    "title": "Opintopisteiden Rekisteröinti",
+    "title": "Opintopisteiden rekisteröinti",
     "course": "Kurssi: {{course}}",
     "credits": "Opintopisteet: {{ects}} (Vaatii suomalaisen henkilötunnuksen).",
     "credits_details": "Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin. Opintosuorituksen rekisteröinti on ilmaista.",

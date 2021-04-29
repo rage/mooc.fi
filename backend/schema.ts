@@ -10,8 +10,8 @@ if (process.env.NEXUS_REFLECTION) {
 import { makeSchema, connectionPlugin, fieldAuthorizePlugin } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
 import * as types from "./graphql"
-import { DateTimeResolver, JSONObjectResolver } from "graphql-scalars"
-import { GraphQLScalarType } from "graphql/type"
+import { DateTimeResolver, /*JSONObjectResolver*/ } from "graphql-scalars"
+// import { GraphQLScalarType } from "graphql/type"
 import * as path from "path"
 import { loggerPlugin } from "./middlewares/logger"
 import { sentryPlugin } from "./middlewares/sentry"
@@ -33,14 +33,15 @@ const createPlugins = () => {
       shouldGenerateArtifacts: true,
       scalars: {
         DateTime: DateTimeResolver,
-        Json: new GraphQLScalarType({
+        /*Json: new GraphQLScalarType({
           ...JSONObjectResolver,
           name: "Json",
           description:
-            "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
-        }),
+          "The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).",
+        }),*/
       },
     }),
+
     connectionPlugin({
       nexusFieldName: "connection",
       includeNodesField: true,

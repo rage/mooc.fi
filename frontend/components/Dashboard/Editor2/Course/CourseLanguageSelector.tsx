@@ -5,7 +5,6 @@ import { initialTranslation } from "./form-validation"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import { useFieldArray, useFormContext } from "react-hook-form"
-import { CourseTranslationFormValues } from "/components/Dashboard/Editor2/Course/types"
 
 const ButtonGroupContainer = styled(ButtonGroup)`
   width: 90%;
@@ -39,7 +38,7 @@ const StyledLanguageButton = styled(Button)<ButtonProps>`
     border: 1px solid #83acda;
     color: black;
   }
-  &: disabled {
+  &:disabled {
     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5);
     background-color: #354b45;
     color: white;
@@ -51,15 +50,16 @@ interface LanguageSelectorProps {
   selectedLanguage: string
   setSelectedLanguage: any
 }
-const CourseLanguageSelector = (props: LanguageSelectorProps) => {
+function CourseLanguageSelector(props: LanguageSelectorProps) {
   const { selectedLanguage, setSelectedLanguage } = props
 
   const { control } = useFormContext()
 
-  const { append } = useFieldArray<CourseTranslationFormValues>({
+  const { append } = useFieldArray({
     control,
     name: "course_translations",
   })
+
   const t = useTranslator(CoursesTranslations)
 
   return (

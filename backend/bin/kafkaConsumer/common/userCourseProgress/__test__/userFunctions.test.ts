@@ -24,7 +24,7 @@ describe("createCompletion", () => {
     it("create new one when no existing is found", async () => {
       const course = await ctx.prisma.course.findFirst({
         where: {
-          slug: "course1",
+          slug: "course2",
         },
       })
       const user = await ctx.prisma.user.findFirst({

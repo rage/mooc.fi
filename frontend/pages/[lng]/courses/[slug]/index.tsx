@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import { WideContainer } from "/components/Container"
@@ -7,8 +7,7 @@ import { gql } from "@apollo/client"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
-import { Card, Typography, Button } from "@material-ui/core"
-import LanguageContext from "/contexes/LanguageContext"
+import { Card, Typography, Button, Paper } from "@material-ui/core"
 import LangLink from "/components/LangLink"
 import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
 import Spinner from "/components/Spinner"
@@ -21,6 +20,8 @@ import {
   PreviousPageCompletionsQuery,
 } from "/components/Dashboard/CompletionsList"
 import { useTranslator } from "/util/useTranslator"
+import { useConfirm } from "material-ui-confirm"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -49,10 +50,17 @@ const recheckCompletionsMutation = gql`
   }
 `
 
+const Row = styled(Paper)`
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+`
+
 const Course = () => {
-  const { language } = useContext(LanguageContext)
   const slug = useQueryParameter("slug")
   const t = useTranslator(CoursesTranslations)
+  const confirm = useConfirm()
 
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")
@@ -63,6 +71,17 @@ const Course = () => {
       variables: { slug },
     },
   )
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: data?.course?.name,
+      href: `/courses/${slug}`,
+    },
+  ])
 
   const [recheckCompletions] = useMutation(recheckCompletionsMutation, {
     variables: {
@@ -120,27 +139,40 @@ const Course = () => {
         <SubtitleNoBackground component="p" variant="subtitle1" align="center">
           {t("courseHome")}
         </SubtitleNoBackground>
-        {data.course?.completion_email != null ? (
-          <LangLink
-            href="/[lng]/email-templates/[id]"
-            as={`/${language}/email-templates/${data.course.completion_email?.id}`}
-            prefetch={false}
-            passHref
+        <Row>
+          {data.course?.completion_email != null ? (
+            <LangLink
+              href={`/email-templates/${data.course.completion_email?.id}`}
+              prefetch={false}
+              passHref
+            >
+              <Card style={{ width: "300px", minHeight: "50px" }}>
+                Completion Email: {data.course.completion_email?.name}
+              </Card>
+            </LangLink>
+          ) : (
+            <CreateEmailTemplateDialog
+              buttonText="Create completion email"
+              course={data.course}
+            />
+          )}
+          <Button
+            color="primary"
+            onClick={() => {
+              confirm({
+                title: "Are you sure?",
+                description:
+                  "Don't do this unless you really know what you're doing. This might mess things up!",
+                confirmationText: "Yes, I'm sure",
+                cancellationText: "Cancel",
+              }).then(handleRecheck)
+            }}
+            disabled={checking}
           >
-            <Card style={{ width: "300px", minHeight: "50px" }}>
-              Completion Email: {data.course.completion_email?.name}
-            </Card>
-          </LangLink>
-        ) : (
-          <CreateEmailTemplateDialog
-            buttonText="Create completion email"
-            course={data.course}
-          />
-        )}
-        <Button color="primary" onClick={handleRecheck} disabled={checking}>
-          Re-check completions
-        </Button>
-        {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
+            Re-check completions
+          </Button>
+          {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
+        </Row>
         <CourseDashboard />
       </WideContainer>
     </section>
