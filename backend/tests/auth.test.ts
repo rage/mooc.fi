@@ -1,10 +1,20 @@
-import { getTestContext } from "./__helpers"
+import {
+  getTestContext,
+  fakeTMCCurrent,
+  fakeTMCUserCreate,
+  fakeGetAccessToken,
+  fakeTMCUserEmailNotFound,
+  fakeTMCUserWrongPassword,
+} from "./__helpers"
+import { adminUserDetails, normalUserDetails } from "./data"
 import { seed } from "./data/seed"
 import axios, { Method } from "axios"
 
-const crypto = require("crypto")
-
 const ctx = getTestContext()
+const tmc = fakeTMCCurrent({
+  "Bearer normal": [200, normalUserDetails],
+  "Bearer admin": [200, adminUserDetails],
+})
 
 describe("server", () => {
   interface RequestParams {
@@ -32,6 +42,22 @@ describe("server", () => {
     request("GET")(route, defaultHeaders)
   const post = (route: string = "", defaultHeaders: any) =>
     request("POST")(route, defaultHeaders)
+
+  beforeEach(() => {
+    tmc.setup()
+    fakeTMCUserCreate([200, { success: true, message: "User created." }])
+    fakeGetAccessToken([200, "normal"])
+    fakeTMCUserEmailNotFound([
+      404,
+      { error: "invalid_grant", error_description: "..." },
+    ])
+    fakeTMCUserWrongPassword([
+      403,
+      { error: "invalid_grant", error_description: "..." },
+    ])
+  })
+
+  afterAll(() => tmc.teardown())
 
   describe("/auth/signUp", () => {
     const defaultHeaders = {}
@@ -101,7 +127,7 @@ describe("server", () => {
     it("success on creating user", async () => {
       const res = await postSignUp({
         data: {
-          email: `${crypto.randomBytes(4).toString("hex")}@user.com`,
+          email: `t@mail.com`,
           password: "password",
           confirmPassword: "password",
         },

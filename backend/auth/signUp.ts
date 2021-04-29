@@ -19,7 +19,6 @@ export function signUp(ctx: ApiContext) {
         ctx,
       )
     )
-
     if (result.success) {
       const user = {
         user: {

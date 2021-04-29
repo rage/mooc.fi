@@ -93,7 +93,7 @@ export const getCurrentUserDetails = async (
   accessToken: string,
 ): Promise<UserInfo> => {
   const res = await axios.get(
-    `${BASE_URL}/api/v8/users/current?show_user_fields=true`,
+    `${BASE_URL}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
     {
       headers: { Authorization: `Bearer ${accessToken}` },
     },
@@ -134,27 +134,23 @@ export const authenticateUser = async (
   username: string,
   password: string,
 ): Promise<any> => {
-  if (username === "e@mail.com" || username === "f@mail.com") {
-    return { success: true, token: "fake_access_token", error: null }
-  } else {
-    return await axios({
-      method: "POST",
-      url: `${BASE_URL}/oauth/token`,
-      data: JSON.stringify({ username, password, grant_type: "password" }),
-      headers: { "Content-Type": "application/json" },
+  return await axios({
+    method: "POST",
+    url: `${BASE_URL}/oauth/token`,
+    data: JSON.stringify({ username, password, grant_type: "password" }),
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((response) => response.data)
+    .then((json) => {
+      if (json.access_token) {
+        return { success: true, token: json.access_token, error: null }
+      } else {
+        return { success: false, token: null, error: json }
+      }
     })
-      .then((response) => response.data)
-      .then((json) => {
-        if (json.access_token) {
-          return { success: true, token: json.access_token, error: null }
-        } else {
-          return { success: false, token: null, error: json }
-        }
-      })
-      .catch((error) => {
-        return { success: false, token: null, error }
-      })
-  }
+    .catch((error) => {
+      return { success: false, token: null, error }
+    })
 }
 
 export const resetUserPassword = async (email: string): Promise<any> => {
