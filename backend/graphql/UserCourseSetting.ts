@@ -1,4 +1,7 @@
-import { ForbiddenError, UserInputError } from "apollo-server-express"
+import {
+  ForbiddenError,
+  UserInputError,
+} from "apollo-server-core"
 import {
   extendType,
   idArg,
@@ -8,7 +11,9 @@ import {
   stringArg,
 } from "nexus"
 
-import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import {
+  findManyCursorConnection,
+} from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
@@ -140,7 +145,7 @@ export const UserCourseSettingQueries = extendType({
 
         const orCondition: Prisma.UserWhereInput[] = []
 
-        if (search && search !== "") {
+        if (search) {
           orCondition.push(buildUserSearch(search))
         }
 

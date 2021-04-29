@@ -2,14 +2,25 @@ import type { ApolloServer } from "apollo-server-express"
 import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { Server } from "http"
-import { knex, Knex } from "knex"
+import {
+  knex,
+  Knex,
+} from "knex"
 import { nanoid } from "nanoid"
 import nock from "nock"
 import winston from "winston"
 
-import { PrismaClient, User } from "@prisma/client"
+import {
+  PrismaClient,
+  User,
+} from "@prisma/client"
 
-import { DATABASE_URL, DB_USER, DEBUG, TMC_HOST } from "../config"
+import {
+  DATABASE_URL,
+  DB_USER,
+  DEBUG,
+  TMC_HOST,
+} from "../config"
 import binPrisma from "../prisma"
 import server from "../server"
 
@@ -111,10 +122,12 @@ function createTestContext(testContext: TestContext) {
 
       while (true) {
         try {
-          port = await getPort({ port: makeRange(4001, 4999) })
-          serverInstance = app.listen(port).on("error", (err) => {
-            throw err
-          })
+          port = await getPort({ port: makeRange(4001, 6000) })
+          try {
+            serverInstance = app.listen(port)
+          } catch {
+            throw new Error("port in use")
+          }
           DEBUG && console.log(`got port ${port}`)
 
           return {
@@ -238,13 +251,10 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
   return {
     setup() {
       for (const [user_id, reply] of Object.entries(users)) {
-        nock(TMC_HOST || "")
+        nock(process.env.TMC_HOST || "")
           .persist()
           .get(`/api/v8/users/${user_id}?show_user_fields=1&extra_fields=1`)
           .reply(function () {
-            if (!Array.isArray(reply)) {
-              throw new Error(`Invalid fakeTMCSpecific entry ${reply}`)
-            }
             return reply
           })
       }
@@ -256,11 +266,11 @@ export function fakeTMCSpecific(users: Record<number, [number, object]>) {
 }
 
 export const fakeGetAccessToken = (reply: [number, string]) =>
-  nock(TMC_HOST || "")
+  nock(process.env.TMC_HOST || "")
     .post("/oauth/token")
     .reply(() => [reply[0], { access_token: reply[1] }])
 
 export const fakeUserDetailReply = (reply: [number, object]) =>
-  nock(TMC_HOST || "")
+  nock(process.env.TMC_HOST || "")
     .get("/api/v8/users/recently_changed_user_details")
     .reply(reply[0], () => reply[1])

@@ -2,7 +2,7 @@ import {
   UserPoints as UserPointsData,
   UserPoints_currentUser_progresses,
 } from "/static/types/generated/UserPoints"
-import Grid from "@mui/material/Grid"
+import Grid from "@material-ui/core/Grid"
 import PointsListItemCard from "/components/Dashboard/PointsListItemCard"
 import notEmpty from "/util/notEmpty"
 

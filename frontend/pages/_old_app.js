@@ -17,14 +17,30 @@ import getTranslator from "/translations"
 import PageTranslations from "/translations/pages"
 import { ConfirmProvider } from "material-ui-confirm"
 import App from "next/app"
+import Router from "next/router"
+import { initGA, logPageView } from "/lib/gtag"
 import Head from "next/head"
 import Router from "next/router"
 
 import { ApolloProvider } from "@apollo/client"
-import { CacheProvider, Global } from "@emotion/react"
+import Layout from "./_layout"
+import { isSignedIn, isAdmin } from "/lib/authentication"
+import LoginStateContext from "/contexts/LoginStateContext"
+import LanguageContext from "/contexts/LanguageContext"
+import { BreadcrumbContext } from "/contexts/BreadcrumbContext"
+import withApolloClient from "/lib/with-apollo-client"
+import theme from "/src/theme"
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
-import { CssBaseline } from "@mui/material"
-import { ThemeProvider } from "@mui/material/styles"
+import "@fortawesome/fontawesome-svg-core/styles.css"
+import { CssBaseline } from "@material-ui/core"
+import PageTranslations from "/translations/pages"
+import { ConfirmProvider } from "material-ui-confirm"
+import AlertContext from "/contexts/AlertContext"
+import getTranslator from "/translations"
+import { CacheProvider } from "@emotion/react"
+import createCache from "@emotion/cache"
+import { fontCss } from "/src/fonts"
+import { Global } from "@emotion/react"
 
 import createEmotionCache from "../src/createEmotionCache"
 import Layout from "./_layout"
@@ -191,11 +207,11 @@ function createPath(originalUrl) {
   if (originalUrl?.match(/^\/en\/?$/)) {
     url = "/"
   } else if (originalUrl?.startsWith("/en")) {
-    url = originalUrl.replace(/^\/en/, "/fi")
+    url = originalUrl.replace("/en/", "/fi/")
   } else if (originalUrl?.startsWith("/se")) {
-    url = originalUrl.replace(/^\/se/, "/fi")
+    url = originalUrl.replace("/se/", "/fi/")
   } else if (originalUrl?.startsWith("/fi")) {
-    url = originalUrl.replace(/^\/fi/, "/en")
+    url = originalUrl.replace("/fi/", "/en/")
   } else {
     url = "/en" + originalUrl
   }

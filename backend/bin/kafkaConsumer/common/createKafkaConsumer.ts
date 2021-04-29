@@ -6,14 +6,10 @@ import winston from "winston"
 import type { PrismaClient } from "@prisma/client"
 
 import {
-  KAFKA_CONSUMER_GROUP,
   KAFKA_DEBUG_CONTEXTS,
   KAFKA_HOST,
-  KAFKA_TOP_OF_THE_QUEUE,
 } from "../../../config"
 import { attachPrismaEvents } from "../../../util/prismaLogger"
-import { KafkaError } from "../../lib/errors"
-import checkConnectionInInterval from "./connectedChecker"
 
 const logCommit =
   (logger: winston.Logger) => (err: any, topicPartitions: any) => {
@@ -35,8 +31,8 @@ export const createKafkaConsumer = ({
   logger,
   prisma,
 }: CreateKafkaConsumer) => {
-  let consumerGroup = KAFKA_CONSUMER_GROUP ?? "kafka"
-  if (KAFKA_TOP_OF_THE_QUEUE) {
+  let consumerGroup = process.env.KAFKA_CONSUMER_GROUP ?? "kafka"
+  if (process.env.KAFKA_TOP_OF_THE_QUEUE) {
     consumerGroup = v4()
   }
   logger.info(`Joining consumer group ${consumerGroup}.`)
@@ -53,7 +49,9 @@ export const createKafkaConsumer = ({
   }
 
   const consumer = new Kafka.KafkaConsumer(globalConfig, {
-    "auto.offset.reset": KAFKA_TOP_OF_THE_QUEUE ? "latest" : "earliest",
+    "auto.offset.reset": process.env.KAFKA_TOP_OF_THE_QUEUE
+      ? "latest"
+      : "earliest",
   })
 
   consumer.on("event.error", (error) => {

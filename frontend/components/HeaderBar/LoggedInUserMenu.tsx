@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import Typography from "@mui/material/Typography"
+import Typography from "@material-ui/core/Typography"
 import LangLink from "components/LangLink"
 import styled from "@emotion/styled"
 import Button from "@mui/material/Button"

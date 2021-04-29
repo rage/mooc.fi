@@ -314,8 +314,12 @@ function useRegisterOrganization(searchFilter: string) {
 
 const Register = () => {
   const t = useTranslator(RegistrationTranslations)
-  const { searchFilter, cancelFilterDebounce, searchBox, setSearchBox } =
-    useSearchBox()
+  const {
+    searchFilter,
+    cancelFilterDebounce,
+    searchBox,
+    setSearchBox,
+  } = useSearchBox()
   const {
     error,
     loading,

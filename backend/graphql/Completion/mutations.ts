@@ -1,5 +1,8 @@
 import { AuthenticationError } from "apollo-server-express"
-import { chunk, difference, groupBy } from "lodash"
+import {
+  difference,
+  groupBy,
+} from "lodash"
 import {
   arg,
   extendType,
@@ -12,10 +15,9 @@ import {
 } from "nexus"
 import { v4 as uuidv4 } from "uuid"
 
-import { Completion } from "@prisma/client"
-
-import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import {
+  generateUserCourseProgress,
+} from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { notEmpty } from "../../util/notEmpty"
 
 export const CompletionMutations = extendType({
@@ -216,36 +218,21 @@ export const CompletionMutations = extendType({
           },
         })
 
-        const queue = chunk(users, 50)
-        let processed = 0
-
-        for (const userChunk of queue) {
-          try {
-            const promises = userChunk.map((user) =>
-              generateUserCourseProgress({
-                user,
-                course,
-                userCourseProgress: progressByUser[user.id][0],
-                context: {
-                  // not very optimal, but
-                  logger: ctx.logger,
-                  prisma: ctx.prisma,
-                  consumer: undefined as any,
-                  mutex: undefined as any,
-                  knex: ctx.knex,
-                  topic_name: "",
-                },
-              }),
-            )
-            await Promise.all(promises)
-            processed += userChunk.length
-            ctx.logger.info(`${processed} users processed`)
-          } catch (e: unknown) {
-            const message = e instanceof Error ? `${e.message}, ${e.stack}` : e
-            ctx.logger.error(`error processing after ${processed}: ${message}`)
-
-            return `error processing after ${processed}: ${message}`
-          }
+        for (const user of users) {
+          await generateUserCourseProgress({
+            user,
+            course,
+            userCourseProgress: progressByUser[user.id][0],
+            context: {
+              // not very optimal, but
+              logger: ctx.logger,
+              prisma: ctx.prisma,
+              consumer: undefined as any,
+              mutex: undefined as any,
+              knex: ctx.knex,
+              topic_name: "",
+            },
+          })
         }
 
         return `${users.length} users rechecked`

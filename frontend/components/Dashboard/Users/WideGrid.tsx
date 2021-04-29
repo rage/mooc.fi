@@ -74,10 +74,10 @@ const WideGrid = () => {
               <StyledTableCell align="right">
                 {t("userStudentNumber")}
               </StyledTableCell>
-              {/*<StyledTableCell align="right">
-                {t("summary")}
-                {("completions")}
-            </StyledTableCell>*/}
+              <StyledTableCell align="right">
+                {/*t("summary")*/}
+                {/*t("completions")*/}
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <RenderResults />

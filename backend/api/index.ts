@@ -4,16 +4,25 @@ import * as winston from "winston"
 
 import type { PrismaClient } from "@prisma/client"
 
-import { abEnrollmentRouter, abStudiesRouter } from "./abStudio"
+import {
+  abEnrollmentRouter,
+  abStudiesRouter,
+} from "./abStudio"
 import {
   completionInstructions,
   completions,
   completionTiers,
   recheckCompletion,
 } from "./completions"
-import { progress, progressV2 } from "./progress"
+import {
+  progress,
+  progressV2,
+} from "./progress"
 import { registerCompletions } from "./registerCompletions"
-import { getStoredData, postStoredData } from "./storedData"
+import {
+  getStoredData,
+  postStoredData,
+} from "./storedData"
 import { tierProgress } from "./tierProgress"
 import { userCourseProgress } from "./userCourseProgress"
 import {

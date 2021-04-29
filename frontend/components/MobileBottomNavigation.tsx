@@ -6,7 +6,6 @@ import LoggedInUserMenu from "./HeaderBar/LoggedInUserMenu"
 import LoginStateContext from "/contexts/LoginStateContext"
 import { whichIsActive } from "/components/HeaderBar/Header"
 import LanguageContext from "/contexts/LanguageContext"
-import { BoxProps } from "@mui/system"
 
 const StyledBottomNavigation = styled(AppBar)<AppBarProps & BoxProps>`
   @media (min-width: 1050px) {

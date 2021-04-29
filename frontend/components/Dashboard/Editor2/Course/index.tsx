@@ -21,6 +21,15 @@ import { CourseDetails_course } from "/static/types/generated/CourseDetails"
 import { CourseEditorCourses_courses } from "/static/types/generated/CourseEditorCourses"
 import { CourseEditorStudyModules_study_modules } from "/static/types/generated/CourseEditorStudyModules"
 import CoursesTranslations from "/translations/courses"
+import { useTranslator } from "/util/useTranslator"
+import {
+  AddCourseMutation,
+  UpdateCourseMutation,
+  DeleteCourseMutation,
+} from "/graphql/mutations/courses"
+import { CourseFormValues } from "./types"
+import { fromCourseForm, toCourseForm } from "./serialization"
+import { CourseQuery } from "/graphql/queries/courses"
 import notEmpty from "/util/notEmpty"
 import { getFirstErrorAnchor } from "/util/useEnumeratingAnchors"
 import { useTranslator } from "/util/useTranslator"
@@ -29,6 +38,8 @@ import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 import { PureQueryOptions, useApolloClient, useMutation } from "@apollo/client"
 
 import { EditorContext } from "../EditorContext"
+import { useAnchorContext } from "/contexts/AnchorContext"
+import { FormStatus } from "/components/Dashboard/Editor2/types"
 import CourseEditForm from "./CourseEditForm"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"

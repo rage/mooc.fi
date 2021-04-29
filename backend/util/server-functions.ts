@@ -1,53 +1,26 @@
-import { Request, Response } from "express"
+import {
+  Request,
+  Response,
+} from "express"
 import { Knex } from "knex"
 
-import { CourseOwnership, Organization, User } from "@prisma/client"
+import {
+  Organization,
+  User,
+} from "@prisma/client"
 
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { err, ok, Result } from "../util/result"
+import {
+  err,
+  ok,
+  Result,
+} from "../util/result"
 
 interface GetUserReturn {
   user: User
   details: UserInfo
-}
-
-export function requireCourseOwnership({
-  course_id,
-  knex,
-}: {
-  course_id: string
-  knex: Knex
-}) {
-  return async function (
-    req: Request,
-    res: Response,
-  ): Promise<Result<CourseOwnership | GetUserReturn, any>> {
-    const getUserResult = await getUser(knex)(req, res)
-
-    if (getUserResult.isErr()) {
-      return getUserResult
-    }
-
-    const { user } = getUserResult.value
-    const ownership = (
-      await knex
-        .select<any, CourseOwnership[]>("*")
-        .from("course_ownership")
-        .where("course_id", course_id)
-        .andWhere("user_id", user.id)
-        .limit(1)
-    )?.[0]
-
-    if (!Boolean(ownership)) {
-      return err(
-        res.status(401).json({ message: "no ownership for this course" }),
-      )
-    }
-
-    return ok(ownership)
-  }
 }
 
 export function requireAdmin(knex: Knex) {

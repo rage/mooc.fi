@@ -9,7 +9,7 @@ const createExercise = () => ({
   part: Math.round(Math.random() * 3 + 1),
   section: Math.round(Math.random() * 3 + 1),
   timestamp: new Date(),
-  custom_id: faker.random.uuid(),
+  custom_id: faker.datatype.uuid(),
 })
 
 const createExerciseCompletion = (exercise: Exercise) => ({

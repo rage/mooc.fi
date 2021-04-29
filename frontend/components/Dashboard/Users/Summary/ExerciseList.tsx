@@ -1,11 +1,4 @@
 import {
-  UserSummary_user_user_course_summary_course_exercises,
-  UserSummary_user_user_course_summary_exercise_completions,
-} from "/static/types/generated/UserSummary"
-import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
-
-import {
   Paper,
   Table,
   TableBody,
@@ -13,17 +6,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from "@mui/material"
-
+} from "@material-ui/core"
 import ExerciseEntry from "./ExerciseEntry"
+import { UserSummary_user_user_course_summary_exercise_completions } from "/static/types/generated/UserSummary"
+import ProfileTranslations from "/translations/profile"
+import { useTranslator } from "/util/useTranslator"
 
 interface ExerciseListProps {
-  exercises: (UserSummary_user_user_course_summary_course_exercises & {
-    exercise_completions: UserSummary_user_user_course_summary_exercise_completions[]
-  })[]
+  exerciseCompletions: UserSummary_user_user_course_summary_exercise_completions[]
 }
 
-export default function ExerciseList({ exercises }: ExerciseListProps) {
+export default function ExerciseList({
+  exerciseCompletions,
+}: ExerciseListProps) {
   const t = useTranslator(ProfileTranslations)
 
   return (
@@ -40,10 +35,10 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {exercises.map((exercise, index) => (
+          {exerciseCompletions.map((exerciseCompletion, index) => (
             <ExerciseEntry
-              key={`exercise-${exercise.id}-${index}`}
-              exercise={exercise}
+              key={`exercise-${exerciseCompletion.exercise?.id}-${index}`}
+              exerciseCompletion={exerciseCompletion}
             />
           ))}
         </TableBody>

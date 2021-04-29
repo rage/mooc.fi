@@ -12,7 +12,10 @@ import {
   CheckModuleSlugQuery,
 } from "/graphql/queries/study-modules"
 import { StudyModuleQuery } from "/pages/[lng]/study-modules/[slug]/edit"
-import { StudyModuleDetails_study_module } from "/static/types/generated/StudyModuleDetails"
+import { PureQueryOptions } from "@apollo/client"
+import { toStudyModuleForm, fromStudyModuleForm } from "./serialization"
+import Router from "next/router"
+import LanguageContext from "/contexts/LanguageContext"
 import ModulesTranslations from "/translations/study-modules"
 import { useTranslator } from "/util/useTranslator"
 import { FormikHelpers } from "formik"

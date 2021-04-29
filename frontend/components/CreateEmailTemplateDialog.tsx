@@ -22,27 +22,16 @@ import {
   InputLabel,
   NativeSelect,
   TextField,
-} from "@mui/material"
-
-export const AllCoursesDetails = gql`
-  query AllCoursesDetails {
-    courses {
-      id
-      slug
-      name
-      teacher_in_charge_name
-      teacher_in_charge_email
-      start_date
-      completion_email {
-        name
-        id
-      }
-      course_stats_email {
-        id
-      }
-    }
-  }
-`
+} from "@material-ui/core"
+import { AddEmailTemplateMutation } from "/graphql/mutations/email-templates"
+import { AddEmailTemplate } from "/static/types/generated/AddEmailTemplate"
+import Router from "next/router"
+import LanguageContext from "/contexts/LanguageContext"
+import CustomSnackbar from "/components/CustomSnackbar"
+import { updateCourse } from "/static/types/generated/updateCourse"
+import { UpdateCourseMutation } from "/graphql/mutations/courses"
+import { CourseDetailsFromSlugQuery_course } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import omit from "lodash/omit"
 
 interface CreateEmailTemplateDialogParams {
   course?: CourseDetailsData

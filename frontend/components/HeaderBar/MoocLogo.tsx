@@ -40,7 +40,7 @@ const MoocLogoLink = styled.a`
 `
 const MoocLogo = () => {
   return (
-    <LangLink href="/" passHref>
+    <LangLink href="/">
       <MoocLogoLink aria-label="MOOC.fi homepage">
         <MoocLogoAvatar alt="MOOC logo" src="/static/images/moocfi.svg" />
         <MoocLogoText>MOOC.fi</MoocLogoText>

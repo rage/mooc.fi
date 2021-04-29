@@ -5,7 +5,7 @@ import {
   FieldArrayWithId,
   Path,
 } from "react-hook-form"
-import { FormGroup, Typography } from "@mui/material"
+import { FormGroup, Typography } from "@material-ui/core"
 import { useTranslator } from "/util/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { useConfirm } from "material-ui-confirm"
@@ -119,7 +119,9 @@ export function ControlledFieldArrayList<T extends { _id?: string }>(
             {noFields}
           </Typography>
         )}
-        {conditions.add(watchedFields as Partial<T>[]) ? (
+        {watchedFields.length === 0 ||
+        (watchedFields.length &&
+          conditions.add(watchedFields as Partial<T>[])) ? (
           <ButtonWithWhiteText
             variant="contained"
             color="primary"

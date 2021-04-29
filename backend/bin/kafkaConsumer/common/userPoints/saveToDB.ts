@@ -1,10 +1,14 @@
-import { UserInputError } from "apollo-server-express"
+import { UserInputError } from "apollo-server-errors"
 import { Knex } from "knex"
 import { DateTime } from "luxon"
 
 import { ExerciseCompletion } from "@prisma/client"
 
-import { err, ok, Result } from "../../../../util/result"
+import {
+  err,
+  ok,
+  Result,
+} from "../../../../util/result"
 import { DatabaseInputError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
@@ -65,26 +69,19 @@ export const saveToDatabase = async (
   }
 
   logger.info("Getting the completion")
-  const exerciseCompleted = (
-    await prisma.user
-      .findUnique({
-        where: {
-          upstream_id: Number(message.user_id),
-        },
-      })
-      .exercise_completions({
-        where: {
-          exercise: {
-            custom_id: message.exercise_id?.toString(),
-          },
-        },
-        orderBy: { timestamp: "desc" },
-        include: {
-          exercise_completion_required_actions: true,
-        },
-        take: 1,
-      })
-  )?.[0]
+  const exerciseCompleted = await prisma.exerciseCompletion.findFirst({
+    take: 1,
+    where: {
+      exercise: {
+        custom_id: message.exercise_id?.toString(),
+      },
+      user: { upstream_id: Number(message.user_id) },
+    },
+    orderBy: { timestamp: "desc" },
+    include: {
+      exercise_completion_required_actions: true,
+    },
+  })
 
   // @ts-ignore: value not used
   let savedExerciseCompletion: ExerciseCompletion

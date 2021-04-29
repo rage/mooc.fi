@@ -6,11 +6,11 @@ import {
   CollapsablePart,
   useCollapseContext,
 } from "/components/Dashboard/Users/Summary/CollapseContext"
-import { Paper, Button, Dialog } from "@mui/material"
+import { Paper, Button, Dialog } from "@material-ui/core"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { useTranslator } from "/util/useTranslator"
 import CommonTranslations from "/translations/common"
-import BuildIcon from "@mui/icons-material/Build"
+import BuildIcon from "@material-ui/icons/Build"
 import RawView from "/components/Dashboard/Users/Summary/RawView"
 import { useState } from "react"
 interface UserPointsSummaryProps {

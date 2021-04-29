@@ -1,6 +1,6 @@
 import { Knex } from "knex"
 
-import { isProduction } from "../config"
+const isProduction = process.env.NODE_ENV === "production"
 
 export async function up(knex: Knex): Promise<void> {
   if (isProduction) {

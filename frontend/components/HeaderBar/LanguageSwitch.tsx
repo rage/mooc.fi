@@ -28,8 +28,8 @@ const LanguageSwitch = () => {
   const { language, url } = useContext(LanguageContext)
 
   return (
-    <Link href={url} passHref>
-      <SwitchLink>
+    <Link href={url === "/" ? "/" : url}>
+      <SwitchLink href={hrefUrl}>
         <Language style={{ marginRight: "0.4rem" }} />
         <p style={{ margin: "auto" }} data-testid="language-switch">
           {language === "en" ? "Suomi" : "English"}

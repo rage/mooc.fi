@@ -1,7 +1,16 @@
 import { useState } from "react"
-
+import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
+import CourseDashboard from "/components/Dashboard/CourseDashboard"
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
+import { Card, Typography, Button, Paper } from "@material-ui/core"
+import LangLink from "/components/LangLink"
+import { CourseDetailsFromSlugQuery as CourseDetailsData } from "/static/types/generated/CourseDetailsFromSlugQuery"
+import Spinner from "/components/Spinner"
+import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import withAdmin from "/lib/with-admin"
+import CoursesTranslations from "/translations/courses"
+import styled from "@emotion/styled"
 import {
   AllCompletionsQuery,
   PreviousPageCompletionsQuery,
@@ -20,10 +29,7 @@ import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { useTranslator } from "/util/useTranslator"
 import { useConfirm } from "material-ui-confirm"
-
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button, Card, Paper, Typography } from "@mui/material"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Title = styled(Typography)<any>`
   margin-bottom: 0.7em;
@@ -114,6 +120,17 @@ const Course = () => {
     loading: userLoading,
     error: userError,
   } = useQuery<UserCourseStatsSubscriptions>(UserCourseStatsSubscriptionsQuery)
+
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: `/courses`,
+    },
+    {
+      label: data?.course?.name,
+      href: `/courses/${slug}`,
+    },
+  ])
 
   useBreadcrumbs([
     {
@@ -229,29 +246,6 @@ const Course = () => {
             <CreateEmailTemplateDialog
               buttonText="Create completion email"
               course={data.course}
-              type="completion"
-            />
-          )}
-          {data.course?.course_stats_email !== null ? (
-            <>
-              <LangLink
-                href={`/email-templates/${data.course.course_stats_email?.id}`}
-                prefetch={false}
-                passHref
-              >
-                <Card style={{ width: "300px", minHeight: "50px" }}>
-                  Course stats email: {data.course.course_stats_email?.name}
-                </Card>
-              </LangLink>
-              <Button onClick={handleSubscribe} disabled={subscribing}>
-                {isSubscribed ? "Unsubscribe" : "Subscribe"}
-              </Button>
-            </>
-          ) : (
-            <CreateEmailTemplateDialog
-              buttonText="Create course stats email"
-              course={data.course}
-              type="course-stats"
             />
           )}
           <Button

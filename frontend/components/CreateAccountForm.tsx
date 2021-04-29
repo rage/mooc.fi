@@ -1,5 +1,16 @@
 import { Component } from "react"
-
+import {
+  TextField,
+  Typography,
+  Paper,
+  CircularProgress,
+} from "@material-ui/core"
+import { createAccount } from "/lib/account"
+import { signIn as authenticate } from "/lib/authentication"
+import LanguageContext from "/contexts/LanguageContext"
+import SignUpTranslations from "/translations/sign-up"
+import LangLink from "/components/LangLink"
+import styled from "@emotion/styled"
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import LangLink from "/components/LangLink"
 import LanguageContext from "/contexts/LanguageContext"
@@ -324,9 +335,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <LangLink href={`/sign-in`} passHref>
-            {/*LangLink passes href*/}
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+          <LangLink href={`/sign-in`}>
             <a>{t("signIn")}</a>
           </LangLink>
         </Row>

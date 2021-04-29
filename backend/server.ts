@@ -1,4 +1,6 @@
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
 import cors from "cors"
 import express from "express"
@@ -7,15 +9,18 @@ import { Knex } from "knex"
 import morgan from "morgan"
 import * as winston from "winston"
 
-import { PrismaClient } from "@prisma/client"
-
 import { apiRouter } from "./api"
-import { DEBUG, isProduction, isTest } from "./config"
+import {
+  DEBUG,
+  isProduction,
+  isTest,
+} from "./config"
 import schema from "./schema"
 
 const helmet = require("helmet")
-const bodyParser = require("body-parser")
 
+const DEBUG = Boolean(process.env.DEBUG)
+const TEST = process.env.NODE_ENV === "test"
 interface ServerContext {
   prisma: PrismaClient
   logger: winston.Logger

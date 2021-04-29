@@ -5,7 +5,7 @@ import {
   UnpackNestedValue,
   useFormContext,
 } from "react-hook-form"
-import { FormControlLabel, Checkbox, Tooltip } from "@mui/material"
+import { FormControlLabel, Checkbox, Tooltip } from "@material-ui/core"
 import {
   ControlledFieldProps,
   FieldController,

@@ -1,4 +1,4 @@
-import { Skeleton } from "@mui/material"
+import { Skeleton } from "@material-ui/core"
 import LangLink from "/components/LangLink"
 import styled from "@emotion/styled"
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"

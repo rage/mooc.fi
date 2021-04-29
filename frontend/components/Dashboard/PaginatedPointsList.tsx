@@ -1,4 +1,7 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
+import { gql } from "@apollo/client"
+import ErrorBoundary from "/components/ErrorBoundary"
+import { useLazyQuery } from "@apollo/client"
 
 import ErrorBoundary from "/components/ErrorBoundary"
 import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
@@ -8,14 +11,8 @@ import {
   UserCourseSettings_userCourseSettings_pageInfo,
 } from "/static/types/generated/UserCourseSettings"
 import notEmpty from "/util/notEmpty"
-import useDebounce from "/util/useDebounce"
-import { range } from "lodash"
-
-import { gql, useLazyQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
-
-import PointsList from "./DashboardPointsList"
+import { ProgressUserCourseProgressFragment } from "/graphql/fragments/userCourseProgress"
+import { ProgressUserCourseServiceProgressFragment } from "/graphql/fragments/userCourseServiceProgress"
 
 export const StudentProgresses = gql`
   query UserCourseSettings($course_id: ID!, $skip: Int, $search: String) {

@@ -3,22 +3,22 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { OrganizationRole } from "./globalTypes"
+import { OrganizationRole } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: updateUserOrganization
 // ====================================================
 
 export interface updateUserOrganization_updateUserOrganization {
-  __typename: "UserOrganization"
-  id: string
+  __typename: "UserOrganization";
+  id: string;
 }
 
 export interface updateUserOrganization {
-  updateUserOrganization: updateUserOrganization_updateUserOrganization | null
+  updateUserOrganization: updateUserOrganization_updateUserOrganization | null;
 }
 
 export interface updateUserOrganizationVariables {
-  id: string
-  role?: OrganizationRole | null
+  id: string;
+  role?: OrganizationRole | null;
 }

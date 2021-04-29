@@ -15,9 +15,9 @@ import { useEditorContext } from "/components/Dashboard/Editor2/EditorContext"
 import CommonTranslations from "/translations/common"
 import flattenKeys from "/util/flattenKeys"
 import { useTranslator } from "/util/useTranslator"
-import { TextField, Tooltip, IconButton } from "@mui/material"
-import HistoryIcon from "@mui/icons-material/History"
-import HelpIcon from "@mui/icons-material/Help"
+import { TextField, Tooltip, IconButton } from "@material-ui/core"
+import HistoryIcon from "@material-ui/icons/History"
+import HelpIcon from "@material-ui/icons/Help"
 import { get, set } from "lodash"
 export interface ControlledTextFieldProps extends ControlledFieldProps {
   type?: string
