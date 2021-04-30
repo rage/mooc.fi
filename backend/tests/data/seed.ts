@@ -55,7 +55,6 @@ export const seed = async (prisma: PrismaClient) => {
     "exerciseCompletion",
     exerciseCompletions,
   )
-<<<<<<< HEAD
   const seededUserCourseProgresses = await create(
     "userCourseProgress",
     userCourseProgresses,
@@ -77,13 +76,10 @@ export const seed = async (prisma: PrismaClient) => {
     "openUniversityRegistrationLink",
     openUniversityRegistrationLink,
   )
-  const seededAuthorizationCodes = await create("authorizationCode", authorizationCode)
-=======
   const seededAuthorizationCodes = await create(
     "authorizationCode",
     authorizationCode,
   )
->>>>>>> 53a7fcd2... ran prettier
   const seededClients = await create("client", client)
   const seededAccessTokens = await create("accessToken", accessToken)
 
