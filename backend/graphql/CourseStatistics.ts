@@ -11,15 +11,41 @@ export const DatedInt = objectType({
 export const CourseStatisticsEntry = objectType({
   name: "CourseStatisticsEntry",
   definition(t) {
-    t.field("updated_at", { type: "DateTime"})
-    t.list.field("data", { type: "DatedInt" })
-  }
+    t.field("updated_at", { type: "DateTime" })
+    t.nonNull.list.nonNull.field("data", { type: "DatedInt" })
+  },
 })
 interface DatedInt {
   value?: number
   date: number
 }
 
+/*const createStatisticsQuery = (
+  path: string,
+  ctx: Context,
+  query: string | TemplateStringsArray | Sql,
+  ...values: any[]
+) => async () => {
+  const data = (await ctx.prisma.$queryRaw(query, ...values)) ?? []
+
+  return {
+    path,
+    updated_at: Date.now(),
+    data,
+  }
+}
+const createCourseStatisticsResolver = <
+  TypeName extends string,
+  FieldName extends string
+>(
+  path: FieldName,
+  query: string | TemplateStringsArray | Sql,
+): FieldResolver<TypeName, FieldName> => async (
+  { course_id },
+  _,
+  ctx,
+): Promise<any> => {}
+*/
 export const CourseStatistics = objectType({
   name: "CourseStatistics",
   definition(t) {
@@ -27,7 +53,7 @@ export const CourseStatistics = objectType({
     /*, {
       resolve: ({ course_id }) => course_id
     })*/
-    t.nullable.field("started", {
+    t.field("started", {
       type: "CourseStatisticsEntry",
       resolve: async ({ course_id }, __, ctx) => {
         return await redisify(
@@ -43,11 +69,11 @@ export const CourseStatistics = objectType({
 
             return {
               updated_at: Date.now(),
-              data: started ?? []
+              data: started ?? [],
             }
           },
           {
-            prefix: "coursestatistics_startedz",
+            prefix: "coursestatistics_startedx",
             expireTime: 1, // 60 * 60 * 1000,
             key: `${course_id}`,
           },
@@ -55,11 +81,11 @@ export const CourseStatistics = objectType({
       },
     })
 
-    t.nullable.field("cumulative_started", {
+    t.field("cumulative_started", {
       type: "CourseStatisticsEntry",
       resolve: async ({ course_id }, _, ctx) => {
-        return await redisify(
-          async () => {
+        /*return await redisify(
+          async () => {*/
             const started = await ctx.prisma.$queryRaw(
               `
             select distinct date, count(distinct ucs.user_id) as value
@@ -82,18 +108,19 @@ export const CourseStatistics = objectType({
 
             return {
               updated_at: Date.now(),
-              data: started ?? []
+              data: started ?? [],
             }
-          },
+          /*},
           {
             prefix: "coursestatistics_cumulative_started",
             expireTime: 1, // 24 * 60 * 60 * 1000,
             key: `${course_id}`,
           },
-        )
+        )*/
       },
     })
-    t.nullable.field("completed", {
+
+    t.field("completed", {
       type: "CourseStatisticsEntry",
       resolve: async ({ course_id }, __, ctx) => {
         return await redisify(
@@ -109,7 +136,7 @@ export const CourseStatistics = objectType({
 
             return {
               updated_at: Date.now(),
-              date: completed ?? []
+              data: completed ?? [],
             }
           },
           {
@@ -121,7 +148,7 @@ export const CourseStatistics = objectType({
       },
     })
 
-    t.nullable.field("cumulative_completed", {
+    t.field("cumulative_completed", {
       type: "CourseStatisticsEntry",
       resolve: async ({ course_id }, _, ctx) => {
         return await redisify(
@@ -148,7 +175,7 @@ export const CourseStatistics = objectType({
 
             return {
               updated_at: Date.now(),
-              data: completed ?? []
+              data: completed ?? [],
             }
           },
           {
@@ -160,7 +187,7 @@ export const CourseStatistics = objectType({
       },
     })
 
-    t.nullable.field("at_least_one_exercise", {
+    t.field("at_least_one_exercise", {
       type: "CourseStatisticsEntry",
       resolve: async ({ course_id }, __, ctx) => {
         return await redisify(
@@ -177,7 +204,7 @@ export const CourseStatistics = objectType({
 
             return {
               updated_at: Date.now(),
-              data: atLeastOne ?? []
+              data: atLeastOne ?? [],
             }
           },
           {
@@ -189,7 +216,7 @@ export const CourseStatistics = objectType({
       },
     })
 
-    t.nullable.field("cumulative_at_least_one_exercise", {
+    t.field("cumulative_at_least_one_exercise", {
       type: "CourseStatisticsEntry",
       resolve: async ({ course_id }, _, ctx) => {
         const atLeastOne = await ctx.prisma.$queryRaw(
@@ -218,7 +245,7 @@ export const CourseStatistics = objectType({
 
         return {
           updated_at: Date.now(),
-          data: atLeastOne ?? []
+          data: atLeastOne ?? [],
         }
         return await redisify<DatedInt>(
           async () => {
