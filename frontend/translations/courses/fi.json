@@ -110,5 +110,10 @@
   "helpCourseAutomaticCompletionsEligibleForEcts": "Jos automaattiset kurssisuoritukset ovat päällä, myönnetäänkö myös opintopisteet automaattisesti?",
   "started": "Aloitettu",
   "completed": "Suoritettu",
-  "atLeastOneExercise": "Ainakin yksi tehtävä palautettu"
+  "atLeastOneExercise": "Ainakin yksi tehtävä palautettu",
+  "updated": "Päivitetty",
+  "cumulative_started": "Aloitettu, kumulatiivinen",
+  "cumulative_completed": "Suoritettu, kumulatiivinen",
+  "cumulative_at_least_one_exercise": "Ainakin yksi tehtävä palautettu, kumulatiivinen"
+
 }

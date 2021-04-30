@@ -110,5 +110,9 @@
   "helpCourseAutomaticCompletionsEligibleForEcts": "If the course has automatic completions, are they eligible for ECTS?",
   "started": "Started",
   "completed": "Completed",
-  "atLeastOneExercise": "At least one exercise submitted"
+  "atLeastOneExercise": "At least one exercise submitted",
+  "updated": "Updated",
+  "cumulative_started": "Cumulative started",
+  "cumulative_completed": "Cumulative completed",
+  "cumulative_at_least_one_exercise": "Cumulative at least one exercise submitted"
 }
