@@ -66,15 +66,15 @@ function create(initialState: any, originalAccessToken?: string) {
   // these cache settings are mainly for the breadcrumbs
   const cache: InMemoryCache = new InMemoryCache({
     typePolicies: {
-      Course: {
-        keyFields: ["slug", "id"]
+      /*Course: {
+        keyFields: ["id", "slug"]
       },
       StudyModule: {
-        keyFields: ["slug", "id"]
-      },
-      /*CourseStatistics: {
-        keyFields: ["course_id"]
+        keyFields: ["id", "slug"]
       },*/
+      CourseStatistics: {
+        keyFields: ["course_id"]
+      },
     }
     /*dataIdFromObject: (object: any) => {
       switch (object.__typename) {
