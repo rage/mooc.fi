@@ -10,8 +10,8 @@ const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const argon2 = require("argon2")
 
-const RATE_LIMIT = 5
-const AUTH_ISSUER = "http://localhost:4000/auth/token"
+const RATE_LIMIT = 50
+const AUTH_ISSUER = "https://mooc.fi/auth/token"
 const NATIVE_ID = "native"
 
 async function issueToken(user: any, client: any, { knex }: ApiContext) {
@@ -79,7 +79,7 @@ async function grantAuthorizationCode(
     status: 200,
     success: true,
     code,
-    targetUri: `http://localhost:3000/en/authorization?code=${code}`,
+    targetUri: `https://mooc.fi/authorization?code=${code}`,
   }
 }
 
@@ -305,21 +305,20 @@ export async function signIn(
   )?.[0]
 
   if (!client) {
-    return {
-      status: 401,
-      success: false,
-      message: "Not allowed",
-    }
+    client = (
+      await ctx
+        .knex("clients")
+        .insert({
+          name: "native",
+          client_id: "native",
+          client_secret: "native",
+          redirect_uri: "*",
+        })
+        .returning("*")
+    )?.[0]
   }
 
   if (user) {
-    /*if(user.client !== "native") {
-      return {
-        status: 403,
-        success: false,
-        message: 'Unauthorized: Please use the correct sign in method.'
-      }
-    }*/
     if (user.password_throttle) {
       let passwordThrottle = user.password_throttle || <any>[]
       passwordThrottle.forEach((throttle: any) => {
