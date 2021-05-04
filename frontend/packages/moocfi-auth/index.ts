@@ -6,7 +6,10 @@ const axios = require("axios")
 const Cookies = require("universal-cookie")
 */
 
-const BASE_URL = "https://mooc.fi"
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://mooc.fi"
+    : "http://localhost:4000"
 
 interface ExtraFields {
   namespace?: string

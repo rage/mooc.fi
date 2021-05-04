@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react"
-import Link from "next/link"
+import LangLink from "/components/LangLink"
 import axios from "axios"
 import styled from "@emotion/styled"
 import { getAccessToken } from "../../../lib/authentication"
 
-const BASE_URL = "https://mooc.fi"
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://mooc.fi"
+    : "http://localhost:4000"
 
 const Container = styled.section`
   width: 100%;
@@ -261,9 +264,9 @@ const Clients = () => {
               <td>{client.client_id}</td>
               <td>{client.redirect_uri}</td>
               <td>
-                <Link href={`client-details?id=${client.client_id}`}>
-                  <a href={`client-details?id=${client.client_id}`}>View</a>
-                </Link>
+                <LangLink href={`client-details?id=${client.client_id}`}>
+                  <a>View</a>
+                </LangLink>
               </td>
             </tr>
           ))}
