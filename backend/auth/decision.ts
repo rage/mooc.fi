@@ -4,7 +4,7 @@ import { AuthorizationCode } from "@prisma/client"
 
 export function decision(ctx: ApiContext) {
   return async (req: any, res: any) => {
-    const code = req.query.code
+    const code = req.params.code
 
     let authorizationCode = (
       await ctx.knex

@@ -19,7 +19,8 @@ import { FormSubmitButton as SubmitButton } from "../../components/Buttons/FormS
 import CommonTranslations from "../../translations/common"
 import { useTranslator } from "../../util/useTranslator"
 
-const domain = "localhost"
+const domain = "mooc.fi"
+const BASE_URL = "https://mooc.fi"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -89,7 +90,7 @@ const Authorization = () => {
   const getAuthorization = async () => {
     return await axios({
       method: "GET",
-      url: `http://localhost:4000/auth/authorize?code=${router.query.code}`,
+      url: `${BASE_URL}/auth/authorize/${router.query.code}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -120,7 +121,7 @@ const Authorization = () => {
     if (choice === true) {
       return await axios({
         method: "GET",
-        url: `http://localhost:4000/auth/decision?code=${router.query.code}&choice=${choice}`,
+        url: `${BASE_URL}/auth/decision?code=${router.query.code}&choice=${choice}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${cookies.get("token")}`,
@@ -142,7 +143,7 @@ const Authorization = () => {
   const signIn = () => {
     axios({
       method: "POST",
-      url: `http://localhost:4000/auth/token`,
+      url: `${BASE_URL}/auth/token`,
       data: {
         email,
         password,

@@ -439,13 +439,12 @@ describe("server", () => {
       authorization: "Bearer nonToken",
     }
 
-    const getDecision = get("/auth/decision", defaultHeaders)
-    const getDecisionNonToken = get("/auth/decision", nonUserHeaders)
+    const getDecision = get("/auth/decision/code", defaultHeaders)
+    const getDecisionNonCode = get("/auth/decision/non-code", defaultHeaders)
+    const getDecisionNonToken = get("/auth/decision/code", nonUserHeaders)
 
     it("error on authorization code", async () => {
-      return getDecision({
-        params: { code: "non-code" },
-      })
+      return getDecisionNonCode({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(404)
@@ -453,9 +452,7 @@ describe("server", () => {
     })
 
     it("error on invalid token", async () => {
-      return getDecisionNonToken({
-        params: { code: "code" },
-      })
+      return getDecisionNonToken({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(403)
@@ -463,9 +460,7 @@ describe("server", () => {
     })
 
     it("authorize user", async () => {
-      const res = await getDecision({
-        params: { code: "code" },
-      })
+      const res = await getDecision({})
 
       expect(res.status).toBe(200)
     })
@@ -535,13 +530,23 @@ describe("server", () => {
     const getClientsNonToken = get("/auth/clients", nonUserHeaders)
     const getClientsNonAdmin = get("/auth/clients", nonAdminHeaders)
 
-    const showClient = get("/auth/client", defaultHeaders)
-    const showClientNonToken = get("/auth/client", nonUserHeaders)
-    const showClientNonAdmin = get("/auth/client", nonAdminHeaders)
+    const showClient = get("/auth/client/native", defaultHeaders)
+    const showClientNonToken = get("/auth/client/native", nonUserHeaders)
+    const showClientNonAdmin = get("/auth/client/native", nonAdminHeaders)
 
-    const deleteClient = post("/auth/deleteClient", defaultHeaders)
-    const deleteClientNonToken = post("/auth/deleteClient", nonUserHeaders)
-    const deleteClientNonAdmin = post("/auth/deleteClient", nonAdminHeaders)
+    const deleteClient = post("/auth/deleteClient/native", defaultHeaders)
+    const deleteClientInvalid = post(
+      "/auth/deleteClient/non-native",
+      defaultHeaders,
+    )
+    const deleteClientNonToken = post(
+      "/auth/deleteClient/native",
+      nonUserHeaders,
+    )
+    const deleteClientNonAdmin = post(
+      "/auth/deleteClient/native",
+      nonAdminHeaders,
+    )
 
     //Post client
     it("error create client on invalid token", async () => {
@@ -606,9 +611,7 @@ describe("server", () => {
 
     //Show client
     it("error show client on invalid token", async () => {
-      return showClientNonToken({
-        params: { id: 1 },
-      })
+      return showClientNonToken({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(403)
@@ -616,9 +619,7 @@ describe("server", () => {
     })
 
     it("error show client on non-admin token", async () => {
-      return showClientNonAdmin({
-        params: { id: 1 },
-      })
+      return showClientNonAdmin({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(403)
@@ -626,18 +627,14 @@ describe("server", () => {
     })
 
     it("show client", async () => {
-      const res = await showClient({
-        params: { id: "native" },
-      })
+      const res = await showClient({})
 
       expect(res.status).toBe(200)
     })
 
     //Delete client
     it("error delete client on invalid token", async () => {
-      return deleteClientNonToken({
-        params: { id: 1 },
-      })
+      return deleteClientNonToken({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(403)
@@ -645,9 +642,7 @@ describe("server", () => {
     })
 
     it("error delete client on non-admin token", async () => {
-      return deleteClientNonAdmin({
-        params: { id: 1 },
-      })
+      return deleteClientNonAdmin({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(403)
@@ -655,9 +650,7 @@ describe("server", () => {
     })
 
     it("error delete client on invalid client", async () => {
-      return deleteClient({
-        params: { id: 0 },
-      })
+      return deleteClientInvalid({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(404)
@@ -665,7 +658,7 @@ describe("server", () => {
     })
 
     it("delete client", async () => {
-      const res = await deleteClient({ params: { id: "native" } })
+      const res = await deleteClient({})
 
       expect(res.status).toBe(200)
     })
