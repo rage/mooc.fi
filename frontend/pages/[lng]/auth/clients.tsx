@@ -3,6 +3,8 @@ import axios from "axios"
 import styled from "@emotion/styled"
 import { getAccessToken } from "../../../lib/authentication"
 
+const BASE_URL = "https://mooc.fi"
+
 const Container = styled.section`
   width: 100%;
   max-width: 1024px;
@@ -146,7 +148,7 @@ const Clients = () => {
   const getClients = async () => {
     axios({
       method: "GET",
-      url: `http://localhost:4000/auth/clients`,
+      url: `${BASE_URL}/auth/clients`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${await getAccessToken(undefined)}`,
@@ -163,7 +165,7 @@ const Clients = () => {
     setCreateError("")
     axios({
       method: "POST",
-      url: `http://localhost:4000/auth/clients`,
+      url: `${BASE_URL}/auth/clients`,
       data: {
         name: clientName,
         redirect_uri: clientRedirect,

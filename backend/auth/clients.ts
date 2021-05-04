@@ -65,7 +65,7 @@ export function showClient(ctx: ApiContext) {
       return res.status(403).json({ error: "You do not have permission." })
     }
 
-    const id = req.query.id
+    const id = req.params.id
 
     let client = (
       await ctx.knex
@@ -93,7 +93,7 @@ export function deleteClient(ctx: ApiContext) {
       return res.status(403).json({ error: "You do not have permission." })
     }
 
-    const id = req.query.id
+    const id = req.params.id
 
     let client = (
       await ctx.knex
@@ -129,7 +129,7 @@ export function regenerateClient(ctx: ApiContext) {
       return res.status(403).json({ error: "You do not have permission." })
     }
 
-    const id = req.query.id
+    const id = req.params.id
 
     let client = (
       await ctx.knex

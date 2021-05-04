@@ -25,9 +25,9 @@ export function authRouter(ctx: ApiContext) {
     .post("/passwordReset", passwordReset(ctx))
     .post("/token", token(ctx))
     .get("/authorize", authorize(ctx))
-    .get("/decision", decision(ctx))
+    .get("/decision/:code", decision(ctx))
     .get("/clients", getClients(ctx))
     .post("/clients", createClient(ctx))
-    .get("/client", showClient(ctx))
-    .post("/deleteClient", deleteClient(ctx))
+    .get("/client/:id", showClient(ctx))
+    .post("/deleteClient/:id", deleteClient(ctx))
 }

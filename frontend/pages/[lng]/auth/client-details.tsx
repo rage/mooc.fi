@@ -4,6 +4,8 @@ import axios from "axios"
 import styled from "@emotion/styled"
 import { getAccessToken } from "../../../lib/authentication"
 
+const BASE_URL = "https://mooc.fi"
+
 const Container = styled.section`
   width: 100%;
   max-width: 1024px;
@@ -122,7 +124,7 @@ const ClientDetails = () => {
   const showClient = async () => {
     axios({
       method: "GET",
-      url: `http://localhost:4000/auth/client?id=${router.query.id}`,
+      url: `${BASE_URL}/auth/client/${router.query.id}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${await getAccessToken(undefined)}`,
@@ -136,7 +138,7 @@ const ClientDetails = () => {
   const updateClient = async () => {
     axios({
       method: "PUT",
-      url: `http://localhost:4000/auth/client?id=${router.query.id}`,
+      url: `${BASE_URL}/auth/client/${router.query.id}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${await getAccessToken(undefined)}`,
@@ -150,7 +152,7 @@ const ClientDetails = () => {
   const regenerateClient = async () => {
     axios({
       method: "POST",
-      url: `http://localhost:4000/auth/regenerateSecret?id=${router.query.id}`,
+      url: `${BASE_URL}/auth/regenerateSecret/${router.query.id}`,
       data: {},
       headers: {
         "Content-Type": "application/json",
@@ -165,7 +167,7 @@ const ClientDetails = () => {
   const deleteClient = async () => {
     axios({
       method: "POST",
-      url: `http://localhost:4000/auth/deleteClient?id=${router.query.id}`,
+      url: `${BASE_URL}/auth/deleteClient/${router.query.id}`,
       data: {},
       headers: {
         "Content-Type": "application/json",
