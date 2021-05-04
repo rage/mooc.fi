@@ -121,7 +121,7 @@ const Authorization = () => {
     if (choice === true) {
       return await axios({
         method: "GET",
-        url: `${BASE_URL}/auth/decision?code=${router.query.code}&choice=${choice}`,
+        url: `${BASE_URL}/auth/decision/${router.query.code}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${cookies.get("token")}`,

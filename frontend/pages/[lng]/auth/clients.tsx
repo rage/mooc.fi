@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import Link from "next/link"
 import axios from "axios"
 import styled from "@emotion/styled"
 import { getAccessToken } from "../../../lib/authentication"
@@ -260,7 +261,9 @@ const Clients = () => {
               <td>{client.client_id}</td>
               <td>{client.redirect_uri}</td>
               <td>
-                <a href={`client-details?id=${client.client_id}`}>View</a>
+                <Link href={`client-details?id=${client.client_id}`}>
+                  <a href={`client-details?id=${client.client_id}`}>View</a>
+                </Link>
               </td>
             </tr>
           ))}
