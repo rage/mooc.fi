@@ -19,8 +19,11 @@ import { FormSubmitButton as SubmitButton } from "../../components/Buttons/FormS
 import CommonTranslations from "../../translations/common"
 import { useTranslator } from "../../util/useTranslator"
 
-const domain = "mooc.fi"
-const BASE_URL = "https://mooc.fi"
+const domain = process.env.NODE_ENV === "production" ? "mooc.fi" : "localhost"
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://mooc.fi"
+    : "http://localhost:4000"
 
 const StyledPaper = styled(Paper)`
   display: flex;
@@ -129,14 +132,14 @@ const Authorization = () => {
       })
         .then((response) => response.data)
         .then((json) => {
-          window.location.replace(
+          router.push(
             `${json.redirectUri}?code=${router.query.code}&tmc=${
               tmcToken || cookies.get("tmcToken")
             }`,
           )
         })
     } else {
-      window.location.replace(redirectUri)
+      router.push(redirectUri)
     }
   }
 
