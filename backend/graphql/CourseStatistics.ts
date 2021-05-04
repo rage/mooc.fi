@@ -87,11 +87,11 @@ export const CourseStatistics = objectType({
       resolve: async ({ course_id }, _, ctx) => {
         /*return await redisify(
           async () => {*/
-            const started = await ctx.prisma.$queryRaw(
-              `
+        const started = await ctx.prisma.$queryRaw(
+          `
             select distinct date, count(distinct ucs.user_id) as value
             from (
-                select generate_series(min(date_trunc('day', created_at)), now(), '1 week') as date
+                select generate_series(min(date_trunc('day', created_at)), now(), '1 day') as date
                 from user_course_setting
                 where course_id = $1
                 union
@@ -104,14 +104,14 @@ export const CourseStatistics = objectType({
             group by date
             order by date;
             `,
-              course_id,
-            )
+          course_id,
+        )
 
-            return {
-              updated_at: Date.now(),
-              data: started ?? [],
-            }
-          /*},
+        return {
+          updated_at: Date.now(),
+          data: started ?? [],
+        }
+        /*},
           {
             prefix: "coursestatistics_cumulative_started",
             expireTime: 1, // 24 * 60 * 60 * 1000,
@@ -158,7 +158,7 @@ export const CourseStatistics = objectType({
               `
           select distinct date, count(distinct co.user_id) as value
           from (
-              select generate_series(min(date_trunc('day', created_at)), now(), '1 week') as date
+              select generate_series(min(date_trunc('day', created_at)), now(), '1 day') as date
               from completion
               where course_id = $1
               union
@@ -224,7 +224,7 @@ export const CourseStatistics = objectType({
           `
       select distinct date, count(distinct ec.id) as value
       from (
-          select generate_series(min(date_trunc('week', ec2.created_at)), now(), '1 week') as date
+          select generate_series(min(date_trunc('week', ec2.created_at)), now(), '1 day') as date
           from exercise_completion ec2
           join exercise e2 on ec2.exercise_id = e2.id
           where course_id = $1
