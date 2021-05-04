@@ -12,8 +12,11 @@ export interface CheckSlug_course {
   id: string
   slug: string
   name: string
+<<<<<<< HEAD
   description: string | null
   instructions: string | null
+=======
+>>>>>>> 67f338cb (options for charts, synced charts etc.)
 }
 
 export interface CheckSlug {
