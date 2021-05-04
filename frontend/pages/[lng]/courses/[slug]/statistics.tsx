@@ -3,8 +3,8 @@ import withAdmin from "/lib/with-admin"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { gql, useQuery } from "@apollo/client"
 import Container from "/components/Container"
-import Spinner from "/components/Spinner"
-import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+// import Spinner from "/components/Spinner"
+// import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
@@ -118,16 +118,17 @@ function CourseStatisticsPage() {
 
   const slug = useQueryParameter("slug")
 
-  const { data: currentData, loading: currentLoading, error: currentError } = useQuery<CourseStatistics>(
-    CourseStatisticsQuery,
-    {
-      variables: { slug },
-    },
-  )
+  const {
+    data: currentData,
+    loading: currentLoading,
+    error: currentError,
+  } = useQuery<CourseStatistics>(CourseStatisticsQuery, {
+    variables: { slug },
+  })
   const {
     data: cumulativeStartedData,
     loading: cumulativeStartedLoading,
-    error: cumulativeStartedError
+    error: cumulativeStartedError,
   } = useQuery<CourseStatisticsCumulativeStarted>(
     CourseStatisticsCumulativeStartedQuery,
     {
@@ -137,7 +138,7 @@ function CourseStatisticsPage() {
   const {
     data: cumulativeCompletedData,
     loading: cumulativeCompletedLoading,
-    error: cumulativeCompletedError
+    error: cumulativeCompletedError,
   } = useQuery<CourseStatisticsCumulativeCompleted>(
     CourseStatisticsCumulativeCompletedQuery,
     {
@@ -147,7 +148,7 @@ function CourseStatisticsPage() {
   const {
     data: cumulativeAtLeastOneExerciseData,
     loading: cumulativeAtLeastOneExerciseLoading,
-    error: cumulativeAtLeastOneExerciseError
+    error: cumulativeAtLeastOneExerciseError,
   } = useQuery<CourseStatisticsCumulativeAtLeastOneExercise>(
     CourseStatisticsCumulativeAtLeastOneExerciseQuery,
     {
@@ -155,7 +156,7 @@ function CourseStatisticsPage() {
     },
   )
 
-  const courseNameLabel = currentData?.course?.name ?? (!currentData?.course || currentError) ? slug : undefined
+  const course_exists = Boolean(currentData?.course?.id)
 
   useBreadcrumbs([
     {
@@ -163,7 +164,9 @@ function CourseStatisticsPage() {
       href: `/courses`,
     },
     {
-      label: courseNameLabel, // currentData?.course?.name ?? currentError ? t("course") : undefined,
+      label:
+        currentData?.course?.name ??
+        (!currentLoading && !course_exists ? slug : undefined),
       href: `/courses/${slug}`,
     },
     {
@@ -198,11 +201,13 @@ function CourseStatisticsPage() {
         </H1NoBackground>
 
         <Paper elevation={3}>
-          {currentError ?
+          {currentError ? (
             <Alert severity="error">
               <AlertTitle>Error loading statistics</AlertTitle>
               <pre>{JSON.stringify(currentError, undefined, 2)}</pre>
-            </Alert> : <>
+            </Alert>
+          ) : (
+            <>
               <CourseStatisticsEntry
                 name="started"
                 label={t("started")}
@@ -220,14 +225,52 @@ function CourseStatisticsPage() {
               <CourseStatisticsEntry
                 name="atLeastOneExercise"
                 label={t("atLeastOneExercise")}
-                value={currentData?.course?.course_statistics?.at_least_one_exercise}
+                value={
+                  currentData?.course?.course_statistics?.at_least_one_exercise
+                }
                 loading={currentLoading}
                 error={Boolean(currentError)}
               />
-            </>}
-
+            </>
+          )}
         </Paper>
         <Graph
+          values={[
+            {
+              name: "cumulative_started",
+              label: t("cumulative_started"),
+              value:
+                cumulativeStartedData?.course?.course_statistics
+                  ?.cumulative_started,
+              loading: cumulativeStartedLoading,
+              error: cumulativeStartedError,
+            },
+            {
+              name: "cumulative_completed",
+              label: t("cumulative_completed"),
+              value:
+                cumulativeCompletedData?.course?.course_statistics
+                  ?.cumulative_completed,
+              loading: cumulativeCompletedLoading,
+              error: cumulativeCompletedError,
+            },
+            {
+              name: "cumulative_at_least_one_exercise",
+              label: t("cumulative_at_least_one_exercise"),
+              value:
+                cumulativeAtLeastOneExerciseData?.course?.course_statistics
+                  ?.cumulative_at_least_one_exercise,
+              loading: cumulativeAtLeastOneExerciseLoading,
+              error: cumulativeAtLeastOneExerciseError,
+            },
+          ]}
+          label="Stats"
+          updated_at={
+            cumulativeStartedData?.course?.course_statistics?.cumulative_started
+              ?.updated_at
+          }
+        />
+        {/*<Graph
           name="cumulative_started"
           label={t("cumulative_started")}
           value={cumulativeStartedData?.course?.course_statistics?.cumulative_started}
@@ -247,7 +290,7 @@ function CourseStatisticsPage() {
           value={cumulativeAtLeastOneExerciseData?.course?.course_statistics?.cumulative_at_least_one_exercise}
           loading={cumulativeAtLeastOneExerciseLoading}
           error={cumulativeAtLeastOneExerciseError}
-        />
+        />*/}
       </Container>
     </>
   )

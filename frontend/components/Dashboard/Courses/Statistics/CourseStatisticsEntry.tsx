@@ -3,6 +3,8 @@ import { DatedInt } from "/components/Dashboard/Courses/Statistics/types"
 import styled from "@emotion/styled"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
+import { DateTime } from "luxon"
+import { useLanguageContext } from "/contexts/LanguageContext"
 
 interface CourseStatisticsEntryProps {
   name: string
@@ -24,10 +26,21 @@ const StatisticsEntryWrapper: any = styled.div`
     border-top: 1px ridge;
   }
 `
+
+const LabelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 function CourseStatisticsEntry({
-  name, label, value, loading, error
+  name,
+  label,
+  value,
+  loading,
+  error,
 }: CourseStatisticsEntryProps) {
   const t = useTranslator(CoursesTranslations)
+  const { language } = useLanguageContext()
 
   if (loading) {
     return <Skeleton />
@@ -36,14 +49,28 @@ function CourseStatisticsEntry({
   if (error) {
     return <div>Error loading {name}</div>
   }
+
+  const updated_at = DateTime.fromISO(value?.updated_at ?? "")
+    .setLocale(language ?? "en")
+    .toLocaleString(DateTime.DATETIME_FULL)
+
   return (
     <StatisticsEntryWrapper>
-      {loading
-        ? <Skeleton />
-        : <>
-            <Typography variant="h3">{label}: {value?.data?.[0].value}</Typography>
-            <Typography variant="h3">{t("updated")} {value?.updated_at}</Typography>
-          </>}
+      {loading ? (
+        <Skeleton />
+      ) : (
+        <>
+          <LabelWrapper>
+            <Typography variant="h3">{label}</Typography>
+            <Typography variant="caption">
+              {t("updated")} {updated_at}
+            </Typography>
+          </LabelWrapper>
+          <Typography variant="h1">
+            {value?.data?.[0].value ?? "---"}
+          </Typography>
+        </>
+      )}
     </StatisticsEntryWrapper>
   )
 }

@@ -10,7 +10,7 @@ if (process.env.NEXUS_REFLECTION) {
 import { makeSchema, connectionPlugin, fieldAuthorizePlugin } from "nexus"
 import { nexusPrisma } from "nexus-plugin-prisma"
 import * as types from "./graphql"
-import { DateTimeResolver, /*JSONObjectResolver*/ } from "graphql-scalars"
+import { DateTimeResolver /*JSONObjectResolver*/ } from "graphql-scalars"
 // import { GraphQLScalarType } from "graphql/type"
 import * as path from "path"
 import { loggerPlugin } from "./middlewares/logger"

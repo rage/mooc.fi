@@ -3,7 +3,7 @@ import {
   ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
-  defaultDataIdFromObject,
+  // defaultDataIdFromObject,
 } from "@apollo/client"
 import { onError } from "@apollo/client/link/error"
 import { createUploadLink } from "apollo-upload-client"
@@ -73,9 +73,9 @@ function create(initialState: any, originalAccessToken?: string) {
         keyFields: ["id", "slug"]
       },*/
       CourseStatistics: {
-        keyFields: ["course_id"]
+        keyFields: ["course_id"],
       },
-    }
+    },
     /*dataIdFromObject: (object: any) => {
       switch (object.__typename) {
         case "Course":
