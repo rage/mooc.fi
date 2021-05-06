@@ -90,7 +90,10 @@ function useGraphFilter(values: GraphEntry[]) {
   const [series, setSeries] = useState(calculateSeries(values))
   const [loading, setLoading] = useState(getLoading(values))
 
-  useEffect(() => setLoading(getLoading(values)), [values])
+  useEffect(() => {
+    setSeries(calculateSeries(values))
+    setLoading(getLoading(values))
+  }, [values])
   useEffect(() => {
     const filterNames = filter.map((f) => f.name)
     setSeries(
@@ -141,6 +144,7 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
   const [isFilterVisible, setIsFilterVisible] = useState(false)
   const [separate, setSeparate] = useState(true)
 
+  console.log(values)
   const {
     filterValues,
     filter,
