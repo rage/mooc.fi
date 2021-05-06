@@ -7,8 +7,8 @@ async function fetchAccessToken(): Promise<string> {
   try {
     const response = await axios.post(
       `${process.env.TMC_HOST}/oauth/token`,
-      `client_secret=${
-        process.env.TMC_CLIENT_SECRET
+      `client_secret=${process.env.TMC_CLIENT_SECRET}&client_id=${
+        process.env.TMC_CLIENT_ID
       }&username=${encodeURIComponent(
         process.env.TMC_USERNAME || "",
       )}&password=${encodeURIComponent(
