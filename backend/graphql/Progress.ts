@@ -9,13 +9,10 @@ export const Progress = objectType({
     t.nullable.field("user_course_progress", {
       type: "UserCourseProgress",
       resolve: async ({ course, user }, _, ctx) => {
-        const res = await ctx.prisma.userCourseProgress.findFirst({
+        return ctx.prisma.userCourseProgress.findFirst({
           where: { course_id: course?.id, user_id: user?.id },
           orderBy: { created_at: "asc" },
         })
-        console.log("res", res)
-
-        return res
       },
     })
     t.list.field("user_course_service_progresses", {
