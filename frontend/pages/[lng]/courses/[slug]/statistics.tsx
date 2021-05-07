@@ -7,15 +7,6 @@ import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import type { CourseStatistics } from "/static/types/generated/CourseStatistics"
-import {
-  CourseStatisticsCumulativeAtLeastOneExercise,
-} from "/static/types/generated/CourseStatisticsCumulativeAtLeastOneExercise"
-import {
-  CourseStatisticsCumulativeCompleted,
-} from "/static/types/generated/CourseStatisticsCumulativeCompleted"
-import {
-  CourseStatisticsCumulativeStarted,
-} from "/static/types/generated/CourseStatisticsCumulativeStarted"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -66,15 +57,15 @@ export const CourseStatisticsQuery = gql`
   }
 `
 
-const CourseStatisticsCumulativeStartedQuery = gql`
-  query CourseStatisticsCumulativeStarted($slug: String) {
+const CourseStatisticsStartedCumulativeQuery = gql`
+  query CourseStatisticsStartedCumulative($slug: String) {
     course(slug: $slug) {
       id
       slug
       name
       course_statistics {
         course_id
-        cumulative_started {
+        started_cumulative {
           updated_at
           data {
             value
@@ -86,15 +77,15 @@ const CourseStatisticsCumulativeStartedQuery = gql`
   }
 `
 
-const CourseStatisticsCumulativeCompletedQuery = gql`
-  query CourseStatisticsCumulativeCompleted($slug: String) {
+const CourseStatisticsCompletedCumulativeQuery = gql`
+  query CourseStatisticsCompletedCumulative($slug: String) {
     course(slug: $slug) {
       id
       slug
       name
       course_statistics {
         course_id
-        cumulative_completed {
+        completed_cumulative {
           updated_at
           data {
             value
@@ -106,15 +97,15 @@ const CourseStatisticsCumulativeCompletedQuery = gql`
   }
 `
 
-const CourseStatisticsCumulativeAtLeastOneExerciseQuery = gql`
-  query CourseStatisticsCumulativeAtLeastOneExercise($slug: String) {
+const CourseStatisticsAtLeastOneExerciseCumulativeQuery = gql`
+  query CourseStatisticsAtLeastOneExerciseCumulative($slug: String) {
     course(slug: $slug) {
       id
       slug
       name
       course_statistics {
         course_id
-        cumulative_at_least_one_exercise {
+        at_least_one_exercise_cumulative {
           updated_at
           data {
             value
@@ -123,6 +114,26 @@ const CourseStatisticsCumulativeAtLeastOneExerciseQuery = gql`
         }
       }
     }
+  }
+`
+
+const CourseStatisticsAtLeastOneExerciseByIntervalQuery = gql`
+  query CourseStatisticsAtLeastOneExerciseByIntervalQuery($slug: String, $number: Int, $unit: IntervalUnit) {
+    course(slug: $slug) {
+      id
+      slug
+      name
+      course_statistics {
+        course_id
+        at_least_one_exercise_by_interval(number: $number, unit: $unit) {
+          updated_at
+          data {
+            value
+            date
+          }
+        }
+      }
+    }    
   }
 `
 
@@ -139,35 +150,47 @@ function CourseStatisticsPage() {
     variables: { slug },
   })
   const {
-    data: cumulativeStartedData,
-    loading: cumulativeStartedLoading,
-    error: cumulativeStartedError,
-  } = useQuery<CourseStatisticsCumulativeStarted>(
-    CourseStatisticsCumulativeStartedQuery,
+    data: startedCumulativeData,
+    loading: startedCumulativeLoading,
+    error: startedCumulativeError,
+  } = useQuery<CourseStatisticsStartedCumulative>(
+    CourseStatisticsStartedCumulativeQuery,
     {
       variables: { slug },
     },
   )
   const {
-    data: cumulativeCompletedData,
-    loading: cumulativeCompletedLoading,
-    error: cumulativeCompletedError,
-  } = useQuery<CourseStatisticsCumulativeCompleted>(
-    CourseStatisticsCumulativeCompletedQuery,
+    data: completedCumulativeData,
+    loading: completedCumulativeLoading,
+    error: completedCumulativeError,
+  } = useQuery<CourseStatisticsCompletedCumulative>(
+    CourseStatisticsCompletedCumulativeQuery,
     {
       variables: { slug },
     },
   )
   const {
-    data: cumulativeAtLeastOneExerciseData,
-    loading: cumulativeAtLeastOneExerciseLoading,
-    error: cumulativeAtLeastOneExerciseError,
-  } = useQuery<CourseStatisticsCumulativeAtLeastOneExercise>(
-    CourseStatisticsCumulativeAtLeastOneExerciseQuery,
+    data: atLeastOneExerciseCumulativeData,
+    loading: atLeastOneExerciseCumulativeLoading,
+    error: atLeastOneExerciseCumulativeError,
+  } = useQuery<CourseStatisticsAtLeastOneExerciseCumulative>(
+    CourseStatisticsAtLeastOneExerciseCumulativeQuery,
     {
       variables: { slug },
     },
   )
+
+  const {
+    data: atLeastOneExerciseByIntervalData,
+    loading: atLeastOneExerciseByIntervalLoading,
+    error: atLeastOneExerciseByIntervalError,
+  } = useQuery<CourseStatisticsAtLeastOneExerciseByInterval>(
+    CourseStatisticsAtLeastOneExerciseByIntervalQuery,
+    {
+      variables: { slug, unit: "day" },
+    },
+  )
+
 
   const course_exists = Boolean(currentData?.course?.id)
 
@@ -250,59 +273,68 @@ function CourseStatisticsPage() {
         <Graph
           values={[
             {
-              name: "cumulative_started",
-              label: t("cumulative_started"),
+              name: "started_cumulative",
+              label: t("started_cumulative"),
               value:
-                cumulativeStartedData?.course?.course_statistics
-                  ?.cumulative_started,
-              loading: cumulativeStartedLoading,
-              error: cumulativeStartedError,
+                startedCumulativeData?.course?.course_statistics
+                  ?.started_cumulative,
+              loading: startedCumulativeLoading,
+              error: startedCumulativeError,
             },
             {
-              name: "cumulative_completed",
-              label: t("cumulative_completed"),
+              name: "completed_cumulative",
+              label: t("completed_cumulative"),
               value:
-                cumulativeCompletedData?.course?.course_statistics
-                  ?.cumulative_completed,
-              loading: cumulativeCompletedLoading,
-              error: cumulativeCompletedError,
+                completedCumulativeData?.course?.course_statistics
+                  ?.completed_cumulative,
+              loading: completedCumulativeLoading,
+              error: completedCumulativeError,
+            },
+            [{
+              name: "at_least_one_exercise",
+              label: t("at_least_one_exercise_cumulative"),
+              value:
+                atLeastOneExerciseCumulativeData?.course?.course_statistics
+                  ?.at_least_one_exercise_cumulative,
+              loading: atLeastOneExerciseCumulativeLoading,
+              error: atLeastOneExerciseCumulativeError,
             },
             {
-              name: "cumulative_at_least_one_exercise",
-              label: t("cumulative_at_least_one_exercise"),
+              name: "at_least_one_exercise_by_interval",
+              label: "At least one exercise",
               value:
-                cumulativeAtLeastOneExerciseData?.course?.course_statistics
-                  ?.cumulative_at_least_one_exercise,
-              loading: cumulativeAtLeastOneExerciseLoading,
-              error: cumulativeAtLeastOneExerciseError,
-            },
+                atLeastOneExerciseByIntervalData?.course?.course_statistics
+                  ?.at_least_one_exercise_by_interval,
+              loading: atLeastOneExerciseByIntervalLoading,
+              error: atLeastOneExerciseByIntervalError,
+            }],
           ]}
           label="Stats"
           updated_at={
-            cumulativeStartedData?.course?.course_statistics?.cumulative_started
+            startedCumulativeData?.course?.course_statistics?.started_cumulative
               ?.updated_at
           }
         />
         {/*<Graph
-          name="cumulative_started"
-          label={t("cumulative_started")}
-          value={cumulativeStartedData?.course?.course_statistics?.cumulative_started}
-          loading={cumulativeStartedLoading}
-          error={cumulativeStartedError}
+          name="started_cumulative"
+          label={t("started_cumulative")}
+          value={startedCumulativeData?.course?.course_statistics?.cumulative_started}
+          loading={startedCumulativeLoading}
+          error={startedCumulativeError}
         />
         <Graph
-          name="cumulative_completed"
-          label={t("cumulative_completed")}
-          value={cumulativeCompletedData?.course?.course_statistics?.cumulative_completed}
-          loading={cumulativeCompletedLoading}
-          error={cumulativeCompletedError}
+          name="completed_cumulative"
+          label={t("completed_cumulative")}
+          value={completedCumulativeData?.course?.course_statistics?.cumulative_completed}
+          loading={completedCumulativeLoading}
+          error={completedCumulativeError}
         />
         <Graph
-          name="cumulative_at_least_one_exercise"
-          label={t("cumulative_at_least_one_exercise")}
-          value={cumulativeAtLeastOneExerciseData?.course?.course_statistics?.cumulative_at_least_one_exercise}
-          loading={cumulativeAtLeastOneExerciseLoading}
-          error={cumulativeAtLeastOneExerciseError}
+          name="at_least_one_exercise_cumulative"
+          label={t("at_least_one_exercise_cumulative")}
+          value={atLeastOneExerciseCumulativeData?.course?.course_statistics?.cumulative_at_least_one_exercise}
+          loading={atLeastOneExerciseCumulativeLoading}
+          error={atLeastOneExerciseCumulativeError}
         />*/}
       </Container>
     </>

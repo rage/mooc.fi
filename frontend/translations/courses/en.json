@@ -113,7 +113,7 @@
   "completed": "Completed",
   "atLeastOneExercise": "At least one exercise submitted",
   "updated": "Updated",
-  "cumulative_started": "Cumulative started",
-  "cumulative_completed": "Cumulative completed",
-  "cumulative_at_least_one_exercise": "Cumulative at least one exercise submitted"
+  "started_cumulative": "Cumulative started",
+  "completed_cumulative": "Cumulative completed",
+  "at_least_one_exercise_cumulative": "Cumulative at least one exercise submitted"
 }

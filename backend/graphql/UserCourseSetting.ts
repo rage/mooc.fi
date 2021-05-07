@@ -145,7 +145,7 @@ export const UserCourseSettingQueries = extendType({
 
         const orCondition: Prisma.UserWhereInput[] = []
 
-        if (search) {
+        if (search && search !== "") {
           orCondition.push(buildUserSearch(search))
         }
 
@@ -155,18 +155,16 @@ export const UserCourseSettingQueries = extendType({
 
         const baseArgs = {
           where: {
-            ...(orCondition.length
-              ? {
-                  user: {
-                    OR: orCondition,
-                  },
-                }
-              : {}),
+            ...orCondition.length ? {
+            user: {
+              OR: orCondition,
+            } } : {},
             course_id,
             // TODO: should this only return unique and only the oldest/newest?
           },
         }
 
+        console.log(baseArgs)
         return findManyCursorConnection(
           async (args) => {
             let baseQuery

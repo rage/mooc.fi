@@ -17,8 +17,10 @@ import { ApolloError } from "@apollo/client"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import { useLanguageContext } from "/contexts/LanguageContext"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { FormControl } from "@material-ui/core"
+import { flatten } from "lodash"
+import notEmpty from "/util/notEmpty"
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 
@@ -58,8 +60,10 @@ interface GraphEntry {
   error?: ApolloError
 }
 
+type GraphValues = GraphEntry | GraphEntry[]
+
 interface GraphProps {
-  values: GraphEntry[]
+  values: GraphValues[]
   loading?: boolean
   error?: ApolloError
   label?: string
@@ -71,33 +75,68 @@ interface Filter {
   label: string
 }
 
-function useGraphFilter(values: GraphEntry[]) {
-  const getFilters = (_values: GraphEntry[]) =>
-    _values.map((v) => ({ name: v.name, label: v.label }))
-  const calculateSeries = (_values: GraphEntry[]) =>
-    _values.map((value) => ({
-      name: value.label,
-      data: (value?.value?.data ?? []).map((e) => ({
-        x: new Date(DateTime.fromISO(e.date).toJSDate()).getTime(),
-        y: e.value,
-      })),
-    }))
+interface SeriesEntry {
+  name: string
+  data: Array<{ x: number, y: number | null }>
+}
 
-  const getLoading = (_values: GraphEntry[]) =>
-    _values.map((v) => v.loading ?? false)
+type Series = SeriesEntry | SeriesEntry[]
+
+function useGraphFilter(values: GraphValues[]) {
+  const getFilters = (_values: GraphValues[]) =>
+    flatten(_values.map((v) => { 
+      if (Array.isArray(v)) {
+        return v.map((v2) => ({ name: v2.name, label: v2.label }))
+      }
+      return { name: v.name, label: v.label }
+    }))
+  const mapGraphEntry = (value: GraphEntry): SeriesEntry => ({
+    name: value.label,
+    data: (value?.value?.data ?? []).map((e) => ({
+      x: new Date(DateTime.fromISO(e.date).toJSDate()).getTime(),
+      y: e.value,
+    })),
+  })
+
+  const calculateSeries = (_values: GraphValues[]): Series[] => 
+    _values.map((value) => {
+      if (Array.isArray(value)) return value.map(mapGraphEntry)
+
+      return mapGraphEntry(value)
+    })
+  
+  const getLoading = (_values: GraphValues[]) =>
+    _values.map((v) => {
+      if (Array.isArray(v)) return v.reduce((acc, curr) => acc || (curr.loading ?? false), false)
+
+      return v.loading ?? false
+    })
+  
   const filterValues = getFilters(values)
   const [filter, setFilter] = useState<Filter[]>(filterValues)
   const [series, setSeries] = useState(calculateSeries(values))
   const [loading, setLoading] = useState(getLoading(values))
 
+  console.log(filterValues)
   useEffect(() => {
     setSeries(calculateSeries(values))
     setLoading(getLoading(values))
   }, [values])
   useEffect(() => {
     const filterNames = filter.map((f) => f.name)
+    console.log(filterNames)
+    const tmp = values.map((v) => {
+      if (Array.isArray(v)) {
+        const arr = v.filter((v2) => filterNames.includes(v2.name)) 
+        return arr.length > 0 ? arr : undefined
+      }
+
+      return filterNames.includes(v.name) ? v : undefined
+    }).filter(notEmpty)
+    
+    console.log("temp", tmp)
     setSeries(
-      calculateSeries(values.filter((v) => filterNames.includes(v.name))),
+      calculateSeries(tmp),
     )
   }, [filter])
 
@@ -138,13 +177,20 @@ function ChartSkeleton() {
   )
 }
 
+interface ChartsProps {
+  series: Series[]
+  error?: ApolloError
+  loading?: boolean
+  separate: boolean
+  seriesLoading: boolean[]
+}
+
 function Graph({ values, loading, error, label, updated_at }: GraphProps) {
   const t = useTranslator(CoursesTranslations)
   const { language } = useLanguageContext()
   const [isFilterVisible, setIsFilterVisible] = useState(false)
   const [separate, setSeparate] = useState(true)
 
-  console.log(values)
   const {
     filterValues,
     filter,
@@ -153,59 +199,8 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
     loading: seriesLoading,
   } = useGraphFilter(values)
 
-  const options: ApexCharts.ApexOptions = {
-    stroke: {
-      curve: "smooth",
-    },
-    /*markers: {
-      size: [4],
-    },*/
-    yaxis: {
-      title: {
-        text: "users",
-      },
-      labels: {
-        minWidth: 10,
-      },
-    },
-    xaxis: {
-      type: "datetime",
-      labels: {
-        rotate: -90,
-        rotateAlways: true,
-        hideOverlappingLabels: false,
-        formatter: (_value, timestamp, _opts) => {
-          return DateTime.fromMillis(Number(timestamp) ?? 0).toLocaleString({
-            locale: language ?? "en",
-          })
-        },
-      },
-      tickPlacement: "on",
-    },
-    chart: {
-      id: "group",
-      group: "group",
-    },
-    grid: {
-      show: true,
-      position: "back",
-      borderColor: "#e7e7e7",
-      row: {
-        colors: ["#f3f3f3", "transparent"],
-        opacity: 0.5,
-      },
-      xaxis: {
-        lines: {
-          show: true,
-        },
-      },
-    },
-    legend: {
-      position: "top",
-      showForSingleSeries: true,
-      showForNullSeries: false,
-    },
-  }
+  console.log(series)
+
 
   const handleFilterChange = (filterValue: Filter) => (
     _: any,
@@ -217,8 +212,8 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
 
   const updatedAtFormatted = updated_at
     ? DateTime.fromISO(updated_at)
-        .setLocale(language ?? "en")
-        .toLocaleString(DateTime.DATETIME_FULL)
+      .setLocale(language ?? "en")
+      .toLocaleString(DateTime.DATETIME_FULL)
     : undefined
 
   return (
@@ -272,40 +267,129 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
           </FilterColumn>
         </FilterMenu>
       </Collapse>
-      {loading ? (
-        <>
-          <ChartSkeleton key="page-skeleton-1" />
-          <ChartSkeleton key="page-skeleton-2" />
-          <ChartSkeleton key="page-skeleton-3" />
-        </>
-      ) : error ? (
-        <Alert severity="error">
-          <AlertTitle>Error loading graph</AlertTitle>
-          <pre>{JSON.stringify(error, undefined, 2)}</pre>
-        </Alert>
-      ) : separate ? (
-        <div id="wrapper">
-          {series.map((s, index) => (
-            <div key={`chart-${index}`}>
-              {seriesLoading[index] ? (
-                <ChartSkeleton key={`skeleton-${index}`} />
-              ) : (
-                <Chart
-                  options={{
-                    ...options,
-                    colors: [colors[index % colors.length]],
-                  }}
-                  series={[s]}
-                  type="line"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <Chart options={options} series={series} type="line" />
-      )}
+      <Charts
+        loading={loading}
+        error={error}
+        separate={separate}
+        series={series}
+        seriesLoading={seriesLoading}
+      />
     </ChartWrapper>
+  )
+}
+
+const getChartName = (s: Series) => 
+  Array.isArray(s) ? s.map((s2) => s2.name).join("-") : s.name
+
+function Charts({ loading, error, separate, series, seriesLoading }: ChartsProps) {
+  const { language } = useLanguageContext()
+
+  const options: ApexCharts.ApexOptions = {
+    stroke: {
+      curve: "smooth",
+    },
+    /*markers: {
+      size: [4],
+    },*/
+    yaxis: {
+      title: {
+        text: "users",
+      },
+      labels: {
+        minWidth: 10,
+      },
+    },
+    xaxis: {
+      type: "datetime",
+      labels: {
+        rotate: -90,
+        rotateAlways: true,
+        hideOverlappingLabels: false,
+        formatter: (_value, timestamp, _opts) => {
+          return DateTime.fromMillis(Number(timestamp) ?? 0).toLocaleString({
+            locale: language ?? "en",
+          })
+        },
+      },
+      tickPlacement: "on",
+    },
+    chart: {
+      animations: {
+        enabled: false
+      },
+      group: "group",
+    },
+    grid: {
+      show: true,
+      position: "back",
+      borderColor: "#e7e7e7",
+      row: {
+        colors: ["#f3f3f3", "transparent"],
+        opacity: 0.5,
+      },
+      xaxis: {
+        lines: {
+          show: true,
+        },
+      },
+    },
+    legend: {
+      position: "top",
+      showForSingleSeries: true,
+      showForNullSeries: false,
+    },
+  }
+
+  const chartOptions = useCallback(() => series.map((_, index) => ({
+    ...options,
+    colors: colors.slice(index % colors.length).concat(colors.slice(0, index % colors.length)),
+    chart: {
+      ...options.chart,
+      id: `chart-${index}`
+    }
+  })), [series])
+
+  if (loading) {
+    return (
+      <>
+        <ChartSkeleton key="page-skeleton-1" />
+        <ChartSkeleton key="page-skeleton-2" />
+        <ChartSkeleton key="page-skeleton-3" />
+      </>
+    )
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error">
+        <AlertTitle>Error loading chart</AlertTitle>
+        <pre>{JSON.stringify(error, undefined, 2)}</pre>
+      </Alert>
+    )
+  }
+
+  if (separate) {
+    return (
+      <>
+        {series.map((s, index) => (
+          <div key={`chart-${getChartName(s)}`}>
+            {seriesLoading[index] ? (
+              <ChartSkeleton key={`skeleton-${getChartName(s)}`} />
+            ) : (
+              <Chart
+                options={chartOptions()[index]}
+                series={Array.isArray(s) ? s : [s]}
+                type="line"
+              />
+            )}
+          </div>
+        ))}
+      </>
+    )
+  }
+
+  return (
+    <Chart options={options} series={series} type="line" />
   )
 }
 

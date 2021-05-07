@@ -8,6 +8,7 @@
 // ====================================================
 
 export interface CheckSlug_course {
+<<<<<<< HEAD
   __typename: "Course"
   id: string
   slug: string
@@ -17,12 +18,18 @@ export interface CheckSlug_course {
   instructions: string | null
 =======
 >>>>>>> 67f338cb (options for charts, synced charts etc.)
+=======
+  __typename: "Course";
+  id: string;
+  slug: string;
+  name: string;
+>>>>>>> 9b8932d9 (able to group charts)
 }
 
 export interface CheckSlug {
-  course: CheckSlug_course | null
+  course: CheckSlug_course | null;
 }
 
 export interface CheckSlugVariables {
-  slug: string
+  slug: string;
 }

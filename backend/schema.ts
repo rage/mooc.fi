@@ -7,6 +7,8 @@ import {
 import { nexusPrisma } from "nexus-plugin-prisma"
 // import { GraphQLScalarType } from "graphql/type"
 import * as path from "path"
+// import { GraphQLScalarType } from "graphql/type"
+import * as path from "path"
 import { join } from "path"
 
 import {
@@ -28,24 +30,6 @@ require("dotenv-safe").config({
 if (process.env.NEXUS_REFLECTION) {
   require("sharp")
 }
-
-<<<<<<< HEAD
-if (NEXUS_REFLECTION) {
-  require("sharp")
-}
-=======
-import { makeSchema, connectionPlugin, fieldAuthorizePlugin } from "nexus"
-import { nexusPrisma } from "nexus-plugin-prisma"
-import * as types from "./graphql"
-import { DateTimeResolver /*JSONObjectResolver*/ } from "graphql-scalars"
-// import { GraphQLScalarType } from "graphql/type"
-import * as path from "path"
-import { loggerPlugin } from "./middlewares/logger"
-import { sentryPlugin } from "./middlewares/sentry"
-import { cachePlugin } from "./middlewares/cache"
-import { moocfiAuthPlugin } from "./middlewares/fetchUser"
-import { join } from "path"
->>>>>>> 67f338cb (options for charts, synced charts etc.)
 
 const createPlugins = () => {
   const plugins = [

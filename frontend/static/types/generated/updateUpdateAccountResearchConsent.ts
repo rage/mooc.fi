@@ -8,14 +8,14 @@
 // ====================================================
 
 export interface updateUpdateAccountResearchConsent_updateResearchConsent {
-  __typename: "User"
-  id: string
+  __typename: "User";
+  id: string;
 }
 
 export interface updateUpdateAccountResearchConsent {
-  updateResearchConsent: updateUpdateAccountResearchConsent_updateResearchConsent | null
+  updateResearchConsent: updateUpdateAccountResearchConsent_updateResearchConsent | null;
 }
 
 export interface updateUpdateAccountResearchConsentVariables {
-  value: boolean
+  value: boolean;
 }

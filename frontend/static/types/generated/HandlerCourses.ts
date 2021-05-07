@@ -8,12 +8,12 @@
 // ====================================================
 
 export interface HandlerCourses_handlerCourses {
-  __typename: "Course"
-  id: string
-  slug: string
-  name: string
+  __typename: "Course";
+  id: string;
+  slug: string;
+  name: string;
 }
 
 export interface HandlerCourses {
-  handlerCourses: (HandlerCourses_handlerCourses | null)[] | null
+  handlerCourses: (HandlerCourses_handlerCourses | null)[] | null;
 }
