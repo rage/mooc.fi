@@ -7,13 +7,14 @@ import {
   Collapse,
   Checkbox,
   FormControlLabel,
+  Button,
 } from "@material-ui/core"
 import CollapseButton from "/components/Buttons/CollapseButton"
 import dynamic from "next/dynamic"
 import { DateTime } from "luxon"
 import styled, { StyledComponent } from "@emotion/styled"
 import { DatedInt } from "/components/Dashboard/Courses/Statistics/types"
-import { ApolloError } from "@apollo/client"
+import { ApolloError, OperationVariables, QueryLazyOptions } from "@apollo/client"
 import CoursesTranslations from "/translations/courses"
 import { useTranslator } from "/util/useTranslator"
 import { useLanguageContext } from "/contexts/LanguageContext"
@@ -57,6 +58,7 @@ interface GraphEntry {
   name: string
   label: string
   loading: boolean
+  fetch?: (_?: QueryLazyOptions<OperationVariables>) => void
   error?: ApolloError
 }
 
@@ -79,6 +81,10 @@ interface SeriesEntry {
   name: string
   data: Array<{ x: number, y: number | null }>
 }
+/*interface SeriesEntry {
+  name: string
+  [key: string]: any
+}*/
 
 type Series = SeriesEntry | SeriesEntry[]
 
@@ -98,6 +104,7 @@ function useGraphFilter(values: GraphValues[]) {
     })),
   })
 
+  console.log(values)
   const calculateSeries = (_values: GraphValues[]): Series[] => 
     _values.map((value) => {
       if (Array.isArray(value)) return value.map(mapGraphEntry)
@@ -216,6 +223,16 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
       .toLocaleString(DateTime.DATETIME_FULL)
     : undefined
 
+  const refreshSeries = () => {
+    // todo: only fetch selected
+    values.forEach((v) => {
+      if (Array.isArray(v)) {
+        return v.forEach((v2) => v2.fetch?.())
+      }
+      v.fetch?.()
+    })
+  }
+
   return (
     <ChartWrapper>
       <ChartHeader>
@@ -264,6 +281,7 @@ function Graph({ values, loading, error, label, updated_at }: GraphProps) {
                 />
               }
             />
+            <Button onClick={() => refreshSeries()}>Refresh</Button>
           </FilterColumn>
         </FilterMenu>
       </Collapse>
@@ -288,9 +306,6 @@ function Charts({ loading, error, separate, series, seriesLoading }: ChartsProps
     stroke: {
       curve: "smooth",
     },
-    /*markers: {
-      size: [4],
-    },*/
     yaxis: {
       title: {
         text: "users",
@@ -376,6 +391,7 @@ function Charts({ loading, error, separate, series, seriesLoading }: ChartsProps
             {seriesLoading[index] ? (
               <ChartSkeleton key={`skeleton-${getChartName(s)}`} />
             ) : (
+              //<div/>
               <Chart
                 options={chartOptions()[index]}
                 series={Array.isArray(s) ? s : [s]}
@@ -389,6 +405,7 @@ function Charts({ loading, error, separate, series, seriesLoading }: ChartsProps
   }
 
   return (
+    // <div />
     <Chart options={options} series={series} type="line" />
   )
 }

@@ -1,4 +1,6 @@
 import Container from "/components/Container"
+import CourseStatisticsEntry
+  from "/components/Dashboard/Courses/Statistics/CourseStatisticsEntry"
 import Graph from "/components/Dashboard/Courses/Statistics/Graph"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
 // import Spinner from "/components/Spinner"
@@ -7,6 +9,18 @@ import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import withAdmin from "/lib/with-admin"
 import type { CourseStatistics } from "/static/types/generated/CourseStatistics"
+import {
+  CourseStatisticsAtLeastOneExerciseByInterval,
+} from "/static/types/generated/CourseStatisticsAtLeastOneExerciseByInterval"
+import {
+  CourseStatisticsAtLeastOneExerciseCumulative,
+} from "/static/types/generated/CourseStatisticsAtLeastOneExerciseCumulative"
+import {
+  CourseStatisticsCompletedCumulative,
+} from "/static/types/generated/CourseStatisticsCompletedCumulative"
+import {
+  CourseStatisticsStartedCumulative,
+} from "/static/types/generated/CourseStatisticsStartedCumulative"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 import { useQueryParameter } from "/util/useQueryParameter"
@@ -14,6 +28,7 @@ import { useTranslator } from "/util/useTranslator"
 
 import {
   gql,
+  useLazyQuery,
   useQuery,
 } from "@apollo/client"
 import {
@@ -149,42 +164,42 @@ function CourseStatisticsPage() {
   } = useQuery<CourseStatistics>(CourseStatisticsQuery, {
     variables: { slug },
   })
-  const {
+  const [getStartedCumulative, {
     data: startedCumulativeData,
     loading: startedCumulativeLoading,
     error: startedCumulativeError,
-  } = useQuery<CourseStatisticsStartedCumulative>(
+  }] = useLazyQuery<CourseStatisticsStartedCumulative>(
     CourseStatisticsStartedCumulativeQuery,
     {
       variables: { slug },
     },
   )
-  const {
+  const [getCompletedCumulative, {
     data: completedCumulativeData,
     loading: completedCumulativeLoading,
     error: completedCumulativeError,
-  } = useQuery<CourseStatisticsCompletedCumulative>(
+  }] = useLazyQuery<CourseStatisticsCompletedCumulative>(
     CourseStatisticsCompletedCumulativeQuery,
     {
       variables: { slug },
     },
   )
-  const {
+  const [getAtLeastOneExerciseCumulative, {
     data: atLeastOneExerciseCumulativeData,
     loading: atLeastOneExerciseCumulativeLoading,
     error: atLeastOneExerciseCumulativeError,
-  } = useQuery<CourseStatisticsAtLeastOneExerciseCumulative>(
+  }] = useLazyQuery<CourseStatisticsAtLeastOneExerciseCumulative>(
     CourseStatisticsAtLeastOneExerciseCumulativeQuery,
     {
       variables: { slug },
     },
   )
 
-  const {
+  const [getAtLeastOneExerciseByInterval, {
     data: atLeastOneExerciseByIntervalData,
     loading: atLeastOneExerciseByIntervalLoading,
     error: atLeastOneExerciseByIntervalError,
-  } = useQuery<CourseStatisticsAtLeastOneExerciseByInterval>(
+  }] = useLazyQuery<CourseStatisticsAtLeastOneExerciseByInterval>(
     CourseStatisticsAtLeastOneExerciseByIntervalQuery,
     {
       variables: { slug, unit: "day" },
@@ -275,6 +290,7 @@ function CourseStatisticsPage() {
             {
               name: "started_cumulative",
               label: t("started_cumulative"),
+              fetch: getStartedCumulative,
               value:
                 startedCumulativeData?.course?.course_statistics
                   ?.started_cumulative,
