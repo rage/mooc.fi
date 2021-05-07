@@ -99,6 +99,8 @@ function PaginatedPointsList(props: Props) {
     [search],
   )
 
+  console.log(data)
+
   if (error) {
     return <p>ERROR: {JSON.stringify(error)}</p>
   }

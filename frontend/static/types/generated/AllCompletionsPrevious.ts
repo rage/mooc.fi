@@ -8,89 +8,89 @@
 // ====================================================
 
 export interface AllCompletionsPrevious_completionsPaginated_pageInfo {
-  __typename: "PageInfo"
+  __typename: "PageInfo";
   /**
    * Used to indicate whether more edges exist following the set defined by the clients arguments.
    */
-  hasNextPage: boolean
+  hasNextPage: boolean;
   /**
    * Used to indicate whether more edges exist prior to the set defined by the clients arguments.
    */
-  hasPreviousPage: boolean
+  hasPreviousPage: boolean;
   /**
    * The cursor corresponding to the first nodes in edges. Null if the connection is empty.
    */
-  startCursor: string | null
+  startCursor: string | null;
   /**
    * The cursor corresponding to the last nodes in edges. Null if the connection is empty.
    */
-  endCursor: string | null
+  endCursor: string | null;
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_user {
-  __typename: "User"
-  id: string
-  first_name: string | null
-  last_name: string | null
-  student_number: string | null
+  __typename: "User";
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  student_number: string | null;
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_course {
-  __typename: "Course"
-  id: string
-  name: string
+  __typename: "Course";
+  id: string;
+  name: string;
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_completions_registered_organization {
-  __typename: "Organization"
-  id: string
-  slug: string
+  __typename: "Organization";
+  id: string;
+  slug: string;
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node_completions_registered {
-  __typename: "CompletionRegistered"
-  id: string
-  organization: AllCompletionsPrevious_completionsPaginated_edges_node_completions_registered_organization | null
+  __typename: "CompletionRegistered";
+  id: string;
+  organization: AllCompletionsPrevious_completionsPaginated_edges_node_completions_registered_organization | null;
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges_node {
-  __typename: "Completion"
-  id: string
-  email: string
-  completion_language: string | null
-  created_at: any | null
-  user: AllCompletionsPrevious_completionsPaginated_edges_node_user | null
-  course: AllCompletionsPrevious_completionsPaginated_edges_node_course | null
-  completions_registered: AllCompletionsPrevious_completionsPaginated_edges_node_completions_registered[]
+  __typename: "Completion";
+  id: string;
+  email: string;
+  completion_language: string | null;
+  created_at: any | null;
+  user: AllCompletionsPrevious_completionsPaginated_edges_node_user | null;
+  course: AllCompletionsPrevious_completionsPaginated_edges_node_course | null;
+  completions_registered: AllCompletionsPrevious_completionsPaginated_edges_node_completions_registered[];
 }
 
 export interface AllCompletionsPrevious_completionsPaginated_edges {
-  __typename: "CompletionEdge"
+  __typename: "CompletionEdge";
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Node
    */
-  node: AllCompletionsPrevious_completionsPaginated_edges_node | null
+  node: AllCompletionsPrevious_completionsPaginated_edges_node | null;
 }
 
 export interface AllCompletionsPrevious_completionsPaginated {
-  __typename: "CompletionConnection"
+  __typename: "CompletionConnection";
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
    */
-  pageInfo: AllCompletionsPrevious_completionsPaginated_pageInfo
+  pageInfo: AllCompletionsPrevious_completionsPaginated_pageInfo;
   /**
    * https: // facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
    */
-  edges: (AllCompletionsPrevious_completionsPaginated_edges | null)[] | null
+  edges: (AllCompletionsPrevious_completionsPaginated_edges | null)[] | null;
 }
 
 export interface AllCompletionsPrevious {
-  completionsPaginated: AllCompletionsPrevious_completionsPaginated | null
+  completionsPaginated: AllCompletionsPrevious_completionsPaginated | null;
 }
 
 export interface AllCompletionsPreviousVariables {
-  course: string
-  cursor?: string | null
-  completionLanguage?: string | null
-  search?: string | null
+  course: string;
+  cursor?: string | null;
+  completionLanguage?: string | null;
+  search?: string | null;
 }

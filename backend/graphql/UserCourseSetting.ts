@@ -127,7 +127,7 @@ export const UserCourseSettingQueries = extendType({
 
         const orCondition: Prisma.UserWhereInput[] = []
 
-        if (search) {
+        if (search && search !== "") {
           orCondition.push(buildUserSearch(search))
         }
 
@@ -137,13 +137,15 @@ export const UserCourseSettingQueries = extendType({
 
         const baseArgs = {
           where: {
+            ...orCondition.length ? {
             user: {
               OR: orCondition,
-            },
+            } } : {},
             course_id,
           },
         }
 
+        console.log(baseArgs)
         return findManyCursorConnection(
           async (args) =>
             ctx.prisma.userCourseSetting.findMany({ ...args, ...baseArgs }),

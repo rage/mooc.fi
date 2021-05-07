@@ -8,22 +8,21 @@ export const Progress = objectType({
 
     t.nullable.field("user_course_progress", {
       type: "UserCourseProgress",
-      resolve: async (parent, _, ctx) => {
-        const course_id = parent.course?.id
-        const user_id = parent.user?.id
-        return await ctx.prisma.userCourseProgress.findFirst({
-          where: { course_id, user_id },
+      resolve: async ({ course, user }, _, ctx) => {
+        const res = await ctx.prisma.userCourseProgress.findFirst({
+          where: { course_id: course?.id, user_id: user?.id },
           orderBy: { created_at: "asc" },
         })
+        console.log("res", res)
+
+        return res
       },
     })
     t.list.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
-      resolve: async (parent, _, ctx) => {
-        const course_id = parent.course?.id
-        const user_id = parent.user?.id
+      resolve: async ({ course, user }, _, ctx) => {
         return ctx.prisma.userCourseServiceProgress.findMany({
-          where: { user_id, course_id },
+          where: { user_id: user?.id, course_id: course?.id },
         })
       },
     })

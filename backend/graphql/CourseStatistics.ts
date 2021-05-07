@@ -4,9 +4,7 @@ import {
   enumType,
   intArg,
   nonNull,
-  nullable,
   objectType,
-  stringArg,
 } from "nexus"
 import { redisify } from "../services/redis"
 import { Context } from "../context"
@@ -86,6 +84,7 @@ type TimeGroupUnit =
   | "timezone_minute"
   | "week"
   | "year"
+
 interface CourseStatisticsValue {
   value?: number
   date?: number
@@ -135,7 +134,6 @@ const createStatisticsQuery = async ({
   const queryFn = async () => {
     const data = (await ctx.prisma.$queryRaw(query, ...values)) ?? []
 
-    console.log("data", data)
     return {
       updated_at: Date.now(),
       unit,
@@ -152,18 +150,6 @@ const createStatisticsQuery = async ({
   })
 }
 
-/*const createCourseStatisticsResolver = <
-  TypeName extends string,
-  FieldName extends string
->(
-  path: FieldName,
-  query: string | TemplateStringsArray | Sql,
-): FieldResolver<TypeName, FieldName> => async (
-  { course_id },
-  _,
-  ctx,
-): Promise<any> => {}
-*/
 export const CourseStatistics = objectType({
   name: "CourseStatistics",
   definition(t) {
@@ -198,10 +184,10 @@ export const CourseStatistics = objectType({
           path: "started_by_unit",
           ctx,
           query: `
-            select round(extract(${unit} from created_at)) as unit_value, count(distinct ucs.user_id) as value
+            select floor(extract(${unit} from created_at)) as unit_value, count(distinct ucs.user_id) as value
             from user_course_setting ucs
             where course_id = $1
-            group by round(extract(${unit} from created_at));
+            group by floor(extract(${unit} from created_at));
           `,
           values: [course_id],
           unit,
@@ -268,7 +254,7 @@ export const CourseStatistics = objectType({
             left join
               user_course_setting ucs
               on date_trunc('${unit}', ucs.created_at) <= series.date
-              and course_id = $1
+            where course_id = $1
             group by date
             order by date;
           `,
@@ -372,7 +358,7 @@ export const CourseStatistics = objectType({
           query: `
             SELECT COUNT(DISTINCT user_id) as value, now() as date
             FROM exercise_completion ec
-            JOIN exercise e ON ec.exercise_id = e.id
+            LEFT JOIN exercise e ON ec.exercise_id = e.id
             WHERE course_id = $1;
           `,
           values: [course_id],
@@ -446,7 +432,7 @@ export const CourseStatistics = objectType({
             left join
               exercise e
               on ec.exercise_id = e.id
-              and e.course_id = $1
+            where e.course_id = $1
             group by date
             order by date;
           `,
