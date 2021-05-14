@@ -90,7 +90,7 @@ const EmailTemplateView = () => {
     setHtmlBody(data.email_template?.html_body)
     setTitle(data.email_template?.title)
     setTemplateType(data.email_template?.type)
-    setExerciseThreshold(data.email_template?.execise_completions_threshold)
+    setExerciseThreshold(data.email_template?.exercise_completions_threshold)
     setPointsThreshold(data.email_template?.points_threshold)
     setThresholdCourseId(
       data.email_template?.triggered_automatically_by_course_id,
