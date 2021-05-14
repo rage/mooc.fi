@@ -5,7 +5,14 @@ import { SubtitleNoBackground } from "/components/Text/headers"
 import { useQueryParameter } from "/util/useQueryParameter"
 import { EmailTemplate } from "/static/types/generated/EmailTemplate"
 import { EmailTemplateQuery } from "/graphql/queries/email-templates"
-import { Paper, TextField, Button } from "@material-ui/core"
+import {
+  Paper,
+  TextField,
+  Button,
+  NativeSelect,
+  InputLabel,
+  Select,
+} from "@material-ui/core"
 import {
   UpdateEmailTemplateMutation,
   DeleteEmailTemplateMutation,
@@ -17,6 +24,8 @@ import LanguageContext from "/contexts/LanguageContext"
 import Router from "next/router"
 import withAdmin from "/lib/with-admin"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { AllCoursesQuery } from "/graphql/queries/courses"
+import { AllCourses } from "/static/types/generated/AllCourses"
 
 const EmailTemplateView = () => {
   const [emailTemplate, setEmailTemplate] = useState<any>()
@@ -24,6 +33,10 @@ const EmailTemplateView = () => {
   const [txtBody, setTxtBody] = useState<any>()
   const [htmlBody, setHtmlBody] = useState<any>()
   const [title, setTitle] = useState<any>()
+  const [exerciseThreshold, setExerciseThreshold] = useState<any>()
+  const [pointsThreshold, setPointsThreshold] = useState<any>()
+  const [templateType, setTemplateType] = useState<any>()
+  const [thresholdCourseId, setThresholdCourseId] = useState<any>()
   const [didInit, setDidInit] = useState(false)
 
   const id = useQueryParameter("id")
@@ -43,6 +56,12 @@ const EmailTemplateView = () => {
     variables: { id: id },
   })
 
+  const {
+    loading: courseLoading,
+    error: courseError,
+    data: courseData,
+  } = useQuery<AllCourses>(AllCoursesQuery)
+
   const { language } = useContext(LanguageContext)
 
   useBreadcrumbs([
@@ -57,11 +76,11 @@ const EmailTemplateView = () => {
   ])
 
   //TODO add circular progress
-  if (loading) {
+  if (loading || courseLoading) {
     return null
   }
   //TODO fix error message
-  if (error || !data) {
+  if (error || !data || courseError || !courseData) {
     return <p>Error has occurred</p>
   }
 
@@ -70,9 +89,19 @@ const EmailTemplateView = () => {
     setTxtBody(data.email_template?.txt_body)
     setHtmlBody(data.email_template?.html_body)
     setTitle(data.email_template?.title)
+    setTemplateType(data.email_template?.type)
+    setExerciseThreshold(data.email_template?.execise_completions_threshold)
+    setPointsThreshold(data.email_template?.points_threshold)
+    setThresholdCourseId(
+      data.email_template?.triggered_automatically_by_course_id,
+    )
     setDidInit(true)
     setEmailTemplate(data.email_template)
   }
+
+  const courseOptions = courseData?.courses?.map((course) => {
+    return <option value={course?.id}>{course?.name}</option>
+  })
 
   return (
     <section>
@@ -141,6 +170,67 @@ const EmailTemplateView = () => {
             />
             <br></br>
             <br></br>
+            <InputLabel htmlFor="select">Template type</InputLabel>
+            <NativeSelect
+              onChange={(e) => {
+                e.preventDefault()
+                setTemplateType(e.target.value)
+              }}
+              id="select"
+              value={templateType}
+            >
+              <option value="completion">Completion e-mail</option>
+              <option value="threshold">Threshold e-mail</option>
+            </NativeSelect>
+            <br />
+            <br />
+            {templateType === "threshold" ? (
+              <>
+                <TextField
+                  type="number"
+                  label="Exercise Completions threshold"
+                  fullWidth
+                  autoComplete="off"
+                  variant="outlined"
+                  style={{ width: "60%" }}
+                  onChange={(e) => {
+                    e.preventDefault()
+                    setExerciseThreshold(e.target.value)
+                  }}
+                />
+                <br />
+                <br />
+                <TextField
+                  type="number"
+                  label="Points threshold"
+                  fullWidth
+                  autoComplete="off"
+                  variant="outlined"
+                  style={{ width: "60%" }}
+                  onChange={(e) => {
+                    e.preventDefault()
+                    setPointsThreshold(e.target.value)
+                  }}
+                />
+                <br />
+                <br />
+                <InputLabel htmlFor="selectCourse">
+                  Threshold for course
+                </InputLabel>
+                <Select
+                  onChange={(e) => {
+                    e.preventDefault()
+                    setThresholdCourseId(e.target.value)
+                  }}
+                  id="selectCourse"
+                  value={thresholdCourseId}
+                >
+                  {courseOptions}
+                </Select>
+              </>
+            ) : null}
+            <br></br>
+            <br></br>
             <ApolloConsumer>
               {(client) => (
                 <Button
@@ -158,6 +248,10 @@ const EmailTemplateView = () => {
                             title: title,
                             txt_body: txtBody,
                             html_body: htmlBody,
+                            triggered_automatically_by_course_id: thresholdCourseId,
+                            execise_completions_threshold: exerciseThreshold,
+                            points_threshold: pointsThreshold,
+                            type: templateType,
                           },
                         },
                       )
