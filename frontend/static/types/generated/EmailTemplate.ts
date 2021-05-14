@@ -18,7 +18,7 @@ export interface EmailTemplate_email_template {
   title: string | null
   type: string | null
   points_threshold: number | null
-  execise_completions_threshold: number | null
+  exercise_completions_threshold: number | null
   triggered_automatically_by_course_id: string | null
 }
 
