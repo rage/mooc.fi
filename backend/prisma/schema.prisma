@@ -175,7 +175,7 @@ model EmailTemplate {
   name                                     String?
   title                                    String?
   txt_body                                 String?
-  type                                     String?
+  template_type                            String?
   exercise_completions_threshold           Int?
   points_threshold                         Int?
   updated_at                               DateTime?        @updatedAt
