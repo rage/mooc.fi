@@ -8,17 +8,16 @@ export async function up(knex: Knex): Promise<void> {
     ADD COLUMN IF NOT EXISTS exercise_completions_threshold INTEGER;
   `)
   await knex.raw(`ALTER TABLE email_template
-    ADD COLUMN IF NOT EXISTS triggered_automatically_by_course_id text;
+    ADD COLUMN IF NOT EXISTS triggered_automatically_by_course_id uuid;
   `)
   await knex.raw(`ALTER TABLE email_template
     ADD COLUMN IF NOT EXISTS template_type text;
   `)
   try {
-    await knex.transaction(async (trx) => {
-      await trx.raw(`ALTER TABLE ONLY email_template
-        ADD CONSTRAINT course_threshold_email_fkey FOREIGN KEY (triggered_automatically_by_course) REFERENCES course(id) ON DELETE SET NULL;`)
-    })
-  } catch {
+    await knex.raw(`ALTER TABLE ONLY email_template
+      ADD CONSTRAINT course_threshold_email_fkey FOREIGN KEY (triggered_automatically_by_course_id) REFERENCES course(id) ON DELETE SET NULL;`)
+  } catch (e) {
+    console.log(e)
     console.log("Error adding foreign key constraints.")
   }
 }
