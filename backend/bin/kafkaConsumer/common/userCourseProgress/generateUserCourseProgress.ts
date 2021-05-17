@@ -33,7 +33,12 @@ export const generateUserCourseProgress = async ({
     await checkCompletion({ user, course, combinedProgress: combined, context })
   }
 
-  await checkAndSendThresholdEmail({ user, course, combined, context })
+  await checkAndSendThresholdEmail({
+    user,
+    course,
+    combinedUserCourseProgress: combined,
+    context,
+  })
 
   await context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
